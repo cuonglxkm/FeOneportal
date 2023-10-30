@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  #----------------------------------------------------------------
+  app-host:
+    image: app-host:1.0.0
+    build:
+      context: ./..
+      dockerfile: apps/app-host/Dockerfile
+    container_name: app-host
+    restart: on-failure
+    expose:
+      - '4200'
+    ports:
+      - "4200:80"
+    networks:
+      - one-portal-network
+
+  #----------------------------------------------------------------
+  app-dashboard:
+    image: app-dashboard:1.0.0
+    build:
+      context: ./..
+      dockerfile: apps/app-dashboard/Dockerfile
+    container_name: app-dashboard
+    restart: on-failure
+    expose:
+      - '4201'
+    ports:
+      - "4201:80"
+    networks:
+      - one-portal-network
+#----------------------------------------------------------------
+networks:
+  one-portal-network:

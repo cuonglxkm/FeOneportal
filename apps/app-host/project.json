@@ -1,0 +1,82 @@
+{
+  "name": "app-host",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-host/src",
+  "tags": ["app-host"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-host",
+        "index": "apps/app-host/src/index.html",
+        "main": "apps/app-host/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-host/tsconfig.app.json",
+        "assets": ["apps/app-host/src/favicon.ico", "apps/app-host/src/assets"],
+        "styles": ["apps/app-host/src/styles.less"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-host/webpack.config.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:module-federation-dev-server",
+      "options": {
+        "port": 4200,
+        "publicHost": "http://localhost:4200"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-host:build:production"
+        },
+        "development": {
+          "browserTarget": "app-host:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-host:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/app-host/**/*.ts", "apps/app-host/**/*.html"]
+      }
+    }
+  }
+}

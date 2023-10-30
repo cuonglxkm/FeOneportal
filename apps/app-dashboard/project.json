@@ -1,0 +1,108 @@
+{
+  "name": "app-dashboard",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-dashboard/src",
+  "tags": ["app-dashboard"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-dashboard",
+        "index": "apps/app-dashboard/src/index.html",
+        "main": "apps/app-dashboard/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-dashboard/tsconfig.app.json",
+        "assets": [
+          "apps/app-dashboard/src/favicon.ico",
+          "apps/app-dashboard/src/assets"
+        ],
+        "styles": ["apps/app-dashboard/src/styles.less"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-dashboard/webpack.config.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-dashboard/webpack.prod.config.ts"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:webpack-dev-server",
+      "options": {
+        "port": 4201,
+        "publicHost": "http://localhost:4201"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-dashboard:build:production"
+        },
+        "development": {
+          "browserTarget": "app-dashboard:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-dashboard:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/app-dashboard/**/*.ts",
+          "apps/app-dashboard/**/*.html"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "app-dashboard:build",
+        "port": 4201,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-dashboard:build:development"
+        },
+        "production": {
+          "buildTarget": "app-dashboard:build:production"
+        }
+      }
+    }
+  }
+}
