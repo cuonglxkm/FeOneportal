@@ -1,0 +1,10 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+
+<div class="normal-table-wrap">
+  <input class="m-b-20" nz-input [placeholder]="'The value passed into the drawer'" [(ngModel)]="data" />
+
+  {{ 'This is the value returned from the drawer:' + dataFromDrawer }}
+  <br />
+
+  <button nz-button (click)="showDrawer()">Create by service</button>
+</div>

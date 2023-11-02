@@ -1,0 +1,52 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+
+<div class="normal-table-wrap">
+  <nz-card class="relative" [nzBodyStyle]="{ padding: 0 }">
+    <div id="wrap" class="p-0 m-t-0" nz-result-content nz-row nzJustify="space-between">
+      <div>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Front" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="vertical-align-top"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Back" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="vertical-align-bottom"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Frame" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="gateway"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Group" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="group"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="UnGroup" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="ungroup"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Save" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="save"></i>
+        </button>
+      </div>
+      <div>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Zoom in" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="plus-circle"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Zoom out" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="minus-circle"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Zoom to 1:1" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="one-to-one"></i>
+        </button>
+        <button nz-button nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="Zoom to fit screen" nzType="text">
+          <i nz-icon nzTheme="outline" nzType="compress"></i>
+        </button>
+      </div>
+    </div>
+    <div class="flex">
+      <div #container id="container" class="flex-1"></div>
+    </div>
+
+    <nz-card class="absolute node-sel-bar" [nzBodyStyle]="{ padding: 0 }">
+      <div class="flex flex-coloum">
+        <i nz-icon nz-tooltip nzTheme="outline" nzTooltipPlacement="right" nzTooltipTitle="Rect" nzType="border" shap="rect" (mousedown)="drag($event)"></i>
+        <i nz-icon nz-tooltip nzTheme="outline" nzTooltipPlacement="right" nzTooltipTitle="Circle" nzType="user" shap="circle" (mousedown)="drag($event)"></i>
+      </div>
+    </nz-card>
+  </nz-card>
+</div>

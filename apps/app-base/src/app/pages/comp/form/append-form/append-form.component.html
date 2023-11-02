@@ -1,0 +1,130 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+<div class="normal-table-wrap">
+  <nz-card class="m-b-10" nzTitle="Message">
+    <div class="task-head" nz-row nzAlign="middle" nzJustify="space-between">
+      <div class="text-center" nz-col nzSpan="7">
+        <div class="task-head-title m-b-5" nz-typography nzType="secondary">My to-do list</div>
+        <p>2 tasks</p>
+      </div>
+      <div>
+        <nz-divider class="divider" nzType="vertical"></nz-divider>
+      </div>
+      <div class="text-center" nz-col nzSpan="7">
+        <div class="m-b-5" nz-typography nzType="secondary">Number of overdue tasks</div>
+        <p>1 tasks</p>
+      </div>
+      <div class="center">
+        <nz-divider class="divider" nzType="vertical"></nz-divider>
+      </div>
+      <div class="text-center" nz-col nzSpan="7">
+        <div class="m-b-5" nz-typography nzType="secondary">Number of tasks in progress</div>
+        <p>1 tasks</p>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="space-between">
+      <h3 class="sp-18">Task List</h3>
+      <div>
+        <nz-radio-group class="m-r-15" [ngModel]="taskState">
+          <label nz-radio-button [nzValue]="taskStateSearchEnum.All">
+            <span>All</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskStateSearchEnum.NoStarted">
+            <span>Not started</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskStateSearchEnum.Processing">
+            <span>In Progress</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskStateSearchEnum.Complete">
+            <span>Completed</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskStateSearchEnum.Overdue">
+            <span>Expired</span>
+          </label>
+        </nz-radio-group>
+        <nz-radio-group class="m-r-15" [ngModel]="taskCheckPeriodState">
+          <label nz-radio-button [nzValue]="taskCheckPeriodStateEnum.All">
+            <span>All</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskCheckPeriodStateEnum.DayCheck">
+            <span>Daily Inspection</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskCheckPeriodStateEnum.MonthCheck">
+            <span>Monthly Inspection</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskCheckPeriodStateEnum.QuarterlyCheck">
+            <span>Quarterly Inspection</span>
+          </label>
+          <label nz-radio-button [nzValue]="taskCheckPeriodStateEnum.YearCheck">
+            <span>Annual inspection</span>
+          </label>
+        </nz-radio-group>
+        <nz-input-group nzSuffixIcon="search" style="width: 200px">
+          <input type="text" name="q" nz-input placeholder="Please enter" />
+        </nz-input-group>
+      </div>
+    </div>
+
+    <button class="m-b-8 m-t-20" nz-button nzBlock [nzType]="'dashed'" (click)="add()">
+      <i nz-icon nzType="plus"></i>
+      <span>Add</span>
+    </button>
+
+    <nz-list [nzDataSource]="showTaskList" [nzLoading]="loading" [nzPagination]="pagination" [nzRenderItem]="item">
+      <ng-template #item let-item>
+        <nz-list-item [nzActions]="[edit, op]" [nzContent]="nzContent">
+          <ng-template #edit>
+            <a class="operate-text" nz-typography>Complete</a>
+          </ng-template>
+          <ng-template #op>
+            <a class="ant-dropdown-link operate-text" nz-dropdown nz-typography [nzDropdownMenu]="opMenu">
+              More
+              <i nz-icon nzType="down"></i>
+            </a>
+            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item>Edit</li>
+                <li nz-menu-item>Delete</li>
+              </ul>
+            </nz-dropdown-menu>
+          </ng-template>
+          <nz-list-item-meta [nzDescription]="item.taskDesc" [nzTitle]="nzTitle">
+            <ng-template #nzTitle>
+              <a class="sp-18 m-r-8" href="{{ item.href }}" target="_blank">{{ item.taskName }}</a>
+              <nz-tag [nzColor]="'blue'">Tag</nz-tag>
+            </ng-template>
+          </nz-list-item-meta>
+          <ng-template #nzContent>
+            <div style="width: 280px">
+              <div style="display: flex; color: #8c8c8c">
+                <div style="flex: 1">
+                  Executor
+                  <p nz-typography nzEllipsis nzExpandable [attr.title]="item.userName" [nzEllipsisRows]="1" (nzOnEllipsis)="onEllipsisChange($event)">
+                    {{ item.userName }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  Deadline
+                  <p>{{ item.endTime | date : 'yyyy-MM-dd' }}</p>
+                </div>
+              </div>
+              <nz-progress [nzPercent]="item.finishRate" [nzStatus]="item.taskStateName" [nzStrokeWidth]="6"></nz-progress>
+            </div>
+          </ng-template>
+        </nz-list-item>
+      </ng-template>
+      <ng-template #pagination>
+        <nz-pagination
+          nzShowQuickJumper
+          nzShowSizeChanger
+          [nzPageSize]="pageObj.pageSize"
+          [nzPageSizeOptions]="[3, 5, 10, 20]"
+          [nzTotal]="showAllTaskList.length"
+          [(nzPageIndex)]="pageObj.pageNum"
+          (nzPageIndexChange)="getData($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+        ></nz-pagination>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+</div>

@@ -1,0 +1,9 @@
+<div class="normal-table-wrap">
+  <p>
+    brought over, the id obtained from the route
+    <span class="sp-28 text-error">{{ id }}</span>
+  </p>
+  <p>Enter the value in the input box below, and then switch the tab to experience the caching effect of the component</p>
+  <input nz-input />
+  <p *ngFor="let item of 60 | numberLoop; let index = index">To demonstrate the scroll bar cache {{ index }}</p>
+</div>

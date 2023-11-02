@@ -1,0 +1,16 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+<div class="normal-table-wrap">
+  <button nz-button class="m-r-8" nzType="primary" (click)="currentComp = 'home'">Main animation</button>
+  <button nz-button class="m-r-8" nzType="primary" (click)="currentComp = 'EnterLeave'">Entry/Leave</button>
+  <button nz-button class="m-r-8" nzType="primary" (click)="currentComp = 'Dynamic'">Dynamic parameters</button>
+  <button nz-button class="m-r-8 m-t-8" nzType="primary" (click)="currentComp = 'Experiments'">Experimental</button>
+
+  <nz-card class="m-t-8">
+    <div class="center">
+      <app-demo-main *ngIf="currentComp === 'home'"></app-demo-main>
+      <app-demo-on-enter-on-leave *ngIf="currentComp === 'EnterLeave'"></app-demo-on-enter-on-leave>
+      <app-demo-dynamic-params *ngIf="currentComp === 'Dynamic'"></app-demo-dynamic-params>
+      <app-experiments *ngIf="currentComp === 'Experiments'"></app-experiments>
+    </div>
+  </nz-card>
+</div>

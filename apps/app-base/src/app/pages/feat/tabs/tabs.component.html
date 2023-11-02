@@ -1,0 +1,29 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+<div class="normal-table-wrap">
+  <nz-card nzTitle="Enter text in the input box below, the content will be saved after switching">
+    <nz-alert class="m-b-8" nzMessage="This operation will not affect the page title, only modify the Tab title" nzType="warning"></nz-alert>
+
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+      <input #tabTitleInput type="text" nz-input placeholder="input search text" />
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzSearch nzType="primary" (click)="changeTabTitle(tabTitleInput.value)">Set tab title</button>
+    </ng-template>
+  </nz-card>
+
+  <nz-card class="m-t-10" nzTitle="Tabs">
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="closeRight()">Close rights</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="closeLeft()">Close lefts</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="closeOther()">Close others</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="closeCurrent()">Close</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="refresh()">Refresh</button>
+  </nz-card>
+
+  <nz-card class="m-t-10" nzTitle="Open details operation">
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="openDetailPage(1)">Open details operation 1</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="openDetailPage(2)">Open details operation 2</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="openDetailPage(3)">Open details operation 3</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="openDetailPage(4)">Open details operation 4</button>
+    <button class="m-r-8 m-b-8" nz-button nzSearch nzType="primary" (click)="openDetailPage(5)">Open details operation 5</button>
+  </nz-card>
+</div>

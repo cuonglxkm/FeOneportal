@@ -1,0 +1,22 @@
+<nz-card [nzBordered]="false">
+  <nz-result nzStatus="error" nzSubTitle="Please check and modify the following information before submitting again." nzTitle="Submit failed">
+    <div nz-result-content>
+      <div class="desc">
+        <h4 class="m-b-20" nz-title>Your submission has the following errors:</h4>
+        <p class="m-b-8" nz-paragraph>
+          <i class="text-error m-r-8" nz-icon nzType="close-circle"></i>
+          Your account has been frozen
+          <a class="operate-text m-l-20">Thaw Now &gt;</a>
+        </p>
+        <p nz-paragraph>
+          <i class="text-error m-r-8" nz-icon nzType="close-circle"></i>
+          Your account is not yet eligible
+          <a class="operate-text m-l-20">Upgrade Now &gt;</a>
+        </p>
+      </div>
+    </div>
+    <div nz-result-extra>
+      <button nz-button nzType="primary">Back to modify</button>
+    </div>
+  </nz-result>
+</nz-card>

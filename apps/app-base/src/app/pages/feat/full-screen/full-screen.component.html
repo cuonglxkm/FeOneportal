@@ -1,0 +1,20 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+
+<div class="normal-table-wrap">
+  <nz-card nzTitle="Window Full Screen (I don't know why vben has to write in English)">
+    <nz-space>
+      <button *nzSpaceItem nz-button nzType="primary" (click)="intoFull()">Enter fullscreen</button>
+      <button *nzSpaceItem nz-button nzType="primary" (click)="toggle()">Toggle fullscreen</button>
+      <button *nzSpaceItem nz-button nzType="primary" (click)="exitFull()">Exit fullscreen</button>
+    </nz-space>
+    <div>Current full screen status:{{ !isFullscreenFlag }}</div>
+  </nz-card>
+
+  <nz-card class="m-t-15" nzTitle="Dom Full Screen">
+    <button nz-button nzType="primary" (click)="intoDomFull(dom)">The following dom full screen</button>
+  </nz-card>
+
+  <div #dom class="m-t-30 center" style="height: 600px; background: white; margin-left: auto; margin-right: auto">
+    <button nz-button nzType="primary" (click)="exitFull()">The dom below cancels the full screen</button>
+  </div>
+</div>

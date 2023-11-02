@@ -1,0 +1,155 @@
+<!--Head section-->
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+<ng-template #headerExtra>
+  <nz-radio-group>
+    <label nz-radio-button>Operation 1</label>
+    <label nz-radio-button>Operation 2</label>
+    <label nz-dropdown nz-radio-button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'">
+      <i nz-icon nzTheme="outline" nzType="ellipsis"></i>
+    </label>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item>Option 1</li>
+        <li nz-menu-item>Option 2</li>
+        <li nz-menu-item>Option 3</li>
+      </ul>
+    </nz-dropdown-menu>
+  </nz-radio-group>
+  <button nz-button nzType="primary">Primary operation</button>
+</ng-template>
+<ng-template #headerContent>
+  <div nz-row>
+    <div nz-col [nzLg]="18" [nzMd]="16" [nzSm]="24" [nzXl]="18" [nzXs]="24" [nzXXl]="20">
+      <nz-descriptions nzSize="small" [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
+        <nz-descriptions-item nzTitle="Creator">Qu Lili</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Order Product">XX Service</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Creation time">2017-07-07</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Associated Document"><a class="operate-text">12421</a></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="effective date">2017-07-07 ~ 2017-08-08</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Remarks">Please confirm within two working days</nz-descriptions-item>
+      </nz-descriptions>
+    </div>
+    <div nz-col [nzLg]="6" [nzMd]="8" [nzSm]="24" [nzXl]="6" [nzXs]="24" [nzXXl]="4">
+      <div class="left-start-center">
+        <nz-statistic class="m-r-25" nzTitle="Status" nzValue="Pending approval"></nz-statistic>
+        <nz-statistic nzTitle="Order Amount" [nzValue]="568.08" nzPrefix="¥"></nz-statistic>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #headerFooter>
+  <nz-tabset [(nzSelectedIndex)]="currentSelTab">
+    <nz-tab nzTitle="Details" (nzClick)="to(tabEnum.Detail)"></nz-tab>
+    <nz-tab nzTitle="Rule" (nzClick)="to(tabEnum.Rule)"></nz-tab>
+  </nz-tabset>
+</ng-template>
+
+<div class="normal-table-wrap">
+  <nz-card [nzTitle]="'Process progress'">
+    <app-water-mark></app-water-mark>
+    <nz-steps [nzCurrent]="1" [nzDirection]="stepDirection" [nzProgressDot]="progressTemplate">
+      <nz-step nzTitle="Create Project" [nzDescription]="createTpl"></nz-step>
+      <nz-step nzTitle="Department preliminary review" [nzDescription]="trialTpl"></nz-step>
+      <nz-step nzTitle="Financial Review"></nz-step>
+      <nz-step nzTitle="Complete"></nz-step>
+    </nz-steps>
+    <ng-template #createTpl>
+      <div>
+        <span class="m-r-8">Qu Lili</span>
+        <i nz-icon nzTheme="outline" nzType="dingding"></i>
+      </div>
+      <div>2016-12-12 12:32</div>
+    </ng-template>
+    <ng-template #trialTpl>
+      <div>
+        <span class="m-r-8">Zhou Maomao</span>
+        <i nz-icon nzTheme="outline" nzType="dingding" style="color: rgb(0, 160, 233)"></i>
+      </div>
+      <div>
+        <a class="operate-text">Remind</a>
+      </div>
+    </ng-template>
+    <ng-template #progressTemplate let-dot let-index="index" let-status="status">
+      <span nz-popover style="margin-left: -100%" [nzPopoverContent]="trialPopTpl">
+        <ng-template [ngTemplateOutlet]="dot"></ng-template>
+      </span>
+    </ng-template>
+    <ng-template #trialPopTpl>
+      <div style="width: 160px">
+        <div class="flex">
+          <div class="flex-1">Wu Jiahao</div>
+          <nz-badge nzStatus="default" nzText="Not responding"></nz-badge>
+        </div>
+        <div class="mt5">Time-consuming: 2 hours and 25 minutes</div>
+      </div>
+    </ng-template>
+  </nz-card>
+
+  <nz-card class="m-t-20" [nzTitle]="'User Information'">
+    <app-water-mark></app-water-mark>
+    <nz-descriptions>
+      <nz-descriptions-item nzTitle="User Name">Fu Xiaoxiao</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Membership Card Number">32943898021309809423</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="ID card">3321944288191034921</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Contact Information">18112345678</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Contact Address" [nzSpan]="2">Qu Lili 18100000000 Intersection of Huanggushan Road, Gongzhuan Road, Xihu District, Hangzhou City, Zhejiang Province</nz-descriptions-item>
+    </nz-descriptions>
+    <nz-descriptions class="m-t-20" nzTitle="Group Information">
+      <nz-descriptions-item nzTitle="XX data">725</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="The data update time">2017-08-08</nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="dataTitleTpl">725</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="The data update time">2017-08-08</nz-descriptions-item>
+    </nz-descriptions>
+    <ng-template #dataTitleTpl>
+      some data
+      <i class="title-icon" nz-icon nz-tooltip nzTheme="outline" nzTooltipTitle="Data Description" nzType="info-circle"></i>
+    </ng-template>
+    <h3 class="m-t-20">Group Information</h3>
+    <nz-card class="m-t-20" nzTitle="Multi-level information group" nzType="inner">
+      <nz-descriptions nzTitle="Group Name">
+        <nz-descriptions-item nzTitle="Responsible Person">Lin Dongdong</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Role Code">1234567</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Affiliated Department">XX Company - YY Department</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Expires">2017-08-08</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Description" [nzSpan]="2"
+          >This description is long, long, long, long, long, long, long, long,
+          long, long, long, long, long, long, long, long, long, long, long, long ...
+        </nz-descriptions-item>
+      </nz-descriptions>
+      <nz-divider></nz-divider>
+      <nz-descriptions nzTitle="Group Name" [nzColumn]="1">
+        <nz-descriptions-item nzTitle="Scientific Name">Citrullus lanatus (Thunb.) Matsum. et Nakai is an annual vine; the
+          stems and branches are thick and have obvious ribs. The tendrils are
+          thicker..
+        </nz-descriptions-item>
+      </nz-descriptions>
+      <nz-divider></nz-divider>
+      <nz-descriptions nzTitle="Group Name">
+        <nz-descriptions-item nzTitle="Responsible Person">Fu Xiaoxiao</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Role code">1234568</nz-descriptions-item>
+      </nz-descriptions>
+    </nz-card>
+  </nz-card>
+
+  <nz-card class="m-t-20" [nzTitle]="'User call records in the past six months'">
+    <app-water-mark></app-water-mark>
+    <nz-empty></nz-empty>
+  </nz-card>
+
+  <nz-card class="m-t-20">
+    <app-water-mark></app-water-mark>
+    <nz-card-tab>
+      <nz-tabset nzSize="large">
+        <nz-tab nzTitle="Operation Log 1"></nz-tab>
+        <nz-tab nzTitle="Operation Log 2"></nz-tab>
+        <nz-tab nzTitle="Operation Log 3"></nz-tab>
+      </nz-tabset>
+    </nz-card-tab>
+    <app-ant-table [tableConfig]="returnTableConfig" [tableData]="returnDataList"></app-ant-table>
+  </nz-card>
+</div>
+
+<ng-template #highLightTpl let-code="code">
+  <nz-badge nzStatus="processing" nzText="Success"></nz-badge>
+  and {{ code }}
+</ng-template>

@@ -1,0 +1,73 @@
+<!--Head section-->
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+
+<div class="normal-table-wrap">
+  <nz-card>
+    <app-water-mark></app-water-mark>
+    <form class="form-wrap" nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label nzFor="title" nzRequired [nzSm]="6" [nzXs]="24">Title</nz-form-label>
+        <nz-form-control nzErrorTip="Please enter a title" [nzSm]="14" [nzXs]="24">
+          <input id="title" formControlName="title" nz-input placeholder="Give the target a name" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="date" nzRequired [nzSm]="6" [nzXs]="24">Start and end date</nz-form-label>
+        <nz-form-control nzErrorTip="Please select the start and end dates" [nzSm]="14" [nzXs]="24">
+          <nz-range-picker class="with-full" formControlName="date"></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="desc" nzRequired [nzSm]="6" [nzXs]="24">Goal description</nz-form-label>
+        <nz-form-control nzErrorTip="Please enter a goal description" [nzSm]="14" [nzXs]="24">
+          <textarea id="desc" formControlName="desc" nz-input placeholder="Please enter your work goals" rows="4"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="standard" nzRequired [nzSm]="6" [nzXs]="24">Metrics</nz-form-label>
+        <nz-form-control nzErrorTip="Please enter a measure" [nzSm]="14" [nzXs]="24">
+          <textarea id="standard" formControlName="standard" nz-input placeholder="Please enter metric" rows="4"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="client" nzTooltipTitle="Target service object" [nzSm]="6" [nzXs]="24">Client</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <input id="client" formControlName="client" nz-input placeholder="Please describe your customer service, internal customers directly @name/job number" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="invitedCommenter" [nzSm]="6" [nzXs]="24">Inviting critics</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <input id="invitedCommenter" formControlName="invitedCommenter" nz-input placeholder="Please direct @ Name / job number, you can invite up to5 people" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="weights" [nzSm]="6" [nzXs]="24">Weight</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <nz-input-number id="weights" formControlName="weights" [nzPlaceHolder]="'Please enter'" [nzStep]="1"></nz-input-number>
+          %
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="public" [nzSm]="6" [nzXs]="24">Target disclosure</nz-form-label>
+        <nz-form-control nz-row nzExtra="Customers and invitees are shared by default" [nzSm]="14" [nzXs]="24">
+          <nz-radio-group id="public" formControlName="isPublic">
+            <label nz-radio nzValue="1">Public</label>
+            <label nz-radio nzValue="2">Partially public</label>
+            <label nz-radio nzValue="3">Private</label>
+          </nz-radio-group>
+          <nz-select *ngIf="validateForm.get('isPublic')!.value === '2'" class="m-t-5" nzMode="tags" nzPlaceHolder="Please select">
+            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nz-row>
+        <nz-form-control [nzOffset]="6" [nzSpan]="14">
+          <button nz-button nzType="primary">Submit</button>
+          <button class="m-l-10" nz-button nzType="default">Save</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-card>
+</div>

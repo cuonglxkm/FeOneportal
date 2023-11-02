@@ -1,0 +1,26 @@
+<nz-list nzItemLayout="horizontal">
+  <nz-list-item>
+    <ul nz-list-item-actions>
+      <nz-list-item-action>
+        <nz-switch nzCheckedChildren="on" nzUnCheckedChildren="off" [(ngModel)]="i.password"></nz-switch>
+      </nz-list-item-action>
+    </ul>
+    <nz-list-item-meta nzDescription="Other user's news will be notified in the form of a letter" nzTitle="Account Password"></nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item>
+    <ul nz-list-item-actions>
+      <nz-list-item-action>
+        <nz-switch nzCheckedChildren="on" nzUnCheckedChildren="off" [(ngModel)]="i.messages"></nz-switch>
+      </nz-list-item-action>
+    </ul>
+    <nz-list-item-meta nzDescription="System news will be notified in the form of a letter" nzTitle="System News"></nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item>
+    <ul nz-list-item-actions>
+      <nz-list-item-action>
+        <nz-switch nzCheckedChildren="on" nzUnCheckedChildren="off" [(ngModel)]="i.todo"></nz-switch>
+      </nz-list-item-action>
+    </ul>
+    <nz-list-item-meta nzDescription="To-do news will be notified in the form of an internal message" nzTitle="To-do News"></nz-list-item-meta>
+  </nz-list-item>
+</nz-list>

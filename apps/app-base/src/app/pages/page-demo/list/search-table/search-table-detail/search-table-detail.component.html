@@ -1,0 +1,21 @@
+<!--Head section-->
+<app-page-header [backTpl]="back" [backUrl]="backUrl" [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+
+<ng-template #back>
+  <span class="operate-text">Return</span>
+</ng-template>
+<div class="normal-table-wrap">
+  <h1>Input box demo.</h1>
+  <input nz-input [(ngModel)]="name" />
+
+  <nz-divider></nz-divider>
+
+  <h1>Form Demo</h1>
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter username.!">
+        <input type="text" formControlName="userName" nz-input placeholder="Username" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
