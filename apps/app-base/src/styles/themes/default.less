@@ -1,0 +1,40 @@
+@import (multiple) '../../../../../node_modules/ng-zorro-antd/src/style/themes/variable.less';
+@import './base';
+
+
+@layout-header-background: @component-background;
+@menu-dark-bg: #001529;
+@layout-sider-background: @menu-dark-bg;
+
+.operate-text {
+  color: @primary-color;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: #f1f1f1;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+}
+
+.bst-badge .ant-scroll-number.ant-badge-count.ant-badge-multiple-words {  box-shadow: none;}
+
+.dropdownBell {
+  box-shadow: 0 6px 16px -8px rgba(0,0,0,.08), 0 9px 28px 0 rgba(0,0,0,.05), 0 12px 48px 16px rgba(0,0,0,.03);
+  background-color: #fff;
+  width: 336px;
+}
+
+body{
+  font-family: Roboto, 'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji',-apple-system, BlinkMacSystemFont;
+}
+
+.ng-star-inserted .ant-form.ant-form-horizontal .ant-form-item:last-child {  margin-bottom: 0;}

@@ -1,0 +1,95 @@
+<!--Head section-->
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+
+<div class="normal-table-wrap">
+  <app-water-mark></app-water-mark>
+  <nz-card class="m-b-10" nzHoverable [nzBodyStyle]="{ 'padding-bottom': 0 }">
+    <form nz-form>
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">
+        <div nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
+          <nz-form-item>
+            <nz-form-label [nzFor]="">Menu Name</nz-form-label>
+            <nz-form-control>
+              <input name="menuName" nz-input placeholder="Please enter the name of the menu"
+                [(ngModel)]="searchParam.menuName" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
+          <nz-form-item>
+            <nz-form-label [nzFor]="">Status</nz-form-label>
+            <nz-form-control>
+              <nz-select name="visible" nzAllowClear nzPlaceHolder="Select from Dropdown"
+                [(ngModel)]="searchParam.visible">
+                <nz-option *ngFor="let item of visibleOptions" [nzLabel]="item.label"
+                  [nzValue]="item.value"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div class="text-right p-0 m-b-10" nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
+          <button nz-button [nzType]="'primary'" (click)="getDataList()">
+            <i nz-icon nzType="search"></i>
+            Search
+          </button>
+          <button class="m-l-15" nz-button (click)="resetForm()">
+            <i nz-icon nzTheme="outline" nzType="close-circle"></i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </form>
+  </nz-card>
+
+  <app-card-table-wrap [btnTpl]="tableBtns" [tableTitle]="'Menu List'" (reload)="reloadTable()">
+    <app-tree-table [tableConfig]="tableConfig" [tableData]="dataList" (changePageNum)="getDataList($event)"
+      (changePageSize)="changePageSize($event)"></app-tree-table>
+    <ng-template #operationTpl let-fatherId="fatherId" let-id="id" let-menuType="menuType">
+      <span class="operate-text" (click)="detail(id)" nz-tooltip nzTooltipTitle="Detail"><span nz-icon nzType="info-circle"
+          nzTheme="outline"></span></span>
+      <span *appAuth="ActionCode.MenuEdit" class="operate-text" (click)="edit(id, fatherId)" nz-tooltip
+        nzTooltipTitle="Edit"><span nz-icon nzType="edit" [nzTheme]="'twotone'"></span></span>
+      <ng-container *appAuth="ActionCode.MenuAddLowLevel">
+        <span *ngIf="menuType === 'C'" class="operate-text" (click)="add(id)" nz-tooltip
+          nzTooltipTitle="Add child"><span nz-icon nzType="plus-circle" [nzTheme]="'twotone'"
+            [nzTwotoneColor]="'#52c41a'"></span></span>
+      </ng-container>
+      <span *appAuth="ActionCode.MenuDel" class="operate-text" (click)="del(id)" nz-tooltip
+        nzTooltipTitle="Delete"><span nz-icon nzType="delete" [nzTheme]="'twotone'"
+          [nzTwotoneColor]="'#eb2f96'"></span></span>
+    </ng-template>
+  </app-card-table-wrap>
+</div>
+<ng-template #zorroIconTpl let-icon="icon">
+  <div class="center">
+    <i nz-icon nzTheme="outline" [nzType]="icon"></i>
+  </div>
+</ng-template>
+<ng-template #aliIconTpl let-alIcon="alIcon">
+  <div class="center">
+    <i *ngIf="alIcon" nz-icon [nzIconfont]="alIcon"></i>
+  </div>
+</ng-template>
+<ng-template #tableBtns>
+  <button class="m-r-8" nz-button nzType="primary" (click)="add('0')">
+    <i nz-icon nzType="plus"></i>
+    Add New
+  </button>
+</ng-template>
+<ng-template #visibleTpl let-menuType="menuType" let-visible="visible">
+  <ng-container *ngIf="menuType === 'C'">
+    <ng-container *ngTemplateOutlet="visible ? yesTpl : notTpl"></ng-container>
+  </ng-container>
+</ng-template>
+<ng-template #newLinkFlag let-menuType="menuType" let-newLinkFlag="newLinkFlag">
+  <ng-container *ngIf="menuType === 'C'">
+    <ng-container *ngTemplateOutlet="newLinkFlag ? yesTpl : notTpl"></ng-container>
+  </ng-container>
+</ng-template>
+<ng-template #yesTpl>
+  <nz-tag [nzColor]="'green'">Yes</nz-tag>
+</ng-template>
+<ng-template #notTpl>
+  <nz-tag [nzColor]="'magenta'">No</nz-tag>
+</ng-template>

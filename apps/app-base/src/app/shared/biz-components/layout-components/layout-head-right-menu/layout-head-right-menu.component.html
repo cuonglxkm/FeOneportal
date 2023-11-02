@@ -1,0 +1,100 @@
+<ng-container *ngTemplateOutlet="headRight"></ng-container>
+<ng-template #headRight>
+  <div id="tools" class="bst-header-wrap">
+    <span *appScreenLessHidden="'375'" (click)="lockScreen()" class="bst-header-icon" nz-tooltip
+      nzTooltipTitle="{{'head.lockScreenTooltip'| translate}}" nzTooltipPlacement="bottom">
+      <i nz-icon nzType="lock" nzTheme="outline"></i>
+    </span>
+
+    <span *appScreenLessHidden="'320'" class="bst-header-icon" nz-tooltip nzTooltipPlacement="bottom"
+      nzTooltipTitle="{{'head.searchTooltip'| translate}}" (click)="showSearchModal()">
+      <i nz-icon nzTheme="outline" nzType="search"></i>
+    </span>
+    <span *appScreenLessHidden="'375'" class="bst-header-icon" nz-tooltip
+      nzTooltipTitle="{{'head.helpTooltip'| translate}}" nzTooltipPlacement="bottom">
+      <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+    </span>
+    <span *appScreenLessHidden="'393'" #toogleFullScreenDir="appToggleFullscreen" class="bst-header-icon"
+      appToggleFullscreen nz-tooltip nzTooltipPlacement="bottom"
+      [nzTooltipTitle]="toogleFullScreenDir.isFullscreenFlag ? ('head.fullscreenTooltip'| translate) : ('head.exitFullscreenTooltip'|translate)">
+      <i *ngIf="toogleFullScreenDir.isFullscreenFlag; else exitFullTpl" nz-icon nzTheme="outline"
+        nzType="fullscreen"></i>
+      <ng-template #exitFullTpl>
+        <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i>
+      </ng-template>
+    </span>
+
+    <span class="bst-header-icon" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="noticeMenu"
+      [nzOverlayClassName]="'dropdownBell'">
+      <nz-badge class="bst-badge" [nzCount]="11">
+        <i nz-icon nzTheme="outline" nzType="bell"></i>
+      </nz-badge>
+    </span>
+    <span class="bst-header-icon" nz-dropdown [nzDropdownMenu]="userSettingMenu">
+      <img class="avatar" alt="" src="{{currentUser.picture || 'assets/imgs/default_face.png'}}" />
+      <span class="base-font-size">{{currentUser.name||(currentUser.email | emailToName)||'Anonymous'}}</span>
+    </span>
+    <nz-dropdown-menu #userSettingMenu>
+      <ul nz-menu>
+        <li nz-menu-item (click)="goPage('personal-center')">
+          <a>
+            <i class="m-r-8" nz-icon nzTheme="outline" nzType="user"></i>
+            <span>{{'head.userSettingMenu.personalCenter'| translate}}</span>
+          </a>
+        </li>
+        <li nz-menu-item (click)="goPage('personal-setting')">
+          <a>
+            <i class="m-r-8" nz-icon nzTheme="outline" nzType="setting"></i>
+            <span>{{'head.userSettingMenu.personalSetttings'| translate}}</span>
+          </a>
+        </li>
+        <li nz-menu-item (click)="changePassWorld()">
+          <a>
+            <i class="m-r-8" nz-icon nzTheme="outline" nzType="lock"></i>
+            <span>{{'head.userSettingMenu.changePassword'| translate}}</span>
+          </a>
+        </li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="clean()">
+          <a>
+            <i class="m-r-8" nz-icon nzTheme="outline" nzType="clear"></i>
+            <span>{{'head.userSettingMenu.clearCache'| translate}}</span>
+          </a>
+        </li>
+        <li nz-menu-item (click)="lockScreen()">
+          <a>
+            <i class="m-r-8" nz-icon nzTheme="outline" nzType="lock"></i>
+            <span>{{'head.userSettingMenu.lockScreen'| translate}}</span>
+          </a>
+        </li>
+        <li nz-menu-item>
+          <a (click)="goLogin()">
+            <i class="m-r-8" nz-icon nzTheme="outline" nzType="logout"></i>
+            <span>{{'head.userSettingMenu.logOut'| translate}}</span>
+          </a>
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+
+    <span class="bst-header-icon" nz-dropdown [nzDropdownMenu]="language">
+      <!-- <i nz-icon nzTheme="outline" nzType="font-size"></i> -->
+      <i class="anticon" title="{{'head.languageTooltip'| translate}}">
+        <svg viewBox="0 0 24 24" focusable="false" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+          <path d="M0 0h24v24H0z" fill="none"></path>
+          <path
+            d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z "
+            class="css-c4d79v"></path>
+        </svg>
+      </i>
+    </span>
+    <nz-dropdown-menu #language="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="changeLanguage('en_US')" [nzSelected]="curLangCode().locale !== 'vi'">English</li>
+        <li nz-menu-item (click)="changeLanguage('vi_VN')" [nzSelected]="curLangCode().locale === 'vi'">Tiếng Việt</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+  <nz-dropdown-menu #noticeMenu="nzDropdownMenu">
+    <app-home-notice></app-home-notice>
+  </nz-dropdown-menu>
+</ng-template>

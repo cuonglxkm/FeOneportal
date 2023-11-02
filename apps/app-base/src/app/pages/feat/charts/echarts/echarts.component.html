@@ -1,0 +1,11 @@
+<app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header>
+<div class="normal-table-wrap">
+  <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
+</div>
+<ng-template #headerFooter>
+  <nz-tabset [(nzSelectedIndex)]="currentSelTab">
+    <nz-tab nzTitle="Start" (nzClick)="to(tabEnum.Started)"></nz-tab>
+    <nz-tab nzTitle="Advanced" (nzClick)="to(tabEnum.Advanced)"></nz-tab>
+    <nz-tab nzTitle="Series" (nzClick)="to(tabEnum.Series)"></nz-tab>
+  </nz-tabset>
+</ng-template>

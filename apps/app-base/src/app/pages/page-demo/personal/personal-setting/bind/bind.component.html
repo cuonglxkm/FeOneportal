@@ -1,0 +1,32 @@
+<nz-list nzItemLayout="horizontal">
+  <nz-list-item [nzActions]="[githubOp]">
+    <ng-template #githubOp>
+      <a class="operate-text">binding</a>
+    </ng-template>
+    <nz-list-item-meta nzDescription="Currently unbound Github account" nzTitle="Bind Github" [nzAvatar]="githubAvatar">
+      <ng-template #githubAvatar>
+        <i class="icon-sm" nz-icon nzType="github"></i>
+      </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item [nzActions]="[taobaoOp]">
+    <ng-template #taobaoOp>
+      <a class="operate-text">binding</a>
+    </ng-template>
+    <nz-list-item-meta nzDescription="Currently unbound taobao account" nzTitle="Bind Taobao" [nzAvatar]="taobaoAvatar">
+      <ng-template #taobaoAvatar>
+        <i class="icon-sm color-taobao" nz-icon nzType="taobao"></i>
+      </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item [nzActions]="[alipayOp]">
+    <ng-template #alipayOp>
+      <a class="operate-text">binding</a>
+    </ng-template>
+    <nz-list-item-meta nzDescription="Currently unbound Alipay account" nzTitle="Bind Alipay" [nzAvatar]="alipayAvatar">
+      <ng-template #alipayAvatar>
+        <i class="icon-sm color-alipay" nz-icon nzType="alipay-circle"></i>
+      </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+</nz-list>

@@ -1,0 +1,57 @@
+<form class="form-wrap p-b-0 center-row" nz-form [class.p-0]="stepDirection === 'vertical'" [formGroup]="validateForm">
+  <nz-form-item>
+    <nz-form-label nzFor="title" nzRequired [nzSm]="6" [nzXs]="24">Payment Account</nz-form-label>
+    <nz-form-control nzErrorTip="Please enter payment account" [nzSm]="14" [nzXs]="24">
+      <nz-select formControlName="paymentAccount">
+        <nz-option nzLabel="ant-design@alipay.com" nzValue="ant-design@alipay.com"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="a" nzRequired [nzSm]="6" [nzXs]="24">Receiving account</nz-form-label>
+    <nz-form-control nzErrorTip="Please enter the receiving account" [nzSm]="14" [nzXs]="24">
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+        <ng-template #addOnBeforeTemplate>
+          <nz-select class="phone-select" formControlName="payWay" style="width: 90px">
+            <nz-option nzLabel="Alipay" nzValue="zhifubao"></nz-option>
+            <nz-option nzLabel="Bank card" nzValue="bankcard"></nz-option>
+          </nz-select>
+        </ng-template>
+        <input id="'payWayNo'" formControlName="payWayNo" nz-input />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="payeeName" nzRequired [nzSm]="6" [nzXs]="24">Receipient Name</nz-form-label>
+    <nz-form-control nzErrorTip="Please enter the receipient name" [nzSm]="14" [nzXs]="24">
+      <input id="payeeName" formControlName="payeeName" nz-input placeholder="Receipient Name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="a" nzRequired [nzSm]="6" [nzXs]="24">Amount</nz-form-label>
+    <nz-form-control nzErrorTip="Please enter the amount" [nzSm]="14" [nzXs]="24">
+      <nz-input-group nzPrefix="$">
+        <input type="number" formControlName="amount" nz-input />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row>
+    <div nz-col [nzSpan]="6"></div>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <button nz-button nzType="primary" (click)="goNext()">Next</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-divider></nz-divider>
+<section class="desc-wrap" [class.p-0]="stepDirection === 'vertical'">
+  <h3 nz-typography nzType="secondary">Instructions</h3>
+  <h4 nz-typography nzType="secondary">Transfering to Alipay account:</h4>
+  <p nz-typography nzType="secondary">
+    Here are some FAQ's about the product. If necessary, here are some FAQ's about the product. If necessary, here are some FAQ's about the product.
+  </p>
+  <h4 nz-typography nzType="secondary">Transfering to Bank account:</h4>
+  <p nz-typography nzType="secondary">
+    Here are some FAQ's about the product. If necessary, here are some FAQ's about the product. If necessary, here are some FAQ's about the product.
+  </p>
+</section>

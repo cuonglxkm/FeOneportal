@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "mr-voca": {
+      "hosting": {
+        "voca": [
+          "mr-voca"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "mr-voca"
+  }
+}
