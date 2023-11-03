@@ -15,8 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "app-base/Module": ["apps/app-base/src/app/remote-entry/entry.module.ts"],
       "app-dashboard/Routes": [
         "apps/app-dashboard/src/app/remote-entry/entry.routes.ts"
+      ],
+      "app-smart-cloud/Module": [
+        "./apps/app-smart-cloud/src/app/remote-entry/entry.module.ts"
       ],
       "dashboard/Routes": ["dashboard/src/app/remote-entry/entry.routes.ts"]
     }

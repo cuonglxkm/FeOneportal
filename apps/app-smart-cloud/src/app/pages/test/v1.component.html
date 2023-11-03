@@ -1,0 +1,29 @@
+<div class="alain-default__content-title">
+  <h1>
+    Dashboard
+    <small>Welcome !</small>
+  </h1>
+</div>
+<div nz-row nzGutter="16">
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-primary rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <div class="h2 mt0">123,456</div>
+        <p class="text-nowrap mb0">Website Traffics</p>
+      </div>
+      <div nz-col nzSpan="12">
+        <g2-mini-bar
+          *ngIf="webSite"
+          height="35"
+          color="#fff"
+          borderWidth="3"
+          [padding]="[5, 30]"
+          [data]="webSite"
+          tooltipType="mini"
+          (ready)="fixDark($event)"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+

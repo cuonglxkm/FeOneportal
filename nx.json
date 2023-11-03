@@ -42,7 +42,8 @@
       "style": "css",
       "linter": "eslint",
       "unitTestRunner": "jest",
-      "e2eTestRunner": "none"
+      "e2eTestRunner": "none",
+      "strict": false
     },
     "@nx/angular:library": {
       "linter": "eslint",
