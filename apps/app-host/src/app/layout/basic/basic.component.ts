@@ -88,7 +88,8 @@ export class LayoutBasicComponent {
     logoCollapsed: `./assets/logo.svg`
   };
   searchToggleStatus = false;
-  showSettingDrawer = !environment.production;
+  showSettingDrawer = true;
+    //!environment.production;
   get user(): User {
     return this.settings.user;
   }

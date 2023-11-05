@@ -20,7 +20,14 @@
         "scripts": [],
         "customWebpackConfig": {
           "path": "apps/app-host/webpack.config.ts"
-        }
+        },
+        "allowedCommonJsDependencies": [
+          "ajv",
+          "ajv-formats",
+          "mockjs",
+          "file-saver",
+          "extend"
+        ]
       },
       "configurations": {
         "production": {

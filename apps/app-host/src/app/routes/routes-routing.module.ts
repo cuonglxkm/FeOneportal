@@ -48,16 +48,15 @@ const routes: Routes = [
     children: [{path: '', loadChildren: () => import('./data-v/data-v.module').then(m => m.DataVModule)}]
   },
   // passport
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./passport/passport.module').then(m => m.PassportModule),
-  //   data: {preload: true}
-  // },
-  {path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule)},
-
-
-
-
+  {
+    path: '',
+    loadChildren: () => import('./passport/passport.module').then(m => m.PassportModule),
+    data: {preload: true}
+  },
+  {
+    path: 'exception',
+    loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule)
+  },
   {path: '**', redirectTo: 'exception/404'},
 
 ];

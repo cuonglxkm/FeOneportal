@@ -31,6 +31,13 @@ export class CallbackComponent implements OnInit {
       ...this.settingsSrv.user,
       ...info
     });
-    this.socialService.callback(info);
+    // this.socialService.callback(info);
+
+    this.socialService.callback({
+      token: '123456789',
+      name: 'cipchk',
+      id: 10000,
+      time: +new Date
+    });
   }
 }
