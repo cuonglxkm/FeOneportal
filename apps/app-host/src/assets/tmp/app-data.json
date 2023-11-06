@@ -42,7 +42,7 @@
         {
           "text": "Quản lý Security Group",
           "icon": "anticon-dashboard",
-          "link": "/dashboard/v2"
+          "link": "/app-smart-cloud/security-group"
         }
       ]
     },
