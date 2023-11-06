@@ -9,6 +9,7 @@ import {environment} from '@env/environment';
 import {LayoutBasicComponent} from '../layout/basic/basic.component';
 import {LayoutBlankComponent} from '../layout/blank/blank.component';
 import {loadRemoteModule} from "@nx/angular/mf";
+import {UserProfileComponent} from "./user-profile/user-profile.component";
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     data: {},
     children: [
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+      {path: 'profile', component: UserProfileComponent},
       {
         path: 'dashboard',
         loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
