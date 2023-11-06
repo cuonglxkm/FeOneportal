@@ -79,7 +79,10 @@ const FORM_MODULES = [JsonSchemaModule];
     ...FORM_MODULES,
     HttpClientModule
   ],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES],
+  providers: [...LANG_PROVIDES,
+    // ...INTERCEPTOR_PROVIDES,
+    ...I18NSERVICE_PROVIDES,
+    ...APPINIT_PROVIDES],
   bootstrap: [AppComponent],
 })
 export class AppModule {
