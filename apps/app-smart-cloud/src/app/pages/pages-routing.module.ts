@@ -3,7 +3,6 @@ import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {NgModule} from "@angular/core";
 import {PreloadOptionalModules} from "@delon/theme";
 import {environment} from "@env/environment";
-import {V1Component} from "./test/v1.component";
 
 const routes: Routes = [
   { path: '', redirectTo: 'user-profile', pathMatch: 'full' },
@@ -13,8 +12,8 @@ const routes: Routes = [
   },
   {
     path: 'vm',
-    component: V1Component
-  },
+    loadChildren: () => import('../pages/vm/vm.module').then(m => m.VMModule)
+  }
 
 
 ]

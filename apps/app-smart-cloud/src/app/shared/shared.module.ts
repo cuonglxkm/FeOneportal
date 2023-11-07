@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { NgModule, Type } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -8,6 +8,7 @@ import { AlainThemeModule } from '@delon/theme';
 
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+import { provideNzI18n, en_US } from 'ng-zorro-antd/i18n';
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -54,6 +55,6 @@ const DIRECTIVES: Array<Type<any>> = [];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES
-  ]
+  ],
 })
 export class SharedModule {}
