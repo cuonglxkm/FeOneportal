@@ -6,13 +6,13 @@ import {environment} from "@env/environment";
 import {V1Component} from "./test/v1.component";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'user-profile', pathMatch: 'full' },
+  {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
   {
     path: 'user-profile',
     component: UserProfileComponent
   },
   {
-    path: 'vm',
+    path: 'test',
     component: V1Component
   },
 
@@ -23,4 +23,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PagesRoutingModule {}
+export class PagesRoutingModule {
+}

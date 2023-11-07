@@ -153,8 +153,8 @@ export class UserLoginComponent implements OnDestroy {
       callback = `http://localhost:4200/passport/callback/${type}`;
     }
     switch (type) {
-      case 'auth0':
-        url = `//10.1.125.250:8081/default/authorize?response_type=code&client_id=debugger&scope=openid&redirect_uri=${decodeURIComponent(callback)}`;
+      case 'oneportal':
+        url = `https://172.16.68.200:1000/connect/authorize?response_type=code&client_id=swagger-client&scope=openid%20all&redirect_uri=${decodeURIComponent(callback)}`;
         break;
       case 'github':
         url = `//github.com/login/oauth/authorize?client_id=2517b4cd4f44af81a2b0&response_type=code&redirect_uri=${decodeURIComponent(
