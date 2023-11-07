@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
 
 interface Security {
   id: number;
@@ -17,7 +18,10 @@ interface Inbound {
   templateUrl: './security-group.component.html',
   styleUrls: ['./security-group.component.less'],
 })
-export class SecurityGroupComponent {
+export class SecurityGroupComponent implements OnInit{
+  constructor(private http: HttpClient) {
+  }
+
   selectedValue?: Security;
   options: Security[] = [
     { name: 'Security 1', id: 1, desc: '' },
@@ -34,5 +38,12 @@ export class SecurityGroupComponent {
   ]
   onSelectChange(): void {
     console.log('Selected value: ' + this.selectedValue);
+  }
+
+  showDeleteConfirm(): void {
+
+  }
+  ngOnInit() {
+
   }
 }

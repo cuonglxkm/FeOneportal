@@ -9,172 +9,167 @@
         <a routerLink="/app-smart-cloud/security-group">Security group</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
-    <h4 class="text-header">Security group</h4>
+    <h4>Security group</h4>
   </div>
 </nz-header>
 <nz-content>
-  <p class="text-content">Danh sách Security Group</p>
-  <nz-row style="padding-bottom: 8px">
-    <nz-col nzSpan="6">
-      <div><p class="text">Chọn Security group</p></div>
-    </nz-col>
-    <nz-col nzSpan="12">
-      <nz-space>
-        <div style="margin-right: 32px;
-                    border: 1px">
-          <select class="select" [(ngModel)]="selectedValue" (change)="onSelectChange()">
-            <option *ngFor="let option of options" [value]="option">{{ option.name }}</option>
-          </select>
-        </div>
-        <button nz-button nzType="primary" nzDanger
-                style="background: rgba(252, 16, 16, 1);
-                        width: 155px;
-                        height: 32px;
-                        border-radius: 5px;
-                        gap: 10px;
-                        padding: 5px 10px 5px 10px;">Xoá Security Group</button>
-      </nz-space>
-    </nz-col>
-    <nz-col nzSpan="6">
-      <button nzBlock nz-button nzType="primary"
-              style="background: rgba(38, 111, 254, 1);
+  <nz-card>
+    <div class="title">Danh sách Security Group</div>
+    <nz-row style="margin-bottom: 16px">
+      <nz-col nzSpan="4">
+        <div class="label">Chọn Security group</div>
+      </nz-col>
+      <nz-col nzSpan="14">
+        <nz-space [nzSize]="24">
+          <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Select a security" [(ngModel)]="selectedValue">
+            <nz-option  *ngFor="let item of options" [nzLabel]="item.name" [nzValue]="item"></nz-option>
+          </nz-select>
+          <button *nzSpaceItem nz-button nzType="primary" nzDanger
+                  class="button-delete" (click)="showDeleteConfirm()">Xoá Security Group</button>
+        </nz-space>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-row nzJustify="end">
+          <button nz-button nzType="primary"
+                  style="background: rgba(38, 111, 254, 1);
                     width: 201px;
                     height: 32px;
                     border-radius: 5px;
                     gap: 10px;
                     padding: 5px 10px 5px 10px;"
-              routerLink="/app-smart-cloud/create-security-group">Thêm mới Security group</button>
-    </nz-col>
-  </nz-row>
-  <nz-row>
-    <nz-col nzSpan="6">
-      <div><p class="text">Mô tả</p></div>
-    </nz-col>
-    <nz-col nzSpan="18">
-      <textarea rows="4" nz-input></textarea>
-    </nz-col>
-  </nz-row>
-
-  <nz-row>
-    <section class="code-box-meta markdown">
-      <div class="code-box-title">
-        Inbound
-      </div>
-      <div class="code-box-description">
-        <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-          <button nz-button nzType="primary" class="button-crate-new">Thêm mới Inbound</button>
+                  routerLink="/app-smart-cloud/create-security-group">Thêm mới Security group</button>
         </nz-row>
-        <nz-table #basicTable
-                  [nzData]="listInbound"
-                  nzShowSizeChanger
-                  [nzFrontPagination]="false"
-                  [nzTotal]="100"
-                  [nzPageSize]="50"
-                  [nzPageIndex]="1"
-        >
-          <thead>
-          <tr>
-            <th nzAlign="center">IP Version</th>
-            <th nzAlign="center">Protocol</th>
-            <th nzAlign="center">PortRange</th>
-            <th nzAlign="center">RemoteIPPrefix</th>
-            <th nzAlign="center">Thao tác</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td nzAlign="center">{{ data.ip_version }}</td>
-            <td nzAlign="center">{{ data.protocol }}</td>
-            <td nzAlign="center">{{ data.port_range }}</td>
-            <td nzAlign="center">{{ data.remote }}</td>
-            <td nzAlign="center">
-              <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
-            </td>
-          </tr>
-          </tbody>
-        </nz-table>
-      </div>
-    </section>
-  </nz-row>
-  <nz-row>
-    <section class="code-box-meta markdown">
-      <div class="code-box-title">
-        Outbound
-      </div>
-      <div class="code-box-description">
-        <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-          <button nz-button nzType="primary" class="button-crate-new">Thêm mới Outbound</button>
-        </nz-row>
-        <nz-table #basicTable
-                  [nzData]="listInbound"
-                  nzShowSizeChanger
-                  [nzFrontPagination]="false"
-                  [nzTotal]="100"
-                  [nzPageSize]="50"
-                  [nzPageIndex]="1"
-        >
-          <thead>
-          <tr>
-            <th nzAlign="center">IP Version</th>
-            <th nzAlign="center">Protocol</th>
-            <th nzAlign="center">PortRange</th>
-            <th nzAlign="center">RemoteIPPrefix</th>
-            <th nzAlign="center">Thao tác</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td nzAlign="center">{{ data.ip_version }}</td>
-            <td nzAlign="center">{{ data.protocol }}</td>
-            <td nzAlign="center">{{ data.port_range }}</td>
-            <td nzAlign="center">{{ data.remote }}</td>
-            <td nzAlign="center">
-              <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
-            </td>
-          </tr>
-          </tbody>
-        </nz-table>
-      </div>
-    </section>
-  </nz-row>
-  <nz-row>
-    <section class="code-box-meta markdown">
-      <div class="code-box-title">
-        Quản lý Gắn/Gỡ Security Group
-      </div>
-      <div class="code-box-description">
-        <nz-table #basicTable
-                  [nzData]="listInbound"
-                  nzShowSizeChanger
-                  [nzFrontPagination]="false"
-                  [nzTotal]="100"
-                  [nzPageSize]="50"
-                  [nzPageIndex]="1"
-        >
-          <thead>
-          <tr>
-            <th nzAlign="center">Tên máy ảo</th>
-            <th nzAlign="center">Trạng thái</th>
-            <th nzAlign="center">Trạng thái tác vụ</th>
-            <th nzAlign="center">IP LAN</th>
-            <th nzAlign="center">IP Public</th>
-            <th nzAlign="center">Thao tác</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td nzAlign="center">{{ data.ip_version }}</td>
-            <td nzAlign="center">{{ data.protocol }}</td>
-            <td nzAlign="center">{{ data.port_range }}</td>
-            <td nzAlign="center">{{ data.remote }}</td>
-            <td nzAlign="center">{{ data.remote }}</td>
-            <td nzAlign="center">
-              <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
-            </td>
-          </tr>
-          </tbody>
-        </nz-table>
-      </div>
-    </section>
-  </nz-row>
+      </nz-col>
+    </nz-row>
+    <nz-row style="margin-bottom: 16px">
+      <nz-col nzSpan="4">
+        <div class="label">Mô tả</div>
+      </nz-col>
+      <nz-col>
+        <div></div>
+      </nz-col>
+    </nz-row>
+    <nz-row style="margin-bottom: 16px">
+      <section class="code-box-meta markdown">
+        <div class="code-box-title">
+          Inbound
+        </div>
+        <div class="code-box-description">
+          <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
+            <button nz-button nzType="primary" class="button-crate-new" routerLink="/app-smart-cloud/create-inbound">Thêm mới Inbound</button>
+          </nz-row>
+          <nz-table #basicTable
+                    [nzData]="listInbound"
+                    nzShowSizeChanger
+                    [nzFrontPagination]="false"
+                    [nzTotal]="100"
+                    [nzPageSize]="50"
+                    [nzPageIndex]="1"
+          >
+            <thead>
+            <tr>
+              <th nzAlign="center">IP Version</th>
+              <th nzAlign="center">Protocol</th>
+              <th nzAlign="center">PortRange</th>
+              <th nzAlign="center">RemoteIPPrefix</th>
+              <th nzAlign="center">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of basicTable.data">
+              <td nzAlign="center">{{ data.ip_version }}</td>
+              <td nzAlign="center">{{ data.protocol }}</td>
+              <td nzAlign="center">{{ data.port_range }}</td>
+              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center">
+                <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </section>
+    </nz-row>
+    <nz-row style="margin-bottom: 16px">
+      <section class="code-box-meta markdown">
+        <div class="code-box-title">
+          Outbound
+        </div>
+        <div class="code-box-description">
+          <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
+            <button nz-button nzType="primary" class="button-crate-new" routerLink="/app-smart-cloud/create-outbound">Thêm mới Outbound</button>
+          </nz-row>
+          <nz-table #basicTable
+                    [nzData]="listInbound"
+                    nzShowSizeChanger
+                    [nzFrontPagination]="false"
+                    [nzTotal]="100"
+                    [nzPageSize]="50"
+                    [nzPageIndex]="1"
+          >
+            <thead>
+            <tr>
+              <th nzAlign="center">IP Version</th>
+              <th nzAlign="center">Protocol</th>
+              <th nzAlign="center">PortRange</th>
+              <th nzAlign="center">RemoteIPPrefix</th>
+              <th nzAlign="center">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of basicTable.data">
+              <td nzAlign="center">{{ data.ip_version }}</td>
+              <td nzAlign="center">{{ data.protocol }}</td>
+              <td nzAlign="center">{{ data.port_range }}</td>
+              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center">
+                <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </section>
+    </nz-row>
+    <nz-row>
+      <section class="code-box-meta markdown">
+        <div class="code-box-title">
+          Quản lý Gắn/Gỡ Security Group
+        </div>
+        <div class="code-box-description">
+          <nz-table #basicTable
+                    [nzData]="listInbound"
+                    nzShowSizeChanger
+                    [nzFrontPagination]="false"
+                    [nzTotal]="100"
+                    [nzPageSize]="50"
+                    [nzPageIndex]="1"
+          >
+            <thead>
+            <tr>
+              <th nzAlign="center">Tên máy ảo</th>
+              <th nzAlign="center">Trạng thái</th>
+              <th nzAlign="center">Trạng thái tác vụ</th>
+              <th nzAlign="center">IP LAN</th>
+              <th nzAlign="center">IP Public</th>
+              <th nzAlign="center">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of basicTable.data">
+              <td nzAlign="center">{{ data.ip_version }}</td>
+              <td nzAlign="center">{{ data.protocol }}</td>
+              <td nzAlign="center">{{ data.port_range }}</td>
+              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center">
+                <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </section>
+    </nz-row>
+  </nz-card>
 </nz-content>

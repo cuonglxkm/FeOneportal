@@ -1,8 +1,6 @@
 import {RouterModule, Routes} from "@angular/router";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {NgModule} from "@angular/core";
-import {PreloadOptionalModules} from "@delon/theme";
-import {environment} from "@env/environment";
 import {V1Component} from "./test/v1.component";
 import {SecurityGroupComponent} from "./security-group/list/security-group.component";
 import {CreateSecurityGroupComponent} from "./security-group/create/create-security-group.component";
@@ -10,7 +8,7 @@ import {CreateInboundComponent} from "./security-group/inbound/create-inbound.co
 import {OutboundComponent} from "./security-group/outbound/outbound.component";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'user-profile', pathMatch: 'full' },
+  {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
   {
     path: 'user-profile',
     component: UserProfileComponent
@@ -24,7 +22,7 @@ const routes: Routes = [
     component: SecurityGroupComponent
   },
   {
-    path:'create-security-group',
+    path: 'create-security-group',
     component: CreateSecurityGroupComponent
   },
   {
@@ -42,4 +40,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PagesRoutingModule {}
+export class PagesRoutingModule {
+}

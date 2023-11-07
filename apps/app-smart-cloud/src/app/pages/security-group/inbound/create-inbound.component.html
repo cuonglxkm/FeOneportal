@@ -1,1 +1,172 @@
-<p>create-inbound works!</p>
+<nz-content>
+  <nz-card>
+    <div class="title">Thêm mới Inbound</div>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()"  style="margin-top: 39px;">
+      <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="rule">
+              <div class="name-rule">
+                <span>Chọn Rule</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Custom  UDP Rule" >
+              <nz-select
+                      id="rule"
+                      formControlName="rule"
+                      nzPlaceHolder="Custom  UDP Rule">
+                <nz-option nzValue="rule 1" nzLabel="rule 1"></nz-option>
+                <nz-option nzValue="rule 2" nzLabel="rule 2"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="rule">
+              <div class="name-rule">
+                <span>Chọn Remote</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Custom  UDP Rule">
+              <nz-select
+                      id="remote"
+                      formControlName="remote"
+                      nzPlaceHolder="Custom  UDP Rule"
+              >
+                <nz-option nzValue="remote 1" nzLabel="remote 1"></nz-option>
+                <nz-option nzValue="remote 2" nzLabel="remote 2"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="port_type">
+              <div class="name-rule">
+                <span>Chọn Open Port</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Chọn Open Port">
+              <nz-select
+                      id="port_type"
+                      formControlName="port_type"
+                      nzPlaceHolder="Chọn Open Port"
+                      (ngModelChange)="portChange($event)"
+              >
+                <nz-option nzValue="port" nzLabel="Port"></nz-option>
+                <nz-option nzValue="port_range" nzLabel="Port Range"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item *ngIf="port_type === 'port'">
+            <nz-form-label nzFor="remote_ip">
+              <div class="name-rule">
+                <span>Nhập Remote IP</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+              <input nz-input formControlName="remote_ip" id="remote_ip"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item  *ngIf="port_type === 'port_range'">
+            <nz-form-label nzFor="security">
+              <div class="name-rule">
+                <span>Chọn Security Group</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Chọn Security Group *">
+              <nz-select
+                      id="security"
+                      formControlName="security"
+                      nzPlaceHolder="Chọn Security Group"
+              >
+                <nz-option nzValue="default" nzLabel="Default"></nz-option>
+                <nz-option nzValue="1" nzLabel="Security 1"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item *ngIf="port_type === 'port'">
+            <nz-form-label nzFor="port">
+              <div class="name-rule">
+                <span>Nhập Port</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+              <input nz-input formControlName="port" id="port"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="port_type === 'port_range'">
+            <nz-form-label nzFor="from">
+              <div class="name-rule">
+                <span>From Port</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+              <input nz-input formControlName="from" id="from"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item  *ngIf="port_type === 'port_range'">
+            <nz-form-label nzFor="enther">
+              <div class="name-rule">
+                <span>Chọn Enter Type</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Chọn Enther Type">
+              <nz-select
+                      id="enther"
+                      formControlName="enther"
+                      nzPlaceHolder="Chọn Enther Type"
+              >
+                <nz-option nzValue="ipv4" nzLabel="IPV4"></nz-option>
+                <nz-option nzValue="ipv6" nzLabel="IPV6"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item *ngIf="port_type === 'port_range'">
+            <nz-form-label nzFor="to">
+              <div class="name-rule">
+                <span>To Port</span>
+                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+              <input nz-input formControlName="to" id="to"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="large">
+          <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back">Quay lại</button>
+          <nz-form-control *nzSpaceItem>
+            <button nz-button nzType="primary" class="button-create">Tạo mới</button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </nz-card>
+</nz-content>
+
