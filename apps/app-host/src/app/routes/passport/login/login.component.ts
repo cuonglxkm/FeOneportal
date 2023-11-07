@@ -1,5 +1,13 @@
 import { HttpContext } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, Optional } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Optional
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StartupService } from '@core';
@@ -17,7 +25,7 @@ import { finalize } from 'rxjs';
   providers: [SocialService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserLoginComponent implements OnDestroy {
+export class UserLoginComponent implements OnDestroy, OnInit{
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -51,6 +59,12 @@ export class UserLoginComponent implements OnDestroy {
   interval$: any;
 
   // #endregion
+
+  ngOnInit(): void {
+
+    // Auto login
+    this.open('oneportal', 'href')
+  }
 
   switch({ index }: NzTabChangeEvent): void {
     this.type = index!;
@@ -100,6 +114,7 @@ export class UserLoginComponent implements OnDestroy {
     // 然一般来说登录请求不需要校验，因此加上 `ALLOW_ANONYMOUS` 表示不触发用户 Token 校验
     this.loading = true;
     this.cdr.detectChanges();
+    // @ts-ignore
     this.http
       .post(
         '/login/account',
@@ -119,7 +134,7 @@ export class UserLoginComponent implements OnDestroy {
           this.cdr.detectChanges();
         })
       )
-      .subscribe(res => {
+      .subscribe((res: any) => {
         if (res.msg !== 'ok') {
           this.error = res.msg;
           this.cdr.detectChanges();
@@ -170,7 +185,7 @@ export class UserLoginComponent implements OnDestroy {
         .login(url, '/', {
           type: 'window'
         })
-        .subscribe(res => {
+        .subscribe((res: any) => {
           if (res) {
             this.settingsService.setUser(res);
             this.router.navigateByUrl('/');
@@ -190,4 +205,6 @@ export class UserLoginComponent implements OnDestroy {
       clearInterval(this.interval$);
     }
   }
+
+
 }

@@ -1,8 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppValidator} from "../../shared/utils/AppValidator";
+
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {AppValidator} from "../../../../../../libs/common-utils/src";
 
 
 @Component({
