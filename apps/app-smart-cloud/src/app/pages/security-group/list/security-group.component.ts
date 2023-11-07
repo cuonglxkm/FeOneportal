@@ -13,6 +13,18 @@ interface Inbound {
   port_range: string;
   remote: string;
 }
+
+interface Area {
+  id: number;
+  name: string;
+  desc: string;
+}
+interface Project {
+  id: number;
+  name: string;
+  desc: string;
+}
+
 @Component({
   selector: 'one-portal-security-group',
   templateUrl: './security-group.component.html',
@@ -29,6 +41,22 @@ export class SecurityGroupComponent implements OnInit{
     { name: 'Security 3', id: 3, desc:"" },
   ];
 
+  selectedValueArea?: Area;
+  optionsArea: Area[] = [
+    { name: 'Khu vực 1', id: 1, desc: '' },
+    { name: 'Khu vực 2', id: 2, desc:''},
+    { name: 'Khu vực 3', id: 3, desc:"" },
+  ];
+
+  selectedValueProject?: Project;
+  optionsProject: Project[] = [
+    { name: 'Dự án 1', id: 1, desc: '' },
+    { name: 'Dự án 2', id: 2, desc:''},
+    { name: 'Dự án 3', id: 3, desc:"" },
+  ]
+
+  listSecurityGroup: Object = [];
+
   listInbound: Inbound[] = [
     { ip_version: 'ipV4', protocol: 'tcp', port_range: '1', remote: 'Test 1'},
     { ip_version: 'ipV4', protocol: 'tcp', port_range: '2', remote: 'Test 1'},
@@ -40,10 +68,15 @@ export class SecurityGroupComponent implements OnInit{
     console.log('Selected value: ' + this.selectedValue);
   }
 
-  showDeleteConfirm(): void {
+  showDeleteConfirm(): void {}
 
+  getSecurityGroup() {
+    this.http.get("http://172.16.68.200:1009/security_group/get_all")
+        .subscribe(listSecurityGroup => this.listSecurityGroup = listSecurityGroup)
   }
-  ngOnInit() {
 
+  getInstances() {
+    this.http.get("")
   }
+  ngOnInit() {}
 }
