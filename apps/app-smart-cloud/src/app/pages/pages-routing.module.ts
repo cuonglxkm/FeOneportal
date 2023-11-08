@@ -4,6 +4,8 @@ import {NgModule} from "@angular/core";
 import {PreloadOptionalModules} from "@delon/theme";
 import {environment} from "@env/environment";
 import {V1Component} from "./test/v1.component";
+import {VolumeComponent} from "./volume/volume.component";
+import {CreateVolumeComponent} from "./volume/create-volume/create-volume.component";
 
 const routes: Routes = [
   { path: '', redirectTo: 'user-profile', pathMatch: 'full' },
@@ -15,6 +17,16 @@ const routes: Routes = [
     path: 'vm',
     component: V1Component
   },
+  {
+    path: 'volume',
+    component: VolumeComponent
+  },
+  {
+    path: 'volume/create',
+    component: CreateVolumeComponent
+  },
+
+
 
 
 ]

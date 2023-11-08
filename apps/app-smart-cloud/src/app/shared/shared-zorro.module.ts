@@ -30,8 +30,10 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 
 export const SHARED_ZORRO_MODULES = [
+  NzPageHeaderModule,
   NzButtonModule,
   NzMessageModule,
   NzDropDownModule,

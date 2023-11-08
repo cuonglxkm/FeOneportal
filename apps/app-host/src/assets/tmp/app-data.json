@@ -27,7 +27,7 @@
         {
           "text": "Quản lý Volume",
           "icon": "anticon-dashboard",
-          "link": "/app-smart-cloud/vm"
+          "link": "/app-smart-cloud/volume"
         },
         {
           "text": "Quản lý IP Public",
