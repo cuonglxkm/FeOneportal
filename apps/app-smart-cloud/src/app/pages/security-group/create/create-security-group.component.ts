@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
 import {Location} from '@angular/common';
-import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'one-portal-create-security-group',
@@ -32,7 +31,7 @@ export class CreateSecurityGroupComponent {
         this._location.back();
     }
 
-    constructor(private fb: NonNullableFormBuilder, private _location: Location, private http: HttpClient) {
+    constructor(private fb: NonNullableFormBuilder, private _location: Location) {
         this.validateForm = this.fb.group({
             name: ['', [Validators.required]],
             desc: ['']
