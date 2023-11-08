@@ -26,7 +26,8 @@
           "ajv-formats",
           "mockjs",
           "file-saver",
-          "extend"
+          "extend",
+          "crypto"
         ]
       },
       "configurations": {

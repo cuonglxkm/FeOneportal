@@ -15,7 +15,7 @@ const routes: Routes = [
     component: UserProfileComponent
   },
   {
-    path: 'vm',
+    path: 'test',
     component: V1Component
   },
   {
