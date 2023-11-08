@@ -11,13 +11,14 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Custom  UDP Rule" >
+            <nz-form-control nzErrorTip="Không được để trống!" >
               <nz-select
                       id="rule"
                       formControlName="rule"
                       nzPlaceHolder="Custom  UDP Rule">
-                <nz-option nzValue="rule 1" nzLabel="rule 1"></nz-option>
-                <nz-option nzValue="rule 2" nzLabel="rule 2"></nz-option>
+                <nz-option *ngFor="let data of listSecurityGroupRule"
+                           nzValue="{{ data.id }}" nzLabel="{{ data.id }}   "></nz-option>
+<!--                <nz-option nzValue="rule 2" nzLabel="rule 2"></nz-option>-->
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -30,11 +31,11 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Custom  UDP Rule">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <nz-select
                       id="remote"
                       formControlName="remote"
-                      nzPlaceHolder="Custom  UDP Rule"
+                      nzPlaceHolder="Custom UDP Rule"
               >
                 <nz-option nzValue="remote 1" nzLabel="remote 1"></nz-option>
                 <nz-option nzValue="remote 2" nzLabel="remote 2"></nz-option>
@@ -52,7 +53,7 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Chọn Open Port">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <nz-select
                       id="port_type"
                       formControlName="port_type"
@@ -73,7 +74,7 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <input nz-input formControlName="remote_ip" id="remote_ip"/>
             </nz-form-control>
           </nz-form-item>
@@ -84,7 +85,7 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Chọn Security Group *">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <nz-select
                       id="security"
                       formControlName="security"
@@ -106,7 +107,7 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <input nz-input formControlName="port" id="port"/>
             </nz-form-control>
           </nz-form-item>
@@ -117,7 +118,7 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <input nz-input formControlName="from" id="from"/>
             </nz-form-control>
           </nz-form-item>
@@ -152,7 +153,7 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+            <nz-form-control nzErrorTip="Không được để trống!">
               <input nz-input formControlName="to" id="to"/>
             </nz-form-control>
           </nz-form-item>

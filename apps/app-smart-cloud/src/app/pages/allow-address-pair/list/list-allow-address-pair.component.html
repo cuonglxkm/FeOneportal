@@ -1,0 +1,138 @@
+<nz-header>
+    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
+        <nz-row nzJustify="space-between" nzAlign="middle">
+            <nz-breadcrumb nz-page-header-breadcrumb>
+                <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    Dịch vụ
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a routerLink="/">VM</a>
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+            <nz-space>
+                <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Khu vực"
+                           [(ngModel)]="selectedValueArea"
+                           style="border: 1px solid #D9D9D9; width: 113px; height: 32px">
+                    <nz-option *ngFor="let item of optionsArea" [nzLabel]="item.name" [nzValue]="item"></nz-option>
+                </nz-select>
+                <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Dự án"
+                           [(ngModel)]="selectedValueProject"
+                           style="border: 1px solid #D9D9D9; width: 113px; height: 32px">
+                    <nz-option *ngFor="let item of optionsProject" [nzLabel]="item.name" [nzValue]="item"></nz-option>
+                </nz-select>
+            </nz-space>
+        </nz-row>
+        <h4>Danh sách Allow Address Pair</h4>
+        <nz-row nzJustify="space-between" nzAlign="middle">
+            <div style="margin-top: 20px;">
+                <input nz-input placeholder="Tìm kiếm IP Address" [(ngModel)]="value" type="text"
+                       style="width: 396px; height: 40px;"/>
+                <!--            <span nz-icon nzType="setting" nzTheme="outline"></span>-->
+                <button class="button-search">
+                    <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
+                    Search
+                </button>
+            </div>
+            <div style="margin-top: 20px;">
+                <nz-space>
+                    <button class="button-create" (click)="showModalCreate()">
+                        <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 12px;"></span>
+                        Tạo mới
+                    </button>
+                    <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới"
+                              (nzOnCancel)="handleCancel()" nzCentered>
+                        <div *nzModalTitle>
+                            <h5 class="text-h5"><b>Tạo mới Allowed Address Pair</b></h5>
+                        </div>
+                        <div *nzModalContent>
+                            <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+                                <div nz-row>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="ipAddress">
+                                            <div class="name-ip-address">
+                                                <span>IP Address/ CIDR</span>
+                                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                                            </div>
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="Không được để trống!">
+                                            <input nz-input formControlName="ipAddress" id="ipAddress"/>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                                <div nz-row>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="macAddress">
+                                            <div class="name-ip-address">
+                                                <span>MAC Address</span>
+                                            </div>
+                                        </nz-form-label>
+                                        <input nz-input formControlName="macAddress" id="macAddress"/>
+                                    </nz-form-item>
+                                </div>
+                            </form>
+                        </div>
+                        <div *nzModalFooter>
+                            <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel-popup">Hủy
+                            </button>
+                            <button nz-button nzType="primary" (click)="submitForm()" [nzLoading]="isCreateLoading"
+                                    class="button-create-popup">Tạo mới
+                            </button>
+                        </div>
+                    </nz-modal>
+                </nz-space>
+            </div>
+        </nz-row>
+    </nz-col>
+</nz-header>
+<nz-content style="margin-top: 10px">
+    <nz-card>
+        <div class="code-box-description">
+            <nz-table #basicTable
+                      [nzData]="listIPAddress"
+                      nzShowSizeChanger
+                      [nzFrontPagination]="false"
+                      [nzTotal]="100"
+                      [nzPageSize]="50"
+                      [nzPageIndex]="1"
+            >
+                <thead>
+                <tr>
+                    <th nzAlign="center" class="text-th">IP Address/CIDR</th>
+                    <th nzAlign="center" class="text-th">MAC Address</th>
+                    <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td nzAlign="center">{{ data.ipAddress }}</td>
+                    <td nzAlign="center">{{ data.macAddress }}</td>
+                    <td nzAlign="center">
+                        <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá
+                        </button>
+                        <nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa Allowed Address Pair"
+                                  (nzOnCancel)="handleCancel()" nzCentered>
+                            <div *nzModalTitle>
+                                <p class="text-h5"><b>Xoá Allowed Address Pair</b></p>
+                            </div>
+                            <div *nzModalContent>
+                                <p class="text-p">Vui lòng cân nhắc thật kỹ trước khi click nút
+                                    <b class="text-b">Đồng ý</b>.
+                                    Quý khách chắc chắn muốn thực hiện xóa Allowed Address Pair?</p>
+                            </div>
+                            <div *nzModalFooter>
+                                <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy
+                                </button>
+                                <button nz-button nzType="primary" (click)="handleOk()"
+                                        [nzLoading]="isConfirmLoading"
+                                        class="button-ok">Đồng ý
+                                </button>
+                            </div>
+                        </nz-modal>
+                    </td>
+                </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-card>
+</nz-content>

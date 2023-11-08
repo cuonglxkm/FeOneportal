@@ -68,7 +68,23 @@ export class SecurityGroupComponent implements OnInit{
     console.log('Selected value: ' + this.selectedValue);
   }
 
-  showDeleteConfirm(): void {}
+  isVisible = false;
+  isConfirmLoading = false;
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    this.isConfirmLoading = true;
+    setTimeout(() => {
+      this.isVisible = false;
+      this.isConfirmLoading = false;
+    }, 3000);
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
+  }
 
   getSecurityGroup() {
     this.http.get("http://172.16.68.200:1009/security_group/get_all")
