@@ -1,0 +1,9 @@
+{
+  "name": "common-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/common-utils/src",
+  "prefix": "one-portal",
+  "tags": [],
+  "projectType": "library",
+  "targets": {}
+}

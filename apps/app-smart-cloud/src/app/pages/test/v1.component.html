@@ -3,6 +3,11 @@
     Dashboard
     <small>Welcome !</small>
   </h1>
+
+  <div class="text-right">
+    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
+  </div>
 </div>
 <div nz-row nzGutter="16">
   <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
@@ -12,18 +17,11 @@
         <p class="text-nowrap mb0">Website Traffics</p>
       </div>
       <div nz-col nzSpan="12">
-        <g2-mini-bar
-          *ngIf="webSite"
-          height="35"
-          color="#fff"
-          borderWidth="3"
-          [padding]="[5, 30]"
-          [data]="webSite"
-          tooltipType="mini"
-          (ready)="fixDark($event)"
         />
       </div>
     </div>
   </div>
+
+
 </div>
 

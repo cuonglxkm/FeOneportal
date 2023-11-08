@@ -15,11 +15,6 @@
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "Thông tin tài khoản",
-          "icon": "anticon-dashboard",
-          "link": "/app-smart-cloud/user-profile"
-        },
-        {
           "text": "Quản lý máy ảo",
           "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/user-profile"
@@ -62,6 +57,10 @@
               "text": "仪表盘V1",
               "link": "/dashboard/v1",
               "i18n": "menu.dashboard.v1"
+            },
+            {
+              "text": "Test",
+              "link": "/app-smart-cloud/test"
             }
           ]
         },
