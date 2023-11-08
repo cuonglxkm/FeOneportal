@@ -16,8 +16,8 @@
                       id="rule"
                       formControlName="rule"
                       nzPlaceHolder="Custom  UDP Rule">
-                <nz-option *ngFor="let data of listSecurityGroupRule"
-                           nzValue="{{ data.id }}" nzLabel="{{ data.id }}   "></nz-option>
+                <nz-option *ngFor="let data of rulesList"
+                           nzValue="{{ data.value }}" nzLabel="{{ data.option }}"></nz-option>
 <!--                <nz-option nzValue="rule 2" nzLabel="rule 2"></nz-option>-->
               </nz-select>
             </nz-form-control>
@@ -37,8 +37,8 @@
                       formControlName="remote"
                       nzPlaceHolder="Custom UDP Rule"
               >
-                <nz-option nzValue="remote 1" nzLabel="remote 1"></nz-option>
-                <nz-option nzValue="remote 2" nzLabel="remote 2"></nz-option>
+                <nz-option *ngFor="let data of remotesList"
+                           nzValue="{{ data.value }}" nzLabel="{{ data.option }}"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -91,8 +91,8 @@
                       formControlName="security"
                       nzPlaceHolder="Chọn Security Group"
               >
-                <nz-option nzValue="default" nzLabel="Default"></nz-option>
-                <nz-option nzValue="1" nzLabel="Security 1"></nz-option>
+                <nz-option *ngFor="let data of listSecurityGroup"
+                           nzValue="{{ data.name }}" nzLabel="{{ data.name }}"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
