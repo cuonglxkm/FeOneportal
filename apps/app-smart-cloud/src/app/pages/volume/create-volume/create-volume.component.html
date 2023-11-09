@@ -20,11 +20,11 @@
 
         <nz-select nzSize="default"
                    [nzPlaceHolder]="'-Chọn Snapshot-'"
-                   [nzOptions]="snapshotList"
                    [(ngModel)]="snapshot"
                    (ngModelChange)="changeExpTime()"
                    style="width: 100%;"
         >
+          <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
         </nz-select>
     </div>
 
@@ -85,9 +85,9 @@
     <br>
     <nz-select nzSize="default"
                [nzPlaceHolder]="'-Chọn máy ảo-'"
-               [nzOptions]="vmList"
                style="width: 100%;"
     >
+      <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
     </nz-select>
     <br>
     <br>

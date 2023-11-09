@@ -31,6 +31,9 @@ export class VolumeComponent implements OnInit {
     content: 'Danh sách Volume'
   };
 
+  volumeNameSearch: string;
+  volumeStatusSearch: string;
+
   listVolumeRootResponse: GetListVolumeModel;
   listVolumeAddVolumeResponse: GetListVolumeModel;
 
@@ -45,9 +48,9 @@ export class VolumeComponent implements OnInit {
 
   selectedOption: NzSelectOptionInterface | null = null;
   options: NzSelectOptionInterface[] = [
-    {label: 'Khởi tạo', value: 'init'},
-    {label: 'Hủy', value: 'cancel'},
-    {label: 'Tạm dừng', value: 'pause'},
+    {label: 'Đang hoạt động', value: 'KHOITAO'},
+    {label: 'Lỗi', value: 'ERROR'},
+    {label: 'Tạm ngừng', value: 'SUSPENDED'},
   ];
 
   optionVolumeRoot: NzSelectOptionInterface[] = [
@@ -67,29 +70,31 @@ export class VolumeComponent implements OnInit {
 
   constructor(private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Khởi tạo');
-    this.combinedValues = this.listOfData.map((item, index) => 'item' + index);
+    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
+    this.volumeStatus.set('ERROR', 'Lỗi');
+    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
   }
 
   ngOnInit() {
     //get list Root
-    this.volumeSevice.getVolumes(669, 4094, 3, true, 10 , 0).subscribe(data => {
+    this.volumeSevice.getVolumes(669, 4094, 3, true, 10, 0 , null).subscribe(data => {
       this.listVolumeRootResponse = data;
       this.listVolumeRoot = data.records;
       this.totalRoot = data.totalCount;
       console.log(this.listVolumeRoot);
     })
     //get list Add
-    this.volumeSevice.getVolumes(669, 4094, 3, false , 10, 0).subscribe(data => {
+    this.volumeSevice.getVolumes(669, 4094, 3, false, 10, 0 , null).subscribe(data => {
       this.listVolumeAddVolumeResponse = data;
       this.listVolumeAdd = data.records;
       this.totalAdd = data.totalCount;
       console.log(this.listVolumeAdd);
     })
   }
+
   onRootPageIndexChange(event: any) {
     this.curentPageRoot = event;
-    this.volumeSevice.getVolumes(669, 4094, 3, true, 10 , (this.curentPageRoot-1)).subscribe(data => {
+    this.volumeSevice.getVolumes(669, 4094, 3, true, 10, (this.curentPageRoot - 1), null).subscribe(data => {
       this.listVolumeRootResponse = data;
       this.listVolumeRoot = data.records;
       this.totalRoot = data.totalCount;
@@ -98,7 +103,7 @@ export class VolumeComponent implements OnInit {
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.volumeSevice.getVolumes(669, 4094, 3, false, 10 , (this.curentPageAdd-1)).subscribe(data => {
+    this.volumeSevice.getVolumes(669, 4094, 3, false, 10, (this.curentPageAdd - 1),null).subscribe(data => {
       this.listVolumeAddVolumeResponse = data;
       this.listVolumeAdd = data.records;
       this.totalAdd = data.totalCount;
@@ -106,170 +111,11 @@ export class VolumeComponent implements OnInit {
     })
   }
 
-
-  listOfData: Volume[] = [
-    {
-      name: 'VM01_root_volume',
-      storage: 2,
-      iops: 200,
-      statusVolume: 0,
-      statusAction: 0,
-      vm: 'VM01'
-    },
-    {
-      name: 'VM02_root_volume',
-      storage: 4,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM01'
-    },
-    {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    },
-    {
-      name: 'VM04_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 3,
-      statusAction: 1,
-      vm: 'VM03'
-    },
-    {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    },
-    {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    },
-    {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    },
-    {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 2,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }, {
-      name: 'VM03_root_volume',
-      storage: 10,
-      iops: 200,
-      statusVolume: 1,
-      statusAction: 1,
-      vm: 'VM02'
-    }
-  ];
   isVisible = false;
-  isOkLoading = false;
 
-  onSelectionChange(value: any, nameVolume: string) {
+  onSelectionChange(value: any, idVolume: number) {
     console.log('Value selected: ', value);
-    console.log('Volume Name: ', nameVolume);
+    console.log('Volume Name: ', idVolume);
     if (value === 'addVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gắn Volume',
@@ -285,7 +131,7 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
-              console.log('Add volume ' + nameVolume + ' in to ' + selected);
+              console.log('Add volume ' + idVolume + ' in to ' + selected);
               modal.destroy()
             }
           }
@@ -308,7 +154,7 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
-              console.log('Add volume ' + nameVolume + ' in to ' + selected);
+              console.log('Add volume ' + idVolume + ' in to ' + selected);
               modal.destroy();
             }
           }
@@ -342,6 +188,20 @@ export class VolumeComponent implements OnInit {
 
   navigateToCreateVolume() {
     this.router.navigate(['/app-smart-cloud/volume/create']);
+  }
+
+  searchVolumes() {
+    console.log('Volume name: ' + this.volumeNameSearch);
+    console.log('Volume status: ' + this.volumeStatusSearch);
+  }
+
+  getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number) {
+    this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage ,null).subscribe(data => {
+      this.listVolumeAddVolumeResponse = data;
+      this.listVolumeAdd = data.records;
+      this.totalAdd = data.totalCount;
+      console.log(this.listVolumeAdd);
+    })
   }
 
 
