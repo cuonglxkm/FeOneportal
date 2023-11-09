@@ -1,5 +1,13 @@
 import { HttpContext } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, Optional } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Optional
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StartupService } from '@core';
@@ -17,7 +25,7 @@ import { finalize } from 'rxjs';
   providers: [SocialService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserLoginComponent implements OnDestroy {
+export class UserLoginComponent implements OnDestroy, OnInit{
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -51,6 +59,12 @@ export class UserLoginComponent implements OnDestroy {
   interval$: any;
 
   // #endregion
+
+  ngOnInit(): void {
+
+    // Auto login
+    this.open('oneportal', 'href')
+  }
 
   switch({ index }: NzTabChangeEvent): void {
     this.type = index!;
@@ -100,6 +114,7 @@ export class UserLoginComponent implements OnDestroy {
     // 然一般来说登录请求不需要校验，因此加上 `ALLOW_ANONYMOUS` 表示不触发用户 Token 校验
     this.loading = true;
     this.cdr.detectChanges();
+    // @ts-ignore
     this.http
       .post(
         '/login/account',
@@ -119,7 +134,7 @@ export class UserLoginComponent implements OnDestroy {
           this.cdr.detectChanges();
         })
       )
-      .subscribe(res => {
+      .subscribe((res: any) => {
         if (res.msg !== 'ok') {
           this.error = res.msg;
           this.cdr.detectChanges();
@@ -153,8 +168,8 @@ export class UserLoginComponent implements OnDestroy {
       callback = `http://localhost:4200/passport/callback/${type}`;
     }
     switch (type) {
-      case 'auth0':
-        url = `//10.1.125.250:8081/default/authorize?response_type=code&client_id=debugger&scope=openid&redirect_uri=${decodeURIComponent(callback)}`;
+      case 'oneportal':
+        url = `https://172.16.68.200:1000/connect/authorize?response_type=code&client_id=swagger-client&scope=openid%20all&redirect_uri=${decodeURIComponent(callback)}`;
         break;
       case 'github':
         url = `//github.com/login/oauth/authorize?client_id=2517b4cd4f44af81a2b0&response_type=code&redirect_uri=${decodeURIComponent(
@@ -170,7 +185,7 @@ export class UserLoginComponent implements OnDestroy {
         .login(url, '/', {
           type: 'window'
         })
-        .subscribe(res => {
+        .subscribe((res: any) => {
           if (res) {
             this.settingsService.setUser(res);
             this.router.navigateByUrl('/');
@@ -190,4 +205,6 @@ export class UserLoginComponent implements OnDestroy {
       clearInterval(this.interval$);
     }
   }
+
+
 }

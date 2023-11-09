@@ -13,7 +13,7 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  API_BASE_URL:"http://172.16.68.200:1009"
+  baseUrl: 'http://172.16.68.200:1009',
 } as Environment;
 
 /*

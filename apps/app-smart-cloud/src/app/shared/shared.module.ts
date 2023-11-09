@@ -1,4 +1,4 @@
-import { CommonModule, registerLocaleData } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgModule, Type } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -8,7 +8,9 @@ import { AlainThemeModule } from '@delon/theme';
 
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
-import { provideNzI18n, en_US } from 'ng-zorro-antd/i18n';
+import {RegionSelectDropdownComponent} from "./components/region-select-dropdown/region-select-dropdown.component";
+import {ProjectSelectDropdownComponent} from "./components/project-select-dropdown/project-select-dropdown.component";
+
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -17,7 +19,7 @@ const THIRDMODULES: Array<Type<any>> = [];
 // #endregion
 
 // #region your componets & directives
-const COMPONENTS: Array<Type<any>> = [];
+const COMPONENTS: Array<Type<any>> = [RegionSelectDropdownComponent, ProjectSelectDropdownComponent];
 const DIRECTIVES: Array<Type<any>> = [];
 // #endregion
 
@@ -55,6 +57,6 @@ const DIRECTIVES: Array<Type<any>> = [];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES
-  ],
+  ]
 })
 export class SharedModule {}

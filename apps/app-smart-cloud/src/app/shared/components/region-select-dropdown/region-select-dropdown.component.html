@@ -1,0 +1,10 @@
+<!--<nz-form-item>-->
+<!--&lt;!&ndash;  <nz-form-label nzFor="region">Khu vực</nz-form-label>&ndash;&gt;-->
+<!--  <nz-form-control>-->
+
+<!--  </nz-form-control>-->
+<!--</nz-form-item>-->
+<nz-select (ngModelChange)="regionChanged($event)"
+           [(ngModel)]="selectedRegion" name="region" [nzPlaceHolder]="'Khu vực'" [nzShowSearch]="true">
+  <nz-option *ngFor="let i of listRegion; let idx = index" [nzLabel]="i.regionDisplayName" [nzValue]="i"/>
+</nz-select>
