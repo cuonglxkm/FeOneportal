@@ -4,7 +4,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'app-basic-list-edit',
+  selector: 'app-basic-list-security-group-edit',
   templateUrl: './edit.component.html'
 })
 export class ProBasicListEditComponent {

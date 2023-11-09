@@ -3,7 +3,7 @@ import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
-  selector: 'app-list-projects',
+  selector: 'app-list-security-group-projects',
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush

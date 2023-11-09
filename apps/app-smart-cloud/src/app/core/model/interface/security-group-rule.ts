@@ -6,7 +6,7 @@ export interface SecurityGroupRule {
     portRangeMin?: number,
     protocol?: string,
     etherType?: string,
-    direction?: string,
+    direction: 'ingress' | 'egress',
     securityGroupId?: string,
     portRange?: string,
     remoteIp?: string

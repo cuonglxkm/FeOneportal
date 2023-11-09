@@ -25,7 +25,7 @@
   </nz-col>
 </nz-header>
 <nz-content>
-  <nz-card *ngFor="let data of options">
+  <nz-card>
     <div class="title">Danh sách Security Group</div>
     <nz-row style="margin-bottom: 16px">
       <nz-col nzSpan="4">
@@ -33,29 +33,22 @@
       </nz-col>
       <nz-col nzSpan="14">
         <nz-space [nzSize]="24">
-          <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Select a security"
-                     [(ngModel)]="selectedValue">
-            <nz-option *ngFor="let item of options" nzValue="{{ item.name }}" nzLabel="{{ item.name }}"></nz-option>
+          <nz-select
+            *nzSpaceItem
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select a security"
+            [(ngModel)]="selectedValue"
+            (ngModelChange)="onSecurityGroupChange()"
+          >
+            <nz-option *ngFor="let item of options" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
           </nz-select>
-          <button *nzSpaceItem nz-button nzType="primary" nzDanger
-                  class="button-delete" (click)="showModal()">Xoá Security Group
-          </button>
-          <nz-modal [(nzVisible)]="isVisible" nzTitle="Custom Modal Title"
-                    (nzOnCancel)="handleCancel()" nzCentered>
-            <div *nzModalTitle>
-              <p class="text-confirm-title">Xác nhận xóa Security Group</p>
-            </div>
-            <div *nzModalContent>
-              <p class="text-confirm-content">Bạn có chắc chăn muốn xóa Security Group </p>
-            </div>
-            <div *nzModalFooter>
-              <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy bỏ</button>
-              <button nz-button nzType="primary" (click)="handleOk()"
-                      [nzLoading]="isConfirmLoading"
-                      class="button-ok">Xác nhận
-              </button>
-            </div>
-          </nz-modal>
+          <div *nzSpaceItem>
+            <button *ngIf="!!selectedValue" nz-button nzType="primary" nzDanger
+                    class="button-delete" (click)="showModal()">Xoá Security Group
+            </button>
+          </div>
+          <one-portal-delete-security-group [isVisible]="isVisible" [condition]="conditionSearch" [id]="selectedValue.id" (onCancel)="handleCancel()" (onOk)="handleOk()"></one-portal-delete-security-group>
         </nz-space>
       </nz-col>
       <nz-col nzSpan="6">
@@ -72,7 +65,7 @@
         <div class="label">Mô tả</div>
       </nz-col>
       <nz-col>
-        <div class="label"></div>
+        <div class="label">{{selectedValue?.description || ''}}</div>
       </nz-col>
     </nz-row>
     <nz-row style="margin-bottom: 16px">
@@ -86,13 +79,12 @@
                     routerLink="/app-smart-cloud/create-inbound">Thêm mới Inbound
             </button>
           </nz-row>
-          <nz-table #basicTable
+          <nz-table #tableInbound
                     [nzData]="listInbound"
                     nzShowSizeChanger
                     [nzFrontPagination]="false"
-                    [nzTotal]="100"
+                    [nzTotal]="listOutbound.length"
                     [nzPageSize]="50"
-                    [nzPageIndex]="1"
           >
             <thead>
             <tr>
@@ -104,13 +96,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td nzAlign="center">{{ data.ip_version }}</td>
+            <tr *ngFor="let data of tableInbound.data">
+              <td nzAlign="center">{{ data.remoteIp }}</td>
               <td nzAlign="center">{{ data.protocol }}</td>
-              <td nzAlign="center">{{ data.port_range }}</td>
-              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center">{{ data.portRange }}</td>
+              <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
               <td nzAlign="center">
-                <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
+                <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
+                <one-portal-delete [isVisible]="isVisible" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancel()" (onOk)="handleOk()"></one-portal-delete>
               </td>
             </tr>
             </tbody>
@@ -129,13 +122,12 @@
                     routerLink="/app-smart-cloud/create-outbound">Thêm mới Outbound
             </button>
           </nz-row>
-          <nz-table #basicTable
-                    [nzData]="listInbound"
+          <nz-table #tableOutbound
+                    [nzData]="listOutbound"
                     nzShowSizeChanger
                     [nzFrontPagination]="false"
-                    [nzTotal]="100"
+                    [nzTotal]="listOutbound.length"
                     [nzPageSize]="50"
-                    [nzPageIndex]="1"
           >
             <thead>
             <tr>
@@ -147,13 +139,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td nzAlign="center">{{ data.ip_version }}</td>
+            <tr *ngFor="let data of tableOutbound.data">
+              <td nzAlign="center">{{ data.remoteIp }}</td>
               <td nzAlign="center">{{ data.protocol }}</td>
-              <td nzAlign="center">{{ data.port_range }}</td>
-              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center">{{ data.portRange }}</td>
+              <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
               <td nzAlign="center">
-                <button nz-button nzType="primary" nzDanger class="button-delete">Xoá</button>
+                <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showDeleteRuleModalConfirm()">Xoá</button>
+                <one-portal-delete-rule [isVisible]="isVisibleRemoveRule" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancelDeleteRuleModalConfirm()" (onOk)="handleOk()"></one-portal-delete-rule>
               </td>
             </tr>
             </tbody>
@@ -168,7 +161,7 @@
         </div>
         <div class="code-box-description">
           <nz-table #basicTable
-                    [nzData]="listInbound"
+                    [nzData]="[]"
                     nzShowSizeChanger
                     [nzFrontPagination]="false"
                     [nzTotal]="100"
@@ -187,11 +180,11 @@
             </thead>
             <tbody>
             <tr *ngFor="let data of basicTable.data">
-              <td nzAlign="center">{{ data.ip_version }}</td>
-              <td nzAlign="center">{{ data.protocol }}</td>
-              <td nzAlign="center">{{ data.port_range }}</td>
-              <td nzAlign="center">{{ data.remote }}</td>
-              <td nzAlign="center">{{ data.remote }}</td>
+              <td nzAlign="center"></td>
+              <td nzAlign="center"></td>
+              <td nzAlign="center"></td>
+              <td nzAlign="center"></td>
+              <td nzAlign="center"></td>
               <td nzAlign="center">
                 <button nz-button nzType="primary" nzDanger class="button-delete">Gỡ</button>
               </td>

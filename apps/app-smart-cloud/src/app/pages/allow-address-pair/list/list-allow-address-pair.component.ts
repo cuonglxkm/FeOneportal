@@ -18,7 +18,7 @@ interface IPAddress {
   macAddress: string;
 }
 @Component({
-  selector: 'one-portal-list-allow-address-pair',
+  selector: 'one-portal-list-security-group-allow-address-pair',
   templateUrl: './list-allow-address-pair.component.html',
   styleUrls: ['./list-allow-address-pair.component.less'],
 })

@@ -37,9 +37,9 @@ const routes: Routes = [
   {
     path: 'list',
     children: [
-      { path: 'table-list', component: ProTableListComponent },
-      { path: 'basic-list', component: ProBasicListComponent },
-      { path: 'card-list', component: ProCardListComponent },
+      { path: 'table-list-security-group', component: ProTableListComponent },
+      { path: 'basic-list-security-group', component: ProBasicListComponent },
+      { path: 'card-list-security-group', component: ProCardListComponent },
       {
         path: '',
         component: ProListLayoutComponent,

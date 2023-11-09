@@ -9,7 +9,7 @@ interface ProListApplicationListItem {
 }
 
 @Component({
-  selector: 'app-list-applications',
+  selector: 'app-list-security-group-applications',
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {SecurityGroup} from "../../../core/model/interface/security-group";
+import {SecurityGroup} from "../../../../core/model/interface/security-group";
 
 interface RulesList {
   option: string;
