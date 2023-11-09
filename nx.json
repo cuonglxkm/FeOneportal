@@ -39,7 +39,7 @@
   },
   "generators": {
     "@nx/angular:application": {
-      "style": "css",
+      "style": "less",
       "linter": "eslint",
       "unitTestRunner": "jest",
       "e2eTestRunner": "none",
@@ -50,7 +50,7 @@
       "unitTestRunner": "jest"
     },
     "@nx/angular:component": {
-      "style": "css"
+      "style": "less"
     }
   },
   "nxCloudAccessToken": "NmJmYmExMzMtMmE5MS00OTA3LWFjNGItM2JiODVmMzdiMmYxfHJlYWQtd3JpdGU="

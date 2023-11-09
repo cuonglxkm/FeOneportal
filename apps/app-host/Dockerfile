@@ -1,13 +1,14 @@
-FROM node:latest as node
+FROM node:18.18.2 as node
 WORKDIR /app
 COPY . .
 
-
-RUN npm install -g @nrwl/cli
-RUN npm install --force
+#RUN npm install --global yarn
+RUN pwd && ls
+RUN yarn global add @nrwl/cli
+RUN yarn install
 RUN npx nx build app-host
 #--configuration=production
-#RUN pwd && ls
+
 
 #stage 2
 FROM nginx:alpine

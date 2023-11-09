@@ -86,8 +86,8 @@ import { environment } from '@env/environment';
 })
 export class LayoutBasicComponent {
   options: LayoutDefaultOptions = {
-    logoExpanded: `./assets/logo-full.svg`,
-    logoCollapsed: `./assets/logo.svg`
+    logoExpanded: `./assets/imgs/logo-vnpt-idc.svg`,
+    logoCollapsed: `./assets/imgs/logo-vnpt-idc-symbol.svg`
   };
   searchToggleStatus = false;
   showSettingDrawer = true;

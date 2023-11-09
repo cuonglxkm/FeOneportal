@@ -23,6 +23,11 @@
         "scripts": [],
         "customWebpackConfig": {
           "path": "apps/app-smart-cloud/webpack.config.ts"
+        },
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "node_modules/"
+          ]
         }
       },
       "configurations": {
