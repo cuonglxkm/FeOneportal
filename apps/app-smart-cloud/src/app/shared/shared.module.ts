@@ -8,6 +8,9 @@ import { AlainThemeModule } from '@delon/theme';
 
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+import {RegionSelectDropdownComponent} from "./components/region-select-dropdown/region-select-dropdown.component";
+import {ProjectSelectDropdownComponent} from "./components/project-select-dropdown/project-select-dropdown.component";
+
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -16,7 +19,7 @@ const THIRDMODULES: Array<Type<any>> = [];
 // #endregion
 
 // #region your componets & directives
-const COMPONENTS: Array<Type<any>> = [];
+const COMPONENTS: Array<Type<any>> = [RegionSelectDropdownComponent, ProjectSelectDropdownComponent];
 const DIRECTIVES: Array<Type<any>> = [];
 // #endregion
 

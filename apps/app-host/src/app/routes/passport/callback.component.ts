@@ -101,7 +101,8 @@ export class CallbackComponent implements OnInit {
           token: response.access_token,
           name: 'Admin',
           email: decodedToken['sub'],
-          time: response.expires_in
+          time: response.expires_in,
+          id_token: response.id_token,
         };
 
         this.settingsSrv.setUser({

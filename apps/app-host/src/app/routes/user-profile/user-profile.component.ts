@@ -38,8 +38,5 @@ export class UserProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // @ts-ignore
-    console.log(this.tokenService.get().token);
-
   }
 }

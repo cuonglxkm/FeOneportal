@@ -3,6 +3,11 @@
     Dashboard
     <small>Welcome !</small>
   </h1>
+
+  <div class="text-right">
+    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
+  </div>
 </div>
 <div nz-row nzGutter="16">
   <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
@@ -16,5 +21,7 @@
       </div>
     </div>
   </div>
+
+
 </div>
 
