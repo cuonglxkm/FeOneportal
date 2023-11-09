@@ -33,7 +33,7 @@
                     <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
                     <td nzAlign="center">
                         <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showDeleteRuleModalConfirm()">Xoá</button>
-                        <one-portal-delete-rule [isVisible]="isVisibleRemoveRule" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancelDeleteRuleModalConfirm()" (onOk)="handleOk()"></one-portal-delete-rule>
+                        <one-portal-delete-security-group-rule [isVisible]="isVisibleRemoveRule" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancel()" (onOk)="handleOk()"></one-portal-delete-security-group-rule>
                     </td>
                 </tr>
                 </tbody>
