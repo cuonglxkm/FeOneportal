@@ -48,7 +48,12 @@
                     class="button-delete" (click)="showModal()">Xoá Security Group
             </button>
           </div>
-          <one-portal-delete-security-group [isVisible]="isVisible" [condition]="conditionSearch" [id]="selectedValue.id" (onCancel)="handleCancel()" (onOk)="handleOk()"></one-portal-delete-security-group>
+          <one-portal-delete-security-group [isVisible]="isVisible"
+                                            [condition]="conditionSearch"
+                                            [id]="selectedValue.id"
+                                            (onCancel)="handleCancel()"
+                                            (onOk)="handleOk()">
+          </one-portal-delete-security-group>
         </nz-space>
       </nz-col>
       <nz-col nzSpan="6">
@@ -68,92 +73,8 @@
         <div class="label">{{selectedValue?.description || ''}}</div>
       </nz-col>
     </nz-row>
-    <nz-row style="margin-bottom: 16px">
-      <section class="code-box-meta markdown">
-        <div class="code-box-title">
-          Inbound
-        </div>
-        <div class="code-box-description">
-          <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-            <button nz-button nzType="primary" class="button-crate-new"
-                    routerLink="/app-smart-cloud/create-inbound">Thêm mới Inbound
-            </button>
-          </nz-row>
-          <nz-table #tableInbound
-                    [nzData]="listInbound"
-                    nzShowSizeChanger
-                    [nzFrontPagination]="false"
-                    [nzTotal]="listOutbound.length"
-                    [nzPageSize]="50"
-          >
-            <thead>
-            <tr>
-              <th nzAlign="center" class="text-th">IP Version</th>
-              <th nzAlign="center" class="text-th">Protocol</th>
-              <th nzAlign="center" class="text-th">PortRange</th>
-              <th nzAlign="center" class="text-th">RemoteIPPrefix</th>
-              <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let data of tableInbound.data">
-              <td nzAlign="center">{{ data.remoteIp }}</td>
-              <td nzAlign="center">{{ data.protocol }}</td>
-              <td nzAlign="center">{{ data.portRange }}</td>
-              <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
-              <td nzAlign="center">
-                <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
-                <one-portal-delete [isVisible]="isVisible" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancel()" (onOk)="handleOk()"></one-portal-delete>
-              </td>
-            </tr>
-            </tbody>
-          </nz-table>
-        </div>
-      </section>
-    </nz-row>
-    <nz-row style="margin-bottom: 16px">
-      <section class="code-box-meta markdown">
-        <div class="code-box-title">
-          Outbound
-        </div>
-        <div class="code-box-description">
-          <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-            <button nz-button nzType="primary" class="button-crate-new"
-                    routerLink="/app-smart-cloud/create-outbound">Thêm mới Outbound
-            </button>
-          </nz-row>
-          <nz-table #tableOutbound
-                    [nzData]="listOutbound"
-                    nzShowSizeChanger
-                    [nzFrontPagination]="false"
-                    [nzTotal]="listOutbound.length"
-                    [nzPageSize]="50"
-          >
-            <thead>
-            <tr>
-              <th nzAlign="center" class="text-th">IP Version</th>
-              <th nzAlign="center" class="text-th">Protocol</th>
-              <th nzAlign="center" class="text-th">PortRange</th>
-              <th nzAlign="center" class="text-th">RemoteIPPrefix</th>
-              <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let data of tableOutbound.data">
-              <td nzAlign="center">{{ data.remoteIp }}</td>
-              <td nzAlign="center">{{ data.protocol }}</td>
-              <td nzAlign="center">{{ data.portRange }}</td>
-              <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
-              <td nzAlign="center">
-                <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showDeleteRuleModalConfirm()">Xoá</button>
-                <one-portal-delete-rule [isVisible]="isVisibleRemoveRule" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancelDeleteRuleModalConfirm()" (onOk)="handleOk()"></one-portal-delete-rule>
-              </td>
-            </tr>
-            </tbody>
-          </nz-table>
-        </div>
-      </section>
-    </nz-row>
+    <one-portal-inbound-list></one-portal-inbound-list>
+    <one-portal-list-outbound></one-portal-list-outbound>
     <nz-row>
       <section class="code-box-meta markdown">
         <div class="code-box-title">

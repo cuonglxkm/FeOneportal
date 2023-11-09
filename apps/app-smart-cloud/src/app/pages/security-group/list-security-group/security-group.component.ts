@@ -1,4 +1,3 @@
-import {HttpHeaders} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
 import {SecurityGroupService} from "../../../core/service/security-group.service";
@@ -32,7 +31,7 @@ export class SecurityGroupComponent implements OnInit {
 
   isVisible = false;
 
-  isVisibleRemoveRule = false;
+  // isVisibleRemoveRule = false;
 
   conditionSearch: SecurityGroupSearchCondition = {
     userId: 669,
@@ -42,7 +41,7 @@ export class SecurityGroupComponent implements OnInit {
 
   options: SecurityGroup[] = [];
 
-  selectedValue?: SecurityGroup;
+  selectedValue: SecurityGroup;
 
   listInbound: SecurityGroupRule[] = []
 
@@ -73,13 +72,13 @@ export class SecurityGroupComponent implements OnInit {
     this.isVisible = true;
   }
 
-  showDeleteRuleModalConfirm(): void {
-    this.isVisibleRemoveRule = true;
-  }
-
-  handleCancelDeleteRuleModalConfirm(): void {
-    this.isVisibleRemoveRule = false;
-  }
+  // showDeleteRuleModalConfirm(): void {
+  //   this.isVisibleRemoveRule = true;
+  // }
+  //
+  // handleCancelDeleteRuleModalConfirm(): void {
+  //   this.isVisibleRemoveRule = false;
+  // }
 
   handleOk(): void {
     this.isVisible = false;

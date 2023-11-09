@@ -26,7 +26,7 @@ export class DeleteSecurityGroupComponent {
   }
 
   handleOk(): void {
-    this.isConfirmLoading = true;
+    // this.isConfirmLoading = true;
     this.securityGroupService.delete(this.id, this.condition)
         .subscribe((data) => {
           this.message.create('success', `Đã xóa thành công`);

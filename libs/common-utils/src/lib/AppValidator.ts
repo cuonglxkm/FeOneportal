@@ -1,4 +1,4 @@
-import {AbstractControl, ValidationErrors} from '@angular/forms';
+import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
 export class AppValidator {
   // @ts-ignore
@@ -145,5 +145,15 @@ export class AppValidator {
       }
     }
     return null;
+  }
+
+  static startsWithValidator(startValue: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const inputValue = control.value as string;
+      if (inputValue && !inputValue.startsWith(startValue)) {
+        return { 'startsWith': true };
+      }
+      return null;
+    };
   }
 }

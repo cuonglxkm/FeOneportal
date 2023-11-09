@@ -15,7 +15,7 @@ interface RemotesList {
 }
 
 @Component({
-  selector: 'one-portal-create-inbound',
+  selector: 'one-portal-create-security-group-inbound',
   templateUrl: './create-inbound.component.html',
   styleUrls: ['./create-inbound.component.less'],
 })

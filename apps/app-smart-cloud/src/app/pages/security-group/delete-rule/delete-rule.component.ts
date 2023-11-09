@@ -4,7 +4,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {SecurityGroupRuleService} from "../../../core/service/security-group-rule.service";
 
 @Component({
-  selector: 'one-portal-delete-rule',
+  selector: 'one-portal-delete-security-group-rule',
   templateUrl: './delete-rule.component.html',
   styleUrls: ['./delete-rule.component.less'],
 })

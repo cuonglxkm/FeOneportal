@@ -4,10 +4,10 @@ import {Location} from "@angular/common";
 
 @Component({
   selector: 'one-portal-outbound',
-  templateUrl: './outbound.component.html',
-  styleUrls: ['./outbound.component.less'],
+  templateUrl: './create-outbound.component.html',
+  styleUrls: ['./create-outbound.component.less'],
 })
-export class OutboundComponent {
+export class CreateOutboundComponent {
   port_type: 'port' | 'port_range' = 'port';
   validateForm: FormGroup<{
     rule: FormControl<string | null>;
