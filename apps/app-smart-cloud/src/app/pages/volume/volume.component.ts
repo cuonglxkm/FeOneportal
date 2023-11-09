@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
 import {NzModalService, NzModalRef, NzModalComponent} from 'ng-zorro-antd/modal';
 import {PopupAddVolumeComponent} from "./popup-volume/popup-add-volume.component";
 import {PopupDeleteVolumeComponent} from "./popup-volume/popup-delete-volume.component";
-import { Router } from "@angular/router";
+import {Router} from "@angular/router";
+import {VolumeDTO} from "./dto/volume.dto";
+import {VolumeService} from "./volume.service";
+import {GetListVolumeModel} from "./model/get-list-volume.model";
 
 interface Volume {
   name: string;
@@ -19,10 +22,24 @@ interface Volume {
   templateUrl: './volume.component.html',
   styleUrls: ['./volume.component.less'],
 })
-export class VolumeComponent {
+export class VolumeComponent implements OnInit {
 
-  // listOfData: SshKey[];
-  // data: SshKey;
+  headerInfo = {
+    breadcrumb1: 'Home',
+    breadcrumb2: 'Dịch vụ',
+    breadcrumb3: 'Volume',
+    content: 'Danh sách Volume'
+  };
+
+  listVolumeRootResponse: GetListVolumeModel;
+  listVolumeAddVolumeResponse: GetListVolumeModel;
+
+  listVolumeRoot: VolumeDTO[];
+  listVolumeAdd: VolumeDTO[];
+  totalRoot: number;
+  totalAdd: number;
+  curentPageRoot: number;
+  curentPageAdd: number;
 
   combinedValues: string[] = [];
 
@@ -31,12 +48,6 @@ export class VolumeComponent {
     {label: 'Khởi tạo', value: 'init'},
     {label: 'Hủy', value: 'cancel'},
     {label: 'Tạm dừng', value: 'pause'},
-  ];
-
-  listVM: NzSelectOptionInterface[] = [
-    {label: 'VM01', value: 'vm01'},
-    {label: 'VM02', value: 'vm02'},
-    {label: 'VM03', value: 'vm03'},
   ];
 
   optionVolumeRoot: NzSelectOptionInterface[] = [
@@ -52,15 +63,47 @@ export class VolumeComponent {
 
   ]
 
-  volumeStatus: Map<number, string>;
+  volumeStatus: Map<String, string>;
 
-  constructor(private modalService: NzModalService , private router: Router) {
-    this.volumeStatus = new Map<number, string>();
-    this.volumeStatus.set(0, 'Tạm dừng');
-    this.volumeStatus.set(1, 'Đang hoạt động');
-    this.volumeStatus.set(2, 'Chậm gia hạn');
-    this.volumeStatus.set(3, 'Vi phạm điều khoản');
+  constructor(private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService) {
+    this.volumeStatus = new Map<String, string>();
+    this.volumeStatus.set('KHOITAO', 'Khởi tạo');
     this.combinedValues = this.listOfData.map((item, index) => 'item' + index);
+  }
+
+  ngOnInit() {
+    //get list Root
+    this.volumeSevice.getVolumes(669, 4094, 3, true, 10 , 0).subscribe(data => {
+      this.listVolumeRootResponse = data;
+      this.listVolumeRoot = data.records;
+      this.totalRoot = data.totalCount;
+      console.log(this.listVolumeRoot);
+    })
+    //get list Add
+    this.volumeSevice.getVolumes(669, 4094, 3, false , 10, 0).subscribe(data => {
+      this.listVolumeAddVolumeResponse = data;
+      this.listVolumeAdd = data.records;
+      this.totalAdd = data.totalCount;
+      console.log(this.listVolumeAdd);
+    })
+  }
+  onRootPageIndexChange(event: any) {
+    this.curentPageRoot = event;
+    this.volumeSevice.getVolumes(669, 4094, 3, true, 10 , (this.curentPageRoot-1)).subscribe(data => {
+      this.listVolumeRootResponse = data;
+      this.listVolumeRoot = data.records;
+      this.totalRoot = data.totalCount;
+    })
+  }
+
+  onAddPageIndexChange(event: any) {
+    this.curentPageAdd = event;
+    this.volumeSevice.getVolumes(669, 4094, 3, false, 10 , (this.curentPageAdd-1)).subscribe(data => {
+      this.listVolumeAddVolumeResponse = data;
+      this.listVolumeAdd = data.records;
+      this.totalAdd = data.totalCount;
+      console.log(this.listVolumeAdd);
+    })
   }
 
 
@@ -224,10 +267,10 @@ export class VolumeComponent {
   isVisible = false;
   isOkLoading = false;
 
-  onSelectionChange(value: any , nameVolume: string) {
+  onSelectionChange(value: any, nameVolume: string) {
     console.log('Value selected: ', value);
     console.log('Volume Name: ', nameVolume);
-    if(value === 'addVolume' ){
+    if (value === 'addVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gắn Volume',
         nzContent: PopupAddVolumeComponent,
@@ -250,7 +293,7 @@ export class VolumeComponent {
       });
     }
 
-    if(value === 'cancelVolume' ){
+    if (value === 'cancelVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gỡ Volume',
         nzContent: PopupAddVolumeComponent,
@@ -273,7 +316,7 @@ export class VolumeComponent {
       });
     }
 
-    if(value === 'delete' ){
+    if (value === 'delete') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Xóa Volume',
         nzWidth: '600px',
@@ -297,7 +340,7 @@ export class VolumeComponent {
 
   }
 
-  navigateToCreateVolume(){
+  navigateToCreateVolume() {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 

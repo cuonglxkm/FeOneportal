@@ -1,11 +1,5 @@
+<app-dashboard-v1 [headerInfo]="headerInfo"></app-dashboard-v1>
 <!--<h2>Danh sách Volume</h2>-->
-<nz-page-header class="site-page-header" nzTitle="Danh sách Volume">
-  <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item><a>Dịch vụ</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>Volume</nz-breadcrumb-item>
-  </nz-breadcrumb>
-</nz-page-header>
 <br>
 <div class="search-volume">
   <nz-form-label [nzFor]="'volumeStatus'">Trạng thái Volume</nz-form-label>
@@ -36,7 +30,7 @@
   <nz-tabset>
     <nz-tab nzTitle="Volume Root">
 
-      <nz-table #basicTable [nzData]="listOfData">
+      <nz-table #tableRoot [nzData]="listVolumeRoot" [nzFrontPagination]="false" [nzTotal] = "totalRoot" (nzPageIndexChange)="onRootPageIndexChange($event)">
         <thead>
         <tr>
           <th>Tên Volume</th>
@@ -49,22 +43,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of basicTable.data; let i = index">
+        <tr *ngFor="let data of tableRoot.data; let i = index">
           <td>{{ data.name }}</td>
-          <td>{{ data.storage}}</td>
+          <td>{{ data.sizeInGB}}</td>
           <td>{{ data.iops }}</td>
-          <td *ngIf="data.statusVolume === 1" style="color: #6abe39">{{ volumeStatus.get(data.statusVolume)}}</td>
-          <td *ngIf="data.statusVolume === 0 || data.statusVolume === 2 || data.statusVolume === 3"
-              style="color: red">{{ volumeStatus.get(data.statusVolume)}}</td>
-          <td>{{ data.statusAction }}</td>
-          <td>{{ data.vm }}</td>
+          <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
+          <td>{{ data.serviceStatus }}</td>
+          <td>{{ data.instanceName }}</td>
           <td>
             <nz-select nzSize="small"
                        class="custom-background"
                        [nzPlaceHolder]="'Tạo Snapshot'"
                        [nzOptions]="optionVolumeRoot"
                        style="width: 150px;"
-                       [(ngModel)]="combinedValues[i]"
+                       [(ngModel)]="data.id"
                        (ngModelChange)="onSelectionChange($event , data.name)"
             >
             </nz-select>
@@ -76,7 +68,7 @@
     </nz-tab>
     <nz-tab nzTitle="Volume gắn thêm">
 
-      <nz-table #basicTable [nzData]="listOfData">
+      <nz-table #tableAdd [nzData]="listVolumeAdd" [nzFrontPagination]="false" [nzTotal]="totalAdd" (nzPageIndexChange)="onAddPageIndexChange($event)">
         <thead>
         <tr>
           <th>Tên Volume</th>
@@ -89,22 +81,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of basicTable.data; let i = index">
+        <tr *ngFor="let data of tableAdd.data; let i = index">
           <td>{{ data.name }}</td>
-          <td>{{ data.storage}}</td>
+          <td>{{ data.sizeInGB}}</td>
           <td>{{ data.iops }}</td>
-          <td *ngIf="data.statusVolume === 1" style="color: #6abe39">{{ volumeStatus.get(data.statusVolume)}}</td>
-          <td *ngIf="data.statusVolume === 0 || data.statusVolume === 2 || data.statusVolume === 3"
-              style="color: red">{{ volumeStatus.get(data.statusVolume)}}</td>
-          <td>{{ data.statusAction }}</td>
-          <td>{{ data.vm }}</td>
+          <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
+          <td>{{ data.serviceStatus }}</td>
+          <td>{{ data.instanceName }}</td>
           <td>
             <nz-select nzSize="small"
+                       class="custom-background"
                        [nzPlaceHolder]="'Gắn Volume'"
                        [nzOptions]="optionVolumeAdd"
-                       [ngStyle]="{ 'background-color': 'deepskyblue' }"
                        style="width: 150px;"
-                       [(ngModel)]="combinedValues[i]"
+                       [(ngModel)]="data.id"
                        (ngModelChange)="onSelectionChange($event , data.name)"
             >
             </nz-select>

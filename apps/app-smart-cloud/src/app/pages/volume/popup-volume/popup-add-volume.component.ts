@@ -1,32 +1,42 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
+import {VolumeService} from "../volume.service";
+import {GetAllVmModel} from "../model/get-all-vm.model";
+import {VmDto} from "../dto/vm.dto";
 
 @Component({
   selector: 'app-popup-content',
   template: `
-      <nz-form-label >Chọn máy ảo</nz-form-label>
-      <nz-select nzSize="default"
-                 [nzPlaceHolder]="'-Chọn máy ảo-'"
-                 [nzOptions]="options"
-                 [(ngModel)]="selectedItem"
-                 style="width: 300px;"
-      >
-      </nz-select>
+    <nz-form-label>Chọn máy ảo</nz-form-label>
+    <nz-select nzSize="default"
+               [nzPlaceHolder]="'-Chọn máy ảo-'"
+               [(ngModel)]="selectedItem"
+               nzShowSearch
+               style="width: 300px;"
+    >
+      <nz-option *ngFor="let item of options" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
+    </nz-select>
   `
 })
-export class  PopupAddVolumeComponent{
-  options: NzSelectOptionInterface[] = [
-    { value: 'VM01', label: 'VM-01' },
-    { value: 'VM02', label: 'VM-02' },
-    { value: 'VM03', label: 'VM-03' }
-  ];
-
-  selectedItem: string;
-
+export class PopupAddVolumeComponent implements OnInit {
+  options: NzSelectOptionInterface[] = [];
+  getAllVmResponse: GetAllVmModel;
+  listAllVMs: VmDto[] = [];
+  selectedItem: any;
   @Output() valueSelected: EventEmitter<string> = new EventEmitter<string>();
+  constructor(private volumeService: VolumeService) {
 
+  }
   onChange(value: string): void {
     this.selectedItem = value;
     this.valueSelected.emit(value);
+  }
+  async ngOnInit(): Promise<void> {
+    this.getAllVmResponse = await this.volumeService.getAllVMs(3).toPromise();
+    this.listAllVMs = this.getAllVmResponse.records;
+    this.listAllVMs.forEach((vm) => {
+      this.options.push({label: vm.name , value: vm.id});
+    })
+
   }
 }

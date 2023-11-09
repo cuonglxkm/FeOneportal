@@ -5,9 +5,17 @@ import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 @Component({
   selector: 'app-create-volume',
   templateUrl: './create-volume.component.html',
-  styleUrls: ['./ceate-volume.component.less'],
+  styleUrls: ['./create-volume.component.less'],
 })
 export class CreateVolumeComponent {
+
+  headerInfo = {
+    breadcrumb1: 'Home',
+    breadcrumb2: 'Dịch vụ',
+    breadcrumb3: 'Volume',
+    content: 'Tạo Volume '
+  };
+
   volumeName = '';
   vmList: NzSelectOptionInterface[] = [
     {label: 'VM01', value: 'vm01'},
@@ -34,7 +42,7 @@ export class CreateVolumeComponent {
   mota = '';
   protected readonly onchange = onchange;
 
-  radioValue = 'A';
+  radioValue = '1';
   changeExpTime(){
     console.log('ExpTime: ', this.expiryTime);
   }

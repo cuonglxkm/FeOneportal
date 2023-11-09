@@ -6,6 +6,7 @@ import {environment} from "@env/environment";
 import {V1Component} from "./test/v1.component";
 import {VolumeComponent} from "./volume/volume.component";
 import {CreateVolumeComponent} from "./volume/create-volume/create-volume.component";
+import {DetailVolumeComponent} from "./volume/detail-volume/detail-volume.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
@@ -24,6 +25,10 @@ const routes: Routes = [
   {
     path: 'volume/create',
     component: CreateVolumeComponent
+  },
+  {
+    path: 'volume/detail',
+    component: DetailVolumeComponent
   },
 
 
