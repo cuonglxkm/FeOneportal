@@ -28,7 +28,12 @@
           "file-saver",
           "extend",
           "crypto"
-        ]
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "node_modules/"
+          ]
+        }
       },
       "configurations": {
         "production": {

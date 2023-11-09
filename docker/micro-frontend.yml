@@ -15,18 +15,18 @@ services:
     networks:
       - one-portal-network
 
-  #----------------------------------------------------------------
-  app-dashboard:
-    image: app-dashboard:1.0.0
+  #  ----------------------------------------------------------------
+  app-smart-cloud:
+    image: app-smart-cloud:1.0.0
     build:
       context: ./..
-      dockerfile: apps/app-dashboard/Dockerfile
-    container_name: app-dashboard
+      dockerfile: apps/app-smart-cloud/Dockerfile
+    container_name: app-smart-cloud
     restart: on-failure
     expose:
-      - '4201'
+      - '4203'
     ports:
-      - "4201:80"
+      - "4203:80"
     networks:
       - one-portal-network
 #----------------------------------------------------------------
