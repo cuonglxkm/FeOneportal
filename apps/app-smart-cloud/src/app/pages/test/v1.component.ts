@@ -25,5 +25,6 @@ export class V1Component implements OnInit {
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.selectedRegion = region.regionId;
+    console.log(this.tokenService.get()?.userId)
   }
 }
