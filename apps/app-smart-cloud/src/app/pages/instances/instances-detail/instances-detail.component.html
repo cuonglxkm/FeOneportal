@@ -1,0 +1,112 @@
+<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <nz-card [nzBordered]="false">
+        <nz-card-meta
+          [nzAvatar]="nzAvatarChuKyThanhToan"
+          [nzDescription]="nzDescriptionChuKyThanhToan"
+        >
+          <ng-template #nzAvatarChuKyThanhToan>
+            <nz-avatar nzSize="large" nzIcon="user" />
+          </ng-template>
+          <ng-template #nzDescriptionChuKyThanhToan>
+            <ellipsis> Quý khách hàng lưu ý, </ellipsis>
+          </ng-template>
+        </nz-card-meta>
+      </nz-card>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-card [nzBordered]="false">
+        <nz-card-meta
+          [nzAvatar]="nzAvatarThanhToan"
+          [nzDescription]="nzDescriptionThanhToan"
+        >
+          <ng-template #nzAvatarThanhToan>
+            <nz-avatar nzSize="large" nzIcon="user" />
+          </ng-template>
+          <ng-template #nzDescriptionThanhToan>
+            <ellipsis> Quý khách hàng lưu ý, </ellipsis>
+          </ng-template>
+        </nz-card-meta>
+      </nz-card>
+    </div>
+  </div>
+</nz-card>
+
+<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <p>Tên máy ảo:</p>
+      <p>Gói cấu hình:</p>
+      <p>Trạng thái:</p>
+      <p>Thời gian khởi tạo:</p>
+      <p>Loại Volumn:</p>
+      <p>
+        <nz-card class="card-warning-custom">
+          <nz-card-meta
+            [nzAvatar]="nzAvatarWarning"
+            [nzDescription]="nzDescriptionWarning3"
+          >
+            <ng-template #nzAvatarWarning>
+              <nz-avatar nzSize="large" nzIcon="user" />
+            </ng-template>
+            <ng-template #nzDescriptionWarning3>
+              <ellipsis>
+                Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo
+                hiển thị loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong
+                thực tế máy ảo đã được lưu trữ tại phân vùng SSD để đảm bảo tối
+                đa hiệu năng và tốc độ truy xuất.
+              </ellipsis>
+            </ng-template>
+          </nz-card-meta>
+        </nz-card>
+      </p>
+    </div>
+    <div nz-col nzSpan="12">
+      <p>Hệ điều hành:</p>
+      <p>Truy cập và bảo mật:</p>
+      <p>IP Public:</p>
+      <p>IP LAN:</p>
+      <p>Băng thông trong nước:</p>
+      <p>Băng thông quốc tế:</p>
+    </div>
+  </div>
+</nz-card>
+<nz-card
+  [nzBordered]="false"
+  nzTitle="
+Block Storage"
+>
+  <div nz-row></div>
+</nz-card>
+
+<nz-card
+  [nzBordered]="false"
+  nzTitle="
+Network"
+>
+  <div nz-row></div>
+</nz-card>
+<nz-card
+  [nzBordered]="false"
+  nzTitle="
+  Thành tiền"
+>
+<div>
+    <nz-table>
+      <tr>
+        <td>Chi phí máy ảo ( 1 tháng )</td>
+        <td class="float-right">1.000.000 VNĐ</td>
+      </tr>
+      <tr>
+        <td>Chi phí Volume bổ sung (1 tháng)</td>
+        <td class="float-right">1.000.000 VNĐ</td>
+      </tr>
+      <tr>
+        <td>Thành tiền ( Đã bao gồm 10% VAT)</td>
+        <td class="float-right">1.000.000 VNĐ</td>
+      </tr>
+    </nz-table>
+  
+  </div>
+</nz-card>
