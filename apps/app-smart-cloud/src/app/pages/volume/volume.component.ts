@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {VolumeDTO} from "./dto/volume.dto";
 import {VolumeService} from "./volume.service";
 import {GetListVolumeModel} from "./model/get-list-volume.model";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 interface Volume {
   name: string;
@@ -51,7 +52,7 @@ export class VolumeComponent implements OnInit {
 
   selectedOption: NzSelectOptionInterface | null = null;
   options: NzSelectOptionInterface[] = [
-    {label: 'Tất cả', value: null},
+    {label: 'Tất cả trạng thái', value: null},
     {label: 'Đang hoạt động', value: 'KHOITAO'},
     {label: 'Lỗi', value: 'ERROR'},
     {label: 'Tạm ngừng', value: 'SUSPENDED'},
@@ -72,7 +73,7 @@ export class VolumeComponent implements OnInit {
 
   volumeStatus: Map<String, string>;
 
-  constructor(private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService) {
+  constructor(private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService , private message:NzMessageService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -83,7 +84,7 @@ export class VolumeComponent implements OnInit {
     //get list Root
     this.getListVolume(null, null, 3, true, 10, 0 , null , null)
     //get list Add
-    this.getListVolume(null, null, 3, false, 10, 0 , null, null)
+    // this.getListVolume(null, null, 3, false, 10, 0 , null, null)
   }
 
   onRootPageIndexChange(event: any) {
@@ -199,6 +200,7 @@ export class VolumeComponent implements OnInit {
 
   getDetailVolume(idVolume: string){
     console.log(idVolume);
+    this.router.navigate(['/app-smart-cloud/volume/detail/'+idVolume]);
   }
 
 
@@ -209,10 +211,12 @@ export class VolumeComponent implements OnInit {
         this.listVolumeRootResponse = data;
         this.listVolumeRoot = data.records;
         this.totalRoot = data.totalCount;
+        this.message.create('success', `Tìm kiếm Volume thành công.`);
       }else{
         this.listVolumeAddVolumeResponse = data;
         this.listVolumeAdd = data.records;
         this.totalAdd = data.totalCount;
+        this.message.create('success', `Tìm kiếm Volume thành công.`);
       }
     })
   }

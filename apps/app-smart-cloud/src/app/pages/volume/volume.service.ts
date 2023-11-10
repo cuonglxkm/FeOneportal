@@ -6,7 +6,7 @@ import {VolumeDTO} from "./dto/volume.dto";
 import {BaseService} from "../../shared/services/base.service";
 import {GetListVolumeModel} from "./model/get-list-volume.model";
 import {GetAllVmModel} from "./model/get-all-vm.model";
-
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Injectable({
   providedIn: 'root'
 })
@@ -28,6 +28,12 @@ export class VolumeService extends BaseService {
     );
   }
 
+  getVolummeById(volumeId: string){
+    return this.http.get<VolumeDTO>('http://172.16.68.200:1009/volumes/'+volumeId).pipe(
+      catchError(this.handleError<VolumeDTO>('get volume-detail error'))
+    )
+  }
+
   //get All VMs
 
   getAllVMs(region: number): Observable<GetAllVmModel> {
@@ -38,7 +44,7 @@ export class VolumeService extends BaseService {
   }
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient , private message: NzMessageService) {
     super();
   }
 
@@ -48,6 +54,7 @@ export class VolumeService extends BaseService {
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
 
+      this.message.create('error', `Xảy ra lỗi: ${error}`);
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };

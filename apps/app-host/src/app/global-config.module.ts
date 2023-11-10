@@ -11,6 +11,7 @@ import { environment } from '@env/environment';
 // Please refer to: https://ng-alain.com/docs/global-config
 // #region NG-ALAIN Config
 
+
 const alainConfig: AlainConfig = {
   st: { modal: { size: 'lg' } },
   pageHeader: { homeI18n: 'home' },
@@ -18,7 +19,10 @@ const alainConfig: AlainConfig = {
     license: `A59B099A586B3851E0F0D7FDBF37B603`,
     licenseA: `C94CEE276DB2187AE6B65D56B3FC2848`
   },
-  auth: { login_url: '/passport/login' }
+  auth: {
+    // @ts-ignore
+    login_url: `${environment.sso.issuer}/connect/authorize?response_type=code&client_id=${environment.sso.clientId}&scope=${decodeURIComponent(environment.sso.scope)}&redirect_uri=${decodeURIComponent(environment.sso.callback)}`,
+  }
 };
 
 const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule.forRoot()];

@@ -30,8 +30,9 @@ export class V1Component implements OnInit {
 
     selectedRegion: number = null;
 
-    onRegionChange(region: RegionModel) {
-        // Handle the region change event
-        this.selectedRegion = region.regionId;
-    }
+  onRegionChange(region: RegionModel) {
+    // Handle the region change event
+    this.selectedRegion = region.regionId;
+    console.log(this.tokenService.get()?.userId)
+  }
 }

@@ -15,8 +15,8 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutBasicComponent,
-    // canActivate: [startPageGuard, authSimpleCanActivate],
-    // canActivateChild: [authSimpleCanActivateChild],
+    canActivate: [startPageGuard, authSimpleCanActivate],
+    canActivateChild: [authSimpleCanActivateChild],
     data: {},
     children: [
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},

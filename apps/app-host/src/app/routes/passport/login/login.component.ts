@@ -165,11 +165,13 @@ export class UserLoginComponent implements OnDestroy, OnInit{
     if (environment.production) {
       callback = `https://ng-alain.github.io/ng-alain/#/passport/callback/${type}`;
     } else {
-      callback = `http://localhost:4200/passport/callback/${type}`;
+      // @ts-ignore
+      callback = environment.sso.callback;
     }
     switch (type) {
       case 'oneportal':
-        url = `https://172.16.68.200:1000/connect/authorize?response_type=code&client_id=swagger-client&scope=openid%20all&redirect_uri=${decodeURIComponent(callback)}`;
+        // @ts-ignore
+        url = `${environment.sso.issuer}/connect/authorize?response_type=code&client_id=${environment.sso.clientId}&scope=${decodeURIComponent(environment.sso.scope)}&redirect_uri=${decodeURIComponent(callback)}`;
         break;
       case 'github':
         url = `//github.com/login/oauth/authorize?client_id=2517b4cd4f44af81a2b0&response_type=code&redirect_uri=${decodeURIComponent(
