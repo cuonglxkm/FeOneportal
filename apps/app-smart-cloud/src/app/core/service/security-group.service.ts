@@ -25,7 +25,7 @@ export class SecurityGroupService {
     params = params.append('projectId', condition.projectId);
     params = params.append('regionId', condition.regionId);
 
-    return this.http.get<SecurityGroup[]>(`${API_URL}/security_group/get_all`, {
+    return this.http.get<SecurityGroup[]>(`${API_URL}/security_group/getall`, {
       headers: this.getHeaders(),
       params: params
     })
