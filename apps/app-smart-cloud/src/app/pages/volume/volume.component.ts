@@ -51,6 +51,7 @@ export class VolumeComponent implements OnInit {
 
   selectedOption: NzSelectOptionInterface | null = null;
   options: NzSelectOptionInterface[] = [
+    {label: 'Tất cả', value: null},
     {label: 'Đang hoạt động', value: 'KHOITAO'},
     {label: 'Lỗi', value: 'ERROR'},
     {label: 'Tạm ngừng', value: 'SUSPENDED'},
@@ -87,12 +88,12 @@ export class VolumeComponent implements OnInit {
 
   onRootPageIndexChange(event: any) {
     this.curentPageRoot = event;
-    this.getListVolume(null, null, 3, true, 10, (this.curentPageRoot - 1), null, null)
+    this.getListVolume(null, null, 3, true, 10, (this.curentPageRoot - 1), this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.getListVolume(null, null, 3, false, 10, (this.curentPageAdd - 1),null,null)
+    this.getListVolume(null, null, 3, false, 10, (this.curentPageAdd - 1),this.volumeStatusSearch,this.volumeNameSearch)
   }
 
   isVisible = false;
