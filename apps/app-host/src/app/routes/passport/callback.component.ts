@@ -5,6 +5,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpContext, HttpHeaders, HttpParams} from "@angular/common/http";
 import {NzSafeAny} from "ng-zorro-antd/core/types";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {environment} from "@env/environment";
+import {UserModel} from "../../../../../../libs/common-utils/src/lib/shared-model";
+import {of, switchMap} from "rxjs";
 
 
 export interface TokenResponse {
@@ -26,7 +29,8 @@ export interface TokenResponse {
 export class CallbackComponent implements OnInit {
   @Input() type = '';
 
-  url = 'https://172.16.68.200:1000/connect/token';
+  // @ts-ignore
+  url = environment.sso.issuer
 
   code: string = '';
 
@@ -39,77 +43,69 @@ export class CallbackComponent implements OnInit {
   ) {
   }
 
-
   ngOnInit(): void {
     console.log(this.router.url)
     // this.mockModel();
     this.code = this.activatedRoute.snapshot.queryParamMap.get('code') || "";
-
     this.getToken();
-
   }
 
-  private mockModel(): void {
-    const info = {
-      token: '123456789',
-      name: 'cipchk',
-      email: `${this.type}@${this.type}.com`,
-      id: 10000,
-      time: +new Date()
-    };
-    this.settingsSrv.setUser({
-      ...this.settingsSrv.user,
-      ...info
-    });
-    // this.socialService.callback(info);
-
-    this.socialService.callback({
-      token: '123456789',
-      name: 'admin',
-      id: 10000,
-      time: +new Date
-    });
-  }
 
   getToken() {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic c3dhZ2dlci1jbGllbnQ6c3dhZ2dlci1jbGllbnQtc2VjcmV0'
+      'Authorization': 'Basic ' + btoa(environment['sso'].clientId + ':')
     });
-
+    const helper = new JwtHelperService();
     const params = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', this.code)
-      .set('redirect_uri', 'http://localhost:4200/passport/callback/oneportal');
+      .set('redirect_uri', environment['sso'].callback);
 
 
-    this.httpClient.post<TokenResponse>(this.url, params.toString(),
+    this.httpClient.post<TokenResponse>(this.url + '/connect/token', params.toString(),
       {
         headers,
         responseType: 'json',
         context: new HttpContext().set(ALLOW_ANONYMOUS, true)
       })
-      .subscribe((response: TokenResponse) => {
-        let accessToken = response.access_token || '';
+      .pipe(
+        switchMap(token => {
+          let accessToken = token.access_token || '';
+          const decodedToken = helper.decodeToken(accessToken);
 
+          let info = {
+            token: token.access_token,
+            email: decodedToken['email'],
+            time: token.expires_in,
+            id_token: decodedToken['oi_au_id'],
+          };
 
-        const helper = new JwtHelperService();
-        const decodedToken = helper.decodeToken(accessToken);
-        console.log('decodedToken', decodedToken)
-
-        const info = {
-          token: response.access_token,
-          name: 'Admin',
-          email: decodedToken['sub'],
-          time: response.expires_in,
-          id_token: response.id_token,
-        };
-
+          return this.httpClient.get<UserModel>('http://172.16.68.200:1006/users/' + info.email, {
+            // headers: new HttpHeaders({
+            //   'Authorization': "Bearer " + accessToken
+            // }),
+            context: new HttpContext().set(ALLOW_ANONYMOUS, true)
+          }).pipe(switchMap(user => {
+            let additionInfo = {
+              name: user.fullName,
+              userId: user.id
+            }
+            info = {...info, ...additionInfo}
+            return of(info)
+          }))
+        })
+      )
+      .subscribe((response) => {
         this.settingsSrv.setUser({
           ...this.settingsSrv.user,
-          ...info
+          ...response
         });
-        this.socialService.callback(info);
+        this.socialService.callback(response);
+
+      }, error => {
+        console.log(error)
+        setTimeout(() => this.router.navigateByUrl(`/exception/500`));
       });
   }
 }
