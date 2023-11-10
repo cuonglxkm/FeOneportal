@@ -9,7 +9,7 @@ export interface SecurityGroup {
   rulesInfo?: SecurityGroupRule[];
 }
 
-export interface SecurityGroupSearchCondition {
+export class SecurityGroupSearchCondition {
   userId?: string | number
   regionId?: string | number
   projectId?: string | number

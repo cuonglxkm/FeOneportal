@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {SecurityGroupSearchCondition} from "../model/interface/security-group";
+import {SecurityGroupRuleCreateForm} from "../model/interface/security-group-rule";
 
 const API_URL: string = 'http://172.16.68.200:1009';
 @Injectable({
@@ -18,8 +19,8 @@ export class SecurityGroupRuleService {
         })
     }
 
-    create() {
-
+    create(form: SecurityGroupRuleCreateForm, condition: SecurityGroupSearchCondition) {
+        return this.http.post(`${API_URL}/security_group/rule`, Object.assign(form, condition))
     }
 
     delete(id: string, condition: SecurityGroupSearchCondition) {

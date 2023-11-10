@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {SecurityGroup} from "../../../../core/model/interface/security-group";
+import {SecurityGroup, SecurityGroupSearchCondition} from "../../../../core/model/interface/security-group";
+import {SecurityGroupRuleService} from "../../../../core/service/security-group-rule.service";
 
 interface RulesList {
   option: string;
@@ -22,53 +22,6 @@ interface RemotesList {
 export class CreateInboundComponent implements OnInit {
 
   port_type: 'port' | 'port_range' = 'port';
-  validateForm: FormGroup<{
-    rule: FormControl<string | null>;
-    remote: FormControl<string>;
-    port_type: FormControl<'port' | 'port_range'>;
-    remote_ip: FormControl<string>;
-    port: FormControl<string>;
-    enther: FormControl<'ipv4' | 'ipv6'>;
-    from: FormControl<string>;
-    security: FormControl<string>;
-    to: FormControl<string>;
-  }>;
-
-  portChange(value: 'port' | 'port_range'): void {
-    this.port_type = value
-    // this.validateForm.controls.note.setValue(value === 'male' ? 'Hi, man!' : 'Hi, lady!');
-  }
-
-  submitForm(): void {
-    if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
-    } else {
-      Object.values(this.validateForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({onlySelf: true});
-        }
-      });
-    }
-  }
-
-  goBack(): void {
-    this._location.back();
-  }
-
-  constructor(private fb: NonNullableFormBuilder, private _location: Location, private http: HttpClient) {
-    this.validateForm = this.fb.group({
-      rule: ['', [Validators.required]],
-      remote: ['', [Validators.required]],
-      port_type: this.fb.control<'port' | 'port_range'>('port', [Validators.required]),
-      enther: this.fb.control<'ipv4' | 'ipv6'>('ipv4', [Validators.required]),
-      remote_ip: [''],
-      port: [''],
-      from: [''],
-      security: [''],
-      to: ['']
-    });
-  }
 
   listSecurityGroup: SecurityGroup[] = [];
 
@@ -91,16 +44,84 @@ export class CreateInboundComponent implements OnInit {
     {option: "Security Group", value: "SecurityGroup"},
   ]
 
-  header = new HttpHeaders();
-  request_header = this.header.append('token', '123456789');
-
-  ngOnInit(): void {
-
-    this.http.get("http://172.16.68.200:1009/security_group/get_all?userId=669&regionId=3&projectId=4079",
-      {headers: this.request_header})
-      .subscribe((data: any) => {
-        this.listSecurityGroup = data;
-        console.log('data: ', this.listSecurityGroup)
-      })
+  conditionSearch: SecurityGroupSearchCondition = {
+    userId: 669,
+    regionId: 3,
+    projectId: 4079
   }
+
+  validateForm: FormGroup<{
+    rule: FormControl<string | null>;
+    remoteGroupId: FormControl<string>;
+    port_type: FormControl<'port' | 'port_range'>;
+    remoteIpPrefix: FormControl<string>;
+    port: FormControl<string>;
+    etherType: FormControl<'ipv4' | 'ipv6'>;
+    portRangeMin: FormControl<string>;
+    securityGroupId: FormControl<string>;
+    portRangeMax: FormControl<string>;
+  }>;
+
+  constructor(private fb: NonNullableFormBuilder,
+              private _location: Location,
+              private securityGroupRuleService: SecurityGroupRuleService) {
+    this.validateForm = this.fb.group({
+      rule: ['', [Validators.required]],
+      remoteGroupId: ['', [Validators.required]],
+      port_type: this.fb.control<'port' | 'port_range'>('port', [Validators.required]),
+      etherType: this.fb.control<'ipv4' | 'ipv6'>('ipv4', [Validators.required]),
+      remoteIpPrefix: [''],
+      port: [''],
+      portRangeMin: [''],
+      securityGroupId: [''],
+      portRangeMax: ['']
+    });
+  }
+
+  portChange(value: 'port' | 'port_range'): void {
+    this.port_type = value
+    if (value === 'port') {
+      console.log('a');
+      this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required);
+      this.validateForm.controls.remoteIpPrefix.markAsDirty();
+      this.validateForm.controls.port.setValidators(Validators.required);
+      this.validateForm.controls.port.markAsDirty();
+    }
+    if (value === 'port_range') {
+      console.log('b');
+      this.validateForm.controls.port.clearValidators();
+      this.validateForm.controls.port.markAsPristine();
+      this.validateForm.controls.remoteIpPrefix.clearValidators();
+      this.validateForm.controls.remoteIpPrefix.markAsPristine();
+    }
+    this.validateForm.controls.port.updateValueAndValidity();
+    this.validateForm.controls.remoteIpPrefix.updateValueAndValidity();
+  }
+
+  submitForm(): void {
+    if (this.validateForm.valid) {
+      console.log("value", this.validateForm.value);
+      this.validateForm.patchValue({
+
+      })
+      // this.securityGroupRuleService.create(this.validateForm.value, this.conditionSearch).subscribe((data) => {
+      //   this.message.create('success', `Đã thêm thành công`);
+      //   this.router.navigate([
+      //     '/app-smart-cloud/security-group'
+      //   ])
+      // })
+    } else {
+      Object.values(this.validateForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({onlySelf: true});
+        }
+      });
+    }
+  }
+
+  goBack(): void {
+    this._location.back();
+  }
+  ngOnInit(): void {}
 }

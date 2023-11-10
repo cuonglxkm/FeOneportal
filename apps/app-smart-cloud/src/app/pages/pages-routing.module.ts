@@ -7,6 +7,7 @@ import {CreateSecurityGroupComponent} from "./security-group/create-security-gro
 import {CreateInboundComponent} from "./security-group/inbound/create/create-inbound.component";
 import {CreateOutboundComponent} from "./security-group/outbound/create/create-outbound.component";
 import {ListAllowAddressPairComponent} from "./allow-address-pair/list/list-allow-address-pair.component";
+import {BlankSecurityGroupComponent} from "./security-group/blank-security-group/blank-security-group.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
@@ -37,7 +38,12 @@ const routes: Routes = [
   {
     path: 'allow-address-pair',
     component: ListAllowAddressPairComponent
+  },
+  {
+    path: 'blank-security-group',
+    component: BlankSecurityGroupComponent
   }
+
 
 ]
 

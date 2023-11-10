@@ -6,6 +6,7 @@ import {SecurityGroupService} from "../../../core/service/security-group.service
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 
 @Component({
@@ -29,8 +30,10 @@ export class CreateSecurityGroupComponent {
     submitForm(): void {
         if (this.validateForm.valid) {
             console.log("value", this.validateForm.value);
-            this.securityGroupService.create(this.validateForm.value, this.conditionSearch).subscribe((data) => {
-                this.message.create('success', `Đã thêm thành công`);
+            this.securityGroupService.create(this.validateForm.value, this.conditionSearch)
+                .subscribe((data) => {
+                // this.message.create('success', `Đã thêm thành công`);
+                this.notification.success('Thành công', 'Đã tạo Security Group thành công');
                 this.router.navigate([
                     '/app-smart-cloud/security-group'
                 ])
@@ -53,7 +56,8 @@ export class CreateSecurityGroupComponent {
                 private _location: Location,
                 private router: Router,
                 private securityGroupService: SecurityGroupService,
-                private message: NzMessageService) {
+                private message: NzMessageService,
+                private notification: NzNotificationService) {
         this.validateForm = this.fb.group({
             name: ['', [Validators.required, Validators.maxLength(50),
                 AppValidator.startsWithValidator('SG_')]],
@@ -61,4 +65,5 @@ export class CreateSecurityGroupComponent {
         });
     }
 
+    protected readonly console = console;
 }

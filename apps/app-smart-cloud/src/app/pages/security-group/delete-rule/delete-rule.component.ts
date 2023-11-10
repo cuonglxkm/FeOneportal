@@ -12,6 +12,8 @@ export class DeleteRuleComponent {
   @Input() id: string
   @Input() condition: SecurityGroupSearchCondition
   @Input() isVisible: boolean
+  @Input() title: string
+  @Input() content: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 

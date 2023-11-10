@@ -11,3 +11,14 @@ export interface SecurityGroupRule {
     portRange?: string,
     remoteIp?: string
 }
+
+export interface SecurityGroupRuleCreateForm {
+    remoteGroupId?: string,
+    remoteIpPrefix?: string,
+    portRangeMin?: number,
+    securityGroupId?: string,
+    portRangeMax?: number,
+    etherType?: string,
+    protocol?: string,
+    direction?: string
+}

@@ -6,7 +6,7 @@
         <div class="code-box-description">
             <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
                 <button nz-button nzType="primary" class="button-crate-new"
-                        routerLink="/app-smart-cloud/create-outbound">Thêm mới Outbound
+                        routerLink="/app-smart-cloud/create-security-group-outbound">Thêm mới Outbound
                 </button>
             </nz-row>
             <nz-table #tableOutbound
@@ -32,8 +32,16 @@
                     <td nzAlign="center">{{ data.portRange }}</td>
                     <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
                     <td nzAlign="center">
-                        <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showDeleteRuleModalConfirm()">Xoá</button>
-                        <one-portal-delete-security-group-rule [isVisible]="isVisibleRemoveRule" [condition]="conditionSearch" [id]="data.id" (onCancel)="handleCancel()" (onOk)="handleOk()"></one-portal-delete-security-group-rule>
+                        <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
+                        <one-portal-delete-security-group-rule
+                                [isVisible]="isVisible"
+                                [condition]="conditionSearch"
+                                [id]="data.id"
+                                [title]="title"
+                                [content]="content"
+                                (onCancel)="handleCancel()"
+                                (onOk)="handleOk(data.id)">
+                        </one-portal-delete-security-group-rule>
                     </td>
                 </tr>
                 </tbody>

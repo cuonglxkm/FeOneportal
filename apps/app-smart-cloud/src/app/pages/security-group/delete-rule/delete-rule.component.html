@@ -1,10 +1,10 @@
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="1050" nzTitle="Custom Modal Title"
           (nzOnCancel)="handleCancel()" nzCentered>
     <div *nzModalTitle>
-        <p class="text-confirm-title">Xác nhận xóa Security Group</p>
+        <p class="text-confirm-title">{{ title }}</p>
     </div>
     <div *nzModalContent>
-        <p class="text-confirm-content">Bạn có chắc chăn muốn xóa Security Group </p>
+        <p class="text-confirm-content">{{ content }} </p>
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy bỏ</button>

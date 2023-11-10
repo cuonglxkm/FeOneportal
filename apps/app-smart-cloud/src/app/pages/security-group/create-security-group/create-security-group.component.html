@@ -1,3 +1,31 @@
+<nz-header>
+  <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
+    <nz-row nzJustify="space-between" nzAlign="middle">
+      <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          Dịch vụ
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a routerLink="/app-smart-cloud/security-group">Security group</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <nz-space>
+        <!--        <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Khu vực"-->
+        <!--                   [(ngModel)]="selectedValueArea" style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
+        <!--          <nz-option *ngFor="let item of optionsArea" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
+        <!--        </nz-select>-->
+        <!--        <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Dự án"-->
+        <!--                   [(ngModel)]="selectedValueProject" style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
+        <!--          <nz-option *ngFor="let item of optionsProject" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
+        <!--        </nz-select>-->
+        <region-select-dropdown></region-select-dropdown>
+        <project-select-dropdown></project-select-dropdown>
+      </nz-space>
+    </nz-row>
+    <h4>Security group</h4>
+  </nz-col>
+</nz-header>
 <nz-content>
   <nz-card>
     <div class="title">Danh sách Security Group</div>
@@ -7,8 +35,13 @@
           <span>Tên Security group</span>
           <span style="color: rgba(252, 16, 16, 1); "> *</span>
         </div>
-        <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input formControlName="name" id="name" placeholder="Vui lòng nhập thông tin"/>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">Không được nhập quá 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('startsWith')">Tên phải bắt đầu bằng SG_</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>

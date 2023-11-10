@@ -18,14 +18,13 @@
                       nzPlaceHolder="Custom  UDP Rule">
                 <nz-option *ngFor="let data of rulesList"
                            nzValue="{{ data.value }}" nzLabel="{{ data.option }}"></nz-option>
-<!--                <nz-option nzValue="rule 2" nzLabel="rule 2"></nz-option>-->
               </nz-select>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="rule">
+            <nz-form-label nzFor="remoteGroupId">
               <div class="name-rule">
                 <span>Chọn Remote</span>
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
@@ -33,8 +32,8 @@
             </nz-form-label>
             <nz-form-control nzErrorTip="Không được để trống!">
               <nz-select
-                      id="remote"
-                      formControlName="remote"
+                      id="remoteGroupId"
+                      formControlName="remoteGroupId"
                       nzPlaceHolder="Custom UDP Rule"
               >
                 <nz-option *ngFor="let data of remotesList"
@@ -68,14 +67,14 @@
         </div>
         <div nz-col [nzSpan]="12">
           <nz-form-item *ngIf="port_type === 'port'">
-            <nz-form-label nzFor="remote_ip">
+            <nz-form-label nzFor="remoteIpPrefix">
               <div class="name-rule">
                 <span>Nhập Remote IP</span>
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
             <nz-form-control nzErrorTip="Không được để trống!">
-              <input nz-input formControlName="remote_ip" id="remote_ip"/>
+              <input nz-input formControlName="remoteIpPrefix" id="remoteIpPrefix"/>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item  *ngIf="port_type === 'port_range'">
