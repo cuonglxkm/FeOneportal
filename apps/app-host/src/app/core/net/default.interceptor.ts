@@ -234,6 +234,11 @@ export class DefaultInterceptor implements HttpInterceptor {
       res['Accept-Language'] = lang;
     }
 
+    const token = this.tokenSrv.get()?.token;
+    if (!headers?.has('Authentication') && token) {
+      res['Authentication'] = "Bearer " + token;
+    }
+
     return res;
   }
 

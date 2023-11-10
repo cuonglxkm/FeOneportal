@@ -14,6 +14,13 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   baseUrl: 'http://172.16.68.200:1009',
+  sso: {
+    issuer: 'https://172.16.68.200:1000',
+    clientId: 'frontend-client',
+    callback: 'http://localhost:4200/passport/callback/oneportal',
+    logout_callback: 'http://localhost:4200',
+    scope: 'openid email roles',
+  }
   // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 
