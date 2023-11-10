@@ -29,8 +29,8 @@
 
   <br>
   <br>
-  <nz-tabset>
-    <nz-tab nzTitle="Volume Root">
+  <nz-tabset [(nzSelectedIndex)]="tabVolumeIndex">
+    <nz-tab nzTitle="Volume Root" (nzClick) = "reloadDataVolumeRoot()">
 
       <nz-table #tableRoot [nzData]="listVolumeRoot" [nzFrontPagination]="false" [nzTotal]="totalRoot"
                 (nzPageIndexChange)="onRootPageIndexChange($event)">
@@ -47,7 +47,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let data of tableRoot.data; let i = index">
-          <td>{{ data.name }}</td>
+          <td (click)="getDetailVolume(data.id)">{{ data.name }}</td>
           <td>{{ data.sizeInGB}}</td>
           <td>{{ data.iops }}</td>
           <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
@@ -69,7 +69,7 @@
       </nz-table>
 
     </nz-tab>
-    <nz-tab nzTitle="Volume gắn thêm">
+    <nz-tab nzTitle="Volume gắn thêm" (nzClick)="reloadDataVolumeAdd()" >
 
       <nz-table #tableAdd [nzData]="listVolumeAdd" [nzFrontPagination]="false" [nzTotal]="totalAdd"
                 (nzPageIndexChange)="onAddPageIndexChange($event)">

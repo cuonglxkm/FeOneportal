@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
-import {NzModalService, NzModalRef, NzModalComponent} from 'ng-zorro-antd/modal';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {PopupAddVolumeComponent} from "./popup-volume/popup-add-volume.component";
 import {PopupDeleteVolumeComponent} from "./popup-volume/popup-delete-volume.component";
 import {Router} from "@angular/router";
@@ -41,8 +41,11 @@ export class VolumeComponent implements OnInit {
   listVolumeAdd: VolumeDTO[];
   totalRoot: number;
   totalAdd: number;
-  curentPageRoot: number;
-  curentPageAdd: number;
+  curentPageRoot: number = 0;
+  curentPageAdd: number = 0;
+  tabVolumeIndex: number = 0;
+
+
 
   combinedValues: string[] = [];
 
@@ -77,38 +80,19 @@ export class VolumeComponent implements OnInit {
 
   ngOnInit() {
     //get list Root
-    this.volumeSevice.getVolumes(669, 4094, 3, true, 10, 0 , null).subscribe(data => {
-      this.listVolumeRootResponse = data;
-      this.listVolumeRoot = data.records;
-      this.totalRoot = data.totalCount;
-      console.log(this.listVolumeRoot);
-    })
+    this.getListVolume(null, null, 3, true, 10, 0 , null , null)
     //get list Add
-    this.volumeSevice.getVolumes(669, 4094, 3, false, 10, 0 , null).subscribe(data => {
-      this.listVolumeAddVolumeResponse = data;
-      this.listVolumeAdd = data.records;
-      this.totalAdd = data.totalCount;
-      console.log(this.listVolumeAdd);
-    })
+    this.getListVolume(null, null, 3, false, 10, 0 , null, null)
   }
 
   onRootPageIndexChange(event: any) {
     this.curentPageRoot = event;
-    this.volumeSevice.getVolumes(669, 4094, 3, true, 10, (this.curentPageRoot - 1), null).subscribe(data => {
-      this.listVolumeRootResponse = data;
-      this.listVolumeRoot = data.records;
-      this.totalRoot = data.totalCount;
-    })
+    this.getListVolume(null, null, 3, true, 10, (this.curentPageRoot - 1), null, null)
   }
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.volumeSevice.getVolumes(669, 4094, 3, false, 10, (this.curentPageAdd - 1),null).subscribe(data => {
-      this.listVolumeAddVolumeResponse = data;
-      this.listVolumeAdd = data.records;
-      this.totalAdd = data.totalCount;
-      console.log(this.listVolumeAdd);
-    })
+    this.getListVolume(null, null, 3, false, 10, (this.curentPageAdd - 1),null,null)
   }
 
   isVisible = false;
@@ -191,16 +175,44 @@ export class VolumeComponent implements OnInit {
   }
 
   searchVolumes() {
-    console.log('Volume name: ' + this.volumeNameSearch);
-    console.log('Volume status: ' + this.volumeStatusSearch);
+    // tabIndex = 0 : RootVolume
+    // tabIndex = 1 : AddVolume
+    if(this.tabVolumeIndex == 0 ){
+      this.getListVolume(null, null, 3, true, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
+    }else{
+      this.getListVolume(null, null, 3, false, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
+    }
+
   }
 
-  getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number) {
-    this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage ,null).subscribe(data => {
-      this.listVolumeAddVolumeResponse = data;
-      this.listVolumeAdd = data.records;
-      this.totalAdd = data.totalCount;
-      console.log(this.listVolumeAdd);
+  reloadDataVolumeRoot( ){
+    this.getListVolume(null, null, 3, true, 10, 0, null , null)
+    this.volumeNameSearch = null;
+    this.volumeStatusSearch = null;
+  }
+  reloadDataVolumeAdd( ){
+    this.getListVolume(null, null, 3, false, 10, 0, null , null)
+    this.volumeNameSearch = null;
+    this.volumeStatusSearch = null;
+  }
+
+  getDetailVolume(idVolume: string){
+    console.log(idVolume);
+  }
+
+
+  private getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string) {
+    this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage ,status , volumeName).subscribe(data => {
+
+      if(volumeRootOnly === true ){
+        this.listVolumeRootResponse = data;
+        this.listVolumeRoot = data.records;
+        this.totalRoot = data.totalCount;
+      }else{
+        this.listVolumeAddVolumeResponse = data;
+        this.listVolumeAdd = data.records;
+        this.totalAdd = data.totalCount;
+      }
     })
   }
 

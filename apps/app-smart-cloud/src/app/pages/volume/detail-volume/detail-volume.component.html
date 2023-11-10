@@ -7,15 +7,43 @@
   <nz-table [nzTemplateMode]=true style="border: none;">
     <tbody>
     <tr>
-      <td style="border-bottom: none;">
-        <img nz-image
-             width="200px"
-             height="200px"
-             nzSrc="'apps/app-smart-cloud/src/assets/tmp/img/icon_cycle.png'"
-             alt=""
-        />
+      <td style="border-bottom: none;" [nzAlign] = "'right'">
+        <div style="width: 100px; height: 100px;">
+          <img nz-image
+               width=100%
+               height=100%
+               nzSrc="assets/imgs/icon_cycle.png"
+               alt=""
+          />
+        </div>
       </td>
-      <td style="border-bottom: none;"></td>
+      <td style="border-bottom: none;" >
+        <div style="padding-left: 20px;">
+          <b>Chu kỳ thanh toán</b>
+          <br>
+          <p>1 tháng</p>
+          <p>Chu kỳ hiện tại: 1</p>
+        </div>
+      </td>
+      <td style="border-bottom: none;"[nzAlign] = "'right'">
+        <div style="width: 100px; height: 100px;">
+          <img nz-image
+               width=100%
+               height=100%
+               nzSrc="assets/imgs/icon_money.png"
+               alt=""
+          />
+        </div>
+
+      </td>
+      <td style="border-bottom: none;">
+        <div style="padding-left: 20px;">
+          <b>Thông tin thanh toán kỳ tới </b>
+          <br>
+          <p>số tiền: 1.210.000VNĐ (từ 10/10/2023 đến 20/11/2023)</p>
+          <p>Ngày thanh toán: 20/10/2023</p>
+        </div>
+      </td>
     </tr>
     </tbody>
   </nz-table>

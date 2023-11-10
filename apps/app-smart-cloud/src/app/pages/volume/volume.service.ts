@@ -21,10 +21,9 @@ export class VolumeService extends BaseService {
   private urlVM = 'http://172.16.68.200:1009/instances/getpaging';
 
   //search List Volumes
-  getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string): Observable<GetListVolumeModel> {
-    return this.http.get<GetListVolumeModel>(this.urlVolume + '?customerId=' + customerId + '&projectId=' + projectId +
-      '&regionId=' + regionId + '&volumeRootOnly=' + volumeRootOnly + '&pageSize=' + pageSize + '&currentPage=' + currentPage + '&status=' + status
-    ).pipe(
+  getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string , volumeName: string): Observable<GetListVolumeModel> {
+    let urlResult = this.getConditionSearchVolume(customerId, projectId , regionId, volumeRootOnly, pageSize , currentPage, status , volumeName);
+    return this.http.get<GetListVolumeModel>( urlResult).pipe(
       catchError(this.handleError<GetListVolumeModel>('get volume-list error'))
     );
   }
@@ -54,9 +53,9 @@ export class VolumeService extends BaseService {
     };
   }
 
-  getConditionSearchVolume(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string): string {
+  private getConditionSearchVolume(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string , volumeName: string): string {
 
-    let urlResult = this.urlVM;
+    let urlResult = this.urlVolume;
     let count = 0;
     if(customerId !== undefined && customerId != null){
       urlResult += '?customerId='+customerId;
@@ -80,10 +79,10 @@ export class VolumeService extends BaseService {
     }
     if(volumeRootOnly !== undefined && volumeRootOnly !=null){
       if(count == 0){
-        urlResult += '?volumeRootOnly='+projectId;
+        urlResult += '?volumeRootOnly='+volumeRootOnly;
         count++;
       }else{
-        urlResult += '&volumeRootOnly='+projectId;
+        urlResult += '&volumeRootOnly='+volumeRootOnly;
       }
     }
 
@@ -111,23 +110,14 @@ export class VolumeService extends BaseService {
         urlResult += '&status='+status;
       }
     }
-    if(projectId !== undefined && projectId !=null){
+    if(volumeName !== undefined && volumeName !=null){
       if(count == 0){
-        urlResult += '?projectId='+projectId;
+        urlResult += '?volumeName='+volumeName;
         count++;
       }else{
-        urlResult += '&projectId='+projectId;
+        urlResult += '&volumeName='+volumeName;
       }
     }
-    if(projectId !== undefined && projectId !=null){
-      if(count == 0){
-        urlResult += '?projectId='+projectId;
-        count++;
-      }else{
-        urlResult += '&projectId='+projectId;
-      }
-    }
-
     return urlResult;
 
   }

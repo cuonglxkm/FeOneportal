@@ -24,18 +24,20 @@ export class PopupAddVolumeComponent implements OnInit {
   listAllVMs: VmDto[] = [];
   selectedItem: any;
   @Output() valueSelected: EventEmitter<string> = new EventEmitter<string>();
-  constructor(private volumeService: VolumeService) {
 
+  constructor(private volumeService: VolumeService) {
   }
+
   onChange(value: string): void {
     this.selectedItem = value;
     this.valueSelected.emit(value);
   }
+
   async ngOnInit(): Promise<void> {
     this.getAllVmResponse = await this.volumeService.getAllVMs(3).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
-      this.options.push({label: vm.name , value: vm.id});
+      this.options.push({label: vm.name, value: vm.id});
     })
 
   }
