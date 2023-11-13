@@ -9,6 +9,8 @@ import {CreateOutboundComponent} from "./security-group/outbound/create/create-o
 import {ListAllowAddressPairComponent} from "./allow-address-pair/list/list-allow-address-pair.component";
 import {BlankSecurityGroupComponent} from "./security-group/blank-security-group/blank-security-group.component";
 
+import { SshKeyComponent } from "./ssh-key/ssh-key.component";
+
 const routes: Routes = [
   {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
   {
@@ -19,6 +21,14 @@ const routes: Routes = [
     path: 'test',
     component: V1Component
   },
+  {
+    path: 'vm',
+    component: V1Component
+  },
+  {
+    path: "ssh-key",
+    component: SshKeyComponent
+  }
   {
     path: 'security-group',
     component: SecurityGroupComponent

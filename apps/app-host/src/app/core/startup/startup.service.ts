@@ -44,10 +44,14 @@ export class StartupService {
         this.i18n.use(defaultLang, langData);
 
         // 应用信息：包括站点名、描述、年份
-        this.settingService.setApp(appData.app);
+        this.settingService.setApp( {
+          "name": "One Portal",
+          "description": "One Portal"
+        });
         // 用户信息：包括姓名、头像、邮箱地址
-        this.settingService.setUser(appData.user);
+        // this.settingService.setUser(appData.user);
         // ACL：设置权限为全量
+
         this.aclService.setFull(true);
         // 初始化菜单
         this.menuService.add(appData.menu);

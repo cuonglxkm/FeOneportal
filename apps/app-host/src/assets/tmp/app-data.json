@@ -32,7 +32,7 @@
         {
           "text": "Quản lý SSH Key",
           "icon": "anticon-dashboard",
-          "link": "/dashboard/v1"
+          "link": "/app-smart-cloud/ssh-key"
         },
         {
           "text": "Quản lý Security Group",

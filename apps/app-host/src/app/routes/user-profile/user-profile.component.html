@@ -49,7 +49,7 @@
         <nz-form-item>
           <nz-form-label nzRequired>Mã khách hàng</nz-form-label>
           <nz-form-control nzErrorTip="Mã khách hàng">
-            <input nz-input formControlName="customer_code" placeholder="Mã khách hàng"/>
+            <input [disabled]="true" nz-input formControlName="customer_code" placeholder="Mã khách hàng"/>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -88,8 +88,9 @@
       <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label>Mật khẩu cũ</nz-form-label>
-          <nz-form-control nzErrorTip="Mật khẩu cũ">
-            <input nz-input formControlName="old_password" placeholder="Mật khẩu cũ"/>
+          <nz-form-control nzErrorTip="Mật khẩu cũ không đúng!">
+            <input  type="password" (change)="onOldPassChange($event)" nz-input formControlName="old_password"
+                   placeholder="Mật khẩu cũ"/>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -99,8 +100,10 @@
       <nz-col nzOffset="1" nzLg="8" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label>Mật khẩu mới</nz-form-label>
-          <nz-form-control nzErrorTip="Mật khẩu có 8-16 ký tự, gồm ít nhất 1 chữ viết thường, 1 chữ viết hoa, 1 ký tự đặc biệt, 1 chữ số, không trùng mật khẩu cũ">
-            <input minlength="8" maxlength="16" nz-input formControlName="new_password" placeholder="Mật khẩu mới"/>
+          <nz-form-control
+            nzErrorTip="Mật khẩu có 8-16 ký tự, gồm ít nhất 1 chữ viết thường, 1 chữ viết hoa, 1 ký tự đặc biệt, 1 chữ số, không trùng mật khẩu cũ">
+            <input type="password" (ngModelChange)="updateConfirmValidator()" minlength="8" maxlength="16" nz-input
+                   formControlName="new_password" placeholder="Mật khẩu mới"/>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -111,7 +114,8 @@
         <nz-form-item>
           <nz-form-label>Nhập lại mật khẩu mới</nz-form-label>
           <nz-form-control nzErrorTip="Mật khẩu không khớp!">
-            <input nz-input formControlName="retype_new_password" placeholder="Nhập lại mật khẩu mới"/>
+            <input type="password" nz-input (change)="onRetypePassChange($event)" formControlName="confirm_password"
+                   placeholder="Nhập lại mật khẩu mới"/>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
