@@ -1,4 +1,4 @@
-export interface SecurityGroupRule {
+export default interface SecurityGroupRule {
     id?: string,
     remoteGroupId?: string,
     remoteIpPrefix?: string,
@@ -13,12 +13,21 @@ export interface SecurityGroupRule {
 }
 
 export interface SecurityGroupRuleCreateForm {
-    remoteGroupId?: string,
-    remoteIpPrefix?: string,
-    portRangeMin?: number,
-    securityGroupId?: string,
-    portRangeMax?: number,
-    etherType?: string,
-    protocol?: string,
-    direction?: string
+    // remoteType: string,
+    rule?: string,
+    // remoteGroupId: string,
+    // remoteIpPrefix: string,
+    // portRangeMin: number,
+    // securityGroupId: string,
+    // portRangeMax: number,
+    // etherType: string,
+    // protocol: string,
+    direction: 'ingress' | 'egress',
+}
+
+export class SecurityGroupRuleGetPage {
+    pageSize?: number;
+    pageNumber?: number;
+    securityGroupId?: string;
+    direction?: string;
 }

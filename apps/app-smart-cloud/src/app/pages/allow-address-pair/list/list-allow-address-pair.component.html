@@ -21,7 +21,7 @@
                 <!--                           style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
                 <!--                    <nz-option *ngFor="let item of optionsProject" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
                 <!--                </nz-select>-->
-                <region-select-dropdown></region-select-dropdown>
+                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
                 <project-select-dropdown></project-select-dropdown>
             </nz-space>
 
@@ -30,20 +30,65 @@
         <nz-row nzJustify="space-between" nzAlign="middle">
             <div style="margin-top: 20px;">
                 <input nz-input placeholder="Tìm kiếm IP Address" [(ngModel)]="value" type="text"
-                       style="width: 396px; height: 40px;"/>
+                       style="width: 396px; height: 40px;" (input)="onInputChange($event.target['value'])"/>
                 <!--            <span nz-icon nzType="setting" nzTheme="outline"></span>-->
-                <button class="button-search">
+                <button class="button-search" (click)="search()">
                     <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
                     Search
                 </button>
             </div>
             <div style="margin-top: 20px;">
                 <nz-space>
-                    <button class="button-create" (click)="showModalCreate()">
+                    <button nz-button (click)="showModalCreate()">
                         <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 12px;"></span>
                         Tạo mới
                     </button>
-                    <one-portal-create-allow-address-pair></one-portal-create-allow-address-pair>
+<!--                    <one-portal-create-allow-address-pair  [isVisible]="isVisibleCreate"-->
+<!--                                                           (onCancel)="handleCancelCreate()"-->
+<!--                                                           (onOk)="handleOkCreate()">-->
+<!--                    </one-portal-create-allow-address-pair>-->
+                    <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới"
+                              (nzOnCancel)="handleCancelCreate()" nzCentered [nzWidth]="600" >
+                        <div *nzModalTitle>
+                            <h5 class="text-h5"><b>Tạo mới Allowed Address Pair</b></h5>
+                        </div>
+                        <div *nzModalContent>
+                            <form nz-form [formGroup]="validateForm" >
+                                <div nz-row>
+                                    <nz-form-item >
+                                        <nz-form-label nzFor="ipAddress" [nzSpan]="12">
+                                            <div class="name-ip-address">
+                                                <span>IP Address/ CIDR</span>
+                                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                                            </div>
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="Không được để trống!" [nzSpan]="12">
+                                            <input nz-input formControlName="ipAddress" id="ipAddress"/>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                                <div nz-row>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="macAddress" [nzSpan]="12">
+                                            <div class="name-ip-address">
+                                                <span>MAC Address</span>
+                                            </div>
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="Không được để trống!" [nzSpan]="12">
+                                            <input nz-input formControlName="macAddress" id="macAddress"/>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </form>
+                        </div>
+                        <div *nzModalFooter>
+                            <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel-popup">Hủy
+                            </button>
+                            <button nz-button nzType="primary" (click)="handleOkCreate()" class="button-create-popup">Tạo mới
+                            </button>
+                        </div>
+                    </nz-modal>
+
                 </nz-space>
             </div>
         </nz-row>
@@ -52,12 +97,12 @@
 <nz-content style="margin-top: 10px">
     <nz-card>
         <div class="code-box-description">
-            <nz-table #basicTable
-                      [nzData]="listIPAddress"
+            <nz-table #tablePair
+                      [nzData]="listPairInfo"
                       nzShowSizeChanger
                       [nzFrontPagination]="false"
-                      [nzTotal]="100"
-                      [nzPageSize]="50"
+                      [nzTotal]="listPairInfo.length"
+                      [nzPageSize]="10"
                       [nzPageIndex]="1"
             >
                 <thead>
@@ -68,7 +113,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let data of basicTable.data">
+                <tr *ngFor="let data of tablePair.data">
                     <td nzAlign="center">{{ data.ipAddress }}</td>
                     <td nzAlign="center">{{ data.macAddress }}</td>
                     <td nzAlign="center">
@@ -87,7 +132,7 @@
                             <div *nzModalFooter>
                                 <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy
                                 </button>
-                                <button nz-button nzType="primary" (click)="handleOk()"
+                                <button nz-button nzType="primary" (click)="handleOk(data)"
                                         [nzLoading]="isConfirmLoading"
                                         class="button-ok">Đồng ý
                                 </button>

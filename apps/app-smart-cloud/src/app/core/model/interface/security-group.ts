@@ -1,4 +1,4 @@
-import {SecurityGroupRule} from "./security-group-rule";
+import SecurityGroupRule from "./security-group-rule";
 
 export interface SecurityGroup {
   tenantId?: string;

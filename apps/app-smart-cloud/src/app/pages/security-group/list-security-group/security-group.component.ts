@@ -1,28 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
 import {SecurityGroupService} from "../../../core/service/security-group.service";
-import {SecurityGroupRule} from "../../../core/model/interface/security-group-rule";
+import SecurityGroupRule, {SecurityGroupRuleGetPage} from "../../../core/model/interface/security-group-rule";
 import {Router} from "@angular/router";
 import {RegionModel} from "../../../shared/models/region.model";
-
-interface Inbound {
-    ip_version: string;
-    protocol: string;
-    port_range: string;
-    remote: string;
-}
-
-interface Area {
-    id: number;
-    name: string;
-    desc: string;
-}
-
-interface Project {
-    id: number;
-    name: string;
-    desc: string;
-}
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {SecurityGroupRuleService} from "../../../core/service/security-group-rule.service";
 
 @Component({
     selector: 'one-portal-security-group',
@@ -32,8 +15,6 @@ interface Project {
 export class SecurityGroupComponent implements OnInit {
 
     isVisible = false;
-
-    // isVisibleRemoveRule = false;
 
     conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
 
@@ -47,26 +28,16 @@ export class SecurityGroupComponent implements OnInit {
 
     region: RegionModel;
 
+    securityGroupRuleGetPage: SecurityGroupRuleGetPage = new SecurityGroupRuleGetPage();
+
     constructor(private securityGroupService: SecurityGroupService,
-                private router: Router) {
+                private router: Router,
+                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+                private securityGroupRuleService: SecurityGroupRuleService) {
     }
 
-
-    selectedValueArea?: Area;
-    optionsArea: Area[] = [
-        {name: 'Khu vực 1', id: 1, desc: ''},
-        {name: 'Khu vực 2', id: 2, desc: ''},
-        {name: 'Khu vực 3', id: 3, desc: ""},
-    ];
-
-    selectedValueProject?: Project;
-    optionsProject: Project[] = [
-        {name: 'Dự án 1', id: 1, desc: ''},
-        {name: 'Dự án 2', id: 2, desc: ''},
-        {name: 'Dự án 3', id: 3, desc: ""},
-    ]
-
     onSecurityGroupChange(): void {
+        this.getListInbound();
         this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
         this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
     }
@@ -74,14 +45,6 @@ export class SecurityGroupComponent implements OnInit {
     showModal(): void {
         this.isVisible = true;
     }
-
-    // showDeleteRuleModalConfirm(): void {
-    //   this.isVisibleRemoveRule = true;
-    // }
-    //
-    // handleCancelDeleteRuleModalConfirm(): void {
-    //   this.isVisibleRemoveRule = false;
-    // }
 
     handleOk(): void {
         this.isVisible = false;
@@ -93,27 +56,25 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     regionChanged(region: RegionModel) {
-        console.log('region', region)
         this.conditionSearch.regionId = region.regionId;
         this.getSecurityGroup();
     }
 
     getSecurityGroup() {
-        this.conditionSearch.projectId = 4079
-        this.conditionSearch.userId = 669
-        console.log("conđition: ", this.conditionSearch)
         this.securityGroupService.search(this.conditionSearch)
             .subscribe((data) => {
-                // if (!!data.length) {
-                //     this.selectedValue = data[0]
-                //     this.listInbound = data[0].rulesInfo.filter(value => value.direction === 'ingress')
-                //     this.listOutbound = data[0].rulesInfo.filter(value => value.direction === 'egress')
-                // }
                 this.options = data;
             })
     }
 
+    getListInbound() {
+        console.log('condition, ', this.conditionSearch);
+        // this.securityGroupRuleService.getInbound(this.conditionSearch)
+    }
+
     ngOnInit() {
+        this.conditionSearch.projectId = 4079
+        this.conditionSearch.userId = this.tokenService.get()?.userId
     }
 
 }

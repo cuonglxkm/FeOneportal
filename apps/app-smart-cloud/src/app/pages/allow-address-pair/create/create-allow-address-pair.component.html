@@ -4,7 +4,7 @@
         <h5 class="text-h5"><b>Tạo mới Allowed Address Pair</b></h5>
     </div>
     <div *nzModalContent>
-        <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
             <div nz-row>
                 <nz-form-item>
                     <nz-form-label nzFor="ipAddress">
@@ -33,7 +33,7 @@
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel-popup">Hủy
         </button>
-        <button nz-button nzType="primary" (click)="submitForm()" class="button-create-popup">Tạo mới
+        <button nz-button nzType="primary" (click)="handleCreate()" class="button-create-popup">Tạo mới
         </button>
     </div>
 </nz-modal>

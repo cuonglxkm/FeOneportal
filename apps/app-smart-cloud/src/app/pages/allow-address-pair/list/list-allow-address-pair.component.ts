@@ -1,77 +1,127 @@
-import { Component } from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
+import PairInfo, {
+    AllowAddressPairCreateOrDeleteForm,
+    AllowAddressPairSearchForm
+} from 'src/app/core/model/allow-address-pair';
+import {RegionModel} from "../../../shared/models/region.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {AllowAddressPairService} from "../../../core/service/allow-address-pair.service";
+import {NzMessageService} from "ng-zorro-antd/message";
 
-interface Area {
-  id: number;
-  name: string;
-  desc: string;
-}
-interface Project {
-  id: number;
-  name: string;
-  desc: string;
-}
 
-interface IPAddress {
-  id: number;
-  ipAddress: string;
-  macAddress: string;
-}
 @Component({
-  selector: 'one-portal-list-security-group-allow-address-pair',
-  templateUrl: './list-allow-address-pair.component.html',
-  styleUrls: ['./list-allow-address-pair.component.less'],
+    selector: 'one-portal-list-security-group-allow-address-pair',
+    templateUrl: './list-allow-address-pair.component.html',
+    styleUrls: ['./list-allow-address-pair.component.less'],
 })
-export class ListAllowAddressPairComponent {
-  isVisibleCreate = false;
+export class ListAllowAddressPairComponent implements OnInit {
+    @Input() portId: string
 
-  validateForm: FormGroup<{
-    ipAddress: FormControl<string | null>;
-  }>;
+    constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+                private allowAddressPairService: AllowAddressPairService,
+                private message: NzMessageService) {
+    }
 
-  value?: string;
+    isVisibleCreate = false;
 
-  selectedValueArea?: Area;
-  optionsArea: Area[] = [
-    { name: 'Khu vực 1', id: 1, desc: '' },
-    { name: 'Khu vực 2', id: 2, desc:''},
-    { name: 'Khu vực 3', id: 3, desc:"" },
-  ];
 
-  selectedValueProject?: Project;
-  optionsProject: Project[] = [
-    { name: 'Dự án 1', id: 1, desc: '' },
-    { name: 'Dự án 2', id: 2, desc:''},
-    { name: 'Dự án 3', id: 3, desc:"" },
-  ]
+    listPairInfo: PairInfo[] = []
 
-  listIPAddress: IPAddress[] = [
-    { ipAddress: '192.168.9.0/24', id: 1, macAddress: 'FA:16:3E:3F:A2:5E' },
-    { ipAddress: '192.168.9.0/24', id: 2, macAddress:'FA:16:3E:3F:A2:5E'},
-    { ipAddress: '192.168.9.0/24', id: 3, macAddress:'FA:16:3E:3F:A2:5E' },
-  ]
+    region: RegionModel;
 
-  isVisible = false;
-  isConfirmLoading = false;
+    validateForm: FormGroup<{
+        ipAddress: FormControl<string | null>;
+    }>;
 
-  showModal(): void {
-    this.isVisible = true;
-  }
+    value?: string;
 
-  handleOk(): void {
-    this.isConfirmLoading = true;
-    setTimeout(() => {
-      this.isVisible = false;
-      this.isConfirmLoading = false;
-    }, 3000);
-  }
+    formSearch: AllowAddressPairSearchForm = new AllowAddressPairSearchForm();
 
-  handleCancel(): void {
-    this.isVisible = false;
-  }
+    isVisible = false;
+    isConfirmLoading = false;
 
-  showModalCreate(){
-    this.isVisibleCreate = true;
-  }
+    formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm = new AllowAddressPairCreateOrDeleteForm();
 
+    pairInfos: PairInfo[];
+
+    inputValue: string;
+    showModal(): void {
+        this.isVisible = true;
+    }
+
+    handleOk(pairInfo: PairInfo): void {
+        if(this.pairInfos) {
+            this.pairInfos.push(pairInfo);
+        } else {
+            this.pairInfos = [pairInfo];
+        }
+
+        this.isConfirmLoading = true;
+        this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+        this.formDeleteOrCreate.pairInfos = this.pairInfos;
+
+        this.formDeleteOrCreate.isDelete = true;
+        this.formDeleteOrCreate.region = this.region.regionId;
+        this.formDeleteOrCreate.vpcId = 4079;
+        this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
+        this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
+            .subscribe(data => {
+            this.message.create('Thành công', `Đã xóa thành công`);
+        })
+    }
+
+    handleCancel(): void {
+        this.isVisible = false;
+    }
+
+    handleOkCreate() {
+
+    }
+
+    handleCancelCreate() {
+        this.isVisibleCreate = false;
+    }
+    showModalCreate() {
+        this.isVisibleCreate = true;
+    }
+
+    regionChanged(region: RegionModel) {
+        this.region = region;
+        this.formSearch = this.getParam();
+        this.getAllowAddressPair(this.formSearch);
+    }
+
+    getParam(): AllowAddressPairSearchForm {
+        this.formSearch.region = this.region.regionId;
+        this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+        this.formSearch.pageSize = 10;
+        this.formSearch.currentPage = 1;
+        if (this.value === undefined) {
+            this.formSearch.search = null;
+        } else {
+            this.formSearch.search = this.value;
+        }
+        return this.formSearch;
+    }
+    getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
+        this.allowAddressPairService.search(formSearch)
+            .subscribe((data: any) => {
+                this.listPairInfo = data.records;
+            });
+    }
+
+    ngOnInit(): void {
+        this.formSearch.vpcId = 4079
+        this.formSearch.customerId = this.tokenService.get()?.userId
+    }
+
+    search() {
+        this.formSearch = this.getParam();
+        this.getAllowAddressPair(this.formSearch);
+    }
+
+    onInputChange(value: string) {
+        this.inputValue = value;
+    }
 }

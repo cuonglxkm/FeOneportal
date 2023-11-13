@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {SecurityGroupRule} from "../../../../core/model/interface/security-group-rule";
+import SecurityGroupRule from "../../../../core/model/interface/security-group-rule";
 import {SecurityGroupSearchCondition} from "../../../../core/model/interface/security-group";
 
 @Component({
