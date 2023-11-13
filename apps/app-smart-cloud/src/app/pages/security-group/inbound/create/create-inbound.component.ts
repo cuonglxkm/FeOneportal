@@ -1,15 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
-import {SecurityGroup, SecurityGroupSearchCondition} from "../../../../core/model/interface/security-group";
-import {SecurityGroupRuleService} from "../../../../core/service/security-group-rule.service";
+import {SecurityGroupSearchCondition} from "../../../../core/model/interface/security-group";
 
 interface RulesList {
-    option: string;
-    value: string;
-}
-
-interface RemotesList {
     option: string;
     value: string;
 }
@@ -24,8 +18,6 @@ export class CreateInboundComponent implements OnInit {
     port_type: 'port' | 'port_range' = 'port';
     remote_type: 'cidr' | 'security_group' = 'cidr';
 
-    listSecurityGroup: SecurityGroup[] = [];
-
     rulesList: RulesList[] = [
         {option: "Custom TCP Rule", value: "tcp-IPv4"},
         {option: "Custom UDP Rule", value: "udp-IPv4"},
@@ -38,11 +30,6 @@ export class CreateInboundComponent implements OnInit {
         {option: "ICMP", value: "icmp-IPv4-"},
         {option: "MYSQL", value: "tcp-IPv4-3306"},
         {option: "Any", value: "-IPv4-"},
-    ]
-
-    remotesList: RemotesList[] = [
-        {option: "CIDR", value: "CIDR"},
-        {option: "Security Group", value: "SecurityGroup"},
     ]
 
     conditionSearch: SecurityGroupSearchCondition = {
@@ -65,8 +52,7 @@ export class CreateInboundComponent implements OnInit {
     }>;
 
     constructor(private fb: NonNullableFormBuilder,
-                private _location: Location,
-                private securityGroupRuleService: SecurityGroupRuleService) {
+                private _location: Location) {
         this.validateForm = this.fb.group({
             rule: ['', [Validators.required]],
             remoteGroupId: ['', [Validators.required]],
@@ -130,10 +116,6 @@ export class CreateInboundComponent implements OnInit {
                 }
             });
         }
-    }
-
-    goBack(): void {
-        this._location.back();
     }
 
     ngOnInit(): void {

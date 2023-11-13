@@ -1,7 +1,6 @@
 import {BaseService} from "../../shared/services/base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {SecurityGroupSearchCondition} from "../model/interface/security-group";
 import {Observable} from "rxjs";
 import PairInfo, {AllowAddressPairCreateOrDeleteForm, AllowAddressPairSearchForm} from "../model/allow-address-pair";
 
@@ -26,7 +25,7 @@ export class AllowAddressPairService extends BaseService {
         params = params.append('region', form.region);
         params = params.append('portId', form.portId);
         params = params.append('vpcId', form.vpcId);
-        if(form.search != null){
+        if (form.search != null) {
             params = params.append('search', form.search);
         }
         params = params.append('pageSize', form.pageSize);

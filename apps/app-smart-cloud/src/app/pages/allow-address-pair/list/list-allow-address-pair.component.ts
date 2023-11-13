@@ -46,12 +46,13 @@ export class ListAllowAddressPairComponent implements OnInit {
     pairInfos: PairInfo[];
 
     inputValue: string;
+
     showModal(): void {
         this.isVisible = true;
     }
 
     handleOk(pairInfo: PairInfo): void {
-        if(this.pairInfos) {
+        if (this.pairInfos) {
             this.pairInfos.push(pairInfo);
         } else {
             this.pairInfos = [pairInfo];
@@ -67,8 +68,8 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
         this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
             .subscribe(data => {
-            this.message.create('Thành công', `Đã xóa thành công`);
-        })
+                this.message.create('Thành công', `Đã xóa thành công`);
+            })
     }
 
     handleCancel(): void {
@@ -82,6 +83,7 @@ export class ListAllowAddressPairComponent implements OnInit {
     handleCancelCreate() {
         this.isVisibleCreate = false;
     }
+
     showModalCreate() {
         this.isVisibleCreate = true;
     }
@@ -104,6 +106,7 @@ export class ListAllowAddressPairComponent implements OnInit {
         }
         return this.formSearch;
     }
+
     getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
         this.allowAddressPairService.search(formSearch)
             .subscribe((data: any) => {

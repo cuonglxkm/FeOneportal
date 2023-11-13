@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {SecurityGroup, SecurityGroupSearchCondition} from "../model/interface/security-group";
+import {SecurityGroupSearchCondition} from "../model/interface/security-group";
 import SecurityGroupRule, {
     SecurityGroupRuleCreateForm,
     SecurityGroupRuleGetPage
@@ -34,7 +34,7 @@ export class SecurityGroupRuleService extends BaseService {
         })
     }
 
-    getInbound(form: SecurityGroupRuleGetPage, condition: SecurityGroupSearchCondition):Observable<SecurityGroupRule[]> {
+    getInbound(form: SecurityGroupRuleGetPage, condition: SecurityGroupSearchCondition): Observable<SecurityGroupRule[]> {
         let params = new HttpParams();
         params = params.append('userId', condition.userId);
         params = params.append('projectId', condition.projectId);
@@ -44,7 +44,7 @@ export class SecurityGroupRuleService extends BaseService {
         params = params.append('securityGroupId', form.securityGroupId);
         params = params.append('direction', form.direction);
 
-        return this.http.get<SecurityGroupRule[]>(this.baseUrl +'/security_group/rule/getpaging', {
+        return this.http.get<SecurityGroupRule[]>(this.baseUrl + '/security_group/rule/getpaging', {
             headers: this.getHeaders(),
             params: params
         })
