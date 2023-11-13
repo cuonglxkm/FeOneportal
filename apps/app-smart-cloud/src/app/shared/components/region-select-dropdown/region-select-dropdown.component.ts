@@ -1,5 +1,4 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {RegionModel} from "../../models/region.model";
 import {RegionService} from "../../services/region.service";
 
@@ -11,7 +10,6 @@ import {RegionService} from "../../services/region.service";
 export class RegionSelectDropdownComponent implements OnInit {
 
   @Output() valueChanged = new EventEmitter();
-
   selectedRegion: RegionModel;
   listRegion: RegionModel[] = [
     {
@@ -29,13 +27,17 @@ export class RegionSelectDropdownComponent implements OnInit {
     this.regionService.getAll().subscribe(data => {
       console.log(data);
       this.listRegion = data;
+
+      if (this.listRegion.length > 0) {
+        this.selectedRegion = this.listRegion[0];
+        this.valueChanged.emit(this.listRegion[0])
+      }
     }, error => {
       this.listRegion = []
     });
   }
 
   regionChanged(region: RegionModel) {
-    console.log(region);
     this.valueChanged.emit(region);
   }
 
