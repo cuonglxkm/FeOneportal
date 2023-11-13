@@ -28,7 +28,7 @@ const routes: Routes = [
   {
     path: "ssh-key",
     component: SshKeyComponent
-  }
+  },
   {
     path: 'security-group',
     component: SecurityGroupComponent
