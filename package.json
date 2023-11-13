@@ -37,6 +37,7 @@
     "@zxcvbn-ts/language-en": "2.1.0",
     "angular-animations": "^0.11.0",
     "angularx-qrcode": "^15.0.1",
+    "antd-css-utilities": "^2.0.4",
     "crypto-js": "^4.1.1",
     "date-fns": "2.30.0",
     "driver.js": "0.9.8",
