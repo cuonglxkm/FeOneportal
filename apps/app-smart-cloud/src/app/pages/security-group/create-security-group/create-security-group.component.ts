@@ -24,7 +24,7 @@ export class CreateSecurityGroupComponent {
 
     validateForm: FormGroup<{
         name: FormControl<string>;
-        descripton: FormControl<string>;
+        description: FormControl<string>;
     }>;
 
     submitForm(): void {
@@ -61,7 +61,7 @@ export class CreateSecurityGroupComponent {
         this.validateForm = this.fb.group({
             name: ['', [Validators.required, Validators.maxLength(50),
                 AppValidator.startsWithValidator('SG_')]],
-            descripton: ['', [Validators.maxLength(500)]]
+            description: ['', [Validators.maxLength(500)]]
         });
     }
 
