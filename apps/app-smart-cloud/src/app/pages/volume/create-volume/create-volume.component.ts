@@ -5,6 +5,7 @@ import {VmDto} from "../dto/vm.dto";
 import {VolumeService} from "../volume.service";
 import {PriceVolumeDto} from "../dto/price-volume.dto";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {CreateVolumeDto} from "../dto/create-volume.dto";
 
 @Component({
   selector: 'app-create-volume',
@@ -27,11 +28,56 @@ export class CreateVolumeComponent implements OnInit {
   vmList: NzSelectOptionInterface[] = [];
   expiryTimeList: NzSelectOptionInterface[] = [
     {label: '1', value: 1},
+    {label: '3', value: 3},
     {label: '6', value: 6},
+    {label: '9', value: 9},
     {label: '12', value: 12},
+    {label: '24', value: 24},
   ];
-  snapshotList: NzSelectOptionInterface[] = [];
+  snapshotList: NzSelectOptionInterface[] = [
+    {label: 'snapshot_01', value: 100001},
+    {label: 'snapshot_02', value: 100002},
+    {label: 'snapshot_03', value: 100003},
+  ];
 
+  createVolumeInfo: CreateVolumeDto = {
+    volumeType: "",
+    volumeSize: 1,
+    description: '',
+    instanceToAttachId: null,
+    isMultiAttach: false,
+    isEncryption: false,
+    vpcId: null,
+    oneSMEAddonId: null,
+    serviceType: null,
+    serviceInstanceId: null,
+    customerId:   null,
+    createDate: null,
+    expireDate: null,
+    saleDept:   null,
+    saleDeptCode:   null,
+    contactPersonEmail:   null,
+    contactPersonPhone:   null,
+    contactPersonName:   null,
+    note:   null,
+    createDateInContract:   null,
+    am:   null,
+    amManager:  null,
+    isTrial:  null,
+    offerId: 2,
+    couponCode:   null,
+    dhsxkd_SubscriptionId:   null,
+    dSubscriptionNumber:  null,
+    dSubscriptionType:   null,
+    oneSME_SubscriptionId:  null,
+    actionType:   null,
+    regionId:   null,
+    serviceName:   null,
+    typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    userEmail:   null,
+    actorEmail:   null,
+    createFromSnapshotId:   null,
+  };
   volumeExpiryTime: any;
 
   volumeStorage = 1;
@@ -41,8 +87,6 @@ export class CreateVolumeComponent implements OnInit {
   snapshot: any;
   mota = '';
   protected readonly onchange = onchange;
-
-  volumeType= 'ssd';
 
   //Phi Volume
   priceVolumeInfo: PriceVolumeDto = {
@@ -74,6 +118,11 @@ export class CreateVolumeComponent implements OnInit {
         }
       })
     }
+  }
+
+  createNewVolume(){
+    //TO DO
+    console.log(this.createVolumeInfo);
   }
 
 

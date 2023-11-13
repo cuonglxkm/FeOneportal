@@ -33,7 +33,7 @@
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn loại Volume</nz-form-label>
   <br>
 
-  <nz-radio-group [(ngModel)]="volumeInfo.volumeType">
+  <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()">
     <div style="display: flex; padding: 20px;">
       <div nz-radio nzValue="1" [ngStyle]="{'background-color': volumeInfo.volumeType === '1' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">

@@ -8,6 +8,8 @@ import {GetListVolumeModel} from "./model/get-list-volume.model";
 import {GetAllVmModel} from "./model/get-all-vm.model";
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {PriceVolumeDto} from "./dto/price-volume.dto";
+import {CreateVolumeRequestModel} from "./model/create-volume/create-volume-request.model";
+import {CreateVolumeResponseModel} from "./model/create-volume/create-volume-response.model";
 @Injectable({
   providedIn: 'root'
 })
@@ -35,7 +37,7 @@ export class VolumeService extends BaseService {
     )
   }
 
-  //tinh phi Volume
+  //tinh phi Volume : FAKE
   getPremium(volumeType: string , size: number, duration: number):  Observable<PriceVolumeDto>{
     let urlResult = this.getConditionGetPremiumVolume(volumeType,size,duration);
     return this.http.get<PriceVolumeDto>(urlResult).pipe(
@@ -52,6 +54,11 @@ export class VolumeService extends BaseService {
     );
   }
 
+  createNewVolume(request: CreateVolumeRequestModel ): Observable<CreateVolumeResponseModel>{
+    return this.http.post<CreateVolumeResponseModel>('http://172.16.68.200:1003/orders/', request).pipe(
+      catchError(this.handleError<CreateVolumeResponseModel>('create volume error.'))
+    );
+  }
 
 
   constructor(private http: HttpClient , private message: NzMessageService) {

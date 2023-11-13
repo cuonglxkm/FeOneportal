@@ -5,7 +5,7 @@
   <hr>
   <br>
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Volume</nz-form-label>
-  <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="volumeName" type="text"/>
+  <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="createVolumeInfo.serviceName" type="text"/>
   <br>
   <br>
   <p>
@@ -20,7 +20,7 @@
 
     <nz-select nzSize="default"
                [nzPlaceHolder]="'-Chọn Snapshot-'"
-               [(ngModel)]="snapshot"
+               [(ngModel)]="createVolumeInfo.createFromSnapshotId"
                style="width: 100%;"
     >
       <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
@@ -32,15 +32,15 @@
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn loại Volume</nz-form-label>
   <br>
 
-  <nz-radio-group [(ngModel)]="volumeType" (ngModelChange)="getPremiumVolume(volumeType,volumeStorage,volumeExpiryTime)">
+  <nz-radio-group [(ngModel)]="createVolumeInfo.volumeType" (ngModelChange)="getPremiumVolume(createVolumeInfo.volumeType,volumeStorage,volumeExpiryTime)">
     <div style="display: flex; padding: 20px;">
-      <div nz-radio nzValue="hdd" [ngStyle]="{'background-color': volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="hdd" [ngStyle]="{'background-color': createVolumeInfo.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         HDD
         <br>
         Additional description and information about copywriting.
       </div>
-      <div nz-radio nzValue="ssd" [ngStyle]="{'background-color': volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="ssd" [ngStyle]="{'background-color': createVolumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         SSD
         <br>
@@ -65,7 +65,8 @@
     <tbody>
     <tr>
       <td>
-        <nz-input-number [(ngModel)]="volumeStorage" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+        <nz-input-number [(ngModel)]="createVolumeInfo.volumeSize" (ngModelChange)="getPremiumVolume(createVolumeInfo.volumeType,volumeStorage,volumeExpiryTime)"
+                         [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
       </td>
       <td>200</td>
       <td>360.712</td>
@@ -75,15 +76,16 @@
   </nz-table>
   <br>
   <br>
-  <label nz-checkbox [(ngModel)]="isEncode">Mã hóa Volume</label>
+  <label nz-checkbox [(ngModel)]="createVolumeInfo.isEncryption">Mã hóa Volume</label>
   <br>
-  <label nz-checkbox [(ngModel)]="isAddVms">Gắn nhiều máy ảo</label>
+  <label nz-checkbox [(ngModel)]="createVolumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
   <br>
   <br>
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn máy ảo</nz-form-label>
   <br>
   <nz-select nzSize="default"
              [nzPlaceHolder]="'-Chọn máy ảo-'"
+             [(ngModel)]="createVolumeInfo.instanceToAttachId"
              style="width: 100%;"
   >
     <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
@@ -91,7 +93,7 @@
   <br>
   <br>
   <p>Mô tả</p>
-  <textarea rows="4" nz-input [(ngModel)]="mota"></textarea>
+  <textarea rows="4" nz-input [(ngModel)]="createVolumeInfo.description"></textarea>
   <br>
   <br>
 
@@ -102,7 +104,7 @@
              [nzPlaceHolder]="'-Chọn thời hạn sử dụng-'"
              [nzOptions]="expiryTimeList"
              [(ngModel)]="volumeExpiryTime"
-             (ngModelChange)="getPremiumVolume(volumeType,volumeStorage,volumeExpiryTime)"
+             (ngModelChange)="getPremiumVolume(createVolumeInfo.volumeType,volumeStorage,volumeExpiryTime)"
              style="width: 100%;"
   >
   </nz-select>
@@ -128,7 +130,7 @@
     <td style="border-bottom: none; text-align: right; padding-right: 30px;">
       <button nz-button nzType="primary" style="background-color: #9c9c9c; padding-right: 20px; width: 150px;">Hủy
       </button>
-      <button nz-button nzType="primary" style="width: 200px;">Tạo mới</button>
+      <button nz-button nzType="primary" style="width: 200px;" (click)="createNewVolume()">Tạo mới</button>
     </td>
   </tr>
   </tbody>
