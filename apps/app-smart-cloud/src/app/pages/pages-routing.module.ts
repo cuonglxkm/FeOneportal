@@ -8,6 +8,7 @@ import {VolumeComponent} from "./volume/volume.component";
 import {CreateVolumeComponent} from "./volume/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/detail-volume/detail-volume.component";
 import {EditVolumeComponent} from "./volume/edit-volume/edit-volume.component";
+import { SshKeyComponent } from "./ssh-key/ssh-key.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
@@ -34,11 +35,14 @@ const routes: Routes = [
   {
     path: 'volume/edit/:id',
     component: EditVolumeComponent
+  }, {
+    path: 'vm',
+    component: V1Component
   },
-
-
-
-
+  {
+    path: "ssh-key",
+    component: SshKeyComponent
+  }
 ]
 
 @NgModule({

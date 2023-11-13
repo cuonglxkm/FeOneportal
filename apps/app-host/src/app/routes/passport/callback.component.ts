@@ -88,7 +88,7 @@ export class CallbackComponent implements OnInit {
             context: new HttpContext().set(ALLOW_ANONYMOUS, true)
           }).pipe(switchMap(user => {
             let additionInfo = {
-              name: user.fullName,
+              name: user.name,
               userId: user.id
             }
             info = {...info, ...additionInfo}

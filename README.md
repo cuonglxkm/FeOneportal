@@ -7,8 +7,7 @@
 ## Install Nx
 
 ```
-npm install -g nx
-```
+ ```
 Check version
 ```
 nx --version
