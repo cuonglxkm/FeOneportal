@@ -16,6 +16,10 @@ const routes: Routes = [
     component: V1Component
   },
   {
+    path: "ssh-key",
+    component: SshKeyComponent
+  }
+  {
     path: 'vm',
     loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule)
   }
