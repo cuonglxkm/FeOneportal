@@ -7,6 +7,7 @@ import {V1Component} from "./test/v1.component";
 import {VolumeComponent} from "./volume/volume.component";
 import {CreateVolumeComponent} from "./volume/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/detail-volume/detail-volume.component";
+import {EditVolumeComponent} from "./volume/edit-volume/edit-volume.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
@@ -29,6 +30,10 @@ const routes: Routes = [
   {
     path: 'volume/detail/:id',
     component: DetailVolumeComponent
+  },
+  {
+    path: 'volume/edit/:id',
+    component: EditVolumeComponent
   },
 
 

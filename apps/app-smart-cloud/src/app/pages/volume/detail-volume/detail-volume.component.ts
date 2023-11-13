@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {VolumeDTO} from "../dto/volume.dto";
 import {VolumeService} from "../volume.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
-
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {PopupAddVolumeComponent} from "../popup-volume/popup-add-volume.component";
+import {PopupExtendVolumeComponent} from "../popup-volume/popup-extend-volume.component";
 @Component({
   selector: 'app-detail-volume',
   templateUrl: './detail-volume.component.html',
@@ -26,7 +28,9 @@ export class DetailVolumeComponent implements OnInit {
 
   private getVolumeById(idVolume: string) {
 
-    this.volumeService.getVolummeById(idVolume).subscribe(data => {
+
+
+    this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null){
         this.nzMessage.create('success', 'Tìm kiếm thông tin Volume thành công.')
         this.volumeInfo = data;
@@ -37,6 +41,43 @@ export class DetailVolumeComponent implements OnInit {
     })
   }
 
-  constructor(private volumeService: VolumeService, private activatedRoute: ActivatedRoute, private nzMessage:NzMessageService) {
+  openPopupExtend(){
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Gia hạn Volume',
+      nzContent: PopupExtendVolumeComponent,
+      nzFooter: [
+        {
+          label: 'Hủy',
+          type: 'default',
+          onClick: () => modal.destroy()
+        },
+        {
+          label: 'Đồng ý',
+          type: 'primary',
+          onClick: () => {
+            const selected = modal.getContentComponent().selectedItem;
+            this.extendVolume();
+            modal.destroy()
+          }
+        }
+      ]
+    });
   }
+  extendVolume(){
+    console.log('Gia hạn thành công');
+  }
+
+  navigateEditVolume(idVolume:number){
+    this.router.navigate(['/app-smart-cloud/volume/edit/'+idVolume]);
+  }
+
+  volumeStatus: Map<String, string>;
+  constructor(private volumeSevice: VolumeService,  private router: Router, private activatedRoute: ActivatedRoute, private nzMessage:NzMessageService, private modalService:NzModalService) {
+    this.volumeStatus = new Map<String, string>();
+    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
+    this.volumeStatus.set('ERROR', 'Lỗi');
+    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+  }
+
+  protected readonly navigator = navigator;
 }

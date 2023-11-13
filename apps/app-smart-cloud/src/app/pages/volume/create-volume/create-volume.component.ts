@@ -3,6 +3,8 @@ import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {GetAllVmModel} from "../model/get-all-vm.model";
 import {VmDto} from "../dto/vm.dto";
 import {VolumeService} from "../volume.service";
+import {PriceVolumeDto} from "../dto/price-volume.dto";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-create-volume',
@@ -24,14 +26,15 @@ export class CreateVolumeComponent implements OnInit {
   volumeName = '';
   vmList: NzSelectOptionInterface[] = [];
   expiryTimeList: NzSelectOptionInterface[] = [
-    {label: '1', value: '1'},
-    {label: '6', value: '6'},
-    {label: '12', value: '12'},
+    {label: '1', value: 1},
+    {label: '6', value: 6},
+    {label: '12', value: 12},
   ];
   snapshotList: NzSelectOptionInterface[] = [];
 
-  expiryTime: any;
-  storage = 1;
+  volumeExpiryTime: any;
+
+  volumeStorage = 1;
   isEncode = false;
   isAddVms = false;
   isInitSnapshot = false;
@@ -39,12 +42,16 @@ export class CreateVolumeComponent implements OnInit {
   mota = '';
   protected readonly onchange = onchange;
 
-  radioValue = '1';
+  volumeType= 'ssd';
 
-  changeExpTime() {
-    console.log('ExpTime: ', this.expiryTime);
-  }
-  constructor(private volumeSevice: VolumeService) {
+  //Phi Volume
+  priceVolumeInfo: PriceVolumeDto = {
+    price: 0,
+    totalPrice: 0,
+    tax:0
+  };
+
+  constructor(private volumeSevice: VolumeService ,  private nzMessage:NzMessageService) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -56,6 +63,19 @@ export class CreateVolumeComponent implements OnInit {
     })
 
   }
+
+  getPremiumVolume(volumeType: string, size: number, duration: number){
+    if(volumeType !== undefined && volumeType != null && size !== undefined && size != null  && duration !== undefined && duration != null ){
+      this.volumeSevice.getPremium(volumeType,size,duration).subscribe(data => {
+        if(data != null ){
+          this.nzMessage.create('success', 'Phí đã được cập nhật.')
+          this.priceVolumeInfo = data;
+          console.log(data);
+        }
+      })
+    }
+  }
+
 
 
 }

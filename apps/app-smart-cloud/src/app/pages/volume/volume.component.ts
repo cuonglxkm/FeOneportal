@@ -198,7 +198,7 @@ export class VolumeComponent implements OnInit {
     this.volumeStatusSearch = null;
   }
 
-  getDetailVolume(idVolume: string){
+  getDetailVolume(idVolume: number){
     console.log(idVolume);
     this.router.navigate(['/app-smart-cloud/volume/detail/'+idVolume]);
   }

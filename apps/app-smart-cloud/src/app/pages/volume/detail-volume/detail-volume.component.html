@@ -1,4 +1,17 @@
 <app-dashboard-v1 [headerInfo]="headerInfo" xmlns="http://www.w3.org/1999/html"></app-dashboard-v1>
+
+<div class="action-detail-volume">
+  <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button nzType="primary">
+    <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
+  </button>
+  <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178" (click)="navigateEditVolume(volumeInfo.id)"
+          nz-button nzType="primary">
+    <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+  </button>
+</div>
+
+
+
 <div class="detail-volume">
   <h3>Chi tiết dịch vụ</h3>
   <br>
@@ -64,22 +77,22 @@
   <nz-table [nzTemplateMode]="true" style="border: none;">
     <tbody>
 
-      <td style="border-bottom: none; ">
-        <p>
-          <b>Tên Volume: </b>
-          {{volumeInfo.name}}
-        </p>
-      </td>
-      <td style="border-bottom: none; ">
-        <p>
-          <b>Loại Volume: </b>
-          {{volumeInfo.volumeType}}
-        </p>
-      </td>
+    <td style="border-bottom: none; ">
+      <p>
+        <b>Tên Volume: </b>
+        {{volumeInfo.name}}
+      </p>
+    </td>
+    <td style="border-bottom: none; ">
+      <p>
+        <b>Loại Volume: </b>
+        {{volumeInfo.volumeType}}
+      </p>
+    </td>
     </tbody>
   </nz-table>
 
-  <nz-table  [nzTemplateMode]="true">
+  <nz-table [nzTemplateMode]="true">
     <thead>
     <tr>
       <th>Dung lượng(GB)</th>
@@ -92,8 +105,10 @@
     <tr>
       <td>{{ volumeInfo.sizeInGB }}</td>
       <td>{{ volumeInfo.iops }}</td>
-      <td>{{ volumeInfo.status }}</td>
-      <td>{{ volumeInfo.bootable?'VOLUME ROOT':'VOLUME GẮN THÊM' }}</td>
+      <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
     </tr>
     </tbody>
   </nz-table>
@@ -117,7 +132,7 @@
     <b>
       Thời gian khởi tạo:
     </b>
-    {{volumeInfo.createDate}}
+    <span>{{ volumeInfo.createDate | date:'dd/MM/yyyy' }}</span>
   </p>
 
 

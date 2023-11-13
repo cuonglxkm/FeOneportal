@@ -13,10 +13,13 @@ import {PopupAddVolumeComponent} from "./volume/popup-volume/popup-add-volume.co
 import {PopupDeleteVolumeComponent} from "./volume/popup-volume/popup-delete-volume.component";
 import {CreateVolumeComponent} from "./volume/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/detail-volume/detail-volume.component";
+import {PopupExtendVolumeComponent} from "./volume/popup-volume/popup-extend-volume.component";
+import {EditVolumeComponent} from "./volume/edit-volume/edit-volume.component";
 
 
 @NgModule({
-  declarations: [UserProfileComponent, V1Component, VolumeComponent, PopupAddVolumeComponent, PopupDeleteVolumeComponent, CreateVolumeComponent, DetailVolumeComponent],
+  declarations: [UserProfileComponent, V1Component, VolumeComponent, PopupAddVolumeComponent,
+    PopupDeleteVolumeComponent, CreateVolumeComponent, DetailVolumeComponent, PopupExtendVolumeComponent, EditVolumeComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

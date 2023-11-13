@@ -7,6 +7,7 @@ import {BaseService} from "../../shared/services/base.service";
 import {GetListVolumeModel} from "./model/get-list-volume.model";
 import {GetAllVmModel} from "./model/get-all-vm.model";
 import { NzMessageService } from 'ng-zorro-antd/message';
+import {PriceVolumeDto} from "./dto/price-volume.dto";
 @Injectable({
   providedIn: 'root'
 })
@@ -29,9 +30,17 @@ export class VolumeService extends BaseService {
   }
 
   getVolummeById(volumeId: string){
-    return this.http.get<VolumeDTO>('http://172.16.68.200:1009/volumes/'+volumeId).pipe(
+    return this.http.get<VolumeDTO>(this.urlVolume+'/'+volumeId).pipe(
       catchError(this.handleError<VolumeDTO>('get volume-detail error'))
     )
+  }
+
+  //tinh phi Volume
+  getPremium(volumeType: string , size: number, duration: number):  Observable<PriceVolumeDto>{
+    let urlResult = this.getConditionGetPremiumVolume(volumeType,size,duration);
+    return this.http.get<PriceVolumeDto>(urlResult).pipe(
+      catchError(this.handleError<PriceVolumeDto>('get premium-volume error'))
+    );
   }
 
   //get All VMs
@@ -42,6 +51,7 @@ export class VolumeService extends BaseService {
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
     );
   }
+
 
 
   constructor(private http: HttpClient , private message: NzMessageService) {
@@ -127,6 +137,33 @@ export class VolumeService extends BaseService {
     }
     return urlResult;
 
+  }
+  private getConditionGetPremiumVolume( volumeType: string, size: number , duration: number): string{
+    let urlResult = this.urlVolume+'/getcreateprice';
+    let count = 0;
+    if(volumeType !== undefined && volumeType != null){
+      urlResult += '?volumeType='+volumeType;
+      count++;
+    }
+    if(size !== undefined && size !=null){
+      if(count == 0){
+        urlResult += '?size='+size;
+        count++;
+      }else{
+        urlResult += '&size='+size;
+      }
+    }
+    if(duration !== undefined && duration !=null){
+      if(count == 0){
+        urlResult += '?duration='+duration;
+        count++;
+      }else{
+        urlResult += '&duration='+duration;
+      }
+    }
+
+
+    return urlResult;
   }
 
 }
