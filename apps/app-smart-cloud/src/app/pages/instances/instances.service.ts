@@ -16,7 +16,7 @@ import { BaseHttpService } from 'src/app/core/services/base-http.service';
 @Injectable({
   providedIn: 'root',
 })
-export class VMService {
+export class InstancesService {
   private readonly http2 = inject(HttpClient);
   private readonly baseUrl = 'http://172.16.68.200:1009';
 
@@ -113,10 +113,16 @@ export class VMService {
   }
 
   getById(id: number, checkState: boolean = false): Observable<any> {
-    let url_ = `/instances${id}?checkState=${checkState}`;
+    let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
     return this.http2.get<any>(this.baseUrl + url_);
+  }
+
+  delete(id: number): Observable<any> {
+    let url_ = `/instances/${id}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.delete<any>(this.baseUrl + url_);
   }
 
   create(data: any): Observable<any> {
@@ -127,9 +133,5 @@ export class VMService {
 
   update(todoId: string, todoData: InstancesModel): Observable<InstancesModel> {
     return this.http.put<InstancesModel>(`/api/todos/${todoId}`, todoData);
-  }
-
-  delete(todoId: string): Observable<never> {
-    return this.http.delete<never>(`/api/todos/${todoId}`);
   }
 }

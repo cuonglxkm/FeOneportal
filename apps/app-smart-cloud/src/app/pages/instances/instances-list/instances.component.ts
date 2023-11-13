@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
   TemplateRef,
   ViewChild,
@@ -17,7 +18,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { finalize } from 'rxjs/operators';
-import { VMService } from '../instances.service';
+import { InstancesService } from '../instances.service';
 import { AntTableConfig } from 'src/app/core/models/interfaces/table';
 import { PageHeaderType } from 'src/app/core/models/interfaces/page';
 import { Role } from 'src/app/core/models/interfaces/role';
@@ -25,6 +26,7 @@ import { SearchCommonVO } from 'src/app/core/models/interfaces/types';
 import { InstancesModel } from '../instances.model';
 import { async } from 'rxjs';
 import { da } from 'date-fns/locale';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 class SearchParam {
   status: string = '';
@@ -82,7 +84,8 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
 
   constructor(
-    private dataService: VMService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -126,16 +129,19 @@ export class InstancesComponent implements OnInit {
           command: 'restart',
           id: this.actionData.id,
         };
-        this.dataService
-          .postAction(this.actionData.id, body)
-          .subscribe((data: any) => {
+        this.dataService.postAction(this.actionData.id, body).subscribe(
+          (data: any) => {
             console.log(data);
             if (data == true) {
               this.message.success('Khởi động lại máy ảo thành công');
             } else {
               this.message.error('Khởi động lại máy ảo không thành công');
             }
-          });
+          },
+          () => {
+            this.message.error('Khởi động lại máy ảo không thành công');
+          }
+        );
         break;
       case 8: // Tắt máy ảo
         this.isVisible08 = false;
@@ -143,15 +149,18 @@ export class InstancesComponent implements OnInit {
           command: 'shutdown',
           id: this.actionData.id,
         };
-        this.dataService
-          .postAction(this.actionData.id, body)
-          .subscribe((data: any) => {
+        this.dataService.postAction(this.actionData.id, body).subscribe(
+          (data: any) => {
             if (data == true) {
               this.message.success('Tắt máy ảo thành công');
             } else {
               this.message.error('Tắt máy ảo không thành công');
             }
-          });
+          },
+          () => {
+            this.message.error('Tắt máy ảo không thành công');
+          }
+        );
         break;
       default:
         this.isVisible01 = false;
@@ -185,25 +194,11 @@ export class InstancesComponent implements OnInit {
     this.getDataList();
   }
 
-  getDataList(e?: NzTableQueryParams) {
+  getDataList(reset = false) {
+    if (reset) {
+      this.pageIndex = 1;
+    }
     this.loading = true;
-
-    // this.tableConfig.loading = true;
-    // const params: SearchCommonVO<any> = {
-    //   pageSize: this.tableConfig.pageSize | 10,
-    //   pageNum: e?.pageIndex || this.tableConfig.pageIndex |1,
-    //   filters: this.searchParam
-    // };
-    // this.dataService
-    //   .getUsers2(1, 10, this.sortKey!, this.sortValue!, this.searchGenderList)
-    //   .subscribe((data: any) => {
-    //     this.loading = false;
-    //     this.dataList = data.results;
-    //     this.tableConfig.total = 20;
-    //     this.tableConfig.pageIndex = 1;
-    //     this.tableLoading(false);
-    //     this.checkedCashArray = [...this.checkedCashArray];
-    //   });
     this.dataService
       .search(
         this.pageIndex,
@@ -232,13 +227,6 @@ export class InstancesComponent implements OnInit {
       });
   }
 
-  // Setting permissions
-  setRole(id: number): void {
-    this.router.navigate(['/admin/system/role-manager/set-role'], {
-      queryParams: { id: id },
-    });
-  }
-
   // trigger table change detection
   tableChangeDectction(): void {
     // Changing the reference triggers change detection.
@@ -249,20 +237,6 @@ export class InstancesComponent implements OnInit {
   tableLoading(isLoading: boolean): void {
     this.tableConfig.loading = isLoading;
     this.tableChangeDectction();
-  }
-
-  add(): void {
-    // this.modalService.show({ nzTitle: 'New' }).subscribe(
-    //   res => {
-    //     if (!res || res.status === ModalBtnStatus.Cancel) {
-    //       return;
-    //     }
-    //     const param = { ...res.modalValue };
-    //     this.tableLoading(true);
-    //     this.addEditData(param, 'addRoles');
-    //   },
-    //   error => this.tableLoading(false)
-    // );
   }
 
   reloadTable(): void {
@@ -344,6 +318,6 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreate() {
-    this.router.navigate(['/pages/vm/instances-create']);
+    this.router.navigate(['/app-smart-cloud/vm/instances-create']);
   }
 }

@@ -1,5 +1,19 @@
-<!-- <page-header [title]="'Thông tin máy ảo'">
+<!-- <page-header [title]="'Tạo máy ảo'">
+  <div class="text-right">
+    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
+  </div>
   </page-header> -->
+<div page-header class="alain-default__content-title">
+  <h1 class="h1">Tạo máy ảo</h1>
+
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  </div>
+</div>
 
 <form
   nz-form
@@ -15,7 +29,8 @@
           <nz-form-control nzErrorTip="Vui lòng nhập tên máy ảo">
             <input
               nz-input
-              formControlName="name"  [(ngModel)]="createInstances.name"
+              formControlName="name"
+              [(ngModel)]="createInstances.name"
               id="name"
               placeholder="Nhập tên máy ảo"
             />
@@ -107,7 +122,7 @@
       </ng-template>
     </ng-container> -->
 
-    <br/>
+    <br />
     <nz-row nzGutter="16">
       <h6 class="h6">Chọn loại Volume *</h6>
     </nz-row>
@@ -176,21 +191,41 @@
 
     <nz-tabset>
       <nz-tab nzTitle="Gói cấu hình">
-        <nz-carousel [nzEffect]="effect" style="height: 300px">
+        <nz-carousel
+          [nzEffect]="effect"
+          style="overflow: initial"
+          style="height: 200px"
+        >
           <div nz-carousel-content *ngFor="let page of pagedCardList">
             <div nz-row>
               <div nz-col nzSpan="6" *ngFor="let data of page">
-                <nz-card class="card-border-custom text-center">
-                  <div>
-                    <h4 class="h4">{{ data.flavorName }}</h4>
-                    <h4 class="h4">{{ data.price }}đ/tháng</h4>
-                    <span>đ/giờ</span>
-                  </div>
-                  <hr />
-                  <div>
-                    <p>{{ data.description }}</p>
-                  </div>
-                </nz-card>
+                <table class="flavor-card text-center"  (click)="onInputFlavors(data.id)">
+                  <tbody
+                    class="flavor-body"
+                    [id]="'flavor_' + data.id"
+                    [class.initialClassFlavor]="
+                    selectedElementFlavor === 'flavor_' + data.id && isInitialClass
+                    "
+                    [class.newClassFlavor]="
+                    selectedElementFlavor === 'flavor_' + data.id && isNewClass
+                    "
+                    (click)="selectElementInputFlavors('flavor_' + data.id)"
+                  >
+                    <tr>
+                      <div>
+                        <b class="h4">{{ data.flavorName }}</b><br>
+                        <b class="h4">{{ data.price }}đ/tháng</b><br>
+                        <span>đ/giờ</span>
+                      </div>
+                    </tr>
+                    <tr >
+                      <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
+                      <div>
+                        <p>{{ data.description }}</p>
+                      </div>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -259,7 +294,7 @@
         </div>
       </nz-tab>
     </nz-tabset>
-    <br/>
+    <br />
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
@@ -315,25 +350,26 @@
           </nz-form-control>
         </nz-form-item>
         <div>
-          <nz-card class="card-warning-custom">
-            <nz-card-meta
-              [nzAvatar]="nzAvatarWarning"
-              [nzDescription]="nzDescriptionWarning3"
-            >
-              <ng-template #nzAvatarWarning>
-                <nz-avatar nzSize="large" nzIcon="user" />
-              </ng-template>
-              <ng-template #nzDescriptionWarning3>
-                <ellipsis>
-                  Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
-                  hình Security Group trong mục Truy cập và Bảo mật
-                </ellipsis>
-              </ng-template>
-            </nz-card-meta>
-          </nz-card>
+          <nz-alert
+            nzType="warning"
+            [nzMessage]="nzDescriptionWarning3"
+            nzShowIcon
+          ></nz-alert>
+          <ng-template #nzDescriptionWarning3>
+            <div>
+              Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
+              hình Security Group <br />
+              trong mục <u>Truy cập và Bảo mật</u>
+            </div>
+          </ng-template>
         </div>
       </nz-col>
     </nz-row>
+    <nz-col nzLg="24" nzMd="12" nzSm="24">
+      <nz-form-label nzFor="name"
+        >Chọn phương thức truy cập máy ảo *</nz-form-label
+      >
+    </nz-col>
     <nz-row nzGutter="16">
       <nz-radio-group
         style="width: 100%; display: inline-flex"
@@ -416,22 +452,21 @@
         </nz-col>
 
         <nz-col nzLg="24" nzMd="12" nzSm="24">
-          <nz-card class="card-warning-custom">
-            <nz-card-meta
-              [nzAvatar]="nzAvatarWarning"
-              [nzDescription]="nzDescriptionWarning06"
-            >
-              <ng-template #nzAvatarWarning>
-                <nz-avatar nzSize="large" nzIcon="user" />
-              </ng-template>
-              <ng-template #nzDescriptionWarning06>
-                <ellipsis>Quy tắc đặt mật khẩu: </ellipsis>
-              </ng-template>
-            </nz-card-meta>
-          </nz-card>
+          <nz-alert
+            nzType="warning"
+            [nzMessage]="nzDescriptionWarning06"
+            nzShowIcon
+          ></nz-alert>
+          <ng-template #nzDescriptionWarning06>
+            <div>
+              Quy tắc đặt mật khẩu: Độ dài của một mật khẩu được sử dụng trực
+              tuyến cần phải chứa tối thiểu là 12 ký tự, sử dụng hỗn hợp bao gồm
+              các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt.
+            </div>
+          </ng-template>
         </nz-col>
       </div>
-      <div *ngIf="activeBlockSSHKey">
+      <div *ngIf="activeBlockSSHKey" style="width: 100%">
         <nz-col nzLg="24" nzMd="12" nzSm="24">
           <nz-form-item>
             <nz-form-label>Chọn SSH key *</nz-form-label>
@@ -451,26 +486,21 @@
         </nz-col>
 
         <nz-col nzLg="24" nzMd="12" nzSm="24">
-          <nz-card class="card-warning-custom">
-            <nz-card-meta
-              [nzAvatar]="nzAvatarWarning"
-              [nzDescription]="nzDescriptionWarning"
-            >
-              <ng-template #nzAvatarWarning>
-                <nz-avatar nzSize="large" nzIcon="user" />
-              </ng-template>
-              <ng-template #nzDescriptionWarning>
-                <ellipsis
-                  >Chúng tôi khuyến cáo sử dụng SSH Key để đảm an toàn bảo mật
-                  cho máy chủ của quý khách. Thông tin hướng dẫn sử dụng về SSH
-                  key cho máy chủ có thể xem tại đây.
-                  <br />
-                  Mật khẩu đăng nhập vào máy chủ sẽ được tạo tự động và gửi vào
-                  email của quý khách khi máy chủ được tạo thành công</ellipsis
-                >
-              </ng-template>
-            </nz-card-meta>
-          </nz-card>
+          <nz-alert
+            nzType="warning"
+            [nzMessage]="nzDescriptionWarning07"
+            nzShowIcon
+          ></nz-alert>
+          <ng-template #nzDescriptionWarning07>
+            <div>
+              Chúng tôi khuyến cáo sử dụng SSH Key để đảm an toàn bảo mật cho
+              máy chủ của quý khách. Thông tin hướng dẫn sử dụng về SSH key cho
+              máy chủ có thể xem tại đây.
+              <br />
+              Mật khẩu đăng nhập vào máy chủ sẽ được tạo tự động và gửi vào
+              email của quý khách khi máy chủ được tạo thành công
+            </div>
+          </ng-template>
         </nz-col>
       </div>
     </nz-row>
@@ -497,7 +527,7 @@
 
   <nz-card nzTitle="Block Storage">
     <div *ngIf="!activeBlockStorage">
-      <nz-card nzHoverable class="card-add-custom">
+      <!-- <nz-card nzHoverable class="card-add-custom">
         <nz-card-meta
           [nzAvatar]="nzAvatar"
           [nzTitle]="nzTitle"
@@ -522,7 +552,24 @@
             >
           </ng-template>
         </nz-card-meta>
-      </nz-card>
+      </nz-card> -->
+      <nz-alert
+        (click)="initBlockStorage()"
+        nzType="success"
+        [nzMessage]="customMgTemplateVolumn"
+        nzDescription="Với các ứng dụng cần lưu trữ lớn, quý khách nên sử dụng ổ cứng
+      gắn ngoài để đảm bảo về dữ liệu và khả năng mở rộng dễ
+      dàng"
+        [nzIcon]="customIconTemplateVolumn"
+        nzShowIcon
+      ></nz-alert>
+
+      <ng-template #customIconTemplateVolumn>
+        <div>+</div>
+      </ng-template>
+      <ng-template #customMgTemplateVolumn>
+        <b>Bổ sung Volume</b>
+      </ng-template>
     </div>
     <div *ngIf="activeBlockStorage">
       <nz-card nzHoverable>
@@ -641,7 +688,7 @@
 
   <nz-card nzTitle="Network">
     <div *ngIf="!activeNetwork">
-      <nz-card nzHoverable class="card-add-custom">
+      <!-- <nz-card nzHoverable class="card-add-custom">
         <nz-card-meta
           [nzAvatar]="nzAvatarNetwork"
           [nzTitle]="nzTitleNetwork"
@@ -665,7 +712,23 @@
             >
           </ng-template>
         </nz-card-meta>
-      </nz-card>
+      </nz-card> -->
+      <nz-alert
+        (click)="initBlockStorage()"
+        nzType="success"
+        [nzMessage]="customMgTemplateNetwrok"
+        nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
+      gia đình hoặc doanh nghiệp để kết nối với internet"
+        [nzIcon]="customIconTemplateNetwrok"
+        nzShowIcon
+      ></nz-alert>
+
+      <ng-template #customIconTemplateNetwrok>
+        <div>+</div>
+      </ng-template>
+      <ng-template #customMgTemplateNetwrok>
+        <b>Bổ sung IP Public</b>
+      </ng-template>
     </div>
     <div *ngIf="activeNetwork">
       <nz-card nzHoverable>
@@ -759,7 +822,12 @@
     </nz-table>
     <div style="float: right; padding-top: 1%">
       <button nz-button nzType="default" (click)="cancel()">Hủy</button>
-      <button nz-button nzType="primary" [disabled]="form.invalid">
+      <button
+        nz-button
+        nzType="primary"
+        [disabled]="form.invalid"
+        (click)="save()"
+      >
         Tạo máy ảo
       </button>
     </div>

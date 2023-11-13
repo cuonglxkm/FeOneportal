@@ -1,48 +1,116 @@
-<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
+<page-header [title]="'Chi tiết máy ảo'" [action]="action">
+  <ng-template #action>
+    <button nz-button [nzType]="'primary'" (click)="activeGSCard()">
+      <i nz-icon nzType="video-camera"></i> <span>Giám sát</span>
+    </button>
+    <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
+      <i nz-icon nzType="edit"></i>
+      <span>Chỉnh sửa</span>
+    </button>
+    <button
+      nz-button
+      [nzType]="'primary'"
+      nz-dropdown
+      [nzDropdownMenu]="opMenu"
+    >
+      <span>Thêm</span> <i nz-icon nzType="down"></i>
+    </button>
+    <nz-dropdown-menu #opMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="continue(modalContentContiniue)">Gia hạn</li>
+        <li nz-menu-item>Truy cập</li>
+        <li nz-menu-item>Khởi động lại</li>
+        <li nz-menu-item>Tắt</li>
+        <li nz-menu-item (click)="resetPasswordFc(modalContentResetPassword)">
+          Reset Password
+        </li>
+        <li
+          nz-menu-item
+          style="color: red"
+          (click)="delete(modalContentDelete)"
+        >
+          Xóa
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </ng-template>
+</page-header>
+
+<nz-card nzTitle="Giám sát" [nzBordered]="false" *ngIf="activeGS">
+  <button nz-button (click)="refresh()" nzType="primary">Refresh</button>
+  <button *ngFor="let i of axisList" nz-button (click)="refresh(i)" nzType="primary">{{ i }} axis</button>
+  <g2-timeline [maxAxis]="maxAxis" [data]="chartData" [titleMap]="titleMap" [height]="300" />
+  
+  <g2-timeline *ngIf="offlineChartData" [data]="offlineChartData" [height]="289" [titleMap]="{ y1: '客流量', y2: '支付笔数' }" />
+</nz-card>
+
+<nz-card [nzBordered]="false" nzTitle="Chi tiết dịch vụ"  [nzLoading]="loading">
   <div nz-row>
-    <div nz-col nzSpan="12">
-      <nz-card [nzBordered]="false">
-        <nz-card-meta
-          [nzAvatar]="nzAvatarChuKyThanhToan"
-          [nzDescription]="nzDescriptionChuKyThanhToan"
-        >
-          <ng-template #nzAvatarChuKyThanhToan>
-            <nz-avatar nzSize="large" nzIcon="user" />
-          </ng-template>
-          <ng-template #nzDescriptionChuKyThanhToan>
-            <ellipsis> Quý khách hàng lưu ý, </ellipsis>
-          </ng-template>
-        </nz-card-meta>
-      </nz-card>
+    <div nz-col [nzSpan]="12">
+      <div nz-row [nzAlign]="'middle'">
+        <div nz-col [nzSpan]="2">
+          <i nz-icon nzType="laptop" class="display-2 text-blue"></i>
+        </div>
+        <div nz-col [nzSpan]="22">
+          <h4 class="fs-md text-black mb0">Chu kì thanh toán</h4>
+          <div class="text-black">1 tháng</div>
+          <div class="text-black">Chu kỳ hiện tại: 1</div>
+        </div>
+      </div>
     </div>
-    <div nz-col nzSpan="12">
-      <nz-card [nzBordered]="false">
-        <nz-card-meta
-          [nzAvatar]="nzAvatarThanhToan"
-          [nzDescription]="nzDescriptionThanhToan"
-        >
-          <ng-template #nzAvatarThanhToan>
-            <nz-avatar nzSize="large" nzIcon="user" />
-          </ng-template>
-          <ng-template #nzDescriptionThanhToan>
-            <ellipsis> Quý khách hàng lưu ý, </ellipsis>
-          </ng-template>
-        </nz-card-meta>
-      </nz-card>
+    <div nz-col [nzSpan]="12">
+      <div nz-row [nzAlign]="'middle'">
+        <div nz-col [nzSpan]="2">
+          <i nz-icon nzType="laptop" class="display-2 text-blue"></i>
+        </div>
+        <div nz-col [nzSpan]="22">
+          <h4 class="fs-md text-black mb0">Thông tin thanh toán kỳ tới</h4>
+          <div class="text-black">
+            Số tiền: 1.210.000 VNĐ ( Từ 23/10/2023 đến 24/11/2023)
+          </div>
+          <div class="text-black">Ngày thanh toán: 25/11/2023</div>
+        </div>
+      </div>
     </div>
   </div>
 </nz-card>
 
-<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
+<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo"  [nzLoading]="loading">
   <div nz-row>
     <div nz-col nzSpan="12">
-      <p>Tên máy ảo:</p>
-      <p>Gói cấu hình:</p>
-      <p>Trạng thái:</p>
-      <p>Thời gian khởi tạo:</p>
-      <p>Loại Volumn:</p>
-      <p>
-        <nz-card class="card-warning-custom">
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Tên máy ảo: <span class="fw-400">{{ instancesModel.name }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Gói cấu hình:<span class="fw-400">{{ instancesModel.flavorId }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Trạng thái:<span class="fw-400" style="color: #52c41a">{{
+            instancesModel.status
+          }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Thời gian khởi tạo:<span class="fw-400">{{
+            instancesModel.createdDate | date : 'dd/MM/yyyy'
+          }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Loại Volumn:<span class="fw-400">{{
+            instancesModel.volumeRootId
+          }}</span>
+        </h4>
+      </div>
+      <div>
+        <!-- <nz-card class="card-warning-custom">
           <nz-card-meta
             [nzAvatar]="nzAvatarWarning"
             [nzDescription]="nzDescriptionWarning3"
@@ -59,16 +127,54 @@
               </ellipsis>
             </ng-template>
           </nz-card-meta>
-        </nz-card>
-      </p>
+        </nz-card> -->
+        <nz-alert
+        nzType="warning"
+        [nzMessage]="nzDescriptionWarning06"
+        nzShowIcon
+      ></nz-alert>
+      <ng-template #nzDescriptionWarning06>
+        <div>
+          Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo
+                hiển thị loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong
+                thực tế máy ảo đã được lưu trữ tại phân vùng SSD để đảm bảo tối
+                đa hiệu năng và tốc độ truy xuất.
+        </div>
+      </ng-template>
+      </div>
     </div>
     <div nz-col nzSpan="12">
-      <p>Hệ điều hành:</p>
-      <p>Truy cập và bảo mật:</p>
-      <p>IP Public:</p>
-      <p>IP LAN:</p>
-      <p>Băng thông trong nước:</p>
-      <p>Băng thông quốc tế:</p>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Hệ điều hành:<span class="fw-400">{{ instancesModel.imageId }}</span
+          ><a (click)="navigateToChangeImage()">Thay đổi</a>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Truy cập và bảo mật:<span class="fw-400"></span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          IP Public:<span class="fw-400">{{ instancesModel.ipPublic }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          IP LAN:<span class="fw-400"></span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Băng thông trong nước:<span class="fw-400"></span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Băng thông quốc tế:<span class="fw-400"></span>
+        </h4>
+      </div>
     </div>
   </div>
 </nz-card>
@@ -77,7 +183,67 @@
   nzTitle="
 Block Storage"
 >
-  <div nz-row></div>
+  <div class="ant-table">
+    <table>
+      <thead class="ant-table-thead">
+        <tr>
+          <th>Loại ổ cứng</th>
+          <th>Tên Volume</th>
+          <th>VCPU</th>
+          <th>RAM (GB)</th>
+          <th>Dung lượng (GB)</th>
+          <th>Trạng thái Volume</th>
+          <th>Kiểu Volume</th>
+          <th>Giá theo tháng (VNĐ)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="ant-table-tbody">
+        <tr *ngFor="let data of listOfDataBlockStorage">
+          <td>
+            <label>
+              {{ data.type }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.name }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.vCPU }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.ram }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.capacity }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.status }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.typeVolume }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.price }}
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </nz-card>
 
 <nz-card
@@ -85,14 +251,52 @@ Block Storage"
   nzTitle="
 Network"
 >
-  <div nz-row></div>
+  <div class="ant-table">
+    <table>
+      <thead class="ant-table-thead">
+        <tr>
+          <th>Tên Network</th>
+          <th>MAC Address</th>
+          <th>FixedIPs</th>
+          <th>Status</th>
+          <th>Giá theo tháng (VNĐ)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="ant-table-tbody">
+        <tr *ngFor="let data of listOfDataNetwork">
+          <td>
+            <label>
+              {{ data.name }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.mac }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.ip }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.status }}
+            </label>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </nz-card>
 <nz-card
   [nzBordered]="false"
   nzTitle="
   Thành tiền"
 >
-<div>
+  <div class="">
     <nz-table>
       <tr>
         <td>Chi phí máy ảo ( 1 tháng )</td>
@@ -107,6 +311,72 @@ Network"
         <td class="float-right">1.000.000 VNĐ</td>
       </tr>
     </nz-table>
-  
   </div>
 </nz-card>
+
+<ng-template #modalContentDelete>
+  <nz-alert
+    nzType="warning"
+    [nzMessage]="customTemplateMessageDelete"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #customTemplateMessageDelete>
+    <div>
+      Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và <br /><b
+        >KHÔNG THỂ KHÔI PHỤC LẠI.
+      </b>
+    </div>
+  </ng-template>
+  <br />
+  <nz-form-item>
+    <input nz-input type="checkbox" checked style="width: 15px" />
+    <div style="width: 82%; margin-left: 1%">
+      Vui lòng cân nhắc thật kỹ trước khi click nút <b> Đồng ý.</b> Quý khách
+      chắc chắn muốn thực hiện xóa máy ảo?
+    </div>
+  </nz-form-item>
+</ng-template>
+<ng-template #modalContentContiniue>
+  <nz-form-item> Quý khách chắc chắn muốn gia hạn dịch vụ này? </nz-form-item>
+</ng-template>
+<ng-template #modalContentResetPassword>
+  <nz-alert
+    nzType="warning"
+    [nzMessage]="customTemplateMessageResetPassword"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #customTemplateMessageResetPassword>
+    <div>
+      Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root Nếu HĐH
+      là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator
+    </div>
+  </ng-template>
+  <br />
+  <nz-form-item>
+    <input nz-input type="checkbox" checked style="width: 15px" />
+    <div style="width: 82%; margin-left: 1%">Tự sinh</div>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Mật khẩu mới</nz-form-label> &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <nz-form-control>
+      <input
+        nz-input
+        [(ngModel)]="resetPassword"
+        name="resetPassword"
+        placeholder=""
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Xác nhận mật khẩu</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        [(ngModel)]="resetPasswordRepeat"
+        name="resetPasswordRepeat"
+        placeholder=""
+      />
+    </nz-form-control>
+  </nz-form-item>
+</ng-template>

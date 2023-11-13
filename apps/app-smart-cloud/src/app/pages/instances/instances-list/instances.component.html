@@ -1,6 +1,8 @@
 <!--Head section-->
 <!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
 
+<page-header [title]="'Danh sách máy ảo'"> </page-header>
+
 <div class="normal-table-wrap" *ngIf="!activeCreate; else elsePage">
   <nz-card
     class="m-b-10"
@@ -77,10 +79,10 @@
           [nzXXl]="8"
         >
           <button nz-button [nzType]="'primary'" (click)="getDataList()">
-            <i nz-icon nzType="setting"></i>
+            <i nz-icon nzType="search"></i>
             Search
           </button>
-          <!-- <button class="m-l-15" nz-button (click)="resetForm()">
+          <!-- <button class="m-l-15" nz-button (click)="resetForm()"> <span nz-icon nzType="search" nzTheme="outline"></span> copied 🎉
             <i nz-icon nzTheme="outline" nzType="close-circle"></i>
             Reset
           </button> -->
@@ -107,8 +109,8 @@
     [nzTotal]="total"
     [(nzPageIndex)]="pageIndex"
     [(nzPageSize)]="pageSize"
-    (nzPageIndexChange)="searchData()"
-    (nzPageSizeChange)="searchData(true)"
+    (nzPageIndexChange)="getDataList()"
+    (nzPageSizeChange)="getDataList(true)"
   >
     <thead>
       <tr>
@@ -125,13 +127,14 @@
       <tr *ngFor="let data of ajaxTable3.data">
         <td>{{ data.name }}</td>
         <td>
-          {{ data.flavorId }}
+          {{ data.flavorName }}
           <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
         </td>
         <td>
           <div *ngFor="let nameFill of filterStatus">
-            <p *ngIf="data.status == nameFill.value">{{ nameFill.text }}</p>
+            <p *ngIf="data.status == nameFill.value;">{{ nameFill.text }}</p>
           </div>
+          <!-- <ng-template #notmatch>{{ data.status}}</ng-template> -->
         </td>
         <td>{{ data.taskState }}</td>
         <td>{{ data.ipPrivate }}</td>
@@ -161,18 +164,10 @@
     </tbody>
   </nz-table>
 </div>
-
-<ng-template #tableBtns>
-  <button class="m-r-8" nz-button nzType="primary" (click)="add()">
-    <i nz-icon nzType="plus"></i>
-    Add New
-  </button>
-</ng-template>
-
 <ng-template #elsePage>
   <nz-card>
     <result>
-      <img nz-image nzSrc="assets/images/blank_vm.png" alt="" />
+      <img nz-image nzSrc="assets/imgs/blank_vm.png" alt="" />
 
       <button nz-button [nzType]="'primary'" (click)="navigateToCreate()">
         <!-- <a routerLink="/pages/vm/instances-create"> Khởi tạo ngay</a>

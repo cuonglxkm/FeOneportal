@@ -15,8 +15,9 @@ const routes: Routes = [
     path: 'test',
     component: V1Component
   },
+  {
     path: 'vm',
-    loadChildren: () => import('../pages/vm/vm.module').then(m => m.VMModule)
+    loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule)
   }
 
 

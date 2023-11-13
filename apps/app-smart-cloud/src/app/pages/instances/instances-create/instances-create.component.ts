@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
   Renderer2,
 } from '@angular/core';
@@ -26,11 +27,13 @@ import {
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { VMService } from '../instances.service';
+import { InstancesService } from '../instances.service';
 import { da, tr } from 'date-fns/locale';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { Observable } from 'rxjs';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { RegionModel } from 'src/app/shared/models/region.model';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -66,7 +69,7 @@ class Network {
 @Component({
   selector: 'one-portal-instances-create',
   templateUrl: './instances-create.component.html',
-  styleUrls: ['./instances-create.component.less'],
+  styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstancesCreateComponent implements OnInit {
@@ -92,7 +95,7 @@ export class InstancesCreateComponent implements OnInit {
   //danh sách các biến của form model
   createInstances: CreateInstances = new CreateInstances();
   region: number = 3;
-  projectId: number = 310;
+  projectId: number = 4079;
   customerId: number = 669;
   userId: number = 669;
   today: Date = new Date();
@@ -103,6 +106,8 @@ export class InstancesCreateComponent implements OnInit {
   password?: string;
   numberMonth: number = 1;
   hdh: any;
+  flavor: any;
+  flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
 
   //#region Hệ điều hành
@@ -211,6 +216,10 @@ export class InstancesCreateComponent implements OnInit {
   pagedCardList: Array<Array<any>> = [];
   effect = 'scrollx';
 
+  selectedElementFlavor: string = null;
+  isInitialClass = true;
+  isNewClass = false;
+
   initFlavors(): void {
     this.activeBlockFlavors = true;
     this.activeBlockFlavorCloud = false;
@@ -224,9 +233,31 @@ export class InstancesCreateComponent implements OnInit {
         }
       });
   }
+
   initFlavorCloud(): void {
     this.activeBlockFlavors = false;
     this.activeBlockFlavorCloud = true;
+  }
+
+  onInputFlavors(event: any) {
+    this.flavor =  this.listFlavors.find(flavor => flavor.id === event);
+    console.log(this.flavor);
+  }
+  toggleClass(id: string) {
+    this.selectedElementFlavor = id;
+    if (this.selectedElementFlavor) {
+      this.isInitialClass = !this.isInitialClass;
+      this.isNewClass = !this.isNewClass;
+    } else {
+      this.isInitialClass = true;
+      this.isNewClass = false;
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  selectElementInputFlavors(id: string) {
+    this.selectedElementFlavor = id;
   }
   //#endregion
 
@@ -329,15 +360,22 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   constructor(
-    private dataService: VMService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     public message: NzMessageService,
     private renderer: Renderer2
   ) {}
+  onRegionChange(region: RegionModel) {
+    // Handle the region change event
+    this.region = region.regionId;
+    console.log(this.tokenService.get()?.userId);
+  }
 
   ngOnInit(): void {
+    this.userId = this.tokenService.get()?.userId;
     this.getAllImageType();
     this.initFlavors();
     this.getAllIPPublic();
@@ -387,10 +425,28 @@ export class InstancesCreateComponent implements OnInit {
   // }
 
   save(): void {
-    this.createInstances.regionId= this.region
-    this.createInstances.projectId=this.projectId
-    this.createInstances.customerId=this.customerId
-    this.createInstances.imageId= this.hdh.id
+    this.createInstances.regionId = 3; // this.region;
+    this.createInstances.projectId = 4079; // this.projectId;
+    this.createInstances.customerId = 669; // this.customerId;
+    this.createInstances.imageId = 113; // this.hdh.id;
+    this.createInstances.useIPv6 = this.isUseIPv6;
+    this.createInstances.usePrivateNetwork = this.isUseLAN;
+    this.createInstances.currentNetworkCloudId =
+      '113210e5-52ac-4c01-a7bf-0976eca0c81f';
+    this.createInstances.flavorId = 368; //this.flavor.id;
+    this.createInstances.storage = 1;
+    this.createInstances.snapshotCloudId = null;
+    this.createInstances.listSecurityGroup = null;
+    this.createInstances.keypair = null;
+    this.createInstances.domesticBandwidth = 5;
+    this.createInstances.intenationalBandwidth = 10;
+    this.createInstances.ramAdditional = 0;
+    this.createInstances.cpuAdditional = 0;
+    this.createInstances.btqtAdditional = 0;
+    this.createInstances.bttnAdditional = 0;
+    this.createInstances.initPassword = '123123aA@';
+    this.createInstances.ipPrivate = null;
+
     this.dataService.create(this.createInstances).subscribe(
       (data: any) => {
         console.log(data);
@@ -404,14 +460,14 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   cancel(): void {
-    this.ngOnInit();
+    this.router.navigate(['/app-smart-cloud/vm']);
   }
 
   _submitForm(): void {
-    this.formValidity(this.form.controls);
-    if (this.form.invalid) {
-      return;
-    }
+    // this.formValidity(this.form.controls);
+    // if (this.form.invalid) {
+    //   return;
+    // }
     this.save();
   }
 

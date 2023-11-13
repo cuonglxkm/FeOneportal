@@ -140,6 +140,7 @@ export class InstancesModel {
   cloudId: string;
   name: string;
   flavorId: number;
+  flavorName:string;
   flavorCloudId: string;
   imageId: number;
   customerId: number;
