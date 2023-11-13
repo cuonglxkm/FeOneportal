@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 
 import {HttpClient, HttpContext, HttpHeaders} from "@angular/common/http";
 import {ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -32,9 +32,20 @@ export class UserProfileComponent implements OnInit {
     province: new FormControl('', {validators: [Validators.required]}),
     address: new FormControl('', {validators: [Validators.required, AppValidator.cannotContainSpecialCharactorExceptComma]}),
     old_password: new FormControl('', {validators: []}),
-    new_password: new FormControl('', {validators: [AppValidator.validPassword]}),
-    retype_new_password: new FormControl('', {validators: []}),
+    new_password: new FormControl({value: '', disabled: true}),
+    confirm_password: new FormControl({value: '', disabled: true}),
   });
+
+
+  confirmationValidator: ValidatorFn = (control: AbstractControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return {required: true};
+    } else if (control.value !== this.form.controls['new_password'].value) {
+      return {confirm: true, error: true};
+    }
+    return {};
+  };
+
 
   userModel: UserModel = {};
 
@@ -97,5 +108,34 @@ export class UserProfileComponent implements OnInit {
       console.log(error)
       this.message.error("Cập nhật tài khoản thất bại!")
     })
+  }
+
+  onOldPassChange(data: any) {
+    console.log(data)
+    this.form.controls["old_password"].setValidators([Validators.required, AppValidator.validPassword]);
+    this.form.controls["old_password"].updateValueAndValidity();
+
+
+    this.form.controls['new_password'].enable();
+    this.form.controls["new_password"].setValidators([Validators.required, AppValidator.validPassword]);
+    this.form.controls["new_password"].updateValueAndValidity();
+
+    this.form.controls['confirm_password'].enable();
+    this.form.controls["confirm_password"].setValidators([Validators.required, this.confirmationValidator]);
+    this.form.controls["confirm_password"].updateValueAndValidity();
+
+  }
+
+  updateConfirmValidator(): void {
+    /** wait for refresh value */
+    Promise.resolve().then(() => this.form.controls["confirm_password"].updateValueAndValidity());
+  }
+
+  onNewPassChange(data: any) {
+
+  }
+
+  onRetypePassChange(data: any) {
+
   }
 }
