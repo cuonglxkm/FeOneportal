@@ -3,7 +3,7 @@ import { ActivationEnd, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 
 @Component({
-  selector: 'app-list-security-group-layout',
+  selector: 'app-list-layout',
   templateUrl: './list.component.html'
 })
 export class ProListLayoutComponent implements OnInit, OnDestroy {

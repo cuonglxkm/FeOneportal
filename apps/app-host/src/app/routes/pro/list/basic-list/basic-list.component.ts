@@ -5,7 +5,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ProBasicListEditComponent } from './edit/edit.component';
 
 @Component({
-  selector: 'app-basic-list-security-group',
+  selector: 'app-basic-list',
   templateUrl: './basic-list.component.html',
   styleUrls: ['./basic-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush

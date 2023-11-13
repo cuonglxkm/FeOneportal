@@ -3,7 +3,7 @@ import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
-  selector: 'app-list-security-group-card-list-security-group',
+  selector: 'app-list-card-list',
   templateUrl: './card-list.component.html',
   styles: [
     `

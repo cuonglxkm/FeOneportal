@@ -7,7 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-table-list-security-group',
+  selector: 'app-table-list',
   templateUrl: './table-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

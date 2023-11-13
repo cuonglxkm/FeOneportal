@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { _HttpClient } from '@delon/theme';
 
 @Component({
-  selector: 'app-list-security-group-articles',
+  selector: 'app-list-articles',
   templateUrl: './articles.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
