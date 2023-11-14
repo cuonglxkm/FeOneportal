@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators} from '@angular/forms';
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
 import {Location} from '@angular/common';
 import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../shared/services/security-group.service";
@@ -32,12 +32,12 @@ export class CreateSecurityGroupComponent {
             console.log("value", this.validateForm.value);
             this.securityGroupService.create(this.validateForm.value, this.conditionSearch)
                 .subscribe((data) => {
-                // this.message.create('success', `Đã thêm thành công`);
-                this.notification.success('Thành công', 'Đã tạo Security Group thành công');
-                this.router.navigate([
-                    '/app-smart-cloud/security-group'
-                ])
-            })
+                    // this.message.create('success', `Đã thêm thành công`);
+                    this.notification.success('Thành công', 'Đã tạo Security Group thành công');
+                    this.router.navigate([
+                        '/app-smart-cloud/security-group'
+                    ])
+                })
         } else {
             Object.values(this.validateForm.controls).forEach(control => {
                 if (control.invalid) {
