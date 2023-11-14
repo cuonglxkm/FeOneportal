@@ -1,0 +1,40 @@
+<nz-row>
+    <section class="code-box-meta markdown">
+        <div class="code-box-title">
+            Quản lý Gắn/Gỡ Security Group
+        </div>
+        <div class="code-box-description">
+            <nz-table #basicTable
+                      [nzData]="[]"
+                      nzShowSizeChanger
+                      [nzFrontPagination]="false"
+                      [nzTotal]="100"
+                      [nzPageSize]="50"
+                      [nzPageIndex]="1"
+            >
+                <thead>
+                <tr>
+                    <th nzAlign="center" class="text-th">Tên máy ảo</th>
+                    <th nzAlign="center" class="text-th">Trạng thái</th>
+                    <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
+                    <th nzAlign="center" class="text-th">IP LAN</th>
+                    <th nzAlign="center" class="text-th">IP Public</th>
+                    <th nzAlign="center" class="text-th" style="width: 216px; ">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td nzAlign="center"></td>
+                    <td nzAlign="center"></td>
+                    <td nzAlign="center"></td>
+                    <td nzAlign="center"></td>
+                    <td nzAlign="center"></td>
+                    <td nzAlign="center">
+                        <button nz-button nzType="primary" nzDanger class="button-delete">Gỡ</button>
+                    </td>
+                </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </section>
+</nz-row>
