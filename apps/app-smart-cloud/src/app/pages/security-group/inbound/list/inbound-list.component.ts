@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import SecurityGroupRule from "../../../../core/model/interface/security-group-rule";
-import {SecurityGroupSearchCondition} from "../../../../core/model/interface/security-group";
+import SecurityGroupRule from "../../../../shared/models/security-group-rule";
+import {SecurityGroupSearchCondition} from "../../../../shared/models/security-group";
 
 @Component({
   selector: 'one-portal-inbound-list',

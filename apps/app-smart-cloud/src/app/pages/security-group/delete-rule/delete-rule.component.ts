@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
+import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {SecurityGroupRuleService} from "../../../core/service/security-group-rule.service";
+import {SecurityGroupRuleService} from "../../../shared/services/security-group-rule.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({

@@ -2,12 +2,12 @@ import {Component, Inject, Input, OnInit} from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {Location} from "@angular/common";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {SecurityGroup, SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
-import {SecurityGroupService} from "../../../core/service/security-group.service";
+import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
+import {SecurityGroupService} from "../../../shared/services/security-group.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";
-import {SecurityGroupRuleService} from "../../../core/service/security-group-rule.service";
-import {SecurityGroupRuleCreateForm} from "../../../core/model/interface/security-group-rule";
+import {SecurityGroupRuleService} from "../../../shared/services/security-group-rule.service";
+import {SecurityGroupRuleCreateForm} from "../../../shared/models/security-group-rule";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
 

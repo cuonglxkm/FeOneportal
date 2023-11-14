@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {Location} from '@angular/common';
-import {SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
-import {SecurityGroupService} from "../../../core/service/security-group.service";
+import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
+import {SecurityGroupService} from "../../../shared/services/security-group.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";

@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {SecurityGroup, SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
-import {SecurityGroupService} from "../../../core/service/security-group.service";
-import SecurityGroupRule from "../../../core/model/interface/security-group-rule";
+import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
+import {SecurityGroupService} from "../../../shared/services/security-group.service";
+import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 

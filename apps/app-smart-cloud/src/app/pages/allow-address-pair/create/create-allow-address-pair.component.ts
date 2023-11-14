@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
-import {AllowAddressPairService} from "../../../core/service/allow-address-pair.service";
-import {SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
+import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
+import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import PairInfo, {AllowAddressPairCreateOrDeleteForm} from "../../../core/model/allow-address-pair";
+import PairInfo, {AllowAddressPairCreateOrDeleteForm} from "../../../shared/models/allow-address-pair";
 import {RegionModel} from "../../../shared/models/region.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 

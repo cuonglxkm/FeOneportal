@@ -3,10 +3,10 @@ import {FormControl, FormGroup} from "@angular/forms";
 import PairInfo, {
     AllowAddressPairCreateOrDeleteForm,
     AllowAddressPairSearchForm
-} from 'src/app/core/model/allow-address-pair';
+} from 'src/app/shared/models/allow-address-pair';
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {AllowAddressPairService} from "../../../core/service/allow-address-pair.service";
+import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 
 
