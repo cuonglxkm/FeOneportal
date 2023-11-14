@@ -18,7 +18,7 @@
     <nz-dropdown-menu #opMenu="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item (click)="continue(modalContentContiniue)">Gia hạn</li>
-        <li nz-menu-item>Truy cập</li>
+        <li nz-menu-item (click)="openConsole()">Truy cập</li>
         <li nz-menu-item>Khởi động lại</li>
         <li nz-menu-item>Tắt</li>
         <li nz-menu-item (click)="resetPasswordFc(modalContentResetPassword)">

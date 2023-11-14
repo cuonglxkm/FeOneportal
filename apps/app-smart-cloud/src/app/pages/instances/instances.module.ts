@@ -8,6 +8,8 @@ import { InstancesDetailComponent } from './instances-detail/instances-detail.co
 import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit-info.component';
 import { InstancesEditComponent } from './instances-edit/instances-edit.component';
 import {InstancesConsoleComponent} from "./instances-console/instances-console.component";
+import {FullContentModule} from "@delon/abc/full-content";
+import {SafePipe} from "../../../../../../libs/common-utils/src";
 
 @NgModule({
   declarations: [
@@ -18,7 +20,7 @@ import {InstancesConsoleComponent} from "./instances-console/instances-console.c
     InstancesEditComponent,
     InstancesConsoleComponent,
   ],
-  imports: [InstancesRoutingModule, SharedModule],
+  imports: [InstancesRoutingModule, SharedModule, FullContentModule, SafePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class InstancesModule {}
