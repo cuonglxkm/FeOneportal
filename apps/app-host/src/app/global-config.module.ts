@@ -57,6 +57,7 @@ const alainProvides = [{ provide: ALAIN_CONFIG, useValue: alainConfig }];
 // #region NG-ZORRO Config
 
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
+import {DelonMockModule} from "@delon/mock";
 
 const ngZorroConfig: NzConfig = {};
 

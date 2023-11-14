@@ -7,17 +7,24 @@ import {_HttpClient} from '@delon/theme';
 import {NzSafeAny} from 'ng-zorro-antd/core/types';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../shared/models/region.model";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-dashboard-v1',
   templateUrl: 'v1.component.html',
 })
 export class V1Component implements OnInit {
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private http: HttpClient) {
 
   }
 
   ngOnInit(): void {
+
+    this.http.get("/test/profile").subscribe(data => {
+      console.log(data)
+    })
+
   }
 
   selectedRegion: number = null;
