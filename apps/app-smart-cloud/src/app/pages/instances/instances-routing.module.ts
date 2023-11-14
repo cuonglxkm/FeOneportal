@@ -5,6 +5,7 @@ import { InstancesCreateComponent } from './instances-create/instances-create.co
 import { InstancesDetailComponent } from './instances-detail/instances-detail.component';
 import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit-info.component';
 import { InstancesEditComponent } from './instances-edit/instances-edit.component';
+import {InstancesConsoleComponent} from "./instances-console/instances-console.component";
 
 const routes: Routes = [
   {
@@ -33,6 +34,11 @@ const routes: Routes = [
     component: InstancesEditComponent,
     data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit' },
   },
+  {
+    path: 'instances-console',
+    component: InstancesConsoleComponent,
+    data: { title: 'Console máy ảo', key: 'instances-console' },
+  }
 ];
 
 @NgModule({

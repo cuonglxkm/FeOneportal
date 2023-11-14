@@ -64,8 +64,7 @@
       "executor": "@nx/angular:webpack-dev-server",
       "options": {
         "port": 4203,
-        "publicHost": "http://localhost:4203",
-        "proxyConfig": "apps/app-smart-cloud/proxy.conf.json"
+        "publicHost": "http://localhost:4203"
       },
       "configurations": {
         "production": {
