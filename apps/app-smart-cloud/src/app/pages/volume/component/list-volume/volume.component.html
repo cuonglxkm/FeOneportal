@@ -12,25 +12,29 @@
   </nz-select>
 
   <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-    <input type="text"  [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume" style="width: 300px; margin-left: 30px;"/>
+    <input type="text" [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume"
+           style="width: 300px; margin-left: 30px;"/>
   </nz-input-group>
   <ng-template #suffixButton>
     <button nz-button nzType="primary" (click)="searchVolumes()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
     </button>
   </ng-template>
-  <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateVolume()"
-          style="background-color: #52c41a; margin-left: 50%;">
+  <div class="text-right" style="margin-top: -40px;  padding-right: 30px;">
+    <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateVolume()"
+            style="background-color: #52c41a;">
         <span
           nz-icon nzType="plus"
           nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
         </span>
-    Tạo mới
-  </button>
+      Tạo mới
+    </button>
+  </div>
+
 
   <br>
   <br>
   <nz-tabset [(nzSelectedIndex)]="tabVolumeIndex">
-    <nz-tab nzTitle="Volume Root" (nzClick) = "reloadDataVolumeRoot()">
+    <nz-tab nzTitle="Volume Root" (nzClick)="reloadDataVolumeRoot()">
 
       <nz-table #tableRoot [nzData]="listVolumeRoot" [nzFrontPagination]="false" [nzTotal]="totalRoot"
                 (nzPageIndexChange)="onRootPageIndexChange($event)">
@@ -69,7 +73,7 @@
       </nz-table>
 
     </nz-tab>
-    <nz-tab nzTitle="Volume gắn thêm" (nzClick)="reloadDataVolumeAdd()" >
+    <nz-tab nzTitle="Volume gắn thêm" (nzClick)="reloadDataVolumeAdd()">
 
       <nz-table #tableAdd [nzData]="listVolumeAdd" [nzFrontPagination]="false" [nzTotal]="totalAdd"
                 (nzPageIndexChange)="onAddPageIndexChange($event)">

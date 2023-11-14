@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {GetAllVmModel} from "../model/get-all-vm.model";
-import {VmDto} from "../dto/vm.dto";
-import {VolumeService} from "../volume.service";
+import {GetAllVmModel} from "../../model/get-all-vm.model";
+import {VmDto} from "../../dto/vm.dto";
+import {VolumeService} from "../../volume.service";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {VolumeDTO} from "../dto/volume.dto";
+import {VolumeDTO} from "../../dto/volume.dto";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({

@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {PopupAddVolumeComponent} from "./popup-volume/popup-add-volume.component";
-import {PopupDeleteVolumeComponent} from "./popup-volume/popup-delete-volume.component";
+import {PopupAddVolumeComponent} from "../popup-volume/popup-add-volume.component";
+import {PopupDeleteVolumeComponent} from "../popup-volume/popup-delete-volume.component";
 import {Router} from "@angular/router";
-import {VolumeDTO} from "./dto/volume.dto";
-import {VolumeService} from "./volume.service";
-import {GetListVolumeModel} from "./model/get-list-volume.model";
+import {VolumeDTO} from "../../dto/volume.dto";
+import {VolumeService} from "../../volume.service";
+import {GetListVolumeModel} from "../../model/get-list-volume.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 
 interface Volume {

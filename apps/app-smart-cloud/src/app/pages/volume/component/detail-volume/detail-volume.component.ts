@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {VolumeDTO} from "../dto/volume.dto";
-import {VolumeService} from "../volume.service";
+import {VolumeDTO} from "../../dto/volume.dto";
+import {VolumeService} from "../../volume.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";

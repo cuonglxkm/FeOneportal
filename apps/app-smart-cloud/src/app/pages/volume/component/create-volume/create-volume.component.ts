@@ -1,15 +1,15 @@
 import {Component, Inject, OnInit, ViewChildren} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {GetAllVmModel} from "../model/get-all-vm.model";
-import {VmDto} from "../dto/vm.dto";
-import {VolumeService} from "../volume.service";
-import {PriceVolumeDto} from "../dto/price-volume.dto";
+import {GetAllVmModel} from "../../model/get-all-vm.model";
+import {VmDto} from "../../dto/vm.dto";
+import {VolumeService} from "../../volume.service";
+import {PriceVolumeDto} from "../../dto/price-volume.dto";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {CreateVolumeDto} from "../dto/create-volume.dto";
+import {CreateVolumeDto} from "../../dto/create-volume.dto";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {CreateVolumeRequestModel} from "../model/create-volume/create-volume-request.model";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
+import {CreateVolumeRequestModel} from "../../model/create-volume/create-volume-request.model";
+import {RegionModel} from "../../../../shared/models/region.model";
+import {ProjectModel} from "../../../../shared/models/project.model";
 import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
 import {Router} from "@angular/router";
 
@@ -162,11 +162,7 @@ export class CreateVolumeComponent implements OnInit {
       const user = JSON.parse(userString);
       this.createVolumeInfo.actorEmail = user.email;
       this.createVolumeInfo.userEmail = user.email;
-
-
-
       this.doCreateVolume();
-      this.nzMessage.create('success', 'Tạo Volume thành công.')
       console.log(this.createVolumeInfo);
     } else {
 
@@ -192,9 +188,10 @@ export class CreateVolumeComponent implements OnInit {
       if(data != null){
         this.nzMessage.create('success', 'Tạo Volume thành công.')
         console.log(data);
-        // this.router.navigate(['/app-smart-cloud/volume']);
+        this.router.navigate(['/app-smart-cloud/volume']);
       }
     })
+    // this.router.navigate(['/app-smart-cloud/volume']);
   }
 
 
@@ -218,6 +215,14 @@ export class CreateVolumeComponent implements OnInit {
     if (!this.volumeExpiryTime) {
       this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
       this.showWarningVolumeExpTime = true;
+      return false;
+    }
+    if(!this.createVolumeInfo.regionId){
+      this.nzMessage.create('error', 'Cần chọn khu vực.');
+      return false;
+    }
+    if(!this.createVolumeInfo.vpcId){
+      this.nzMessage.create('error', 'Cần chọn dự án.');
       return false;
     }
 
