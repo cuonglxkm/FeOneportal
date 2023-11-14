@@ -51,11 +51,11 @@
           <table class="images-card text-center">
             <tbody class="images-body images-body-wh" [id]="'images_' + data.id"  
             [ngClass]="{
-              'bgActive': data.id === selectedTypeImageId,
+              'images-body-active': data.id === selectedTypeImageId,
               'bgGray': !data.id === selectedTypeImageId
             }">
-              <tr style="height: 150px; background-color: antiquewhite;">
-                <div>
+              <tr >
+                <div class="images-body-tr">
                   <span nz-icon nzType="windows" nzTheme="outline">{{
                     data.name
                   }}</span>
@@ -72,7 +72,7 @@
                     nzPlaceHolder="Chọn phiên bản"
                     [ngModelOptions]="{ standalone: true }"
                     style="text-align: center"
-                    class="images-body-wh"
+                    class="images-body-select"
                   >
                     <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
                     <nz-option

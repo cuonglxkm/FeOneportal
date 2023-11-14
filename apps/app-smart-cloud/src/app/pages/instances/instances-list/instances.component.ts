@@ -69,6 +69,10 @@ export class InstancesComponent implements OnInit {
     { text: 'Tạm ngưng', value: 'TAMNGUNG' },
   ];
 
+  listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
+
+
+
   selectedOptionAction: string;
   isVisible01 = false;
   isVisible02 = false; //
@@ -107,7 +111,7 @@ export class InstancesComponent implements OnInit {
         this.isVisible07 = true;
         break;
       case 8:
-        this.isVisible08 = true;
+        this.shutdownInstance()
         break;
       default:
         this.isVisible01 = false;
@@ -324,7 +328,71 @@ export class InstancesComponent implements OnInit {
       pageIndex: 1,
     };
   }
-
+  ganVLANFC(tpl: TemplateRef<{}>): void {
+    this.modalSrv.create({
+      nzTitle: 'Gắn VLAN',
+      nzContent: tpl,
+      nzOkText: 'Xác nhận',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+       
+      },
+    });
+  }
+  shutdownInstance(): void {
+    this.modalSrv.create({
+      nzTitle: 'Tắt máy ảo',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện tắt máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        var body = {
+          command: 'shutdown',
+          id: this.actionData.id,
+        };
+        this.dataService.postAction(this.actionData.id, body).subscribe(
+          (data: any) => {
+            if (data == true) {
+              this.message.success('Tắt máy ảo thành công');
+            } else {
+              this.message.error('Tắt máy ảo không thành công');
+            }
+          },
+          () => {
+            this.message.error('Tắt máy ảo không thành công');
+          }
+        );
+      },
+    });
+  }
+  restartInstance(): void {
+    this.modalSrv.create({
+      nzTitle: 'Khởi động lại máy ảo',
+      nzContent: 'Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        this.isVisible07 = false;
+        var body = {
+          command: 'restart',
+          id: this.actionData.id,
+        };
+        this.dataService.postAction(this.actionData.id, body).subscribe(
+          (data: any) => {
+            console.log(data);
+            if (data == true) {
+              this.message.success('Khởi động lại máy ảo thành công');
+            } else {
+              this.message.error('Khởi động lại máy ảo không thành công');
+            }
+          },
+          () => {
+            this.message.error('Khởi động lại máy ảo không thành công');
+          }
+        );
+      },
+    });
+  }
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/vm/instances-create']);
   }

@@ -1,6 +1,6 @@
 <page-header [title]="'Chi tiết máy ảo'" [action]="action">
   <ng-template #action>
-    <button nz-button [nzType]="'primary'" (click)="activeGSCard()">
+    <button nz-button [nzType]="'primary'" (click)="activeGSCard()" *ngIf="!activeGS">
       <i nz-icon nzType="video-camera"></i> <span>Giám sát</span>
     </button>
     <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
@@ -80,7 +80,7 @@
   />
 </nz-card>
 
-<nz-card [nzBordered]="false" nzTitle="Chi tiết dịch vụ" [nzLoading]="loading">
+<nz-card *ngIf="!activeGS" [nzBordered]="false" nzTitle="Chi tiết dịch vụ" [nzLoading]="loading">
   <div nz-row>
     <div nz-col [nzSpan]="12">
       <div nz-row [nzAlign]="'middle'">
@@ -203,119 +203,10 @@
     </div>
   </div>
 </nz-card>
-<nz-card
-  [nzBordered]="false"
-  nzTitle="
-Block Storage"
->
-  <div class="ant-table">
-    <table>
-      <thead class="ant-table-thead">
-        <tr>
-          <th>Loại ổ cứng</th>
-          <th>Tên Volume</th>
-          <th>VCPU</th>
-          <th>RAM (GB)</th>
-          <th>Dung lượng (GB)</th>
-          <th>Trạng thái Volume</th>
-          <th>Kiểu Volume</th>
-          <th>Giá theo tháng (VNĐ)</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody class="ant-table-tbody">
-        <tr *ngFor="let data of listOfDataBlockStorage">
-          <td>
-            <label>
-              {{ data.type }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.name }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.vCPU }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.ram }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.capacity }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.status }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.typeVolume }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.price }}
-            </label>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</nz-card>
+<one-portal-blockstorage-detail [instancesId]="id" [listOfDataBlockStorage]="listOfDataBlockStorage"></one-portal-blockstorage-detail>
+<one-portal-network-detail [instancesId]="id" [listOfDataNetwork]="listOfDataNetwork"></one-portal-network-detail>
 
-<nz-card
-  [nzBordered]="false"
-  nzTitle="
-Network"
->
-  <div class="ant-table">
-    <table>
-      <thead class="ant-table-thead">
-        <tr>
-          <th>Tên Network</th>
-          <th>MAC Address</th>
-          <th>FixedIPs</th>
-          <th>Status</th>
-          <th>Giá theo tháng (VNĐ)</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody class="ant-table-tbody">
-        <tr *ngFor="let data of listOfDataNetwork">
-          <td>
-            <label>
-              {{ data.name }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.mac }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.ip }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.status }}
-            </label>
-          </td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</nz-card>
+
 <nz-card
   [nzBordered]="false"
   nzTitle="

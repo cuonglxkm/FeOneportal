@@ -14,7 +14,6 @@
   </div>
 </div>
 
-
 <div class="normal-table-wrap" *ngIf="!activeCreate; else elsePage">
   <nz-card
     class="m-b-10"
@@ -26,11 +25,11 @@
         <div
           nz-col
           [nzLg]="8"
-          [nzMd]="12"
+          [nzMd]="8"
           [nzSm]="24"
-          [nzXl]="8"
+          [nzXl]="6"
           [nzXs]="24"
-          [nzXXl]="8"
+          [nzXXl]="6"
         >
           <nz-form-item>
             <nz-form-label [nzFor]="">Trạng thái máy ảo</nz-form-label>
@@ -49,14 +48,6 @@
                 />
               </nz-select>
             </nz-form-control>
-            <!-- <nz-form-control>
-              <input
-                name="status"
-                nz-input
-                placeholder="Tất cả trạng thái"
-                [(ngModel)]="searchParam.status"
-              />
-            </nz-form-control> -->
           </nz-form-item>
         </div>
         <div
@@ -74,12 +65,27 @@
                 name="name"
                 nz-input
                 placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
-                [ngModel]="searchParam.name"  (ngModelChange)="changeName($event)"
+                [ngModel]="searchParam.name"
+                (ngModelChange)="changeName($event)"
               />
             </nz-form-control>
           </nz-form-item>
         </div>
-        <!-- <div nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8"></div> -->
+        <div
+          class="text-right p-0 m-b-10"
+          nz-col
+          [nzLg]="4"
+          [nzMd]="8"
+          [nzSm]="24"
+          [nzXl]="4"
+          [nzXs]="24"
+          [nzXXl]="2"
+        >
+          <button nz-button [nzType]="'primary'" (click)="getDataList()">
+            <i nz-icon nzType="search"></i>
+            Search
+          </button>
+        </div>
         <div
           class="text-right p-0 m-b-10"
           nz-col
@@ -90,16 +96,9 @@
           [nzXs]="24"
           [nzXXl]="8"
         >
-          <button nz-button [nzType]="'primary'" (click)="getDataList()">
-            <i nz-icon nzType="search"></i>
-            Search
-          </button>
-          <!-- <button class="m-l-15" nz-button (click)="resetForm()"> <span nz-icon nzType="search" nzTheme="outline"></span> copied 🎉
-            <i nz-icon nzTheme="outline" nzType="close-circle"></i>
-            Reset
-          </button> -->
           <button
             class="m-r-8"
+            class="bg-success border-success"
             nz-button
             nzType="primary"
             (click)="navigateToCreate()"
@@ -144,7 +143,7 @@
         </td>
         <td>
           <div *ngFor="let nameFill of filterStatus">
-            <p *ngIf="data.status == nameFill.value;">{{ nameFill.text }}</p>
+            <p *ngIf="data.status == nameFill.value">{{ nameFill.text }}</p>
           </div>
           <!-- <ng-template #notmatch>{{ data.status}}</ng-template> -->
         </td>
@@ -165,7 +164,7 @@
               nzLabel="Chỉnh sửa Security Group"
             ></nz-option>
             <nz-option nzValue="4" nzLabel="Chỉnh sửa"></nz-option>
-            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"></nz-option>
+            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"  (click)="ganVLANFC(modalContentGanVLAN)"></nz-option>
             <nz-option nzValue="6" nzLabel="Gỡ khỏi VLAN"></nz-option>
             <nz-option nzValue="7" nzLabel="Khởi động lại"></nz-option>
             <nz-option nzValue="8" nzLabel="Tắt máy ảo"></nz-option>
@@ -222,3 +221,55 @@
     <button nz-button nzType="primary" (click)="handleOk(8)">Xác nhận</button>
   </ng-template>
 </nz-modal>
+
+<ng-template #modalContentGanVLAN>
+
+  <nz-form-item>
+    <nz-form-label>Danh sách VLAN</nz-form-label>
+    <nz-form-control>
+      <nz-select
+      [nzPlaceHolder]="'-- Chọn VLAN --'"
+      [nzShowSearch]="true"
+    >
+      <nz-option
+        *ngFor="let i of listVLAN"
+        [nzLabel]="i.text"
+        [nzValue]="i.id"
+      />
+    </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <div><a>Nhập IP Address</a></div>
+  </nz-form-item>
+  <nz-alert
+    nzType="warning"
+    [nzMessage]="customTemplateMessageGanVLAN"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #customTemplateMessageGanVLAN>
+    <div>
+      Trong trường hợp 1 Network của quý khách có nhiều subnet, quý khách cần
+      lựa chọn subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP vui
+      lòng chọn IP chưa được sửa dụng bởi máy ảo nào và IP này thuộc dải IP được
+      cấu hình trong Subnet tương ứng
+    </div>
+  </ng-template>
+  <br />
+</ng-template>
+
+<ng-template #modalContentShutdown>
+  <nz-form-item>
+    <div>
+      Quý khách chắn chắn muốn thực hiện tắt máy ảo?
+    </div>
+  </nz-form-item>
+</ng-template>
+
+<ng-template #modalContentRestart>
+  <nz-form-item>
+    <div>
+      Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?
+      </div>
+  </nz-form-item>
+</ng-template>

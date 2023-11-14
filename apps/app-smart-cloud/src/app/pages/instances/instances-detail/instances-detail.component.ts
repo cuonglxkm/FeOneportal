@@ -32,7 +32,7 @@ class BlockStorage {
   price?: string = '000';
 }
 class Network {
-  name?: string = '';
+  name?: string = 'prive_network';
   mac?: string = '';
   ip?: string = '';
   status?: string = '';
@@ -52,6 +52,7 @@ export class InstancesDetailComponent implements OnInit {
   listOfDataBlockStorage: BlockStorage[] = [];
   listOfDataNetwork: Network[] = [];
   listSecurityGroupModel: SecurityGroupModel[] = [];
+  defaultNetwork: Network = new Network();
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -64,6 +65,8 @@ export class InstancesDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.listOfDataNetwork.push(this.defaultNetwork);
+
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
@@ -361,9 +364,9 @@ export class InstancesDetailComponent implements OnInit {
   //   this.titleMap = titleMap;
   // }
   onChangeCPU(event?:any){
-
+    this.offlineChartData = this.cahrt;
   }
   onChangeTIME(event?:any){
-
+    this.offlineChartData = this.cahrt;
   }
 }

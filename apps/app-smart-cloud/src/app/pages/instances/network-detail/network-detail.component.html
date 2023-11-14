@@ -1,0 +1,60 @@
+
+<nz-card nzTitle="Network">
+    <nz-card nzHoverable>
+      <div class="ant-table">
+        
+    <table>
+      <thead class="ant-table-thead">
+        <tr>
+          <th>Tên Network</th>
+          <th>MAC Address</th>
+          <th>FixedIPs</th>
+          <th>Status</th>
+          <th>Giá theo tháng (VNĐ)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="ant-table-tbody">
+        <tr *ngFor="let data of listOfDataNetwork">
+          <td>
+            <label>
+              {{ data.name }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.mac }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.ip }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.status }}
+            </label>
+          </td>
+          <td>
+            <button
+            nz-button
+            [nzType]="'primary'"
+            nz-dropdown
+            [nzDropdownMenu]="opMenu"
+          >
+            <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
+          </button>
+          <nz-dropdown-menu #opMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="navigateToEdit()">Chỉnh sửa</li>
+              <li nz-menu-item>Address Pair</li>
+            </ul>
+          </nz-dropdown-menu>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+      </div>
+    </nz-card>
+  </nz-card>

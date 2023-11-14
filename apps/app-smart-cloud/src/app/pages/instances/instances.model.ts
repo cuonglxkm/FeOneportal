@@ -116,7 +116,7 @@ export class RebuildInstances {
   id: number = 0;
 }
 
-export interface UpdateInstances {
+export class UpdateInstances {
   regionId: number;
   customerId: number;
   imageId: number;

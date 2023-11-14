@@ -18,7 +18,6 @@
 <form
   nz-form
   [formGroup]="form"
-  (ngSubmit)="_submitForm()"
   [nzLayout]="'vertical'"
 >
   <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
@@ -32,7 +31,7 @@
               formControlName="name"
               [(ngModel)]="createInstances.name"
               id="name"
-              placeholder="Nhập tên máy ảo"
+              placeholder="Nhập tên máy ảo" maxlength="250" minlength="1"  (change)="createInstances.name = createInstances.name.trim()"
             />
           </nz-form-control>
         </nz-form-item>
@@ -68,7 +67,7 @@
         <h6 class="h6">Hệ điều hành</h6>
       </nz-row>
       <nz-row nzGutter="16">
-        <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let hdh of listImageTypes">
+        <!-- <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let hdh of listImageTypes">
           <table class="hdh-card">
             <tbody>
               <tr height="200px">
@@ -97,31 +96,59 @@
               </tr>
             </tbody>
           </table>
-        </nz-col>
+        </nz-col> -->
+        <nz-carousel
+    [nzEffect]="effect"
+    style="overflow: initial"
+    style="height: 250px"
+  >
+    <div nz-carousel-content *ngFor="let page of pagedCardListImages">
+      <div nz-row>
+        <div nz-col nzSpan="6" *ngFor="let data of page">
+          <table class="images-card text-center">
+            <tbody class="images-body images-body-wh" [id]="'images_' + data.id"  
+            [ngClass]="{
+              'images-body-active': data.id === selectedTypeImageId,
+              'bgGray': !data.id === selectedTypeImageId
+            }">
+              <tr >
+                <div class="images-body-tr">
+                  <span nz-icon nzType="windows" nzTheme="outline">{{
+                    data.name
+                  }}</span>
+                </div>
+              </tr>
+              <tr>
+                <div>
+                  <nz-select
+                    [id]="'hdh_' + data.id"
+                    [(ngModel)]="data.versionId"
+                    (ngModelChange)="onInputHDH(data.id, $event)"
+                    (nzOpenChange)="getAllImageVersionByType(data.id)"
+                    [nzLoading]="isLoading"
+                    nzPlaceHolder="Chọn phiên bản"
+                    [ngModelOptions]="{ standalone: true }"
+                    style="text-align: center"
+                    class="images-body-select"
+                  >
+                    <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
+                    <nz-option
+                      *ngFor="let p of listImageVersionByType"
+                      [nzValue]="p.id"
+                      [nzLabel]="p.name"
+                    ></nz-option>
+                  </nz-select>
+                </div>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </nz-carousel>
       </nz-row>
     </div>
-    <!-- <ng-container *ngFor="let idx of ['id1', 'id2', 'id3', 'id4', 'id5']">
-      <nz-card  <input
-                  type="radio"
-                  [checked]="activeBlockPassword"
-                  (click)="initPassword()"
-        style="width:300px;"
-        (click)="actionHDH(idx)"
-        [nzActions]="[actionSetting]"
-      >
-        <nz-card-meta
-          nzTitle="Card title"
-          nzDescription="This is the description"
-          [nzAvatar]="avatarTemplate"
-        ></nz-card-meta>
-      </nz-card>
-      <ng-template #actionSetting>
-        <div (click)="action1(idx)" class="action-wrapper">
-          <i nz-icon type="setting"></i>{{ idx }}
-        </div>
-      </ng-template>
-    </ng-container> -->
-
+ 
     <br />
     <nz-row nzGutter="16">
       <h6 class="h6">Chọn loại Volume *</h6>
@@ -132,7 +159,7 @@
         name="selectedHDDorSSD"
       >
         <nz-col nzXs="24" nzMd="12">
-          <nz-card [nzAlign]="'middle'">
+          <nz-card [nzAlign]="'middle'"  [ngStyle]="{'background-color': activeBlockHDD ? '#e6f7ff' : '#fcfcfc'}">
             <nz-card-meta
               [nzAvatar]="nzAvatarselectedHDDorSSD1"
               [nzTitle]="nzTitleselectedHDDorSSD1"
@@ -160,7 +187,7 @@
           </nz-card></nz-col
         >
         <nz-col nzXs="24" nzMd="12">
-          <nz-card [nzAlign]="'middle'">
+          <nz-card [nzAlign]="'middle'" [ngStyle]="{'background-color': activeBlockSSD ? '#e6f7ff' : '#fcfcfc'}">
             <nz-card-meta
               [nzAvatar]="nzAvatarselectedHDDorSSD2"
               [nzTitle]="nzTitleselectedHDDorSSD2"
@@ -309,7 +336,7 @@
               <nz-option nzLabel="Mặc định" nzValue="" />
               <nz-option
                 *ngFor="let i of listIPPublic"
-                [nzLabel]="i.ipAddress"
+                [nzLabel]="i.ipAddress || i.networkId"
                 [nzValue]="i.id"
               />
             </nz-select>
@@ -376,7 +403,7 @@
         name="selectedPasswordOrSSHkey"
       >
         <nz-col nzXs="24" nzMd="12">
-          <nz-card>
+          <nz-card [ngStyle]="{'background-color': activeBlockPassword ? '#e6f7ff' : '#fcfcfc'}">
             <nz-card-meta
               [nzAvatar]="nzAvatarselectedPasswordOrSSHkey1"
               [nzTitle]="nzTitleselectedPasswordOrSSHkey1"
@@ -399,7 +426,7 @@
           </nz-card></nz-col
         >
         <nz-col nzXs="24" nzMd="12">
-          <nz-card>
+          <nz-card [ngStyle]="{'background-color': activeBlockSSHKey ? '#e6f7ff' : '#fcfcfc'}">
             <nz-card-meta
               [nzAvatar]="nzAvatarselectedPasswordOrSSHkey2"
               [nzTitle]="nzTitleselectedPasswordOrSSHkey2"

@@ -57,7 +57,7 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onInputHDH(index: number, event: any) {
-    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
+    this.hdh = this.listImageVersionByType.find(x => x.id = event);
     this.selectedTypeImageId= this.hdh.imageTypeId
   }
 
