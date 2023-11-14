@@ -1,12 +1,21 @@
-export class SecurityGroupModel {
-  tenantId:    string;
-  regionId:    number;
+export class IPSubnetModel {
   id:          string;
-  name:        string;
-  description: string;
- // rulesInfo:   any;
+  displayName: string;
+  cidr:        string;
+  availableIp: string;
+  gatewayIp:   string;
+  networkId:   string;
 }
 
+
+export class SecurityGroupModel {
+  tenantId: string;
+  regionId: number;
+  id: string;
+  name: string;
+  description: string;
+  // rulesInfo:   any;
+}
 
 export class IPPublicModel {
   ipAddress: string;
@@ -71,7 +80,7 @@ export class ImageTypesModel {
   id: number;
   isChecked: boolean = false;
   items: Images[] = [];
-  versionId:any;
+  versionId: any;
 }
 
 export class Snapshot {
@@ -95,6 +104,16 @@ export enum RegionText {
 export enum Status {
   Huy = 'HUY',
   Khoitao = 'KHOITAO',
+}
+
+export class RebuildInstances {
+  regionId: number = 0;
+  customerId: number = 0;
+  imageId: number = 0;
+  flavorId: number = 0;
+  volumeType: number = 0;
+  iops: number = 0;
+  id: number = 0;
 }
 
 export interface UpdateInstances {
@@ -140,7 +159,7 @@ export class InstancesModel {
   cloudId: string;
   name: string;
   flavorId: number;
-  flavorName:string;
+  flavorName: string;
   flavorCloudId: string;
   imageId: number;
   customerId: number;

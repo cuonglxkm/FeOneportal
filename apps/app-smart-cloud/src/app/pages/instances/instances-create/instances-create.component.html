@@ -714,7 +714,7 @@
         </nz-card-meta>
       </nz-card> -->
       <nz-alert
-        (click)="initBlockStorage()"
+        (click)="initNetwork()"
         nzType="success"
         [nzMessage]="customMgTemplateNetwrok"
         nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
@@ -738,7 +738,6 @@
               <tr>
                 <th>Dải IP</th>
                 <th>Số lượng</th>
-                <th>IPv6</th>
                 <th>Giá theo tháng (VNĐ)</th>
                 <th></th>
               </tr>
@@ -746,7 +745,7 @@
             <tbody class="ant-table-tbody">
               <tr *ngFor="let data of listOfDataNetwork">
                 <td>
-                  <nz-select
+                  <nz-select style="width: 85%;"
                     nzPlaceHolder="Chọn"
                     name="inputNetwork"
                     [ngModelOptions]="{ standalone: true }"
@@ -755,29 +754,21 @@
                     (ngModelChange)="onInputNetwork(data.id, $event)"
                   >
                     <nz-option
-                      *ngFor="let p of typeBlockStorage"
-                      [nzValue]="p.value"
-                      [nzLabel]="p.label"
+                      *ngFor="let p of listIPSubnetModel"
+                      [nzValue]="p.id"
+                      [nzLabel]="p.displayName"
                     ></nz-option>
                   </nz-select>
                 </td>
                 <td>
-                  <nz-input-number
+                  <nz-input-number 
                     [(ngModel)]="data.amount"
                     [ngModelOptions]="{ standalone: true }"
                     [id]="'amount_' + data.id"
                     [nzMin]="0"
-                    [nzMax]="10"
+                    [nzMax]="7"
                     [nzStep]="1"
                   ></nz-input-number>
-                </td>
-                <td>
-                  <label
-                    nz-checkbox
-                    [(ngModel)]="data.ipv6"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'ipv6_' + data.id"
-                  ></label>
                 </td>
                 <td>
                   <label>

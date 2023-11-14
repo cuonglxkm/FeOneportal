@@ -2,14 +2,21 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
+  Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { ImageTypesModel, Images, InstancesModel } from '../instances.model';
+import {
+  ImageTypesModel,
+  Images,
+  InstancesModel,
+  RebuildInstances,
+} from '../instances.model';
 import { InstancesService } from '../instances.service';
 
 @Component({
@@ -26,6 +33,8 @@ export class InstancesEditInfoComponent implements OnInit {
   customerId: number = 669;
   //userId: number = this.tokenService.get()?.userId;
 
+  rebuildInstances: RebuildInstances = new RebuildInstances();
+
   instancesModel: InstancesModel;
   id: number;
   pagedCardListImages: Array<Array<any>> = [];
@@ -36,6 +45,8 @@ export class InstancesEditInfoComponent implements OnInit {
   listImageVersionByType: Images[] = [];
   selectedValueVersion: any;
   isLoading = false;
+  hdh: Images;
+  selectedTypeImageId:number;
 
   getAllImageVersionByType(type: number) {
     this.dataService
@@ -46,7 +57,8 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onInputHDH(index: number, event: any) {
-    //this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
+    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
+    this.selectedTypeImageId= this.hdh.imageTypeId
   }
 
   //#endregion
@@ -58,7 +70,8 @@ export class InstancesEditInfoComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService
+    public message: NzMessageService,
+    private el: ElementRef, private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -73,15 +86,33 @@ export class InstancesEditInfoComponent implements OnInit {
               this.pagedCardListImages.push(
                 this.listImageTypes.slice(i, i + 4)
               );
-              
+            }
             this.loading = false;
             this.cdr.detectChanges();
-            }
           });
         });
       }
     });
+    this.cdr.detectChanges();
   }
+  save(): void {
+    this.rebuildInstances.regionId = this.instancesModel.regionId;
+    this.rebuildInstances.customerId = this.instancesModel.customerId;
+    this.rebuildInstances.imageId = this.hdh.id;
+    this.rebuildInstances.flavorId = this.instancesModel.flavorId;
+    this.rebuildInstances.id = this.instancesModel.id;
+    this.dataService.rebuild(this.rebuildInstances).subscribe(
+      (data: any) => {
+        console.log(data);
+        this.message.success('Thay đổi hệ điều hành thành công');
+      },
+      (error) => {
+        console.log(error.error);
+        this.message.error('Thay đổi hệ điều hành không thành công');
+      }
+    );
+  }
+
   navigateToEdit() {
     this.route.navigate(['/app-smart-cloud/vm/instances-edit/' + this.id]);
   }

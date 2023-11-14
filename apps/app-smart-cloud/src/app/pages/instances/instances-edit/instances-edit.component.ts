@@ -25,7 +25,7 @@ import {
   SecurityGroupModel,
   Snapshot,
 } from '../instances.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
@@ -66,19 +66,14 @@ class Network {
 }
 
 @Component({
-  selector: 'one-portal-instances-create',
-  templateUrl: './instances-create.component.html',
+  selector: 'one-portal-instances-edit',
+  templateUrl: './instances-edit.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstancesCreateComponent implements OnInit {
+export class InstancesEditComponent implements OnInit {
   listOfOption: Array<{ value: string; label: string }> = [];
-  listOfSelectedValue = ['a10', 'c12'];
-
-  radioValue = 'A';
   reverse = true;
-  editIndex = -1;
-  editObj = {};
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -86,12 +81,11 @@ export class InstancesCreateComponent implements OnInit {
     }),
     // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
-  users: Array<{ value: string; label: string }> = [
-    { value: 'xiao', label: '付晓晓' },
-    { value: 'mao', label: '周毛毛' },
-  ];
 
   //danh sách các biến của form model
+  id: number;
+  instancesModel: InstancesModel;
+
   createInstances: CreateInstances = new CreateInstances();
   region: number = 3;
   projectId: number = 4079;
@@ -110,63 +104,10 @@ export class InstancesCreateComponent implements OnInit {
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
 
   //#region Hệ điều hành
-  listImageTypes: ImageTypesModel[] = [];
-  listImageVersionByType: Images[] = [];
-  selectedValueVersion: any;
-  isLoading = false;
-
-  getAllImageType() {
-    this.dataService.getAllImageType().subscribe((data: any) => {
-      this.listImageTypes = data;
-      // for (var i = 0; i < this.listImageTypes.length; i++) {
-      //   this.dataService
-      //     .getAllImage(
-      //       null,
-      //       this.region,
-      //       this.listImageTypes[i].id,
-      //       this.customerId
-      //     )
-      //     .subscribe((dataimage: any) => {
-      //       this.listImageTypes[i].items = dataimage;
-      //     });
-      // }
-    });
-  }
-
-  getAllImageVersionByType(type: number) {
-    this.dataService
-      .getAllImage(null, this.region, type, this.customerId)
-      .subscribe((data: any) => {
-        this.listImageVersionByType = data;
-      });
-  }
-
-  onInputHDH(index: number, event: any) {
-    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
-  }
 
   //#endregion
 
   //#region  Snapshot
-  isSnapshot: boolean = false;
-  listImages: Images[] = [];
-  listSnapshot: Snapshot[] = [];
-
-  initSnapshot(): void {
-    if (this.isSnapshot) {
-      this.dataService
-        .getAllSnapshot(null, this.region, null, null)
-        .subscribe((data: any) => {
-          this.listSnapshot = data;
-        });
-    } else {
-      this.dataService
-        .getAllImage(null, this.region, null, null)
-        .subscribe((data: any) => {
-          this.listImages = data;
-        });
-    }
-  }
 
   //#endregion
 
@@ -189,13 +130,6 @@ export class InstancesCreateComponent implements OnInit {
   listSecurityGroup: SecurityGroupModel[] = [];
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
-  getAllIPPublic() {
-    this.dataService
-      .getAllIPPublic(this.region, this.customerId, 0, 9999, 1, false, '')
-      .subscribe((data: any) => {
-        this.listIPPublic = data.records;
-      });
-  }
 
   getAllSecurityGroup() {
     this.dataService
@@ -261,17 +195,7 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region selectedPasswordOrSSHkey
-  activeBlockPassword: boolean = true;
-  activeBlockSSHKey: boolean = false;
 
-  initPassword(): void {
-    this.activeBlockPassword = true;
-    this.activeBlockSSHKey = false;
-  }
-  initSSHkey(): void {
-    this.activeBlockPassword = false;
-    this.activeBlockSSHKey = true;
-  }
   //#endregion
 
   //#region BlockStorage
@@ -371,7 +295,8 @@ export class InstancesCreateComponent implements OnInit {
     private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
+    private route: Router,
+    private router: ActivatedRoute,
     public message: NzMessageService,
     private renderer: Renderer2
   ) {}
@@ -383,53 +308,24 @@ export class InstancesCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
-    this.getAllImageType();
     this.initFlavors();
-    this.getAllIPPublic();
     this.getAllSecurityGroup();
-    const userList = [
-      {
-        key: '1',
-        workId: '00001',
-        name: 'John Brown',
-        department: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '2',
-        workId: '00002',
-        name: 'Jim Green',
-        department: 'London No. 1 Lake Park',
-      },
-      {
-        key: '3',
-        workId: '00003',
-        name: 'Joe Black',
-        department: 'Sidney No. 1 Lake Park',
-      },
-    ];
 
-    const children: string[] = [];
-    for (let i = 10; i < 10000; i++) {
-      children.push(`${i.toString(36)}${i}`);
-    }
-    this.listOfOption = children.map((item) => ({
-      value: item,
-      label: item,
-    }));
-  }
-
-  createInstancesForm(): FormGroup<InstancesForm> {
-    return new FormGroup({
-      name: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+    this.router.paramMap.subscribe((param) => {
+      if (param.get('id') != null) {
+        this.id = parseInt(param.get('id'));
+        this.dataService.getById(this.id, false).subscribe((data: any) => {
+          this.instancesModel = data;
+        });
+      }
     });
   }
-
-  // get items(): FormArray<FormGroup<InstancesForm>> {
-  //   return this.form.controls.items;
-  // }
+  navigateToChangeImage() {
+    this.route.navigate(['/app-smart-cloud/vm/instances-edit-info/' + this.id]);
+  }
+  returnPage(): void {
+    this.route.navigate(['/app-smart-cloud/vm']);
+  }
 
   save(): void {
     this.createInstances.regionId = 3; // this.region;
@@ -467,22 +363,6 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/app-smart-cloud/vm']);
-  }
-
-  _submitForm(): void {
-    // this.formValidity(this.form.controls);
-    // if (this.form.invalid) {
-    //   return;
-    // }
-    this.save();
-  }
-
-  private formValidity(controls: NzSafeAny): void {
-    Object.keys(controls).forEach((key) => {
-      const control = (controls as NzSafeAny)[key] as AbstractControl;
-      control.markAsDirty();
-      control.updateValueAndValidity();
-    });
+    this.route.navigate(['/app-smart-cloud/vm']);
   }
 }

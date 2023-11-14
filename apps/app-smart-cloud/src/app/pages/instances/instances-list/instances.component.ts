@@ -27,6 +27,7 @@ import { InstancesModel } from '../instances.model';
 import { async } from 'rxjs';
 import { da } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { RegionModel } from 'src/app/shared/models/region.model';
 
 class SearchParam {
   status: string = '';
@@ -79,7 +80,7 @@ export class InstancesComponent implements OnInit {
   isVisible08 = false; // Tắt máy ảo
   actionData: InstancesModel;
 
-  region: number = 3;
+  region: number;
 
   activeCreate: boolean = false;
 
@@ -183,12 +184,19 @@ export class InstancesComponent implements OnInit {
   changeFilterStatus(e: any): void {
     this.searchParam.status = e;
   }
+  changeName(e: any): void {
+    this.searchParam.name = e;
+  }
 
   selectedChecked(e: any): void {
     // @ts-ignore
     this.checkedCashArray = [...e];
   }
-
+  onRegionChange(region: RegionModel) {
+    // Handle the region change event
+    this.region = region.regionId;
+    console.log(this.tokenService.get()?.userId);
+  }
   resetForm(): void {
     this.searchParam = {};
     this.getDataList();

@@ -4,6 +4,7 @@ import { InstancesComponent } from './instances-list/instances.component';
 import { InstancesCreateComponent } from './instances-create/instances-create.component';
 import { InstancesDetailComponent } from './instances-detail/instances-detail.component';
 import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit-info.component';
+import { InstancesEditComponent } from './instances-edit/instances-edit.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,11 @@ const routes: Routes = [
     path: 'instances-edit-info/:id',
     component: InstancesEditInfoComponent,
     data: { title: 'Chỉnh sửa thông tin máy ảo', key: 'instances-edit-info' },
+  },
+  {
+    path: 'instances-edit/:id',
+    component: InstancesEditComponent,
+    data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit' },
   },
 ];
 

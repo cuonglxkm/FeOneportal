@@ -32,12 +32,30 @@ export class InstancesService {
   }
 
   //hệ điều hành là Image, gói cấu hình là Flavors
+
+  getAllSecurityGroupByInstance(
+    instanceId: any,
+    regionId: any,
+    userId: any,
+    projectId: any
+  ): Observable<any> {
+    let url_ = `/security_group/getbyinstace?instanceId=${instanceId}&userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.get<any>(this.baseUrl + url_);
+  }
+
+  getAllIPSubnet(regionId: any): Observable<any> {
+    let url_ = `/Ip/subnet/${regionId}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.get<any>(this.baseUrl + url_);
+  }
+
   getAllSecurityGroup(
     regionId: any,
     userId: any,
     projectId: any
   ): Observable<any> {
-    let url_ = `/security_group/get_all?userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
+    let url_ = `/security_group/getall?userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http2.get<any>(this.baseUrl + url_);
   }
@@ -127,6 +145,18 @@ export class InstancesService {
 
   create(data: any): Observable<any> {
     let url_ = `/instances`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.post<any>(this.baseUrl + url_, data);
+  }
+
+  resetpassword(data: any): Observable<any> {
+    let url_ = `/instances/resetpassword?id=${data.id}&newPassword=${data.newPassword}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.post<any>(this.baseUrl + url_, '');
+  }
+
+  rebuild(data: any): Observable<any> {
+    let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http2.post<any>(this.baseUrl + url_, data);
   }

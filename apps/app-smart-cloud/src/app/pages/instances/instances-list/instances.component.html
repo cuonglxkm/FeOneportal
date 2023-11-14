@@ -1,7 +1,19 @@
 <!--Head section-->
 <!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
 
-<page-header [title]="'Danh sách máy ảo'"> </page-header>
+<!-- <page-header [title]="'Danh sách máy ảo'"> </page-header> -->
+
+<div page-header class="alain-default__content-title">
+  <h1 class="h1">Danh sách máy ảo</h1>
+
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  </div>
+</div>
+
 
 <div class="normal-table-wrap" *ngIf="!activeCreate; else elsePage">
   <nz-card
@@ -62,7 +74,7 @@
                 name="name"
                 nz-input
                 placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
-                [ngModel]="searchParam.name"
+                [ngModel]="searchParam.name"  (ngModelChange)="changeName($event)"
               />
             </nz-form-control>
           </nz-form-item>

@@ -6,13 +6,19 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { InstancesModel } from '../instances.model';
+import { InstancesModel, SecurityGroupModel } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData, G2TimelineMap } from '@delon/chart/timeline';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 
 class BlockStorage {
   id: number = 0;
@@ -45,6 +51,7 @@ export class InstancesDetailComponent implements OnInit {
   id: number;
   listOfDataBlockStorage: BlockStorage[] = [];
   listOfDataNetwork: Network[] = [];
+  listSecurityGroupModel: SecurityGroupModel[] = [];
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -61,8 +68,20 @@ export class InstancesDetailComponent implements OnInit {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService.getById(this.id, false).subscribe((data: any) => {
-          this.loading = false;
           this.instancesModel = data;
+          this.loading = false;
+
+          this.dataService
+            .getAllSecurityGroupByInstance(
+              this.instancesModel.cloudId,
+              this.instancesModel.regionId,
+              this.instancesModel.customerId,
+              this.instancesModel.projectId
+            )
+            .subscribe((datasg: any) => {
+              this.listSecurityGroupModel = datasg;
+              this.cdr.detectChanges();
+            });
         });
       }
     });
@@ -91,6 +110,8 @@ export class InstancesDetailComponent implements OnInit {
     this.modalSrv.create({
       nzTitle: 'Xóa máy ảo',
       nzContent: tpl,
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
       nzOnOk: () => {
         this.dataService.delete(this.id).subscribe(
           (data: any) => {
@@ -113,6 +134,8 @@ export class InstancesDetailComponent implements OnInit {
     this.modalSrv.create({
       nzTitle: 'Gia hạn',
       nzContent: tpl,
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
       nzOnOk: () => {
         this.message.success('Gia hạn thành công');
         //  this.dataService.delete(this.id).subscribe(
@@ -140,27 +163,71 @@ export class InstancesDetailComponent implements OnInit {
     this.modalSrv.create({
       nzTitle: 'Reset mật khẩu máy ảo',
       nzContent: tpl,
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
       nzOnOk: () => {
-        this.message.success('Reset mật khẩu máy ảo thành công');
-        //  this.dataService.delete(this.id).subscribe(
-        //   (data: any) => {
-        //     console.log(data);
-        //     if (data == true) {
-        //       this.message.success('Xóa máy ảo thành công');
-        //     } else {
-        //       this.message.error('Xóa máy ảo không thành công');
-        //     }
-        //   },
-        //   () => {
-        //     this.message.error('Xóa máy ảo không thành công');
-        //   }
-        // );
+        if (this.resetPassword == this.resetPasswordRepeat) {
+          this.message.success('Reset mật khẩu máy ảo thành công');
+          // this.dataService
+          //   .resetpassword({ id: this.id, newPassword: this.resetPassword })
+          //   .subscribe(
+          //     (data: any) => {
+          //       console.log(data);
+          //       if (data == true) {
+          //         this.message.success('Reset mật khẩu máy ảo thành công');
+          //       } else {
+          //         this.message.error('Reset mật khẩu không thành công');
+          //       }
+          //     },
+          //     () => {
+          //       this.message.error('Reset mật khẩu không thành công');
+          //     }
+          //   );
+        } else {
+          this.message.error('Mật khẩu không khớp!');
+        }
       },
     });
   }
   //Giám sát
   activeGS: boolean = false;
   offlineChartData!: any[];
+  valueGSCPU:string =''
+  valueGSTIME:string =''
+
+  GSCPU = [
+    {
+      key: '1',
+      name: 'CPU',
+    },
+    {
+      key: '2',
+      name: 'RAM',
+    },
+    {
+      key: '3',
+      name: 'Network',
+    },
+    {
+      key: '4',
+      name: 'Disk IOPS',
+    },
+    {
+      key: '5',
+      name: 'Disk Read / Write',
+    },
+  ];
+  GSTIME = [
+    {
+      key: '1',
+      name: '5 phút',
+    },
+    {
+      key: '2',
+      name: '15 phút',
+    },
+  ];
+
   cahrt = [
     {
       time: '2023-11-13T02:55:02.606Z',
@@ -286,39 +353,17 @@ export class InstancesDetailComponent implements OnInit {
   activeGSCard() {
     this.activeGS = true;
     this.offlineChartData = this.cahrt;
-    this.refresh();
   }
-  chartData: G2TimelineData[] = [];
-  titleMap: G2TimelineMap = { y1: '指标1', y2: '指标2' };
-  maxAxis = 2;
-  axisList = new Array(5).fill(0).map((_, idx) => idx + 1);
-  private genData(max: number): {
-    titleMap: G2TimelineMap;
-    data: G2TimelineData[];
-  } {
-    const titleMap: G2TimelineMap = { y1: '' };
-    for (let i = 1; i <= max; i++) {
-      titleMap[`y${i}`] = `指标${i}`;
-    }
+  // refresh(max?: number): void {
+  //   this.maxAxis = max ?? this.maxAxis;
+  //   const { titleMap, data } = this.genData(this.maxAxis);
+  //   this.chartData = data;
+  //   this.titleMap = titleMap;
+  // }
+  onChangeCPU(event?:any){
 
-    const data: G2TimelineData[] = [];
-    for (let i = 0; i < 20; i += 1) {
-      const item: G2TimelineData = {
-        time: new Date().getTime() + 1000 * 60 * 30 * i,
-        y1: 0,
-      };
-      for (let i = 1; i <= max; i++) {
-        item[`y${i}`] = Math.floor(Math.random() * 100) + 500 * i;
-      }
-      data.push(item);
-    }
-    return { titleMap, data };
   }
+  onChangeTIME(event?:any){
 
-  refresh(max?: number): void {
-    this.maxAxis = max ?? this.maxAxis;
-    const { titleMap, data } = this.genData(this.maxAxis);
-    this.chartData = data;
-    this.titleMap = titleMap;
   }
 }
