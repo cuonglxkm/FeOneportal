@@ -2,7 +2,8 @@ import {BaseService} from "../../shared/services/base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import PairInfo, {AllowAddressPairCreateOrDeleteForm, AllowAddressPairSearchForm} from "../model/allow-address-pair";
+import PairInfo, {AllowAddressPairCreateOrDeleteForm, AllowAddressPairSearchForm}
+    from "../../shared/models/allow-address-pair";
 
 @Injectable({
     providedIn: 'root'

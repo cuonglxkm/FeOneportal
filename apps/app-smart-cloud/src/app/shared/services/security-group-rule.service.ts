@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {SecurityGroupSearchCondition} from "../model/interface/security-group";
+import {SecurityGroupSearchCondition} from "../../shared/models/security-group";
 import SecurityGroupRule, {
     SecurityGroupRuleCreateForm,
     SecurityGroupRuleGetPage
-} from "../model/interface/security-group-rule";
+} from "../../shared/models/security-group-rule";
 import {BaseService} from "../../shared/services/base.service";
 import {Observable} from "rxjs";
 

@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {SecurityGroup, SecurityGroupCreateForm, SecurityGroupSearchCondition} from "../model/interface/security-group";
+import {SecurityGroup, SecurityGroupCreateForm, SecurityGroupSearchCondition}
+  from "../../shared/models/security-group";
 import {Observable} from "rxjs";
 import { BaseService } from "src/app/shared/services/base.service";
 
