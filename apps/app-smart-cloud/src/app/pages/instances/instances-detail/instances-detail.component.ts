@@ -6,13 +6,13 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { InstancesModel, SecurityGroupModel } from '../instances.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { InstancesService } from '../instances.service';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { G2TimelineData, G2TimelineMap } from '@delon/chart/timeline';
+import {InstancesModel, SecurityGroupModel} from '../instances.model';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {InstancesService} from '../instances.service';
+import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
+import {G2TimelineData, G2TimelineMap} from '@delon/chart/timeline';
 import {
   AbstractControl,
   FormControl,
@@ -31,6 +31,7 @@ class BlockStorage {
   typeVolume?: string = '';
   price?: string = '000';
 }
+
 class Network {
   name?: string = 'prive_network';
   mac?: string = '';
@@ -62,7 +63,8 @@ export class InstancesDetailComponent implements OnInit {
     private router: ActivatedRoute,
     private route: Router,
     public message: NzMessageService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.listOfDataNetwork.push(this.defaultNetwork);
@@ -89,12 +91,15 @@ export class InstancesDetailComponent implements OnInit {
       }
     });
   }
+
   navigateToEdit() {
     this.route.navigate(['/app-smart-cloud/vm/instances-edit/' + this.id]);
   }
+
   navigateToChangeImage() {
     this.route.navigate(['/app-smart-cloud/vm/instances-edit-info/' + this.id]);
   }
+
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/vm']);
   }
@@ -108,6 +113,7 @@ export class InstancesDetailComponent implements OnInit {
       },
     });
   }
+
   delete(tpl: TemplateRef<{}>): void {
     //xóa
     this.modalSrv.create({
@@ -132,6 +138,7 @@ export class InstancesDetailComponent implements OnInit {
       },
     });
   }
+
   continue(tpl: TemplateRef<{}>): void {
     //gia hạn
     this.modalSrv.create({
@@ -192,11 +199,12 @@ export class InstancesDetailComponent implements OnInit {
       },
     });
   }
+
   //Giám sát
   activeGS: boolean = false;
   offlineChartData!: any[];
-  valueGSCPU:string =''
-  valueGSTIME:string =''
+  valueGSCPU: string = ''
+  valueGSTIME: string = ''
 
   GSCPU = [
     {
@@ -353,10 +361,12 @@ export class InstancesDetailComponent implements OnInit {
       _time: 1699878302606,
     },
   ];
+
   activeGSCard() {
     this.activeGS = true;
     this.offlineChartData = this.cahrt;
   }
+
   // refresh(max?: number): void {
   //   this.maxAxis = max ?? this.maxAxis;
   //   const { titleMap, data } = this.genData(this.maxAxis);
@@ -368,5 +378,12 @@ export class InstancesDetailComponent implements OnInit {
   }
   onChangeTIME(event?:any){
     this.offlineChartData = this.cahrt;
+
+  openConsole(): void {
+    this.route.navigateByUrl('/app-smart-cloud/vm/instances-console/' + this.id, {
+      state: {
+        vmId: this.id
+      }
+    });
   }
 }

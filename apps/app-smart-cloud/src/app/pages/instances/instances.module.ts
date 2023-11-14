@@ -7,8 +7,6 @@ import { InstancesCreateComponent } from './instances-create/instances-create.co
 import { InstancesDetailComponent } from './instances-detail/instances-detail.component';
 import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit-info.component';
 import { InstancesEditComponent } from './instances-edit/instances-edit.component';
-import { NetworkDetailComponent } from './network-detail/network-detail.component';
-import { BlockstorageDetailComponent } from './blockstorage-detail/blockstorage-detail.component';
 
 @NgModule({
   declarations: [
@@ -17,10 +15,11 @@ import { BlockstorageDetailComponent } from './blockstorage-detail/blockstorage-
     InstancesDetailComponent,
     InstancesEditInfoComponent,
     InstancesEditComponent,
+    InstancesConsoleComponent,
     NetworkDetailComponent,
     BlockstorageDetailComponent,
   ],
-  imports: [InstancesRoutingModule, SharedModule],
+  imports: [InstancesRoutingModule, SharedModule, FullContentModule, SafePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class InstancesModule {}
