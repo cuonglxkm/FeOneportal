@@ -1,0 +1,27 @@
+.frameWrapper {
+  position: relative;
+  //padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 45.25%;
+  height: 0;
+}
+.frameWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay-button {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  transform: translate(0%, 0%);
+  padding: 1px 1px;
+  z-index: 9999; /* Set a higher z-index to ensure it's on top */
+  border: none;
+  transition: border-color 0ms !important;
+}
+.overlay-button:hover {
+  color: ghostwhite;
+}

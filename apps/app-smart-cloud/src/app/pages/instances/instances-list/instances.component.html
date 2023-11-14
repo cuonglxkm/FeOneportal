@@ -1,0 +1,224 @@
+<!--Head section-->
+<!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
+
+<!-- <page-header [title]="'Danh sách máy ảo'"> </page-header> -->
+
+<div page-header class="alain-default__content-title">
+  <h1 class="h1">Danh sách máy ảo</h1>
+
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  </div>
+</div>
+
+
+<div class="normal-table-wrap" *ngIf="!activeCreate; else elsePage">
+  <nz-card
+    class="m-b-10"
+    nzHoverable
+    [nzBodyStyle]="{ 'padding-bottom': '15px' }"
+  >
+    <form nz-form>
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">
+        <div
+          nz-col
+          [nzLg]="8"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="8"
+          [nzXs]="24"
+          [nzXXl]="8"
+        >
+          <nz-form-item>
+            <nz-form-label [nzFor]="">Trạng thái máy ảo</nz-form-label>
+            <nz-form-control>
+              <nz-select
+                [ngModel]="searchParam.status"
+                [nzPlaceHolder]="'Tất cả trạng thái'"
+                [nzShowSearch]="false"
+                name="status"
+                (ngModelChange)="changeFilterStatus($event)"
+              >
+                <nz-option
+                  *ngFor="let i of filterStatus"
+                  [nzLabel]="i.text"
+                  [nzValue]="i.value"
+                />
+              </nz-select>
+            </nz-form-control>
+            <!-- <nz-form-control>
+              <input
+                name="status"
+                nz-input
+                placeholder="Tất cả trạng thái"
+                [(ngModel)]="searchParam.status"
+              />
+            </nz-form-control> -->
+          </nz-form-item>
+        </div>
+        <div
+          nz-col
+          [nzLg]="8"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="8"
+          [nzXs]="24"
+          [nzXXl]="8"
+        >
+          <nz-form-item>
+            <nz-form-control>
+              <input
+                name="name"
+                nz-input
+                placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
+                [ngModel]="searchParam.name"  (ngModelChange)="changeName($event)"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <!-- <div nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8"></div> -->
+        <div
+          class="text-right p-0 m-b-10"
+          nz-col
+          [nzLg]="8"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="8"
+          [nzXs]="24"
+          [nzXXl]="8"
+        >
+          <button nz-button [nzType]="'primary'" (click)="getDataList()">
+            <i nz-icon nzType="search"></i>
+            Search
+          </button>
+          <!-- <button class="m-l-15" nz-button (click)="resetForm()"> <span nz-icon nzType="search" nzTheme="outline"></span> copied 🎉
+            <i nz-icon nzTheme="outline" nzType="close-circle"></i>
+            Reset
+          </button> -->
+          <button
+            class="m-r-8"
+            nz-button
+            nzType="primary"
+            (click)="navigateToCreate()"
+          >
+            <i nz-icon nzType="plus"></i>
+            Tạo mới
+          </button>
+        </div>
+      </div>
+    </form>
+  </nz-card>
+
+  <nz-table
+    #ajaxTable3
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="dataList"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getDataList()"
+    (nzPageSizeChange)="getDataList(true)"
+  >
+    <thead>
+      <tr>
+        <th>Tên máy ảo</th>
+        <th>Gói cấu hình</th>
+        <th>Trạng thái máy ảo</th>
+        <th>Trạng thái tác vụ</th>
+        <th>IP LAN</th>
+        <th>IP Public</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of ajaxTable3.data">
+        <td>{{ data.name }}</td>
+        <td>
+          {{ data.flavorName }}
+          <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
+        </td>
+        <td>
+          <div *ngFor="let nameFill of filterStatus">
+            <p *ngIf="data.status == nameFill.value;">{{ nameFill.text }}</p>
+          </div>
+          <!-- <ng-template #notmatch>{{ data.status}}</ng-template> -->
+        </td>
+        <td>{{ data.taskState }}</td>
+        <td>{{ data.ipPrivate }}</td>
+        <td>{{ data.ipPublic }}</td>
+        <td>
+          <nz-select
+            [nzPlaceHolder]="'Thao tác'"
+            ngModel="selectedOptionAction"
+            name="selectAction"
+            (ngModelChange)="showModal($event, data)"
+          >
+            <nz-option nzValue="1" nzLabel="Tạo Backup"></nz-option>
+            <nz-option nzValue="2" nzLabel="Tạo lịch Backup"></nz-option>
+            <nz-option
+              nzValue="3"
+              nzLabel="Chỉnh sửa Security Group"
+            ></nz-option>
+            <nz-option nzValue="4" nzLabel="Chỉnh sửa"></nz-option>
+            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"></nz-option>
+            <nz-option nzValue="6" nzLabel="Gỡ khỏi VLAN"></nz-option>
+            <nz-option nzValue="7" nzLabel="Khởi động lại"></nz-option>
+            <nz-option nzValue="8" nzLabel="Tắt máy ảo"></nz-option>
+            <nz-option nzValue="9" nzLabel="RESCUE"></nz-option>
+          </nz-select>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+<ng-template #elsePage>
+  <nz-card>
+    <result>
+      <img nz-image nzSrc="assets/imgs/blank_vm.png" alt="" />
+
+      <button nz-button [nzType]="'primary'" (click)="navigateToCreate()">
+        <!-- <a routerLink="/pages/vm/instances-create"> Khởi tạo ngay</a>
+        -->
+        Khởi tạo ngay
+      </button>
+    </result>
+  </nz-card>
+</ng-template>
+
+<!-- Modal -->
+<nz-modal
+  [(nzVisible)]="isVisible07"
+  nzTitle="Tắt máy ảo"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk(7)"
+  [nzFooter]="modalFooter7"
+>
+  <ng-container *nzModalContent>
+    <p>Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?</p>
+  </ng-container>
+  <ng-template #modalFooter7>
+    <button nz-button nzType="default" (click)="handleCancel()">Hủy</button>
+    <button nz-button nzType="primary" (click)="handleOk(7)">Xác nhận</button>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisible08"
+  nzTitle="Tắt máy ảo"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk(8)"
+  [nzFooter]="modalFooter8"
+>
+  <ng-container *nzModalContent>
+    <p>Quý khách chắn chắn muốn thực hiện tắt máy ảo?</p>
+  </ng-container>
+  <ng-template #modalFooter8>
+    <button nz-button nzType="default" (click)="handleCancel()">Hủy</button>
+    <button nz-button nzType="primary" (click)="handleOk(8)">Xác nhận</button>
+  </ng-template>
+</nz-modal>

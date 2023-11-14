@@ -1,0 +1,141 @@
+<page-header [title]="'Chỉnh sửa thông tin máy ảo'"> </page-header>
+
+<nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành">
+  <nz-row nzGutter="16">
+    <p>Hệ điều hành hiện tại: {{ instancesModel.imageId }}</p>
+  </nz-row>
+  <nz-row nzGutter="16">
+    <p>Lựa chọn hệ điều hành mới</p>
+  </nz-row>
+  <!-- <nz-row nzGutter="16">
+    <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let hdh of listImageTypes">
+      <table class="hdh-card">
+        <tbody>
+          <tr height="200px">
+            <span nz-icon nzType="windows" nzTheme="outline">{{
+              hdh.name
+            }}</span>
+          </tr>
+          <tr>
+            <nz-select
+              [id]="'hdh_' + hdh.id"
+              [(ngModel)]="hdh.versionId"
+              (ngModelChange)="onInputHDH(hdh.id, $event)"
+              (nzOpenChange)="getAllImageVersionByType(hdh.id)"
+              [nzLoading]="isLoading"
+              nzPlaceHolder="Chọn phiên bản"
+              [ngModelOptions]="{ standalone: true }"
+              style="width: 100%; text-align: center"
+            >
+              <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
+              <nz-option
+                *ngFor="let p of listImageVersionByType"
+                [nzValue]="p.id"
+                [nzLabel]="p.name"
+              ></nz-option>
+            </nz-select>
+          </tr>
+        </tbody>
+      </table>
+    </nz-col>
+  </nz-row> -->
+  <nz-row nzGutter="16">
+  <nz-carousel
+    [nzEffect]="effect"
+    style="overflow: initial"
+    style="height: 250px"
+  >
+    <div nz-carousel-content *ngFor="let page of pagedCardListImages">
+      <div nz-row>
+        <div nz-col nzSpan="6" *ngFor="let data of page">
+          <table class="images-card text-center">
+            <tbody class="images-body images-body-wh" [id]="'images_' + data.id"  
+            [ngClass]="{
+              'bgActive': data.id === selectedTypeImageId,
+              'bgGray': !data.id === selectedTypeImageId
+            }">
+              <tr style="height: 150px; background-color: antiquewhite;">
+                <div>
+                  <span nz-icon nzType="windows" nzTheme="outline">{{
+                    data.name
+                  }}</span>
+                </div>
+              </tr>
+              <tr>
+                <div>
+                  <nz-select
+                    [id]="'hdh_' + data.id"
+                    [(ngModel)]="data.versionId"
+                    (ngModelChange)="onInputHDH(data.id, $event)"
+                    (nzOpenChange)="getAllImageVersionByType(data.id)"
+                    [nzLoading]="isLoading"
+                    nzPlaceHolder="Chọn phiên bản"
+                    [ngModelOptions]="{ standalone: true }"
+                    style="text-align: center"
+                    class="images-body-wh"
+                  >
+                    <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
+                    <nz-option
+                      *ngFor="let p of listImageVersionByType"
+                      [nzValue]="p.id"
+                      [nzLabel]="p.name"
+                    ></nz-option>
+                  </nz-select>
+                </div>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </nz-carousel>
+</nz-row>
+  <br />
+  <br />
+  <nz-row nzGutter="16">
+    <div style="width: 100%">
+      <nz-alert
+        nzType="warning"
+        [nzMessage]="nzDescriptionWarning06"
+        nzShowIcon
+      ></nz-alert>
+      <ng-template #nzDescriptionWarning06>
+        <div>
+          Các phiên bản hệ điều hành Windows Server là bản dùng thử.Quý khách
+          hàng vui lòng kích hoạt bản quyền trước khi sử dụng.
+        </div>
+      </ng-template>
+    </div></nz-row
+  ><nz-row nzGutter="16">
+    <div style="width: 100%; margin-top: 2%; margin-bottom: 2%">
+      <nz-alert
+        nzType="warning"
+        [nzMessage]="nzDescriptionWarning02"
+        nzShowIcon
+      ></nz-alert>
+      <ng-template #nzDescriptionWarning02>
+        <div>
+          <b> Quý khách lưu ý:</b><br />
+          <b style="color: red">
+            - Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng 2 GB)
+            sẽ bị xóa và không thể khôi phục lại.</b
+          >
+          <br />- Dữ liệu nằm trên volume gắn ngoài sẽ không bị ảnh hưởng.
+          <br />- Sau khi điều chỉnh thành công, mật khẩu đăng nhập mới sẽ được
+          gửi vào email khaitestportal2@yopmail.com . <br />- Quá trình điều
+          chỉnh hệ điều hành sẽ mất khoảng 15 đến 20 phút tùy dung lượng của
+          volume root của máy ảo. <br />- Cấu hình máy ảo (SMC01), ip (,
+          192.168.0.109), security group (default) sẽ được giữ nguyên.
+        </div>
+      </ng-template>
+    </div></nz-row
+  >
+  <nz-row nzGutter="16" style="display: inline">
+    <div style="float: right">
+      <button nz-button (click)="returnPage()">Quay lại</button>
+      <button nz-button [nzType]="'primary'" (click)="save()" [disabled]="!hdh">
+        Chỉnh sửa
+      </button>
+    </div>
+  </nz-row>
+</nz-card>

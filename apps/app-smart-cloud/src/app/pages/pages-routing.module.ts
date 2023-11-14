@@ -8,7 +8,8 @@ import {CreateInboundComponent} from "./security-group/inbound/create/create-inb
 import {CreateOutboundComponent} from "./security-group/outbound/create/create-outbound.component";
 import {ListAllowAddressPairComponent} from "./allow-address-pair/list/list-allow-address-pair.component";
 import {BlankSecurityGroupComponent} from "./security-group/blank-security-group/blank-security-group.component";
-
+import {PreloadOptionalModules} from "@delon/theme";
+import {environment} from "@env/environment";
 import { SshKeyComponent } from "./ssh-key/ssh-key.component";
 
 const routes: Routes = [
@@ -22,12 +23,12 @@ const routes: Routes = [
     component: V1Component
   },
   {
-    path: 'vm',
-    component: V1Component
-  },
-  {
     path: "ssh-key",
     component: SshKeyComponent
+  },
+  {
+    path: 'vm',
+    loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule)
   },
   {
     path: 'security-group',
