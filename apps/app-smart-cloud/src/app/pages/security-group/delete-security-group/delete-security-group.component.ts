@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
 import {SecurityGroupService} from "../../../core/service/security-group.service";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-delete-security-group',
@@ -17,7 +18,8 @@ export class DeleteSecurityGroupComponent {
 
   isConfirmLoading = false;
 
-  constructor(private securityGroupService: SecurityGroupService, private message: NzMessageService) {}
+  constructor(private securityGroupService: SecurityGroupService, private message: NzMessageService,
+              private notification: NzNotificationService) {}
 
 
 
@@ -29,7 +31,7 @@ export class DeleteSecurityGroupComponent {
     // this.isConfirmLoading = true;
     this.securityGroupService.delete(this.id, this.condition)
         .subscribe((data) => {
-          this.message.create('success', `Đã xóa thành công`);
+          this.notification.success('Thành công', `Đã xóa thành công`);
           this.onOk.emit();
         })
   }

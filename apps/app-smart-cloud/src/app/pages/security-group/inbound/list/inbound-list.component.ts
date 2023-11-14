@@ -7,15 +7,18 @@ import {SecurityGroupSearchCondition} from "../../../../core/model/interface/sec
   templateUrl: './inbound-list.component.html',
   styleUrls: ['./inbound-list.component.less'],
 })
-export class InboundListComponent implements OnInit{
+export class InboundListComponent implements OnInit {
   isVisible = false;
 
   @Input() listInbound: SecurityGroupRule[] = [];
   @Input() conditionSearch: SecurityGroupSearchCondition
+  @Input() securityGroupId?: string;
 
   title: string = 'Xác nhận xóa Inbound';
   content: string = 'Bạn có chắc chăn muốn xóa Inbound';
 
+  ngOnInit(): void {
+  }
   showModal(): void {
     this.isVisible = true;
   }
@@ -29,6 +32,5 @@ export class InboundListComponent implements OnInit{
     this.isVisible = false;
   }
 
-  ngOnInit(): void {
-  }
+
 }

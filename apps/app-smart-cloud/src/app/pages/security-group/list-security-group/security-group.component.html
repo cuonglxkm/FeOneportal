@@ -41,8 +41,7 @@
             nzAllowClear
             nzPlaceHolder="Select a security"
             [(ngModel)]="selectedValue"
-            (ngModelChange)="onSecurityGroupChange()"
-          >
+            (ngModelChange)="onSecurityGroupChange()">
             <nz-option *ngFor="let item of options" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
           </nz-select>
           <div *nzSpaceItem>
@@ -75,8 +74,8 @@
         <div class="label">{{selectedValue?.description || ''}}</div>
       </nz-col>
     </nz-row>
-    <one-portal-inbound-list [listInbound]="listInbound" [conditionSearch]="conditionSearch"></one-portal-inbound-list>
-    <one-portal-list-outbound [listOutbound]="listOutbound" [conditionSearch]="conditionSearch"></one-portal-list-outbound>
+    <one-portal-inbound-list [listInbound]="listInbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-inbound-list>
+    <one-portal-list-outbound [listOutbound]="listOutbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-list-outbound>
     <one-portal-list-virtual-machine></one-portal-list-virtual-machine>
   </nz-card>
 </nz-content>

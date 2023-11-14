@@ -23,8 +23,8 @@ export class SecurityGroupRuleService extends BaseService {
         })
     }
 
-    create(form: SecurityGroupRuleCreateForm, condition: SecurityGroupSearchCondition) {
-        return this.http.post(this.baseUrl + '/security_group/rule', Object.assign(form, condition))
+    create(form: SecurityGroupRuleCreateForm) {
+        return this.http.post(this.baseUrl + '/security_group/rule', Object.assign(form))
     }
 
     delete(id: string, condition: SecurityGroupSearchCondition) {

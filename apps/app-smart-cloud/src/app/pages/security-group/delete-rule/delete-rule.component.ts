@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {SecurityGroupRuleService} from "../../../core/service/security-group-rule.service";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-delete-security-group-rule',
@@ -19,7 +20,8 @@ export class DeleteRuleComponent {
 
   isConfirmLoading = false;
 
-  constructor(private securityGroupRuleService: SecurityGroupRuleService, private message: NzMessageService) {}
+  constructor(private securityGroupRuleService: SecurityGroupRuleService, private message: NzMessageService,
+              private notification: NzNotificationService) {}
 
 
 
@@ -31,7 +33,7 @@ export class DeleteRuleComponent {
     this.isConfirmLoading = true;
     this.securityGroupRuleService.delete(this.id, this.condition)
         .subscribe((data) => {
-          this.message.create('success', `Đã xóa thành công`);
+          this.notification.success('Thành công', `Đã xóa thành công`);
           this.onOk.emit();
         })
   }

@@ -10,6 +10,7 @@ import {SecurityGroupSearchCondition} from "../../../../core/model/interface/sec
 export class ListOutboundComponent implements OnInit{
   @Input() listOutbound: SecurityGroupRule[] = [];
   @Input() conditionSearch: SecurityGroupSearchCondition
+  @Input() securityGroupId?: string;
 
   isVisible = false;
   title: string = 'Xác nhận xóa Outbound';

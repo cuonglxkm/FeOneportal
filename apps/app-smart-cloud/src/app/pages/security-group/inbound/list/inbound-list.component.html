@@ -1,50 +1,52 @@
 <nz-row style="margin-bottom: 16px">
-    <section class="code-box-meta markdown">
-        <div class="code-box-title">
-            Inbound
-        </div>
-        <div class="code-box-description">
-            <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-                <button nz-button nzType="primary" class="button-crate-new"
-                        routerLink="/app-smart-cloud/create-security-group-inbound">Thêm mới Inbound
-                </button>
-            </nz-row>
-            <nz-table #tableInbound
-                      [nzData]="listInbound"
-                      nzShowSizeChanger
-                      [nzFrontPagination]="false"
-                      [nzTotal]="listInbound.length"
-                      [nzPageSize]="10"
-            >
-                <thead>
-                <tr>
-                    <th nzAlign="center" class="text-th">IP Version</th>
-                    <th nzAlign="center" class="text-th">Protocol</th>
-                    <th nzAlign="center" class="text-th">PortRange</th>
-                    <th nzAlign="center" class="text-th">RemoteIPPrefix</th>
-                    <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let data of tableInbound.data">
-                    <td nzAlign="center">{{ data.remoteIp }}</td>
-                    <td nzAlign="center">{{ data.protocol }}</td>
-                    <td nzAlign="center">{{ data.portRange }}</td>
-                    <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
-                    <td nzAlign="center">
-                        <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
-                        <one-portal-delete-security-group-rule [isVisible]="isVisible"
-                                                               [condition]="conditionSearch"
-                                                               [id]="data.id"
-                                                               [title]="title"
-                                                               [content]="content"
-                                                               (onCancel)="handleCancel()"
-                                                               (onOk)="handleOk(data.id)">
-                        </one-portal-delete-security-group-rule>
-                    </td>
-                </tr>
-                </tbody>
-            </nz-table>
-        </div>
-    </section>
+  <section class="code-box-meta markdown">
+    <div class="code-box-title">
+      Inbound
+    </div>
+
+    <div class="code-box-description">
+      <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
+        <button nz-button nzType="primary" class="button-crate-new"
+                [routerLink]="['/app-smart-cloud/create-security-group-inbound']" [queryParams]="{param: securityGroupId  }">
+          Thêm mới Inbound
+        </button>
+      </nz-row>
+      <nz-table #tableInbound
+                [nzData]="listInbound"
+                nzShowSizeChanger
+                [nzFrontPagination]="false"
+                [nzTotal]="listInbound.length"
+                [nzPageSize]="10"
+      >
+        <thead>
+        <tr>
+          <th nzAlign="center" class="text-th">IP Version</th>
+          <th nzAlign="center" class="text-th">Protocol</th>
+          <th nzAlign="center" class="text-th">PortRange</th>
+          <th nzAlign="center" class="text-th">RemoteIPPrefix</th>
+          <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of tableInbound.data">
+          <td nzAlign="center">{{ data.remoteIp }}</td>
+          <td nzAlign="center">{{ data.protocol }}</td>
+          <td nzAlign="center">{{ data.portRange }}</td>
+          <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
+          <td nzAlign="center">
+            <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
+            <one-portal-delete-security-group-rule [isVisible]="isVisible"
+                                                   [condition]="conditionSearch"
+                                                   [id]="data.id"
+                                                   [title]="title"
+                                                   [content]="content"
+                                                   (onCancel)="handleCancel()"
+                                                   (onOk)="handleOk(data.id)">
+            </one-portal-delete-security-group-rule>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </section>
 </nz-row>

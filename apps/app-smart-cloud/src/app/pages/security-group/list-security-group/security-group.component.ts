@@ -1,80 +1,77 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../../core/model/interface/security-group";
 import {SecurityGroupService} from "../../../core/service/security-group.service";
-import SecurityGroupRule, {SecurityGroupRuleGetPage} from "../../../core/model/interface/security-group-rule";
-import {Router} from "@angular/router";
+import SecurityGroupRule from "../../../core/model/interface/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {SecurityGroupRuleService} from "../../../core/service/security-group-rule.service";
 
 @Component({
-    selector: 'one-portal-security-group',
-    templateUrl: './security-group.component.html',
-    styleUrls: ['./security-group.component.less'],
+  selector: 'one-portal-security-group',
+  templateUrl: './security-group.component.html',
+  styleUrls: ['./security-group.component.less'],
 })
 export class SecurityGroupComponent implements OnInit {
 
-    isVisible = false;
+  isVisible = false;
 
-    conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
+  conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
 
-    options: SecurityGroup[] = [];
+  options: SecurityGroup[] = [];
 
-    selectedValue: SecurityGroup;
+  selectedValue: SecurityGroup;
 
-    listInbound: SecurityGroupRule[] = []
+  listInbound: SecurityGroupRule[] = []
 
-    listOutbound: SecurityGroupRule[] = []
+  listOutbound: SecurityGroupRule[] = []
 
-    region: RegionModel;
+  region: RegionModel;
 
-    securityGroupRuleGetPage: SecurityGroupRuleGetPage = new SecurityGroupRuleGetPage();
 
-    constructor(private securityGroupService: SecurityGroupService,
-                private router: Router,
-                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-                private securityGroupRuleService: SecurityGroupRuleService) {
-    }
+  constructor(private securityGroupService: SecurityGroupService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+  }
 
-    onSecurityGroupChange(): void {
-        this.getListInbound();
-        this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
-        this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
-    }
+  onSecurityGroupChange(): void {
+    this.getListInbound();
+    this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
+    this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
 
-    showModal(): void {
-        this.isVisible = true;
-    }
+    console.log('selected value', this.selectedValue)
+  }
 
-    handleOk(): void {
-        this.isVisible = false;
-        this.getSecurityGroup();
-    }
+  showModal(): void {
+    this.isVisible = true;
+  }
 
-    handleCancel(): void {
-        this.isVisible = false;
-    }
+  handleOk(): void {
+    this.isVisible = false;
+    this.getSecurityGroup();
+  }
 
-    regionChanged(region: RegionModel) {
-        this.conditionSearch.regionId = region.regionId;
-        this.getSecurityGroup();
-    }
+  handleCancel(): void {
+    this.isVisible = false;
+  }
 
-    getSecurityGroup() {
-        this.securityGroupService.search(this.conditionSearch)
-            .subscribe((data) => {
-                this.options = data;
-            })
-    }
+  regionChanged(region: RegionModel) {
+    this.conditionSearch.regionId = region.regionId;
+    this.getSecurityGroup();
+  }
 
-    getListInbound() {
-        console.log('condition, ', this.conditionSearch);
-        // this.securityGroupRuleService.getInbound(this.conditionSearch)
-    }
+  getSecurityGroup() {
+    this.securityGroupService.search(this.conditionSearch)
+      .subscribe((data) => {
+        this.options = data;
+      })
+  }
 
-    ngOnInit() {
-        this.conditionSearch.projectId = 4079
-        this.conditionSearch.userId = this.tokenService.get()?.userId
-    }
+  getListInbound() {
+    console.log('condition, ', this.conditionSearch);
+    // this.securityGroupRuleService.getInbound(this.conditionSearch)
+  }
+
+  ngOnInit() {
+    this.conditionSearch.projectId = 4079
+    this.conditionSearch.userId = this.tokenService.get()?.userId
+  }
 
 }
