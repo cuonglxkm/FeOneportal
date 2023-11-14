@@ -3,12 +3,12 @@
   [breadcrumb]="breadcrumb"
   [action]="action">
   <ng-template #action>
-<!--    <div class="text-right">-->
-<!--      <button nz-button nzType="primary" nzSize="default" (click)="onClickFullScreen()">-->
-<!--        <i nz-icon nzType="fullscreen" nzTheme="outline"></i>-->
-<!--        Fullscreen-->
-<!--      </button>-->
-<!--    </div>-->
+    <!--    <div class="text-right">-->
+    <!--      <button nz-button nzType="primary" nzSize="default" (click)="onClickFullScreen()">-->
+    <!--        <i nz-icon nzType="fullscreen" nzTheme="outline"></i>-->
+    <!--        Fullscreen-->
+    <!--      </button>-->
+    <!--    </div>-->
   </ng-template>
 
   <ng-template #breadcrumb>
@@ -20,16 +20,18 @@
 </page-header>
 
 <full-content (fullscreenChange)="fullChange($event)">
-<!--  <button *ngIf="isFull" nz-button [nzType]="'default'" full-toggle class="">Exit</button>-->
-<!--  <nz-card>-->
-    <div class="frameWrapper">
-      <button class="overlay-button" nz-button nzType="primary" nzSize="small" (click)="onClickFullScreen()">
-        <i nz-icon nzType="fullscreen" nzTheme="outline"></i>
-      </button>
-      <iframe (load)="$event.target.contentWindow.focus()" [src]="src | safe" frameborder="0" scrolling="no"></iframe>
-    </div>
-<!--  </nz-card>-->
-<!--    <iframe #iframe type="text/javascript" frameborder="0" scrolling="no"></iframe>-->
+  <!--  <button *ngIf="isFull" nz-button [nzType]="'default'" full-toggle class="">Exit</button>-->
+  <!--  <nz-card>-->
+  <div class="frameWrapper">
+    <button class="overlay-button" *ngIf="src != '' && isLoaded" nz-button nzGhost nzType="text" nzSize="small"
+            (click)="onClickFullScreen()">
+      <i nz-icon nzType="fullscreen" nzTheme="outline"></i>
+    </button>
+
+    <iframe #iframe (load)="loadingComplete($event)" [src]="src | safe" frameborder="0" scrolling="no"></iframe>
+  </div>
+  <!--  </nz-card>-->
+  <!--    <iframe #iframe type="text/javascript" frameborder="0" scrolling="no"></iframe>-->
 
 
 </full-content>

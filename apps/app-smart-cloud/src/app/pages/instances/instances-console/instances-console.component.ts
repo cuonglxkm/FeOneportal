@@ -11,11 +11,12 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./instances-console.component.less'],
 })
 export class InstancesConsoleComponent implements OnInit, AfterViewInit {
-  src: string = 'https://192.168.30.10:6080/vnc_auto.html?path=%3Ftoken%3D72cdab7b-18c4-4ffa-837e-10b521c0a107'; // <- YOUR URL
+  src: string = ''; // <- YOUR URL
   scroll = {y: '230px'};
   isFull: boolean = false;
-
   vmId: any;
+  isLoaded = false;
+  @ViewChild('iframe') iframeEle: ElementRef;
 
   constructor(
     private fullContentService: FullContentService,
@@ -39,7 +40,8 @@ export class InstancesConsoleComponent implements OnInit, AfterViewInit {
   }
 
   onClickFullScreen() {
-    this.fullContentService.toggle()
+    this.fullContentService.toggle();
+    this.iframeEle.nativeElement.focus();
   }
 
   getUrl() {
@@ -52,5 +54,9 @@ export class InstancesConsoleComponent implements OnInit, AfterViewInit {
       })
   }
 
+  loadingComplete(event: any) {
+    this.isLoaded = true;
+    event.target.contentWindow.focus()
+  }
 
 }
