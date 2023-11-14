@@ -7,7 +7,7 @@ export class CreateVolumeDto{
   isEncryption: boolean;
   vpcId: number | null;
   oneSMEAddonId: number |null;
-  serviceType: string | null;
+  serviceType: number | null;
   serviceInstanceId: number | null;
   customerId: number | null;
   createDate: string;

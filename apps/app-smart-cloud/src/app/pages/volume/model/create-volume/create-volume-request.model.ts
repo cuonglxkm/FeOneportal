@@ -1,14 +1,14 @@
-export class CreateVolumeRequestModel{
+export class CreateVolumeRequestModel {
   customerId: number;
   createdByUserId: number;
   note: string;
-  orderItems:[
+  orderItems: [
     {
-      orderItemQuantity:1;
+      orderItemQuantity: number;
       specification: string;
-      specificationType:'volume_create';
-      price:number;
-      serviceDuration:1;
+      specificationType: string;
+      price: number;
+      serviceDuration: number;
     }
   ]
 }

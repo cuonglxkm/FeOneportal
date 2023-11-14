@@ -19,10 +19,12 @@ import {EditVolumeComponent} from "./volume/edit-volume/edit-volume.component";
 import { SshKeyComponent } from './ssh-key/ssh-key.component';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import {NzResultModule} from "ng-zorro-antd/result";
+import {HeaderVolumeComponent} from "./volume/header-volume/header-volume.component";
 
 @NgModule({
   declarations: [UserProfileComponent, V1Component, VolumeComponent, PopupAddVolumeComponent,
-    PopupDeleteVolumeComponent, CreateVolumeComponent, DetailVolumeComponent, PopupExtendVolumeComponent, EditVolumeComponent,SshKeyComponent],
+    PopupDeleteVolumeComponent, CreateVolumeComponent, DetailVolumeComponent, PopupExtendVolumeComponent,
+    EditVolumeComponent,SshKeyComponent, HeaderVolumeComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChildren} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {GetAllVmModel} from "../model/get-all-vm.model";
 import {VmDto} from "../dto/vm.dto";
@@ -6,6 +6,12 @@ import {VolumeService} from "../volume.service";
 import {PriceVolumeDto} from "../dto/price-volume.dto";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {CreateVolumeDto} from "../dto/create-volume.dto";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {CreateVolumeRequestModel} from "../model/create-volume/create-volume-request.model";
+import {RegionModel} from "../../../shared/models/region.model";
+import {ProjectModel} from "../../../shared/models/project.model";
+import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-volume',
@@ -13,6 +19,9 @@ import {CreateVolumeDto} from "../dto/create-volume.dto";
   styleUrls: ['./create-volume.component.less'],
 })
 export class CreateVolumeComponent implements OnInit {
+
+  @ViewChildren(HeaderVolumeComponent) hearderVolumeComponent : HeaderVolumeComponent;
+
 
   headerInfo = {
     breadcrumb1: 'Home',
@@ -40,6 +49,15 @@ export class CreateVolumeComponent implements OnInit {
     {label: 'snapshot_03', value: 100003},
   ];
 
+  createDateVolume: Date = new Date();
+  endDateVolume: Date;
+
+  showWarningVolumeName = false;
+  showWarningVolumeType = false;
+  showWarningVm = false;
+  showWarningVolumeExpTime = false;
+
+
   createVolumeInfo: CreateVolumeDto = {
     volumeType: "",
     volumeSize: 1,
@@ -49,36 +67,36 @@ export class CreateVolumeComponent implements OnInit {
     isEncryption: false,
     vpcId: null,
     oneSMEAddonId: null,
-    serviceType: null,
-    serviceInstanceId: null,
-    customerId:   null,
+    serviceType: 2,
+    serviceInstanceId: 0, //ID Volume
+    customerId: null,
     createDate: null,
     expireDate: null,
-    saleDept:   null,
-    saleDeptCode:   null,
-    contactPersonEmail:   null,
-    contactPersonPhone:   null,
-    contactPersonName:   null,
-    note:   null,
-    createDateInContract:   null,
-    am:   null,
-    amManager:  null,
-    isTrial:  null,
+    saleDept: null,
+    saleDeptCode: null,
+    contactPersonEmail: null,
+    contactPersonPhone: null,
+    contactPersonName: null,
+    note: null,
+    createDateInContract: null,
+    am: null,
+    amManager: null,
+    isTrial: false,
     offerId: 2,
-    couponCode:   null,
-    dhsxkd_SubscriptionId:   null,
-    dSubscriptionNumber:  null,
-    dSubscriptionType:   null,
-    oneSME_SubscriptionId:  null,
-    actionType:   null,
-    regionId:   null,
-    serviceName:   null,
+    couponCode: null,
+    dhsxkd_SubscriptionId: null,
+    dSubscriptionNumber: null,
+    dSubscriptionType: null,
+    oneSME_SubscriptionId: null,
+    actionType: 1,
+    regionId: null,
+    serviceName: null,
     typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-    userEmail:   null,
-    actorEmail:   null,
-    createFromSnapshotId:   null,
+    userEmail: null,
+    actorEmail: null,
+    createFromSnapshotId: null,
   };
-  volumeExpiryTime: any;
+  volumeExpiryTime: number;
 
   volumeStorage = 1;
   isEncode = false;
@@ -92,10 +110,11 @@ export class CreateVolumeComponent implements OnInit {
   priceVolumeInfo: PriceVolumeDto = {
     price: 0,
     totalPrice: 0,
-    tax:0
+    tax: 0
   };
 
-  constructor(private volumeSevice: VolumeService ,  private nzMessage:NzMessageService) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService,
+              private nzMessage: NzMessageService, private router: Router) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -103,28 +122,122 @@ export class CreateVolumeComponent implements OnInit {
     this.getAllVmResponse = await this.volumeSevice.getAllVMs(3).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
-      this.vmList.push({value: vm.id ,label: vm.name});
+      this.vmList.push({value: vm.id, label: vm.name});
     })
+
 
   }
 
-  getPremiumVolume(volumeType: string, size: number, duration: number){
-    if(volumeType !== undefined && volumeType != null && size !== undefined && size != null  && duration !== undefined && duration != null ){
-      this.volumeSevice.getPremium(volumeType,size,duration).subscribe(data => {
-        if(data != null ){
-          this.nzMessage.create('success', 'Phí đã được cập nhật.')
-          this.priceVolumeInfo = data;
-          console.log(data);
-        }
-      })
+  getPremiumVolume(volumeType: string, size: number, duration: number) {
+    this.showWarningVolumeType = false;
+    this.showWarningVolumeExpTime = false;
+
+    if (duration !== undefined && duration != null) {
+      this.endDateVolume = new Date(this.createDateVolume.getFullYear(), this.createDateVolume.getMonth()
+        + this.volumeExpiryTime, this.createDateVolume.getDate());
+      this.createVolumeInfo.createDate = this.createDateVolume.toISOString()
+      this.createVolumeInfo.expireDate = this.endDateVolume.toISOString();
+      if (volumeType !== undefined && volumeType != null && volumeType != ''
+        && size !== undefined && size != null) {
+
+
+        this.volumeSevice.getPremium(volumeType, size, duration).subscribe(data => {
+          if (data != null) {
+            this.nzMessage.create('success', 'Phí đã được cập nhật.')
+            this.priceVolumeInfo = data;
+          }
+        })
+      }
+    }
+
+
+  }
+
+  createNewVolume() {
+
+    if (this.validateData()) {
+
+      this.createVolumeInfo.customerId = this.tokenService.get()?.userId;
+      const userString = localStorage.getItem('user');
+      const user = JSON.parse(userString);
+      this.createVolumeInfo.actorEmail = user.email;
+      this.createVolumeInfo.userEmail = user.email;
+
+
+
+      this.doCreateVolume();
+      this.nzMessage.create('success', 'Tạo Volume thành công.')
+      console.log(this.createVolumeInfo);
+    } else {
+
     }
   }
 
-  createNewVolume(){
-    //TO DO
-    console.log(this.createVolumeInfo);
+  doCreateVolume(){
+    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
+    request.customerId = this.createVolumeInfo.customerId;
+    request.createdByUserId = this.createVolumeInfo.customerId;
+    request.note = 'tạo volume';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.createVolumeInfo),
+        specificationType: 'volume_create',
+        price: this.priceVolumeInfo.price,
+        serviceDuration: this.volumeExpiryTime
+      }
+    ]
+    console.log(request);
+    this.volumeSevice.createNewVolume(request).subscribe(data => {
+      if(data != null){
+        this.nzMessage.create('success', 'Tạo Volume thành công.')
+        console.log(data);
+        // this.router.navigate(['/app-smart-cloud/volume']);
+      }
+    })
   }
 
 
+  validateData(): boolean {
+
+    if (!this.createVolumeInfo.serviceName) {
+      this.nzMessage.create('error', 'Tên Volume không được để trống.');
+      this.showWarningVolumeName = true;
+      return false;
+    }
+    if (!this.createVolumeInfo.volumeType) {
+      this.nzMessage.create('error', 'Cần chọn loại Volume.');
+      this.showWarningVolumeType = true;
+      return false;
+    }
+    if (!this.createVolumeInfo.instanceToAttachId) {
+      this.nzMessage.create('error', 'Cần chọn máy ảo.');
+      this.showWarningVm = true;
+      return false;
+    }
+    if (!this.volumeExpiryTime) {
+      this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
+      this.showWarningVolumeExpTime = true;
+      return false;
+    }
+
+    return true;
+  }
+
+  changeVolumeName() {
+    this.showWarningVolumeName = false;
+  }
+
+  changeVm() {
+    this.showWarningVm = false;
+  }
+
+  getProjectId(projectId: number){
+    this.createVolumeInfo.vpcId = projectId;
+  }
+
+  getRegionId(regionId: number){
+    this.createVolumeInfo.regionId = regionId;
+  }
 
 }
