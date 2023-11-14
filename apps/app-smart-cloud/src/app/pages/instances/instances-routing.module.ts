@@ -35,7 +35,7 @@ const routes: Routes = [
     data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit' },
   },
   {
-    path: 'instances-console',
+    path: 'instances-console/:id',
     component: InstancesConsoleComponent,
     data: { title: 'Console máy ảo', key: 'instances-console' },
   }
