@@ -17,7 +17,7 @@
         {
           "text": "Quản lý máy ảo",
           "icon": "anticon-dashboard",
-          "link": "/app-smart-cloud/user-profile"
+          "link": "/app-smart-cloud/instances"
         },
         {
           "text": "Quản lý Volume",
