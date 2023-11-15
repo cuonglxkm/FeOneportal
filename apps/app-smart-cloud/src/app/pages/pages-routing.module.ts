@@ -41,9 +41,6 @@ const routes: Routes = [
   {
     path: 'volume/edit/:id',
     component: EditVolumeComponent
-  }, {
-    path: 'vm',
-    component: V1Component
   },
   {
     path: "ssh-key",
@@ -77,8 +74,6 @@ const routes: Routes = [
     path: 'blank-security-group',
     component: BlankSecurityGroupComponent
   }
-
-
 ]
 
 @NgModule({
