@@ -24,7 +24,6 @@ interface Volume {
   styleUrls: ['./volume.component.less'],
 })
 export class VolumeComponent implements OnInit {
-
   headerInfo = {
     breadcrumb1: 'Home',
     breadcrumb2: 'Dịch vụ',
@@ -32,6 +31,10 @@ export class VolumeComponent implements OnInit {
     content: 'Danh sách Volume'
   };
 
+  selectedOptionAction: string = '';
+
+  regionSearch: number;
+  projectSearch: number;
   volumeNameSearch: string;
   volumeStatusSearch: string;
 
@@ -46,7 +49,7 @@ export class VolumeComponent implements OnInit {
   curentPageAdd: number = 0;
   tabVolumeIndex: number = 0;
 
-
+  isLoading = true;
 
   combinedValues: string[] = [];
 
@@ -70,7 +73,6 @@ export class VolumeComponent implements OnInit {
     {label: 'Xóa', value: 'delete'}
 
   ]
-
   volumeStatus: Map<String, string>;
 
   constructor(private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService , private message:NzMessageService) {
@@ -81,27 +83,22 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-    //get list Root
-    this.getListVolume(null, null, 3, true, 10, 0 , null , null)
-    //get list Add
-    // this.getListVolume(null, null, 3, false, 10, 0 , null, null)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0 , null , null)
   }
 
   onRootPageIndexChange(event: any) {
     this.curentPageRoot = event;
-    this.getListVolume(null, null, 3, true, 10, (this.curentPageRoot - 1), this.volumeStatusSearch, this.volumeNameSearch)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, (this.curentPageRoot - 1), this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.getListVolume(null, null, 3, false, 10, (this.curentPageAdd - 1),this.volumeStatusSearch,this.volumeNameSearch)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, (this.curentPageAdd - 1),this.volumeStatusSearch,this.volumeNameSearch)
   }
 
   isVisible = false;
 
-  onSelectionChange(value: any, idVolume: number) {
-    console.log('Value selected: ', value);
-    console.log('Volume Name: ', idVolume);
+  onSelectionChange(value: any, volume: any) {
     if (value === 'addVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gắn Volume',
@@ -117,9 +114,14 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
-              console.log('Add volume ' + idVolume + ' in to ' + selected);
-              this.message.create('success', `Add Volume Success`);
-              modal.destroy()
+              if(selected !== undefined ){
+                console.log('Add volume ' + volume.id + ' in to ' + selected);
+                this.message.create('success', `Add Volume Success`);
+                modal.destroy()
+              }else{
+                this.message.create('error', `Please choose VM for add Volume.`);
+              }
+
             }
           }
         ]
@@ -141,6 +143,7 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
+              console.log('Delete volume ' + volume.id + ' from ' + selected);
               this.message.create('success', `Delete Volume Success`);
               modal.destroy();
             }
@@ -164,6 +167,15 @@ export class VolumeComponent implements OnInit {
             label: 'Đồng ý',
             type: 'primary',
             onClick: () => {
+
+              let deleteVolume =  this.doDeleteVolume(volume.id);
+              if(deleteVolume){
+                this.message.create('success', `Delete Volume Success: `+ volume.name );
+                this.searchVolumes();
+              }else{
+                this.message.create('error', `Delete Volume Fail: `+ volume.name );
+                console.log('Delete volume Fail: ' + volume.name );
+              }
               modal.destroy();
             }
           }
@@ -181,20 +193,19 @@ export class VolumeComponent implements OnInit {
     // tabIndex = 0 : RootVolume
     // tabIndex = 1 : AddVolume
     if(this.tabVolumeIndex == 0 ){
-      this.getListVolume(null, null, 3, true, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
+      this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
     }else{
-      this.getListVolume(null, null, 3, false, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
+      this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
     }
-
   }
 
   reloadDataVolumeRoot( ){
-    this.getListVolume(null, null, 3, true, 10, 0, null , null)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, null , null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
   reloadDataVolumeAdd( ){
-    this.getListVolume(null, null, 3, false, 10, 0, null , null)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, null , null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
@@ -206,21 +217,34 @@ export class VolumeComponent implements OnInit {
 
 
   private getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string) {
+    this.isLoading = true;
     this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage ,status , volumeName).subscribe(data => {
 
       if(volumeRootOnly === true ){
         this.listVolumeRootResponse = data;
         this.listVolumeRoot = data.records;
         this.totalRoot = data.totalCount;
-        this.message.create('success', `Tìm kiếm Volume thành công.`);
+        this.isLoading=false;
       }else{
         this.listVolumeAddVolumeResponse = data;
         this.listVolumeAdd = data.records;
         this.totalAdd = data.totalCount;
-        this.message.create('success', `Tìm kiếm Volume thành công.`);
+        this.isLoading=false;
       }
     })
   }
 
+  async doDeleteVolume(volumeId: number): Promise<any>{
+    let result = this.volumeSevice.deleteVolume(volumeId).toPromise();
+    return !!result;
+  }
+
+  getProjectId(projectId: number){
+    this.projectSearch = projectId;
+  }
+
+  getRegionId(regionId: number){
+    this.regionSearch = regionId;
+  }
 
 }

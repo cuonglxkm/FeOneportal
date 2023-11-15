@@ -1,4 +1,4 @@
-<app-header-volume [headerInfo]="headerInfo"></app-header-volume>
+<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"  [headerInfo]="headerInfo"></app-header-volume>
 <!--<h2>Danh sách Volume</h2>-->
 <br>
 <div class="search-volume">
@@ -37,7 +37,7 @@
     <nz-tab nzTitle="Volume Root" (nzClick)="reloadDataVolumeRoot()">
 
       <nz-table #tableRoot [nzData]="listVolumeRoot" [nzFrontPagination]="false" [nzTotal]="totalRoot"
-                (nzPageIndexChange)="onRootPageIndexChange($event)">
+                (nzPageIndexChange)="onRootPageIndexChange($event)" [nzLoading]="isLoading">
         <thead>
         <tr>
           <th>Tên Volume</th>
@@ -51,10 +51,12 @@
         </thead>
         <tbody>
         <tr *ngFor="let data of tableRoot.data; let i = index">
-          <td (click)="getDetailVolume(data.id)">{{ data.name }}</td>
+          <td (click)="getDetailVolume(data.id)"><a>{{ data.name }}</a></td>
           <td>{{ data.sizeInGB}}</td>
           <td>{{ data.iops }}</td>
           <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
+          <td *ngIf="data.status === 'ERROR'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
+          <td *ngIf="data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
           <td>{{ data.serviceStatus }}</td>
           <td>{{ data.instanceName }}</td>
           <td>
@@ -63,8 +65,8 @@
                        [nzPlaceHolder]="'Tạo Snapshot'"
                        [nzOptions]="optionVolumeRoot"
                        style="width: 150px;"
-                       [(ngModel)]="data.id"
-                       (ngModelChange)="onSelectionChange($event , data.id)"
+                       [ngModel] ="selectedOptionAction"
+                       (ngModelChange)="onSelectionChange($event , data)"
             >
             </nz-select>
           </td>
@@ -76,7 +78,7 @@
     <nz-tab nzTitle="Volume gắn thêm" (nzClick)="reloadDataVolumeAdd()">
 
       <nz-table #tableAdd [nzData]="listVolumeAdd" [nzFrontPagination]="false" [nzTotal]="totalAdd"
-                (nzPageIndexChange)="onAddPageIndexChange($event)">
+                (nzPageIndexChange)="onAddPageIndexChange($event)" [nzLoading]="isLoading">
         <thead>
         <tr>
           <th>Tên Volume</th>
@@ -90,7 +92,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let data of tableAdd.data; let i = index">
-          <td (click)="getDetailVolume(data.id)">{{ data.name }}</td>
+          <td (click)="getDetailVolume(data.id)"><a>{{ data.name }}</a></td>
           <td>{{ data.sizeInGB}}</td>
           <td>{{ data.iops }}</td>
           <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
@@ -104,8 +106,8 @@
                        [nzPlaceHolder]="'Gắn Volume'"
                        [nzOptions]="optionVolumeAdd"
                        style="width: 150px;"
-                       [(ngModel)]="data.id"
-                       (ngModelChange)="onSelectionChange($event , data.id)"
+                       [ngModel]="selectedOptionAction"
+                       (ngModelChange)="onSelectionChange($event , data)"
             >
             </nz-select>
           </td>

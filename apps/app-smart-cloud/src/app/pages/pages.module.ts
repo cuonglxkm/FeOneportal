@@ -39,6 +39,7 @@ import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {SEModule} from "@delon/abc/se";
+import {HeaderVolumeDataService} from "./volume/component/header-volume/header-volume-data.service";
 
 
 const icons: IconDefinition[] = [SettingOutline];
@@ -71,7 +72,7 @@ const icons: IconDefinition[] = [SettingOutline];
     DetailVolumeComponent,
     PopupExtendVolumeComponent,
     EditVolumeComponent,
-    HeaderVolumeComponent
+    HeaderVolumeComponent,
   ],
   imports: [
     CommonModule,
@@ -97,5 +98,6 @@ const icons: IconDefinition[] = [SettingOutline];
     NzImageModule,
     NzImageModule,
   ],
+  providers: [HeaderVolumeDataService]
 })
 export class PagesModule { }
