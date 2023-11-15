@@ -13,6 +13,7 @@ export class ProjectService extends BaseService {
   }
 
   getByRegion(regionId: number) {
-    return this.http.get<ProjectModel[]>(this.baseUrl + `/projects?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}`);
+    return this.http.get<ProjectModel[]>
+    (this.baseUrl + `/projects?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}`);
   }
 }
