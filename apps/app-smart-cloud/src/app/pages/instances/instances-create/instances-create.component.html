@@ -27,7 +27,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label nzFor="name">Tên máy ảo <span class="red">*</span></nz-form-label>
+          <nz-form-label nzFor="name">Tên máy ảo <span class="text-red">*</span></nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng nhập tên máy ảo">
             <input
               nz-input
@@ -73,36 +73,7 @@
         <h6 class="h6">Hệ điều hành</h6>
       </nz-row>
       <nz-row nzGutter="16">
-        <!-- <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let hdh of listImageTypes">
-          <table class="hdh-card">
-            <tbody>
-              <tr height="200px">
-                <span nz-icon nzType="windows" nzTheme="outline">{{
-                  hdh.name
-                }}</span>
-              </tr>
-              <tr>
-                <nz-select
-                  [id]="'hdh_' + hdh.id"
-                  [(ngModel)]="hdh.versionId"
-                  (ngModelChange)="onInputHDH(hdh.id, $event)"
-                  (nzOpenChange)="getAllImageVersionByType(hdh.id)"
-                  [nzLoading]="isLoading"
-                  nzPlaceHolder="Chọn phiên bản"
-                  [ngModelOptions]="{ standalone: true }"
-                  style="width: 100%; text-align: center"
-                >
-                  <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
-                  <nz-option
-                    *ngFor="let p of listImageVersionByType"
-                    [nzValue]="p.id"
-                    [nzLabel]="p.name"
-                  ></nz-option>
-                </nz-select>
-              </tr>
-            </tbody>
-          </table>
-        </nz-col> -->
+       
         <nz-carousel
           [nzEffect]="effect"
           style="overflow: initial"
@@ -163,7 +134,7 @@
 
     <br />
     <nz-row nzGutter="16">
-      <h6 class="h6">Chọn loại Volume <span class="red">*</span></h6>
+      <h6 class="h6">Chọn loại Volume <span class="text-red">*</span></h6>
     </nz-row>
     <nz-row nzGutter="16">
       <nz-radio-group
@@ -359,7 +330,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Chọn IP Public <span class="red">*</span></nz-form-label>
+          <nz-form-label>Chọn IP Public <span class="text-red">*</span></nz-form-label>
           <nz-form-control nzErrorTip="Chọn IP Public *">
             <nz-select
               [nzPlaceHolder]="'Mặc định'"
@@ -428,7 +399,7 @@
     </nz-row>
     <nz-col nzLg="24" nzMd="12" nzSm="24">
       <nz-form-label nzFor="name"
-        >Chọn phương thức truy cập máy ảo <span class="red">*</span></nz-form-label
+        >Chọn phương thức truy cập máy ảo <span class="text-red">*</span></nz-form-label
       >
     </nz-col>
     <nz-row nzGutter="16">
@@ -495,7 +466,7 @@
         <nz-col nzLg="24" nzMd="12" nzSm="24">
           <nz-form-item>
             <nz-form-label nzFor="name"
-              >Mật khẩu truy cập máy ảo <span class="red">*</span></nz-form-label
+              >Mật khẩu truy cập máy ảo <span class="text-red">*</span></nz-form-label
             >
             <nz-form-control
               nzErrorTip="Vui lòng nhập mật khẩu truy cập máy ảo"
@@ -538,7 +509,7 @@
       <div *ngIf="activeBlockSSHKey" style="width: 100%">
         <nz-col nzLg="24" nzMd="12" nzSm="24">
           <nz-form-item>
-            <nz-form-label>Chọn SSH key <span class="red">*</span></nz-form-label>
+            <nz-form-label>Chọn SSH key <span class="text-red">*</span></nz-form-label>
             <nz-form-control nzErrorTip="Chọn  *">
               <nz-select
                 [nzPlaceHolder]="'--Chọn SSH key--'"
@@ -577,7 +548,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Thời hạn sử dụng (Tháng) <span class="red">*</span></nz-form-label>
+          <nz-form-label>Thời hạn sử dụng (Tháng) <span class="text-red">*</span></nz-form-label>
           <nz-form-control>
             <nz-input-number
               style="width: 100%"
@@ -596,32 +567,6 @@
 
   <nz-card nzTitle="Block Storage">
     <div *ngIf="!activeBlockStorage">
-      <!-- <nz-card nzHoverable class="card-add-custom">
-        <nz-card-meta
-          [nzAvatar]="nzAvatar"
-          [nzTitle]="nzTitle"
-          [nzDescription]="nzDescription"
-        >
-          <ng-template #nzAvatar>
-            <nz-avatar
-              (click)="initBlockStorage()"
-              nzSize="large"
-              nzIcon="user"
-              style="background-color: #87d068"
-            />
-          </ng-template>
-          <ng-template #nzTitle>
-            <b>Bổ sung Volume</b>
-          </ng-template>
-          <ng-template #nzDescription>
-            <ellipsis
-              >Với các ứng dụng cần lưu trữ lớn, quý khách nên sử dụng ổ cứng
-              gắn ngoài để đảm bảo về dữ liệu và khả năng mở rộng dễ
-              dàng</ellipsis
-            >
-          </ng-template>
-        </nz-card-meta>
-      </nz-card> -->
       <nz-alert
         (click)="initBlockStorage()"
         nzType="success"
@@ -757,31 +702,7 @@
 
   <nz-card nzTitle="Network">
     <div *ngIf="!activeNetwork">
-      <!-- <nz-card nzHoverable class="card-add-custom">
-        <nz-card-meta
-          [nzAvatar]="nzAvatarNetwork"
-          [nzTitle]="nzTitleNetwork"
-          [nzDescription]="nzDescriptionNetwork"
-        >
-          <ng-template #nzAvatarNetwork>
-            <nz-avatar
-              (click)="initNetwork()"
-              nzSize="large"
-              nzIcon="user"
-              style="background-color: #87d068"
-            />
-          </ng-template>
-          <ng-template #nzTitleNetwork>
-            <b>Bổ sung IP Public</b>
-          </ng-template>
-          <ng-template #nzDescriptionNetwork>
-            <ellipsis
-              >Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
-              gia đình hoặc doanh nghiệp để kết nối với internet</ellipsis
-            >
-          </ng-template>
-        </nz-card-meta>
-      </nz-card> -->
+
       <nz-alert
         (click)="initNetwork()"
         nzType="success"
