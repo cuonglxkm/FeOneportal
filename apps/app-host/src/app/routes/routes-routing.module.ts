@@ -19,7 +19,7 @@ const routes: Routes = [
     canActivateChild: [authSimpleCanActivateChild],
     data: {},
     children: [
-      {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+      {path: '', redirectTo: 'app-smart-cloud', pathMatch: 'full'},
       {path: 'profile', component: UserProfileComponent},
       {
         path: 'dashboard',
