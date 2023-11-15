@@ -50,7 +50,7 @@ const routes: Routes = [
     component: SshKeyComponent
   },
   {
-    path: 'vm',
+    path: 'instances',
     loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule)
   },
   {
