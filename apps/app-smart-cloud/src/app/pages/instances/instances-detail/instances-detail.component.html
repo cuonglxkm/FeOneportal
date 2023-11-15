@@ -151,9 +151,13 @@
       <div class="pb-1">
         <h4 class="fs-md text-black mb0">
           Hệ điều hành:<span class="fw-400">{{ instancesModel.imageId }}</span
-          ><a (click)="navigateToChangeImage()">
-            <i nz-icon nzType="redo"></i>Thay đổi</a
-          >
+          >  <a
+          (click)="navigateToChangeImage()"
+          style="margin-left: 15px;"
+        >
+          <img nz-image nzSrc="assets/imgs/undo.png" alt="" /><span
+            >Thay đổi</span
+          ></a>
         </h4>
       </div>
       <div class="pb-1">
@@ -173,17 +177,17 @@
       </div>
       <div class="pb-1">
         <h4 class="fs-md text-black mb0">
-          IP LAN:<span class="fw-400"></span>
+          IP LAN:<span class="fw-400">{{ instancesModel.ipPrivate }}</span>
         </h4>
       </div>
       <div class="pb-1">
         <h4 class="fs-md text-black mb0">
-          Băng thông trong nước:<span class="fw-400"></span>
+          Băng thông trong nước:<span class="fw-400">{{ instancesModel.bttn }}</span>
         </h4>
       </div>
       <div class="pb-1">
         <h4 class="fs-md text-black mb0">
-          Băng thông quốc tế:<span class="fw-400"></span>
+          Băng thông quốc tế:<span class="fw-400">{{ instancesModel.btqt }}</span>
         </h4>
       </div>
     </div>

@@ -18,43 +18,11 @@
 </div>
 <nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành">
   <nz-row nzGutter="16">
-    <p>Hệ điều hành hiện tại: {{ instancesModel.imageId }}</p>
+    <p>Hệ điều hành hiện tại: {{ selectedImage.name }}</p>
   </nz-row>
   <nz-row nzGutter="16">
     <p>Lựa chọn hệ điều hành mới</p>
   </nz-row>
-  <!-- <nz-row nzGutter="16">
-    <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let hdh of listImageTypes">
-      <table class="hdh-card">
-        <tbody>
-          <tr height="200px">
-            <span nz-icon nzType="windows" nzTheme="outline">{{
-              hdh.name
-            }}</span>
-          </tr>
-          <tr>
-            <nz-select
-              [id]="'hdh_' + hdh.id"
-              [(ngModel)]="hdh.versionId"
-              (ngModelChange)="onInputHDH(hdh.id, $event)"
-              (nzOpenChange)="getAllImageVersionByType(hdh.id)"
-              [nzLoading]="isLoading"
-              nzPlaceHolder="Chọn phiên bản"
-              [ngModelOptions]="{ standalone: true }"
-              style="width: 100%; text-align: center"
-            >
-              <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
-              <nz-option
-                *ngFor="let p of listImageVersionByType"
-                [nzValue]="p.id"
-                [nzLabel]="p.name"
-              ></nz-option>
-            </nz-select>
-          </tr>
-        </tbody>
-      </table>
-    </nz-col>
-  </nz-row> -->
   <nz-row nzGutter="16">
   <nz-carousel
     [nzEffect]="effect"
