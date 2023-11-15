@@ -18,6 +18,7 @@ import {
   RebuildInstances,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
+import { RegionModel } from 'src/app/shared/models/region.model';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -57,7 +58,7 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onInputHDH(index: number, event: any) {
-    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
+    this.hdh = this.listImageVersionByType.find(x => x.id = event);
     this.selectedTypeImageId= this.hdh.imageTypeId
   }
 
@@ -111,6 +112,11 @@ export class InstancesEditInfoComponent implements OnInit {
         this.message.error('Thay đổi hệ điều hành không thành công');
       }
     );
+  }
+  onRegionChange(region: RegionModel) {
+    // Handle the region change event
+    this.region = region.regionId;
+    console.log(this.tokenService.get()?.userId);
   }
 
   navigateToEdit() {

@@ -1,0 +1,68 @@
+
+<nz-card
+  [nzBordered]="false"
+  nzTitle="
+Block Storage"
+>
+  <div class="ant-table">
+    <table>
+      <thead class="ant-table-thead">
+        <tr>
+          <th>Loại ổ cứng</th>
+          <th>Tên Volume</th>
+          <th>VCPU</th>
+          <th>RAM (GB)</th>
+          <th>Dung lượng (GB)</th>
+          <th>Trạng thái Volume</th>
+          <th>Kiểu Volume</th>
+          <th>Giá theo tháng (VNĐ)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="ant-table-tbody">
+        <tr *ngFor="let data of listOfDataBlockStorage">
+          <td>
+            <label>
+              {{ data.type }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.name }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.vCPU }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.ram }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.capacity }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.status }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.typeVolume }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.price }}
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</nz-card>

@@ -6,6 +6,7 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
 // import { ActionCode } from '@app/config/actionCode';
@@ -28,6 +29,7 @@ import { async } from 'rxjs';
 import { da } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { InstancesVlanGimComponent } from './instances-vlan-gim/instances-vlan-gim.component';
 
 class SearchParam {
   status: string = '';
@@ -69,15 +71,9 @@ export class InstancesComponent implements OnInit {
     { text: 'Tạm ngưng', value: 'TAMNGUNG' },
   ];
 
+  listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
+
   selectedOptionAction: string;
-  isVisible01 = false;
-  isVisible02 = false; //
-  isVisible03 = false; //
-  isVisible04 = false; //
-  isVisible05 = false; //
-  isVisible06 = false; //
-  isVisible07 = false; // Khởi động lại máy ảo
-  isVisible08 = false; // Tắt máy ảo
   actionData: InstancesModel;
 
   region: number;
@@ -90,7 +86,9 @@ export class InstancesComponent implements OnInit {
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    public message: NzMessageService
+    public message: NzMessageService,
+    private viewContainerRef: ViewContainerRef,
+   // private bsModalRef: BsModalRef
   ) {}
 
   showModal(cs: string, data: any): void {
@@ -98,87 +96,20 @@ export class InstancesComponent implements OnInit {
     this.selectedOptionAction = '';
     switch (parseInt(cs, 10)) {
       case 1:
-        this.isVisible01 = true;
         break;
       case 2:
-        this.isVisible02 = true;
+        break;
+      case 5:
+        this.ganVLANFC();
         break;
       case 7:
-        this.isVisible07 = true;
+        this.restartInstance();
         break;
       case 8:
-        this.isVisible08 = true;
+        this.shutdownInstance();
         break;
       default:
-        this.isVisible01 = false;
-        this.isVisible02 = false;
     }
-  }
-
-  handleOk(cs: number): void {
-    this.selectedOptionAction = '';
-    switch (cs) {
-      case 1:
-        this.isVisible01 = false;
-        break;
-      case 2:
-        this.isVisible02 = false;
-        break;
-      case 7: // Khởi động lại máy ảo
-        this.isVisible07 = false;
-        var body = {
-          command: 'restart',
-          id: this.actionData.id,
-        };
-        this.dataService.postAction(this.actionData.id, body).subscribe(
-          (data: any) => {
-            console.log(data);
-            if (data == true) {
-              this.message.success('Khởi động lại máy ảo thành công');
-            } else {
-              this.message.error('Khởi động lại máy ảo không thành công');
-            }
-          },
-          () => {
-            this.message.error('Khởi động lại máy ảo không thành công');
-          }
-        );
-        break;
-      case 8: // Tắt máy ảo
-        this.isVisible08 = false;
-        var body = {
-          command: 'shutdown',
-          id: this.actionData.id,
-        };
-        this.dataService.postAction(this.actionData.id, body).subscribe(
-          (data: any) => {
-            if (data == true) {
-              this.message.success('Tắt máy ảo thành công');
-            } else {
-              this.message.error('Tắt máy ảo không thành công');
-            }
-          },
-          () => {
-            this.message.error('Tắt máy ảo không thành công');
-          }
-        );
-        break;
-      default:
-        this.isVisible01 = false;
-        this.isVisible02 = false;
-    }
-  }
-
-  handleCancel(): void {
-    this.actionData = null;
-    this.isVisible01 = false;
-    this.isVisible02 = false; //
-    this.isVisible03 = false; //
-    this.isVisible04 = false; //
-    this.isVisible05 = false; //
-    this.isVisible06 = false; //
-    this.isVisible07 = false; // Khởi động lại máy ảo
-    this.isVisible08 = false;
   }
 
   changeFilterStatus(e: any): void {
@@ -324,7 +255,78 @@ export class InstancesComponent implements OnInit {
       pageIndex: 1,
     };
   }
+  ganVLANFC(): void {
+    const modal = this.modalSrv.create({
+      nzTitle: 'Gắn VLAN',
+      nzOkText: 'Xác nhận',
+      nzCancelText: 'Hủy',
+      nzContent: InstancesVlanGimComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzData: {
+        title: "SIM"
+      },
+      nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
+    });
+    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+    // Return a result when closed
+    modal.afterClose.subscribe((result) =>
+      console.log('[afterClose] The result is:', result)
+    );
+  }
 
+  shutdownInstance(): void {
+    this.modalSrv.create({
+      nzTitle: 'Tắt máy ảo',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện tắt máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        var body = {
+          command: 'shutdown',
+          id: this.actionData.id,
+        };
+        this.dataService.postAction(this.actionData.id, body).subscribe(
+          (data: any) => {
+            if (data == true) {
+              this.message.success('Tắt máy ảo thành công');
+            } else {
+              this.message.error('Tắt máy ảo không thành công');
+            }
+          },
+          () => {
+            this.message.error('Tắt máy ảo không thành công');
+          }
+        );
+      },
+    });
+  }
+  restartInstance(): void {
+    this.modalSrv.create({
+      nzTitle: 'Khởi động lại máy ảo',
+      nzContent: 'Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        var body = {
+          command: 'restart',
+          id: this.actionData.id,
+        };
+        this.dataService.postAction(this.actionData.id, body).subscribe(
+          (data: any) => {
+            console.log(data);
+            if (data == true) {
+              this.message.success('Khởi động lại máy ảo thành công');
+            } else {
+              this.message.error('Khởi động lại máy ảo không thành công');
+            }
+          },
+          () => {
+            this.message.error('Khởi động lại máy ảo không thành công');
+          }
+        );
+      },
+    });
+  }
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/vm/instances-create']);
   }
