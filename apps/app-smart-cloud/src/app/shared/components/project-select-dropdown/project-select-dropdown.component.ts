@@ -46,5 +46,10 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
     if (changes.regionId) {
       this.loadProjects();
     }
+
+    if (this.listProject.length > 0) {
+      this.selectedProject = this.listProject[0];
+      this.valueChanged.emit(this.listProject[0])
+    }
   }
 }

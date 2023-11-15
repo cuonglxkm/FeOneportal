@@ -27,7 +27,7 @@
         {
           "text": "Quản lý IP Public",
           "icon": "anticon-dashboard",
-          "link": "/dashboard/v1"
+          "link": "/app-smart-cloud/ip-public"
         },
         {
           "text": "Quản lý SSH Key",
