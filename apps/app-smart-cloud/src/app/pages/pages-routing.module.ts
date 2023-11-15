@@ -19,7 +19,7 @@ import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-vol
 import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
+  {path: '', redirectTo: 'instances', pathMatch: 'full'},
   {
     path: 'user-profile',
     component: UserProfileComponent
