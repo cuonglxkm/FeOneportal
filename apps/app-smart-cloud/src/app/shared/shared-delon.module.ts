@@ -3,5 +3,6 @@ import { ResultModule } from '@delon/abc/result';
 import { SEModule } from '@delon/abc/se';
 import { STModule } from '@delon/abc/st';
 import { SVModule } from '@delon/abc/sv';
+import { G2TimelineModule } from '@delon/chart/timeline';
 
-export const SHARED_DELON_MODULES = [STModule, SVModule, SEModule, PageHeaderModule, ResultModule];
+export const SHARED_DELON_MODULES = [G2TimelineModule, STModule, SVModule, SEModule, PageHeaderModule, ResultModule];

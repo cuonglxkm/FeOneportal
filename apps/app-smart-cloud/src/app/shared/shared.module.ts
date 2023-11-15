@@ -11,6 +11,16 @@ import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 import {RegionSelectDropdownComponent} from "./components/region-select-dropdown/region-select-dropdown.component";
 import {ProjectSelectDropdownComponent} from "./components/project-select-dropdown/project-select-dropdown.component";
 
+import * as AllIcons from '@ant-design/icons-angular/icons';
+import { NZ_ICONS } from 'ng-zorro-antd/icon';
+
+const antDesignIcons = AllIcons as {
+    [key: string]: any;
+  };
+  const icons: any[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
+
+
+ 
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -57,6 +67,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES
-  ]
+  ],
+  providers: [{ provide: NZ_ICONS, useValue: icons }]
 })
 export class SharedModule {}

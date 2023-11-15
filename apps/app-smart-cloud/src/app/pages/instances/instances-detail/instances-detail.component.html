@@ -1,0 +1,222 @@
+<page-header [title]="'Chi tiết máy ảo'" [action]="action">
+  <ng-template #action>
+    <button
+      nz-button
+      [nzType]="'primary'"
+      (click)="activeGSCard()"
+      *ngIf="!activeGS"
+    >
+      <i nz-icon nzType="video-camera"></i> <span>Giám sát</span>
+    </button>
+    <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
+      <i nz-icon nzType="edit"></i>
+      <span>Chỉnh sửa</span>
+    </button>
+    <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
+    </one-portal-instances-btn>
+  </ng-template>
+</page-header>
+
+<nz-card nzTitle="Giám sát" [nzBordered]="false" *ngIf="activeGS">
+  <nz-select
+    style="width: 10%"
+    nzPlaceHolder="Chọn"
+    [ngModelOptions]="{ standalone: true }"
+    [(ngModel)]="valueGSCPU"
+    (ngModelChange)="onChangeCPU($event)"
+  >
+    <nz-option
+      *ngFor="let p of GSCPU"
+      [nzValue]="p.key"
+      [nzLabel]="p.name"
+    ></nz-option>
+  </nz-select>
+
+  <nz-select
+    style="width: 10%"
+    nzPlaceHolder="Chọn"
+    [ngModelOptions]="{ standalone: true }"
+    [(ngModel)]="valueGSTIME"
+    (ngModelChange)="onChangeTIME($event)"
+  >
+    <nz-option
+      *ngFor="let p of GSTIME"
+      [nzValue]="p.key"
+      [nzLabel]="p.name"
+    ></nz-option>
+  </nz-select>
+
+  <!-- <g2-timeline
+    [maxAxis]="maxAxis"
+    [data]="chartData"
+    [titleMap]="titleMap"
+    [height]="300"
+  /> -->
+
+  <g2-timeline
+    *ngIf="offlineChartData"
+    [data]="offlineChartData"
+    [height]="289"
+    [titleMap]="{ y1: 'Traflic', y2: 'Payments' }"
+  />
+</nz-card>
+
+<nz-card
+  *ngIf="!activeGS"
+  [nzBordered]="false"
+  nzTitle="Chi tiết dịch vụ"
+  [nzLoading]="loading"
+>
+  <div nz-row>
+    <div nz-col [nzSpan]="12">
+      <div nz-row [nzAlign]="'middle'">
+        <div nz-col [nzSpan]="2">
+          <i nz-icon nzType="laptop" class="display-2 text-blue"></i>
+        </div>
+        <div nz-col [nzSpan]="22">
+          <h4 class="fs-md text-black mb0">Chu kì thanh toán</h4>
+          <div class="text-black">1 tháng</div>
+          <div class="text-black">Chu kỳ hiện tại: 1</div>
+        </div>
+      </div>
+    </div>
+    <div nz-col [nzSpan]="12">
+      <div nz-row [nzAlign]="'middle'">
+        <div nz-col [nzSpan]="2">
+          <i nz-icon nzType="laptop" class="display-2 text-blue"></i>
+        </div>
+        <div nz-col [nzSpan]="22">
+          <h4 class="fs-md text-black mb0">Thông tin thanh toán kỳ tới</h4>
+          <div class="text-black">
+            Số tiền: 1.210.000 VNĐ ( Từ 23/10/2023 đến 24/11/2023)
+          </div>
+          <div class="text-black">Ngày thanh toán: 25/11/2023</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nz-card>
+
+<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo" [nzLoading]="loading">
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Tên máy ảo: <span class="fw-400">{{ instancesModel.name }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Gói cấu hình:<span class="fw-400">{{ instancesModel.flavorId }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Trạng thái:<span class="fw-400" style="color: #52c41a">{{
+            instancesModel.status
+          }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Thời gian khởi tạo:<span class="fw-400">{{
+            instancesModel.createdDate | date : 'dd/MM/yyyy'
+          }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Loại Volumn:<span class="fw-400">{{
+            instancesModel.volumeRootId
+          }}</span>
+        </h4>
+      </div>
+      <div style="width: 95%">
+        <nz-alert
+          nzType="warning"
+          [nzMessage]="nzDescriptionWarning06"
+          nzShowIcon
+        ></nz-alert>
+        <ng-template #nzDescriptionWarning06>
+          <div>
+            Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển
+            thị loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy
+            ảo đã được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và
+            tốc độ truy xuất.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div nz-col nzSpan="12">
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Hệ điều hành:<span class="fw-400">{{ instancesModel.imageId }}</span
+          ><a (click)="navigateToChangeImage()">
+            <i nz-icon nzType="redo"></i>Thay đổi</a
+          >
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Truy cập và bảo mật:<span
+            class="fw-400"
+            *ngFor="let i of listSecurityGroupModel"
+          >
+            {{ i.name }}</span
+          >
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          IP Public:<span class="fw-400">{{ instancesModel.ipPublic }}</span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          IP LAN:<span class="fw-400"></span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Băng thông trong nước:<span class="fw-400"></span>
+        </h4>
+      </div>
+      <div class="pb-1">
+        <h4 class="fs-md text-black mb0">
+          Băng thông quốc tế:<span class="fw-400"></span>
+        </h4>
+      </div>
+    </div>
+  </div>
+</nz-card>
+<one-portal-blockstorage-detail
+  [instancesId]="id"
+  [listOfDataBlockStorage]="listOfDataBlockStorage"
+></one-portal-blockstorage-detail>
+<one-portal-network-detail
+  [instancesId]="id"
+  [listOfDataNetwork]="listOfDataNetwork"
+></one-portal-network-detail>
+
+<nz-card
+  [nzBordered]="false"
+  nzTitle="
+  Thành tiền"
+>
+  <div class="">
+    <nz-table>
+      <tr>
+        <td>Chi phí máy ảo ( 1 tháng )</td>
+        <td class="float-right">1.000.000 VNĐ</td>
+      </tr>
+      <tr>
+        <td>Chi phí Volume bổ sung (1 tháng)</td>
+        <td class="float-right">1.000.000 VNĐ</td>
+      </tr>
+      <tr>
+        <td>Thành tiền ( Đã bao gồm 10% VAT)</td>
+        <td class="float-right">1.000.000 VNĐ</td>
+      </tr>
+    </nz-table>
+  </div>
+</nz-card>

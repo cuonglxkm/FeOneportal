@@ -37,7 +37,12 @@
         {
           "text": "Quản lý Security Group",
           "icon": "anticon-dashboard",
-          "link": "/dashboard/v2"
+          "link": "/app-smart-cloud/security-group"
+        },
+        {
+          "text": "Allow Address Pair",
+          "icon": "anticon-dashboard",
+          "link": "/app-smart-cloud/allow-address-pair"
         }
       ]
     },

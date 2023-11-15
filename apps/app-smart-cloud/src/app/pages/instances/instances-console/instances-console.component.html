@@ -1,0 +1,39 @@
+<page-header
+  [title]="'Console máy ảo'"
+  [breadcrumb]="breadcrumb"
+  [action]="action">
+  <ng-template #action>
+    <!--    <div class="text-right">-->
+    <!--      <button nz-button nzType="primary" nzSize="default" (click)="onClickFullScreen()">-->
+    <!--        <i nz-icon nzType="fullscreen" nzTheme="outline"></i>-->
+    <!--        Fullscreen-->
+    <!--      </button>-->
+    <!--    </div>-->
+  </ng-template>
+
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/vm">Máy ảo</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Console máy ảo</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<full-content (fullscreenChange)="fullChange($event)">
+  <!--  <button *ngIf="isFull" nz-button [nzType]="'default'" full-toggle class="">Exit</button>-->
+  <!--  <nz-card>-->
+  <div class="frameWrapper">
+    <button class="overlay-button" *ngIf="src != '' && isLoaded" nz-button nzGhost nzType="text" nzSize="small"
+            (click)="onClickFullScreen()">
+      <i nz-icon nzType="fullscreen" nzTheme="outline"></i>
+    </button>
+
+    <iframe #iframe (load)="loadingComplete($event)" [src]="src | safe" frameborder="0" scrolling="no"></iframe>
+  </div>
+  <!--  </nz-card>-->
+  <!--    <iframe #iframe type="text/javascript" frameborder="0" scrolling="no"></iframe>-->
+
+
+</full-content>
+
+

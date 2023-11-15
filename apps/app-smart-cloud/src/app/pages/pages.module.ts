@@ -1,30 +1,78 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {UserProfileComponent} from "./user-profile/user-profile.component";
-import {V1Component} from "./test/v1.component";
-import {G2MiniBarModule} from "@delon/chart/mini-bar";
-import {PagesRoutingModule} from "./pages-routing.module";
-import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
-import {ReactiveFormsModule} from "@angular/forms";
-import {VolumeComponent} from "./volume/component/list-volume/volume.component";
-import {SEModule} from "@delon/abc/se";
-import {SharedModule} from "@shared";
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {UserProfileComponent} from './user-profile/user-profile.component';
+import {V1Component} from './test/v1.component';
+import {G2MiniBarModule} from '@delon/chart/mini-bar';
+import {PagesRoutingModule} from './pages-routing.module';
+import {SharedModule} from '@shared';
+import {SecurityGroupComponent} from './security-group/list-security-group/security-group.component';
+import {NzLayoutModule} from 'ng-zorro-antd/layout';
+import {NzSpaceModule} from 'ng-zorro-antd/space';
+import {NzPageHeaderModule} from 'ng-zorro-antd/page-header';
+import {CreateSecurityGroupComponent} from './security-group/create-security-group/create-security-group.component';
+import {CreateInboundComponent} from './security-group/inbound/create/create-inbound.component';
+import {ListAllowAddressPairComponent} from './allow-address-pair/list/list-allow-address-pair.component';
+import {IconDefinition} from '@ant-design/icons-angular';
+import {SettingOutline} from '@ant-design/icons-angular/icons';
+import {DeleteSecurityGroupComponent} from './security-group/delete-security-group/delete-security-group.component';
+import {DeleteRuleComponent} from './security-group/delete-rule/delete-rule.component';
+import {NzIconModule} from 'ng-zorro-antd/icon';
+import {InboundListComponent} from './security-group/inbound/list/inbound-list.component';
+import {ListOutboundComponent} from './security-group/outbound/list/list-outbound.component';
+import {CreateOutboundComponent} from './security-group/outbound/create/create-outbound.component';
+import {CreateAllowAddressPairComponent} from './allow-address-pair/create/create-allow-address-pair.component';
+import {ListVirtualMachineComponent} from './security-group/vm/list/list-virtual-machine.component';
+import {BlankSecurityGroupComponent} from './security-group/blank-security-group/blank-security-group.component';
+import {NzResultModule} from 'ng-zorro-antd/result';
+import {NzImageModule} from 'ng-zorro-antd/image';
+import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
+import {NzPaginationModule} from 'ng-zorro-antd/pagination';
+import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
 import {PopupAddVolumeComponent} from "./volume/component/popup-volume/popup-add-volume.component";
 import {PopupDeleteVolumeComponent} from "./volume/component/popup-volume/popup-delete-volume.component";
 import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
 import {PopupExtendVolumeComponent} from "./volume/component/popup-volume/popup-extend-volume.component";
 import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import {VolumeComponent} from "./volume/component/list-volume/volume.component";
+import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
+import {ReactiveFormsModule} from "@angular/forms";
+import {SEModule} from "@delon/abc/se";
 
-import { SshKeyComponent } from './ssh-key/ssh-key.component';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import {NzResultModule} from "ng-zorro-antd/result";
-import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
+
+const icons: IconDefinition[] = [SettingOutline];
 
 @NgModule({
-  declarations: [UserProfileComponent, V1Component, VolumeComponent, PopupAddVolumeComponent,
-    PopupDeleteVolumeComponent, CreateVolumeComponent, DetailVolumeComponent, PopupExtendVolumeComponent,
-    EditVolumeComponent,SshKeyComponent, HeaderVolumeComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    UserProfileComponent,
+    V1Component,
+    SecurityGroupComponent,
+    CreateSecurityGroupComponent,
+    CreateInboundComponent,
+    ListOutboundComponent,
+    CreateOutboundComponent,
+    ListAllowAddressPairComponent,
+    DeleteSecurityGroupComponent,
+    DeleteSecurityGroupComponent,
+    DeleteRuleComponent,
+    InboundListComponent,
+    ListOutboundComponent,
+    CreateAllowAddressPairComponent,
+    ListVirtualMachineComponent,
+    BlankSecurityGroupComponent,
+    FormRuleComponent,
+    SshKeyComponent,
+    VolumeComponent,
+    PopupAddVolumeComponent,
+    PopupDeleteVolumeComponent,
+    CreateVolumeComponent,
+    DetailVolumeComponent,
+    PopupExtendVolumeComponent,
+    EditVolumeComponent,
+    HeaderVolumeComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -34,9 +82,20 @@ import {HeaderVolumeComponent} from "./volume/component/header-volume/header-vol
     SHARED_ZORRO_MODULES,
     SEModule,
     SharedModule,
-    SharedModule,
     NzPaginationModule,
     NzResultModule,
-  ]
+
+    SharedModule,
+    PagesRoutingModule,
+    NzLayoutModule,
+    SharedModule,
+    NzSpaceModule,
+    NzPageHeaderModule,
+    NzIconModule.forRoot(icons),
+    NzResultModule,
+    NgOptimizedImage,
+    NzImageModule,
+    NzImageModule,
+  ],
 })
 export class PagesModule { }
