@@ -13,6 +13,7 @@ export class SecurityGroupSearchCondition {
   userId?: string | number
   regionId?: string | number
   projectId?: string | number
+  securityGroupId?: string | number
 }
 
 export interface SecurityGroupCreateForm {

@@ -1,5 +1,5 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {Location} from "@angular/common";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
@@ -62,18 +62,11 @@ export class FormRuleComponent implements OnInit{
     etherType: FormControl<null | string>;
     protocol: FormControl<any>;
     securityGroupId: FormControl<null | string>;
-  }> = this.fb.group({
-    rule: ['', [Validators.required]],
-    portType: 'Port' as 'Port' | 'PortRange',
-    portRangeMin: [null as number | string | null, [Validators.required, AppValidator.validPort]],
-    portRangeMax: [null as number | string | null, [Validators.required]],
-    remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
-    remoteIpPrefix: [null as null | string | number, [Validators.required, AppValidator.ipWithCIDRValidator,
-    Validators.pattern( /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/)]],
-    etherType: [null as null | string],
-    protocol: [null as null | string],
-    securityGroupId: [null as null | string]
-  });
+  }>
+
+  updatePortRangeValidator(): void {
+    Promise.resolve().then(() => this.validateForm.controls.portRangeMax.updateValueAndValidity());
+  }
 
   submitForm(): void {
     if (this.validateForm.valid) {
@@ -119,6 +112,7 @@ export class FormRuleComponent implements OnInit{
           this.router.navigate([
             '/app-smart-cloud/security-group'
           ])
+          this.router.navigateByUrl(`/app-smart-cloud/security-group?securityGroupId=${"5ec8aff4-71d5-4027-b519-e47b7e618092"}&regionId=${3}`);
         },
         error => {
           this.notification.error('Thất bại', 'Tạo Inbound thất bại');
@@ -145,44 +139,45 @@ export class FormRuleComponent implements OnInit{
   }
 
   ruleChange(type: string) {
+
+    this.validateForm.controls.portRangeMin.clearValidators();
+    this.validateForm.controls.portRangeMin.markAsPristine();
+    this.validateForm.controls.portRangeMin.reset();
+
+    this.validateForm.controls.portRangeMax.clearValidators();
+    this.validateForm.controls.portRangeMax.markAsPristine();
+    this.validateForm.controls.portRangeMax.reset();
+
+    this.validateForm.controls.protocol.clearValidators();
+    this.validateForm.controls.protocol.markAsPristine();
+    this.validateForm.controls.protocol.reset();
+
     if (type === 'other-IPv4') {
-      this.validateForm.controls.protocol.setValidators([Validators.required]);
+      this.validateForm.controls.protocol.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validateProtocol]);
       this.validateForm.controls.protocol.markAsDirty();
       this.validateForm.controls.protocol.reset();
+    }
 
-      this.validateForm.controls.portRangeMin.clearValidators();
-      this.validateForm.controls.portRangeMin.markAsPristine();
+    if (type === 'icmp-IPv4') {
+      this.validateForm.controls.portRangeMin.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
+      this.validateForm.controls.portRangeMin.markAsDirty();
       this.validateForm.controls.portRangeMin.reset();
 
-      this.validateForm.controls.portRangeMax.clearValidators();
-      this.validateForm.controls.portRangeMax.markAsPristine();
+      this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
+      this.validateForm.controls.portRangeMax.markAsDirty();
       this.validateForm.controls.portRangeMax.reset();
-    } else {
-
-      if (type === '-IPv4-' || type === 'tcp-IPv4-80' || type === 'tcp-IPv4-443'
-        || type === 'tcp-IPv4-22' || type === 'tcp-IPv4-3389' || type === 'icmp-IPv4-'
-        || type === 'tcp-IPv4-3306') {
-        this.validateForm.controls.portRangeMin.clearValidators();
-        this.validateForm.controls.portRangeMin.markAsPristine();
-        this.validateForm.controls.portRangeMin.reset();
-
-        this.validateForm.controls.portRangeMax.clearValidators();
-        this.validateForm.controls.portRangeMax.markAsPristine();
-        this.validateForm.controls.portRangeMax.reset();
-      } else {
-        this.validateForm.controls.portRangeMin.setValidators([Validators.required]);
-        this.validateForm.controls.portRangeMin.markAsDirty();
-        this.validateForm.controls.portRangeMin.reset();
-
-        this.validateForm.controls.portRangeMax.setValidators([Validators.required]);
-        this.validateForm.controls.portRangeMax.markAsDirty();
-        this.validateForm.controls.portRangeMax.reset();
-      }
-
-      this.validateForm.controls.protocol.clearValidators();
-      this.validateForm.controls.protocol.markAsPristine();
-      this.validateForm.controls.protocol.reset();
     }
+
+    if (type === 'tcp-IPv4' || type === 'udp-IPv4') {
+      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.min(1), AppValidator.validateNumber]);
+      this.validateForm.controls.portRangeMin.markAsDirty();
+      this.validateForm.controls.portRangeMin.reset();
+
+      this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, this.validatePortRange]);
+      this.validateForm.controls.portRangeMax.markAsDirty();
+      this.validateForm.controls.portRangeMax.reset();
+    }
+
     this.validateForm.controls.protocol.updateValueAndValidity();
     this.validateForm.controls.portRangeMin.updateValueAndValidity();
     this.validateForm.controls.portRangeMax.updateValueAndValidity();
@@ -249,12 +244,35 @@ export class FormRuleComponent implements OnInit{
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private securityGroupRuleService: SecurityGroupRuleService,
     private notification: NzNotificationService,
-    private router: Router) {}
+    private router: Router) {
+    this.validateForm = this.fb.group({
+      rule: ['', [Validators.required]],
+      portType: 'Port' as 'Port' | 'PortRange',
+      portRangeMin: [null as number | string | null, [Validators.required, Validators.min(1), AppValidator.validateNumber]],
+      portRangeMax: [null as number | string | null, [Validators.required, AppValidator.validateNumber, this.validatePortRange]],
+      remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
+      remoteIpPrefix: [null as null | string | number, [Validators.required, AppValidator.ipWithCIDRValidator,
+        Validators.pattern( /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/)]],
+      etherType: [null as null | string],
+      protocol: [null as null | string],
+      securityGroupId: [null as null | string]
+    });
+  }
 
+  validatePortRange: ValidatorFn = (control: AbstractControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { required: true };
+    } else if (control.value < this.validateForm.controls.portRangeMin.value) {
+      return { invalidPortRange: true };
+    }
+    return null;
+  };
   ngOnInit() {
     this.conditionSearch.projectId = 4079
     this.conditionSearch.regionId = 3
     this.conditionSearch.userId = this.tokenService.get()?.userId
     this.getSecurityGroup()
   }
+
+  protected readonly console = console;
 }

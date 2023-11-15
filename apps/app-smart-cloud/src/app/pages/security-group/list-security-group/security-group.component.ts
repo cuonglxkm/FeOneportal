@@ -4,6 +4,7 @@ import {SecurityGroupService} from "../../../shared/services/security-group.serv
 import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'one-portal-security-group',
@@ -28,7 +29,8 @@ export class SecurityGroupComponent implements OnInit {
 
 
   constructor(private securityGroupService: SecurityGroupService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private route: ActivatedRoute) {
   }
 
   onSecurityGroupChange(): void {
@@ -72,6 +74,22 @@ export class SecurityGroupComponent implements OnInit {
   ngOnInit() {
     this.conditionSearch.projectId = 4079
     this.conditionSearch.userId = this.tokenService.get()?.userId
+    this.route.queryParams.subscribe(params => {
+      this.conditionSearch.regionId = params['regionId'];
+      this.conditionSearch.securityGroupId = params['securityGroupId'];
+      if (this.conditionSearch.regionId && this.conditionSearch.securityGroupId) {
+        this.securityGroupService.search(this.conditionSearch)
+            .subscribe((data) => {
+              if (data) {
+                const index = data.findIndex(v => v.id === this.conditionSearch.securityGroupId) || 0
+                this.selectedValue = data[index]
+                this.listInbound = data[index].rulesInfo.filter(value => value.direction === 'ingress')
+                this.listOutbound = data[index].rulesInfo.filter(value => value.direction === 'egress')
+              }
+              this.options = data;
+            })
+      }
+    });
   }
 
 }

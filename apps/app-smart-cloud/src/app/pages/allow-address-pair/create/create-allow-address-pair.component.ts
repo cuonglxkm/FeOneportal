@@ -1,13 +1,11 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
-import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import PairInfo, {AllowAddressPairCreateOrDeleteForm} from "../../../shared/models/allow-address-pair";
-import {RegionModel} from "../../../shared/models/region.model";
+import {AllowAddressPairCreateOrDeleteForm} from "../../../shared/models/allow-address-pair";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {AppValidator} from "../../../../../../../libs/common-utils/src";
 
-// @ts-ignore
 @Component({
   selector: 'one-portal-create-allow-address-pair',
   templateUrl: './create-allow-address-pair.component.html',
@@ -16,55 +14,24 @@ import {NzMessageService} from "ng-zorro-antd/message";
 export class CreateAllowAddressPairComponent implements OnInit {
   @Input() isVisible: boolean
   @Output() onCancel = new EventEmitter<void>()
-  @Output() onOk = new EventEmitter<void>()
-
-  isVisibleCreate = false;
-  isCreateLoading = false;
-
-  validateForm: FormGroup<{
-    ipAddress: FormControl<string | null>;
-  }>;
-
-  value?: string;
+  @Output() onOk = new EventEmitter()
 
   formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm;
 
-  region: RegionModel;
-
-  listPairInfos: PairInfo[];
-
-  constructor(private allowAddressPairService: AllowAddressPairService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private message: NzMessageService) {
+  validateForm: FormGroup<{
+    macAddress: FormControl<string>;
+    ipAddress: FormControl<string>;
+  }> = this.fb.group({
+    macAddress: [''],
+    ipAddress: ['', [Validators.required, AppValidator.ipWithCIDRValidator,
+      Validators.pattern( /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/)]],
+  });
+  constructor(private fb: NonNullableFormBuilder) {
   }
-
-  ngOnInit(): void {
-    this.conditionSearch.userId = this.tokenService.get()?.userId
-    this.conditionSearch.projectId = 4079
-    }
-
-  handleCancel(): void {
-    this.isVisibleCreate = false;
-    this.onCancel.emit();
-  }
-  handleCreate(){
-    this.isCreateLoading = true;
-    this.submitForm();
-    this.onOk.emit();
-  }
-
-  showModalCreate() {
-    this.isVisible = true;
-  }
-
-  conditionSearch: SecurityGroupSearchCondition;
-
 
   submitForm(): void {
-
     if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
-      this.create(this.validateForm.value);
+      this.onOk.emit(this.validateForm.value);
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -75,25 +42,10 @@ export class CreateAllowAddressPairComponent implements OnInit {
     }
   }
 
-  create(pairInfo: PairInfo) {
-    console.log('pair: ', pairInfo);
-    this.listPairInfos.push(pairInfo);
-
-    this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-    this.formDeleteOrCreate.pairInfos = this.listPairInfos;
-    this.formDeleteOrCreate.isDelete = false;
-    this.formDeleteOrCreate.region = this.region.regionId;
-    this.formDeleteOrCreate.vpcId = 4079;
-
-    this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
-        .subscribe(data => {
-          this.message.create('Thành công', `Đã tạo thành công`);
-        })
+  handleCancel(): void {
+    this.onCancel.emit();
   }
 
-  regionChanged(region: RegionModel) {
-    this.region = region;
+  ngOnInit(): void {
   }
-
-
 }
