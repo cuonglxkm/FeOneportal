@@ -1,0 +1,81 @@
+<nz-header>
+  <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
+    <nz-row nzJustify="space-between" nzAlign="middle">
+      <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          Dịch vụ
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a routerLink="/app-smart-cloud/security-group">Security group</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <nz-space>
+<!--        <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Khu vực"-->
+<!--                   [(ngModel)]="selectedValueArea" style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
+<!--          <nz-option *ngFor="let item of optionsArea" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
+<!--        </nz-select>-->
+<!--        <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Dự án"-->
+<!--                   [(ngModel)]="selectedValueProject" style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
+<!--          <nz-option *ngFor="let item of optionsProject" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
+<!--        </nz-select>-->
+        <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+        <project-select-dropdown></project-select-dropdown>
+      </nz-space>
+    </nz-row>
+    <h4>Security group</h4>
+  </nz-col>
+</nz-header>
+<nz-content>
+  <nz-card>
+    <div class="title">Danh sách Security Group</div>
+    <nz-row style="margin-bottom: 16px">
+      <nz-col nzSpan="4">
+        <div class="label">Chọn Security group</div>
+      </nz-col>
+      <nz-col nzSpan="14">
+        <nz-space [nzSize]="24">
+          <nz-select
+            *nzSpaceItem
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select a security"
+            [(ngModel)]="selectedValue"
+            (ngModelChange)="onSecurityGroupChange()">
+            <nz-option *ngFor="let item of options" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
+          </nz-select>
+          <div *nzSpaceItem>
+            <button *ngIf="!!selectedValue" nz-button nzType="primary" nzDanger
+                    class="button-delete" (click)="showModal()">Xoá Security Group
+            </button>
+          </div>
+          <one-portal-delete-security-group *ngIf="!!selectedValue" [isVisible]="isVisible"
+                                            [condition]="conditionSearch"
+                                            [id]="selectedValue.id"
+                                            (onCancel)="handleCancel()"
+                                            (onOk)="handleOk()">
+          </one-portal-delete-security-group>
+        </nz-space>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-row nzJustify="end">
+          <button nz-button nzType="primary"
+                  class="button-add"
+                  routerLink="/app-smart-cloud/create-security-group">Thêm mới Security group
+          </button>
+        </nz-row>
+      </nz-col>
+    </nz-row>
+    <nz-row style="margin-bottom: 16px">
+      <nz-col nzSpan="4">
+        <div class="label">Mô tả</div>
+      </nz-col>
+      <nz-col>
+        <div class="label">{{selectedValue?.description || ''}}</div>
+      </nz-col>
+    </nz-row>
+    <one-portal-inbound-list [listInbound]="listInbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-inbound-list>
+    <one-portal-list-outbound [listOutbound]="listOutbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-list-outbound>
+    <one-portal-list-virtual-machine></one-portal-list-virtual-machine>
+  </nz-card>
+</nz-content>
