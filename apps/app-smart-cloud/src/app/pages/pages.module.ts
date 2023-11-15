@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {UserProfileComponent} from './user-profile/user-profile.component';
 import {V1Component} from './test/v1.component';
@@ -27,50 +27,75 @@ import {NzResultModule} from 'ng-zorro-antd/result';
 import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
+import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
+import {PopupAddVolumeComponent} from "./volume/component/popup-volume/popup-add-volume.component";
+import {PopupDeleteVolumeComponent} from "./volume/component/popup-volume/popup-delete-volume.component";
+import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
+import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
+import {PopupExtendVolumeComponent} from "./volume/component/popup-volume/popup-extend-volume.component";
+import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import {VolumeComponent} from "./volume/component/list-volume/volume.component";
+import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
+import {ReactiveFormsModule} from "@angular/forms";
+import {SEModule} from "@delon/abc/se";
+
 
 const icons: IconDefinition[] = [SettingOutline];
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    UserProfileComponent,
+    V1Component,
+    SecurityGroupComponent,
+    CreateSecurityGroupComponent,
+    CreateInboundComponent,
+    ListOutboundComponent,
+    CreateOutboundComponent,
+    ListAllowAddressPairComponent,
+    DeleteSecurityGroupComponent,
+    DeleteSecurityGroupComponent,
+    DeleteRuleComponent,
+    InboundListComponent,
+    ListOutboundComponent,
+    CreateAllowAddressPairComponent,
+    ListVirtualMachineComponent,
+    BlankSecurityGroupComponent,
+    FormRuleComponent,
+    SshKeyComponent,
+    VolumeComponent,
+    PopupAddVolumeComponent,
+    PopupDeleteVolumeComponent,
+    CreateVolumeComponent,
+    DetailVolumeComponent,
+    PopupExtendVolumeComponent,
+    EditVolumeComponent,
+    HeaderVolumeComponent
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    G2MiniBarModule,
+    PagesRoutingModule,
+    NzResultModule,
+    SHARED_ZORRO_MODULES,
+    SEModule,
+    SharedModule,
+    NzPaginationModule,
+    NzResultModule,
 
-    declarations: [
-        UserProfileComponent,
-        V1Component,
-        SecurityGroupComponent,
-        CreateSecurityGroupComponent,
-        CreateInboundComponent,
-        ListOutboundComponent,
-        CreateOutboundComponent,
-        ListAllowAddressPairComponent,
-        DeleteSecurityGroupComponent,
-        DeleteSecurityGroupComponent,
-        DeleteRuleComponent,
-        InboundListComponent,
-        ListOutboundComponent,
-        CreateAllowAddressPairComponent,
-        ListVirtualMachineComponent,
-        BlankSecurityGroupComponent,
-        FormRuleComponent,
-    ],
-    imports: [
-        CommonModule,
-        G2MiniBarModule,
-        PagesRoutingModule,
-        SharedModule,
-        NzPaginationModule,
-        NzResultModule,
-
-        SharedModule,
-        PagesRoutingModule,
-        NzLayoutModule,
-        SharedModule,
-        NzSpaceModule,
-        NzPageHeaderModule,
-        NzIconModule.forRoot(icons),
-        NzResultModule,
-        NgOptimizedImage,
-        NzImageModule,
-        NzImageModule,
-    ],
+    SharedModule,
+    PagesRoutingModule,
+    NzLayoutModule,
+    SharedModule,
+    NzSpaceModule,
+    NzPageHeaderModule,
+    NzIconModule.forRoot(icons),
+    NzResultModule,
+    NgOptimizedImage,
+    NzImageModule,
+    NzImageModule,
+  ],
 })
-export class PagesModule {
-}
+export class PagesModule { }

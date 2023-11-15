@@ -1,0 +1,140 @@
+<app-header-volume [headerInfo]="headerInfo"></app-header-volume>
+<br>
+<div class="create-volume">
+  <h3>Thông tin Volume</h3>
+  <hr>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Volume</nz-form-label>
+  <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="volumeInfo.name" type="text"/>
+  <br>
+  <br>
+  <p>
+    <nz-switch [(ngModel)]="isInitSnapshot" nzCheckedChildren="ON" nzUnCheckedChildren="OFF"
+               style="padding-right: 10px;"></nz-switch>
+    Tạo từ Snapshot
+  </p>
+
+  <div *ngIf="isInitSnapshot === true">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn Snapshot</nz-form-label>
+    <br>
+
+    <nz-select nzSize="default"
+               [nzPlaceHolder]="'-Chọn Snapshot-'"
+               [(ngModel)]="snapshot"
+               (ngModelChange)="changeExpTime()"
+               style="width: 100%;"
+    >
+      <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
+    </nz-select>
+  </div>
+
+
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn loại Volume</nz-form-label>
+  <br>
+
+  <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()">
+    <div style="display: flex; padding: 20px;">
+      <div nz-radio nzValue="1" [ngStyle]="{'background-color': volumeInfo.volumeType === '1' ? '#e6f7ff' : '#fcfcfc'}"
+           style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
+        HDD
+        <br>
+        Additional description and information about copywriting.
+      </div>
+      <div nz-radio nzValue="0" [ngStyle]="{'background-color': volumeInfo.volumeType === '0' ? '#e6f7ff' : '#fcfcfc'}"
+           style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
+        SSD
+        <br>
+        Additional description and information about copywriting.
+      </div>
+    </div>
+  </nz-radio-group>
+
+  <br>
+  <br>
+
+
+  <nz-table [nzTemplateMode]=true>
+    <thead>
+    <tr>
+      <th>Dung lượng(GB)</th>
+      <th>IOPS</th>
+      <th>Giá theo tháng(VNĐ)</th>
+      <th>Giá theo giờ(VNĐ)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+      </td>
+      <td>200</td>
+      <td>360.712</td>
+      <td>484</td>
+    </tr>
+    </tbody>
+  </nz-table>
+  <br>
+  <br>
+  <label nz-checkbox [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
+  <br>
+  <label nz-checkbox [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
+  <br>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn máy ảo</nz-form-label>
+  <br>
+  <nz-select nzSize="default"
+             [nzPlaceHolder]="'-Chọn máy ảo-'"
+             [(ngModel)]="volumeInfo.instanceId"
+             style="width: 100%;"
+  >
+    <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
+  </nz-select>
+  <br>
+  <br>
+  <p>Mô tả</p>
+  <textarea rows="4" nz-input [(ngModel)]="volumeInfo.description"></textarea>
+  <br>
+  <br>
+
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Thời hạn sử dụng</nz-form-label>
+  <br>
+
+  <nz-select nzSize="default"
+             [nzPlaceHolder]="'-Chọn thời hạn sử dụng-'"
+             [nzOptions]="expiryTimeList"
+             [(ngModel)]="expiryTime"
+             (ngModelChange)="changeExpTime()"
+             style="width: 100%;"
+  >
+  </nz-select>
+  <p>
+    Thời gian bắt đầu sử dụng:
+    <span>{{ volumeInfo.createDate | date:'dd/MM/yyyy' }}</span>
+  </p>
+</div>
+<br>
+<b>Thành tiền</b>
+<br>
+<hr>
+<br>
+<nz-table [nzTemplateMode]=true style="border: none;">
+  <tbody>
+  <tr>
+    <td style="border-bottom: none"><p>Chi phí sử dụng ({{ expiryTime }} tháng)</p></td>
+    <td style="border-bottom: none; text-align: right"><p>1.000.000 VNĐ</p></td>
+  </tr>
+  <tr>
+    <td style="border-bottom: none">Thành tiền (Đã bao gồm 10% VAT)</td>
+    <td style="border-bottom: none; text-align: right">1.100.000 VND</td>
+  </tr>
+  <tr>
+    <td style="border-bottom: none"></td>
+    <td style="border-bottom: none; text-align: right; padding-right: 30px;">
+      <button nz-button nzType="primary" style="background-color: #9c9c9c; padding-right: 20px;">Hủy</button>
+      <button nz-button nzType="primary">Chỉnh sửa</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+
