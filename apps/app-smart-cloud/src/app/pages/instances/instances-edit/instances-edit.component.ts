@@ -328,8 +328,21 @@ export class InstancesEditComponent implements OnInit {
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/vm']);
   }
-
+  
   save(): void {
+    this.modalSrv.create({
+      nzTitle: 'Xác nhận thông tin thay đổi',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện thay đổi thông tin máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+       this.readyEdit()
+      },
+    });
+  }
+
+
+  readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
     this.updateInstances.name = this.instancesModel.name;
     this.updateInstances.regionId = 3; // this.region;

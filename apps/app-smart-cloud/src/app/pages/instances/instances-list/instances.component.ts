@@ -78,7 +78,7 @@ export class InstancesComponent implements OnInit {
 
   region: number;
 
-  activeCreate: boolean = false;
+  activeCreate: boolean = true;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -87,8 +87,7 @@ export class InstancesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     public message: NzMessageService,
-    private viewContainerRef: ViewContainerRef,
-   // private bsModalRef: BsModalRef
+    private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
   showModal(cs: string, data: any): void {
@@ -98,6 +97,9 @@ export class InstancesComponent implements OnInit {
       case 1:
         break;
       case 2:
+        break;
+      case 4:
+        this.navigateToEdit(this.actionData.id)
         break;
       case 5:
         this.ganVLANFC();
@@ -127,6 +129,7 @@ export class InstancesComponent implements OnInit {
     // Handle the region change event
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
+    this.getDataList();
   }
   resetForm(): void {
     this.searchParam = {};
@@ -148,8 +151,14 @@ export class InstancesComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // Update your component properties with the received data
           this.loading = false;
+
+          // Update your component properties with the received data
+          if (data.records && data.records.length > 0) {
+            this.activeCreate = false;
+          } else {
+            this.activeCreate = true;
+          }
           this.dataList = data.records; // Assuming 'records' property contains your data
           this.tableConfig.total = data.totalCount;
           this.total = data.totalCount;
@@ -263,7 +272,7 @@ export class InstancesComponent implements OnInit {
       nzContent: InstancesVlanGimComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzData: {
-        title: "SIM"
+        title: 'SIM',
       },
       nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
     });
@@ -329,5 +338,10 @@ export class InstancesComponent implements OnInit {
   }
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/vm/instances-create']);
+  }
+  navigateToEdit(id:number) {
+    this.router.navigate([
+      '/app-smart-cloud/vm/instances-edit/' + id,
+    ]);
   }
 }
