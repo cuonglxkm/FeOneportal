@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {SshKeyService} from 'src/app/pages/ssh-key/ssh-key.service';
-import {BaseResponse} from './dto/base-response';
+import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {SshKey} from './dto/ssh-key';
 import {ModalHelper} from '@delon/theme';
 import { NzModalService} from 'ng-zorro-antd/modal';
@@ -42,7 +42,6 @@ export class SshKeyComponent implements OnInit{
   searchKey:string = "";
   customIcon: SafeResourceUrl;
   regionId: number;
-  okId: number;
   projectId: number;
   modalStyle = {
     'padding': '20px',
@@ -67,17 +66,19 @@ export class SshKeyComponent implements OnInit{
 
   ngOnInit() {
     this.getSshKeys();
+    this.form.get('keypair_name_2').disable();
+    this.form.get('public_key').disable();
   }
 
   getSshKeys(): void {
-     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.regionId, this.okId, this.index, this.size, this.searchKey)
+     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
       .subscribe(response => {
         this.listOfData = response.records,
           this.total = response.totalCount,
           this.index = response.currentPage
       });
 
-    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.regionId, this.okId, 0, 1, "")
+    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, 0, 1, "")
       .subscribe(resonse => {
         this.checkEmpty = resonse.records
         if (this.checkEmpty == undefined || this.checkEmpty == null || this.checkEmpty.length < 1) {
@@ -145,9 +146,9 @@ export class SshKeyComponent implements OnInit{
 
     const ax = {
       name: namePrivate,
-      vpcId: this.regionId,
+      vpcId: this.projectId,
       customerId: this.tokenService.get()?.userId,
-      regionId: this.okId,
+      regionId: this.regionId,
       publicKey: publickey,
     }
 
@@ -158,6 +159,15 @@ export class SshKeyComponent implements OnInit{
 
   onTabchange(event: any) {
     this.indexTab = event;
+    if (this.indexTab === 0) {
+      this.form.get('keypair_name_1').enable();
+      this.form.get('keypair_name_2').disable();
+      this.form.get('public_key').disable();
+    } else {
+      this.form.get('keypair_name_1').disable();
+      this.form.get('keypair_name_2').enable();
+      this.form.get('public_key').enable();
+    }
   }
 
   form = new FormGroup({
@@ -171,12 +181,12 @@ export class SshKeyComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
-    this.okId = region.regionId;
+    this.regionId = region.regionId;
     this.getSshKeys();
   }
 
   projectChange(project: ProjectModel) {
-    this.regionId = project.id;
+    this.projectId = project.id;
     this.getSshKeys();
   }
 }

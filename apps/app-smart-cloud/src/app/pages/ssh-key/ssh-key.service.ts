@@ -3,7 +3,8 @@ import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { SshKey } from './dto/ssh-key';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
-import {BaseResponse} from "./dto/base-response";
+import {BaseResponse} from "../../../../../../libs/common-utils/src";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +20,7 @@ export class SshKeyService {
 
   // get all
   getSshKeys( userId: any, vpcId: any, regionId: any, page: any, size: any, search: any): Observable<BaseResponse<SshKey[]>> {
-    return this.http.get<BaseResponse<SshKey[]>>(this.url + '?userId=' + userId + '&pvpcId=' + vpcId+ '&regionId=' + regionId+
+    return this.http.get<BaseResponse<SshKey[]>>(this.url + '?userId=' + userId + '&vpcId=' + vpcId+ '&regionId=' + regionId+
       '&pageSize=' + size+ '&currentPage=' + page+ '&name=' + search).pipe(
       catchError(this.handleError<BaseResponse<SshKey[]>>('get shh-key error'))
     );

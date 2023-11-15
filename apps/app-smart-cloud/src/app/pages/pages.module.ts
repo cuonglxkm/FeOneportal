@@ -28,6 +28,7 @@ import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
 import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {DeleteAllowAddressPairComponent} from "./allow-address-pair/delete/delete-allow-address-pair.component";
 import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
 import {PopupAddVolumeComponent} from "./volume/component/popup-volume/popup-add-volume.component";
 import {PopupDeleteVolumeComponent} from "./volume/component/popup-volume/popup-delete-volume.component";
@@ -39,7 +40,9 @@ import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {SEModule} from "@delon/abc/se";
-
+import { IpPublicComponent } from './ip-public/ip-public.component';
+import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
+import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
 
 const icons: IconDefinition[] = [SettingOutline];
 
@@ -71,7 +74,11 @@ const icons: IconDefinition[] = [SettingOutline];
     DetailVolumeComponent,
     PopupExtendVolumeComponent,
     EditVolumeComponent,
-    HeaderVolumeComponent
+    HeaderVolumeComponent,
+      DeleteAllowAddressPairComponent,
+    IpPublicComponent,
+    CreateUpdateIpPublicComponent,
+    DetailIpPublicComponent
   ],
   imports: [
     CommonModule,

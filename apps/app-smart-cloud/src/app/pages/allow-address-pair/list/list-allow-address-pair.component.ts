@@ -8,10 +8,11 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Component({
-    selector: 'one-portal-list-security-group-allow-address-pair',
+    selector: 'list-allow-address-pair',
     templateUrl: './list-allow-address-pair.component.html',
     styleUrls: ['./list-allow-address-pair.component.less'],
 })
@@ -20,7 +21,8 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                 private allowAddressPairService: AllowAddressPairService,
-                private message: NzMessageService) {
+                private message: NzMessageService,
+                private route: ActivatedRoute) {
     }
 
     isVisibleCreate = false;
@@ -38,7 +40,7 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     formSearch: AllowAddressPairSearchForm = new AllowAddressPairSearchForm();
 
-    isVisible = false;
+    isVisibleDelete = false;
     isConfirmLoading = false;
 
     formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm = new AllowAddressPairCreateOrDeleteForm();
@@ -47,11 +49,16 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     inputValue: string;
 
-    showModal(): void {
-        this.isVisible = true;
+    showModalDelete(): void {
+        this.isVisibleDelete = true;
     }
 
-    handleOk(pairInfo: PairInfo): void {
+    handleCancelDelete(): void {
+        this.isVisibleDelete = false;
+    }
+
+    handleOkDelete(pairInfo: PairInfo): void {
+        this.isVisibleDelete = false;
         if (this.pairInfos) {
             this.pairInfos.push(pairInfo);
         } else {
@@ -66,32 +73,38 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.region = this.region.regionId;
         this.formDeleteOrCreate.vpcId = 4079;
         this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
-        this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
-            .subscribe(data => {
-                this.message.create('Thành công', `Đã xóa thành công`);
-            })
-    }
 
-    handleCancel(): void {
-        this.isVisible = false;
-    }
-
-    handleOkCreate() {
-
-    }
-
-    handleCancelCreate() {
-        this.isVisibleCreate = false;
+        console.log('delete', this.formDeleteOrCreate)
+        this.getAllowAddressPair(this.formSearch)
     }
 
     showModalCreate() {
         this.isVisibleCreate = true;
     }
 
+    closeModalCreate() {
+        this.isVisibleCreate = false;
+    }
+
+    handleCreate(value) {
+        this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+        this.formDeleteOrCreate.pairInfos = [value];
+        this.formDeleteOrCreate.isDelete = false;
+        this.formDeleteOrCreate.region = this.region.regionId;
+        this.formDeleteOrCreate.vpcId = 4079;
+
+        this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
+            .subscribe(data => {
+                this.message.create('Thành công', `Đã tạo thành công`);
+                this.isVisibleCreate = false;
+            })
+    }
+
     regionChanged(region: RegionModel) {
         this.region = region;
         this.formSearch = this.getParam();
         this.getAllowAddressPair(this.formSearch);
+
     }
 
     getParam(): AllowAddressPairSearchForm {
@@ -117,6 +130,12 @@ export class ListAllowAddressPairComponent implements OnInit {
     ngOnInit(): void {
         this.formSearch.vpcId = 4079
         this.formSearch.customerId = this.tokenService.get()?.userId
+        this.route.queryParams.subscribe(queryParams => {
+            const value = queryParams['param'];
+            console.log('Received value:', value);
+            this.portId = value;
+        });
+
     }
 
     search() {

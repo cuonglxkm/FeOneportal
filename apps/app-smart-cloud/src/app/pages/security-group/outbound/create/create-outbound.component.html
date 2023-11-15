@@ -1,3 +1,23 @@
+<nz-header>
+    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
+        <nz-row nzJustify="space-between" nzAlign="middle">
+            <nz-breadcrumb nz-page-header-breadcrumb>
+                <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    Dịch vụ
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a routerLink="/app-smart-cloud/security-group">Security group</a>
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+            <nz-space>
+                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+                <project-select-dropdown></project-select-dropdown>
+            </nz-space>
+        </nz-row>
+        <h4>Security group</h4>
+    </nz-col>
+</nz-header>
 <nz-content>
     <nz-card>
         <div class="title">Thêm mới Outbound</div>

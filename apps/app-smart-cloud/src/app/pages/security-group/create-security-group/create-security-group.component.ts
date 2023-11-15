@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
 import {Location} from '@angular/common';
 import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
@@ -7,6 +7,8 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {RegionModel} from "../../../shared/models/region.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 
 @Component({
@@ -14,13 +16,14 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
     templateUrl: './create-security-group.component.html',
     styleUrls: ['./create-security-group.component.less'],
 })
-export class CreateSecurityGroupComponent {
-
-    conditionSearch: SecurityGroupSearchCondition = {
-        userId: 669,
-        regionId: 3,
-        projectId: 4079
+export class CreateSecurityGroupComponent implements OnInit{
+    ngOnInit(): void {
+        this.conditionSearch.projectId = 4079
+        this.conditionSearch.regionId = 3
+        this.conditionSearch.userId = this.tokenService.get()?.userId
     }
+
+    conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
 
     validateForm: FormGroup<{
         name: FormControl<string>;
@@ -29,6 +32,11 @@ export class CreateSecurityGroupComponent {
 
     submitForm(): void {
         if (this.validateForm.valid) {
+            const formData = Object.assign(this.validateForm.value, {
+                projectId: this.conditionSearch.projectId,
+                regionId: this.conditionSearch.regionId,
+                userId: this.conditionSearch.userId,
+            })
             console.log("value", this.validateForm.value);
             this.securityGroupService.create(this.validateForm.value, this.conditionSearch)
                 .subscribe((data) => {
@@ -48,6 +56,10 @@ export class CreateSecurityGroupComponent {
         }
     }
 
+    regionChanged(region: RegionModel) {
+        this.conditionSearch.regionId = region.regionId;
+    }
+
     goBack(): void {
         this._location.back();
     }
@@ -57,13 +69,12 @@ export class CreateSecurityGroupComponent {
                 private router: Router,
                 private securityGroupService: SecurityGroupService,
                 private message: NzMessageService,
-                private notification: NzNotificationService) {
+                private notification: NzNotificationService,
+                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
         this.validateForm = this.fb.group({
             name: ['', [Validators.required, Validators.maxLength(50),
                 AppValidator.startsWithValidator('SG_')]],
             description: ['', [Validators.maxLength(500)]]
         });
     }
-
-    protected readonly console = console;
 }

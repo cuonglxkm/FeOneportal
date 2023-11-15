@@ -11,6 +11,8 @@ import {BlankSecurityGroupComponent} from "./security-group/blank-security-group
 import {PreloadOptionalModules} from "@delon/theme";
 import {environment} from "@env/environment";
 import { SshKeyComponent } from "./ssh-key/ssh-key.component";
+import { IpPublicComponent } from "./ip-public/ip-public.component";
+import {CreateUpdateIpPublicComponent} from "./ip-public/create-update-ip-public/create-update-ip-public.component";
 import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
@@ -41,9 +43,6 @@ const routes: Routes = [
   {
     path: 'volume/edit/:id',
     component: EditVolumeComponent
-  }, {
-    path: 'vm',
-    component: V1Component
   },
   {
     path: "ssh-key",
@@ -52,6 +51,14 @@ const routes: Routes = [
   {
     path: 'instances',
     loadChildren: () => import('../pages/instances/instances.module').then(m => m.InstancesModule)
+  },
+  {
+    path: "ip-public",
+    component: IpPublicComponent
+  },
+  {
+    path: "ip-public/create",
+    component: CreateUpdateIpPublicComponent
   },
   {
     path: 'security-group',
@@ -77,12 +84,11 @@ const routes: Routes = [
     path: 'blank-security-group',
     component: BlankSecurityGroupComponent
   }
-
-
 ]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PagesRoutingModule { }
+export class PagesRoutingModule {
+}
