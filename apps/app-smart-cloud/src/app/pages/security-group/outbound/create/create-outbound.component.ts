@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
+import {RegionModel} from "../../../../shared/models/region.model";
 
 @Component({
   selector: 'one-portal-outbound',
@@ -7,8 +8,12 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./create-outbound.component.less'],
 })
 export class CreateOutboundComponent implements OnInit{
+  region: number;
   securityGroupId: string;
   constructor(private route: ActivatedRoute) {
+  }
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   ngOnInit(): void {

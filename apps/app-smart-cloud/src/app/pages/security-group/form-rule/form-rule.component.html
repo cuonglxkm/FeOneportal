@@ -1,3 +1,4 @@
+
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
   <nz-row nzGutter="24">
     <nz-col nzSpan="12">
@@ -26,8 +27,13 @@
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
           </div>
         </nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
           <input nz-input formControlName="protocol" id="protocol" />
+          <ng-template #protocolErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng 1 - 255</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *ngIf="ruleValue === 'icmp-IPv4'">
@@ -37,8 +43,14 @@
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
           </div>
         </nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="codeErrorTpl">
           <input nz-input formControlName="portRangeMin" id="code"/>
+          <ng-template #codeErrorTpl let-control>
+            {{console.log(control)}}
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *ngIf="ruleValue === 'icmp-IPv4'">
@@ -48,8 +60,13 @@
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
           </div>
         </nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
           <input nz-input formControlName="portRangeMax" id="type"/>
+          <ng-template #typeErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <div *ngIf="!['icmp-IPv4', 'other-IPv4', '-IPv4-', 'tcp-IPv4-80', 'tcp-IPv4-443', 'tcp-IPv4-22',
@@ -81,13 +98,13 @@
               <span style="color: rgba(252, 16, 16, 1); "> *</span>
             </div>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="portErrorTpl">
             <input nz-input formControlName="portRangeMin" id="port"
-                   (change)="portChange($event.target['value'])" type="number"/>
-            <ng-template #nameErrorTpl let-control>
+                   (change)="portChange($event.target['value'])"/>
+            <ng-template #portErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
               <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
-              <ng-container *ngIf="control.hasError('lessThanOne')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
+              <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -98,8 +115,13 @@
               <span style="color: rgba(252, 16, 16, 1); "> *</span>
             </div>
           </nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
-            <input nz-input formControlName="portRangeMin" id="portRangeMin"/>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="portRangeMinErrorTpl">
+            <input nz-input formControlName="portRangeMin" id="portRangeMin" (ngModelChange)="updatePortRangeValidator()"/>
+            <ng-template #portRangeMinErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item *ngIf="portType === 'PortRange'">
@@ -109,8 +131,13 @@
               <span style="color: rgba(252, 16, 16, 1); "> *</span>
             </div>
           </nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng nhập thông tin">
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="portRangeMaxErrorTpl">
             <input nz-input formControlName="portRangeMax" id="portRangeMax"/>
+            <ng-template #portRangeMaxErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('invalidPortRange')">Vui lòng nhập số lớn hơn hoặc bằng From Port</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
