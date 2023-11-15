@@ -1,0 +1,15 @@
+<div class="alain-default__content-title" style="height: 120px;">
+  <nz-page-header class="site-page-header" nzTitle="{{headerInfo.content}}">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>{{headerInfo.breadcrumb1}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a>{{headerInfo.breadcrumb2}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{headerInfo.breadcrumb3}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </nz-page-header>
+
+
+  <div class="text-right" style="margin-top: -20px;">
+    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    <project-select-dropdown [regionId]="selectedRegion" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+  </div>
+</div>

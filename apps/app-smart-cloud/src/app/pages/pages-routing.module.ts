@@ -11,6 +11,10 @@ import {BlankSecurityGroupComponent} from "./security-group/blank-security-group
 import {PreloadOptionalModules} from "@delon/theme";
 import {environment} from "@env/environment";
 import { SshKeyComponent } from "./ssh-key/ssh-key.component";
+import {VolumeComponent} from "./volume/component/list-volume/volume.component";
+import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
+import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
+import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'user-profile', pathMatch: 'full'},
@@ -20,6 +24,25 @@ const routes: Routes = [
   },
   {
     path: 'test',
+    component: V1Component
+  },
+  {
+    path: 'volume',
+    component: VolumeComponent
+  },
+  {
+    path: 'volume/create',
+    component: CreateVolumeComponent
+  },
+  {
+    path: 'volume/detail/:id',
+    component: DetailVolumeComponent
+  },
+  {
+    path: 'volume/edit/:id',
+    component: EditVolumeComponent
+  }, {
+    path: 'vm',
     component: V1Component
   },
   {
@@ -62,5 +85,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PagesRoutingModule {
-}
+export class PagesRoutingModule { }

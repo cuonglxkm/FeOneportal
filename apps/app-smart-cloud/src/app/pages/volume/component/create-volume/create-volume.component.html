@@ -1,0 +1,149 @@
+<app-header-volume (regionId)="getRegionId($event)" (projectId)="getProjectId($event)"  [headerInfo]="headerInfo"></app-header-volume>
+<br>
+<div class="create-volume">
+  <h3>Thông tin Volume</h3>
+  <hr>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Volume</nz-form-label>
+  <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="createVolumeInfo.serviceName"
+         (ngModelChange)="changeVolumeName()" type="text"/>
+  <p *ngIf="showWarningVolumeName" class="warning-message">Tên Volume không được để trống.</p>
+  <br>
+  <br>
+  <p>
+    <nz-switch [(ngModel)]="isInitSnapshot" nzCheckedChildren="ON" nzUnCheckedChildren="OFF"
+               style="padding-right: 10px;"></nz-switch>
+    Tạo từ Snapshot
+  </p>
+
+  <div *ngIf="isInitSnapshot === true">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn Snapshot</nz-form-label>
+    <br>
+
+    <nz-select nzSize="default"
+               [nzPlaceHolder]="'-Chọn Snapshot-'"
+               [(ngModel)]="createVolumeInfo.createFromSnapshotId"
+               style="width: 100%;"
+    >
+      <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
+    </nz-select>
+  </div>
+
+
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn loại Volume</nz-form-label>
+  <br>
+
+  <nz-radio-group [(ngModel)]="createVolumeInfo.volumeType"
+                  (ngModelChange)="getPremiumVolume(createVolumeInfo.volumeType,volumeStorage,volumeExpiryTime)">
+    <div style="display: flex; padding: 20px;">
+      <div nz-radio nzValue="hdd"
+           [ngStyle]="{'background-color': createVolumeInfo.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
+           style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
+        HDD
+        <br>
+        Additional description and information about copywriting.
+      </div>
+      <div nz-radio nzValue="ssd"
+           [ngStyle]="{'background-color': createVolumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
+           style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
+        SSD
+        <br>
+        Additional description and information about copywriting.
+      </div>
+    </div>
+  </nz-radio-group>
+  <p *ngIf="showWarningVolumeType" class="warning-message">Vui lòng chọn loại Volume.</p>
+
+  <br>
+  <br>
+
+
+  <nz-table [nzTemplateMode]=true>
+    <thead>
+    <tr>
+      <th>Dung lượng(GB)</th>
+      <th>IOPS</th>
+      <th>Giá theo tháng(VNĐ)</th>
+      <th>Giá theo giờ(VNĐ)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <nz-input-number [(ngModel)]="createVolumeInfo.volumeSize"
+                         (ngModelChange)="getPremiumVolume(createVolumeInfo.volumeType,volumeStorage,volumeExpiryTime)"
+                         [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+      </td>
+      <td>200</td>
+      <td>360.712</td>
+      <td>484</td>
+    </tr>
+    </tbody>
+  </nz-table>
+  <br>
+  <br>
+  <label nz-checkbox [(ngModel)]="createVolumeInfo.isEncryption">Mã hóa Volume</label>
+  <br>
+  <label nz-checkbox [(ngModel)]="createVolumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
+  <br>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn máy ảo</nz-form-label>
+  <br>
+  <nz-select nzSize="default"
+             [nzPlaceHolder]="'-Chọn máy ảo-'"
+             [(ngModel)]="createVolumeInfo.instanceToAttachId"
+             (ngModelChange)="changeVm()"
+             style="width: 100%;"
+  >
+    <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
+  </nz-select>
+  <p *ngIf="showWarningVm" class="warning-message">Vui lòng chọn máy ảo.</p>
+  <br>
+  <br>
+  <p>Mô tả</p>
+  <textarea rows="4" nz-input [(ngModel)]="createVolumeInfo.description"></textarea>
+  <br>
+  <br>
+
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Thời hạn sử dụng (Tháng)</nz-form-label>
+  <br>
+
+  <nz-select nzSize="default"
+             [nzPlaceHolder]="'-Chọn thời hạn sử dụng-'"
+             [nzOptions]="expiryTimeList"
+             [(ngModel)]="volumeExpiryTime"
+             (ngModelChange)="getPremiumVolume(createVolumeInfo.volumeType,volumeStorage,volumeExpiryTime)"
+             style="width: 100%;"
+  >
+  </nz-select>
+  <p>Ngày bắt đầu sử dụng: {{ createDateVolume | date:'dd/MM/yyyy' }}</p>
+  <p>Ngày hết hạn: {{ endDateVolume | date:'dd/MM/yyyy' }}</p>
+  <p *ngIf="showWarningVolumeExpTime" class="warning-message">Vui lòng chọn thời gian sử dụng.</p>
+</div>
+<br>
+<b>Thành tiền</b>
+<br>
+<hr>
+<br>
+<nz-table [nzTemplateMode]=true style="border: none;">
+  <tbody>
+  <tr>
+    <td style="border-bottom: none"><p>Chi phí sử dụng ({{ volumeExpiryTime }} tháng)</p></td>
+    <td style="border-bottom: none; text-align: right"><p>{{ priceVolumeInfo.price }} VNĐ</p></td>
+  </tr>
+  <tr>
+    <td style="border-bottom: none">Thành tiền (Đã bao gồm 10% VAT)</td>
+    <td style="border-bottom: none; text-align: right">{{ priceVolumeInfo.totalPrice }}VND</td>
+  </tr>
+  <tr>
+    <td style="border-bottom: none"></td>
+    <td style="border-bottom: none; text-align: right; padding-right: 30px;">
+      <button nz-button nzType="primary" style="background-color: #9c9c9c; padding-right: 20px; width: 150px;">Hủy
+      </button>
+      <button nz-button nzType="primary" style="width: 200px;" (click)="createNewVolume()">Tạo mới</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+

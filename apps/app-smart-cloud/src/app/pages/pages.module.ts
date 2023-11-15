@@ -28,6 +28,18 @@ import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
 import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
+import {PopupAddVolumeComponent} from "./volume/component/popup-volume/popup-add-volume.component";
+import {PopupDeleteVolumeComponent} from "./volume/component/popup-volume/popup-delete-volume.component";
+import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
+import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
+import {PopupExtendVolumeComponent} from "./volume/component/popup-volume/popup-extend-volume.component";
+import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import {VolumeComponent} from "./volume/component/list-volume/volume.component";
+import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
+import {ReactiveFormsModule} from "@angular/forms";
+import {SEModule} from "@delon/abc/se";
+
 
 const icons: IconDefinition[] = [SettingOutline];
 
@@ -51,12 +63,24 @@ const icons: IconDefinition[] = [SettingOutline];
     ListVirtualMachineComponent,
     BlankSecurityGroupComponent,
     FormRuleComponent,
-    SshKeyComponent
+    SshKeyComponent,
+    VolumeComponent,
+    PopupAddVolumeComponent,
+    PopupDeleteVolumeComponent,
+    CreateVolumeComponent,
+    DetailVolumeComponent,
+    PopupExtendVolumeComponent,
+    EditVolumeComponent,
+    HeaderVolumeComponent
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     G2MiniBarModule,
     PagesRoutingModule,
+    NzResultModule,
+    SHARED_ZORRO_MODULES,
+    SEModule,
     SharedModule,
     NzPaginationModule,
     NzResultModule,
@@ -74,5 +98,4 @@ const icons: IconDefinition[] = [SettingOutline];
     NzImageModule,
   ],
 })
-export class PagesModule {
-}
+export class PagesModule { }
