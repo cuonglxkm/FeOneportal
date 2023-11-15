@@ -4,7 +4,7 @@ import {AllowAddressPairCreateOrDeleteForm} from "../../../shared/models/allow-a
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
 
 @Component({
-    selector: 'one-portal-delete-allow-address-pair',
+    selector: 'delete-allow-address-pair',
     templateUrl: './delete-allow-address-pair.component.html',
     styleUrls: ['./delete-allow-address-pair.component.less'],
 })

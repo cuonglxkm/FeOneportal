@@ -32,18 +32,20 @@
                 <input nz-input placeholder="Tìm kiếm IP Address" [(ngModel)]="value" type="text"
                        style="width: 396px; height: 40px;" (input)="onInputChange($event.target['value'])"/>
                 <!--            <span nz-icon nzType="setting" nzTheme="outline"></span>-->
-                <button class="button-search" (click)="search()">
+                <button class="button-search" (click)="search()" style="cursor: pointer;">
                     <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
                     Search
                 </button>
             </div>
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 20px;" >
                 <nz-space>
-                    <button nz-button (click)="showModalCreate()">
+                    <button nz-button (click)="showModalCreate()" class="button-create">
                         <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 12px;"></span>
                         Tạo mới
                     </button>
-                    <one-portal-create-allow-address-pair [isVisible]="isVisibleCreate" (onCancel)="closeModalCreate()" (onOk)="handleCreate($event)"/>
+                    <create-allow-address-pair [isVisible]="isVisibleCreate"
+                                               (onCancel)="closeModalCreate()"
+                                               (onOk)="handleCreate($event)"/>
                 </nz-space>
             </div>
         </nz-row>
@@ -72,14 +74,16 @@
                     <td nzAlign="center">{{ data.ipAddress }}</td>
                     <td nzAlign="center">{{ data.macAddress }}</td>
                     <td nzAlign="center">
-                        <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModalDelete()">
+                        <button nz-button nzType="primary" nzDanger
+                                class="button-delete"
+                                (click)="showModalDelete()">
                             Xoá
                         </button>
-                        <one-portal-delete-allow-address-pair [formDeletePair]="formDeleteOrCreate"
+                        <delete-allow-address-pair [formDeletePair]="formDeleteOrCreate"
                                                               [isVisible]="isVisibleDelete"
                                                               (onCancel)="handleCancelDelete()"
                                                               (onOk)="handleOkDelete(data)"
-                        ></one-portal-delete-allow-address-pair>
+                        ></delete-allow-address-pair>
                     </td>
                 </tr>
                 </tbody>

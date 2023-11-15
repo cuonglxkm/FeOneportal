@@ -8,10 +8,11 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Component({
-    selector: 'one-portal-list-security-group-allow-address-pair',
+    selector: 'list-allow-address-pair',
     templateUrl: './list-allow-address-pair.component.html',
     styleUrls: ['./list-allow-address-pair.component.less'],
 })
@@ -20,7 +21,8 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                 private allowAddressPairService: AllowAddressPairService,
-                private message: NzMessageService) {
+                private message: NzMessageService,
+                private route: ActivatedRoute) {
     }
 
     isVisibleCreate = false;
@@ -128,7 +130,11 @@ export class ListAllowAddressPairComponent implements OnInit {
     ngOnInit(): void {
         this.formSearch.vpcId = 4079
         this.formSearch.customerId = this.tokenService.get()?.userId
-
+        this.route.queryParams.subscribe(queryParams => {
+            const value = queryParams['param'];
+            console.log('Received value:', value);
+            this.portId = value;
+        });
 
     }
 

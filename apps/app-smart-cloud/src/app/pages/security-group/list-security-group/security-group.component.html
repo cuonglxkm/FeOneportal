@@ -11,14 +11,6 @@
         </nz-breadcrumb-item>
       </nz-breadcrumb>
       <nz-space>
-<!--        <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Khu vực"-->
-<!--                   [(ngModel)]="selectedValueArea" style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
-<!--          <nz-option *ngFor="let item of optionsArea" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
-<!--        </nz-select>-->
-<!--        <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Dự án"-->
-<!--                   [(ngModel)]="selectedValueProject" style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
-<!--          <nz-option *ngFor="let item of optionsProject" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
-<!--        </nz-select>-->
         <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
         <project-select-dropdown></project-select-dropdown>
       </nz-space>

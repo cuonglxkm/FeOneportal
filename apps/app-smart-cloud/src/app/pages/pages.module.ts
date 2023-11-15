@@ -28,51 +28,53 @@ import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
 import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {DeleteAllowAddressPairComponent} from "./allow-address-pair/delete/delete-allow-address-pair.component";
 
 const icons: IconDefinition[] = [SettingOutline];
 
 @NgModule({
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [
-    UserProfileComponent,
-    V1Component,
-    SecurityGroupComponent,
-    CreateSecurityGroupComponent,
-    CreateInboundComponent,
-    ListOutboundComponent,
-    CreateOutboundComponent,
-    ListAllowAddressPairComponent,
-    DeleteSecurityGroupComponent,
-    DeleteSecurityGroupComponent,
-    DeleteRuleComponent,
-    InboundListComponent,
-    ListOutboundComponent,
-    CreateAllowAddressPairComponent,
-    ListVirtualMachineComponent,
-    BlankSecurityGroupComponent,
-    FormRuleComponent,
-    SshKeyComponent
-  ],
-  imports: [
-    CommonModule,
-    G2MiniBarModule,
-    PagesRoutingModule,
-    SharedModule,
-    NzPaginationModule,
-    NzResultModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    declarations: [
+        UserProfileComponent,
+        V1Component,
+        SecurityGroupComponent,
+        CreateSecurityGroupComponent,
+        CreateInboundComponent,
+        ListOutboundComponent,
+        CreateOutboundComponent,
+        ListAllowAddressPairComponent,
+        DeleteSecurityGroupComponent,
+        DeleteSecurityGroupComponent,
+        DeleteRuleComponent,
+        InboundListComponent,
+        ListOutboundComponent,
+        CreateAllowAddressPairComponent,
+        ListVirtualMachineComponent,
+        BlankSecurityGroupComponent,
+        FormRuleComponent,
+        SshKeyComponent,
+        DeleteAllowAddressPairComponent
+    ],
+    imports: [
+        CommonModule,
+        G2MiniBarModule,
+        PagesRoutingModule,
+        SharedModule,
+        NzPaginationModule,
+        NzResultModule,
 
-    SharedModule,
-    PagesRoutingModule,
-    NzLayoutModule,
-    SharedModule,
-    NzSpaceModule,
-    NzPageHeaderModule,
-    NzIconModule.forRoot(icons),
-    NzResultModule,
-    NgOptimizedImage,
-    NzImageModule,
-    NzImageModule,
-  ],
+        SharedModule,
+        PagesRoutingModule,
+        NzLayoutModule,
+        SharedModule,
+        NzSpaceModule,
+        NzPageHeaderModule,
+        NzIconModule.forRoot(icons),
+        NzResultModule,
+        NgOptimizedImage,
+        NzImageModule,
+        NzImageModule,
+    ],
 })
 export class PagesModule {
 }

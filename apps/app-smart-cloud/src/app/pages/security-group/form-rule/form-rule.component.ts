@@ -19,6 +19,7 @@ export class FormRuleComponent implements OnInit{
 
   @Input() direction: 'ingress' | 'egress'
   @Input() securityGroupId: string
+  @Input() region: number;
 
   portType: 'Port' | 'PortRange' = "Port";
 
@@ -112,7 +113,7 @@ export class FormRuleComponent implements OnInit{
           this.router.navigate([
             '/app-smart-cloud/security-group'
           ])
-          this.router.navigateByUrl(`/app-smart-cloud/security-group?securityGroupId=${"5ec8aff4-71d5-4027-b519-e47b7e618092"}&regionId=${3}`);
+          // this.router.navigateByUrl(`/app-smart-cloud/security-group?securityGroupId=${"5ec8aff4-71d5-4027-b519-e47b7e618092"}&regionId=${3}`);
         },
         error => {
           this.notification.error('Thất bại', 'Tạo Inbound thất bại');
@@ -128,10 +129,6 @@ export class FormRuleComponent implements OnInit{
     }
   }
 
-  // bindingData(formData) : SecurityGroupRuleCreateForm {
-  //
-  //   return this.form;
-  // }
   portChange(value: string) {
     if (this.portType === 'Port') {
       this.validateForm.controls.portRangeMax.setValue(value)

@@ -27,6 +27,9 @@ export class SecurityGroupComponent implements OnInit {
 
   region: RegionModel;
 
+  isLoading: boolean = true;
+
+
 
   constructor(private securityGroupService: SecurityGroupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -57,6 +60,7 @@ export class SecurityGroupComponent implements OnInit {
   regionChanged(region: RegionModel) {
     this.conditionSearch.regionId = region.regionId;
     this.getSecurityGroup();
+    this.isLoading = false;
   }
 
   getSecurityGroup() {
