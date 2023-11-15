@@ -1,47 +1,34 @@
-<nz-page-header class="site-page-header">
-  <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+<div style="padding-top: 1%">
+  <nz-breadcrumb style="width: 50%; float: left">
     <nz-breadcrumb-item>
-      <a>Quản lý Volumn</a>
+      <a [routerLink]="['/']">Quản lý máy ảo</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>Chỉnh sửa máy ảo</nz-breadcrumb-item>
     <nz-breadcrumb-item>
-      <div class="text-right">
-        <region-select-dropdown
-          (valueChanged)="onRegionChange($event)"
-        ></region-select-dropdown>
-        <project-select-dropdown
-          [regionId]="region"
-        ></project-select-dropdown></div
-    ></nz-breadcrumb-item>
+      <a [routerLink]="['/']">Chỉnh sửa máy ảo</a>
+    </nz-breadcrumb-item>
   </nz-breadcrumb>
-</nz-page-header>
-
-<page-header [title]="'Chỉnh sửa máy ảo'" [action]="action">
-  <ng-template #action>
-    <button
-      nz-button
-      [nzType]="'primary'"
-      (click)="navigateToCreate()"
-      class="bg-success border-success"
-    >
-      <i nz-icon nzType="plus"></i> <span>Thêm mới</span>
-    </button>
-    <button
-      nz-button
-      [nzType]="'primary'"
-      nz-dropdown
-      [nzDropdownMenu]="opMenu"
-    >
-      <span>Thêm</span> <i nz-icon nzType="down"></i>
-    </button>
-    <nz-dropdown-menu #opMenu="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item>Truy cập</li>
-      </ul>
-    </nz-dropdown-menu>
-  </ng-template>
-</page-header>
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  </div>
+  <!-- <div><h2>Chỉnh sửa máy ảo</h2></div> -->
+  <page-header [title]="'Chỉnh sửa máy ảo'" [action]="action">
+    <ng-template #action>
+      <button
+        nz-button
+        [nzType]="'primary'"
+        (click)="navigateToCreate()"
+        class="bg-success border-success"
+      >
+        <i nz-icon nzType="plus"></i> <span>Thêm mới</span>
+      </button>
+      <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
+      </one-portal-instances-btn>
+    </ng-template>
+  </page-header>
+</div>
 
 <form nz-form [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">

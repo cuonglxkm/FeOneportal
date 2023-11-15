@@ -47,7 +47,7 @@
           </button>
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="navigateToEdit()">Chỉnh sửa</li>
+              <li nz-menu-item (click)="editPort(modalContentEditPort)">Chỉnh sửa</li>
               <li nz-menu-item>Address Pair</li>
             </ul>
           </nz-dropdown-menu>
@@ -58,3 +58,26 @@
       </div>
     </nz-card>
   </nz-card>
+
+  
+<ng-template #modalContentEditPort>
+  <nz-form-item>
+   <label>Port Security <span style="color: red;">*</span></label> <input nz-input type="checkbox" checked style="width: 15px" />
+  </nz-form-item>
+  <nz-form-item>
+    <label>Port Security Groups <span style="color: red;">*</span></label> 
+    <nz-select style="width: 65%;"
+    nzMode="multiple"
+    nzPlaceHolder="Chọn Security Group"
+    [ngModelOptions]="{ standalone: true }"
+    [(ngModel)]="selectedSecurityGroup"
+    (ngModelChange)="onChangeSecurityGroup($event)"
+  >
+    <nz-option
+      *ngFor="let i of listSecurityGroup"
+      [nzLabel]="i.name"
+      [nzValue]="i.id"
+    />
+  </nz-select>
+   </nz-form-item>
+</ng-template>

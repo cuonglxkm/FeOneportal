@@ -6,13 +6,12 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import {InstancesModel, SecurityGroupModel} from '../instances.model';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {InstancesService} from '../instances.service';
-import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
-import {G2TimelineData, G2TimelineMap} from '@delon/chart/timeline';
+import { InstancesModel, SecurityGroupModel } from '../instances.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { InstancesService } from '../instances.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
   AbstractControl,
   FormControl,
@@ -63,8 +62,7 @@ export class InstancesDetailComponent implements OnInit {
     private router: ActivatedRoute,
     private route: Router,
     public message: NzMessageService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.listOfDataNetwork.push(this.defaultNetwork);
@@ -114,97 +112,11 @@ export class InstancesDetailComponent implements OnInit {
     });
   }
 
-  delete(tpl: TemplateRef<{}>): void {
-    //xóa
-    this.modalSrv.create({
-      nzTitle: 'Xóa máy ảo',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.dataService.delete(this.id).subscribe(
-          (data: any) => {
-            console.log(data);
-            if (data == true) {
-              this.message.success('Xóa máy ảo thành công');
-            } else {
-              this.message.error('Xóa máy ảo không thành công');
-            }
-          },
-          () => {
-            this.message.error('Xóa máy ảo không thành công');
-          }
-        );
-      },
-    });
-  }
-
-  continue(tpl: TemplateRef<{}>): void {
-    //gia hạn
-    this.modalSrv.create({
-      nzTitle: 'Gia hạn',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.message.success('Gia hạn thành công');
-        //  this.dataService.delete(this.id).subscribe(
-        //   (data: any) => {
-        //     console.log(data);
-        //     if (data == true) {
-        //       this.message.success('Xóa máy ảo thành công');
-        //     } else {
-        //       this.message.error('Xóa máy ảo không thành công');
-        //     }
-        //   },
-        //   () => {
-        //     this.message.error('Xóa máy ảo không thành công');
-        //   }
-        // );
-      },
-    });
-  }
-
-  resetPassword: string = '';
-  resetPasswordRepeat: string = '';
-
-  resetPasswordFc(tpl: TemplateRef<{}>): void {
-    //Reset mật khẩu máy ảo
-    this.modalSrv.create({
-      nzTitle: 'Reset mật khẩu máy ảo',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        if (this.resetPassword == this.resetPasswordRepeat) {
-          this.message.success('Reset mật khẩu máy ảo thành công');
-          // this.dataService
-          //   .resetpassword({ id: this.id, newPassword: this.resetPassword })
-          //   .subscribe(
-          //     (data: any) => {
-          //       console.log(data);
-          //       if (data == true) {
-          //         this.message.success('Reset mật khẩu máy ảo thành công');
-          //       } else {
-          //         this.message.error('Reset mật khẩu không thành công');
-          //       }
-          //     },
-          //     () => {
-          //       this.message.error('Reset mật khẩu không thành công');
-          //     }
-          //   );
-        } else {
-          this.message.error('Mật khẩu không khớp!');
-        }
-      },
-    });
-  }
-
   //Giám sát
   activeGS: boolean = false;
   offlineChartData!: any[];
-  valueGSCPU: string = ''
-  valueGSTIME: string = ''
+  valueGSCPU: string = '';
+  valueGSTIME: string = '';
 
   GSCPU = [
     {
@@ -373,17 +285,10 @@ export class InstancesDetailComponent implements OnInit {
   //   this.chartData = data;
   //   this.titleMap = titleMap;
   // }
-  onChangeCPU(event?:any){
+  onChangeCPU(event?: any) {
     this.offlineChartData = this.cahrt;
   }
-  onChangeTIME(event?:any){
+  onChangeTIME(event?: any) {
     this.offlineChartData = this.cahrt;
-
-  openConsole(): void {
-    this.route.navigateByUrl('/app-smart-cloud/vm/instances-console/' + this.id, {
-      state: {
-        vmId: this.id
-      }
-    });
   }
 }

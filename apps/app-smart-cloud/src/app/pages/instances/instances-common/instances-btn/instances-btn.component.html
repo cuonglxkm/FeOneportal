@@ -1,0 +1,84 @@
+<button nz-button [nzType]="'primary'" nz-dropdown [nzDropdownMenu]="opMenu">
+  <span>Thêm</span> <i nz-icon nzType="down"></i>
+</button>
+<nz-dropdown-menu #opMenu="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item (click)="continue(modalContentContiniue)">Gia hạn</li>
+    <li nz-menu-item (click)="openConsole()">Truy cập</li>
+    <li nz-menu-item (click)="restartInstance()">Khởi động lại</li>
+    <li nz-menu-item (click)="shutdownInstance()">Tắt</li>
+    <li nz-menu-item (click)="resetPasswordFc(modalContentResetPassword)">
+      Reset Password
+    </li>
+    <li nz-menu-item style="color: red" (click)="delete(modalContentDelete)">
+      Xóa
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<ng-template #modalContentDelete>
+  <nz-alert
+    nzType="warning"
+    [nzMessage]="customTemplateMessageDelete"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #customTemplateMessageDelete>
+    <div>
+      Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và <br /><b
+        >KHÔNG THỂ KHÔI PHỤC LẠI.
+      </b>
+    </div>
+  </ng-template>
+  <br />
+  <nz-form-item>
+    <input nz-input type="checkbox" checked style="width: 15px" />
+    <div style="width: 82%; margin-left: 1%">
+      Vui lòng cân nhắc thật kỹ trước khi click nút <b> Đồng ý.</b> Quý khách
+      chắc chắn muốn thực hiện xóa máy ảo?
+    </div>
+  </nz-form-item>
+</ng-template>
+<ng-template #modalContentContiniue>
+  <nz-form-item> Quý khách chắc chắn muốn gia hạn dịch vụ này? </nz-form-item>
+</ng-template>
+<ng-template #modalContentResetPassword>
+  <nz-alert
+    nzType="warning"
+    [nzMessage]="customTemplateMessageResetPassword"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #customTemplateMessageResetPassword>
+    <div>
+      Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root Nếu HĐH
+      là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator
+    </div>
+  </ng-template>
+  <br />
+  <nz-form-item>
+    <input nz-input type="checkbox" checked style="width: 15px" />
+    <div style="width: 82%; margin-left: 1%">Tự sinh</div>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Mật khẩu mới</nz-form-label> &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <nz-form-control>
+      <input
+        nz-input
+        [(ngModel)]="resetPassword"
+        name="resetPassword"
+        placeholder=""
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Xác nhận mật khẩu</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        [(ngModel)]="resetPasswordRepeat"
+        name="resetPasswordRepeat"
+        placeholder=""
+      />
+    </nz-form-control>
+  </nz-form-item>
+</ng-template>

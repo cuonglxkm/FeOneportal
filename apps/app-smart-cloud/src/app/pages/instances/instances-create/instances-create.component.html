@@ -4,16 +4,24 @@
     <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
   </div>
   </page-header> -->
-<div page-header class="alain-default__content-title">
-  <h1 class="h1">Tạo máy ảo</h1>
-
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  <div style="padding-top: 1%">
+    <nz-breadcrumb style="width: 50%; float: left">
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Quản lý máy ảo</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Danh sách máy ảo</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div class="text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"></project-select-dropdown>
+    </div>
+    <div><h2>Tạo máy ảo</h2></div>
   </div>
-</div>
+  
 
 <form
   nz-form

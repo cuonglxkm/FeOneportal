@@ -1,5 +1,21 @@
-<page-header [title]="'Chỉnh sửa thông tin máy ảo'"> </page-header>
-
+<!-- <page-header [title]="'Chỉnh sửa thông tin máy ảo'"> </page-header> -->
+<div style="padding-top: 1%">
+  <nz-breadcrumb style="width: 50%; float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Quản lý máy ảo</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Chỉnh sửa thông tin máy ảo</a>
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  </div>
+  <div><h2>Chỉnh sửa thông tin máy ảo</h2></div>
+</div>
 <nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành">
   <nz-row nzGutter="16">
     <p>Hệ điều hành hiện tại: {{ instancesModel.imageId }}</p>

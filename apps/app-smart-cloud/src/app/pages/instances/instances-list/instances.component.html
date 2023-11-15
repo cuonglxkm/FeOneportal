@@ -1,17 +1,22 @@
 <!--Head section-->
 <!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
 
-<!-- <page-header [title]="'Danh sách máy ảo'"> </page-header> -->
-
-<div page-header class="alain-default__content-title">
-  <h1 class="h1">Danh sách máy ảo</h1>
-
+<div style="padding-top: 1%">
+  <nz-breadcrumb style="width: 50%; float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Danh sách máy ảo</a>
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
   <div class="text-right">
     <region-select-dropdown
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
     <project-select-dropdown [regionId]="region"></project-select-dropdown>
   </div>
+  <div><h2>Danh sách máy ảo</h2></div>
 </div>
 
 <div class="normal-table-wrap" *ngIf="!activeCreate; else elsePage">
@@ -164,7 +169,7 @@
               nzLabel="Chỉnh sửa Security Group"
             ></nz-option>
             <nz-option nzValue="4" nzLabel="Chỉnh sửa"></nz-option>
-            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"  (click)="ganVLANFC(modalContentGanVLAN)"></nz-option>
+            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"></nz-option>
             <nz-option nzValue="6" nzLabel="Gỡ khỏi VLAN"></nz-option>
             <nz-option nzValue="7" nzLabel="Khởi động lại"></nz-option>
             <nz-option nzValue="8" nzLabel="Tắt máy ảo"></nz-option>
@@ -189,54 +194,17 @@
   </nz-card>
 </ng-template>
 
-<!-- Modal -->
-<nz-modal
-  [(nzVisible)]="isVisible07"
-  nzTitle="Tắt máy ảo"
-  (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk(7)"
-  [nzFooter]="modalFooter7"
->
-  <ng-container *nzModalContent>
-    <p>Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?</p>
-  </ng-container>
-  <ng-template #modalFooter7>
-    <button nz-button nzType="default" (click)="handleCancel()">Hủy</button>
-    <button nz-button nzType="primary" (click)="handleOk(7)">Xác nhận</button>
-  </ng-template>
-</nz-modal>
-
-<nz-modal
-  [(nzVisible)]="isVisible08"
-  nzTitle="Tắt máy ảo"
-  (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk(8)"
-  [nzFooter]="modalFooter8"
->
-  <ng-container *nzModalContent>
-    <p>Quý khách chắn chắn muốn thực hiện tắt máy ảo?</p>
-  </ng-container>
-  <ng-template #modalFooter8>
-    <button nz-button nzType="default" (click)="handleCancel()">Hủy</button>
-    <button nz-button nzType="primary" (click)="handleOk(8)">Xác nhận</button>
-  </ng-template>
-</nz-modal>
-
 <ng-template #modalContentGanVLAN>
-
   <nz-form-item>
     <nz-form-label>Danh sách VLAN</nz-form-label>
     <nz-form-control>
-      <nz-select
-      [nzPlaceHolder]="'-- Chọn VLAN --'"
-      [nzShowSearch]="true"
-    >
-      <nz-option
-        *ngFor="let i of listVLAN"
-        [nzLabel]="i.text"
-        [nzValue]="i.id"
-      />
-    </nz-select>
+      <nz-select [nzPlaceHolder]="'-- Chọn VLAN --'" [nzShowSearch]="true">
+        <nz-option
+          *ngFor="let i of listVLAN"
+          [nzLabel]="i.text"
+          [nzValue]="i.id"
+        />
+      </nz-select>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
@@ -256,20 +224,4 @@
     </div>
   </ng-template>
   <br />
-</ng-template>
-
-<ng-template #modalContentShutdown>
-  <nz-form-item>
-    <div>
-      Quý khách chắn chắn muốn thực hiện tắt máy ảo?
-    </div>
-  </nz-form-item>
-</ng-template>
-
-<ng-template #modalContentRestart>
-  <nz-form-item>
-    <div>
-      Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?
-      </div>
-  </nz-form-item>
 </ng-template>

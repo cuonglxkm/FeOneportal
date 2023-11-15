@@ -1,34 +1,28 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  Renderer2,
-  SimpleChanges,
-} from '@angular/core';
-import { InstancesService } from '../instances.service';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-class Network {
-  name?: string = 'pri_network';
-  mac?: string = '';
-  ip?: string = '';
+import { InstancesService } from '../../instances.service';
+class BlockStorage {
+  id: number = 0;
+  type?: string = '';
+  name?: string = '';
+  vCPU?: string = '';
+  ram?: string = '';
+  capacity?: string = '';
   status?: string = '';
+  typeVolume?: string = '';
+  price?: string = '000';
 }
-
 @Component({
-  selector: 'one-portal-network-detail',
-  templateUrl: './network-detail.component.html',
+  selector: 'one-portal-blockstorage-detail',
+  templateUrl: './blockstorage-detail.component.html',
   styleUrls: [],
 })
-export class NetworkDetailComponent implements OnInit, OnChanges {
+export class BlockstorageDetailComponent implements OnInit, OnChanges {
   selectedProject: any;
   @Input() instancesId: any;
-  @Input() listOfDataNetwork: any;
+  @Input() listOfDataBlockStorage: any;
   @Output() valueChanged = new EventEmitter();
 
   constructor(
@@ -80,3 +74,4 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     this.route.navigate(['/app-smart-cloud/vm']);
   }
 }
+
