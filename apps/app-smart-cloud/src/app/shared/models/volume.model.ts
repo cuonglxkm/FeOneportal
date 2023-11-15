@@ -1,3 +1,19 @@
+import {VmDto, VolumeDTO} from "../dto/volume.dto";
+
+export class CreateVolumeRequestModel {
+  customerId: number;
+  createdByUserId: number;
+  note: string;
+  orderItems: [
+    {
+      orderItemQuantity: number;
+      specification: string;
+      specificationType: string;
+      price: number;
+      serviceDuration: number;
+    }
+  ]
+}
 export class CreateVolumeResponseModel{
 
   orderCode: string | null;
@@ -40,6 +56,21 @@ export class CreateVolumeResponseModel{
       dhsxkD_SubId: number| null;
     }
   ];
-  id: 24892
+  id: number
 }
 
+export class GetAllVmModel {
+  totalCount: number;
+  pageSize: number;
+  currentPage: number;
+  previousPage: number;
+  records: VmDto[];
+
+}
+export class GetListVolumeModel {
+  totalCount: number;
+  records: VolumeDTO[];
+  pageSize: number;
+  currentPage: number;
+  previousPage: number;
+}

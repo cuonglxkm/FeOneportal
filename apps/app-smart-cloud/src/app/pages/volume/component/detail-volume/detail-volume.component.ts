@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {VolumeDTO} from "../../dto/volume.dto";
-import {VolumeService} from "../../volume.service";
+import {VolumeDTO} from "../../../../shared/dto/volume.dto";
+import {VolumeService} from "../../../../shared/services/volume.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {PopupAddVolumeComponent} from "../popup-volume/popup-add-volume.component";
 import {PopupExtendVolumeComponent} from "../popup-volume/popup-extend-volume.component";
+
 @Component({
   selector: 'app-detail-volume',
   templateUrl: './detail-volume.component.html',

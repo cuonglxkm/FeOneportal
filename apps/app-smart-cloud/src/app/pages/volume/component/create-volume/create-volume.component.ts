@@ -1,15 +1,11 @@
 import {Component, Inject, OnInit, ViewChildren} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {GetAllVmModel} from "../../model/get-all-vm.model";
-import {VmDto} from "../../dto/vm.dto";
-import {VolumeService} from "../../volume.service";
-import {PriceVolumeDto} from "../../dto/price-volume.dto";
+import {GetAllVmModel} from "../../../../shared/models/volume.model";
+import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
+import {VolumeService} from "../../../../shared/services/volume.service";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {CreateVolumeDto} from "../../dto/create-volume.dto";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {CreateVolumeRequestModel} from "../../model/create-volume/create-volume-request.model";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import {CreateVolumeRequestModel} from "../../../../shared/models/volume.model";
 import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
 import {Router} from "@angular/router";
 

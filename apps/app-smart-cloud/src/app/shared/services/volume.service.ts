@@ -2,14 +2,15 @@ import {Injectable, OnInit} from '@angular/core';
 import {catchError} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {VolumeDTO} from "./dto/volume.dto";
-import {BaseService} from "../../shared/services/base.service";
-import {GetListVolumeModel} from "./model/get-list-volume.model";
-import {GetAllVmModel} from "./model/get-all-vm.model";
+import {VolumeDTO} from "../dto/volume.dto";
+import {BaseService} from "./base.service";
+import {GetListVolumeModel} from "../models/volume.model";
+import {GetAllVmModel} from "../models/volume.model";
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {PriceVolumeDto} from "./dto/price-volume.dto";
-import {CreateVolumeRequestModel} from "./model/create-volume/create-volume-request.model";
-import {CreateVolumeResponseModel} from "./model/create-volume/create-volume-response.model";
+import {PriceVolumeDto} from "../dto/volume.dto";
+import {CreateVolumeRequestModel} from "../models/volume.model";
+import {CreateVolumeResponseModel} from "../models/volume.model";
+
 @Injectable({
   providedIn: 'root'
 })

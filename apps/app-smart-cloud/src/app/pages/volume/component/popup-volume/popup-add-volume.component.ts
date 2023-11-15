@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
-import {VolumeService} from "../../volume.service";
-import {GetAllVmModel} from "../../model/get-all-vm.model";
-import {VmDto} from "../../dto/vm.dto";
+import { VolumeService } from "../../../../shared/services/volume.service";
+import {GetAllVmModel} from "../../../../shared/models/volume.model";
+import {VmDto} from "../../../../shared/dto/volume.dto";
 
 @Component({
   selector: 'app-popup-content',

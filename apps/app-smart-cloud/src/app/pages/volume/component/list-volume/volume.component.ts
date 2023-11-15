@@ -4,9 +4,9 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {PopupAddVolumeComponent} from "../popup-volume/popup-add-volume.component";
 import {PopupDeleteVolumeComponent} from "../popup-volume/popup-delete-volume.component";
 import {Router} from "@angular/router";
-import {VolumeDTO} from "../../dto/volume.dto";
-import {VolumeService} from "../../volume.service";
-import {GetListVolumeModel} from "../../model/get-list-volume.model";
+import {VolumeDTO} from "../../../../shared/dto/volume.dto";
+import { VolumeService } from "../../../../shared/services/volume.service";
+import {GetListVolumeModel} from "../../../../shared/models/volume.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 
 interface Volume {
@@ -118,6 +118,7 @@ export class VolumeComponent implements OnInit {
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
               console.log('Add volume ' + idVolume + ' in to ' + selected);
+              this.message.create('success', `Add Volume Success`);
               modal.destroy()
             }
           }
@@ -140,7 +141,7 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
-              console.log('Add volume ' + idVolume + ' in to ' + selected);
+              this.message.create('success', `Delete Volume Success`);
               modal.destroy();
             }
           }
