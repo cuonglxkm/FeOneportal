@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {UserProfileComponent} from './user-profile/user-profile.component';
 import {V1Component} from './test/v1.component';
@@ -27,50 +27,52 @@ import {NzResultModule} from 'ng-zorro-antd/result';
 import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
+import {SshKeyComponent} from "./ssh-key/ssh-key.component";
 
 const icons: IconDefinition[] = [SettingOutline];
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    UserProfileComponent,
+    V1Component,
+    SecurityGroupComponent,
+    CreateSecurityGroupComponent,
+    CreateInboundComponent,
+    ListOutboundComponent,
+    CreateOutboundComponent,
+    ListAllowAddressPairComponent,
+    DeleteSecurityGroupComponent,
+    DeleteSecurityGroupComponent,
+    DeleteRuleComponent,
+    InboundListComponent,
+    ListOutboundComponent,
+    CreateAllowAddressPairComponent,
+    ListVirtualMachineComponent,
+    BlankSecurityGroupComponent,
+    FormRuleComponent,
+    SshKeyComponent
+  ],
+  imports: [
+    CommonModule,
+    G2MiniBarModule,
+    PagesRoutingModule,
+    SharedModule,
+    NzPaginationModule,
+    NzResultModule,
 
-    declarations: [
-        UserProfileComponent,
-        V1Component,
-        SecurityGroupComponent,
-        CreateSecurityGroupComponent,
-        CreateInboundComponent,
-        ListOutboundComponent,
-        CreateOutboundComponent,
-        ListAllowAddressPairComponent,
-        DeleteSecurityGroupComponent,
-        DeleteSecurityGroupComponent,
-        DeleteRuleComponent,
-        InboundListComponent,
-        ListOutboundComponent,
-        CreateAllowAddressPairComponent,
-        ListVirtualMachineComponent,
-        BlankSecurityGroupComponent,
-        FormRuleComponent,
-    ],
-    imports: [
-        CommonModule,
-        G2MiniBarModule,
-        PagesRoutingModule,
-        SharedModule,
-        NzPaginationModule,
-        NzResultModule,
-
-        SharedModule,
-        PagesRoutingModule,
-        NzLayoutModule,
-        SharedModule,
-        NzSpaceModule,
-        NzPageHeaderModule,
-        NzIconModule.forRoot(icons),
-        NzResultModule,
-        NgOptimizedImage,
-        NzImageModule,
-        NzImageModule,
-    ],
+    SharedModule,
+    PagesRoutingModule,
+    NzLayoutModule,
+    SharedModule,
+    NzSpaceModule,
+    NzPageHeaderModule,
+    NzIconModule.forRoot(icons),
+    NzResultModule,
+    NgOptimizedImage,
+    NzImageModule,
+    NzImageModule,
+  ],
 })
 export class PagesModule {
 }
