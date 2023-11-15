@@ -161,7 +161,9 @@ export class InstancesService {
     return this.http2.post<any>(this.baseUrl + url_, data);
   }
 
-  update(todoId: string, todoData: InstancesModel): Observable<InstancesModel> {
-    return this.http.put<InstancesModel>(`/api/todos/${todoId}`, todoData);
+  update(data: any): Observable<any> {
+    let url_ = `/instances/${data.id}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.put<any>(this.baseUrl + url_, data);
   }
 }

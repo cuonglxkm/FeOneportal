@@ -1,18 +1,33 @@
-<!-- <page-header [title]="'Tạo máy ảo'">
-  <div class="text-right">
-    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-    <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
-  </div>
-  </page-header> -->
-<div page-header class="alain-default__content-title">
-  <h1 class="h1">Chỉnh sửa máy ảo</h1>
-
+<div style="padding-top: 1%">
+  <nz-breadcrumb style="width: 50%; float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Quản lý máy ảo</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Chỉnh sửa máy ảo</a>
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
   <div class="text-right">
     <region-select-dropdown
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
     <project-select-dropdown [regionId]="region"></project-select-dropdown>
   </div>
+  <!-- <div><h2>Chỉnh sửa máy ảo</h2></div> -->
+  <page-header [title]="'Chỉnh sửa máy ảo'" [action]="action">
+    <ng-template #action>
+      <button
+        nz-button
+        [nzType]="'primary'"
+        (click)="navigateToCreate()"
+        class="bg-success border-success"
+      >
+        <i nz-icon nzType="plus"></i> <span>Thêm mới</span>
+      </button>
+      <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
+      </one-portal-instances-btn>
+    </ng-template>
+  </page-header>
 </div>
 
 <form nz-form [nzLayout]="'vertical'">
@@ -69,7 +84,12 @@
         name="selectedHDDorSSD"
       >
         <nz-col nzXs="24" nzMd="12">
-          <nz-card [nzAlign]="'middle'">
+          <nz-card
+            [nzAlign]="'middle'"
+            [ngStyle]="{
+              'background-color': activeBlockHDD ? '#e6f7ff' : '#fcfcfc'
+            }"
+          >
             <nz-card-meta
               [nzAvatar]="nzAvatarselectedHDDorSSD1"
               [nzTitle]="nzTitleselectedHDDorSSD1"
@@ -97,7 +117,12 @@
           </nz-card></nz-col
         >
         <nz-col nzXs="24" nzMd="12">
-          <nz-card [nzAlign]="'middle'">
+          <nz-card
+            [nzAlign]="'middle'"
+            [ngStyle]="{
+              'background-color': activeBlockSSD ? '#e6f7ff' : '#fcfcfc'
+            }"
+          >
             <nz-card-meta
               [nzAvatar]="nzAvatarselectedHDDorSSD2"
               [nzTitle]="nzTitleselectedHDDorSSD2"
@@ -143,19 +168,17 @@
                   <tbody
                     class="flavor-body"
                     [id]="'flavor_' + data.id"
-                    [class.initialClassFlavor]="
-                      selectedElementFlavor === 'flavor_' + data.id &&
-                      isInitialClass
-                    "
-                    [class.newClassFlavor]="
-                      selectedElementFlavor === 'flavor_' + data.id &&
-                      isNewClass
-                    "
-                    (click)="selectElementInputFlavors('flavor_' + data.id)"
+                    [ngClass]="{
+                      initialClassFlavor: data.id === selectedElementFlavor,
+                      newClassFlavor: !data.id === selectedElementFlavor
+                    }"
+                    (click)="selectElementInputFlavors(data.id)"
                   >
                     <tr>
                       <div>
-                        <b class="h4">{{ data.flavorName }}</b
+                        <b class="h4"
+                          >{{ data.flavorName }} {{ data.id }}
+                          {{ selectedElementFlavor }}</b
                         ><br />
                         <b class="h4">{{ data.price }}đ/tháng</b><br />
                         <span>đ/giờ</span>
@@ -255,24 +278,25 @@
       </nz-col>
     </nz-row>
     <nz-row nzGutter="16">
-        <nz-col style="width: 100%">
-      <nz-form-item >
-        <nz-form-label>Chọn Security Group</nz-form-label>
-        <nz-form-control>
-          <nz-select
-            nzMode="multiple"
-            nzPlaceHolder="Chọn Security Group"
-            [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="selectedSecurityGroup"
-          >
-            <nz-option
-              *ngFor="let i of listSecurityGroup"
-              [nzLabel]="i.name"
-              [nzValue]="i.id"
-            />
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item></nz-col>
+      <nz-col style="width: 100%">
+        <nz-form-item>
+          <nz-form-label>Chọn Security Group</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              nzMode="multiple"
+              nzPlaceHolder="Chọn Security Group"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="selectedSecurityGroup"
+              (ngModelChange)="onChangeSecurityGroup($event)"
+            >
+              <nz-option
+                *ngFor="let i of listSecurityGroup"
+                [nzLabel]="i.name"
+                [nzValue]="i.id"
+              />
+            </nz-select>
+          </nz-form-control> </nz-form-item
+      ></nz-col>
     </nz-row>
 
     <nz-row nzGutter="16">
@@ -281,6 +305,7 @@
           <nz-form-label>Thời hạn sử dụng (Tháng) *</nz-form-label>
           <nz-form-control>
             <nz-input-number
+              [nzReadOnly]="true"
               style="width: 100%"
               [nzMin]="1"
               [nzMax]="100"
@@ -290,189 +315,22 @@
             ></nz-input-number>
           </nz-form-control>
         </nz-form-item>
-        <div>Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}</div>
+        <div>
+          Thời gian bắt đầu sử dụng:
+          {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
+        </div>
       </nz-col>
     </nz-row>
   </nz-card>
+  <one-portal-blockstorage-detail
+    [instancesId]="id"
+    [listOfDataBlockStorage]="listOfDataBlockStorage"
+  ></one-portal-blockstorage-detail>
 
-  <nz-card nzTitle="Block Storage">
-    <nz-card nzHoverable>
-      <div class="ant-table">
-        <table>
-          <thead class="ant-table-thead">
-            <tr>
-              <th>Loại Volumn</th>
-              <th>Tên Volume</th>
-              <th>VCPU</th>
-              <th>RAM (GB)</th>
-              <th>Dung lượng (GB)</th>
-              <th>Mã hóa</th>
-              <th>Multi Attach</th>
-              <th>Giá theo tháng (VNĐ)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody class="ant-table-tbody">
-            <tr *ngFor="let data of listOfDataBlockStorage">
-              <td>
-                <nz-select
-                  nzPlaceHolder="Thêm ổ cứng"
-                  name="inputBlockStorage"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="data.type"
-                  [id]="'type_' + data.id"
-                  (ngModelChange)="onInputBlockStorage(data.id, $event)"
-                >
-                  <nz-option
-                    *ngFor="let p of typeBlockStorage"
-                    [nzValue]="p.value"
-                    [nzLabel]="p.label"
-                  ></nz-option>
-                </nz-select>
-              </td>
-              <td>
-                <input
-                  type="text"
-                  [ngModelOptions]="{ standalone: true }"
-                  nz-input
-                  [(ngModel)]="data.name"
-                  [id]="'name_' + data.id"
-                />
-              </td>
-              <td>
-                <nz-input-number
-                  [(ngModel)]="data.vCPU"
-                  [ngModelOptions]="{ standalone: true }"
-                  [id]="'vCPU_' + data.id"
-                  [nzMin]="0"
-                  [nzMax]="62"
-                  [nzStep]="1"
-                ></nz-input-number>
-              </td>
-              <td>
-                <nz-input-number
-                  [(ngModel)]="data.ram"
-                  [ngModelOptions]="{ standalone: true }"
-                  [id]="'ram_' + data.id"
-                  [nzMin]="0"
-                  [nzMax]="62"
-                  [nzStep]="1"
-                ></nz-input-number>
-              </td>
-              <td>
-                <nz-input-number
-                  [(ngModel)]="data.capacity"
-                  [ngModelOptions]="{ standalone: true }"
-                  [id]="'capacity_' + data.id"
-                  [nzMin]="0"
-                  [nzMax]="100"
-                  [nzStep]="1"
-                ></nz-input-number>
-              </td>
-              <td>
-                <label
-                  nz-checkbox
-                  [(ngModel)]="data.code"
-                  [ngModelOptions]="{ standalone: true }"
-                  [id]="'code_' + data.id"
-                ></label>
-              </td>
-              <td>
-                <label
-                  nz-checkbox
-                  [(ngModel)]="data.multiattach"
-                  [ngModelOptions]="{ standalone: true }"
-                  [id]="'multiattach_' + data.id"
-                ></label>
-              </td>
-              <td>
-                <label>
-                  {{ data.price }}
-                </label>
-              </td>
-              <td>
-                <button
-                  (click)="deleteRowBlockStorage(data.id)"
-                  nz-button
-                  nzType="primary"
-                  nzDanger
-                  *ngIf="data.type != ''"
-                >
-                  Xóa
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p>{{ listOfDataBlockStorage | json }}</p>
-    </nz-card>
-  </nz-card>
-
-  <nz-card nzTitle="Network">
-    <nz-card nzHoverable>
-      <div class="ant-table">
-        <table>
-          <thead class="ant-table-thead">
-            <tr>
-              <th>Dải IP</th>
-              <th>Số lượng</th>
-              <th>Giá theo tháng (VNĐ)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody class="ant-table-tbody">
-            <tr *ngFor="let data of listOfDataNetwork">
-              <td>
-                <nz-select
-                  style="width: 85%"
-                  nzPlaceHolder="Chọn"
-                  name="inputNetwork"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="data.ip"
-                  [id]="'ip_' + data.id"
-                  (ngModelChange)="onInputNetwork(data.id, $event)"
-                >
-                  <nz-option
-                    *ngFor="let p of listIPSubnetModel"
-                    [nzValue]="p.id"
-                    [nzLabel]="p.displayName"
-                  ></nz-option>
-                </nz-select>
-              </td>
-              <td>
-                <nz-input-number
-                  [(ngModel)]="data.amount"
-                  [ngModelOptions]="{ standalone: true }"
-                  [id]="'amount_' + data.id"
-                  [nzMin]="0"
-                  [nzMax]="7"
-                  [nzStep]="1"
-                ></nz-input-number>
-              </td>
-              <td>
-                <label>
-                  {{ data.price }}
-                </label>
-              </td>
-              <td>
-                <button
-                  (click)="deleteRowNetwork(data.id)"
-                  nz-button
-                  nzType="primary"
-                  nzDanger
-                  *ngIf="data.ip != ''"
-                >
-                  Xóa
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p>{{ listOfDataNetwork | json }}</p>
-    </nz-card>
-  </nz-card>
+  <one-portal-network-detail
+    [instancesId]="id"
+    [listOfDataNetwork]="listOfDataNetwork"
+  ></one-portal-network-detail>
 </form>
 <nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
   <div>
@@ -492,14 +350,7 @@
     </nz-table>
     <div style="float: right; padding-top: 1%">
       <button nz-button nzType="default" (click)="cancel()">Hủy</button>
-      <button
-        nz-button
-        nzType="primary"
-        [disabled]="form.invalid"
-        (click)="save()"
-      >
-        Tạo máy ảo
-      </button>
+      <button nz-button nzType="primary" (click)="save()">Chỉnh sửa</button>
     </div>
   </div>
 </nz-card>

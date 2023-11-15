@@ -1,4 +1,4 @@
-import {AbstractControl, ValidationErrors} from '@angular/forms';
+import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
 export class AppValidator {
   // @ts-ignore
@@ -147,6 +147,16 @@ export class AppValidator {
     return null;
   }
 
+  static startsWithValidator(startValue: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const inputValue = control.value as string;
+      if (inputValue && !inputValue.startsWith(startValue)) {
+        return {'startsWith': true};
+      }
+      return null;
+    };
+  }
+
   static validKeypairName(control: AbstractControl): ValidationErrors | null { //valid keypair
     var regex = new RegExp("^[a-zA-Z0-9_ ]*$")
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
@@ -156,5 +166,101 @@ export class AppValidator {
     }
     return null;
   }
+
+  static ipWithCIDRValidator(): ValidatorFn { //validate input ip
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const ipAddress = control.value;
+      if (!ipAddress) {
+        return null;
+      }
+      const ipRegex = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/;
+
+      return ipRegex.test(ipAddress) ? null : {'invalidIP': true};
+    }
+  }
+
+  static validCodeAndType(): ValidatorFn { // validate input code and type
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      if (value == null) {
+        return { invalidNumber: true };
+      }
+      const validNumberRegex = /^-?\d+(\.\d+)?$/;
+      if (!validNumberRegex.test(value)) {
+        return { invalidNumber: true };
+      }
+      const numericValue = parseFloat(value);
+      if (numericValue < -1 || numericValue > 255) {
+        return { outOfRange: true };
+      }
+      return null;
+    };
+  }
+
+  static validProtocol(): ValidatorFn { // validate input protocol
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      if (value == null) {
+        return { invalidNumber: true };
+      }
+      const validNumberRegex = /^-?\d+(\.\d+)?$/;
+      if (!validNumberRegex.test(value)) {
+        return { invalidNumber: true };
+      }
+      const numericValue = parseFloat(value);
+      if (numericValue < 1 || numericValue > 255) {
+        return { outOfRange: true };
+      }
+      return null;
+    };
+  }
+
+  static validPort(): ValidatorFn { // validate input port
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      if (value == null) {
+        return { invalidNumber: true };
+      }
+      const validNumberRegex = /^[1-9]\d*$/;
+      if (!validNumberRegex.test(value)) {
+        return { invalidNumber: true };
+      }
+      const integerValue = parseInt(value, 10);
+      if (integerValue < 1) {
+        return { lessThanOne: true };
+      }
+
+      return null;
+    };
+  }
+
+  // static validRangeValidator(): ValidatorFn {
+  //   return (control: AbstractControl): { [key: string]: any } | null => {
+  //     const fromValue = control.get('from').value;
+  //     const toValue = control.get('to').value;
+  //
+  //     // Kiểm tra nếu giá trị 'from' và 'to' rỗng (null hoặc undefined)
+  //     if (fromValue == null || toValue == null) {
+  //       return { invalidNumber: true };
+  //     }
+  //
+  //     // Sử dụng biểu thức chính quy để kiểm tra giá trị có hợp lệ
+  //     const validNumberRegex = /^[1-9]\d*$/;
+  //     if (!validNumberRegex.test(fromValue) || !validNumberRegex.test(toValue)) {
+  //       return { invalidNumber: true };
+  //     }
+  //
+  //     // Chuyển đổi giá trị thành số nguyên
+  //     const fromNumericValue = parseInt(fromValue, 10);
+  //     const toNumericValue = parseInt(toValue, 10);
+  //
+  //     if (fromNumericValue < 1 || toNumericValue < 1 || toNumericValue <= fromNumericValue) {
+  //       return { notValidRange: true };
+  //     }
+  //
+  //     return null;
+  //   };
+  // }
+
 
 }
