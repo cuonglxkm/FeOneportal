@@ -30,6 +30,7 @@
           <nz-select
             *nzSpaceItem
             nzShowSearch
+            [nzLoading]="isLoadingSG"
             nzAllowClear
             nzPlaceHolder="Select a security"
             [(ngModel)]="selectedValue"
@@ -66,8 +67,8 @@
         <div class="label">{{selectedValue?.description || ''}}</div>
       </nz-col>
     </nz-row>
-    <one-portal-inbound-list [listInbound]="listInbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-inbound-list>
-    <one-portal-list-outbound [listOutbound]="listOutbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-list-outbound>
-    <one-portal-list-virtual-machine></one-portal-list-virtual-machine>
+    <one-portal-inbound-list [isLoading]="isLoading" [listInbound]="listInbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-inbound-list>
+    <one-portal-list-outbound [isLoading]="isLoading" [listOutbound]="listOutbound" [conditionSearch]="conditionSearch" [securityGroupId]="selectedValue?.id"></one-portal-list-outbound>
+<!--    <one-portal-list-virtual-machine></one-portal-list-virtual-machine>-->
   </nz-card>
 </nz-content>

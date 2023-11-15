@@ -49,6 +49,8 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     inputValue: string;
 
+    isLoading: boolean = true;
+
     showModalDelete(): void {
         this.isVisibleDelete = true;
     }
@@ -121,9 +123,11 @@ export class ListAllowAddressPairComponent implements OnInit {
     }
 
     getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
+
         this.allowAddressPairService.search(formSearch)
             .subscribe((data: any) => {
                 this.listPairInfo = data.records;
+                this.isLoading = false;
             });
     }
 
