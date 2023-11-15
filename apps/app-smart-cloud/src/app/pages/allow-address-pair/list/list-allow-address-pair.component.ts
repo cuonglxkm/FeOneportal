@@ -9,6 +9,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {ActivatedRoute} from "@angular/router";
+import {ProjectModel} from "../../../shared/models/project.model";
 
 
 @Component({
@@ -30,7 +31,9 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     listPairInfo: PairInfo[] = []
 
-    region: RegionModel;
+    region: number;
+
+    project: number;
 
     validateForm: FormGroup<{
         ipAddress: FormControl<string | null>;
@@ -72,7 +75,7 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.pairInfos = this.pairInfos;
 
         this.formDeleteOrCreate.isDelete = true;
-        this.formDeleteOrCreate.region = this.region.regionId;
+        this.formDeleteOrCreate.region = this.region;
         this.formDeleteOrCreate.vpcId = 4079;
         this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
@@ -92,7 +95,7 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
         this.formDeleteOrCreate.pairInfos = [value];
         this.formDeleteOrCreate.isDelete = false;
-        this.formDeleteOrCreate.region = this.region.regionId;
+        this.formDeleteOrCreate.region = this.region;
         this.formDeleteOrCreate.vpcId = 4079;
 
         this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
@@ -103,14 +106,20 @@ export class ListAllowAddressPairComponent implements OnInit {
     }
 
     regionChanged(region: RegionModel) {
-        this.region = region;
+        this.region = region.regionId;
+        // this.formSearch = this.getParam();
+        // this.getAllowAddressPair(this.formSearch);
+    }
+
+    projectChanged(project: ProjectModel) {
+        this.project = project.id;
         this.formSearch = this.getParam();
         this.getAllowAddressPair(this.formSearch);
-
     }
 
     getParam(): AllowAddressPairSearchForm {
-        this.formSearch.region = this.region.regionId;
+        this.formSearch.vpcId = this.project;
+        this.formSearch.region = this.region;
         this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
         this.formSearch.pageSize = 10;
         this.formSearch.currentPage = 1;
@@ -123,7 +132,6 @@ export class ListAllowAddressPairComponent implements OnInit {
     }
 
     getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
-
         this.allowAddressPairService.search(formSearch)
             .subscribe((data: any) => {
                 this.listPairInfo = data.records;
@@ -132,14 +140,12 @@ export class ListAllowAddressPairComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.formSearch.vpcId = 4079
         this.formSearch.customerId = this.tokenService.get()?.userId
         this.route.queryParams.subscribe(queryParams => {
             const value = queryParams['param'];
             console.log('Received value:', value);
             this.portId = value;
         });
-
     }
 
     search() {

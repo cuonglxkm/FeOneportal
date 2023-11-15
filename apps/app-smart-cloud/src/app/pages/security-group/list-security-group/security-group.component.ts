@@ -5,6 +5,7 @@ import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ActivatedRoute} from '@angular/router';
+import {ProjectModel} from "../../../shared/models/project.model";
 
 @Component({
     selector: 'one-portal-security-group',
@@ -25,11 +26,20 @@ export class SecurityGroupComponent implements OnInit {
 
     listOutbound: SecurityGroupRule[] = []
 
-    region: RegionModel;
+    region: number;
+
+    project: number;
 
     isLoadingSG: boolean = true;
 
     isLoading: boolean = true;
+
+    headerInfo = {
+        firstItem: 'Home',
+        secondItem: 'Dịch vụ',
+        thirdItem: 'Security Group',
+        content: 'Security Group'
+    }
 
 
     constructor(private securityGroupService: SecurityGroupService,
@@ -61,13 +71,17 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     regionChanged(region: RegionModel) {
-        this.conditionSearch.regionId = region.regionId;
-        this.getSecurityGroup();
+        this.region = region.regionId;
+        this.conditionSearch.regionId = this.region;
+    }
 
+    projectChanged(project: ProjectModel) {
+        this.project = project.id;
+        this.conditionSearch.projectId = this.project;
+        this.getSecurityGroup();
     }
 
     getSecurityGroup() {
-
         this.securityGroupService.search(this.conditionSearch)
             .subscribe((data) => {
                 this.options = data;
@@ -83,13 +97,13 @@ export class SecurityGroupComponent implements OnInit {
     ngOnInit() {
         this.conditionSearch.projectId = 4079
         this.conditionSearch.userId = this.tokenService.get()?.userId
+        this.conditionSearch.regionId = this.region
         this.route.queryParams.subscribe(params => {
             this.conditionSearch.regionId = params['regionId'];
             this.conditionSearch.securityGroupId = params['securityGroupId'];
-            if (this.conditionSearch.regionId && this.conditionSearch.securityGroupId) {
+            if (this.conditionSearch.regionId && this.conditionSearch.securityGroupId && this.conditionSearch.projectId) {
                 this.securityGroupService.search(this.conditionSearch)
                     .subscribe((data) => {
-
                         if (data) {
                             const index = data.findIndex(v => v.id === this.conditionSearch.securityGroupId) || 0
                             this.selectedValue = data[index]
