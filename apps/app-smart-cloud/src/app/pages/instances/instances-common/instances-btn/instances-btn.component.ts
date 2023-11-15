@@ -29,7 +29,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   
   openConsole(): void {
-    this.route.navigateByUrl('/app-smart-cloud/vm/instances-console/' + this.instancesId, {
+    this.route.navigateByUrl('/app-smart-cloud/instances/instances-console/' + this.instancesId, {
       state: {
         vmId: this.instancesId
       }
@@ -183,16 +183,16 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     }
   }
   navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
     this.route.navigate([
-      '/app-smart-cloud/vm/instances-edit-info/' + this.instancesId,
+      '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
     ]);
   }
   navigateToEdit() {
     this.route.navigate([
-      '/app-smart-cloud/vm/instances-edit/' + this.instancesId,
+      '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
     ]);
   }
   returnPage(): void {

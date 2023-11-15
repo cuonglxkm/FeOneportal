@@ -264,6 +264,16 @@ export class InstancesComponent implements OnInit {
       pageIndex: 1,
     };
   }
+  getStatus(value:string): string {
+    const foundItem = this.filterStatus.find(item => item.value === value);
+
+    if (foundItem) {
+      return foundItem.text;
+    } else {
+      return value;
+    }
+  }
+
   ganVLANFC(): void {
     const modal = this.modalSrv.create({
       nzTitle: 'Gắn VLAN',
@@ -337,11 +347,16 @@ export class InstancesComponent implements OnInit {
     });
   }
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToEdit(id:number) {
     this.router.navigate([
-      '/app-smart-cloud/vm/instances-edit/' + id,
+      '/app-smart-cloud/instances/instances-edit/' + id,
+    ]);
+  }
+  navigateToDetail(id:number) {
+    this.router.navigate([
+      '/app-smart-cloud/instances/instances-detail/' + id,
     ]);
   }
 }

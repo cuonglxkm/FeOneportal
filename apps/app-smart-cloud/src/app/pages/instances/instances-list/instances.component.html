@@ -141,16 +141,15 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of ajaxTable3.data">
-        <td>{{ data.name }}</td>
+        <td class="text-blue" (click)="navigateToDetail(data.id)">{{ data.name }}</td>
         <td>
           {{ data.flavorName }}
           <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
         </td>
         <td>
-          <div *ngFor="let nameFill of filterStatus">
-            <p *ngIf="data.status == nameFill.value">{{ nameFill.text }}</p>
+          <div>
+            {{ getStatus(data.status) }}
           </div>
-          <!-- <ng-template #notmatch>{{ data.status}}</ng-template> -->
         </td>
         <td>{{ data.taskState }}</td>
         <td>{{ data.ipPrivate }}</td>
@@ -186,7 +185,7 @@
       <img nz-image nzSrc="assets/imgs/blank_vm.png" alt="" />
 
       <button nz-button [nzType]="'primary'" (click)="navigateToCreate()">
-        <!-- <a routerLink="/pages/vm/instances-create"> Khởi tạo ngay</a>
+        <!-- <a routerLink="/pages/instances/instances-create"> Khởi tạo ngay</a>
         -->
         Khởi tạo ngay
       </button>

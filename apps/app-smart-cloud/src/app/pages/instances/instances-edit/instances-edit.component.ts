@@ -317,13 +317,13 @@ export class InstancesEditComponent implements OnInit {
     });
   }
   navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-edit-info/' + this.id]);
+    this.route.navigate(['/app-smart-cloud/instances/instances-edit-info/' + this.id]);
   }
   navigateToEdit() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-edit/' + this.id]);
+    this.route.navigate(['/app-smart-cloud/instances/instances-edit/' + this.id]);
   }
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/vm']);
