@@ -86,10 +86,6 @@ export class InstancesCreateComponent implements OnInit {
     }),
     // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
-  users: Array<{ value: string; label: string }> = [
-    { value: 'xiao', label: '付晓晓' },
-    { value: 'mao', label: '周毛毛' },
-  ];
 
   //danh sách các biến của form model
   createInstances: CreateInstances = new CreateInstances();
@@ -104,8 +100,8 @@ export class InstancesCreateComponent implements OnInit {
   passwordVisible = false;
   password?: string;
   numberMonth: number = 1;
-  hdh: any;
-  flavor: any;
+  hdh: any = null;
+  flavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
 
@@ -114,22 +110,15 @@ export class InstancesCreateComponent implements OnInit {
   listImageVersionByType: Images[] = [];
   selectedValueVersion: any;
   isLoading = false;
+  selectedTypeImageId: number;
+  pagedCardListImages: Array<Array<any>> = [];
 
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
-      // for (var i = 0; i < this.listImageTypes.length; i++) {
-      //   this.dataService
-      //     .getAllImage(
-      //       null,
-      //       this.region,
-      //       this.listImageTypes[i].id,
-      //       this.customerId
-      //     )
-      //     .subscribe((dataimage: any) => {
-      //       this.listImageTypes[i].items = dataimage;
-      //     });
-      // }
+      for (let i = 0; i < this.listImageTypes.length; i += 4) {
+        this.pagedCardListImages.push(this.listImageTypes.slice(i, i + 4));
+      }
     });
   }
 
@@ -143,6 +132,7 @@ export class InstancesCreateComponent implements OnInit {
 
   onInputHDH(index: number, event: any) {
     this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
+    this.selectedTypeImageId = this.hdh.imageTypeId;
   }
 
   //#endregion
@@ -202,7 +192,7 @@ export class InstancesCreateComponent implements OnInit {
       .getAllSecurityGroup(this.region, this.userId, this.projectId)
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
-        this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
+        this.selectedSecurityGroup.push(this.listSecurityGroup[0].id);
       });
   }
 
@@ -432,18 +422,31 @@ export class InstancesCreateComponent implements OnInit {
   // }
 
   save(): void {
+    let arraylistSecurityGroup = null;
+    if (this.selectedSecurityGroup.length > 0) {
+      arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
+        obj.id.toString()
+      );
+    }
+    if (this.hdh == null) {
+      this.message.error('Vui lòng chọn hệ điều hành');
+      return;
+    }
+    if (this.flavor == null) {
+      this.message.error('Vui lòng chọn gói cấu hình');
+      return;
+    }
     this.createInstances.regionId = 3; // this.region;
     this.createInstances.projectId = 4079; // this.projectId;
     this.createInstances.customerId = 669; // this.customerId;
     this.createInstances.imageId = 113; // this.hdh.id;
     this.createInstances.useIPv6 = this.isUseIPv6;
     this.createInstances.usePrivateNetwork = this.isUseLAN;
-    this.createInstances.currentNetworkCloudId =
-      '113210e5-52ac-4c01-a7bf-0976eca0c81f';
+    this.createInstances.currentNetworkCloudId ='113210e5-52ac-4c01-a7bf-0976eca0c81f';
     this.createInstances.flavorId = 368; //this.flavor.id;
     this.createInstances.storage = 1;
     this.createInstances.snapshotCloudId = null;
-    this.createInstances.listSecurityGroup = null;
+    this.createInstances.listSecurityGroup = null; //arraylistSecurityGroup;
     this.createInstances.keypair = null;
     this.createInstances.domesticBandwidth = 5;
     this.createInstances.intenationalBandwidth = 10;
@@ -451,7 +454,7 @@ export class InstancesCreateComponent implements OnInit {
     this.createInstances.cpuAdditional = 0;
     this.createInstances.btqtAdditional = 0;
     this.createInstances.bttnAdditional = 0;
-    this.createInstances.initPassword = '123123aA@';
+    this.createInstances.initPassword = '123123aA@' //this.password;
     this.createInstances.ipPrivate = null;
 
     this.dataService.create(this.createInstances).subscribe(

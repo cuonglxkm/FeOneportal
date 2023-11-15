@@ -24,6 +24,7 @@ import {
   InstancesModel,
   SecurityGroupModel,
   Snapshot,
+  UpdateInstances,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -58,12 +59,12 @@ class BlockStorage {
   price?: string = '000';
 }
 class Network {
-  id: number = 0;
+  name?: string = 'pri_network';
+  mac?: string = '';
   ip?: string = '';
-  amount?: number = 0;
-  ipv6?: boolean = false;
-  price?: string = '000';
+  status?: string = '';
 }
+
 
 @Component({
   selector: 'one-portal-instances-edit',
@@ -86,7 +87,7 @@ export class InstancesEditComponent implements OnInit {
   id: number;
   instancesModel: InstancesModel;
 
-  createInstances: CreateInstances = new CreateInstances();
+  updateInstances: UpdateInstances = new UpdateInstances();
   region: number = 3;
   projectId: number = 4079;
   customerId: number = 669;
@@ -135,9 +136,14 @@ export class InstancesEditComponent implements OnInit {
     this.dataService
       .getAllSecurityGroup(this.region, this.userId, this.projectId)
       .subscribe((data: any) => {
+        console.log('getAllSecurityGroup', data);
         this.listSecurityGroup = data;
-        this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
+        //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
       });
+  }
+  onChangeSecurityGroup(even?: any) {
+    console.log(even);
+    console.log('selectedSecurityGroup', this.selectedSecurityGroup);
   }
 
   //#endregion
@@ -149,7 +155,7 @@ export class InstancesEditComponent implements OnInit {
   pagedCardList: Array<Array<any>> = [];
   effect = 'scrollx';
 
-  selectedElementFlavor: string = null;
+  selectedElementFlavor: number = null;
   isInitialClass = true;
   isNewClass = false;
 
@@ -176,20 +182,20 @@ export class InstancesEditComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
-  toggleClass(id: string) {
-    this.selectedElementFlavor = id;
-    if (this.selectedElementFlavor) {
-      this.isInitialClass = !this.isInitialClass;
-      this.isNewClass = !this.isNewClass;
-    } else {
-      this.isInitialClass = true;
-      this.isNewClass = false;
-    }
+  // toggleClass(id: string) {
+  //   this.selectedElementFlavor = id;
+  //   if (this.selectedElementFlavor) {
+  //     this.isInitialClass = !this.isInitialClass;
+  //     this.isNewClass = !this.isNewClass;
+  //   } else {
+  //     this.isInitialClass = true;
+  //     this.isNewClass = false;
+  //   }
 
-    this.cdr.detectChanges();
-  }
+  //   this.cdr.detectChanges();
+  // }
 
-  selectElementInputFlavors(id: string) {
+  selectElementInputFlavors(id: any) {
     this.selectedElementFlavor = id;
   }
   //#endregion
@@ -260,34 +266,7 @@ export class InstancesEditComponent implements OnInit {
       // this.listOfDataNetwork.push(...resultHttp);
     });
   }
-  deleteRowNetwork(id: number): void {
-    this.listOfDataNetwork = this.listOfDataNetwork.filter((d) => d.id !== id);
-  }
-
-  onInputNetwork(index: number, event: any) {
-    // const inputElement = this.renderer.selectRootElement('#type_' + index);
-    // const inputValue = inputElement.value;
-    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataNetwork.filter(
-      (item) => item.ip !== ''
-    );
-    const filteredArrayHas = this.listOfDataNetwork.filter(
-      (item) => item.ip == ''
-    );
-
-    if (filteredArrayHas.length > 0) {
-      this.listOfDataNetwork[index].ip = event;
-    } else {
-      // Add a new row with the same value as the current row
-      //const currentItem = this.itemsTest[count];
-      //this.itemsTest.splice(count + 1, 0, currentItem);
-      this.defaultNetwork = new Network();
-      this.idNetwork++;
-      this.defaultNetwork.id = this.idNetwork;
-      this.listOfDataNetwork.push(this.defaultNetwork);
-    }
-    this.cdr.detectChanges();
-  }
+ 
   //#endregion
 
   constructor(
@@ -310,54 +289,68 @@ export class InstancesEditComponent implements OnInit {
     this.userId = this.tokenService.get()?.userId;
     this.initFlavors();
     this.getAllSecurityGroup();
+    this.initNetwork()
 
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService.getById(this.id, false).subscribe((data: any) => {
           this.instancesModel = data;
+          this.selectedElementFlavor = this.instancesModel.flavorId;
+          this.dataService
+            .getAllSecurityGroupByInstance(
+              this.instancesModel.cloudId,
+              this.instancesModel.regionId,
+              this.instancesModel.customerId,
+              this.instancesModel.projectId
+            )
+            .subscribe((datasg: any) => {
+              console.log('getAllSecurityGroupByInstance', datasg);
+              var arraylistSecurityGroup = datasg.map((obj) =>
+                obj.id.toString()
+              );
+              this.selectedSecurityGroup = arraylistSecurityGroup;
+              this.cdr.detectChanges();
+            });
         });
       }
     });
   }
+  navigateToCreate() {
+    this.route.navigate(['/app-smart-cloud/vm/instances-create']);
+  }
   navigateToChangeImage() {
     this.route.navigate(['/app-smart-cloud/vm/instances-edit-info/' + this.id]);
+  }
+  navigateToEdit() {
+    this.route.navigate(['/app-smart-cloud/vm/instances-edit/' + this.id]);
   }
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/vm']);
   }
 
   save(): void {
-    this.createInstances.regionId = 3; // this.region;
-    this.createInstances.projectId = 4079; // this.projectId;
-    this.createInstances.customerId = 669; // this.customerId;
-    this.createInstances.imageId = 113; // this.hdh.id;
-    this.createInstances.useIPv6 = this.isUseIPv6;
-    this.createInstances.usePrivateNetwork = this.isUseLAN;
-    this.createInstances.currentNetworkCloudId =
-      '113210e5-52ac-4c01-a7bf-0976eca0c81f';
-    this.createInstances.flavorId = 368; //this.flavor.id;
-    this.createInstances.storage = 1;
-    this.createInstances.snapshotCloudId = null;
-    this.createInstances.listSecurityGroup = null;
-    this.createInstances.keypair = null;
-    this.createInstances.domesticBandwidth = 5;
-    this.createInstances.intenationalBandwidth = 10;
-    this.createInstances.ramAdditional = 0;
-    this.createInstances.cpuAdditional = 0;
-    this.createInstances.btqtAdditional = 0;
-    this.createInstances.bttnAdditional = 0;
-    this.createInstances.initPassword = '123123aA@';
-    this.createInstances.ipPrivate = null;
+    this.updateInstances.id = this.instancesModel.id;
+    this.updateInstances.name = this.instancesModel.name;
+    this.updateInstances.regionId = 3; // this.region;
+    this.updateInstances.projectId = 4079; // this.projectId;
+    this.updateInstances.customerId = 669; // this.customerId;
+    this.updateInstances.imageId = 113; // this.hdh.id;
+    this.updateInstances.flavorId = 368; //this.flavor.id;
+    this.updateInstances.storage = 1;
+    this.updateInstances.securityGroups = null;
+    this.updateInstances.duration = null;
+    this.updateInstances.listServicesToBeExtended = '';
+    this.updateInstances.newExpiredDate = '';
 
-    this.dataService.create(this.createInstances).subscribe(
+    this.dataService.update(this.updateInstances).subscribe(
       (data: any) => {
         console.log(data);
-        this.message.success('Tạo mới máy ảo thành công');
+        this.message.success('Cập nhật máy ảo thành công');
       },
       (error) => {
         console.log(error.error);
-        this.message.error('Tạo mới máy ảo không thành công');
+        this.message.error('Cập nhật máy ảo không thành công');
       }
     );
   }
