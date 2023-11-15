@@ -47,7 +47,8 @@ export class InstancesEditInfoComponent implements OnInit {
   selectedValueVersion: any;
   isLoading = false;
   hdh: Images;
-  selectedTypeImageId:number;
+  selectedTypeImageId: number;
+  selectedImage: Images;
 
   getAllImageVersionByType(type: number) {
     this.dataService
@@ -58,8 +59,8 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onInputHDH(index: number, event: any) {
-    this.hdh = this.listImageVersionByType.find(x => x.id = event);
-    this.selectedTypeImageId= this.hdh.imageTypeId
+    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
+    this.selectedTypeImageId = this.hdh.imageTypeId;
   }
 
   //#endregion
@@ -72,26 +73,36 @@ export class InstancesEditInfoComponent implements OnInit {
     private router: ActivatedRoute,
     private route: Router,
     public message: NzMessageService,
-    private el: ElementRef, private renderer: Renderer2
+    private el: ElementRef,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, false).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.dataService.getAllImageType().subscribe((data: any) => {
-            this.listImageTypes = data;
-            for (let i = 0; i < this.listImageTypes.length; i += 4) {
-              this.pagedCardListImages.push(
-                this.listImageTypes.slice(i, i + 4)
-              );
-            }
-            this.loading = false;
-            this.cdr.detectChanges();
+        this.dataService
+          .getById(this.id, false)
+          .subscribe((dataInstae: any) => {
+            this.instancesModel = dataInstae;
+            this.dataService.getAllImageType().subscribe((data: any) => {
+              this.listImageTypes = data;
+              for (let i = 0; i < this.listImageTypes.length; i += 4) {
+                this.pagedCardListImages.push(
+                  this.listImageTypes.slice(i, i + 4)
+                );
+              }
+              this.dataService
+                .getImageById(this.instancesModel.imageId)
+                .subscribe((dataimge: any) => {
+                  //this.hdh = dataimge;
+                  this.selectedImage = dataimge;
+                //  this.selectedTypeImageId = this.hdh.imageTypeId;
+                  this.loading = false;
+                  this.cdr.detectChanges();
+                });
+            });
           });
-        });
       }
     });
     this.cdr.detectChanges();

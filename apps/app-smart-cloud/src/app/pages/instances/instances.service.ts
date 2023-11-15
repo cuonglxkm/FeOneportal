@@ -86,6 +86,12 @@ export class InstancesService {
     return this.http2.get<any>(this.baseUrl + url_);
   }
 
+  getImageById(id: number): Observable<{}> {
+    let url_ = `/images/${id}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http2.get(this.baseUrl + url_);
+  }
+
   getAllImage(
     show: any,
     region: any,
