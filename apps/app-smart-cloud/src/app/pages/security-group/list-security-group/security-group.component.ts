@@ -76,6 +76,9 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     projectChanged(project: ProjectModel) {
+        if(this.region === null || this.region === undefined) {
+            this.project = 0;
+        }
         this.project = project.id;
         this.conditionSearch.projectId = this.project;
         this.getSecurityGroup();
