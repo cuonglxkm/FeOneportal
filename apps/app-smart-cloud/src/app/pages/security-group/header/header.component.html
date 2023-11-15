@@ -1,0 +1,20 @@
+<nz-header>
+    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
+        <nz-row nzJustify="space-between" nzAlign="middle">
+            <nz-breadcrumb nz-page-header-breadcrumb>
+                <nz-breadcrumb-item>{{ headerInfo.firstItem }}</nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    {{ headerInfo.secondItem }}
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a routerLink="/app-smart-cloud/{{ headerInfo.firstItem }}">{{ headerInfo.thirdItem }}</a>
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+            <nz-space>
+                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+                <project-select-dropdown (valueChanged)="projectChanged($event)"></project-select-dropdown>
+            </nz-space>
+        </nz-row>
+        <h4>{{ headerInfo.content }}</h4>
+    </nz-col>
+</nz-header>
