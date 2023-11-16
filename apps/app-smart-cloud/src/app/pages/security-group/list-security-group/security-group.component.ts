@@ -6,6 +6,7 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ActivatedRoute} from '@angular/router';
 import {ProjectModel} from "../../../shared/models/project.model";
+import {NzNotificationService} from 'ng-zorro-antd/notification';
 
 @Component({
     selector: 'one-portal-security-group',
@@ -44,7 +45,8 @@ export class SecurityGroupComponent implements OnInit {
 
     constructor(private securityGroupService: SecurityGroupService,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private notification: NzNotificationService) {
     }
 
     onSecurityGroupChange(): void {
@@ -63,6 +65,9 @@ export class SecurityGroupComponent implements OnInit {
 
     handleOk(): void {
         this.isVisible = false;
+        this.selectedValue = undefined
+        this.listInbound = []
+        this.listOutbound = []
         this.getSecurityGroup();
     }
 
@@ -76,6 +81,7 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     projectChanged(project: ProjectModel) {
+        this.isLoadingSG = true;
         this.project = project?.id;
         this.conditionSearch.projectId = project?.id;
         this.selectedValue = undefined
@@ -89,7 +95,7 @@ export class SecurityGroupComponent implements OnInit {
         if (this.conditionSearch.regionId
             && this.conditionSearch.userId
             && this.conditionSearch.projectId) {
-            this.isLoadingSG = true;
+
             this.securityGroupService.search(this.conditionSearch)
                 .subscribe((data) => {
                     this.options = data;
@@ -124,6 +130,8 @@ export class SecurityGroupComponent implements OnInit {
                         }
                         this.options = data;
                         this.isLoading = false
+                    }, error => {
+                        this.notification.error('Thất bại', `Lấy dữ liệu thất bại`);
                     })
 
             }

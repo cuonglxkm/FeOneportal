@@ -30,17 +30,15 @@ export class CreateAllowAddressPairComponent implements OnInit {
     submitForm(): void {
         if (this.validateForm.valid) {
             this.onOk.emit(this.validateForm.value);
-        } else {
-            Object.values(this.validateForm.controls).forEach(control => {
-                if (control.invalid) {
-                    control.markAsDirty();
-                    control.updateValueAndValidity({onlySelf: true});
-                }
-            });
         }
+
     }
 
     handleCancel(): void {
+        this.validateForm.patchValue({
+            ipAddress: '',
+            macAddress: ''
+        });
         this.onCancel.emit();
     }
 

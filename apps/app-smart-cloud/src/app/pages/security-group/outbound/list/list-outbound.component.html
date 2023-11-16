@@ -6,7 +6,8 @@
         <div class="code-box-description">
             <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
                 <button nz-button nzType="primary" class="button-crate-new"
-                        [routerLink]="['/app-smart-cloud/create-security-group-outbound']" [queryParams]="{param: securityGroupId  }">Thêm mới Outbound
+                        [routerLink]="['/app-smart-cloud/create-security-group-outbound']"
+                        [queryParams]="{param: securityGroupId, region: region, project: project  }">Thêm mới Outbound
                 </button>
             </nz-row>
             <nz-table #tableOutbound

@@ -7,7 +7,8 @@
     <div class="code-box-description">
       <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
         <button nz-button nzType="primary" class="button-crate-new"
-                [routerLink]="['/app-smart-cloud/create-security-group-inbound']" [queryParams]="{param: securityGroupId  }">
+                [routerLink]="['/app-smart-cloud/create-security-group-inbound']" [queryParams]="{param: securityGroupId,
+                 region: region, project: project}">
           Thêm mới Inbound
         </button>
       </nz-row>

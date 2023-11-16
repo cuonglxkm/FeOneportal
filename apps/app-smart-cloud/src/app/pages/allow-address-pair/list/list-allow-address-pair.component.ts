@@ -89,12 +89,7 @@ export class ListAllowAddressPairComponent implements OnInit {
     }
 
     handleOkDelete(pairInfo: PairInfo): void {
-        this.isVisibleDelete = false;
-        if (this.pairInfos) {
-            this.pairInfos.push(pairInfo);
-        } else {
-            this.pairInfos = [pairInfo];
-        }
+        this.pairInfos = [pairInfo];
 
         this.isConfirmLoading = true;
         this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
@@ -105,19 +100,30 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.vpcId = this.project;
         this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
+        this.isVisibleDelete = false;
+
         console.log('delete', this.formDeleteOrCreate)
-        this.getAllowAddressPair(this.formSearch)
+
+        this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate).subscribe(
+            data => {
+                this.notification.success('Thành công', `Xóa Allow Address Pair thành công`);
+                this.getAllowAddressPair(this.formSearch)
+            }, error => {
+                this.notification.error('Thất bại', 'Xóa Allow Address Pair thất bại');
+            }
+        )
+
     }
 
     showModalCreate() {
         this.isVisibleCreate = true;
     }
 
-    closeModalCreate() {
+    handleCloseCreate() {
         this.isVisibleCreate = false;
     }
 
-    handleCreate(value) {
+    handleOkCreate(value) {
         this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
         this.formDeleteOrCreate.pairInfos = [value];
         this.formDeleteOrCreate.isDelete = false;
@@ -126,17 +132,22 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
         console.log('form delete or create', this.formDeleteOrCreate)
+
         this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
             .subscribe(data => {
-                this.notification.success('Thành công', `Đã tạo thành công`);
+                this.notification.success('Thành công', `Tạo Allow Address Pair thành công`);
                 this.isVisibleCreate = false;
                 this.getAllowAddressPair(this.formSearch)
+            }, error => {
+                this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
             })
     }
 
-     getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
+    getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
+        console.log('this.formSearch', this.formSearch)
         this.allowAddressPairService.search(formSearch)
             .subscribe((data: any) => {
+                console.log('get success', data)
                 this.listPairInfo = data.records;
                 this.isLoading = false;
             });

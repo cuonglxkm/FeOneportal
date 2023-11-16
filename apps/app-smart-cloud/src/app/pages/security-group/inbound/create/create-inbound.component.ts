@@ -26,8 +26,15 @@ export class CreateInboundComponent implements OnInit {
     ngOnInit(): void {
         this.route.queryParams.subscribe(queryParams => {
             const value = queryParams['param'];
+            const region = queryParams['region'];
+            const project = queryParams['project'];
             console.log('Received value:', value);
             this.securityGroupId = value;
+            this.region = parseInt(region);
+            this.project = parseInt(project);
+            console.log('Received value 2:', this.region);
+            console.log('Received value 3 :', this.project);
         });
+
     }
 }

@@ -14,6 +14,8 @@ export class InboundListComponent implements OnInit {
   @Input() listInbound: SecurityGroupRule[] = [];
   @Input() conditionSearch: SecurityGroupSearchCondition
   @Input() securityGroupId?: string;
+  @Input() region: number
+  @Input() project: number
   @Input() isLoading: boolean
 
   title: string = 'Xác nhận xóa Inbound';
