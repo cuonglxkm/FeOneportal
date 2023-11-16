@@ -33,7 +33,7 @@ export class StartupService {
   load(): Observable<void> {
     const defaultLang = this.i18n.defaultLang;
     return zip(this.i18n.loadLangData(defaultLang), this.httpClient.get('assets/tmp/app-data.json')).pipe(
-      // 接收其他拦截器后产生的异常消息
+
       catchError(res => {
         console.warn(`StartupService.load: Network request failed`, res);
         setTimeout(() => this.router.navigateByUrl(`/exception/500`));
@@ -43,19 +43,17 @@ export class StartupService {
         // setting language data
         this.i18n.use(defaultLang, langData);
 
-        // 应用信息：包括站点名、描述、年份
         this.settingService.setApp( {
           "name": "One Portal",
           "description": "One Portal"
         });
-        // 用户信息：包括姓名、头像、邮箱地址
+        // Set user info
         // this.settingService.setUser(appData.user);
-        // ACL：设置权限为全量
 
         this.aclService.setFull(true);
-        // 初始化菜单
+
         this.menuService.add(appData.menu);
-        // 设置页面标题的后缀
+
         this.titleService.default = '';
         this.titleService.suffix = appData.app.name;
       })

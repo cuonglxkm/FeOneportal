@@ -30,7 +30,7 @@
   </page-header>
 </div>
 
-<form nz-form [nzLayout]="'vertical'">
+<form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
   <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
     <nz-row nzGutter="16">
       <div style="width: 100%">

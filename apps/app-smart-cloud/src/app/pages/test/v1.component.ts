@@ -8,6 +8,7 @@ import {NzSafeAny} from 'ng-zorro-antd/core/types';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../shared/models/region.model";
 import {HttpClient} from "@angular/common/http";
+import {ProjectModel} from "../../shared/models/project.model";
 
 @Component({
   selector: 'app-dashboard-v1',
@@ -20,18 +21,16 @@ export class V1Component implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.http.get("/test/profile").subscribe(data => {
-      console.log(data)
-    })
-
   }
 
   selectedRegion: number = null;
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
     this.selectedRegion = region.regionId;
-    console.log(this.tokenService.get()?.userId)
+    console.log(region)
+  }
+
+  onProjectChange(projectModel: ProjectModel) {
+    console.log(projectModel)
   }
 }

@@ -16,21 +16,21 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { BehaviorSubject, Observable, of, throwError, catchError, filter, mergeMap, switchMap, take } from 'rxjs';
 
 const CODEMESSAGE: { [key: number]: string } = {
-  200: '服务器成功返回请求的数据。',
-  201: '新建或修改数据成功。',
-  202: '一个请求已经进入后台排队（异步任务）。',
-  204: '删除数据成功。',
-  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
-  403: '用户得到授权，但是访问是被禁止的。',
-  404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
-  406: '请求的格式不可得。',
-  410: '请求的资源被永久删除，且不会再得到的。',
-  422: '当创建一个对象时，发生一个验证错误。',
-  500: '服务器发生错误，请检查服务器。',
-  502: '网关错误。',
-  503: '服务不可用，服务器暂时过载或维护。',
-  504: '网关超时。'
+  200: 'Máy chủ trả về thành công dữ liệu được yêu cầu. ',
+  201: 'Tạo hoặc sửa đổi dữ liệu thành công. ',
+  202: 'Một yêu cầu đã được đưa vào hàng đợi nền (tác vụ không đồng bộ). ',
+  204: 'Xóa dữ liệu thành công. ',
+  400: 'Đã xảy ra lỗi trong yêu cầu được đưa ra và máy chủ không tạo hoặc sửa đổi dữ liệu. ',
+  401: 'Người dùng không có quyền (mã thông báo, tên người dùng, mật khẩu không chính xác). ',
+  403: 'Người dùng được ủy quyền nhưng quyền truy cập bị cấm. ',
+  404: 'Yêu cầu được thực hiện đối với bản ghi không tồn tại và máy chủ không thực hiện thao tác. ',
+  406: 'Định dạng được yêu cầu không có sẵn. ',
+  410: 'Tài nguyên được yêu cầu đã bị xóa vĩnh viễn và sẽ không còn khả dụng nữa. ',
+  422: 'Đã xảy ra lỗi xác thực khi tạo đối tượng. ',
+  500: 'Đã xảy ra lỗi máy chủ, vui lòng kiểm tra máy chủ. ',
+  502: 'Lỗi cổng. ',
+  503: 'Dịch vụ không khả dụng. Máy chủ tạm thời bị quá tải hoặc đang bảo trì. ',
+  504: 'Đã hết thời gian chờ cổng. '
 };
 
 /**
@@ -121,9 +121,9 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   /**
-   * 重新附加新 Token 信息
+   * Đính kèm lại thông tin Token mới
    *
-   * > 由于已经发起的请求，不会再走一遍 `@delon/auth` 因此需要结合业务情况重新附加新的 Token
+   * > Vì yêu cầu đã được bắt đầu nên nó sẽ không được thực hiện lại `@delon/auth` nên cần phải đính kèm lại Mã thông báo mới tùy theo tình hình kinh doanh.
    */
   private reAttachToken(req: HttpRequest<any>): HttpRequest<any> {
     // 以下示例是以 NG-ALAIN 默认使用 `SimpleInterceptor`
@@ -137,7 +137,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
   // #endregion
 
-  // #region 刷新Token方式二：使用 `@delon/auth` 的 `refresh` 接口
+  // #region  Phương thức làm mới mã thông báo thứ hai: sử dụng giao diện `refresh` của `@delon/auth`
 
   private buildAuthRefresh(): void {
     if (!this.refreshTokenEnabled) {
@@ -214,8 +214,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       default:
         if (ev instanceof HttpErrorResponse) {
           console.warn(
-            '未可知错误，大部分是由于后端不支持跨域CORS或无效配置引起，请参考 https://ng-alain.com/docs/server 解决跨域问题',
-            ev
+            'Lỗi không xác định, chủ yếu là do phần phụ trợ không hỗ trợ CORS tên miền chéo hoặc cấu hình không hợp lệ, vui lòng tham khảo https://ng-alain.com/docs/server để giải quyết các vấn đề về tên miền chéo',            ev
           );
         }
         break;
@@ -233,17 +232,10 @@ export class DefaultInterceptor implements HttpInterceptor {
     if (!headers?.has('Accept-Language') && lang) {
       res['Accept-Language'] = lang;
     }
-
-    const token = this.tokenSrv.get()?.token;
-    if (!headers?.has('Authentication') && token) {
-      res['Authentication'] = "Bearer " + token;
-    }
-
     return res;
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // 统一加上服务端前缀
     let url = req.url;
     if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
       const { baseUrl } = environment.api;
@@ -252,14 +244,13 @@ export class DefaultInterceptor implements HttpInterceptor {
 
     const newReq = req.clone({ url, setHeaders: this.getAdditionalHeaders(req.headers) });
     return next.handle(newReq).pipe(
-      mergeMap(ev => {
-        // 允许统一对请求错误处理
-        if (ev instanceof HttpResponseBase) {
-          return this.handleData(ev, newReq, next);
-        }
-        // 若一切都正常，则后续操作
-        return of(ev);
-      })
+      // mergeMap(ev => {
+      //   if (ev instanceof HttpResponseBase) {
+      //     return this.handleData(ev, newReq, next);
+      //   }
+      //   // 若一切都正常，则后续操作
+      //   return of(ev);
+      // })
       // catchError((err: HttpErrorResponse) => this.handleData(err, newReq, next))
     );
   }
