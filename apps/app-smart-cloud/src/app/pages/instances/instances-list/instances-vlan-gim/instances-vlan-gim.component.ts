@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, Input, Optional } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnInit, Optional, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -9,7 +9,9 @@ import { InstancesService } from '../../instances.service';
   templateUrl: './instances-vlan-gim.component.html',
   styleUrls: [],
 })
-export class InstancesVlanGimComponent {
+export class InstancesVlanGimComponent implements OnInit{
+  @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
+
   @Input() title?: string;
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
   constructor(private modal: NzModalRef, private dataService: InstancesService,
@@ -17,6 +19,8 @@ export class InstancesVlanGimComponent {
     private cdr: ChangeDetectorRef,
     private router: Router,
     public message: NzMessageService,) {}
+  ngOnInit(): void {
+  }
 
   destroyModal(): void {
     this.modal.close({ data: 'this the result data' });

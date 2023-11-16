@@ -16,7 +16,7 @@
   </div>
   <div><h2>Chỉnh sửa thông tin máy ảo</h2></div>
 </div>
-<nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành">
+<nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành" *ngIf="selectedImage">
   <nz-row nzGutter="16">
     <p>Hệ điều hành hiện tại: {{ selectedImage.name }}</p>
   </nz-row>

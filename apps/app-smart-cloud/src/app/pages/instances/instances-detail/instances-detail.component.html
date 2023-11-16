@@ -97,7 +97,7 @@
   </div>
 </nz-card>
 
-<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo" [nzLoading]="loading">
+<nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo" [nzLoading]="loading" *ngIf="instancesModel">
   <div nz-row>
     <div nz-col nzSpan="12">
       <div class="pb-1">
