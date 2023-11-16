@@ -44,7 +44,7 @@
         </ng-template>
       </div></nz-row
     >
-
+    <br />
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
@@ -68,11 +68,11 @@
         <nz-form-item >
           <nz-form-label nzFor="name" 
             >Hệ điều hành: {{ instancesModel.imageId }}
-            <a
+            <a class="text-blue"
               (click)="navigateToChangeImage()"
               style="margin-left: 15px;"
             >
-              <img nz-image nzSrc="assets/imgs/undo.png" alt="" /><span
+              <img nz-image nzSrc="assets/imgs/undo.png" alt=""  /><span style="margin-left: 15px;"
                 >Thay đổi</span
               ></a
             >
@@ -182,7 +182,7 @@
                     <tr>
                       <div>
                         <b class="h4"
-                          >{{ data.flavorName }} {{ selectedElementFlavor }}</b
+                          >{{ data.flavorName }}</b
                         ><br />
                         <b class="h4">{{ data.price }}đ/tháng</b><br />
                         <span>đ/giờ</span>
@@ -361,7 +361,7 @@
       </tr>
     </nz-table>
     <div style="float: right; padding-top: 1%">
-      <button nz-button nzType="default" (click)="cancel()">Hủy</button>
+      <button nz-button nzType="default" (click)="cancel()">Quay lại</button>
       <button nz-button nzType="primary" (click)="save()">Chỉnh sửa</button>
     </div>
   </div>

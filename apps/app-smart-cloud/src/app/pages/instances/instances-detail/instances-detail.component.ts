@@ -18,6 +18,8 @@ import {
   FormGroup,
   ValidatorFn,
 } from '@angular/forms';
+import { finalize } from 'rxjs';
+import { LoadingService } from '@delon/abc/loading';
 
 class BlockStorage {
   id: number = 0;
@@ -61,10 +63,13 @@ export class InstancesDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService
+    public message: NzMessageService,
+    private loadingSrv: LoadingService
   ) {}
 
   ngOnInit(): void {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+
     this.listOfDataNetwork.push(this.defaultNetwork);
 
     this.router.paramMap.subscribe((param) => {
@@ -81,6 +86,7 @@ export class InstancesDetailComponent implements OnInit {
               this.instancesModel.customerId,
               this.instancesModel.projectId
             )
+            .pipe(finalize(() => this.loadingSrv.close()))
             .subscribe((datasg: any) => {
               this.listSecurityGroupModel = datasg;
               this.cdr.detectChanges();
@@ -91,15 +97,19 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   navigateToEdit() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-edit/' + this.id]);
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-edit/' + this.id,
+    ]);
   }
 
   navigateToChangeImage() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-edit-info/' + this.id]);
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
+    ]);
   }
 
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   add(tpl: TemplateRef<{}>): void {

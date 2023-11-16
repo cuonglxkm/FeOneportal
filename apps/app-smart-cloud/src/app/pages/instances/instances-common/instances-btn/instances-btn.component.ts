@@ -196,7 +196,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     ]);
   }
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 }
 
