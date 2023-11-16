@@ -25,24 +25,29 @@ interface Person {
   styleUrls: ['./ssh-key.component.less'],
 })
 export class SshKeyComponent implements OnInit{
+  //input
+  searchKey:string = "";
+  regionId: any = "";
+  projectId: any = "";
+  size = 10;
+  index: any = 0;
+  total: any = 0;
+
+  //output
+  baseResponse: BaseResponse<SshKey[]>;
   listOfData: SshKey[] = [];
   checkEmpty: SshKey[] = [];
-  isBegin: Boolean = false;
   data: SshKey;
-  size = 10;
-  index: number = 0;
-  total: number = 0;
-  baseResponse: BaseResponse<SshKey[]>;
+
+  //flag
+  isBegin: Boolean = false;
   checked = false;
-  loading = false;
-  indeterminate = false;
-  isVisible = false;
+  isVisibleDelete = false;
   isVisibleCreate = false;
   isVisibleDetail = false;
-  searchKey:string = "";
+
+  //resource
   customIcon: SafeResourceUrl;
-  regionId: number;
-  projectId: number;
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
@@ -73,14 +78,14 @@ export class SshKeyComponent implements OnInit{
   getSshKeys(): void {
      this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
       .subscribe(response => {
-        this.listOfData = response.records,
-          this.total = response.totalCount,
-          this.index = response.currentPage
+        this.listOfData = (this.checkNullObject(response) ? [] : response.records),
+          this.total = (this.checkNullObject(response) ? 0 : response.totalCount),
+          this.index = (this.checkNullObject(response) ? 0 : response.currentPage)
       });
 
     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, 0, 1, "")
-      .subscribe(resonse => {
-        this.checkEmpty = resonse.records
+      .subscribe(response => {
+        this.checkEmpty = (this.checkNullObject(response) ? [] : response.records);
         if (this.checkEmpty == undefined || this.checkEmpty == null || this.checkEmpty.length < 1) {
           this.isBegin = true;
         } else {
@@ -115,18 +120,18 @@ export class SshKeyComponent implements OnInit{
 
   // show modal
   showModal(): void {
-    this.isVisible = true;
+    this.isVisibleDelete = true;
   }
 
   handleOk(number: any): void {
     // call api
     this.sshKeyService.deleteSshKey(this.data.id).subscribe(()=> {this.getSshKeys();});
-    this.isVisible = false;
+    this.isVisibleDelete = false;
   }
 
   handleCancel(): void {
     console.log('Button cancel clicked')
-    this.isVisible = false;
+    this.isVisibleDelete = false;
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
   }
@@ -186,7 +191,15 @@ export class SshKeyComponent implements OnInit{
   }
 
   projectChange(project: ProjectModel) {
-    this.projectId = project.id;
+    this.projectId = (this.checkNullObject(project) ? "" : project.id);
     this.getSshKeys();
+  }
+
+  checkNullObject(object: any): Boolean {
+    if (object == null || object == undefined) {
+      return true;
+    }
+
+    return false;
   }
 }

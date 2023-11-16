@@ -56,7 +56,7 @@
               Xóa
             </button>
           </td>
-          <nz-modal [(nzVisible)]="isVisible" nzTitle="Bạn có đồng ý xóa keypair này?" (nzOnCancel)="handleCancel()"
+          <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?" (nzOnCancel)="handleCancel()"
                     (nzOnOk)="handleOk(data.id)">
             <ng-container *nzModalContent></ng-container>
           </nz-modal>
