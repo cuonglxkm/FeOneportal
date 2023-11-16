@@ -1,4 +1,4 @@
-// 请参考：https://ng-alain.com/docs/i18n
+
 import { Platform } from '@angular/cdk/platform';
 import { registerLocaleData } from '@angular/common';
 import ngEn from '@angular/common/locales/en';

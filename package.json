@@ -2,7 +2,9 @@
   "name": "@one-portal/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "postinstall": "ngcc --properties es2015 browser module main"
+  },
   "private": true,
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",

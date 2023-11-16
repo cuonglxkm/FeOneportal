@@ -21,11 +21,6 @@ export class V1Component implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.http.get("/test/profile").subscribe(data => {
-      console.log(data)
-    })
-
   }
 
   selectedRegion: number = null;
