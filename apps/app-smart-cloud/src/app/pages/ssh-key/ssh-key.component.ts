@@ -47,7 +47,6 @@ export class SshKeyComponent implements OnInit{
   isVisibleDetail = false;
 
   //resource
-  customIcon: SafeResourceUrl;
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
@@ -55,8 +54,7 @@ export class SshKeyComponent implements OnInit{
   };
 
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
-  @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private sanitizer: DomSanitizer) {
-    this.customIcon = this.sanitizer.bypassSecurityTrustResourceUrl('./assets/begin-ssh.png');
+  @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
   onPageSizeChange(event: any) {

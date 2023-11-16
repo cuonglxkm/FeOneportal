@@ -1,10 +1,10 @@
-<page-header  [action]="action" [title]="'SSH Key'">
+<page-header [action]="action" [title]="'SSH Key'">
   <ng-template #action>
     <div class="text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
-    </ng-template>
+  </ng-template>
 </page-header>
 
 <nz-card>
@@ -56,7 +56,8 @@
               Xóa
             </button>
           </td>
-          <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?" (nzOnCancel)="handleCancel()"
+          <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?"
+                    (nzOnCancel)="handleCancel()"
                     (nzOnOk)="handleOk(data.id)">
             <ng-container *nzModalContent></ng-container>
           </nz-modal>
@@ -64,24 +65,24 @@
         </tbody>
       </nz-table>
     </ng-container>
-    <ng-container *ngSwitchDefault >
-      <nz-result nzTitle="SSH KEY - Ổ Khóa truy cp dịch vụ" nzSubTitle="Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối">
-        <ng-container #nzIcon>
-          <img src="/assets/imgs/ssh-key.png" alt="Custom Icon" style="width: 24px; height: 24px;">
-        </ng-container>
-        <app-custom-icon [iconPath]="'/assets/imgs/ssh-key.png'"></app-custom-icon>
+    <ng-container *ngSwitchDefault>
+      <nz-result [nzIcon]="customIcon" nzTitle="SSH KEY - Ổ Khóa truy cập dịch vụ"
+                 nzSubTitle="Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối">
+        <ng-template #customIcon>
+          <img src="assets/imgs/ssh-key.png" alt="Custom Icon">
+        </ng-template>
         <div nz-result-extra>
-        <button (click)="createKey()" nz-button nzType="primary">Khởi tạo ngay</button>
-      </div>
-    </nz-result>
+          <button (click)="createKey()" nz-button nzType="primary">Khởi tạo ngay</button>
+        </div>
+      </nz-result>
     </ng-container>
   </ng-container>
 
-
   <!-- tạo mới -->
-  <nz-form-control >
+  <nz-form-control>
     <form nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
-      <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới Keypair" [nzOkDisabled]="form.invalid" (nzOnCancel)="handleCancel()"
+      <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới Keypair" [nzOkDisabled]="form.invalid"
+                (nzOnCancel)="handleCancel()"
                 (nzOnOk)="handleCreate()" [nzStyle]="modalStyle" nzOkText="Xác nhận"
                 nzCancelText="Hủy bỏ">
         <ng-container *nzModalContent>
@@ -107,7 +108,8 @@
                 <nz-form-item>
                   <nz-form-control
                     nzErrorTip="Tên keypair không được chứa ký tự đặc biệt, chữ cái phải trong bảng tiếng anh">
-                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Vui lòng nhập thông tin" maxlength="20" formControlName="keypair_name_1"></textarea>
+                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Vui lòng nhập thông tin"
+                              maxlength="20" formControlName="keypair_name_1"></textarea>
                   </nz-form-control>
                 </nz-form-item>
               </nz-input-group>
@@ -133,7 +135,8 @@
                 <nz-form-item>
                   <nz-form-control
                     nzErrorTip="Tên keypair không được chứa ký tự đặc biệt, chữ cái phải trong bảng tiếng anh">
-                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Vui lòng nhập thông tin" maxlength="20" formControlName="keypair_name_2"></textarea>
+                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Vui lòng nhập thông tin"
+                              maxlength="20" formControlName="keypair_name_2"></textarea>
                   </nz-form-control>
                 </nz-form-item>
               </nz-input-group>
@@ -145,7 +148,8 @@
                 <nz-form-item>
                   <nz-form-control
                     nzErrorTip="Trường dữ liệu không thể bỏ trống">
-                    <textarea formControlName="public_key" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập public key"></textarea>
+                    <textarea formControlName="public_key" nz-input [nzAutosize]="{ minRows: 3 }"
+                              placeholder="Nhập public key"></textarea>
                   </nz-form-control>
                 </nz-form-item>
               </nz-input-group>
@@ -155,7 +159,6 @@
       </nz-modal>
     </form>
   </nz-form-control>
-
 
   <!-- chi tiết  -->
   <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel()" [nzOkText]="null"
