@@ -4,7 +4,7 @@ import {Observable, of} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {VolumeDTO} from "../dto/volume.dto";
 import {BaseService} from "./base.service";
-import {GetListVolumeModel} from "../models/volume.model";
+import {AddVolumetoVmModel, GetListVolumeModel} from "../models/volume.model";
 import {GetAllVmModel} from "../models/volume.model";
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {PriceVolumeDto} from "../dto/volume.dto";
@@ -72,6 +72,11 @@ export class VolumeService extends BaseService {
     );
   }
 
+  addVolumeToVm(request: AddVolumetoVmModel): Observable<any> {
+    return this.http.post<any>('http://172.16.68.200:1009/volumes/attach',request).pipe(
+      catchError(this.handleError<any>('Add Volume to VM error.'))
+    );
+  }
 
   constructor(private http: HttpClient, private message: NzMessageService) {
     super();

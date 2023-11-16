@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {PopupAddVolumeComponent} from "../popup-volume/popup-add-volume.component";
@@ -6,8 +6,9 @@ import {PopupDeleteVolumeComponent} from "../popup-volume/popup-delete-volume.co
 import {Router} from "@angular/router";
 import {VolumeDTO} from "../../../../shared/dto/volume.dto";
 import { VolumeService } from "../../../../shared/services/volume.service";
-import {GetListVolumeModel} from "../../../../shared/models/volume.model";
+import {AddVolumetoVmModel, GetListVolumeModel} from "../../../../shared/models/volume.model";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 interface Volume {
   name: string;
@@ -75,7 +76,7 @@ export class VolumeComponent implements OnInit {
   ]
   volumeStatus: Map<String, string>;
 
-  constructor(private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService , private message:NzMessageService) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService , private message:NzMessageService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -116,7 +117,8 @@ export class VolumeComponent implements OnInit {
               const selected = modal.getContentComponent().selectedItem;
               if(selected !== undefined ){
                 console.log('Add volume ' + volume.id + ' in to ' + selected);
-                this.message.create('success', `Add Volume Success`);
+                this.addVolumeToVM(volume, selected);
+
                 modal.destroy()
               }else{
                 this.message.create('error', `Please choose VM for add Volume.`);
@@ -237,6 +239,22 @@ export class VolumeComponent implements OnInit {
   async doDeleteVolume(volumeId: number): Promise<any>{
     let result = this.volumeSevice.deleteVolume(volumeId).toPromise();
     return !!result;
+  }
+
+  async addVolumeToVM(volume: VolumeDTO, vmId: number): Promise<void>{
+    if(volume.isMultiAttach == false && volume.instanceId != null){
+      this.message.create('error','Volume này chỉ có thể gắn với một máy ảo.')
+
+    }else{
+
+      let addVolumetoVmRequest = new AddVolumetoVmModel();
+
+      addVolumetoVmRequest.volumeId = volume.id;
+      addVolumetoVmRequest.instanceId = vmId;
+      addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+      let response = this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise()
+      console.log(response);
+    }
   }
 
   getProjectId(projectId: number){

@@ -35,13 +35,13 @@
 
   <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()">
     <div style="display: flex; padding: 20px;">
-      <div nz-radio nzValue="1" [ngStyle]="{'background-color': volumeInfo.volumeType === '1' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="hdd" [ngStyle]="{'background-color': volumeInfo.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         HDD
         <br>
         Additional description and information about copywriting.
       </div>
-      <div nz-radio nzValue="0" [ngStyle]="{'background-color': volumeInfo.volumeType === '0' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="ssd" [ngStyle]="{'background-color': volumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         SSD
         <br>
