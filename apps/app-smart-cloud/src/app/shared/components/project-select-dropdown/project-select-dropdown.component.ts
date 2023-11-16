@@ -52,12 +52,12 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.regionId) {
       this.loadProjects();
-      this.valueChanged.emit(null);
+      // this.valueChanged.emit(null);
     }
 
-    if (this.listProject.length > 0) {
-      this.selectedProject = this.listProject[0];
-      this.valueChanged.emit(this.listProject[0])
-    }
+    // if (this.listProject.length > 0) {
+    //   this.selectedProject = this.listProject[0];
+    //   this.valueChanged.emit(this.listProject[0])
+    // }
   }
 }
