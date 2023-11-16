@@ -80,3 +80,9 @@ export class AddVolumetoVmModel {
   instanceId: number;
   customerId: number;
 }
+export class EditTextVolumeModel{
+  volumeId: number;
+  customerId: number;
+  newName: string;
+  newDescription: string;
+}

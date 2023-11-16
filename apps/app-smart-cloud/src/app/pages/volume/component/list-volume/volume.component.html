@@ -1,4 +1,5 @@
-<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"  [headerInfo]="headerInfo"></app-header-volume>
+<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
+                   [headerInfo]="headerInfo"></app-header-volume>
 <!--<h2>Danh sách Volume</h2>-->
 <br>
 <div class="search-volume">
@@ -20,8 +21,12 @@
     </button>
   </ng-template>
   <div class="text-right" style="margin-top: -40px;  padding-right: 30px;">
-    <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateVolume()"
-            style="background-color: #52c41a;">
+    <button class="m-r-8"
+            class="bg-success border-success"
+            nz-button
+            nzType="primary"
+            (click)="navigateToCreateVolume()"
+    >
         <span
           nz-icon nzType="plus"
           nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
@@ -65,7 +70,7 @@
                        [nzPlaceHolder]="'Tạo Snapshot'"
                        [nzOptions]="optionVolumeRoot"
                        style="width: 150px;"
-                       [ngModel] ="selectedOptionAction"
+                       [ngModel]="selectedOptionAction"
                        (ngModelChange)="onSelectionChange($event , data)"
             >
             </nz-select>
