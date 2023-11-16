@@ -44,7 +44,7 @@ import { IpPublicComponent } from './ip-public/ip-public.component';
 import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
 import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
 import {HeaderVolumeDataService} from "./volume/component/header-volume/header-volume-data.service";
-
+import { HeaderComponent } from './security-group/header/header.component';
 
 const icons: IconDefinition[] = [SettingOutline];
 
@@ -77,11 +77,11 @@ const icons: IconDefinition[] = [SettingOutline];
     PopupExtendVolumeComponent,
     EditVolumeComponent,
     HeaderVolumeComponent,
-    HeaderVolumeComponent,
       DeleteAllowAddressPairComponent,
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
-    DetailIpPublicComponent
+    DetailIpPublicComponent,
+    HeaderComponent
   ],
   imports: [
     CommonModule,
