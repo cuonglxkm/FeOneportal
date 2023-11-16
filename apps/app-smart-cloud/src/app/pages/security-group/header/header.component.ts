@@ -14,29 +14,23 @@ interface Header {
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.less'],
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent {
 
-  @Input() headerInfo: Header;
-  @Output() regionId = new EventEmitter<number>;
-  @Output() projectId = new EventEmitter<number>;
+  @Input() path: string[]
 
-  region: number;
-  project: number;
-  userId: number;
+  @Input() title: string
+
+  @Input() regionId: number
+
+  @Output() onRegionChanged = new EventEmitter<RegionModel>;
+
+  @Output() onProjectChanged = new EventEmitter<ProjectModel>;
+
   regionChanged(region: RegionModel) {
-    this.region = region.regionId;
-    this.regionId.emit(this.region)
+    this.onRegionChanged.emit(region)
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id;
-    this.projectId.emit(this.project)
-  }
-
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-  }
-
-  ngOnInit(): void {
-    this.userId = this.tokenService.get()?.userId
+    this.onProjectChanged.emit(project)
   }
 }

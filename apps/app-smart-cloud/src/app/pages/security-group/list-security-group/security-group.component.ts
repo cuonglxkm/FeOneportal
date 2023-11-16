@@ -76,20 +76,26 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     projectChanged(project: ProjectModel) {
-        if(this.region === null || this.region === undefined) {
-            this.project = 0;
-        }
-        this.project = project.id;
-        this.conditionSearch.projectId = this.project;
+        this.project = project?.id;
+        this.conditionSearch.projectId = project?.id;
+        this.selectedValue = undefined
+        this.listInbound = []
+        this.listOutbound = []
         this.getSecurityGroup();
     }
 
     getSecurityGroup() {
-        this.securityGroupService.search(this.conditionSearch)
-            .subscribe((data) => {
-                this.options = data;
-                this.isLoadingSG = false;
-            })
+        console.log('search', this.conditionSearch)
+        if (this.conditionSearch.regionId
+            && this.conditionSearch.userId
+            && this.conditionSearch.projectId) {
+            this.isLoadingSG = true;
+            this.securityGroupService.search(this.conditionSearch)
+                .subscribe((data) => {
+                    this.options = data;
+                    this.isLoadingSG = false;
+                })
+        }
     }
 
     getListInbound() {
@@ -104,7 +110,10 @@ export class SecurityGroupComponent implements OnInit {
         this.route.queryParams.subscribe(params => {
             this.conditionSearch.regionId = params['regionId'];
             this.conditionSearch.securityGroupId = params['securityGroupId'];
-            if (this.conditionSearch.regionId && this.conditionSearch.securityGroupId && this.conditionSearch.projectId) {
+            if (this.conditionSearch.regionId
+                && this.conditionSearch.securityGroupId
+                && this.conditionSearch.projectId) {
+                this.isLoading = true
                 this.securityGroupService.search(this.conditionSearch)
                     .subscribe((data) => {
                         if (data) {
@@ -114,6 +123,7 @@ export class SecurityGroupComponent implements OnInit {
                             this.listOutbound = data[index].rulesInfo.filter(value => value.direction === 'egress')
                         }
                         this.options = data;
+                        this.isLoading = false
                     })
 
             }

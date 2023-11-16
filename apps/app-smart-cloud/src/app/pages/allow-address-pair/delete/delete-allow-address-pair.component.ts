@@ -16,10 +16,13 @@ export class DeleteAllowAddressPairComponent {
 
     isConfirmLoading = false;
 
+  modalStyle = {
+    'height': '217px'
+  };
+
     constructor(private notification: NzNotificationService,
                 private allowAddressPairService: AllowAddressPairService) {
     }
-
 
     handleCancel(): void {
         this.onCancel.emit();
@@ -30,6 +33,7 @@ export class DeleteAllowAddressPairComponent {
         this.allowAddressPairService.createOrDelete(this.formDeletePair).subscribe(
             data => {
                 this.notification.success('Thành công', `Xóa Allow Address Pair thành công`);
+
             },
             error => {
                 this.notification.error('Thất bại', 'Xóa Allow Address Pair thất bại');

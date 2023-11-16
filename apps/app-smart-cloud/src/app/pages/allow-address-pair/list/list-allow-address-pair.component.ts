@@ -7,9 +7,9 @@ import PairInfo, {
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
-import {NzMessageService} from "ng-zorro-antd/message";
 import {ActivatedRoute} from "@angular/router";
 import {ProjectModel} from "../../../shared/models/project.model";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 
 @Component({
@@ -22,7 +22,7 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                 private allowAddressPairService: AllowAddressPairService,
-                private message: NzMessageService,
+                private notification: NzNotificationService,
                 private route: ActivatedRoute) {
     }
 
@@ -54,6 +54,32 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     isLoading: boolean = true;
 
+    regionChanged(region: RegionModel) {
+        this.region = region.regionId;
+    }
+
+    projectChanged(project: ProjectModel) {
+        if (this.region != undefined) {
+            this.project = project?.id;
+        }
+        this.formSearch = this.getParam();
+        this.getAllowAddressPair(this.formSearch);
+    }
+
+    getParam(): AllowAddressPairSearchForm {
+        this.formSearch.vpcId = this.project;
+        this.formSearch.region = this.region;
+        this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+        this.formSearch.pageSize = 10;
+        this.formSearch.currentPage = 1;
+        if (this.value === undefined) {
+            this.formSearch.search = null;
+        } else {
+            this.formSearch.search = this.value;
+        }
+        return this.formSearch;
+    }
+
     showModalDelete(): void {
         this.isVisibleDelete = true;
     }
@@ -76,7 +102,7 @@ export class ListAllowAddressPairComponent implements OnInit {
 
         this.formDeleteOrCreate.isDelete = true;
         this.formDeleteOrCreate.region = this.region;
-        this.formDeleteOrCreate.vpcId = 4079;
+        this.formDeleteOrCreate.vpcId = this.project;
         this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
         console.log('delete', this.formDeleteOrCreate)
@@ -96,42 +122,19 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.formDeleteOrCreate.pairInfos = [value];
         this.formDeleteOrCreate.isDelete = false;
         this.formDeleteOrCreate.region = this.region;
-        this.formDeleteOrCreate.vpcId = 4079;
+        this.formDeleteOrCreate.vpcId = this.project;
+        this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
+        console.log('form delete or create', this.formDeleteOrCreate)
         this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
             .subscribe(data => {
-                this.message.create('Thành công', `Đã tạo thành công`);
+                this.notification.success('Thành công', `Đã tạo thành công`);
                 this.isVisibleCreate = false;
+                this.getAllowAddressPair(this.formSearch)
             })
     }
 
-    regionChanged(region: RegionModel) {
-        this.region = region.regionId;
-        // this.formSearch = this.getParam();
-        // this.getAllowAddressPair(this.formSearch);
-    }
-
-    projectChanged(project: ProjectModel) {
-        this.project = project.id;
-        this.formSearch = this.getParam();
-        this.getAllowAddressPair(this.formSearch);
-    }
-
-    getParam(): AllowAddressPairSearchForm {
-        this.formSearch.vpcId = this.project;
-        this.formSearch.region = this.region;
-        this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-        this.formSearch.pageSize = 10;
-        this.formSearch.currentPage = 1;
-        if (this.value === undefined) {
-            this.formSearch.search = null;
-        } else {
-            this.formSearch.search = this.value;
-        }
-        return this.formSearch;
-    }
-
-    getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
+     getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
         this.allowAddressPairService.search(formSearch)
             .subscribe((data: any) => {
                 this.listPairInfo = data.records;

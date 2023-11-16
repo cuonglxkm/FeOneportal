@@ -43,4 +43,10 @@ export class SecurityGroupService extends BaseService {
             body: JSON.stringify({id, ...condition})
         })
     }
+
+    getInstanceBySecurityGroup() {
+    return this.http.get('/instance/security-group', {
+      headers: this.getHeaders()
+    })
+    }
 }
