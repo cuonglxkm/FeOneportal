@@ -1,4 +1,17 @@
-<nz-form-item>
+<nz-modal
+  nzTitle="Tắt máy ảo"
+  [nzFooter]="modalFooter7"
+>
+  <ng-container *nzModalContent>
+    <p>{{title}}</p>
+  </ng-container>
+  <ng-template #modalFooter7>
+    <button nz-button nzType="default" >Hủy</button>
+    <button nz-button nzType="primary" >Xác nhận</button>
+  </ng-template>
+</nz-modal>
+
+<!-- <nz-form-item>
     <nz-form-label>Danh sách VLAN</nz-form-label> {{title}}
     <nz-form-control>
       <nz-select
@@ -29,4 +42,4 @@
       cấu hình trong Subnet tương ứng
     </div>
   </ng-template>
-  <br />
+  <br /> -->

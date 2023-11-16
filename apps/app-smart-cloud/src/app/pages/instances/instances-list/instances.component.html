@@ -193,7 +193,7 @@
   </nz-card>
 </ng-template>
 
-<ng-template #modalContentGanVLAN>
+<!-- <ng-template #modalContentGanVLAN>
   <nz-form-item>
     <nz-form-label>Danh sách VLAN</nz-form-label>
     <nz-form-control>
@@ -223,4 +223,47 @@
     </div>
   </ng-template>
   <br />
-</ng-template>
+</ng-template> -->
+
+
+
+<nz-modal
+  [(nzVisible)]="isVisibleGanVLAN"
+  nzTitle="Gắn VLAN"
+  (nzOnCancel)="handleCancelGanVLAN()"
+  (nzOnOk)="handleOkGanVLAN()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <nz-form-item>
+      <nz-form-label>Danh sách VLAN</nz-form-label>
+      <nz-form-control>
+        <nz-select [nzPlaceHolder]="'-- Chọn VLAN --'" [nzShowSearch]="true">
+          <nz-option
+            *ngFor="let i of listVLAN"
+            [nzLabel]="i.text"
+            [nzValue]="i.id"
+          />
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <div><a (click)="clickIPAddress()">Nhập IP Address</a></div>
+    </nz-form-item>
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="customTemplateMessageGanVLAN"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageGanVLAN>
+      <div>
+        Trong trường hợp 1 Network của quý khách có nhiều subnet, quý khách cần
+        lựa chọn subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP vui
+        lòng chọn IP chưa được sửa dụng bởi máy ảo nào và IP này thuộc dải IP được
+        cấu hình trong Subnet tương ứng
+      </div>
+    </ng-template>
+  </ng-container>
+</nz-modal>
+
