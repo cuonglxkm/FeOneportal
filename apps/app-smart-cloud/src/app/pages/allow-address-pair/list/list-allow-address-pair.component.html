@@ -7,22 +7,13 @@
                     Dịch vụ
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    <a routerLink="/">VM</a>
+                    <a routerLink="/app-smart-cloud/instances/instances-detail/8101">VM</a>
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
             <nz-space>
-                <!--                <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Khu vực"-->
-                <!--                           [(ngModel)]="selectedValueArea"-->
-                <!--                           style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
-                <!--                    <nz-option *ngFor="let item of optionsArea" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
-                <!--                </nz-select>-->
-                <!--                <nz-select *nzSpaceItem nzShowSearch nzAllowClear nzPlaceHolder="Dự án"-->
-                <!--                           [(ngModel)]="selectedValueProject"-->
-                <!--                           style="border: 1px solid #D9D9D9; width: 113px; height: 32px">-->
-                <!--                    <nz-option *ngFor="let item of optionsProject" [nzLabel]="item.name" [nzValue]="item"></nz-option>-->
-                <!--                </nz-select>-->
                 <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-                <project-select-dropdown></project-select-dropdown>
+                <project-select-dropdown (valueChanged)="projectChanged($event)"
+                                         [regionId]="region"></project-select-dropdown>
             </nz-space>
 
         </nz-row>
@@ -31,21 +22,20 @@
             <div style="margin-top: 20px;">
                 <input nz-input placeholder="Tìm kiếm IP Address" [(ngModel)]="value" type="text"
                        style="width: 396px; height: 40px;" (input)="onInputChange($event.target['value'])"/>
-                <!--            <span nz-icon nzType="setting" nzTheme="outline"></span>-->
                 <button class="button-search" (click)="search()" style="cursor: pointer;">
                     <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
                     Search
                 </button>
             </div>
-            <div style="margin-top: 20px;" >
+            <div style="margin-top: 20px;">
                 <nz-space>
                     <button nz-button (click)="showModalCreate()" class="button-create">
                         <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 12px;"></span>
                         Tạo mới
                     </button>
                     <create-allow-address-pair [isVisible]="isVisibleCreate"
-                                               (onCancel)="closeModalCreate()"
-                                               (onOk)="handleCreate($event)"/>
+                                               (onCancel)="handleCloseCreate()"
+                                               (onOk)="handleOkCreate($event)"/>
                 </nz-space>
             </div>
         </nz-row>
@@ -61,6 +51,7 @@
                       [nzTotal]="listPairInfo.length"
                       [nzPageSize]="10"
                       [nzPageIndex]="1"
+                      [nzLoading]="isLoading"
             >
                 <thead>
                 <tr>
@@ -79,10 +70,9 @@
                                 (click)="showModalDelete()">
                             Xoá
                         </button>
-                        <delete-allow-address-pair [formDeletePair]="formDeleteOrCreate"
-                                                              [isVisible]="isVisibleDelete"
-                                                              (onCancel)="handleCancelDelete()"
-                                                              (onOk)="handleOkDelete(data)"
+                        <delete-allow-address-pair [isVisible]="isVisibleDelete"
+                                                   (onCancel)="handleCancelDelete()"
+                                                   (onOk)="handleOkDelete(data)"
                         ></delete-allow-address-pair>
                     </td>
                 </tr>

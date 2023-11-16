@@ -31,8 +31,11 @@
                             <span>MAC Address</span>
                         </div>
                     </nz-form-label>
-                    <nz-form-control [nzSpan]="18">
+                    <nz-form-control [nzSpan]="18" nzDisableAutoTips [nzErrorTip]="nameError">
                         <input nz-input formControlName="macAddress" id="macAddress"/>
+                        <ng-template #nameError let-control>
+                            <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng MAC</ng-container>
+                        </ng-template>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item nzJustify="end" style="margin-bottom: 0">

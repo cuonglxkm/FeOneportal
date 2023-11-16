@@ -25,11 +25,13 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   }
 
 
-  projectChange(project: any) {
+  projectChange(project: ProjectModel) {
+    localStorage.setItem('projectId', project.id + "")
     this.valueChanged.emit(project);
   }
 
   ngOnInit(): void {
+
     this.loadProjects();
   }
 
@@ -39,24 +41,31 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       // console.log(data);
       this.listProject = data;
       if (this.listProject.length > 0) {
-        this.selectedProject = this.listProject[0];
-        this.valueChanged.emit(this.listProject[0])
+        if (localStorage.getItem('projectId') != null) {
+
+          this.selectedProject = this.listProject.find(item =>
+            item.id == JSON.parse(localStorage.getItem('projectId')));
+          this.valueChanged.emit(this.selectedProject)
+
+        } else {
+          this.selectedProject = this.listProject[0];
+          this.valueChanged.emit(this.listProject[0])
+          localStorage.setItem('projectId', this.selectedProject.id + "")
+        }
+
+
       }
     }, error => {
       this.listProject = [];
       this.selectedProject = null;
+      this.valueChanged.emit(null)
+      localStorage.removeItem('projectId')
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.regionId) {
       this.loadProjects();
-      this.valueChanged.emit(null);
-    }
-
-    if (this.listProject.length > 0) {
-      this.selectedProject = this.listProject[0];
-      this.valueChanged.emit(this.listProject[0])
     }
   }
 }
