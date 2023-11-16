@@ -12,7 +12,6 @@ export abstract class BaseService {
     users: '/users',
     catalogs: '/catalogs',
     actionlogs: '/actionlogs',
-
   }
   protected baseUrl: string;
 
