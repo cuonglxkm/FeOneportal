@@ -11,21 +11,14 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   @Output() valueChanged = new EventEmitter();
   selectedRegion: RegionModel;
-  listRegion: RegionModel[] = [
-    {
-      "id": 1,
-      "cloudId": "Hanoi",
-      "regionId": 1,
-      "regionDisplayName": "Hà Nội 1"
-    }
-  ]
+  listRegion: RegionModel[] = []
 
   constructor(private regionService: RegionService) {
   }
 
   ngOnInit() {
     this.regionService.getAll().subscribe(data => {
-      console.log(data);
+      // console.log(data);
       this.listRegion = data;
 
       if (this.listRegion.length > 0) {

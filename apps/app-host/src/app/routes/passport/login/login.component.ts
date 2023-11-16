@@ -64,6 +64,23 @@ export class UserLoginComponent implements OnDestroy, OnInit{
 
     // Auto login
     this.open('oneportal', 'href')
+    // this.mockModel();
+  }
+
+
+  private mockModel(): void {
+    const info = {
+      token: '123456789',
+      name: 'cipchk',
+      email: `${this.type}@${this.type}.com`,
+      id: 10000,
+      time: +new Date()
+    };
+    this.settingsService.setUser({
+      ...this.settingsService.user,
+      ...info
+    });
+    this.socialService.callback(info);
   }
 
   switch({ index }: NzTabChangeEvent): void {
