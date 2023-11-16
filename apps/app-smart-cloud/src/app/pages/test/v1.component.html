@@ -6,7 +6,7 @@
 
   <div class="text-right">
     <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-    <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
+    <project-select-dropdown (valueChanged)="onProjectChange($event)" [regionId]="selectedRegion"></project-select-dropdown>
   </div>
 </div>
 <div nz-row nzGutter="16">
