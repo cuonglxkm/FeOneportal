@@ -1,7 +1,7 @@
 import {BaseService} from "../../shared/services/base.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
+import {catchError, Observable, throwError} from "rxjs";
 import PairInfo, {AllowAddressPairCreateOrDeleteForm, AllowAddressPairSearchForm}
     from "../../shared/models/allow-address-pair";
 
@@ -32,15 +32,19 @@ export class AllowAddressPairService extends BaseService {
         params = params.append('pageSize', form.pageSize);
         params = params.append('currentPage', form.currentPage);
 
-        return this.http.get<PairInfo[]>(this.baseUrl + '/instances/allow_adress_pair', {
+        return this.http.get<PairInfo[]>(this.baseUrl + this.ENDPOINT.provisions + '/instances/allow_adress_pair', {
             headers: this.getHeaders(),
             params: params
         })
+            .pipe(catchError(this.errorCode));
     }
 
     createOrDelete(form: AllowAddressPairCreateOrDeleteForm) {
-        return this.http.post(this.baseUrl + '/instances/allowadresspair', Object.assign(form));
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions  + '/instances/allowadresspair', Object.assign(form))
+            .pipe(catchError(this.errorCode));
     }
+
+
 
 
 }

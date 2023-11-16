@@ -11,6 +11,9 @@ export class ListOutboundComponent implements OnInit{
   @Input() listOutbound: SecurityGroupRule[] = [];
   @Input() conditionSearch: SecurityGroupSearchCondition
   @Input() securityGroupId?: string;
+  @Input() isLoading: boolean
+  @Input() region: number
+  @Input() project: number
 
   isVisible = false;
   title: string = 'Xác nhận xóa Outbound';

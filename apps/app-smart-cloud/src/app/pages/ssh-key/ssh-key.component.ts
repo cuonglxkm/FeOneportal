@@ -9,6 +9,7 @@ import {RegionModel} from "../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ProjectModel} from "../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -18,8 +19,8 @@ import {NzMessageService} from "ng-zorro-antd/message";
 export class SshKeyComponent implements OnInit {
   //input
   searchKey: string = "";
-  regionId: any;
-  projectId: any;
+  regionId: any = '';
+  projectId: any = '';
   size = 10;
   index: any = 0;
   total: any = 0;
@@ -38,7 +39,7 @@ export class SshKeyComponent implements OnInit {
   isVisibleDetail = false;
 
   //resource
-  loading = true;
+  loading = false;
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
@@ -60,7 +61,7 @@ export class SshKeyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadSshKeys();
+    // this.loadSshKeys();
     this.form.get('keypair_name_2').disable();
     this.form.get('public_key').disable();
   }
@@ -68,22 +69,12 @@ export class SshKeyComponent implements OnInit {
   loadSshKeys(): void {
     this.loading = true;
     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
+      .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
         this.listOfData = (this.checkNullObject(response) ? [] : response.records),
           this.total = (this.checkNullObject(response) ? 0 : response.totalCount),
           this.index = (this.checkNullObject(response) ? 0 : response.currentPage)
       });
-
-    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, 0, 1, "")
-      .subscribe(response => {
-        this.checkEmpty = (this.checkNullObject(response) ? [] : response.records);
-        if (this.checkEmpty == undefined || this.checkEmpty == null || this.checkEmpty.length < 1) {
-          this.isBegin = true;
-        } else {
-          this.isBegin = false;
-        }
-      })
-    this.loading = false;
   }
 
   //SEARCH
@@ -194,10 +185,17 @@ export class SshKeyComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = (this.checkNullObject(region) ? "" : region.regionId);
+
   }
 
   projectChange(project: ProjectModel) {
-    this.projectId = (this.checkNullObject(project) ? "" : project.id);
+    if (project != null) {
+      // this.listOfData = []
+      // return;
+      this.projectId = project.id;
+    }
+
+
     this.loadSshKeys();
   }
 

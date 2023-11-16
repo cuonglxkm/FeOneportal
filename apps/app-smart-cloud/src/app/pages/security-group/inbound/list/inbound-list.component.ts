@@ -10,9 +10,13 @@ import {SecurityGroupSearchCondition} from "../../../../shared/models/security-g
 export class InboundListComponent implements OnInit {
   isVisible = false;
 
+
   @Input() listInbound: SecurityGroupRule[] = [];
   @Input() conditionSearch: SecurityGroupSearchCondition
   @Input() securityGroupId?: string;
+  @Input() region: number
+  @Input() project: number
+  @Input() isLoading: boolean
 
   title: string = 'Xác nhận xóa Inbound';
   content: string = 'Bạn có chắc chăn muốn xóa Inbound';
