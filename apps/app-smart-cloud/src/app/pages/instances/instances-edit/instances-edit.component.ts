@@ -317,19 +317,32 @@ export class InstancesEditComponent implements OnInit {
     });
   }
   navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-edit-info/' + this.id]);
+    this.route.navigate(['/app-smart-cloud/instances/instances-edit-info/' + this.id]);
   }
   navigateToEdit() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-edit/' + this.id]);
+    this.route.navigate(['/app-smart-cloud/instances/instances-edit/' + this.id]);
   }
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/vm']);
   }
-
+  
   save(): void {
+    this.modalSrv.create({
+      nzTitle: 'Xác nhận thông tin thay đổi',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện thay đổi thông tin máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+       this.readyEdit()
+      },
+    });
+  }
+
+
+  readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
     this.updateInstances.name = this.instancesModel.name;
     this.updateInstances.regionId = 3; // this.region;

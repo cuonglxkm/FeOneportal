@@ -91,11 +91,11 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   navigateToEdit() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-edit/' + this.id]);
+    this.route.navigate(['/app-smart-cloud/instances/instances-edit/' + this.id]);
   }
 
   navigateToChangeImage() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-edit-info/' + this.id]);
+    this.route.navigate(['/app-smart-cloud/instances/instances-edit-info/' + this.id]);
   }
 
   returnPage(): void {

@@ -78,7 +78,10 @@ export class InstancesComponent implements OnInit {
 
   region: number;
 
-  activeCreate: boolean = false;
+  activeCreate: boolean = true;
+  isVisibleGanVLAN: boolean = false;
+  isVisibleGanVLANIPAddress: boolean = false;
+
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -87,8 +90,7 @@ export class InstancesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     public message: NzMessageService,
-    private viewContainerRef: ViewContainerRef,
-   // private bsModalRef: BsModalRef
+    private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
   showModal(cs: string, data: any): void {
@@ -99,8 +101,15 @@ export class InstancesComponent implements OnInit {
         break;
       case 2:
         break;
+      case 3:
+        break;
+      case 4:
+        this.navigateToEdit(this.actionData.id);
+        break;
       case 5:
-        this.ganVLANFC();
+        this.isVisibleGanVLAN = true;
+        break;
+      case 6:
         break;
       case 7:
         this.restartInstance();
@@ -127,6 +136,7 @@ export class InstancesComponent implements OnInit {
     // Handle the region change event
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
+    this.getDataList();
   }
   resetForm(): void {
     this.searchParam = {};
@@ -137,33 +147,41 @@ export class InstancesComponent implements OnInit {
     if (reset) {
       this.pageIndex = 1;
     }
-    this.loading = true;
-    this.dataService
-      .search(
-        this.pageIndex,
-        this.pageSize,
-        this.region,
-        this.searchParam.name,
-        this.searchParam.status
-      )
-      .subscribe({
-        next: (data: any) => {
-          // Update your component properties with the received data
-          this.loading = false;
-          this.dataList = data.records; // Assuming 'records' property contains your data
-          this.tableConfig.total = data.totalCount;
-          this.total = data.totalCount;
-          this.tableConfig.pageIndex = this.pageIndex;
-          this.tableLoading(false);
-          this.checkedCashArray = [...this.checkedCashArray];
-        },
-        error: (error) => {
-          // Handle the error, e.g., display an error message to the user
-        },
-        complete: () => {
-          console.log('Completed'); // This is called when the observable completes
-        },
-      });
+    if (this.region != undefined && this.region != null) {
+      this.loading = true;
+      this.dataService
+        .search(
+          this.pageIndex,
+          this.pageSize,
+          this.region,
+          this.searchParam.name,
+          this.searchParam.status
+        )
+        .subscribe({
+          next: (data: any) => {
+            this.loading = false;
+
+            // Update your component properties with the received data
+            if (data.records && data.records.length > 0) {
+              this.activeCreate = false;
+            } else {
+              this.activeCreate = true;
+            }
+            this.dataList = data.records; // Assuming 'records' property contains your data
+            this.tableConfig.total = data.totalCount;
+            this.total = data.totalCount;
+            this.tableConfig.pageIndex = this.pageIndex;
+            this.tableLoading(false);
+            this.checkedCashArray = [...this.checkedCashArray];
+          },
+          error: (error) => {
+            // Handle the error, e.g., display an error message to the user
+          },
+          complete: () => {
+            console.log('Completed'); // This is called when the observable completes
+          },
+        });
+    }
   }
 
   // trigger table change detection
@@ -255,24 +273,48 @@ export class InstancesComponent implements OnInit {
       pageIndex: 1,
     };
   }
-  ganVLANFC(): void {
-    const modal = this.modalSrv.create({
-      nzTitle: 'Gắn VLAN',
-      nzOkText: 'Xác nhận',
-      nzCancelText: 'Hủy',
-      nzContent: InstancesVlanGimComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzData: {
-        title: "SIM"
-      },
-      nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
-    });
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-    // Return a result when closed
-    modal.afterClose.subscribe((result) =>
-      console.log('[afterClose] The result is:', result)
-    );
+  getStatus(value: string): string {
+    const foundItem = this.filterStatus.find((item) => item.value === value);
+
+    if (foundItem) {
+      return foundItem.text;
+    } else {
+      return value;
+    }
   }
+
+  handleCancelGanVLAN(): void {
+    this.actionData = null;
+    this.isVisibleGanVLAN = false;
+  }
+
+  handleOkGanVLAN(): void {
+    this.message.success('Gắn VLAN thành công');
+    //this.actionData = null;
+    this.isVisibleGanVLAN = false;
+    // var body = {};
+    // this.dataService.postAction(this.actionData.id, body).subscribe(
+    //   (data: any) => {
+    //     console.log(data);
+    //     if (data == true) {
+    //       this.message.success('Gắn VLAN thành công');
+    //     } else {
+    //       this.message.error('Gắn VLAN không thành công');
+    //     }
+    //   },
+    //   () => {
+    //     this.message.error('Gắn VLAN không thành công');
+    //   }
+    // );
+  }
+
+  clickIPAddress(): void {
+    this.isVisibleGanVLAN = false;
+    this.isVisibleGanVLANIPAddress = true;
+    this.message.success('Thành công');
+
+  }
+
 
   shutdownInstance(): void {
     this.modalSrv.create({
@@ -328,6 +370,12 @@ export class InstancesComponent implements OnInit {
     });
   }
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+  }
+  navigateToEdit(id: number) {
+    this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
+  }
+  navigateToDetail(id: number) {
+    this.router.navigate(['/app-smart-cloud/instances/instances-detail/' + id]);
   }
 }

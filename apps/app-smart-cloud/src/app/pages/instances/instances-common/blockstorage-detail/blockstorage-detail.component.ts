@@ -58,16 +58,16 @@ export class BlockstorageDetailComponent implements OnInit, OnChanges {
     }
   }
   navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
     this.route.navigate([
-      '/app-smart-cloud/vm/instances-edit-info/' + this.instancesId,
+      '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
     ]);
   }
   navigateToEdit() {
     this.route.navigate([
-      '/app-smart-cloud/vm/instances-edit/' + this.instancesId,
+      '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
     ]);
   }
   returnPage(): void {

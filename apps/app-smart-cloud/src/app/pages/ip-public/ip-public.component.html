@@ -1,0 +1,118 @@
+<page-header  [action]="action" [title]="'Danh sách IP Public'">
+  <ng-template #action>
+    <div class="text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-card>
+  <ng-container [ngSwitch]="isBegin">
+    <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
+      <div nz-row class="mb-md">
+        <div nz-col nzSpan="18">
+          <div class="row">
+            <div class="col-md-6" style="display:flex;">
+              <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái volume:</h4>
+              <nz-input-group nzCompact>
+                <nz-select [(ngModel)]="selectedStatus" nzSize="large">
+                  <nz-option *ngFor="let p of statusData" [nzValue]="p" [nzLabel]="p" ></nz-option>
+                </nz-select>
+              </nz-input-group>
+            </div>
+            <div class="col-md-6" style="margin-left: 30px">
+              <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+                <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+              </nz-input-group>
+              <ng-template #suffixButton>
+                <button nz-button nzType="primary" nzSize="large" nzSearch (click)="search(searchBox.value)">
+                  <span nz-icon nzType="setting" nzTheme="outline"></span>
+                  Tim kiếm
+                </button>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div nz-col nzSpan="6">
+          <div class="text-right">
+            <button nzSize="large" (click)="createIp()" nz-button nzType="primary" style="
+            border: 1px solid #52c41a;
+            border-radius: 2px;
+            background-color: #52c41a;
+          ">+ Tạo mới
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Bảng-->
+      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfIp"
+                [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
+                (nzPageIndexChange)="onPageIndexChange($event)">
+        <thead>
+        <tr>
+          <th>Địa chỉ IP</th>
+          <th>Loại IP</th>
+          <th>Máy ảo</th>
+          <th>Trạng thái IP Public</th>
+          <th>Trạng thái dịch vụ</th>
+          <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of listOfIp">
+          <td width="25%">{{ item.ipAddress }}</td>
+          <td>loại ip</td>
+          <td>{{ item.iPv6Address === null ? 'IPv4' : 'IPv6' }}</td>
+          <td *ngIf="item.status === 0" style="color: forestgreen">Khởi tạo</td>
+          <td *ngIf="item.status !== 0" style="color: red">Đang sử dụng</td>
+<!--          <td style="color: forestgreen">{{ item.status === 0 ? 'Khởi tạo' : 'Đang sử dụng' }}</td>-->
+          <td>{{ item.serviceStatus }}</td>
+          <td width="15%">
+<!--            <a nz-dropdown [nzDropdownMenu]="menu">-->
+<!--              Tại đây-->
+<!--              <i nz-icon nzType="down"></i>-->
+<!--            </a>-->
+<!--            <nz-dropdown-menu   #menu="nzDropdownMenu">-->
+<!--              <ul nz-menu nzSelectable>-->
+<!--                <li nz-menu-item (click)="openIpMounted(item.id)">Gắn Ip Pulbic</li>-->
+<!--                <li nz-menu-item (click)="openIpRemove(item.id)">Gỡ Ip Pulbic</li>-->
+<!--                <li nz-menu-item (click)="openIpDelete(item.id)" nzDanger>Xóa</li>-->
+<!--              </ul>-->
+<!--            </nz-dropdown-menu>-->
+            <nz-input-group nzCompact>
+              <nz-select [(ngModel)]="selectedAction" nzSize="large" (nzOpenChange)="openIpMounted($event, item.id)">
+                <nz-option nzValue="Gắn Ip Pulbic" nzLabel="Gắn Ip Pulbic" ></nz-option>
+                <nz-option nzValue="Gỡ Ip Pulbic" nzLabel="Gỡ Ip Pulbic" ></nz-option>
+                <nz-option nzValue="Xóa" nzLabel="Xóa" ></nz-option>
+              </nz-select>
+            </nz-input-group>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </ng-container>
+    <ng-container *ngSwitchDefault >
+      <nz-result nzStatus="403" nzTitle="SSH KEY - Ổ Khóa truy cp dịch vụ" nzSubTitle="Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối">
+<!--        <div nz-result-extra>-->
+<!--          <button (click)="createKey()" nz-button nzType="primary">Khởi tạo ngay</button>-->
+<!--        </div>-->
+      </nz-result>
+    </ng-container>
+  </ng-container>
+</nz-card>
+
+<!--Gắn-->
+<nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="Gắn Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="Mounted()" nzOkText="Xác nhận"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+</nz-modal>
+
+<!--Gỡ-->
+<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="Mounted()" nzOkText="Xác nhận"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+</nz-modal>
+
+<!--Xóa-->
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="Mounted()" nzOkText="Xác nhận"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+</nz-modal>
+

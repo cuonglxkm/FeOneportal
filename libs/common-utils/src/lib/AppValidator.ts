@@ -179,22 +179,28 @@ export class AppValidator {
     }
   }
 
-  static validCodeAndType(): ValidatorFn { // validate input code and type
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const value = control.value;
-      if (value == null) {
-        return { invalidNumber: true };
-      }
-      const validNumberRegex = /^-?\d+(\.\d+)?$/;
-      if (!validNumberRegex.test(value)) {
-        return { invalidNumber: true };
-      }
-      const numericValue = parseFloat(value);
-      if (numericValue < -1 || numericValue > 255) {
-        return { outOfRange: true };
-      }
-      return null;
-    };
+  static validCodeAndType(control: { value: string }): { [key: string]: boolean } | null {
+    const value = parseFloat(control.value);
+    if (value < -1 || value > 255) {
+      return { outOfRange: true };
+    }
+    return null
+  }
+
+  static validateNumber(control: { value: string }): { [key: string]: boolean } | null {
+    const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
+    if (!isNumber && !!control.value) {
+      return { invalidNumber: true }
+    }
+    return null;
+  }
+
+  static validateProtocol(control: { value: string }): { [key: string]: boolean } | null {
+    const numericValue = parseFloat(control.value);
+    if (numericValue < 1 || numericValue > 255) {
+      return { outOfRange: true };
+    }
+    return null;
   }
 
   static validProtocol(): ValidatorFn { // validate input protocol
@@ -224,10 +230,6 @@ export class AppValidator {
       const validNumberRegex = /^[1-9]\d*$/;
       if (!validNumberRegex.test(value)) {
         return { invalidNumber: true };
-      }
-      const integerValue = parseInt(value, 10);
-      if (integerValue < 1) {
-        return { lessThanOne: true };
       }
 
       return null;

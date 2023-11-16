@@ -32,11 +32,14 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
   @Input() instances: any;
   @Input() listOfDataNetwork: any;
+
   @Output() valueChanged = new EventEmitter();
 
   listSecurityGroup: SecurityGroupModel[] = [];
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
+
+  portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
   getAllSecurityGroup() {
     this.dataService
@@ -106,19 +109,25 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     }
   }
   navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/vm/instances-create']);
+    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
     this.route.navigate([
-      '/app-smart-cloud/vm/instances-edit-info/' + this.instancesId,
+      '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
     ]);
   }
   navigateToEdit() {
     this.route.navigate([
-      '/app-smart-cloud/vm/instances-edit/' + this.instancesId,
+      '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
     ]);
   }
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/vm']);
+  }
+
+  navigateToAllowAddressPair() {
+    this.route.navigate([
+        '/app-smart-cloud/allow-address-pair/' + this.portId,
+    ]);
   }
 }

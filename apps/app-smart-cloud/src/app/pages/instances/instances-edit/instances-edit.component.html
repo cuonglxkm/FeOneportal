@@ -30,7 +30,7 @@
   </page-header>
 </div>
 
-<form nz-form [nzLayout]="'vertical'">
+<form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
   <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
     <nz-row nzGutter="16">
       <div style="width: 100%">
@@ -65,18 +65,23 @@
     <br />
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
+        <nz-form-item >
+          <nz-form-label nzFor="name" 
             >Hệ điều hành: {{ instancesModel.imageId }}
-            <a (click)="navigateToChangeImage()">
-              <i nz-icon nzType="redo"></i>Thay đổi</a
+            <a
+              (click)="navigateToChangeImage()"
+              style="margin-left: 15px;"
+            >
+              <img nz-image nzSrc="assets/imgs/undo.png" alt="" /><span
+                >Thay đổi</span
+              ></a
             >
           </nz-form-label>
         </nz-form-item>
       </nz-col>
     </nz-row>
     <nz-row nzGutter="16">
-      <h6 class="h6">Chọn loại Volume *</h6>
+      <h6 class="h6">Chọn loại Volume <span class="text-red">*</span></h6>
     </nz-row>
     <nz-row nzGutter="16">
       <nz-radio-group
@@ -177,14 +182,19 @@
                     <tr>
                       <div>
                         <b class="h4"
-                          >{{ data.flavorName }} {{ data.id }}
-                          {{ selectedElementFlavor }}</b
+                          >{{ data.flavorName }} {{ selectedElementFlavor }}</b
                         ><br />
                         <b class="h4">{{ data.price }}đ/tháng</b><br />
                         <span>đ/giờ</span>
                       </div>
                     </tr>
-                    <tr>
+                    <tr
+                      class="flavor-footer"
+                      [class.flavor-footer-active]="
+                        selectedElementFlavor === data.id
+                      "
+                      [class.flavor-footer]="selectedElementFlavor != data.id"
+                    >
                       <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
                       <div>
                         <p>{{ data.description }}</p>
@@ -302,7 +312,9 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Thời hạn sử dụng (Tháng) *</nz-form-label>
+          <nz-form-label
+            >Thời hạn sử dụng (Tháng) <span class="text-red">*</span></nz-form-label
+          >
           <nz-form-control>
             <nz-input-number
               [nzReadOnly]="true"
