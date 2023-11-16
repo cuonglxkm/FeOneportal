@@ -40,7 +40,7 @@ export class AllowAddressPairService extends BaseService {
     }
 
     createOrDelete(form: AllowAddressPairCreateOrDeleteForm) {
-        return this.http.post(this.baseUrl2  + '/instances/allowadresspair', Object.assign(form))
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions  + '/instances/allowadresspair', Object.assign(form))
             .pipe(catchError(this.errorCode));
     }
 
