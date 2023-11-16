@@ -34,7 +34,9 @@ export class DeleteRuleComponent {
     this.securityGroupRuleService.delete(this.id, this.condition)
         .subscribe((data) => {
           this.notification.success('Thành công', `Đã xóa thành công`);
-          this.onOk.emit();
+        }, error => {
+          this.notification.error('Thất bại', `Đã xóa thất bại`);
         })
+    this.onOk.emit();
   }
 }

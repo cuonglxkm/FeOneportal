@@ -45,6 +45,8 @@ export class CreateSecurityGroupComponent implements OnInit{
                     this.router.navigate([
                         '/app-smart-cloud/security-group'
                     ])
+                }, error => {
+                    this.notification.error('Thất bại', 'Tạo Security Group thất bại');
                 })
         } else {
             Object.values(this.validateForm.controls).forEach(control => {

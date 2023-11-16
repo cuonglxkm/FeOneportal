@@ -19,7 +19,7 @@ export class CreateAllowAddressPairComponent implements OnInit {
         macAddress: FormControl<string>;
         ipAddress: FormControl<string>;
     }> = this.fb.group({
-        macAddress: [''],
+        macAddress: ['', [Validators.pattern(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/)]],
         ipAddress: ['', [Validators.required, AppValidator.ipWithCIDRValidator,
             Validators.pattern(/^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/)]],
     });
@@ -30,17 +30,15 @@ export class CreateAllowAddressPairComponent implements OnInit {
     submitForm(): void {
         if (this.validateForm.valid) {
             this.onOk.emit(this.validateForm.value);
-        } else {
-            Object.values(this.validateForm.controls).forEach(control => {
-                if (control.invalid) {
-                    control.markAsDirty();
-                    control.updateValueAndValidity({onlySelf: true});
-                }
-            });
         }
+
     }
 
     handleCancel(): void {
+        this.validateForm.patchValue({
+            ipAddress: '',
+            macAddress: ''
+        });
         this.onCancel.emit();
     }
 

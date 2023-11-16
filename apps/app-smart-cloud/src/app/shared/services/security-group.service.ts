@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SecurityGroup, SecurityGroupCreateForm, SecurityGroupSearchCondition}
   from "../../shared/models/security-group";
-import {Observable} from "rxjs";
+import {Observable, catchError, throwError} from "rxjs";
 import { BaseService } from "src/app/shared/services/base.service";
 
 @Injectable({
@@ -27,20 +27,30 @@ export class SecurityGroupService extends BaseService {
         params = params.append('projectId', condition.projectId);
         params = params.append('regionId', condition.regionId);
 
-        return this.http.get<SecurityGroup[]>(this.baseUrl + '/security_group/getall', {
+        return this.http.get<SecurityGroup[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getall', {
             headers: this.getHeaders(),
             params: params
         })
+            .pipe(catchError(this.errorCode));
     }
 
     create(form: SecurityGroupCreateForm, condition: SecurityGroupSearchCondition) {
-        return this.http.post(this.baseUrl + '/security_group', Object.assign(form, condition))
+        return this.http
+            .post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form, condition))
+            .pipe(catchError(this.errorCode));
     }
 
     delete(id: string, condition: SecurityGroupSearchCondition) {
-        return this.http.delete(this.baseUrl + '/security_group', {
+        return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group', {
             headers: this.getHeaders(),
             body: JSON.stringify({id, ...condition})
-        })
+        }).pipe(catchError(this.errorCode));
     }
+
+    getInstanceBySecurityGroup() {
+    return this.http.get('/instance/security-group', {
+      headers: this.getHeaders()
+    })
+    }
+
 }
