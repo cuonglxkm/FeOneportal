@@ -7,28 +7,25 @@ import {
   QuerySnapshot,
 } from '@angular/fire/compat/firestore';
 import { Observable, from, map } from 'rxjs';
-import firebase from 'firebase/compat/app';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
-import { SearchCommonVO, PageInfo } from 'src/app/core/models/interfaces/types';
-import { BaseHttpService } from 'src/app/core/services/base-http.service';
+import { BaseService } from 'src/app/shared/services/base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class InstancesService {
-  private readonly http2 = inject(HttpClient);
-  private readonly baseUrl = 'http://172.16.68.200:1009';
+export class InstancesService extends BaseService{
 
-  constructor(public http: BaseHttpService) {}
-
+  constructor(private http: HttpClient) {
+    super();
+  }
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
   postAction(id: number, data: any): Observable<any> {
     //let url_ = `/images?show=${show}&region=${region}&type=${type}&customerId=${customerId}`;
     let url_ = `/instances/${id}/action`;
     url_ = url_.replace(/[?&]$/, '');
     // const _body = JSON.stringify(data)
-    return this.http2.post<any>(this.baseUrl + url_, data);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
 
   //hệ điều hành là Image, gói cấu hình là Flavors
@@ -41,13 +38,13 @@ export class InstancesService {
   ): Observable<any> {
     let url_ = `/security_group/getbyinstace?instanceId=${instanceId}&userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllIPSubnet(regionId: any): Observable<any> {
     let url_ = `/Ip/subnet/${regionId}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllSecurityGroup(
@@ -57,7 +54,7 @@ export class InstancesService {
   ): Observable<any> {
     let url_ = `/security_group/getall?userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllIPPublic(
@@ -71,7 +68,7 @@ export class InstancesService {
   ): Observable<any> {
     let url_ = `/Ip?status=${status}&customerId=${customerId}&regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}&isCheckState=${isCheckState}&ipAddress=${ipAddress}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllSnapshot(
@@ -83,13 +80,13 @@ export class InstancesService {
     //let url_ = `/images?show=${show}&region=${region}&type=${type}&customerId=${customerId}`;
     let url_ = `/images?region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getImageById(id: number): Observable<{}> {
     let url_ = `/images/${id}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get(this.baseUrl + url_);
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllImage(
@@ -101,13 +98,13 @@ export class InstancesService {
     let url_ = `/images?region=${region}&type=${type}&customerId=${customerId}`;
     // let url_ = `/images?region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<Images[]>(this.baseUrl + url_);
+    return this.http.get<Images[]>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllImageType(): Observable<{}> {
     let url_ = `/images/imageTypes`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get(this.baseUrl + url_);
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getAllFlavors(
@@ -119,7 +116,7 @@ export class InstancesService {
   ): Observable<Flavors[]> {
     let url_ = `/flavors?show=${show}&region=${region}&isBasic=${isBasic}&isVpc=${isVpc}&showAll=${showAll}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.get<Flavors[]>(this.baseUrl + url_);
+    return this.http.get<Flavors[]>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   search(
@@ -133,43 +130,43 @@ export class InstancesService {
     let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&status=${status}&region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getById(id: number, checkState: boolean = false): Observable<any> {
     let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http2.get<any>(this.baseUrl + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   delete(id: number): Observable<any> {
     let url_ = `/instances/${id}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.delete<any>(this.baseUrl + url_);
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   create(data: any): Observable<any> {
     let url_ = `/instances`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.post<any>(this.baseUrl + url_, data);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
 
   resetpassword(data: any): Observable<any> {
     let url_ = `/instances/resetpassword?id=${data.id}&newPassword=${data.newPassword}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.post<any>(this.baseUrl + url_, '');
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, '');
   }
 
   rebuild(data: any): Observable<any> {
     let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.post<any>(this.baseUrl + url_, data);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
 
   update(data: any): Observable<any> {
     let url_ = `/instances/${data.id}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http2.put<any>(this.baseUrl + url_, data);
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
 }
