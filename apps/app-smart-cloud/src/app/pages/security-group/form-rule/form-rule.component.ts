@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {Location} from "@angular/common";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
@@ -16,11 +16,12 @@ import {Router} from "@angular/router";
   templateUrl: './form-rule.component.html',
 })
 export class FormRuleComponent implements OnInit{
-
   @Input() direction: 'ingress' | 'egress'
   @Input() securityGroupId: string
   @Input() region: number;
   @Input() project: number
+  @Output() onOk = new EventEmitter()
+  @Output() onCancel = new EventEmitter()
 
   portType: 'Port' | 'PortRange' = "Port";
 
@@ -28,7 +29,7 @@ export class FormRuleComponent implements OnInit{
 
   ruleValue?: string;
 
-  directionValue: any;
+  isLoading: boolean = false;
 
   rulesList: NzSelectOptionInterface[] = [
     {label: "Custom TCP Rule", value: "tcp-IPv4"},
@@ -78,7 +79,6 @@ export class FormRuleComponent implements OnInit{
         regionId: this.region,
         userId: this.conditionSearch.userId,
       })
-      console.log(formData);
       this.formCreateSGRule.direction = this.direction;
       this.formCreateSGRule.etherType = formData.etherType
       if(formData.portRangeMin === undefined || formData.portRangeMin === null) {
@@ -106,17 +106,15 @@ export class FormRuleComponent implements OnInit{
       this.formCreateSGRule.projectId = this.conditionSearch.projectId
       this.formCreateSGRule.region =this.conditionSearch.regionId
 
-      console.log('request: ', this.formCreateSGRule)
+      this.isLoading = true
       this.securityGroupRuleService.create(this.formCreateSGRule).subscribe(
         data => {
-          console.log('response: ', data)
+          this.isLoading = false
           this.notification.success('Thành công', 'Đã tạo Inbound thành công');
-          this.router.navigate([
-            '/app-smart-cloud/security-group'
-          ])
-          // this.router.navigateByUrl(`/app-smart-cloud/security-group?securityGroupId=${"5ec8aff4-71d5-4027-b519-e47b7e618092"}&regionId=${3}`);
+          this.onOk.emit(data)
         },
         error => {
+          this.isLoading = false
           this.notification.error('Thất bại', 'Tạo Inbound thất bại');
         }
       )
@@ -233,22 +231,11 @@ export class FormRuleComponent implements OnInit{
   }
 
   goBack(): void {
-    this.location.back();
-    this.validateForm.patchValue({
-      rule: '',
-      portType: 'Port',
-      portRangeMin: '',
-      portRangeMax: '',
-      remoteType: 'CIDR',
-      remoteIpPrefix: '',
-      etherType: '',
-      protocol: '',
-      securityGroupId: ''
-    });
+    this.onCancel.emit()
+    this.validateForm.reset();
   }
   constructor(
     private fb: NonNullableFormBuilder,
-    private location: Location,
     private securityGroupService: SecurityGroupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private securityGroupRuleService: SecurityGroupRuleService,

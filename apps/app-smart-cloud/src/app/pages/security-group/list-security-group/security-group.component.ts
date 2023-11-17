@@ -1,5 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
+import {
+    SecurityGroup,
+    SecurityGroupCreateForm,
+    SecurityGroupSearchCondition
+} from "../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../shared/services/security-group.service";
 import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
@@ -15,8 +19,6 @@ import {NzNotificationService} from 'ng-zorro-antd/notification';
 })
 export class SecurityGroupComponent implements OnInit {
 
-    isVisible = false;
-
     conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
 
     options: SecurityGroup[] = [];
@@ -31,17 +33,12 @@ export class SecurityGroupComponent implements OnInit {
 
     project: number;
 
-    isLoadingSG: boolean = true;
-
-    isLoading: boolean = true;
-
     headerInfo = {
         firstItem: 'Home',
         secondItem: 'Dịch vụ',
         thirdItem: 'Security Group',
         content: 'Security Group'
     }
-
 
     constructor(private securityGroupService: SecurityGroupService,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -50,7 +47,6 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     onSecurityGroupChange(): void {
-        this.isLoading = false;
         this.getListInbound();
 
         this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
@@ -59,30 +55,24 @@ export class SecurityGroupComponent implements OnInit {
         console.log('selected value', this.selectedValue)
     }
 
-    showModal(): void {
-        this.isVisible = true;
-    }
-
     handleOk(): void {
-        this.isVisible = false;
         this.selectedValue = undefined
         this.listInbound = []
         this.listOutbound = []
         this.getSecurityGroup();
     }
 
-    handleCancel(): void {
-        this.isVisible = false;
+    handleOkCreate() {
+        this.getSecurityGroup();
     }
 
     regionChanged(region: RegionModel) {
-        this.region = region.regionId;
+        this.region = region.regionId
         this.conditionSearch.regionId = this.region;
     }
 
     projectChanged(project: ProjectModel) {
-        this.isLoadingSG = true;
-        this.project = project?.id;
+        this.project = project?.id
         this.conditionSearch.projectId = project?.id;
         this.selectedValue = undefined
         this.listInbound = []
@@ -92,14 +82,13 @@ export class SecurityGroupComponent implements OnInit {
 
     getSecurityGroup() {
         console.log('search', this.conditionSearch)
+
         if (this.conditionSearch.regionId
             && this.conditionSearch.userId
             && this.conditionSearch.projectId) {
-
             this.securityGroupService.search(this.conditionSearch)
                 .subscribe((data) => {
                     this.options = data;
-                    this.isLoadingSG = false;
                 })
         }
     }
@@ -110,7 +99,7 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.conditionSearch.projectId = 4079
+        this.conditionSearch.projectId = localStorage.getItem('projectId')
         this.conditionSearch.userId = this.tokenService.get()?.userId
         this.conditionSearch.regionId = this.region
         this.route.queryParams.subscribe(params => {
@@ -119,7 +108,6 @@ export class SecurityGroupComponent implements OnInit {
             if (this.conditionSearch.regionId
                 && this.conditionSearch.securityGroupId
                 && this.conditionSearch.projectId) {
-                this.isLoading = true
                 this.securityGroupService.search(this.conditionSearch)
                     .subscribe((data) => {
                         if (data) {
@@ -129,7 +117,6 @@ export class SecurityGroupComponent implements OnInit {
                             this.listOutbound = data[index].rulesInfo.filter(value => value.direction === 'egress')
                         }
                         this.options = data;
-                        this.isLoading = false
                     }, error => {
                         this.notification.error('Thất bại', `Lấy dữ liệu thất bại`);
                     })
