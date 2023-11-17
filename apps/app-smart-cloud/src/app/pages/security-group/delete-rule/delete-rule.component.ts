@@ -23,8 +23,6 @@ export class DeleteRuleComponent {
   constructor(private securityGroupRuleService: SecurityGroupRuleService, private message: NzMessageService,
               private notification: NzNotificationService) {}
 
-
-
   handleCancel(): void {
     this.onCancel.emit();
   }
@@ -33,10 +31,10 @@ export class DeleteRuleComponent {
     this.isConfirmLoading = true;
     this.securityGroupRuleService.delete(this.id, this.condition)
         .subscribe((data) => {
+          this.onOk.emit();
           this.notification.success('Thành công', `Đã xóa thành công`);
         }, error => {
           this.notification.error('Thất bại', `Đã xóa thất bại`);
         })
-    this.onOk.emit();
   }
 }

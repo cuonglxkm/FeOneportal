@@ -1,9 +1,14 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SecurityGroupSearchCondition} from "../models/security-group";
-import {SecurityGroupRuleCreateForm} from "../models/security-group-rule";
+import SecurityGroupRule, {
+    RuleSearchCondition,
+    SecurityGroupRuleCreateForm,
+    SecurityGroupRuleGetPage
+} from "../models/security-group-rule";
 import {BaseService} from "./base.service";
-import {catchError, throwError} from "rxjs";
+import {catchError, Observable, throwError} from "rxjs";
+import Pagination from "../models/pagination";
 
 @Injectable({
     providedIn: 'root'
@@ -34,19 +39,19 @@ export class SecurityGroupRuleService extends BaseService {
     }
 
 
-    // getInbound(form: SecurityGroupRuleGetPage, condition: SecurityGroupSearchCondition): Observable<SecurityGroupRule[]> {
-    //     let params = new HttpParams();
-    //     params = params.append('userId', condition.userId);
-    //     params = params.append('projectId', condition.projectId);
-    //     params = params.append('regionId', condition.regionId);
-    //     params = params.append('pageSize', form.pageSize);
-    //     params = params.append('pageNumber', form.pageNumber);
-    //     params = params.append('securityGroupId', form.securityGroupId);
-    //     params = params.append('direction', form.direction);
-    //
-    //     return this.http.get<SecurityGroupRule[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', {
-    //         headers: this.getHeaders(),
-    //         params: params
-    //     })
-    // }
+    search(condition: RuleSearchCondition): Observable<Pagination<SecurityGroupRule>> {
+        let params = new HttpParams();
+        params = params.append('userId', condition.userId);
+        params = params.append('projectId', condition.projectId);
+        params = params.append('regionId', condition.regionId);
+        params = params.append('pageSize', condition.pageSize);
+        params = params.append('pageNumber', condition.pageNumber);
+        params = params.append('securityGroupId', condition.securityGroupId);
+        params = params.append('direction', condition.direction);
+
+        return this.http.get<Pagination<SecurityGroupRule>>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', {
+            headers: this.getHeaders(),
+            params: params
+        }).pipe(catchError(this.errorCode));
+    }
 }

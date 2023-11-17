@@ -52,8 +52,6 @@ export class ListAllowAddressPairComponent implements OnInit {
 
     inputValue: string;
 
-    isLoading: boolean = true;
-
     regionChanged(region: RegionModel) {
         this.region = region.regionId;
     }
@@ -149,7 +147,6 @@ export class ListAllowAddressPairComponent implements OnInit {
             .subscribe((data: any) => {
                 console.log('get success', data)
                 this.listPairInfo = data.records;
-                this.isLoading = false;
             });
     }
 
