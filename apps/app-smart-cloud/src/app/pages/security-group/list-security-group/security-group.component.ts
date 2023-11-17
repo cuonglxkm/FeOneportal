@@ -51,8 +51,6 @@ export class SecurityGroupComponent implements OnInit {
 
         this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
         this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
-
-        console.log('selected value', this.selectedValue)
     }
 
     handleOk(): void {
@@ -81,8 +79,6 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     getSecurityGroup() {
-        console.log('search', this.conditionSearch)
-
         if (this.conditionSearch.regionId
             && this.conditionSearch.userId
             && this.conditionSearch.projectId) {
@@ -99,7 +95,7 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.conditionSearch.projectId = localStorage.getItem('projectId')
+        this.conditionSearch.projectId = this.project
         this.conditionSearch.userId = this.tokenService.get()?.userId
         this.conditionSearch.regionId = this.region
         this.route.queryParams.subscribe(params => {

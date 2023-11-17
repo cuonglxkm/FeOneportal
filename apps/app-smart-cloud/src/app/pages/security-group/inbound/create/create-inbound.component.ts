@@ -1,7 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
 import {SecurityGroupSearchCondition} from "../../../../shared/models/security-group";
 
 @Component({
@@ -30,6 +27,7 @@ export class CreateInboundComponent implements OnInit {
         this.isVisible = false;
         this.onCancel.emit();
     }
+
     ngOnInit(): void {
 
     }
