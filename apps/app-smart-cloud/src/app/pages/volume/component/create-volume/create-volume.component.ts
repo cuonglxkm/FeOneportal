@@ -16,9 +16,6 @@ import {Router} from "@angular/router";
 })
 export class CreateVolumeComponent implements OnInit {
 
-  @ViewChildren(HeaderVolumeComponent) hearderVolumeComponent : HeaderVolumeComponent;
-
-
   headerInfo = {
     breadcrumb1: 'Home',
     breadcrumb2: 'Dịch vụ',
@@ -115,7 +112,7 @@ export class CreateVolumeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    this.getAllVmResponse = await this.volumeSevice.getAllVMs(3).toPromise();
+    this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.createVolumeInfo.regionId).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
       this.vmList.push({value: vm.id, label: vm.name});
@@ -235,10 +232,17 @@ export class CreateVolumeComponent implements OnInit {
 
   getProjectId(projectId: number){
     this.createVolumeInfo.vpcId = projectId;
+
   }
 
-  getRegionId(regionId: number){
+  async getRegionId(regionId: number){
+    this.vmList = [];
     this.createVolumeInfo.regionId = regionId;
+    this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.createVolumeInfo.regionId).toPromise();
+    this.listAllVMs = this.getAllVmResponse.records;
+    this.listAllVMs.forEach((vm) => {
+      this.vmList.push({value: vm.id, label: vm.name});
+    })
   }
 
 }

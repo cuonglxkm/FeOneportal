@@ -31,9 +31,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { da, tr } from 'date-fns/locale';
-import { Observable } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { LoadingService } from '@delon/abc/loading';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -64,7 +65,6 @@ class Network {
   ip?: string = '';
   status?: string = '';
 }
-
 
 @Component({
   selector: 'one-portal-instances-edit',
@@ -266,7 +266,7 @@ export class InstancesEditComponent implements OnInit {
       // this.listOfDataNetwork.push(...resultHttp);
     });
   }
- 
+
   //#endregion
 
   constructor(
@@ -277,7 +277,8 @@ export class InstancesEditComponent implements OnInit {
     private route: Router,
     private router: ActivatedRoute,
     public message: NzMessageService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private loadingSrv: LoadingService
   ) {}
   onRegionChange(region: RegionModel) {
     // Handle the region change event
@@ -286,10 +287,12 @@ export class InstancesEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+
     this.userId = this.tokenService.get()?.userId;
     this.initFlavors();
     this.getAllSecurityGroup();
-    this.initNetwork()
+    this.initNetwork();
 
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
@@ -297,6 +300,8 @@ export class InstancesEditComponent implements OnInit {
         this.dataService.getById(this.id, false).subscribe((data: any) => {
           this.instancesModel = data;
           this.selectedElementFlavor = this.instancesModel.flavorId;
+          this.region = this.instancesModel.regionId;
+          this.projectId = this.instancesModel.projectId;
           this.dataService
             .getAllSecurityGroupByInstance(
               this.instancesModel.cloudId,
@@ -304,6 +309,7 @@ export class InstancesEditComponent implements OnInit {
               this.instancesModel.customerId,
               this.instancesModel.projectId
             )
+            .pipe(finalize(() => this.loadingSrv.close()))
             .subscribe((datasg: any) => {
               console.log('getAllSecurityGroupByInstance', datasg);
               var arraylistSecurityGroup = datasg.map((obj) =>
@@ -320,27 +326,31 @@ export class InstancesEditComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-edit-info/' + this.id]);
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
+    ]);
   }
   navigateToEdit() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-edit/' + this.id]);
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-edit/' + this.id,
+    ]);
   }
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
-  
+
   save(): void {
     this.modalSrv.create({
       nzTitle: 'Xác nhận thông tin thay đổi',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện thay đổi thông tin máy ảo?',
+      nzContent:
+        'Quý khách chắn chắn muốn thực hiện thay đổi thông tin máy ảo?',
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-       this.readyEdit()
+        this.readyEdit();
       },
     });
   }
-
 
   readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
@@ -369,6 +379,6 @@ export class InstancesEditComponent implements OnInit {
   }
 
   cancel(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 }

@@ -1,4 +1,4 @@
-<app-header-volume [headerInfo]="headerInfo"></app-header-volume>
+<app-header-volume (regionId)="getRegionId($event)" (projectId)="getProjectId($event)" [headerInfo]="headerInfo"></app-header-volume>
 <br>
 <div class="create-volume">
   <h3>Thông tin Volume</h3>
@@ -33,15 +33,15 @@
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn loại Volume</nz-form-label>
   <br>
 
-  <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()">
+  <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()" [disabled]="true">
     <div style="display: flex; padding: 20px;">
-      <div nz-radio nzValue="1" [ngStyle]="{'background-color': volumeInfo.volumeType === '1' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="hdd" [ngStyle]="{'background-color': volumeInfo.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         HDD
         <br>
         Additional description and information about copywriting.
       </div>
-      <div nz-radio nzValue="0" [ngStyle]="{'background-color': volumeInfo.volumeType === '0' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="ssd" [ngStyle]="{'background-color': volumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         SSD
         <br>
@@ -66,7 +66,7 @@
     <tbody>
     <tr>
       <td>
-        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" [nzMin]="oldSize" [nzMax]="10" [nzStep]="1"></nz-input-number>
       </td>
       <td>200</td>
       <td>360.712</td>
@@ -76,9 +76,9 @@
   </nz-table>
   <br>
   <br>
-  <label nz-checkbox [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
+  <label nz-checkbox [(ngModel)]="volumeInfo.isEncryption" [disabled]="true">Mã hóa Volume</label>
   <br>
-  <label nz-checkbox [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
+  <label nz-checkbox [(ngModel)]="volumeInfo.isMultiAttach" [disabled]="true">Gắn nhiều máy ảo</label>
   <br>
   <br>
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn máy ảo</nz-form-label>
@@ -87,6 +87,7 @@
              [nzPlaceHolder]="'-Chọn máy ảo-'"
              [(ngModel)]="volumeInfo.instanceId"
              style="width: 100%;"
+             [disabled] = true
   >
     <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
   </nz-select>
@@ -106,6 +107,7 @@
              [(ngModel)]="expiryTime"
              (ngModelChange)="changeExpTime()"
              style="width: 100%;"
+             [disabled] = true
   >
   </nz-select>
   <p>
@@ -131,8 +133,8 @@
   <tr>
     <td style="border-bottom: none"></td>
     <td style="border-bottom: none; text-align: right; padding-right: 30px;">
-      <button nz-button nzType="primary" style="background-color: #9c9c9c; padding-right: 20px;">Hủy</button>
-      <button nz-button nzType="primary">Chỉnh sửa</button>
+      <button nz-button nzType="default" style="background-color: #9c9c9c; padding-right: 20px; color: white">Hủy</button>
+      <button nz-button nzType="primary" (click)="editVolume()" >Chỉnh sửa</button>
     </td>
   </tr>
   </tbody>

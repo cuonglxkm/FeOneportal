@@ -74,3 +74,15 @@ export class GetListVolumeModel {
   currentPage: number;
   previousPage: number;
 }
+
+export class AddVolumetoVmModel {
+  volumeId: number;
+  instanceId: number;
+  customerId: number;
+}
+export class EditTextVolumeModel{
+  volumeId: number;
+  customerId: number;
+  newName: string;
+  newDescription: string;
+}
