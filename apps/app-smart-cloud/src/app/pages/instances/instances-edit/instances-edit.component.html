@@ -7,11 +7,10 @@
       <a [routerLink]="['/']">Chỉnh sửa máy ảo</a>
     </nz-breadcrumb-item>
   </nz-breadcrumb>
-  <div class="text-right">
+  <div class="text-right non-pointer">
     <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
-    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+    <project-select-dropdown></project-select-dropdown>
   </div>
   <!-- <div><h2>Chỉnh sửa máy ảo</h2></div> -->
   <page-header [title]="'Chỉnh sửa máy ảo'" [action]="action">

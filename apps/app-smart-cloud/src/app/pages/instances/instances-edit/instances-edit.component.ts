@@ -300,6 +300,8 @@ export class InstancesEditComponent implements OnInit {
         this.dataService.getById(this.id, false).subscribe((data: any) => {
           this.instancesModel = data;
           this.selectedElementFlavor = this.instancesModel.flavorId;
+          this.region = this.instancesModel.regionId;
+          this.projectId = this.instancesModel.projectId;
           this.dataService
             .getAllSecurityGroupByInstance(
               this.instancesModel.cloudId,
