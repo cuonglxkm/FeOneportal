@@ -21,8 +21,8 @@ export class VolumeService extends BaseService {
   };
 
 
-  private urlVolume = 'http://172.16.68.200:1009/volumes';
-  private urlVM = 'http://172.16.68.200:1009/instances/getpaging';
+  private urlVolume = this.baseUrl+this.ENDPOINT.provisions+'/volumes';
+  private urlVM = this.baseUrl+this.ENDPOINT.provisions+'/instances/getpaging';
 
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): Observable<GetListVolumeModel> {
