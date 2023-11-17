@@ -39,7 +39,7 @@
       <!--  Bảng-->
       <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
-                (nzPageIndexChange)="onPageIndexChange($event)">
+                (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>
         <tr>
           <th>Tên keypaird</th>
@@ -57,8 +57,8 @@
             </button>
           </td>
           <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?"
-                    (nzOnCancel)="handleCancel()"
-                    (nzOnOk)="handleOk(data.id)">
+                    (nzOnCancel)="handleCancel(null)"
+                    (nzOnOk)="handleDelete(data.id)">
             <ng-container *nzModalContent></ng-container>
           </nz-modal>
         </tr>
@@ -80,13 +80,13 @@
 
   <!-- tạo mới -->
   <nz-form-control>
-    <form nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
+    <form #myForm="ngForm" nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
       <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới Keypair" [nzOkDisabled]="form.invalid"
-                (nzOnCancel)="handleCancel()"
-                (nzOnOk)="handleCreate()" [nzStyle]="modalStyle" nzOkText="Xác nhận"
+                (nzOnCancel)="handleCancel(myForm)"
+                (nzOnOk)="handleCreate(myForm)" [nzStyle]="modalStyle" nzOkText="Xác nhận"
                 nzCancelText="Hủy bỏ">
         <ng-container *nzModalContent>
-          <nz-tabset (nzSelectedIndexChange)="onTabchange($event)">
+          <nz-tabset (nzSelectedIndexChange)="onTabchange($event, myForm)">
             <nz-tab nzTitle="Tạo SSH Key mới">
               <div class="mb-5 mt-5 pt-3 pb-3" style="
               border-style: solid;
@@ -161,7 +161,7 @@
   </nz-form-control>
 
   <!-- chi tiết  -->
-  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel()" [nzOkText]="null"
+  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel(null)" [nzOkText]="null"
             nzCancelText="Quay lại" [nzStyle]="modalStyle">
     <ng-container *nzModalContent>
       <h4>Tên key pair:</h4>

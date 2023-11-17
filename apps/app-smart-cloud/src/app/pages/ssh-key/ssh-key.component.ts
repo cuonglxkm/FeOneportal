@@ -1,34 +1,26 @@
-import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {SshKeyService} from 'src/app/pages/ssh-key/ssh-key.service';
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {AppValidator, BaseResponse} from "../../../../../../libs/common-utils/src";
 import {SshKey} from './dto/ssh-key';
 import {ModalHelper} from '@delon/theme';
-import { NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppValidator} from "../../../../../../libs/common-utils/src";
 import {RegionModel} from "../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {ProjectModel} from "../../shared/models/project.model";
-
-interface Person {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
-
+import {NzMessageService} from "ng-zorro-antd/message";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'one-portal-ssh-key',
   templateUrl: './ssh-key.component.html',
   styleUrls: ['./ssh-key.component.less'],
 })
-export class SshKeyComponent implements OnInit{
+export class SshKeyComponent implements OnInit {
   //input
-  searchKey:string = "";
-  regionId: any = "";
-  projectId: any = "";
+  searchKey: string = "";
+  regionId: any = '';
+  projectId: any = '';
   size = 10;
   index: any = 0;
   total: any = 0;
@@ -47,6 +39,7 @@ export class SshKeyComponent implements OnInit{
   isVisibleDetail = false;
 
   //resource
+  loading = false;
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
@@ -54,48 +47,40 @@ export class SshKeyComponent implements OnInit{
   };
 
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
-  @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private message: NzMessageService) {
   }
 
   onPageSizeChange(event: any) {
     this.size = event
-    this.getSshKeys();
+    this.loadSshKeys();
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
-    this.getSshKeys();
+    this.loadSshKeys();
   }
 
   ngOnInit() {
-    this.getSshKeys();
+    // this.loadSshKeys();
     this.form.get('keypair_name_2').disable();
     this.form.get('public_key').disable();
   }
 
-  getSshKeys(): void {
-     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
+  loadSshKeys(): void {
+    this.loading = true;
+    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
+      .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
         this.listOfData = (this.checkNullObject(response) ? [] : response.records),
           this.total = (this.checkNullObject(response) ? 0 : response.totalCount),
           this.index = (this.checkNullObject(response) ? 0 : response.currentPage)
       });
-
-    this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, 0, 1, "")
-      .subscribe(response => {
-        this.checkEmpty = (this.checkNullObject(response) ? [] : response.records);
-        if (this.checkEmpty == undefined || this.checkEmpty == null || this.checkEmpty.length < 1) {
-          this.isBegin = true;
-        } else {
-          this.isBegin = false;
-        }
-      })
   }
 
   //SEARCH
   search(search: string) {
     this.searchKey = search;
-    this.getSshKeys();
+    this.loadSshKeys();
   }
 
   //DELETE
@@ -121,22 +106,26 @@ export class SshKeyComponent implements OnInit{
     this.isVisibleDelete = true;
   }
 
-  handleOk(number: any): void {
+  handleDelete(number: any): void {
     // call api
-    this.sshKeyService.deleteSshKey(this.data.id).subscribe(()=> {this.getSshKeys();});
+    this.sshKeyService.deleteSshKey(this.data.id).subscribe(() => {
+      this.loadSshKeys();
+      this.message.create('success', `Xóa thành công keypair`);
+    });
     this.isVisibleDelete = false;
   }
 
-  handleCancel(): void {
+  handleCancel(form: any): void {
     console.log('Button cancel clicked')
     this.isVisibleDelete = false;
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
+    form.resetForm();
   }
 
   indexTab: number = 0;
 
-  handleCreate(): void {
+  handleCreate(form: any): void {
     let namePrivate: string;
     let publickey: string = "";
 
@@ -155,12 +144,21 @@ export class SshKeyComponent implements OnInit{
       publicKey: publickey,
     }
 
-    this.sshKeyService.createSshKey(ax).subscribe(()=> {this.getSshKeys();});
-    // call api
+    this.sshKeyService.createSshKey(ax).subscribe({
+      next: post => {
+        this.loadSshKeys();
+        this.message.create('success', `Tạo mới thành công keypair`);
+      },
+      error: e => {
+        this.loadSshKeys();
+        this.message.create('error', `Tạo mới thất bại keypair`);
+      },
+    });
     this.isVisibleCreate = false;
+    form.resetForm();
   }
 
-  onTabchange(event: any) {
+  onTabchange(event: any, form: any) {
     this.indexTab = event;
     if (this.indexTab === 0) {
       this.form.get('keypair_name_1').enable();
@@ -171,6 +169,8 @@ export class SshKeyComponent implements OnInit{
       this.form.get('keypair_name_2').enable();
       this.form.get('public_key').enable();
     }
+
+    form.resetForm();
   }
 
   form = new FormGroup({
@@ -184,13 +184,19 @@ export class SshKeyComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
-    this.regionId = region.regionId;
-    this.getSshKeys();
+    this.regionId = (this.checkNullObject(region) ? "" : region.regionId);
+
   }
 
   projectChange(project: ProjectModel) {
-    this.projectId = (this.checkNullObject(project) ? "" : project.id);
-    this.getSshKeys();
+    if (project != null) {
+      // this.listOfData = []
+      // return;
+      this.projectId = project.id;
+    }
+
+
+    this.loadSshKeys();
   }
 
   checkNullObject(object: any): Boolean {
