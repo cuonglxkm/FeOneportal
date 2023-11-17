@@ -19,6 +19,8 @@ import {
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { finalize } from 'rxjs';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -74,10 +76,13 @@ export class InstancesEditInfoComponent implements OnInit {
     private route: Router,
     public message: NzMessageService,
     private el: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private loadingSrv: LoadingService
   ) {}
 
   ngOnInit(): void {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
@@ -94,10 +99,12 @@ export class InstancesEditInfoComponent implements OnInit {
               }
               this.dataService
                 .getImageById(this.instancesModel.imageId)
+                .pipe(finalize(() => this.loadingSrv.close()))
+
                 .subscribe((dataimge: any) => {
                   //this.hdh = dataimge;
                   this.selectedImage = dataimge;
-                //  this.selectedTypeImageId = this.hdh.imageTypeId;
+                  //  this.selectedTypeImageId = this.hdh.imageTypeId;
                   this.loading = false;
                   this.cdr.detectChanges();
                 });
@@ -131,12 +138,16 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   navigateToEdit() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-edit/' + this.id]);
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-edit/' + this.id,
+    ]);
   }
   navigateToChangeImage() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-edit-info/' + this.id]);
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
+    ]);
   }
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 }

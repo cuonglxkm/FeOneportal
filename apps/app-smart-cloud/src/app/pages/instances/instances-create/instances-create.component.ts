@@ -369,6 +369,22 @@ export class InstancesCreateComponent implements OnInit {
     // Handle the region change event
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
+    this.listSecurityGroup = [];
+    this.listIPPublic = [];
+    this.selectedSecurityGroup=[]
+    this.ipPublicValue=""
+    this.getAllIPPublic();
+    this.getAllSecurityGroup();
+    this.cdr.detectChanges()
+  }
+
+  onProjectChange(project: any) {
+    // Handle the region change event
+    this.projectId = project.id;
+    this.listSecurityGroup = [];
+    this.selectedSecurityGroup=[]
+    this.getAllSecurityGroup();
+    this.cdr.detectChanges()
   }
 
   ngOnInit(): void {
@@ -377,35 +393,6 @@ export class InstancesCreateComponent implements OnInit {
     this.initFlavors();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
-    const userList = [
-      {
-        key: '1',
-        workId: '00001',
-        name: 'John Brown',
-        department: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '2',
-        workId: '00002',
-        name: 'Jim Green',
-        department: 'London No. 1 Lake Park',
-      },
-      {
-        key: '3',
-        workId: '00003',
-        name: 'Joe Black',
-        department: 'Sidney No. 1 Lake Park',
-      },
-    ];
-
-    const children: string[] = [];
-    for (let i = 10; i < 10000; i++) {
-      children.push(`${i.toString(36)}${i}`);
-    }
-    this.listOfOption = children.map((item) => ({
-      value: item,
-      label: item,
-    }));
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -442,7 +429,8 @@ export class InstancesCreateComponent implements OnInit {
     this.createInstances.imageId = 113; // this.hdh.id;
     this.createInstances.useIPv6 = this.isUseIPv6;
     this.createInstances.usePrivateNetwork = this.isUseLAN;
-    this.createInstances.currentNetworkCloudId ='113210e5-52ac-4c01-a7bf-0976eca0c81f';
+    this.createInstances.currentNetworkCloudId =
+      '113210e5-52ac-4c01-a7bf-0976eca0c81f';
     this.createInstances.flavorId = 368; //this.flavor.id;
     this.createInstances.storage = 1;
     this.createInstances.snapshotCloudId = null;
@@ -454,7 +442,7 @@ export class InstancesCreateComponent implements OnInit {
     this.createInstances.cpuAdditional = 0;
     this.createInstances.btqtAdditional = 0;
     this.createInstances.bttnAdditional = 0;
-    this.createInstances.initPassword = '123123aA@' //this.password;
+    this.createInstances.initPassword = '123123aA@'; //this.password;
     this.createInstances.ipPrivate = null;
 
     this.dataService.create(this.createInstances).subscribe(
@@ -470,7 +458,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/app-smart-cloud/vm']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   _submitForm(): void {

@@ -17,7 +17,7 @@
     <region-select-dropdown
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
-    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+    <project-select-dropdown [regionId]="region"  (valueChanged)="onProjectChange($event)"></project-select-dropdown>
   </div>
   <div><h2>Tạo máy ảo</h2></div>
 </div>
@@ -695,7 +695,6 @@
             </tbody>
           </table>
         </div>
-        <p>{{ listOfDataBlockStorage | json }}</p>
       </nz-card>
     </div>
   </nz-card>
@@ -781,7 +780,6 @@
             </tbody>
           </table>
         </div>
-        <p>{{ listOfDataNetwork | json }}</p>
       </nz-card>
     </div>
   </nz-card>
@@ -803,7 +801,7 @@
       </tr>
     </nz-table>
     <div style="float: right; padding-top: 1%">
-      <button nz-button nzType="default" (click)="cancel()">Hủy</button>
+      <button nz-button nzType="default" (click)="cancel()">Quay lại</button>
       <button
         nz-button
         nzType="primary"
