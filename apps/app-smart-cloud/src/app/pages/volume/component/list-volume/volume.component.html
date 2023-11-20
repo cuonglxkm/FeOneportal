@@ -2,102 +2,7 @@
                    [headerInfo]="headerInfo"></app-header-volume>
 <!--<h2>Danh sách Volume</h2>-->
 <br>
-<div class="search-volume">
-
-<!--  <nz-card-->
-<!--    class="m-b-10"-->
-<!--    nzHoverable-->
-<!--    [nzBodyStyle]="{ 'padding-bottom': '15px' }"-->
-<!--  >-->
-<!--    <form nz-form>-->
-<!--      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">-->
-<!--        <div-->
-<!--          nz-col-->
-<!--          [nzLg]="8"-->
-<!--          [nzMd]="8"-->
-<!--          [nzSm]="24"-->
-<!--          [nzXl]="6"-->
-<!--          [nzXs]="24"-->
-<!--          [nzXXl]="6"-->
-<!--        >-->
-<!--          <nz-form-item>-->
-<!--            <nz-form-label [nzFor]="">Trạng thái Volume</nz-form-label>-->
-<!--            <nz-form-control>-->
-<!--              <nz-select-->
-<!--                [ngModel]="volumeStatusSearch"-->
-<!--                [nzPlaceHolder]="'Tất cả trạng thái'"-->
-<!--                [nzShowSearch]="false"-->
-<!--                name="status"-->
-<!--              >-->
-<!--                <nz-option-->
-<!--                  *ngFor="let i of options"-->
-<!--                  [nzLabel]="i.label.toString()"-->
-<!--                  [nzValue]="i.value"-->
-<!--                />-->
-<!--              </nz-select>-->
-<!--            </nz-form-control>-->
-<!--          </nz-form-item>-->
-<!--        </div>-->
-<!--        <div-->
-<!--          nz-col-->
-<!--          [nzLg]="8"-->
-<!--          [nzMd]="12"-->
-<!--          [nzSm]="24"-->
-<!--          [nzXl]="8"-->
-<!--          [nzXs]="24"-->
-<!--          [nzXXl]="8"-->
-<!--        >-->
-<!--          <nz-form-item>-->
-<!--            <nz-form-control>-->
-<!--              <input-->
-<!--                name="name"-->
-<!--                nz-input-->
-<!--                placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."-->
-<!--                [ngModel]="volumeNameSearch"-->
-<!--              />-->
-<!--            </nz-form-control>-->
-<!--          </nz-form-item>-->
-<!--        </div>-->
-<!--        <div-->
-<!--          class="text-right p-0 m-b-10"-->
-<!--          nz-col-->
-<!--          [nzLg]="4"-->
-<!--          [nzMd]="8"-->
-<!--          [nzSm]="24"-->
-<!--          [nzXl]="4"-->
-<!--          [nzXs]="24"-->
-<!--          [nzXXl]="2"-->
-<!--        >-->
-<!--          <button nz-button [nzType]="'primary'" (click)="searchVolumes()">-->
-<!--            <i nz-icon nzType="search"></i>-->
-<!--            Search-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div-->
-<!--          class="text-right p-0 m-b-10"-->
-<!--          nz-col-->
-<!--          [nzLg]="8"-->
-<!--          [nzMd]="12"-->
-<!--          [nzSm]="24"-->
-<!--          [nzXl]="8"-->
-<!--          [nzXs]="24"-->
-<!--          [nzXXl]="8"-->
-<!--        >-->
-<!--          <button-->
-<!--            class="m-r-8"-->
-<!--            class="bg-success border-success"-->
-<!--            nz-button-->
-<!--            nzType="primary"-->
-<!--            (click)="navigateToCreateVolume()"-->
-<!--          >-->
-<!--            <i nz-icon nzType="plus"></i>-->
-<!--            Tạo mới-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </form>-->
-<!--  </nz-card>-->
-
+<div class="search-volume" *ngIf="!isBlankVolume; else elsePage">
   <nz-card
     class="m-b-10"
     nzHoverable
@@ -225,3 +130,17 @@
     </nz-tab>
   </nz-tabset>
 </div>
+
+<ng-template #elsePage>
+  <nz-card>
+    <result>
+      <img nz-image style="height: 100%; width: 100%;" nzSrc="assets/imgs/blank_volume.png" alt=""/>
+
+      <button nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()">
+        <!-- <a routerLink="/pages/instances/instances-create"> Khởi tạo ngay</a>
+        -->
+        Khởi tạo ngay
+      </button>
+    </result>
+  </nz-card>
+</ng-template>

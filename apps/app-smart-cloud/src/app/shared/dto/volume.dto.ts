@@ -31,7 +31,8 @@ export class VolumeDTO {
   isMultiAttach: boolean;
   volumeType: string | null;
   customerEmail: string;
-  id: number
+  id: number;
+  attachedInstances: AttachedDto[];
 }
 
 export class PriceVolumeDto {
@@ -99,4 +100,9 @@ export class EditSizeMemoryVolumeDTO{
 export class VmDto {
   id: number;
   name: string;
+}
+
+export class AttachedDto {
+  instanceId: number;
+  instanceName: string;
 }

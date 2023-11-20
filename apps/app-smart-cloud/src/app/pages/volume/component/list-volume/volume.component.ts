@@ -9,16 +9,7 @@ import { VolumeService } from "../../../../shared/services/volume.service";
 import {AddVolumetoVmModel, GetListVolumeModel} from "../../../../shared/models/volume.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-
-interface Volume {
-  name: string;
-  storage: number;
-  iops: number;
-  statusVolume: number;
-  statusAction: number;
-  vm: string;
-}
-
+import {isBlank} from "@delon/form";
 @Component({
   selector: 'app-volume',
   templateUrl: './volume.component.html',
@@ -52,7 +43,8 @@ export class VolumeComponent implements OnInit {
 
   isLoading = true;
 
-  combinedValues: string[] = [];
+
+  isBlankVolume = true;
 
   selectedOption: NzSelectOptionInterface | null = null;
   options: NzSelectOptionInterface[] = [
@@ -84,10 +76,10 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-    const regionString = localStorage.getItem('region');
-    const region = JSON.parse(regionString);
-    const projectId = localStorage.getItem('projectId')!=null?parseInt(localStorage.getItem('projectId')):null;
-    this.getListVolume(null, projectId, region.regionId, true, 10, 0 , null , null)
+    // const regionString = localStorage.getItem('region');
+    // const region = JSON.parse(regionString);
+    // const projectId = localStorage.getItem('projectId')!=null?parseInt(localStorage.getItem('projectId')):null;
+    // this.getListVolume(null, projectId, region.regionId, true, 10, 0 , null , null)
   }
 
   onRootPageIndexChange(event: any) {
@@ -226,15 +218,25 @@ export class VolumeComponent implements OnInit {
     this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage ,status , volumeName).subscribe(data => {
 
       if(volumeRootOnly === true ){
-        this.listVolumeRootResponse = data;
-        this.listVolumeRoot = data.records;
-        this.totalRoot = data.totalCount;
-        this.isLoading=false;
+        if(data.records.length > 0){
+          this.listVolumeRootResponse = data;
+          this.listVolumeRoot = data.records;
+          this.totalRoot = data.totalCount;
+          this.isLoading=false;
+          this.isBlankVolume = false;
+        }else
+          this.isBlankVolume = true;
+
       }else{
-        this.listVolumeAddVolumeResponse = data;
-        this.listVolumeAdd = data.records;
-        this.totalAdd = data.totalCount;
-        this.isLoading=false;
+        if(data.records.length > 0){
+          this.listVolumeAddVolumeResponse = data;
+          this.listVolumeAdd = data.records;
+          this.totalAdd = data.totalCount;
+          this.isLoading=false;
+          this.isBlankVolume = false;
+        }else
+          this.isBlankVolume = true;
+
       }
     })
   }
@@ -262,10 +264,13 @@ export class VolumeComponent implements OnInit {
 
   getProjectId(projectId: number){
     this.projectSearch = projectId;
+    this.searchVolumes();
   }
 
   getRegionId(regionId: number){
     this.regionSearch = regionId;
+    this.searchVolumes();
   }
 
+  protected readonly isBlank = isBlank;
 }

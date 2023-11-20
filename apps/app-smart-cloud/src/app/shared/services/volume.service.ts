@@ -27,7 +27,7 @@ export class VolumeService extends BaseService {
   //API GW
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
   private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
-
+  private  urlOrderGW = this.baseUrl + this.ENDPOINT.orders;
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): Observable<GetListVolumeModel> {
     let urlResult = this.getConditionSearchVolume(customerId, projectId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName);
