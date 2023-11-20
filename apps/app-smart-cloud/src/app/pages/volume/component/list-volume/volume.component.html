@@ -3,37 +3,138 @@
 <!--<h2>Danh sách Volume</h2>-->
 <br>
 <div class="search-volume">
-  <nz-form-label [nzFor]="'volumeStatus'">Trạng thái Volume</nz-form-label>
-  <nz-select nzSize="large"
-             [nzPlaceHolder]="'Tất cả trạng thái'"
-             [nzOptions]="options"
-             [(ngModel)]="volumeStatusSearch"
-             style="width: 170px;"
-  >
-  </nz-select>
 
-  <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-    <input type="text" [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume"
-           style="width: 300px; margin-left: 30px;"/>
-  </nz-input-group>
-  <ng-template #suffixButton>
-    <button nz-button nzType="primary" (click)="searchVolumes()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
-    </button>
-  </ng-template>
-  <div class="text-right" style="margin-top: -40px;  padding-right: 30px;">
-    <button class="m-r-8"
-            class="bg-success border-success"
-            nz-button
-            nzType="primary"
-            (click)="navigateToCreateVolume()"
+<!--  <nz-card-->
+<!--    class="m-b-10"-->
+<!--    nzHoverable-->
+<!--    [nzBodyStyle]="{ 'padding-bottom': '15px' }"-->
+<!--  >-->
+<!--    <form nz-form>-->
+<!--      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">-->
+<!--        <div-->
+<!--          nz-col-->
+<!--          [nzLg]="8"-->
+<!--          [nzMd]="8"-->
+<!--          [nzSm]="24"-->
+<!--          [nzXl]="6"-->
+<!--          [nzXs]="24"-->
+<!--          [nzXXl]="6"-->
+<!--        >-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label [nzFor]="">Trạng thái Volume</nz-form-label>-->
+<!--            <nz-form-control>-->
+<!--              <nz-select-->
+<!--                [ngModel]="volumeStatusSearch"-->
+<!--                [nzPlaceHolder]="'Tất cả trạng thái'"-->
+<!--                [nzShowSearch]="false"-->
+<!--                name="status"-->
+<!--              >-->
+<!--                <nz-option-->
+<!--                  *ngFor="let i of options"-->
+<!--                  [nzLabel]="i.label.toString()"-->
+<!--                  [nzValue]="i.value"-->
+<!--                />-->
+<!--              </nz-select>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </div>-->
+<!--        <div-->
+<!--          nz-col-->
+<!--          [nzLg]="8"-->
+<!--          [nzMd]="12"-->
+<!--          [nzSm]="24"-->
+<!--          [nzXl]="8"-->
+<!--          [nzXs]="24"-->
+<!--          [nzXXl]="8"-->
+<!--        >-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-control>-->
+<!--              <input-->
+<!--                name="name"-->
+<!--                nz-input-->
+<!--                placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."-->
+<!--                [ngModel]="volumeNameSearch"-->
+<!--              />-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </div>-->
+<!--        <div-->
+<!--          class="text-right p-0 m-b-10"-->
+<!--          nz-col-->
+<!--          [nzLg]="4"-->
+<!--          [nzMd]="8"-->
+<!--          [nzSm]="24"-->
+<!--          [nzXl]="4"-->
+<!--          [nzXs]="24"-->
+<!--          [nzXXl]="2"-->
+<!--        >-->
+<!--          <button nz-button [nzType]="'primary'" (click)="searchVolumes()">-->
+<!--            <i nz-icon nzType="search"></i>-->
+<!--            Search-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div-->
+<!--          class="text-right p-0 m-b-10"-->
+<!--          nz-col-->
+<!--          [nzLg]="8"-->
+<!--          [nzMd]="12"-->
+<!--          [nzSm]="24"-->
+<!--          [nzXl]="8"-->
+<!--          [nzXs]="24"-->
+<!--          [nzXXl]="8"-->
+<!--        >-->
+<!--          <button-->
+<!--            class="m-r-8"-->
+<!--            class="bg-success border-success"-->
+<!--            nz-button-->
+<!--            nzType="primary"-->
+<!--            (click)="navigateToCreateVolume()"-->
+<!--          >-->
+<!--            <i nz-icon nzType="plus"></i>-->
+<!--            Tạo mới-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </nz-card>-->
+
+  <nz-card
+    class="m-b-10"
+    nzHoverable
+    [nzBodyStyle]="{ 'padding': '30px' }"
+  >
+    <nz-form-label [nzFor]="'volumeStatus'">Trạng thái Volume</nz-form-label>
+    <nz-select nzSize="large"
+               [nzPlaceHolder]="'Tất cả trạng thái'"
+               [nzOptions]="options"
+               [(ngModel)]="volumeStatusSearch"
+               style="width: 170px;"
     >
+    </nz-select>
+
+    <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+      <input type="text" [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume"
+             style="width: 300px; margin-left: 30px;"/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" (click)="searchVolumes()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+      </button>
+    </ng-template>
+    <div class="text-right" style="margin-top: -40px;  padding-right: 30px;">
+      <button class="m-r-8"
+              class="bg-success border-success"
+              nz-button
+              nzType="primary"
+              (click)="navigateToCreateVolume()"
+      >
         <span
           nz-icon nzType="plus"
           nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
         </span>
-      Tạo mới
-    </button>
-  </div>
+        Tạo mới
+      </button>
+    </div>
+  </nz-card>
 
 
   <br>

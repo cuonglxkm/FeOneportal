@@ -25,7 +25,7 @@ export class VolumeDTO {
   suspendType: string;
   typeId: string;
   backupScheduleId: string;
-  vpcId: string;
+  vpcId: number;
   vpcName: string;
   isEncryption: boolean;
   isMultiAttach: boolean;
@@ -78,6 +78,24 @@ export class CreateVolumeDto{
   actorEmail: string | null;
   createFromSnapshotId: number | null;
 }
+
+export class EditSizeMemoryVolumeDTO{
+  newSize: number;
+  newDescription: string;
+  newOfferId: number;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  regionId: number;
+  serviceName: string;
+  customerId: number;
+  vpcId: number;
+  typeName: string;
+  userEmail: string;
+  actorEmail:string;
+}
+
+
 export class VmDto {
   id: number;
   name: string;

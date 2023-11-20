@@ -59,6 +59,22 @@ export class CreateVolumeResponseModel{
   id: number
 }
 
+export class EditSizeVolumeModel{
+  customerId: number;
+  createdByUserId: number;
+  note: string;
+  orderItems: [
+    {
+      orderItemQuantity: number;
+      specification: string;
+      specificationType: string;
+      price: number;
+      serviceDuration: number;
+    }
+  ]
+}
+
+
 export class GetAllVmModel {
   totalCount: number;
   pageSize: number;
@@ -86,3 +102,4 @@ export class EditTextVolumeModel{
   newName: string;
   newDescription: string;
 }
+

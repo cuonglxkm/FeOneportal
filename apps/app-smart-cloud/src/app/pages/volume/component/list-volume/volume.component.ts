@@ -84,7 +84,10 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0 , null , null)
+    const regionString = localStorage.getItem('region');
+    const region = JSON.parse(regionString);
+    const projectId = localStorage.getItem('projectId')!=null?parseInt(localStorage.getItem('projectId')):null;
+    this.getListVolume(null, projectId, region.regionId, true, 10, 0 , null , null)
   }
 
   onRootPageIndexChange(event: any) {

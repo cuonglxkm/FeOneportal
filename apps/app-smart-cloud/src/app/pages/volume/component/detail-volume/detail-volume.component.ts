@@ -32,7 +32,6 @@ export class DetailVolumeComponent implements OnInit {
 
     this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null){
-        this.nzMessage.create('success', 'Tìm kiếm thông tin Volume thành công.')
         this.volumeInfo = data;
       }else{
 

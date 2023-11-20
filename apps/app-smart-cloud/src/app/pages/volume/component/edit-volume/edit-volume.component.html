@@ -66,7 +66,7 @@
     <tbody>
     <tr>
       <td>
-        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" [nzMin]="oldSize" [nzMax]="10" [nzStep]="1"></nz-input-number>
+        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" (ngModelChange)="getPremiumVolume($event)" [nzMin]="oldSize" [nzMax]="10" [nzStep]="1"></nz-input-number>
       </td>
       <td>200</td>
       <td>360.712</td>
@@ -124,11 +124,11 @@
   <tbody>
   <tr>
     <td style="border-bottom: none"><p>Chi phí sử dụng ({{ expiryTime }} tháng)</p></td>
-    <td style="border-bottom: none; text-align: right"><p>1.000.000 VNĐ</p></td>
+    <td style="border-bottom: none; text-align: right"><p>{{priceVolumeInfo.price}}</p></td>
   </tr>
   <tr>
     <td style="border-bottom: none">Thành tiền (Đã bao gồm 10% VAT)</td>
-    <td style="border-bottom: none; text-align: right">1.100.000 VND</td>
+    <td style="border-bottom: none; text-align: right">{{priceVolumeInfo.totalPrice}}</td>
   </tr>
   <tr>
     <td style="border-bottom: none"></td>

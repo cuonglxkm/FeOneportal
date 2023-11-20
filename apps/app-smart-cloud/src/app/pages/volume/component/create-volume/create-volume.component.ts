@@ -112,13 +112,6 @@ export class CreateVolumeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.createVolumeInfo.regionId).toPromise();
-    this.listAllVMs = this.getAllVmResponse.records;
-    this.listAllVMs.forEach((vm) => {
-      this.vmList.push({value: vm.id, label: vm.name});
-    })
-
-
   }
 
   getPremiumVolume(volumeType: string, size: number, duration: number) {
@@ -236,6 +229,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   async getRegionId(regionId: number){
+
     this.vmList = [];
     this.createVolumeInfo.regionId = regionId;
     this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.createVolumeInfo.regionId).toPromise();
