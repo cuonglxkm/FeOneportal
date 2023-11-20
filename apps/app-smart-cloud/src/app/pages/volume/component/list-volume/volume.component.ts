@@ -247,19 +247,26 @@ export class VolumeComponent implements OnInit {
   }
 
   async addVolumeToVM(volume: VolumeDTO, vmId: number): Promise<void>{
-    if(volume.isMultiAttach == false && volume.instanceId != null){
-      this.message.create('error','Volume này chỉ có thể gắn với một máy ảo.')
+    this.volumeSevice.getVolummeById(volume.id.toString()).toPromise().then(data => {
+      if(data != null){
+        if(data.isMultiAttach == false && data.attachedInstances.length == 1 ){
+          this.message.create('error','Volume này chỉ có thể gắn với một máy ảo.')
 
-    }else{
+        }else{
 
-      let addVolumetoVmRequest = new AddVolumetoVmModel();
+          let addVolumetoVmRequest = new AddVolumetoVmModel();
 
-      addVolumetoVmRequest.volumeId = volume.id;
-      addVolumetoVmRequest.instanceId = vmId;
-      addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
-      let response = this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise()
-      console.log(response);
-    }
+          addVolumetoVmRequest.volumeId = volume.id;
+          addVolumetoVmRequest.instanceId = vmId;
+          addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+          let response = this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise()
+          console.log(response);
+        }
+      }else
+        this.message.create('error','Gắn Volume thất bại.')
+    })
+
+
   }
 
   getProjectId(projectId: number){

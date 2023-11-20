@@ -83,22 +83,20 @@
   </nz-table>
   <br>
   <br>
-  <label nz-checkbox [(ngModel)]="createVolumeInfo.isEncryption">Mã hóa Volume</label>
+  <label nz-checkbox [(ngModel)]="createVolumeInfo.isEncryption" (ngModelChange)="selectEncryptionVolume($event)">Mã hóa Volume</label>
   <br>
-  <label nz-checkbox [(ngModel)]="createVolumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
+  <label nz-checkbox [(ngModel)]="createVolumeInfo.isMultiAttach" (ngModelChange)="selectMultiAttachVolume($event)">Gắn nhiều máy ảo</label>
   <br>
   <br>
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn máy ảo</nz-form-label>
+  <nz-form-label [nzSm]="6" [nzXs]="24" >Chọn máy ảo</nz-form-label>
   <br>
   <nz-select nzSize="default"
              [nzPlaceHolder]="'-Chọn máy ảo-'"
              [(ngModel)]="createVolumeInfo.instanceToAttachId"
-             (ngModelChange)="changeVm()"
              style="width: 100%;"
   >
     <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
   </nz-select>
-  <p *ngIf="showWarningVm" class="warning-message">Vui lòng chọn máy ảo.</p>
   <br>
   <br>
   <p>Mô tả</p>

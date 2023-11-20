@@ -98,18 +98,31 @@
       <th>Dung lượng(GB)</th>
       <th>IOPS</th>
       <th>Trạng thái Volume</th>
+      <th>Máy ảo</th>
       <th>Kiểu Volume</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
+    <tr *ngIf="this.attachedDto.length > 1">
       <td>{{ volumeInfo.sizeInGB }}</td>
       <td>{{ volumeInfo.iops }}</td>
       <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
       <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
       <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td><pre>{{this.listVMs}}</pre></td>
       <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
     </tr>
+
+    <tr *ngIf="this.attachedDto.length <= 1">
+      <td>{{ volumeInfo.sizeInGB }}</td>
+      <td>{{ volumeInfo.iops }}</td>
+      <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+      <td>{{this.attachedDto.length ==1?this.attachedDto[0].instanceName:'Không có máy ảo'}} </td>
+      <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
+    </tr>
+
     </tbody>
   </nz-table>
 

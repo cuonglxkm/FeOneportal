@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {VolumeDTO} from "../../../../shared/dto/volume.dto";
+import {AttachedDto, VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -21,6 +21,10 @@ export class DetailVolumeComponent implements OnInit {
 
   volumeInfo: VolumeDTO;
 
+  attachedDto: AttachedDto[];
+
+  listVMs: string = '';
+
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
     this.getVolumeById(idVolume);
@@ -33,6 +37,12 @@ export class DetailVolumeComponent implements OnInit {
     this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null){
         this.volumeInfo = data;
+        this.attachedDto = data.attachedInstances;
+        if(this.attachedDto.length > 1){
+          this.attachedDto.forEach(vm => {
+              this.listVMs += vm.instanceName+'\n';
+          })
+        }
       }else{
 
       }

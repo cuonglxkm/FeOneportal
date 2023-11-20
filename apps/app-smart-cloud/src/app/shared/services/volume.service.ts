@@ -21,7 +21,7 @@ export class VolumeService extends BaseService {
   };
 
   private urlVolume = 'http://172.16.68.200:1009/volumes';
-  private urlOder = 'http://172.16.68.200:1003/orders';
+  private urlOrder = 'http://172.16.68.200:1003/orders';
   private urlVM = 'http://172.16.68.200:1009/instances';
 
   //API GW
@@ -37,7 +37,7 @@ export class VolumeService extends BaseService {
   }
 
   getVolummeById(volumeId: string) {
-    return this.http.get<VolumeDTO>(this.urlVolume + '/' + volumeId).pipe(
+    return this.http.get<VolumeDTO>(this.urlVolumeGW + '/' + volumeId).pipe(
       catchError(this.handleError<VolumeDTO>('get volume-detail error'))
     )
   }
@@ -55,9 +55,9 @@ export class VolumeService extends BaseService {
   getAllVMs(region: number): Observable<GetAllVmModel> {
     let url;
     if (region != null) {
-      url = this.urlVM + '/getpaging' + '?region=' + region + '&pageSize=' + 10000 + '&currentPage=' + 1;
+      url = this.urlVMGW + '/getpaging' + '?region=' + region + '&pageSize=' + 10000 + '&currentPage=' + 1;
     } else {
-      url = this.urlVM + '/getpaging'  + '?pageSize=' + 10000 + '&currentPage=' + 1;
+      url = this.urlVMGW + '/getpaging'  + '?pageSize=' + 10000 + '&currentPage=' + 1;
     }
     return this.http.get<GetAllVmModel>(url).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
@@ -71,25 +71,25 @@ export class VolumeService extends BaseService {
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOder, request).pipe(
+    return this.http.post<any>(this.urlOrderGW, request).pipe(
       catchError(this.handleError<any>('Edit size volume error.'))
     );
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolume + '/' + idVolume).pipe(
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume).pipe(
       catchError(this.handleError<boolean>('delete volume error.'))
     );
   }
 
-  addVolumeToVm(request: AddVolumetoVmModel): Observable<any> {
-    return this.http.post<any>(this.urlVolume + '/attach', request).pipe(
-      catchError(this.handleError<any>('Add Volume to VM error.'))
+  addVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request).pipe(
+      catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
 
   editTextVolume(request: EditTextVolumeModel): Observable<any> {
-    return this.http.put(this.urlVolume + '/' + request.volumeId, request).pipe(
+    return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request).pipe(
       catchError(this.handleError<any>('Edit Volume to VM error.'))
     );
   }
@@ -113,7 +113,7 @@ export class VolumeService extends BaseService {
 
   private getConditionSearchVolume(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): string {
 
-    let urlResult = this.urlVolume;
+    let urlResult = this.urlVolumeGW;
     let count = 0;
     if (customerId !== undefined && customerId != null) {
       urlResult += '?customerId=' + customerId;
@@ -181,7 +181,7 @@ export class VolumeService extends BaseService {
   }
 
   private getConditionGetPremiumVolume(volumeType: string, size: number, duration: number): string {
-    let urlResult = this.urlVolume + '/getcreateprice';
+    let urlResult = this.urlVolumeGW + '/getcreateprice';
     let count = 0;
     if (volumeType !== undefined && volumeType != null) {
       urlResult += '?volumeType=' + volumeType;

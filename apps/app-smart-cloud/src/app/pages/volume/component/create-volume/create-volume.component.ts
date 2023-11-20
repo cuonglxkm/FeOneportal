@@ -47,7 +47,6 @@ export class CreateVolumeComponent implements OnInit {
 
   showWarningVolumeName = false;
   showWarningVolumeType = false;
-  showWarningVm = false;
   showWarningVolumeExpTime = false;
 
 
@@ -75,7 +74,7 @@ export class CreateVolumeComponent implements OnInit {
     am: null,
     amManager: null,
     isTrial: false,
-    offerId: 2,
+    offerId: null,
     couponCode: null,
     dhsxkd_SubscriptionId: null,
     dSubscriptionNumber: null,
@@ -148,6 +147,12 @@ export class CreateVolumeComponent implements OnInit {
       const user = JSON.parse(userString);
       this.createVolumeInfo.actorEmail = user.email;
       this.createVolumeInfo.userEmail = user.email;
+      if(this.createVolumeInfo.volumeType == 'hdd'){
+        this.createVolumeInfo.offerId =2;
+      }
+      if(this.createVolumeInfo.volumeType == 'ssd'){
+        this.createVolumeInfo.offerId = 156;
+      }
       this.doCreateVolume();
       console.log(this.createVolumeInfo);
     } else {
@@ -193,11 +198,6 @@ export class CreateVolumeComponent implements OnInit {
       this.showWarningVolumeType = true;
       return false;
     }
-    if (!this.createVolumeInfo.instanceToAttachId) {
-      this.nzMessage.create('error', 'Cần chọn máy ảo.');
-      this.showWarningVm = true;
-      return false;
-    }
     if (!this.volumeExpiryTime) {
       this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
       this.showWarningVolumeExpTime = true;
@@ -219,9 +219,6 @@ export class CreateVolumeComponent implements OnInit {
     this.showWarningVolumeName = false;
   }
 
-  changeVm() {
-    this.showWarningVm = false;
-  }
 
   getProjectId(projectId: number){
     this.createVolumeInfo.vpcId = projectId;
@@ -237,6 +234,19 @@ export class CreateVolumeComponent implements OnInit {
     this.listAllVMs.forEach((vm) => {
       this.vmList.push({value: vm.id, label: vm.name});
     })
+  }
+
+  selectEncryptionVolume(value: any){
+    if(value){
+      this.createVolumeInfo.isMultiAttach = !value;
+    }
+
+  }
+
+  selectMultiAttachVolume(value: any){
+    if(value){
+      this.createVolumeInfo.isEncryption = !value;
+    }
   }
 
 }

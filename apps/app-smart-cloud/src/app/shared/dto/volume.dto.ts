@@ -65,7 +65,7 @@ export class CreateVolumeDto{
   am: any | null;
   amManager:any | null;
   isTrial: boolean| null;
-  offerId: 2;
+  offerId: number;
   couponCode: any | null;
   dhsxkd_SubscriptionId: number | null;
   dSubscriptionNumber: any | null;

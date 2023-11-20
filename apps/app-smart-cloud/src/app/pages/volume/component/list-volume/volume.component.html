@@ -1,7 +1,6 @@
 <app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
                    [headerInfo]="headerInfo"></app-header-volume>
 <!--<h2>Danh sách Volume</h2>-->
-<br>
 <div class="search-volume" *ngIf="!isBlankVolume; else elsePage">
   <nz-card
     class="m-b-10"
@@ -40,10 +39,6 @@
       </button>
     </div>
   </nz-card>
-
-
-  <br>
-  <br>
   <nz-tabset [(nzSelectedIndex)]="tabVolumeIndex">
     <nz-tab nzTitle="Volume Root" (nzClick)="reloadDataVolumeRoot()">
 
