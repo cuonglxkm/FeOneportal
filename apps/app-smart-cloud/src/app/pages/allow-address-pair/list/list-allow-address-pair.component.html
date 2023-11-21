@@ -34,8 +34,12 @@
                         Tạo mới
                     </button>
                     <create-allow-address-pair [isVisible]="isVisibleCreate"
+                                               [isLoading]="isLoading"
+                                               [region]="region"
+                                               [project]="project"
+                                               [userId]="userId"
                                                (onCancel)="handleCloseCreate()"
-                                               (onOk)="handleOkCreate($event)"/>
+                                               (onOk)="handleOkCreate()"/>
                 </nz-space>
             </div>
         </nz-row>
@@ -51,6 +55,7 @@
                       [nzTotal]="listPairInfo.length"
                       [nzPageSize]="10"
                       [nzPageIndex]="1"
+                      [nzLoading]="isLoading"
             >
                 <thead>
                 <tr>
@@ -70,6 +75,7 @@
                             Xoá
                         </button>
                         <delete-allow-address-pair [isVisible]="isVisibleDelete"
+                                                   [isLoading]="isLoading"
                                                    (onCancel)="handleCancelDelete()"
                                                    (onOk)="handleOkDelete(data)"
                         ></delete-allow-address-pair>

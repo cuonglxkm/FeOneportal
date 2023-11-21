@@ -109,12 +109,12 @@ export class FormRuleComponent implements OnInit {
             this.securityGroupRuleService.create(this.formCreateSGRule).subscribe(
                 data => {
                     this.isLoading = false
-                    this.notification.success('Thành công', 'Đã tạo Inbound thành công');
+                    this.notification.success('Thành công', 'Tạo mới thành công');
                     this.onOk.emit(data)
                 },
                 error => {
                     this.isLoading = false
-                    this.notification.error('Thất bại', 'Tạo Inbound thất bại');
+                    this.notification.error('Thất bại', 'Tạo mới thất bại');
                 }
             )
         } else {
