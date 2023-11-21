@@ -302,7 +302,10 @@ export class VolumeComponent implements OnInit {
 
   getRegionId(regionId: number) {
     this.regionSearch = regionId;
-    this.searchVolumes();
+    if(this.projectSearch != null){
+      this.searchVolumes();
+    }
+
   }
 
   protected readonly isBlank = isBlank;

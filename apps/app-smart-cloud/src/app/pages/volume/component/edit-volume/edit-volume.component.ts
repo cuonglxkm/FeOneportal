@@ -42,13 +42,7 @@ export class EditVolumeComponent implements OnInit {
   projectIdSearch: number;
 
   vmList: NzSelectOptionInterface[] = [];
-  expiryTimeList: NzSelectOptionInterface[] = [
-    {label: '1', value: 1},
-    {label: '3', value: 3},
-    {label: '6', value: 6},
-    {label: '12', value: 12},
-    {label: '24', value: 24},
-  ];
+
   snapshotList: NzSelectOptionInterface[] = [];
 
   expiryTime: any;
@@ -56,10 +50,6 @@ export class EditVolumeComponent implements OnInit {
   snapshot: any;
   protected readonly onchange = onchange;
 
-
-  changeExpTime() {
-    console.log('ExpTime: ', this.expiryTime);
-  }
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService, private nzMessage: NzMessageService, private activatedRoute: ActivatedRoute, private router: Router) {
   }
@@ -86,8 +76,8 @@ export class EditVolumeComponent implements OnInit {
 
 
         //Thoi gian su dung
-        const createDate = new Date(this.volumeInfo.createDate);
-        const exdDate = new Date(this.volumeInfo.expireDate);
+        const createDate = new Date(this.volumeInfo.creationDate);
+        const exdDate = new Date(this.volumeInfo.expirationDate);
         this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
 
       } else {

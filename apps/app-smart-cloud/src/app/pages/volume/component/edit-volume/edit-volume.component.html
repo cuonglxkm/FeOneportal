@@ -1,4 +1,5 @@
-<app-header-volume (regionId)="getRegionId($event)" (projectId)="getProjectId($event)" [headerInfo]="headerInfo"></app-header-volume>
+<app-header-volume (regionId)="getRegionId($event)" (projectId)="getProjectId($event)"
+                   [headerInfo]="headerInfo"></app-header-volume>
 <br>
 <div class="create-volume">
   <h3>Thông tin Volume</h3>
@@ -35,13 +36,15 @@
 
   <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()" [disabled]="true">
     <div style="display: flex; padding: 20px;">
-      <div nz-radio nzValue="hdd" [ngStyle]="{'background-color': volumeInfo.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="hdd"
+           [ngStyle]="{'background-color': volumeInfo.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         HDD
         <br>
         Additional description and information about copywriting.
       </div>
-      <div nz-radio nzValue="ssd" [ngStyle]="{'background-color': volumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
+      <div nz-radio nzValue="ssd"
+           [ngStyle]="{'background-color': volumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
            style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
         SSD
         <br>
@@ -66,7 +69,8 @@
     <tbody>
     <tr>
       <td>
-        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" (ngModelChange)="getPremiumVolume($event)" [nzMin]="oldSize" [nzMax]="10" [nzStep]="1"></nz-input-number>
+        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" (ngModelChange)="getPremiumVolume($event)" [nzMin]="oldSize"
+                         [nzMax]="10" [nzStep]="1"></nz-input-number>
       </td>
       <td>200</td>
       <td>360.712</td>
@@ -87,7 +91,7 @@
              [nzPlaceHolder]="'-Chọn máy ảo-'"
              [(ngModel)]="volumeInfo.instanceId"
              style="width: 100%;"
-             [disabled] = true
+             [disabled]=true
   >
     <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
   </nz-select>
@@ -101,18 +105,16 @@
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Thời hạn sử dụng</nz-form-label>
   <br>
 
-  <nz-select nzSize="default"
-             [nzPlaceHolder]="'-Chọn thời hạn sử dụng-'"
-             [nzOptions]="expiryTimeList"
-             [(ngModel)]="expiryTime"
-             (ngModelChange)="changeExpTime()"
-             style="width: 100%;"
-             [disabled] = true
+  <nz-input-group
+    style="width: 100%;"
   >
-  </nz-select>
+    <input type="text" [(ngModel)]="expiryTime" nz-input
+           style="width: 100%;" [disabled]=true/>
+  </nz-input-group>
+
   <p>
     Thời gian bắt đầu sử dụng:
-    <span>{{ volumeInfo.createDate | date:'dd/MM/yyyy' }}</span>
+    <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
   </p>
 </div>
 <br>
@@ -133,8 +135,9 @@
   <tr>
     <td style="border-bottom: none"></td>
     <td style="border-bottom: none; text-align: right; padding-right: 30px;">
-      <button nz-button nzType="default" style="background-color: #9c9c9c; padding-right: 20px; color: white">Hủy</button>
-      <button nz-button nzType="primary" (click)="editVolume()" >Chỉnh sửa</button>
+      <button nz-button nzType="default" style="background-color: #9c9c9c; padding-right: 20px; color: white">Hủy
+      </button>
+      <button nz-button nzType="primary" (click)="editVolume()">Chỉnh sửa</button>
     </td>
   </tr>
   </tbody>

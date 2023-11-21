@@ -4,21 +4,21 @@
 <nz-spin *ngIf="isLoading" nzSimple [nzSize]="'large'"></nz-spin>
 
 <div *ngIf="!isLoading">
-  <div class="action-detail-volume">
-    <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
-            nzType="primary">
-      <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
-    </button>
-    <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
-            (click)="navigateEditVolume(volumeInfo.id)"
-            nz-button nzType="primary">
-      <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-    </button>
-  </div>
-
-
   <div class="detail-volume">
-    <h3>Chi tiết dịch vụ</h3>
+    <div class="row">
+      <h3 style="display: inline-block; margin-right: auto;">Chi tiết dịch vụ</h3>
+      <div class="action-detail-volume">
+        <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
+                nzType="primary">
+          <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
+        </button>
+        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
+                (click)="navigateEditVolume(volumeInfo.id)"
+                nz-button nzType="primary">
+          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+        </button>
+      </div>
+    </div>
     <br>
     <hr style="opacity: 0.1">
     <br>
@@ -144,7 +144,7 @@
       <b>
         Thời gian khởi tạo:
       </b>
-      <span>{{ volumeInfo.createDate | date:'dd/MM/yyyy' }}</span>
+      <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
     </p>
 
 
