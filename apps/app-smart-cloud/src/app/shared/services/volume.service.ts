@@ -88,6 +88,12 @@ export class VolumeService extends BaseService {
     );
   }
 
+  detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
+    return this.http.post<boolean>(this.urlVolumeGW + '/detach', request).pipe(
+      catchError(this.handleError<boolean>('Add Volume to VM error.'))
+    );
+  }
+
   editTextVolume(request: EditTextVolumeModel): Observable<any> {
     return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request).pipe(
       catchError(this.handleError<any>('Edit Volume to VM error.'))

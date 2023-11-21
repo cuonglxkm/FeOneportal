@@ -25,6 +25,8 @@ export class DetailVolumeComponent implements OnInit {
 
   listVMs: string = '';
 
+  isLoading: boolean = true;
+
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
     this.getVolumeById(idVolume);
@@ -38,6 +40,7 @@ export class DetailVolumeComponent implements OnInit {
       if (data !== undefined && data != null){
         this.volumeInfo = data;
         this.attachedDto = data.attachedInstances;
+        this.isLoading = false;
         if(this.attachedDto.length > 1){
           this.attachedDto.forEach(vm => {
               this.listVMs += vm.instanceName+'\n';

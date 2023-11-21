@@ -44,6 +44,7 @@ import {IpPublicComponent} from './ip-public/ip-public.component';
 import {CreateUpdateIpPublicComponent} from './ip-public/create-update-ip-public/create-update-ip-public.component';
 import {DetailIpPublicComponent} from './ip-public/detail-ip-public/detail-ip-public.component';
 import {HeaderComponent} from './security-group/header/header.component';
+import {PopupCancelVolumeComponent} from "./volume/component/popup-volume/popup-cancel-volume.component";
 
 const icons: IconDefinition[] = [SettingOutline];
 
@@ -80,7 +81,9 @@ const icons: IconDefinition[] = [SettingOutline];
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
     DetailIpPublicComponent,
-    HeaderComponent
+    HeaderComponent,
+    PopupCancelVolumeComponent,
+
   ],
   imports: [
     CommonModule,

@@ -10,6 +10,7 @@ import {AddVolumetoVmModel, GetListVolumeModel} from "../../../../shared/models/
 import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {isBlank} from "@delon/form";
+import {PopupCancelVolumeComponent} from "../popup-volume/popup-cancel-volume.component";
 @Component({
   selector: 'app-volume',
   templateUrl: './volume.component.html',
@@ -113,7 +114,6 @@ export class VolumeComponent implements OnInit {
               if(selected !== undefined ){
                 console.log('Add volume ' + volume.id + ' in to ' + selected);
                 this.addVolumeToVM(volume, selected);
-
                 modal.destroy()
               }else{
                 this.message.create('error', `Please choose VM for add Volume.`);
@@ -128,7 +128,8 @@ export class VolumeComponent implements OnInit {
     if (value === 'cancelVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gỡ Volume',
-        nzContent: PopupAddVolumeComponent,
+        nzContent: PopupCancelVolumeComponent,
+        nzData: volume.id,
         nzFooter: [
           {
             label: 'Hủy',
@@ -141,7 +142,7 @@ export class VolumeComponent implements OnInit {
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
               console.log('Delete volume ' + volume.id + ' from ' + selected);
-              this.message.create('success', `Delete Volume Success`);
+              this.doDetachVolumeToVm(volume , selected );
               modal.destroy();
             }
           }
@@ -246,7 +247,7 @@ export class VolumeComponent implements OnInit {
     return !!result;
   }
 
-  async addVolumeToVM(volume: VolumeDTO, vmId: number): Promise<void>{
+  addVolumeToVM(volume: VolumeDTO, vmId: number): void{
     this.volumeSevice.getVolummeById(volume.id.toString()).toPromise().then(data => {
       if(data != null){
         if(data.isMultiAttach == false && data.attachedInstances.length == 1 ){
@@ -259,14 +260,30 @@ export class VolumeComponent implements OnInit {
           addVolumetoVmRequest.volumeId = volume.id;
           addVolumetoVmRequest.instanceId = vmId;
           addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
-          let response = this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise()
-          console.log(response);
+          this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise().then(data => {
+            if(data == true){
+              this.message.create('success','Gắn Volume thành công.')
+            }
+          })
+
         }
       }else
         this.message.create('error','Gắn Volume thất bại.')
     })
+  }
 
-
+  doDetachVolumeToVm(volume: VolumeDTO , vmId: number){
+    let addVolumetoVmRequest = new AddVolumetoVmModel();
+    addVolumetoVmRequest.volumeId = volume.id;
+    addVolumetoVmRequest.instanceId = vmId;
+    addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+    this.volumeSevice.detachVolumeToVm(addVolumetoVmRequest).toPromise().then( data => {
+      if(data ==true){
+        this.message.create('success', `Delete Volume Success`);
+      }else{
+        this.message.create('error', `Delete Volume Fail`);
+      }
+    })
   }
 
   getProjectId(projectId: number){
