@@ -97,6 +97,21 @@ export class EditSizeMemoryVolumeDTO{
   actorEmail:string;
 }
 
+export class ExtendVolumeDTO{
+  regionId: number;
+  serviceName: string;
+  customerId: number;
+  vpcId: number;
+  typeName:  string;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  newExpireDate: string;
+  userEmail: string;
+  actorEmail: string;
+}
+
+
 
 export class VmDto {
   id: number;

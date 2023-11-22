@@ -65,7 +65,7 @@ export class VolumeService extends BaseService {
   }
 
   createNewVolume(request: CreateVolumeRequestModel): Observable<CreateVolumeResponseModel> {
-    return this.http.post<CreateVolumeResponseModel>('http://172.16.68.200:1003/orders/', request).pipe(
+    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request).pipe(
       catchError(this.handleError<CreateVolumeResponseModel>('create volume error.'))
     );
   }
@@ -100,6 +100,11 @@ export class VolumeService extends BaseService {
     );
   }
 
+  extendsVolume(request: EditSizeVolumeModel): Observable<any>{
+    return this.http.post<any>(this.urlOrderGW, request).pipe(
+      catchError(this.handleError<any>('Extends size volume error.'))
+    );
+  }
 
   constructor(private http: HttpClient, private message: NzMessageService) {
     super();
