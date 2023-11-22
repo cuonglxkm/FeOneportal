@@ -10,7 +10,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 })
 
 export class SecurityGroupSelectComponent implements OnInit {
-  @Input() value?: Flavor
+  @Input() value?: SecurityGroup
   @Input() region?: number
   @Input() project?: number
   @Output() onChange = new EventEmitter();

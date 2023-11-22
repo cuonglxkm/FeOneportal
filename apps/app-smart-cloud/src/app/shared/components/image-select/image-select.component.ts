@@ -10,7 +10,7 @@ import Image from "../../models/image";
 
 export class ImageSelectComponent implements OnInit{
 
-  @Input() value?: Flavor
+  @Input() value?: Image
   @Input() region?: number
   @Output() onChange = new EventEmitter();
 
