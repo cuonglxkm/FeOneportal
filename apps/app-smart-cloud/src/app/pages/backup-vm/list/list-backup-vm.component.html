@@ -1,0 +1,87 @@
+<one-portal-header
+  title="Backup VM"
+  [path]="['Home', 'Dịch vụ', 'Backup VM']"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content>
+  <nz-card>
+    <div class="title">Danh sách Backup VM</div>
+    <nz-row nzAlign="middle">
+      <nz-space [nzSize]="24">
+        <div *nzSpaceItem>
+          <nz-select nzPlaceHolder="Tất cả trạng thái">
+            <nz-option nzValue="Tất cả" nzLabel="Tất cả"></nz-option>
+            <nz-option nzValue="Hoạt động" nzLabel="Hoạt động"></nz-option>
+            <nz-option nzValue="Tạm dừng" nzLabel="Tạm dừng"></nz-option>
+            <nz-option nzValue="Lỗi" nzLabel="Lỗi"></nz-option>
+          </nz-select>
+        </div>
+        <div *nzSpaceItem>
+          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+            <input type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
+          </nz-input-group>
+          <ng-template #suffixButton>
+            <button nz-button nzType="primary" nzSearch>
+              <span nz-icon nzType="search" nzTheme="outline"></span>
+              Search
+            </button>
+          </ng-template>
+        </div>
+      </nz-space>
+    </nz-row>
+    <nz-table #tablePair
+              nzShowSizeChanger
+              [nzFrontPagination]="false"
+              [nzPageSize]="10"
+              [nzPageIndex]="1"
+    >
+      <thead>
+      <tr>
+        <th nzAlign="center" class="text-th">Tên</th>
+        <th nzAlign="center" class="text-th">VM gốc</th>
+        <th nzAlign="center" class="text-th">Dung luợng</th>
+        <th nzAlign="center" class="text-th">Gói backup</th>
+        <th nzAlign="center" class="text-th">Chu kỳ</th>
+        <th nzAlign="center" class="text-th">Thời gian tạo</th>
+        <th nzAlign="center" class="text-th">Trạng thái</th>
+        <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
+        <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center"></td>
+        <td nzAlign="center">
+          <button
+            nz-button
+            [nzType]="'primary'"
+            nz-dropdown
+            [nzDropdownMenu]="opMenu"
+          >
+            <span>Khôi phục</span> <i nz-icon nzType="down"></i>
+          </button>
+          <nz-dropdown-menu #opMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item routerLink="/app-smart-cloud/restore-backup-vm" >Restore</li>
+              <li nz-menu-item (click)="showModalDelete()">Xóa</li>
+              <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                           [isLoading]="isLoading"
+                                           (onCancel)="handleCancelDelete()"
+                                           (onOk)="handleOkDelete()" />
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </nz-card>
+</nz-content>

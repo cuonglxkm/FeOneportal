@@ -12,7 +12,6 @@ import {ActivatedRoute} from "@angular/router";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import Pagination from "../../../shared/models/pagination";
-import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 
 
@@ -33,8 +32,6 @@ export class ListAllowAddressPairComponent implements OnInit {
   isVisibleCreate = false;
   userId: number
 
-  listPairInfo: PairInfo[] = []
-
   region: number;
 
   project: number;
@@ -52,14 +49,18 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm = new AllowAddressPairCreateOrDeleteForm();
 
-  pairInfos: PairInfo[];
-
-  inputValue: string;
   isLoading: boolean = false;
 
-  collection: Pagination<AllowAddressPair>;
+  collection: Pagination<AllowAddressPair> = {
+    previousPage: 0,
+    totalCount: 0,
+    records: [],
+    currentPage: 1,
+    pageSize: 10
 
-  pageSize: number = 10
+  };
+
+  pageSize: number = 5
   pageNumber: number = 1
 
   regionChanged(region: RegionModel) {
@@ -97,11 +98,9 @@ export class ListAllowAddressPairComponent implements OnInit {
   }
 
   handleOkDelete(pairInfo: PairInfo): void {
-    this.pairInfos = [pairInfo];
-
     this.isConfirmLoading = true;
     this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-    this.formDeleteOrCreate.pairInfos = this.pairInfos;
+    this.formDeleteOrCreate.pairInfos = [pairInfo];
 
     this.formDeleteOrCreate.isDelete = true;
     this.formDeleteOrCreate.region = this.region;
@@ -109,15 +108,14 @@ export class ListAllowAddressPairComponent implements OnInit {
     this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
     this.isVisibleDelete = false;
-
-    console.log('delete', this.formDeleteOrCreate)
+``
     this.isLoading = true;
     this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate).subscribe(
-      data => {
+      () => {
         this.isLoading = false;
         this.notification.success('Thành công', `Xóa Allow Address Pair thành công`);
         this.getAllowAddressPair(this.formSearch)
-      }, error => {
+      }, () => {
         this.isLoading = false;
         this.notification.error('Thất bại', 'Xóa Allow Address Pair thất bại');
       }
@@ -140,19 +138,17 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   onQueryParamsChange(params: NzTableQueryParams) {
     const {pageSize, pageIndex} = params
-    this.pageSize = pageSize;
-    this.pageNumber = pageIndex
+    this.formSearch.pageSize = pageSize;
+    this.formSearch.currentPage = pageIndex
     this.getAllowAddressPair(this.formSearch);
   }
 
   getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
     this.isLoading = true;
-    console.log('this.formSearch', this.formSearch)
     this.allowAddressPairService.search(formSearch)
-      .subscribe((data: any) => {
+      .subscribe((data) => {
         this.isLoading = false;
-        console.log('get success', data)
-        this.listPairInfo = data.records;
+        this.collection = data
       });
   }
 
@@ -161,7 +157,6 @@ export class ListAllowAddressPairComponent implements OnInit {
     this.formSearch.customerId = this.userId
     this.route.queryParams.subscribe(queryParams => {
       const value = queryParams['param'];
-      console.log('Received value:', value);
       this.portId = value;
     });
   }
@@ -172,6 +167,6 @@ export class ListAllowAddressPairComponent implements OnInit {
   }
 
   onInputChange(value: string) {
-    this.inputValue = value;
+    this.value = value;
   }
 }

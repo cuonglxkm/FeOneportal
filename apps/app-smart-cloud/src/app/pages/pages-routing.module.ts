@@ -8,15 +8,16 @@ import {CreateInboundComponent} from "./security-group/inbound/create/create-inb
 import {CreateOutboundComponent} from "./security-group/outbound/create/create-outbound.component";
 import {ListAllowAddressPairComponent} from "./allow-address-pair/list/list-allow-address-pair.component";
 import {BlankSecurityGroupComponent} from "./security-group/blank-security-group/blank-security-group.component";
-import {PreloadOptionalModules} from "@delon/theme";
-import {environment} from "@env/environment";
-import { SshKeyComponent } from "./ssh-key/ssh-key.component";
-import { IpPublicComponent } from "./ip-public/ip-public.component";
+import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {IpPublicComponent} from "./ip-public/ip-public.component";
 import {CreateUpdateIpPublicComponent} from "./ip-public/create-update-ip-public/create-update-ip-public.component";
 import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
 import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import {BlankBackupVmComponent} from "./backup-vm/blank/blank-backup-vm.component";
+import {ListBackupVmComponent} from "./backup-vm/list/list-backup-vm.component";
+import {RestoreBackupVmComponent} from "./backup-vm/restore/restore-backup-vm.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -83,6 +84,18 @@ const routes: Routes = [
   {
     path: 'blank-security-group',
     component: BlankSecurityGroupComponent
+  },
+  {
+    path: 'blank-backup-vm',
+    component: BlankBackupVmComponent
+  },
+  {
+    path: 'backup-vm',
+    component: ListBackupVmComponent
+  },
+  {
+    path: 'restore-backup-vm',
+    component: RestoreBackupVmComponent
   }
 ]
 

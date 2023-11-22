@@ -13,7 +13,7 @@ import {CreateSecurityGroupComponent} from './security-group/create-security-gro
 import {CreateInboundComponent} from './security-group/inbound/create/create-inbound.component';
 import {ListAllowAddressPairComponent} from './allow-address-pair/list/list-allow-address-pair.component';
 import {IconDefinition} from '@ant-design/icons-angular';
-import {SettingOutline} from '@ant-design/icons-angular/icons';
+import {SearchOutline, SettingOutline} from '@ant-design/icons-angular/icons';
 import {DeleteSecurityGroupComponent} from './security-group/delete-security-group/delete-security-group.component';
 import {DeleteRuleComponent} from './security-group/delete-rule/delete-rule.component';
 import {NzIconModule} from 'ng-zorro-antd/icon';
@@ -27,26 +27,31 @@ import {NzResultModule} from 'ng-zorro-antd/result';
 import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
-import {SshKeyComponent} from "./ssh-key/ssh-key.component";
-import {DeleteAllowAddressPairComponent} from "./allow-address-pair/delete/delete-allow-address-pair.component";
-import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
-import {PopupAddVolumeComponent} from "./volume/component/popup-volume/popup-add-volume.component";
-import {PopupDeleteVolumeComponent} from "./volume/component/popup-volume/popup-delete-volume.component";
-import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
-import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
-import {PopupExtendVolumeComponent} from "./volume/component/popup-volume/popup-extend-volume.component";
-import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
-import {VolumeComponent} from "./volume/component/list-volume/volume.component";
-import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
-import {ReactiveFormsModule} from "@angular/forms";
-import {SEModule} from "@delon/abc/se";
-import { IpPublicComponent } from './ip-public/ip-public.component';
-import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
-import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
-import {HeaderVolumeDataService} from "./volume/component/header-volume/header-volume-data.service";
-import { HeaderComponent } from './security-group/header/header.component';
+import {SshKeyComponent} from './ssh-key/ssh-key.component';
+import {DeleteAllowAddressPairComponent} from './allow-address-pair/delete/delete-allow-address-pair.component';
+import {HeaderVolumeComponent} from './volume/component/header-volume/header-volume.component';
+import {PopupAddVolumeComponent} from './volume/component/popup-volume/popup-add-volume.component';
+import {PopupDeleteVolumeComponent} from './volume/component/popup-volume/popup-delete-volume.component';
+import {CreateVolumeComponent} from './volume/component/create-volume/create-volume.component';
+import {DetailVolumeComponent} from './volume/component/detail-volume/detail-volume.component';
+import {PopupExtendVolumeComponent} from './volume/component/popup-volume/popup-extend-volume.component';
+import {EditVolumeComponent} from './volume/component/edit-volume/edit-volume.component';
+import {VolumeComponent} from './volume/component/list-volume/volume.component';
+import {SHARED_ZORRO_MODULES} from '../shared/shared-zorro.module';
+import {ReactiveFormsModule} from '@angular/forms';
+import {SEModule} from '@delon/abc/se';
+import {IpPublicComponent} from './ip-public/ip-public.component';
+import {CreateUpdateIpPublicComponent} from './ip-public/create-update-ip-public/create-update-ip-public.component';
+import {DetailIpPublicComponent} from './ip-public/detail-ip-public/detail-ip-public.component';
+import {HeaderVolumeDataService} from './volume/component/header-volume/header-volume-data.service';
+import {HeaderComponent} from './header/header.component';
+import {BlankBackupVmComponent} from './backup-vm/blank/blank-backup-vm.component';
+import {ListBackupVmComponent} from './backup-vm/list/list-backup-vm.component';
+import {LayoutDefaultModule} from '@delon/theme/layout-default';
+import {RestoreBackupVmComponent} from './backup-vm/restore/restore-backup-vm.component';
+import {DeleteBackupVmComponent} from './backup-vm/delete/delete-backup-vm.component';
 
-const icons: IconDefinition[] = [SettingOutline];
+const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -77,11 +82,15 @@ const icons: IconDefinition[] = [SettingOutline];
     PopupExtendVolumeComponent,
     EditVolumeComponent,
     HeaderVolumeComponent,
-      DeleteAllowAddressPairComponent,
+    DeleteAllowAddressPairComponent,
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
     DetailIpPublicComponent,
-    HeaderComponent
+    HeaderComponent,
+    BlankBackupVmComponent,
+    ListBackupVmComponent,
+    RestoreBackupVmComponent,
+    DeleteBackupVmComponent,
   ],
   imports: [
     CommonModule,
@@ -94,7 +103,6 @@ const icons: IconDefinition[] = [SettingOutline];
     SharedModule,
     NzPaginationModule,
     NzResultModule,
-
     SharedModule,
     PagesRoutingModule,
     NzLayoutModule,
@@ -106,7 +114,9 @@ const icons: IconDefinition[] = [SettingOutline];
     NgOptimizedImage,
     NzImageModule,
     NzImageModule,
+    LayoutDefaultModule,
   ],
-  providers: [HeaderVolumeDataService]
+  providers: [HeaderVolumeDataService],
 })
-export class PagesModule { }
+export class PagesModule {
+}

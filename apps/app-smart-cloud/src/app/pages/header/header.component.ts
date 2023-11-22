@@ -1,13 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-
-interface Header {
-    firstItem: string
-    secondItem: string
-    thirdItem: string
-    content: string
-}
+import {RegionModel} from "../../shared/models/region.model";
+import {ProjectModel} from "../../shared/models/project.model";
 
 @Component({
     selector: 'one-portal-header',

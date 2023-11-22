@@ -49,11 +49,20 @@ export class CreateAllowAddressPairComponent implements OnInit {
         .subscribe(data => {
           this.validateForm.reset();
           this.isLoading = false;
+          console.log('dâta', data)
           this.notification.success('Thành công', `Tạo Allow Address Pair thành công`);
           this.onOk.emit();
         }, error => {
+          // this.isVisible = false;
           this.isLoading = false;
-          this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
+          this.validateForm.reset();
+          console.log('error', error.status)
+          if(error.status === 502) {
+            this.notification.warning('Thất bại', 'Không được tạo quá 10 Allow Address Pair')
+          } else {
+            this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
+          }
+          this.onOk.emit();
         })
     }
 

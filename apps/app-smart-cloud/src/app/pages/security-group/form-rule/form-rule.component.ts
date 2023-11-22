@@ -269,9 +269,6 @@ export class FormRuleComponent implements OnInit {
         this.conditionSearch.projectId = parseInt(String(this.project))
         this.conditionSearch.regionId = parseInt(String(this.region))
         this.conditionSearch.userId = this.tokenService.get()?.userId
-
-        console.log(this.project)
-        console.log(this.region)
         this.getSecurityGroup()
     }
 }
