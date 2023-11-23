@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {EditTextVolumeModel, GetAllVmModel} from "../../../../shared/models/volume.model";
-import {VmDto} from "../../../../shared/dto/volume.dto";
-import { VolumeService } from "../../../../shared/services/volume.service";
+import {EditSizeVolumeModel, EditTextVolumeModel, GetAllVmModel} from "../../../../shared/models/volume.model";
+import {EditSizeMemoryVolumeDTO, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
+import {VolumeService} from "../../../../shared/services/volume.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {ActivatedRoute, Router} from "@angular/router";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Component({
   selector: 'app-edit-volume',
@@ -21,6 +22,12 @@ export class EditVolumeComponent implements OnInit {
     content: 'Chỉnh sửa Volume '
   };
 
+  priceVolumeInfo: PriceVolumeDto = {
+    price: 0,
+    totalPrice: 0,
+    tax: 0
+  };
+
   getAllVmResponse: GetAllVmModel;
   listAllVMs: VmDto[] = [];
 
@@ -31,18 +38,11 @@ export class EditVolumeComponent implements OnInit {
   oldDescription: string;
 
 
-
   regionIdSearch: number;
   projectIdSearch: number;
 
   vmList: NzSelectOptionInterface[] = [];
-  expiryTimeList: NzSelectOptionInterface[] = [
-    {label: '1', value: 1},
-    {label: '3', value: 3},
-    {label: '6', value: 6},
-    {label: '12', value: 12},
-    {label: '24', value: 24},
-  ];
+
   snapshotList: NzSelectOptionInterface[] = [];
 
   expiryTime: any;
@@ -51,10 +51,7 @@ export class EditVolumeComponent implements OnInit {
   protected readonly onchange = onchange;
 
 
-  changeExpTime() {
-    console.log('ExpTime: ', this.expiryTime);
-  }
-  constructor(private volumeSevice: VolumeService,private nzMessage:NzMessageService, private activatedRoute: ActivatedRoute ,private router: Router) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService, private nzMessage: NzMessageService, private activatedRoute: ActivatedRoute, private router: Router) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -66,72 +63,127 @@ export class EditVolumeComponent implements OnInit {
     this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.regionIdSearch).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
-      this.vmList.push({value: vm.id ,label: vm.name});
+      this.vmList.push({value: vm.id, label: vm.name});
     })
 
   }
+
   private getVolumeById(idVolume: string) {
     this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
-      if (data !== undefined && data != null){
-        this.nzMessage.create('success', 'Tìm kiếm thông tin Volume thành công.')
+      if (data !== undefined && data != null) {
         this.volumeInfo = data;
         this.oldSize = data.sizeInGB;
 
 
         //Thoi gian su dung
-        const createDate = new Date(this.volumeInfo.createDate);
-        const exdDate = new Date(this.volumeInfo.expireDate);
+        const createDate = new Date(this.volumeInfo.creationDate);
+        const exdDate = new Date(this.volumeInfo.expirationDate);
         this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
 
-      }else{
+      } else {
 
       }
 
     })
   }
 
-  changeVolumeType(){
+  changeVolumeType() {
     this.nzMessage.create('warning', 'Không thể thay đổi loại Volume.')
   }
-  getProjectId(projectId: number){
+
+  getProjectId(projectId: number) {
     this.projectIdSearch = projectId;
   }
 
-  async getRegionId(regionId: number){
+  async getRegionId(regionId: number) {
     this.regionIdSearch = regionId;
 
     this.vmList = [];
     this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.regionIdSearch).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
-      this.vmList.push({value: vm.id ,label: vm.name});
+      this.vmList.push({value: vm.id, label: vm.name});
     })
   }
 
-  editVolume(){
-    if(this.oldSize !== this.volumeInfo.sizeInGB){
+  editVolume() {
+    if (this.oldSize !== this.volumeInfo.sizeInGB) {
       console.log('Call API Create.')
-    }else{
-      console.log('Call API PUT')
       this.doEditSizeVolume();
+    } else {
+      console.log('Call API PUT')
+      this.doEditTextVolume();
     }
   }
 
-  async doEditSizeVolume(){
+  async doEditTextVolume() {
     let request = new EditTextVolumeModel();
     request.volumeId = this.volumeInfo.id;
-    request.newDescription =  this.volumeInfo.description;
+    request.newDescription = this.volumeInfo.description;
     request.newName = this.volumeInfo.name;
     let response = this.volumeSevice.editTextVolume(request).toPromise();
-    if(await response == true){
+    if (await response == true) {
       this.nzMessage.create('success', 'Chỉnh sửa thông tin Volume thành công.');
       this.router.navigate(['/app-smart-cloud/volume']);
-    }else
+    } else
       return false;
 
   }
-  private doEditTextVolume(){
 
+  private doEditSizeVolume() {
+    let editVolumeDto = new EditSizeMemoryVolumeDTO();
+    editVolumeDto.serviceInstanceId = this.volumeInfo.id;
+    editVolumeDto.newDescription = this.volumeInfo.description;
+    editVolumeDto.regionId = this.volumeInfo.regionId;
+    editVolumeDto.newSize = this.volumeInfo.sizeInGB
+    editVolumeDto.newOfferId = 0;
+    editVolumeDto.serviceName = this.volumeInfo.name;
+    editVolumeDto.vpcId = this.volumeInfo.vpcId;
+    editVolumeDto.customerId = this.tokenService.get()?.userId;
+    editVolumeDto.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
+    const userString = localStorage.getItem('user');
+    const user = JSON.parse(userString);
+    editVolumeDto.actorEmail = user.email;
+    editVolumeDto.userEmail = user.email;
+    editVolumeDto.serviceType = 2;
+    editVolumeDto.actionType = 1;
+
+    let request = new EditSizeVolumeModel();
+    request.customerId = editVolumeDto.customerId;
+    request.createdByUserId = editVolumeDto.customerId;
+    request.note = 'update volume';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(editVolumeDto),
+        specificationType: 'volume_resize',
+        price: this.priceVolumeInfo.price,
+        serviceDuration: this.expiryTime
+      }
+    ]
+    let reponse = this.volumeSevice.editSizeVolume(request).subscribe(data => {
+        if (data != null) {
+          this.nzMessage.create('success', 'Chỉnh sửa Volume thành công.')
+          console.log(data);
+          this.router.navigate(['/app-smart-cloud/volume']);
+        }
+      }
+    );
+
+  }
+
+  getPremiumVolume(size: number) {
+
+    if (size !== undefined && size != null) {
+
+
+      this.volumeSevice.getPremium(this.volumeInfo.volumeType, size, this.expiryTime).subscribe(data => {
+        if (data != null) {
+          this.nzMessage.create('success', 'Phí đã được cập nhật.')
+          this.priceVolumeInfo = data;
+        }
+      })
+    }
   }
 
 

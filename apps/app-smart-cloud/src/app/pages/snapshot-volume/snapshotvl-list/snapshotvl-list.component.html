@@ -1,0 +1,84 @@
+<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
+                   [headerInfo]="headerInfo"></app-header-volume>
+<div class="snapshot-volume-list">
+  <nz-card
+    class="m-b-10"
+    nzHoverable
+    [nzBodyStyle]="{ 'padding': '30px' }"
+  >
+    <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
+    <nz-select nzSize="large"
+               [nzPlaceHolder]="'Tất cả trạng thái'"
+               [nzOptions]="options"
+               [(ngModel)]="snapshotStatusSearch"
+               style="width: 170px;"
+    >
+    </nz-select>
+
+    <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+      <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
+             style="width: 300px; margin-left: 30px;"/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+      </button>
+    </ng-template>
+    <div class="text-right" style="margin-top: -40px;  padding-right: 30px;">
+      <button class="m-r-8"
+              class="bg-success border-success"
+              nz-button
+              nzType="primary"
+              (click)="navigateToCreateSnapshot()"
+      >
+        <span
+          nz-icon nzType="plus"
+          nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
+        </span>
+        Tạo mới
+      </button>
+    </div>
+  </nz-card>
+
+
+  <nz-table #tableSnapshotVolume [nzData]="listSnapshot" [nzFrontPagination]="false" [nzTotal]="totalSnapshot"
+            (nzPageIndexChange)="onRootPageIndexChange($event)" [nzLoading]="isLoadingSearch">
+    <thead>
+    <tr>
+      <th>Tên</th>
+      <th>Dung lượng(GB)</th>
+      <th>Mô tả</th>
+      <th>Volume</th>
+      <th>VPC</th>
+      <th>Thời gian tạo</th>
+      <th>Trạng thái dịch vụ</th>
+      <th>Trạng thái tác vụ</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--    <tr *ngFor="let data of tableSnapshotVolume.data; let i = index">-->
+    <!--      <td><a>{{ data.name }}</a></td>-->
+    <!--      <td>{{ data.sizeInGB}}</td>-->
+    <!--      <td>{{ data.iops }}</td>-->
+    <!--      <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>-->
+    <!--      <td *ngIf="data.status === 'ERROR'" style="color: red">{{ volumeStatus.get(data.status)}}</td>-->
+    <!--      <td *ngIf="data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status)}}</td>-->
+    <!--      <td>{{ data.serviceStatus }}</td>-->
+    <!--      <td>{{ data.instanceName }}</td>-->
+    <!--      <td>-->
+    <!--        <nz-select nzSize="small"-->
+    <!--                   class="custom-background"-->
+    <!--                   [nzPlaceHolder]="'Tạo Snapshot'"-->
+    <!--                   [nzOptions]="optionVolumeRoot"-->
+    <!--                   style="width: 150px;"-->
+    <!--                   [ngModel]="selectedOptionAction"-->
+    <!--                   (ngModelChange)="onSelectionChange($event , data)"-->
+    <!--        >-->
+    <!--        </nz-select>-->
+    <!--      </td>-->
+    <!--    </tr>-->
+    </tbody>
+  </nz-table>
+
+
+</div>

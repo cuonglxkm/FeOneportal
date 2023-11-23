@@ -2,7 +2,6 @@ import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/c
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
-import {HeaderVolumeDataService} from "./header-volume-data.service";
 
 interface HeaderInfo {
   breadcrumb1: string;
@@ -22,7 +21,7 @@ export class HeaderVolumeComponent implements OnInit {
   @Output() projectId = new EventEmitter<number>;
 
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private dataService: HeaderVolumeDataService) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
 
   }
 
@@ -35,13 +34,11 @@ export class HeaderVolumeComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.selectedRegion = region.regionId;
     this.regionId.emit(region.regionId);
-    this.dataService.regionId = region.regionId;
   }
 
   onProjectChange(project: ProjectModel){
     this.selectedProject = project.id;
     this.projectId.emit(project.id);
-    this.dataService.projectId = project.id;
   }
 
 }

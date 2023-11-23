@@ -27,24 +27,26 @@ import {NzResultModule} from 'ng-zorro-antd/result';
 import {NzImageModule} from 'ng-zorro-antd/image';
 import {FormRuleComponent} from './security-group/form-rule/form-rule.component';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
-import {SshKeyComponent} from './ssh-key/ssh-key.component';
-import {DeleteAllowAddressPairComponent} from './allow-address-pair/delete/delete-allow-address-pair.component';
-import {HeaderVolumeComponent} from './volume/component/header-volume/header-volume.component';
-import {PopupAddVolumeComponent} from './volume/component/popup-volume/popup-add-volume.component';
-import {PopupDeleteVolumeComponent} from './volume/component/popup-volume/popup-delete-volume.component';
-import {CreateVolumeComponent} from './volume/component/create-volume/create-volume.component';
-import {DetailVolumeComponent} from './volume/component/detail-volume/detail-volume.component';
-import {PopupExtendVolumeComponent} from './volume/component/popup-volume/popup-extend-volume.component';
-import {EditVolumeComponent} from './volume/component/edit-volume/edit-volume.component';
-import {VolumeComponent} from './volume/component/list-volume/volume.component';
-import {SHARED_ZORRO_MODULES} from '../shared/shared-zorro.module';
-import {ReactiveFormsModule} from '@angular/forms';
-import {SEModule} from '@delon/abc/se';
+import {SshKeyComponent} from "./ssh-key/ssh-key.component";
+import {DeleteAllowAddressPairComponent} from "./allow-address-pair/delete/delete-allow-address-pair.component";
+import {HeaderVolumeComponent} from "./volume/component/header-volume/header-volume.component";
+import {PopupAddVolumeComponent} from "./volume/component/popup-volume/popup-add-volume.component";
+import {PopupDeleteVolumeComponent} from "./volume/component/popup-volume/popup-delete-volume.component";
+import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
+import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
+import {PopupExtendVolumeComponent} from "./volume/component/popup-volume/popup-extend-volume.component";
+import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import {VolumeComponent} from "./volume/component/list-volume/volume.component";
+import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
+import {ReactiveFormsModule} from "@angular/forms";
+import {SEModule} from "@delon/abc/se";
 import {IpPublicComponent} from './ip-public/ip-public.component';
 import {CreateUpdateIpPublicComponent} from './ip-public/create-update-ip-public/create-update-ip-public.component';
 import {DetailIpPublicComponent} from './ip-public/detail-ip-public/detail-ip-public.component';
-import {HeaderVolumeDataService} from './volume/component/header-volume/header-volume-data.service';
 import {HeaderComponent} from './header/header.component';
+import {PopupCancelVolumeComponent} from "./volume/component/popup-volume/popup-cancel-volume.component";
+import {SnapshotVolumeListComponent} from "./snapshot-volume/snapshotvl-list/snapshotvl-list.component";
+import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/snappshotvl-detail.component";
 import {BlankBackupVmComponent} from './backup-vm/blank/blank-backup-vm.component';
 import {ListBackupVmComponent} from './backup-vm/list/list-backup-vm.component';
 import {LayoutDefaultModule} from '@delon/theme/layout-default';
@@ -86,6 +88,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
     DetailIpPublicComponent,
+    PopupCancelVolumeComponent,
+    SnapshotVolumeListComponent,
+    SnappshotvlDetailComponent,
     HeaderComponent,
     BlankBackupVmComponent,
     ListBackupVmComponent,
@@ -103,6 +108,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SharedModule,
     NzPaginationModule,
     NzResultModule,
+
     SharedModule,
     PagesRoutingModule,
     NzLayoutModule,
@@ -116,7 +122,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     LayoutDefaultModule,
   ],
-  providers: [HeaderVolumeDataService],
 })
 export class PagesModule {
 }

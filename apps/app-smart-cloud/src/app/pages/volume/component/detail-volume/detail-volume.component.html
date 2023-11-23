@@ -1,139 +1,152 @@
 <app-header-volume [headerInfo]="headerInfo" xmlns="http://www.w3.org/1999/html"></app-header-volume>
 
-<div class="action-detail-volume">
-  <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button nzType="primary">
-    <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
-  </button>
-  <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178" (click)="navigateEditVolume(volumeInfo.id)"
-          nz-button nzType="primary">
-    <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-  </button>
-</div>
+
+<nz-spin *ngIf="isLoading" nzSimple [nzSize]="'large'"></nz-spin>
+
+<div *ngIf="!isLoading">
+  <div class="detail-volume">
+    <div class="row">
+      <h3 style="display: inline-block; margin-right: auto;">Chi tiết dịch vụ</h3>
+      <div class="action-detail-volume">
+        <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
+                nzType="primary">
+          <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
+        </button>
+        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
+                (click)="navigateEditVolume(volumeInfo.id)"
+                nz-button nzType="primary">
+          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+        </button>
+      </div>
+    </div>
+    <br>
+    <hr style="opacity: 0.1">
+    <br>
 
 
+    <nz-table [nzTemplateMode]="true" style="border: none;">
+      <tbody>
+      <tr>
+        <td style="border-bottom: none; ">
+          <div style="display: flex; padding-left: 10%;">
+            <div style="width: 100px; height: 100px;">
+              <img nz-image
+                   width="100%"
+                   height="100%"
+                   nzSrc="assets/imgs/icon_cycle.png"
+                   alt=""
+              />
+            </div>
+            <div style="padding-left: 20px;">
+              <b>Chu kỳ thanh toán</b>
+              <br>
+              <p>1 tháng</p>
+              <p>Chu kỳ hiện tại: 1</p>
+            </div>
+          </div>
 
-<div class="detail-volume">
-  <h3>Chi tiết dịch vụ</h3>
+        </td>
+        <td style="border-bottom: none; ">
+          <div style=" display: flex;  padding-left: 40%">
+            <div style="width: 100px; height: 100px;">
+              <img nz-image
+                   width="100%"
+                   height="100%"
+                   nzSrc="assets/imgs/icon_money.png"
+                   alt=""
+              />
+            </div>
+            <div style="padding-left: 20px;">
+              <b>Thông tin thanh toán kỳ tới</b>
+              <br>
+              <p>số tiền: 1.210.000VNĐ (từ 10/10/2023 đến 20/11/2023)</p>
+              <p>Ngày thanh toán: 20/10/2023</p>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </div>
+
   <br>
-  <hr style="opacity: 0.1">
   <br>
 
+  <div class="info-volume">
+    <h3>Thông tin Volume</h3>
+    <br>
+    <hr style="opacity: 0.1">
+    <br>
+    <nz-table [nzTemplateMode]="true" style="border: none;">
+      <tbody>
 
-  <nz-table [nzTemplateMode]="true" style="border: none;">
-    <tbody>
-    <tr>
       <td style="border-bottom: none; ">
-        <div style="display: flex; padding-left: 10%;">
-          <div style="width: 100px; height: 100px;">
-            <img nz-image
-                 width="100%"
-                 height="100%"
-                 nzSrc="assets/imgs/icon_cycle.png"
-                 alt=""
-            />
-          </div>
-          <div style="padding-left: 20px;">
-            <b>Chu kỳ thanh toán</b>
-            <br>
-            <p>1 tháng</p>
-            <p>Chu kỳ hiện tại: 1</p>
-          </div>
-        </div>
-
+        <p>
+          <b>Tên Volume: </b>
+          {{volumeInfo.name}}
+        </p>
       </td>
       <td style="border-bottom: none; ">
-        <div style=" display: flex;  padding-left: 40%">
-          <div style="width: 100px; height: 100px;">
-            <img nz-image
-                 width="100%"
-                 height="100%"
-                 nzSrc="assets/imgs/icon_money.png"
-                 alt=""
-            />
-          </div>
-          <div style="padding-left: 20px;">
-            <b>Thông tin thanh toán kỳ tới</b>
-            <br>
-            <p>số tiền: 1.210.000VNĐ (từ 10/10/2023 đến 20/11/2023)</p>
-            <p>Ngày thanh toán: 20/10/2023</p>
-          </div>
-        </div>
-
+        <p>
+          <b>Loại Volume: </b>
+          {{volumeInfo.volumeType}}
+        </p>
       </td>
-    </tr>
-    </tbody>
-  </nz-table>
+      </tbody>
+    </nz-table>
 
-</div>
+    <nz-table [nzTemplateMode]="true">
+      <thead>
+      <tr>
+        <th>Dung lượng(GB)</th>
+        <th>IOPS</th>
+        <th>Trạng thái Volume</th>
+        <th>Máy ảo</th>
+        <th>Kiểu Volume</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngIf="this.attachedDto.length > 1">
+        <td>{{ volumeInfo.sizeInGB }}</td>
+        <td>{{ volumeInfo.iops }}</td>
+        <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td>
+          <pre>{{this.listVMs}}</pre>
+        </td>
+        <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
+      </tr>
 
-<br>
-<br>
+      <tr *ngIf="this.attachedDto.length <= 1">
+        <td>{{ volumeInfo.sizeInGB }}</td>
+        <td>{{ volumeInfo.iops }}</td>
+        <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td>{{this.attachedDto.length == 1 ? this.attachedDto[0].instanceName : 'Không có máy ảo'}} </td>
+        <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
+      </tr>
 
-<div class="info-volume">
-  <h3>Thông tin Volume</h3>
-  <br>
-  <hr style="opacity: 0.1">
-  <br>
-  <nz-table [nzTemplateMode]="true" style="border: none;">
-    <tbody>
+      </tbody>
+    </nz-table>
 
-    <td style="border-bottom: none; ">
-      <p>
-        <b>Tên Volume: </b>
-        {{volumeInfo.name}}
-      </p>
-    </td>
-    <td style="border-bottom: none; ">
-      <p>
-        <b>Loại Volume: </b>
-        {{volumeInfo.volumeType}}
-      </p>
-    </td>
-    </tbody>
-  </nz-table>
-
-  <nz-table [nzTemplateMode]="true">
-    <thead>
-    <tr>
-      <th>Dung lượng(GB)</th>
-      <th>IOPS</th>
-      <th>Trạng thái Volume</th>
-      <th>Kiểu Volume</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>{{ volumeInfo.sizeInGB }}</td>
-      <td>{{ volumeInfo.iops }}</td>
-      <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
-      <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
-      <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
-      <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
-    </tr>
-    </tbody>
-  </nz-table>
-
-  <br>
-  <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
-  <br>
-  <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
-  <br>
-  <br>
-  <br>
-  <p>
-    <b>
-      Máy ảo:
-    </b>
-    {{volumeInfo.instanceName!=null?volumeInfo.instanceName:'Chưa gắn máy ảo.'}}
-  </p>
-  <br>
-  <br>
-  <p>
-    <b>
-      Thời gian khởi tạo:
-    </b>
-    <span>{{ volumeInfo.createDate | date:'dd/MM/yyyy' }}</span>
-  </p>
+    <br>
+    <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
+    <br>
+    <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
+    <br>
+    <br>
+    <br>
+    <p>
+      <b>
+        Thời gian khởi tạo:
+      </b>
+      <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
+    </p>
 
 
+  </div>
 </div>

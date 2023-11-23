@@ -48,6 +48,11 @@
           "text": "Backup VM",
           "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/backup-vm"
+        },
+        {
+          "text": "Quản lý Snapshot Volume",
+          "icon": "anticon-dashboard",
+          "link": "/app-smart-cloud/snapshotvls"
         }
       ]
     },
