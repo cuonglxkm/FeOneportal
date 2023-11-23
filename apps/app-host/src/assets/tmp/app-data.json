@@ -43,6 +43,11 @@
           "text": "Allow Address Pair",
           "icon": "anticon-edit",
           "link": "/app-smart-cloud/allow-address-pair"
+        },
+        {
+          "text": "Quản lý Snapshot Volume",
+          "icon": "anticon-dashboard",
+          "link": "/app-smart-cloud/snapshotvls"
         }
       ]
     }

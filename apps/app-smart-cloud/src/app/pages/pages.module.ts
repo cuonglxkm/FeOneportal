@@ -40,11 +40,13 @@ import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {SHARED_ZORRO_MODULES} from "../shared/shared-zorro.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {SEModule} from "@delon/abc/se";
-import { IpPublicComponent } from './ip-public/ip-public.component';
-import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
-import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
-import {HeaderVolumeDataService} from "./volume/component/header-volume/header-volume-data.service";
-import { HeaderComponent } from './security-group/header/header.component';
+import {IpPublicComponent} from './ip-public/ip-public.component';
+import {CreateUpdateIpPublicComponent} from './ip-public/create-update-ip-public/create-update-ip-public.component';
+import {DetailIpPublicComponent} from './ip-public/detail-ip-public/detail-ip-public.component';
+import {HeaderComponent} from './security-group/header/header.component';
+import {PopupCancelVolumeComponent} from "./volume/component/popup-volume/popup-cancel-volume.component";
+import {SnapshotVolumeListComponent} from "./snapshot-volume/snapshotvl-list/snapshotvl-list.component";
+import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/snappshotvl-detail.component";
 
 const icons: IconDefinition[] = [SettingOutline];
 
@@ -81,7 +83,10 @@ const icons: IconDefinition[] = [SettingOutline];
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
     DetailIpPublicComponent,
-    HeaderComponent
+    HeaderComponent,
+    PopupCancelVolumeComponent,
+    SnapshotVolumeListComponent,
+    SnappshotvlDetailComponent
   ],
   imports: [
     CommonModule,
@@ -107,6 +112,5 @@ const icons: IconDefinition[] = [SettingOutline];
     NzImageModule,
     NzImageModule,
   ],
-  providers: [HeaderVolumeDataService]
 })
 export class PagesModule { }

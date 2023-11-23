@@ -4,7 +4,7 @@ import {Observable, of} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {VolumeDTO} from "../dto/volume.dto";
 import {BaseService} from "./base.service";
-import {AddVolumetoVmModel, EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
+import {AddVolumetoVmModel, EditSizeVolumeModel, EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
 import {GetAllVmModel} from "../models/volume.model";
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {PriceVolumeDto} from "../dto/volume.dto";
@@ -19,11 +19,10 @@ export class VolumeService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
-
-
-  private urlVolume = 'http://172.16.68.200:1009/volumes';
-  private urlVM = 'http://172.16.68.200:1009/instances/getpaging';
-
+  //API GW
+  private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
+  private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
+  private  urlOrderGW = this.baseUrl + this.ENDPOINT.orders;
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): Observable<GetListVolumeModel> {
     let urlResult = this.getConditionSearchVolume(customerId, projectId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName);
@@ -33,7 +32,7 @@ export class VolumeService extends BaseService {
   }
 
   getVolummeById(volumeId: string) {
-    return this.http.get<VolumeDTO>(this.urlVolume + '/' + volumeId).pipe(
+    return this.http.get<VolumeDTO>(this.urlVolumeGW + '/' + volumeId).pipe(
       catchError(this.handleError<VolumeDTO>('get volume-detail error'))
     )
   }
@@ -51,9 +50,9 @@ export class VolumeService extends BaseService {
   getAllVMs(region: number): Observable<GetAllVmModel> {
     let url;
     if (region != null) {
-      url = this.urlVM + '?region=' + region + '&pageSize=' + 10000 + '&currentPage=' + 1;
+      url = this.urlVMGW + '/getpaging' + '?region=' + region + '&pageSize=' + 10000 + '&currentPage=' + 1;
     } else {
-      url = this.urlVM + '?pageSize=' + 10000 + '&currentPage=' + 1;
+      url = this.urlVMGW + '/getpaging'  + '?pageSize=' + 10000 + '&currentPage=' + 1;
     }
     return this.http.get<GetAllVmModel>(url).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
@@ -61,29 +60,46 @@ export class VolumeService extends BaseService {
   }
 
   createNewVolume(request: CreateVolumeRequestModel): Observable<CreateVolumeResponseModel> {
-    return this.http.post<CreateVolumeResponseModel>('http://172.16.68.200:1003/orders/', request).pipe(
+    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request).pipe(
       catchError(this.handleError<CreateVolumeResponseModel>('create volume error.'))
     );
   }
 
+  editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
+    return this.http.post<any>(this.urlOrderGW, request).pipe(
+      catchError(this.handleError<any>('Edit size volume error.'))
+    );
+  }
+
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>('http://172.16.68.200:1009/volumes/' + idVolume).pipe(
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume).pipe(
       catchError(this.handleError<boolean>('delete volume error.'))
     );
   }
 
-  addVolumeToVm(request: AddVolumetoVmModel): Observable<any> {
-    return this.http.post<any>('http://172.16.68.200:1009/volumes/attach',request).pipe(
-      catchError(this.handleError<any>('Add Volume to VM error.'))
+  addVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request).pipe(
+      catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
 
-  editTextVolume(request: EditTextVolumeModel): Observable<any>{
-    return this.http.put('http://172.16.68.200:1009/volumes/' + request.volumeId, request).pipe(
+  detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
+    return this.http.post<boolean>(this.urlVolumeGW + '/detach', request).pipe(
+      catchError(this.handleError<boolean>('Add Volume to VM error.'))
+    );
+  }
+
+  editTextVolume(request: EditTextVolumeModel): Observable<any> {
+    return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request).pipe(
       catchError(this.handleError<any>('Edit Volume to VM error.'))
     );
   }
 
+  extendsVolume(request: EditSizeVolumeModel): Observable<any>{
+    return this.http.post<any>(this.urlOrderGW, request).pipe(
+      catchError(this.handleError<any>('Extends size volume error.'))
+    );
+  }
 
   constructor(private http: HttpClient, private message: NzMessageService) {
     super();
@@ -103,7 +119,7 @@ export class VolumeService extends BaseService {
 
   private getConditionSearchVolume(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): string {
 
-    let urlResult = this.urlVolume;
+    let urlResult = this.urlVolumeGW;
     let count = 0;
     if (customerId !== undefined && customerId != null) {
       urlResult += '?customerId=' + customerId;
@@ -171,7 +187,7 @@ export class VolumeService extends BaseService {
   }
 
   private getConditionGetPremiumVolume(volumeType: string, size: number, duration: number): string {
-    let urlResult = this.urlVolume + '/getcreateprice';
+    let urlResult = this.urlVolumeGW + '/getcreateprice';
     let count = 0;
     if (volumeType !== undefined && volumeType != null) {
       urlResult += '?volumeType=' + volumeType;
