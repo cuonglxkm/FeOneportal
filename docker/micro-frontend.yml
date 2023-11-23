@@ -2,7 +2,7 @@ version: "3.8"
 services:
   #----------------------------------------------------------------
   app-host:
-    image: oneportal-app-host:${BUILD_VERSION}
+    image: registry.onsmartcloud.com/cloudportal/oneportal-app-host:${BUILD_VERSION}
     build:
       context: ./..
       dockerfile: apps/app-host/Dockerfile
@@ -17,7 +17,7 @@ services:
 
   #  ----------------------------------------------------------------
   app-smart-cloud:
-    image: oneportal-app-smart-cloud:${BUILD_VERSION}
+    image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud:${BUILD_VERSION}
     build:
       context: ./..
       dockerfile: apps/app-smart-cloud/Dockerfile
