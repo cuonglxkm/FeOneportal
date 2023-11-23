@@ -52,6 +52,7 @@ import {ListBackupVmComponent} from './backup-vm/list/list-backup-vm.component';
 import {LayoutDefaultModule} from '@delon/theme/layout-default';
 import {RestoreBackupVmComponent} from './backup-vm/restore/restore-backup-vm.component';
 import {DeleteBackupVmComponent} from './backup-vm/delete/delete-backup-vm.component';
+import {DetailBackupVmComponent} from "./backup-vm/detail/detail-backup-vm.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -96,6 +97,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
+    DetailBackupVmComponent
   ],
   imports: [
     CommonModule,

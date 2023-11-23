@@ -4,7 +4,6 @@ import {ProjectModel} from "../../../shared/models/project.model";
 import {BackupVm, BackupVMFormSearch} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import Pagination from "../../../shared/models/pagination";
-import {AllowAddressPair} from "../../../shared/models/allow-address-pair";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
