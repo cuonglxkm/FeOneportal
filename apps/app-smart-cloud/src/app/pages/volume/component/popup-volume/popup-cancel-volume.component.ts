@@ -1,8 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
 import {VolumeService} from "../../../../shared/services/volume.service";
 import {GetAllVmModel} from "../../../../shared/models/volume.model";
-import {VmDto} from "../../../../shared/dto/volume.dto";
+import {VmDto, VolumeDTO} from "../../../../shared/dto/volume.dto";
+import {NZ_MODAL_DATA} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-popup-content',
@@ -18,14 +19,12 @@ import {VmDto} from "../../../../shared/dto/volume.dto";
     </nz-select>
   `
 })
-export class PopupAddVolumeComponent implements OnInit {
+export class PopupCancelVolumeComponent implements OnInit {
   options: NzSelectOptionInterface[] = [];
-  getAllVmResponse: GetAllVmModel;
-  listAllVMs: VmDto[] = [];
   selectedItem: any;
   @Output() valueSelected: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(private volumeService: VolumeService ) {
+  constructor(private volumeSevice: VolumeService,@Inject(NZ_MODAL_DATA) public data: number ) {
   }
 
   onChange(value: string): void {
@@ -34,13 +33,14 @@ export class PopupAddVolumeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const regionString = localStorage.getItem('region');
-    const region = JSON.parse(regionString);
-    this.getAllVmResponse = await this.volumeService.getAllVMs(region.regionId).toPromise();
-    this.listAllVMs = this.getAllVmResponse.records;
-    this.listAllVMs.forEach((vm) => {
-      this.options.push({label: vm.name, value: vm.id});
+    this.volumeSevice.getVolummeById(this.data.toString()).toPromise().then( response => {
+      if(response != null){
+        if(response.attachedInstances.length > 0){
+          response.attachedInstances.forEach(vm => {
+            this.options.push({label: vm.instanceName , value: vm.instanceId})
+          })
+        }
+      }
     })
-
   }
 }

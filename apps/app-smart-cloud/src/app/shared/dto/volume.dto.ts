@@ -18,20 +18,22 @@ export class VolumeDTO {
   projectId: number;
   project: string | null;
   instanceName: string;
-  expireDate: string;
+  expirationDate: string;
+  creationDate: string;
   deletedDate: string;
   suspendDate: string;
   serviceStatus: string;
   suspendType: string;
   typeId: string;
   backupScheduleId: string;
-  vpcId: string;
+  vpcId: number;
   vpcName: string;
   isEncryption: boolean;
   isMultiAttach: boolean;
   volumeType: string | null;
   customerEmail: string;
-  id: number
+  id: number;
+  attachedInstances: AttachedDto[];
 }
 
 export class PriceVolumeDto {
@@ -64,7 +66,7 @@ export class CreateVolumeDto{
   am: any | null;
   amManager:any | null;
   isTrial: boolean| null;
-  offerId: 2;
+  offerId: number;
   couponCode: any | null;
   dhsxkd_SubscriptionId: number | null;
   dSubscriptionNumber: any | null;
@@ -78,7 +80,45 @@ export class CreateVolumeDto{
   actorEmail: string | null;
   createFromSnapshotId: number | null;
 }
+
+export class EditSizeMemoryVolumeDTO{
+  newSize: number;
+  newDescription: string;
+  newOfferId: number;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  regionId: number;
+  serviceName: string;
+  customerId: number;
+  vpcId: number;
+  typeName: string;
+  userEmail: string;
+  actorEmail:string;
+}
+
+export class ExtendVolumeDTO{
+  regionId: number;
+  serviceName: string;
+  customerId: number;
+  vpcId: number;
+  typeName:  string;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  newExpireDate: string;
+  userEmail: string;
+  actorEmail: string;
+}
+
+
+
 export class VmDto {
   id: number;
   name: string;
+}
+
+export class AttachedDto {
+  instanceId: number;
+  instanceName: string;
 }
