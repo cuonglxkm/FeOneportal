@@ -139,108 +139,108 @@
       </nz-card>
     </div>
     <div *ngIf="selectedValueRadio === 'O'">
-      <nz-card>
-        <nz-row nzGutter="24">
-          <nz-col nzSpan="12">
-            <nz-form-item>
-              <nz-form-label nzFor="name">
-                <div class="name-rule">
-                  <span>Tên máy ảo</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <input nz-input formControlName="name" id="name"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="flavor">
-                <div class="name-rule">
-                  <span>Gói cấu hình</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <one-portal-flavor-select [region]="region"
-                                          [value]="validateForm.controls.flavor.value"
-                                          (onChange)="handleFlavorChange($event)"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="image">
-                <div class="name-rule">
-                  <span>Hệ điều hành</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <one-portal-image-select [region]="region"
-                                         [value]="validateForm.controls.image.value"
-                                         (onChange)="handleImageChange($event)"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-col>
-          <nz-col nzSpan="12">
-            <nz-form-item>
-              <nz-form-label nzFor="security-group">
-                <div class="name-rule">
-                  <span>Security Group</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <one-portal-security-group-select [region]="region"
-                                                  [project]="project"
-                                                  [value]="validateForm.controls.securityGroup.value"
-                                                  (onChange)="handleSecurityGroupChange($event)"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="iops">
-                <div class="name-rule">
-                  <span>IOPS</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <input nz-input formControlName="iops" id="iops"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="storage">
-                <div class="name-rule">
-                  <span>Dung lượng ổ hệ điều hành</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <input nz-input formControlName="storage" id="storage"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
+<!--      <nz-card>-->
+<!--        <nz-row nzGutter="24">-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="name">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>Tên máy ảo</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <input nz-input formControlName="name" id="name"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="flavor">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>Gói cấu hình</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <one-portal-flavor-select [region]="region"-->
+<!--                                          [value]="validateForm.controls.flavor.value"-->
+<!--                                          (onChange)="handleFlavorChange($event)"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="image">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>Hệ điều hành</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <one-portal-image-select [region]="region"-->
+<!--                                         [value]="validateForm.controls.image.value"-->
+<!--                                         (onChange)="handleImageChange($event)"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="security-group">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>Security Group</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <one-portal-security-group-select [region]="region"-->
+<!--                                                  [project]="project"-->
+<!--                                                  [value]="validateForm.controls.securityGroup.value"-->
+<!--                                                  (onChange)="handleSecurityGroupChange($event)"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="iops">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>IOPS</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <input nz-input formControlName="iops" id="iops"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="storage">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>Dung lượng ổ hệ điều hành</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <input nz-input formControlName="storage" id="storage"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--            <nz-form-item>-->
 
-            </nz-form-item>
-          </nz-col>
-        </nz-row>
-      </nz-card>
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+<!--      </nz-card>-->
     </div>
   </form>
 </nz-content>
