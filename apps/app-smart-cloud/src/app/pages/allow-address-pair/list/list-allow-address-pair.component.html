@@ -34,8 +34,12 @@
                         Tạo mới
                     </button>
                     <create-allow-address-pair [isVisible]="isVisibleCreate"
+                                               [isLoading]="isLoading"
+                                               [region]="region"
+                                               [project]="project"
+                                               [userId]="userId"
                                                (onCancel)="handleCloseCreate()"
-                                               (onOk)="handleOkCreate($event)"/>
+                                               (onOk)="handleOkCreate()"/>
                 </nz-space>
             </div>
         </nz-row>
@@ -45,12 +49,14 @@
     <nz-card>
         <div class="code-box-description">
             <nz-table #tablePair
-                      [nzData]="listPairInfo"
+                      [nzData]="collection.records"
                       nzShowSizeChanger
                       [nzFrontPagination]="false"
-                      [nzTotal]="listPairInfo.length"
-                      [nzPageSize]="10"
-                      [nzPageIndex]="1"
+                      [nzTotal]="collection.totalCount"
+                      [nzPageSize]="collection.pageSize"
+                      [nzPageIndex]="collection.currentPage"
+                      [nzLoading]="isLoading"
+                      (nzQueryParams)="onQueryParamsChange($event)"
             >
                 <thead>
                 <tr>
@@ -70,6 +76,7 @@
                             Xoá
                         </button>
                         <delete-allow-address-pair [isVisible]="isVisibleDelete"
+                                                   [isLoading]="isLoading"
                                                    (onCancel)="handleCancelDelete()"
                                                    (onOk)="handleOkDelete(data)"
                         ></delete-allow-address-pair>

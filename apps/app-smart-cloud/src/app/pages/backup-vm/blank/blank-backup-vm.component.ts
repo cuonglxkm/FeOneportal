@@ -3,11 +3,11 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 
 @Component({
-  selector: 'one-portal-bank-security-group',
-  templateUrl: './blank-security-group.component.html',
-  styleUrls: ['./blank-security-group.component.less'],
+  selector: 'one-portal-blank-backup-vm',
+  templateUrl: './blank-backup-vm.component.html',
+  styleUrls: ['./blank-backup-vm.component.less'],
 })
-export class BlankSecurityGroupComponent {
+export class BlankBackupVmComponent {
   region: number;
 
   project: number;
@@ -19,6 +19,4 @@ export class BlankSecurityGroupComponent {
   projectChanged(project: ProjectModel) {
     this.project = project?.id
   }
-
-
 }

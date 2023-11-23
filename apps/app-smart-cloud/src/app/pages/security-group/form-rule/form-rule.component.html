@@ -46,7 +46,6 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="codeErrorTpl">
           <input nz-input formControlName="portRangeMin" id="code"/>
           <ng-template #codeErrorTpl let-control>
-            {{console.log(control)}}
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
             <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
             <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>

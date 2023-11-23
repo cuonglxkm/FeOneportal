@@ -1,19 +1,15 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
-  selector: 'delete-allow-address-pair',
-  templateUrl: './delete-allow-address-pair.component.html',
-  styleUrls: ['./delete-allow-address-pair.component.less'],
+  selector: 'one-portal-delete-backup-vm',
+  templateUrl: './delete-backup-vm.component.html',
+  styleUrls: ['./delete-backup-vm.component.less'],
 })
-export class DeleteAllowAddressPairComponent {
+export class DeleteBackupVmComponent {
   @Input() isVisible: boolean
   @Input() isLoading: boolean
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
-
-  modalStyle = {
-    'height': '217px'
-  };
 
   handleCancel(): void {
     this.onCancel.emit();
@@ -22,5 +18,4 @@ export class DeleteAllowAddressPairComponent {
   handleOk(): void {
     this.onOk.emit();
   }
-
 }
