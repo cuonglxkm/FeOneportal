@@ -17,7 +17,7 @@ export class RestoreBackupVmComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  radioValue = 'A';
+  selectedValueRadio = 'N';
 
   validateForm: FormGroup<{
     name: FormControl<string>
@@ -26,6 +26,7 @@ export class RestoreBackupVmComponent implements OnInit{
     securityGroup: FormControl<SecurityGroup | null>
     iops: FormControl<number>
     storage: FormControl<number>
+    radio: FormControl<any>
   }> = this.fb.group({
     name: ['', [Validators.required]],
     flavor: [null as Flavor | null, [Validators.required]],
@@ -33,6 +34,7 @@ export class RestoreBackupVmComponent implements OnInit{
     securityGroup: [null as SecurityGroup | null, [Validators.required]],
     iops: [null as number | null, [Validators.required]],
     storage: [null as number | null, [Validators.required]],
+    radio: [''],
   })
 
   constructor(private fb: NonNullableFormBuilder,
@@ -85,4 +87,7 @@ export class RestoreBackupVmComponent implements OnInit{
   }
 
 
+  onChangeStatus() {
+    console.log('Selected option changed:', this.selectedValueRadio);
+  }
 }

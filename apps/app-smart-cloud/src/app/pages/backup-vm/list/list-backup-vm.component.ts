@@ -19,6 +19,15 @@ export class ListBackupVmComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  status = [
+    {label: 'Tất cả', value: 'all'},
+    {label: 'Hoạt động', value: 'AVAILABLE'},
+    {label: 'Tạm dừng', value: 'SUSPENDED'},
+    {label: 'Lỗi', value:'ERROR'}
+  ]
+
+  selectedValue: any;
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId
   }
@@ -42,12 +51,17 @@ export class ListBackupVmComponent implements OnInit {
   handleOkDelete(){
   }
 
-
   search(){
+  }
 
+  getListBackupVM() {
+  }
+
+  onChange(value){
+    this.selectedValue = value.value;
+    console.log('selected', this.selectedValue)
   }
 
   ngOnInit(): void {
-
   }
 }

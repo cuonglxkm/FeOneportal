@@ -10,11 +10,10 @@
     <nz-row nzAlign="middle">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
-          <nz-select nzPlaceHolder="Tất cả trạng thái">
-            <nz-option nzValue="Tất cả" nzLabel="Tất cả"></nz-option>
-            <nz-option nzValue="Hoạt động" nzLabel="Hoạt động"></nz-option>
-            <nz-option nzValue="Tạm dừng" nzLabel="Tạm dừng"></nz-option>
-            <nz-option nzValue="Lỗi" nzLabel="Lỗi"></nz-option>
+          <nz-select [(ngModel)]="selectedValue"
+                     (ngModelChange)="onChange($event)"
+                     nzPlaceHolder="Tất cả trạng thái" >
+            <nz-option *ngFor="let item of status" [nzValue]="item" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
         <div *nzSpaceItem>
