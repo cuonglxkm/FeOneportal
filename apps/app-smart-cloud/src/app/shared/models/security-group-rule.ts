@@ -34,3 +34,13 @@ export class SecurityGroupRuleGetPage {
   securityGroupId?: string;
   direction?: string;
 }
+
+export class RuleSearchCondition {
+  userId: number
+  regionId: number
+  projectId: number
+  pageSize: number
+  pageNumber: number
+  securityGroupId?: string
+  direction?: 'ingress' | 'egress'
+}

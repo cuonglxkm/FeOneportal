@@ -1,38 +1,37 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
+import {SecurityGroupSearchCondition} from "../../../../shared/models/security-group";
 
 @Component({
   selector: 'one-portal-outbound',
   templateUrl: './create-outbound.component.html',
   styleUrls: ['./create-outbound.component.less'],
 })
-export class CreateOutboundComponent implements OnInit{
-  region: number;
-  securityGroupId: string;
-  project: number;
+export class CreateOutboundComponent implements OnInit {
+  @Input() disabled?: boolean
+  @Input() condition: SecurityGroupSearchCondition
+  @Output() onOk = new EventEmitter()
+  @Output() onCancel = new EventEmitter()
 
-  constructor(private route: ActivatedRoute) {
-  }
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId;
+  isVisible: boolean = false;
+
+  showModal(): void {
+    this.isVisible = true;
   }
 
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id;
+
+  handleOk() {
+    this.isVisible = false;
+    this.onOk.emit();
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
+    this.onCancel.emit();
   }
   ngOnInit(): void {
-    this.route.queryParams.subscribe(queryParams => {
-      const value = queryParams['param'];
-      const region = queryParams['region'];
-      const project = queryParams['project'];
-      console.log('Received value:', value);
-      this.securityGroupId = value;
-      this.region = parseInt(region);
-      this.project = parseInt(project);
-      console.log('Received value 2:', this.region);
-      console.log('Received value 3 :', this.project);
-    });
+
   }
 }

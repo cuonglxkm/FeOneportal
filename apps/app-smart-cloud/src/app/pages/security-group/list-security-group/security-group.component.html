@@ -1,71 +1,65 @@
 <one-portal-header
-  title="Security Group"
-  [path]="['Home', 'Dịch vụ', 'Security Group']"
-  [regionId]="region"
-  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+        title="Security Group"
+        [path]="['Home', 'Dịch vụ', 'Security Group']"
+        [regionId]="region"
+        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
 <nz-content>
-  <nz-card>
-    <div class="title">Danh sách Security Group</div>
-    <nz-row style="margin-bottom: 16px">
-      <nz-col nzSpan="4">
-        <div class="label">Chọn Security group</div>
-      </nz-col>
-      <nz-col nzSpan="14">
-        <nz-space [nzSize]="24">
-          <nz-select
-            *nzSpaceItem
-            nzShowSearch
-            [nzLoading]="isLoadingSG"
-            nzAllowClear
-            nzPlaceHolder="Select a security"
-            [(ngModel)]="selectedValue"
-            (ngModelChange)="onSecurityGroupChange()">
-            <nz-option *ngFor="let item of options" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
-          </nz-select>
-          <div *nzSpaceItem>
-            <button *ngIf="!!selectedValue" nz-button nzType="primary" nzDanger
-                    class="button-delete" (click)="showModal()">Xoá Security Group
-            </button>
-          </div>
-          <one-portal-delete-security-group *ngIf="!!selectedValue" [isVisible]="isVisible"
-                                            [condition]="conditionSearch"
-                                            [id]="selectedValue.id"
-                                            (onCancel)="handleCancel()"
-                                            (onOk)="handleOk()">
-          </one-portal-delete-security-group>
-        </nz-space>
-      </nz-col>
-      <nz-col nzSpan="6">
-        <nz-row nzJustify="end">
-          <button nz-button nzType="primary"
-                  class="button-add"
-                  routerLink="/app-smart-cloud/create-security-group">Thêm mới Security group
-          </button>
+    <nz-card>
+        <div class="title">Danh sách Security Group</div>
+        <nz-row style="margin-bottom: 16px">
+            <nz-col nzSpan="4">
+                <div class="label">Chọn Security group</div>
+            </nz-col>
+            <nz-col nzSpan="14">
+                <nz-space [nzSize]="24">
+                    <nz-select
+                            *nzSpaceItem
+                            nzShowSearch
+                            nzAllowClear
+                            nzPlaceHolder="Select a security"
+                            [(ngModel)]="selectedValue"
+                            (ngModelChange)="onSecurityGroupChange()">
+                        <nz-option *ngFor="let item of options" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
+                    </nz-select>
+                    <div *nzSpaceItem>
+                        <one-portal-delete-security-group
+                                *ngIf="!!selectedValue"
+                                [condition]="conditionSearch"
+                                [id]="selectedValue.id"
+                                (onOk)="handleOk()"
+                        />
+                    </div>
+
+                </nz-space>
+            </nz-col>
+            <nz-col nzSpan="6">
+                <nz-row nzJustify="end">
+                    <one-portal-create-security-group
+                            [conditionSearch]="conditionSearch"
+                            (onOk)="handleOkCreate()"
+                    />
+                </nz-row>
+            </nz-col>
         </nz-row>
-      </nz-col>
-    </nz-row>
-    <nz-row style="margin-bottom: 16px">
-      <nz-col nzSpan="4">
-        <div class="label">Mô tả</div>
-      </nz-col>
-      <nz-col>
-        <div class="label">{{selectedValue?.description || ''}}</div>
-      </nz-col>
-    </nz-row>
-    <one-portal-inbound-list [isLoading]="isLoading"
-                             [listInbound]="listInbound"
-                             [conditionSearch]="conditionSearch"
-                             [securityGroupId]="selectedValue?.id"
-                             [region]="region"
-                             [project]="project"></one-portal-inbound-list>
-    <one-portal-list-outbound [isLoading]="isLoading"
-                              [listOutbound]="listOutbound"
-                              [conditionSearch]="conditionSearch"
-                              [securityGroupId]="selectedValue?.id"
-                              [region]="region"
-                              [project]="project"
-    ></one-portal-list-outbound>
-<!--    <one-portal-list-virtual-machine></one-portal-list-virtual-machine>-->
-  </nz-card>
+        <nz-row style="margin-bottom: 16px">
+            <nz-col nzSpan="4">
+                <div class="label">Mô tả</div>
+            </nz-col>
+            <nz-col>
+                <div class="label">{{selectedValue?.description || ''}}</div>
+            </nz-col>
+        </nz-row>
+        <one-portal-inbound-list
+                [securityGroupId]="selectedValue?.id"
+                [regionId]="region"
+                [projectId]="project"
+        />
+        <one-portal-list-outbound
+                [securityGroupId]="selectedValue?.id"
+                [regionId]="region"
+                [projectId]="project"
+        />
+        <!--    <one-portal-list-virtual-machine></one-portal-list-virtual-machine>-->
+    </nz-card>
 </nz-content>
