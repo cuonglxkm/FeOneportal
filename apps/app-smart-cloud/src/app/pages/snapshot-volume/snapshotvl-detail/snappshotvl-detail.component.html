@@ -1,0 +1,42 @@
+<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
+                   [headerInfo]="headerInfo"></app-header-volume>
+
+<nz-card
+  class="m-b-10"
+  [nzBodyStyle]="{ 'padding': '30px' }"
+  nzTitle="Thông tin Snapshot Volume"
+>
+
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Snapshot Volume</nz-form-label>
+  <input nz-input disabled="true" type="text"/>
+  <br>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24">Dung lượng</nz-form-label>
+  <input nz-input disabled="true" type="text"/>
+
+  <br>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+  <textarea rows="4" nz-input></textarea>
+
+  <br>
+  <br>
+  <nz-form-label [nzSm]="6" [nzXs]="24">Volume</nz-form-label>
+  <input nz-input disabled="true" type="text"/>
+
+  <div *ngIf="projectSearch == null || projectSearch === undefined">
+    <br>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24">VPC</nz-form-label>
+    <input nz-input disabled="true" type="text"/>
+  </div>
+  <br>
+  <br>
+  <p>Thời gian khởi tạo:</p>
+
+</nz-card>
+<div class="footer-detail">
+  <button class="buttonBack" nz-button nzType="default">Quay lại
+  </button>
+</div>
+

@@ -1,6 +1,5 @@
 <app-header-volume (regionId)="getRegionId($event)" (projectId)="getProjectId($event)"
                    [headerInfo]="headerInfo"></app-header-volume>
-<br>
 <div class="create-volume">
   <h3>Thông tin Volume</h3>
   <hr>
@@ -22,7 +21,6 @@
     <nz-select nzSize="default"
                [nzPlaceHolder]="'-Chọn Snapshot-'"
                [(ngModel)]="snapshot"
-               (ngModelChange)="changeExpTime()"
                style="width: 100%;"
     >
       <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>

@@ -19,11 +19,6 @@ export class VolumeService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
-
-  private urlVolume = 'http://172.16.68.200:1009/volumes';
-  private urlOrder = 'http://172.16.68.200:1003/orders';
-  private urlVM = 'http://172.16.68.200:1009/instances';
-
   //API GW
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
   private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
