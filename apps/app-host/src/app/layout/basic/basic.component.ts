@@ -90,8 +90,7 @@ export class LayoutBasicComponent {
     logoCollapsed: `./assets/imgs/logo-vnpt-idc-symbol.svg`
   };
   searchToggleStatus = false;
-  showSettingDrawer = true;
-    //!environment.production;
+  showSettingDrawer = !environment.production;
   get user(): User {
     return this.settings.user;
   }

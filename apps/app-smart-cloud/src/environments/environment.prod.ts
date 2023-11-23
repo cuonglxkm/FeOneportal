@@ -7,5 +7,6 @@ export const environment = {
     baseUrl: './',
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
-  }
+  },
+  baseUrl: 'https://api.onsmartcloud.com',
 } as Environment;
