@@ -62,7 +62,7 @@ export class CallbackComponent implements OnInit {
       .set('code', this.code)
       .set('redirect_uri', environment['sso'].callback);
 
-
+    let baseUrl = environment['baseUrl'];
     this.httpClient.post<TokenResponse>(this.url + '/connect/token', params.toString(),
       {
         headers,
@@ -81,7 +81,7 @@ export class CallbackComponent implements OnInit {
             id_token: decodedToken['oi_au_id'],
           };
 
-          return this.httpClient.get<UserModel>('http://172.16.68.200:1006/users/' + info.email, {
+          return this.httpClient.get<UserModel>(`${baseUrl}/users/` + info.email, {
             // headers: new HttpHeaders({
             //   'Authorization': "Bearer " + accessToken
             // }),
