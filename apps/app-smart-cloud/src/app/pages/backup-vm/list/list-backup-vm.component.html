@@ -18,7 +18,7 @@
         </div>
         <div *nzSpaceItem>
           <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
+            <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
           </nz-input-group>
           <ng-template #suffixButton>
             <button nz-button nzType="primary" nzSearch>
@@ -29,19 +29,21 @@
         </div>
       </nz-space>
     </nz-row>
-    <nz-table #tablePair
+    <nz-table #tableBackupVM
+              [nzData]="collection.records"
               nzShowSizeChanger
               [nzFrontPagination]="false"
-              [nzPageSize]="10"
-              [nzPageIndex]="1"
+              [nzTotal]="collection.totalCount"
+              [nzPageSize]="collection.pageSize"
+              [nzPageIndex]="collection.currentPage"
+              [nzLoading]="isLoading"
+              (nzQueryParams)="onQueryParamsChange($event)"
     >
       <thead>
       <tr>
         <th nzAlign="center" class="text-th">Tên</th>
         <th nzAlign="center" class="text-th">VM gốc</th>
         <th nzAlign="center" class="text-th">Dung luợng</th>
-        <th nzAlign="center" class="text-th">Gói backup</th>
-        <th nzAlign="center" class="text-th">Chu kỳ</th>
         <th nzAlign="center" class="text-th">Thời gian tạo</th>
         <th nzAlign="center" class="text-th">Trạng thái</th>
         <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
@@ -49,23 +51,29 @@
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
+      <tr *ngFor="let data of tableBackupVM.data">
+        <td nzAlign="center" routerLink="/app-smart-cloud/detail-backup-vm">{{ data.name }}</td>
+        <td nzAlign="center"> {{ data.instanceName }}</td>
+        <td nzAlign="center">{{ data.size }}</td>
+        <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+        <td nzAlign="center">{{ data.status }}</td>
+        <td nzAlign="center">{{ data.serviceStatus }}</td>
+<!--        <td nzAlign="center" *ngIF="data.status == 'ERROR'">-->
+<!--          <button-->
+<!--            nz-button-->
+<!--            [nzType]="'primary'">Xóa</button>-->
+<!--          <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"-->
+<!--                                       [isLoading]="isLoading"-->
+<!--                                       (onCancel)="handleCancelDelete()"-->
+<!--                                       (onOk)="handleOkDelete()" />-->
+<!--        </td>-->
         <td nzAlign="center">
           <button
             nz-button
             [nzType]="'primary'"
             nz-dropdown
-            [nzDropdownMenu]="opMenu"
-          >
-            <span>Khôi phục</span> <i nz-icon nzType="down"></i>
+            [nzDropdownMenu]="opMenu">
+            <span>Restore</span> <i nz-icon nzType="down"></i>
           </button>
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
