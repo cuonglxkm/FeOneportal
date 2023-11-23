@@ -1,0 +1,23 @@
+<one-portal-header
+  title="Backup VM"
+  [path]="['Home', 'Dịch vụ', 'Backup VM']"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content>
+  <nz-card>
+    <nz-row nzJustify="center">
+      <img src="/assets/tmp/backup-vm.png" width="450" height="450" alt="blank-security-group">
+    </nz-row>
+    <nz-row nzJustify="center" style="margin-top: -12px">
+      <div class="text-title">Backup VM - Sao lưu, bảo mật</div>
+    </nz-row>
+    <nz-row nzJustify="center">
+      <div class="text-subtitle" style="margin-top: 22px; max-width: 885px; text-wrap: normal">Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng
+        cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.</div>
+    </nz-row>
+    <nz-row nzJustify="center" style="margin: 50px 0">
+      <button style="text-align: center" nz-button nzType="primary" routerLink="/app-smart-cloud/create-backup-vm">Khởi tạo ngay</button>
+    </nz-row>
+  </nz-card>
+</nz-content>

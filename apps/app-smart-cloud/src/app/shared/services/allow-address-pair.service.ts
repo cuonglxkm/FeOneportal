@@ -4,6 +4,7 @@ import {Injectable} from "@angular/core";
 import {catchError, Observable, throwError} from "rxjs";
 import PairInfo, {AllowAddressPairCreateOrDeleteForm, AllowAddressPairSearchForm}
     from "../../shared/models/allow-address-pair";
+import Pagination from "../models/pagination";
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +21,7 @@ export class AllowAddressPairService extends BaseService {
         })
     }
 
-    search(form: AllowAddressPairSearchForm): Observable<PairInfo[]> {
+    search(form: AllowAddressPairSearchForm): Observable<Pagination<PairInfo>> {
         let params = new HttpParams();
         params = params.append('customerId', form.customerId);
         params = params.append('region', form.region);
@@ -32,7 +33,7 @@ export class AllowAddressPairService extends BaseService {
         params = params.append('pageSize', form.pageSize);
         params = params.append('currentPage', form.currentPage);
 
-        return this.http.get<PairInfo[]>(this.baseUrl + this.ENDPOINT.provisions + '/instances/allow_adress_pair', {
+        return this.http.get<Pagination<PairInfo>>(this.baseUrl + this.ENDPOINT.provisions + '/instances/allow_adress_pair', {
             headers: this.getHeaders(),
             params: params
         })
@@ -40,8 +41,8 @@ export class AllowAddressPairService extends BaseService {
     }
 
     createOrDelete(form: AllowAddressPairCreateOrDeleteForm) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions  + '/instances/allowadresspair', Object.assign(form))
-            .pipe(catchError(this.errorCode));
+        return this.http.post(this.baseUrl +
+          this.ENDPOINT.provisions  + '/instances/allowadresspair', Object.assign(form));
     }
 
 

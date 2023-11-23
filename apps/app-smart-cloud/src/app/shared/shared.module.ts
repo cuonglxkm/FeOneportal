@@ -13,6 +13,9 @@ import {ProjectSelectDropdownComponent} from "./components/project-select-dropdo
 
 import * as AllIcons from '@ant-design/icons-angular/icons';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
+import { FlavorSelectComponent } from './components/flavor-select/flavor-select.component';
+import {ImageSelectComponent} from "./components/image-select/image-select.component";
+import {SecurityGroupSelectComponent} from "./components/security-group-select/security-group-select.component";
 
 const antDesignIcons = AllIcons as {
     [key: string]: any;
@@ -20,7 +23,7 @@ const antDesignIcons = AllIcons as {
   const icons: any[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
 
 
- 
+
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -29,7 +32,13 @@ const THIRDMODULES: Array<Type<any>> = [];
 // #endregion
 
 // #region your componets & directives
-const COMPONENTS: Array<Type<any>> = [RegionSelectDropdownComponent, ProjectSelectDropdownComponent];
+const COMPONENTS: Array<Type<any>> = [
+  RegionSelectDropdownComponent,
+  ProjectSelectDropdownComponent,
+  FlavorSelectComponent,
+  ImageSelectComponent,
+  SecurityGroupSelectComponent,
+];
 const DIRECTIVES: Array<Type<any>> = [];
 // #endregion
 
