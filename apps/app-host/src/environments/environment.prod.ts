@@ -14,8 +14,8 @@ export const environment = {
   sso: {
     issuer: 'https://identity.onsmartcloud.com',
     clientId: 'frontend-client',
-    callback: 'http://localhost:4200/passport/callback/oneportal',
-    logout_callback: 'http://localhost:4200',
+    callback: 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
+    logout_callback: 'https://oneportal.onsmartcloud.com',
     scope: 'openid email roles',
   },
 } as Environment;
