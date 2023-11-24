@@ -180,7 +180,7 @@
   </nz-table>
 </div>
 <ng-template #elsePage>
-  <nz-card>
+  <nz-card *ngIf="dataList.length != 0">
     <result>
       <img nz-image nzSrc="assets/imgs/blank_vm.png" alt="" />
 

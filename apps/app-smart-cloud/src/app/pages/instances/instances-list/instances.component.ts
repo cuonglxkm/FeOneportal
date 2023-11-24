@@ -77,7 +77,6 @@ export class InstancesComponent implements OnInit {
   actionData: InstancesModel;
 
   region: number;
-
   activeCreate: boolean = true;
   isVisibleGanVLAN: boolean = false;
   isVisibleGanVLANIPAddress: boolean = false;
@@ -155,7 +154,8 @@ export class InstancesComponent implements OnInit {
           this.pageSize,
           this.region,
           this.searchParam.name,
-          this.searchParam.status
+          this.searchParam.status,
+          this.tokenService.get()?.userId
         )
         .subscribe({
           next: (data: any) => {
