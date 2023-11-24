@@ -13,7 +13,7 @@ import { CreateSecurityGroupComponent } from './security-group/create-security-g
 import { CreateInboundComponent } from './security-group/inbound/create/create-inbound.component';
 import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { SettingOutline } from '@ant-design/icons-angular/icons';
+import { SearchOutline, SettingOutline } from '@ant-design/icons-angular/icons';
 import { DeleteSecurityGroupComponent } from './security-group/delete-security-group/delete-security-group.component';
 import { DeleteRuleComponent } from './security-group/delete-rule/delete-rule.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -43,17 +43,16 @@ import { SEModule } from '@delon/abc/se';
 import { IpPublicComponent } from './ip-public/ip-public.component';
 import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
 import { DetailIpPublicComponent } from './ip-public/detail-ip-public/detail-ip-public.component';
-import { HeaderVolumeDataService } from './volume/component/header-volume/header-volume-data.service';
-import { HeaderComponent } from './security-group/header/header.component';
+import { HeaderComponent } from './header/header.component';
+import { PopupCancelVolumeComponent } from './volume/component/popup-volume/popup-cancel-volume.component';
+import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
+import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
+import { BlankBackupVmComponent } from './backup-vm/blank/blank-backup-vm.component';
+import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
+import { LayoutDefaultModule } from '@delon/theme/layout-default';
+import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
+import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.component';
 import { ActionHistoryComponent } from './action-history/action-history.component';
-import {PopupCancelVolumeComponent} from "./volume/component/popup-volume/popup-cancel-volume.component";
-import {SnapshotVolumeListComponent} from "./snapshot-volume/snapshotvl-list/snapshotvl-list.component";
-import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/snappshotvl-detail.component";
-import {BlankBackupVmComponent} from './backup-vm/blank/blank-backup-vm.component';
-import {ListBackupVmComponent} from './backup-vm/list/list-backup-vm.component';
-import {LayoutDefaultModule} from '@delon/theme/layout-default';
-import {RestoreBackupVmComponent} from './backup-vm/restore/restore-backup-vm.component';
-import {DeleteBackupVmComponent} from './backup-vm/delete/delete-backup-vm.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -98,7 +97,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
-    HeaderComponent,
     ActionHistoryComponent,
   ],
   imports: [
@@ -126,7 +124,5 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     LayoutDefaultModule,
   ],
-  providers: [HeaderVolumeDataService],
 })
 export class PagesModule {}
-
