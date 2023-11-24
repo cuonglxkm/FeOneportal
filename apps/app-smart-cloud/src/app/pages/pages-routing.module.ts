@@ -18,6 +18,11 @@ import {CreateVolumeComponent} from "./volume/component/create-volume/create-vol
 import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
 import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
 import { ActionHistoryComponent } from "./action-history/action-history.component";
+import {SnapshotVolumeListComponent} from "./snapshot-volume/snapshotvl-list/snapshotvl-list.component";
+import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/snappshotvl-detail.component";
+import {BlankBackupVmComponent} from "./backup-vm/blank/blank-backup-vm.component";
+import {ListBackupVmComponent} from "./backup-vm/list/list-backup-vm.component";
+import {RestoreBackupVmComponent} from "./backup-vm/restore/restore-backup-vm.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -88,6 +93,26 @@ const routes: Routes = [
   {
     path: 'action-history',
     component: ActionHistoryComponent
+  },
+  {
+    path: 'snapshotvls',
+    component: SnapshotVolumeListComponent
+  },
+  {
+    path: 'snapshotvls/detail/:id',
+    component: SnappshotvlDetailComponent
+  },
+  {
+    path: 'blank-backup-vm',
+    component: BlankBackupVmComponent
+  },
+  {
+    path: 'backup-vm',
+    component: ListBackupVmComponent
+  },
+  {
+    path: 'restore-backup-vm',
+    component: RestoreBackupVmComponent
   }
 ]
 

@@ -5,19 +5,12 @@ import {PopupAddVolumeComponent} from "../popup-volume/popup-add-volume.componen
 import {PopupDeleteVolumeComponent} from "../popup-volume/popup-delete-volume.component";
 import {Router} from "@angular/router";
 import {VolumeDTO} from "../../../../shared/dto/volume.dto";
-import { VolumeService } from "../../../../shared/services/volume.service";
+import {VolumeService} from "../../../../shared/services/volume.service";
 import {AddVolumetoVmModel, GetListVolumeModel} from "../../../../shared/models/volume.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-
-interface Volume {
-  name: string;
-  storage: number;
-  iops: number;
-  statusVolume: number;
-  statusAction: number;
-  vm: string;
-}
+import {isBlank} from "@delon/form";
+import {PopupCancelVolumeComponent} from "../popup-volume/popup-cancel-volume.component";
 
 @Component({
   selector: 'app-volume',
@@ -50,9 +43,11 @@ export class VolumeComponent implements OnInit {
   curentPageAdd: number = 0;
   tabVolumeIndex: number = 0;
 
-  isLoading = true;
+  isLoadingSearch = true;
+  isLoadingAction: boolean = false;
 
-  combinedValues: string[] = [];
+
+  isBlankVolume = true;
 
   selectedOption: NzSelectOptionInterface | null = null;
   options: NzSelectOptionInterface[] = [
@@ -76,7 +71,7 @@ export class VolumeComponent implements OnInit {
   ]
   volumeStatus: Map<String, string>;
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService , private message:NzMessageService) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private modalService: NzModalService, private router: Router, private volumeSevice: VolumeService, private message: NzMessageService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -84,7 +79,10 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0 , null , null)
+    // const regionString = localStorage.getItem('region');
+    // const region = JSON.parse(regionString);
+    // const projectId = localStorage.getItem('projectId')!=null?parseInt(localStorage.getItem('projectId')):null;
+    // this.getListVolume(null, projectId, region.regionId, true, 10, 0 , null , null)
   }
 
   onRootPageIndexChange(event: any) {
@@ -94,7 +92,7 @@ export class VolumeComponent implements OnInit {
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, (this.curentPageAdd - 1),this.volumeStatusSearch,this.volumeNameSearch)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, (this.curentPageAdd - 1), this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   isVisible = false;
@@ -115,12 +113,11 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
-              if(selected !== undefined ){
+              if (selected !== undefined) {
                 console.log('Add volume ' + volume.id + ' in to ' + selected);
                 this.addVolumeToVM(volume, selected);
-
                 modal.destroy()
-              }else{
+              } else {
                 this.message.create('error', `Please choose VM for add Volume.`);
               }
 
@@ -133,7 +130,8 @@ export class VolumeComponent implements OnInit {
     if (value === 'cancelVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gỡ Volume',
-        nzContent: PopupAddVolumeComponent,
+        nzContent: PopupCancelVolumeComponent,
+        nzData: volume.id,
         nzFooter: [
           {
             label: 'Hủy',
@@ -146,7 +144,7 @@ export class VolumeComponent implements OnInit {
             onClick: () => {
               const selected = modal.getContentComponent().selectedItem;
               console.log('Delete volume ' + volume.id + ' from ' + selected);
-              this.message.create('success', `Delete Volume Success`);
+              this.doDetachVolumeToVm(volume, selected);
               modal.destroy();
             }
           }
@@ -170,13 +168,13 @@ export class VolumeComponent implements OnInit {
             type: 'primary',
             onClick: () => {
 
-              let deleteVolume =  this.doDeleteVolume(volume.id);
-              if(deleteVolume){
-                this.message.create('success', `Delete Volume Success: `+ volume.name );
+              let deleteVolume = this.doDeleteVolume(volume.id);
+              if (deleteVolume) {
+                this.message.create('success', `Delete Volume Success: ` + volume.name);
                 this.searchVolumes();
-              }else{
-                this.message.create('error', `Delete Volume Fail: `+ volume.name );
-                console.log('Delete volume Fail: ' + volume.name );
+              } else {
+                this.message.create('error', `Delete Volume Fail: ` + volume.name);
+                console.log('Delete volume Fail: ' + volume.name);
               }
               modal.destroy();
             }
@@ -194,75 +192,121 @@ export class VolumeComponent implements OnInit {
   searchVolumes() {
     // tabIndex = 0 : RootVolume
     // tabIndex = 1 : AddVolume
-    if(this.tabVolumeIndex == 0 ){
-      this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
-    }else{
-      this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, this.volumeStatusSearch , this.volumeNameSearch)
+    if (this.tabVolumeIndex == 0) {
+      this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, this.volumeStatusSearch, this.volumeNameSearch)
+    } else {
+      this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, this.volumeStatusSearch, this.volumeNameSearch)
     }
   }
 
-  reloadDataVolumeRoot( ){
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, null , null)
-    this.volumeNameSearch = null;
-    this.volumeStatusSearch = null;
-  }
-  reloadDataVolumeAdd( ){
-    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, null , null)
+  reloadDataVolumeRoot() {
+    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, null, null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
 
-  getDetailVolume(idVolume: number){
+  reloadDataVolumeAdd() {
+    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, null, null)
+    this.volumeNameSearch = null;
+    this.volumeStatusSearch = null;
+  }
+
+  getDetailVolume(idVolume: number) {
     console.log(idVolume);
-    this.router.navigate(['/app-smart-cloud/volume/detail/'+idVolume]);
+    this.router.navigate(['/app-smart-cloud/volume/detail/' + idVolume]);
   }
 
 
   private getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string) {
-    this.isLoading = true;
-    this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage ,status , volumeName).subscribe(data => {
+    this.isLoadingSearch = true;
+    this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName).subscribe(data => {
 
-      if(volumeRootOnly === true ){
-        this.listVolumeRootResponse = data;
-        this.listVolumeRoot = data.records;
-        this.totalRoot = data.totalCount;
-        this.isLoading=false;
-      }else{
-        this.listVolumeAddVolumeResponse = data;
-        this.listVolumeAdd = data.records;
-        this.totalAdd = data.totalCount;
-        this.isLoading=false;
+      if (volumeRootOnly === true) {
+        if (data.records.length > 0) {
+          this.listVolumeRootResponse = data;
+          this.listVolumeRoot = data.records;
+          this.totalRoot = data.totalCount;
+          this.isLoadingSearch = false;
+          this.isBlankVolume = false;
+        } else
+          this.isBlankVolume = true;
+
+      } else {
+        if (data.records.length > 0) {
+          this.listVolumeAddVolumeResponse = data;
+          this.listVolumeAdd = data.records;
+          this.totalAdd = data.totalCount;
+          this.isLoadingSearch = false;
+          this.isBlankVolume = false;
+        } else
+          this.isBlankVolume = true;
+
       }
     })
   }
 
-  async doDeleteVolume(volumeId: number): Promise<any>{
+  async doDeleteVolume(volumeId: number): Promise<any> {
     let result = this.volumeSevice.deleteVolume(volumeId).toPromise();
     return !!result;
   }
 
-  async addVolumeToVM(volume: VolumeDTO, vmId: number): Promise<void>{
-    if(volume.isMultiAttach == false && volume.instanceId != null){
-      this.message.create('error','Volume này chỉ có thể gắn với một máy ảo.')
+  addVolumeToVM(volume: VolumeDTO, vmId: number): void {
+    this.volumeSevice.getVolummeById(volume.id.toString()).toPromise().then(data => {
+      if (data != null) {
+        this.isLoadingAction = true;
+        if (data.isMultiAttach == false && data.attachedInstances.length == 1) {
+          this.message.create('error', 'Volume này chỉ có thể gắn với một máy ảo.')
+          this.isLoadingAction = false;
+        } else {
 
-    }else{
+          let addVolumetoVmRequest = new AddVolumetoVmModel();
 
-      let addVolumetoVmRequest = new AddVolumetoVmModel();
-
-      addVolumetoVmRequest.volumeId = volume.id;
-      addVolumetoVmRequest.instanceId = vmId;
-      addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
-      let response = this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise()
-      console.log(response);
-    }
+          addVolumetoVmRequest.volumeId = volume.id;
+          addVolumetoVmRequest.instanceId = vmId;
+          addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+          this.volumeSevice.addVolumeToVm(addVolumetoVmRequest).toPromise().then(data => {
+            if (data == true) {
+              this.message.create('success', 'Gắn Volume thành công.')
+            }
+            this.isLoadingAction = false;
+          })
+        }
+      } else{
+        this.message.create('error', 'Gắn Volume thất bại.')
+        this.isLoadingAction = false;
+      }
+    })
   }
 
-  getProjectId(projectId: number){
+  doDetachVolumeToVm(volume: VolumeDTO, vmId: number) {
+    this.isLoadingAction = true;
+    let addVolumetoVmRequest = new AddVolumetoVmModel();
+    addVolumetoVmRequest.volumeId = volume.id;
+    addVolumetoVmRequest.instanceId = vmId;
+    addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+    this.volumeSevice.detachVolumeToVm(addVolumetoVmRequest).toPromise().then(data => {
+      if (data == true) {
+        this.message.create('success', `Detach Volume Success`);
+        this.isLoadingAction = false;
+      } else {
+        this.message.create('error', `Detach Volume Fail`);
+        this.isLoadingAction = false;
+      }
+    })
+  }
+
+  getProjectId(projectId: number) {
     this.projectSearch = projectId;
+    this.searchVolumes();
   }
 
-  getRegionId(regionId: number){
+  getRegionId(regionId: number) {
     this.regionSearch = regionId;
+    if(this.projectSearch != null){
+      this.searchVolumes();
+    }
+
   }
 
+  protected readonly isBlank = isBlank;
 }

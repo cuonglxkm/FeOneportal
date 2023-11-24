@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {RegionModel} from "../../../shared/models/region.model";
+import {ProjectModel} from "../../../shared/models/project.model";
 
 @Component({
   selector: 'one-portal-bank-security-group',
@@ -6,5 +8,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./blank-security-group.component.less'],
 })
 export class BlankSecurityGroupComponent {
-   // ngZorroIconLiteral = '<img src="./assets/img/logo.svg" width="450" height="450" alt="a">';
+  region: number;
+
+  project: number;
+
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.project = project?.id
+  }
+
+
 }

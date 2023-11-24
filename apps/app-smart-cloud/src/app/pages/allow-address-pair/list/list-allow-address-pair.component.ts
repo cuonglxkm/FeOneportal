@@ -1,8 +1,9 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import PairInfo, {
-    AllowAddressPairCreateOrDeleteForm,
-    AllowAddressPairSearchForm
+  AllowAddressPair,
+  AllowAddressPairCreateOrDeleteForm,
+  AllowAddressPairSearchForm
 } from 'src/app/shared/models/allow-address-pair';
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -10,164 +11,162 @@ import {AllowAddressPairService} from "../../../shared/services/allow-address-pa
 import {ActivatedRoute} from "@angular/router";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import Pagination from "../../../shared/models/pagination";
+import {NzTableQueryParams} from "ng-zorro-antd/table";
 
 
 @Component({
-    selector: 'list-allow-address-pair',
-    templateUrl: './list-allow-address-pair.component.html',
-    styleUrls: ['./list-allow-address-pair.component.less'],
+  selector: 'list-allow-address-pair',
+  templateUrl: './list-allow-address-pair.component.html',
+  styleUrls: ['./list-allow-address-pair.component.less'],
 })
 export class ListAllowAddressPairComponent implements OnInit {
-    @Input() portId: string
+  @Input() portId: string
 
-    constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-                private allowAddressPairService: AllowAddressPairService,
-                private notification: NzNotificationService,
-                private route: ActivatedRoute) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private allowAddressPairService: AllowAddressPairService,
+              private notification: NzNotificationService,
+              private route: ActivatedRoute) {
+  }
+
+  isVisibleCreate = false;
+  userId: number
+
+  region: number;
+
+  project: number;
+
+  validateForm: FormGroup<{
+    ipAddress: FormControl<string | null>;
+  }>;
+
+  value?: string;
+
+  formSearch: AllowAddressPairSearchForm = new AllowAddressPairSearchForm();
+
+  isVisibleDelete = false;
+  isConfirmLoading = false;
+
+  formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm = new AllowAddressPairCreateOrDeleteForm();
+
+  isLoading: boolean = false;
+
+  collection: Pagination<AllowAddressPair> = {
+    previousPage: 0,
+    totalCount: 0,
+    records: [],
+    currentPage: 1,
+    pageSize: 10
+
+  };
+
+  pageSize: number = 5
+  pageNumber: number = 1
+
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  projectChanged(project: ProjectModel) {
+    if (this.region != undefined) {
+      this.project = project?.id;
     }
+    this.formSearch = this.getParam();
+    this.getAllowAddressPair(this.formSearch);
+  }
 
-    isVisibleCreate = false;
-
-
-    listPairInfo: PairInfo[] = []
-
-    region: number;
-
-    project: number;
-
-    validateForm: FormGroup<{
-        ipAddress: FormControl<string | null>;
-    }>;
-
-    value?: string;
-
-    formSearch: AllowAddressPairSearchForm = new AllowAddressPairSearchForm();
-
-    isVisibleDelete = false;
-    isConfirmLoading = false;
-
-    formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm = new AllowAddressPairCreateOrDeleteForm();
-
-    pairInfos: PairInfo[];
-
-    inputValue: string;
-
-    isLoading: boolean = true;
-
-    regionChanged(region: RegionModel) {
-        this.region = region.regionId;
+  getParam(): AllowAddressPairSearchForm {
+    this.formSearch.vpcId = this.project;
+    this.formSearch.region = this.region;
+    this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+    this.formSearch.pageSize = 10;
+    this.formSearch.currentPage = 1;
+    if (this.value === undefined) {
+      this.formSearch.search = null;
+    } else {
+      this.formSearch.search = this.value;
     }
+    return this.formSearch;
+  }
 
-    projectChanged(project: ProjectModel) {
-        if (this.region != undefined) {
-            this.project = project?.id;
-        }
-        this.formSearch = this.getParam();
-        this.getAllowAddressPair(this.formSearch);
-    }
+  showModalDelete(): void {
+    this.isVisibleDelete = true;
+  }
 
-    getParam(): AllowAddressPairSearchForm {
-        this.formSearch.vpcId = this.project;
-        this.formSearch.region = this.region;
-        this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-        this.formSearch.pageSize = 10;
-        this.formSearch.currentPage = 1;
-        if (this.value === undefined) {
-            this.formSearch.search = null;
-        } else {
-            this.formSearch.search = this.value;
-        }
-        return this.formSearch;
-    }
+  handleCancelDelete(): void {
+    this.isVisibleDelete = false;
+  }
 
-    showModalDelete(): void {
-        this.isVisibleDelete = true;
-    }
+  handleOkDelete(pairInfo: PairInfo): void {
+    this.isConfirmLoading = true;
+    this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+    this.formDeleteOrCreate.pairInfos = [pairInfo];
 
-    handleCancelDelete(): void {
-        this.isVisibleDelete = false;
-    }
+    this.formDeleteOrCreate.isDelete = true;
+    this.formDeleteOrCreate.region = this.region;
+    this.formDeleteOrCreate.vpcId = this.project;
+    this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
-    handleOkDelete(pairInfo: PairInfo): void {
-        this.pairInfos = [pairInfo];
+    this.isVisibleDelete = false;
+``
+    this.isLoading = true;
+    this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate).subscribe(
+      () => {
+        this.isLoading = false;
+        this.notification.success('Thành công', `Xóa Allow Address Pair thành công`);
+        this.getAllowAddressPair(this.formSearch)
+      }, () => {
+        this.isLoading = false;
+        this.notification.error('Thất bại', 'Xóa Allow Address Pair thất bại');
+      }
+    )
 
-        this.isConfirmLoading = true;
-        this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-        this.formDeleteOrCreate.pairInfos = this.pairInfos;
+  }
 
-        this.formDeleteOrCreate.isDelete = true;
-        this.formDeleteOrCreate.region = this.region;
-        this.formDeleteOrCreate.vpcId = this.project;
-        this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
+  showModalCreate() {
+    this.isVisibleCreate = true;
+  }
 
-        this.isVisibleDelete = false;
+  handleCloseCreate() {
+    this.isVisibleCreate = false;
+  }
 
-        console.log('delete', this.formDeleteOrCreate)
+  handleOkCreate() {
+    this.isVisibleCreate = false
+    this.getAllowAddressPair(this.formSearch)
+  }
 
-        this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate).subscribe(
-            data => {
-                this.notification.success('Thành công', `Xóa Allow Address Pair thành công`);
-                this.getAllowAddressPair(this.formSearch)
-            }, error => {
-                this.notification.error('Thất bại', 'Xóa Allow Address Pair thất bại');
-            }
-        )
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex} = params
+    this.formSearch.pageSize = pageSize;
+    this.formSearch.currentPage = pageIndex
+    this.getAllowAddressPair(this.formSearch);
+  }
 
-    }
+  getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
+    this.isLoading = true;
+    this.allowAddressPairService.search(formSearch)
+      .subscribe((data) => {
+        this.isLoading = false;
+        this.collection = data
+      });
+  }
 
-    showModalCreate() {
-        this.isVisibleCreate = true;
-    }
+  ngOnInit(): void {
+    this.userId = this.tokenService.get()?.userId
+    this.formSearch.customerId = this.userId
+    this.route.queryParams.subscribe(queryParams => {
+      const value = queryParams['param'];
+      this.portId = value;
+    });
+  }
 
-    handleCloseCreate() {
-        this.isVisibleCreate = false;
-    }
+  search() {
+    this.formSearch = this.getParam();
+    this.getAllowAddressPair(this.formSearch);
+  }
 
-    handleOkCreate(value) {
-        this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-        this.formDeleteOrCreate.pairInfos = [value];
-        this.formDeleteOrCreate.isDelete = false;
-        this.formDeleteOrCreate.region = this.region;
-        this.formDeleteOrCreate.vpcId = this.project;
-        this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
-
-        console.log('form delete or create', this.formDeleteOrCreate)
-
-        this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate)
-            .subscribe(data => {
-                this.notification.success('Thành công', `Tạo Allow Address Pair thành công`);
-                this.isVisibleCreate = false;
-                this.getAllowAddressPair(this.formSearch)
-            }, error => {
-                this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
-            })
-    }
-
-    getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
-        console.log('this.formSearch', this.formSearch)
-        this.allowAddressPairService.search(formSearch)
-            .subscribe((data: any) => {
-                console.log('get success', data)
-                this.listPairInfo = data.records;
-                this.isLoading = false;
-            });
-    }
-
-    ngOnInit(): void {
-        this.formSearch.customerId = this.tokenService.get()?.userId
-        this.route.queryParams.subscribe(queryParams => {
-            const value = queryParams['param'];
-            console.log('Received value:', value);
-            this.portId = value;
-        });
-    }
-
-    search() {
-        this.formSearch = this.getParam();
-        this.getAllowAddressPair(this.formSearch);
-    }
-
-    onInputChange(value: string) {
-        this.inputValue = value;
-    }
+  onInputChange(value: string) {
+    this.value = value;
+  }
 }
