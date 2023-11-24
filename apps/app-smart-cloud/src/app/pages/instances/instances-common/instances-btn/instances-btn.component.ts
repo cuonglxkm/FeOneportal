@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
+import { tr } from 'date-fns/locale';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -89,6 +90,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
+  check = true;
+  isOk = false;
 
   resetPasswordFc(tpl: TemplateRef<{}>): void {
     //Reset mật khẩu máy ảo
@@ -98,7 +101,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        if (this.resetPassword == this.resetPasswordRepeat) {
+        if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
           this.message.success('Reset mật khẩu máy ảo thành công');
           // this.dataService
           //   .resetpassword({ id: this.id, newPassword: this.resetPassword })
@@ -116,12 +119,21 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           //     }
           //   );
         } else {
-          this.message.error('Mật khẩu không khớp!');
+          this.message.error('Reset mật khẩu không thành công');
         }
       },
     });
   }
 
+  onInputChange(event: Event): void {
+    if (this.resetPassword == this.resetPasswordRepeat) {
+      this.check = true;
+      this.isOk = true;
+    } else {
+      this.check = false;
+      this.isOk = false;
+    }
+  }
   
   shutdownInstance(): void {
     this.modalSrv.create({

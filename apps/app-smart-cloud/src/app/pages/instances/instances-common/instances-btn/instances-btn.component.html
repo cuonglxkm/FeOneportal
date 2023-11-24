@@ -78,7 +78,11 @@
         [(ngModel)]="resetPasswordRepeat"
         name="resetPasswordRepeat"
         placeholder=""
+        (input)="onInputChange($event)"
       />
+      <div *ngIf="check == false">
+        <span style="color: rgba(252, 16, 16, 1)">Mật khẩu không khớp!</span>
+      </div>
     </nz-form-control>
   </nz-form-item>
 </ng-template>

@@ -53,6 +53,11 @@
           "text": "Quản lý Snapshot Volume",
           "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/snapshotvls"
+        },
+        {
+          "text": "Action history",
+          "icon": "anticon-dashboard",
+          "link": "/app-smart-cloud/action-history"
         }
       ]
     }
