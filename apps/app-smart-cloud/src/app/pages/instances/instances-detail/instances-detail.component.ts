@@ -72,26 +72,29 @@ export class InstancesDetailComponent implements OnInit {
 
     this.listOfDataNetwork.push(this.defaultNetwork);
 
-    this.router.paramMap.subscribe((param) => {
+    this.router.paramMap.subscribe(async (param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, false).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.loading = false;
+        await this.dataService
+          .getById(this.id, false)
+          .subscribe(async (data: any) => {
+            this.instancesModel = data;
+            this.loading = false;
 
-          this.dataService
-            .getAllSecurityGroupByInstance(
-              this.instancesModel.cloudId,
-              this.instancesModel.regionId,
-              this.instancesModel.customerId,
-              this.instancesModel.projectId
-            )
-            .pipe(finalize(() => this.loadingSrv.close()))
-            .subscribe((datasg: any) => {
-              this.listSecurityGroupModel = datasg;
-              this.cdr.detectChanges();
-            });
-        });
+            await this.dataService
+              .getAllSecurityGroupByInstance(
+                this.instancesModel.cloudId,
+                this.instancesModel.regionId,
+                this.instancesModel.customerId,
+                this.instancesModel.projectId
+              )
+              .pipe(finalize(() => this.loadingSrv.close()))
+              .subscribe((datasg: any) => {
+                this.listSecurityGroupModel = datasg;
+                this.cdr.detectChanges();
+              });
+            this.cdr.detectChanges();
+          });
       }
     });
   }

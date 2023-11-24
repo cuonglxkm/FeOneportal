@@ -17,6 +17,7 @@ import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
 import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import { ActionHistoryComponent } from "./action-history/action-history.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -83,6 +84,10 @@ const routes: Routes = [
   {
     path: 'blank-security-group',
     component: BlankSecurityGroupComponent
+  },
+  {
+    path: 'action-history',
+    component: ActionHistoryComponent
   }
 ]
 

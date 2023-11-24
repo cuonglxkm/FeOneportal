@@ -14,7 +14,8 @@ import { InstancesService } from '../../instances.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { SecurityGroupModel } from '../../instances.model';
+import { InstancesModel, SecurityGroupModel } from '../../instances.model';
+import { da } from 'date-fns/locale';
 class Network {
   name?: string = 'pri_network';
   mac?: string = '';
@@ -30,30 +31,41 @@ class Network {
 export class NetworkDetailComponent implements OnInit, OnChanges {
   selectedProject: any;
   @Input() instancesId: any;
-  @Input() instances: any;
   @Input() listOfDataNetwork: any;
 
   @Output() valueChanged = new EventEmitter();
 
+  instancesModel: InstancesModel;
   listSecurityGroup: SecurityGroupModel[] = [];
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
+  ngOnInit(): void {
+    this.getAllSecurityGroup();
+    this.loadList();
+  }
+
   getAllSecurityGroup() {
     this.dataService
-      .getAllSecurityGroup(
-        this.instances.region,
-        this.instances.userId,
-        this.instances.projectId
-      )
-      .subscribe((data: any) => {
-        console.log('getAllSecurityGroup', data);
-        this.listSecurityGroup = data;
-        //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
+      .getById(this.instancesId, false)
+      .subscribe(async (data: any) => {
+        this.instancesModel = data;
+        this.dataService
+          .getAllSecurityGroup(
+            this.instancesModel.regionId,
+            this.instancesModel.customerId,
+            this.instancesModel.projectId
+          )
+          .subscribe((data: any) => {
+            console.log('getAllSecurityGroup', data);
+            this.listSecurityGroup = data;
+            //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
+          });
       });
   }
+
   onChangeSecurityGroup(even?: any) {
     console.log(even);
     console.log('selectedSecurityGroup', this.selectedSecurityGroup);
@@ -90,10 +102,6 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     this.valueChanged.emit(project);
   }
 
-  ngOnInit(): void {
-    this.loadList();
-  }
-
   loadList() {
     // this.dataService.get(this.regionId).subscribe(data => {
     //   console.log(data);
@@ -126,8 +134,6 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
   }
 
   navigateToAllowAddressPair() {
-    this.route.navigate([
-        '/app-smart-cloud/allow-address-pair/' + this.portId,
-    ]);
+    this.route.navigate(['/app-smart-cloud/allow-address-pair/' + this.portId]);
   }
 }

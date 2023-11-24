@@ -43,6 +43,11 @@
           "text": "Allow Address Pair",
           "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/allow-address-pair"
+        },
+        {
+          "text": "Action history",
+          "icon": "anticon-dashboard",
+          "link": "/app-smart-cloud/action-history"
         }
       ]
     },
