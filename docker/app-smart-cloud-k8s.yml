@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: vnptcloud
-  name: app-smart-cloud-deployment
+  name: app-smartcloud-deployment
   labels:
-    app: app-smart-cloud
+    app: app-smartcloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: app-smart-cloud
+      service: app-smartcloud
   template:
     metadata:
       labels:
-        app: app-smart-cloud
-        service: app-smart-cloud
+        app: app-smartcloud
+        service: app-smartcloud
     spec:
       containers:
-        - name: app-smart-cloud
+        - name: app-smartcloud
           image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud
           ports:
             - containerPort: 80
@@ -31,13 +31,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-smart-cloud
+  name: app-smartcloud
   namespace: vnptcloud
 spec:
   type: NodePort
   ports:
     - port: 80
       name: port1
-      nodePort: 30767
+      nodePort: 30766
   selector:
-    app: app-smart-cloud
+    app: app-smartcloud
