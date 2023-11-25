@@ -51,15 +51,18 @@ export class HeaderUserComponent {
   }
 
   logout(): void {
-    this.tokenService.clear();
-    this.httpClient.get(environment['sso'].issuer
-      + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
-      .subscribe(data => {
-        console.log(data)
-      }, error => {
-        console.log(error)
-      });
 
-    this.router.navigateByUrl(this.tokenService.login_url!);
+    let id_token = this.tokenService.get()!['id_token'];
+    this.tokenService.clear();
+    // this.httpClient.get(environment['sso'].issuer
+    //   + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
+    //   .subscribe(data => {
+    //     console.log(data)
+    //   }, error => {
+    //     console.log(error)
+    //   });
+
+    window.location.href = environment['sso'].issuer
+      + `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`
   }
 }

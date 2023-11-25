@@ -4,19 +4,30 @@
   "projectType": "application",
   "prefix": "one-portal",
   "sourceRoot": "apps/app-host/src",
-  "tags": ["app-host"],
+  "tags": [
+    "app-host"
+  ],
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/app-host",
         "index": "apps/app-host/src/index.html",
         "main": "apps/app-host/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/app-host/tsconfig.app.json",
-        "assets": ["apps/app-host/src/favicon.ico", "apps/app-host/src/assets"],
-        "styles": ["apps/app-host/src/styles.less"],
+        "assets": [
+          "apps/app-host/src/favicon.ico",
+          "apps/app-host/src/assets"
+        ],
+        "styles": [
+          "apps/app-host/src/styles.less"
+        ],
         "scripts": [],
         "customWebpackConfig": {
           "path": "apps/app-host/webpack.config.ts"
@@ -37,6 +48,12 @@
       },
       "configurations": {
         "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-host/src/environments/environment.ts",
+              "with": "apps/app-host/src/environments/environment.prod.ts"
+            }
+          ],
           "budgets": [
             {
               "type": "initial",
@@ -86,9 +103,14 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/app-host/**/*.ts", "apps/app-host/**/*.html"]
+        "lintFilePatterns": [
+          "apps/app-host/**/*.ts",
+          "apps/app-host/**/*.html"
+        ]
       }
     }
   }
