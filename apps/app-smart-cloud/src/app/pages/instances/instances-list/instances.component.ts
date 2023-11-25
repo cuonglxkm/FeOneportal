@@ -78,6 +78,7 @@ export class InstancesComponent implements OnInit {
 
   region: number;
   activeCreate: boolean = true;
+  showTemplate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGanVLANIPAddress: boolean = false;
 
@@ -234,6 +235,9 @@ export class InstancesComponent implements OnInit {
     // });
     this.getDataList();
     this.initTable();
+    setTimeout(() => {
+      this.showTemplate = true;
+    }, 2500);
   }
   // ngAfterViewInit(): void {
   //   // This method is called after the component's view has been initialized.
