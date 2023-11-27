@@ -5,12 +5,13 @@
         </div>
         <div class="code-box-description">
             <nz-table #basicTable
-                      [nzData]="[]"
+                      [nzData]="collection?.records || []"
                       nzShowSizeChanger
                       [nzFrontPagination]="false"
-                      [nzTotal]="100"
-                      [nzPageSize]="50"
-                      [nzPageIndex]="1"
+                      [nzTotal]="collection?.totalCount || 0"
+                      [nzPageSize]="collection?.pageSize || 0"
+                      (nzQueryParams)="onQueryParamsChange($event)"
+                      [nzLoading]="isLoading"
             >
                 <thead>
                 <tr>
@@ -24,13 +25,18 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of basicTable.data">
-                    <td nzAlign="center"></td>
-                    <td nzAlign="center"></td>
-                    <td nzAlign="center"></td>
-                    <td nzAlign="center"></td>
-                    <td nzAlign="center"></td>
+                    <td nzAlign="center">{{ data.name }}</td>
+                    <td nzAlign="center">{{ data.status }}</td>
+                    <td nzAlign="center">{{ data.taskState }}</td>
+                    <td nzAlign="center">{{ data.ipPrivate }}</td>
+                    <td nzAlign="center">{{ data.ipPublic }}</td>
                     <td nzAlign="center">
-                        <button nz-button nzType="primary" nzDanger class="button-delete">Gỡ</button>
+                        <ng-container *ngIf="[data.securityGroups].includes(securityGroupId); else elseBlock">
+                            <button nz-button nzType="primary" nzDanger class="button-delete" (click)="attachOrDetach(data.id, 'detach')">Gỡ</button>
+                        </ng-container>
+                        <ng-template #elseBlock>
+                            <button nz-button nzType="primary" nzDanger class="button-attach" (click)="attachOrDetach(data.id, 'attach')">Gán</button>
+                        </ng-template>
                     </td>
                 </tr>
                 </tbody>

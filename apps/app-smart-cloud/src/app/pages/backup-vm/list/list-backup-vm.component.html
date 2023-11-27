@@ -13,7 +13,7 @@
           <nz-select [(ngModel)]="selectedValue"
                      (ngModelChange)="onChange($event)"
                      nzPlaceHolder="Tất cả trạng thái" >
-            <nz-option *ngFor="let item of status" [nzValue]="item" [nzLabel]="item.label"></nz-option>
+            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
         <div *nzSpaceItem>
@@ -21,7 +21,7 @@
             <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
           </nz-input-group>
           <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch>
+            <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               Search
             </button>
@@ -52,39 +52,56 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of tableBackupVM.data">
-        <td nzAlign="center" routerLink="/app-smart-cloud/detail-backup-vm">{{ data.name }}</td>
+        <td nzAlign="center"><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
         <td nzAlign="center"> {{ data.instanceName }}</td>
         <td nzAlign="center">{{ data.size }}</td>
         <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-        <td nzAlign="center">{{ data.status }}</td>
-        <td nzAlign="center">{{ data.serviceStatus }}</td>
-<!--        <td nzAlign="center" *ngIF="data.status == 'ERROR'">-->
-<!--          <button-->
-<!--            nz-button-->
-<!--            [nzType]="'primary'">Xóa</button>-->
-<!--          <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"-->
-<!--                                       [isLoading]="isLoading"-->
-<!--                                       (onCancel)="handleCancelDelete()"-->
-<!--                                       (onOk)="handleOkDelete()" />-->
-<!--        </td>-->
         <td nzAlign="center">
-          <button
-            nz-button
-            [nzType]="'primary'"
-            nz-dropdown
-            [nzDropdownMenu]="opMenu">
-            <span>Restore</span> <i nz-icon nzType="down"></i>
-          </button>
-          <nz-dropdown-menu #opMenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item routerLink="/app-smart-cloud/restore-backup-vm" >Restore</li>
-              <li nz-menu-item (click)="showModalDelete()">Xóa</li>
-              <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
-                                           [isLoading]="isLoading"
-                                           (onCancel)="handleCancelDelete()"
-                                           (onOk)="handleOkDelete()" />
-            </ul>
-          </nz-dropdown-menu>
+          <div class="status" [ngSwitch]="data.status">
+            <span class="available" *ngSwitchCase="'AVAILABLE'">
+              Hoạt động
+            </span>
+            <span class="suspended" *ngSwitchCase="'SUSPENDED'">
+              Tạm dừng
+            </span>
+          </div>
+        </td>
+        <td nzAlign="center">
+          <span *ngIf="data.serviceStatus === 'KHOITAO'">
+            -
+          </span>
+        <td nzAlign="center">
+          <ng-container *ngIf="['SUSPENDED'].includes(data.status); else elseBlock">
+            <button
+              nz-button
+              nzType="primary"
+              nzDanger
+              style="width: 100px"
+            >
+              <span>Xóa</span>
+            </button>
+          </ng-container>
+          <ng-template #elseBlock>
+            <button
+              nz-button
+              [nzType]="'primary'"
+              nz-dropdown
+              style="width: 100px"
+              [nzDropdownMenu]="opMenu">
+              <span>Restore</span> <i nz-icon nzType="down"></i>
+            </button>
+            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item routerLink="/app-smart-cloud/backup-vm/restore-backup-vm" >Restore</li>
+                <li nz-menu-item (click)="showModalDelete()">Xóa</li>
+
+              </ul>
+            </nz-dropdown-menu>
+          </ng-template>
+          <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                       [isLoading]="isLoading"
+                                       (onCancel)="handleCancelDelete()"
+                                       (onOk)="handleOkDelete(data.id)" />
         </td>
       </tr>
       </tbody>

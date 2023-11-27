@@ -6,6 +6,8 @@ import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import Pagination from "../../../shared/models/pagination";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {Router} from "@angular/router";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-list-backup-vm',
@@ -27,11 +29,14 @@ export class ListBackupVmComponent implements OnInit {
   status = [
     {label: 'Tất cả', value: 'all'},
     {label: 'Hoạt động', value: 'AVAILABLE'},
-    {label: 'Tạm dừng', value: 'SUSPENDED'},
-    {label: 'Lỗi', value: 'ERROR'}
+    {label: 'Tạm dừng', value: 'SUSPENDED'}
   ]
 
-  selectedValue: null
+  serviceStatusMapping = {
+    KHOITAO: '-'
+  }
+
+  selectedValue?: string = null
 
   formSearch: BackupVMFormSearch = new BackupVMFormSearch()
 
@@ -43,8 +48,12 @@ export class ListBackupVmComponent implements OnInit {
     pageSize: 10
   };
 
+  userId: number
+
   constructor(private backupVmService: BackupVmService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private router: Router,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -68,38 +77,49 @@ export class ListBackupVmComponent implements OnInit {
     this.isVisibleDelete = false;
   }
 
-  handleOkDelete() {
+  handleOkDelete(id: number) {
+    this.isLoading = true
+    this.backupVmService.delete(id).subscribe(data => {
+      this.isLoading = false
+      this.notification.success('Thành công', 'Xóa thành công')
+    }, error => {
+      this.isLoading = false
+      this.notification.error('Thất bại', 'Xóa thất bại')
+    })
   }
 
-  getListBackupVM(formSearch: BackupVMFormSearch) {
+  getListBackupVM() {
+    this.formSearch = this.getParam();
     this.isLoading = true;
-    this.backupVmService.search(formSearch).subscribe(data => {
+    this.backupVmService.search(this.formSearch).subscribe(data => {
       this.isLoading = false
       this.collection = data
       console.log(this.collection)
     })
   }
 
-  onChange(value) {
-    this.selectedValue = value.value;
-    console.log('selected', this.selectedValue)
+  onChange(value: string) {
+    this.selectedValue = value;
     if (this.selectedValue === 'all') {
       this.formSearch.status = null
     } else {
-      this.formSearch.status = this.selectedValue
+      this.formSearch.status = value
     }
-    this.getListBackupVM(this.formSearch)
+    this.getListBackupVM()
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
     const {pageSize, pageIndex} = params
     this.formSearch.pageSize = pageSize;
     this.formSearch.currentPage = pageIndex
-    this.getListBackupVM(this.formSearch);
+    this.getListBackupVM();
   }
 
   ngOnInit(): void {
-    console.log(this.region)
+    this.userId = this.tokenService.get()?.userId
+  }
+
+  getParam() : BackupVMFormSearch {
     this.formSearch.regionId = this.region
 
     // this.formSearch.customerId = this.tokenService.get()?.userId
@@ -116,6 +136,10 @@ export class ListBackupVmComponent implements OnInit {
     }
     this.formSearch.pageSize = 10
     this.formSearch.currentPage = 1
-    console.log(this.formSearch)
+    return this.formSearch
+  }
+
+  navigateToDetail(id: number) {
+    this.router.navigate(['/app-smart-cloud/backup-vm/detail-backup-vm/'+id])
   }
 }

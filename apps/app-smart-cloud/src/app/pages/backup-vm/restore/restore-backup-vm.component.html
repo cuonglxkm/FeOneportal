@@ -11,8 +11,8 @@
       <div class="title">Restore Backup VM</div>
       <nz-row>
         <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()" formControlName="radio">
-          <label nz-radio nzValue="O">Restore vào máy ảo hiện tại </label>
-          <label nz-radio nzValue="N">Restore vào máy ảo mới </label>
+          <label nz-radio nzValue="O" class="label">Restore vào máy ảo hiện tại </label>
+          <label nz-radio nzValue="N" class="label">Restore vào máy ảo mới </label>
         </nz-radio-group>
       </nz-row>
     </nz-card>
@@ -23,7 +23,7 @@
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label nzFor="name">
-                <div class="name-rule">
+                <div class="label">
                   <span>Tên máy ảo</span>
                   <span style="color: rgba(252, 16, 16, 1); "> *</span>
                 </div>
@@ -37,7 +37,7 @@
             </nz-form-item>
             <nz-form-item>
               <nz-form-label nzFor="flavor">
-                <div class="name-rule">
+                <div class="label">
                   <span>Gói cấu hình</span>
                   <span style="color: rgba(252, 16, 16, 1); "> *</span>
                 </div>
@@ -51,28 +51,38 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            <nz-form-item>
-              <nz-form-label nzFor="image">
-                <div class="name-rule">
-                  <span>Hệ điều hành</span>
-                  <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                </div>
-              </nz-form-label>
-              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <one-portal-image-select [region]="region"
-                                         [value]="validateForm.controls.image.value"
-                                         (onChange)="handleImageChange($event)"/>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
+            <div>
+              <div class="label">
+                Dung lượng backup
+              </div>
+              <div style="padding-top: 8px">
+                Dung lượng sẽ tính theo hạn mức (quato) của VPC
+              </div>
+            </div>
+
+
+<!--            <nz-form-item>-->
+<!--              <nz-form-label nzFor="image">-->
+<!--                <div class="name-rule">-->
+<!--                  <span>Hệ điều hành</span>-->
+<!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
+<!--                </div>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--                <one-portal-image-select [region]="region"-->
+<!--                                         [value]="validateForm.controls.image.value"-->
+<!--                                         (onChange)="handleImageChange($event)"/>-->
+<!--                <ng-template #nameErrorTpl let-control>-->
+<!--                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                </ng-template>-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
           </nz-col>
           <nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label nzFor="security-group">
-                <div class="name-rule">
-                  <span>Security Group</span>
+                <div class="label">
+                  <span>Chọn Security Group</span>
                   <span style="color: rgba(252, 16, 16, 1); "> *</span>
                 </div>
               </nz-form-label>
@@ -88,7 +98,7 @@
             </nz-form-item>
             <nz-form-item>
               <nz-form-label nzFor="iops">
-                <div class="name-rule">
+                <div class="label">
                   <span>IOPS</span>
                   <span style="color: rgba(252, 16, 16, 1); "> *</span>
                 </div>
@@ -102,13 +112,15 @@
             </nz-form-item>
             <nz-form-item>
               <nz-form-label nzFor="storage">
-                <div class="name-rule">
+                <div class="label">
                   <span>Dung lượng ổ hệ điều hành</span>
                   <span style="color: rgba(252, 16, 16, 1); "> *</span>
                 </div>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                <input nz-input formControlName="storage" id="storage"/>
+                <nz-input-group nzAddOnAfter="GB" style="width: 100%">
+                  <input nz-input formControlName="storage" id="storage"/>
+                </nz-input-group>
                 <ng-template #nameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
                 </ng-template>
@@ -144,7 +156,7 @@
 <!--          <nz-col nzSpan="12">-->
 <!--            <nz-form-item>-->
 <!--              <nz-form-label nzFor="name">-->
-<!--                <div class="name-rule">-->
+<!--                <div class="label">-->
 <!--                  <span>Tên máy ảo</span>-->
 <!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
 <!--                </div>-->
@@ -158,7 +170,7 @@
 <!--            </nz-form-item>-->
 <!--            <nz-form-item>-->
 <!--              <nz-form-label nzFor="flavor">-->
-<!--                <div class="name-rule">-->
+<!--                <div class="label">-->
 <!--                  <span>Gói cấu hình</span>-->
 <!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
 <!--                </div>-->
@@ -174,7 +186,7 @@
 <!--            </nz-form-item>-->
 <!--            <nz-form-item>-->
 <!--              <nz-form-label nzFor="image">-->
-<!--                <div class="name-rule">-->
+<!--                <div class="label">-->
 <!--                  <span>Hệ điều hành</span>-->
 <!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
 <!--                </div>-->
@@ -192,7 +204,7 @@
 <!--          <nz-col nzSpan="12">-->
 <!--            <nz-form-item>-->
 <!--              <nz-form-label nzFor="security-group">-->
-<!--                <div class="name-rule">-->
+<!--                <div class="label">-->
 <!--                  <span>Security Group</span>-->
 <!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
 <!--                </div>-->
@@ -209,7 +221,7 @@
 <!--            </nz-form-item>-->
 <!--            <nz-form-item>-->
 <!--              <nz-form-label nzFor="iops">-->
-<!--                <div class="name-rule">-->
+<!--                <div class="label">-->
 <!--                  <span>IOPS</span>-->
 <!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
 <!--                </div>-->
@@ -223,7 +235,7 @@
 <!--            </nz-form-item>-->
 <!--            <nz-form-item>-->
 <!--              <nz-form-label nzFor="storage">-->
-<!--                <div class="name-rule">-->
+<!--                <div class="label">-->
 <!--                  <span>Dung lượng ổ hệ điều hành</span>-->
 <!--                  <span style="color: rgba(252, 16, 16, 1); "> *</span>-->
 <!--                </div>-->

@@ -4,8 +4,38 @@
   [regionId]="region"
   (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
-<nz-content>
+<nz-content style="margin-top: 10px">
   <nz-card>
-    <div class="title">Thông tin chung</div>
+    <nz-descriptions nzTitle="Thông tin chung" nzLayout="vertical" nzColumn="6">
+      <nz-descriptions-item nzTitle="Tên backup VM">ipV4</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="VM gốc">tcp</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Thời gian khởi tạ">1/1/2023</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Volume gắn">test1</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Truy cập và bảo mật">test1</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Mô tả">test1</nz-descriptions-item>
+    </nz-descriptions>
+  </nz-card>
+  <nz-card>
+    <div class="title">Cấu hình</div>
+<!--    <div class="code-box-description">-->
+      <nz-table nzShowSizeChanger
+                [nzFrontPagination]="false"
+      >
+        <thead>
+        <tr>
+          <th nzAlign="center" class="text-th">Tham số</th>
+          <th nzAlign="center" class="text-th">Số lượng</th>
+          <th nzAlign="center" class="text-th">Đơn vị</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td nzAlign="center"></td>
+          <td nzAlign="center"></td>
+          <td nzAlign="center"></td>
+        </tr>
+        </tbody>
+      </nz-table>
+    <button nz-button nzType="default" (click)="goBack()" class="button-cancel">Quay lại</button>
   </nz-card>
 </nz-content>

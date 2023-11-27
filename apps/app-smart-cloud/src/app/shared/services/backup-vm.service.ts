@@ -46,4 +46,12 @@ export class BackupVmService extends BaseService {
     })
   }
 
+  detail(id: number) {
+    return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}?id=${id}`)
+  }
+
+  delete(id: number) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`)
+  }
+
 }

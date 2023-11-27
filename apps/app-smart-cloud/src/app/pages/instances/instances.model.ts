@@ -162,6 +162,7 @@ export class InstancesModel {
   flavorName: string;
   flavorCloudId: string;
   imageId: number;
+  imageName: string;
   customerId: number;
   ipPublic: string;
   ipPrivate: null;
