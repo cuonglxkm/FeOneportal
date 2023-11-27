@@ -53,7 +53,8 @@ import { LayoutDefaultModule } from '@delon/theme/layout-default';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.component';
 import { ActionHistoryComponent } from './action-history/action-history.component';
-
+import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
+import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -98,6 +99,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
     ActionHistoryComponent,
+    DetailBackupVmComponent,
+    CreateBackupVmComponent,
   ],
   imports: [
     CommonModule,

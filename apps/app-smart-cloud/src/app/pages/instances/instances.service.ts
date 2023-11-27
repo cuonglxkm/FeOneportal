@@ -181,4 +181,8 @@ export class InstancesService extends BaseService{
     url_ = url_.replace(/[?&]$/, '');
     return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
   }
+
+  getInstanceById(id: number) {
+    return this.http.get<InstancesModel>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`)
+  }
 }

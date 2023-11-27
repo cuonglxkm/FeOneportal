@@ -161,7 +161,7 @@
             name="selectAction"
             (ngModelChange)="showModal($event, data)"
           >
-            <nz-option nzValue="1" nzLabel="Tạo Backup"></nz-option>
+            <nz-option nzValue="1" nzLabel="Tạo Backup" (click)="navigateToCreateBackup(data.id)"></nz-option>
             <nz-option nzValue="2" nzLabel="Tạo lịch Backup"></nz-option>
             <nz-option
               nzValue="3"

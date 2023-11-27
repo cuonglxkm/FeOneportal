@@ -13,15 +13,15 @@
           <nz-select [(ngModel)]="selectedValue"
                      (ngModelChange)="onChange($event)"
                      nzPlaceHolder="Tất cả trạng thái" >
-            <nz-option *ngFor="let item of status" [nzValue]="item" [nzLabel]="item.label"></nz-option>
+            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
         <div *nzSpaceItem>
           <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
+            <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
           </nz-input-group>
           <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch>
+            <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               Search
             </button>
@@ -29,19 +29,21 @@
         </div>
       </nz-space>
     </nz-row>
-    <nz-table #tablePair
+    <nz-table #tableBackupVM
+              [nzData]="collection.records"
               nzShowSizeChanger
               [nzFrontPagination]="false"
-              [nzPageSize]="10"
-              [nzPageIndex]="1"
+              [nzTotal]="collection.totalCount"
+              [nzPageSize]="collection.pageSize"
+              [nzPageIndex]="collection.currentPage"
+              [nzLoading]="isLoading"
+              (nzQueryParams)="onQueryParamsChange($event)"
     >
       <thead>
       <tr>
         <th nzAlign="center" class="text-th">Tên</th>
         <th nzAlign="center" class="text-th">VM gốc</th>
         <th nzAlign="center" class="text-th">Dung luợng</th>
-        <th nzAlign="center" class="text-th">Gói backup</th>
-        <th nzAlign="center" class="text-th">Chu kỳ</th>
         <th nzAlign="center" class="text-th">Thời gian tạo</th>
         <th nzAlign="center" class="text-th">Trạng thái</th>
         <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
@@ -49,34 +51,57 @@
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
-        <td nzAlign="center"></td>
+      <tr *ngFor="let data of tableBackupVM.data">
+        <td nzAlign="center"><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
+        <td nzAlign="center"> {{ data.instanceName }}</td>
+        <td nzAlign="center">{{ data.size }}</td>
+        <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">
-          <button
-            nz-button
-            [nzType]="'primary'"
-            nz-dropdown
-            [nzDropdownMenu]="opMenu"
-          >
-            <span>Khôi phục</span> <i nz-icon nzType="down"></i>
-          </button>
-          <nz-dropdown-menu #opMenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item routerLink="/app-smart-cloud/restore-backup-vm" >Restore</li>
-              <li nz-menu-item (click)="showModalDelete()">Xóa</li>
-              <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
-                                           [isLoading]="isLoading"
-                                           (onCancel)="handleCancelDelete()"
-                                           (onOk)="handleOkDelete()" />
-            </ul>
-          </nz-dropdown-menu>
+          <div class="status" [ngSwitch]="data.status">
+            <span class="available" *ngSwitchCase="'AVAILABLE'">
+              Hoạt động
+            </span>
+            <span class="suspended" *ngSwitchCase="'SUSPENDED'">
+              Tạm dừng
+            </span>
+          </div>
+        </td>
+        <td nzAlign="center">
+          <span *ngIf="data.serviceStatus === 'KHOITAO'">
+            -
+          </span>
+        <td nzAlign="center">
+          <ng-container *ngIf="['SUSPENDED'].includes(data.status); else elseBlock">
+            <button
+              nz-button
+              nzType="primary"
+              nzDanger
+              style="width: 100px"
+            >
+              <span>Xóa</span>
+            </button>
+          </ng-container>
+          <ng-template #elseBlock>
+            <button
+              nz-button
+              [nzType]="'primary'"
+              nz-dropdown
+              style="width: 100px"
+              [nzDropdownMenu]="opMenu">
+              <span>Restore</span> <i nz-icon nzType="down"></i>
+            </button>
+            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item routerLink="/app-smart-cloud/backup-vm/restore-backup-vm" >Restore</li>
+                <li nz-menu-item (click)="showModalDelete()">Xóa</li>
+
+              </ul>
+            </nz-dropdown-menu>
+          </ng-template>
+          <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                       [isLoading]="isLoading"
+                                       (onCancel)="handleCancelDelete()"
+                                       (onOk)="handleOkDelete(data.id)" />
         </td>
       </tr>
       </tbody>
