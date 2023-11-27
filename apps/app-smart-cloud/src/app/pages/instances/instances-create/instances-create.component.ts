@@ -22,6 +22,7 @@ import {
   ImageTypesModel,
   Images,
   InstancesModel,
+  SHHKeyModel,
   SecurityGroupModel,
   Snapshot,
 } from '../instances.model';
@@ -72,13 +73,7 @@ class Network {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstancesCreateComponent implements OnInit {
-  listOfOption: Array<{ value: string; label: string }> = [];
-  listOfSelectedValue = ['a10', 'c12'];
-
-  radioValue = 'A';
   reverse = true;
-  editIndex = -1;
-  editObj = {};
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -104,6 +99,8 @@ export class InstancesCreateComponent implements OnInit {
   flavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  selectedSSHKeyId: string = '';
+  selectedSnapshot: number;
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
@@ -138,24 +135,22 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region  Snapshot
-  isSnapshot: boolean = false;
+  isSnapshot: boolean = true;
   listImages: Images[] = [];
   listSnapshot: Snapshot[] = [];
 
   initSnapshot(): void {
     if (this.isSnapshot) {
       this.dataService
-        .getAllSnapshot(null, this.region, null, null)
+        .getAllSnapshot('', '', this.region, this.customerId)
         .subscribe((data: any) => {
           this.listSnapshot = data;
         });
-    } else {
-      this.dataService
-        .getAllImage(null, this.region, null, null)
-        .subscribe((data: any) => {
-          this.listImages = data;
-        });
     }
+  }
+
+  onChangeSnapshot(event?: any) {
+    this.selectedSnapshot = event;
   }
 
   //#endregion
@@ -192,7 +187,6 @@ export class InstancesCreateComponent implements OnInit {
       .getAllSecurityGroup(this.region, this.userId, this.projectId)
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
-        this.selectedSecurityGroup.push(this.listSecurityGroup[0].id);
       });
   }
 
@@ -251,6 +245,7 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region selectedPasswordOrSSHkey
+  listSSHKey: SHHKeyModel[] = [];
   activeBlockPassword: boolean = true;
   activeBlockSSHKey: boolean = false;
 
@@ -261,7 +256,27 @@ export class InstancesCreateComponent implements OnInit {
   initSSHkey(): void {
     this.activeBlockPassword = false;
     this.activeBlockSSHKey = true;
+    this.getAllSSHKey();
   }
+
+  getAllSSHKey() {
+    this.dataService
+      .getAllSSHKey(this.projectId, this.region, this.customerId, 999999, 1)
+      .subscribe((data: any) => {
+        data.records.forEach((e) => {
+          const itemMapper = new SHHKeyModel();
+          itemMapper.id = e.id;
+          itemMapper.displayName = e.name;
+          this.listSSHKey.push(itemMapper);
+        });
+      });
+  }
+
+  onSSHKeyChange(event?: any) {
+    this.selectedSSHKeyId = event;
+    console.log('sshkey', event);
+  }
+
   //#endregion
 
   //#region BlockStorage
@@ -371,20 +386,21 @@ export class InstancesCreateComponent implements OnInit {
     console.log(this.tokenService.get()?.userId);
     this.listSecurityGroup = [];
     this.listIPPublic = [];
-    this.selectedSecurityGroup=[]
-    this.ipPublicValue=""
+    this.selectedSecurityGroup = [];
+    this.ipPublicValue = '';
+    this.initSnapshot();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
-    this.cdr.detectChanges()
+    this.cdr.detectChanges();
   }
 
   onProjectChange(project: any) {
     // Handle the region change event
     this.projectId = project.id;
     this.listSecurityGroup = [];
-    this.selectedSecurityGroup=[]
+    this.selectedSecurityGroup = [];
     this.getAllSecurityGroup();
-    this.cdr.detectChanges()
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -426,7 +442,7 @@ export class InstancesCreateComponent implements OnInit {
     this.createInstances.regionId = 3; // this.region;
     this.createInstances.projectId = 4079; // this.projectId;
     this.createInstances.customerId = 669; // this.customerId;
-    this.createInstances.imageId = 113; // this.hdh.id;
+    this.createInstances.imageId = this.selectedSnapshot;
     this.createInstances.useIPv6 = this.isUseIPv6;
     this.createInstances.usePrivateNetwork = this.isUseLAN;
     this.createInstances.currentNetworkCloudId =
@@ -434,8 +450,8 @@ export class InstancesCreateComponent implements OnInit {
     this.createInstances.flavorId = 368; //this.flavor.id;
     this.createInstances.storage = 1;
     this.createInstances.snapshotCloudId = null;
-    this.createInstances.listSecurityGroup = null; //arraylistSecurityGroup;
-    this.createInstances.keypair = null;
+    this.createInstances.listSecurityGroup = arraylistSecurityGroup;
+    this.createInstances.keypair = this.selectedSSHKeyId;
     this.createInstances.domesticBandwidth = 5;
     this.createInstances.intenationalBandwidth = 10;
     this.createInstances.ramAdditional = 0;

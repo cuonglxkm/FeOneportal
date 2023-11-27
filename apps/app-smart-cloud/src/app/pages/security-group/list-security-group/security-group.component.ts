@@ -11,6 +11,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ActivatedRoute} from '@angular/router';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from 'ng-zorro-antd/notification';
+import {Instance, InstanceFormSearch} from "../../../shared/models/instance";
 
 @Component({
     selector: 'one-portal-security-group',
@@ -29,16 +30,13 @@ export class SecurityGroupComponent implements OnInit {
 
     listOutbound: SecurityGroupRule[] = []
 
-    region: number;
+    listInstance: Instance[] = []
 
-    project: number;
+    condition: InstanceFormSearch = new InstanceFormSearch()
 
-    headerInfo = {
-        firstItem: 'Home',
-        secondItem: 'Dịch vụ',
-        thirdItem: 'Security Group',
-        content: 'Security Group'
-    }
+    region = JSON.parse(localStorage.getItem('region')).regionId;
+
+    project = JSON.parse(localStorage.getItem('projectId'));
 
     constructor(private securityGroupService: SecurityGroupService,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -48,7 +46,6 @@ export class SecurityGroupComponent implements OnInit {
 
     onSecurityGroupChange(): void {
         this.getListInbound();
-
         this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
         this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
     }
@@ -57,6 +54,7 @@ export class SecurityGroupComponent implements OnInit {
         this.selectedValue = undefined
         this.listInbound = []
         this.listOutbound = []
+        this.listInstance = []
         this.getSecurityGroup();
     }
 
@@ -75,6 +73,7 @@ export class SecurityGroupComponent implements OnInit {
         this.selectedValue = undefined
         this.listInbound = []
         this.listOutbound = []
+        this.listInstance = []
         this.getSecurityGroup();
     }
 
@@ -85,6 +84,7 @@ export class SecurityGroupComponent implements OnInit {
             this.securityGroupService.search(this.conditionSearch)
                 .subscribe((data) => {
                     this.options = data;
+                    console.log('sg', this.options)
                 })
         }
     }

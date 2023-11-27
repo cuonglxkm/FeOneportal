@@ -19,6 +19,7 @@ import {ProjectModel} from "../../../../shared/models/project.model";
   templateUrl: './volume.component.html',
   styleUrls: ['./volume.component.less'],
 })
+
 export class VolumeComponent implements OnInit {
   headerInfo = {
     breadcrumb1: 'Home',

@@ -1,19 +1,24 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
-import {SecurityGroup, SecurityGroupCreateForm, SecurityGroupSearchCondition}
-  from "../../shared/models/security-group";
-import {Observable, catchError, throwError} from "rxjs";
-import { BaseService } from "src/app/shared/services/base.service";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {
+    ExecuteAttachOrDetach,
+    SecurityGroup,
+    SecurityGroupCreateForm,
+    SecurityGroupSearchCondition
+} from "../models/security-group";
+import {catchError, Observable} from "rxjs";
+import {BaseService} from "src/app/shared/services/base.service";
+import {stringify} from "uuid";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SecurityGroupService extends BaseService {
 
 
-  constructor(public http: HttpClient) {
-    super();
-  }
+    constructor(public http: HttpClient) {
+        super();
+    }
 
     private getHeaders() {
         return new HttpHeaders({
@@ -47,10 +52,10 @@ export class SecurityGroupService extends BaseService {
         }).pipe(catchError(this.errorCode));
     }
 
-    getInstanceBySecurityGroup() {
-    return this.http.get('/instance/security-group', {
-      headers: this.getHeaders()
-    })
+    attachOrDetach(form: ExecuteAttachOrDetach){
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/action', {
+            form
+        })
     }
 
 }

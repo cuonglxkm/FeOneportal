@@ -6,7 +6,10 @@ export class IPSubnetModel {
   gatewayIp:   string;
   networkId:   string;
 }
-
+export class SHHKeyModel {
+  id:          string;
+  displayName: string;
+}
 
 export class SecurityGroupModel {
   tenantId: string;
@@ -162,6 +165,7 @@ export class InstancesModel {
   flavorName: string;
   flavorCloudId: string;
   imageId: number;
+  imageName: string;
   customerId: number;
   ipPublic: string;
   ipPrivate: null;

@@ -60,6 +60,11 @@
                 [regionId]="region"
                 [projectId]="project"
         />
-        <!--    <one-portal-list-virtual-machine></one-portal-list-virtual-machine>-->
+        <one-portal-list-virtual-machine
+                [securityGroupId]="selectedValue?.id"
+                [regionId]="region"
+                [projectId]="project">
+
+        </one-portal-list-virtual-machine>
     </nz-card>
 </nz-content>

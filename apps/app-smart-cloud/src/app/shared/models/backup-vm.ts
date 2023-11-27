@@ -18,7 +18,9 @@ export interface BackupVm {
   suspendType: string,
   vpcName: string,
   customerEmail: string,
-  instanceName: string
+  instanceName: string,
+  size: number,
+  backupPackageName: string
 }
 
 export interface SystemInfoBackup {
@@ -44,12 +46,12 @@ export interface SecurityGroupBackup {
   remoteIpPrefix: string
 }
 
-export interface BackupVMFormSearch {
-  regionId: number,
-  customerId: number,
-  projectId: number,
-  status: string,
-  instanceBackupName: string,
-  pageSize: number,
-  currentPage: number
+export class BackupVMFormSearch {
+  regionId?: number
+  customerId?: number
+  projectId?: number
+  status?: string
+  instanceBackupName?: string
+  pageSize?: number
+  currentPage?: number
 }

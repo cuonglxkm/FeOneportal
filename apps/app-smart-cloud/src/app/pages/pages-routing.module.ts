@@ -17,11 +17,14 @@ import {VolumeComponent} from "./volume/component/list-volume/volume.component";
 import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
 import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
 import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
+import { ActionHistoryComponent } from "./action-history/action-history.component";
 import {SnapshotVolumeListComponent} from "./snapshot-volume/snapshotvl-list/snapshotvl-list.component";
 import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/snappshotvl-detail.component";
 import {BlankBackupVmComponent} from "./backup-vm/blank/blank-backup-vm.component";
 import {ListBackupVmComponent} from "./backup-vm/list/list-backup-vm.component";
 import {RestoreBackupVmComponent} from "./backup-vm/restore/restore-backup-vm.component";
+import {DetailBackupVmComponent} from "./backup-vm/detail/detail-backup-vm.component";
+import {CreateBackupVmComponent} from "./backup-vm/create/create-backup-vm.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -90,6 +93,10 @@ const routes: Routes = [
     component: BlankSecurityGroupComponent
   },
   {
+    path: 'action-history',
+    component: ActionHistoryComponent
+  },
+  {
     path: 'snapshotvls',
     component: SnapshotVolumeListComponent
   },
@@ -106,8 +113,16 @@ const routes: Routes = [
     component: ListBackupVmComponent
   },
   {
-    path: 'restore-backup-vm',
+    path: 'backup-vm/restore-backup-vm',
     component: RestoreBackupVmComponent
+  },
+  {
+    path: 'backup-vm/detail-backup-vm/:id',
+    component: DetailBackupVmComponent
+  },
+  {
+    path: 'instance/:id/create-backup-vm',
+    component: CreateBackupVmComponent
   }
 ]
 

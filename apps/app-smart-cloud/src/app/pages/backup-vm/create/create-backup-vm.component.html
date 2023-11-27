@@ -1,0 +1,81 @@
+<one-portal-header
+  title="Backup VM"
+  [path]="['Home', 'Dịch vụ', 'Backup VM']"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+
+<nz-content>
+  <ng-container *ngIf="!isLoading; else elseBlock">
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
+      <nz-card>
+        <div class="title">Thông tin máy ảo</div>
+        <nz-descriptions *ngIf="instance" nzLayout="horizontal" [nzColumn]="3">
+          <nz-descriptions-item nzTitle="Tên máy ảo">{{instance.name}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Khu vực">{{instance.regionText}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="IP Public">{{instance.ipPublic}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Gói cấu hình">{{instance.flavorName}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Hệ điều hành">{{instance.imageName}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="IP LAN">{{instance.ipPrivate}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Thời gian khởi tạo"></nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Thời gian kết thúc"></nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Mô tả"></nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+      <nz-card>
+        <div class="title">Thông tin backup</div>
+        <nz-row>
+          <nz-col [nzSpan]="12">
+
+          </nz-col>
+          <nz-col [nzSpan]="12"></nz-col>
+        </nz-row>
+      </nz-card>
+      <nz-card>
+        <div class="title">Thông tin tài nguyên backup</div>
+        <nz-row>
+          <nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label [nzFor]="">Volume gắn ngoài</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                        [nzPlaceHolder]="'Vui lòng cho mình xem thư lume'"
+                        [nzShowSearch]="false"
+                >
+                  <nz-option
+                          *ngFor="let i of []"
+                          [nzLabel]="i.text"
+                          [nzValue]="i.value"
+                  />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label [nzFor]="">Volume gắn ngoài</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                        [nzPlaceHolder]="'Vui lòng cho mình xem thư lume'"
+                        [nzShowSearch]="false"
+                        style="width: 100px;"
+                >
+                  <nz-option
+                          *ngFor="let i of []"
+                          [nzLabel]="i.text"
+                          [nzValue]="i.value"
+                  />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </form>
+  </ng-container>
+  <ng-template #elseBlock>
+    <nz-row nzJustify="center" nzAlign="middle">
+      <nz-spin nzSimple nzSize="large"/>
+    </nz-row>
+  </ng-template>
+</nz-content>
