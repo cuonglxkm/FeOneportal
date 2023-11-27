@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: vnptcloud
+  name: app-smart-cloud-deployment
+  labels:
+    app: app-smart-cloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: app-smart-cloud
+  template:
+    metadata:
+      labels:
+        app: app-smart-cloud
+        service: app-smart-cloud
+    spec:
+      containers:
+        - name: app-smart-cloud
+          image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      imagePullSecrets:
+        - name: regcred
+#          env:
+#            - name: API_LINK
+#              value: http://localhost:30991
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-smart-cloud
+  namespace: vnptcloud
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      name: port1
+      nodePort: 30767
+  selector:
+    app: app-smart-cloud

@@ -1,5 +1,3 @@
 {
-  "app-dashboard": "http://localhost:4201",
-  "app-smart-cloud": "http://localhost:4203",
-  "app-base": "http://localhost:4204"
+  "app-smart-cloud": "http://localhost:4203"
 }

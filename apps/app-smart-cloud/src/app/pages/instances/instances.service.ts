@@ -71,14 +71,26 @@ export class InstancesService extends BaseService{
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
+  getAllSSHKey(
+    vpcId: any,
+    regionId: any,
+    userId: any,
+    pageSize: any,
+    currentPage: any,
+  ): Observable<any> {
+    let url_ = `/keypair?vpcId=${vpcId}&regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
+
   getAllSnapshot(
     show: any,
-    region: any,
     type: any,
+    region: any,
     customerId: any
   ): Observable<any> {
-    //let url_ = `/images?show=${show}&region=${region}&type=${type}&customerId=${customerId}`;
-    let url_ = `/images?region=${region}`;
+    let url_ = `/images?show=${show}&type=${type}&region=${region}&customerId=${customerId}`;
+    // let url_ = `/images?region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
