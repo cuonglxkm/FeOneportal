@@ -42,7 +42,7 @@
 <div class="footer-detail">
   <button class="buttonBack" nz-button nzType="default" (click)="backTOListPage()">Quay lại
   </button>
-  <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="validateEditSnapshot()" >Chỉnh sửa
+  <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="validateEditSnapshot()" (click)="editSnapshot()">Chỉnh sửa
   </button>
 </div>
 </nz-card>

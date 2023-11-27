@@ -8,6 +8,8 @@ import {Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupDeleteVolumeComponent} from "../../volume/component/popup-volume/popup-delete-volume.component";
 import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete-snapshot-volume.component";
+import {RegionModel} from "../../../shared/models/region.model";
+import {ProjectModel} from "../../../shared/models/project.model";
 
 @Component({
   selector: 'app-snapshot-volume-list',
@@ -81,13 +83,13 @@ export class SnapshotVolumeListComponent implements OnInit {
 
   }
 
-  getProjectId(projectId: number) {
-    this.projectId = projectId;
+  getProjectId(project: ProjectModel) {
+    this.projectId = project.id;
     this.searchSnapshot();
   }
 
-  getRegionId(regionId: number) {
-    this.regionId = regionId;
+  getRegionId(region: RegionModel) {
+    this.regionId = region.regionId;
     if(this.projectId != null ){
       this.searchSnapshot();
     }

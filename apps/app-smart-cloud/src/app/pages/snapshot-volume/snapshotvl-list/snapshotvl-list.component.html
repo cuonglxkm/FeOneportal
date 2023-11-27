@@ -1,31 +1,48 @@
-<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
-                   [headerInfo]="headerInfo"></app-header-volume>
-<div class="snapshot-volume-list">
-  <nz-card
-    class="m-b-10"
-    [nzBordered]="false"
-    [nzBodyStyle]="{ 'padding': '30px' }"
+<!--<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"-->
+<!--                   [headerInfo]="headerInfo"></app-header-volume>-->
+<div style="padding-top: 1%">
+  <nz-breadcrumb style="width: 50%; float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">{{headerInfo.breadcrumb1}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">{{headerInfo.breadcrumb2}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">{{headerInfo.breadcrumb3}}</a>
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="getRegionId($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="regionId" (valueChanged)="getProjectId($event)"></project-select-dropdown>
+  </div>
+  <div><h2>{{headerInfo.content}}</h2></div>
+</div>
+<div
+  class="m-b-10"
+  style="padding: 30px;"
+>
+  <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
+  <nz-select nzSize="default"
+             [nzPlaceHolder]="'Tất cả trạng thái'"
+             [nzOptions]="options"
+             [(ngModel)]="snapshotStatusSearch"
+             style="width: 170px;"
   >
-    <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
-    <nz-select nzSize="default"
-               [nzPlaceHolder]="'Tất cả trạng thái'"
-               [nzOptions]="options"
-               [(ngModel)]="snapshotStatusSearch"
-               style="width: 170px;"
-    >
-    </nz-select>
+  </nz-select>
 
-    <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-      <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
-             style="width: 300px; margin-left: 30px;"/>
-    </nz-input-group>
-    <ng-template #suffixButton>
-      <button nz-button  nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
-      </button>
-    </ng-template>
-  </nz-card>
-
-
+  <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+    <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
+           style="width: 300px; margin-left: 30px;"/>
+  </nz-input-group>
+  <ng-template #suffixButton>
+    <button nz-button  nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+    </button>
+  </ng-template>
+</div>
+<div class="snapshot-volume-list">
   <nz-table #tableSnapshotVolume
             [nzData]="listSnapshot"
             [nzFrontPagination]="false"

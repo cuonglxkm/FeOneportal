@@ -11,6 +11,8 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {isBlank} from "@delon/form";
 import {PopupCancelVolumeComponent} from "../popup-volume/popup-cancel-volume.component";
+import {RegionModel} from "../../../../shared/models/region.model";
+import {ProjectModel} from "../../../../shared/models/project.model";
 
 @Component({
   selector: 'app-volume',
@@ -301,13 +303,13 @@ export class VolumeComponent implements OnInit {
     })
   }
 
-  getProjectId(projectId: number) {
-    this.projectSearch = projectId;
+  getProjectId(project: ProjectModel) {
+    this.projectSearch = project.id;
     this.searchVolumes();
   }
 
-  getRegionId(regionId: number) {
-    this.regionSearch = regionId;
+  getRegionId(region: RegionModel) {
+    this.regionSearch = region.regionId;
     if(this.projectSearch != null){
       this.searchVolumes();
     }

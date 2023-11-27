@@ -55,6 +55,7 @@ import {DeleteBackupVmComponent} from './backup-vm/delete/delete-backup-vm.compo
 import {
   PopupDeleteSnapshotVolumeComponent
 } from "./snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component";
+import {PopupEditSnapshotVolumeComponent} from "./snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -99,7 +100,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
-    PopupDeleteSnapshotVolumeComponent
+    PopupDeleteSnapshotVolumeComponent,
+    PopupEditSnapshotVolumeComponent
   ],
   imports: [
     CommonModule,
