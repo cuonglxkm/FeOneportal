@@ -1,6 +1,13 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Inject, OnInit} from "@angular/core";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {SnapshotVolumeDto} from "../../../shared/dto/snapshot-volume.dto";
+import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
+import {GetListSnapshotVlModel} from "../../../shared/models/snapshotvl.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {Router} from "@angular/router";
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {PopupDeleteVolumeComponent} from "../../volume/component/popup-volume/popup-delete-volume.component";
+import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete-snapshot-volume.component";
 
 @Component({
   selector: 'app-snapshot-volume-list',
@@ -17,45 +24,125 @@ export class SnapshotVolumeListComponent implements OnInit {
 
   options: NzSelectOptionInterface[] = [
     {label: 'Tất cả trạng thái', value: null},
+    {label: 'Đang khởi tạo', value: 'DANGKHOITAO'},
+    {label: 'Dịch vụ đã xóa', value: 'HUY'},
+    {label: 'Tạm ngừng', value: 'TAMNGUNG'},
     {label: 'Đang hoạt động', value: 'KHOITAO'},
-    {label: 'Lỗi', value: 'ERROR'},
-    {label: 'Tạm ngừng', value: 'SUSPENDED'},
   ];
 
-  snapshotStatusSearch : string;
-  snapshotNameSearch: string;
+  optionAction: NzSelectOptionInterface[] = [
+    {label: 'Tạo Volume', value: 'initVolume'},
+    {label: 'Chỉnh sửa', value: 'edit'},
+    {label: 'Xóa', value: 'delete'}
+  ]
 
+  selectedAction: string;
   isLoadingSearch = false;
 
-  listSnapshot : SnapshotVolumeDto[];
-  totalSnapshot: number = 0;
+  listSnapshotVlResponse: GetListSnapshotVlModel;
+  listSnapshot: SnapshotVolumeDto[];
+  totalSnapshot: number;
 
-  onRootPageIndexChange(event: any){
+  //parameter search
+  userId: number;
+  projectId: number;
+  regionId: number;
+  size: number;
+  pageSize: number = 10;
+  currentPage: number;
+  snapshotStatusSearch: string;
+  snapshotNameSearch: string;
+  volumeName: string;
 
+
+  onPageIndexChange(event: any) {
+    this.currentPage = event;
+    this.getListSnapshotVl(this.userId, this.projectId, this.regionId, this.size, this.pageSize,
+      this.currentPage, this.snapshotStatusSearch, this.volumeName, this.snapshotNameSearch);
   }
 
-
-
-
-
-
-
+  onPageSizeChange(event: any) {
+    this.pageSize = event;
+    this.getListSnapshotVl(this.userId, this.projectId, this.regionId, this.size, this.pageSize,
+      1, this.snapshotStatusSearch, this.volumeName, this.snapshotNameSearch);
+  }
 
 
   ngOnInit(): void {
   }
 
-  searchSnapshot(){
-
+  searchSnapshot() {
+    this.userId = this.tokenService.get()?.userId;
+    this.getListSnapshotVl(this.userId, this.projectId, this.regionId, this.size, this.pageSize,
+      1, this.snapshotStatusSearch, this.volumeName, this.snapshotNameSearch);
   }
-  navigateToCreateSnapshot(){
+
+  navigateToCreateSnapshot() {
 
   }
 
   getProjectId(projectId: number) {
+    this.projectId = projectId;
+    this.searchSnapshot();
   }
 
   getRegionId(regionId: number) {
+    this.regionId = regionId;
+    if(this.projectId != null ){
+      this.searchSnapshot();
+    }
+  }
+  onSelectionChange(event: any, snapshotVl: SnapshotVolumeDto){
+    if(event == 'edit'){
+      this.router.navigate(['/app-smart-cloud/snapshotvls/detail', snapshotVl.id], { queryParams: { edit: 'true' } });
+    }
+    if(event == 'initVolume'){
+      this.router.navigate(['/app-smart-cloud/volume/create'], { queryParams: { createdFromSnapshot: 'true', idSnapshot: snapshotVl.id } });
+    }
+    if(event == 'delete'){
+      const modal: NzModalRef = this.modalService.create({
+        nzTitle: 'Xóa Snapshot Volume',
+        nzWidth: '600px',
+        nzContent: PopupDeleteSnapshotVolumeComponent,
+        nzFooter: [
+          {
+            label: 'Hủy',
+            type: 'default',
+            onClick: () => modal.destroy()
+          },
+          {
+            label: 'Đồng ý',
+            type: 'primary',
+            onClick: () => {
+              //do Delete snapshot
+              modal.destroy();
+            }
+          }
+        ]
+      });
+    }
+  }
+
+  constructor(private snapshotVlService: SnapshotVolumeService, private router: Router,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private modalService: NzModalService) {
+  }
+
+  private getListSnapshotVl(customerId: number, projectId: number, regionId: number, size: number, pageSize: number, currentPage: number, status: string, volumeName: string, name: string) {
+    this.isLoadingSearch = true;
+    this.listSnapshot = [];
+    this.snapshotVlService.getSnapshotVolumes(customerId, projectId, regionId, size, pageSize, currentPage, status, volumeName, name).subscribe(data => {
+      if (data.records.length > 0) {
+        this.listSnapshotVlResponse = data;
+        this.listSnapshot = data.records;
+        this.totalSnapshot = data.totalCount;
+        this.isLoadingSearch = false;
+      } else
+        this.isLoadingSearch = false;
+    })
+  }
+  getDetailSnapshotVl(idSnapshot: number){
+    console.log(idSnapshot);
+    this.router.navigate(['/app-smart-cloud/snapshotvls/detail/' + idSnapshot]);
   }
 
 }

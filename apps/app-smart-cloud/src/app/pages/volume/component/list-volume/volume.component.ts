@@ -27,6 +27,7 @@ export class VolumeComponent implements OnInit {
 
   selectedOptionAction: string = '';
 
+  userId: number;
   regionSearch: number;
   projectSearch: number;
   volumeNameSearch: string;
@@ -87,12 +88,12 @@ export class VolumeComponent implements OnInit {
 
   onRootPageIndexChange(event: any) {
     this.curentPageRoot = event;
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, (this.curentPageRoot - 1), this.volumeStatusSearch, this.volumeNameSearch)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, this.curentPageRoot, this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, (this.curentPageAdd - 1), this.volumeStatusSearch, this.volumeNameSearch)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, this.curentPageAdd, this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   isVisible = false;
@@ -190,23 +191,24 @@ export class VolumeComponent implements OnInit {
   }
 
   searchVolumes() {
+    this.userId = this.tokenService.get()?.userId;
     // tabIndex = 0 : RootVolume
     // tabIndex = 1 : AddVolume
     if (this.tabVolumeIndex == 0) {
-      this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, this.volumeStatusSearch, this.volumeNameSearch)
+      this.getListVolume(this.userId, this.projectSearch, this.regionSearch, true, 10, 1, this.volumeStatusSearch, this.volumeNameSearch)
     } else {
-      this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, this.volumeStatusSearch, this.volumeNameSearch)
+      this.getListVolume(this.userId, this.projectSearch, this.regionSearch, false, 10, 1, this.volumeStatusSearch, this.volumeNameSearch)
     }
   }
 
   reloadDataVolumeRoot() {
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 0, null, null)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 1, null, null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
 
   reloadDataVolumeAdd() {
-    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 0, null, null)
+    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 1, null, null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
@@ -228,8 +230,11 @@ export class VolumeComponent implements OnInit {
           this.totalRoot = data.totalCount;
           this.isLoadingSearch = false;
           this.isBlankVolume = false;
-        } else
+        } else{
           this.isBlankVolume = true;
+          this.isLoadingSearch = false;
+        }
+
 
       } else {
         if (data.records.length > 0) {
@@ -238,9 +243,10 @@ export class VolumeComponent implements OnInit {
           this.totalAdd = data.totalCount;
           this.isLoadingSearch = false;
           this.isBlankVolume = false;
-        } else
+        } else{
           this.isBlankVolume = true;
-
+          this.isLoadingSearch = false;
+        }
       }
     })
   }

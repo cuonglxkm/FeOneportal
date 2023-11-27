@@ -4,11 +4,10 @@
   <div class="search-volume" *ngIf="!isBlankVolume; else elsePage">
     <nz-card
       class="m-b-10"
-      nzHoverable
       [nzBodyStyle]="{ 'padding': '30px' }"
     >
       <nz-form-label [nzFor]="'volumeStatus'">Trạng thái Volume</nz-form-label>
-      <nz-select nzSize="large"
+      <nz-select nzSize="default"
                  [nzPlaceHolder]="'Tất cả trạng thái'"
                  [nzOptions]="options"
                  [(ngModel)]="volumeStatusSearch"
@@ -16,15 +15,15 @@
       >
       </nz-select>
 
-      <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
         <input type="text" [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume"
                style="width: 300px; margin-left: 30px;"/>
       </nz-input-group>
       <ng-template #suffixButton>
-        <button nz-button nzType="primary" (click)="searchVolumes()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+        <button nz-button nzType="primary" nzSize="default" (click)="searchVolumes()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
         </button>
       </ng-template>
-      <div class="text-right" style="margin-top: -40px;  padding-right: 30px;">
+      <div class="text-right" style="margin-top: -40px;">
         <button class="m-r-8"
                 class="bg-success border-success"
                 nz-button
