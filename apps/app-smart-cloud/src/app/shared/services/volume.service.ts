@@ -44,15 +44,13 @@ export class VolumeService extends BaseService {
       catchError(this.handleError<PriceVolumeDto>('get premium-volume error'))
     );
   }
-
-  //get All VMs
-
-  getAllVMs(region: number): Observable<GetAllVmModel> {
-    let url;
-    if (region != null) {
-      url = this.urlVMGW + '/getpaging' + '?region=' + region + '&pageSize=' + 10000 + '&currentPage=' + 1;
-    } else {
-      url = this.urlVMGW + '/getpaging'  + '?pageSize=' + 10000 + '&currentPage=' + 1;
+  getListVM(userId: number, regionId: number): Observable<GetAllVmModel> {
+    let url = this.urlVMGW + '/getpaging' + '?pageSize=' + 10000 + '&currentPage=' + 1;
+    if (regionId != null) {
+      url += '&region=' + regionId;
+    }
+    if (userId != null){
+      url += '&userId='+userId;
     }
     return this.http.get<GetAllVmModel>(url).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
