@@ -93,7 +93,7 @@ export class InstancesComponent implements OnInit {
     private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
-  showModal(cs: string, data: any): void {
+  showModal(cs  : string, data: any): void {
     this.actionData = data;
     this.selectedOptionAction = '';
     switch (parseInt(cs, 10)) {
