@@ -136,10 +136,11 @@ export class InstancesService extends BaseService{
     pageSize: number,
     region: number,
     searchValue: string = '',
-    status: string = ''
+    status: string = '',
+    userId: number
   ): Observable<any> {
     if (searchValue == undefined) searchValue = '';
-    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&status=${status}&region=${region}`;
+    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&searchValue=${searchValue}&status=${status}&userId=${userId}`;
     url_ = url_.replace(/[?&]$/, '');
 
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
@@ -180,5 +181,9 @@ export class InstancesService extends BaseService{
     let url_ = `/instances/${data.id}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+  }
+
+  getInstanceById(id: number) {
+    return this.http.get<InstancesModel>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`)
   }
 }

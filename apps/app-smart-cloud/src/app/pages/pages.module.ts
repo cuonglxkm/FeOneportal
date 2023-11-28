@@ -53,6 +53,14 @@ import { LayoutDefaultModule } from '@delon/theme/layout-default';
 import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
 import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.component';
 import { ActionHistoryComponent } from './action-history/action-history.component';
+import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
+import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import {
+  ListBackupVolumeComponent
+} from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -89,15 +97,20 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
     DetailIpPublicComponent,
+    HeaderComponent,
     PopupCancelVolumeComponent,
     SnapshotVolumeListComponent,
     SnappshotvlDetailComponent,
-    HeaderComponent,
     BlankBackupVmComponent,
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
     ActionHistoryComponent,
+    DetailBackupVmComponent,
+    CreateBackupVmComponent,
+    CreateBackupVolumeComponent,
+    ListBackupVolumeComponent,
+    DetailBackupVolumeComponent,
   ],
   imports: [
     CommonModule,
@@ -110,7 +123,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SharedModule,
     NzPaginationModule,
     NzResultModule,
-
     SharedModule,
     PagesRoutingModule,
     NzLayoutModule,
@@ -123,6 +135,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     NzImageModule,
     LayoutDefaultModule,
+
+    DragDropModule,
   ],
 })
 export class PagesModule {}

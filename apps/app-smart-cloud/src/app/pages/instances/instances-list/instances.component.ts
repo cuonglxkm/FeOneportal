@@ -39,8 +39,7 @@ class SearchParam {
 @Component({
   selector: 'one-portal-instances',
   templateUrl: './instances.component.html',
-  styleUrls: ['./instances.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./instances.component.less']
 })
 export class InstancesComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
@@ -51,6 +50,7 @@ export class InstancesComponent implements OnInit {
     breadcrumb: ['Home', 'Dịch vụ', 'VM'],
   };
   dataList: InstancesModel[] = [];
+  emptyList: InstancesModel[] = [];
   checkedCashArray = [];
 
   pageIndex = 1;
@@ -77,8 +77,8 @@ export class InstancesComponent implements OnInit {
   actionData: InstancesModel;
 
   region: number;
-
-  activeCreate: boolean = true;
+  activeCreate: boolean = false;
+  isSearch: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGanVLANIPAddress: boolean = false;
 
@@ -93,11 +93,12 @@ export class InstancesComponent implements OnInit {
     private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
-  showModal(cs: string, data: any): void {
+  showModal(cs  : string, data: any): void {
     this.actionData = data;
     this.selectedOptionAction = '';
     switch (parseInt(cs, 10)) {
       case 1:
+        this.navigateToCreateBackup(this.actionData.id);
         break;
       case 2:
         break;
@@ -147,6 +148,11 @@ export class InstancesComponent implements OnInit {
     if (reset) {
       this.pageIndex = 1;
     }
+    if (this.searchParam.name != undefined || this.searchParam.status != undefined) {
+      this.isSearch = true;
+      this.cdr.detectChanges();
+    }
+    
     if (this.region != undefined && this.region != null) {
       this.loading = true;
       this.dataService
@@ -155,32 +161,31 @@ export class InstancesComponent implements OnInit {
           this.pageSize,
           this.region,
           this.searchParam.name,
-          this.searchParam.status
-        )
-        .subscribe({
-          next: (data: any) => {
-            this.loading = false;
-
+          this.searchParam.status,
+          this.tokenService.get()?.userId
+        ).pipe(
+          finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+        ).subscribe(data => {
             // Update your component properties with the received data
-            if (data.records && data.records.length > 0) {
+            if (data != null && data.records && data.records.length > 0) {
               this.activeCreate = false;
+              this.isSearch = true;
+              this.dataList = data.records; // Assuming 'records' property contains your data
+              this.tableConfig.total = data.totalCount;
+              this.total = data.totalCount;
+              this.tableConfig.pageIndex = this.pageIndex;
+              this.tableLoading(false);
+              this.checkedCashArray = [...this.checkedCashArray];
             } else {
               this.activeCreate = true;
             }
-            this.dataList = data.records; // Assuming 'records' property contains your data
-            this.tableConfig.total = data.totalCount;
-            this.total = data.totalCount;
-            this.tableConfig.pageIndex = this.pageIndex;
-            this.tableLoading(false);
-            this.checkedCashArray = [...this.checkedCashArray];
-          },
-          error: (error) => {
-            // Handle the error, e.g., display an error message to the user
-          },
-          complete: () => {
-            console.log('Completed'); // This is called when the observable completes
-          },
-        });
+            this.cdr.detectChanges()
+        }, error => {
+              this.activeCreate = true;
+        })
     }
   }
 
@@ -222,7 +227,7 @@ export class InstancesComponent implements OnInit {
     this.tableConfig.pageSize = e;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     // this.dataService
     // .getUsers2(1,10, this.sortKey!, this.sortValue!, this.searchGenderList)
     // .subscribe((data: any) => {
@@ -377,5 +382,11 @@ export class InstancesComponent implements OnInit {
   }
   navigateToDetail(id: number) {
     this.router.navigate(['/app-smart-cloud/instances/instances-detail/' + id]);
+  }
+
+  navigateToCreateBackup(id: number) {
+    console.log('data ', id);
+    // this.dataService.setSelectedObjectId(id)
+    this.router.navigate(['/app-smart-cloud/instance/' + id + '/create-backup-vm']);
   }
 }

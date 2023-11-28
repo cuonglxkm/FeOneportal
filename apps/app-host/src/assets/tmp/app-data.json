@@ -58,6 +58,11 @@
           "text": "Action history",
           "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/action-history"
+        },
+        {
+          "text": "Backup Volume",
+          "icon": "anticon-info",
+          "link": "/app-smart-cloud/list-backup-volume"
         }
       ]
     }
