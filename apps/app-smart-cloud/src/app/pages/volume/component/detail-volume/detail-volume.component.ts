@@ -104,12 +104,12 @@ export class DetailVolumeComponent implements OnInit {
     let request = new EditSizeVolumeModel();
     request.customerId = extendsDto.customerId;
     request.createdByUserId = extendsDto.customerId;
-    request.note = 'update volume';
+    request.note = 'extend volume';
     request.orderItems = [
       {
         orderItemQuantity: 1,
         specification: JSON.stringify(extendsDto),
-        specificationType: 'volume_resize',
+        specificationType: 'volume_extend',
         price: 100000,
         serviceDuration: expiryTime
       }

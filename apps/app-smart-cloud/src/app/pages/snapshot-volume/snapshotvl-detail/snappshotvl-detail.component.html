@@ -8,35 +8,41 @@
 >
 
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Snapshot Volume</nz-form-label>
-  <input nz-input disabled="true" type="text"/>
+  <input nz-input [disabled]="!isEdit" type="text" [ngModel]="snapshotName"/>
   <br>
   <br>
   <nz-form-label [nzSm]="6" [nzXs]="24">Dung lượng</nz-form-label>
-  <input nz-input disabled="true" type="text"/>
+  <input nz-input [disabled]="!isEdit" type="number" [ngModel]="snapshotSize"/>
 
   <br>
   <br>
-  <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
-  <textarea rows="4" nz-input></textarea>
+  <nz-form-label [nzSm]="6" [nzXs]="24" >Mô tả</nz-form-label>
+  <textarea rows="4" nz-input maxlength="255" [ngModel]="snapshotDesc"></textarea>
 
   <br>
   <br>
   <nz-form-label [nzSm]="6" [nzXs]="24">Volume</nz-form-label>
-  <input nz-input disabled="true" type="text"/>
+  <input nz-input [disabled]="!isEdit" type="text" [ngModel]="snapshotVolumeName"/>
 
   <div *ngIf="projectSearch == null || projectSearch === undefined">
     <br>
     <br>
     <nz-form-label [nzSm]="6" [nzXs]="24">VPC</nz-form-label>
-    <input nz-input disabled="true" type="text"/>
+    <input nz-input [disabled]="!isEdit" type="text"/>
   </div>
   <br>
   <br>
   <p>Thời gian khởi tạo:</p>
 
 </nz-card>
+
+<nz-card
+  [nzBodyStyle]="{ 'padding': '30px' }"
+>
 <div class="footer-detail">
-  <button class="buttonBack" nz-button nzType="default">Quay lại
+  <button class="buttonBack" nz-button nzType="default" (click)="backTOListPage()">Quay lại
+  </button>
+  <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="validateEditSnapshot()" (click)="editSnapshot()">Chỉnh sửa
   </button>
 </div>
-
+</nz-card>
