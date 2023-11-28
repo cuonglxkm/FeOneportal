@@ -14,25 +14,25 @@
       <div nz-row class="mb-md">
         <div nz-col nzSpan="12">
           <div class="text-left">
-            <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+            <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
               <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+              <ng-template #suffixButton>
+                <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+                  <i nz-icon nzType="search"></i>
+                  Tim kiếm
+                </button>
+              </ng-template>
             </nz-input-group>
-            <ng-template #suffixButton>
-              <button nz-button nzType="primary" nzSize="large" nzSearch (click)="search(searchBox.value)">
-                <span nz-icon nzType="setting" nzTheme="outline"></span>
-                Tim kiếm
-              </button>
-            </ng-template>
           </div>
         </div>
         <div nz-col nzSpan="12">
           <div class="text-right">
-            <button nzSize="large" (click)="createKey()" nz-button nzType="primary" style="
+              <button (click)="createKey()" nz-button nzType="primary" style="
             border: 1px solid #52c41a;
             border-radius: 2px;
             background-color: #52c41a;
-          ">+ Tạo mới
-            </button>
+          "><i nz-icon nzType="plus"></i> Tạo mới
+              </button>
           </div>
         </div>
       </div>
@@ -45,23 +45,24 @@
           <th>Tên keypaird</th>
           <th>Finger print</th>
           <th>Thao tác</th>
+          <th>Thao tác</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let data of listOfData">
           <td (click)="detailKey(data)">{{ data.name }}</td>
-          <td>{{ data.fingerprint }}</td>
+          <td (click)="detailKey(data)">{{ data.fingerprint }}</td>
           <td>
             <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">
               Xóa
             </button>
           </td>
-          <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?"
-                    (nzOnCancel)="handleCancel(null)"
-                    (nzOnOk)="handleDelete(data.id)">
-            <ng-container *nzModalContent></ng-container>
-          </nz-modal>
         </tr>
+        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?"
+                  (nzOnCancel)="handleCancel(null)"
+                  (nzOnOk)="handleDelete(data.id)">
+          <ng-container *nzModalContent></ng-container>
+        </nz-modal>
         </tbody>
       </nz-table>
     </ng-container>
