@@ -31,9 +31,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { da, tr } from 'date-fns/locale';
-import { Observable } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { LoadingService } from '@delon/abc/loading';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -260,8 +261,9 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   getAllSSHKey() {
+    this.listSSHKey = [];
     this.dataService
-      .getAllSSHKey(this.projectId, this.region, this.customerId, 999999, 1)
+      .getAllSSHKey(this.projectId, this.region, this.customerId, 999999, 0)
       .subscribe((data: any) => {
         data.records.forEach((e) => {
           const itemMapper = new SHHKeyModel();
@@ -378,7 +380,8 @@ export class InstancesCreateComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     public message: NzMessageService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private loadingSrv: LoadingService
   ) {}
   onRegionChange(region: RegionModel) {
     // Handle the region change event
@@ -389,6 +392,7 @@ export class InstancesCreateComponent implements OnInit {
     this.selectedSecurityGroup = [];
     this.ipPublicValue = '';
     this.initSnapshot();
+    this.getAllSSHKey();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
     this.cdr.detectChanges();
@@ -400,6 +404,7 @@ export class InstancesCreateComponent implements OnInit {
     this.listSecurityGroup = [];
     this.selectedSecurityGroup = [];
     this.getAllSecurityGroup();
+    this.getAllSSHKey();
     this.cdr.detectChanges();
   }
 
@@ -426,12 +431,12 @@ export class InstancesCreateComponent implements OnInit {
 
   save(): void {
     let arraylistSecurityGroup = null;
-    if (this.selectedSecurityGroup.length > 0) {
-      arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
-        obj.id.toString()
-      );
-    }
-    if (this.hdh == null) {
+    // if (this.selectedSecurityGroup.length > 0) {
+    //   arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
+    //     obj.id.toString()
+    //   );
+    // }
+    if (!this.isSnapshot && this.hdh == null) {
       this.message.error('Vui lòng chọn hệ điều hành');
       return;
     }
@@ -439,19 +444,20 @@ export class InstancesCreateComponent implements OnInit {
       this.message.error('Vui lòng chọn gói cấu hình');
       return;
     }
-    this.createInstances.regionId = 3; // this.region;
-    this.createInstances.projectId = 4079; // this.projectId;
+    this.createInstances.regionId = 5; // this.region;
+    this.createInstances.projectId = 4082; // this.projectId;
     this.createInstances.customerId = 669; // this.customerId;
-    this.createInstances.imageId = this.selectedSnapshot;
-    this.createInstances.useIPv6 = this.isUseIPv6;
-    this.createInstances.usePrivateNetwork = this.isUseLAN;
-    this.createInstances.currentNetworkCloudId =
-      '113210e5-52ac-4c01-a7bf-0976eca0c81f';
-    this.createInstances.flavorId = 368; //this.flavor.id;
+    // this.createInstances.imageId = this.selectedSnapshot;
+    this.createInstances.imageId = 132;
+    this.createInstances.useIPv6 = false;
+    this.createInstances.usePrivateNetwork = true //his.isUseLAN;
+    this.createInstances.currentNetworkCloudId = null;
+      //'113210e5-52ac-4c01-a7bf-0976eca0c81f';
+    this.createInstances.flavorId = 2446; //this.flavor.id;
     this.createInstances.storage = 1;
     this.createInstances.snapshotCloudId = null;
-    this.createInstances.listSecurityGroup = arraylistSecurityGroup;
-    this.createInstances.keypair = this.selectedSSHKeyId;
+    this.createInstances.listSecurityGroup = null //arraylistSecurityGroup;
+    this.createInstances.keypair = null //this.selectedSSHKeyId;
     this.createInstances.domesticBandwidth = 5;
     this.createInstances.intenationalBandwidth = 10;
     this.createInstances.ramAdditional = 0;
@@ -461,10 +467,17 @@ export class InstancesCreateComponent implements OnInit {
     this.createInstances.initPassword = '123123aA@'; //this.password;
     this.createInstances.ipPrivate = null;
 
-    this.dataService.create(this.createInstances).subscribe(
+    this.loadingSrv.open({type: "spin", text: "Loading..."});
+
+    this.dataService.create(this.createInstances)
+    .pipe(finalize(() => {
+      this.loadingSrv.close();
+    }))
+    .subscribe(
       (data: any) => {
         console.log(data);
         this.message.success('Tạo mới máy ảo thành công');
+        this.router.navigateByUrl(`/app-smart-cloud/instances`)
       },
       (error) => {
         console.log(error.error);
