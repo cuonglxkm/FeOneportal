@@ -98,6 +98,7 @@ export class InstancesComponent implements OnInit {
     this.selectedOptionAction = '';
     switch (parseInt(cs, 10)) {
       case 1:
+        this.navigateToCreateBackup(this.actionData.id);
         break;
       case 2:
         break;
@@ -381,5 +382,11 @@ export class InstancesComponent implements OnInit {
   }
   navigateToDetail(id: number) {
     this.router.navigate(['/app-smart-cloud/instances/instances-detail/' + id]);
+  }
+
+  navigateToCreateBackup(id: number) {
+    console.log('data ', id);
+    // this.dataService.setSelectedObjectId(id)
+    this.router.navigate(['/app-smart-cloud/instance/' + id + '/create-backup-vm']);
   }
 }

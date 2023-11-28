@@ -23,6 +23,8 @@ import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/sn
 import {BlankBackupVmComponent} from "./backup-vm/blank/blank-backup-vm.component";
 import {ListBackupVmComponent} from "./backup-vm/list/list-backup-vm.component";
 import {RestoreBackupVmComponent} from "./backup-vm/restore/restore-backup-vm.component";
+import {DetailBackupVmComponent} from "./backup-vm/detail/detail-backup-vm.component";
+import {CreateBackupVmComponent} from "./backup-vm/create/create-backup-vm.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -111,8 +113,16 @@ const routes: Routes = [
     component: ListBackupVmComponent
   },
   {
-    path: 'restore-backup-vm',
+    path: 'backup-vm/restore-backup-vm',
     component: RestoreBackupVmComponent
+  },
+  {
+    path: 'backup-vm/detail-backup-vm/:id',
+    component: DetailBackupVmComponent
+  },
+  {
+    path: 'instance/:id/create-backup-vm',
+    component: CreateBackupVmComponent
   }
 ]
 
