@@ -104,10 +104,10 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
           this.message.success('Reset mật khẩu máy ảo thành công');
           // this.dataService
-          //   .resetpassword({ id: this.id, newPassword: this.resetPassword })
+          //   .resetpassword({ id: this.instancesId, newPassword: this.resetPassword })
           //   .subscribe(
           //     (data: any) => {
-          //       console.log(data);
+          //       console.log("reset password", data);
           //       if (data == true) {
           //         this.message.success('Reset mật khẩu máy ảo thành công');
           //       } else {
@@ -128,9 +128,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   onInputChange(event: Event): void {
     if (this.resetPassword == this.resetPasswordRepeat) {
       this.check = true;
-      this.isOk = true;
     } else {
       this.check = false;
+      this.isOk = false;
+    }
+    if (this.resetPassword == this.resetPasswordRepeat && this.resetPasswordRepeat != '') {
+      this.isOk = true;
+    } else {
       this.isOk = false;
     }
   }
