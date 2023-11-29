@@ -60,7 +60,8 @@ export class EditVolumeComponent implements OnInit {
     this.getVolumeById(idVolume);
 
 
-    this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.regionIdSearch).toPromise();
+    let userId = this.tokenService.get()?.userId;
+    this.getAllVmResponse = await this.volumeSevice.getListVM(userId, this.regionIdSearch).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
       this.vmList.push({value: vm.id, label: vm.name});
@@ -99,7 +100,8 @@ export class EditVolumeComponent implements OnInit {
     this.regionIdSearch = regionId;
 
     this.vmList = [];
-    this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.regionIdSearch).toPromise();
+    let userId = this.tokenService.get()?.userId;
+    this.getAllVmResponse = await this.volumeSevice.getListVM(userId, this.regionIdSearch).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
       this.vmList.push({value: vm.id, label: vm.name});

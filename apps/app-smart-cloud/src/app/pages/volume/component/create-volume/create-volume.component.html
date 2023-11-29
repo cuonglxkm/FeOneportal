@@ -5,9 +5,11 @@
   <hr>
   <br>
   <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Volume</nz-form-label>
-  <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="createVolumeInfo.serviceName"
-         (ngModelChange)="changeVolumeName()" type="text"/>
-  <p *ngIf="showWarningVolumeName" class="warning-message">Tên Volume không được để trống.</p>
+  <nz-form-control [nzValidateStatus]="showWarningVolumeName?'error':''">
+    <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="createVolumeInfo.serviceName"
+           (ngModelChange)="changeVolumeName()" type="text"/>
+    <nz-form-explain class="warning-message" st *ngIf="showWarningVolumeName">Tên Volume không được để trống.</nz-form-explain>
+  </nz-form-control>
   <br>
   <br>
   <p>

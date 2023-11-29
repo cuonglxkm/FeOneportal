@@ -8,6 +8,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {CreateVolumeRequestModel} from "../../../../shared/models/volume.model";
 import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
 import {Router} from "@angular/router";
+import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
 
 @Component({
   selector: 'app-create-volume',
@@ -36,11 +37,7 @@ export class CreateVolumeComponent implements OnInit {
     {label: '12', value: 12},
     {label: '24', value: 24},
   ];
-  snapshotList: NzSelectOptionInterface[] = [
-    {label: 'snapshot_01', value: 100001},
-    {label: 'snapshot_02', value: 100002},
-    {label: 'snapshot_03', value: 100003},
-  ];
+  snapshotList: NzSelectOptionInterface[] = [];
 
   createDateVolume: Date = new Date();
   endDateVolume: Date;
@@ -106,6 +103,7 @@ export class CreateVolumeComponent implements OnInit {
   };
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService,
+              private snapshotvlService: SnapshotVolumeService,
               private nzMessage: NzMessageService, private router: Router) {
   }
 
@@ -216,24 +214,20 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   changeVolumeName() {
-    this.showWarningVolumeName = false;
+    this.createVolumeInfo.serviceName = this.createVolumeInfo.serviceName.trim();
+    this.showWarningVolumeName = this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == '';
   }
 
 
   getProjectId(projectId: number){
     this.createVolumeInfo.vpcId = projectId;
-
+    this.getListSnapshot();
   }
 
   async getRegionId(regionId: number){
-
-    this.vmList = [];
     this.createVolumeInfo.regionId = regionId;
-    this.getAllVmResponse = await this.volumeSevice.getAllVMs(this.createVolumeInfo.regionId).toPromise();
-    this.listAllVMs = this.getAllVmResponse.records;
-    this.listAllVMs.forEach((vm) => {
-      this.vmList.push({value: vm.id, label: vm.name});
-    })
+    this.getListSnapshot()
+    this.getListVm()
   }
 
   selectEncryptionVolume(value: any){
@@ -247,6 +241,27 @@ export class CreateVolumeComponent implements OnInit {
     if(value){
       this.createVolumeInfo.isEncryption = !value;
     }
+  }
+
+  private getListSnapshot(){
+    this.snapshotList = [];
+    let userId = this.tokenService.get()?.userId;
+    this.snapshotvlService.getSnapshotVolumes(userId, this.createVolumeInfo.vpcId, this.createVolumeInfo.regionId,
+      null, 10000, 1, null, null, null).subscribe(data => {
+        data.records.forEach(snapshot => {
+          this.snapshotList.push({label: snapshot.name , value: snapshot.id});
+        })
+    });
+  }
+
+  private getListVm(){
+    this.vmList = [];
+    let userId = this.tokenService.get()?.userId;
+    this.volumeSevice.getListVM(userId, this.createVolumeInfo.regionId).subscribe(data => {
+      data.records.forEach( vm => {
+        this.vmList.push({value: vm.id, label: vm.name});
+      });
+    });
   }
 
 }

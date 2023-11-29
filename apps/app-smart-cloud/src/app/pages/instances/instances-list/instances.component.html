@@ -1,121 +1,107 @@
 <!--Head section-->
 <!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
 
-<div style="padding-top: 1%">
-  <nz-breadcrumb style="width: 50%; float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Home</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Danh sách máy ảo</a>
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="region"></project-select-dropdown>
-  </div>
-  <div><h2>Danh sách máy ảo</h2></div>
-</div>
-
-<div class="normal-table-wrap" *ngIf="!activeCreate; else elsePage">
-  <nz-card
-    class="m-b-10"
-    nzHoverable
-    [nzBodyStyle]="{ 'padding-bottom': '15px' }"
-  >
-    <form nz-form>
-      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">
-        <div
-          nz-col
-          [nzLg]="8"
-          [nzMd]="8"
-          [nzSm]="24"
-          [nzXl]="6"
-          [nzXs]="24"
-          [nzXXl]="6"
-        >
-          <nz-form-item>
-            <nz-form-label [nzFor]="">Trạng thái máy ảo</nz-form-label>
-            <nz-form-control>
-              <nz-select
-                [ngModel]="searchParam.status"
-                [nzPlaceHolder]="'Tất cả trạng thái'"
-                [nzShowSearch]="false"
-                name="status"
-                (ngModelChange)="changeFilterStatus($event)"
-              >
-                <nz-option
-                  *ngFor="let i of filterStatus"
-                  [nzLabel]="i.text"
-                  [nzValue]="i.value"
-                />
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div
-          nz-col
-          [nzLg]="8"
-          [nzMd]="12"
-          [nzSm]="24"
-          [nzXl]="8"
-          [nzXs]="24"
-          [nzXXl]="8"
-        >
-          <nz-form-item>
-            <nz-form-control>
-              <input
-                name="name"
-                nz-input
-                placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
-                [ngModel]="searchParam.name"
-                (ngModelChange)="changeName($event)"
+<page-header [action]="action" [title]="'Danh sách máy ảo'">
+  <ng-template #action>
+    <div class="text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <form nz-form *ngIf="isSearch">
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">
+      <div
+        nz-col
+        [nzLg]="8"
+        [nzMd]="8"
+        [nzSm]="24"
+        [nzXl]="6"
+        [nzXs]="24"
+        [nzXXl]="6"
+      >
+        <nz-form-item>
+          <nz-form-label [nzFor]="">Trạng thái máy ảo</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [ngModel]="searchParam.status"
+              [nzPlaceHolder]="'Tất cả trạng thái'"
+              [nzShowSearch]="false"
+              name="status"
+              (ngModelChange)="changeFilterStatus($event)"
+            >
+              <nz-option
+                *ngFor="let i of filterStatus"
+                [nzLabel]="i.text"
+                [nzValue]="i.value"
               />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div
-          class="text-right p-0 m-b-10"
-          nz-col
-          [nzLg]="4"
-          [nzMd]="8"
-          [nzSm]="24"
-          [nzXl]="4"
-          [nzXs]="24"
-          [nzXXl]="2"
-        >
-          <button nz-button [nzType]="'primary'" (click)="getDataList()">
-            <i nz-icon nzType="search"></i>
-            Search
-          </button>
-        </div>
-        <div
-          class="text-right p-0 m-b-10"
-          nz-col
-          [nzLg]="8"
-          [nzMd]="12"
-          [nzSm]="24"
-          [nzXl]="8"
-          [nzXs]="24"
-          [nzXXl]="8"
-        >
-          <button
-            class="m-r-8"
-            class="bg-success border-success"
-            nz-button
-            nzType="primary"
-            (click)="navigateToCreate()"
-          >
-            <i nz-icon nzType="plus"></i>
-            Tạo mới
-          </button>
-        </div>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
       </div>
-    </form>
-  </nz-card>
+      <div
+        nz-col
+        [nzLg]="8"
+        [nzMd]="12"
+        [nzSm]="24"
+        [nzXl]="8"
+        [nzXs]="24"
+        [nzXXl]="8"
+      >
+        <nz-form-item>
+          <nz-form-control>
+            <input
+              name="name"
+              nz-input
+              placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
+              [ngModel]="searchParam.name"
+              (ngModelChange)="changeName($event)"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div
+        class="text-right p-0 m-b-10"
+        nz-col
+        [nzLg]="4"
+        [nzMd]="8"
+        [nzSm]="24"
+        [nzXl]="4"
+        [nzXs]="24"
+        [nzXXl]="2"
+      >
+        <button nz-button [nzType]="'primary'" (click)="getDataList()">
+          <i nz-icon nzType="search"></i>
+          Search
+        </button>
+      </div>
+      <div
+        class="text-right p-0 m-b-10"
+        nz-col
+        [nzLg]="8"
+        [nzMd]="12"
+        [nzSm]="24"
+        [nzXl]="8"
+        [nzXs]="24"
+        [nzXXl]="8"
+      >
+        <button
+          class="m-r-8"
+          class="bg-success border-success"
+          nz-button
+          nzType="primary"
+          (click)="navigateToCreate()"
+        >
+          <i nz-icon nzType="plus"></i>
+          Tạo mới
+        </button>
+      </div>
+    </div>
+  </form>
+</page-header>
 
+<div class="normal-table-wrap" *ngIf="!activeCreate">
   <nz-table
     #ajaxTable3
     nzShowSizeChanger
@@ -141,7 +127,9 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of ajaxTable3.data">
-        <td class="text-blue" (click)="navigateToDetail(data.id)">{{ data.name }}</td>
+        <td class="text-blue" (click)="navigateToDetail(data.id)">
+          {{ data.name }}
+        </td>
         <td>
           {{ data.flavorName }}
           <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
@@ -156,7 +144,7 @@
         <td>{{ data.ipPublic }}</td>
         <td>
           <nz-select
-            [nzPlaceHolder]="'Thao tác'"
+            [nzPlaceHolder]="'Chọn thao tác'"
             ngModel="selectedOptionAction"
             name="selectAction"
             (ngModelChange)="showModal($event, data)"
@@ -179,19 +167,42 @@
     </tbody>
   </nz-table>
 </div>
-<ng-template #elsePage>
+
+<div class="normal-table-wrap" *ngIf="activeCreate && isSearch">
+  <nz-table
+    #ajaxTable3
+    [nzData]="emptyList"
+    [nzLoading]="loading"
+  >
+    <thead>
+      <tr>
+        <th>Tên máy ảo</th>
+        <th>Gói cấu hình</th>
+        <th>Trạng thái máy ảo</th>
+        <th>Trạng thái tác vụ</th>
+        <th>IP LAN</th>
+        <th>IP Public</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </nz-table>
+</div>
+
+<div *ngIf="!loading && activeCreate && !isSearch">
   <nz-card>
     <result>
       <img nz-image nzSrc="assets/imgs/blank_vm.png" alt="" />
 
       <button nz-button [nzType]="'primary'" (click)="navigateToCreate()">
         <!-- <a routerLink="/pages/instances/instances-create"> Khởi tạo ngay</a>
-        -->
+          -->
         Khởi tạo ngay
       </button>
     </result>
   </nz-card>
-</ng-template>
+</div>
 
 <!-- <ng-template #modalContentGanVLAN>
   <nz-form-item>
@@ -225,8 +236,6 @@
   <br />
 </ng-template> -->
 
-
-
 <nz-modal
   [(nzVisible)]="isVisibleGanVLAN"
   nzTitle="Gắn VLAN"
@@ -259,11 +268,10 @@
     <ng-template #customTemplateMessageGanVLAN>
       <div>
         Trong trường hợp 1 Network của quý khách có nhiều subnet, quý khách cần
-        lựa chọn subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP vui
-        lòng chọn IP chưa được sửa dụng bởi máy ảo nào và IP này thuộc dải IP được
-        cấu hình trong Subnet tương ứng
+        lựa chọn subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP
+        vui lòng chọn IP chưa được sửa dụng bởi máy ảo nào và IP này thuộc dải
+        IP được cấu hình trong Subnet tương ứng
       </div>
     </ng-template>
   </ng-container>
 </nz-modal>
-

@@ -19,8 +19,8 @@ import {finalize} from "rxjs/operators";
 export class SshKeyComponent implements OnInit {
   //input
   searchKey: string = "";
-  regionId: any = '';
-  projectId: any = '';
+  regionId: any;
+  projectId: any;
   size = 10;
   index: any = 0;
   total: any = 0;
@@ -52,12 +52,12 @@ export class SshKeyComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event
-    this.loadSshKeys();
+    this.loadSshKeys(false);
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
-    this.loadSshKeys();
+    this.loadSshKeys(false);
   }
 
   ngOnInit() {
@@ -66,21 +66,25 @@ export class SshKeyComponent implements OnInit {
     this.form.get('public_key').disable();
   }
 
-  loadSshKeys(): void {
+  loadSshKeys(isCheckBegin: boolean): void {
     this.loading = true;
     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
       .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
-        this.listOfData = (this.checkNullObject(response) ? [] : response.records),
-          this.total = (this.checkNullObject(response) ? 0 : response.totalCount),
-          this.index = (this.checkNullObject(response) ? 0 : response.currentPage)
+        this.listOfData = (this.checkNullObject(response) ? [] : response.records);
+          this.total = (this.checkNullObject(response) ? 0 : response.totalCount);
+          this.index = (this.checkNullObject(response) ? 0 : response.currentPage);
+          if (isCheckBegin) {
+            this.isBegin = this.checkNullObject(this.listOfData) || this.listOfData.length < 1 ? true : false;
+          }
       });
+
   }
 
   //SEARCH
   search(search: string) {
     this.searchKey = search;
-    this.loadSshKeys();
+    this.loadSshKeys(false);
   }
 
   //DELETE
@@ -109,7 +113,8 @@ export class SshKeyComponent implements OnInit {
   handleDelete(number: any): void {
     // call api
     this.sshKeyService.deleteSshKey(this.data.id).subscribe(() => {
-      this.loadSshKeys();
+      this.searchKey = "";
+      this.loadSshKeys(true);
       this.message.create('success', `Xóa thành công keypair`);
     });
     this.isVisibleDelete = false;
@@ -146,11 +151,11 @@ export class SshKeyComponent implements OnInit {
 
     this.sshKeyService.createSshKey(ax).subscribe({
       next: post => {
-        this.loadSshKeys();
+        this.loadSshKeys(true);
         this.message.create('success', `Tạo mới thành công keypair`);
       },
       error: e => {
-        this.loadSshKeys();
+        this.loadSshKeys(true);
         this.message.create('error', `Tạo mới thất bại keypair`);
       },
     });
@@ -184,19 +189,15 @@ export class SshKeyComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    this.regionId = (this.checkNullObject(region) ? "" : region.regionId);
-
+    this.regionId = this.checkNullObject(region) ? "" : region.regionId;
   }
 
   projectChange(project: ProjectModel) {
-    if (project != null) {
       // this.listOfData = []
       // return;
-      this.projectId = project.id;
-    }
-
-
-    this.loadSshKeys();
+    this.projectId =  this.checkNullObject(project) ? "" : project.id;
+    this.searchKey = '';
+    this.loadSshKeys(true);
   }
 
   checkNullObject(object: any): Boolean {

@@ -5,45 +5,43 @@
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" ></project-select-dropdown>
     </div>
   </ng-template>
-</page-header>
-<nz-card>
-  <ng-container [ngSwitch]="isBegin">
-    <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
-      <div nz-row class="mb-md">
-        <div nz-col nzSpan="18">
-          <div class="row">
-            <div class="col-md-6" style="display:flex;">
-              <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái volume:</h4>
-              <nz-input-group nzCompact>
-                <nz-select [(ngModel)]="selectedStatus" nzSize="large">
-                  <nz-option *ngFor="let p of statusData" [nzValue]="p" [nzLabel]="p" ></nz-option>
-                </nz-select>
-              </nz-input-group>
-            </div>
-            <div class="col-md-6" style="margin-left: 30px">
-              <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-                <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
-              </nz-input-group>
-              <ng-template #suffixButton>
-                <button nz-button nzType="primary" nzSize="large" nzSearch (click)="search(searchBox.value)">
-                  <span nz-icon nzType="setting" nzTheme="outline"></span>
-                  Tim kiếm
-                </button>
-              </ng-template>
-            </div>
-          </div>
+  <div *ngIf="!isBegin" nz-row class="mb-md">
+    <div nz-col nzSpan="18">
+      <div class="row">
+        <div class="col-md-6" style="display:flex;">
+          <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái volume:</h4>
+          <nz-select [(ngModel)]="selectedStatus" nzSize="default">
+            <nz-option *ngFor="let p of statusData" [nzValue]="p" [nzLabel]="p" ></nz-option>
+          </nz-select>
         </div>
-        <div nz-col nzSpan="6">
-          <div class="text-right">
-            <button nzSize="large" (click)="createIp()" nz-button nzType="primary" style="
+        <div class="col-md-6" style="margin-left: 30px">
+          <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+            <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+            <ng-template #suffixButton>
+              <button nz-button nzType="primary" nzSize="default" nzSearch (click)="search(searchBox.value)">
+                <span nz-icon nzType="setting" nzTheme="outline"></span>
+                Tim kiếm
+              </button>
+            </ng-template>
+          </nz-input-group>
+        </div>
+      </div>
+    </div>
+    <div nz-col nzSpan="6">
+      <div class="text-right">
+        <button nzSize="default" (click)="createIp()" nz-button nzType="primary" style="
             border: 1px solid #52c41a;
             border-radius: 2px;
             background-color: #52c41a;
           ">+ Tạo mới
-            </button>
-          </div>
-        </div>
+        </button>
       </div>
+    </div>
+  </div>
+</page-header>
+<nz-card>
+  <ng-container [ngSwitch]="isBegin">
+    <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
       <!-- Bảng-->
       <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfIp"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"

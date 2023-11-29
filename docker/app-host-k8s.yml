@@ -22,11 +22,21 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
+          env:
+            - name: APP_SMART_CLOUD_URL
+              value: https://appsmartcloud.onsmartcloud.com
+            - name: BASE_URL
+              value: https://api.onsmartcloud.com
+            - name: ISSUER
+              value: https://identity.onsmartcloud.com
+            - name: CALLBACK
+              value: https://oneportal.onsmartcloud.com/passport/callback/oneportal
+            - name: LOGOUT_CALLBACK
+              value: https://oneportal.onsmartcloud.com
+            - name: SCOPE
+              value: openid profile email
       imagePullSecrets:
         - name: regcred
-#          env:
-#            - name: API_LINK
-#              value: http://localhost:30991
 ---
 apiVersion: v1
 kind: Service
