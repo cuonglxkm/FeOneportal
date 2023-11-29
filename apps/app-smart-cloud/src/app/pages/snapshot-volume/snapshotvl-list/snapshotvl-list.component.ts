@@ -10,7 +10,6 @@ import {PopupDeleteVolumeComponent} from "../../volume/component/popup-volume/po
 import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete-snapshot-volume.component";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
-
 @Component({
   selector: 'app-snapshot-volume-list',
   templateUrl: './snapshotvl-list.component.html',
@@ -99,7 +98,16 @@ export class SnapshotVolumeListComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/snapshotvls/detail', snapshotVl.id], { queryParams: { edit: 'true' } });
     }
     if(event == 'initVolume'){
-      this.router.navigate(['/app-smart-cloud/volume/create'], { queryParams: { createdFromSnapshot: 'true', idSnapshot: snapshotVl.id } });
+      this.router.navigate(['/app-smart-cloud/volume/create'],
+        { queryParams:
+            {
+              createdFromSnapshot: 'true',
+              idSnapshot: snapshotVl.id,
+              sizeSnapshot: snapshotVl.sizeInGB ,
+              typeSnapshot: snapshotVl.iops>0?'ssd':'hdd',
+
+            }
+        });
     }
     if(event == 'delete'){
       const modal: NzModalRef = this.modalService.create({

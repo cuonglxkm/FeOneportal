@@ -7,7 +7,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {CreateVolumeRequestModel} from "../../../../shared/models/volume.model";
 import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
@@ -99,11 +99,26 @@ export class CreateVolumeComponent implements OnInit {
   };
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService,
-              private snapshotvlService: SnapshotVolumeService,
+              private snapshotvlService: SnapshotVolumeService, private activatedRoute: ActivatedRoute,
               private nzMessage: NzMessageService, private router: Router) {
   }
 
   async ngOnInit(): Promise<void> {
+    this.activatedRoute.queryParams.subscribe(params => {
+      console.log(params);
+      const createdFromSnapshot = params['createdFromSnapshot'];
+      const idSnapshot = params['idSnapshot'];
+      const sizeSnapshot = params['sizeSnapshot'];
+      const typeSnapshot = params['typeSnapshot'];
+
+      if(createdFromSnapshot == 'true'){
+        this.isInitSnapshot = true;
+        this.createVolumeInfo.createFromSnapshotId = Number.parseInt(idSnapshot);
+        this.createVolumeInfo.volumeSize = Number.parseInt(sizeSnapshot);
+        this.createVolumeInfo.volumeType = typeSnapshot;
+      }
+
+    });
 
   }
 
