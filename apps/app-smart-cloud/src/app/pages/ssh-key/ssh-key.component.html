@@ -5,37 +5,38 @@
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
+  <div *ngIf="!isBegin" nz-row class="mb-md">
+    <div nz-col nzSpan="12">
+      <div class="text-left">
+        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+          <ng-template #suffixButton>
+            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+              <i nz-icon nzType="search"></i>
+              Tim kiếm
+            </button>
+          </ng-template>
+        </nz-input-group>
+      </div>
+    </div>
+    <div nz-col nzSpan="12">
+      <div class="text-right">
+        <button (click)="createKey()" nz-button nzType="primary" style="
+            border: 1px solid #52c41a;
+            border-radius: 2px;
+            background-color: #52c41a;
+          "><i nz-icon nzType="plus"></i> Tạo mới
+        </button>
+      </div>
+    </div>
+  </div>
 </page-header>
 
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
-      <h2>Danh sách SSH Key</h2>
-      <div nz-row class="mb-md">
-        <div nz-col nzSpan="12">
-          <div class="text-left">
-            <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-              <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
-              <ng-template #suffixButton>
-                <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-                  <i nz-icon nzType="search"></i>
-                  Tim kiếm
-                </button>
-              </ng-template>
-            </nz-input-group>
-          </div>
-        </div>
-        <div nz-col nzSpan="12">
-          <div class="text-right">
-              <button (click)="createKey()" nz-button nzType="primary" style="
-            border: 1px solid #52c41a;
-            border-radius: 2px;
-            background-color: #52c41a;
-          "><i nz-icon nzType="plus"></i> Tạo mới
-              </button>
-          </div>
-        </div>
-      </div>
+      <!--      <h2>Danh sách SSH Key</h2>-->
+
       <!--  Bảng-->
       <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
@@ -162,7 +163,8 @@
   </nz-form-control>
 
   <!-- chi tiết  -->
-  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel(null)" [nzOkText]="null"
+  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel(null)"
+            [nzOkText]="null"
             nzCancelText="Quay lại" [nzStyle]="modalStyle">
     <ng-container *nzModalContent>
       <h4>Tên key pair:</h4>

@@ -5,33 +5,33 @@
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
+  <div *ngIf="!isBegin" nz-row class="mb-md" style="display: flex; flex-direction: column;">
+    <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>
+    <div style="display: flex; align-items: center;">
+      <h3 style="display: inline-block; margin-right: 90px;">Trạng thái</h3>
+      <nz-select nzPlaceHolder="Tất cả trạng thái" [(ngModel)]="selectedStatus"
+                 (nzOpenChange)="search('')" style="width: 150px">
+        <nz-option *ngFor="let s of listStatus" [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
+      </nz-select>
+      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-left: 25px;">
+        <!--            <nz-select [(ngModel)]="selectedStatus" nzSize="default">-->
+        <!--              <nz-option [nzValue]="" [nzLabel]="" ></nz-option>-->
+        <!--            </nz-select>-->
+        <input #searchBox type="text" nz-input placeholder="Tìm kiến tên,dung lượng,volume..."
+               style="width: 350px"/>
+        <ng-template #suffixButton>
+          <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+            <i nz-icon nzType="search"></i>
+            Tim kiếm
+          </button>
+        </ng-template>
+      </nz-input-group>
+    </div>
+  </div>
 </page-header>
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
-      <div nz-row class="mb-md" style="display: flex; flex-direction: column;">
-        <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>
-        <div style="display: flex; align-items: center;">
-          <h3 style="display: inline-block; margin-right: 90px;">Trạng thái</h3>
-          <nz-select nzPlaceHolder="Tất cả trạng thái" [(ngModel)]="selectedStatus"
-                     (nzOpenChange)="search('')" style="width: 150px">
-            <nz-option *ngFor="let s of listStatus" [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
-          </nz-select>
-          <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-left: 25px;">
-            <!--            <nz-select [(ngModel)]="selectedStatus" nzSize="default">-->
-            <!--              <nz-option [nzValue]="" [nzLabel]="" ></nz-option>-->
-            <!--            </nz-select>-->
-            <input #searchBox type="text" nz-input placeholder="Tìm kiến tên,dung lượng,volume..."
-                   style="width: 350px"/>
-            <ng-template #suffixButton>
-              <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-                <i nz-icon nzType="search"></i>
-                Tim kiếm
-              </button>
-            </ng-template>
-          </nz-input-group>
-        </div>
-      </div>
       <!--  Bảng-->
       <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
@@ -61,8 +61,10 @@
           <td>
             <nz-select (ngModelChange)="openDataMounted($event, data)"
                        nzPlaceHolder="thao tác" nzSize="default" style="width: 90px">
-              <nz-option *ngIf="data.status=='AVAILABLE' && data.status!='CREATING' && data.status!='DELETING'" nzValue="1" nzLabel="Restore"></nz-option>
-              <nz-option *ngIf="data.status!='CREATING' && data.status!='DELETING'" nzValue="DELETE" nzLabel="2"></nz-option>
+              <nz-option *ngIf="data.status=='AVAILABLE' && data.status!='CREATING' && data.status!='DELETING'"
+                         nzValue="1" nzLabel="Restore"></nz-option>
+              <nz-option *ngIf="data.status!='CREATING' && data.status!='DELETING'" nzValue="DELETE"
+                         nzLabel="2"></nz-option>
             </nz-select>
           </td>
           <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa backup volume này?"
