@@ -1,24 +1,4 @@
-<!--<div style="padding-top: 1%">-->
-<!--  <nz-breadcrumb style="width: 50%; float: left">-->
-<!--    <nz-breadcrumb-item>-->
-<!--      <a [routerLink]="['/']">{{headerInfo.breadcrumb1}}</a>-->
-<!--    </nz-breadcrumb-item>-->
-<!--    <nz-breadcrumb-item>-->
-<!--      <a [routerLink]="['/']">{{headerInfo.breadcrumb2}}</a>-->
-<!--    </nz-breadcrumb-item>-->
-<!--    <nz-breadcrumb-item>-->
-<!--      <a [routerLink]="['/']">{{headerInfo.breadcrumb3}}</a>-->
-<!--    </nz-breadcrumb-item>-->
-<!--  </nz-breadcrumb>-->
-<!--  <div class="text-right">-->
-<!--    <region-select-dropdown-->
-<!--      (valueChanged)="getRegionId($event)"-->
-<!--    ></region-select-dropdown>-->
-<!--    <project-select-dropdown [regionId]="regionSearch" (valueChanged)="getProjectId($event)"></project-select-dropdown>-->
-<!--  </div>-->
-<!--  <div><h2>{{headerInfo.content}}</h2></div>-->
-<!--</div>-->
-<page-header [action]="action" [title]="'Volume'">
+<page-header [action]="action" [title]="'Danh sách Volume'">
   <ng-template #action>
     <div class="text-right">
       <region-select-dropdown
@@ -30,7 +10,6 @@
 
   <div
     class="row"
-    style="padding: 30px;"
   >
     <div style="display: inline-block; margin-right: auto;">
       <nz-form-label [nzFor]="'volumeStatus'"><b>Trạng thái Volume</b></nz-form-label>

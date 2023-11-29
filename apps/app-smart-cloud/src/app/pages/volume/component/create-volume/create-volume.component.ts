@@ -9,6 +9,8 @@ import {CreateVolumeRequestModel} from "../../../../shared/models/volume.model";
 import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
 import {Router} from "@angular/router";
 import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
+import {RegionModel} from "../../../../shared/models/region.model";
+import {ProjectModel} from "../../../../shared/models/project.model";
 
 @Component({
   selector: 'app-create-volume',
@@ -17,13 +19,7 @@ import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume
 })
 export class CreateVolumeComponent implements OnInit {
 
-  headerInfo = {
-    breadcrumb1: 'Home',
-    breadcrumb2: 'Dịch vụ',
-    breadcrumb3: 'Volume',
-    content: 'Tạo Volume '
-  };
-
+  isLoadingAction = false;
   getAllVmResponse: GetAllVmModel;
   listAllVMs: VmDto[] = [];
 
@@ -159,6 +155,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   doCreateVolume(){
+    this.isLoadingAction = true;
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.createVolumeInfo.customerId;
     request.createdByUserId = this.createVolumeInfo.customerId;
@@ -175,6 +172,7 @@ export class CreateVolumeComponent implements OnInit {
     console.log(request);
     this.volumeSevice.createNewVolume(request).subscribe(data => {
       if(data != null){
+        this.isLoadingAction = false;
         this.nzMessage.create('success', 'Tạo Volume thành công.')
         console.log(data);
         this.router.navigate(['/app-smart-cloud/volume']);
@@ -219,13 +217,13 @@ export class CreateVolumeComponent implements OnInit {
   }
 
 
-  getProjectId(projectId: number){
-    this.createVolumeInfo.vpcId = projectId;
+  getProjectId(project: ProjectModel){
+    this.createVolumeInfo.vpcId = project.id;
     this.getListSnapshot();
   }
 
-  async getRegionId(regionId: number){
-    this.createVolumeInfo.regionId = regionId;
+  async getRegionId(region: RegionModel){
+    this.createVolumeInfo.regionId = region.regionId;
     this.getListSnapshot()
     this.getListVm()
   }
@@ -244,6 +242,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   private getListSnapshot(){
+    this.isLoadingAction = true;
     this.snapshotList = [];
     let userId = this.tokenService.get()?.userId;
     this.snapshotvlService.getSnapshotVolumes(userId, this.createVolumeInfo.vpcId, this.createVolumeInfo.regionId,
@@ -251,16 +250,19 @@ export class CreateVolumeComponent implements OnInit {
         data.records.forEach(snapshot => {
           this.snapshotList.push({label: snapshot.name , value: snapshot.id});
         })
+      this.isLoadingAction = false;
     });
   }
 
   private getListVm(){
+    this.isLoadingAction = true;
     this.vmList = [];
     let userId = this.tokenService.get()?.userId;
     this.volumeSevice.getListVM(userId, this.createVolumeInfo.regionId).subscribe(data => {
       data.records.forEach( vm => {
         this.vmList.push({value: vm.id, label: vm.name});
       });
+      this.isLoadingAction = false;
     });
   }
 
