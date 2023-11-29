@@ -10760,6 +10760,13 @@ ngx-echarts@^15.0.1:
   dependencies:
     tslib "^2.3.0"
 
+ngx-owl-carousel-o@16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-owl-carousel-o/-/ngx-owl-carousel-o-16.0.0.tgz#7b174e93c24060670f81fee2f8a41d84be2c172c"
+  integrity sha512-dmHByyjE1GhUpwLPJPplS9bBZcj8o4yDhZ/ZF+ZmRBIicn3+0OyAKpw6LiaXVKtWEi+HVdjZkpkaYVaAEoEP7A==
+  dependencies:
+    tslib "^2.3.0"
+
 ngx-tinymce@^16.0.0:
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/ngx-tinymce/-/ngx-tinymce-16.0.0.tgz#342f7c602c90b0abfbf18af09ad00c2e33be270e"

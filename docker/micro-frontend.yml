@@ -2,7 +2,7 @@ version: "3.8"
 services:
   #----------------------------------------------------------------
   app-host:
-    image: registry.onsmartcloud.com/cloudportal/oneportal-app-host:${BUILD_VERSION}
+    image: registry.onsmartcloud.com/cloudportal/oneportal-app-host:1.1.1
     build:
       context: ./..
       dockerfile: apps/app-host/Dockerfile
@@ -14,21 +14,29 @@ services:
       - "4200:80"
     networks:
       - one-portal-network
+    environment:
+      - APP_SMART_CLOUD_URL=https://appsmartcloud.onsmartcloud.com
+      - BASE_URL=https://api.onsmartcloud.com
+      - ISSUER=https://identity.onsmartcloud.com
+      - CLIENT_ID=frontend-client
+      - CALLBACK=http://localhost:4200/passport/callback/oneportal
+      - LOGOUT_CALLBACK=http://localhost:4200
+      - SCOPE=openid profile email
 
   #  ----------------------------------------------------------------
-  app-smart-cloud:
-    image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud:${BUILD_VERSION}
-    build:
-      context: ./..
-      dockerfile: apps/app-smart-cloud/Dockerfile
-    container_name: oneportal-app-smart-cloud
-    restart: on-failure
-    expose:
-      - '4203'
-    ports:
-      - "4203:80"
-    networks:
-      - one-portal-network
-#----------------------------------------------------------------
+#  app-smart-cloud:
+#    image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud:1.0.1
+#    build:
+#      context: ./..
+#      dockerfile: apps/app-smart-cloud/Dockerfile
+#    container_name: oneportal-app-smart-cloud
+#    restart: on-failure
+#    expose:
+#      - '4203'
+#    ports:
+#      - "4203:80"
+#    networks:
+#      - one-portal-network
+##----------------------------------------------------------------
 networks:
   one-portal-network:
