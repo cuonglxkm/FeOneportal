@@ -63,7 +63,7 @@ export class ListBackupVmComponent implements OnInit {
     regionChanged(region: RegionModel) {
         this.region = region.regionId
         this.formSearch.regionId = this.region
-        this.getListBackupVM(this.formSearch)
+        this.getListBackupVM()
     }
 
     projectChanged(project: ProjectModel) {
@@ -90,14 +90,14 @@ export class ListBackupVmComponent implements OnInit {
         this.backupVmService.delete(id, this.userId).subscribe(data => {
             this.isLoading = false
             this.notification.success('Thành công', 'Xóa thành công')
-            this.getListBackupVM(this.formSearch)
+            this.getListBackupVM()
         }, error => {
             this.isLoading = false
             this.notification.error('Thất bại', 'Xóa thất bại')
         })
     }
 
-    getListBackupVM(formSearch: BackupVMFormSearch) {
+    getListBackupVM() {
         this.formSearch = this.getParam();
         this.isLoading = true;
         this.backupVmService.search(this.formSearch).subscribe(data => {
@@ -116,14 +116,14 @@ export class ListBackupVmComponent implements OnInit {
         }
         this.formSearch.currentPage = 1
         console.log('form search', this.formSearch)
-        this.getListBackupVM(this.formSearch)
+        this.getListBackupVM()
     }
 
     onQueryParamsChange(params: NzTableQueryParams) {
         const {pageSize, pageIndex} = params
         this.formSearch.pageSize = pageSize;
         this.formSearch.currentPage = pageIndex
-        this.getListBackupVM(this.formSearch);
+        this.getListBackupVM();
     }
 
     ngOnInit(): void {

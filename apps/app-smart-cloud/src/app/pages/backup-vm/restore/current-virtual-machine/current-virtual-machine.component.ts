@@ -1,7 +1,5 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import Flavor from "../../../../shared/models/flavor.model";
-import Image from "../../../../shared/models/image";
+import {NonNullableFormBuilder} from "@angular/forms";
 import {Location} from "@angular/common";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";

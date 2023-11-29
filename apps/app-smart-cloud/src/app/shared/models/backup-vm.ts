@@ -1,5 +1,3 @@
-import {FormControl} from "@angular/forms";
-
 export interface BackupVm {
   id: number,
   name: string,
@@ -47,6 +45,7 @@ export interface VolumeBackup {
   status: string,
   typeName: string
 }
+
 export interface SystemInfoBackup {
   id: number,
   instanceBackupId: number,

@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
-import Flavor from "../../models/flavor.model";
+import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../models/security-group";
 import {SecurityGroupService} from "../../services/security-group.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
