@@ -4,7 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
-  Renderer2,
+  Renderer2, signal, WritableSignal,
 } from '@angular/core';
 import {
   FormControl,
@@ -35,7 +35,7 @@ import { Observable, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import {OwlOptions} from "ngx-owl-carousel-o";
+import {OwlOptions, SlidesOutputData} from "ngx-owl-carousel-o";
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -67,6 +67,16 @@ class Network {
   ipv6?: boolean = false;
   price?: string = '000';
 }
+interface CarouselData {
+  id?: string;
+  text: string;
+  dataMerge?: number;
+  width: number;
+  dotContent?: string;
+  src?: string;
+  dataHash?: string;
+}
+
 
 @Component({
   selector: 'one-portal-instances-create',
@@ -113,31 +123,70 @@ export class InstancesCreateComponent implements OnInit {
   pagedCardListImages: Array<Array<any>> = [];
 
 
+
+
+  carouselData: CarouselData[] = [
+    { text: 'Slide 1 PM', dataMerge: 1, width: 350, dotContent: 'text1' },
+    { text: 'Slide 2 PM', dataMerge: 2, width: 350, dotContent: 'text2' },
+    { text: 'Slide 3 PM', dataMerge: 3, width: 350, dotContent: 'text3' },
+    { text: 'Slide 4 PM', width: 350, dotContent: 'text4' },
+    { text: 'Slide 5 PM', dataMerge: 4, width: 350, dotContent: 'text5' },
+    { text: 'Slide 6 PM', dataMerge: 5, width: 350, dotContent: 'text5' },
+    { text: 'Slide 7 PM', dataMerge: 6, width: 350, dotContent: 'text5' },
+  ];
+  activeSlides: WritableSignal<SlidesOutputData> = signal({});
+
+  getPassedData(data: any) {
+    this.activeSlides.set(data);
+    // console.log(this.activeSlides());
+  }
+
   customOptions: OwlOptions = {
+    autoWidth: true,
     loop: true,
-    mouseDrag: true,
-    touchDrag: true,
+    items: 4,
+    margin: 50,
+    // slideBy: 'page',
+    mergeFit: true,
+    merge: true,
+    // autoplay: true,
+    // autoplayTimeout: 5000,
+    // autoplayHoverPause: true,
+    // autoplaySpeed: 4000,
+    dotsSpeed: 500,
+    rewind: false,
+    // dots: false,
+    // dotsData: true,
+    // mouseDrag: true,
+    // touchDrag: false,
     pullDrag: true,
-    dots: true,
-    navSpeed: 700,
-    navText: ['4324', '43243'],
+    smartSpeed: 400,
+    // fluidSpeed: 499,
+    dragEndSpeed: 350,
+    // dotsEach: 1,
+    // center: true,
+    // rewind: true,
+    // rtl: true,
+    // startPosition: 1,
+    // navText: [ '<i class=fa-chevron-left>left</i>', '<i class=fa-chevron-right>right</i>' ],
+    slideBy: 'page',
     responsive: {
       0: {
         items: 1
       },
-      400: {
+      300: {
         items: 2
       },
-      740: {
+      600: {
         items: 3
       },
-      940: {
+      900: {
         items: 4
       }
     },
-    nav: true
+    // stagePadding: 40,
+    nav: false
   }
-
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
