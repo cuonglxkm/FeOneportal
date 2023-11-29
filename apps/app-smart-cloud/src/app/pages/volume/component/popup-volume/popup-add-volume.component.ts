@@ -1,8 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
 import {VolumeService} from "../../../../shared/services/volume.service";
 import {GetAllVmModel} from "../../../../shared/models/volume.model";
 import {VmDto} from "../../../../shared/dto/volume.dto";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Component({
   selector: 'app-popup-content',
@@ -25,7 +26,7 @@ export class PopupAddVolumeComponent implements OnInit {
   selectedItem: any;
   @Output() valueSelected: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(private volumeService: VolumeService ) {
+  constructor(private volumeService: VolumeService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
   onChange(value: string): void {
@@ -36,7 +37,8 @@ export class PopupAddVolumeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const regionString = localStorage.getItem('region');
     const region = JSON.parse(regionString);
-    this.getAllVmResponse = await this.volumeService.getAllVMs(region.regionId).toPromise();
+    let userId = this.tokenService.get()?.userId;
+    this.getAllVmResponse = await this.volumeService.getListVM(userId, region.regionId).toPromise();
     this.listAllVMs = this.getAllVmResponse.records;
     this.listAllVMs.forEach((vm) => {
       this.options.push({label: vm.name, value: vm.id});

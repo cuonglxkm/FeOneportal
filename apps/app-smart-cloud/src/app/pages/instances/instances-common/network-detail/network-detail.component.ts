@@ -82,7 +82,6 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
   ) {}
 
   editPort(tpl: TemplateRef<{}>): void {
-    //Reset mật khẩu máy ảo
     this.modalSrv.create({
       nzTitle: 'Chỉnh sửa Port',
       nzContent: tpl,

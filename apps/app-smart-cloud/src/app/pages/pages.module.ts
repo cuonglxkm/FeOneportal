@@ -55,6 +55,9 @@ import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.com
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
+import { PopupDeleteSnapshotVolumeComponent } from "./snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component";
+import { PopupEditSnapshotVolumeComponent } from "./snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component";
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
@@ -105,6 +108,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
+    PopupDeleteSnapshotVolumeComponent,
+    PopupEditSnapshotVolumeComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
     CreateBackupVmComponent,
