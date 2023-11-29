@@ -55,6 +55,9 @@ import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.com
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
+import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
+import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
+import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -101,6 +104,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ActionHistoryComponent,
     DetailBackupVmComponent,
     CreateBackupVmComponent,
+    AttachOrDetachComponent,
+    CurrentVirtualMachineComponent,
+    NewVirtualMachineComponent,
   ],
   imports: [
     CommonModule,

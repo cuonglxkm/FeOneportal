@@ -113,7 +113,7 @@ const routes: Routes = [
     component: ListBackupVmComponent
   },
   {
-    path: 'backup-vm/restore-backup-vm',
+    path: 'backup-vm/restore-backup-vm/:id',
     component: RestoreBackupVmComponent
   },
   {

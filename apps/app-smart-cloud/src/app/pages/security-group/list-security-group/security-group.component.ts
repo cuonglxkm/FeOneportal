@@ -11,7 +11,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ActivatedRoute} from '@angular/router';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from 'ng-zorro-antd/notification';
-import {Instance, InstanceFormSearch} from "../../../shared/models/instance";
+import {Instance, InstanceFormSearch} from "../../instances/instances.model";
 
 @Component({
     selector: 'one-portal-security-group',
