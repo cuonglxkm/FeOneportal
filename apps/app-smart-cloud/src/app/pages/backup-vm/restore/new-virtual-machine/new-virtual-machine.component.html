@@ -1,0 +1,129 @@
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
+    <nz-card>
+        <nz-row nzGutter="24">
+            <nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label nzFor="name">
+                        <div class="label">
+                            <span>Tên máy ảo</span>
+                            <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                        </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                        <input nz-input formControlName="name" id="name"/>
+                        <ng-template #nameErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label nzFor="flavor">
+                        <div class="label">
+                            <span>Gói cấu hình</span>
+                            <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                        </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                        <one-portal-flavor-select [region]="region"
+                                                  [value]="validateForm.controls.flavor.value"
+                                                  (onChange)="handleFlavorChange($event)"/>
+                        <ng-template #nameErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label nzFor="flavor">
+                        <div class="label">
+                            <span>Hệ điều hành</span>
+                            <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                        </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                        <one-portal-image-select [region]="region"
+                                                  [value]="validateForm.controls.image.value"
+                                                  (onChange)="handleImageChange($event)"/>
+                        <ng-template #nameErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label nzFor="security-group">
+                        <div class="label">
+                            <span>Chọn Security Group</span>
+                            <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                        </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips>
+<!--                        <one-portal-security-group-select [value]="validateForm.controls.securityGroup.value"-->
+<!--                                                          (onChange)="handleSecurityGroupChange($event)"/>-->
+<!--                        <ng-template #nameErrorTpl let-control>-->
+<!--                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
+<!--                        </ng-template>-->
+                        <nz-select [nzPlaceHolder]="'Security Group'"
+                                   formControlName="securityGroup"
+                                   id="securityGroup"
+                                   [nzShowSearch]="false">
+                            <nz-option *ngFor="let index of securityGroupLst"
+                                       [nzLabel]="index.name"
+                                       [nzValue]="index"/>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label nzFor="iops">
+                        <div class="label">
+                            <span>IOPS</span>
+                            <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                        </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                        <input nz-input formControlName="iops" id="iops"/>
+                        <ng-template #nameErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label nzFor="storage">
+                        <div class="label">
+                            <span>Dung lượng ổ hệ điều hành</span>
+                            <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                        </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                        <nz-input-group nzAddOnAfter="GB" style="width: 100%">
+                            <input nz-input formControlName="storage" id="storage"/>
+                        </nz-input-group>
+                        <ng-template #nameErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="12"></nz-col>
+        </nz-row>
+    </nz-card>
+    <nz-card nzTitle="Thành tiền">
+        <nz-table>
+            <tr>
+                <td>Chi phí restore (1 tháng)</td>
+                <td style="padding-top: 10px; text-align: right">1.000.000 VNĐ</td>
+            </tr>
+            <tr>
+                <td>Thành tiền (Đã bao gồm 10% VAT)</td>
+                <td style="padding-top: 10px; text-align: right">1.000.000 VNĐ</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top: 10px; text-align: right;">
+                    <button nz-button nzType="default" class="button-back" (click)="goBack()">Quay lại</button>
+                    <button nz-button nzType="primary" class="button-create">Xác nhận</button>
+                </td>
+            </tr>
+        </nz-table>
+    </nz-card>
+</form>

@@ -1,8 +1,16 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {BackupVm, BackupVMFormSearch} from "../models/backup-vm";
+import {
+  BackupPackage,
+  BackupVm,
+  BackupVMFormSearch,
+  FormCreateBackup,
+  RestoreFormCurrent,
+  VolumeAttachment
+} from "../models/backup-vm";
 import Pagination from "../models/pagination";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +18,8 @@ import Pagination from "../models/pagination";
 
 export class BackupVmService extends BaseService {
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
@@ -19,6 +28,7 @@ export class BackupVmService extends BaseService {
       'Content-Type': 'application/json'
     })
   }
+  c
 
   search(form: BackupVMFormSearch) {
     let params = new HttpParams();
@@ -46,12 +56,27 @@ export class BackupVmService extends BaseService {
     })
   }
 
-  detail(id: number) {
-    return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}?id=${id}`)
+  detail(id: number, userId: number) {
+    return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}?customerId=${userId}`)
   }
 
-  delete(id: number) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`)
+  delete(id: number, userId: number) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}?customerId=${userId}`)
   }
 
+  restoreCurrentBackupVm(form: RestoreFormCurrent) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form))
+  }
+
+  getVolumeInstanceAttachment(id: number){
+    return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments`)
+  }
+
+  getBackupPackages(customerId: number) {
+    return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages?customerId=${customerId}`)
+  }
+
+  create(form: FormCreateBackup) {
+    return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', Object.assign(form))
+  }
 }

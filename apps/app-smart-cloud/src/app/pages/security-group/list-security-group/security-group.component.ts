@@ -1,9 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {
-    SecurityGroup,
-    SecurityGroupCreateForm,
-    SecurityGroupSearchCondition
-} from "../../../shared/models/security-group";
+import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../shared/services/security-group.service";
 import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
@@ -11,7 +7,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ActivatedRoute} from '@angular/router';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from 'ng-zorro-antd/notification';
-import {Instance, InstanceFormSearch} from "../../../shared/models/instance";
+import {Instance, InstanceFormSearch} from "../../instances/instances.model";
 
 @Component({
     selector: 'one-portal-security-group',

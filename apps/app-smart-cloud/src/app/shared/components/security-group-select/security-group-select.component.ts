@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
-import Flavor from "../../models/flavor.model";
+import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../models/security-group";
 import {SecurityGroupService} from "../../services/security-group.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -9,10 +8,9 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
   templateUrl: './security-group-select.component.html',
 })
 
-export class SecurityGroupSelectComponent implements OnInit {
+export class SecurityGroupSelectComponent {
   @Input() value?: SecurityGroup
-  @Input() region?: number
-  @Input() project?: number
+
   @Output() onChange = new EventEmitter();
 
   conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
@@ -27,23 +25,16 @@ export class SecurityGroupSelectComponent implements OnInit {
   }
 
   search(conditionSearch: SecurityGroupSearchCondition) {
+    this.conditionSearch.userId = this.tokenService.get()?.userId
+    this.conditionSearch.regionId = JSON.parse(localStorage.getItem('region')).regionId
+    this.conditionSearch.projectId = JSON.parse(localStorage.getItem('projectId'))
     if (conditionSearch.regionId && conditionSearch.userId && conditionSearch.projectId) {
       this.securityGroupService.search(conditionSearch)
         .subscribe((data) => {
           this.listSecurityGroup = data;
+          console.log('sg', this.listSecurityGroup)
         })
     }
-  }
-
-  ngOnInit(): void {
-    console.log(this.region)
-    console.log(this.project)
-    console.log(this.tokenService.get()?.userId)
-    this.conditionSearch.userId = this.tokenService.get()?.userId
-    this.conditionSearch.regionId = this.region
-    this.conditionSearch.projectId = this.project
-
-    this.search(this.conditionSearch);
   }
 
 }

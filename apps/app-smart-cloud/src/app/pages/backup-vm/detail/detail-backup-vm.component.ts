@@ -1,47 +1,66 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
-import {BackupVm} from "../../../shared/models/backup-vm";
-import {Location} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
+import {BackupVm, SystemInfoBackup, VolumeBackup} from "../../../shared/models/backup-vm";
+import {ActivatedRoute, Router} from "@angular/router";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Component({
-  selector: 'one-portal-detail-backup-vm',
-  templateUrl: './detail-backup-vm.component.html',
-  styleUrls: ['./detail-backup-vm.component.less'],
+    selector: 'one-portal-detail-backup-vm',
+    templateUrl: './detail-backup-vm.component.html',
+    styleUrls: ['./detail-backup-vm.component.less'],
 })
-export class DetailBackupVmComponent implements OnInit{
+export class DetailBackupVmComponent implements OnInit {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
+    region = JSON.parse(localStorage.getItem('region')).regionId;
+    project = JSON.parse(localStorage.getItem('projectId'));
 
-  backupVm: BackupVm;
+    backupVm: BackupVm;
 
-  constructor(private backupVmService: BackupVmService,
-              private location: Location,
-              private route: ActivatedRoute) {
-  }
+    systemInfoBackups: SystemInfoBackup[] = []
+    volumeBackups: VolumeBackup[] = []
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-  }
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    console.log(this.project)
-  }
+    nameSecurityGroup = []
+    nameSecurityGroupText: string
+    userId: number
 
-  goBack() {
-    this.location.back();
-  }
-  ngOnInit(): void {
-    const selectedDetailBackupId = this.route.snapshot.paramMap.get('id')
-    console.log(selectedDetailBackupId);
-    if(selectedDetailBackupId !== undefined) {
-      this.backupVmService.detail(parseInt(selectedDetailBackupId)).subscribe(data => {
-        this.backupVm = data
-        console.log('data' , this.backupVm)
-      })
+    constructor(private backupVmService: BackupVmService,
+                private route: ActivatedRoute,
+                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+                private router: Router) {
     }
-  }
+
+    regionChanged(region: RegionModel) {
+        this.region = region.regionId
+    }
+
+    projectChanged(project: ProjectModel) {
+        this.project = project?.id
+        console.log(this.project)
+    }
+
+    goBack() {
+        this.router.navigate(['/app-smart-cloud/backup-vm'])
+    }
+
+    ngOnInit(): void {
+        this.userId = this.tokenService.get()?.userId
+        const selectedDetailBackupId = this.route.snapshot.paramMap.get('id')
+        console.log(selectedDetailBackupId);
+        if (selectedDetailBackupId !== undefined) {
+            this.backupVmService.detail(parseInt(selectedDetailBackupId), this.userId).subscribe(data => {
+                this.backupVm = data
+                this.systemInfoBackups = this.backupVm.systemInfoBackups
+                this.volumeBackups = this.backupVm.volumeBackups
+                this.backupVm.securityGroupBackups.forEach(item => {
+                    this.nameSecurityGroup.push(item.sgName)
+
+                })
+                this.nameSecurityGroupText = this.nameSecurityGroup.join(', ')
+                console.log('name', this.nameSecurityGroup)
+                console.log('data', this.backupVm)
+            })
+        }
+    }
 }

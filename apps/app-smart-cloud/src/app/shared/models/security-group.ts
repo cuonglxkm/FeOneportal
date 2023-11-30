@@ -24,8 +24,15 @@ export interface SecurityGroupCreateForm {
 export class ExecuteAttachOrDetach {
   securityGroupId: string
   instanceId: number
-  action: string
+  action?: 'attach' | 'detach'
   userId: number
   projectId: number
   regionId: number
+}
+
+export class FormSearchSecurityGroupByInstance {
+  instanceId: string
+  userId: number
+  regionId: number
+  projectId: number
 }
