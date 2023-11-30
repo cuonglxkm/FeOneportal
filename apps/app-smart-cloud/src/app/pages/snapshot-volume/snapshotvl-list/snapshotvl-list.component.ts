@@ -10,6 +10,7 @@ import {PopupDeleteVolumeComponent} from "../../volume/component/popup-volume/po
 import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete-snapshot-volume.component";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
+import {NzMessageService} from "ng-zorro-antd/message";
 @Component({
   selector: 'app-snapshot-volume-list',
   templateUrl: './snapshotvl-list.component.html',
@@ -36,6 +37,7 @@ export class SnapshotVolumeListComponent implements OnInit {
     {label: 'Chỉnh sửa', value: 'edit'},
     {label: 'Xóa', value: 'delete'}
   ]
+  isLoading: boolean;
 
   selectedAction: string;
   isLoadingSearch = false;
@@ -125,6 +127,7 @@ export class SnapshotVolumeListComponent implements OnInit {
             type: 'primary',
             onClick: () => {
               //do Delete snapshot
+              this.doDeteleSnapshotVl(snapshotVl.id);
               modal.destroy();
             }
           }
@@ -134,7 +137,8 @@ export class SnapshotVolumeListComponent implements OnInit {
   }
 
   constructor(private snapshotVlService: SnapshotVolumeService, private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private modalService: NzModalService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private modalService: NzModalService,
+              private message: NzMessageService) {
   }
 
   private getListSnapshotVl(customerId: number, projectId: number, regionId: number, size: number, pageSize: number, currentPage: number, status: string, volumeName: string, name: string) {
@@ -155,4 +159,25 @@ export class SnapshotVolumeListComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/snapshotvls/detail/' + idSnapshot]);
   }
 
+  doDeteleSnapshotVl(snapshotId: number){
+    this.isLoading = true;
+    this.snapshotVlService.deleteSnapshotVolume(snapshotId).subscribe(
+      (data) => {
+        this.message.create('success', 'Xóa Snapshot Volume thành công')
+        this.isLoading = false;
+        this.searchSnapshot();
+      },
+      (error) => {
+        this.isLoading = false;
+
+        if (error.status === 404) {
+          this.message.create('error', 'Không tìm thấy thông tin Snapshot Volume')
+        } else if (error.status === 500) {
+          this.message.create('error', 'Lỗi Sever.')
+        } else {
+
+        }
+      }
+    )
+  }
 }

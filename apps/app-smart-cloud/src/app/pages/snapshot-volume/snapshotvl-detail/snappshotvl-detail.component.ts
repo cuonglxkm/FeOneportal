@@ -5,6 +5,8 @@ import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete
 import {PopupEditSnapshotVolumeComponent} from "../popup-snapshot/popup-edit-snapshot-volume.component";
 import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
 import {messages} from "nx/src/utils/ab-testing";
+import {EditSnapshotVolume} from "../../../shared/models/snapshotvl.model";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-snapshot-volume-detail',
@@ -18,15 +20,20 @@ export class SnappshotvlDetailComponent implements OnInit {
   regionSearch : number;
   projectSearch : number;
   isEdit: boolean;
+  snapshotId: number;
   snapshotName: string;
   snapshotSize: number;
   snapshotDesc: string;
   snapshotVolumeName: string;
+  snapshotVPC:string;
   snapshotVlCreateDate: string;
   isLoading: boolean;
+  isShowWarningSnapshotVlName: boolean;
+  contentWarningSnapshotVlName: string;
   ngOnInit(): void {
 
     const idSnapshotVl = this.activatedRoute.snapshot.paramMap.get('id');
+    this.snapshotId = Number.parseInt(idSnapshotVl);
 
     this.activatedRoute.queryParams.subscribe(queryParams => {
       this.isEdit =  queryParams['edit'];
@@ -63,6 +70,7 @@ export class SnappshotvlDetailComponent implements OnInit {
         this.snapshotDesc = data.description;
         this.snapshotVolumeName = data.volumeName;
         this.snapshotVlCreateDate = data.startDate;
+        this.snapshotVPC = data.projectName;
         this.isLoading = false;
       }else{
       }
@@ -78,14 +86,58 @@ export class SnappshotvlDetailComponent implements OnInit {
     this.regionSearch = regionId;
   }
   constructor(private router: Router, private snapshotVlService: SnapshotVolumeService,
-              private activatedRoute: ActivatedRoute, private modalService: NzModalService) {
+              private activatedRoute: ActivatedRoute, private modalService: NzModalService,
+              private message: NzMessageService) {
   }
 
   backTOListPage(){
     this.router.navigate(['/app-smart-cloud/snapshotvls']);
   }
-  validateEditSnapshot(): boolean{
-    return false;
+
+  changeSnapshotName(){
+    this.isShowWarningSnapshotVlName = false;
+    this.contentWarningSnapshotVlName = null;
+    //check empty
+    if(this.snapshotName.trim() == '' ||  this.snapshotName === undefined){
+      this.isShowWarningSnapshotVlName = true;
+      this.contentWarningSnapshotVlName = 'Tên Snapshot Volume không được để trống.';
+    }
+    //check special
+    if(this.checkSpecialSnapshotName(this.snapshotName)){
+      this.isShowWarningSnapshotVlName = true;
+      this.contentWarningSnapshotVlName = 'Tên Snapshot Volume không được chứa ký tự đặc biệt.';
+    }
+  }
+  private checkSpecialSnapshotName( str: string): boolean{
+    //check ký tự đặc biệt
+    const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    return specialCharacters.test(str);
+  }
+
+
+  private doEditSnapshot() {
+    this.isLoading = true;
+    let editRequest = new EditSnapshotVolume();
+    editRequest.name = this.snapshotName;
+    editRequest.id = this.snapshotId;
+    editRequest.description = this.snapshotDesc;
+    this.snapshotVlService.editSnapshotVolume(editRequest).subscribe(
+      (data) => {
+        this.isLoading = false;
+        this.message.create('success', 'Chỉnh sửa Snapshot Volume thành công')
+        this.router.navigate(['/app-smart-cloud/snapshotvls']);
+      },
+      (error) => {
+      this.isLoading = false;
+        console.error('Lỗi:', error);
+
+        if (error.status === 404) {
+          this.message.create('error', 'Không tìm thấy thông tin Snapshot Volume')
+        } else if (error.status === 500) {
+          this.message.create('error', 'Lỗi Sever.')
+        } else {
+        }
+      })
   }
 
   editSnapshot(){
@@ -103,7 +155,7 @@ export class SnappshotvlDetailComponent implements OnInit {
           label: 'Đồng ý',
           type: 'primary',
           onClick: () => {
-            //do Delete snapshot
+            this.doEditSnapshot()
             modal.destroy();
           }
         }

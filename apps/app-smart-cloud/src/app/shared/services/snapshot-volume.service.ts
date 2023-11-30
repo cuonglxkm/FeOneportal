@@ -37,6 +37,12 @@ export class SnapshotVolumeService extends BaseService {
     );
   }
 
+  deleteSnapshotVolume(idSnapshotVolume: number): Observable<boolean> {
+    return this.http.delete<boolean>(this.urlSnapshotVl + '/' + idSnapshotVolume).pipe(
+      catchError(this.handleError<boolean>('delete snapshot volume error.'))
+    );
+  }
+
   private getConditionSearchSnapshotVl(customerId: number, projectId: number, regionId: number, size: number, pageSize: number, currentPage: number, status: string, volumeName: string, name: string): string{
     let urlResult = this.urlSnapshotVl;
     let count = 0;
