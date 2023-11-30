@@ -7,3 +7,8 @@ export class GetListSnapshotVlModel{
   previousPage: number;
   records: SnapshotVolumeDto[];
 }
+export class EditSnapshotVolume{
+  id: number;
+  name: string;
+  description: string;
+}

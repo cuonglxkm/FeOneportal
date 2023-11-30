@@ -1,95 +1,86 @@
-<!--<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"-->
-<!--                   [headerInfo]="headerInfo"></app-header-volume>-->
-<div style="padding-top: 1%">
-  <nz-breadcrumb style="width: 50%; float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">{{headerInfo.breadcrumb1}}</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">{{headerInfo.breadcrumb2}}</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">{{headerInfo.breadcrumb3}}</a>
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="getRegionId($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="getProjectId($event)"></project-select-dropdown>
-  </div>
-  <div><h2>{{headerInfo.content}}</h2></div>
-</div>
-<div
-  class="m-b-10"
-  style="padding: 30px;"
->
-  <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
-  <nz-select nzSize="default"
-             [nzPlaceHolder]="'Tất cả trạng thái'"
-             [nzOptions]="options"
-             [(ngModel)]="snapshotStatusSearch"
-             style="width: 170px;"
-  >
-  </nz-select>
-
-  <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-    <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
-           style="width: 300px; margin-left: 30px;"/>
-  </nz-input-group>
-  <ng-template #suffixButton>
-    <button nz-button  nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
-    </button>
+<page-header [action]="action" [title]="'Danh sách Snapshot Volume'">
+  <ng-template #action>
+    <div class="text-right">
+      <region-select-dropdown
+        (valueChanged)="getRegionId($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="getProjectId($event)"></project-select-dropdown>
+    </div>
   </ng-template>
-</div>
-<div class="snapshot-volume-list">
-  <nz-table #tableSnapshotVolume
-            [nzData]="listSnapshot"
-            [nzFrontPagination]="false"
-            [nzTotal]="totalSnapshot"
-            [(nzPageIndex)]="currentPage"
-            [(nzPageSize)]="pageSize"
-            (nzPageIndexChange)="onPageIndexChange($event)"
-            (nzPageSizeChange)="onPageSizeChange($event)"
-            [nzLoading]="isLoadingSearch"
+  <div
+    class="m-b-10"
   >
-    <thead>
-    <tr>
-      <th>Tên</th>
-      <th>Dung lượng(GB)</th>
-      <th>Mô tả</th>
-      <th>Volume</th>
-      <th>VPC</th>
-      <th>Thời gian tạo</th>
-      <th>Trạng thái dịch vụ</th>
-      <th>Trạng thái tác vụ</th>
-      <th>Thao tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let data of tableSnapshotVolume.data;">
-      <td (click)="getDetailSnapshotVl(data.id)"><a>{{ data.name }}</a></td>
-      <td>{{ data.sizeInGB}}</td>
-      <td>{{ data.description}}</td>
-      <td>{{data.volumeName}}</td>
-      <td>{{data.projectName}}</td>
-      <td>{{data.startDate}}</td>
-      <td>{{data.serviceStatus}}</td>
-      <td>{{data.resourceStatus}}</td>
-      <td>
-        <nz-select nzSize="small"
-                   class="custom-background"
-                   [nzPlaceHolder]="'Tạo Snapshot'"
-                   [nzOptions]="optionAction"
-                   style="width: 150px;"
-                   [ngModel]="selectedAction"
-                   (ngModelChange)="onSelectionChange($event , data)"
-        >
-        </nz-select>
-      </td>
-    </tr>
-    </tbody>
-  </nz-table>
+    <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
+    <nz-select nzSize="default"
+               [nzPlaceHolder]="'Tất cả trạng thái'"
+               [nzOptions]="options"
+               [(ngModel)]="snapshotStatusSearch"
+               style="width: 170px;"
+    >
+    </nz-select>
+
+    <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+      <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
+             style="width: 300px; margin-left: 30px;"/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+      </button>
+    </ng-template>
+  </div>
+
+</page-header>
 
 
+<div class="snapshot-volume-list">
+  <nz-spin [nzSpinning]="isLoading">
+    <nz-table #tableSnapshotVolume
+              [nzData]="listSnapshot"
+              [nzFrontPagination]="false"
+              [nzTotal]="totalSnapshot"
+              [(nzPageIndex)]="currentPage"
+              [(nzPageSize)]="pageSize"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzLoading]="isLoadingSearch"
+    >
+      <thead>
+      <tr>
+        <th>Tên</th>
+        <th>Dung lượng(GB)</th>
+        <th>Mô tả</th>
+        <th>Volume</th>
+        <th>VPC</th>
+        <th>Thời gian tạo</th>
+        <th>Trạng thái dịch vụ</th>
+        <th>Trạng thái tác vụ</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of tableSnapshotVolume.data;">
+        <td (click)="getDetailSnapshotVl(data.id)"><a>{{ data.name }}</a></td>
+        <td>{{ data.sizeInGB}}</td>
+        <td>{{ data.description}}</td>
+        <td>{{data.volumeName}}</td>
+        <td>{{data.projectName}}</td>
+        <td>{{data.startDate}}</td>
+        <td>{{data.serviceStatus}}</td>
+        <td>{{data.resourceStatus}}</td>
+        <td>
+          <nz-select nzSize="small"
+                     class="custom-background"
+                     [nzPlaceHolder]="'Thao tác'"
+                     [nzOptions]="optionAction"
+                     style="width: 150px;"
+                     [ngModel]="selectedAction"
+                     (ngModelChange)="onSelectionChange($event , data)"
+          >
+          </nz-select>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </nz-spin>
 </div>
