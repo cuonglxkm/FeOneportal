@@ -1,13 +1,13 @@
 export class IPSubnetModel {
-  id:          string;
+  id: string;
   displayName: string;
-  cidr:        string;
+  cidr: string;
   availableIp: string;
-  gatewayIp:   string;
-  networkId:   string;
+  gatewayIp: string;
+  networkId: string;
 }
 export class SHHKeyModel {
-  id:          string;
+  id: string;
   displayName: string;
 }
 
@@ -195,36 +195,144 @@ export class InstancesModel {
 }
 
 export class InstanceFormSearch {
-  searchValue: string
-  status: string
-  isCheckState: boolean
-  fromDate: any
-  toDate: any
-  region: number
-  userId: number
-  pageNumber: number
-  pageSize: number
-  securityGroupId: string
-  projectId: number
+  searchValue: string;
+  status: string;
+  isCheckState: boolean;
+  fromDate: any;
+  toDate: any;
+  region: number;
+  userId: number;
+  pageNumber: number;
+  pageSize: number;
+  securityGroupId: string;
+  projectId: number;
 }
 
 export interface Instance {
-  id: number,
-  cloudId: string,
-  name: string,
-  flavorId: number,
-  flavorName: string,
-  customerId: number,
-  ipPublic: string,
-  ipPrivate: string,
-  regionId: number,
-  regionText: string,
-  createdDate: any,
-  cloudIdentityId: number,
-  projectName: string,
-  projectId: number,
-  volumeRootId: number,
-  status: string,
-  taskState: string,
-  securityGroups: string
+  id: number;
+  cloudId: string;
+  name: string;
+  flavorId: number;
+  flavorName: string;
+  customerId: number;
+  ipPublic: string;
+  ipPrivate: string;
+  regionId: number;
+  regionText: string;
+  createdDate: any;
+  cloudIdentityId: number;
+  projectName: string;
+  projectId: number;
+  volumeRootId: number;
+  status: string;
+  taskState: string;
+  securityGroups: string;
+}
+
+export class InstanceCreate {
+  description: any;
+  flavorId: number;
+  imageId: number;
+  iops: number;
+  vmType: any;
+  keypairName: any;
+  securityGroups: any;
+  network: any;
+  volumeSize: number;
+  isUsePrivateNetwork: boolean;
+  ipPublic: any;
+  password: any;
+  snapshotCloudId: any;
+  encryption: boolean;
+  isUseIPv6: boolean;
+  addRam: number;
+  addCpu: number;
+  addBttn: number;
+  addBtqt: number;
+  poolName: any;
+  usedMss: boolean;
+  customerUsingMss: any;
+  typeName: string;
+  vpcId: string;
+  oneSMEAddonId: any;
+  serviceType: number;
+  serviceInstanceId: number;
+  customerId: number;
+  createDate: string;
+  expireDate: string;
+  saleDept: any;
+  saleDeptCode: any;
+  contactPersonEmail: any;
+  contactPersonPhone: any;
+  contactPersonName: any;
+  note: any;
+  createDateInContract: any;
+  am: any;
+  amManager: any;
+  isTrial: boolean;
+  offerId: number;
+  couponCode: any;
+  dhsxkd_SubscriptionId: any;
+  dSubscriptionNumber: any;
+  dSubscriptionType: any;
+  oneSME_SubscriptionId: any;
+  actionType: number;
+  regionId: number;
+  serviceName: any;
+  userEmail: any;
+  actorEmail: any;
+}
+
+export class VolumeCreate {
+  volumeType: any;
+  volumeSize: number;
+  description: any;
+  createFromSnapshotId: any;
+  instanceToAttachId: any;
+  isMultiAttach: boolean;
+  isEncryption: boolean;
+  vpcId: any;
+  oneSMEAddonId: any;
+  serviceType: number;
+  serviceInstanceId: number;
+  customerId: number;
+  createDate: string;
+  expireDate: string;
+  saleDept: any;
+  saleDeptCode: any;
+  contactPersonEmail: any;
+  contactPersonPhone: any;
+  contactPersonName: any;
+  note: any;
+  createDateInContract: any;
+  am: any;
+  amManager: any;
+  isTrial: boolean;
+  offerId: number;
+  couponCode: any;
+  dhsxkd_SubscriptionId: any;
+  dSubscriptionNumber: any;
+  dSubscriptionType: any;
+  oneSME_SubscriptionId: any;
+  actionType: number;
+  regionId: number;
+  serviceName: any;
+  typeName: string;
+  userEmail: any;
+  actorEmail: any;
+}
+
+export class Order {
+  customerId: number;
+  createdByUserId: number;
+  note: string;
+  orderItems: any[];
+}
+
+export class OrderItem {
+  orderItemQuantity: number;
+  specification: string;
+  specificationType: string;
+  price: number;
+  serviceDuration: number;
 }

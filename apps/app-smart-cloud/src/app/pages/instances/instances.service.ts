@@ -160,9 +160,9 @@ export class InstancesService extends BaseService{
   }
 
   create(data: any): Observable<any> {
-    let url_ = `/instances`;
+    let url_ = ``;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders + url_, data);
   }
 
   resetpassword(data: any): Observable<any> {
