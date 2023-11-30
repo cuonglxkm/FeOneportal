@@ -1,7 +1,9 @@
 <app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
                    [headerInfo]="headerInfo"></app-header-volume>
 
+<nz-spin *ngIf="isLoading" nzSimple [nzSize]="'large'"></nz-spin>
 <nz-card
+  *ngIf="!isLoading"
   class="m-b-10"
   [nzBodyStyle]="{ 'padding': '30px' }"
   nzTitle="Thông tin Snapshot Volume"
@@ -16,7 +18,7 @@
 
   <br>
   <br>
-  <nz-form-label [nzSm]="6" [nzXs]="24" >Mô tả</nz-form-label>
+  <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
   <textarea rows="4" nz-input maxlength="255" [ngModel]="snapshotDesc"></textarea>
 
   <br>
@@ -32,17 +34,19 @@
   </div>
   <br>
   <br>
-  <p>Thời gian khởi tạo:</p>
+  <p>Thời gian khởi tạo: <span>{{ snapshotVlCreateDate | date:'dd/MM/yyyy' }}</span></p>
 
 </nz-card>
 
 <nz-card
+  *ngIf="!isLoading"
   [nzBodyStyle]="{ 'padding': '30px' }"
 >
-<div class="footer-detail">
-  <button class="buttonBack" nz-button nzType="default" (click)="backTOListPage()">Quay lại
-  </button>
-  <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="validateEditSnapshot()" (click)="editSnapshot()">Chỉnh sửa
-  </button>
-</div>
+  <div class="footer-detail">
+    <button class="buttonBack" nz-button nzType="default" (click)="backTOListPage()">Quay lại
+    </button>
+    <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="validateEditSnapshot()"
+            (click)="editSnapshot()">Chỉnh sửa
+    </button>
+  </div>
 </nz-card>

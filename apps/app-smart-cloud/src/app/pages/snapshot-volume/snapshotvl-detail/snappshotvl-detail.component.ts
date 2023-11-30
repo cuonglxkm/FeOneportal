@@ -3,6 +3,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete-snapshot-volume.component";
 import {PopupEditSnapshotVolumeComponent} from "../popup-snapshot/popup-edit-snapshot-volume.component";
+import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
+import {messages} from "nx/src/utils/ab-testing";
 
 @Component({
   selector: 'app-snapshot-volume-detail',
@@ -20,7 +22,12 @@ export class SnappshotvlDetailComponent implements OnInit {
   snapshotSize: number;
   snapshotDesc: string;
   snapshotVolumeName: string;
+  snapshotVlCreateDate: string;
+  isLoading: boolean;
   ngOnInit(): void {
+
+    const idSnapshotVl = this.activatedRoute.snapshot.paramMap.get('id');
+
     this.activatedRoute.queryParams.subscribe(queryParams => {
       this.isEdit =  queryParams['edit'];
       if(this.isEdit){
@@ -30,6 +37,9 @@ export class SnappshotvlDetailComponent implements OnInit {
           breadcrumb3: 'Snapshot Volume',
           content: 'Chỉnh sửa Snapshot Volume'
         };
+        this.getSnapshotVolume(idSnapshotVl);
+
+
       }else{
         this.isEdit = false;
         this.headerInfo = {
@@ -38,8 +48,26 @@ export class SnappshotvlDetailComponent implements OnInit {
           breadcrumb3: 'Snapshot Volume',
           content: 'Xem chi tiết Snapshot Volume'
         };
+
+        this.getSnapshotVolume(idSnapshotVl);
       }
     });
+  }
+
+  private getSnapshotVolume(idSnapshotVl: string) {
+    this.isLoading = true;
+    this.snapshotVlService.getSnapshotVolummeById(idSnapshotVl).subscribe(data => {
+      if (data !== undefined && data != null){
+        this.snapshotName = data.name;
+        this.snapshotSize = data.sizeInGB;
+        this.snapshotDesc = data.description;
+        this.snapshotVolumeName = data.volumeName;
+        this.snapshotVlCreateDate = data.startDate;
+        this.isLoading = false;
+      }else{
+      }
+
+    })
   }
 
   getProjectId(projectId: number) {
@@ -49,7 +77,8 @@ export class SnappshotvlDetailComponent implements OnInit {
   getRegionId(regionId: number) {
     this.regionSearch = regionId;
   }
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private modalService: NzModalService) {
+  constructor(private router: Router, private snapshotVlService: SnapshotVolumeService,
+              private activatedRoute: ActivatedRoute, private modalService: NzModalService) {
   }
 
   backTOListPage(){
