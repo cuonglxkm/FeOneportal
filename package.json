@@ -2,9 +2,7 @@
   "name": "@one-portal/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {
-    "postinstall": "ngcc --properties es2015 browser module main"
-  },
+  "scripts": {},
   "private": true,
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
@@ -54,6 +52,7 @@
     "ng-zorro-antd": "16.2.2",
     "ngx-color-picker": "^13.0.0",
     "ngx-echarts": "^15.0.1",
+    "ngx-owl-carousel-o": "16.0.0",
     "ngx-tinymce": "^16.0.0",
     "rxjs": "~7.8.0",
     "screenfull": "^6.0.2",

@@ -4,9 +4,10 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {InstanceService} from "../../../../shared/services/instance.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import Pagination from "../../../../shared/models/pagination";
-import {Instance, InstanceFormSearch} from "../../../../shared/models/instance";
-import {ExecuteAttachOrDetach, SecurityGroup} from "../../../../shared/models/security-group";
+import {ExecuteAttachOrDetach} from "../../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../../shared/services/security-group.service";
+import { Instance } from 'src/app/pages/instances/instances.model';
+import {InstanceFormSearch} from "../../../instances/instances.model";
 
 @Component({
     selector: 'one-portal-list-virtual-machine',
@@ -26,6 +27,10 @@ export class ListVirtualMachineComponent implements OnInit {
     isLoading = false;
 
     attachOrDetachForm: ExecuteAttachOrDetach = new ExecuteAttachOrDetach()
+
+    isVisibleAttach = false
+    isVisibleDetach = false
+
 
     constructor(
         private instanceService: InstanceService,
@@ -60,10 +65,15 @@ export class ListVirtualMachineComponent implements OnInit {
         })
     }
 
-    attachOrDetach(instanceId: number, type: string) {
+    showModalAttach(): void {
+        this.isVisibleAttach = true;
+    }
+
+    handleOkAttach(instanceId: number): void {
+        this.isVisibleAttach = false;
         this.attachOrDetachForm.securityGroupId = this.securityGroupId
         this.attachOrDetachForm.instanceId = instanceId
-        this.attachOrDetachForm.action = type
+        this.attachOrDetachForm.action = 'attach'
         this.attachOrDetachForm.userId = this.tokenService.get()?.userId
         this.attachOrDetachForm.regionId = this.regionId
         this.attachOrDetachForm.projectId = this.projectId
@@ -73,6 +83,34 @@ export class ListVirtualMachineComponent implements OnInit {
         }, error => {
             this.notification.error('Thất bại', 'Gán Security Group vào máy ảo thất bại')
         })
+    }
+
+    handleCancelAttach(): void {
+        this.isVisibleAttach = false;
+    }
+
+    showModalDetach(): void {
+        this.isVisibleDetach = true;
+    }
+
+    handleOkDetach(instanceId: number): void {
+        this.isVisibleDetach = false;
+        this.attachOrDetachForm.securityGroupId = this.securityGroupId
+        this.attachOrDetachForm.instanceId = instanceId
+        this.attachOrDetachForm.action = 'detach'
+        this.attachOrDetachForm.userId = this.tokenService.get()?.userId
+        this.attachOrDetachForm.regionId = this.regionId
+        this.attachOrDetachForm.projectId = this.projectId
+        this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
+            this.notification.success('Thành công', 'Gỡ Security Group vào máy ảo thành công')
+            this.getInstances()
+        }, error => {
+            this.notification.error('Thất bại', 'Gỡ Security Group vào máy ảo thất bại')
+        })
+    }
+
+    handleCancelDetach(): void {
+        this.isVisibleDetach = false;
     }
 
     ngOnInit(): void {

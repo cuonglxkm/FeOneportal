@@ -1,18 +1,19 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
-  selector: 'one-portal-delete-backup-vm',
-  templateUrl: './delete-backup-vm.component.html',
-  styleUrls: ['./delete-backup-vm.component.less'],
+  selector: 'one-portal-attach-or-detach',
+  templateUrl: './attach-or-detach.component.html',
+  styleUrls: ['./attach-or-detach.component.less'],
 })
-export class DeleteBackupVmComponent {
+export class AttachOrDetachComponent {
   @Input() isVisible: boolean
-  @Input() isLoading: boolean
+  @Input() title: string
+  @Input() content: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
+  isConfirmLoading = false;
   handleCancel(): void {
-    this.isVisible = false
     this.onCancel.emit();
   }
 

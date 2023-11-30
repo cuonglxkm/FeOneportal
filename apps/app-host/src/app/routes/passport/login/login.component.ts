@@ -180,7 +180,9 @@ export class UserLoginComponent implements OnDestroy, OnInit{
     let url = ``;
     let callback = ``;
     if (environment.production) {
-      callback = `https://ng-alain.github.io/ng-alain/#/passport/callback/${type}`;
+      // callback = `https://ng-alain.github.io/ng-alain/#/passport/callback/${type}`;
+      // @ts-ignore
+      callback = environment.sso.callback;
     } else {
       // @ts-ignore
       callback = environment.sso.callback;

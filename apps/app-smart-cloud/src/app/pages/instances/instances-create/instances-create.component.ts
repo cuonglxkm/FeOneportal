@@ -35,6 +35,7 @@ import { Observable, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
+import {OwlOptions} from "ngx-owl-carousel-o";
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -110,6 +111,32 @@ export class InstancesCreateComponent implements OnInit {
   isLoading = false;
   selectedTypeImageId: number;
   pagedCardListImages: Array<Array<any>> = [];
+
+
+  customOptions: OwlOptions = {
+    loop: true,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: true,
+    navSpeed: 700,
+    navText: ['4324', '43243'],
+    responsive: {
+      0: {
+        items: 1
+      },
+      400: {
+        items: 2
+      },
+      740: {
+        items: 3
+      },
+      940: {
+        items: 4
+      }
+    },
+    nav: true
+  }
 
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {

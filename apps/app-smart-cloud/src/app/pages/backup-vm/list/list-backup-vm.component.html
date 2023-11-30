@@ -12,13 +12,14 @@
         <div *nzSpaceItem>
           <nz-select [(ngModel)]="selectedValue"
                      (ngModelChange)="onChange($event)"
-                     nzPlaceHolder="Tất cả trạng thái" >
+                     nzPlaceHolder="Tất cả trạng thái">
             <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
         <div *nzSpaceItem>
           <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input placeholder="Tìm kếm tên, dung lượng, volume ..."/>
+            <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+                   placeholder="Tìm kếm tên, dung lượng, volume ..."/>
           </nz-input-group>
           <ng-template #suffixButton>
             <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
@@ -64,44 +65,56 @@
             <span class="suspended" *ngSwitchCase="'SUSPENDED'">
               Tạm dừng
             </span>
+            <span class="available" *ngSwitchCase="'CREATING'">
+              Đang khởi tạo
+            </span>
+            <span class="suspended" *ngSwitchCase="'DELETING'">
+              Đang xoóa
+            </span>
           </div>
         </td>
         <td nzAlign="center">
           <span *ngIf="data.serviceStatus === 'KHOITAO'">
             -
           </span>
+          <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
+        </td>
         <td nzAlign="center">
-          <ng-container *ngIf="['SUSPENDED'].includes(data.status); else elseBlock">
-            <button
-              nz-button
-              nzType="primary"
-              nzDanger
-              style="width: 100px"
-            >
-              <span>Xóa</span>
-            </button>
-          </ng-container>
-          <ng-template #elseBlock>
-            <button
-              nz-button
-              [nzType]="'primary'"
-              nz-dropdown
-              style="width: 100px"
-              [nzDropdownMenu]="opMenu">
-              <span>Restore</span> <i nz-icon nzType="down"></i>
-            </button>
-            <nz-dropdown-menu #opMenu="nzDropdownMenu">
-              <ul nz-menu>
-                <li nz-menu-item routerLink="/app-smart-cloud/backup-vm/restore-backup-vm" >Restore</li>
-                <li nz-menu-item (click)="showModalDelete()">Xóa</li>
+          <div [ngSwitch]="data.status">
+            <div *ngSwitchCase="'AVAILABLE'">
+              <button
+                nz-button
+                [nzType]="'primary'"
+                nz-dropdown
+                style="width: 100px"
+                [nzDropdownMenu]="opMenu">
+                <span>Restore</span> <i nz-icon nzType="down"></i>
+              </button>
+              <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="navigateToRestore(data.id)" >Restore</li>
+                  <li nz-menu-item (click)="showModalDelete()">Xóa</li>
+                  <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                               [isLoading]="isLoading"
+                                               (onCancel)="handleCancelDelete()"
+                                               (onOk)="handleOkDelete(data.id)"/>
+                </ul>
+              </nz-dropdown-menu>
 
-              </ul>
-            </nz-dropdown-menu>
-          </ng-template>
-          <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
-                                       [isLoading]="isLoading"
-                                       (onCancel)="handleCancelDelete()"
-                                       (onOk)="handleOkDelete(data.id)" />
+            </div>
+            <div *ngSwitchCase="'SUSPENDED'">
+              <button
+                nz-button
+                nzType="primary"
+                nzDanger
+                style="width: 100px" (click)="showModalDelete()">Xóa
+              </button>
+              <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                           [isLoading]="isLoading"
+                                           (onCancel)="handleCancelDelete()"
+                                           (onOk)="handleOkDelete(data.id)"/>
+            </div>
+          </div>
         </td>
       </tr>
       </tbody>
