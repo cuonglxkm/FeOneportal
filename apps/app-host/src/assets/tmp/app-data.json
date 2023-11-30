@@ -62,7 +62,7 @@
         {
           "text": "Backup Volume",
           "icon": "anticon-info",
-          "link": "/app-smart-cloud/list-backup-volume"
+          "link": "/app-smart-cloud/backup-volume"
         }
       ]
     }
