@@ -2,10 +2,12 @@ import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable, of} from "rxjs";
-import {GetListVolumeModel} from "../models/volume.model";
+import {EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
 import {catchError} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {GetListSnapshotVlModel} from "../models/snapshotvl.model";
+import {EditSnapshotVolume, GetListSnapshotVlModel} from "../models/snapshotvl.model";
+import {VolumeDTO} from "../dto/volume.dto";
+import {SnapshotVolumeDto} from "../dto/snapshot-volume.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,24 @@ export class SnapshotVolumeService extends BaseService {
     let urlResult = this.getConditionSearchSnapshotVl(customerId, projectId, regionId, size, pageSize, currentPage, status, volumeName, name);
     return this.http.get<GetListSnapshotVlModel>(urlResult).pipe(
       catchError(this.handleError<GetListSnapshotVlModel>('get snapshot-volume-list error'))
+    );
+  }
+
+  getSnapshotVolummeById(snapshotVlID: string) {
+    return this.http.get<SnapshotVolumeDto>(this.urlSnapshotVl + '/' + snapshotVlID).pipe(
+      catchError(this.handleError<SnapshotVolumeDto>('get snapshot volume-detail error'))
+    )
+  }
+
+  editSnapshotVolume(request: EditSnapshotVolume): Observable<any> {
+    return this.http.put(this.urlSnapshotVl, request).pipe(
+      catchError(this.handleError<any>('Edit Snapshot Volume to VM error.'))
+    );
+  }
+
+  deleteSnapshotVolume(idSnapshotVolume: number): Observable<boolean> {
+    return this.http.delete<boolean>(this.urlSnapshotVl + '/' + idSnapshotVolume).pipe(
+      catchError(this.handleError<boolean>('delete snapshot volume error.'))
     );
   }
 
