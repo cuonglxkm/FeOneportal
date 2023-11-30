@@ -42,12 +42,12 @@
             <input
               nz-input
               formControlName="name"
-              [(ngModel)]="createInstances.name"
+              [(ngModel)]="instanceCreate.serviceName"
               id="name"
               placeholder="Nhập tên máy ảo"
               maxlength="250"
               minlength="1"
-              (change)="createInstances.name = createInstances.name.trim()"
+              (change)="instanceCreate.serviceName = instanceCreate.serviceName.trim()"
             />
           </nz-form-control>
         </nz-form-item>

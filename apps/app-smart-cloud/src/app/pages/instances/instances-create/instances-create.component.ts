@@ -4,7 +4,9 @@ import {
   Component,
   Inject,
   OnInit,
-  Renderer2, signal, WritableSignal,
+  Renderer2,
+  signal,
+  WritableSignal,
 } from '@angular/core';
 import {
   FormControl,
@@ -15,7 +17,7 @@ import {
 } from '@angular/forms';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import {
-  CreateInstances,
+  InstanceCreate,
   Flavors,
   IPPublicModel,
   IPSubnetModel,
@@ -25,6 +27,9 @@ import {
   SHHKeyModel,
   SecurityGroupModel,
   Snapshot,
+  VolumeCreate,
+  Order,
+  OrderItem,
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -35,7 +40,7 @@ import { Observable, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import {OwlOptions, SlidesOutputData} from "ngx-owl-carousel-o";
+import { OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -77,7 +82,6 @@ interface CarouselData {
   dataHash?: string;
 }
 
-
 @Component({
   selector: 'one-portal-instances-create',
   templateUrl: './instances-create.component.html',
@@ -95,7 +99,10 @@ export class InstancesCreateComponent implements OnInit {
   });
 
   //danh sách các biến của form model
-  createInstances: CreateInstances = new CreateInstances();
+  instanceCreate: InstanceCreate = new InstanceCreate();
+  volumeCreate: VolumeCreate = new VolumeCreate();
+  order: Order = new Order();
+  orderItem: OrderItem[] = [];
   region: number = 3;
   projectId: number = 4079;
   customerId: number = 669;
@@ -121,9 +128,6 @@ export class InstancesCreateComponent implements OnInit {
   isLoading = false;
   selectedTypeImageId: number;
   pagedCardListImages: Array<Array<any>> = [];
-
-
-
 
   carouselData: CarouselData[] = [
     { text: 'Slide 1 PM', dataMerge: 1, width: 350, dotContent: 'text1' },
@@ -172,21 +176,21 @@ export class InstancesCreateComponent implements OnInit {
     slideBy: 'page',
     responsive: {
       0: {
-        items: 1
+        items: 1,
       },
       300: {
-        items: 2
+        items: 2,
       },
       600: {
-        items: 3
+        items: 3,
       },
       900: {
-        items: 4
-      }
+        items: 4,
+      },
     },
     // stagePadding: 40,
-    nav: false
-  }
+    nav: false,
+  };
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
@@ -520,46 +524,139 @@ export class InstancesCreateComponent implements OnInit {
       this.message.error('Vui lòng chọn gói cấu hình');
       return;
     }
-    this.createInstances.regionId = 5; // this.region;
-    this.createInstances.projectId = 4082; // this.projectId;
-    this.createInstances.customerId = 669; // this.customerId;
-    // this.createInstances.imageId = this.selectedSnapshot;
-    this.createInstances.imageId = 132;
-    this.createInstances.useIPv6 = false;
-    this.createInstances.usePrivateNetwork = true //his.isUseLAN;
-    this.createInstances.currentNetworkCloudId = null;
-      //'113210e5-52ac-4c01-a7bf-0976eca0c81f';
-    this.createInstances.flavorId = 2446; //this.flavor.id;
-    this.createInstances.storage = 1;
-    this.createInstances.snapshotCloudId = null;
-    this.createInstances.listSecurityGroup = null //arraylistSecurityGroup;
-    this.createInstances.keypair = null //this.selectedSSHKeyId;
-    this.createInstances.domesticBandwidth = 5;
-    this.createInstances.intenationalBandwidth = 10;
-    this.createInstances.ramAdditional = 0;
-    this.createInstances.cpuAdditional = 0;
-    this.createInstances.btqtAdditional = 0;
-    this.createInstances.bttnAdditional = 0;
-    this.createInstances.initPassword = '123123aA@'; //this.password;
-    this.createInstances.ipPrivate = null;
+    this.instanceCreate.description = null; // this.region;
+    this.instanceCreate.flavorId = 368; //this.flavor.id;
+    this.instanceCreate.imageId = 113;
+    this.instanceCreate.iops = 300;
+    this.instanceCreate.vmType = null;
+    this.instanceCreate.keypairName = null;
+    this.instanceCreate.securityGroups = null;
+    this.instanceCreate.network = null;
+    this.instanceCreate.volumeSize = 1;
+    this.instanceCreate.isUsePrivateNetwork = true;
+    this.instanceCreate.ipPublic = null;
+    this.instanceCreate.password = null;
+    this.instanceCreate.snapshotCloudId = null;
+    this.instanceCreate.encryption = false;
+    this.instanceCreate.isUseIPv6 = false;
+    this.instanceCreate.addRam = 0;
+    this.instanceCreate.addCpu = 0;
+    this.instanceCreate.addBttn = 0;
+    this.instanceCreate.addBtqt = 0;
+    this.instanceCreate.poolName = null;
+    this.instanceCreate.usedMss = false;
+    this.instanceCreate.customerUsingMss = null;
+    this.instanceCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.instanceCreate.vpcId = "4079";
+    this.instanceCreate.oneSMEAddonId = null;
+    this.instanceCreate.serviceType = 1;
+    this.instanceCreate.serviceInstanceId = 0;
+    this.instanceCreate.customerId = 669;
+    this.instanceCreate.createDate = '2023-11-01T00:00:00';
+    this.instanceCreate.expireDate = '2023-12-01T00:00:00';
+    this.instanceCreate.saleDept = null;
+    this.instanceCreate.saleDeptCode = null;
+    this.instanceCreate.contactPersonEmail = null;
+    this.instanceCreate.contactPersonPhone = null;
+    this.instanceCreate.contactPersonName = null;
+    this.instanceCreate.note = null;
+    this.instanceCreate.createDateInContract = null;
+    this.instanceCreate.am = null;
+    this.instanceCreate.amManager = null;
+    this.instanceCreate.isTrial = false;
+    this.instanceCreate.offerId = -2446;
+    this.instanceCreate.couponCode = null;
+    this.instanceCreate.dhsxkd_SubscriptionId = null;
+    this.instanceCreate.dSubscriptionNumber = null;
+    this.instanceCreate.dSubscriptionType = null;
+    this.instanceCreate.oneSME_SubscriptionId = null;
+    this.instanceCreate.actionType = 0;
+    this.instanceCreate.regionId = 3;
+    this.instanceCreate.userEmail = 'toannv8@yandex.com';
+    this.instanceCreate.actorEmail = 'toannv8@yandex.com';
 
-    this.loadingSrv.open({type: "spin", text: "Loading..."});
+    this.volumeCreate.volumeType = 'hdd';
+    this.volumeCreate.volumeSize = 1;
+    this.volumeCreate.description = null;
+    this.volumeCreate.createFromSnapshotId = null;
+    this.volumeCreate.instanceToAttachId = null;
+    this.volumeCreate.isMultiAttach = false;
+    this.volumeCreate.isEncryption = false;
+    this.volumeCreate.vpcId = 4079;
+    this.volumeCreate.oneSMEAddonId = null;
+    this.volumeCreate.serviceType = 2;
+    this.volumeCreate.serviceInstanceId = 0;
+    this.volumeCreate.customerId = 669;
+    this.volumeCreate.createDate = '0001-01-01T00:00:00';
+    this.volumeCreate.expireDate = '0001-01-01T00:00:00';
+    this.volumeCreate.saleDept = null;
+    this.volumeCreate.saleDeptCode = null;
+    this.volumeCreate.contactPersonEmail = null;
+    this.volumeCreate.contactPersonPhone = null;
+    this.volumeCreate.contactPersonName = null;
+    this.volumeCreate.note = null;
+    this.volumeCreate.createDateInContract = null;
+    this.volumeCreate.am = null;
+    this.volumeCreate.amManager = null;
+    this.volumeCreate.isTrial = false;
+    this.volumeCreate.offerId = 2;
+    this.volumeCreate.couponCode = null;
+    this.volumeCreate.dhsxkd_SubscriptionId = null;
+    this.volumeCreate.dSubscriptionNumber = null;
+    this.volumeCreate.dSubscriptionType = null;
+    this.volumeCreate.oneSME_SubscriptionId = null;
+    this.volumeCreate.actionType = 1;
+    this.volumeCreate.regionId = 3;
+    this.volumeCreate.serviceName = 'volume-khaitesttaovmOrder';
+    this.volumeCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
+    this.volumeCreate.userEmail = 'Khaitest';
+    this.volumeCreate.actorEmail = 'Khaitest';
 
-    this.dataService.create(this.createInstances)
-    .pipe(finalize(() => {
-      this.loadingSrv.close();
-    }))
-    .subscribe(
-      (data: any) => {
-        console.log(data);
-        this.message.success('Tạo mới máy ảo thành công');
-        this.router.navigateByUrl(`/app-smart-cloud/instances`)
-      },
-      (error) => {
-        console.log(error.error);
-        this.message.error('Tạo mới máy ảo không thành công');
-      }
-    );
+    let specificationInstance = JSON.stringify(this.instanceCreate);
+    let orderItemInstance = new OrderItem();
+    orderItemInstance.orderItemQuantity = 1;
+    orderItemInstance.specification = specificationInstance;
+    orderItemInstance.specificationType = "instance_create";
+    orderItemInstance.price = 1;
+    orderItemInstance.serviceDuration = 1;
+    this.orderItem.push(orderItemInstance);
+
+    let specificationVolume = JSON.stringify(this.volumeCreate);
+    let orderItemVolume = new OrderItem();
+    orderItemVolume.orderItemQuantity = 1;
+    orderItemVolume.specification = specificationVolume;
+    orderItemVolume.specificationType = "volume_create";
+    orderItemVolume.price = 1;
+    orderItemVolume.serviceDuration = 1;
+    this.orderItem.push(orderItemVolume);
+
+    this.order.customerId = this.tokenService.get()?.userId;
+    this.order.createdByUserId = this.tokenService.get()?.userId;
+    this.order.note = "tạo vm";
+    this.order.orderItems = this.orderItem;
+
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+
+    this.dataService
+      .create(this.order)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe(
+        (data: any) => {
+          console.log(data);
+          this.message.success('Tạo mới máy ảo thành công');
+          this.router.navigateByUrl(`/app-smart-cloud/instances`);
+        },
+        (error) => {
+          console.log(error.error);
+          this.message.error('Tạo mới máy ảo không thành công');
+        }
+      );
   }
 
   cancel(): void {
