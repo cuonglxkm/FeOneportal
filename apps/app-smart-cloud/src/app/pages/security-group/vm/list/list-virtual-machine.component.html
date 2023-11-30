@@ -31,11 +31,23 @@
                     <td nzAlign="center">{{ data.ipPrivate }}</td>
                     <td nzAlign="center">{{ data.ipPublic }}</td>
                     <td nzAlign="center">
-                        <ng-container *ngIf="[data.securityGroups].includes(securityGroupId); else elseBlock">
-                            <button nz-button nzType="primary" nzDanger class="button-delete" (click)="attachOrDetach(data.id, 'detach')">Gỡ</button>
+                        <ng-container *ngIf="data.securityGroups.includes(securityGroupId); else elseBlock">
+                            <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModalDetach()">Gỡ</button>
+                          <one-portal-attach-or-detach [isVisible]="isVisibleDetach"
+                                                       [title]="'Xác nhận gỡ security group khỏi máy ảo'"
+                                                       [content]="'Bạn có chắc chăn muốn gỡ security group khỏi máy ảo'"
+                                                       (onCancel)="handleCancelDetach()"
+                                                       (onOk)="handleOkDetach(data.id)"
+                          />
                         </ng-container>
                         <ng-template #elseBlock>
-                            <button nz-button nzType="primary" nzDanger class="button-attach" (click)="attachOrDetach(data.id, 'attach')">Gán</button>
+                            <button nz-button nzType="primary" class="button-attach" (click)="showModalAttach()">Gán</button>
+                            <one-portal-attach-or-detach [isVisible]="isVisibleAttach"
+                                                         [title]="'Xác nhận gán security group khỏi máy ảo'"
+                                                         [content]="'Bạn có chắc chăn muốn gán security group khỏi máy ảo'"
+                                                         (onCancel)="handleCancelAttach()"
+                                                         (onOk)="handleOkAttach(data.id)"
+                            />
                         </ng-template>
                     </td>
                 </tr>

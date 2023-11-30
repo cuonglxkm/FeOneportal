@@ -1,0 +1,16 @@
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="1050" nzTitle=""
+          (nzOnCancel)="handleCancel()" nzCentered>
+    <div *nzModalTitle>
+        <p class="text-confirm-title">{{ title }}</p>
+    </div>
+    <div *nzModalContent>
+        <p class="text-confirm-content">{{ content }} </p>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy bỏ</button>
+        <button nz-button nzType="primary" (click)="handleOk()"
+                [nzLoading]="isConfirmLoading"
+                class="button-ok">Xác nhận
+        </button>
+    </div>
+</nz-modal>

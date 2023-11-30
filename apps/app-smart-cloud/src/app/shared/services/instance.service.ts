@@ -1,15 +1,14 @@
 import {Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {Instance, InstanceFormSearch} from "../models/instance";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import Pagination from "../models/pagination";
+import {Instance, InstanceFormSearch} from "src/app/pages/instances/instances.model";
 
 @Injectable({
     providedIn: 'root'
 })
 export class InstanceService extends BaseService {
-    private selectedObjectId: number | undefined;
 
     constructor(private http: HttpClient) {
         super();
