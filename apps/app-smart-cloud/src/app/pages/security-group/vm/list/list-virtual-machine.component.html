@@ -32,21 +32,21 @@
                     <td nzAlign="center">{{ data.ipPublic }}</td>
                     <td nzAlign="center">
                         <ng-container *ngIf="data.securityGroups.includes(securityGroupId); else elseBlock">
-                            <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModalDetach()">Gỡ</button>
+                            <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModalDetach(data.id)">Gỡ</button>
                           <one-portal-attach-or-detach [isVisible]="isVisibleDetach"
                                                        [title]="'Xác nhận gỡ security group khỏi máy ảo'"
-                                                       [content]="'Bạn có chắc chăn muốn gỡ security group khỏi máy ảo'"
+                                                       [content]="'Bạn có chắc chắn muốn gỡ security group khỏi máy ảo'"
                                                        (onCancel)="handleCancelDetach()"
-                                                       (onOk)="handleOkDetach(data.id)"
+                                                       (onOk)="handleOkDetach()"
                           />
                         </ng-container>
                         <ng-template #elseBlock>
-                            <button nz-button nzType="primary" class="button-attach" (click)="showModalAttach()">Gán</button>
+                            <button nz-button nzType="primary" class="button-attach" (click)="showModalAttach(data.id)">Gán</button>
                             <one-portal-attach-or-detach [isVisible]="isVisibleAttach"
-                                                         [title]="'Xác nhận gán security group khỏi máy ảo'"
-                                                         [content]="'Bạn có chắc chăn muốn gán security group khỏi máy ảo'"
+                                                         [title]="'Xác nhận gán security group vào máy ảo'"
+                                                         [content]="'Bạn có chắc chắn muốn gán security group vào máy ảo'"
                                                          (onCancel)="handleCancelAttach()"
-                                                         (onOk)="handleOkAttach(data.id)"
+                                                         (onOk)="handleOkAttach()"
                             />
                         </ng-template>
                     </td>

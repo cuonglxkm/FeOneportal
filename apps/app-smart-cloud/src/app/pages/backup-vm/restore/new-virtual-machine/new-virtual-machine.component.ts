@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Location} from '@angular/common';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import Flavor from "../../../../shared/models/flavor.model";
@@ -12,7 +12,7 @@ import {SecurityGroupService} from "../../../../shared/services/security-group.s
     templateUrl: './new-virtual-machine.component.html',
     styleUrls: ['./new-virtual-machine.component.less'],
 })
-export class NewVirtualMachineComponent implements OnInit{
+export class NewVirtualMachineComponent implements OnInit, OnChanges{
 
     @Input() region: number
     @Input() project: number
@@ -81,4 +81,10 @@ export class NewVirtualMachineComponent implements OnInit{
         this.region = JSON.parse(localStorage.getItem('region')).regionId;
         this.project = JSON.parse(localStorage.getItem('projectId'));
     }
+
+  ngOnChanges(changes: SimpleChanges): void {
+      if (changes.project) {
+        this.getSecurityGroup()
+      }
+  }
 }

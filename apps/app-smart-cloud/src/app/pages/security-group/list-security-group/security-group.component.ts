@@ -8,6 +8,8 @@ import {ActivatedRoute} from '@angular/router';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {Instance, InstanceFormSearch} from "../../instances/instances.model";
+import {InstanceService} from "../../../shared/services/instance.service";
+import Pagination from "../../../shared/models/pagination";
 
 @Component({
     selector: 'one-portal-security-group',
@@ -34,16 +36,22 @@ export class SecurityGroupComponent implements OnInit {
 
     project = JSON.parse(localStorage.getItem('projectId'));
 
+    pageSize: number = 10
+    pageNumber: number = 1
+
+
     constructor(private securityGroupService: SecurityGroupService,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                 private route: ActivatedRoute,
-                private notification: NzNotificationService) {
+                private notification: NzNotificationService,
+                private instanceService: InstanceService) {
     }
 
     onSecurityGroupChange(): void {
         this.getListInbound();
         this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
         this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
+        this.getInstances()
     }
 
     handleOk(): void {
@@ -83,6 +91,21 @@ export class SecurityGroupComponent implements OnInit {
                     console.log('sg', this.options)
                 })
         }
+    }
+
+    getInstances() {
+        this.condition.userId = this.tokenService.get()?.userId
+
+        this.condition.region = this.region
+        this.condition.pageNumber = this.pageNumber
+        this.condition.pageSize = this.pageSize
+        this.condition.isCheckState = true
+        this.instanceService.search(this.condition).subscribe(data => {
+            this.listInstance = data.records
+            console.log('data', this.listInstance)
+        }, error => {
+            this.notification.error('Thất bại', 'Lấy thông tin máy ảo thất bại')
+        })
     }
 
     getListInbound() {
