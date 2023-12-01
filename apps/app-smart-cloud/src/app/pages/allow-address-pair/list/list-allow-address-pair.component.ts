@@ -32,9 +32,9 @@ export class ListAllowAddressPairComponent implements OnInit {
   isVisibleCreate = false;
   userId: number
 
-  region: number;
+  region = JSON.parse(localStorage.getItem('region')).regionId;
 
-  project: number;
+  project = JSON.parse(localStorage.getItem('projectId'));
 
   validateForm: FormGroup<{
     ipAddress: FormControl<string | null>;
@@ -62,6 +62,8 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   pageSize: number = 5
   pageNumber: number = 1
+
+  size: number = 0
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -124,6 +126,10 @@ export class ListAllowAddressPairComponent implements OnInit {
   }
 
   showModalCreate() {
+    if(this.size >= 10 ){
+      this.isVisibleCreate = false
+      this.notification.error('Thất bại','Không thể thêm mới quá 10 Allow Address Pair')
+    }
     this.isVisibleCreate = true;
   }
 
@@ -149,6 +155,7 @@ export class ListAllowAddressPairComponent implements OnInit {
       .subscribe((data) => {
         this.isLoading = false;
         this.collection = data
+        this.size = this.collection.totalCount
       });
   }
 

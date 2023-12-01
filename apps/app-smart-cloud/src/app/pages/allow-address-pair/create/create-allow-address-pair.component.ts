@@ -57,11 +57,7 @@ export class CreateAllowAddressPairComponent implements OnInit {
           this.isLoading = false;
           this.validateForm.reset();
           console.log('error', error.status)
-          if(error.status === 502) {
-            this.notification.warning('Thất bại', 'Không được tạo quá 10 Allow Address Pair')
-          } else {
-            this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
-          }
+          this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
           this.onOk.emit();
         })
     }
