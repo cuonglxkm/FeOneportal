@@ -1,3 +1,6 @@
+
+
+
 <!-- <page-header [title]="'Tạo máy ảo'">
   <div class="text-right">
     <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
@@ -26,6 +29,8 @@
 </div>
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+
+
   <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
@@ -37,12 +42,12 @@
             <input
               nz-input
               formControlName="name"
-              [(ngModel)]="createInstances.name"
+              [(ngModel)]="instanceCreate.serviceName"
               id="name"
               placeholder="Nhập tên máy ảo"
               maxlength="250"
               minlength="1"
-              (change)="createInstances.name = createInstances.name.trim()"
+              (change)="instanceCreate.serviceName = instanceCreate.serviceName.trim()"
             />
           </nz-form-control>
         </nz-form-item>
@@ -225,6 +230,17 @@
 
     <nz-tabset>
       <nz-tab nzTitle="Gói cấu hình">
+        <!-- <div class="container">
+          <owl-carousel-o [options]="customOptions" (translated)="getPassedData($event)" #owlCar>
+            <ng-container *ngFor="let item of carouselData; let i=index">
+              <ng-template carouselSlide [width]="item.width">
+                <div class="slider">
+                  <p>{{item.text}}</p>
+                </div>
+              </ng-template>
+            </ng-container>
+          </owl-carousel-o>
+        </div> -->
         <nz-carousel
           [nzEffect]="effect"
           style="overflow: initial"

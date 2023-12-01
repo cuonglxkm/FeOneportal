@@ -135,6 +135,9 @@ export class InstancesComponent implements OnInit {
   }
   onRegionChange(region: RegionModel) {
     // Handle the region change event
+    this.activeCreate = false;
+    this.isSearch = false;
+    this.loading = true;
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
     this.getDataList();
@@ -152,7 +155,7 @@ export class InstancesComponent implements OnInit {
       this.isSearch = true;
       this.cdr.detectChanges();
     }
-    
+
     if (this.region != undefined && this.region != null) {
       this.loading = true;
       this.dataService

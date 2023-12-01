@@ -1,4 +1,12 @@
-import {Component, Inject} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ComponentFactoryResolver, ComponentRef,
+  EventEmitter,
+  Inject,
+  Output,
+  ViewChild, ViewContainerRef
+} from '@angular/core';
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {RegionModel} from "../../../../../shared/models/region.model";
 import {BackupVolume} from "../backup-volume.model";
@@ -6,6 +14,13 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
 import {finalize} from "rxjs/operators";
+import {Router} from "@angular/router";
+import {BehaviorSubject} from "rxjs";
+import {DetailBackupVolumeComponent} from "../detail-backup-volume/detail-backup-volume.component";
+import {VolumeService} from "../../../../../shared/services/volume.service";
+import {VolumeDTO} from "../../../../../shared/dto/volume.dto";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {AppValidator} from "../../../../../../../../../libs/common-utils/src";
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -22,9 +37,13 @@ export class ListBackupVolumeComponent {
   total: any = 0;
   selectedStatus: any;
   selectedAction = 'RESTORE';
+  selectedOptionAction: string = '';
+  selectedVolume: any;
 
   //output
   listOfData: BackupVolume[] = [];
+  data : BackupVolume;
+  listOfVolume: VolumeDTO[] = [];
 
   //common
   listStatus = [
@@ -36,17 +55,24 @@ export class ListBackupVolumeComponent {
     {label: 'Đang xóa', value: 'DELETING', color: 'black'},
   ]
 
-  // flag
-  isVisibleDelete: boolean = false;
-
+  //child component
+  // @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
+  // private detailComponent: ComponentRef<DetailBackupVolumeComponent>;
   constructor(private service: BackupVolumeService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private message: NzMessageService) {
+              private volumeService: VolumeService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private message: NzMessageService,
+              private router: Router) {
   }
-
   //flash
   isBegin: boolean = false;
   loading = false;
+  isVisibleDelete: boolean = false;
+  isVisibleRestore :boolean = false;
+  loadingRestore: boolean = false;
 
+  form = new FormGroup({
+    select: new FormControl('', {validators: [Validators.required]}),
+  });
   ngOnInit() {
     this.selectedStatus = this.listStatus[0].value;
   }
@@ -99,8 +125,9 @@ export class ListBackupVolumeComponent {
     this.loadBackupVolume(false);
   }
 
-  detailKey(event: any) {
-
+  detailKey(event: BackupVolume) {
+    this.service.receivedData.next(event);
+    this.router.navigate(['/app-smart-cloud/backup-volume/detail']);
   }
 
   onchangedStatus(status: any) {
@@ -119,25 +146,58 @@ export class ListBackupVolumeComponent {
   }
 
   handleCancel(form: any): void {
-    console.log('Button cancel clicked')
     this.isVisibleDelete = false;
+    this.isVisibleRestore = false;
     form.resetForm();
   }
 
   handleDelete(number: any): void {
     // call api
-    // this.sshKeyService.deleteSshKey(this.data.id).subscribe(() => {
-    //   this.searchKey = "";
-    //   this.loadSshKeys(true);
-    //   this.message.create('success', `Xóa thành công keypair`);
-    // });
+    this.service.deleteVolume(number, this.tokenService.get()?.userId).subscribe(() => {
+      this.searchKey = "";
+      this.loadBackupVolume(true);
+      this.message.create('success', `Xóa thành công keypair`);
+    });
     this.isVisibleDelete = false;
   }
 
-
-  openDataMounted(event: any, id: any): void {
-    if (event == "Xóa") {
+  openDataMounted(event: any, data: BackupVolume): void {
+    this.data = data;
+    if (event == "1") {
+      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.projectId, this.regionId, false,
+        999, 1, '','').subscribe(
+        (data) => {
+          this.listOfVolume = data.records;
+        }
+      )
+      this.isVisibleRestore = true;
+    } else if (event == "2") {
       this.isVisibleDelete = true;
     }
+  }
+
+  handleRestore(backupVolumeId: any) {
+    this.loadingRestore  = true;
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      volumeBackupId: backupVolumeId,
+      volumeId: this.selectedVolume
+    }
+
+    // call api
+    this.service.restoreVolume(request)
+      .pipe(finalize(() => this.loadingRestore = false))
+      .subscribe(
+      () => {
+        this.loadBackupVolume(true);
+        this.message.create('success', `Restore thành công`);
+      },
+      (error) => {
+        this.loadBackupVolume(true);
+        this.message.create('error', `Restore thất bại`);
+      }
+    );
+
+    this.handleCancel(null);
   }
 }
