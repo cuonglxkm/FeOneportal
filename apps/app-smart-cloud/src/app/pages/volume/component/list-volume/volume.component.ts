@@ -101,7 +101,7 @@ export class VolumeComponent implements OnInit {
 
   isVisible = false;
 
-  onSelectionChange(value: any, volume: any) {
+  onSelectionChange(value: any, volume: VolumeDTO) {
     if (value === 'addVolume') {
       const modal: NzModalRef = this.modalService.create({
         nzTitle: 'Gắn Volume',
@@ -187,6 +187,11 @@ export class VolumeComponent implements OnInit {
       });
     }
 
+    if (value === 'initBackup') {
+      this.router.navigate(['/app-smart-cloud/backup-volume/create'],{
+        queryParams:{idVolume:volume.id, startDate: volume.creationDate , endDate: volume.expirationDate, nameVolume:volume.name }
+      });
+    }
   }
 
   navigateToCreateVolume() {
