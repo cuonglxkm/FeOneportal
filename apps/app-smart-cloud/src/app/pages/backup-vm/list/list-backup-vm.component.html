@@ -1,13 +1,24 @@
-<one-portal-header
-  title="Backup VM"
-  [path]="['Home', 'Dịch vụ', 'Backup VM']"
-  [regionId]="region"
-  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
-<nz-content>
-  <nz-card>
-    <div class="title">Danh sách Backup VM</div>
-    <nz-row nzAlign="middle">
+<nz-header>
+  <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
+    <nz-row nzJustify="space-between" nzAlign="middle">
+      <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          Dịch vụ
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a routerLink="/app-smart-cloud/backup-vm">Backup VM</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <nz-space>
+        <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+        <project-select-dropdown (valueChanged)="projectChanged($event)"
+                                 [regionId]="region"></project-select-dropdown>
+      </nz-space>
+
+    </nz-row>
+    <h3>Danh sách Backup VM</h3>
+    <nz-row nzAlign="middle" style="margin-top:5px">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
           <nz-select [(ngModel)]="selectedValue"
@@ -30,6 +41,11 @@
         </div>
       </nz-space>
     </nz-row>
+  </nz-col>
+</nz-header>
+
+<nz-content>
+  <nz-card>
     <nz-table #tableBackupVM
               [nzData]="collection.records"
               nzShowSizeChanger
