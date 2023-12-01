@@ -17,8 +17,8 @@
       </nz-space>
 
     </nz-row>
-    <h3>Danh sách Backup VM</h3>
-    <nz-row nzAlign="middle" style="margin-top:5px">
+    <h3 style="margin-top: 10px">Danh sách Backup VM</h3>
+    <nz-row nzAlign="middle" style="margin-top:10px">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
           <nz-select [(ngModel)]="selectedValue"
@@ -108,12 +108,12 @@
               </button>
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="navigateToRestore(data.id)" >Restore</li>
-                  <li nz-menu-item (click)="showModalDelete()">Xóa</li>
+                  <li nz-menu-item (click)="navigateToRestore(data.id)">Restore</li>
+                  <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
                   <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
                                                [isLoading]="isLoading"
                                                (onCancel)="handleCancelDelete()"
-                                               (onOk)="handleOkDelete(data.id)"/>
+                                               (onOk)="handleOkDelete()"/>
                 </ul>
               </nz-dropdown-menu>
 
@@ -123,12 +123,12 @@
                 nz-button
                 nzType="primary"
                 nzDanger
-                style="width: 100px" (click)="showModalDelete()">Xóa
+                style="width: 100px" (click)="showModalDelete(data.id)">Xóa
               </button>
               <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
                                            [isLoading]="isLoading"
                                            (onCancel)="handleCancelDelete()"
-                                           (onOk)="handleOkDelete(data.id)"/>
+                                           (onOk)="handleOkDelete()"/>
             </div>
           </div>
         </td>
