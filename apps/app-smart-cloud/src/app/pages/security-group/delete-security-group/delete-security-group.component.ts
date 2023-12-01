@@ -44,7 +44,8 @@ export class DeleteSecurityGroupComponent {
           this.onOk.emit();
 
         }, error => {
-          this.notification.error('Thất bại', `Đã xóa thất bại`);
+          this.isVisible = false;
+          this.notification.error('Thất bại', `Đã xóa thất bại do Security Group đang được sử dụng.`);
         })
 
 
