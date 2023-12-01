@@ -26,6 +26,8 @@ export class CurrentVirtualMachineComponent implements OnInit {
     securityGroupName: string
 
     securityGroup = []
+    securityGroupUnique: string[]
+
 
     form: RestoreFormCurrent = new RestoreFormCurrent()
 
@@ -53,8 +55,11 @@ export class CurrentVirtualMachineComponent implements OnInit {
                 this.backupVm = data
                 this.backupVm.securityGroupBackups.forEach(item => {
                     this.securityGroup.push(item.sgName)
+
                 })
-                this.securityGroupName = this.securityGroup.join('\n')
+                console.log('detail', this.securityGroup)
+                this.securityGroupUnique = Array.from(new Set(this.securityGroup))
+                this.securityGroupName = this.securityGroupUnique.join(', ')
             }
             console.log('backupvm', this.backupVm)
         })
