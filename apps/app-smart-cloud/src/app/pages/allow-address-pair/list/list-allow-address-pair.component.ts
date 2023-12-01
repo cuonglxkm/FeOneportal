@@ -128,9 +128,11 @@ export class ListAllowAddressPairComponent implements OnInit {
   showModalCreate() {
     if(this.size >= 10 ){
       this.isVisibleCreate = false
-      this.notification.error('Thất bại','Không thể thêm mới quá 10 Allow Address Pair')
+      this.notification.warning('','Không thể thêm mới quá 10 Allow Address Pair')
+    } else {
+      this.isVisibleCreate = true;
     }
-    this.isVisibleCreate = true;
+
   }
 
   handleCloseCreate() {
