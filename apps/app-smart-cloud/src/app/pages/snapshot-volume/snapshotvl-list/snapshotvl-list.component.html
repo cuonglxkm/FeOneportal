@@ -15,6 +15,7 @@
                [nzPlaceHolder]="'Tất cả trạng thái'"
                [nzOptions]="options"
                [(ngModel)]="snapshotStatusSearch"
+               (ngModelChange)="searchSnapshot()"
                style="width: 170px;"
     >
     </nz-select>
