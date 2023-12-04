@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {BackupVolume} from "../../pages/volume/component/backup-volume/backup-volume.model";
 import {BaseService} from "./base.service";
 
@@ -9,6 +9,8 @@ import {BaseService} from "./base.service";
   providedIn: 'root'
 })
 export class BackupVolumeService extends BaseService {
+  receivedData: BehaviorSubject<BackupVolume> = new BehaviorSubject<BackupVolume>(null);
+  sharedData$ = this.receivedData.asObservable();
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -21,4 +23,14 @@ export class BackupVolumeService extends BaseService {
     return this.http.get<BaseResponse<BackupVolume[]>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes" + '?customerId=' + userId + '&projectId=' + projectId+ '&regionId=' + regionId+
       '&pageSize=' + size+ '&currentPage=' + page+ '&status=' + status+ '&volumeBackupName=' + search);
   }
+
+  //delete
+  deleteVolume(id: any, userId: any) {
+    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes" + '/' + id+ '?customerId=' +userId);
+  }
+
+  restoreVolume(data: any) : Observable<HttpResponse<any>> {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes/restore", data, this.httpOptions);
+  }
+
 }

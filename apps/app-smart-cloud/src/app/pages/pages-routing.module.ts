@@ -132,15 +132,15 @@ const routes: Routes = [
     component: CreateBackupVmComponent
   },
   {
-    path: 'create-backup-volume',
+    path: 'backup-volume/create',
     component: CreateBackupVolumeComponent
   },
   {
-    path: 'detail-backup-volume',
+    path: 'backup-volume/detail',
     component: DetailBackupVolumeComponent
   },
   {
-    path: 'list-backup-volume',
+    path: 'backup-volume',
     component: ListBackupVolumeComponent
   }
 ]

@@ -52,7 +52,7 @@ export class InstanceService extends BaseService {
     searchBySecurityGroupId(form: InstanceFormSearch) {
         let params = new HttpParams();
         if(form.securityGroupId !== undefined) {
-            params = params.append('id', form.searchValue)
+            params = params.append('id', form.securityGroupId)
         }
         params = params.append('regionId', form.region)
         params = params.append('userId', form.userId)

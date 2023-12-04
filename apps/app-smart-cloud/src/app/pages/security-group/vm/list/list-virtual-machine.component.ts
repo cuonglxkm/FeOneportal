@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {InstanceService} from "../../../../shared/services/instance.service";
@@ -6,7 +6,7 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import Pagination from "../../../../shared/models/pagination";
 import {ExecuteAttachOrDetach} from "../../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../../shared/services/security-group.service";
-import { Instance } from 'src/app/pages/instances/instances.model';
+import {Instance} from 'src/app/pages/instances/instances.model';
 import {InstanceFormSearch} from "../../../instances/instances.model";
 
 @Component({
@@ -14,7 +14,7 @@ import {InstanceFormSearch} from "../../../instances/instances.model";
     templateUrl: './list-virtual-machine.component.html',
     styleUrls: ['./list-virtual-machine.component.less'],
 })
-export class ListVirtualMachineComponent implements OnInit {
+export class ListVirtualMachineComponent implements OnInit, OnChanges {
 
     @Input() securityGroupId: string;
     @Input() regionId: number
@@ -30,6 +30,7 @@ export class ListVirtualMachineComponent implements OnInit {
 
     isVisibleAttach = false
     isVisibleDetach = false
+    instanceId: number
 
 
     constructor(
@@ -39,6 +40,8 @@ export class ListVirtualMachineComponent implements OnInit {
         private securityGroupService: SecurityGroupService
     ) {
     }
+
+
 
     onQueryParamsChange(params: NzTableQueryParams) {
         const {pageSize, pageIndex} = params
@@ -65,14 +68,16 @@ export class ListVirtualMachineComponent implements OnInit {
         })
     }
 
-    showModalAttach(): void {
+    showModalAttach(instanceId): void {
+        this.instanceId = instanceId
         this.isVisibleAttach = true;
     }
 
-    handleOkAttach(instanceId: number): void {
+    handleOkAttach(): void {
+        console.log('id', this.instanceId)
         this.isVisibleAttach = false;
         this.attachOrDetachForm.securityGroupId = this.securityGroupId
-        this.attachOrDetachForm.instanceId = instanceId
+        this.attachOrDetachForm.instanceId = this.instanceId
         this.attachOrDetachForm.action = 'attach'
         this.attachOrDetachForm.userId = this.tokenService.get()?.userId
         this.attachOrDetachForm.regionId = this.regionId
@@ -89,14 +94,15 @@ export class ListVirtualMachineComponent implements OnInit {
         this.isVisibleAttach = false;
     }
 
-    showModalDetach(): void {
+    showModalDetach(instanceId: number): void {
+        this.instanceId = instanceId
         this.isVisibleDetach = true;
     }
 
-    handleOkDetach(instanceId: number): void {
+    handleOkDetach(): void {
         this.isVisibleDetach = false;
         this.attachOrDetachForm.securityGroupId = this.securityGroupId
-        this.attachOrDetachForm.instanceId = instanceId
+        this.attachOrDetachForm.instanceId = this.instanceId
         this.attachOrDetachForm.action = 'detach'
         this.attachOrDetachForm.userId = this.tokenService.get()?.userId
         this.attachOrDetachForm.regionId = this.regionId
@@ -115,6 +121,12 @@ export class ListVirtualMachineComponent implements OnInit {
 
     ngOnInit(): void {
         this.getInstances()
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if(changes.securityGrouup) {
+            this.getInstances()
+        }
     }
 }
 

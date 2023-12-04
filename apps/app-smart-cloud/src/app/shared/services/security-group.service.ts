@@ -53,9 +53,7 @@ export class SecurityGroupService extends BaseService {
     }
 
     attachOrDetach(form: ExecuteAttachOrDetach){
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/action', {
-            form
-        })
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/action', Object.assign(form))
     }
 
 }
