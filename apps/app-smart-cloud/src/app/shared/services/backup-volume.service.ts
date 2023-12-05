@@ -29,8 +29,13 @@ export class BackupVolumeService extends BaseService {
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes" + '/' + id+ '?customerId=' +userId);
   }
 
+  //restore
   restoreVolume(data: any) : Observable<HttpResponse<any>> {
     return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes/restore", data, this.httpOptions);
   }
 
+  //create
+  createVolume(data: any) {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes",data , this.httpOptions);
+  }
 }
