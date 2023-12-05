@@ -46,7 +46,6 @@
           <th>Tên keypaird</th>
           <th>Finger print</th>
           <th>Thao tác</th>
-          <th>Thao tác</th>
         </tr>
         </thead>
         <tbody>
@@ -59,10 +58,12 @@
             </button>
           </td>
         </tr>
-        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?"
+        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xác nhận xóa SSH Key"
                   (nzOnCancel)="handleCancel(null)"
                   (nzOnOk)="handleDelete(data.id)">
-          <ng-container *nzModalContent></ng-container>
+          <ng-container *nzModalContent>
+            <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn xóa SSH Key?</h3>
+          </ng-container>
         </nz-modal>
         </tbody>
       </nz-table>
@@ -92,6 +93,7 @@
             <nz-tab nzTitle="Tạo SSH Key mới">
               <div class="mb-5 mt-5 pt-3 pb-3" style="
               border-style: solid;
+              border-width: 1px;
               border-color: #0493fa;
               background-color: #d6eeff;
             ">
@@ -121,12 +123,12 @@
               border-style: solid;
               border-color: #0493fa;
               background-color: #d6eeff;
+              border-width: 1px;
             ">
                 <Space>
                 <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
                       style="color: blue"></span>
-                  Private key sẽ được gửi vào email khách hàng đăng ký tài khoản.
-                  Quý khách lưu ý giữ private key này an toàn bảo mật cho server.
+                  Chức năng được dùng khi quý khách đã có sẵn cặp SSH key.Vui lòng nhập Public Key để tạo vào tài khoản của quý khách.
                 </Space>
               </div>
               <h4>

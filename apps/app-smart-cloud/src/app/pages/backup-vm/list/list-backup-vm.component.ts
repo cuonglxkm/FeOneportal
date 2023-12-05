@@ -53,6 +53,8 @@ export class ListBackupVmComponent implements OnInit {
 
     userId: number
 
+    id: number
+
 
     constructor(private backupVmService: BackupVmService,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -76,18 +78,19 @@ export class ListBackupVmComponent implements OnInit {
         console.log('input text: ', this.value)
     }
 
-    showModalDelete(): void {
+    showModalDelete(id: number): void {
         this.isVisibleDelete = true;
+        this.id = id
     }
 
     handleCancelDelete(): void {
         this.isVisibleDelete = false;
     }
 
-    handleOkDelete(id: number) {
+    handleOkDelete() {
         this.isLoading = true
         this.isVisibleDelete = false
-        this.backupVmService.delete(id, this.userId).subscribe(data => {
+        this.backupVmService.delete(this.id, this.userId).subscribe(data => {
             this.isLoading = false
             this.notification.success('Thành công', 'Xóa thành công')
             this.getListBackupVM()
