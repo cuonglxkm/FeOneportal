@@ -12,11 +12,9 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class RestoreBackupVmComponent implements OnInit {
 
-    // region = JSON.parse(localStorage.getItem('region')).regionId;
-    // project = JSON.parse(localStorage.getItem('projectId'));
+    region = JSON.parse(localStorage.getItem('region')).regionId;
+    project = JSON.parse(localStorage.getItem('projectId'));
 
-    region: number
-    project: number
     selectedValueRadio = 'O';
 
     validateForm: FormGroup<{

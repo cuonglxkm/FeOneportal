@@ -35,7 +35,7 @@ const COMPONENTS: Array<Type<any>> = [
     ProjectSelectDropdownComponent,
     FlavorSelectComponent,
     ImageSelectComponent,
-    SecurityGroupSelectComponent
+    SecurityGroupSelectComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 
