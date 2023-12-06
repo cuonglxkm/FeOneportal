@@ -74,16 +74,6 @@ class Network {
   ipv6?: boolean = false;
   price?: string = '000';
 }
-interface CarouselData {
-  id?: string;
-  text: string;
-  dataMerge?: number;
-  width: number;
-  dotContent?: string;
-  src?: string;
-  dataHash?: string;
-}
-
 @Component({
   selector: 'one-portal-instances-create',
   templateUrl: './instances-create.component.html',
@@ -98,7 +88,7 @@ export class InstancesCreateComponent implements OnInit {
 
   public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 1, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
     speed: 250,
     point: {
       visible: true
@@ -109,10 +99,6 @@ export class InstancesCreateComponent implements OnInit {
     animation: 'lazy'
   };
   tempData: any[];
-
-
-
-
 
   reverse = true;
   form = new FormGroup({
@@ -153,22 +139,6 @@ export class InstancesCreateComponent implements OnInit {
   isLoading = false;
   selectedTypeImageId: number;
   pagedCardListImages: Array<Array<any>> = [];
-
-  carouselData: CarouselData[] = [
-    { text: 'Slide 1 PM', dataMerge: 1, width: 350, dotContent: 'text1' },
-    { text: 'Slide 2 PM', dataMerge: 2, width: 350, dotContent: 'text2' },
-    { text: 'Slide 3 PM', dataMerge: 3, width: 350, dotContent: 'text3' },
-    { text: 'Slide 4 PM', width: 350, dotContent: 'text4' },
-    { text: 'Slide 5 PM', dataMerge: 4, width: 350, dotContent: 'text5' },
-    { text: 'Slide 6 PM', dataMerge: 5, width: 350, dotContent: 'text5' },
-    { text: 'Slide 7 PM', dataMerge: 6, width: 350, dotContent: 'text5' },
-  ];
-  activeSlides: WritableSignal<SlidesOutputData> = signal({});
-
-  getPassedData(data: any) {
-    this.activeSlides.set(data);
-    // console.log(this.activeSlides());
-  }
 
   customOptions: OwlOptions = {
     autoWidth: true,
@@ -328,6 +298,7 @@ export class InstancesCreateComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
+  
   toggleClass(id: string) {
     this.selectedElementFlavor = id;
     if (this.selectedElementFlavor) {
@@ -604,7 +575,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
-    this.instanceCreate.customerId = 669;
+    this.instanceCreate.customerId = this.tokenService.get()?.userId;
     this.instanceCreate.createDate = '2023-11-01T00:00:00';
     this.instanceCreate.expireDate = '2023-12-01T00:00:00';
     this.instanceCreate.saleDept = null;
@@ -639,7 +610,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
-    this.volumeCreate.customerId = 669;
+    this.volumeCreate.customerId = this.tokenService.get()?.userId;
     this.volumeCreate.createDate = '0001-01-01T00:00:00';
     this.volumeCreate.expireDate = '0001-01-01T00:00:00';
     this.volumeCreate.saleDept = null;

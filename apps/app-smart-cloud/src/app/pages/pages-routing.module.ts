@@ -32,6 +32,8 @@ import {
 import {
   ListBackupVolumeComponent
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import { UserComponent } from "./users/user.component";
+import { UserCreateComponent } from "./users/user-create/user-create.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -142,6 +144,14 @@ const routes: Routes = [
   {
     path: 'backup-volume',
     component: ListBackupVolumeComponent
+  },
+  {
+    path: 'users',
+    component: UserComponent
+  },
+  {
+    path: 'users/create',
+    component: UserCreateComponent
   }
 ]
 

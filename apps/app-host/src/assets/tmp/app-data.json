@@ -63,6 +63,11 @@
           "text": "Backup Volume",
           "icon": "anticon-info",
           "link": "/app-smart-cloud/backup-volume"
+        }, 
+        {
+          "text": "Users",
+          "icon": "anticon-user",
+          "link": "/app-smart-cloud/users"
         }
       ]
     }

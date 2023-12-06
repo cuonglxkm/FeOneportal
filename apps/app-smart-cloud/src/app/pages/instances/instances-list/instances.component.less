@@ -37,7 +37,7 @@ i {
 }
 
 .flavor-card {
-  display: inline-flex;
+  display: flex;
   padding: 14px 55px 52px 36px;
   flex-direction: column;
   align-items: center;
@@ -46,7 +46,7 @@ i {
 
 .flavor-body {
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .flavor-body-active {
@@ -56,7 +56,7 @@ i {
 
 /* app.component.css */
 .initialClassFlavor {
-  color: #1890FF;
+  color: #1890ff;
   border-radius: 10px;
   border: 1px solid #1890ff;
 }
@@ -64,7 +64,7 @@ i {
 .newClassFlavor {
   color: rgba(0, 0, 0, 0.85);
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .flavorfooter {
@@ -78,7 +78,7 @@ i {
 }
 
 .flavor-footer-active {
-  background: #1890FF;
+  background: #1890ff;
   color: #fff;
 }
 
@@ -91,7 +91,7 @@ i {
 }
 
 .bgActive {
-  background: #1890FF;
+  background: #1890ff;
   border-radius: 10px;
 }
 
@@ -104,11 +104,11 @@ i {
 }
 
 .images-body {
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .images-body-active {
-  border: 1px solid #1890FF
+  border: 1px solid #1890ff;
 }
 
 .images-body-wh {
@@ -127,8 +127,6 @@ i {
   max-width: 300px;
 }
 
-
-
 .slider {
   height: 60px;
   border-right: 1px solid #fff;
@@ -146,7 +144,6 @@ i {
 //.owl-theme .owl-dots .owl-dot:hover span {
 //  background: #033aa2 !important;
 //}
-
 
 .bannerStyle div {
   background-color: #ccc;
@@ -174,6 +171,8 @@ i {
   min-height: 200px;
   background-color: #ccc;
   background-size: cover !important;
+  min-width: 200px;
+  border-radius: 20px;
 }
 
 .tile h1 {
