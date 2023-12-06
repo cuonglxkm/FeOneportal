@@ -65,6 +65,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
 import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { UserComponent } from './users/user.component';
 import { UserCreateComponent } from './users/user-create/user-create.component';
 
@@ -148,7 +149,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     NzImageModule,
     LayoutDefaultModule,
-
     DragDropModule,
   ],
 })

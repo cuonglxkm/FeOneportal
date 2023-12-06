@@ -23,6 +23,7 @@ export class DetailBackupVmComponent implements OnInit {
 
     nameSecurityGroup = []
     nameSecurityGroupText: string
+    nameSecurityGroupTextUnique: string[]
     userId: number
 
     constructor(private backupVmService: BackupVmService,
@@ -55,9 +56,10 @@ export class DetailBackupVmComponent implements OnInit {
                 this.volumeBackups = this.backupVm.volumeBackups
                 this.backupVm.securityGroupBackups.forEach(item => {
                     this.nameSecurityGroup.push(item.sgName)
-
                 })
-                this.nameSecurityGroupText = this.nameSecurityGroup.join(', ')
+
+                this.nameSecurityGroupTextUnique = Array.from(new Set(this.nameSecurityGroup))
+                this.nameSecurityGroupText = this.nameSecurityGroupTextUnique.join(', ')
                 console.log('name', this.nameSecurityGroup)
                 console.log('data', this.backupVm)
             })

@@ -61,9 +61,14 @@
         },
         {
           "text": "Backup Volume",
-          "icon": "anticon-info",
+          "icon": "anticon-time",
           "link": "/app-smart-cloud/backup-volume"
-        }, 
+        },
+        {
+          "text": "Quản lý Policy",
+          "icon": "anticon-search",
+          "link": "/app-smart-cloud/policy"
+        },
         {
           "text": "Users",
           "icon": "anticon-user",

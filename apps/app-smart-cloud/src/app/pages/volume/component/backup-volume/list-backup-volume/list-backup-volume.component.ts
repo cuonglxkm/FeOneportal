@@ -1,11 +1,6 @@
 import {
-  AfterViewInit,
   Component,
-  ComponentFactoryResolver, ComponentRef,
-  EventEmitter,
   Inject,
-  Output,
-  ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {RegionModel} from "../../../../../shared/models/region.model";
@@ -15,12 +10,9 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
 import {finalize} from "rxjs/operators";
 import {Router} from "@angular/router";
-import {BehaviorSubject} from "rxjs";
-import {DetailBackupVolumeComponent} from "../detail-backup-volume/detail-backup-volume.component";
 import {VolumeService} from "../../../../../shared/services/volume.service";
 import {VolumeDTO} from "../../../../../shared/dto/volume.dto";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppValidator} from "../../../../../../../../../libs/common-utils/src";
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -152,8 +144,11 @@ export class ListBackupVolumeComponent {
   }
 
   handleDelete(number: any): void {
+    this.loading = true;
     // call api
-    this.service.deleteVolume(number, this.tokenService.get()?.userId).subscribe(() => {
+    this.service.deleteVolume(number, this.tokenService.get()?.userId)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe(() => {
       this.searchKey = "";
       this.loadBackupVolume(true);
       this.message.create('success', `Xóa thành công keypair`);
@@ -177,7 +172,7 @@ export class ListBackupVolumeComponent {
   }
 
   handleRestore(backupVolumeId: any) {
-    this.loadingRestore  = true;
+    this.loading  = true;
     const request = {
       customerId: this.tokenService.get()?.userId,
       volumeBackupId: backupVolumeId,
@@ -186,7 +181,7 @@ export class ListBackupVolumeComponent {
 
     // call api
     this.service.restoreVolume(request)
-      .pipe(finalize(() => this.loadingRestore = false))
+      .pipe(finalize(() => this.loading = false))
       .subscribe(
       () => {
         this.loadBackupVolume(true);

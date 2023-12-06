@@ -111,8 +111,11 @@ export class SshKeyComponent implements OnInit {
   }
 
   handleDelete(number: any): void {
+    this.loading = true;
     // call api
-    this.sshKeyService.deleteSshKey(this.data.id).subscribe(() => {
+    this.sshKeyService.deleteSshKey(this.data.id)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe(() => {
       this.searchKey = "";
       this.loadSshKeys(true);
       this.message.create('success', `Xóa thành công keypair`);
@@ -131,6 +134,7 @@ export class SshKeyComponent implements OnInit {
   indexTab: number = 0;
 
   handleCreate(form: any): void {
+    this.loading = true;
     let namePrivate: string;
     let publickey: string = "";
 
@@ -149,7 +153,9 @@ export class SshKeyComponent implements OnInit {
       publicKey: publickey,
     }
 
-    this.sshKeyService.createSshKey(ax).subscribe({
+    this.sshKeyService.createSshKey(ax)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
       next: post => {
         this.loadSshKeys(true);
         this.message.create('success', `Tạo mới thành công keypair`);
