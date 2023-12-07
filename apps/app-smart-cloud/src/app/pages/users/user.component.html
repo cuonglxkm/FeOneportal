@@ -71,7 +71,7 @@
           nz-button
           nzType="default"
           style="background-color: #9c9c9c; color: white"
-          (click)="navigateToCreate()"
+          (click)="showModal(); renameModal()"
         >
           <i nz-icon nzType="delete"></i>
           Xóa
@@ -107,7 +107,7 @@
       >
         <thead>
           <tr>
-            <th style="width: 20px;"></th>
+            <th style="width: 20px"></th>
             <th>Tên User</th>
             <th>Groups</th>
             <th>Thời gian tạo</th>
@@ -122,7 +122,9 @@
                 [ngModelOptions]="{ standalone: true }"
               ></label>
             </td>
-            <td>{{ item.name }}</td>
+            <td (click)="getUserDetail(item.id)">
+              <a>{{ item.name }}</a>
+            </td>
             <td>{{ item.groups }}</td>
             <td>{{ item.createdTime }}</td>
           </tr>
@@ -131,3 +133,49 @@
     </ng-container>
   </ng-container>
 </nz-card>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDelete"
+  [nzTitle]="nameModal"
+  (nzOnCancel)="handleCancelDelete()"
+  (nzOnOk)="handleOkDelete()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="customTemplateMessageGanVLAN"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageGanVLAN>
+      <div>
+        Bạn đang thực hiện xóa User <span> Nguyen </span>
+      </div>
+      <div>
+        Việc thực hiện xóa User cũng sẽ xóa tất cả dữ liệu liên quan tới User này
+      </div>
+      <div>
+        Hành động này không thể được hoàn tác
+      </div>
+    </ng-template>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Để thực hiện xóa User, vui lòng nhập tên User để xác
+            nhận</nz-form-label
+          >
+          <nz-form-control>
+            <input
+              name="name"
+              nz-input
+              [ngModel]="codeVerify"
+              (ngModelChange)="changecodeVerify($event)"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </ng-container>
+</nz-modal>

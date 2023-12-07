@@ -34,6 +34,9 @@ import {
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
 import { UserComponent } from "./users/user.component";
 import { UserCreateComponent } from "./users/user-create/user-create.component";
+import { UserDetailComponent } from "./users/user-detail/user-detail.component";
+import { AddPoliciesComponent } from "./users/user-detail/add-policies/add-policies.component";
+import { AddToGroupComponent } from "./users/user-detail/add-to-group/add-to-group.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -157,6 +160,18 @@ const routes: Routes = [
   {
     path: 'users/create',
     component: UserCreateComponent
+  },
+  {
+    path: 'users/detail/:id',
+    component: UserDetailComponent
+  },
+  {
+    path: 'users/detail/:id/add-policies',
+    component: AddPoliciesComponent
+  },
+  {
+    path: 'users/detail/:id/add-to-group',
+    component: AddToGroupComponent
   }
 ]
 

@@ -67,6 +67,9 @@ import { DetailBackupVolumeComponent } from './volume/component/backup-volume/de
 import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { UserComponent } from './users/user.component';
 import { UserCreateComponent } from './users/user-create/user-create.component';
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { AddPoliciesComponent } from './users/user-detail/add-policies/add-policies.component';
+import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -124,6 +127,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NewVirtualMachineComponent,
     UserComponent,
     UserCreateComponent,
+    UserDetailComponent,
+    AddPoliciesComponent,
+    AddToGroupComponent,
   ],
   imports: [
     CommonModule,

@@ -1,6 +1,7 @@
 export class User {
   id: number;
   name: string;
+  email: string;
   groups: number;
   createdTime: string;
 }
@@ -26,4 +27,11 @@ export class PermissionPolicies {
   name: string;
   type: string;
   attachedEntities: number;
+}
+
+export class PoliciesOfUser {
+  id: number;
+  name: string;
+  type: string;
+  attachedVia: string[];
 }

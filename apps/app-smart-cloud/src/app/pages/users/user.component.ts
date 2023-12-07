@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'one-portal-user',
@@ -25,9 +26,13 @@ export class UserComponent implements OnInit {
   searchParam: string;
   loading = true;
 
+  userDelete: User;
+  nameModal: string;
+
   constructor(
     private service: UserService, 
     private router: Router,
+    public message: NzMessageService,
     private cdr: ChangeDetectorRef,
     ) {}
 
@@ -36,9 +41,11 @@ export class UserComponent implements OnInit {
       console.log(data);
     });
     this.getData();
+    this.renameModal();
   }
 
   ngOnChange(): void {}
+
   getData(): void {
     // this.service.getData(this.ipAddress, this.status, this.customerId, this.regionId, this.isCheckState, this.size, this.index)
     //   .subscribe(baseResponse => {
@@ -54,6 +61,30 @@ export class UserComponent implements OnInit {
       this.listOfUser = baseResponse.records;
         console.log(this.listOfUser);
     });
+  }
+
+  isVisibleDelete: boolean = false;
+  codeVerify: string;
+  showModal() {
+    this.isVisibleDelete = true;
+  }
+
+  renameModal() {
+    this.nameModal = "Xóa User" + ' this.userDelete.name';
+    this.cdr.detectChanges();
+  }
+
+  changecodeVerify(e: string) {
+    this.codeVerify = e
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
+  handleOkDelete() {
+    this.message.success('Xóa thành công');
+    this.isVisibleDelete = false;
   }
 
   changeSearch(e: any): void {
@@ -78,6 +109,10 @@ export class UserComponent implements OnInit {
   onPageIndexChange(event: any) {
     // this.index = event;
     // this.getSshKeys();
+  }
+
+  getUserDetail(id: number) {
+    this.router.navigate(['/app-smart-cloud/users/detail/' + id]);
   }
 
   navigateToCreate() {
