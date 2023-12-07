@@ -67,6 +67,8 @@ import { DetailBackupVolumeComponent } from './volume/component/backup-volume/de
 import {
   ListBackupVolumeComponent
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {NgJsonEditorModule} from "ang-jsoneditor";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -148,6 +150,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     LayoutDefaultModule,
 
     DragDropModule,
+    NgxJsonViewerModule
   ],
 })
 export class PagesModule {}
