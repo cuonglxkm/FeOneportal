@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './policy-list.component.html',
   styleUrls: ['./policy-list.component.less'],
 })
-export class PolicyListComponent {}
+export class PolicyListComponent {
+
+}

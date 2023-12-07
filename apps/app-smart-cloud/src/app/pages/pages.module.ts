@@ -65,9 +65,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
 import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { UserComponent } from './users/user.component';
+import { UserCreateComponent } from './users/user-create/user-create.component';
 import { PolicyListComponent } from './policy/policy-list/policy-list.component';
-import {PolicyAttachDetachComponent} from "./policy/policy-attach-detach/policy-attach-detach.component";
-import {PopupAttachPolicy} from "./policy/popup-policy/popup-attach-policy";
+import {PolicyAttachComponent} from "./policy/policy-attach/policy-attach.component";
+import {PopupAttachPolicyComponent} from "./policy/popup-policy/popup-attach-policy.component";
+import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
+import {PopupDetachPolicyComponent} from "./policy/popup-policy/popup-detach-policy.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -123,9 +127,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachOrDetachComponent,
     CurrentVirtualMachineComponent,
     NewVirtualMachineComponent,
-    PolicyListComponent,
-    PolicyAttachDetachComponent,
-    PopupAttachPolicy
+    PolicyAttachComponent,
+    PopupAttachPolicyComponent,
+    PolicyDetachComponent,
+    PopupDetachPolicyComponent,
+    UserComponent,
+    UserCreateComponent,
   ],
   imports: [
     CommonModule,
@@ -150,7 +157,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     NzImageModule,
     LayoutDefaultModule,
-
     DragDropModule,
   ],
 })

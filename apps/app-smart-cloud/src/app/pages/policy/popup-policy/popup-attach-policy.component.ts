@@ -8,6 +8,6 @@ import {Component} from '@angular/core';
       <p><b>Để thực hiện Attach Policy, vui lòng chọn "Đồng ý". để thực hiện</b></p>
   `
 })
-export class  PopupAttachPolicy{
+export class PopupAttachPolicyComponent {
 
 }

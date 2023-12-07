@@ -4,7 +4,8 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {PopupAttachPolicy} from "../popup-policy/popup-attach-policy";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.component";
 
 
 export interface Data {
@@ -13,11 +14,11 @@ export interface Data {
   type: number;
 }
 @Component({
-  selector: 'one-portal-policy-attach-detach',
-  templateUrl: './policy-attach-detach.component.html',
-  styleUrls: ['./policy-attach-detach.component.less'],
+  selector: 'one-portal-policy-detach',
+  templateUrl: './policy-detach.component.html',
+  styleUrls: ['./policy-detach.component.less'],
 })
-export class PolicyAttachDetachComponent implements OnInit {
+export class PolicyDetachComponent implements OnInit {
 
   region = JSON.parse(localStorage.getItem('region')).regionId;
 
@@ -77,12 +78,12 @@ export class PolicyAttachDetachComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
-  attachPolicy(){
+  detachPolicy(){
     const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.id));
 
     const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Attach Policy',
-      nzContent:PopupAttachPolicy,
+      nzTitle: 'Detach Policy',
+      nzContent:PopupDetachPolicyComponent,
       nzFooter: [
         {
           label: 'Hủy',
@@ -93,7 +94,7 @@ export class PolicyAttachDetachComponent implements OnInit {
           label: 'Đồng ý',
           type: 'primary',
           onClick: () => {
-            this.doAttachPolicy(requestData, this.idPolicy);
+            this.doDetachPolicy(requestData, this.idPolicy);
             modal.destroy()
           }
         }
@@ -101,9 +102,10 @@ export class PolicyAttachDetachComponent implements OnInit {
     });
 
   }
-  private doAttachPolicy(requestData: Data[] , idPolicy: number){
+  private doDetachPolicy(requestData: Data[] , idPolicy: number){
     console.log(requestData);
     console.log("idPolicy: "+ idPolicy);
+    this.notification.success('Thành công', 'Gỡ Policy thành công');
   }
 
   goBack(){
@@ -127,7 +129,10 @@ export class PolicyAttachDetachComponent implements OnInit {
       type: index%2,
     }));
   }
-  constructor(private activatedRoute: ActivatedRoute,private modalService: NzModalService) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private modalService: NzModalService,
+    private notification: NzNotificationService,) {
   }
 
 }
