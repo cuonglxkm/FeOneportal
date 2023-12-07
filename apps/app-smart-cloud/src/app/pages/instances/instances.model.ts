@@ -253,7 +253,7 @@ export class InstanceCreate {
   usedMss: boolean;
   customerUsingMss: any;
   typeName: string;
-  vpcId: string;
+  vpcId: any;
   oneSMEAddonId: any;
   serviceType: number;
   serviceInstanceId: number;
@@ -335,4 +335,46 @@ export class OrderItem {
   specificationType: string;
   price: number;
   serviceDuration: number;
+}
+
+export interface InstanceResize {
+  description: any;
+  currentFlavorId: number;
+  newFlavorId: number;
+  addRam: number;
+  addCpu: number;
+  addBttn: number;
+  addBtqt: number;
+  typeName: string;
+  newOfferId: number;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  regionId: number;
+  serviceName: any;
+  customerId: number;
+  vpcId: any;
+  userEmail: any;
+  actorEmail: any;
+}
+
+export class InstanceAttachment {
+  cloudId: string
+  name: string
+  sizeInGB: number
+  description: string
+  instanceId: any
+  postResizeVolumeId: any
+  bootable: boolean
+  regionId: number
+  regionText: string
+  offerId: number
+  iops: number
+  customerId: number
+  createDate: string
+  status: string
+  cloudIdentityId: number
+  projectName: string
+  projectId: number
+  id: number
 }

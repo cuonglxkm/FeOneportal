@@ -8,7 +8,7 @@
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
         <!--    <nz-card>-->
         <nz-card>
-            <div class="title">Restore Backup VM</div>
+            <div class="title"><h4><b>Restore Backup VM</b></h4></div>
             <nz-row>
                 <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
                                 formControlName="radio">
@@ -20,7 +20,8 @@
     </form>
     <div *ngIf="selectedValueRadio === 'N'">
         <one-portal-new-virtual-machine [region]="region"
-                                        [project]="project"/>
+                                        [project]="project"
+                                        [backupVmId]="backupVmId"/>
     </div>
     <div *ngIf="selectedValueRadio === 'O'">
         <one-portal-current-virtual-machine [region]="region"

@@ -58,17 +58,19 @@ import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.com
 import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
 import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import { PopupDeleteSnapshotVolumeComponent } from "./snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component";
-import { PopupEditSnapshotVolumeComponent } from "./snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component";
+import { PopupDeleteSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
+import { PopupEditSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
-import {
-  ListBackupVolumeComponent
-} from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { UserComponent } from './users/user.component';
+import { UserCreateComponent } from './users/user-create/user-create.component';
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { AddPoliciesComponent } from './users/user-detail/add-policies/add-policies.component';
+import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
 import {NgxJsonViewerModule} from "ngx-json-viewer";
-import {NgJsonEditorModule} from "ang-jsoneditor";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -124,6 +126,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachOrDetachComponent,
     CurrentVirtualMachineComponent,
     NewVirtualMachineComponent,
+    UserComponent,
+    UserCreateComponent,
+    UserDetailComponent,
+    AddPoliciesComponent,
+    AddToGroupComponent,
   ],
   imports: [
     CommonModule,
@@ -148,7 +155,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     NzImageModule,
     LayoutDefaultModule,
-
     DragDropModule,
     NgxJsonViewerModule
   ],
