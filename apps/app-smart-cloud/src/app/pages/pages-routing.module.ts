@@ -32,6 +32,7 @@ import {
 import {
   ListBackupVolumeComponent
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import {PolicyAttachDetachComponent} from "./policy/policy-attach-detach/policy-attach-detach.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -142,6 +143,10 @@ const routes: Routes = [
   {
     path: 'backup-volume',
     component: ListBackupVolumeComponent
+  },
+  {
+    path: 'policy/attach/:id',
+    component: PolicyAttachDetachComponent
   }
 ]
 

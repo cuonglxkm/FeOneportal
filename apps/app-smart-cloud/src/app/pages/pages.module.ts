@@ -66,6 +66,8 @@ import { CreateBackupVolumeComponent } from './volume/component/backup-volume/cr
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
 import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { PolicyListComponent } from './policy/policy-list/policy-list.component';
+import {PolicyAttachDetachComponent} from "./policy/policy-attach-detach/policy-attach-detach.component";
+import {PopupAttachPolicy} from "./policy/popup-policy/popup-attach-policy";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -122,6 +124,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CurrentVirtualMachineComponent,
     NewVirtualMachineComponent,
     PolicyListComponent,
+    PolicyAttachDetachComponent,
+    PopupAttachPolicy
   ],
   imports: [
     CommonModule,
