@@ -6,3 +6,4 @@ export * from './_user';
 export * from './_groupCreateUser';
 export * from './_copyUserPolicies';
 export * from './_permissionPolicies';
+export * from './_policiesOfUser';
