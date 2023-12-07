@@ -68,6 +68,11 @@
           "text": "Quản lý Policy",
           "icon": "anticon-search",
           "link": "/app-smart-cloud/policy"
+        },
+        {
+          "text": "Users",
+          "icon": "anticon-user",
+          "link": "/app-smart-cloud/users"
         }
       ]
     }

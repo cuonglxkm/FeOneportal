@@ -36,11 +36,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { da, tr } from 'date-fns/locale';
-import { Observable, finalize } from 'rxjs';
+import {Observable, finalize, interval, startWith, take, map, of} from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
+import {NguCarouselConfig} from "@ngu/carousel";
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -72,23 +74,32 @@ class Network {
   ipv6?: boolean = false;
   price?: string = '000';
 }
-interface CarouselData {
-  id?: string;
-  text: string;
-  dataMerge?: number;
-  width: number;
-  dotContent?: string;
-  src?: string;
-  dataHash?: string;
-}
-
 @Component({
   selector: 'one-portal-instances-create',
   templateUrl: './instances-create.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
+
+
+  images = ['assets/logo.svg', 'assets/logo.svg', 'assets/logo.svg', 'assets/logo.svg'];
+
+  public carouselTileItems$: Observable<number[]>;
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    speed: 250,
+    point: {
+      visible: true
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy'
+  };
+  tempData: any[];
+
   reverse = true;
   form = new FormGroup({
     name: new FormControl('', {
@@ -129,36 +140,20 @@ export class InstancesCreateComponent implements OnInit {
   selectedTypeImageId: number;
   pagedCardListImages: Array<Array<any>> = [];
 
-  carouselData: CarouselData[] = [
-    { text: 'Slide 1 PM', dataMerge: 1, width: 350, dotContent: 'text1' },
-    { text: 'Slide 2 PM', dataMerge: 2, width: 350, dotContent: 'text2' },
-    { text: 'Slide 3 PM', dataMerge: 3, width: 350, dotContent: 'text3' },
-    { text: 'Slide 4 PM', width: 350, dotContent: 'text4' },
-    { text: 'Slide 5 PM', dataMerge: 4, width: 350, dotContent: 'text5' },
-    { text: 'Slide 6 PM', dataMerge: 5, width: 350, dotContent: 'text5' },
-    { text: 'Slide 7 PM', dataMerge: 6, width: 350, dotContent: 'text5' },
-  ];
-  activeSlides: WritableSignal<SlidesOutputData> = signal({});
-
-  getPassedData(data: any) {
-    this.activeSlides.set(data);
-    // console.log(this.activeSlides());
-  }
-
   customOptions: OwlOptions = {
     autoWidth: true,
     loop: true,
     items: 4,
     margin: 50,
     // slideBy: 'page',
-    mergeFit: true,
-    merge: true,
+    // mergeFit: true,
+    // merge: true,
     // autoplay: true,
     // autoplayTimeout: 5000,
     // autoplayHoverPause: true,
     // autoplaySpeed: 4000,
     dotsSpeed: 500,
-    rewind: false,
+    // rewind: false,
     // dots: false,
     // dotsData: true,
     // mouseDrag: true,
@@ -167,7 +162,7 @@ export class InstancesCreateComponent implements OnInit {
     smartSpeed: 400,
     // fluidSpeed: 499,
     dragEndSpeed: 350,
-    // dotsEach: 1,
+    dotsEach: 5,
     // center: true,
     // rewind: true,
     // rtl: true,
@@ -176,17 +171,13 @@ export class InstancesCreateComponent implements OnInit {
     slideBy: 'page',
     responsive: {
       0: {
-        items: 1,
+        items: 4,
+        dotsEach: 5,
       },
       300: {
-        items: 2,
-      },
-      600: {
-        items: 3,
-      },
-      900: {
         items: 4,
-      },
+        dotsEach: 5,
+      }
     },
     // stagePadding: 40,
     nav: false,
@@ -307,6 +298,7 @@ export class InstancesCreateComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
+  
   toggleClass(id: string) {
     this.selectedElementFlavor = id;
     if (this.selectedElementFlavor) {
@@ -462,7 +454,38 @@ export class InstancesCreateComponent implements OnInit {
     public message: NzMessageService,
     private renderer: Renderer2,
     private loadingSrv: LoadingService
-  ) {}
+  ) {
+
+    this.tempData = [ this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+
+    ];
+
+    this.carouselTileItems$ = of(this.tempData);
+
+    // this.carouselTileItems$ = interval(500).pipe(
+    //   startWith(-1),
+    //   take(30),
+    //   map(() => {
+    //     const data = (this.tempData = [
+    //       ...this.tempData,
+    //       this.images[Math.floor(Math.random() * this.images.length)]
+    //     ]);
+    //
+    //     return data;
+    //   })
+    // );
+
+  }
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
@@ -552,7 +575,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
-    this.instanceCreate.customerId = 669;
+    this.instanceCreate.customerId = this.tokenService.get()?.userId;
     this.instanceCreate.createDate = '2023-11-01T00:00:00';
     this.instanceCreate.expireDate = '2023-12-01T00:00:00';
     this.instanceCreate.saleDept = null;
@@ -587,7 +610,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
-    this.volumeCreate.customerId = 669;
+    this.volumeCreate.customerId = this.tokenService.get()?.userId;
     this.volumeCreate.createDate = '0001-01-01T00:00:00';
     this.volumeCreate.expireDate = '0001-01-01T00:00:00';
     this.volumeCreate.saleDept = null;

@@ -1,25 +1,28 @@
 <!--Head section-->
 <!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
 
-<page-header [action]="action" [title]="'Danh sách máy ảo'">
-  <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown [regionId]="region"></project-select-dropdown>
-    </div>
-  </ng-template>
+<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: white;">
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item> Quản lý máy ảo </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right non-pointer">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="region"></project-select-dropdown>
+  </div>
+  <div><h2>Danh sách máy ảo</h2></div>
   <form nz-form *ngIf="isSearch">
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
       <div
         nz-col
-        [nzLg]="8"
-        [nzMd]="8"
+        [nzLg]="7"
+        [nzMd]="7"
         [nzSm]="24"
-        [nzXl]="6"
+        [nzXl]="7"
         [nzXs]="24"
-        [nzXXl]="6"
+        [nzXXl]="7"
       >
         <nz-form-item>
           <nz-form-label [nzFor]="">Trạng thái máy ảo</nz-form-label>
@@ -42,49 +45,44 @@
       </div>
       <div
         nz-col
-        [nzLg]="8"
-        [nzMd]="12"
+        [nzLg]="11"
+        [nzMd]="11"
         [nzSm]="24"
-        [nzXl]="8"
+        [nzXl]="11"
         [nzXs]="24"
-        [nzXXl]="8"
+        [nzXXl]="11"
       >
         <nz-form-item>
-          <nz-form-control>
-            <input
-              name="name"
-              nz-input
-              placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
-              [ngModel]="searchParam.name"
-              (ngModelChange)="changeName($event)"
-            />
-          </nz-form-control>
+          <nz-row style="width: 100%;">
+            <nz-col style="width: 60%;">
+              <nz-form-control>
+                <input
+                  name="name"
+                  nz-input
+                  placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
+                  [ngModel]="searchParam.name"
+                  (ngModelChange)="changeName($event)"
+                />
+              </nz-form-control>
+            </nz-col>
+            <nz-form-control>
+              <button nz-button [nzType]="'primary'" (click)="getDataList()">
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </nz-form-control>
+          </nz-row>
         </nz-form-item>
       </div>
       <div
-        class="text-right p-0 m-b-10"
+        class="text-right p-0 m-b-0"
         nz-col
-        [nzLg]="4"
-        [nzMd]="8"
+        [nzLg]="6"
+        [nzMd]="6"
         [nzSm]="24"
-        [nzXl]="4"
+        [nzXl]="6"
         [nzXs]="24"
-        [nzXXl]="2"
-      >
-        <button nz-button [nzType]="'primary'" (click)="getDataList()">
-          <i nz-icon nzType="search"></i>
-          Search
-        </button>
-      </div>
-      <div
-        class="text-right p-0 m-b-10"
-        nz-col
-        [nzLg]="8"
-        [nzMd]="12"
-        [nzSm]="24"
-        [nzXl]="8"
-        [nzXs]="24"
-        [nzXXl]="8"
+        [nzXXl]="6"
       >
         <button
           class="m-r-8"
@@ -149,7 +147,11 @@
             name="selectAction"
             (ngModelChange)="showModal($event, data)"
           >
-            <nz-option nzValue="1" nzLabel="Tạo Backup" (click)="navigateToCreateBackup(data.id)"></nz-option>
+            <nz-option
+              nzValue="1"
+              nzLabel="Tạo Backup"
+              (click)="navigateToCreateBackup(data.id)"
+            ></nz-option>
             <nz-option nzValue="2" nzLabel="Tạo lịch Backup"></nz-option>
             <nz-option
               nzValue="3"
@@ -169,11 +171,7 @@
 </div>
 
 <div class="normal-table-wrap" *ngIf="activeCreate && isSearch">
-  <nz-table
-    #ajaxTable3
-    [nzData]="emptyList"
-    [nzLoading]="loading"
-  >
+  <nz-table #ajaxTable3 [nzData]="emptyList" [nzLoading]="loading">
     <thead>
       <tr>
         <th>Tên máy ảo</th>
@@ -185,15 +183,14 @@
         <th>Thao tác</th>
       </tr>
     </thead>
-    <tbody>
-    </tbody>
+    <tbody></tbody>
   </nz-table>
 </div>
 
 <div *ngIf="!loading && activeCreate && !isSearch">
   <nz-card>
     <result>
-      <img nz-image nzSrc="assets/imgs/blank_vm.png" alt="" />
+      <img src="assets/imgs/blank_vm.png" alt="" />
 
       <button nz-button [nzType]="'primary'" (click)="navigateToCreate()">
         <!-- <a routerLink="/pages/instances/instances-create"> Khởi tạo ngay</a>
