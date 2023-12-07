@@ -3,7 +3,7 @@ import { BaseService } from './base.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { GroupCreateUser, User } from '../models/user.model';
+import { CopyUserPolicies, GroupCreateUser, PermissionPolicies, User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -59,5 +59,13 @@ export class UserService extends BaseService {
 
   getGroupsCreateUser(): Observable<BaseResponse<GroupCreateUser[]>> {
     return this.http.get<BaseResponse<GroupCreateUser[]>>('/groupCreateUsers');
+  }
+
+  getCopyUserPolicies(): Observable<BaseResponse<CopyUserPolicies[]>> {
+    return this.http.get<BaseResponse<CopyUserPolicies[]>>('/copyUserPlicies');
+  }
+
+  getPermissionPolicies(): Observable<BaseResponse<PermissionPolicies[]>> {
+    return this.http.get<BaseResponse<PermissionPolicies[]>>('/permissionPolicies');
   }
 }

@@ -12,3 +12,18 @@ export class GroupCreateUser {
     attachedPolicies: string[];
     createdTime: string;
 }
+
+export class CopyUserPolicies {
+    id: number;
+    name: string;
+    groups: string[];
+    attachedPolicies: string[];
+    createdTime: string;
+}
+
+export class PermissionPolicies {
+  id: number;
+  name: string;
+  type: string;
+  attachedEntities: number;
+}

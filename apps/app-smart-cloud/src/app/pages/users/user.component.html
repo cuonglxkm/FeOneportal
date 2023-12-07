@@ -61,6 +61,15 @@
           class="m-r-8"
           nz-button
           nzType="default"
+          style="background-color: white"
+          (click)="navigateToCreate()"
+        >
+          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
+        </button>
+        <button
+          class="m-r-8"
+          nz-button
+          nzType="default"
           style="background-color: #9c9c9c; color: white"
           (click)="navigateToCreate()"
         >
@@ -98,7 +107,7 @@
       >
         <thead>
           <tr>
-            <th></th>
+            <th style="width: 20px;"></th>
             <th>Tên User</th>
             <th>Groups</th>
             <th>Thời gian tạo</th>

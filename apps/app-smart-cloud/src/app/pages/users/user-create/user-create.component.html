@@ -1,7 +1,7 @@
 <page-header>
   <nz-breadcrumb style="width: 50%; float: left">
     <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Users</a>
+      <a [routerLink]="['/app-smart-cloud/users']">Users</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Tạo User</a>
@@ -201,7 +201,11 @@
   </nz-row>
 </nz-card>
 
-<nz-card *ngIf="activeBlockAddUsertoGroup" [nzBordered]="false" nzTitle="Thông tin Groups">
+<nz-card
+  *ngIf="activeBlockAddUsertoGroup"
+  [nzBordered]="false"
+  nzTitle="Thông tin Groups"
+>
   <form nz-form>
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
       <div
@@ -249,10 +253,10 @@
           class="m-r-8"
           nz-button
           nzType="default"
-          style="background-color:white"
+          style="background-color: white"
           (click)="navigateToCreate()"
         >
-          <img src="assets/imgs/undo.png" alt="" />
+          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
         <button
           class="m-r-8"
@@ -283,7 +287,7 @@
       >
         <thead>
           <tr>
-            <th></th>
+            <th style="width: 20px"></th>
             <th>Tên Group</th>
             <th>Số lượng User</th>
             <th>Attached policies</th>
@@ -309,3 +313,283 @@
     </ng-container>
   </ng-container>
 </nz-card>
+
+<nz-card
+  *ngIf="activeBlockCopyPolicies"
+  [nzBordered]="false"
+  nzTitle="Thông tin Users"
+>
+  <form nz-form>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+      <div
+        nz-col
+        [nzLg]="10"
+        [nzMd]="10"
+        [nzSm]="24"
+        [nzXl]="10"
+        [nzXs]="24"
+        [nzXXl]="10"
+      >
+        <nz-form-item>
+          <nz-row style="width: 100%">
+            <nz-col style="width: 60%">
+              <nz-form-control>
+                <input
+                  name="name"
+                  nz-input
+                  placeholder="Tìm kiếm tên, thời gian tạo ..."
+                  [ngModel]="searchParam"
+                  (ngModelChange)="changeSearch($event)"
+                />
+              </nz-form-control>
+            </nz-col>
+            <nz-form-control>
+              <button
+                nz-button
+                [nzType]="'primary'"
+                (click)="getCopyUserPlicies()"
+              >
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </nz-form-control>
+          </nz-row>
+        </nz-form-item>
+      </div>
+      <div
+        class="text-right p-0 m-b-0"
+        nz-col
+        [nzLg]="14"
+        [nzMd]="14"
+        [nzSm]="24"
+        [nzXl]="14"
+        [nzXs]="24"
+        [nzXXl]="14"
+      >
+        <button
+          class="m-r-8"
+          nz-button
+          nzType="default"
+          style="background-color: white"
+          (click)="navigateToCreate()"
+        >
+          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-container>
+    <ng-container>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOfUsers"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="getCopyUserPlicies()"
+        (nzPageSizeChange)="getCopyUserPlicies()"
+      >
+        <thead>
+          <tr>
+            <th style="width: 20px"></th>
+            <th>Tên User</th>
+            <th>Groups</th>
+            <th>Attached policies</th>
+            <th>Thời gian tạo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfUsers">
+            <td>
+              <label
+                nz-checkbox
+                [ngModel]="isUseIPv6"
+                [ngModelOptions]="{ standalone: true }"
+              ></label>
+            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.groups }}</td>
+            <td>{{ item.attachedPolicies }}</td>
+            <td>{{ item.createdTime }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </ng-container>
+  </ng-container>
+</nz-card>
+
+<nz-card
+  *ngIf="activeBlockAttachPolicies"
+  [nzBordered]="false"
+  nzTitle="Thông tin Permissions policies"
+>
+  <form nz-form>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+      <div
+        nz-col
+        [nzLg]="6"
+        [nzMd]="6"
+        [nzSm]="24"
+        [nzXl]="6"
+        [nzXs]="24"
+        [nzXXl]="6"
+      >
+        <nz-form-item>
+          <nz-form-label [nzFor]="">Loại Policy:</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [ngModel]="typePolicy"
+              [nzPlaceHolder]="'Tất cả các loại'"
+              [nzShowSearch]="false"
+              (ngModelChange)="changeFilterStatus($event)"
+            >
+              <nz-option
+                *ngFor="let i of filterStatus"
+                [nzLabel]="i.text"
+                [nzValue]="i.value"
+              />
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div
+        nz-col
+        [nzLg]="10"
+        [nzMd]="10"
+        [nzSm]="24"
+        [nzXl]="10"
+        [nzXs]="24"
+        [nzXXl]="10"
+      >
+        <nz-form-item>
+          <nz-row style="width: 100%">
+            <nz-col style="width: 60%">
+              <nz-form-control>
+                <input
+                  name="name"
+                  nz-input
+                  placeholder="Tìm kiếm tên, thời gian tạo ..."
+                  [ngModel]="searchParam"
+                  (ngModelChange)="changeSearch($event)"
+                />
+              </nz-form-control>
+            </nz-col>
+            <nz-form-control>
+              <button
+                nz-button
+                [nzType]="'primary'"
+                (click)="getPermissionPolicies()"
+              >
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </nz-form-control>
+          </nz-row>
+        </nz-form-item>
+      </div>
+      <div
+        class="text-right p-0 m-b-0"
+        nz-col
+        [nzLg]="8"
+        [nzMd]="8"
+        [nzSm]="24"
+        [nzXl]="8"
+        [nzXs]="24"
+        [nzXXl]="8"
+      >
+        <button
+          class="m-r-8"
+          nz-button
+          nzType="default"
+          style="background-color: white"
+          (click)="navigateToCreate()"
+        >
+          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
+        </button>
+        <button
+          class="m-r-8"
+          class="bg-success border-success"
+          nz-button
+          nzType="primary"
+          (click)="navigateToCreate()"
+        >
+          <i nz-icon nzType="plus"></i>
+          Tạo mới
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-container>
+    <ng-container>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOfpolicies"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="getPermissionPolicies()"
+        (nzPageSizeChange)="getPermissionPolicies()"
+      >
+        <thead>
+          <tr>
+            <th style="width: 20px"></th>
+            <th>Tên Policy</th>
+            <th>Type</th>
+            <th>Attached entities</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfpolicies">
+            <td>
+              <label
+                nz-checkbox
+                [ngModel]="isUseIPv6"
+                [ngModelOptions]="{ standalone: true }"
+              ></label>
+            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.attachedEntities }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </ng-container>
+  </ng-container>
+</nz-card>
+
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+  <div
+    class="text-right p-0 m-b-0"
+    nz-col
+    [nzLg]="24"
+    [nzMd]="24"
+    [nzSm]="24"
+    [nzXl]="24"
+    [nzXs]="24"
+    [nzXXl]="24"
+  >
+    <button
+      class="m-r-8"
+      nz-button
+      nzType="default"
+      style="background-color: #9c9c9c; color: white"
+      (click)="navigateToList()"
+    >
+      Quay lại
+    </button>
+    <button
+      class="m-r-8"
+      nz-button
+      nzType="primary"
+      (click)="navigateToCreate()"
+    >
+      Tạo mới
+    </button>
+  </div>
+</div>

@@ -7,7 +7,11 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { GroupCreateUser } from 'src/app/shared/models/user.model';
+import {
+  CopyUserPolicies,
+  GroupCreateUser,
+  PermissionPolicies,
+} from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs';
@@ -22,6 +26,8 @@ export class UserCreateComponent implements OnInit {
   regionId: number;
   projectId: number;
   listOfGroups: GroupCreateUser[] = [];
+  listOfUsers: CopyUserPolicies[] = [];
+  listOfpolicies: PermissionPolicies[] = [];
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
@@ -29,6 +35,18 @@ export class UserCreateComponent implements OnInit {
   id: any;
   searchParam: string;
   loading = true;
+  typePolicy: string = '';
+
+  filterStatus = [
+    { text: 'Tất cả các loại', value: '' },
+    { text: 'Khởi tạo', value: 'KHOITAO' },
+    { text: 'Hủy', value: 'HUY' },
+    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+  ];
+
+  changeFilterStatus(e: any): void {
+    this.typePolicy = e;
+  }
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -52,6 +70,8 @@ export class UserCreateComponent implements OnInit {
       console.log(data);
     });
     this.getData();
+    this.getCopyUserPlicies();
+    this.getPermissionPolicies();
   }
 
   getData(): void {
@@ -60,15 +80,46 @@ export class UserCreateComponent implements OnInit {
     //   this.listOfIp = baseResponse.records;
     //     console.log(this.listOfIp);
     // });
-    this.service.getGroupsCreateUser().pipe(
-      finalize(() => {
-      this.loading = false;
-      this.cdr.detectChanges();
-    })
-    ).subscribe(baseResponse => {
-      this.listOfGroups = baseResponse.records;
+    this.service
+      .getGroupsCreateUser()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((baseResponse) => {
+        this.listOfGroups = baseResponse.records;
         console.log(this.listOfGroups);
-    });
+      });
+  }
+
+  getCopyUserPlicies() {
+    this.service
+      .getCopyUserPolicies()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((data) => {
+        this.listOfUsers = data.records;
+      });
+  }
+
+  getPermissionPolicies() {
+    this.service
+      .getPermissionPolicies()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((data) => {
+        this.listOfpolicies = data.records;
+      });
   }
 
   onRegionChange(region: RegionModel) {
@@ -108,4 +159,8 @@ export class UserCreateComponent implements OnInit {
   }
 
   navigateToCreate() {}
+
+  navigateToList() {
+    this.router.navigate(['/app-smart-cloud/users']);
+  }
 }

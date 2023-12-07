@@ -150,7 +150,6 @@ const routes: Routes = [
     loadChildren: () => import('../pages/policy/policy.module').then(m => m.PolicyModule)
   },
   {path: '', redirectTo: 'policy', pathMatch: 'full'},
-  },
   {
     path: 'users',
     component: UserComponent
