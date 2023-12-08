@@ -1,0 +1,8 @@
+<one-portal-header
+  title="Thông tin Policy"
+  [path]="['Home', 'IAM', 'Policies', 'Detail policy' ]"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+
+<json-editor [options]="editorOptions" [data]="data"></json-editor>

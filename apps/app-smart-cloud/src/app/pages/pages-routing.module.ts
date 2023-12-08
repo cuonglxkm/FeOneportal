@@ -36,6 +36,7 @@ import {PolicyAttachComponent} from "./policy/policy-attach/policy-attach.compon
 import { UserComponent } from "./users/user.component";
 import { UserCreateComponent } from "./users/user-create/user-create.component";
 import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
+import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -154,6 +155,10 @@ const routes: Routes = [
   {
     path: 'policy/detach/:id',
     component: PolicyDetachComponent
+  },
+  {
+    path: 'policy/detail/:id',
+    component: PolicyDetailComponent
   },
   {
     path: 'policy',

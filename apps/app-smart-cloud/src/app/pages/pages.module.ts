@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
@@ -72,7 +73,7 @@ import {PolicyAttachComponent} from "./policy/policy-attach/policy-attach.compon
 import {PopupAttachPolicyComponent} from "./policy/popup-policy/popup-attach-policy.component";
 import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
 import {PopupDetachPolicyComponent} from "./policy/popup-policy/popup-detach-policy.component";
-
+import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.component";
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -131,6 +132,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     PopupAttachPolicyComponent,
     PolicyDetachComponent,
     PopupDetachPolicyComponent,
+    PolicyDetailComponent,
     UserComponent,
     UserCreateComponent,
   ],
@@ -158,6 +160,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     LayoutDefaultModule,
     DragDropModule,
+    NgJsonEditorModule,
   ],
 })
 export class PagesModule {}
