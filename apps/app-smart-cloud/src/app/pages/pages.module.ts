@@ -70,6 +70,8 @@ import { UserCreateComponent } from './users/user-create/user-create.component';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
 import { AddPoliciesComponent } from './users/user-detail/add-policies/add-policies.component';
 import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -155,6 +157,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     LayoutDefaultModule,
     DragDropModule,
+    NgxJsonViewerModule,
+    // Starting Angular 13
+    AngJsoneditorModule,
   ],
 })
 export class PagesModule {}
