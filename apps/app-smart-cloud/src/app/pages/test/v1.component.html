@@ -24,7 +24,8 @@
 
   <ngx-json-viewer [json]="someObject"></ngx-json-viewer>
 
-
+  <json-editor [options]="editorOptions" [data]="initialData" (change)="showJson($event)"></json-editor>
+  <div>{{ visibleData | json }}</div>
 
 </div>
 

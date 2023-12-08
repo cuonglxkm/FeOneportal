@@ -17,6 +17,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../shared/models/region.model";
 import {HttpClient} from "@angular/common/http";
 import {ProjectModel} from "../../shared/models/project.model";
+import { JsonEditorOptions } from '@maaxgr/ang-jsoneditor';
 @Component({
   selector: 'app-dashboard-v1',
   templateUrl: 'v1.component.html',
@@ -32,10 +33,18 @@ export class V1Component implements OnInit {
     }
   }
 
-
+  public editorOptions: JsonEditorOptions;
+  public initialData: any;
+  public visibleData: any;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private http: HttpClient) {
+
+    this.editorOptions = new JsonEditorOptions()
+    this.editorOptions.modes = ['code', 'text', 'tree', 'view'];
+
+    this.initialData = {"products":[{"name":"car","product":[{"name":"honda","model":[{"id":"civic","name":"civic"},{"id":"accord","name":"accord"},{"id":"crv","name":"crv"},{"id":"pilot","name":"pilot"},{"id":"odyssey","name":"odyssey"}]}]}]}
+    this.visibleData = this.initialData;
   }
 
   ngOnInit(): void {
@@ -50,5 +59,9 @@ export class V1Component implements OnInit {
 
   onProjectChange(projectModel: ProjectModel) {
     console.log(projectModel)
+  }
+
+  showJson(d: Event) {
+    this.visibleData = d;
   }
 }
