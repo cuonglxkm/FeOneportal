@@ -5,4 +5,100 @@
   (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
 
-<json-editor [options]="editorOptions" [data]="data"></json-editor>
+<nz-content>
+
+  <nz-card nzTitle="Thông tin chính của Policy">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Tên Policy</b></nz-form-label>
+    <br>
+    <p style="opacity: 0.5;">Policy abc</p>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Type</b></nz-form-label>
+    <br>
+    <p style="opacity: 0.5;">Customer Managed</p>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Thời gian khởi tạo</b></nz-form-label>
+    <br>
+    <p style="opacity: 0.5;">16/12/2023 12:12:12</p>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Chỉnh sửa lần cuối </b></nz-form-label>
+    <br>
+    <p style="opacity: 0.5;">16/12/2023 12:12:12</p>
+    <br>
+  </nz-card>
+
+  <nz-card nzTitle="Thông tin bổ sung">
+    <div
+      class="row"
+    >
+      <div style="display: inline-block; margin-right: auto;">
+        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+          <input type="text" [(ngModel)]="policyInfoSearch" nz-input placeholder="Tìm kiếm tên, thời gian tạo..."
+                 style="width: 300px;"/>
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSize="default" (click)="searchPolicInfo()" nzSearch><i nz-icon
+                                                                                                      [nzType]="'search'"></i>Search
+          </button>
+        </ng-template>
+      </div>
+
+      <div style="display: inline-block; margin-left: auto; text-align: right;">
+        <button nz-button
+                nzType="default"
+                (click)="edit()"
+        >
+          Edit
+        </button>
+        <button nz-button
+                [nzType]="!isJson ? 'primary' : 'default' "
+                (click)="toVisual()"
+        >
+          Visual
+        </button>
+        <button nz-button
+                [nzType]="isJson ? 'primary' : 'default' "
+                (click)="toJson()"
+        >
+          Json
+        </button>
+      </div>
+    </div>
+
+  </nz-card>
+
+  <nz-tabset [(nzSelectedIndex)]="tabPolicyIndex">
+    <nz-tab nzTitle="Permissions policies" >
+
+      <json-editor *ngIf="isJson"  style="min-height: 300px;" [options]="editorOptions" [data]="jsonPermission"></json-editor>
+
+      <nz-table
+        *ngIf="!isJson"
+        class="table-data"
+        #rowSelectionTable
+        nzShowPagination
+        nzShowSizeChanger
+        [nzData]="jsonPermission"
+      >
+        <thead>
+        <tr>
+          <th>Entity Name</th>
+          <th>Entity Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data">
+          <td>{{ data.id }}</td>
+          <td>{{ data.regionDisplayName}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+
+    </nz-tab>
+    <nz-tab nzTitle="Entities attached" >
+      <json-editor *ngIf="isJson" style="min-height: 300px;" [options]="editorOptions" [data]="jsonEntities"></json-editor>
+    </nz-tab>
+  </nz-tabset>
+
+</nz-content>
+
+

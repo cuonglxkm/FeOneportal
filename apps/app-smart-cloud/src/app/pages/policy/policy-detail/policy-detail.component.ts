@@ -1,7 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
-import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
+import {RegionService} from "../../../shared/services/region.service";
+
 @Component({
   selector: 'one-portal-policy-detail',
   templateUrl: './policy-detail.component.html',
@@ -10,27 +12,18 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 export class PolicyDetailComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
-  public data: any;
-  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
+
+  public jsonPermission: any;
+  public jsonEntities: any;
+
+  @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
 
 
-  constructor() {
+  constructor(private regionService: RegionService) {
     this.editorOptions = new JsonEditorOptions()
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view'];
     this.editorOptions.mode = 'code'; //set only one mode
 
-    this.data = {
-      "products": [{
-        "name": "car",
-        "product": [{
-          "name": "honda",
-          "model": [{"id": "civic", "name": "civic"}, {"id": "accord", "name": "accord"}, {
-            "id": "crv",
-            "name": "crv"
-          }, {"id": "pilot", "name": "pilot"}, {"id": "odyssey", "name": "odyssey"}]
-        }]
-      }]
-    }
 
 
   }
@@ -39,7 +32,41 @@ export class PolicyDetailComponent implements OnInit {
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
+  policyInfoSearch: string;
+
+  isJson: boolean = true;
+
+  tabPolicyIndex: number;
+
   ngOnInit(): void {
+
+    this.regionService.getAll().subscribe(data => {
+      // console.log(data);
+      this.jsonPermission = data;
+      if (this.jsonPermission.length > 0) {
+
+
+      }
+    }, error => {
+      this.jsonPermission = []
+    });
+  }
+
+
+  searchPolicInfo() {
+
+  }
+
+  edit() {
+
+  }
+
+  toVisual() {
+    this.isJson = false;
+  }
+
+  toJson() {
+    this.isJson = true;
   }
 
   projectChanged(project: ProjectModel) {

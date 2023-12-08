@@ -1,11 +1,15 @@
 <page-header>
   <nz-breadcrumb style="width: 50%; float: left">
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
     <nz-breadcrumb-item>
       <a [routerLink]="['/app-smart-cloud/users']">Users</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Tạo User</a>
+      <a [routerLink]="['/app-smart-cloud/users/detail/' + id]"
+        >Chi tiết User</a
+      >
     </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Thêm Policies </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right">
     <region-select-dropdown
@@ -16,81 +20,8 @@
       (valueChanged)="onProjectChange($event)"
     ></project-select-dropdown>
   </div>
-  <div><h2>Tạo User</h2></div>
+  <div><h2>Thêm Policies</h2></div>
 </page-header>
-
-<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-  <nz-card [nzBordered]="false" nzTitle="Thông tin của User">
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Tên của User<span class="text-red">*</span></nz-form-label
-          >
-          <nz-form-control nzErrorTip="Vui lòng nhập tên User">
-            <input
-              nz-input
-              formControlName="name"
-              id="name"
-              placeholder="Nhập tên của User"
-              maxlength="250"
-              minlength="1"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Email của User<span class="text-red">*</span></nz-form-label
-          >
-          <nz-form-control nzErrorTip="Vui lòng nhập email của User">
-            <input
-              nz-input
-              formControlName="name"
-              id="name"
-              placeholder="Nhập email của User"
-              maxlength="250"
-              minlength="1"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-alert
-          nzType="warning"
-          [nzMessage]="nzDescriptionWarning06"
-          nzShowIcon
-        ></nz-alert>
-        <ng-template #nzDescriptionWarning06>
-          <div>
-            User sẽ nhận thông tin đăng nhập vào hệ thống thông qua Email được
-            điền phía trên.
-          </div>
-          <div>
-            Tài khoản Email của User phải là tài khoản Email đã được sử dụng để
-            đăng ký trên hệ thống.
-          </div>
-          <div>
-            Nếu User chưa có tài khoản Email, vui lòng truy cập
-            <a
-              href="https://workspace.google.com/business/signup/welcome?hl=vi&source=gafb-gmail-hero-vi&ga_region=japac&ga_country=vi&ga_lang=vi&__utma=61317162.261098870.1701847451.1701847451.1701847477.2&__utmb=61317162.0.10.1701847477&__utmc=61317162&__utmx=-&__utmz=61317162.1701847477.2.2.utmcsr=google|utmgclid=Cj0KCQiAsburBhCIARIsAExmsu4c4aTp3VM7eYOsERmsjtaT7CEB2NOhMpNItqa7LdD0KZyuGJcYPakaAggUEALw_wcB|utmgclsrc=aw.ds|utmccn=1605214-Workspace-APAC-VN-vi-BKWS-BRO-Gmai-DesknTabl|utmcmd=cpc|utmctr=KW_%C4%91%C4%83ng%20nh%E1%BA%ADp%20gmail%20m%E1%BB%9Bi|utmcct=text-ad-none-none-DEV_c-CRE_629112839914-ADGP_Hybrid%20|%20BKWS%20-%20BRO%20|%20Txt_Gmail_New-KWID_43700077974856437-kwd-315104593351&__utmv=-&__utmk=185946606"
-              target="_blank"
-              rel="noreferrer"
-              class="list-item-link"
-              >[link đăng ký]</a
-            >
-            để thực hiện đăng ký.
-          </div>
-        </ng-template>
-      </nz-col>
-    </nz-row>
-  </nz-card>
-</form>
 
 <nz-card [nzBordered]="false">
   <span class="title-card">Chọn kiểu gán Permissions cho User</span>
@@ -579,7 +510,7 @@
       nz-button
       nzType="default"
       style="background-color: #9c9c9c; color: white"
-      (click)="navigateToList()"
+      (click)="navigateToDetail()"
     >
       Quay lại
     </button>
@@ -589,7 +520,7 @@
       nzType="primary"
       (click)="navigateToCreate()"
     >
-      Tạo mới
+      Thêm policies
     </button>
   </div>
 </div>

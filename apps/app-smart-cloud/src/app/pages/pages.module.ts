@@ -1,6 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
@@ -74,6 +73,12 @@ import {PopupAttachPolicyComponent} from "./policy/popup-policy/popup-attach-pol
 import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
 import {PopupDetachPolicyComponent} from "./policy/popup-policy/popup-detach-policy.component";
 import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.component";
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { AddPoliciesComponent } from './users/user-detail/add-policies/add-policies.component';
+import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
+
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -135,6 +140,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     PolicyDetailComponent,
     UserComponent,
     UserCreateComponent,
+    UserDetailComponent,
+    AddPoliciesComponent,
+    AddToGroupComponent,
   ],
   imports: [
     CommonModule,
@@ -160,7 +168,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NzImageModule,
     LayoutDefaultModule,
     DragDropModule,
-    NgJsonEditorModule,
+    NgxJsonViewerModule,
+    // Starting Angular 13
+    AngJsoneditorModule,
   ],
 })
 export class PagesModule {}
