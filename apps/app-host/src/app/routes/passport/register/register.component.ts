@@ -22,6 +22,11 @@ export class UserRegisterComponent implements OnDestroy {
     private cdr: ChangeDetectorRef
   ) {}
 
+  panel =     {
+    active: false,
+    name: 'Thêm thông tin cá nhân',
+    disabled: false
+  }
   // #region fields
 
   form = this.fb.nonNullable.group(
@@ -31,7 +36,8 @@ export class UserRegisterComponent implements OnDestroy {
       confirm: ['', [Validators.required, Validators.minLength(6)]],
       mobilePrefix: ['+86'],
       mobile: ['', [Validators.required, Validators.pattern(/^1\d{10}$/)]],
-      captcha: ['', [Validators.required]]
+      captcha: ['', [Validators.required]],
+      agreement: ['', [Validators.required]]
     },
     {
       validators: MatchControl('password', 'confirm')

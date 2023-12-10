@@ -1,5 +1,9 @@
 @import '@delon/theme/index';
-
+//@import '../../../../../../node_modules/open-sans-fonts/open-sans.less';
+@import "@fontsource/open-sans";
+@import "@fontsource/open-sans/800.css"; // Weight 500.l
+@import "@fontsource/open-sans/700.css"; // Weight 500.
+@import "@fontsource/open-sans/600-italic.css"; // Weight 500.
 :host ::ng-deep {
   .container {
     display: flex;
@@ -13,6 +17,7 @@
     height: 40px;
     line-height: 44px;
     text-align: right;
+    float: right;
 
     .anticon {
       cursor: pointer;
@@ -79,6 +84,80 @@
     .wrap {
       padding: 32px 0 24px;
     }
+
+    .image-bg {
+      background-image: url('../../../../src/assets/imgs/abstract-blue-fractal-wave.png');
+      background-repeat: no-repeat;
+      background-size: 100%;
+      height: 822px;
+      width: 100%;
+      position: absolute;
+      bottom: 0px;
+      opacity: 0.5;
+      background-blend-mode: lighten;
+    }
+
+    .image-bg-2 {
+      position: absolute;
+      bottom: 10px;
+      left: 40px;
+    }
+  }
+
+  .text-1 {
+    font-family: Open Sans;
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 0px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(255, 255, 255, 1);
+  }
+
+  .text-2 {
+    font-family: Open Sans;
+    font-size: 76px;
+    font-weight: 800;
+    //line-height: 103px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(255, 255, 255, 1);
+    margin-bottom: 0px;
+  }
+
+  .text-3 {
+    font-family: Open Sans;
+    font-size: 76px;
+    font-weight: 800;
+    //line-height: 103px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(0, 246, 255, 1);
+    margin-bottom: 0px;
+
+  }
+  .text-4 {
+    font-family: Open Sans;
+    font-size: 22px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-bottom: 0px;
+    color: rgba(255, 255, 255, 1);
+
+  }
+
+  .text-5 {
+    font-family: Roboto;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 33px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(19, 228, 241, 1);
+
   }
 }
 
@@ -110,4 +189,21 @@
       margin-bottom: 16px;
     }
   }
+}
+
+.space-align-container {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.space-align-block {
+  margin: 8px 4px;
+  padding: 4px;
+  flex: none;
+}
+.space-align-block .mock-block {
+  display: inline-block;
+  padding: 32px 8px 16px;
+  background: rgba(150, 150, 150, 0.2);
 }
