@@ -46,18 +46,11 @@
     ></nz-option>
   </nz-select>
 
-  <!-- <g2-timeline
+  <g2-timeline
     [maxAxis]="maxAxis"
     [data]="chartData"
-    [titleMap]="titleMap"
-    [height]="300"
-  /> -->
-
-  <g2-timeline
-    *ngIf="offlineChartData"
-    [data]="offlineChartData"
     [height]="289"
-    [titleMap]="{ y1: 'Traflic', y2: 'Payments' }"
+    [titleMap]="{ y1: 'Traflic'}"
   />
 </nz-card>
 

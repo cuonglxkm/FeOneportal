@@ -5,14 +5,11 @@ import {
   Inject,
   OnInit,
   Renderer2,
-  signal,
-  WritableSignal,
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   Validators,
-  FormArray,
   AbstractControl,
 } from '@angular/forms';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
@@ -23,7 +20,6 @@ import {
   IPSubnetModel,
   ImageTypesModel,
   Images,
-  InstancesModel,
   SHHKeyModel,
   SecurityGroupModel,
   Snapshot,
@@ -35,12 +31,11 @@ import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { da, tr } from 'date-fns/locale';
-import {Observable, finalize, interval, startWith, take, map, of} from 'rxjs';
+import {Observable, finalize, of} from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import { OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
+import { OwlOptions } from 'ngx-owl-carousel-o';
 import {NguCarouselConfig} from "@ngu/carousel";
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
@@ -399,15 +394,19 @@ export class InstancesCreateComponent implements OnInit {
   }
   //#endregion
   //#region Network
-  activeNetwork: boolean = false;
-  idNetwork = 0;
-  listOfDataNetwork: Network[] = [];
-  defaultNetwork: Network = new Network();
+  activeIPv4: boolean = false;
+  activeIPv6: boolean = false;
+  idIPv4 = 0;
+  idIPv6 = 0;
+  listOfDataIPv4: Network[] = [];
+  listOfDataIPv6: Network[] = [];
+  defaultIPv4: Network = new Network();
+  defaultIPv6: Network = new Network();
   listIPSubnetModel: IPSubnetModel[] = [];
 
-  initNetwork(): void {
-    this.activeNetwork = true;
-    this.listOfDataNetwork.push(this.defaultNetwork);
+  initIPv4(): void {
+    this.activeIPv4 = true;
+    this.listOfDataIPv4.push(this.defaultIPv4);
 
     this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
       this.listIPSubnetModel = data;
@@ -415,31 +414,72 @@ export class InstancesCreateComponent implements OnInit {
       // this.listOfDataNetwork.push(...resultHttp);
     });
   }
-  deleteRowNetwork(id: number): void {
-    this.listOfDataNetwork = this.listOfDataNetwork.filter((d) => d.id !== id);
+
+  initIPv6(): void {
+    this.activeIPv6 = true;
+    this.listOfDataIPv6.push(this.defaultIPv6);
+
+    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
+      this.listIPSubnetModel = data;
+      // var resultHttp = data;
+      // this.listOfDataNetwork.push(...resultHttp);
+    });
   }
 
-  onInputNetwork(index: number, event: any) {
+  deleteRowIPv4(id: number): void {
+    this.listOfDataIPv4 = this.listOfDataIPv4.filter((d) => d.id !== id);
+  }
+
+  deleteRowIPv6(id: number): void {
+    this.listOfDataIPv6 = this.listOfDataIPv6.filter((d) => d.id !== id);
+  }
+
+  onInputIPv4(index: number, event: any) {
     // const inputElement = this.renderer.selectRootElement('#type_' + index);
     // const inputValue = inputElement.value;
     // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataNetwork.filter(
+    const filteredArray = this.listOfDataIPv4.filter(
       (item) => item.ip !== ''
     );
-    const filteredArrayHas = this.listOfDataNetwork.filter(
+    const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
     );
 
     if (filteredArrayHas.length > 0) {
-      this.listOfDataNetwork[index].ip = event;
+      this.listOfDataIPv4[index].ip = event;
     } else {
       // Add a new row with the same value as the current row
       //const currentItem = this.itemsTest[count];
       //this.itemsTest.splice(count + 1, 0, currentItem);
-      this.defaultNetwork = new Network();
-      this.idNetwork++;
-      this.defaultNetwork.id = this.idNetwork;
-      this.listOfDataNetwork.push(this.defaultNetwork);
+      this.defaultIPv4 = new Network();
+      this.idIPv4++;
+      this.defaultIPv4.id = this.idIPv4;
+      this.listOfDataIPv4.push(this.defaultIPv4);
+    }
+    this.cdr.detectChanges();
+  }
+
+  onInputIPv6(index: number, event: any) {
+    // const inputElement = this.renderer.selectRootElement('#type_' + index);
+    // const inputValue = inputElement.value;
+    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
+    const filteredArray = this.listOfDataIPv6.filter(
+      (item) => item.ip !== ''
+    );
+    const filteredArrayHas = this.listOfDataIPv6.filter(
+      (item) => item.ip == ''
+    );
+
+    if (filteredArrayHas.length > 0) {
+      this.listOfDataIPv6[index].ip = event;
+    } else {
+      // Add a new row with the same value as the current row
+      //const currentItem = this.itemsTest[count];
+      //this.itemsTest.splice(count + 1, 0, currentItem);
+      this.defaultIPv6 = new Network();
+      this.idIPv6++;
+      this.defaultIPv6.id = this.idIPv6;
+      this.listOfDataIPv6.push(this.defaultIPv6);
     }
     this.cdr.detectChanges();
   }

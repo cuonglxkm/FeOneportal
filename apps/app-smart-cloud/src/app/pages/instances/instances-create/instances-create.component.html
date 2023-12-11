@@ -3,11 +3,11 @@
   [inputs]="carouselTileConfig"
   [dataSource]="carouselTileItems$ | async"
 > -->
-<!--  <button NguCarouselPrev class="leftRs" [style.opacity]="myCarousel.isFirst ? 0.5 : 1">-->
-<!--    &lt;-->
-<!--  </button>-->
+  <!--  <button NguCarouselPrev class="leftRs" [style.opacity]="myCarousel.isFirst ? 0.5 : 1">-->
+  <!--    &lt;-->
+  <!--  </button>-->
 
-<!-- <ngu-tile
+  <!-- <ngu-tile
     *nguCarouselDef="let item; index as i; let ani = animate"
     [@slider]="ani"
   >
@@ -16,11 +16,11 @@
     </div>
   </ngu-tile> -->
 
-<!--  <button NguCarouselNext class="rightRs" [style.opacity]="myCarousel.isLast ? 0.5 : 1">-->
-<!--    &gt;-->
-<!--  </button>-->
+  <!--  <button NguCarouselNext class="rightRs" [style.opacity]="myCarousel.isLast ? 0.5 : 1">-->
+  <!--    &gt;-->
+  <!--  </button>-->
 
-<!-- <ul class="myPoint" NguCarouselPoint>
+  <!-- <ul class="myPoint" NguCarouselPoint>
     <li
       *ngFor="let i of myCarousel.pointNumbers"
       [class.active]="i === myCarousel.activePoint"
@@ -29,12 +29,6 @@
   </ul>
 </ngu-carousel> -->
 
-<!-- <page-header [title]="'Tạo máy ảo'">
-  <div class="text-right">
-    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-    <project-select-dropdown [regionId]="selectedRegion"></project-select-dropdown>
-  </div>
-  </page-header> -->
 <page-header>
   <nz-breadcrumb style="width: 50%; float: left">
     <nz-breadcrumb-item>
@@ -338,7 +332,8 @@
                     <b class="h4">{{ item.flavorName }}</b
                     ><br />
                     <i nz-icon nzType="flex"></i><br />
-                    <b class="h4">{{ item.price }}</b><span> đ/tháng</span><br />
+                    <b class="h4">{{ item.price }}</b
+                    ><span> đ/tháng</span><br />
                     <span>đ/giờ</span>
                   </div>
                 </tr>
@@ -818,9 +813,9 @@
   </nz-card>
 
   <nz-card nzTitle="Network">
-    <div *ngIf="!activeNetwork">
+    <div *ngIf="!activeIPv4">
       <nz-alert
-        (click)="initNetwork()"
+        (click)="initIPv4()"
         nzType="success"
         [nzMessage]="customMgTemplateNetwrok"
         nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
@@ -833,10 +828,10 @@
         <div>+</div>
       </ng-template>
       <ng-template #customMgTemplateNetwrok>
-        <b>Bổ sung IP Public</b>
+        <b>Bổ sung IPv4</b>
       </ng-template>
     </div>
-    <div *ngIf="activeNetwork">
+    <div *ngIf="activeIPv4">
       <nz-card nzHoverable>
         <div class="ant-table">
           <table>
@@ -849,7 +844,7 @@
               </tr>
             </thead>
             <tbody class="ant-table-tbody">
-              <tr *ngFor="let data of listOfDataNetwork">
+              <tr *ngFor="let data of listOfDataIPv4">
                 <td>
                   <nz-select
                     style="width: 85%"
@@ -858,7 +853,7 @@
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="data.ip"
                     [id]="'ip_' + data.id"
-                    (ngModelChange)="onInputNetwork(data.id, $event)"
+                    (ngModelChange)="onInputIPv4(data.id, $event)"
                   >
                     <nz-option
                       *ngFor="let p of listIPSubnetModel"
@@ -884,7 +879,88 @@
                 </td>
                 <td>
                   <button
-                    (click)="deleteRowNetwork(data.id)"
+                    (click)="deleteRowIPv4(data.id)"
+                    nz-button
+                    nzType="primary"
+                    nzDanger
+                    *ngIf="data.ip != ''"
+                  >
+                    Xóa
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </nz-card>
+    </div>
+    <div style="margin-top: 5px" *ngIf="!activeIPv6">
+      <nz-alert
+        (click)="initIPv6()"
+        nzType="success"
+        [nzMessage]="customMgTemplateNetwrok"
+        nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
+      gia đình hoặc doanh nghiệp để kết nối với internet"
+        [nzIcon]="customIconTemplateNetwrok"
+        nzShowIcon
+      ></nz-alert>
+
+      <ng-template #customIconTemplateNetwrok>
+        <div>+</div>
+      </ng-template>
+      <ng-template #customMgTemplateNetwrok>
+        <b>Bổ sung IPv6</b>
+      </ng-template>
+    </div>
+    <div *ngIf="activeIPv6">
+      <nz-card nzHoverable>
+        <div class="ant-table">
+          <table>
+            <thead class="ant-table-thead">
+              <tr>
+                <th>Dải IP</th>
+                <th>Số lượng</th>
+                <th>Giá theo tháng (VNĐ)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody class="ant-table-tbody">
+              <tr *ngFor="let data of listOfDataIPv6">
+                <td>
+                  <nz-select
+                    style="width: 85%"
+                    nzPlaceHolder="Chọn"
+                    name="inputNetwork"
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="data.ip"
+                    [id]="'ip_' + data.id"
+                    (ngModelChange)="onInputIPv6(data.id, $event)"
+                  >
+                    <nz-option
+                      *ngFor="let p of listIPSubnetModel"
+                      [nzValue]="p.id"
+                      [nzLabel]="p.displayName"
+                    ></nz-option>
+                  </nz-select>
+                </td>
+                <td>
+                  <nz-input-number
+                    [(ngModel)]="data.amount"
+                    [ngModelOptions]="{ standalone: true }"
+                    [id]="'amount_' + data.id"
+                    [nzMin]="0"
+                    [nzMax]="7"
+                    [nzStep]="1"
+                  ></nz-input-number>
+                </td>
+                <td>
+                  <label>
+                    {{ data.price }}
+                  </label>
+                </td>
+                <td>
+                  <button
+                    (click)="deleteRowIPv6(data.id)"
                     nz-button
                     nzType="primary"
                     nzDanger
