@@ -89,7 +89,6 @@ import {DeleteOneUserGroupComponent} from './iam/user-group/delete/delete-one/de
 import {DetailUserGroupComponent} from './iam/user-group/detail/detail-user-group.component';
 import {EditUserGroupComponent} from './iam/user-group/edit/edit-user-group.component';
 import {ListUserGroupComponent} from './iam/user-group/list/list-user-group.component';
-import {NgJsonEditorModule} from 'ang-jsoneditor';
 import {JsonViewerComponent} from './iam/user-group/detail/json-viewer.component';
 import {UsersTableComponent} from './iam/user-group/create/users-table.component';
 import {PolicyTableComponent} from './iam/user-group/create/policy-table.component';
