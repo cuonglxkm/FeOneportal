@@ -1,9 +1,33 @@
 @import '@delon/theme/index';
-
+//@import '../../../../../../../node_modules/open-sans-fonts/open-sans.less';
 :host {
   display: block;
   width: 368px;
   margin: 0 auto;
+
+
+  .text-font {
+    font-family: Nunito, serif;
+  }
+
+  .text-title {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 55px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #035DED;
+  }
+  .text-des {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #777777;
+  }
+
 
   ::ng-deep {
     h3 {
@@ -12,7 +36,7 @@
     }
 
     .submit {
-      width: 50%;
+      width: 100%;
     }
 
     .login {
@@ -48,4 +72,19 @@
       }
     }
   }
+
+  .ant-collapse-item {
+    font-weight: bold !important;
+  }
+
+  .ant-collapse-header {
+    padding-left: 0px !important;
+  }
+
+  .top-bot-border {
+    border-top: 1px dotted rgba(0, 0, 0, 0.3);
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.3);
+  }
 }
+
+

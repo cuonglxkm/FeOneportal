@@ -1,18 +1,63 @@
 <div class="container">
-  <header-i18n showLangText="false" class="langs" />
-  <div class="wrap">
-    <div class="top">
-      <div class="head">
-        <img class="logo" src="./assets/logo-color.svg" />
-        <span class="title">ng-alain</span>
+
+  <nz-row style="height: 100vh">
+    <div nz-col nzFlex="2">
+      <div class="container" style="background: #035DED; width: 100%">
+        <div nz-row class="mt-10" style="width: 468px; align-self: center;">
+          <div class="space-align-container">
+            <div nz-space nzAlign="center" class="space-align-block">
+              <ng-container *nzSpaceItem><img width="60" height="65" src="assets/imgs/logo-vnpt-idc-symbol.svg"/>
+              </ng-container>
+              <span *nzSpaceItem class="text-5 ml-5">VNPT CLOUD</span>
+            </div>
+          </div>
+
+          <p class="text-1">Chào mừng đến với</p> <br/>
+          <div nz-row>
+            <div nz-col nzSpan="12">
+              <p class="text-2">VNPT</p>
+            </div>
+            <div nz-col nzSpan="12" style="position: relative">
+              <p class="text-3">Cloud</p>
+              <img src="assets/imgs/banner_blue_line.png" style="position: absolute; top: 80%">
+            </div>
+          </div>
+          <br/>
+
+<!--          <nz-space nzDirection="vertical" nzSize="small">-->
+<!--            <span *nzSpaceItem class="text-3">Cloud</span>-->
+<!--            <img *nzSpaceItem src="assets/imgs/banner_blue_line.png">-->
+<!--          </nz-space>-->
+<!--          <p class="text-2">VNPT <span class="text-3">Cloud</span></p> <br/>-->
+
+          <p class="text-4">Giải pháp và hạ tầng máy chủ Cloud với chi phí thấp mà tính hiệu quả cao, đầy đủ tính năng
+            đáp ứng tối đa cho khách hàng.</p>
+        </div>
+
+
+        <div nz-row>
+          <div class="image-bg">
+          </div>
+
+
+        </div>
+        <img class="image-bg-2" src="assets/imgs/web_hosting_image.png"/>
       </div>
-      <div class="desc">武林中最有影响力的《葵花宝典》；欲练神功，挥刀自宫</div>
+
     </div>
-    <router-outlet />
-    <global-footer [links]="links">
-      Copyright
-      <i nz-icon nzType="copyright"></i> 2021 <a href="//github.com/cipchk" target="_blank">卡色</a>出品
-    </global-footer>
-  </div>
+
+
+    <div nz-col nzFlex="4">
+
+      <header-i18n showLangText="false" class="langs"/>
+      <div class="wrap">
+        <router-outlet/>
+        <global-footer [links]="links">
+          Một sản phẩm của VNPT
+          <!--          <i nz-icon nzType="copyright"></i> 2021 <a href="//github.com/cipchk" target="_blank">卡色</a>出品-->
+        </global-footer>
+      </div>
+    </div>
+  </nz-row>
 </div>
-<theme-btn />
+<!--<theme-btn />-->
