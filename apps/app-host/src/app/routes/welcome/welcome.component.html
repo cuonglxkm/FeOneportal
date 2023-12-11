@@ -1,0 +1,49 @@
+<div class="container main-container">
+
+
+  <div style="height: 100vh;"
+       nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"
+       nzAlign="middle" nzJustify="space-around">
+    <div style="text-align: -webkit-center" nz-col class="gutter-row" [nzSpan]="12">
+      <div class="" style="width: 500px; text-align: center">
+        <span
+          style="color: #FFFFFF;font-family: Roboto,serif;font-size: 19px;font-weight: 700;line-height: 22px;letter-spacing: 0em;text-align: center;">
+          Chào mừng đến với VNPT Cloud
+        </span>
+        <br>
+        <span style="color: #FFFFFF;">
+          Công nghệ điện toán đám mây - Giải pháp và hạ tầng máy chủ Cloud với chi phí thấp mà tính hiệu quả cao,
+          hỗ trợ đầy đủ các tính năng cần thiết để đáp ứng tối đa cho khách hàng.</span>
+      </div>
+    </div>
+    <div nz-col class="gutter-row" [nzSpan]="12">
+      <div class="container inner-box">
+
+
+        <div style="margin-top: 80px" nz-row nzJustify="center" nzAlign="bottom">
+          <div nz-col nzSpan="18" nz-space nzAlign="center">
+            <img class="mt-5" src="assets/imgs/logo_vnpt_cloud_with_text.png">
+          </div>
+
+        </div>
+
+        <div class="mt-7" nz-row nzJustify="center" nzAlign="bottom">
+          <div>
+            <button (click)="clickLogin()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
+              Đăng nhập vào Portal
+            </button>
+
+            <button (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
+              Đăng ký tài khoản Portal
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+

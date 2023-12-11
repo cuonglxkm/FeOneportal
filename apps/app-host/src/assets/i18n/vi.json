@@ -30,5 +30,6 @@
     "pages.login.login-form.login-button":"Đăng nhập",
     "pages.login.login-form.google-login-button":"Google",
     "pages.login.login-form.or": "Hoặc",
-    "pages.login.login-form.register-me-button":"Đăng ký tài khoản"
+    "pages.login.login-form.register-me-button":"Đăng ký tài khoản",
+    "test.register.register": "Đăng ký"
 }

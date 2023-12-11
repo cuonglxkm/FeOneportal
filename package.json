@@ -29,6 +29,7 @@
     "@delon/mock": "^16.4.2",
     "@delon/theme": "^16.4.2",
     "@delon/util": "^16.4.2",
+    "@fontsource/open-sans": "^5.0.18",
     "@maaxgr/ang-jsoneditor": "14",
     "@ngu/carousel": "8.0.0",
     "@ngx-translate/core": "^15.0.0",
