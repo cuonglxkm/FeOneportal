@@ -1,1 +1,1 @@
-<ace-editor [(text)]="code" mode="json" style="height:400px;"></ace-editor>
+<json-editor [options]="editorOptions" [data]="initialData" (change)="showJson($event)"></json-editor>

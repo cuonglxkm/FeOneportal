@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor";
 
 @Component({
   selector: 'one-portal-json-viewer',
@@ -7,15 +8,20 @@ import {Component, Input} from '@angular/core';
 export class JsonViewerComponent {
   @Input() value: {}
 
-  get code() {
-    return JSON.stringify(this.value, null, 2);
+  public editorOptions: JsonEditorOptions;
+  public initialData: any;
+  public visibleData: any;
+
+
+  constructor() {
+    this.editorOptions = new JsonEditorOptions()
+    this.editorOptions.modes = ['code', 'text'];
+
+    this.initialData = this.value
+    this.visibleData = this.initialData;
   }
 
-  set code(v) {
-    try {
-      this.value = JSON.parse(v);
-    } catch (e) {
-      console.log('error occored while you were typing the JSON');
-    }
+  showJson(d: Event) {
+    this.visibleData = d;
   }
 }

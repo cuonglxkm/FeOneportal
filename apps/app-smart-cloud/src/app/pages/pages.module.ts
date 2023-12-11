@@ -81,7 +81,6 @@ import { EditUserGroupComponent } from './iam/user-group/edit/edit-user-group.co
 import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.component';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.component';
-import { AceEditorModule } from 'ng2-ace-editor';
 import { UsersTableComponent } from './iam/user-group/create/users-table.component';
 import { PolicyTableComponent } from './iam/user-group/create/policy-table.component';
 

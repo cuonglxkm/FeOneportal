@@ -64,15 +64,7 @@ export class DetailUserGroupComponent {
 
   protected readonly Date = Date;
 
-  public editorOptions: JsonEditorOptions;
-  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   constructor(private router: Router) {
-    this.editorOptions = new JsonEditorOptions()
-    // this.editorOptions.mode = 'code';
-    this.editorOptions.modes = ['code', 'tree'];
-    // this.editorOptions.schema = schema;
-    // this.editorOptions.statusBar = false;
-    this.editorOptions.onChange = () => console.log(this.editor.get());
   }
 
   expandSet = new Set<number>();
