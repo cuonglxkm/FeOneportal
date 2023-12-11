@@ -81,7 +81,8 @@
           </tbody>
         </nz-table>
 
-        <json-editor *ngIf="!isVisual && panel.idService != null"  style="min-height: 300px;" [options]="editorOptions" [data]="panel.listPer"></json-editor>
+        <json-editor *ngIf="!isVisual && panel.idService != null" style="min-height: 300px;" [options]="editorOptions"
+                     [data]="panel.listPer"></json-editor>
 
       </nz-collapse-panel>
     </nz-collapse>
@@ -91,7 +92,22 @@
   <button (click)="addService()"
           nz-button nzType="primary"
           [disabled]="serviceArray.length==0"
-      >Thêm Permission policies
+  >Thêm Permission policies
   </button>
+
+  <br>
+  <br>
+
+  <nz-card
+    [nzBodyStyle]="{ 'padding': '30px' }"
+  >
+    <div class="footer-detail">
+      <button class="buttonBack" nz-button nzType="default" (click)="backToListPage()">Quay lại
+      </button>
+      <button  class="buttonEdit" nz-button nzType="primary"
+              (click)="editPolicy()">Chỉnh sửa
+      </button>
+    </div>
+  </nz-card>
 
 </nz-content>

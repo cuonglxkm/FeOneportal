@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {ProjectModel} from "../../../shared/models/project.model";
@@ -32,18 +32,12 @@ export class PolicyUpdateComponent implements OnInit {
   serviceArray: any;
 
 
-  panels = [
-    {
-      id: null,
-      name: null,
-      idService: null,
-      listPer: null,
-    },
-  ];
+  panels :any;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
+    private router: Router,
     private notification: NzNotificationService,) {
 
     this.editorOptions = new JsonEditorOptions()
@@ -59,7 +53,6 @@ export class PolicyUpdateComponent implements OnInit {
   }
 
   addService() {
-    console.log(this.panels.length);
     this.panels.push({
       id: this.generateRandomString(10),
       idService: null,
@@ -80,8 +73,6 @@ export class PolicyUpdateComponent implements OnInit {
   }
 
   changeService(panel: any) {
-    console.log(panel);
-    console.log(this.panels);
     let countSerice = 0;
     this.panels.forEach(pln => {
       if(pln.idService == panel.idService){
@@ -128,6 +119,15 @@ export class PolicyUpdateComponent implements OnInit {
         serviceId: 'ipp'
       }
     ]
+    // lấy giá trị mặc định
+    this.panels = [
+      {
+        id: this.generateRandomString(10),
+        name: null,
+        idService: null,
+        listPer: null,
+      },
+    ];
     // Lấy danh sách Permission Service
     this.sshService = [
       {
@@ -188,6 +188,14 @@ export class PolicyUpdateComponent implements OnInit {
       },
     ]
 
+  }
+
+  editPolicy(){
+    console.log(this.panels);
+  }
+
+  backToListPage(){
+    this.router.navigate(['/app-smart-cloud/policy']);
   }
 
   projectChanged(project: ProjectModel) {
