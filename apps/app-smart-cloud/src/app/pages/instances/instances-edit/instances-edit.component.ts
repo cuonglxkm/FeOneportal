@@ -362,9 +362,9 @@ export class InstancesEditComponent implements OnInit {
     this.updateInstances.flavorId = 368; //this.flavor.id;
     this.updateInstances.storage = 1;
     this.updateInstances.securityGroups = null;
-    this.updateInstances.duration = null;
-    this.updateInstances.listServicesToBeExtended = '';
-    this.updateInstances.newExpiredDate = '';
+    this.updateInstances.duration = 0;
+    this.updateInstances.listServicesToBeExtended = null;
+    this.updateInstances.newExpiredDate = null;
 
     this.dataService.update(this.updateInstances).subscribe(
       (data: any) => {
