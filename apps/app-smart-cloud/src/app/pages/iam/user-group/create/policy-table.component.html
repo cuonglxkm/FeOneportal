@@ -1,0 +1,61 @@
+<nz-card [nzTitle]="policyCardTitle">
+  <nz-row style="margin-bottom: 16px">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+      <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+             placeholder="Tìm kếm tên, thời gian tạo..."/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" nzSearch>
+        <span nz-icon nzType="search" nzTheme="outline"></span>Search
+      </button>
+    </ng-template>
+  </nz-row>
+  <nz-row>
+    <h3>Thông tin Policy</h3>
+  </nz-row>
+  <nz-table
+    #rowSelectionTable
+    nzShowPagination
+    nzShowSizeChanger
+    [nzData]="listOfData"
+    [nzPageSize]="5"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+  >
+    <thead>
+    <tr>
+      <th [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          nzLabel="Select all"
+          nzWidth="40px"
+          (nzCheckedChange)="onAllChecked($event)"></th>
+      <th nzWidth="40px"></th>
+      <th>Tên Policy</th>
+      <th [nzWidth]="'207px'">Type</th>
+      <th [nzWidth]="'564px'">Mô tả</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let data of rowSelectionTable.data">
+      <tr>
+        <td
+          [nzChecked]="setOfCheckedId.has(data.id)"
+          (nzCheckedChange)="onItemChecked(data.id, $event)"
+        ></td>
+        <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+        <td>
+          <a [href]="'/app-smart-cloud/iam/user-group/' + data.id">{{ data.name }}</a>
+        </td>
+        <td>{{ data.type }}</td>
+        <td>{{ data.desc }}</td>
+      </tr>
+      <tr [nzExpand]="expandSet.has(data.id)">
+        <span>{{ data.config }}</span>
+      </tr>
+    </ng-container>
+
+    </tbody>
+  </nz-table>
+</nz-card>
+<ng-template #policyCardTitle>
+  <div>Thiết lập Policies (Optional) ({{listOfSelected.length}}/{{listOfData.length}})</div>
+</ng-template>

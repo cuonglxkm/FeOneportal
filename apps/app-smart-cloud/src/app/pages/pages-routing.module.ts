@@ -32,6 +32,10 @@ import {
 import {
   ListBackupVolumeComponent
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import {IamDashboardComponent} from "./iam/dashboard/iam-dashboard.component";
+import {ListUserGroupComponent} from "./iam/user-group/list/list-user-group.component";
+import {DetailUserGroupComponent} from "./iam/user-group/detail/detail-user-group.component";
+import {CreateUserGroupComponent} from "./iam/user-group/create/create-user-group.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -142,7 +146,23 @@ const routes: Routes = [
   {
     path: 'backup-volume',
     component: ListBackupVolumeComponent
-  }
+  },
+  {
+    path: 'iam/dashboard',
+    component: IamDashboardComponent
+  },
+  {
+    path: 'iam/user-group',
+    component: ListUserGroupComponent
+  },
+  {
+    path: 'iam/user-group/create',
+    component: CreateUserGroupComponent
+  },
+  {
+    path: 'iam/user-group/:id',
+    component: DetailUserGroupComponent
+  },
 ]
 
 @NgModule({

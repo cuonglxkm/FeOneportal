@@ -15,6 +15,25 @@
       "hideInBreadcrumb": true,
       "children": [
         {
+          "text": "IAM",
+          "group": true,
+          "icon": "anticon-team",
+          "link": "/app-smart-cloud/iam/dashboard",
+          "hideInBreadcrumb": true,
+          "children": [
+            {
+              "text": "Dashboard",
+              "icon": "anticon-dashboard",
+              "link": "/app-smart-cloud/iam/dashboard"
+            },
+            {
+              "text": "User Group",
+              "icon": "anticon-user",
+              "link": "/app-smart-cloud/iam/user-group"
+            }
+          ]
+        },
+        {
           "text": "Quản lý máy ảo",
           "icon": "anticon-cloud",
           "link": "/app-smart-cloud/instances"
