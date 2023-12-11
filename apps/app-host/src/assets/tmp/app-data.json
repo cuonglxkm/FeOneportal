@@ -31,7 +31,7 @@
         },
         {
           "text": "Quản lý SSH Key",
-          "icon": "anticon-info",
+          "icon": "anticon-mail",
           "link": "/app-smart-cloud/ssh-key"
         },
         {
@@ -61,12 +61,12 @@
         },
         {
           "text": "Backup Volume",
-          "icon": "anticon-time",
+          "icon": "anticon-user",
           "link": "/app-smart-cloud/backup-volume"
         },
         {
           "text": "Quản lý Policy",
-          "icon": "anticon-search",
+          "icon": "anticon-info",
           "link": "/app-smart-cloud/policy"
         },
         {
