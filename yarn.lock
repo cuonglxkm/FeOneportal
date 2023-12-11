@@ -3006,6 +3006,13 @@
   dependencies:
     call-bind "^1.0.2"
 
+"@maaxgr/ang-jsoneditor@14":
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/@maaxgr/ang-jsoneditor/-/ang-jsoneditor-14.0.0.tgz#fcc4e0fd74f6fb1c0a9b0de2b3c9cfd3c9196010"
+  integrity sha512-NYybo88UDeu/CmIzwZsETrXA23n2prJ0fP3PVCxKIV8OM5Z3ejf3UxlyRbtBWUMgbIzv9kwrU/BpZ1/jRF1nEA==
+  dependencies:
+    tslib "^2.3.0"
+
 "@material/animation@15.0.0-canary.bc9ae6c9c.0":
   version "15.0.0-canary.bc9ae6c9c.0"
   resolved "https://registry.yarnpkg.com/@material/animation/-/animation-15.0.0-canary.bc9ae6c9c.0.tgz#7c27a42b027fcc2cd9a97c9d3b8f54a16b47333d"
