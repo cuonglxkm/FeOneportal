@@ -7,3 +7,4 @@ export * from './_groupCreateUser';
 export * from './_copyUserPolicies';
 export * from './_permissionPolicies';
 export * from './_policiesOfUser';
+export * from './_policy';

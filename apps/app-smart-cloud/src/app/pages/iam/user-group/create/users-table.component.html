@@ -1,0 +1,52 @@
+<nz-card [nzTitle]="userCardTitle">
+  <nz-row style="margin-bottom: 16px">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+      <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+             placeholder="Tìm kếm tên..."/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" nzSearch>
+        <span nz-icon nzType="search" nzTheme="outline"></span>Search
+      </button>
+    </ng-template>
+  </nz-row>
+  <nz-row>
+    <h3>Thông tin User</h3>
+  </nz-row>
+  <nz-table
+    #rowSelectionTable
+    nzShowPagination
+    nzShowSizeChanger
+    [nzData]="listOfData"
+    [nzPageSize]="5"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+  >
+    <thead>
+    <tr>
+      <th [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          nzLabel="Select all"
+          (nzCheckedChange)="onAllChecked($event)"></th>
+      <th>Name</th>
+      <th [nzWidth]="'207px'">Số lượng users</th>
+      <th [nzWidth]="'564px'">Thời gian tạo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of rowSelectionTable.data">
+      <td
+        [nzChecked]="setOfCheckedId.has(data.id)"
+        (nzCheckedChange)="onItemChecked(data.id, $event)"
+      ></td>
+      <td>
+        <a [href]="'/app-smart-cloud/iam/user-group/' + data.id">{{ data.name }}</a>
+      </td>
+      <td>{{ data.total_users }}</td>
+      <td>{{ data.created_at }}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+<ng-template #userCardTitle>
+  <div>Thêm User vào Group (Optional) ({{listOfSelected.length}}/{{listOfData.length}})</div>
+</ng-template>

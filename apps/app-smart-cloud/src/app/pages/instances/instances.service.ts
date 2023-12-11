@@ -186,4 +186,15 @@ export class InstancesService extends BaseService{
   getInstanceById(id: number) {
     return this.http.get<InstancesModel>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`)
   }
+
+  getMonitorByCloudId(
+    cloudId: string,
+    regionId: number,
+    during: number,
+    type: string,
+    ): Observable<any> {
+    let url_ = `/instances/monitor?instanceId=${cloudId}&regionId=${regionId}&during=${during}&type=${type}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
 }

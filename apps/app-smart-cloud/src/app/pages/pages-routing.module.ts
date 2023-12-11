@@ -32,6 +32,10 @@ import {
 import {
   ListBackupVolumeComponent
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import {IamDashboardComponent} from "./iam/dashboard/iam-dashboard.component";
+import {ListUserGroupComponent} from "./iam/user-group/list/list-user-group.component";
+import {DetailUserGroupComponent} from "./iam/user-group/detail/detail-user-group.component";
+import {CreateUserGroupComponent} from "./iam/user-group/create/create-user-group.component";
 import { UserComponent } from "./users/user.component";
 import { UserCreateComponent } from "./users/user-create/user-create.component";
 import { UserDetailComponent } from "./users/user-detail/user-detail.component";
@@ -149,10 +153,25 @@ const routes: Routes = [
     component: ListBackupVolumeComponent
   },
   {
+    path: 'iam/dashboard',
+    component: IamDashboardComponent
+  },
+  {
+    path: 'iam/user-group',
+    component: ListUserGroupComponent
+  },
+  {
+    path: 'iam/user-group/create',
+    component: CreateUserGroupComponent
+  },
+  {
+    path: 'iam/user-group/:id',
+    component: DetailUserGroupComponent
+  },
+  {
     path: 'policy',
     loadChildren: () => import('../pages/policy/policy.module').then(m => m.PolicyModule)
   },
-  {path: '', redirectTo: 'policy', pathMatch: 'full'},
   {
     path: 'users',
     component: UserComponent
@@ -173,8 +192,7 @@ const routes: Routes = [
     path: 'users/detail/:id/add-to-group',
     component: AddToGroupComponent
   }
-]
-
+  ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
