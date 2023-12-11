@@ -78,6 +78,7 @@ import { AddPoliciesComponent } from './users/user-detail/add-policies/add-polic
 import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
 import {NgxJsonViewerModule} from "ngx-json-viewer";
 import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
+import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -138,6 +139,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     PolicyDetachComponent,
     PopupDetachPolicyComponent,
     PolicyDetailComponent,
+    PolicyUpdateComponent,
     UserComponent,
     UserCreateComponent,
     UserDetailComponent,

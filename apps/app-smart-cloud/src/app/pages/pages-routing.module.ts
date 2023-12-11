@@ -40,6 +40,7 @@ import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.compon
 import { UserDetailComponent } from "./users/user-detail/user-detail.component";
 import { AddPoliciesComponent } from "./users/user-detail/add-policies/add-policies.component";
 import { AddToGroupComponent } from "./users/user-detail/add-to-group/add-to-group.component";
+import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -162,6 +163,10 @@ const routes: Routes = [
   {
     path: 'policy/detail/:id',
     component: PolicyDetailComponent
+  },
+  {
+    path: 'policy/update/:id',
+    component: PolicyUpdateComponent
   },
   {
     path: 'policy',
