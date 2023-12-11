@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import {BaseService} from "./base.service";
 import {BehaviorSubject, Observable} from "rxjs";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {SshKey} from "../../pages/ssh-key/dto/ssh-key";
-import {catchError} from "rxjs/operators";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {IpPublicModel} from "../models/ip-public.model";
 
