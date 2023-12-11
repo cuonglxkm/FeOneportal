@@ -48,6 +48,7 @@ export class AddToGroupComponent implements OnInit {
     //   this.listOfIp = baseResponse.records;
     //     console.log(this.listOfIp);
     // });
+    this.listGroupPicked = [];
     this.service
       .getGroupsCreateUser()
       .pipe(
@@ -60,6 +61,28 @@ export class AddToGroupComponent implements OnInit {
         this.listOfGroups = baseResponse.records;
         console.log(this.listOfGroups);
       });
+  }
+
+  reloadGroupTable() {
+    this.listOfGroups = [];
+    this.getData();
+  }
+
+  listGroupPicked = [];
+  onClickGroupItem(groupName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listGroupPicked.forEach(e => {
+      if (e == groupName) {
+        this.listGroupPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listGroupPicked.push(groupName);
+    }
+    console.log("list group picked", this.listGroupPicked);
   }
 
   onRegionChange(region: RegionModel) {

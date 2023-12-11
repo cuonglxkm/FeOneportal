@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,7 +16,7 @@ import {
 import { UserService } from 'src/app/shared/services/user.service';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs';
-
+import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 @Component({
   selector: 'one-portal-user-create',
   templateUrl: './user-create.component.html',
@@ -63,7 +64,10 @@ export class UserCreateComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.optionJsonEditor = new JsonEditorOptions();
+    this.optionJsonEditor.mode = "text";
+  }
 
   ngOnInit(): void {
     this.service.model.subscribe((data) => {
@@ -80,6 +84,7 @@ export class UserCreateComponent implements OnInit {
     //   this.listOfIp = baseResponse.records;
     //     console.log(this.listOfIp);
     // });
+    this.listGroupPicked = [];
     this.service
       .getGroupsCreateUser()
       .pipe(
@@ -94,7 +99,13 @@ export class UserCreateComponent implements OnInit {
       });
   }
 
+  reloadGroupTable(): void {
+    this.listOfGroups = [];
+    this.getData();
+  }
+
   getCopyUserPlicies() {
+    this.listUserPicked = [];
     this.service
       .getCopyUserPolicies()
       .pipe(
@@ -108,7 +119,13 @@ export class UserCreateComponent implements OnInit {
       });
   }
 
+  reloadUserTable(): void {
+    this.listOfUsers = [];
+    this.getCopyUserPlicies();
+  }
+
   getPermissionPolicies() {
+    this.listPolicyPicked = [];
     this.service
       .getPermissionPolicies()
       .pipe(
@@ -120,6 +137,11 @@ export class UserCreateComponent implements OnInit {
       .subscribe((data) => {
         this.listOfpolicies = data.records;
       });
+  }
+
+  reloadPolicyTable(): void {
+    this.listOfpolicies = [];
+    this.getPermissionPolicies();
   }
 
   onRegionChange(region: RegionModel) {
@@ -146,16 +168,87 @@ export class UserCreateComponent implements OnInit {
     this.activeBlockAddUsertoGroup = true;
     this.activeBlockCopyPolicies = false;
     this.activeBlockAttachPolicies = false;
+    this.listGroupPicked = [];
+    this.listUserPicked = [];
+    this.listPolicyPicked = [];
   }
   initCopyPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
     this.activeBlockCopyPolicies = true;
     this.activeBlockAttachPolicies = false;
+    this.listGroupPicked = [];
+    this.listUserPicked = [];
+    this.listPolicyPicked = [];
   }
   initAttachPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
     this.activeBlockCopyPolicies = false;
     this.activeBlockAttachPolicies = true;
+    this.listGroupPicked = [];
+    this.listUserPicked = [];
+    this.listPolicyPicked = [];
+  }
+
+  listGroupPicked = [];
+  onClickGroupItem(groupName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listGroupPicked.forEach(e => {
+      if (e == groupName) {
+        this.listGroupPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listGroupPicked.push(groupName);
+    }
+    console.log("list group picked", this.listGroupPicked);
+  }
+
+  listUserPicked = [];
+  onClickUserItem(userName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listUserPicked.forEach(e => {
+      if (e == userName) {
+        this.listUserPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listUserPicked.push(userName);
+    }
+    console.log("list user picked", this.listUserPicked);
+  }
+
+  listPolicyPicked = [];
+  onClickPolicyItem(policyName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listPolicyPicked.forEach(e => {
+      if (e == policyName) {
+        this.listPolicyPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listPolicyPicked.push(policyName);
+    }
+    console.log("list policy picked", this.listPolicyPicked);
+  }
+
+  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+  public optionJsonEditor: JsonEditorOptions;
+  expandSet = new Set<string>();
+  onExpandChange(name: string, checked: boolean): void {
+    if (checked) {
+      this.expandSet.add(name);
+    } else {
+      this.expandSet.delete(name);
+    }
   }
 
   navigateToCreate() {}
