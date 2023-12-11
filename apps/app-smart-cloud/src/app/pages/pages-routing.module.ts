@@ -36,6 +36,11 @@ import {IamDashboardComponent} from "./iam/dashboard/iam-dashboard.component";
 import {ListUserGroupComponent} from "./iam/user-group/list/list-user-group.component";
 import {DetailUserGroupComponent} from "./iam/user-group/detail/detail-user-group.component";
 import {CreateUserGroupComponent} from "./iam/user-group/create/create-user-group.component";
+import { UserComponent } from "./users/user.component";
+import { UserCreateComponent } from "./users/user-create/user-create.component";
+import { UserDetailComponent } from "./users/user-detail/user-detail.component";
+import { AddPoliciesComponent } from "./users/user-detail/add-policies/add-policies.component";
+import { AddToGroupComponent } from "./users/user-detail/add-to-group/add-to-group.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -163,8 +168,31 @@ const routes: Routes = [
     path: 'iam/user-group/:id',
     component: DetailUserGroupComponent
   },
-]
-
+  {
+    path: 'policy',
+    loadChildren: () => import('../pages/policy/policy.module').then(m => m.PolicyModule)
+  },
+  {
+    path: 'users',
+    component: UserComponent
+  },
+  {
+    path: 'users/create',
+    component: UserCreateComponent
+  },
+  {
+    path: 'users/detail/:id',
+    component: UserDetailComponent
+  },
+  {
+    path: 'users/detail/:id/add-policies',
+    component: AddPoliciesComponent
+  },
+  {
+    path: 'users/detail/:id/add-to-group',
+    component: AddToGroupComponent
+  }
+  ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

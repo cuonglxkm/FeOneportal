@@ -5,14 +5,11 @@ import {
   Inject,
   OnInit,
   Renderer2,
-  signal,
-  WritableSignal,
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   Validators,
-  FormArray,
   AbstractControl,
 } from '@angular/forms';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
@@ -23,7 +20,6 @@ import {
   IPSubnetModel,
   ImageTypesModel,
   Images,
-  InstancesModel,
   SHHKeyModel,
   SecurityGroupModel,
   Snapshot,
@@ -35,12 +31,13 @@ import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { da, tr } from 'date-fns/locale';
-import { Observable, finalize } from 'rxjs';
+import {Observable, finalize, of} from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import { OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
+import { OwlOptions } from 'ngx-owl-carousel-o';
+import {NguCarouselConfig} from "@ngu/carousel";
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -72,23 +69,32 @@ class Network {
   ipv6?: boolean = false;
   price?: string = '000';
 }
-interface CarouselData {
-  id?: string;
-  text: string;
-  dataMerge?: number;
-  width: number;
-  dotContent?: string;
-  src?: string;
-  dataHash?: string;
-}
-
 @Component({
   selector: 'one-portal-instances-create',
   templateUrl: './instances-create.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
+
+
+  images = ['assets/logo.svg', 'assets/logo.svg', 'assets/logo.svg', 'assets/logo.svg'];
+
+  public carouselTileItems$: Observable<number[]>;
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    speed: 250,
+    point: {
+      visible: true
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy'
+  };
+  tempData: any[];
+
   reverse = true;
   form = new FormGroup({
     name: new FormControl('', {
@@ -129,36 +135,20 @@ export class InstancesCreateComponent implements OnInit {
   selectedTypeImageId: number;
   pagedCardListImages: Array<Array<any>> = [];
 
-  carouselData: CarouselData[] = [
-    { text: 'Slide 1 PM', dataMerge: 1, width: 350, dotContent: 'text1' },
-    { text: 'Slide 2 PM', dataMerge: 2, width: 350, dotContent: 'text2' },
-    { text: 'Slide 3 PM', dataMerge: 3, width: 350, dotContent: 'text3' },
-    { text: 'Slide 4 PM', width: 350, dotContent: 'text4' },
-    { text: 'Slide 5 PM', dataMerge: 4, width: 350, dotContent: 'text5' },
-    { text: 'Slide 6 PM', dataMerge: 5, width: 350, dotContent: 'text5' },
-    { text: 'Slide 7 PM', dataMerge: 6, width: 350, dotContent: 'text5' },
-  ];
-  activeSlides: WritableSignal<SlidesOutputData> = signal({});
-
-  getPassedData(data: any) {
-    this.activeSlides.set(data);
-    // console.log(this.activeSlides());
-  }
-
   customOptions: OwlOptions = {
     autoWidth: true,
     loop: true,
     items: 4,
     margin: 50,
     // slideBy: 'page',
-    mergeFit: true,
-    merge: true,
+    // mergeFit: true,
+    // merge: true,
     // autoplay: true,
     // autoplayTimeout: 5000,
     // autoplayHoverPause: true,
     // autoplaySpeed: 4000,
     dotsSpeed: 500,
-    rewind: false,
+    // rewind: false,
     // dots: false,
     // dotsData: true,
     // mouseDrag: true,
@@ -167,7 +157,7 @@ export class InstancesCreateComponent implements OnInit {
     smartSpeed: 400,
     // fluidSpeed: 499,
     dragEndSpeed: 350,
-    // dotsEach: 1,
+    dotsEach: 5,
     // center: true,
     // rewind: true,
     // rtl: true,
@@ -176,17 +166,13 @@ export class InstancesCreateComponent implements OnInit {
     slideBy: 'page',
     responsive: {
       0: {
-        items: 1,
+        items: 4,
+        dotsEach: 5,
       },
       300: {
-        items: 2,
-      },
-      600: {
-        items: 3,
-      },
-      900: {
         items: 4,
-      },
+        dotsEach: 5,
+      }
     },
     // stagePadding: 40,
     nav: false,
@@ -307,6 +293,7 @@ export class InstancesCreateComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
+  
   toggleClass(id: string) {
     this.selectedElementFlavor = id;
     if (this.selectedElementFlavor) {
@@ -407,15 +394,19 @@ export class InstancesCreateComponent implements OnInit {
   }
   //#endregion
   //#region Network
-  activeNetwork: boolean = false;
-  idNetwork = 0;
-  listOfDataNetwork: Network[] = [];
-  defaultNetwork: Network = new Network();
+  activeIPv4: boolean = false;
+  activeIPv6: boolean = false;
+  idIPv4 = 0;
+  idIPv6 = 0;
+  listOfDataIPv4: Network[] = [];
+  listOfDataIPv6: Network[] = [];
+  defaultIPv4: Network = new Network();
+  defaultIPv6: Network = new Network();
   listIPSubnetModel: IPSubnetModel[] = [];
 
-  initNetwork(): void {
-    this.activeNetwork = true;
-    this.listOfDataNetwork.push(this.defaultNetwork);
+  initIPv4(): void {
+    this.activeIPv4 = true;
+    this.listOfDataIPv4.push(this.defaultIPv4);
 
     this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
       this.listIPSubnetModel = data;
@@ -423,31 +414,72 @@ export class InstancesCreateComponent implements OnInit {
       // this.listOfDataNetwork.push(...resultHttp);
     });
   }
-  deleteRowNetwork(id: number): void {
-    this.listOfDataNetwork = this.listOfDataNetwork.filter((d) => d.id !== id);
+
+  initIPv6(): void {
+    this.activeIPv6 = true;
+    this.listOfDataIPv6.push(this.defaultIPv6);
+
+    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
+      this.listIPSubnetModel = data;
+      // var resultHttp = data;
+      // this.listOfDataNetwork.push(...resultHttp);
+    });
   }
 
-  onInputNetwork(index: number, event: any) {
+  deleteRowIPv4(id: number): void {
+    this.listOfDataIPv4 = this.listOfDataIPv4.filter((d) => d.id !== id);
+  }
+
+  deleteRowIPv6(id: number): void {
+    this.listOfDataIPv6 = this.listOfDataIPv6.filter((d) => d.id !== id);
+  }
+
+  onInputIPv4(index: number, event: any) {
     // const inputElement = this.renderer.selectRootElement('#type_' + index);
     // const inputValue = inputElement.value;
     // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataNetwork.filter(
+    const filteredArray = this.listOfDataIPv4.filter(
       (item) => item.ip !== ''
     );
-    const filteredArrayHas = this.listOfDataNetwork.filter(
+    const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
     );
 
     if (filteredArrayHas.length > 0) {
-      this.listOfDataNetwork[index].ip = event;
+      this.listOfDataIPv4[index].ip = event;
     } else {
       // Add a new row with the same value as the current row
       //const currentItem = this.itemsTest[count];
       //this.itemsTest.splice(count + 1, 0, currentItem);
-      this.defaultNetwork = new Network();
-      this.idNetwork++;
-      this.defaultNetwork.id = this.idNetwork;
-      this.listOfDataNetwork.push(this.defaultNetwork);
+      this.defaultIPv4 = new Network();
+      this.idIPv4++;
+      this.defaultIPv4.id = this.idIPv4;
+      this.listOfDataIPv4.push(this.defaultIPv4);
+    }
+    this.cdr.detectChanges();
+  }
+
+  onInputIPv6(index: number, event: any) {
+    // const inputElement = this.renderer.selectRootElement('#type_' + index);
+    // const inputValue = inputElement.value;
+    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
+    const filteredArray = this.listOfDataIPv6.filter(
+      (item) => item.ip !== ''
+    );
+    const filteredArrayHas = this.listOfDataIPv6.filter(
+      (item) => item.ip == ''
+    );
+
+    if (filteredArrayHas.length > 0) {
+      this.listOfDataIPv6[index].ip = event;
+    } else {
+      // Add a new row with the same value as the current row
+      //const currentItem = this.itemsTest[count];
+      //this.itemsTest.splice(count + 1, 0, currentItem);
+      this.defaultIPv6 = new Network();
+      this.idIPv6++;
+      this.defaultIPv6.id = this.idIPv6;
+      this.listOfDataIPv6.push(this.defaultIPv6);
     }
     this.cdr.detectChanges();
   }
@@ -462,7 +494,38 @@ export class InstancesCreateComponent implements OnInit {
     public message: NzMessageService,
     private renderer: Renderer2,
     private loadingSrv: LoadingService
-  ) {}
+  ) {
+
+    this.tempData = [ this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+
+    ];
+
+    this.carouselTileItems$ = of(this.tempData);
+
+    // this.carouselTileItems$ = interval(500).pipe(
+    //   startWith(-1),
+    //   take(30),
+    //   map(() => {
+    //     const data = (this.tempData = [
+    //       ...this.tempData,
+    //       this.images[Math.floor(Math.random() * this.images.length)]
+    //     ]);
+    //
+    //     return data;
+    //   })
+    // );
+
+  }
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
@@ -552,7 +615,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
-    this.instanceCreate.customerId = 669;
+    this.instanceCreate.customerId = this.tokenService.get()?.userId;
     this.instanceCreate.createDate = '2023-11-01T00:00:00';
     this.instanceCreate.expireDate = '2023-12-01T00:00:00';
     this.instanceCreate.saleDept = null;
@@ -587,7 +650,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
-    this.volumeCreate.customerId = 669;
+    this.volumeCreate.customerId = this.tokenService.get()?.userId;
     this.volumeCreate.createDate = '0001-01-01T00:00:00';
     this.volumeCreate.expireDate = '0001-01-01T00:00:00';
     this.volumeCreate.saleDept = null;

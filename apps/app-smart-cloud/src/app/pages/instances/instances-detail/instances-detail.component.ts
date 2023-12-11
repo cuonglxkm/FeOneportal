@@ -20,6 +20,8 @@ import {
 } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
+import { G2TimelineData } from '@delon/chart/timeline';
+import { DatePipe } from '@angular/common';
 
 class BlockStorage {
   id: number = 0;
@@ -67,24 +69,39 @@ export class InstancesDetailComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  formatTimestamp(timestamp: number): string {
+    const date = new Date(timestamp);
+    const year = date.getUTCFullYear();
+    const month = `0${date.getUTCMonth() + 1}`.slice(-2);
+    const day = `0${date.getUTCDate()}`.slice(-2);
+    const hours = `0${date.getUTCHours()}`.slice(-2);
+    const minutes = `0${date.getUTCMinutes()}`.slice(-2);
+    const seconds = `0${date.getUTCSeconds()}`.slice(-2);
+    const milliseconds = `00${date.getUTCMilliseconds()}`.slice(-3);
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+  }
+
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
 
     this.listOfDataNetwork.push(this.defaultNetwork);
 
-    this.router.paramMap.subscribe(async (param) => {
+    this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        await this.dataService
+        this.dataService
           .getById(this.id, false)
           .subscribe(async (data: any) => {
             this.instancesModel = data;
             this.loading = false;
-
-            await this.dataService
+            this.cloudId = this.instancesModel.cloudId;
+            this.regionId = this.instancesModel.regionId;
+            this.getMonitorData();
+            this.dataService
               .getAllSecurityGroupByInstance(
-                this.instancesModel.cloudId,
-                this.instancesModel.regionId,
+                this.cloudId,
+                this.regionId,
                 this.instancesModel.customerId,
                 this.instancesModel.projectId
               )
@@ -127,181 +144,88 @@ export class InstancesDetailComponent implements OnInit {
 
   //Giám sát
   activeGS: boolean = false;
-  offlineChartData!: any[];
-  valueGSCPU: string = '';
-  valueGSTIME: string = '';
+  maxAxis = 1;
+  cahrt = [];
+  valueGSCPU: string = 'cpu';
+  valueGSTIME: number = 5;
+  cloudId: string;
+  regionId: number;
+  chartData: G2TimelineData[] = [];
 
   GSCPU = [
     {
-      key: '1',
+      key: 'cpu',
       name: 'CPU',
     },
     {
-      key: '2',
+      key: 'ram',
       name: 'RAM',
     },
     {
-      key: '3',
+      key: 'network',
       name: 'Network',
     },
     {
-      key: '4',
+      key: 'diskio',
       name: 'Disk IOPS',
     },
     {
-      key: '5',
+      key: 'diskrw',
       name: 'Disk Read / Write',
     },
   ];
   GSTIME = [
     {
-      key: '1',
+      key: 5,
       name: '5 phút',
     },
     {
-      key: '2',
+      key: 15,
       name: '15 phút',
+    },
+    {
+      key: 60,
+      name: '1 giờ',
     },
   ];
 
-  cahrt = [
-    {
-      time: '2023-11-13T02:55:02.606Z',
-      y1: 75,
-      y2: 42,
-      _time: 1699844102606,
-    },
-    {
-      time: '2023-11-13T03:25:02.606Z',
-      y1: 55,
-      y2: 33,
-      _time: 1699845902606,
-    },
-    {
-      time: '2023-11-13T03:55:02.606Z',
-      y1: 39,
-      y2: 97,
-      _time: 1699847702606,
-    },
-    {
-      time: '2023-11-13T04:25:02.606Z',
-      y1: 24,
-      y2: 40,
-      _time: 1699849502606,
-    },
-    {
-      time: '2023-11-13T04:55:02.606Z',
-      y1: 93,
-      y2: 14,
-      _time: 1699851302606,
-    },
-    {
-      time: '2023-11-13T05:25:02.606Z',
-      y1: 46,
-      y2: 14,
-      _time: 1699853102606,
-    },
-    {
-      time: '2023-11-13T05:55:02.606Z',
-      y1: 57,
-      y2: 55,
-      _time: 1699854902606,
-    },
-    {
-      time: '2023-11-13T06:25:02.606Z',
-      y1: 75,
-      y2: 52,
-      _time: 1699856702606,
-    },
-    {
-      time: '2023-11-13T06:55:02.606Z',
-      y1: 99,
-      y2: 13,
-      _time: 1699858502606,
-    },
-    {
-      time: '2023-11-13T07:25:02.606Z',
-      y1: 60,
-      y2: 18,
-      _time: 1699860302606,
-    },
-    {
-      time: '2023-11-13T07:55:02.606Z',
-      y1: 44,
-      y2: 41,
-      _time: 1699862102606,
-    },
-    {
-      time: '2023-11-13T08:25:02.606Z',
-      y1: 14,
-      y2: 46,
-      _time: 1699863902606,
-    },
-    {
-      time: '2023-11-13T08:55:02.606Z',
-      y1: 108,
-      y2: 95,
-      _time: 1699865702606,
-    },
-    {
-      time: '2023-11-13T09:25:02.606Z',
-      y1: 71,
-      y2: 21,
-      _time: 1699867502606,
-    },
-    {
-      time: '2023-11-13T09:55:02.606Z',
-      y1: 36,
-      y2: 44,
-      _time: 1699869302606,
-    },
-    {
-      time: '2023-11-13T10:25:02.606Z',
-      y1: 64,
-      y2: 94,
-      _time: 1699871102606,
-    },
-    {
-      time: '2023-11-13T10:55:02.606Z',
-      y1: 49,
-      y2: 61,
-      _time: 1699872902606,
-    },
-    {
-      time: '2023-11-13T11:25:02.606Z',
-      y1: 67,
-      y2: 34,
-      _time: 1699874702606,
-    },
-    {
-      time: '2023-11-13T11:55:02.606Z',
-      y1: 101,
-      y2: 29,
-      _time: 1699876502606,
-    },
-    {
-      time: '2023-11-13T12:25:02.606Z',
-      y1: 26,
-      y2: 101,
-      _time: 1699878302606,
-    },
-  ];
+  getMonitorData() {
+    this.chartData = [];
+    this.cahrt = [];
+    this.dataService
+      .getMonitorByCloudId(
+        this.cloudId,
+        this.regionId,
+        this.valueGSTIME,
+        this.valueGSCPU
+      )
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe((data: any) => {
+        data[0].datas.forEach((e: any) => {
+          const item = {
+            time: this.formatTimestamp(e.timeSpan * 1000),
+            y1: Number.parseFloat(e.value),
+          };
+          this.cahrt.push(item);
+        });
+        this.chartData = this.cahrt;
+        this.cdr.detectChanges();
+        console.log('dataMonitor', this.chartData);
+      });
+  }
 
   activeGSCard() {
     this.activeGS = true;
-    this.offlineChartData = this.cahrt;
+    this.getMonitorData();
   }
 
-  // refresh(max?: number): void {
-  //   this.maxAxis = max ?? this.maxAxis;
-  //   const { titleMap, data } = this.genData(this.maxAxis);
-  //   this.chartData = data;
-  //   this.titleMap = titleMap;
-  // }
   onChangeCPU(event?: any) {
-    this.offlineChartData = this.cahrt;
+    this.valueGSTIME = null;
   }
   onChangeTIME(event?: any) {
-    this.offlineChartData = this.cahrt;
+    this.valueGSTIME = event;
+    if (this.valueGSCPU != '') {
+      this.getMonitorData();
+    }
   }
 }

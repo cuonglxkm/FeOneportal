@@ -15,7 +15,15 @@ import { SafePipe } from '../../../../../../libs/common-utils/src';
 import { InstancesBtnComponent } from './instances-common/instances-btn/instances-btn.component';
 import { InstancesVlanGimComponent } from './instances-list/instances-vlan-gim/instances-vlan-gim.component';
 import {CarouselModule} from "ngx-owl-carousel-o";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {
+  NguCarousel,
+  NguCarouselDefDirective,
+  NguCarouselNextDirective,
+  NguCarouselPrevDirective,
+  NguItemComponent,
+  NguTileComponent
+} from '@ngu/carousel';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -30,7 +38,15 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     InstancesBtnComponent,
     InstancesVlanGimComponent,
   ],
-  imports: [InstancesRoutingModule, SharedModule, FullContentModule, SafePipe, CarouselModule],
+  imports: [InstancesRoutingModule, SharedModule, FullContentModule, SafePipe, CarouselModule, SafePipe,
+    NguCarousel,
+    NguTileComponent,
+    NguCarousel,
+    NguCarouselDefDirective,
+    NguCarouselNextDirective,
+    NguCarouselPrevDirective,
+    NguItemComponent, CommonModule
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class InstancesModule {}

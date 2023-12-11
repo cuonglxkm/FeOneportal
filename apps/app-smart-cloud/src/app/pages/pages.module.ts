@@ -65,6 +65,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
 import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { UserComponent } from './users/user.component';
+import { UserCreateComponent } from './users/user-create/user-create.component';
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { AddPoliciesComponent } from './users/user-detail/add-policies/add-policies.component';
+import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
 import { IamDashboardComponent } from './iam/dashboard/iam-dashboard.component';
 import { CreateUserGroupComponent } from './iam/user-group/create/create-user-group.component';
 import { DeleteUserGroupComponent } from './iam/user-group/delete/delete-many-group/delete-user-group.component';
@@ -72,7 +79,6 @@ import { DeleteOneUserGroupComponent } from './iam/user-group/delete/delete-one/
 import { DetailUserGroupComponent } from './iam/user-group/detail/detail-user-group.component';
 import { EditUserGroupComponent } from './iam/user-group/edit/edit-user-group.component';
 import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.component';
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.component';
 import { AceEditorModule } from 'ng2-ace-editor';
@@ -143,6 +149,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     JsonViewerComponent,
     UsersTableComponent,
     PolicyTableComponent,
+    UserComponent,
+    UserCreateComponent,
+    UserDetailComponent,
+    AddPoliciesComponent,
+    AddToGroupComponent,
   ],
   imports: [
     CommonModule,
@@ -169,7 +180,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     LayoutDefaultModule,
     DragDropModule,
     NgxJsonViewerModule,
-    NgJsonEditorModule,
+    // Starting Angular 13
+    AngJsoneditorModule,
     // AceEditorModule
   ],
 })

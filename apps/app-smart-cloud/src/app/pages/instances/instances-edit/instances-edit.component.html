@@ -1,4 +1,4 @@
-<div style="padding-top: 1%">
+<page-header>
   <nz-breadcrumb style="width: 50%; float: left">
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Quản lý máy ảo</a>
@@ -8,26 +8,27 @@
     </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right non-pointer">
-    <region-select-dropdown
-    ></region-select-dropdown>
+    <region-select-dropdown></region-select-dropdown>
     <project-select-dropdown></project-select-dropdown>
   </div>
-  <!-- <div><h2>Chỉnh sửa máy ảo</h2></div> -->
-  <page-header [title]="'Chỉnh sửa máy ảo'" [action]="action">
-    <ng-template #action>
-      <button
-        nz-button
-        [nzType]="'primary'"
-        (click)="navigateToCreate()"
-        class="bg-success border-success"
-      >
-        <i nz-icon nzType="plus"></i> <span>Thêm mới</span>
-      </button>
-      <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
-      </one-portal-instances-btn>
-    </ng-template>
-  </page-header>
-</div>
+  <div style="margin-top: 15px;">
+    <nz-row>
+      <h2 style="width: 50%;">Chỉnh sửa máy ảo</h2>
+      <div class="text-right non-pointer" style="width: 50%;">
+        <button
+          nz-button
+          [nzType]="'primary'"
+          (click)="navigateToCreate()"
+          class="bg-success border-success"
+        >
+          <i nz-icon nzType="plus"></i> <span>Thêm mới</span>
+        </button>
+        <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
+        </one-portal-instances-btn>
+      </div>
+    </nz-row>
+  </div>
+</page-header>
 
 <form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
   <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
@@ -50,7 +51,6 @@
           <nz-form-label nzFor="name">Tên máy ảo</nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng nhập tên máy ảo">
             <input
-              readonly
               nz-input
               [(ngModel)]="instancesModel.name"
               id="name"
@@ -64,14 +64,16 @@
     <br />
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item >
-          <nz-form-label nzFor="name" 
+        <nz-form-item>
+          <nz-form-label nzFor="name"
             >Hệ điều hành: {{ instancesModel.imageId }}
-            <a class="text-blue"
+            <a
+              class="text-blue"
               (click)="navigateToChangeImage()"
-              style="margin-left: 15px;"
+              style="margin-left: 15px"
             >
-              <img nz-image nzSrc="assets/imgs/undo.png" alt=""  /><span style="margin-left: 15px;"
+              <img src="assets/imgs/undo.png" alt="" /><span
+                style="margin-left: 15px"
                 >Thay đổi</span
               ></a
             >
@@ -180,8 +182,7 @@
                   >
                     <tr>
                       <div>
-                        <b class="h4"
-                          >{{ data.flavorName }}</b
+                        <b class="h4">{{ data.flavorName }}</b
                         ><br />
                         <b class="h4">{{ data.price }}đ/tháng</b><br />
                         <span>đ/giờ</span>
@@ -312,7 +313,8 @@
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >Thời hạn sử dụng (Tháng) <span class="text-red">*</span></nz-form-label
+            >Thời hạn sử dụng (Tháng)
+            <span class="text-red">*</span></nz-form-label
           >
           <nz-form-control>
             <nz-input-number
