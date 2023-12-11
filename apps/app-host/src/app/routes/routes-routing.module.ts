@@ -10,6 +10,7 @@ import {LayoutBasicComponent} from '../layout/basic/basic.component';
 import {LayoutBlankComponent} from '../layout/blank/blank.component';
 import {loadRemoteModule} from "@nx/angular/mf";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
+import {WelcomeComponent} from "./welcome/welcome.component";
 
 const routes: Routes = [
   {
@@ -58,6 +59,11 @@ const routes: Routes = [
   {
     path: 'exception',
     loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule)
+  },
+
+  {
+    path: 'welcome',
+    component: WelcomeComponent,
   },
   {path: '**', redirectTo: 'exception/404'},
 
