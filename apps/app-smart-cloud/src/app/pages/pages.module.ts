@@ -72,6 +72,17 @@ import { AddPoliciesComponent } from './users/user-detail/add-policies/add-polic
 import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
 import {NgxJsonViewerModule} from "ngx-json-viewer";
 import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
+import { IamDashboardComponent } from './iam/dashboard/iam-dashboard.component';
+import { CreateUserGroupComponent } from './iam/user-group/create/create-user-group.component';
+import { DeleteUserGroupComponent } from './iam/user-group/delete/delete-many-group/delete-user-group.component';
+import { DeleteOneUserGroupComponent } from './iam/user-group/delete/delete-one/delete-one-user-group.component';
+import { DetailUserGroupComponent } from './iam/user-group/detail/detail-user-group.component';
+import { EditUserGroupComponent } from './iam/user-group/edit/edit-user-group.component';
+import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.component';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
+import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.component';
+import { UsersTableComponent } from './iam/user-group/create/users-table.component';
+import { PolicyTableComponent } from './iam/user-group/create/policy-table.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -127,6 +138,16 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachOrDetachComponent,
     CurrentVirtualMachineComponent,
     NewVirtualMachineComponent,
+    IamDashboardComponent,
+    CreateUserGroupComponent,
+    DeleteUserGroupComponent,
+    DeleteOneUserGroupComponent,
+    DetailUserGroupComponent,
+    EditUserGroupComponent,
+    ListUserGroupComponent,
+    JsonViewerComponent,
+    UsersTableComponent,
+    PolicyTableComponent,
     UserComponent,
     UserCreateComponent,
     UserDetailComponent,
@@ -160,6 +181,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NgxJsonViewerModule,
     // Starting Angular 13
     AngJsoneditorModule,
+    // AceEditorModule
   ],
 })
 export class PagesModule {}
