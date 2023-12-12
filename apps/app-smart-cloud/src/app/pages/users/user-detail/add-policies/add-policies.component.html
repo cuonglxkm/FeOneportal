@@ -185,7 +185,7 @@
           nz-button
           nzType="default"
           style="background-color: white"
-          (click)="navigateToCreate()"
+          (click)="reloadGroupTable()"
         >
           <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
@@ -228,11 +228,11 @@
         <tbody>
           <tr *ngFor="let item of listOfGroups">
             <td>
-              <label
-                nz-checkbox
-                [ngModel]="isUseIPv6"
-                [ngModelOptions]="{ standalone: true }"
-              ></label>
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onClickGroupItem(item.name)"
+              />
             </td>
             <td>{{ item.name }}</td>
             <td>{{ item.numberUsers }}</td>
@@ -302,7 +302,7 @@
           nz-button
           nzType="default"
           style="background-color: white"
-          (click)="navigateToCreate()"
+          (click)="reloadUserTable()"
         >
           <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
@@ -335,11 +335,11 @@
         <tbody>
           <tr *ngFor="let item of listOfUsers">
             <td>
-              <label
-                nz-checkbox
-                [ngModel]="isUseIPv6"
-                [ngModelOptions]="{ standalone: true }"
-              ></label>
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onClickUserItem(item.name)"
+              />
             </td>
             <td>{{ item.name }}</td>
             <td>{{ item.groups }}</td>
@@ -373,6 +373,7 @@
           <nz-form-control>
             <nz-select
               [ngModel]="typePolicy"
+              [ngModelOptions]="{ standalone: true }"
               [nzPlaceHolder]="'Tất cả các loại'"
               [nzShowSearch]="false"
               (ngModelChange)="changeFilterStatus($event)"
@@ -436,7 +437,7 @@
           nz-button
           nzType="default"
           style="background-color: white"
-          (click)="navigateToCreate()"
+          (click)="reloadPolicyTable()"
         >
           <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
@@ -478,11 +479,11 @@
         <tbody>
           <tr *ngFor="let item of listOfpolicies">
             <td>
-              <label
-                nz-checkbox
-                [ngModel]="isUseIPv6"
-                [ngModelOptions]="{ standalone: true }"
-              ></label>
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onClickPolicyItem(item.name)"
+              />
             </td>
             <td>{{ item.name }}</td>
             <td>{{ item.type }}</td>

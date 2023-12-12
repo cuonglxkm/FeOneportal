@@ -19,39 +19,29 @@ export class UserService extends BaseService {
     super();
   }
 
-//   getData(
-//     email: any,
-//     action: any,
-//     resourceName: any,
-//     resourceType: any,
-//     regionId: any,
-//     fromDate: any,
-//     toDate: any,
-//     pageSize: any,
-//     currentPage: any
-//   ): Observable<BaseResponse<ActionHistoryModel[]>> {
-//     return this.http.get<BaseResponse<ActionHistoryModel[]>>(
-//       this.baseUrl +
-//         '/actionlogs?email=' +
-//         email +
-//         '&action=' +
-//         action +
-//         '&resourceName=' +
-//         resourceName +
-//         '&resourceType=' +
-//         resourceType +
-//         '&regionId=' +
-//         regionId +
-//         '&fromDate=' +
-//         fromDate +
-//         '&toDate=' +
-//         toDate +
-//         '&pageSize=' +
-//         pageSize +
-//         '&currentPage=' +
-//         currentPage
-//     );
-//   }
+  // getData(): Observable<BaseResponse<ActionHistoryModel[]>> {
+  //   return this.http.get<BaseResponse<ActionHistoryModel[]>>(
+  //     this.baseUrl +
+  //       '/actionlogs?email=' +
+  //       email +
+  //       '&action=' +
+  //       action +
+  //       '&resourceName=' +
+  //       resourceName +
+  //       '&resourceType=' +
+  //       resourceType +
+  //       '&regionId=' +
+  //       regionId +
+  //       '&fromDate=' +
+  //       fromDate +
+  //       '&toDate=' +
+  //       toDate +
+  //       '&pageSize=' +
+  //       pageSize +
+  //       '&currentPage=' +
+  //       currentPage
+  //   );
+  // }
 
   getUsers(): Observable<BaseResponse<User[]>> {
     return this.http.get<BaseResponse<User[]>>('/users');

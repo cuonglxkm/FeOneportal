@@ -27,10 +27,11 @@ export class UserComponent implements OnInit {
   loading = true;
 
   userDelete: User;
+  listUserPicked = [];
   nameModal: string;
 
   constructor(
-    private service: UserService, 
+    private service: UserService,
     private router: Router,
     public message: NzMessageService,
     private cdr: ChangeDetectorRef,
@@ -52,6 +53,7 @@ export class UserComponent implements OnInit {
     //   this.listOfIp = baseResponse.records;
     //     console.log(this.listOfIp);
     // });
+    this.listUserPicked = [];
     this.service.getUsers().pipe(
       finalize(() => {
       this.loading = false;
@@ -101,6 +103,22 @@ export class UserComponent implements OnInit {
     // this.getSshKeys();
   }
 
+  onClickItem(userName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listUserPicked.forEach(e => {
+      if (e == userName) {
+        this.listUserPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listUserPicked.push(userName);
+    }
+    console.log("list user picked", this.listUserPicked);
+  }
+
   onPageSizeChange(event: any) {
     // this.size = event
     // this.getSshKeys();
@@ -109,6 +127,11 @@ export class UserComponent implements OnInit {
   onPageIndexChange(event: any) {
     // this.index = event;
     // this.getSshKeys();
+  }
+
+  reloadTable(): void {
+    this.listOfUser = [];
+    this.getData();
   }
 
   getUserDetail(id: number) {

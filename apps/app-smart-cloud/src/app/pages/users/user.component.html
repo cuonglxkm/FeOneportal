@@ -15,7 +15,7 @@
   </div>
   <div><h2>Danh sách Users</h2></div>
   <form nz-form>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div style="margin-bottom: -10px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
       <div
         nz-col
         [nzLg]="10"
@@ -62,7 +62,7 @@
           nz-button
           nzType="default"
           style="background-color: white"
-          (click)="navigateToCreate()"
+          (click)="reloadTable()"
         >
           <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
@@ -116,11 +116,9 @@
         <tbody>
           <tr *ngFor="let item of listOfUser">
             <td>
-              <label
-                nz-checkbox
-                [ngModel]="isUseIPv6"
-                [ngModelOptions]="{ standalone: true }"
-              ></label>
+              <input nz-input type="checkbox"
+                (change)="onClickItem(item.name)"
+              >
             </td>
             <td (click)="getUserDetail(item.id)">
               <a>{{ item.name }}</a>

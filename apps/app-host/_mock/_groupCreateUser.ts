@@ -6,7 +6,7 @@ export const GROUPCREATEUSER = {
         "id": 1,
         "name": "SI",
         "numberUsers": 12,
-        "attachedPolicies": ['customer manager'],
+        "attachedPolicies": [],
         "createdTime": "2023-11-20T01:34:12.367Z",
       },
       {
@@ -20,7 +20,7 @@ export const GROUPCREATEUSER = {
         "id": 3,
         "name": "BU",
         "numberUsers": 0,
-        "attachedPolicies": ['customer manager', 'portal manager'],
+        "attachedPolicies": ['customer manager', 'portal manager', 'Admin'],
         "createdTime": "2023-11-20T01:34:12.367Z",
       }
     ],
