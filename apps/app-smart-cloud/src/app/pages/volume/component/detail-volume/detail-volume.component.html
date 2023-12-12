@@ -1,9 +1,7 @@
 <app-header-volume [headerInfo]="headerInfo" xmlns="http://www.w3.org/1999/html"></app-header-volume>
 
 
-<nz-spin *ngIf="isLoading" nzSimple [nzSize]="'large'"></nz-spin>
-
-<div *ngIf="!isLoading">
+<nz-spin [nzSpinning]="isLoading" nzSize="large">
   <div class="detail-volume">
     <div class="row">
       <h3 style="display: inline-block; margin-right: auto;">Chi tiết dịch vụ</h3>
@@ -111,7 +109,8 @@
       <tr *ngIf="this.attachedDto.length > 1">
         <td>{{ volumeInfo.sizeInGB }}</td>
         <td>{{ volumeInfo.iops }}</td>
-        <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td *ngIf="volumeInfo.status === 'KHOITAO'"
+            style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
         <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
         <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
         <td>
@@ -123,7 +122,8 @@
       <tr *ngIf="this.attachedDto.length <= 1">
         <td>{{ volumeInfo.sizeInGB }}</td>
         <td>{{ volumeInfo.iops }}</td>
-        <td *ngIf="volumeInfo.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
+        <td *ngIf="volumeInfo.status === 'KHOITAO'"
+            style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</td>
         <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
         <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
         <td>{{this.attachedDto.length == 1 ? this.attachedDto[0].instanceName : 'Không có máy ảo'}} </td>
@@ -146,7 +146,13 @@
       </b>
       <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
     </p>
+    <p>
+      <b>
+        Ngày hết hạn:
+      </b>
+      <span>{{ volumeInfo.expirationDate | date:'dd/MM/yyyy' }}</span>
+    </p>
 
 
   </div>
-</div>
+</nz-spin>

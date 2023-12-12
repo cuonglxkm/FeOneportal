@@ -17,6 +17,7 @@
                  [nzPlaceHolder]="'Tất cả trạng thái'"
                  [nzOptions]="options"
                  [(ngModel)]="volumeStatusSearch"
+                 (ngModelChange)="searchVolumes()"
                  style="width: 170px;"
       >
       </nz-select>
@@ -75,12 +76,11 @@
             <td>{{ data.sizeInGB}}</td>
             <td>{{ data.iops }}</td>
             <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
-            <td *ngIf="data.status === 'ERROR'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
-            <td *ngIf="data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
+            <td *ngIf="data.status === 'ERROR' || data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
             <td>{{ data.serviceStatus }}</td>
             <td>{{ data.instanceName }}</td>
             <td>
-              <nz-select nzSize="small"
+              <nz-select nzSize="default"
                          class="custom-background"
                          [nzPlaceHolder]="'Tạo Snapshot'"
                          [nzOptions]="optionVolumeRoot"
@@ -121,7 +121,7 @@
             <td>{{ data.serviceStatus }}</td>
             <td>{{ data.instanceName }}</td>
             <td>
-              <nz-select nzSize="small"
+              <nz-select nzSize="default"
                          class="custom-background"
                          [nzPlaceHolder]="'Gắn Volume'"
                          [nzOptions]="optionVolumeAdd"
