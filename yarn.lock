@@ -5353,6 +5353,23 @@ angular-animations@^0.11.0:
   dependencies:
     tslib "^2.0.0"
 
+angular-json-editor@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/angular-json-editor/-/angular-json-editor-0.2.1.tgz#651f2ceab235a70e85ae04c10a23359d61e46c41"
+  integrity sha512-WVtSz4vt1JMMpQ5U+Nfs6dwLO1QL68EmfBekmY5CscJKnxILa1Hcv7qVdS3XexlvRlNE8/4KTbEzA9QW3SDk3A==
+
+angular-jsoneditor@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/angular-jsoneditor/-/angular-jsoneditor-0.0.2.tgz#7d7a8440eb52a2698bc3be6af06915cecaa1187f"
+  integrity sha512-9wC4pqzpWuXY6OJKnW+ajpenj8Yxy3Aq2y2V80Y2XZTutHVyE2f85iXEbQVmb70HHKEy54JOaGglkXPrB+qojg==
+  dependencies:
+    angular "^1.6.1"
+
+angular@^1.6.1:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.3.tgz#851ad75d5163c105a7e329555ef70c90aa706894"
+  integrity sha512-5qjkWIQQVsHj4Sb5TcEs4WZWpFeVFHXwxEBHUhrny41D8UrBAd6T/6nPPAsLngJCReIOqi95W3mxdveveutpZw==
+
 angularx-qrcode@^15.0.1:
   version "15.0.1"
   resolved "https://registry.yarnpkg.com/angularx-qrcode/-/angularx-qrcode-15.0.1.tgz#349b558715c99d933cb62b264ff1bd7b269b334d"
