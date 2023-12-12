@@ -5,18 +5,26 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import {
   CopyUserPolicies,
   GroupCreateUser,
   PermissionPolicies,
+  UseCreate,
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs';
-import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { LoadingService } from '@delon/abc/loading';
 @Component({
   selector: 'one-portal-user-create',
   templateUrl: './user-create.component.html',
@@ -24,6 +32,7 @@ import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCreateComponent implements OnInit {
+  userCreate: UseCreate = new UseCreate();
   regionId: number;
   projectId: number;
   listOfGroups: GroupCreateUser[] = [];
@@ -49,24 +58,27 @@ export class UserCreateComponent implements OnInit {
     this.typePolicy = e;
   }
 
-  form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
+  form: FormGroup<{
+    name: FormControl<string>;
+    email: FormControl<string>;
+  }> = this.fb.group({
+    name: [
+      '',
+      [Validators.required, Validators.pattern(/^[\w\d+=,.@\-_]{1,64}$/)],
+    ],
+    email: ['', [Validators.required, Validators.email]],
   });
 
   constructor(
+    private fb: NonNullableFormBuilder,
     private service: UserService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    public message: NzMessageService,
+    private cdr: ChangeDetectorRef,
+    private loadingSrv: LoadingService
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
-    this.optionJsonEditor.mode = "text";
+    this.optionJsonEditor.mode = 'text';
   }
 
   ngOnInit(): void {
@@ -79,12 +91,8 @@ export class UserCreateComponent implements OnInit {
   }
 
   getData(): void {
-    // this.service.getData(this.ipAddress, this.status, this.customerId, this.regionId, this.isCheckState, this.size, this.index)
-    //   .subscribe(baseResponse => {
-    //   this.listOfIp = baseResponse.records;
-    //     console.log(this.listOfIp);
-    // });
     this.listGroupPicked = [];
+    this.groupNames = [];
     this.service
       .getGroupsCreateUser()
       .pipe(
@@ -125,7 +133,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   getPermissionPolicies() {
-    this.listPolicyPicked = [];
+    this.policyNames.clear();
     this.service
       .getPermissionPolicies()
       .pipe(
@@ -170,7 +178,7 @@ export class UserCreateComponent implements OnInit {
     this.activeBlockAttachPolicies = false;
     this.listGroupPicked = [];
     this.listUserPicked = [];
-    this.listPolicyPicked = [];
+    this.groupNames = [];
   }
   initCopyPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
@@ -178,7 +186,7 @@ export class UserCreateComponent implements OnInit {
     this.activeBlockAttachPolicies = false;
     this.listGroupPicked = [];
     this.listUserPicked = [];
-    this.listPolicyPicked = [];
+    this.groupNames = [];
   }
   initAttachPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
@@ -186,58 +194,77 @@ export class UserCreateComponent implements OnInit {
     this.activeBlockAttachPolicies = true;
     this.listGroupPicked = [];
     this.listUserPicked = [];
-    this.listPolicyPicked = [];
+    this.groupNames = [];
+    this.policyNames.clear();
   }
 
-  listGroupPicked = [];
-  onClickGroupItem(groupName: string) {
+  listGroupPicked: GroupCreateUser[] = [];
+  groupNames = [];
+  policyNames = new Set<string>();
+  onClickGroupItem(groupName: string, item: GroupCreateUser) {
+    this.policyNames.clear();
     var index = 0;
     var isAdded = true;
-    this.listGroupPicked.forEach(e => {
+    this.groupNames.forEach((e) => {
       if (e == groupName) {
+        this.groupNames.splice(index, 1);
         this.listGroupPicked.splice(index, 1);
         isAdded = false;
       }
       index++;
     });
     if (isAdded) {
-      this.listGroupPicked.push(groupName);
+      this.groupNames.push(groupName);
+      this.listGroupPicked.push(item);
     }
-    console.log("list group picked", this.listGroupPicked);
+
+    this.listGroupPicked.forEach((e) => {
+      e.attachedPolicies.forEach((element) => {
+        this.policyNames.add(element);
+      });
+    });
+    console.log('list groupNames', this.groupNames);
+    console.log('list Policies', this.policyNames);
   }
 
-  listUserPicked = [];
-  onClickUserItem(userName: string) {
+  listUserPicked: CopyUserPolicies[] = [];
+  onClickUserItem(item: CopyUserPolicies) {
+    this.policyNames.clear();
     var index = 0;
     var isAdded = true;
-    this.listUserPicked.forEach(e => {
-      if (e == userName) {
+    this.listUserPicked.forEach((e) => {
+      if (e.name == item.name) {
         this.listUserPicked.splice(index, 1);
         isAdded = false;
       }
       index++;
     });
     if (isAdded) {
-      this.listUserPicked.push(userName);
+      this.listUserPicked.push(item);
     }
-    console.log("list user picked", this.listUserPicked);
+
+    this.listUserPicked.forEach((e) => {
+      e.attachedPolicies.forEach((element) => {
+        this.policyNames.add(element);
+      });
+    });
+    console.log('list groupNames', this.groupNames);
+    console.log('list policyNames', this.policyNames);
   }
 
-  listPolicyPicked = [];
   onClickPolicyItem(policyName: string) {
-    var index = 0;
     var isAdded = true;
-    this.listPolicyPicked.forEach(e => {
+    this.policyNames.forEach((e) => {
       if (e == policyName) {
-        this.listPolicyPicked.splice(index, 1);
+        this.policyNames.delete(e);
         isAdded = false;
       }
-      index++;
     });
     if (isAdded) {
-      this.listPolicyPicked.push(policyName);
+      this.policyNames.add(policyName);
     }
-    console.log("list policy picked", this.listPolicyPicked);
+    console.log('list groupNames', this.groupNames);
+    console.log('list policyNames', this.policyNames);
   }
 
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
@@ -249,6 +276,40 @@ export class UserCreateComponent implements OnInit {
     } else {
       this.expandSet.delete(name);
     }
+  }
+
+  isVisibleCreate: boolean = false;
+  showModal() {
+    this.isVisibleCreate = true;
+  }
+
+  handleCancelCreate() {
+
+    this.isVisibleCreate = false;
+  }
+
+  handleOkCreate(): void {
+    this.userCreate.groupNames = this.groupNames;
+    this.userCreate.policyNames = Array.from(this.policyNames)
+    this.isVisibleCreate = false;
+    this.service
+      .create(this.userCreate)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe(
+        (data: any) => {
+          console.log(data);
+          this.message.success('Tạo mới User thành công');
+          this.router.navigateByUrl(`/app-smart-cloud/users`);
+        },
+        (error) => {
+          console.log(error.error);
+          this.message.error('Tạo mới User không thành công');
+        }
+      );
   }
 
   navigateToCreate() {}

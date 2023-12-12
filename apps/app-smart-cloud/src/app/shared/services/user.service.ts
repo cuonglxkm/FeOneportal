@@ -19,33 +19,36 @@ export class UserService extends BaseService {
     super();
   }
 
-  // getData(): Observable<BaseResponse<ActionHistoryModel[]>> {
-  //   return this.http.get<BaseResponse<ActionHistoryModel[]>>(
-  //     this.baseUrl +
-  //       '/actionlogs?email=' +
-  //       email +
-  //       '&action=' +
-  //       action +
-  //       '&resourceName=' +
-  //       resourceName +
-  //       '&resourceType=' +
-  //       resourceType +
-  //       '&regionId=' +
-  //       regionId +
-  //       '&fromDate=' +
-  //       fromDate +
-  //       '&toDate=' +
-  //       toDate +
-  //       '&pageSize=' +
-  //       pageSize +
-  //       '&currentPage=' +
-  //       currentPage
-  //   );
-  // }
+  search(
+    userName: string,
+    pageSize: number,
+    pageNumber: number
+  ): Observable<any> {
+    if (userName == undefined) userName = '';
+    let url_ = `/users?userName=${userName}&pageSize=${pageSize}&pageNumber=${pageNumber}`
+    url_ = url_.replace(/[?&]$/, '');
 
-  getUsers(): Observable<BaseResponse<User[]>> {
-    return this.http.get<BaseResponse<User[]>>('/users');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_);
   }
+
+  create(data: any): Observable<any> {
+    let url_ = `/users`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.iam + url_, data);
+  }
+
+  deleteUser(userName: string): Observable<any> {
+    let url_ = `/users/${userName}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_);
+  }
+  
+  // deleteUsers(userNames: string[]): Observable<any> {
+  //   let url_ = `/users`;
+  //   url_ = url_.replace(/[?&]$/, '');
+
+  //   return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_);
+  // }
 
   getGroupsCreateUser(): Observable<BaseResponse<GroupCreateUser[]>> {
     return this.http.get<BaseResponse<GroupCreateUser[]>>('/groupCreateUsers');
