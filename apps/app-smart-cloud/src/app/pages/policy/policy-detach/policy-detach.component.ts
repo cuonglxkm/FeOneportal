@@ -8,6 +8,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.component";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {AttachOrDetachRequest} from "../policy.model";
 
 @Component({
   selector: 'one-portal-policy-detach',
@@ -20,18 +21,18 @@ export class PolicyDetachComponent implements OnInit {
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  typeSearch : number;
+  typeSearch: number;
 
-  entitiesNameSearch : string;
+  entitiesNameSearch: string;
 
-  optionsEntities : NzSelectOptionInterface[] = [
+  optionsEntities: NzSelectOptionInterface[] = [
     {label: 'Tất cả các loại', value: null},
     {label: 'Users', value: 1},
     {label: 'Users Groups', value: 2},
 
   ];
 
-  policyName : string;
+  policyName: string;
   checked = false;
   indeterminate = false;
   listOfData: any;
@@ -44,7 +45,7 @@ export class PolicyDetachComponent implements OnInit {
   pageSize: number = 5;
 
 
-  searchEntities(){
+  searchEntities() {
     this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
   }
 
@@ -64,8 +65,8 @@ export class PolicyDetachComponent implements OnInit {
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ name }) => this.setOfCheckedId.has(name));
-    this.indeterminate = listOfEnabledData.some(({ name }) => this.setOfCheckedId.has(name)) && !this.checked;
+    this.checked = listOfEnabledData.every(({name}) => this.setOfCheckedId.has(name));
+    this.indeterminate = listOfEnabledData.some(({name}) => this.setOfCheckedId.has(name)) && !this.checked;
   }
 
   onItemChecked(name: string, checked: boolean): void {
@@ -75,16 +76,16 @@ export class PolicyDetachComponent implements OnInit {
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({ name }) => this.updateCheckedSet(name, checked));
+      .forEach(({name}) => this.updateCheckedSet(name, checked));
     this.refreshCheckedStatus();
   }
 
-  detachPolicy(){
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.id));
+  detachPolicy() {
+    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
 
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Detach Policy',
-      nzContent:PopupDetachPolicyComponent,
+      nzContent: PopupDetachPolicyComponent,
       nzFooter: [
         {
           label: 'Hủy',
@@ -103,19 +104,34 @@ export class PolicyDetachComponent implements OnInit {
     });
 
   }
-  private doDetachPolicy(requestData: any , policyName: string){
-    console.log(requestData);
-    console.log("idPolicy: "+ policyName);
-    this.notification.success('Thành công', 'Gỡ Policy thành công');
+
+  private doDetachPolicy(requestData: any, policyName: string) {
+
+    let request = new AttachOrDetachRequest();
+    request.policyName = policyName;
+    request.action = 'detach'
+    request.items = requestData;
+    console.log(request);
+    this.policiService.attachOrDetach(request).subscribe(data => {
+        this.notification.success('Thành công', 'Gỡ Policy thành công');
+        this.searchEntities();
+      },
+      error => {
+        this.notification.error('Có lỗi sảy ra', 'Gỡ Policy thất bại');
+      }
+    )
+
+
   }
 
-  goBack(){
+  goBack() {
 
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
   }
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId
   }
@@ -123,30 +139,31 @@ export class PolicyDetachComponent implements OnInit {
   ngOnInit(): void {
     const url = this.activatedRoute.snapshot.url;
     this.policyName = url[url.length - 1].path;
-    this.doGetAttachedEntities(this.policyName, null, null, 5,1);
+    this.doGetAttachedEntities(this.policyName, null, null, 5, 1);
   }
 
-  onQueryParamsChange(params: NzTableQueryParams){
+  onQueryParamsChange(params: NzTableQueryParams) {
     const {pageSize, pageIndex} = params;
     this.pageSize = pageSize;
     this.currentPage = pageIndex;
     this.searchEntities();
   }
 
-  private doGetAttachedEntities(policyName: string, entityName: string, type: number, pageSize:number, currentPage:number){
+  private doGetAttachedEntities(policyName: string, entityName: string, type: number, pageSize: number, currentPage: number) {
     this.isLoadingEntities = true;
-    this.policiService.getAttachedEntities(policyName,entityName,type,pageSize,currentPage).subscribe(
+    this.policiService.getAttachedEntities(policyName, entityName, type, pageSize, currentPage).subscribe(
       data => {
         this.totalData = data.totalCount;
         this.listOfData = data.records;
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi sảy ra','Lấy danh sách Attached Entities thất bại');
+        this.notification.error('Có lỗi sảy ra', 'Lấy danh sách Attached Entities thất bại');
         this.isLoadingEntities = false;
       }
     )
   }
+
   constructor(
     private policiService: PolicyService,
     private activatedRoute: ActivatedRoute,

@@ -8,6 +8,7 @@ import {PopupAttachPolicyComponent} from "../popup-policy/popup-attach-policy.co
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {AttachOrDetachRequest} from "../policy.model";
 
 
 
@@ -88,7 +89,7 @@ export class PolicyAttachComponent implements OnInit {
   }
 
   attachPolicy(){
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.id));
+    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
 
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Attach Policy',
@@ -112,9 +113,19 @@ export class PolicyAttachComponent implements OnInit {
 
   }
   private doAttachPolicy(requestData: any , policyName: string){
-    console.log(requestData);
-    console.log("idPolicy: "+ policyName);
-    this.notification.success('Thành công', 'Gắn Policy thành công');
+    let request = new AttachOrDetachRequest();
+    request.policyName = policyName;
+    request.action = 'attach'
+    request.items = requestData;
+    console.log(request);
+    this.policiService.attachOrDetach(request).subscribe(data => {
+        this.notification.success('Thành công', 'Gắn Policy thành công');
+        this.searchEntities();
+      },
+      error => {
+        this.notification.error('Có lỗi sảy ra', 'Gắn Policy thất bại');
+      }
+    )
   }
 
   goBack(){
