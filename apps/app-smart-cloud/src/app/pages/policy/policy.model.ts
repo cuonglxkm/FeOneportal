@@ -3,7 +3,7 @@ export interface PolicyModel {
   name: any;
   type: any;
   description: any;
-  jsonData: JSON;
+  jsonData: any;
   expand: boolean;
 }
 

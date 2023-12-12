@@ -30,9 +30,14 @@
     </div>
     <div nz-col nzSpan="10">
       <div class="text-right">
-        <button (click)="deletePolicy()" nz-button nzType="default" style="
-            margin-right: 10px;
-          "><i nz-icon nzType="delete"></i><span nz-icon nzType="reload" nzTheme="outline"></span>
+        <button
+          class="m-r-8"
+          nz-button
+          nzType="default"
+          style="background-color: white; margin-right: 10px;"
+          (click)="deletePolicy()"
+        >
+          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
         <nz-select [(ngModel)]="selectedAction" nzSize="default" style="width: 90px; margin-right: 10px;">
           <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
