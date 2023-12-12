@@ -82,6 +82,12 @@ import {AddPoliciesComponent} from './users/user-detail/add-policies/add-policie
 import {AddToGroupComponent} from './users/user-detail/add-to-group/add-to-group.component';
 import {NgxJsonViewerModule} from "ngx-json-viewer";
 import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
+import {PolicyAttachComponent} from "./policy/policy-attach/policy-attach.component";
+import {PopupAttachPolicyComponent} from "./policy/popup-policy/popup-attach-policy.component";
+import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
+import {PopupDetachPolicyComponent} from "./policy/popup-policy/popup-detach-policy.component";
+import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.component";
+import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
 import {IamDashboardComponent} from './iam/dashboard/iam-dashboard.component';
 import {CreateUserGroupComponent} from './iam/user-group/create/create-user-group.component';
 import {DeleteUserGroupComponent} from './iam/user-group/delete/delete-many-group/delete-user-group.component';
@@ -157,6 +163,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     JsonViewerComponent,
     UsersTableComponent,
     PolicyTableComponent,
+    PolicyAttachComponent,
+    PopupAttachPolicyComponent,
+    PolicyDetachComponent,
+    PopupDetachPolicyComponent,
+    PolicyDetailComponent,
+    PolicyUpdateComponent,
     UserComponent,
     UserCreateComponent,
     UserDetailComponent,
@@ -190,7 +202,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NgxJsonViewerModule,
     // Starting Angular 13
     AngJsoneditorModule,
-    // AceEditorModule
   ],
 })
 export class PagesModule {
