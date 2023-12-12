@@ -2,8 +2,17 @@ import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CopyUserPolicies, GroupCreateUser, PermissionPolicies, PoliciesOfUser, User } from '../models/user.model';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {
+  CopyUserPolicies,
+  GroupCreateUser,
+  PermissionPolicies,
+  PoliciesOfUser,
+  User,
+  UserModel
+} from '../models/user.model';
+import {FormSearchUserGroup, UserGroupModel} from "../models/user-group.model";
+import Pagination from "../models/pagination";
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +62,12 @@ export class UserService extends BaseService {
 //     );
 //   }
 
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  }
+
   getUsers(): Observable<BaseResponse<User[]>> {
     return this.http.get<BaseResponse<User[]>>('/users');
   }
@@ -71,5 +86,22 @@ export class UserService extends BaseService {
 
   getPoliciesOfUser(): Observable<BaseResponse<PoliciesOfUser[]>> {
     return this.http.get<BaseResponse<PoliciesOfUser[]>>('/policiesOfUser');
+  }
+
+  search(form: FormSearchUserGroup) {
+    let params = new HttpParams();
+    if (form.name != null) {
+      params = params.append('groupName', form.name)
+    }
+    if(form.pageSize != null) {
+      params = params.append('pageSize', form.pageSize);
+    }
+    if(form.currentPage != null) {
+      params = params.append('currentPage', form.currentPage);
+    }
+    return this.http.get<BaseResponse<UserModel[]>>( this.baseUrl + this.ENDPOINT.iam + '/users', {
+      headers: this.getHeaders(),
+      params: params
+    })
   }
 }

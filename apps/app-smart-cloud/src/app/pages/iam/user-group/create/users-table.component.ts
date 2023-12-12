@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserGroup} from "../list/list-user-group.component";
+import {UserService} from "../../../../shared/services/user.service";
+import {UserModel} from "../../../../shared/models/user.model";
+import { FormSearchUserGroup } from 'src/app/shared/models/user-group.model';
 
 @Component({
   selector: 'one-portal-users-table',
@@ -8,53 +11,63 @@ import {UserGroup} from "../list/list-user-group.component";
 })
 export class UsersTableComponent implements OnInit{
   value?: string;
-  listOfData: readonly UserGroup[] = [];
-  listOfCurrentPageData: readonly UserGroup[] = [];
+  listOfCurrentPageData: readonly UserModel[] = [];
   checked = false;
   indeterminate = false;
-  setOfCheckedId = new Set<number>();
+  setOfCheckedId = new Set<string>();
   listOfSelected: readonly any[] = []
 
+
+  loading = false
+
+  listUsers: UserModel[] = []
+  countGroup: number = 0
+
+  constructor(private userService: UserService) {
+  }
   onInputChange(value: string) {
     this.value = value;
   }
-  onCurrentPageDataChange(listOfCurrentPageData: readonly UserGroup[]): void {
+  onCurrentPageDataChange(listOfCurrentPageData: readonly UserModel[]): void {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+    this.checked = listOfEnabledData.every(({ userName }) => this.setOfCheckedId.has(userName));
+    this.indeterminate = listOfEnabledData.some(({ userName }) => this.setOfCheckedId.has(userName)) && !this.checked;
   }
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({ id }) => this.updateCheckedSet(id, checked));
+      .forEach(({ userName }) => this.updateCheckedSet(userName, checked));
     this.refreshCheckedStatus();
   }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
+  onItemChecked(userName: string, checked: boolean): void {
+    this.updateCheckedSet(userName, checked);
     this.refreshCheckedStatus();
   }
 
-  updateCheckedSet(id: number, checked: boolean): void {
+  updateCheckedSet(userName: string, checked: boolean): void {
     if (checked) {
-      this.setOfCheckedId.add(id);
+      this.setOfCheckedId.add(userName);
     } else {
-      this.setOfCheckedId.delete(id);
+      this.setOfCheckedId.delete(userName);
     }
-    this.listOfSelected = this.listOfData.filter(data => this.setOfCheckedId.has(data.id))
+    this.listOfSelected = this.listUsers.filter(data => this.setOfCheckedId.has(data.userName))
   }
 
+  refresh() {}
+
+  getUsers() {
+    this.userService.search(new FormSearchUserGroup()).subscribe(data => {
+      this.listUsers = data.records
+
+    })
+  }
   ngOnInit(): void {
-    this.listOfData = new Array(10).fill(0).map((_, index) => ({
-      id: index,
-      name: `TT ${index}`,
-      total_users: 32,
-      created_at: `${index}/10/2023 1${index}:00:2${index}`,
-    }));
+    this.getUsers()
   }
 }

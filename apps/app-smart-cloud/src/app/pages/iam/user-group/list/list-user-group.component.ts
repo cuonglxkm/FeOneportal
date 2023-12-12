@@ -2,125 +2,146 @@ import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 import {Router} from "@angular/router";
+import {UserGroupService} from "../../../../shared/services/user-group.service";
+import {FormSearchUserGroup, UserGroupModel} from "../../../../shared/models/user-group.model";
+import Pagination from "../../../../shared/models/pagination";
 
 export interface UserGroup {
-  id: number;
-  name: string;
-  total_users: number;
-  created_at: string;
+    id: number;
+    name: string;
+    total_users: number;
+    created_at: string;
 }
+
 @Component({
-  selector: 'one-portal-list-user-group',
-  templateUrl: './list-user-group.component.html',
-  styleUrls: ['./list-user-group.component.less'],
+    selector: 'one-portal-list-user-group',
+    templateUrl: './list-user-group.component.html',
+    styleUrls: ['./list-user-group.component.less'],
 })
-export class ListUserGroupComponent implements OnInit, OnChanges{
+export class ListUserGroupComponent implements OnInit, OnChanges {
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
-  value?: string;
-  protected readonly console = console;
-  //fake data
-  checked = false;
-  loading = false;
-  indeterminate = false;
-  listOfData: readonly UserGroup[] = [];
-  listOfCurrentPageData: readonly UserGroup[] = [];
-  setOfCheckedId = new Set<number>();
+    region = JSON.parse(localStorage.getItem('region')).regionId;
+    project = JSON.parse(localStorage.getItem('projectId'));
 
-  isVisibleDelete: boolean = false
-  deleteList: readonly UserGroup[] = [];
+    value?: string;
 
-  constructor( private router: Router) {
-  }
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    // this.formSearch.regionId = this.region
-  }
+    checked = false
+    loading = false
+    indeterminate = false
+    collection: Pagination<UserGroupModel> = {
+        previousPage: 0,
+        totalCount: 0,
+        records: [],
+        currentPage: 1,
+        pageSize: 10
+    };
 
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    // this.formSearch.project = this.project
-  }
+    listOfCurrentPageData: UserGroupModel[] = []
 
-  onInputChange(value: string) {
-    this.value = value;
-    console.log('input text: ', this.value)
-  }
+    pageSize: number = 10
+    pageIndex: number = 1
+    setOfCheckedId = new Set<string>();
+    form: FormSearchUserGroup = new FormSearchUserGroup()
 
-  onCurrentPageDataChange(listOfCurrentPageData: readonly UserGroup[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
+    isVisibleDelete: boolean = false
+    deleteList: UserGroupModel[] = [];
 
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
-  }
-
-  updateCheckedSet(id: number, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(id);
-    } else {
-      this.setOfCheckedId.delete(id);
+    constructor(private router: Router,
+                private userGroupService: UserGroupService) {
     }
-  }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
-  }
+    regionChanged(region: RegionModel) {
+        this.region = region.regionId
+        // this.formSearch.regionId = this.region
+    }
 
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-        .forEach(({ id }) => this.updateCheckedSet(id, checked));
-    this.refreshCheckedStatus();
-  }
+    projectChanged(project: ProjectModel) {
+        this.project = project?.id
+        // this.formSearch.project = this.project
+    }
 
-  showModalDelete(){
-    this.deleteList = this.listOfData.filter(data => this.setOfCheckedId.has(data.id))
-  }
+    onInputChange(value: string) {
+        this.value = value;
+        console.log('input text: ', this.value)
+    }
 
-  handleOkDelete(){
-    console.log('value',)
-    this.deleteList = []
-  }
+    onCurrentPageDataChange(listOfCurrentPageData: UserGroupModel[]): void {
+        // const {pageSize, pageIndex} = params
+        // this.form.currentPage = pageIndex
+        // this.form.pageSize = pageSize
+        // this.form.name = this.value
+        this.listOfCurrentPageData = listOfCurrentPageData;
+        // this.getData(this.form)
+        this.refreshCheckedStatus();
+    }
 
-  handleCancelDelete(){
-    this.deleteList = []
-  }
+    refreshCheckedStatus(): void {
+        const listOfEnabledData = this.listOfCurrentPageData;
+        this.checked = listOfEnabledData.every(({name}) => this.setOfCheckedId.has(name));
+        this.indeterminate = listOfEnabledData.some(({name}) => this.setOfCheckedId.has(name)) && !this.checked;
+    }
 
-  getData() {
-    this.listOfData = new Array(10).fill(0).map((_, index) => ({
-      id: index,
-      name: `TT ${index}`,
-      total_users: 32,
-      created_at: `${index}/10/2023 1${index}:00:2${index}`,
-    }));
-    this.loading = false
-  }
-  ngOnInit(): void {
-    this.loading = true
-    setTimeout(() => {
-      this.getData();
-    }, 2000);
-  }
+    updateCheckedSet(name: string, checked: boolean): void {
+        if (checked) {
+            this.setOfCheckedId.add(name);
+        } else {
+            this.setOfCheckedId.delete(name);
+        }
+    }
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
-  }
+    onItemChecked(name: string, checked: boolean): void {
+        this.updateCheckedSet(name, checked);
+        this.refreshCheckedStatus();
+    }
 
-  navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/iam/user-group/create'])
-  }
+    onAllChecked(checked: boolean): void {
+        this.listOfCurrentPageData
+            .forEach(({name}) => this.updateCheckedSet(name, checked));
+        this.refreshCheckedStatus();
+    }
 
-  refresh() {
-    this.loading = true
-    setTimeout(() => {
-      this.getData();
-    }, 2000);
-  }
+    showModalDelete() {
+        this.deleteList = this.collection.records.filter(data => this.setOfCheckedId.has(data.name))
+    }
 
-  protected readonly length = length;
+    handleOkDelete() {
+        console.log('value')
+        this.deleteList = []
+    }
+
+    handleCancelDelete() {
+        this.deleteList = []
+    }
+
+    getData(form: FormSearchUserGroup) {
+        console.log('begin')
+        this.loading = true
+        this.userGroupService.search(form).subscribe(data => {
+            this.collection = data
+            console.log('data', this.collection)
+            this.loading = false
+        })
+    }
+
+    ngOnInit(): void {
+        this.form.currentPage = 1
+        this.form.pageSize = 10
+        this.form.name = this.value
+        this.getData(this.form)
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        console.log(changes);
+    }
+
+    navigateToCreate() {
+        this.router.navigate(['/app-smart-cloud/iam/user-group/create'])
+    }
+
+    refresh() {
+        this.loading = true
+        setTimeout(() => {
+            this.getData(this.form);
+        }, 2000);
+    }
 }

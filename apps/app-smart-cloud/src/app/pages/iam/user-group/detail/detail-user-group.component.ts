@@ -1,155 +1,165 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
-import {JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
-// import { schema } from './schema.value';
-
-export interface UserGroup {
-  id: number;
-  name: string;
-  group: number;
-  last_activity: string;
-  created_at: string
-}
+import {UserGroupService} from "../../../../shared/services/user-group.service";
+import {FormSearchUserGroup, UserGroupModel} from "../../../../shared/models/user-group.model";
+import {PolicyService} from "../../../../shared/services/policy.service";
+import {UserModel} from 'src/app/shared/models/user.model';
+import {PolicyModel} from "../../../policy/policy.model";
 
 @Component({
-  selector: 'one-portal-detail-user-group',
-  templateUrl: './detail-user-group.component.html',
-  styleUrls: ['./detail-user-group.component.less'],
+    selector: 'one-portal-detail-user-group',
+    templateUrl: './detail-user-group.component.html',
+    styleUrls: ['./detail-user-group.component.less'],
 })
 export class DetailUserGroupComponent {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
-  value?: string;
-  isVisibleEdit: boolean = false
-  checked = false;
-  loading = false;
-  indeterminate = false;
-  listOfData: { last_activity: string; name: string; created_at: string; id: number; group: string }[] = [];
-  listOfDataPolicies = [
-    {
-      id: 1,
-      name: 'parent 1',
-      type: '100',
-      attached_entities: true,
-      children: {
-        title: '0-1-1',
-        key: '011',
-        children: [
-          { title: '0-1-1-0', key: '0110', isLeaf: true },
-          { title: '0-1-1-1', key: '0111', isLeaf: true },
-          { title: '0-1-1-2', key: '0112', isLeaf: true }
-        ]
-      }
-    },
-    {
-      id: 2,
-      name: 'parent 2',
-      type: '100',
-      attached_entities: true,
-      children: 'abc'
-    },
-    {
-      id: 3,
-      name: 'parent 3',
-      type: '100',
-      attached_entities: true,
-      children: 'abc'
+    region = JSON.parse(localStorage.getItem('region')).regionId;
+    project = JSON.parse(localStorage.getItem('projectId'));
+    value?: string;
+    isVisibleEdit: boolean = false
+    checked = false;
+    loading = false;
+    indeterminate = false;
+
+    listOfDataPolicies: PolicyModel[] = []
+    listOfCurrentPageData: readonly UserModel[] = [];
+    setOfCheckedId = new Set<string>();
+
+    groupModel: UserGroupModel
+
+    groupName: string
+
+    expandSet = new Set<string>();
+
+    listUsersFromGroup: UserModel[] = []
+    listUsers: UserModel[] = []
+
+    countUser = 0
+
+    formSearch: FormSearchUserGroup = new FormSearchUserGroup()
+
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                private userGroupService: UserGroupService,
+                private policyService: PolicyService) {
     }
-  ];
-  listOfCurrentPageData: readonly UserGroup[] = [];
-  setOfCheckedId = new Set<number>();
 
-  protected readonly Date = Date;
 
-  constructor(private router: Router) {
-  }
-
-  expandSet = new Set<number>();
-
-  onExpandChange(id: number, checked: boolean): void {
-    if (checked) {
-      this.expandSet.add(id);
-    } else {
-      this.expandSet.delete(id);
+    onExpandChange(name: string, checked: boolean): void {
+        if (checked) {
+            this.expandSet.add(name);
+        } else {
+            this.expandSet.delete(name);
+        }
     }
-  }
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    // this.formSearch.regionId = this.region
-  }
 
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    // this.formSearch.project = this.project
-  }
-
-  onInputChange(value: string) {
-    this.value = value;
-    console.log('input text: ', this.value)
-  }
-
-  onCurrentPageDataChange(listOfCurrentPageData: readonly UserGroup[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
-
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({id}) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({id}) => this.setOfCheckedId.has(id)) && !this.checked;
-  }
-
-  updateCheckedSet(id: number, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(id);
-    } else {
-      this.setOfCheckedId.delete(id);
+    regionChanged(region: RegionModel) {
+        this.region = region.regionId
+        // this.formSearch.regionId = this.region
     }
-  }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
-  }
+    projectChanged(project: ProjectModel) {
+        this.project = project?.id
+        // this.formSearch.project = this.project
+    }
 
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-      .forEach(({id}) => this.updateCheckedSet(id, checked));
-    this.refreshCheckedStatus();
-  }
+    onInputChange(value: string) {
+        this.value = value;
+        console.log('input text: ', this.value)
+    }
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/iam/user-group'])
-  }
+    onCurrentPageDataChange(listOfCurrentPageData: readonly UserModel[]): void {
+        this.listOfCurrentPageData = listOfCurrentPageData;
+        this.refreshCheckedStatus();
+    }
 
-  showModalEdit() {
-    this.isVisibleEdit = true
-  }
+    refreshCheckedStatus(): void {
+        const listOfEnabledData = this.listOfCurrentPageData;
+        this.checked = listOfEnabledData.every(({userName}) => this.setOfCheckedId.has(userName));
+        this.indeterminate = listOfEnabledData.some(({userName}) => this.setOfCheckedId.has(userName)) && !this.checked;
+    }
 
-  handleCancelEdit() {
-    this.isVisibleEdit = false
-  }
+    updateCheckedSet(userName: string, checked: boolean): void {
+        if (checked) {
+            this.setOfCheckedId.add(userName);
+        } else {
+            this.setOfCheckedId.delete(userName);
+        }
+    }
 
-  handleOkEdit() {
-    this.isVisibleEdit = false
-  }
+    onItemChecked(userName: string, checked: boolean): void {
+        this.updateCheckedSet(userName, checked);
+        this.refreshCheckedStatus();
+    }
 
-  nzEvent(event: NzFormatEmitEvent): void {
-    console.log(event);
-  }
+    onAllChecked(checked: boolean): void {
+        this.listOfCurrentPageData
+            .forEach(({userName}) => this.updateCheckedSet(userName, checked));
+        this.refreshCheckedStatus();
+    }
 
-  ngOnInit(): void {
-    this.listOfData = new Array(10).fill(0).map((_, index) => ({
-      id: index,
-      name: `test ${index}`,
-      group: `TT ${index}`,
-      created_at: `${index}/10/2023 1${index}:00:2${index}`,
-      last_activity: `none`,
-    }));
-  }
+    goBack() {
+        this.router.navigate(['/app-smart-cloud/iam/user-group'])
+    }
 
-  protected readonly JSON = JSON;
+    showModalEdit() {
+        this.isVisibleEdit = true
+    }
+
+    handleCancelEdit() {
+        this.isVisibleEdit = false
+    }
+
+    handleOkEdit() {
+        this.isVisibleEdit = false
+        this.route.params.subscribe((params) => {
+            const newName = params['name']
+            console.log('new name', newName)
+            this.getData(newName)
+        })
+    }
+
+    nzEvent(event: NzFormatEmitEvent): void {
+        console.log(event);
+    }
+
+    getUsers() {
+
+    }
+
+    getData(groupName: string) {
+        this.loading = true;
+        //get group
+        this.userGroupService.detail(groupName).subscribe(data => {
+            this.groupModel = data
+            this.loading = false
+            this.groupModel.policies?.forEach(item => {
+                this.policyService.detail(item).subscribe(data2 => {
+                    // get policy
+                    if (this.listOfDataPolicies.length > 0) {
+                        this.listOfDataPolicies.push(data2)
+                    } else {
+                        this.listOfDataPolicies = [data2]
+                    }
+                })
+            })
+            this.userGroupService.getUserByGroup(groupName).subscribe(data3 => {
+                this.listUsers = data3.records
+                console.log('user', this.listUsers)
+            })
+        })
+    }
+
+    ngOnInit(): void {
+        this.route.params.subscribe((params) => {
+            this.groupName = params['name']
+            if (this.groupName !== undefined) {
+                this.getData(this.groupName)
+                this.countUser = this.listUsersFromGroup.length
+            }
+        })
+    }
+
 }

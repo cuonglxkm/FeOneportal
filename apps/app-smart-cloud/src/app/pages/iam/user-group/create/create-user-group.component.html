@@ -39,6 +39,18 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="parent">
+          <div class="name-rule">
+            <span>Chọn Parent Group</span>
+          </div>
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="-----Choọn Parent Group-----">
+            <nz-option *ngFor="let item of listGroupParentUnique" [nzValue]="item" nzLabel="{{ item }}" formControlName="parent" id="parent"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
     </nz-card>
 
     <one-portal-users-table/>

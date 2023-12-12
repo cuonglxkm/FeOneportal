@@ -35,3 +35,12 @@ export class PoliciesOfUser {
   type: string;
   attachedVia: string[];
 }
+
+export class UserModel {
+    userName: string
+    email: string
+    userGroups: [string]
+    userPolicies: [string]
+    userOfGroups: number
+    createdDate: any
+}

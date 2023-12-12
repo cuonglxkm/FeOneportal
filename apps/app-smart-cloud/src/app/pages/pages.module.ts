@@ -70,8 +70,8 @@ import { UserCreateComponent } from './users/user-create/user-create.component';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
 import { AddPoliciesComponent } from './users/user-detail/add-policies/add-policies.component';
 import { AddToGroupComponent } from './users/user-detail/add-to-group/add-to-group.component';
-import {NgxJsonViewerModule} from "ngx-json-viewer";
-import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor';
 import { IamDashboardComponent } from './iam/dashboard/iam-dashboard.component';
 import { CreateUserGroupComponent } from './iam/user-group/create/create-user-group.component';
 import { DeleteUserGroupComponent } from './iam/user-group/delete/delete-many-group/delete-user-group.component';
@@ -83,6 +83,8 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.component';
 import { UsersTableComponent } from './iam/user-group/create/users-table.component';
 import { PolicyTableComponent } from './iam/user-group/create/policy-table.component';
+import { CreatePolicyComponent } from './iam/user-group/policy/create/create-policy.component';
+import { CreateUserComponent } from './iam/user-group/user/create/create-user.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -153,6 +155,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     UserDetailComponent,
     AddPoliciesComponent,
     AddToGroupComponent,
+    CreatePolicyComponent,
+    CreateUserComponent,
   ],
   imports: [
     CommonModule,
