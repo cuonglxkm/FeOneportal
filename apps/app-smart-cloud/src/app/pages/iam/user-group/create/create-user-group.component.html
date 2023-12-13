@@ -47,7 +47,7 @@
         </nz-form-label>
         <nz-form-control>
           <nz-select nzPlaceHolder="-----Chọn Parent Group-----" formControlName="parent" id="parent">
-            <nz-option *ngFor="let item of listGroupParentUnique" nzLabel="{{ item }}" ></nz-option>
+            <nz-option *ngFor="let item of listGroupParentUnique"  [nzValue]="item" nzLabel="{{ item }}" ></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
