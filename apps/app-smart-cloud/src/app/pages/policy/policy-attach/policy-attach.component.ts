@@ -6,13 +6,12 @@ import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupAttachPolicyComponent} from "../popup-policy/popup-attach-policy.component";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {PolicyService} from "../../../shared/services/policy.service";
+import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {AttachOrDetachRequest} from "../policy.model";
 
 
-export interface Data {
-  id: number;
-  name: string;
-  type: number;
-}
+
 @Component({
   selector: 'one-portal-policy-attach',
   templateUrl: './policy-attach.component.html',
@@ -24,62 +23,73 @@ export class PolicyAttachComponent implements OnInit {
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  entitiesStatusSearch : string;
+  typeSearch : number;
 
   entitiesNameSearch : string;
 
   optionsEntities : NzSelectOptionInterface[] = [
     {label: 'Tất cả các loại', value: null},
-    {label: 'Users', value: 'USER'},
-    {label: 'Users Groups', value: 'GROUP'},
+    {label: 'Users', value: 1},
+    {label: 'Users Groups', value: 2},
 
   ];
 
-  idPolicy : number;
+  policyName : string;
   checked = false;
   indeterminate = false;
-  listOfData: readonly Data[] = [];
-  listOfCurrentPageData: readonly Data[] = [];
-  setOfCheckedId = new Set<number>();
+  listOfData: any;
+  listOfCurrentPageData: any;
+  setOfCheckedId = new Set<string>();
+  isLoadingEntities: boolean;
+
+  totalData: number;
+  currentPage: number = 1;
+  pageSize: number = 5;
 
 
   searchEntities(){
-
+    this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
   }
 
+  onQueryParamsChange(params: NzTableQueryParams){
+    const {pageSize, pageIndex} = params;
+    this.pageSize = pageSize;
+    this.currentPage = pageIndex;
+    this.searchEntities();
+  }
 
-  updateCheckedSet(id: number, checked: boolean): void {
+  updateCheckedSet(name:string, checked: boolean): void {
     if (checked) {
-      this.setOfCheckedId.add(id);
+      this.setOfCheckedId.add(name);
     } else {
-      this.setOfCheckedId.delete(id);
+      this.setOfCheckedId.delete(name);
     }
   }
 
-  onCurrentPageDataChange(listOfCurrentPageData: readonly Data[]): void {
+  onCurrentPageDataChange(listOfCurrentPageData: any): void {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+    this.checked = listOfEnabledData.every(({ name }) => this.setOfCheckedId.has(name));
+    this.indeterminate = listOfEnabledData.some(({ name }) => this.setOfCheckedId.has(name)) && !this.checked;
   }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
+  onItemChecked(name: string, checked: boolean): void {
+    this.updateCheckedSet(name, checked);
     this.refreshCheckedStatus();
   }
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({ id }) => this.updateCheckedSet(id, checked));
+      .forEach(({ name }) => this.updateCheckedSet(name, checked));
     this.refreshCheckedStatus();
   }
 
   attachPolicy(){
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.id));
+    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
 
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Attach Policy',
@@ -94,7 +104,7 @@ export class PolicyAttachComponent implements OnInit {
           label: 'Đồng ý',
           type: 'primary',
           onClick: () => {
-            this.doAttachPolicy(requestData, this.idPolicy);
+            this.doAttachPolicy(requestData, this.policyName);
             modal.destroy()
           }
         }
@@ -102,10 +112,20 @@ export class PolicyAttachComponent implements OnInit {
     });
 
   }
-  private doAttachPolicy(requestData: Data[] , idPolicy: number){
-    console.log(requestData);
-    console.log("idPolicy: "+ idPolicy);
-    this.notification.success('Thành công', 'Gắn Policy thành công');
+  private doAttachPolicy(requestData: any , policyName: string){
+    let request = new AttachOrDetachRequest();
+    request.policyName = policyName;
+    request.action = 'attach'
+    request.items = requestData;
+    console.log(request);
+    this.policiService.attachOrDetach(request).subscribe(data => {
+        this.notification.success('Thành công', 'Gắn Policy thành công');
+        this.searchEntities();
+      },
+      error => {
+        this.notification.error('Có lỗi sảy ra', 'Gắn Policy thất bại');
+      }
+    )
   }
 
   goBack(){
@@ -120,16 +140,30 @@ export class PolicyAttachComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.idPolicy = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+
+    const url = this.activatedRoute.snapshot.url;
+    this.policyName = url[url.length - 1].path;
+    this.doGetAttachedEntities(this.policyName, null, null, 5,1);
+
+  }
 
 
-    this.listOfData = new Array(100).fill(0).map((_, index) => ({
-      id: index,
-      name: `Edward King ${index}`,
-      type: index%2,
-    }));
+  private doGetAttachedEntities(policyName: string, entityName: string, type: number, pageSize:number, currentPage:number){
+    this.isLoadingEntities = true;
+    this.policiService.getAttachedEntities(policyName,entityName,type,pageSize,currentPage).subscribe(
+      data => {
+        this.totalData = data.totalCount;
+        this.listOfData = data.records;
+        this.isLoadingEntities = false;
+      },
+      error => {
+        this.notification.error('Có lỗi sảy ra','Lấy danh sách Attached Entities thất bại');
+        this.isLoadingEntities = false;
+      }
+    )
   }
   constructor(
+    private policiService: PolicyService,
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
     private notification: NzNotificationService,) {

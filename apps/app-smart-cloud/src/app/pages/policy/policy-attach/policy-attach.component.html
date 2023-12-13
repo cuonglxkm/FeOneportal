@@ -22,7 +22,7 @@
       <nz-select nzSize="default"
                  [nzPlaceHolder]="'Tất cả các loại'"
                  [nzOptions]="optionsEntities"
-                 [(ngModel)]="entitiesStatusSearch"
+                 [(ngModel)]="typeSearch"
                  (ngModelChange)="searchEntities()"
                  style="width: 170px;"
       >
@@ -41,9 +41,14 @@
     <nz-table
       class="table-data"
       #rowSelectionTable
-      nzShowPagination
-      nzShowSizeChanger
       [nzData]="listOfData"
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzTotal]="totalData"
+      [nzPageSize]="pageSize"
+      [nzPageIndex]="currentPage"
+      [nzLoading]="isLoadingEntities"
+      (nzQueryParams)="onQueryParamsChange($event)"
       (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
     >
       <thead>
@@ -60,11 +65,11 @@
       <tbody>
       <tr *ngFor="let data of rowSelectionTable.data">
         <td
-          [nzChecked]="setOfCheckedId.has(data.id)"
-          (nzCheckedChange)="onItemChecked(data.id, $event)"
+          [nzChecked]="setOfCheckedId.has(data.name)"
+          (nzCheckedChange)="onItemChecked(data.name, $event)"
         ></td>
         <td>{{ data.name }}</td>
-        <td>{{ data.type == 0 ? 'USERS' : 'GROUPS USER' }}</td>
+        <td>{{ data.type == 1 ? 'USERS' : 'GROUPS USER' }}</td>
       </tr>
       </tbody>
     </nz-table>
