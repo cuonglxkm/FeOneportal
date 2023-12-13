@@ -26,7 +26,7 @@ export class UserComponent implements OnInit {
   searchParam: string;
   loading = true;
 
-  userDelete: User;
+  userDelete: string;
   listUserPicked = [];
   nameModal: string;
 
@@ -48,19 +48,14 @@ export class UserComponent implements OnInit {
   ngOnChange(): void {}
 
   getData(): void {
-    // this.service.getData(this.ipAddress, this.status, this.customerId, this.regionId, this.isCheckState, this.size, this.index)
-    //   .subscribe(baseResponse => {
-    //   this.listOfIp = baseResponse.records;
-    //     console.log(this.listOfIp);
-    // });
     this.listUserPicked = [];
-    this.service.getUsers().pipe(
+    this.service.search(this.searchParam, this.pageSize, this.pageIndex).pipe(
       finalize(() => {
       this.loading = false;
       this.cdr.detectChanges();
     })
-    ).subscribe(baseResponse => {
-      this.listOfUser = baseResponse.records;
+    ).subscribe(data => {
+      this.listOfUser = data.records;
         console.log(this.listOfUser);
     });
   }
@@ -68,11 +63,14 @@ export class UserComponent implements OnInit {
   isVisibleDelete: boolean = false;
   codeVerify: string;
   showModal() {
-    this.isVisibleDelete = true;
+    if (this.listUserPicked.length == 1) {
+      this.userDelete = this.listUserPicked[0];
+      this.isVisibleDelete = true;
+    }
   }
 
   renameModal() {
-    this.nameModal = "Xóa User" + ' this.userDelete.name';
+    this.nameModal = "Xóa User " + this.userDelete;
     this.cdr.detectChanges();
   }
 

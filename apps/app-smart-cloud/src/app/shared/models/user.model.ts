@@ -1,9 +1,17 @@
 export class User {
-  id: number;
-  name: string;
+  userName: string;
   email: string;
-  groups: number;
-  createdTime: string;
+  userGroups: string[];
+  userPolicies: string[];
+  userOfGroups: number;
+  createdDate: string;
+}
+
+export class UseCreate {
+  userName: string;
+  email: string;
+  groupNames: string[];
+  policyNames: string[];
 }
 
 export class GroupCreateUser {
