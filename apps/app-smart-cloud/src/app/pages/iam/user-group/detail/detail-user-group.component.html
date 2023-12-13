@@ -19,18 +19,22 @@
         <h3 style="margin-top: 5px">Thông tin Group</h3>
     </nz-col>
 </nz-header>
-<nz-content>
-    <nz-card nzTitle="Thông tin chính của Group">
+<nz-content  >
+    <nz-card nzTitle="Thông tin chính của Group" [nzLoading]="loading">
         <nz-row nzJustify="space-between">
             <nz-col nzSpan="12">
                 <nz-descriptions nzLayout="vertical" [nzColumn]="1">
-                    <nz-descriptions-item [nzTitle]="name">Group 1</nz-descriptions-item>
+                    <nz-descriptions-item [nzTitle]="name">{{ groupModel?.name }}</nz-descriptions-item>
                     <ng-template #name>
                         <div>Tên của Group <span style="color: red">*</span></div>
                     </ng-template>
-                    <nz-descriptions-item [nzTitle]="createdAt">{{Date.now() | date: 'dd/MM/yyyy - HH:ss:mm'}}</nz-descriptions-item>
+                    <nz-descriptions-item [nzTitle]="createdAt">{{ groupModel?.createdDate | date: 'dd/MM/yyyy - HH:ss:mm'}}</nz-descriptions-item>
                     <ng-template #createdAt>
                         <div>Thời gian khởi tạo <span style="color: red">*</span></div>
+                    </ng-template>
+                    <nz-descriptions-item [nzTitle]="parent">{{ groupModel?.parent }}</nz-descriptions-item>
+                    <ng-template #parent>
+                        <div>Parent Group <span style="color: red">*</span></div>
                     </ng-template>
                 </nz-descriptions>
             </nz-col>
@@ -38,20 +42,20 @@
                 <button nz-button class="button-del" nzSize="default" style="cursor: pointer;" (click)="showModalEdit()">
                     Chỉnh sửa
                 </button>
-                <one-portal-edit-user-group [isVisible]="isVisibleEdit"
+                <one-portal-edit-user-group [isVisible]="isVisibleEdit" [groupNameCurrent]="groupName"
                                             (onOk)="handleOkEdit()"
-                                            (onCancel)="handleCancelEdit()"/>
+                                            (onCancel)="handleCancelEdit()"
+                />
             </nz-col>
         </nz-row>
     </nz-card>
-    <nz-card nzTitle="Thông tin bổ sung">
+    <nz-card nzTitle="Thông tin bổ sung" >
         <nz-tabset>
             <ng-template #user>
-                <div>Users <span>({{listOfData.length}})</span></div>
+                <div>Users</div>
             </ng-template>
-            <nz-tab [nzTitle]="user">
-                <div>User trong group <span>({{listOfData.length}})
-                </span></div>
+            <nz-tab [nzTitle]="user" >
+
                 <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
                     <nz-space [nzSize]="24">
                         <div *nzSpaceItem>
@@ -74,17 +78,24 @@
                             <span nz-icon nzType="rest" nzTheme="outline"></span>
                             Xóa
                         </button>
-                        <button nz-button class="button-create" nzSize="default" style="cursor: pointer;">
+                        <button nz-button class="button-create"
+                                nzSize="default"
+                                style="cursor: pointer;"
+                                [routerLink]="'/app-smart-cloud/iam/user-group/'+groupName+'/add-user'">
                             <span nz-icon nzType="plus" nzTheme="outline"></span>
                             Thêm User
                         </button>
                     </nz-row>
                 </nz-row>
+                <div style="margin-bottom: 8px; margin-top: 8px">Users trong Group
+                    <span>({{listUsers.length}})</span>
+                </div>
                 <nz-table
                     #rowSelectionTable
                     nzShowPagination
                     nzShowSizeChanger
-                    [nzData]="listOfData"
+                    [nzData]="listUsers"
+                    [nzLoading]="loading"
                     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
                 >
                     <thead>
@@ -96,23 +107,21 @@
                                 (nzCheckedChange)="onAllChecked($event)"
                         ></th>
                         <th>Name</th>
-                        <th [nzWidth]="'207px'">Group</th>
-                        <th>Last Activity</th>
+                        <th>Group</th>
                         <th>Thời gian tạo</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr *ngFor="let data of rowSelectionTable.data">
                         <td
-                                [nzChecked]="setOfCheckedId.has(data.id)"
-                                (nzCheckedChange)="onItemChecked(data.id, $event)"
+                                [nzChecked]="setOfCheckedId.has(data.userName)"
+                                (nzCheckedChange)="onItemChecked(data.userName, $event)"
                         ></td>
                         <td>
-                            <a [href]="'/app-smart-cloud/iam/user-group/' + data.id">{{ data.name }}</a>
+                            <a [href]="'/app-smart-cloud/iam/user-group/' + data.userName">{{ data.userName }}</a>
                         </td>
-                        <td>{{ data.group }}</td>
-                        <td>{{ data.last_activity }}</td>
-                        <td>{{ data.created_at }}</td>
+                        <td>{{ data.userOfGroups }}</td>
+                        <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
                     </tr>
                     </tbody>
                 </nz-table>
@@ -140,14 +149,17 @@
                         </div>
                     </nz-space>
                     <nz-row nzAlign="middle">
-                        <button nz-button nzSize="default" style="cursor: pointer;">
+                        <button nz-button nzSize="default" style="cursor: pointer;" >
                             <span nz-icon nzType="reload" nzTheme="outline"></span>
                         </button>
                         <button nz-button class="button-del" nzSize="default" style="cursor: pointer;">
                             <span nz-icon nzType="rest" nzTheme="outline"></span>
                             Xóa
                         </button>
-                        <button nz-button class="button-create" nzSize="default" style="cursor: pointer;">
+                        <button nz-button
+                                class="button-create"
+                                nzSize="default" style="cursor: pointer;"
+                                [routerLink]="'/app-smart-cloud/iam/user-group/'+groupName+'/add-policy'">
                             <span nz-icon nzType="plus" nzTheme="outline"></span>
                             Thêm policies
                         </button>
@@ -164,6 +176,7 @@
                     nzShowPagination
                     nzShowSizeChanger
                     [nzData]="listOfDataPolicies"
+                    [nzLoading]="loading"
                     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
                 >
                     <thead>
@@ -182,17 +195,18 @@
                     <tbody *ngFor="let data of rowSelectionTable2.data">
                     <tr>
                         <td
-                                [nzChecked]="setOfCheckedId.has(data.id)"
-                                (nzCheckedChange)="onItemChecked(data.id, $event)"
+                                [nzChecked]="setOfCheckedId.has(data.name)"
+                                (nzCheckedChange)="onItemChecked(data.name, $event)"
                         ></td>
-                        <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)">
+                        <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
                           {{ data.name }}
                         </td>
                         <td>{{ data.type }}</td>
-                        <td>{{ data.attached_entities }}</td>
+                        <td></td>
                     </tr>
-                    <tr [nzExpand]="expandSet.has(data.id)">
-                      <one-portal-json-viewer [value]="data.children"></one-portal-json-viewer>
+                    <tr [nzExpand]="expandSet.has(data.name)">
+<!--                      <span>{{ JSON.stringify(data) }}</span>-->
+                      <one-portal-json-viewer [value]="data" />
                     </tr>
                     </tbody>
                 </nz-table>

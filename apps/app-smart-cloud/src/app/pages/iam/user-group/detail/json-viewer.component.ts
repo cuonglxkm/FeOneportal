@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor";
+import {JsonEditorTreeNode} from "@maaxgr/ang-jsoneditor/lib/jsoneditor/jsoneditoroptions";
 
 @Component({
   selector: 'one-portal-json-viewer',
@@ -15,10 +16,11 @@ export class JsonViewerComponent {
 
   constructor() {
     this.editorOptions = new JsonEditorOptions()
-    this.editorOptions.modes = ['code', 'text'];
+    this.editorOptions.mode = "text"
 
     this.initialData = this.value
-    this.visibleData = this.initialData;
+    console.log('value', this.value)
+    this.visibleData = this.initialData
   }
 
   showJson(d: Event) {

@@ -52,12 +52,15 @@
     <nz-card>
         <nz-table
             #rowSelectionTable
-            nzShowPagination
             nzShowSizeChanger
-            [nzData]="listOfData"
+            [nzData]="collection.records"
             (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
             [nzLoading]="loading"
-        >
+            [nzFrontPagination]="false"
+            [nzTotal]="collection.totalCount"
+            [nzPageSize]="collection.pageSize"
+            [nzPageIndex]="collection.currentPage"
+            >
             <thead>
             <tr>
                 <th [nzChecked]="checked"
@@ -65,21 +68,24 @@
                     nzLabel="Select all"
                     (nzCheckedChange)="onAllChecked($event)"></th>
                 <th>Name</th>
-                <th [nzWidth]="'207px'">Số lượng users</th>
-                <th [nzWidth]="'564px'">Thời gian tạo</th>
+                <th>Số lượng users</th>
+                <th>Group Parent</th>
+                <th>Thời gian tạo</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
                 <td
-                        [nzChecked]="setOfCheckedId.has(data.id)"
-                        (nzCheckedChange)="onItemChecked(data.id, $event)"
+                        [nzChecked]="setOfCheckedId.has(data.name)"
+                        (nzCheckedChange)="onItemChecked(data.name, $event)"
                 ></td>
                 <td>
-                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.id">{{ data.name }}</a>
+                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
                 </td>
-                <td>{{ data.total_users }}</td>
-                <td>{{ data.created_at }}</td>
+                <td style="text-align: right">{{ data.userOfGroup }}</td>
+                <td *ngIf="data.parent === null"></td>
+                <td *ngIf="data.parent !== null">{{ data.parent }}</td>
+                <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
             </tr>
             </tbody>
         </nz-table>
