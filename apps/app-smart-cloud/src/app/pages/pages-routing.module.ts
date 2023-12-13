@@ -32,11 +32,21 @@ import {
 import {
   ListBackupVolumeComponent
 } from "./volume/component/backup-volume/list-backup-volume/list-backup-volume.component";
+import {PolicyAttachComponent} from "./policy/policy-attach/policy-attach.component";
+import {IamDashboardComponent} from "./iam/dashboard/iam-dashboard.component";
+import {ListUserGroupComponent} from "./iam/user-group/list/list-user-group.component";
+import {DetailUserGroupComponent} from "./iam/user-group/detail/detail-user-group.component";
+import {CreateUserGroupComponent} from "./iam/user-group/create/create-user-group.component";
 import { UserComponent } from "./users/user.component";
 import { UserCreateComponent } from "./users/user-create/user-create.component";
+import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
+import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.component";
 import { UserDetailComponent } from "./users/user-detail/user-detail.component";
 import { AddPoliciesComponent } from "./users/user-detail/add-policies/add-policies.component";
 import { AddToGroupComponent } from "./users/user-detail/add-to-group/add-to-group.component";
+import {CreateUserComponent} from "./iam/user-group/user/create/create-user.component";
+import {CreatePolicyComponent} from "./iam/user-group/policy/create/create-policy.component";
+import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -149,6 +159,38 @@ const routes: Routes = [
     component: ListBackupVolumeComponent
   },
   {
+    path: 'iam/dashboard',
+    component: IamDashboardComponent
+  },
+  {
+    path: 'iam/user-group',
+    component: ListUserGroupComponent
+  },
+  {
+    path: 'iam/user-group/create',
+    component: CreateUserGroupComponent
+  },
+  {
+    path: 'iam/user-group/:name',
+    component: DetailUserGroupComponent
+  },
+  {
+    path: 'policy/attach/:id',
+    component: PolicyAttachComponent
+  },
+  {
+    path: 'policy/detach/:id',
+    component: PolicyDetachComponent
+  },
+  {
+    path: 'policy/detail/:id',
+    component: PolicyDetailComponent
+  },
+  {
+    path: 'policy/update/:id',
+    component: PolicyUpdateComponent
+  },
+  {
     path: 'policy',
     loadChildren: () => import('../pages/policy/policy.module').then(m => m.PolicyModule)
   },
@@ -171,9 +213,16 @@ const routes: Routes = [
   {
     path: 'users/detail/:id/add-to-group',
     component: AddToGroupComponent
+  },
+  {
+    path: 'iam/user-group/:groupName/add-user',
+    component: CreateUserComponent
+  },
+  {
+    path: 'iam/user-group/:groupName/add-policy',
+    component: CreatePolicyComponent
   }
-]
-
+  ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

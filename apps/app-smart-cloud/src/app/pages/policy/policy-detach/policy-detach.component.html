@@ -1,0 +1,91 @@
+<one-portal-header
+  title="Gỡ Policy"
+  [path]="['Home', 'IAM', 'Policies', 'Detach policy' ]"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+
+
+<nz-content class="content">
+
+  <nz-card class="content-header" nzTitle="Thực hiện gỡ policy">
+    <p style="opacity: 0.5;">Gỡ policy ra khỏi (người dùng - Users, nhóm ngươi dùng - Groups)</p>
+  </nz-card>
+
+  <nz-card class="content-body" nzTitle="Thông tin thực tế(IAM Entities) (3)">
+    <p style="opacity: 0.5;">Thực thể là các đối tượng IAM như Users, Groups.</p>
+
+    <div style="display: inline-block; margin-right: auto;">
+      <nz-form-label [nzFor]="'volumeStatus'"><b>Loại Entities</b></nz-form-label>
+      <nz-select nzSize="default"
+                 [nzPlaceHolder]="'Tất cả các loại'"
+                 [nzOptions]="optionsEntities"
+                 [(ngModel)]="typeSearch"
+                 (ngModelChange)="searchEntities()"
+                 style="width: 170px;"
+      >
+      </nz-select>
+
+      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+        <input type="text" [(ngModel)]="entitiesNameSearch" nz-input placeholder="Tìm kiếm theo tên"
+               style="width: 300px; margin-left: 30px;"/>
+      </nz-input-group>
+      <ng-template #suffixButton>
+        <button nz-button nzType="primary" nzSize="default" (click)="searchEntities()" nzSearch><i nz-icon
+                                                                                                   [nzType]="'search'"></i>Search
+        </button>
+      </ng-template>
+    </div>
+    <nz-table
+      class="table-data"
+      #rowSelectionTable
+      [nzData]="listOfData"
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzTotal]="totalData"
+      [nzPageSize]="pageSize"
+      [nzPageIndex]="currentPage"
+      [nzLoading]="isLoadingEntities"
+      (nzQueryParams)="onQueryParamsChange($event)"
+      (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+    >
+      <thead>
+      <tr>
+        <th
+          [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          (nzCheckedChange)="onAllChecked($event)"
+        ></th>
+        <th>Entity Name</th>
+        <th>Entity Type</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td
+          [nzChecked]="setOfCheckedId.has(data.name)"
+          (nzCheckedChange)="onItemChecked(data.name, $event)"
+        ></td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.type == 1 ? 'USERS' : 'GROUPS USER' }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+    <div class="text-right">
+      <button  nz-button nzType="default" (click)="goBack()" class="button-cancel">Quay lại</button>
+      <button
+        nz-button
+        nzType="primary"
+        [disabled]="setOfCheckedId.size === 0"
+        (click)="detachPolicy()"
+      >Detach Policy
+      </button>
+
+    </div>
+
+  </nz-card>
+
+</nz-content>
+
+

@@ -39,6 +39,7 @@ export class CreateVolumeComponent implements OnInit {
   endDateVolume: Date;
 
   showWarningVolumeName = false;
+  contentShowWarningVolumeName: string;
   showWarningVolumeType = false;
   showWarningVolumeExpTime = false;
 
@@ -111,7 +112,7 @@ export class CreateVolumeComponent implements OnInit {
       const sizeSnapshot = params['sizeSnapshot'];
       const typeSnapshot = params['typeSnapshot'];
 
-      if(createdFromSnapshot == 'true'){
+      if (createdFromSnapshot == 'true') {
         this.isInitSnapshot = true;
         this.createVolumeInfo.createFromSnapshotId = Number.parseInt(idSnapshot);
         this.createVolumeInfo.volumeSize = Number.parseInt(sizeSnapshot);
@@ -146,6 +147,9 @@ export class CreateVolumeComponent implements OnInit {
 
 
   }
+  checkDisableCreate(): boolean{
+    return this.createVolumeInfo.serviceName == null || this.createVolumeInfo.volumeType == null || this.createVolumeInfo.expireDate == null;
+  }
 
   createNewVolume() {
 
@@ -156,10 +160,10 @@ export class CreateVolumeComponent implements OnInit {
       const user = JSON.parse(userString);
       this.createVolumeInfo.actorEmail = user.email;
       this.createVolumeInfo.userEmail = user.email;
-      if(this.createVolumeInfo.volumeType == 'hdd'){
-        this.createVolumeInfo.offerId =2;
+      if (this.createVolumeInfo.volumeType == 'hdd') {
+        this.createVolumeInfo.offerId = 2;
       }
-      if(this.createVolumeInfo.volumeType == 'ssd'){
+      if (this.createVolumeInfo.volumeType == 'ssd') {
         this.createVolumeInfo.offerId = 156;
       }
       this.doCreateVolume();
@@ -169,7 +173,7 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
-  doCreateVolume(){
+  doCreateVolume() {
     this.isLoadingAction = true;
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.createVolumeInfo.customerId;
@@ -186,7 +190,7 @@ export class CreateVolumeComponent implements OnInit {
     ]
     console.log(request);
     this.volumeSevice.createNewVolume(request).subscribe(data => {
-      if(data != null){
+      if (data != null) {
         this.isLoadingAction = false;
         this.nzMessage.create('success', 'Tạo Volume thành công.')
         console.log(data);
@@ -214,11 +218,11 @@ export class CreateVolumeComponent implements OnInit {
       this.showWarningVolumeExpTime = true;
       return false;
     }
-    if(!this.createVolumeInfo.regionId){
+    if (!this.createVolumeInfo.regionId) {
       this.nzMessage.create('error', 'Cần chọn khu vực.');
       return false;
     }
-    if(!this.createVolumeInfo.vpcId){
+    if (!this.createVolumeInfo.vpcId) {
       this.nzMessage.create('error', 'Cần chọn dự án.');
       return false;
     }
@@ -228,53 +232,86 @@ export class CreateVolumeComponent implements OnInit {
 
   changeVolumeName() {
     this.createVolumeInfo.serviceName = this.createVolumeInfo.serviceName.trim();
-    this.showWarningVolumeName = this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == '';
+    if(this.checkSpecialSnapshotName(this.createVolumeInfo.serviceName)){
+      this.showWarningVolumeName = true;
+      this.contentShowWarningVolumeName = 'Tên Volume không được chứa ký tự đặc biệt.';
+    }else if(this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == ''){
+      this.showWarningVolumeName = true;
+      this.contentShowWarningVolumeName = 'Tên Volume không được để trống';
+    }else{
+      this.showWarningVolumeName = false;
+      this.contentShowWarningVolumeName = '';
+    }
+
   }
 
 
-  getProjectId(project: ProjectModel){
+  checkSpecialSnapshotName( str: string): boolean{
+    //check ký tự đặc biệt
+    const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    return specialCharacters.test(str);
+  }
+
+  loadSnapshotVolumeInfo(event: any) {
+    this.isLoadingAction = true
+    this.snapshotvlService.getSnapshotVolummeById(event).subscribe(
+      (data) => {
+
+        this.createVolumeInfo.volumeSize = data.sizeInGB;
+        this.createVolumeInfo.createFromSnapshotId = Number.parseInt(event);
+        this.createVolumeInfo.volumeType = data.iops > 0 ? 'hdd' : 'ssd';
+        this.isLoadingAction = false;
+      },
+      (error) => {
+        this.nzMessage.create('error', 'Lấy thông tin snapshot không thành công.')
+        this.isLoadingAction = false;
+      }
+  )
+  }
+
+  getProjectId(project: ProjectModel) {
     this.createVolumeInfo.vpcId = project.id;
     this.getListSnapshot();
   }
 
-  async getRegionId(region: RegionModel){
+  async getRegionId(region: RegionModel) {
     this.createVolumeInfo.regionId = region.regionId;
     this.getListSnapshot()
     this.getListVm()
   }
 
-  selectEncryptionVolume(value: any){
-    if(value){
+  selectEncryptionVolume(value: any) {
+    if (value) {
       this.createVolumeInfo.isMultiAttach = !value;
     }
 
   }
 
-  selectMultiAttachVolume(value: any){
-    if(value){
+  selectMultiAttachVolume(value: any) {
+    if (value) {
       this.createVolumeInfo.isEncryption = !value;
     }
   }
 
-  private getListSnapshot(){
+  private getListSnapshot() {
     this.isLoadingAction = true;
     this.snapshotList = [];
     let userId = this.tokenService.get()?.userId;
     this.snapshotvlService.getSnapshotVolumes(userId, this.createVolumeInfo.vpcId, this.createVolumeInfo.regionId,
       null, 10000, 1, null, null, null).subscribe(data => {
-        data.records.forEach(snapshot => {
-          this.snapshotList.push({label: snapshot.name , value: snapshot.id});
-        })
+      data.records.forEach(snapshot => {
+        this.snapshotList.push({label: snapshot.name, value: snapshot.id});
+      })
       this.isLoadingAction = false;
     });
   }
 
-  private getListVm(){
+  private getListVm() {
     this.isLoadingAction = true;
     this.vmList = [];
     let userId = this.tokenService.get()?.userId;
     this.volumeSevice.getListVM(userId, this.createVolumeInfo.regionId).subscribe(data => {
-      data.records.forEach( vm => {
+      data.records.forEach(vm => {
         this.vmList.push({value: vm.id, label: vm.name});
       });
       this.isLoadingAction = false;

@@ -51,7 +51,7 @@ export class VolumeComponent implements OnInit {
   isLoadingAction: boolean = false;
 
 
-  isBlankVolume = true;
+  isBlankVolume = false;
 
   selectedOption: NzSelectOptionInterface | null = null;
   options: NzSelectOptionInterface[] = [
@@ -83,10 +83,7 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-    // const regionString = localStorage.getItem('region');
-    // const region = JSON.parse(regionString);
-    // const projectId = localStorage.getItem('projectId')!=null?parseInt(localStorage.getItem('projectId')):null;
-    // this.getListVolume(null, projectId, region.regionId, true, 10, 0 , null , null)
+
   }
 
   onRootPageIndexChange(event: any) {
@@ -229,6 +226,8 @@ export class VolumeComponent implements OnInit {
 
   private getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string) {
     this.isLoadingSearch = true;
+    this.listVolumeAdd = [];
+    this.listVolumeRoot = [];
     this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName).subscribe(data => {
 
       if (volumeRootOnly === true) {
@@ -237,9 +236,7 @@ export class VolumeComponent implements OnInit {
           this.listVolumeRoot = data.records;
           this.totalRoot = data.totalCount;
           this.isLoadingSearch = false;
-          this.isBlankVolume = false;
         } else{
-          this.isBlankVolume = true;
           this.isLoadingSearch = false;
         }
 
@@ -250,9 +247,7 @@ export class VolumeComponent implements OnInit {
           this.listVolumeAdd = data.records;
           this.totalAdd = data.totalCount;
           this.isLoadingSearch = false;
-          this.isBlankVolume = false;
         } else{
-          this.isBlankVolume = true;
           this.isLoadingSearch = false;
         }
       }

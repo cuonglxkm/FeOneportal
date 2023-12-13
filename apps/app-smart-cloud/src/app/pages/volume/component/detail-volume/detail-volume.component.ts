@@ -23,11 +23,11 @@ export class DetailVolumeComponent implements OnInit {
 
   volumeInfo: VolumeDTO;
 
-  attachedDto: AttachedDto[];
+  attachedDto: AttachedDto[] = [];
 
   listVMs: string = '';
 
-  isLoading: boolean = true;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
@@ -35,27 +35,28 @@ export class DetailVolumeComponent implements OnInit {
   }
 
   private getVolumeById(idVolume: string) {
-
-
+    this.isLoading = true;
 
     this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
-      if (data !== undefined && data != null){
+
         this.volumeInfo = data;
-        this.attachedDto = data.attachedInstances;
-        this.isLoading = false;
-        if(this.attachedDto.length > 1){
-          this.attachedDto.forEach(vm => {
-              this.listVMs += vm.instanceName+'\n';
-          })
+        if(data.attachedInstances!=null){
+          this.attachedDto = data.attachedInstances;
         }
-      }else{
+        this.isLoading = false;
+        if (this.attachedDto.length > 1) {
+          this.attachedDto.forEach(vm => {
+            this.listVMs += vm.instanceName + '\n';
+          })
 
+        }
+      }, error => {
+        this.isLoading = false;
       }
-
-    })
+    )
   }
 
-  openPopupExtend(){
+  openPopupExtend() {
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Gia hạn Volume',
       nzContent: PopupExtendVolumeComponent,
@@ -76,11 +77,13 @@ export class DetailVolumeComponent implements OnInit {
       ]
     });
   }
-  private doExtendVolume(){
+
+  private doExtendVolume() {
+    this.isLoading = true;
     //Tính thời hạn sử dụng khi tạo volume
     let createDate = new Date(this.volumeInfo.creationDate);
     let expDate = new Date(this.volumeInfo.expirationDate);
-    console.log('old ExpDate: '+expDate);
+    console.log('old ExpDate: ' + expDate);
     let expiryTime = (expDate.getFullYear() - createDate.getFullYear()) * 12 + (expDate.getMonth() - createDate.getMonth());
     // Gia hạn bằng thời hạn sử dụng khi tạo.
     expDate.setMonth(expDate.getMonth() + expiryTime);
@@ -115,22 +118,26 @@ export class DetailVolumeComponent implements OnInit {
       }
     ]
 
-    let reponse = this.volumeSevice.extendsVolume(request).subscribe(data => {
-        if (data != null) {
-          this.nzMessage.create('success', 'Gia hạn Volume thành công.')
-          console.log(data);
-        }
+    let reponse = this.volumeSevice.extendsVolume(request).subscribe(
+      data => {
+        this.nzMessage.create('success', 'Gia hạn Volume thành công.')
+        this.isLoading = false
+
+      }, error => {
+        this.nzMessage.create('error', 'Gia hạn Volume không thành công.')
+        this.isLoading = false
       }
     );
 
   }
 
-  navigateEditVolume(idVolume:number){
-    this.router.navigate(['/app-smart-cloud/volume/edit/'+idVolume]);
+  navigateEditVolume(idVolume: number) {
+    this.router.navigate(['/app-smart-cloud/volume/edit/' + idVolume]);
   }
 
   volumeStatus: Map<String, string>;
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService,  private router: Router, private activatedRoute: ActivatedRoute, private nzMessage:NzMessageService, private modalService:NzModalService) {
+
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService, private router: Router, private activatedRoute: ActivatedRoute, private nzMessage: NzMessageService, private modalService: NzModalService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
