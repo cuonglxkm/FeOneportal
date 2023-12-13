@@ -54,9 +54,11 @@ export class CreateUserGroupComponent implements OnInit {
                 } else {
                     this.listGroupParent = [item.parent]
                 }
+                this.listGroupParentUnique = Array.from(new Set(this.listGroupParent))
             })
             console.log('list data', this.listGroupParent)
-            this.listGroupParentUnique = Array.from(new Set(this.listGroupParent))
+            console.log('ist data unique', this.listGroupParentUnique)
+
         })
     }
 
