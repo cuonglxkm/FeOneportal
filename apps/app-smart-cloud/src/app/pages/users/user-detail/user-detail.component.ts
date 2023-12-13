@@ -55,11 +55,10 @@ export class UserDetailComponent implements OnInit {
 
   ngOnInit(): void {
     let test = new User()
-    test.id = 5;
-    test.name = 'nguyen';
+    test.userName = 'nguyen';
     test.email = 'nguyen@gmail.com';
-    test.groups = 2;
-    test.createdTime = '2023-11-20T01:34:12.367Z';
+    test.userGroups = ["dkfjaldk"];
+    test.createdDate = '2023-11-20T01:34:12.367Z';
     this.user = test;
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData();

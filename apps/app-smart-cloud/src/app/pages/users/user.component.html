@@ -117,14 +117,14 @@
           <tr *ngFor="let item of listOfUser">
             <td>
               <input nz-input type="checkbox"
-                (change)="onClickItem(item.name)"
+                (change)="onClickItem(item.userName)"
               >
             </td>
             <td (click)="getUserDetail(item.id)">
-              <a>{{ item.name }}</a>
+              <a>{{ item.userName }}</a>
             </td>
-            <td>{{ item.groups }}</td>
-            <td>{{ item.createdTime }}</td>
+            <td>{{ item.userOfGroups }}</td>
+            <td>{{ item.createdDate }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -143,12 +143,12 @@
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageGanVLAN"
+      [nzMessage]="customTemplateMessageDelete"
       nzShowIcon
     ></nz-alert>
-    <ng-template #customTemplateMessageGanVLAN>
+    <ng-template #customTemplateMessageDelete>
       <div>
-        Bạn đang thực hiện xóa User <span> Nguyen </span>
+        Bạn đang thực hiện xóa User <span> {{userDelete}} </span>
       </div>
       <div>
         Việc thực hiện xóa User cũng sẽ xóa tất cả dữ liệu liên quan tới User này
@@ -162,7 +162,7 @@
         <nz-form-item>
           <nz-form-label nzFor="name"
             >Để thực hiện xóa User, vui lòng nhập tên User để xác
-            nhận</nz-form-label
+            nhận.</nz-form-label
           >
           <nz-form-control>
             <input

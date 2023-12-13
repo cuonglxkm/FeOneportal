@@ -27,15 +27,29 @@
           <nz-form-label nzFor="name"
             >Tên của User<span class="text-red">*</span></nz-form-label
           >
-          <nz-form-control nzErrorTip="Vui lòng nhập tên User">
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
               nz-input
               formControlName="name"
+              [(ngModel)]="userCreate.userName"
               id="name"
               placeholder="Nhập tên của User"
-              maxlength="250"
+              maxlength="64"
               minlength="1"
+              (change)="userCreate.userName = userCreate.userName.trim()"
             />
+            <span class="nameField"
+              >Tên người dùng có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z, a-z,
+              0-9, và + = , . @ _ -</span
+            >
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập tên User
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên người dùng không hợp lệ
+              </ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -43,18 +57,28 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label nzFor="name"
+          <nz-form-label nzFor="email"
             >Email của User<span class="text-red">*</span></nz-form-label
           >
-          <nz-form-control nzErrorTip="Vui lòng nhập email của User">
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
             <input
               nz-input
-              formControlName="name"
-              id="name"
+              formControlName="email"
+              [(ngModel)]="userCreate.email"
+              id="email"
               placeholder="Nhập email của User"
               maxlength="250"
               minlength="1"
+              (change)="userCreate.email = userCreate.email.trim()"
             />
+            <ng-template #emailErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập email của User
+              </ng-container>
+              <ng-container *ngIf="control.hasError('email')"
+                >Email không hợp lệ
+              </ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -300,7 +324,7 @@
               <input
                 nz-input
                 type="checkbox"
-                (change)="onClickGroupItem(item.name)"
+                (change)="onClickGroupItem(item.name, item)"
               />
             </td>
             <td class="fieldColor">{{ item.name }}</td>
@@ -419,7 +443,7 @@
               <input
                 nz-input
                 type="checkbox"
-                (change)="onClickUserItem(item.name)"
+                (change)="onClickUserItem(item)"
               />
             </td>
             <td>{{ item.name }}</td>
@@ -609,13 +633,38 @@
     >
       Quay lại
     </button>
-    <button
-      class="m-r-8"
-      nz-button
-      nzType="primary"
-      (click)="navigateToCreate()"
-    >
+    <button class="m-r-8" nz-button nzType="primary" (click)="showModal()">
       Tạo mới
     </button>
   </div>
 </div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleCreate"
+  nzTitle="Xác nhận tạo User"
+  (nzOnCancel)="handleCancelCreate()"
+  (nzOnOk)="handleOkCreate()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="customTemplateMessageCreate"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageCreate>
+      <div>Bạn đang thực hiện tạo mới User <span>{{ userCreate.userName }}</span></div>
+    </ng-template>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Để thực hiện tạo mới User, vui lòng chọn "Đồng ý" để xác nhận.
+            nhận</nz-form-label
+          >
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </ng-container>
+</nz-modal>
