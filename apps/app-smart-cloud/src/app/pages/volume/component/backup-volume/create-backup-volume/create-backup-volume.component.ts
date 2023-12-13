@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {RegionModel} from "../../../../../shared/models/region.model";
-import {VolumeDTO} from "../../../../../shared/dto/volume.dto";
+import {CreateBackupVolumeOrderData, CreateBackupVolumeSpecification, VolumeDTO} from "../../../../../shared/dto/volume.dto";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BackupVmService} from "../../../../../shared/services/backup-vm.service";
 import {BackupPackage} from "../../../../../shared/models/backup-vm";
@@ -52,15 +52,41 @@ export class CreateBackupVolumeComponent implements OnInit{
       backupPackageId: this.form.controls['select'].value,
       backupScheduleId: null,
     }
-    this.backupVolumeService.createVolume(ax).subscribe(
+
+    let userId = this.tokenService.get()?.userId;
+
+    let createBackupVolumeSpecification = new CreateBackupVolumeSpecification();
+    createBackupVolumeSpecification.volumeId = ax.volumeId;
+    createBackupVolumeSpecification.description = ax.description;
+    createBackupVolumeSpecification.backupPackageId = +ax.backupPackageId;
+    createBackupVolumeSpecification.customerId = userId;
+    createBackupVolumeSpecification.regionId = this.regionId;
+    createBackupVolumeSpecification.serviceName = ax.backupName;
+    createBackupVolumeSpecification.serviceType = 8;
+
+    console.log(createBackupVolumeSpecification);
+
+    let createBackupVolumeOrderData = new CreateBackupVolumeOrderData();
+    createBackupVolumeOrderData.customerId = userId;
+    createBackupVolumeOrderData.createdByUserId = userId;
+    createBackupVolumeOrderData.note = 'tạo backup volume';
+    createBackupVolumeOrderData.orderItems = [
+        {
+            orderItemQuantity: 1,
+            specification: JSON.stringify(createBackupVolumeSpecification),
+            specificationType: 'volumebackup_create',
+            price: 0,
+            serviceDuration: 1
+        }
+    ]
+    console.log(createBackupVolumeOrderData);
+
+    this.backupVolumeService.createBackupVolume(createBackupVolumeOrderData).subscribe(
       () => {
-        this.message.create('success', `Tạo mới backup thành công`);
-      },
-      (error) => {
-        this.message.create('error', `Tạo mới backup thất bại`);
+        this.message.create('success', `Yêu cầu tạo backup volume đã được gửi đi`);
       }
     );
-    this.router.navigate(['/app-smart-cloud/volume']);
+    this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
   ngOnInit(): void {

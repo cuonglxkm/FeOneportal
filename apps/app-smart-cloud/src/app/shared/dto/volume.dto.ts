@@ -122,3 +122,30 @@ export class AttachedDto {
   instanceId: number;
   instanceName: string;
 }
+
+export class CreateBackupVolumeSpecification {
+  volumeId: number
+  description: string
+  backupPackageId: number | null
+  vpcId: number | null
+  customerId: number
+  actionType: 0
+  regionId: number
+  serviceName: string
+  serviceType: number
+}
+
+export class CreateBackupVolumeOrderData {
+  customerId: number
+  createdByUserId: number
+  note: string
+  orderItems: [
+    {
+      orderItemQuantity: 1
+      specification: string
+      specificationType: "volumebackup_create"
+      price: 0
+      serviceDuration: 1
+    }
+  ]
+}

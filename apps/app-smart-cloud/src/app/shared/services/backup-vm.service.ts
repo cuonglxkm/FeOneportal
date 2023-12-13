@@ -5,7 +5,7 @@ import {
   BackupPackage,
   BackupVm,
   BackupVMFormSearch,
-  FormCreateBackup,
+  CreateBackupVmOrderData,
   RestoreFormCurrent,
   VolumeAttachment
 } from "../models/backup-vm";
@@ -80,7 +80,7 @@ export class BackupVmService extends BaseService {
     return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages?customerId=${customerId}`)
   }
 
-  create(form: FormCreateBackup) {
-    return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', Object.assign(form))
+  create(data: CreateBackupVmOrderData) {
+    return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
   }
 }

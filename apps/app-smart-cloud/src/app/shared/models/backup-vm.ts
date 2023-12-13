@@ -127,3 +127,33 @@ export class FormCreateBackup {
   backupPacketId: number
   customerId: number
 }
+
+export class CreateBackupVmSpecification {
+  instanceId: number
+  backupInstanceOfferId: number
+  volumeToBackupIds: number[]
+  securityGroupToBackupIds: string[]
+  description: string
+  backupPackageId: number | null
+  vpcId: number | null
+  customerId: number
+  actionType: 0
+  regionId: number
+  serviceName: string
+  serviceType: number
+}
+
+export class CreateBackupVmOrderData {
+  customerId: number
+  createdByUserId: number
+  note: string
+  orderItems: [
+    {
+      orderItemQuantity: 1
+      specification: string
+      specificationType: "instancebackup_create"
+      price: 0
+      serviceDuration: 1
+    }
+  ]
+}

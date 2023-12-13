@@ -91,12 +91,12 @@ export class VolumeComponent implements OnInit {
 
   onRootPageIndexChange(event: any) {
     this.curentPageRoot = event;
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, this.curentPageRoot, this.volumeStatusSearch, this.volumeNameSearch)
+    this.getListVolume(this.userId, this.projectSearch, this.regionSearch, true, 10, this.curentPageRoot, this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   onAddPageIndexChange(event: any) {
     this.curentPageAdd = event;
-    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, this.curentPageAdd, this.volumeStatusSearch, this.volumeNameSearch)
+    this.getListVolume(this.userId, this.projectSearch, this.regionSearch, false, 10, this.curentPageAdd, this.volumeStatusSearch, this.volumeNameSearch)
   }
 
   isVisible = false;
@@ -210,13 +210,13 @@ export class VolumeComponent implements OnInit {
   }
 
   reloadDataVolumeRoot() {
-    this.getListVolume(null, this.projectSearch, this.regionSearch, true, 10, 1, null, null)
+    this.getListVolume(this.userId, this.projectSearch, this.regionSearch, true, 10, 1, null, null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
 
   reloadDataVolumeAdd() {
-    this.getListVolume(null, this.projectSearch, this.regionSearch, false, 10, 1, null, null)
+    this.getListVolume(this.userId, this.projectSearch, this.regionSearch, false, 10, 1, null, null)
     this.volumeNameSearch = null;
     this.volumeStatusSearch = null;
   }
