@@ -3,7 +3,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {RegionModel} from "../../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {UserService} from "../../../../../shared/services/user.service";
-import {UserModel} from "../../../../../../../../../libs/common-utils/src";
 import {User} from "../../../../../shared/models/user.model";
 
 @Component({
@@ -21,7 +20,7 @@ export class CreateUserComponent implements OnInit {
     loading = false;
     indeterminate = false;
 
-    listOfCurrentPageData: readonly UserModel[] = [];
+    listOfCurrentPageData: readonly User[] = [];
     setOfCheckedId: Set<string> = new Set<string>();
 
     listUsers: User[]
@@ -47,15 +46,15 @@ export class CreateUserComponent implements OnInit {
         console.log('input text: ', this.value)
     }
 
-    onCurrentPageDataChange(listOfCurrentPageData: readonly UserModel[]): void {
+    onCurrentPageDataChange(listOfCurrentPageData: readonly User[]): void {
         this.listOfCurrentPageData = listOfCurrentPageData;
         this.refreshCheckedStatus();
     }
 
     refreshCheckedStatus(): void {
         const listOfEnabledData = this.listOfCurrentPageData;
-        this.checked = listOfEnabledData.every(({name}) => this.setOfCheckedId.has(name));
-        this.indeterminate = listOfEnabledData.some(({name}) => this.setOfCheckedId.has(name)) && !this.checked;
+        this.checked = listOfEnabledData.every(({userName}) => this.setOfCheckedId.has(userName));
+        this.indeterminate = listOfEnabledData.some(({userName}) => this.setOfCheckedId.has(userName)) && !this.checked;
     }
 
     updateCheckedSet(name: string, checked: boolean): void {
@@ -73,7 +72,7 @@ export class CreateUserComponent implements OnInit {
 
     onAllChecked(checked: boolean): void {
         this.listOfCurrentPageData
-            .forEach(({name}) => this.updateCheckedSet(name, checked));
+            .forEach(({userName}) => this.updateCheckedSet(userName, checked));
         this.refreshCheckedStatus();
     }
 
@@ -83,7 +82,7 @@ export class CreateUserComponent implements OnInit {
 
     getUsers() {
         this.loading = true
-        this.userService.getUsers().subscribe(data => {
+        this.userService.search('', 1000000, 1).subscribe(data => {
             this.listUsers = data.records
             this.loading = false
             this.loading = false

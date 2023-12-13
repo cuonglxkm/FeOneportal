@@ -5,7 +5,6 @@ import {ProjectModel} from "../../../../../shared/models/project.model";
 import {PolicyService} from "../../../../../shared/services/policy.service";
 import {PolicyModel} from "../../../../policy/policy.model";
 import {FormSearchUserGroup} from "../../../../../shared/models/user-group.model";
-import {UserModel} from "../../../../../shared/models/user.model";
 
 @Component({
     selector: 'one-portal-create-policy',

@@ -10,8 +10,8 @@ import {
     FormSearchUserGroup,
     UserGroupModel
 } from "../models/user-group.model";
-import {UserModel} from "../models/user.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {User} from "../models/user.model";
 
 @Injectable({
     providedIn: 'root'
@@ -65,6 +65,6 @@ export class UserGroupService extends BaseService {
     }
 
     getUserByGroup(groupName: string) {
-        return this.http.get<BaseResponse<UserModel[]>>(this.baseUrl + this.ENDPOINT.iam + `/users/${groupName}`)
+        return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam + `/users/${groupName}`)
     }
 }

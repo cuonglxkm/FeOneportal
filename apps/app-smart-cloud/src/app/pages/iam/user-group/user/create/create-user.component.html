@@ -71,14 +71,14 @@
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
                 <td
-                        [nzChecked]="setOfCheckedId.has(data.name)"
-                        (nzCheckedChange)="onItemChecked(data.name, $event)"
+                        [nzChecked]="setOfCheckedId.has(data.userName)"
+                        (nzCheckedChange)="onItemChecked(data.userName, $event)"
                 ></td>
                 <td>
-                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
+                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.userName">{{ data.userName }}</a>
                 </td>
-                <td>{{ data.groups }}</td>
-                <td>{{ data.createdTime | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
+                <td>{{ data.userOfGroups }}</td>
+                <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
             </tr>
             </tbody>
         </nz-table>

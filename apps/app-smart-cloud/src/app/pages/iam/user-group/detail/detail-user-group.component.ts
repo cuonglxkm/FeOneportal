@@ -6,8 +6,8 @@ import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {FormSearchUserGroup, UserGroupModel} from "../../../../shared/models/user-group.model";
 import {PolicyService} from "../../../../shared/services/policy.service";
-import {UserModel} from 'src/app/shared/models/user.model';
 import {PolicyModel} from "../../../policy/policy.model";
+import {User} from "../../../../shared/models/user.model";
 
 @Component({
     selector: 'one-portal-detail-user-group',
@@ -24,7 +24,7 @@ export class DetailUserGroupComponent {
     indeterminate = false;
 
     listOfDataPolicies: PolicyModel[] = []
-    listOfCurrentPageData: readonly UserModel[] = [];
+    listOfCurrentPageData: readonly User[] = [];
     setOfCheckedId = new Set<string>();
 
     groupModel: UserGroupModel
@@ -33,8 +33,8 @@ export class DetailUserGroupComponent {
 
     expandSet = new Set<string>();
 
-    listUsersFromGroup: UserModel[] = []
-    listUsers: UserModel[] = []
+    listUsersFromGroup: User[] = []
+    listUsers: User[] = []
 
     countUser = 0
 
@@ -70,7 +70,7 @@ export class DetailUserGroupComponent {
         console.log('input text: ', this.value)
     }
 
-    onCurrentPageDataChange(listOfCurrentPageData: readonly UserModel[]): void {
+    onCurrentPageDataChange(listOfCurrentPageData: readonly User[]): void {
         this.listOfCurrentPageData = listOfCurrentPageData;
         this.refreshCheckedStatus();
     }
