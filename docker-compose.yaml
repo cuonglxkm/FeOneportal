@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  app-host:
+    container_name: app-host
+    build:
+      context: .
+      dockerfile: "./apps/app-host/Dockerfile"
+    image: registry.onsmartcloud.com/cloudportal/oneportal-app-host
+
+  app-smart-cloud:
+    container_name: app-smart-cloud
+    build:
+      context: .
+      dockerfile: "./apps/app-smart-cloud/Dockerfile"
+    image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud
