@@ -163,7 +163,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
   onClickGroupItem(groupName: string, item: GroupCreateUser) {
     var index = 0;
     var isAdded = true;
-    // Kiểm tra mảng có phần tử đc chọn chưa
+    // Kiểm tra mảng có phần tử đc chọn không
     this.groupNames.forEach((e) => {
       if (e == groupName) {           // nếu có xóa đi
         this.groupNames.splice(index, 1);
