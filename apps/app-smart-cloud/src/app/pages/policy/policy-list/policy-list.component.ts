@@ -5,6 +5,7 @@ import {PolicyModel} from "../policy.model";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
+import {ClipboardService} from "ngx-clipboard";
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
@@ -37,9 +38,9 @@ export class PolicyListComponent {
     {label:"Detach",value :"1"},
   ];
 
-  constructor(private service: PolicyService,private router: Router,) {
+  constructor(private service: PolicyService,private router: Router, private clipboardService: ClipboardService) {
     this.optionJsonEditor = new JsonEditorOptions();
-    this.optionJsonEditor.mode = "text";
+    this.optionJsonEditor.mode = "view";
   }
 
   ngOnInit() {
@@ -107,4 +108,10 @@ export class PolicyListComponent {
       console.log('error occored while you were typing the JSON');
     };
   }
+
+  copyText(data: any) {
+    this.clipboardService.copyFromContent(JSON.stringify(data));
+  }
+
+
 }

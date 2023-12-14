@@ -58,6 +58,7 @@
     "lodash": "^4.17.21",
     "mockjs": "^1.1.0",
     "ng-zorro-antd": "16.2.2",
+    "ngx-clipboard": "^16.0.0",
     "ngx-color-picker": "^13.0.0",
     "ngx-echarts": "^15.0.1",
     "ngx-json-viewer": "^3.2.1",
