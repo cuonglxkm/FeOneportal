@@ -107,6 +107,8 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     handleOkDelete() {
         console.log('value')
         this.deleteList = []
+        this.getData(this.form)
+
     }
 
     handleCancelDelete() {

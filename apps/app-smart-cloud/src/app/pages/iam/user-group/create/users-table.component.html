@@ -10,7 +10,7 @@
       </button>
     </ng-template>
     <nz-row nzAlign="middle">
-      <button nz-button nzSize="default" style="cursor: pointer;" (click)="refresh()">
+      <button nz-button nzSize="default" style="cursor: pointer;" (click)="getUsers()">
         <span nz-icon nzType="reload" nzTheme="outline"></span>
       </button>
     </nz-row>
@@ -23,6 +23,7 @@
     nzShowPagination
     nzShowSizeChanger
     [nzData]="listUsers"
+    [nzLoading]="loading"
     [nzPageSize]="5"
     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
   >
@@ -44,7 +45,7 @@
         (nzCheckedChange)="onItemChecked(data.userName, $event)"
       ></td>
       <td>
-        <a [href]="'/app-smart-cloud/iam/user-group/' + data.userName">{{ data.userName }}</a>
+        <a [routerLink]="">{{ data.userName }}</a>
       </td>
       <td>{{ data.userOfGroups }}</td>
       <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>

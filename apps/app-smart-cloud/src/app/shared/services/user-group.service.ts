@@ -5,6 +5,7 @@ import Pagination from "../models/pagination";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {
+    FormCreateUserGroup,
     FormDeleteOneUserGroup, FormDeleteUserGroups,
     FormEditUserGroup,
     FormSearchUserGroup,
@@ -56,8 +57,8 @@ export class UserGroupService extends BaseService {
         return this.http.put<UserGroupModel>(this.baseUrl + this.ENDPOINT.iam + `/groups/groupName?groupName=${groupName}`, Object.assign(form))
     }
 
-    deleteOne(form: FormDeleteOneUserGroup) {
-        return this.http.delete(this.baseUrl + this.ENDPOINT.iam + `/groups/${form.userName}?groupName=${form.groupName}`)
+    deleteOne(groupName: string) {
+        return this.http.delete(this.baseUrl + this.ENDPOINT.iam + `/groups/${groupName}`)
     }
 
     deleteMany(form: FormDeleteUserGroups) {
@@ -67,4 +68,9 @@ export class UserGroupService extends BaseService {
     getUserByGroup(groupName: string) {
         return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam + `/users/${groupName}`)
     }
+
+    create(formCreate: FormCreateUserGroup) {
+        return this.http.post<UserGroupModel>(this.baseUrl + this.ENDPOINT.iam + '/groups', Object.assign(formCreate))
+    }
+
 }
