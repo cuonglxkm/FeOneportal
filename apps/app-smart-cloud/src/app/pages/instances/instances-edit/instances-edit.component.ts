@@ -35,6 +35,7 @@ import { Observable, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
+import { ProjectModel } from 'src/app/shared/models/project.model';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -370,6 +371,7 @@ export class InstancesEditComponent implements OnInit {
       (data: any) => {
         console.log(data);
         this.message.success('Cập nhật máy ảo thành công');
+        this.route.navigate(['/app-smart-cloud/instances']);
       },
       (error) => {
         console.log(error.error);
