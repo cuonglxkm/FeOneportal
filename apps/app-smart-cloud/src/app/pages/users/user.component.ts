@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
@@ -34,57 +39,94 @@ export class UserComponent implements OnInit {
     private service: UserService,
     private router: Router,
     public message: NzMessageService,
-    private cdr: ChangeDetectorRef,
-    ) {}
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.service.model.subscribe((data) => {
       console.log(data);
     });
     this.getData();
-    this.renameModal();
   }
 
   ngOnChange(): void {}
 
   getData(): void {
     this.listUserPicked = [];
-    this.service.search(this.searchParam, this.pageSize, this.pageIndex).pipe(
-      finalize(() => {
-      this.loading = false;
-      this.cdr.detectChanges();
-    })
-    ).subscribe(data => {
-      this.listOfUser = data.records;
-        console.log(this.listOfUser);
-    });
+    this.listCheckedInPage = [];
+    this.checkedAllInPage = false;
+    this.service
+      .search(this.searchParam, this.pageSize, this.pageIndex)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((data) => {
+        this.listOfUser = data.records;
+        console.log("list users", this.listOfUser);
+      });
   }
 
   isVisibleDelete: boolean = false;
+  isVisibleDeleteUsers: boolean = false;
   codeVerify: string;
   showModal() {
     if (this.listUserPicked.length == 1) {
       this.userDelete = this.listUserPicked[0];
       this.isVisibleDelete = true;
+      this.nameModal = 'Xóa User ' + this.userDelete;
+    } else if (this.listUserPicked.length > 1) {
+      this.nameModal = 'Xóa ' + this.listUserPicked.length + ' User';
+      this.isVisibleDeleteUsers = true;
     }
   }
 
-  renameModal() {
-    this.nameModal = "Xóa User " + this.userDelete;
-    this.cdr.detectChanges();
-  }
-
   changecodeVerify(e: string) {
-    this.codeVerify = e
+    this.codeVerify = e;
   }
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
   }
 
+  handleCancelDeleteUsers() {
+    this.isVisibleDeleteUsers = false;
+  }
+
   handleOkDelete() {
-    this.message.success('Xóa thành công');
     this.isVisibleDelete = false;
+    if (this.codeVerify == this.userDelete) {
+      this.service.deleteUser(this.userDelete).subscribe((data) => {
+        console.log(data);
+        this.message.success('Xóa User thành công');
+        this.reloadTable();
+      }, 
+      (error) => {
+        console.log(error.error);
+        this.message.error('Xóa User không thành công')
+      });
+    } else {
+      this.message.error('Xóa User không thành công')
+    }
+  }
+
+  handleOkDeleteUsers() {
+    this.isVisibleDeleteUsers = false;
+    if (this.codeVerify == 'delete') {
+      this.service.deleteUsers(this.listUserPicked).subscribe((data) => {
+        console.log(data);
+        this.message.success('Xóa các Users thành công');
+        this.reloadTable();
+      }, 
+      (error) => {
+        console.log(error.error);
+        this.message.error('Xóa các Users không thành công')
+      });
+    } else {
+      this.message.error('Xóa các Users không thành công')
+    }
   }
 
   changeSearch(e: any): void {
@@ -101,10 +143,10 @@ export class UserComponent implements OnInit {
     // this.getSshKeys();
   }
 
-  onClickItem(userName: string) {
+  onClickItem(userName: string, checked: any) {
     var index = 0;
     var isAdded = true;
-    this.listUserPicked.forEach(e => {
+    this.listUserPicked.forEach((e) => {
       if (e == userName) {
         this.listUserPicked.splice(index, 1);
         isAdded = false;
@@ -114,7 +156,33 @@ export class UserComponent implements OnInit {
     if (isAdded) {
       this.listUserPicked.push(userName);
     }
-    console.log("list user picked", this.listUserPicked);
+    if (this.listUserPicked.length == this.listOfUser.length) {
+      this.checkedAllInPage = true;
+    } else {
+      this.checkedAllInPage = false;
+    }
+    console.log('list user picked', this.listUserPicked);
+  }
+
+  listCheckedInPage = [];
+  checkedAllInPage = false;
+  onChangeCheckAll(checked: any) {
+    let listChecked = [];
+    this.listOfUser.forEach(() => {
+      listChecked.push(checked);
+    });
+    this.listCheckedInPage = listChecked;
+    if (checked == true) {
+      this.listUserPicked = [];
+      this.listOfUser.forEach(e => {
+        this.listUserPicked.push(e.userName);
+      });
+    } else {
+      this.listUserPicked = [];
+    }
+
+    console.log('list user picked', this.listUserPicked);
+    this.cdr.detectChanges();
   }
 
   onPageSizeChange(event: any) {

@@ -49,7 +49,7 @@
       <label style="font-weight: 500"
         >Thời gian khởi tạo<span class="text-red">*</span></label
       >
-      <div class="nameField">{{ user.createdTime }}</div>
+      <div class="nameField">{{ user.createdTime | date:'dd/MM/yyyy HH:mm:ss'}}</div>
     </div>
   </div>
 </nz-card>
@@ -135,15 +135,10 @@
             <button
               class="m-r-8"
               nz-button
-              nzType="default"
-              style="background-color: white"
+              style="cursor: pointer"
               (click)="reloadPolicies()"
             >
-              <img
-                style="margin-bottom: 4px"
-                src="assets/imgs/undo.png"
-                alt=""
-              />
+              <span nz-icon nzType="reload" nzTheme="outline"></span>
             </button>
             <button
               class="m-r-8"
@@ -176,24 +171,32 @@
             #rowSelectionTable
             nzShowSizeChanger
             [nzFrontPagination]="false"
-            [nzData]="listOfpolicies"
+            [nzData]="listOfPolicies"
             [nzLoading]="loading"
           >
             <thead>
               <tr>
-                <th style="width: 20px"></th>
+                <th style="width: 20px">
+                  <input
+                    nz-input
+                    type="checkbox"
+                    (change)="onChangeCheckAllPolicy($event.target.checked)"
+                    [(ngModel)]="checkedAllPolicyInPage"
+                  />
+                </th>
                 <th>Tên Policy</th>
                 <th>Type</th>
                 <th>Attached via</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of listOfpolicies">
+              <tr *ngFor="let item of listOfPolicies; let i = index">
                 <td>
                   <input
                     nz-input
                     type="checkbox"
                     (change)="onClickPolicyItem(item.name)"
+                    [(ngModel)]="listCheckedPolicyInPage[i]"
                   />
                 </td>
                 <td>{{ item.name }}</td>
@@ -231,7 +234,7 @@
                   </nz-form-control>
                 </nz-col>
                 <nz-form-control>
-                  <button nz-button [nzType]="'primary'" (click)="getData()">
+                  <button nz-button [nzType]="'primary'" (click)="getGroup()">
                     <i nz-icon nzType="search"></i>
                     Search
                   </button>
@@ -252,15 +255,10 @@
             <button
               class="m-r-8"
               nz-button
-              nzType="default"
-              style="background-color: white"
+              style="cursor: pointer"
               (click)="reloadGroupOfUser()"
             >
-              <img
-                style="margin-bottom: 4px"
-                src="assets/imgs/undo.png"
-                alt=""
-              />
+              <span nz-icon nzType="reload" nzTheme="outline"></span>
             </button>
             <button
               class="m-r-8"
@@ -300,7 +298,14 @@
           >
             <thead>
               <tr>
-                <th style="width: 20px"></th>
+                <th style="width: 20px">
+                  <input
+                    nz-input
+                    type="checkbox"
+                    (change)="onChangeCheckAllGroup($event.target.checked)"
+                    [(ngModel)]="checkedAllGroupInPage"
+                  />
+                </th>
                 <th>Tên Group</th>
                 <th>Số lượng User</th>
                 <th>Attached policies</th>
@@ -308,12 +313,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of listOfGroups">
+              <tr *ngFor="let item of listOfGroups; let i = index">
                 <td>
                   <input
                     nz-input
                     type="checkbox"
                     (change)="onClickGroupItem(item.name)"
+                    [(ngModel)]="listCheckedGroupInPage[i]"
                   />
                 </td>
                 <td>{{ item.name }}</td>

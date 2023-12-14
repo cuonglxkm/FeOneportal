@@ -43,12 +43,15 @@ export class UserService extends BaseService {
     return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_);
   }
   
-  // deleteUsers(userNames: string[]): Observable<any> {
-  //   let url_ = `/users`;
-  //   url_ = url_.replace(/[?&]$/, '');
+  deleteUsers(userNames: string[]): Observable<any> {
+    let url_ = `/users`;
+    const params = {}
+    userNames.forEach(e => {
+      const param = { userNames: e };
 
-  //   return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_);
-  // }
+    })
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_, { params });
+  }
 
   getGroupsCreateUser(): Observable<BaseResponse<GroupCreateUser[]>> {
     return this.http.get<BaseResponse<GroupCreateUser[]>>('/groupCreateUsers');
