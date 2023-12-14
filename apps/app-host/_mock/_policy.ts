@@ -16,7 +16,7 @@ export const POLICY = {
         "name": "yenPro",
         "type": "Quản lý",
         "description": "nothinggg",
-        "jsonData": "{\"name\": \"gaptoi\", \"des\": \"mo ta\"}"
+        "jsonData": {"name": "check it", "des": "pro vip"}
       }
     ],
     "pageSize": 5,

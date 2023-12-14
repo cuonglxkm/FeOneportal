@@ -198,6 +198,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NgxJsonViewerModule,
     // Starting Angular 13
     AngJsoneditorModule,
+    ClipboardModule,
   ],
 })
 export class PagesModule {}
