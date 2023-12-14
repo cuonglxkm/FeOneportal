@@ -1,5 +1,5 @@
 import {Component, Inject, OnChanges, OnInit} from '@angular/core';
-import {BackupPackage, BackupVm, FormCreateBackup, VolumeAttachment} from "../../../shared/models/backup-vm";
+import {BackupPackage, BackupVm, CreateBackupVmOrderData, CreateBackupVmSpecification, FormCreateBackup, VolumeAttachment} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
@@ -46,7 +46,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
         projectId: FormControl<number>;
         description: FormControl<string>;
         scheduleId: FormControl<number>;
-        backupPacketId: FormControl<number | null>;
+        backupPacketId: FormControl<number>;
         customerId: FormControl<number>
     }> = this.fb.group({
         instanceId: [0, [Validators.required]],
@@ -57,7 +57,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
         projectId: [0, [Validators.required]],
         description: ['', [Validators.required, Validators.maxLength(500)]],
         scheduleId: [0, [Validators.required]],
-        backupPacketId: [null as number | null],
+        backupPacketId: [0, [Validators.required]],
         customerId: [0, [Validators.required]],
     });
 
@@ -104,18 +104,45 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
         if (this.validateForm.valid) {
             console.log(this.validateForm.getRawValue());
             this.formCreateBackup = Object.assign(this.validateForm.value)
+            
+            let createBackupVmSpecification = new CreateBackupVmSpecification();
+            createBackupVmSpecification.instanceId = this.formCreateBackup.instanceId;
+            createBackupVmSpecification.backupInstanceOfferId = 73; // dùng để tính giá về sau
+            createBackupVmSpecification.volumeToBackupIds = this.formCreateBackup.volumeToBackupIds;
+            createBackupVmSpecification.securityGroupToBackupIds = this.formCreateBackup.securityGroupToBackupIds;
+            createBackupVmSpecification.description = this.formCreateBackup.description;
+            createBackupVmSpecification.backupPackageId = this.formCreateBackup.backupPacketId;
+            createBackupVmSpecification.customerId = this.formCreateBackup.customerId;
+            createBackupVmSpecification.serviceName = this.formCreateBackup.backupName;
+            createBackupVmSpecification.regionId =  this.region;
+            createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
+            
+            console.log(createBackupVmSpecification);
 
-            this.backupVmService.create(this.formCreateBackup).subscribe(data => {
+            let createBackupVmOrderData = new CreateBackupVmOrderData();
+            createBackupVmOrderData.customerId = this.formCreateBackup.customerId;
+            createBackupVmOrderData.createdByUserId = this.formCreateBackup.customerId;
+            createBackupVmOrderData.note = 'tạo backup máy ảo';
+            createBackupVmOrderData.orderItems = [
+                {
+                    orderItemQuantity: 1,
+                    specification: JSON.stringify(createBackupVmSpecification),
+                    specificationType: 'instancebackup_create',
+                    price: 0,
+                    serviceDuration: 1
+                }
+            ]
+            console.log(createBackupVmOrderData);
+
+            this.backupVmService.create(createBackupVmOrderData).subscribe(data => {
                 this.isLoading = false
                 console.log('data create', data)
-                this.notification.success('Thành công', 'Thêm mới Backup VM thành công')
+                this.notification.success('Thành công', 'Yêu cầu tạo backup máy ảo đã được gửi đi')
                 this.router.navigate(['/app-smart-cloud/backup-vm'])
-            }, error => {
-                this.isLoading = false
-                this.notification.error('Thất bại', 'Thêm mới Backup VM thất bại')
             })
 
         } else {
+            this.isLoading = false;
             Object.values(this.validateForm.controls).forEach(control => {
                 if (control.invalid) {
                     control.markAsDirty();
