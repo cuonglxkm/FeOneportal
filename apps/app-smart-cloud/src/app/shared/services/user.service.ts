@@ -42,7 +42,7 @@ export class UserService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_);
   }
-  
+
   deleteUsers(userNames: string[]): Observable<any> {
     let url_ = `/users`;
     const params = {}

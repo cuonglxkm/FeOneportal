@@ -39,6 +39,7 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     localStorage.setItem('region', JSON.stringify(region))
+    localStorage.removeItem('projectId')
     this.valueChanged.emit(region);
   }
 

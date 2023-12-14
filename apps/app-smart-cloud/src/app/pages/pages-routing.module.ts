@@ -44,6 +44,8 @@ import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.compon
 import { UserDetailComponent } from "./users/user-detail/user-detail.component";
 import { AddPoliciesComponent } from "./users/user-detail/add-policies/add-policies.component";
 import { AddToGroupComponent } from "./users/user-detail/add-to-group/add-to-group.component";
+import {CreateUserComponent} from "./iam/user-group/user/create/create-user.component";
+import {CreatePolicyComponent} from "./iam/user-group/policy/create/create-policy.component";
 import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
 
 const routes: Routes = [
@@ -169,7 +171,7 @@ const routes: Routes = [
     component: CreateUserGroupComponent
   },
   {
-    path: 'iam/user-group/:id',
+    path: 'iam/user-group/:name',
     component: DetailUserGroupComponent
   },
   {
@@ -211,6 +213,14 @@ const routes: Routes = [
   {
     path: 'users/detail/:id/add-to-group',
     component: AddToGroupComponent
+  },
+  {
+    path: 'iam/user-group/:groupName/add-user',
+    component: CreateUserComponent
+  },
+  {
+    path: 'iam/user-group/:groupName/add-policy',
+    component: CreatePolicyComponent
   }
   ]
 @NgModule({

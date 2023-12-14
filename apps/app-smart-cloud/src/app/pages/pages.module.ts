@@ -89,6 +89,41 @@ import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.compone
 import { UsersTableComponent } from './iam/user-group/create/users-table.component';
 import { PolicyTableComponent } from './iam/user-group/create/policy-table.component';
 import { AttachPermissionPolicyComponent } from './users/attach-permission-policy/attach-permission-policy.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {
+  CreateBackupVolumeComponent
+} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import {
+  DetailBackupVolumeComponent
+} from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import {
+  ListBackupVolumeComponent
+} from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import {UserComponent} from './users/user.component';
+import {UserCreateComponent} from './users/user-create/user-create.component';
+import {UserDetailComponent} from './users/user-detail/user-detail.component';
+import {AddPoliciesComponent} from './users/user-detail/add-policies/add-policies.component';
+import {AddToGroupComponent} from './users/user-detail/add-to-group/add-to-group.component';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor';
+import {PolicyAttachComponent} from "./policy/policy-attach/policy-attach.component";
+import {PopupAttachPolicyComponent} from "./policy/popup-policy/popup-attach-policy.component";
+import {PolicyDetachComponent} from "./policy/policy-detach/policy-detach.component";
+import {PopupDetachPolicyComponent} from "./policy/popup-policy/popup-detach-policy.component";
+import {PolicyDetailComponent} from "./policy/policy-detail/policy-detail.component";
+import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
+import {IamDashboardComponent} from './iam/dashboard/iam-dashboard.component';
+import {CreateUserGroupComponent} from './iam/user-group/create/create-user-group.component';
+import {DeleteUserGroupComponent} from './iam/user-group/delete/delete-many-group/delete-user-group.component';
+import {DeleteOneUserGroupComponent} from './iam/user-group/delete/delete-one/delete-one-user-group.component';
+import {DetailUserGroupComponent} from './iam/user-group/detail/detail-user-group.component';
+import {EditUserGroupComponent} from './iam/user-group/edit/edit-user-group.component';
+import {ListUserGroupComponent} from './iam/user-group/list/list-user-group.component';
+import {JsonViewerComponent} from './iam/user-group/detail/json-viewer.component';
+import {UsersTableComponent} from './iam/user-group/create/users-table.component';
+import {PolicyTableComponent} from './iam/user-group/create/policy-table.component';
+import { CreatePolicyComponent } from './iam/user-group/policy/create/create-policy.component';
+import { CreateUserComponent } from './iam/user-group/user/create/create-user.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -166,6 +201,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AddPoliciesComponent,
     AddToGroupComponent,
     AttachPermissionPolicyComponent,
+    CreatePolicyComponent,
+    CreateUserComponent,
   ],
   imports: [
     CommonModule,

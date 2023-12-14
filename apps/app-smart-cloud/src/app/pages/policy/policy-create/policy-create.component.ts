@@ -6,49 +6,107 @@ import {PolicyService} from "../../../shared/services/policy.service";
 import {JsonEditorOptions} from 'ang-jsoneditor';
 import {Router} from "@angular/router";
 
+
+const listService = [
+  {
+    serviceId: 1,
+    serviceName: "SSH KEY"
+  },
+  {
+    serviceId: 2,
+    serviceName: "Volume"
+  },
+  {
+    serviceId: 3,
+    serviceName: "IP Public"
+  }
+]
+
 @Component({
   selector: 'one-portal-policy-create',
   templateUrl: './policy-create.component.html',
   styleUrls: ['./policy-create.component.less'],
 })
 export class PolicyCreateComponent {
-  current = 0;
+  currentStep = 0;
   regionId: number;
   projectId: number;
-  selectedService: any = false;
+  // selectedService: any = false;
   isVisual: boolean = true;
-  isVisualSelecService: boolean = false;
-  isVisualTablePermiss: boolean = false;
   isVisibleCreate: boolean = false;
   titleCreate: any = 'Chọn dịch vụ';
   listPermission: readonly PermissionPolicyModel[] = [];
   setOfCheckedId = new Set<number>();
   public optionJsonEditor: JsonEditorOptions;
-  dataJson: JSON;
-  listOfSelection = [
-    {
-      text: 'Select All Row',
-      onSelect: () => {
-        this.onAllChecked(true);
+  listOfPermissionSelected: any[] = [];
+
+  defaultService = {
+    orderNum: 0,
+    serviceName: null,
+    isVisualTablePermiss: false,
+    isVisualSelecService: true,
+    isActive: false,
+    serviceId: null,
+    checked: false,
+    indeterminate: false,
+    permissions: [
+      {
+        id: 999,
+        name: "Hàm tạo",
+        description: "mô tả"
+      },
+      {
+        id: 333,
+        name: "Hàm xóa",
+        description: "Xóa theo id"
       }
-    },
+    ],
+    selectedPermission: []
+  }
+
+  countOrderNum: number = 1;
+
+  serviceArray = [
     {
-      text: 'Select Odd Row',
-      onSelect: () => {
-        this.listPermission.forEach((data, index) => this.updateCheckedSet(data.id, index % 2 !== 0));
-        this.refreshCheckedStatus();
-      }
-    },
-    {
-      text: 'Select Even Row',
-      onSelect: () => {
-        this.listPermission.forEach((data, index) => this.updateCheckedSet(data.id, index % 2 === 0));
-        this.refreshCheckedStatus();
-      }
+      orderNum: 0,
+      isInit: false,
+      isVisualTablePermiss: false,
+      isVisualSelecService: true,
+      serviceName: null,
+      isActive: false,
+      serviceId: null,
+      checked: false,
+      indeterminate: false,
+      permissions: [
+        {
+          id: 1,
+          name: "Hàm tạo policy",
+          description: "mô tả"
+        },
+        {
+          id: 2,
+          name: "Hàm xóa policy",
+          description: "Xóa theo id"
+        }
+      ],
+      selectedPermission: []
     }
-  ];
-  checked = false;
-  indeterminate = false;
+  ]
+
+  listServiceAvaiable = [
+    {
+      serviceId: 1,
+      serviceName: "SSH KEY"
+    },
+    {
+      serviceId: 2,
+      serviceName: "Volume"
+    },
+    {
+      serviceId: 3,
+      serviceName: "IP Public"
+    }
+  ]
 
   constructor(private service: PolicyService, private router: Router) {
     this.optionJsonEditor = new JsonEditorOptions();
@@ -63,9 +121,14 @@ export class PolicyCreateComponent {
     }
   }
 
+  addService() {
+    let addedService = JSON.parse(JSON.stringify(this.defaultService));
+    addedService.orderNum = this.countOrderNum++;
+    this.serviceArray.push(addedService)
+  }
+
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    // this.getSshKeys();
   }
 
   projectChange(project: ProjectModel) {
@@ -73,45 +136,73 @@ export class PolicyCreateComponent {
     // this.getSshKeys();
   }
 
-  openSelectService() {
-    if (this.isVisualSelecService || this.isVisualTablePermiss) {
-      this.isVisualSelecService = false;
-    } else {
-      this.isVisualSelecService = true;
-    }
-
-    this.isVisualTablePermiss = false;
-  }
-
-  selectService(event: any) {
-    this.titleCreate = event;
-    this.isVisualSelecService = false;
-    this.isVisualTablePermiss = true;
-    this.service.searchPolicyPermisstion().subscribe(
-      (data) => {
-        this.listPermission = data.records;
+  selectService(newServiceId: any, serviceItem: any) {
+    this.titleCreate = newServiceId;
+    this.serviceArray = this.serviceArray.map(item => {
+      if (item.orderNum === serviceItem.orderNum) {
+        item.serviceName = this.listServiceAvaiable.find(item => item.serviceId === newServiceId).serviceName;
+        item.isVisualTablePermiss = true;
+        item.isVisualSelecService = true;
+        return item;
       }
-    )
+      return item;
+    });
+
+    this.listServiceAvaiable.splice(this.listServiceAvaiable.findIndex(item => item.serviceId === newServiceId),1);
+    if (serviceItem.isInit) {
+      const index = this.listService.findIndex(item => item.serviceId === serviceItem.serviceId);
+      if (index > -1) {
+        this.listServiceAvaiable.push(listService[index]);
+      }
+    } else {
+      serviceItem.isInit = true;
+    }
   }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
+  onItemChecked(serviceID: any, data: any, checked: boolean): void {
+    this.updateCheckedSet(data.id, checked);
+    this.serviceArray.map(item => {
+      if (item.serviceId === serviceID) {
+        const index = item.selectedPermission.findIndex(data => data.id === data.id);
+        if (checked && index == -1) {
+          item.selectedPermission.push(data);
+        } else {
+          item.selectedPermission.splice(index, 1);
+        }
+        return item;
+      }
+      return item;
+    });
+    this.refreshCheckedStatus(serviceID);
   }
 
-  onAllChecked(value: boolean): void {
-    this.listPermission.forEach(item => this.updateCheckedSet(item.id, value));
-    this.refreshCheckedStatus();
+  onAllChecked(serviceID: any, isAddAll: boolean): void {
+    this.serviceArray = this.serviceArray.map(serviceItem => {
+      if (serviceItem.serviceId === serviceID) {
+        serviceItem.permissions
+          .forEach(permission => this.updateCheckedSet(permission.id, isAddAll));
+        if (isAddAll) {
+          // serviceItem.selectedPermission = Object.assign({}, serviceItem.permissions);
+          serviceItem.selectedPermission = [...serviceItem.permissions];
+        } else {
+          serviceItem.selectedPermission = [];
+        }
+        return serviceItem;
+      }
+      return serviceItem;
+    });
+
+    this.refreshCheckedStatus(serviceID);
   }
 
-  onCurrentPageDataChange($event: readonly PermissionPolicyModel[]): void {
-    this.listPermission = $event;
-    this.refreshCheckedStatus();
-  }
-
-  refreshCheckedStatus(): void {
-    this.checked = this.listPermission.every(item => this.setOfCheckedId.has(item.id));
-    this.indeterminate = this.listPermission.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
+  refreshCheckedStatus(serviceId: any): void {
+    for (let item of this.serviceArray) {
+      if (serviceId == item.serviceId) {
+        item.checked = item.permissions.every(item => this.setOfCheckedId.has(item.id));
+        item.indeterminate = item.permissions.some(item => this.setOfCheckedId.has(item.id)) && !item.checked;
+        break;
+      }
+    }
   }
 
   updateCheckedSet(id: number, checked: boolean): void {
@@ -127,7 +218,17 @@ export class PolicyCreateComponent {
   }
 
   setStep(step: any) {
-    this.current = step;
+    if (step == 1) {
+      for (const itemService of this.serviceArray) {
+        for (let per of itemService.selectedPermission) {
+          this.listOfPermissionSelected.push(per);
+        }
+      }
+    } else {
+      this.listOfPermissionSelected = [];
+    }
+
+    this.currentStep = step;
   }
 
   search(search: any) {
@@ -154,4 +255,21 @@ export class PolicyCreateComponent {
   handleCancel() {
     this.isVisibleCreate = false;
   }
+
+  // protected readonly JSON = JSON;
+  protected listService = listService;
+
+  deleteService(serviceItem: any) {
+    const index = this.serviceArray.findIndex(item => item.orderNum === serviceItem.orderNum);
+    this.serviceArray.splice(index, 1);
+
+    if (serviceItem.serviceId !== undefined && serviceItem.serviceId !== null) {
+      const index = listService.findIndex(item => item.serviceId === serviceItem.serviceId);
+      if (index > -1) {
+        this.listServiceAvaiable.push(listService[index]);
+      }
+    }
+  }
+
+  protected readonly JSON = JSON;
 }
