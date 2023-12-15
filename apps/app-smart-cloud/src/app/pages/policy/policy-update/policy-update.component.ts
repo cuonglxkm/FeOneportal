@@ -6,10 +6,16 @@ import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {JsonEditorOptions} from "ang-jsoneditor";
 import {PolicyService} from "../../../shared/services/policy.service";
-import {PolicyInfo, ServicePermissionDetail, ServicePolicyDTO} from "../policy.model";
+import {PolicyInfo, ServicePermissionDetail, ServicePolicyDTO, UpdatePolicyRequest} from "../policy.model";
 import {result} from "lodash";
 import {concatMap, flatMap, forkJoin, map, of} from "rxjs";
 
+export class Pannel {
+  id: string;
+  idService: any;
+  name: string;
+  listPer: any;
+}
 
 @Component({
   selector: 'one-portal-policy-update',
@@ -35,14 +41,7 @@ export class PolicyUpdateComponent implements OnInit {
   isLoadding: boolean = false;
 
 
-
-
-  panels: [{
-    id: string,
-    idService: any,
-    name: string,
-    listPer: any,
-  }];
+  panels: Pannel[];
 
   allService: any;
 
@@ -64,7 +63,7 @@ export class PolicyUpdateComponent implements OnInit {
   }
 
   deleteService(panel: any) {
-    if(this.panels != null){
+    if (this.panels != null) {
       // @ts-ignore
       this.panels = this.panels.filter(temp => temp.id != panel.id);
     }
@@ -101,13 +100,13 @@ export class PolicyUpdateComponent implements OnInit {
       //Lấy danh sách Service và Permission
       this.doGetAllServices().then(result => {
         this.allService = result
-        this.doSetDataPermissionService(this.allService).then( result => {
+        this.doSetDataPermissionService(this.allService).then(result => {
           this.listServiceWithPer = result;
           //Lấy thông tin Permission of Policy set vào local variable
           this.listServiceWithPer.forEach(serviceLocal => {
             serviceLocal.listPermission.forEach(permissionLocal => {
               const foundItem = this.policyInfo.actions.find(perPolicy => perPolicy === permissionLocal.name);
-              if(foundItem){
+              if (foundItem) {
                 permissionLocal.isChecked = true;
               }
             })
@@ -117,12 +116,9 @@ export class PolicyUpdateComponent implements OnInit {
       })
     }).catch((error) => {
       this.policyInfo = null;
-      this.isLoadding =false;
+      this.isLoadding = false;
       this.notification.error('Có lỗi xảy ra', 'Lấy thông tin Policy thất bại.');
     });
-
-
-
 
 
     // lấy giá trị mặc định
@@ -136,8 +132,30 @@ export class PolicyUpdateComponent implements OnInit {
     ];
 
   }
+
   editPolicy() {
+
+    let updateRequest = new UpdatePolicyRequest();
+    let listAcction = [];
     console.log(this.panels);
+    if(this.panels.length>0){
+      this.panels.forEach(panel => {
+        panel.listPer.forEach(per => {
+          if(per.isChecked){
+            listAcction.push(per);
+          }
+        })
+      })
+      updateRequest.name = this.policyInfo.name;
+      updateRequest.desciption = this.policyInfo.description;
+      updateRequest.effect = this.policyInfo.effect;
+      updateRequest.resource = this.policyInfo.resource;
+      updateRequest.actions = listAcction;
+
+      console.log(updateRequest);
+    }else{
+      this.notification.warning('Cảnh báo', 'Chưa có dịch vào được chọn');
+    }
   }
 
   async doGetAllServices(): Promise<any> {
@@ -168,12 +186,12 @@ export class PolicyUpdateComponent implements OnInit {
   }
 
   async doSetDataPermissionService(listService: any) {
-    let tempList :ServicePermissionDetail[] = [];
+    let tempList: ServicePermissionDetail[] = [];
     const getAllPermissionPromises: Promise<void>[] = [];
     listService.forEach((srv: string) => {
       let srvPerDetail: ServicePermissionDetail = new ServicePermissionDetail();
       srvPerDetail.serviceName = srv;
-      const  promise = this.doGetAllPermissionOfServices(srv).then((result) => {
+      const promise = this.doGetAllPermissionOfServices(srv).then((result) => {
         srvPerDetail.listPermission = result;
         tempList.push(srvPerDetail);
       });
@@ -182,8 +200,8 @@ export class PolicyUpdateComponent implements OnInit {
     await Promise.all(getAllPermissionPromises);
     return tempList;
   }
+
   changeService(selectedPanel: any) {
-    console.log(this.listServiceWithPer);
     let countSerice = 0;
     this.panels.forEach(pln => {
       if (pln.idService == selectedPanel.idService) {
@@ -203,6 +221,28 @@ export class PolicyUpdateComponent implements OnInit {
       }
     })
 
+  }
+
+
+  checkedAll: boolean = false;
+
+  onAllChecked(value: boolean, panel: any): void {
+    if (value) {
+      panel.listPer.forEach(per => {
+        per.isChecked = true;
+      })
+    } else {
+      panel.listPer.forEach(per => {
+        per.isChecked = false;
+      })
+    }
+  }
+  onOneChecked(value: boolean, data: any){
+    if(value){
+      data.isChecked = true;
+    }else{
+      data.isChecked = false;
+    }
   }
 
 

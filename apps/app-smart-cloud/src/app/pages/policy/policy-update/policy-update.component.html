@@ -70,12 +70,20 @@
           >
             <thead>
             <tr>
+              <th
+                [(nzChecked)]="checkedAll"
+                (nzCheckedChange)="onAllChecked($event, panel)"
+              ></th>
               <th>Permission Policíe</th>
               <th>Mô tả</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
+              <td
+                [nzChecked]="data.isChecked"
+                (nzCheckedChange)="onOneChecked($event, data)"
+              ></td>
               <td>{{ data.name }}</td>
               <td>{{ data.description}}</td>
             </tr>

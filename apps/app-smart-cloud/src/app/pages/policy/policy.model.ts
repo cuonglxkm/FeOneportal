@@ -26,6 +26,14 @@ export class PermissionDTO{
   isChecked = false;
 }
 
+export class UpdatePolicyRequest{
+  name: string;
+  effect: string;
+  resource: string;
+  actions: any;
+  desciption:string;
+}
+
 export class ServicePermissionDetail{
   serviceName: string;
   listPermission: any;
