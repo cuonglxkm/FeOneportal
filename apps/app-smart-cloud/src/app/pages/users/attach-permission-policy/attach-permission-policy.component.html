@@ -213,7 +213,7 @@
                 nz-input
                 type="checkbox"
                 (change)="onClickGroupItem(item.name, item)"
-                [(ngModel)]="listCheckedGroupInPage[i]"
+                [(ngModel)]="listCheckedInPage[i]"
               />
             </td>
             <td class="fieldColor">{{ item.name }}</td>
@@ -339,7 +339,7 @@
                 nz-input
                 type="checkbox"
                 (change)="onClickUserItem(item)"
-                [(ngModel)]="listCheckedUserInPage[i]"
+                [(ngModel)]="listCheckedInPage[i]"
               />
             </td>
             <td>{{ item.name }}</td>
@@ -491,7 +491,7 @@
                   nz-input
                   type="checkbox"
                   (change)="onClickPolicyItem(item.name)"
-                  [(ngModel)]="listCheckedPolicyInPage[i]"
+                  [(ngModel)]="listCheckedInPage[i]"
                 />
               </td>
               <td

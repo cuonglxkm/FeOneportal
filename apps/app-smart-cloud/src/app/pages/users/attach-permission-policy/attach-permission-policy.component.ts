@@ -42,6 +42,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
   loading = true;
   typePolicy: string = '';
   checkedAllInPage = false;
+  listCheckedInPage = []
 
   filterStatus = [
     { text: 'Tất cả các loại', value: '' },
@@ -80,37 +81,32 @@ export class AttachPermissionPolicyComponent implements OnInit {
   activeBlockCopyPolicies: boolean = false;
   activeBlockAttachPolicies: boolean = false;
 
+  resetDataPicked(): void {
+    this.groupNames = [];
+    this.policyNames.clear();
+    this.listCheckedInPage = [];
+    this.checkedAllInPage = false;
+    this.emitData();
+  }
   initAddUsertoGroup(): void {
     this.activeBlockAddUsertoGroup = true;
     this.activeBlockCopyPolicies = false;
     this.activeBlockAttachPolicies = false;
+    this.resetDataPicked();
     this.listGroupPicked = [];
-    this.groupNames = [];
-    this.policyNames.clear();
-    this.listCheckedGroupInPage = [];
-    this.checkedAllInPage = false;
-    this.emitData();
   }
   initCopyPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
     this.activeBlockCopyPolicies = true;
     this.activeBlockAttachPolicies = false;
+    this.resetDataPicked();
     this.listUserPicked = [];
-    this.policyNames.clear();
-    this.groupNames = [];
-    this.listCheckedUserInPage = [];
-    this.checkedAllInPage = false;
-    this.emitData();
   }
   initAttachPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
     this.activeBlockCopyPolicies = false;
     this.activeBlockAttachPolicies = true;
-    this.groupNames = [];
-    this.policyNames.clear();
-    this.listCheckedPolicyInPage = [];
-    this.checkedAllInPage = false;
-    this.emitData();
+    this.resetDataPicked();
   }
 
   // xử lý tập các quyền khi chọn
@@ -131,11 +127,8 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   // Danh sách Groups
   getGroup(): void {
+    this.resetDataPicked();
     this.listGroupPicked = [];
-    this.groupNames = [];
-    this.policyNames.clear();
-    this.listCheckedGroupInPage = [];
-    this.checkedAllInPage = false;
     this.service
       .getGroupsCreateUser()
       .pipe(
@@ -148,8 +141,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
         this.listOfGroups = baseResponse.records;
         console.log(this.listOfGroups);
       });
-
-    this.emitData();
+    console.log('listGroupPicked', this.listGroupPicked);
   }
 
   reloadGroupTable(): void {
@@ -165,14 +157,16 @@ export class AttachPermissionPolicyComponent implements OnInit {
     var isAdded = true;
     // Kiểm tra mảng có phần tử đc chọn không
     this.groupNames.forEach((e) => {
-      if (e == groupName) {           // nếu có xóa đi
+      if (e == groupName) {
+        // nếu có xóa đi
         this.groupNames.splice(index, 1);
         this.listGroupPicked.splice(index, 1);
         isAdded = false;
       }
       index++;
     });
-    if (isAdded) {                 //nếu không thêm vào
+    if (isAdded) {
+      //nếu không thêm vào
       this.groupNames.push(groupName);
       this.listGroupPicked.push(item);
     }
@@ -191,13 +185,12 @@ export class AttachPermissionPolicyComponent implements OnInit {
     console.log('list policyNames', this.policyNames);
   }
 
-  listCheckedGroupInPage = [];
   onChangeCheckAllGroup(checked: any) {
     let listChecked = [];
     this.listOfGroups.forEach(() => {
       listChecked.push(checked);
     });
-    this.listCheckedGroupInPage = listChecked;
+    this.listCheckedInPage = listChecked;
     if (checked == true) {
       this.listGroupPicked = [];
       this.listOfGroups.forEach((e) => {
@@ -222,10 +215,8 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   //Danh sách Users
   getCopyUserPlicies() {
+    this.resetDataPicked();
     this.listUserPicked = [];
-    this.listCheckedUserInPage = [];
-    this.policyNames.clear();
-    this.checkedAllInPage = false;
     this.service
       .getCopyUserPolicies()
       .pipe(
@@ -238,7 +229,6 @@ export class AttachPermissionPolicyComponent implements OnInit {
         this.listOfUsers = data.records;
       });
 
-    this.emitData();
     console.log('list groupNames', this.groupNames);
     console.log('list policyNames', this.policyNames);
   }
@@ -276,13 +266,12 @@ export class AttachPermissionPolicyComponent implements OnInit {
     console.log('list policyNames', this.policyNames);
   }
 
-  listCheckedUserInPage = [];
   onChangeCheckAllUser(checked: any) {
     let listChecked = [];
     this.listOfUsers.forEach(() => {
       listChecked.push(checked);
     });
-    this.listCheckedUserInPage = listChecked;
+    this.listCheckedInPage = listChecked;
     if (checked == true) {
       this.listUserPicked = [];
       this.listOfUsers.forEach((e) => {
@@ -301,9 +290,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   //Danh sách Policies
   getPermissionPolicies() {
-    this.listCheckedPolicyInPage = [];
-    this.policyNames.clear();
-    this.checkedAllInPage = false;
+    this.resetDataPicked();
     this.service
       .getPermissionPolicies()
       .pipe(
@@ -316,7 +303,6 @@ export class AttachPermissionPolicyComponent implements OnInit {
         this.listOfpolicies = data.records;
       });
 
-    this.emitData();
     console.log('list groupNames', this.groupNames);
     console.log('list policyNames', this.policyNames);
   }
@@ -349,13 +335,12 @@ export class AttachPermissionPolicyComponent implements OnInit {
     console.log('list policyNames', this.policyNames);
   }
 
-  listCheckedPolicyInPage = [];
   onChangeCheckAllPolicy(checked: any) {
     let listChecked = [];
     this.listOfpolicies.forEach(() => {
       listChecked.push(checked);
     });
-    this.listCheckedPolicyInPage = listChecked;
+    this.listCheckedInPage = listChecked;
     if (checked == true) {
       this.policyNames.clear();
       this.listOfpolicies.forEach((e) => {

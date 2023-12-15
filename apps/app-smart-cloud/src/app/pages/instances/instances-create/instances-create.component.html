@@ -3,11 +3,11 @@
   [inputs]="carouselTileConfig"
   [dataSource]="carouselTileItems$ | async"
 > -->
-  <!--  <button NguCarouselPrev class="leftRs" [style.opacity]="myCarousel.isFirst ? 0.5 : 1">-->
-  <!--    &lt;-->
-  <!--  </button>-->
+<!--  <button NguCarouselPrev class="leftRs" [style.opacity]="myCarousel.isFirst ? 0.5 : 1">-->
+<!--    &lt;-->
+<!--  </button>-->
 
-  <!-- <ngu-tile
+<!-- <ngu-tile
     *nguCarouselDef="let item; index as i; let ani = animate"
     [@slider]="ani"
   >
@@ -16,11 +16,11 @@
     </div>
   </ngu-tile> -->
 
-  <!--  <button NguCarouselNext class="rightRs" [style.opacity]="myCarousel.isLast ? 0.5 : 1">-->
-  <!--    &gt;-->
-  <!--  </button>-->
+<!--  <button NguCarouselNext class="rightRs" [style.opacity]="myCarousel.isLast ? 0.5 : 1">-->
+<!--    &gt;-->
+<!--  </button>-->
 
-  <!-- <ul class="myPoint" NguCarouselPoint>
+<!-- <ul class="myPoint" NguCarouselPoint>
     <li
       *ngFor="let i of myCarousel.pointNumbers"
       [class.active]="i === myCarousel.activePoint"
@@ -113,64 +113,66 @@
       </nz-col>
     </div>
     <div *ngIf="!isSnapshot">
-      <nz-row nzGutter="16">
-        <h6 class="h6">Hệ điều hành</h6>
-      </nz-row>
-      <nz-row nzGutter="16">
-        <nz-carousel
-          [nzEffect]="effect"
-          style="overflow: initial"
-          style="height: 250px"
+      <h6 class="h6">Hệ điều hành</h6>
+      <ngu-carousel
+        #myCarousel
+        [inputs]="carouselTileConfig"
+        [dataSource]="listImageTypes"
+      >
+        <ngu-tile
+          *nguCarouselDef="let data; index as i; let ani = animate"
+          [@slider]="ani"
         >
-          <div nz-carousel-content *ngFor="let page of pagedCardListImages">
-            <div nz-row>
-              <div nz-col nzSpan="6" *ngFor="let data of page">
-                <table class="images-card text-center">
-                  <tbody
-                    class="images-body images-body-wh"
-                    [id]="'images_' + data.id"
-                    [ngClass]="{
-                      'images-body-active': data.id === selectedTypeImageId,
-                      bgGray: !data.id === selectedTypeImageId
-                    }"
-                  >
-                    <tr>
-                      <div class="images-body-tr">
-                        <span>{{ data.name }}</span>
-                      </div>
-                    </tr>
-                    <tr>
-                      <div>
-                        <nz-select
-                          [id]="'hdh_' + data.id"
-                          [(ngModel)]="data.versionId"
-                          (ngModelChange)="onInputHDH(data.id, $event)"
-                          (nzOpenChange)="getAllImageVersionByType(data.id)"
-                          [nzLoading]="isLoading"
-                          nzPlaceHolder="Chọn phiên bản"
-                          [ngModelOptions]="{ standalone: true }"
-                          style="text-align: center"
-                          class="images-body-select"
-                        >
-                          <nz-option
-                            nzValue=""
-                            nzLabel="Chọn phiên bản"
-                          ></nz-option>
-                          <nz-option
-                            *ngFor="let p of listImageVersionByType"
-                            [nzValue]="p.id"
-                            [nzLabel]="p.name"
-                          ></nz-option>
-                        </nz-select>
-                      </div>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </nz-carousel>
-      </nz-row>
+          <nz-row>
+            <table class="text-center" style="width: 100%">
+              <tbody
+                class="images-body"
+                [id]="'images_' + data.id"
+                [ngClass]="{
+                  'images-body-active': data.id === listSelectedImageId[i],
+                  bgGray: !data.id === listSelectedImageId[i]
+                }"
+              >
+                <tr>
+                  <div class="images-body-tr">
+                    <span>{{ data.name }}</span>
+                  </div>
+                </tr>
+                <tr>
+                  <div>
+                    <nz-row>
+                      <nz-select
+                        nzShowSearch
+                        [id]="'hdh_' + data.id"
+                        [(ngModel)]="listSelectedImageId[i]"
+                        (ngModelChange)="onInputHDH($event, i)"
+                        [nzLoading]="isLoading"
+                        nzPlaceHolder="Chọn phiên bản"
+                        [ngModelOptions]="{ standalone: true }"
+                        style="text-align: center; width: 100%"
+                      >
+                        <nz-option
+                          *ngFor="let p of listOfImageByImageType[i]"
+                          [nzValue]="p.name"
+                          [nzLabel]="p.name"
+                        ></nz-option>
+                      </nz-select>
+                    </nz-row>
+                  </div>
+                </tr>
+              </tbody>
+            </table>
+          </nz-row>
+        </ngu-tile>
+
+        <ul class="myPoint" NguCarouselPoint>
+          <li
+            *ngFor="let i of myCarousel.pointNumbers"
+            [class.active]="i === myCarousel.activePoint"
+            (click)="myCarousel.moveTo(i)"
+          ></li>
+        </ul>
+      </ngu-carousel>
     </div>
 
     <br />
@@ -314,45 +316,46 @@
             *nguCarouselDef="let item; index as i; let ani = animate"
             [@slider]="ani"
           >
-            <table class="text-center" (click)="onInputFlavors(item.id)">
-              <tbody
-                class="flavor-body"
-                [id]="'flavor_' + item.id"
-                [class.initialClassFlavor]="
-                  selectedElementFlavor === 'flavor_' + item.id &&
-                  isInitialClass
-                "
-                [class.newClassFlavor]="
-                  selectedElementFlavor === 'flavor_' + item.id && isNewClass
-                "
-                (click)="selectElementInputFlavors('flavor_' + item.id)"
-              >
-                <tr>
-                  <div>
-                    <b class="h4">{{ item.flavorName | slice:3 }}</b
-                    ><br />
-                    <i nz-icon nzType="flex"></i><br />
-                    <b class="h4">{{ item.price }}</b
-                    ><span> đ/tháng</span><br />
-                    <span>đ/giờ</span>
-                  </div>
-                </tr>
-                <tr
-                  class="flavorfooter"
-                  [class.flavor-footer-active]="
-                    selectedElementFlavor === 'flavor_' + item.id
+            <nz-row>
+              <table class="text-center" style="width: 100%;" (click)="onInputFlavors(item.id)">
+                <tbody
+                  class="flavor-body"
+                  [id]="'flavor_' + item.id"
+                  [class.initialClassFlavor]="
+                    selectedElementFlavor === 'flavor_' + item.id &&
+                    isInitialClass
                   "
-                  [class.flavor-footer]="
-                    selectedElementFlavor != 'flavor_' + item.id
+                  [class.newClassFlavor]="
+                    selectedElementFlavor === 'flavor_' + item.id && isNewClass
                   "
+                  (click)="selectElementInputFlavors('flavor_' + item.id)"
                 >
-                  <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
-                  <div>
-                    <p>{{ item.description }}</p>
-                  </div>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <div>
+                      <b class="h4">{{ item.flavorName | slice : 3 }}</b
+                      ><br />
+                      <b class="h4">{{ item.price }}</b
+                      ><span> đ/tháng</span><br />
+                      <span>đ/giờ</span>
+                    </div>
+                  </tr>
+                  <tr
+                    class="flavorfooter"
+                    [class.flavor-footer-active]="
+                      selectedElementFlavor === 'flavor_' + item.id
+                    "
+                    [class.flavor-footer]="
+                      selectedElementFlavor != 'flavor_' + item.id
+                    "
+                  >
+                    <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
+                    <div>
+                      <p>{{ item.description }}</p>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
+            </nz-row>
           </ngu-tile>
 
           <ul class="myPoint" NguCarouselPoint>
