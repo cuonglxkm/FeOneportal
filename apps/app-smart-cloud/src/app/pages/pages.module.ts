@@ -88,6 +88,7 @@ import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.co
 import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.component';
 import { UsersTableComponent } from './iam/user-group/create/users-table.component';
 import { PolicyTableComponent } from './iam/user-group/create/policy-table.component';
+import {ClipboardModule} from "ngx-clipboard";
 import { CreatePolicyComponent } from './iam/user-group/policy/create/create-policy.component';
 import { CreateUserComponent } from './iam/user-group/user/create/create-user.component';
 import { PrettyPrintPipe } from './iam/user-group/create/pretty-print.pipe';
@@ -212,6 +213,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NgxJsonViewerModule,
     // Starting Angular 13
     AngJsoneditorModule,
+    ClipboardModule,
   ],
 })
-export class PagesModule {}
+export class PagesModule {
+}
