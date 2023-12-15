@@ -62,7 +62,7 @@
                     <nz-space [nzSize]="24">
                         <div *nzSpaceItem>
                             <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-                                <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
+                                <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
                                        nz-input
                                        placeholder="Tìm kếm tên..."/>
                             </nz-input-group>
@@ -141,7 +141,7 @@
                         </div>
                         <div *nzSpaceItem>
                             <nz-input-group nzSearch [nzAddOnAfter]="suffixButton2">
-                                <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
+                                <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
                                        nz-input
                                        placeholder="Tìm kếm tên..."/>
                             </nz-input-group>

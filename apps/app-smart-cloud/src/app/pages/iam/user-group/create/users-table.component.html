@@ -1,7 +1,7 @@
 <nz-card [nzTitle]="userCardTitle">
   <nz-row style="margin-bottom: 16px" nzJustify="space-between">
     <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-      <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+      <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
              placeholder="Tìm kếm tên..."/>
     </nz-input-group>
     <ng-template #suffixButton>
