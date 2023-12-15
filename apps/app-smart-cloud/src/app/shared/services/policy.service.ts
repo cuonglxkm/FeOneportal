@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {
@@ -38,6 +38,21 @@ export class PolicyService extends BaseService {
   getAttachedEntities(policyName: string, entityName: string, type: number, pageSize: number, currentPage: number): Observable<BaseResponse<AttachedEntitiesDTO[]>> {
     let url = this.getConditionSearchAttachedEntities(policyName, entityName, type, pageSize, currentPage);
     return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url);
+  }
+
+  getListService(): Observable<any>{
+    return of([
+      "volume",
+      "instance",
+      "ippublic",
+      "snapshot"
+    ])
+    // return this.http.get<any>(this.urlIAM+"/services");
+  }
+
+  getListPermissionOfService(serviceName: string): Observable<PermissionDTO[]>{
+    let url = this.urlIAM + '/ServiceAction' + '/'  + serviceName;
+    return this.http.get<PermissionDTO[]>(url);
   }
 
 

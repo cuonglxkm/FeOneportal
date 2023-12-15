@@ -123,7 +123,7 @@ export class PolicyAttachComponent implements OnInit {
         this.searchEntities();
       },
       error => {
-        this.notification.error('Có lỗi sảy ra', 'Gắn Policy thất bại');
+        this.notification.error('Có lỗi xảy ra', 'Gắn Policy thất bại');
       }
     )
   }
@@ -157,7 +157,7 @@ export class PolicyAttachComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi sảy ra','Lấy danh sách Attached Entities thất bại');
+        this.notification.error('Có lỗi xảy ra','Lấy danh sách Attached Entities thất bại');
         this.isLoadingEntities = false;
       }
     )

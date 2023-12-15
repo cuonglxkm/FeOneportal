@@ -5,6 +5,11 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {JsonEditorOptions} from "ang-jsoneditor";
+import {PolicyService} from "../../../shared/services/policy.service";
+import {PolicyInfo, ServicePermissionDetail, ServicePolicyDTO} from "../policy.model";
+import {result} from "lodash";
+import {concatMap, flatMap, forkJoin, map, of} from "rxjs";
+
 
 @Component({
   selector: 'one-portal-policy-update',
@@ -19,26 +24,36 @@ export class PolicyUpdateComponent implements OnInit {
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  idPolicy: number;
+  policyName: string;
 
   isVisual: boolean = true;
 
-  sshService: any;
+  policyInfo: PolicyInfo;
 
-  vlmService: any;
+  serviceArray: ServicePolicyDTO[];
 
-  ippService: any;
-
-  serviceArray: any;
+  isLoadding: boolean = false;
 
 
-  panels :any;
+
+
+  panels: [{
+    id: string,
+    idService: any,
+    name: string,
+    listPer: any,
+  }];
+
+  allService: any;
+
+  listServiceWithPer: ServicePermissionDetail[] = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
     private router: Router,
-    private notification: NzNotificationService,) {
+    private notification: NzNotificationService,
+    private policyService: PolicyService) {
 
     this.editorOptions = new JsonEditorOptions()
     this.editorOptions.mode = 'code';
@@ -49,7 +64,10 @@ export class PolicyUpdateComponent implements OnInit {
   }
 
   deleteService(panel: any) {
-    this.panels = this.panels.filter(temp => temp.id != panel.id);
+    if(this.panels != null){
+      // @ts-ignore
+      this.panels = this.panels.filter(temp => temp.id != panel.id);
+    }
   }
 
   addService() {
@@ -60,6 +78,7 @@ export class PolicyUpdateComponent implements OnInit {
       listPer: null,
     },)
   }
+
   generateRandomString(length: number): string {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -72,53 +91,40 @@ export class PolicyUpdateComponent implements OnInit {
     return result;
   }
 
-  changeService(panel: any) {
-    let countSerice = 0;
-    this.panels.forEach(pln => {
-      if(pln.idService == panel.idService){
-        countSerice++;
-      }
+  async ngOnInit(): Promise<void> {
+    this.isLoadding = true;
+    // Lấy thông tin Policy
+    const url = this.activatedRoute.snapshot.url;
+    this.policyName = url[url.length - 1].path;
+    this.doGetPolicyInfo(this.policyName).then((result) => {
+      this.policyInfo = result;
+      //Lấy danh sách Service và Permission
+      this.doGetAllServices().then(result => {
+        this.allService = result
+        this.doSetDataPermissionService(this.allService).then( result => {
+          this.listServiceWithPer = result;
+          //Lấy thông tin Permission of Policy set vào local variable
+          this.listServiceWithPer.forEach(serviceLocal => {
+            serviceLocal.listPermission.forEach(permissionLocal => {
+              const foundItem = this.policyInfo.actions.find(perPolicy => perPolicy === permissionLocal.name);
+              if(foundItem){
+                permissionLocal.isChecked = true;
+              }
+            })
+          })
+          this.isLoadding = false;
+        });
+      })
+    }).catch((error) => {
+      this.policyInfo = null;
+      this.isLoadding =false;
+      this.notification.error('Có lỗi xảy ra', 'Lấy thông tin Policy thất bại.');
     });
-    if (countSerice  > 1) {
-      this.notification.warning("Cảnh báo", "Dịch vụ này đã tồn tại");
-      this.panels = this.panels.filter(pln => pln.id = panel.id);
-      return;
-    }
-    switch (panel.idService) {
-      case 'ssh':
-        panel.name = 'SSH Key';
-        panel.listPer = this.sshService;
-        break;
-      case 'vlm':
-        panel.name = 'Volume';
-        panel.listPer = this.vlmService;
-        break;
-      case 'ipp':
-        panel.name = 'IP Public';
-        panel.listPer = this.ippService;
-        break;
-    }
-  }
 
 
-  ngOnInit(): void {
-    // Lấy Id Policy
-    this.idPolicy = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    //Lấy danh sách Service
-    this.serviceArray = [
-      {
-        serviceName: 'SSH Key',
-        serviceId: 'ssh'
-      },
-      {
-        serviceName: 'Volume',
-        serviceId: 'vlm'
-      },
-      {
-        serviceName: 'IP Plublic',
-        serviceId: 'ipp'
-      }
-    ]
+
+
+
     // lấy giá trị mặc định
     this.panels = [
       {
@@ -128,73 +134,79 @@ export class PolicyUpdateComponent implements OnInit {
         listPer: null,
       },
     ];
-    // Lấy danh sách Permission Service
-    this.sshService = [
-      {
-        permission: 'clould-server.ssh.list',
-        desc: 'Lấy danh sách SSH Key',
-        isActive: true,
-      },
-      {
-        permission: 'clould-server.ssh.create',
-        desc: 'Tạo SSH Key',
-        isActive: false,
-      },
-      {
-        permission: 'clould-server.ssh.delete',
-        desc: 'Xóa SSH Key',
-        isActive: true,
-      },
-    ]
-
-    this.vlmService = [
-      {
-        permission: 'clould-server.vlm.list',
-        desc: 'Lấy danh sách Volume',
-        isActive: true,
-      },
-      {
-        permission: 'clould-server.vlm.create',
-        desc: 'Tạo Volume',
-        isActive: true,
-      },
-      {
-        permission: 'clould-server.vlm.delete',
-        desc: 'Xóa Volume',
-        isActive: true,
-      },
-      {
-        permission: 'clould-server.vlm.edit',
-        desc: 'Chỉnh sửa Volume',
-        isActive: false,
-      },
-    ]
-
-    this.ippService = [
-      {
-        permission: 'clould-server.ipp.list',
-        desc: 'Lấy danh sách IP Public',
-        isActive: true,
-      },
-      {
-        permission: 'clould-server.ipp.create',
-        desc: 'Tạo IP Public',
-        isActive: true,
-      },
-      {
-        permission: 'clould-server.ipp.delete',
-        desc: 'Xóa IP Public',
-        isActive: false,
-      },
-    ]
 
   }
-
-  editPolicy(){
+  editPolicy() {
     console.log(this.panels);
   }
 
-  backToListPage(){
+  async doGetAllServices(): Promise<any> {
+    try {
+      return await this.policyService.getListService().toPromise()
+    } catch (error) {
+      this.notification.error('Có lỗi xảy ra', 'Lấy danh sách dịch vụ thất bại');
+    }
+  }
+
+  async doGetAllPermissionOfServices(serviceName: string): Promise<any> {
+    try {
+      return await this.policyService.getListPermissionOfService(serviceName).pipe(map(items => {
+        items.map(item => item.isChecked = false)
+        return items;
+      })).toPromise();
+    } catch (error) {
+      this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Permission của dịch vụ thất bại');
+    }
+  }
+
+  async doGetPolicyInfo(namePolicy: string): Promise<any> {
+    try {
+      return this.policyService.getPolicyInfo(namePolicy).toPromise();
+    } catch (error) {
+      this.notification.error('Có lỗi xảy ra', 'Lấy thông tin Policy thất bại.');
+    }
+  }
+
+  async doSetDataPermissionService(listService: any) {
+    let tempList :ServicePermissionDetail[] = [];
+    const getAllPermissionPromises: Promise<void>[] = [];
+    listService.forEach((srv: string) => {
+      let srvPerDetail: ServicePermissionDetail = new ServicePermissionDetail();
+      srvPerDetail.serviceName = srv;
+      const  promise = this.doGetAllPermissionOfServices(srv).then((result) => {
+        srvPerDetail.listPermission = result;
+        tempList.push(srvPerDetail);
+      });
+      getAllPermissionPromises.push(promise);
+    })
+    await Promise.all(getAllPermissionPromises);
+    return tempList;
+  }
+  changeService(selectedPanel: any) {
+    console.log(this.listServiceWithPer);
+    let countSerice = 0;
+    this.panels.forEach(pln => {
+      if (pln.idService == selectedPanel.idService) {
+        countSerice++;
+      }
+    });
+    if (countSerice > 1) {
+      this.notification.warning("Cảnh báo", "Dịch vụ này đã tồn tại");
+      // this.panels = this.panels.filter(pln => pln.id = selectedPanel.id);
+      return;
+    }
+
+    this.listServiceWithPer.forEach(temp => {
+      if (temp.serviceName == selectedPanel.idService) {
+        selectedPanel.name = temp.serviceName;
+        selectedPanel.listPer = temp.listPermission;
+      }
+    })
+
+  }
+
+
+  backToListPage() {
     this.router.navigate(['/app-smart-cloud/policy']);
   }
 

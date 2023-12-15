@@ -177,15 +177,15 @@ const routes: Routes = [
     component: PolicyAttachComponent
   },
   {
-    path: 'policy/detach/:id',
+    path: 'policy/detach/:name',
     component: PolicyDetachComponent
   },
   {
-    path: 'policy/detail/:id',
+    path: 'policy/detail/:name',
     component: PolicyDetailComponent
   },
   {
-    path: 'policy/update/:id',
+    path: 'policy/update/:name',
     component: PolicyUpdateComponent
   },
   {

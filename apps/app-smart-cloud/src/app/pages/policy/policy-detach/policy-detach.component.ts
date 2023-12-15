@@ -117,7 +117,7 @@ export class PolicyDetachComponent implements OnInit {
         this.searchEntities();
       },
       error => {
-        this.notification.error('Có lỗi sảy ra', 'Gỡ Policy thất bại');
+        this.notification.error('Có lỗi xảy ra', 'Gỡ Policy thất bại');
       }
     )
 
@@ -158,7 +158,7 @@ export class PolicyDetachComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi sảy ra', 'Lấy danh sách Attached Entities thất bại');
+        this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached Entities thất bại');
         this.isLoadingEntities = false;
       }
     )
