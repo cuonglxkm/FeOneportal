@@ -50,6 +50,9 @@ import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.compon
 import {BlankScheduleBackupComponent} from "./schedule-backup/blank/blank-schedule-backup.component";
 import {ListScheduleBackupComponent} from "./schedule-backup/list/list-schedule-backup.component";
 import {CreateScheduleBackupComponent} from "./schedule-backup/create/create-schedule-backup.component";
+import {
+  EditScheduleBackupVmComponent
+} from "./schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -237,6 +240,10 @@ const routes: Routes = [
     path: 'schedule/backup/create',
     component: CreateScheduleBackupComponent
   },
+  {
+    path: 'schedule/backup/edit/vm',
+    component: EditScheduleBackupVmComponent
+  }
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],

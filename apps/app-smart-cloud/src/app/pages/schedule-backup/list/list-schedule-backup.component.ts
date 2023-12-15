@@ -1,7 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
+import {BackupSchedule, FormSearchScheduleBackup} from "../../../shared/models/schedule.model";
+import {ScheduleService} from "../../../shared/services/schedule.service";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {BaseResponse} from "../../../../../../../libs/common-utils/src";
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -11,8 +16,6 @@ import {ProjectModel} from "../../../shared/models/project.model";
 export class ListScheduleBackupComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
-
-  listScheduleBackup = []
 
   selectedValue?: string = null
   value?: string;
@@ -24,7 +27,18 @@ export class ListScheduleBackupComponent implements OnInit{
     {label: 'Tạm dừng', value: 'PAUSED'}
   ]
 
-  constructor(private router: Router) {
+  listBackupSchedule: BackupSchedule[] = []
+  formSearch: FormSearchScheduleBackup = new FormSearchScheduleBackup()
+  customerId: number
+
+  pageSize: number = 10
+  pageIndex: number = 1
+
+  response: BaseResponse<BackupSchedule[]>
+  isLoading: boolean = false
+  constructor(private router: Router,
+              private backupScheduleService: ScheduleService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -38,11 +52,7 @@ export class ListScheduleBackupComponent implements OnInit{
   onChange(value: string) {
     console.log('abc', this.selectedValue)
     this.selectedValue = value;
-    // if (this.selectedValue === 'all') {
-    //   this.formSearch.status = null
-    // } else {
-    //   this.formSearch.status = value
-    // }
+
   }
 
   onInputChange(value: string) {
@@ -54,12 +64,31 @@ export class ListScheduleBackupComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/schedule/backup/create'])
   }
 
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex} = params
+    this.formSearch.pageSize = pageSize;
+    this.formSearch.pageIndex = pageIndex
+    this.getListScheduleBackup();
+  }
+
+  getListScheduleBackup() {
+    this.isLoading = true
+    this.backupScheduleService.search(this.formSearch).subscribe(data => {
+      console.log(data)
+      if(data.totalCount == 0) {
+        this.isLoading = false
+        this.router.navigate(['/app-smart-cloud/schedule/backup/blank'])
+      } else {
+        this.response = data
+        this.listBackupSchedule = data.records
+        this.isLoading = false
+      }
+    })
+  }
   ngOnInit(): void {
-    console.log('this.lis', this.listScheduleBackup)
-    // if(this.listScheduleBackup === undefined || this.listScheduleBackup.length <= 0) {
-    //   this.router.navigate(['/app-smart-cloud/schedule/backup/blank'])
-    // } else {
-    //
-    // }
+    this.formSearch.customerId = this.tokenService.get()?.userId
+    this.formSearch.pageIndex = 1
+    this.formSearch.pageSize = 10
+    this.getListScheduleBackup()
   }
 }

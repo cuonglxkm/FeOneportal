@@ -1,14 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {
-    ExecuteAttachOrDetach,
-    SecurityGroup,
-    SecurityGroupCreateForm,
-    SecurityGroupSearchCondition
+  ExecuteAttachOrDetach,
+  SecurityGroup,
+  SecurityGroupCreateForm,
+  SecurityGroupSearchCondition
 } from "../models/security-group";
 import {catchError, Observable} from "rxjs";
 import {BaseService} from "src/app/shared/services/base.service";
-import {stringify} from "uuid";
 
 @Injectable({
     providedIn: 'root'

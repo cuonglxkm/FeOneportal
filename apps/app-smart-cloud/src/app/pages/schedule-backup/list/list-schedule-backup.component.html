@@ -1,84 +1,190 @@
 <one-portal-header
-        title="Lập lịch Backup"
-        [path]="['Home', 'Dịch vụ', 'Lập lịch Backup']"
-        [regionId]="region"
-        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+  title="Lập lịch Backup"
+  [path]="['Home', 'Dịch vụ', 'Lập lịch Backup']"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
 <nz-content>
-    <nz-card>
-        <div>
-            <h3>Danh sách lịch Backup</h3>
-            <nz-row nzAlign="middle" style="margin-top: 20px;" nzJustify="space-between">
-                <nz-space [nzSize]="24">
-                    <div style="margin-right: 10px;">Trạng thái</div>
-                    <div *nzSpaceItem>
-                        <nz-select [(ngModel)]="selectedValue"
-                                   (ngModelChange)="onChange($event)"
-                                   nzPlaceHolder="Tất cả trạng thái">
-                            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-                        </nz-select>
+  <nz-card>
+    <div>
+      <h3>Danh sách lịch Backup</h3>
+      <nz-row nzAlign="middle" style="margin-top: 20px;" nzJustify="space-between">
+        <nz-space [nzSize]="24">
+          <div style="margin-right: 10px;">Trạng thái</div>
+          <div *nzSpaceItem>
+            <nz-select [(ngModel)]="selectedValue"
+                       (ngModelChange)="onChange($event)"
+                       nzPlaceHolder="Tất cả trạng thái">
+              <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+            </nz-select>
+          </div>
+          <div *nzSpaceItem style="width: 410px;">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+              <input style="width: 380px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+                     type="text" nz-input
+                     placeholder="Tìm kếm tên..."/>
+            </nz-input-group>
+            <ng-template #suffixButton>
+              <button nz-button nzType="primary" nzSearch>
+                <span nz-icon nzType="search" nzTheme="outline"></span>
+                Search
+              </button>
+            </ng-template>
+          </div>
+        </nz-space>
+        <nz-row nzAlign="middle">
+          <button nz-button class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
+                  (click)="navigateToCreate()">
+            <span nz-icon nzType="plus" nzTheme="outline"></span>
+            Tạo mới
+          </button>
+        </nz-row>
+      </nz-row>
+      <nz-table #tableScheduleBackup
+                [nzData]="response?.records"
+                nzShowSizeChanger
+                [nzFrontPagination]="false"
+                [nzTotal]="response?.totalCount"
+                [nzPageSize]="response?.pageSize"
+                [nzPageIndex]="response?.currentPage"
+                [nzLoading]="isLoading"
+                (nzQueryParams)="onQueryParamsChange($event)">
+        <thead>
+        <tr>
+          <th>Tên</th>
+          <th>Đối tượng backup</th>
+          <th>Số bản ghi tối đa</th>
+          <th nzAlign="center">Trạng thái</th>
+          <th>Lần backup tiếp theo</th>
+          <th>Ngày tạo</th>
+          <th nzAlign="center">Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of tableScheduleBackup.data">
+          <td>{{ data.name }}</td>
+          <td>
+            <span *ngIf="data.serviceType === 1">VM - {{ data.name }}</span>
+            <span *ngIf="data.serviceType === 2">Volume - {{ data.name }}</span>
+          </td>
+          <td>{{ data.maxBackup }}</td>
+          <td nzAlign="center">
+            <div class="status" [ngSwitch]="data.status">
+              <div *ngIf="data.warningMessage !== null">
+                <div *ngSwitchCase="'ACTIVE'">
+                  <span class="active">Hoạt động</span>
+                  <br>
+                  <span style="text-align: center">{{ data.warningMessage }}</span>
+                </div>
+                <div *ngSwitchCase="'DISABLED'">
+                  <span class="disabled">Gián đoạn</span>
+                  <br>
+                  <span style="text-align: center"> {{ data.warningMessage }}</span>
+                </div>
+                <div *ngSwitchCase="'PAUSED'">
+                  <span class="paused">Tạm dừng</span>
+                  <br>
+                  <span style="text-align: center">{{ data.warningMessage }}</span>
+                </div>
+              </div>
+              <div *ngIf="data.warningMessage === null">
+                <div *ngSwitchCase="'ACTIVE'">
+                  <span class="active">Hoạt động</span>
+                </div>
+                <div *ngSwitchCase="'DISABLED'">
+                  <span class="disabled">Gián đoạn</span>
+                </div>
+                <div *ngSwitchCase="'PAUSED'">
+                  <span class="paused">Tạm dừng</span>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>{{ data.nextRuntime | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
+          <td>{{ data.createdAt | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
+          <td nzAlign="center">
+            <div [ngSwitch]="data.status">
+              <div *ngSwitchCase="'ACTIVE'">
+                <button
+                  nz-button
+                  [nzType]="'primary'"
+                  nz-dropdown
+                  style="width: 100px"
+                  [nzDropdownMenu]="opMenu">
+                  <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <div *ngIf="data.serviceType === 1">
+                      <li nz-menu-item [routerLink]="'/app-smart-cloud/schedule/backup/edit/vm'">Chỉnh sửa</li>
+                      <li nz-menu-item>Tạm dừng</li>
+                      <li nz-menu-item>Xóa</li>
                     </div>
-                    <div *nzSpaceItem>
-                        <nz-range-picker></nz-range-picker>
+                    <div *ngIf="data.serviceType === 2">
+                      <li nz-menu-item [routerLink]="'/app-smart-cloud/schedule/backup/edit/volume'">Chỉnh sửa</li>
+                      <li nz-menu-item>Tạm dừng</li>
+                      <li nz-menu-item>Xóa</li>
                     </div>
-                    <div *nzSpaceItem style="width: 410px;">
-                        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-                            <input style="width: 380px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
-                                   placeholder="Tìm kếm tên, dung lượng, volume ..."/>
-                        </nz-input-group>
-                        <ng-template #suffixButton>
-                            <button nz-button nzType="primary" nzSearch >
-                                <span nz-icon nzType="search" nzTheme="outline"></span>
-                                Search
-                            </button>
-                        </ng-template>
-                    </div>
-                </nz-space>
-                <nz-row nzAlign="middle">
-                    <button nz-button class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;" (click)="navigateToCreate()">
-                        <span nz-icon nzType="plus" nzTheme="outline"></span>
-                        Tạo mới
-                    </button>
-                </nz-row>
-            </nz-row>
-            <nz-table>
-                <thead>
-                <tr>
-                    <th>Tên</th>
-                    <th>Đối tượng backup</th>
-                    <th>Số bản ghi tối đa</th>
-                    <th>Trạng thái</th>
-                    <th>Lần backup tiếp theo</th>
-                    <th>Ngày tạo</th>
-                    <th>Thao tác</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div *ngSwitchCase="'DISABLED'">
+                <button
+                  nz-button
+                  [nzType]="'primary'"
+                  nz-dropdown
+                  style="width: 100px"
+                  [nzDropdownMenu]="opMenu">
+                  <span>Khôi phục</span> <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>Khôi phục</li>
+                    <li nz-menu-item>Xóa</li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div *ngSwitchCase="'PAUSED'">
+                <button
+                  nz-button
+                  [nzType]="'primary'"
+                  nz-dropdown
+                  style="width: 100px"
+                  [nzDropdownMenu]="opMenu">
+                  <span>Tiếp tục</span> <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>Tiếp tục</li>
+                    <li nz-menu-item>Xóa</li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+<!--    <div style="margin-top: 30px;">-->
+<!--      <h3>Thông tin dung lượng Backup VPC</h3>-->
+<!--      <nz-table>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th>Tên VPC</th>-->
+<!--          <th>Hết hạn</th>-->
+<!--          <th>Dung lượng (GB)</th>-->
+<!--          <th>Đã dùng (GB)</th>-->
+<!--          <th>Còn lại (GB)</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
 
-                </tr>
-                </tbody>
-            </nz-table>
-        </div>
-        <div style="margin-top: 30px;">
-            <h3>Thông tin dung lượng Backup VPC</h3>
-            <nz-table>
-                <thead>
-                <tr>
-                    <th>Tên VPC</th>
-                    <th>Hết hạn</th>
-                    <th>Dung lượng (GB)</th>
-                    <th>Đã dùng (GB)</th>
-                    <th>Còn lại (GB)</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </nz-table>-->
+<!--    </div>-->
 
-                </tr>
-                </tbody>
-            </nz-table>
-        </div>
-
-    </nz-card>
+  </nz-card>
 </nz-content>
