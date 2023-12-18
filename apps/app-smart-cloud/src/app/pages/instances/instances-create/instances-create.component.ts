@@ -31,7 +31,7 @@ import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { Observable, finalize, of } from 'rxjs';
+import { Observable, concatMap, finalize, from, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -114,8 +114,7 @@ export class InstancesCreateComponent implements OnInit {
   orderItem: OrderItem[] = [];
   region: number = 3;
   projectId: number = 4079;
-  customerId: number = 669;
-  userId: number = 669;
+  userId: number;
   today: Date = new Date();
   ipPublicValue: string = '';
   isUseIPv6: boolean = false;
@@ -132,38 +131,47 @@ export class InstancesCreateComponent implements OnInit {
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
-  listImageVersionByType: Images[] = [];
-  selectedValueVersion: any;
   isLoading = false;
-  listSelectedImageId = []
+  listSelectedImage = [];
+  selectedImageTypeId: number;
   listOfImageByImageType = [];
+  imageTypeId = [];
 
   getAllImageType() {
-    this.listImageTypes = [];
-    this.listOfImageByImageType = [];
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
-      this.listImageTypes.forEach((e) => {
-        this.listSelectedImageId.push("")
-        this.dataService
-          .getAllImage(null, this.region, e.id, this.customerId)
-          .subscribe((data: any) => {
-            this.listImageVersionByType = data;
-            this.listOfImageByImageType.push(this.listImageVersionByType);
-          });
-      });
+      this.listImageTypes.forEach (e => {
+        this.imageTypeId.push(e.id);
+      })
       console.log('list image types', this.listImageTypes);
-      console.log('list of image by imagetype', this.listOfImageByImageType);
     });
   }
 
-  onInputHDH(event: any, index: number) {
-    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
-    for (let i = 0; i < this.listSelectedImageId.length; ++i) {
+  getAllImageByImageType(imageTypeId: any[]) {
+    this.listOfImageByImageType = [];
+    // Đảm bảo tuần tự ds Image theo như ds ImageType tương ứng
+    from(imageTypeId)
+      .pipe(
+        concatMap((e) =>
+          this.dataService.getAllImage(null, this.region, e, this.userId)
+        )
+      )
+      .subscribe((result) => {
+        this.listOfImageByImageType.push(result);
+      });
+    console.log('list of image by imagetype', this.listOfImageByImageType);
+  }
+
+  onInputHDH(event: any, index: number, imageTypeId: number) {
+    this.hdh = event;
+    this.selectedImageTypeId = imageTypeId;
+    for (let i = 0; i < this.listSelectedImage.length; ++i) {
       if (i != index) {
-        this.listSelectedImageId[i] = "";
+        this.listSelectedImage[i] = 0;
       }
     }
+    console.log('Hệ điều hành', this.hdh);
+    console.log('list seleted Image', this.listSelectedImage);
   }
 
   //#endregion
@@ -176,7 +184,7 @@ export class InstancesCreateComponent implements OnInit {
   initSnapshot(): void {
     if (this.isSnapshot) {
       this.dataService
-        .getAllSnapshot('', '', this.region, this.customerId)
+        .getAllSnapshot('', '', this.region, this.userId)
         .subscribe((data: any) => {
           this.listSnapshot = data;
         });
@@ -210,7 +218,7 @@ export class InstancesCreateComponent implements OnInit {
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(this.region, this.customerId, 0, 9999, 1, false, '')
+      .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
       .subscribe((data: any) => {
         this.listIPPublic = data.records;
       });
@@ -297,7 +305,7 @@ export class InstancesCreateComponent implements OnInit {
   getAllSSHKey() {
     this.listSSHKey = [];
     this.dataService
-      .getAllSSHKey(this.projectId, this.region, this.customerId, 999999, 0)
+      .getAllSSHKey(this.projectId, this.region, this.userId, 999999, 0)
       .subscribe((data: any) => {
         data.records.forEach((e) => {
           const itemMapper = new SHHKeyModel();
@@ -499,6 +507,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllSSHKey();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
+    this.getAllImageByImageType(this.imageTypeId);
     this.cdr.detectChanges();
   }
 

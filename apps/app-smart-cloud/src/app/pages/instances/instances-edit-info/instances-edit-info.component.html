@@ -9,8 +9,13 @@
     </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right non-pointer">
-    <region-select-dropdown></region-select-dropdown>
-    <project-select-dropdown></project-select-dropdown>
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+    ></project-select-dropdown>
   </div>
   <div><h2>Chỉnh sửa thông tin máy ảo</h2></div>
 </div>
@@ -41,8 +46,8 @@
             class="images-body"
             [id]="'images_' + data.id"
             [ngClass]="{
-              'images-body-active': data.id === selectedTypeImageId,
-              bgGray: !data.id === selectedTypeImageId
+              'images-body-active': data.id === selectedImageTypeId,
+              bgGray: !data.id === selectedImageTypeId
             }"
           >
             <tr>
@@ -56,17 +61,15 @@
                   <nz-select
                     nzShowSearch
                     [id]="'hdh_' + data.id"
-                    [(ngModel)]="data.versionId"
-                    (ngModelChange)="onInputHDH(data.id, $event)"
-                    (nzOpenChange)="getAllImageVersionByType(data.id)"
-                    [nzLoading]="isLoading"
+                    [(ngModel)]="listSelectedImage[i]"
+                    (ngModelChange)="onInputHDH($event, i, data.id)"
                     nzPlaceHolder="Chọn phiên bản"
                     [ngModelOptions]="{ standalone: true }"
                     style="text-align: center; width: 100%"
                   >
                     <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
                     <nz-option
-                      *ngFor="let p of listImageVersionByType"
+                      *ngFor="let p of listOfImageByImageType[i]"
                       [nzValue]="p.id"
                       [nzLabel]="p.name"
                     ></nz-option>
@@ -130,7 +133,12 @@
   <nz-row nzGutter="16" style="display: inline">
     <div style="float: right">
       <button nz-button (click)="returnPage()">Quay lại</button>
-      <button nz-button [nzType]="'primary'" (click)="modify()" [disabled]="!hdh">
+      <button
+        nz-button
+        [nzType]="'primary'"
+        (click)="modify()"
+        [disabled]="!hdh"
+      >
         Chỉnh sửa
       </button>
     </div>

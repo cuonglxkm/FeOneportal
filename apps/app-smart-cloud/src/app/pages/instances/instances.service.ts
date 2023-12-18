@@ -192,4 +192,13 @@ export class InstancesService extends BaseService{
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
+
+  getPortByInstance(
+    instanceId: number,
+    region: number
+  ): Observable<any> {
+    let url_ = `/instances/port?instanceId=${instanceId}&region=${region}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
 }

@@ -15,13 +15,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesModel, SecurityGroupModel } from '../../instances.model';
-import { da } from 'date-fns/locale';
-class Network {
-  name?: string = 'pri_network';
-  mac?: string = '';
-  ip?: string = '';
-  status?: string = '';
-}
+import { concatMap } from 'rxjs';
 
 @Component({
   selector: 'one-portal-network-detail',
@@ -31,39 +25,44 @@ class Network {
 export class NetworkDetailComponent implements OnInit, OnChanges {
   selectedProject: any;
   @Input() instancesId: any;
-  @Input() listOfDataNetwork: any;
 
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
+  regionId: number;
   listSecurityGroup: SecurityGroupModel[] = [];
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
+  listOfDataNetwork = [];
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
   ngOnInit(): void {
-    this.getAllSecurityGroup();
+    this.getNetworkAndSecurityGroup();
     this.loadList();
   }
 
-  getAllSecurityGroup() {
-    this.dataService
-      .getById(this.instancesId, false)
-      .subscribe(async (data: any) => {
-        this.instancesModel = data;
-        this.dataService
-          .getAllSecurityGroup(
-            this.instancesModel.regionId,
-            this.instancesModel.customerId,
-            this.instancesModel.projectId
-          )
-          .subscribe((data: any) => {
-            console.log('getAllSecurityGroup', data);
-            this.listSecurityGroup = data;
-            //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
-          });
+  getNetworkAndSecurityGroup() {
+    this.dataService.getById(this.instancesId, false).subscribe((data: any) => {
+      this.instancesModel = data;
+      this.dataService
+      .getPortByInstance(this.instancesId, this.instancesModel.regionId)
+      .subscribe((dataNetwork: any) => {
+        this.listOfDataNetwork = dataNetwork;
+        this.cdr.detectChanges();
       });
+      this.dataService
+        .getAllSecurityGroup(
+          this.instancesModel.regionId,
+          this.instancesModel.customerId,
+          this.instancesModel.projectId
+        )
+        .subscribe((dataSG: any) => {
+          console.log('getAllSecurityGroup', dataSG);
+          this.listSecurityGroup = dataSG;
+          //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
+        });
+    });
   }
 
   onChangeSecurityGroup(even?: any) {
