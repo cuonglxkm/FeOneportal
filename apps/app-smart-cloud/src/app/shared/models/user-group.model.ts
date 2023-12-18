@@ -1,8 +1,8 @@
 export interface UserGroupModel {
     name: string
-    parent: [string]
-    policies: [string]
-    groupUsers: [string]
+    parent: string[]
+    policies: string[]
+    groupUsers: string[]
     userOfGroup: number
     createdDate: any
 }
@@ -19,9 +19,15 @@ export class FormEditUserGroup {
 
 export class FormDeleteOneUserGroup {
     groupName: string
-    userName: string
 }
 
 export class FormDeleteUserGroups {
-    groupName: [string]
+    groupName: string[]
+}
+
+export class FormCreateUserGroup {
+    groupName: string
+    parentName: string[]
+    policyNames: string[]
+    userNames: string[]
 }

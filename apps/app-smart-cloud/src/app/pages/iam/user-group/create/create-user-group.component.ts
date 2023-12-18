@@ -4,7 +4,11 @@ import {ProjectModel} from "../../../../shared/models/project.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
-import {FormSearchUserGroup} from "../../../../shared/models/user-group.model";
+import {FormCreateUserGroup, FormSearchUserGroup} from "../../../../shared/models/user-group.model";
+import {PolicyModel} from "../../../policy/policy.model";
+import {User} from "../../../../shared/models/user.model";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'one-portal-create-user-group',
@@ -18,23 +22,38 @@ export class CreateUserGroupComponent implements OnInit {
     isLoading: boolean = false;
 
     validateForm: FormGroup<{
-        name: FormControl<string>
-        parent: FormControl<string>
+        groupName: FormControl<string>
+        parentName: FormControl<string[]>
+        policyNames: FormControl<string[]>
+        userNames: FormControl<string[]>
     }>
 
     listGroupParent = []
-    listGroupParentUnique = []
+    listGroupParentUnique: string[] = []
     formSearch: FormSearchUserGroup = new FormSearchUserGroup()
 
+    listPoliciesSelected: string[] = []
+    listUsersSelected: string[] = []
+
+    listPolicies: PolicyModel[] = []
+    listUsers: User[] = []
+
+    formCreate: FormCreateUserGroup = new FormCreateUserGroup()
 
     constructor(
         private fb: NonNullableFormBuilder,
         private location: Location,
         private userGroupService: UserGroupService,
+        private notification: NzNotificationService,
+        private router: Router
     ) {
         this.validateForm = this.fb.group({
-            name: ['', [Validators.required]],
-            parent: [null as string | null]
+            groupName: ['', [Validators.required,
+                Validators.pattern(/^[\w+=,.@\-_]{1,128}$/),
+                Validators.maxLength(128)]],
+            parentName: [null as string[] | null],
+            policyNames: [null as string[] | null],
+            userNames: [null as string[] | null]
         });
     }
 
@@ -54,7 +73,10 @@ export class CreateUserGroupComponent implements OnInit {
                 } else {
                     this.listGroupParent = [item.parent]
                 }
-                this.listGroupParentUnique = Array.from(new Set(this.listGroupParent))
+                this.listGroupParentUnique = this.listGroupParent
+                    .map(innerArray => innerArray[0])
+                    .filter((value, index, self) => self.indexOf(value) === index)
+
             })
             console.log('list data', this.listGroupParent)
             console.log('ist data unique', this.listGroupParentUnique)
@@ -64,7 +86,38 @@ export class CreateUserGroupComponent implements OnInit {
 
     submitForm(): void {
         if (this.validateForm.valid) {
-            console.log(this.validateForm.value);
+            this.listPolicies.forEach(item => {
+                if(this.listPoliciesSelected.length !== undefined) {
+                    this.listPoliciesSelected.push(item.name)
+                } else {
+                    this.listPoliciesSelected = [item.name]
+                }
+                this.validateForm.controls.policyNames.setValue(this.listPoliciesSelected)
+            })
+            this.listUsers.forEach(item => {
+                if(this.listUsersSelected.length !== undefined) {
+                    this.listUsersSelected.push(item.userName)
+                } else {
+                    this.listUsersSelected = [item.userName]
+                }
+                this.validateForm.controls.userNames.setValue(this.listUsersSelected)
+            })
+            console.log(this.validateForm.getRawValue());
+            this.formCreate.groupName = this.validateForm.value.groupName
+            this.formCreate.parentName = this.validateForm.value.parentName
+
+            this.formCreate.policyNames = this.validateForm.value.policyNames
+            this.formCreate.userNames = this.validateForm.value.userNames
+            this.userGroupService.create(this.formCreate).subscribe(data => {
+                console.log('data return', data)
+                this.notification.success('Thành công', 'Tạo mới group thành công')
+                this.validateForm.reset()
+                this.router.navigate(['/app-smart-cloud/iam/user-group'])
+            }, error => {
+                this.notification.error('Thất bại', 'Tạo mới thất bại')
+            })
+
+            console.log('data', this.formCreate)
         } else {
             Object.values(this.validateForm.controls).forEach(control => {
                 if (control.invalid) {
@@ -75,6 +128,15 @@ export class CreateUserGroupComponent implements OnInit {
         }
     }
 
+    receivedListPoliciesSelected(object: any) {
+        this.listPolicies = object
+        console.log('selected', this.listPolicies)
+    }
+
+    receivedListUsersSelected(object: any) {
+        this.listUsers = object
+        console.log('selected', this.listUsers)
+    }
 
     ngOnInit(): void {
         this.getGroupParent()

@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "One portal",
-    "description": "Ng-zorro admin panel front-end framework"
+    "description": "One portal"
   },
   "user": {
     "name": "Admin",
@@ -92,6 +92,11 @@
           "text": "Users",
           "icon": "anticon-user",
           "link": "/app-smart-cloud/users"
+        },
+        {
+          "text": "Lập lịch Backup",
+          "icon": "anticon-calendar",
+          "link": "/app-smart-cloud/schedule/backup/list"
         }
       ]
     }

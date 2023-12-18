@@ -1,7 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
+import {InstancesService} from "../../instances/instances.service";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {AppValidator} from "../../../../../../../libs/common-utils/src";
+import {finalize} from "rxjs/operators";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'one-portal-create-update-ip-public',
@@ -13,21 +20,69 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   projectId: number;
   checked = true;
   selectedAction: any;
-  constructor(private service: IpPublicService) {
+  listIpSubnet: any[];
+  listInstance: any[];
+  instanceSelected;
+  dateString = new Date();
+
+  form = new FormGroup({
+    ipSubnet: new FormControl('', {validators: [Validators.required]}),
+    numOfMonth: new FormControl('', {validators: [Validators.required]}),
+ });
+  constructor(private service: IpPublicService, private instancService: InstancesService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private message: NzMessageService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
-    this.service.model.next("1234")
   }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.instancService.getAllIPSubnet(this.regionId).subscribe(
+      (data) => {
+        this.listIpSubnet = data
+      }
+    )
+    this.instancService.search(1,999,this.regionId,'','',this.tokenService.get()?.userId).subscribe(
+      (data) => {
+        this.listInstance = data.records;
+      }
+    )
     // this.getSshKeys();
   }
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
     // this.getSshKeys();
+  }
+
+  backToList(){
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+  }
+
+  createIpPublic(){
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      attachedVmId: this.instanceSelected,
+      regionId: this.regionId,
+      projectId: this.projectId,
+      networkId: this.form.controls['ipSubnet'].value,
+      useIpv6:this.checked,
+    }
+
+    this.service.createIpPublic(request)
+      .subscribe({
+        next: post => {
+          this.message.create('success', `Tạo mới thành công Ip Public`);
+        },
+        error: e => {
+          this.message.create('error', `Tạo mới thất bại Ip Public`);
+        },
+      });
+
+    this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 
 }

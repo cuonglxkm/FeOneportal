@@ -96,6 +96,52 @@
   <!--    </nz-form-control>-->
   <!--  </nz-form-item>-->
 
+  <div nz-row [nzGutter]="16">
+    <div nz-col nzSpan="12">
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="nameErrorTip">
+          <nz-form-label [nzSm]="6" [nzXs]="24">Tên</nz-form-label>
+          <nz-input-group nzSize="large">
+            <input nz-input formControlName="firstName" placeholder="Nhập tên"/>
+          </nz-input-group>
+          <ng-template #nameErrorTip let-i>
+            <ng-container *ngIf="i.errors?.required">{{ 'validation.firstName.required' | i18n }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="lastNameErrorTip">
+          <nz-form-label [nzSm]="6" [nzXs]="24">Họ</nz-form-label>
+          <nz-input-group nzSize="large">
+            <input nz-input formControlName="lastName" placeholder="Nhập họ"/>
+          </nz-input-group>
+          <ng-template #lastNameErrorTip let-i>
+            <ng-container *ngIf="i.errors?.required">{{ 'validation.lastName.required' | i18n }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+
+  <nz-form-item>
+    <nz-form-control [nzErrorTip]="provinceErrorTip">
+      <nz-form-label>Chọn Tỉnh/Thành</nz-form-label>
+      <nz-input-group nzSize="large">
+        <nz-select nzSize="large" nzShowSearch nzAllowClear nzPlaceHolder="Chọn tỉnh thành" formControlName="province">
+          <nz-option [nzLabel]="'Hà Nội'" [nzValue]="'Hà Nội'"/>
+          <nz-option [nzLabel]="'TP. Hồ Chí Minh'" [nzValue]="'TP. Hồ Chí Minh'"/>
+        </nz-select>
+
+      </nz-input-group>
+      <ng-template #provinceErrorTip let-i>
+        <ng-container *ngIf="i.errors?.required">{{ 'validation.province.required' | i18n }}</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
   <nz-form-item>
     <nz-collapse class="top-bot-border" style="width: 100%" [nzGhost]="true" [nzBordered]="false"
                  [nzExpandIconPosition]="'right'">
@@ -104,31 +150,6 @@
         [nzActive]="panel.active"
         [nzDisabled]="panel.disabled">
 
-        <nz-form-item>
-          <nz-form-control [nzErrorTip]="nameErrorTip">
-            <nz-form-label [nzSm]="6" [nzXs]="24">Nhập tên</nz-form-label>
-            <nz-input-group nzSize="large">
-              <input nz-input formControlName="firstName" placeholder="Nhập tên"/>
-            </nz-input-group>
-            <ng-template #nameErrorTip let-i>
-              <!--              <ng-container *ngIf="i.errors?.required">{{ 'validation.email.required' | i18n }}</ng-container>-->
-              <!--              <ng-container *ngIf="i.errors?.email">{{ 'validation.email.wrong-format' | i18n }}</ng-container>-->
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control [nzErrorTip]="lastNameErrorTip">
-            <nz-form-label [nzSm]="6" [nzXs]="24">Nhập họ</nz-form-label>
-            <nz-input-group nzSize="large">
-              <input nz-input formControlName="lastName" placeholder="Nhập họ"/>
-            </nz-input-group>
-            <ng-template #lastNameErrorTip let-i>
-              <!--              <ng-container *ngIf="i.errors?.required">{{ 'validation.email.required' | i18n }}</ng-container>-->
-              <!--              <ng-container *ngIf="i.errors?.email">{{ 'validation.email.wrong-format' | i18n }}</ng-container>-->
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
 
         <nz-form-item>
           <nz-form-control [nzErrorTip]="mobileErrorTip">
@@ -150,23 +171,6 @@
           </nz-form-control>
         </nz-form-item>
 
-        <nz-form-item>
-          <nz-form-control [nzErrorTip]="proviceErrorTip">
-            <nz-form-label>Chọn Tỉnh/Thành</nz-form-label>
-            <nz-input-group nzSize="large">
-
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn tỉnh thành" formControlName="province">
-                <nz-option [nzLabel]="'Hà Nội'" [nzValue]="'Hà Nội'"/>
-                <nz-option [nzLabel]="'TP. Hồ Chí Minh'" [nzValue]="'TP. Hồ Chí Minh'"/>
-              </nz-select>
-              <!--                </ng-template>-->
-
-            </nz-input-group>
-            <ng-template #proviceErrorTip let-i>
-              <!--              <ng-container *ngIf="i.errors?.required">{{ 'validation.phone-number.required' | i18n }}</ng-container>-->
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
 
       </nz-collapse-panel>
     </nz-collapse>
