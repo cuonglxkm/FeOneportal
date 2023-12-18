@@ -1,0 +1,515 @@
+<nz-card [nzBordered]="false">
+  <span class="title-card">Chọn kiểu gán Permissions cho User</span>
+  <nz-row nzGutter="16" style="margin-top: 10px">
+    <nz-radio-group
+      style="width: 100%; display: inline-flex"
+      name="selectedPasswordOrSSHkey"
+    >
+      <nz-col nzXs="24" nzMd="8">
+        <nz-card
+          [ngStyle]="{
+            'background-color': activeBlockAddUsertoGroup
+              ? '#e6f7ff'
+              : '#fcfcfc',
+            height: '130px'
+          }"
+        >
+          <nz-card-meta
+            [nzAvatar]="nzAvatarselected1"
+            [nzTitle]="nzTitleselected1"
+            [nzDescription]="nzDescriptionselected1"
+          >
+            <ng-template #nzAvatarselected1>
+              <input
+                type="radio"
+                [checked]="activeBlockAddUsertoGroup"
+                (click)="initAddUsertoGroup()"
+              />
+            </ng-template>
+            <ng-template #nzTitleselected1>
+              <b>Thêm User vào Group</b>
+            </ng-template>
+            <ng-template #nzDescriptionselected1>
+              <ellipsis
+                >Thêm người dùng vào nhóm hiện có hoặc tạo nhóm mới. Nên sử dụng
+                nhóm để quản lý quyền của người dùng theo chức năng công
+                việc.</ellipsis
+              >
+            </ng-template>
+          </nz-card-meta>
+        </nz-card></nz-col
+      >
+      <nz-col nzXs="24" nzMd="8">
+        <nz-card
+          [ngStyle]="{
+            'background-color': activeBlockCopyPolicies ? '#e6f7ff' : '#fcfcfc',
+            height: '130px'
+          }"
+        >
+          <nz-card-meta
+            [nzAvatar]="nzAvatarselected2"
+            [nzTitle]="nzTitleselected2"
+            [nzDescription]="nzDescriptionselected2"
+          >
+            <ng-template #nzAvatarselected2>
+              <input
+                type="radio"
+                [checked]="activeBlockCopyPolicies"
+                (click)="initCopyPolicies()"
+              />
+            </ng-template>
+            <ng-template #nzTitleselected2>
+              <b>Sao chép Policies </b>
+            </ng-template>
+            <ng-template #nzDescriptionselected2>
+              <ellipsis>
+                Sao chép tất cả tư cách thành viên nhóm, policies được quản lý
+                đỉnh kèm từ người dùng hiện có.</ellipsis
+              >
+            </ng-template>
+          </nz-card-meta>
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzMd="8">
+        <nz-card
+          [ngStyle]="{
+            'background-color': activeBlockAttachPolicies
+              ? '#e6f7ff'
+              : '#fcfcfc',
+            height: '130px'
+          }"
+        >
+          <nz-card-meta
+            [nzAvatar]="nzAvatarselected3"
+            [nzTitle]="nzTitleselected3"
+            [nzDescription]="nzDescriptionselected3"
+          >
+            <ng-template #nzAvatarselected3>
+              <input
+                type="radio"
+                [checked]="activeBlockAttachPolicies"
+                (click)="initAttachPolicies()"
+              />
+            </ng-template>
+            <ng-template #nzTitleselected3>
+              <b>Đính kèm Policies trực tiếp</b>
+            </ng-template>
+            <ng-template #nzDescriptionselected3>
+              <ellipsis>
+                Đính kèm policies được quản lý trực tiếp cho người
+                dùng.</ellipsis
+              >
+            </ng-template>
+          </nz-card-meta>
+        </nz-card>
+      </nz-col>
+    </nz-radio-group>
+  </nz-row>
+</nz-card>
+
+<nz-card
+  *ngIf="activeBlockAddUsertoGroup"
+  [nzBordered]="false"
+  nzTitle="Thông tin Groups"
+>
+  <form nz-form>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+      <div
+        nz-col
+        [nzLg]="10"
+        [nzMd]="10"
+        [nzSm]="24"
+        [nzXl]="10"
+        [nzXs]="24"
+        [nzXXl]="10"
+      >
+        <nz-form-item>
+          <nz-row style="width: 100%">
+            <nz-col style="width: 60%">
+              <nz-form-control>
+                <input
+                  name="name"
+                  nz-input
+                  placeholder="Tìm kiếm tên, thời gian tạo ..."
+                  [ngModel]="searchParam"
+                  (ngModelChange)="changeSearch($event)"
+                />
+              </nz-form-control>
+            </nz-col>
+            <nz-form-control>
+              <button nz-button [nzType]="'primary'" (click)="getGroup()">
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </nz-form-control>
+          </nz-row>
+        </nz-form-item>
+      </div>
+      <div
+        class="text-right p-0 m-b-0"
+        nz-col
+        [nzLg]="14"
+        [nzMd]="14"
+        [nzSm]="24"
+        [nzXl]="14"
+        [nzXs]="24"
+        [nzXXl]="14"
+      >
+        <button
+          class="m-r-8"
+          nz-button
+          style="cursor: pointer"
+          (click)="reloadGroupTable()"
+        >
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+        <button
+          class="m-r-8"
+          class="bg-success border-success"
+          nz-button
+          nzType="primary"
+          (click)="navigateToCreate()"
+        >
+          <i nz-icon nzType="plus"></i>
+          Tạo mới
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-container>
+    <ng-container>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOfGroups"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="getGroup()"
+        (nzPageSizeChange)="getGroup()"
+      >
+        <thead>
+          <tr>
+            <th style="width: 20px">
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onChangeCheckAllGroup($event.target.checked)"
+                [(ngModel)]="checkedAllInPage"
+              />
+            </th>
+            <th>Tên Group</th>
+            <th>Số lượng User</th>
+            <th>Attached policies</th>
+            <th>Thời gian tạo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfGroups; let i = index">
+            <td>
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onClickGroupItem(item.name, item)"
+                [(ngModel)]="listCheckedInPage[i]"
+              />
+            </td>
+            <td class="fieldColor">{{ item.name }}</td>
+            <td>{{ item.numberUsers }}</td>
+            <td *ngIf="item.attachedPolicies.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.attachedPolicies.length == 1">
+              {{ item.attachedPolicies[0] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.attachedPolicies.length == 2">
+              {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.attachedPolicies.length > 2">
+              {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+              <span class="nameField">
+                and {{ item.attachedPolicies.length - 2 }} groups
+              </span>
+            </td>
+            <td>{{ item.createdTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </ng-container>
+  </ng-container>
+</nz-card>
+
+<nz-card
+  *ngIf="activeBlockCopyPolicies"
+  [nzBordered]="false"
+  nzTitle="Thông tin Users"
+>
+  <form nz-form>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+      <div
+        nz-col
+        [nzLg]="10"
+        [nzMd]="10"
+        [nzSm]="24"
+        [nzXl]="10"
+        [nzXs]="24"
+        [nzXXl]="10"
+      >
+        <nz-form-item>
+          <nz-row style="width: 100%">
+            <nz-col style="width: 60%">
+              <nz-form-control>
+                <input
+                  name="name"
+                  nz-input
+                  placeholder="Tìm kiếm tên, thời gian tạo ..."
+                  [ngModel]="searchParam"
+                  (ngModelChange)="changeSearch($event)"
+                />
+              </nz-form-control>
+            </nz-col>
+            <nz-form-control>
+              <button
+                nz-button
+                [nzType]="'primary'"
+                (click)="getCopyUserPlicies()"
+              >
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </nz-form-control>
+          </nz-row>
+        </nz-form-item>
+      </div>
+      <div
+        class="text-right p-0 m-b-0"
+        nz-col
+        [nzLg]="14"
+        [nzMd]="14"
+        [nzSm]="24"
+        [nzXl]="14"
+        [nzXs]="24"
+        [nzXXl]="14"
+      >
+        <button
+          class="m-r-8"
+          nz-button
+          style="cursor: pointer"
+          (click)="reloadUserTable()"
+        >
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-container>
+    <ng-container>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOfUsers"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="getCopyUserPlicies()"
+        (nzPageSizeChange)="getCopyUserPlicies()"
+      >
+        <thead>
+          <tr>
+            <th style="width: 20px">
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onChangeCheckAllUser($event.target.checked)"
+                [(ngModel)]="checkedAllInPage"
+              />
+            </th>
+            <th>Tên User</th>
+            <th>Groups</th>
+            <th>Attached policies</th>
+            <th>Thời gian tạo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfUsers; let i = index">
+            <td>
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onClickUserItem(item)"
+                [(ngModel)]="listCheckedInPage[i]"
+              />
+            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.groups }}</td>
+            <td>{{ item.attachedPolicies }}</td>
+            <td>{{ item.createdTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </ng-container>
+  </ng-container>
+</nz-card>
+
+<nz-card
+  *ngIf="activeBlockAttachPolicies"
+  [nzBordered]="false"
+  nzTitle="Thông tin Permissions policies"
+>
+  <form nz-form>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+      <div
+        nz-col
+        [nzLg]="6"
+        [nzMd]="6"
+        [nzSm]="24"
+        [nzXl]="6"
+        [nzXs]="24"
+        [nzXXl]="6"
+      >
+        <nz-form-item>
+          <nz-form-label [nzFor]="">Loại Policy:</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [ngModel]="typePolicy"
+              [ngModelOptions]="{ standalone: true }"
+              [nzPlaceHolder]="'Tất cả các loại'"
+              [nzShowSearch]="false"
+              (ngModelChange)="changeFilterStatus($event)"
+            >
+              <nz-option
+                *ngFor="let i of filterStatus"
+                [nzLabel]="i.text"
+                [nzValue]="i.value"
+              />
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div
+        nz-col
+        [nzLg]="10"
+        [nzMd]="10"
+        [nzSm]="24"
+        [nzXl]="10"
+        [nzXs]="24"
+        [nzXXl]="10"
+      >
+        <nz-form-item>
+          <nz-row style="width: 100%">
+            <nz-col style="width: 60%">
+              <nz-form-control>
+                <input
+                  name="name"
+                  nz-input
+                  placeholder="Tìm kiếm tên, thời gian tạo ..."
+                  [ngModel]="searchParam"
+                  (ngModelChange)="changeSearch($event)"
+                />
+              </nz-form-control>
+            </nz-col>
+            <nz-form-control>
+              <button
+                nz-button
+                [nzType]="'primary'"
+                (click)="getPermissionPolicies()"
+              >
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </nz-form-control>
+          </nz-row>
+        </nz-form-item>
+      </div>
+      <div
+        class="text-right p-0 m-b-0"
+        nz-col
+        [nzLg]="8"
+        [nzMd]="8"
+        [nzSm]="24"
+        [nzXl]="8"
+        [nzXs]="24"
+        [nzXXl]="8"
+      >
+        <button
+          class="m-r-8"
+          nz-button
+          style="cursor: pointer"
+          (click)="reloadPolicyTable()"
+        >
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+        <button
+          class="m-r-8"
+          class="bg-success border-success"
+          nz-button
+          nzType="primary"
+          (click)="navigateToCreate()"
+        >
+          <i nz-icon nzType="plus"></i>
+          Tạo mới
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-container>
+    <ng-container>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOfpolicies"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="getPermissionPolicies()"
+        (nzPageSizeChange)="getPermissionPolicies()"
+      >
+        <thead>
+          <tr>
+            <th style="width: 20px">
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onChangeCheckAllPolicy($event.target.checked)"
+                [(ngModel)]="checkedAllInPage"
+              />
+            </th>
+            <th>Tên Policy</th>
+            <th>Type</th>
+            <th>Attached entities</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of listOfpolicies; let i = index">
+            <tr>
+              <td>
+                <input
+                  nz-input
+                  type="checkbox"
+                  (change)="onClickPolicyItem(item.name)"
+                  [(ngModel)]="listCheckedInPage[i]"
+                />
+              </td>
+              <td
+                [nzExpand]="expandSet.has(item.name)"
+                (nzExpandChange)="onExpandChange(item.name, $event)"
+              >{{ item.name }}</td>
+              <td>{{ item.type }}</td>
+              <td>{{ item.attachedEntities }}</td>
+            </tr>
+            <tr [nzExpand]="expandSet.has(item.name)">
+              <json-editor
+                [options]="optionJsonEditor"
+                [data]="item"
+              ></json-editor>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </ng-container>
+  </ng-container>
+</nz-card>

@@ -9,44 +9,52 @@
     </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right non-pointer">
-    <region-select-dropdown
-    ></region-select-dropdown>
+    <region-select-dropdown></region-select-dropdown>
     <project-select-dropdown></project-select-dropdown>
   </div>
   <div><h2>Chỉnh sửa thông tin máy ảo</h2></div>
 </div>
-<nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành" *ngIf="selectedImage">
-  <nz-row nzGutter="16">
+<nz-card
+  [nzBordered]="false"
+  nzTitle="Thay đổi hệ điều hành"
+  *ngIf="selectedImage"
+>
+  <nz-row>
     <p>Hệ điều hành hiện tại: {{ selectedImage.name }}</p>
   </nz-row>
-  <nz-row nzGutter="16">
+  <nz-row>
     <p>Lựa chọn hệ điều hành mới</p>
   </nz-row>
-  <nz-row nzGutter="16">
-  <nz-carousel
-    [nzEffect]="effect"
-    style="overflow: initial"
-    style="height: 250px"
+  <ngu-carousel
+    #myCarousel
+    [inputs]="carouselTileConfig"
+    [dataSource]="listImageTypes"
+    style="width: 100%"
   >
-    <div nz-carousel-content *ngFor="let page of pagedCardListImages">
-      <div nz-row>
-        <div nz-col nzSpan="6" *ngFor="let data of page">
-          <table class="images-card text-center">
-            <tbody class="images-body images-body-wh" [id]="'images_' + data.id"  
+    <ngu-tile
+      *nguCarouselDef="let data; index as i; let ani = animate"
+      [@slider]="ani"
+    >
+      <nz-row>
+        <table class="text-center" style="width: 100%">
+          <tbody
+            class="images-body"
+            [id]="'images_' + data.id"
             [ngClass]="{
               'images-body-active': data.id === selectedTypeImageId,
-              'bgGray': !data.id === selectedTypeImageId
-            }">
-              <tr >
-                <div class="images-body-tr">
-                  <span nz-icon nzType="windows" nzTheme="outline">{{
-                    data.name
-                  }}</span>
-                </div>
-              </tr>
-              <tr>
-                <div>
+              bgGray: !data.id === selectedTypeImageId
+            }"
+          >
+            <tr>
+              <div class="images-body-tr">
+                <span>{{ data.name }}</span>
+              </div>
+            </tr>
+            <tr>
+              <div>
+                <nz-row>
                   <nz-select
+                    nzShowSearch
                     [id]="'hdh_' + data.id"
                     [(ngModel)]="data.versionId"
                     (ngModelChange)="onInputHDH(data.id, $event)"
@@ -54,8 +62,7 @@
                     [nzLoading]="isLoading"
                     nzPlaceHolder="Chọn phiên bản"
                     [ngModelOptions]="{ standalone: true }"
-                    style="text-align: center"
-                    class="images-body-select"
+                    style="text-align: center; width: 100%"
                   >
                     <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
                     <nz-option
@@ -64,15 +71,22 @@
                       [nzLabel]="p.name"
                     ></nz-option>
                   </nz-select>
-                </div>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </nz-carousel>
-</nz-row>
+                </nz-row>
+              </div>
+            </tr>
+          </tbody>
+        </table>
+      </nz-row>
+    </ngu-tile>
+
+    <ul class="myPoint" NguCarouselPoint>
+      <li
+        *ngFor="let i of myCarousel.pointNumbers"
+        [class.active]="i === myCarousel.activePoint"
+        (click)="myCarousel.moveTo(i)"
+      ></li>
+    </ul>
+  </ngu-carousel>
   <br />
   <br />
   <nz-row nzGutter="16">
@@ -116,7 +130,7 @@
   <nz-row nzGutter="16" style="display: inline">
     <div style="float: right">
       <button nz-button (click)="returnPage()">Quay lại</button>
-      <button nz-button [nzType]="'primary'" (click)="save()" [disabled]="!hdh">
+      <button nz-button [nzType]="'primary'" (click)="modify()" [disabled]="!hdh">
         Chỉnh sửa
       </button>
     </div>

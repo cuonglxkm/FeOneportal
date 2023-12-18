@@ -100,7 +100,7 @@
       </div>
       <div class="pb-1">
         <h4 class="fs-md text-black mb0">
-          Gói cấu hình:<span class="fw-400">{{ instancesModel.flavorId }}</span>
+          Gói cấu hình: <span class="fw-400">{{ instancesModel.flavorName | slice:3 }}</span>
         </h4>
       </div>
       <div class="pb-1">
@@ -143,7 +143,7 @@
     <div nz-col nzSpan="12">
       <div class="pb-1">
         <h4 class="fs-md text-black mb0">
-          Hệ điều hành:<span class="fw-400">{{ instancesModel.imageId }}</span
+          Hệ điều hành: <span class="fw-400">{{ instancesModel.imageName }}</span
           >  <a class="text-blue"
           (click)="navigateToChangeImage()"
           style="margin-left: 15px;"

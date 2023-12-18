@@ -26,7 +26,7 @@ export class UserDetailComponent implements OnInit {
   regionId: number;
   projectId: number;
   listOfGroups: GroupCreateUser[] = [];
-  listOfpolicies: PoliciesOfUser[] = [];
+  listOfPolicies: PoliciesOfUser[] = [];
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
@@ -54,60 +54,14 @@ export class UserDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let test = new User()
+    let test = new User();
     test.userName = 'nguyen';
     test.email = 'nguyen@gmail.com';
-    test.userGroups = ["dkfjaldk"];
+    test.userGroups = ['dkfjaldk'];
     test.createdDate = '2023-11-20T01:34:12.367Z';
     this.user = test;
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.getData();
-    this.getPolicies();
-  }
-
-  getData(): void {
-    // this.service.getData(this.ipAddress, this.status, this.customerId, this.regionId, this.isCheckState, this.size, this.index)
-    //   .subscribe(baseResponse => {
-    //   this.listOfIp = baseResponse.records;
-    //     console.log(this.listOfIp);
-    // });
-    this.listGroupPicked = [];
-    this.service
-      .getGroupsCreateUser()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe((baseResponse) => {
-        this.listOfGroups = baseResponse.records;
-        console.log(this.listOfGroups);
-      });
-  }
-
-  reloadGroupOfUser() {
-    this.listOfGroups = [];
-    this.getData();
-  }
-
-  getPolicies() {
-    this.listPolicyPicked = [];
-    this.service
-      .getPoliciesOfUser()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe((data) => {
-        this.listOfpolicies = data.records;
-      });
-  }
-
-  reloadPolicies() {
-    this.listOfpolicies = [];
+    this.getGroup();
     this.getPolicies();
   }
 
@@ -127,11 +81,35 @@ export class UserDetailComponent implements OnInit {
     this.searchParam = e;
   }
 
+  //Danh sách Policies
+  getPolicies() {
+    this.listPolicyPicked = [];
+    this.listCheckedPolicyInPage = [];
+    this.checkedAllPolicyInPage = false;
+    this.service
+      .getPoliciesOfUser()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((data) => {
+        this.listOfPolicies = data.records;
+      });
+    console.log('list policy picked', this.listPolicyPicked);
+  }
+
+  reloadPolicies() {
+    this.listOfPolicies = [];
+    this.getPolicies();
+  }
+
   listPolicyPicked = [];
   onClickPolicyItem(policyName: string) {
     var index = 0;
     var isAdded = true;
-    this.listPolicyPicked.forEach(e => {
+    this.listPolicyPicked.forEach((e) => {
       if (e == policyName) {
         this.listPolicyPicked.splice(index, 1);
         isAdded = false;
@@ -141,15 +119,65 @@ export class UserDetailComponent implements OnInit {
     if (isAdded) {
       this.listPolicyPicked.push(policyName);
     }
-    console.log("list policy picked", this.listPolicyPicked);
+
+    if (this.listPolicyPicked.length == this.listOfPolicies.length) {
+      this.checkedAllPolicyInPage = true;
+    } else {
+      this.checkedAllPolicyInPage = false;
+    }
+    console.log('list policy picked', this.listPolicyPicked);
   }
 
+  listCheckedPolicyInPage = [];
+  checkedAllPolicyInPage = false;
+  onChangeCheckAllPolicy(checked: any) {
+    let listChecked = [];
+    this.listOfPolicies.forEach(() => {
+      listChecked.push(checked);
+    });
+    this.listCheckedPolicyInPage = listChecked;
+    if (checked == true) {
+      this.listPolicyPicked = [];
+      this.listOfPolicies.forEach((e) => {
+        this.listPolicyPicked.push(e.name);
+      });
+    } else {
+      this.listPolicyPicked = [];
+    }
+    console.log('list policy picked', this.listPolicyPicked);
+  }
+
+  // Danh sách Groups
+  getGroup(): void {
+    this.listGroupPicked = [];
+    this.listCheckedGroupInPage = [];
+    this.checkedAllGroupInPage = false;
+    this.service
+      .getGroupsCreateUser()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((baseResponse) => {
+        this.listOfGroups = baseResponse.records;
+        console.log(this.listOfGroups);
+      });
+
+    console.log('list group picked', this.listGroupPicked);
+  }
+
+  reloadGroupOfUser() {
+    this.listOfGroups = [];
+    this.getGroup();
+  }
 
   listGroupPicked = [];
   onClickGroupItem(groupName: string) {
     var index = 0;
     var isAdded = true;
-    this.listGroupPicked.forEach(e => {
+    this.listGroupPicked.forEach((e) => {
       if (e == groupName) {
         this.listGroupPicked.splice(index, 1);
         isAdded = false;
@@ -159,17 +187,48 @@ export class UserDetailComponent implements OnInit {
     if (isAdded) {
       this.listGroupPicked.push(groupName);
     }
-    console.log("list group picked", this.listGroupPicked);
+
+    if (this.listGroupPicked.length == this.listOfGroups.length) {
+      this.checkedAllGroupInPage = true;
+    } else {
+      this.checkedAllGroupInPage = false;
+    }
+
+    console.log('list group picked', this.listGroupPicked);
+  }
+
+  listCheckedGroupInPage = [];
+  checkedAllGroupInPage = false;
+  onChangeCheckAllGroup(checked: any) {
+    let listChecked = [];
+    this.listOfGroups.forEach(() => {
+      listChecked.push(checked);
+    });
+    this.listCheckedGroupInPage = listChecked;
+    if (checked == true) {
+      this.listGroupPicked = [];
+      this.listOfGroups.forEach((e) => {
+        this.listGroupPicked.push(e.name);
+      });
+    } else {
+      this.listGroupPicked = [];
+    }
+    console.log('list group picked', this.listGroupPicked);
+    this.cdr.detectChanges();
   }
 
   deletePolicies() {}
   deleteGroups() {}
 
   navigateToAddPolicies() {
-    this.router.navigate(['/app-smart-cloud/users/detail/' +this.id + '/add-policies']);
+    this.router.navigate([
+      '/app-smart-cloud/users/detail/' + this.id + '/add-policies',
+    ]);
   }
   navigateToAddToGroups() {
-    this.router.navigate(['/app-smart-cloud/users/detail/' +this.id + '/add-to-group']);
+    this.router.navigate([
+      '/app-smart-cloud/users/detail/' + this.id + '/add-to-group',
+    ]);
   }
 
   navigateToList() {

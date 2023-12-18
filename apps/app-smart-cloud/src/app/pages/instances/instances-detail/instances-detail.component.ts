@@ -90,6 +90,7 @@ export class InstancesDetailComponent implements OnInit {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
+        
         this.dataService
           .getById(this.id, false)
           .subscribe(async (data: any) => {
