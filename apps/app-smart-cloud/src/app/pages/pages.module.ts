@@ -88,7 +88,7 @@ import { ListUserGroupComponent } from './iam/user-group/list/list-user-group.co
 import { JsonViewerComponent } from './iam/user-group/detail/json-viewer.component';
 import { UsersTableComponent } from './iam/user-group/create/users-table.component';
 import { PolicyTableComponent } from './iam/user-group/create/policy-table.component';
-import {ClipboardModule} from "ngx-clipboard";
+import { ClipboardModule } from 'ngx-clipboard';
 import { CreatePolicyComponent } from './iam/user-group/policy/create/create-policy.component';
 import { CreateUserComponent } from './iam/user-group/user/create/create-user.component';
 import { PrettyPrintPipe } from './iam/user-group/create/pretty-print.pipe';
@@ -99,6 +99,7 @@ import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/sc
 import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
 import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -185,6 +186,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ScheduleBackupVolumeComponent,
     EditScheduleBackupVolumeComponent,
     EditScheduleBackupVmComponent,
+    DeleteScheduleComponent,
   ],
   imports: [
     CommonModule,
@@ -216,5 +218,4 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ClipboardModule,
   ],
 })
-export class PagesModule {
-}
+export class PagesModule {}

@@ -43,4 +43,8 @@ export class ScheduleService extends BaseService {
     })
   }
 
+  detail() {
+
+  }
+
 }

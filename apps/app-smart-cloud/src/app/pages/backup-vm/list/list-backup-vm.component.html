@@ -61,10 +61,11 @@
         <th nzAlign="center" class="text-th">Tên</th>
         <th nzAlign="center" class="text-th">VM gốc</th>
         <th nzAlign="center" class="text-th">Dung luợng</th>
+        <th nzAlign="center" class="text-th">Gói backup</th>
         <th nzAlign="center" class="text-th">Thời gian tạo</th>
         <th nzAlign="center" class="text-th">Trạng thái</th>
         <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
-        <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+        <th nzAlign="center" class="text-th">Thao tác</th>
       </tr>
       </thead>
       <tbody>
@@ -72,6 +73,7 @@
         <td nzAlign="center"><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
         <td nzAlign="center"> {{ data.instanceName }}</td>
         <td nzAlign="center">{{ data.size }}</td>
+        <td nzAlign="center">{{ data.backupPackageName }}</td>
         <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">
           <div class="status" [ngSwitch]="data.status">
@@ -98,25 +100,22 @@
         <td nzAlign="center">
           <div [ngSwitch]="data.status">
             <div *ngSwitchCase="'AVAILABLE'">
-              <button
-                nz-button
-                [nzType]="'primary'"
-                nz-dropdown
-                style="width: 100px"
-                [nzDropdownMenu]="opMenu">
-                <span>Restore</span> <i nz-icon nzType="down"></i>
-              </button>
-              <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="navigateToRestore(data.id)">Restore</li>
-                  <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
-                  <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
-                                               [isLoading]="isLoading"
-                                               (onCancel)="handleCancelDelete()"
-                                               (onOk)="handleOkDelete()"/>
-                </ul>
-              </nz-dropdown-menu>
-
+              <nz-select
+                [nzPlaceHolder]="'Chọn thao tác'"
+                ngModel="selectedOptionAction"
+                name="selectedAction"
+                (ngModelChange)="selectedActionChange($event, data)">
+                <nz-option
+                  nzValue="1"
+                  nzLabel="Restore"
+                  (click)="navigateToRestore(data.id)"
+                ></nz-option>
+                <nz-option nzValue="2" nzLabel="Xóa" (click)="showModalDelete(data.id)"></nz-option>
+                <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                             [isLoading]="isLoading"
+                                             (onCancel)="handleCancelDelete()"
+                                             (onOk)="handleOkDelete()"/>
+              </nz-select>
             </div>
             <div *ngSwitchCase="'SUSPENDED'">
               <button
