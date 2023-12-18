@@ -21,12 +21,15 @@ import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
+import { NguCarouselConfig } from '@ngu/carousel';
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
   templateUrl: './instances-edit-info.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class InstancesEditInfoComponent implements OnInit {
   loading = true;
@@ -51,6 +54,18 @@ export class InstancesEditInfoComponent implements OnInit {
   hdh: Images;
   selectedTypeImageId: number;
   selectedImage: Images;
+
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    speed: 250,
+    point: {
+      visible: true
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy'
+  };
 
   getAllImageVersionByType(type: number) {
     this.dataService
@@ -114,6 +129,20 @@ export class InstancesEditInfoComponent implements OnInit {
     });
     this.cdr.detectChanges();
   }
+
+  modify(): void {
+    this.modalSrv.create({
+      nzTitle: 'Xác nhận thay đổi hệ điều hành',
+      nzContent:
+        'Quý khách chắn chắn muốn thực hiện thay đổi hệ điều hành máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        this.save();
+      },
+    });
+  }
+
   save(): void {
     this.rebuildInstances.regionId = this.instancesModel.regionId;
     this.rebuildInstances.customerId = this.instancesModel.customerId;
@@ -124,6 +153,7 @@ export class InstancesEditInfoComponent implements OnInit {
       (data: any) => {
         console.log(data);
         this.message.success('Thay đổi hệ điều hành thành công');
+        this.returnPage();
       },
       (error) => {
         console.log(error.error);

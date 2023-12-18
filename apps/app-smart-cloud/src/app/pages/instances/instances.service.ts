@@ -1,13 +1,6 @@
-import { Inject, Injectable, Optional, inject } from '@angular/core';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-  DocumentChangeAction,
-  Query,
-  QuerySnapshot,
-} from '@angular/fire/compat/firestore';
-import { Observable, from, map } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 
@@ -135,12 +128,14 @@ export class InstancesService extends BaseService{
     pageNumber: number,
     pageSize: number,
     region: number,
+    projectId: number,
     searchValue: string = '',
     status: string = '',
+    isCheckState: boolean,
     userId: number
   ): Observable<any> {
     if (searchValue == undefined) searchValue = '';
-    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&searchValue=${searchValue}&status=${status}&userId=${userId}`;
+    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&projectId=${projectId}&searchValue=${searchValue}&status=${status}&isCheckState=${isCheckState}&userId=${userId}`;
     url_ = url_.replace(/[?&]$/, '');
 
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);

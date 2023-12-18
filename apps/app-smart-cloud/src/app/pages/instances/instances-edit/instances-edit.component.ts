@@ -10,31 +10,27 @@ import {
   FormControl,
   FormGroup,
   Validators,
-  FormArray,
-  AbstractControl,
 } from '@angular/forms';
-import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import {
-  CreateInstances,
   Flavors,
   IPPublicModel,
   IPSubnetModel,
-  ImageTypesModel,
-  Images,
   InstancesModel,
   SecurityGroupModel,
-  Snapshot,
   UpdateInstances,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { da, tr } from 'date-fns/locale';
-import { Observable, finalize } from 'rxjs';
+import { finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
+import { ProjectModel } from 'src/app/shared/models/project.model';
+import {NguCarouselConfig} from "@ngu/carousel";
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
+
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -71,6 +67,7 @@ class Network {
   templateUrl: './instances-edit.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class InstancesEditComponent implements OnInit {
   listOfOption: Array<{ value: string; label: string }> = [];
@@ -88,7 +85,7 @@ export class InstancesEditComponent implements OnInit {
   instancesModel: InstancesModel;
 
   updateInstances: UpdateInstances = new UpdateInstances();
-  region: number = 3;
+  region: number;
   projectId: number = 4079;
   customerId: number = 669;
   userId: number = 669;
@@ -103,6 +100,18 @@ export class InstancesEditComponent implements OnInit {
   flavor: any;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    speed: 250,
+    point: {
+      visible: true,
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy',
+  };
 
   //#region Hệ điều hành
 
@@ -280,17 +289,26 @@ export class InstancesEditComponent implements OnInit {
     private renderer: Renderer2,
     private loadingSrv: LoadingService
   ) {}
+
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
+    this.initFlavors();
+    this.selectedSecurityGroup = [];
+    this.getAllSecurityGroup();
     console.log(this.tokenService.get()?.userId);
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
+    this.selectedSecurityGroup = [];
+    this.getAllSecurityGroup();
   }
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
 
     this.userId = this.tokenService.get()?.userId;
-    this.initFlavors();
     this.getAllSecurityGroup();
     this.initNetwork();
 
@@ -302,6 +320,7 @@ export class InstancesEditComponent implements OnInit {
           this.selectedElementFlavor = this.instancesModel.flavorId;
           this.region = this.instancesModel.regionId;
           this.projectId = this.instancesModel.projectId;
+          this.initFlavors();
           this.dataService
             .getAllSecurityGroupByInstance(
               this.instancesModel.cloudId,
@@ -370,6 +389,7 @@ export class InstancesEditComponent implements OnInit {
       (data: any) => {
         console.log(data);
         this.message.success('Cập nhật máy ảo thành công');
+        this.route.navigate(['/app-smart-cloud/instances']);
       },
       (error) => {
         console.log(error.error);

@@ -49,7 +49,7 @@
               </nz-form-control>
             </nz-col>
             <nz-form-control>
-              <button nz-button [nzType]="'primary'" (click)="getData()">
+              <button nz-button [nzType]="'primary'" (click)="getGroup()">
                 <i nz-icon nzType="search"></i>
                 Search
               </button>
@@ -70,11 +70,10 @@
         <button
           class="m-r-8"
           nz-button
-          nzType="default"
-          style="background-color: white"
+          style="cursor: pointer"
           (click)="reloadGroupTable()"
         >
-          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
         </button>
         <button
           class="m-r-8"
@@ -100,12 +99,19 @@
         [nzTotal]="total"
         [(nzPageIndex)]="pageIndex"
         [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="getData()"
-        (nzPageSizeChange)="getData()"
+        (nzPageIndexChange)="getGroup()"
+        (nzPageSizeChange)="getGroup()"
       >
         <thead>
           <tr>
-            <th style="width: 20px"></th>
+            <th style="width: 20px">
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onChangeCheckAllGroup($event.target.checked)"
+                [(ngModel)]="checkedAllInPage"
+              />
+            </th>
             <th>Tên Group</th>
             <th>Số lượng User</th>
             <th>Attached policies</th>
@@ -113,18 +119,31 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of listOfGroups">
+          <tr *ngFor="let item of listOfGroups; let i = index">
             <td>
               <input
                 nz-input
                 type="checkbox"
-                (change)="onClickGroupItem(item.name)"
+                (change)="onClickGroupItem(item.name, item)"
+                [(ngModel)]="listCheckedGroupInPage[i]"
               />
             </td>
-            <td>{{ item.name }}</td>
+            <td class="fieldColor">{{ item.name }}</td>
             <td>{{ item.numberUsers }}</td>
-            <td>{{ item.attachedPolicies }}</td>
-            <td>{{ item.createdTime }}</td>
+            <td *ngIf="item.attachedPolicies.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.attachedPolicies.length == 1">
+              {{ item.attachedPolicies[0] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.attachedPolicies.length == 2">
+              {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.attachedPolicies.length > 2">
+              {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+              <span class="nameField">
+                and {{ item.attachedPolicies.length - 2 }} groups
+              </span>
+            </td>
+            <td>{{ item.createdTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
           </tr>
         </tbody>
       </nz-table>
