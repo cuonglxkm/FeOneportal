@@ -39,7 +39,7 @@
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
             <nz-select
-              formControlName="backupPacketId" id="backupPacketId"
+              formControlName="backupPackage" id="backupPackage"
               [nzPlaceHolder]="'Gói backup'"
               [nzShowSearch]="false">
               <nz-option
@@ -74,7 +74,15 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-            <input nz-input formControlName="instanceId" id="instanceId"/>
+            <nz-select formControlName="instanceId"
+                       id="instanceId"
+                       [nzPlaceHolder]="'Chọn máy ảo'"
+                       [nzShowSearch]="false"
+                       (ngModelChange)="selectInstanceChange($event)">
+              <nz-option *ngFor="let i of listInstanceNotUse"
+                         [nzLabel]="i.name"
+                         [nzValue]="i.id"></nz-option>
+            </nz-select>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
             </ng-template>
@@ -128,7 +136,6 @@
                         [nzStep]="1"></nz-input-number>
               <ng-template #monthsErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -275,7 +282,8 @@
         lại
       </button>
       <nz-form-control *nzSpaceItem>
-        <button nz-button [nzLoading]="isLoading" nzType="primary" class="button-create">Xác nhận</button>
+        <button nz-button [nzLoading]="isLoading" nzType="primary"
+                class="button-create">Xác nhận</button>
       </nz-form-control>
     </nz-space>
   </nz-form-item>

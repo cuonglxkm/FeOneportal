@@ -1,10 +1,15 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {BackupPackage, VolumeAttachment} from "../../../../shared/models/backup-vm";
+import {BackupPackage, BackupVm, BackupVMFormSearch, VolumeAttachment} from "../../../../shared/models/backup-vm";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";
+import {BackupSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
+import {ScheduleService} from "../../../../shared/services/schedule.service";
+import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import {InstancesService} from "../../../instances/instances.service";
+import {InstancesModel} from "../../../instances/instances.model";
 
 @Component({
     selector: 'one-portal-schedule-backup-vm',
@@ -25,29 +30,21 @@ export class ScheduleBackupVmComponent implements OnInit {
         months: FormControl<number>
         times: FormControl<string>
         numberOfWeek: FormControl<string>
-        // flavor: FormControl<Flavor | null>
-        // image: FormControl<Image | null>
-        // securityGroup: FormControl<SecurityGroupBackup[]>
-        // iops: FormControl<number>
-        // storage: FormControl<number>
-        // radio: FormControl<any>
-        // volumeToBackupIds: FormControl<number[] | null>
+        maxBackup: FormControl<number>
+        volumeToBackupIds: FormControl<number[] | null>
+        daysOfWeek: FormControl<string[] | null>
     }> = this.fb.group({
-        backupMode: [0, [Validators.required]],
-        name: ['', [Validators.required]],
-        backupPackage: [0, [Validators.required]],
-        description: ['', [Validators.maxLength(700)]],
+        backupMode: [null as number, [Validators.required]],
+        name: [null as string, [Validators.required]],
+        backupPackage: [null as number, [Validators.required]],
+        description: [null as string, [Validators.maxLength(700)]],
         instanceId: [null as number, [Validators.required]],
         months: [null as number, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
-        times: ['', [Validators.required]],
-        numberOfWeek: [null as string, [Validators.required]]
-        // flavor: [null as Flavor | null, [Validators.required]],
-        // image: [null as Image | null, [Validators.required]],
-        // securityGroup: [[] as SecurityGroupBackup[], [Validators.required]],
-        // iops: [null as number | null, [Validators.required]],
-        // storage: [null as number | null, [Validators.required]],
-        // radio: [''],
-        // volumeToBackupIds: [[] as number[]]
+        times: [null as string, [Validators.required]],
+        numberOfWeek: [null as string, [Validators.required]],
+        maxBackup: [null as number, [Validators.required]],
+        volumeToBackupIds: [[] as number[]],
+        daysOfWeek: [[] as string[]]
     })
 
     modeType: any
@@ -80,11 +77,25 @@ export class ScheduleBackupVmComponent implements OnInit {
     ]
 
     volumeAttachments: VolumeAttachment[] = []
+    lstBackupSchedules: BackupSchedule[]
+    response: BaseResponse<BackupSchedule[]>
+    formSearch: FormSearchScheduleBackup = new FormSearchScheduleBackup()
+    formSearchBackup: BackupVMFormSearch = new BackupVMFormSearch()
+
+    listInstance: InstancesModel[] = []
+    listBackupVM: BackupVm[]
+
+    listInstanceNotUse: InstancesModel[] = []
+    listInstanceNotUseUnique: InstancesModel[] = []
+    instanceSelected: InstancesModel
+
     constructor(private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                 private notification: NzNotificationService,
                 private router: Router,
-                private backupVmService: BackupVmService,) {
+                private backupVmService: BackupVmService,
+                private backupScheduleService: ScheduleService,
+                private instanceService: InstancesService) {
     }
 
     goBack() {
@@ -92,6 +103,10 @@ export class ScheduleBackupVmComponent implements OnInit {
     }
 
     submitForm() {
+        if (this.validateForm.valid) {
+
+        }
+        console.log('form create', this.validateForm.getRawValue())
     }
 
     getBackupPackage() {
@@ -126,7 +141,55 @@ export class ScheduleBackupVmComponent implements OnInit {
         })
     }
 
+    checkDuplicateName() {
+
+    }
+
+    getListInstances() {
+        let customerId = this.tokenService.get()?.userId
+        this.formSearchBackup.pageSize = 10000000
+        this.formSearchBackup.currentPage = 1
+        this.formSearchBackup.customerId = customerId
+        this.instanceService.search(1, 10000000,
+            this.region, "", "", customerId).subscribe(data => {
+            this.listInstance = data.records
+            this.backupVmService.search(this.formSearchBackup).subscribe(data => {
+                this.listBackupVM = data.records
+                console.log('instance', this.listInstance)
+                console.log('backup', this.listBackupVM)
+                const idSet = new Set(this.listBackupVM.map(item => item.instanceId));
+                const idSetUnique = Array.from(new Set(idSet))
+                this.listInstance.forEach(item1 => {
+                    if (!idSetUnique.includes(item1.id)) {
+                        if(this.listInstanceNotUse?.length > 0) {
+                            this.listInstanceNotUse.push(item1)
+                        } else {
+                            this.listInstanceNotUse = [item1]
+                        }
+                    }
+                })
+            })
+        })
+
+    }
+
+    selectInstanceChange(value) {
+        // this.instanceSelected = value
+        console.log(value)
+        this.getVolumeInstanceAttachment(value)
+    }
+
+    getListScheduleBackup() {
+        this.backupScheduleService.search(this.formSearch).subscribe(data => {
+            console.log('data', data)
+            this.lstBackupSchedules = data.records
+        })
+    }
+
     ngOnInit(): void {
+        this.getBackupPackage()
+        this.getListInstances()
+        // this.getVolumeInstanceAttachment()
     }
 
 }

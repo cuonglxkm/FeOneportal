@@ -107,8 +107,14 @@ export class ListBackupVmComponent implements OnInit {
     this.isLoading = true;
     this.backupVmService.search(this.formSearch).subscribe(data => {
       this.isLoading = false
-      this.collection = data
-      console.log(this.collection)
+      if(data.totalCount === 0) {
+        this.router.navigate(['/app-smart-cloud/blank-backup-vm'])
+      } else {
+        this.collection = data
+        console.log(this.collection)
+      }
+
+
     })
   }
 
