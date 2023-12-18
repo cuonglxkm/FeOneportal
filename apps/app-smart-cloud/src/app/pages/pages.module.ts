@@ -92,6 +92,14 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { AttachPermissionPolicyComponent } from './users/attach-permission-policy/attach-permission-policy.component';
 import { CreatePolicyComponent } from './iam/user-group/policy/create/create-policy.component';
 import { CreateUserComponent } from './iam/user-group/user/create/create-user.component';
+import { PrettyPrintPipe } from './iam/user-group/create/pretty-print.pipe';
+import { BlankScheduleBackupComponent } from './schedule-backup/blank/blank-schedule-backup.component';
+import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedule-backup.component';
+import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
+import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/schedule-backup-vm.component';
+import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
+import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
+import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -171,6 +179,14 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachPermissionPolicyComponent,
     CreatePolicyComponent,
     CreateUserComponent,
+    PrettyPrintPipe,
+    BlankScheduleBackupComponent,
+    ListScheduleBackupComponent,
+    CreateScheduleBackupComponent,
+    ScheduleBackupVmComponent,
+    ScheduleBackupVolumeComponent,
+    EditScheduleBackupVolumeComponent,
+    EditScheduleBackupVmComponent,
   ],
   imports: [
     CommonModule,

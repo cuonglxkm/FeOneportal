@@ -1,25 +1,32 @@
-<page-header  [action]="action" [title]="'Danh sách IP Public'">
-  <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" ></project-select-dropdown>
-    </div>
-  </ng-template>
+<page-header  [autoBreadcrumb]="false"
+              [autoTitle]="false"
+              style="background: white">
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right non-pointer">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+  </div>
+  <div><h2>Danh sách Ip Public</h2></div>
   <div *ngIf="!isBegin" nz-row class="mb-md">
     <div nz-col nzSpan="18">
       <div class="row">
         <div class="col-md-6" style="display:flex;">
-          <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái volume:</h4>
-          <nz-select [(ngModel)]="selectedStatus" nzSize="default">
-            <nz-option *ngFor="let p of statusData" [nzValue]="p" [nzLabel]="p" ></nz-option>
+          <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái Ip Public:</h4>
+          <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="default" style="width: 150px;">
+            <nz-option *ngFor="let p of statusData" [nzValue]="p.value" [nzLabel]="p.name" ></nz-option>
           </nz-select>
         </div>
         <div class="col-md-6" style="margin-left: 30px">
           <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-            <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+            <input #searchBox type="text" nz-input placeholder="Tìm kiến địa chỉ Ip" style="width: 350px"/>
             <ng-template #suffixButton>
               <button nz-button nzType="primary" nzSize="default" nzSearch (click)="search(searchBox.value)">
-                <span nz-icon nzType="setting" nzTheme="outline"></span>
+                <span nz-icon nzType="search" nzTheme="outline"></span>
                 Tim kiếm
               </button>
             </ng-template>
@@ -41,11 +48,11 @@
 </page-header>
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
-    <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
+    <ng-container *ngSwitchCase=false>
       <!-- Bảng-->
-      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfIp"
+      <nz-table #rowSelectionTable  nzShowPagination nzShowSizeChanger [nzData]="listOfIp"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
-                (nzPageIndexChange)="onPageIndexChange($event)">
+                (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>
         <tr>
           <th>Địa chỉ IP</th>
@@ -58,7 +65,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfIp">
-          <td width="25%">{{ item.ipAddress }}</td>
+          <td style="color: #0D67B0">{{ item.ipAddress }}</td>
           <td>loại ip</td>
           <td>{{ item.iPv6Address === null ? 'IPv4' : 'IPv6' }}</td>
           <td *ngIf="item.status === 0" style="color: forestgreen">Khởi tạo</td>
@@ -66,19 +73,8 @@
 <!--          <td style="color: forestgreen">{{ item.status === 0 ? 'Khởi tạo' : 'Đang sử dụng' }}</td>-->
           <td>{{ item.serviceStatus }}</td>
           <td width="15%">
-<!--            <a nz-dropdown [nzDropdownMenu]="menu">-->
-<!--              Tại đây-->
-<!--              <i nz-icon nzType="down"></i>-->
-<!--            </a>-->
-<!--            <nz-dropdown-menu   #menu="nzDropdownMenu">-->
-<!--              <ul nz-menu nzSelectable>-->
-<!--                <li nz-menu-item (click)="openIpMounted(item.id)">Gắn Ip Pulbic</li>-->
-<!--                <li nz-menu-item (click)="openIpRemove(item.id)">Gỡ Ip Pulbic</li>-->
-<!--                <li nz-menu-item (click)="openIpDelete(item.id)" nzDanger>Xóa</li>-->
-<!--              </ul>-->
-<!--            </nz-dropdown-menu>-->
             <nz-input-group nzCompact>
-              <nz-select [(ngModel)]="selectedAction" nzSize="large" (nzOpenChange)="openIpMounted($event, item.id)">
+              <nz-select [(ngModel)]="selectedAction" nzSize="small" (nzOpenChange)="openIpMounted($event, item.id)">
                 <nz-option nzValue="Gắn Ip Pulbic" nzLabel="Gắn Ip Pulbic" ></nz-option>
                 <nz-option nzValue="Gỡ Ip Pulbic" nzLabel="Gỡ Ip Pulbic" ></nz-option>
                 <nz-option nzValue="Xóa" nzLabel="Xóa" ></nz-option>
@@ -102,15 +98,27 @@
 <!--Gắn-->
 <nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="Gắn Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="Mounted()" nzOkText="Xác nhận"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <h4>Chọn máy ảo</h4>
+    <nz-select [(ngModel)]="instanceSelected" style="width: 100%" nzPlaceHolder="--Chọn máy ảo--">
+      <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id" />
+    </nz-select>
+  </ng-container>
 </nz-modal>
 
 <!--Gỡ-->
-<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="Mounted()" nzOkText="Xác nhận"
+<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="openIpRemove()" nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <p>Quý khách có chắc chắn muốn gỡ Ip Public khỏi máy ảo không?</p>
+  </ng-container>
 </nz-modal>
 
 <!--Xóa-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="Mounted()" nzOkText="Xác nhận"
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"  (nzOnOk)="openIpDelete()" nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <p>Vui lòng cân nhắc trước khi click nút <strong>Đồng ý</strong>.Quý khách có chắc chăn muốn thực hiện xóa Ip Public?</p>
+  </ng-container>
 </nz-modal>
 

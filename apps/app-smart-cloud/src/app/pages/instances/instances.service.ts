@@ -192,4 +192,8 @@ export class InstancesService extends BaseService{
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
+
+  getConsoleUrl(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`)
+  }
 }
