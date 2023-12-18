@@ -9,14 +9,14 @@ export const POLICY = {
         "name": "sonChu",
         "type": "Dev quèn",
         "description": "Đẹp trai",
-        "jsonData": "{\"name\": \"xinchao\", \"des\": \"nothing\"}"
+        "jsonData": {"name": "xinchao", "des": "nothing"}
       },
       {
         "id": 999,
         "name": "yenPro",
         "type": "Quản lý",
         "description": "nothinggg",
-        "jsonData": "{\"name\": \"gaptoi\", \"des\": \"mo ta\"}"
+        "jsonData": {"name": "check it", "des": "pro vip"}
       }
     ],
     "pageSize": 5,
@@ -24,17 +24,17 @@ export const POLICY = {
     "previousPage": 0
   },
 
-  'GET /policy/permission': {
+  'GET /services': {
     "totalCount": 11,
     "records": [
       {
-        "id": 344,
-        "name": "Tạo mới policy",
+        "id": 1,
+        "name": "ssh Key",
         "description": "Tạo mới thôi",
       },
       {
-        "id": 433,
-        "name": "Xóa policy",
+        "id": 2,
+        "name": "IP Pulic",
         "description": "Mô tả xóa",
       }
     ],

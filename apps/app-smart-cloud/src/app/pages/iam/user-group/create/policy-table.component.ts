@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {PolicyService} from "../../../../shared/services/policy.service";
+import {PolicyModel} from "../../../policy/policy.model";
+import { FormSearchUserGroup } from 'src/app/shared/models/user-group.model';
 
 @Component({
   selector: 'one-portal-policy-table',
@@ -6,20 +9,26 @@ import { Component } from '@angular/core';
   styleUrls: ['./create-user-group.component.less'],
 })
 export class PolicyTableComponent {
+  @Output() listPoliciesSelected = new EventEmitter<any>();
+
   value?: string;
-  listOfData: readonly any[] = [];
+  loading = false
   listOfCurrentPageData: readonly [] = [];
   checked = false;
   indeterminate = false;
-  setOfCheckedId = new Set<number>();
-  expandSet = new Set<number>();
+  setOfCheckedId = new Set<string>();
+  expandSet = new Set<string>();
   listOfSelected: readonly any[] = []
 
-  onExpandChange(id: number, checked: boolean): void {
+  listPolicies: PolicyModel[]
+
+  constructor(private policyService: PolicyService) {
+  }
+  onExpandChange(name: string, checked: boolean): void {
     if (checked) {
-      this.expandSet.add(id);
+      this.expandSet.add(name);
     } else {
-      this.expandSet.delete(id);
+      this.expandSet.delete(name);
     }
   }
 
@@ -33,53 +42,51 @@ export class PolicyTableComponent {
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+    this.checked = listOfEnabledData.every(({ name }) => this.setOfCheckedId.has(name));
+    this.indeterminate = listOfEnabledData.some(({ name }) => this.setOfCheckedId.has(name)) && !this.checked;
   }
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({ id }) => this.updateCheckedSet(id, checked));
+      .forEach(({ name }) => this.updateCheckedSet(name, checked));
     this.refreshCheckedStatus();
   }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
+  onItemChecked(name: string, checked: boolean): void {
+    this.updateCheckedSet(name, checked);
     this.refreshCheckedStatus();
   }
 
-  updateCheckedSet(id: number, checked: boolean): void {
+  updateCheckedSet(name: string, checked: boolean): void {
     if (checked) {
-      this.setOfCheckedId.add(id);
+      this.setOfCheckedId.add(name);
     } else {
-      this.setOfCheckedId.delete(id);
+      this.setOfCheckedId.delete(name);
     }
-    this.listOfSelected = this.listOfData.filter(data => this.setOfCheckedId.has(data.id))
+    this.listOfSelected = this.listPolicies.filter(data => this.setOfCheckedId.has(data.name))
+    this.listPoliciesSelected.emit(this.listOfSelected)
+  }
+
+  getPolicies() {
+    this.loading = true
+    const form: FormSearchUserGroup = new FormSearchUserGroup()
+    form.name = ''
+    form.currentPage = 1
+    form.pageSize = 10000000
+    this.policyService.getPolicy(form).subscribe(data => {
+      this.listPolicies = data.records
+      this.loading = false
+      console.log('data', this.listPolicies)
+    })
+  }
+
+  sendListPoliciesSelected() {
+
   }
 
   ngOnInit(): void {
-    this.listOfData = [
-      {
-        id: 1,
-        name: 'Administrator Access',
-        type: 'Portal managed',
-        desc: 'Provides full access to Portal Services',
-        config: {}
-      },
-      {
-        id: 2,
-        name: 'Portal_1',
-        type: 'Customer managed',
-        desc: 'Provides read-only access to Portal Services',
-        config: {}
-      },
-      {
-        id: 3,
-        name: 'Portal_1',
-        type: 'Portal managed',
-        desc: 'Provides full access to Resource Group',
-        config: {}
-      }
-    ];
+    this.getPolicies()
   }
+
+  protected readonly JSON = JSON;
 }

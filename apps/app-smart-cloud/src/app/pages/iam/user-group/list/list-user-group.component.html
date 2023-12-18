@@ -22,7 +22,7 @@
             <nz-space [nzSize]="24">
                 <div *nzSpaceItem>
                     <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-                        <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+                        <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
                                placeholder="Tìm kếm tên..."/>
                     </nz-input-group>
                     <ng-template #suffixButton>
@@ -33,14 +33,14 @@
                 </div>
             </nz-space>
             <nz-row nzAlign="middle">
-                <button nz-button nzSize="default" style="cursor: pointer;" (click)="refresh()">
+                <button nz-button nzSize="default" style="cursor: pointer; margin-right: 5px;" (click)="refresh()">
                     <span nz-icon nzType="reload" nzTheme="outline"></span>
                 </button>
                 <button nz-button class="button-del" nzSize="default" (click)="showModalDelete()">
                     <span nz-icon nzType="delete" nzTheme="outline"></span>
                     Xóa
                 </button>
-                <button nz-button class="button-create" nzSize="default" style="cursor: pointer;" (click)="navigateToCreate()">
+                <button nz-button class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;" (click)="navigateToCreate()">
                     <span nz-icon nzType="plus" nzTheme="outline"></span>
                     Tạo mới
                 </button>
@@ -52,12 +52,15 @@
     <nz-card>
         <nz-table
             #rowSelectionTable
-            nzShowPagination
             nzShowSizeChanger
-            [nzData]="listOfData"
+            [nzData]="collection.records"
             (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
             [nzLoading]="loading"
-        >
+            [nzFrontPagination]="false"
+            [nzTotal]="collection.totalCount"
+            [nzPageSize]="collection.pageSize"
+            [nzPageIndex]="collection.currentPage"
+            >
             <thead>
             <tr>
                 <th [nzChecked]="checked"
@@ -65,21 +68,24 @@
                     nzLabel="Select all"
                     (nzCheckedChange)="onAllChecked($event)"></th>
                 <th>Name</th>
-                <th [nzWidth]="'207px'">Số lượng users</th>
-                <th [nzWidth]="'564px'">Thời gian tạo</th>
+                <th>Số lượng users</th>
+                <th>Group Parent</th>
+                <th>Thời gian tạo</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
                 <td
-                        [nzChecked]="setOfCheckedId.has(data.id)"
-                        (nzCheckedChange)="onItemChecked(data.id, $event)"
+                        [nzChecked]="setOfCheckedId.has(data.name)"
+                        (nzCheckedChange)="onItemChecked(data.name, $event)"
                 ></td>
                 <td>
-                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.id">{{ data.name }}</a>
+                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
                 </td>
-                <td>{{ data.total_users }}</td>
-                <td>{{ data.created_at }}</td>
+                <td style="text-align: right">{{ data.userOfGroup }}</td>
+                <td *ngIf="data.parent === null"></td>
+                <td *ngIf="data.parent !== null">{{ data.parent }}</td>
+                <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
             </tr>
             </tbody>
         </nz-table>

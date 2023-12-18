@@ -15,7 +15,7 @@
   </div>
   <div><h2>Danh sách Users</h2></div>
   <form nz-form>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div style="margin-bottom: -10px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
       <div
         nz-col
         [nzLg]="10"
@@ -62,7 +62,7 @@
           nz-button
           nzType="default"
           style="background-color: white"
-          (click)="navigateToCreate()"
+          (click)="reloadTable()"
         >
           <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
         </button>
@@ -116,17 +116,15 @@
         <tbody>
           <tr *ngFor="let item of listOfUser">
             <td>
-              <label
-                nz-checkbox
-                [ngModel]="isUseIPv6"
-                [ngModelOptions]="{ standalone: true }"
-              ></label>
+              <input nz-input type="checkbox"
+                (change)="onClickItem(item.userName)"
+              >
             </td>
             <td (click)="getUserDetail(item.id)">
-              <a>{{ item.name }}</a>
+              <a>{{ item.userName }}</a>
             </td>
-            <td>{{ item.groups }}</td>
-            <td>{{ item.createdTime }}</td>
+            <td>{{ item.userOfGroups }}</td>
+            <td>{{ item.createdDate }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -145,12 +143,12 @@
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageGanVLAN"
+      [nzMessage]="customTemplateMessageDelete"
       nzShowIcon
     ></nz-alert>
-    <ng-template #customTemplateMessageGanVLAN>
+    <ng-template #customTemplateMessageDelete>
       <div>
-        Bạn đang thực hiện xóa User <span> Nguyen </span>
+        Bạn đang thực hiện xóa User <span> {{userDelete}} </span>
       </div>
       <div>
         Việc thực hiện xóa User cũng sẽ xóa tất cả dữ liệu liên quan tới User này
@@ -164,7 +162,7 @@
         <nz-form-item>
           <nz-form-label nzFor="name"
             >Để thực hiện xóa User, vui lòng nhập tên User để xác
-            nhận</nz-form-label
+            nhận.</nz-form-label
           >
           <nz-form-control>
             <input

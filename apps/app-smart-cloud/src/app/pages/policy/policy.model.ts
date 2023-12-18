@@ -5,7 +5,7 @@ export interface PolicyModel {
   name: any;
   type: any;
   description: any;
-  jsonData: JSON;
+  jsonData: string;
   expand: boolean;
 }
 

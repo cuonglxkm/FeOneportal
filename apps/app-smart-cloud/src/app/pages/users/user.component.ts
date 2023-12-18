@@ -26,11 +26,12 @@ export class UserComponent implements OnInit {
   searchParam: string;
   loading = true;
 
-  userDelete: User;
+  userDelete: string;
+  listUserPicked = [];
   nameModal: string;
 
   constructor(
-    private service: UserService, 
+    private service: UserService,
     private router: Router,
     public message: NzMessageService,
     private cdr: ChangeDetectorRef,
@@ -47,18 +48,14 @@ export class UserComponent implements OnInit {
   ngOnChange(): void {}
 
   getData(): void {
-    // this.service.getData(this.ipAddress, this.status, this.customerId, this.regionId, this.isCheckState, this.size, this.index)
-    //   .subscribe(baseResponse => {
-    //   this.listOfIp = baseResponse.records;
-    //     console.log(this.listOfIp);
-    // });
-    this.service.getUsers().pipe(
+    this.listUserPicked = [];
+    this.service.search(this.searchParam, this.pageSize, this.pageIndex).pipe(
       finalize(() => {
       this.loading = false;
       this.cdr.detectChanges();
     })
-    ).subscribe(baseResponse => {
-      this.listOfUser = baseResponse.records;
+    ).subscribe(data => {
+      this.listOfUser = data.records;
         console.log(this.listOfUser);
     });
   }
@@ -66,11 +63,14 @@ export class UserComponent implements OnInit {
   isVisibleDelete: boolean = false;
   codeVerify: string;
   showModal() {
-    this.isVisibleDelete = true;
+    if (this.listUserPicked.length == 1) {
+      this.userDelete = this.listUserPicked[0];
+      this.isVisibleDelete = true;
+    }
   }
 
   renameModal() {
-    this.nameModal = "Xóa User" + ' this.userDelete.name';
+    this.nameModal = "Xóa User " + this.userDelete;
     this.cdr.detectChanges();
   }
 
@@ -101,6 +101,22 @@ export class UserComponent implements OnInit {
     // this.getSshKeys();
   }
 
+  onClickItem(userName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listUserPicked.forEach(e => {
+      if (e == userName) {
+        this.listUserPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listUserPicked.push(userName);
+    }
+    console.log("list user picked", this.listUserPicked);
+  }
+
   onPageSizeChange(event: any) {
     // this.size = event
     // this.getSshKeys();
@@ -109,6 +125,11 @@ export class UserComponent implements OnInit {
   onPageIndexChange(event: any) {
     // this.index = event;
     // this.getSshKeys();
+  }
+
+  reloadTable(): void {
+    this.listOfUser = [];
+    this.getData();
   }
 
   getUserDetail(id: number) {

@@ -1,16 +1,25 @@
-<page-header [action]="action" [title]="'Tạo Policy'">
-  <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-    </div>
-  </ng-template>
-  <nz-steps [nzCurrent]="current" style="width: 55%; margin: 0 auto;">
+<page-header [autoBreadcrumb]="false"
+             [autoTitle]="false"
+             style="background: white">
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item> IAM</nz-breadcrumb-item>
+    <nz-breadcrumb-item> Polices</nz-breadcrumb-item>
+    <nz-breadcrumb-item> Tạo Policy</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right non-pointer">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+  </div>
+  <div><h2>Tạo Policy</h2></div>
+  <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;">
     <nz-step nzTitle="Bước 1" nzDescription="Thiết lập Permission policies" style="width:900px"></nz-step>
     <nz-step nzTitle="Bước 2" nzDescription="Review and Create"></nz-step>
   </nz-steps>
 </page-header>
-<ng-container [ngSwitch]="current">
+<ng-container [ngSwitch]="currentStep">
   <ng-container *ngSwitchCase=0>
     <!--BƯỚC 1-->
     <nz-card>
@@ -40,151 +49,166 @@
     <ng-container [ngSwitch]="isVisual">
       <ng-container *ngSwitchCase=true>
         <!--màn visual-->
-        <nz-card>
-          <div (click)="openSelectService()">
-            <h2>
-              <!--      <span *ngIf="isVisualSelecService" nz-icon nzType="caret-down" nzTheme="outline"></span>-->
-              <!--      <span *ngIf="!isVisualSelecService" nz-icon nzType="caret-right" nzTheme="outline"></span>-->
-              <span *ngIf="isVisualSelecService" nz-icon nzType="down" nzTheme="outline"></span>
-              <span *ngIf="!isVisualSelecService" nz-icon nzType="right" nzTheme="outline"></span>
-              {{titleCreate}}</h2>
-            <p *ngIf="!isVisualTablePermiss" style="color: #888;">Chỉ định những hành động có thể thực hiện trên các tài
-              nguyên cụ thể trong một dịch vụ</p>
-            <p *ngIf="isVisualTablePermiss" style="color: #888;">Chỉ định permission polices cho dịch vụ</p>
-          </div>
-          <div *ngIf="isVisualSelecService">
-            <h3>Chọn dịch vụ</h3>
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn dịch vụ--" [(ngModel)]="selectedService"
-                       (ngModelChange)="selectService($event)" style="width: 100%">
-              <nz-option nzLabel="Volume" nzValue="Volume"></nz-option>
-              <nz-option nzLabel="SSH Key" nzValue="SSH Key"></nz-option>
-              <nz-option nzLabel="Ip public" nzValue="Ip public"></nz-option>
-            </nz-select>
-          </div>
-          <nz-table
-            *ngIf="isVisualTablePermiss"
-            #rowSelectionTable
-            nzShowSizeChanger
-            [nzData]="listPermission"
-            (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-            style="margin-top: 20px;"
-          >
-            <thead>
-            <tr>
-              <th
-                [nzSelections]="listOfSelection"
-                [(nzChecked)]="checked"
-                [nzIndeterminate]="indeterminate"
-                (nzCheckedChange)="onAllChecked($event)"
-              ></th>
-              <th>Permission policies</th>
-              <th>Mô tả</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let data of rowSelectionTable.data">
-              <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-              <td>{{ data.name }}</td>
-              <td>{{ data.description }}</td>
-            </tr>
-            </tbody>
-          </nz-table>
+        <nz-card *ngFor="let serviceItem of serviceArray" style="position: relative;">
+          <button (click)="deleteService(serviceItem)" nz-button nzType="default"
+                  style="z-index: 1;position: absolute; right: 30px; top: 30px;">
+            <i nz-icon nzType="delete"></i><span nz-icon nzTheme="outline"></span>
+          </button>
+          <nz-collapse [nzGhost]="true">
+            <nz-collapse-panel
+              [nzHeader]="serviceItem.serviceName || 'Chọn dịch vụ'"
+              [nzActive]="false">
+              <div style=" display: flex; align-items: center; justify-content: space-between;">
+                <p *ngIf="!serviceItem.isVisualTablePermiss" style="color: #888;">Chỉ định những hành động có thể thực
+                  hiện trên các tài
+                  nguyên cụ thể trong một dịch vụ</p>
+                <p *ngIf="serviceItem.isVisualTablePermiss" style="color: #888;">Chỉ định permission polices cho dịch
+                  vụ</p>
+                <!--                              {{JSON.stringify(serviceArray)}}-->
+              </div>
+              <div *ngIf="serviceItem.serviceId === null">
+                <h3>Chọn dịch vụ</h3>
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn dịch vụ--"
+                           [(ngModel)]="serviceItem.serviceId"
+                           (ngModelChange)="selectService($event, serviceItem)" style="width: 100%">
+                  <nz-option *ngFor="let sv of listServiceAvaiable" [nzLabel]="sv.serviceName" [nzValue]="sv.serviceId">
+                  </nz-option>
+                </nz-select>
+              </div>
+              <nz-table
+                *ngIf="serviceItem.isVisualTablePermiss"
+                #rowSelectionTable
+                [nzData]="serviceItem.permissions"
+                [nzFrontPagination]="false"
+                style="margin-top: 20px;"
+              >
+                <thead>
+                <tr>
+                  <th
+                    [(nzChecked)]="serviceItem.checked"
+                    [nzIndeterminate]="serviceItem.indeterminate"
+                    (nzCheckedChange)="onAllChecked(serviceItem.serviceId ,$event)"
+                  ></th>
+                  <th>Permission policies</th>
+                  <th>Mô tả</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data">
+                  <td [nzChecked]="setOfCheckedId.has(data.id)"
+                      (nzCheckedChange)="onItemChecked(serviceItem.serviceId ,data, $event)"></td>
+                  <td>{{ data.name }}</td>
+                  <td>{{ data.description }}</td>
+                </tr>
+                </tbody>
+              </nz-table>
+            </nz-collapse-panel>
+          </nz-collapse>
         </nz-card>
+
         <!--button thêm perrmisstion-->
         <nz-card>
-          <button (click)="visualOption(1)" nz-button nzType="primary" style="
+          <button (click)="addService()" nz-button nzType="primary" style="
             border: none;
             background-color: gray;
           ">Thêm Permission policies
           </button>
         </nz-card>
       </ng-container>
+
+      <!--      json-->
       <ng-container *ngSwitchCase=false>
         <nz-card>
-          <json-editor
+          <json-editor style="position: relative;"
             [options]="optionJsonEditor"
-            formControlName="myinput"
-            [data]=""
+            [data]="listOfPermissionSelectedView"
           ></json-editor>
+          <button (click)="copyText()" style="z-index: 1;position: absolute; right: 30px; top: 30px;">
+            <span nz-icon nzType="copy" nzTheme="outline"></span> Copy JSON
+          </button>
         </nz-card>
       </ng-container>
     </ng-container>
   </ng-container>
+
+
   <ng-container *ngSwitchCase=1>
     <!--    Bước 2-->
-    <nz-card>
-      <h2>Thông tin của policy</h2>
-      <hr style="opacity: 0.5px;">
-      <h3 style=" font-weight: normal; margin-top: 20px">Tên của policy<span nz-typography nzType="danger"
-                                                                             style="color: red">*</span></h3>
-      <nz-form-item>
-        <nz-form-control>
-          <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Nhập tên của policy" style="width: 100%"
+    <form #myForm="ngForm" nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <nz-card>
+        <h2>Thông tin của policy</h2>
+        <hr style="opacity: 0.5px;">
+        <h3 style=" font-weight: normal; margin-top: 20px">Tên của policy<span nz-typography nzType="danger"
+                                                                               style="color: red">*</span></h3>
+        <nz-form-item>
+          <nz-form-control>
+            <input nz-input placeholder="Nhập tên của policy" style="width: 100%"
+                   formControlName="name">
+            <p style="color: #888;">Tối đa 128 ký tự. Có thể sử dụng các ký tự chữ và số và '+-=.@-_'.</p>
+          </nz-form-control>
+        </nz-form-item>
+        <h3 style=" font-weight: normal; margin-top: 20px">Mô tả</h3>
+        <nz-form-item>
+          <nz-form-control>
+          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
                     formControlName="description"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <h3 style=" font-weight: normal; margin-top: 20px">Mô tả</h3>
-      <nz-form-item>
-        <nz-form-control>
-          <textarea nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
-                    formControlName="description"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-    </nz-card>
-    <nz-card>
-      <h2>Thông tin của permissions được xác định trong policy</h2>
-      <hr style="opacity: 0.5px; margin-bottom: 25px">
-      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-bottom: 20px;">
-        <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..." style="width: 350px"/>
-        <ng-template #suffixButton>
-          <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-            <i nz-icon nzType="search"></i>
-            Tim kiếm
-          </button>
-        </ng-template>
-      </nz-input-group>
-      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
-                [nzTotal]="2" [nzPageSize]="2" (nzPageSizeChange)="onPageSizeChange($event)"
-                (nzPageIndexChange)="onPageIndexChange($event)">
-        <thead>
-        <tr>
-          <th>Permissions policies</th>
-          <th>Mô tả</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!--        <tr *ngFor="let data of listOfData">-->
-        <!--          <td (click)="detailKey(data)">{{ data.name }}</td>-->
-        <!--          <td (click)="detailKey(data)">{{ data.fingerprint }}</td>-->
-        <!--          <td>-->
-        <!--            <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">-->
-        <!--              Xóa-->
-        <!--            </button>-->
-        <!--          </td>-->
-        <!--        </tr>-->
-        </tbody>
-      </nz-table>
-    </nz-card>
+            <p style="color: #888;">Tối đa 1.000 ký tự. Có thể sử dụng các ký tự chữ và số và '+-=.@-_'.</p>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+      <nz-card>
+        <h2>Thông tin của Permissions được xác định trong Policy</h2>
+        <hr style="opacity: 0.5px; margin-bottom: 25px">
+        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-bottom: 20px;">
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..." style="width: 350px"/>
+          <ng-template #suffixButton>
+            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+              <i nz-icon nzType="search"></i>
+              Tim kiếm
+            </button>
+          </ng-template>
+        </nz-input-group>
+        <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfPermissionSelectedViewFinal"
+                  [nzTotal]="2" [nzPageSize]="5" (nzPageSizeChange)="onPageSizeChange($event)"
+                  (nzPageIndexChange)="onPageIndexChange($event)">
+          <thead>
+          <tr>
+            <th>Permissions policies</th>
+            <th>Mô tả</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of listOfPermissionSelectedViewFinal">
+            <td>{{ data }}</td>
+            <td>{{ data }}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+      <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
+        <button *ngIf="currentStep==1" (click)="setStep(0)" nz-button nzType="primary" style="
+            border: none;
+            background-color: gray;
+          ">Trở lại
+        </button>
+        <button *ngIf="currentStep==1" [disabled]="form.invalid" (click)="createPolicy()" nz-button nzType="primary"
+                style="
+            border: none;
+          ">Xác nhận
+        </button>
+      </div>
+    </form>
   </ng-container>
 </ng-container>
 
 
 <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
-  <button *ngIf="current==1" (click)="setStep(0)" nz-button nzType="primary" style="
-            border: none;
-            background-color: gray;
-          ">Trở lại
-  </button>
-  <button *ngIf="current==1" (click)="createPolicy()" nz-button nzType="primary" style="
-            border: none;
-          ">Xác nhận
-  </button>
-  <button *ngIf="current!=1" (click)="goBack()" nz-button nzType="primary" style="
+  <button *ngIf="currentStep!=1" (click)="goBack()" nz-button nzType="primary" style="
             border: none;
             background-color: gray;
           ">Quay lại
   </button>
-  <button *ngIf="current!=1" (click)="setStep(1)" nz-button nzType="primary" style="
+  <button *ngIf="currentStep!=1" (click)="setStep(1)" nz-button nzType="primary" style="
             border: none;
           ">Tiếp tục
   </button>
@@ -197,5 +221,26 @@
           nzOkText="Xác nhận" nzCancelText="Hủy bỏ">
   <ng-container *nzModalContent>
     <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn tạo policy này?</h3>
+  </ng-container>
+</nz-modal>
+
+<!--Cảnh bảo-->
+<nz-modal [(nzVisible)]="isVisibleNoticeCreate" nzTitle="Cảnh báo bước tiếp theo"
+          (nzOnCancel)="handleCancel()"
+          nzCancelText="Quay lại"
+          [nzOkText]="null">
+  <ng-container *nzModalContent>
+    <div class="mb-5 mt-5 pt-3 pb-3" style="
+              border-style: solid;
+              border-width: 1px;
+              border-color: #0493fa;
+              background-color: #d6eeff;
+            ">
+      <Space>
+                <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
+                      style="color: blue"></span>
+        Quý khách vui lòng chọn policy để đến bước tiếp theo!
+      </Space>
+    </div>
   </ng-container>
 </nz-modal>

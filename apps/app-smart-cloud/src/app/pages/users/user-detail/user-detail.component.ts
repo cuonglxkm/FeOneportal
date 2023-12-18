@@ -55,11 +55,10 @@ export class UserDetailComponent implements OnInit {
 
   ngOnInit(): void {
     let test = new User()
-    test.id = 5;
-    test.name = 'nguyen';
+    test.userName = 'nguyen';
     test.email = 'nguyen@gmail.com';
-    test.groups = 2;
-    test.createdTime = '2023-11-20T01:34:12.367Z';
+    test.userGroups = ["dkfjaldk"];
+    test.createdDate = '2023-11-20T01:34:12.367Z';
     this.user = test;
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData();
@@ -72,6 +71,7 @@ export class UserDetailComponent implements OnInit {
     //   this.listOfIp = baseResponse.records;
     //     console.log(this.listOfIp);
     // });
+    this.listGroupPicked = [];
     this.service
       .getGroupsCreateUser()
       .pipe(
@@ -86,7 +86,13 @@ export class UserDetailComponent implements OnInit {
       });
   }
 
+  reloadGroupOfUser() {
+    this.listOfGroups = [];
+    this.getData();
+  }
+
   getPolicies() {
+    this.listPolicyPicked = [];
     this.service
       .getPoliciesOfUser()
       .pipe(
@@ -98,6 +104,11 @@ export class UserDetailComponent implements OnInit {
       .subscribe((data) => {
         this.listOfpolicies = data.records;
       });
+  }
+
+  reloadPolicies() {
+    this.listOfpolicies = [];
+    this.getPolicies();
   }
 
   onRegionChange(region: RegionModel) {
@@ -116,8 +127,41 @@ export class UserDetailComponent implements OnInit {
     this.searchParam = e;
   }
 
-  reloadPolicies() {}
-  reloadGroupOfUser() {}
+  listPolicyPicked = [];
+  onClickPolicyItem(policyName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listPolicyPicked.forEach(e => {
+      if (e == policyName) {
+        this.listPolicyPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listPolicyPicked.push(policyName);
+    }
+    console.log("list policy picked", this.listPolicyPicked);
+  }
+
+
+  listGroupPicked = [];
+  onClickGroupItem(groupName: string) {
+    var index = 0;
+    var isAdded = true;
+    this.listGroupPicked.forEach(e => {
+      if (e == groupName) {
+        this.listGroupPicked.splice(index, 1);
+        isAdded = false;
+      }
+      index++;
+    });
+    if (isAdded) {
+      this.listGroupPicked.push(groupName);
+    }
+    console.log("list group picked", this.listGroupPicked);
+  }
+
   deletePolicies() {}
   deleteGroups() {}
 
