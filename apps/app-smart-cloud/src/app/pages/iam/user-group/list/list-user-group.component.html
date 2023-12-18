@@ -22,7 +22,7 @@
             <nz-space [nzSize]="24">
                 <div *nzSpaceItem>
                     <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-                        <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+                        <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
                                placeholder="Tìm kếm tên..."/>
                     </nz-input-group>
                     <ng-template #suffixButton>
@@ -33,14 +33,14 @@
                 </div>
             </nz-space>
             <nz-row nzAlign="middle">
-                <button nz-button nzSize="default" style="cursor: pointer;" (click)="refresh()">
+                <button nz-button nzSize="default" style="cursor: pointer; margin-right: 5px;" (click)="refresh()">
                     <span nz-icon nzType="reload" nzTheme="outline"></span>
                 </button>
                 <button nz-button class="button-del" nzSize="default" (click)="showModalDelete()">
                     <span nz-icon nzType="delete" nzTheme="outline"></span>
                     Xóa
                 </button>
-                <button nz-button class="button-create" nzSize="default" style="cursor: pointer;" (click)="navigateToCreate()">
+                <button nz-button class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;" (click)="navigateToCreate()">
                     <span nz-icon nzType="plus" nzTheme="outline"></span>
                     Tạo mới
                 </button>

@@ -47,6 +47,12 @@ import { AddToGroupComponent } from "./users/user-detail/add-to-group/add-to-gro
 import {CreateUserComponent} from "./iam/user-group/user/create/create-user.component";
 import {CreatePolicyComponent} from "./iam/user-group/policy/create/create-policy.component";
 import {PolicyUpdateComponent} from "./policy/policy-update/policy-update.component";
+import {BlankScheduleBackupComponent} from "./schedule-backup/blank/blank-schedule-backup.component";
+import {ListScheduleBackupComponent} from "./schedule-backup/list/list-schedule-backup.component";
+import {CreateScheduleBackupComponent} from "./schedule-backup/create/create-schedule-backup.component";
+import {
+  EditScheduleBackupVmComponent
+} from "./schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -221,6 +227,22 @@ const routes: Routes = [
   {
     path: 'iam/user-group/:groupName/add-policy',
     component: CreatePolicyComponent
+  },
+  {
+    path: 'schedule/backup/blank',
+    component: BlankScheduleBackupComponent
+  },
+  {
+    path: 'schedule/backup/list',
+    component: ListScheduleBackupComponent
+  },
+  {
+    path: 'schedule/backup/create',
+    component: CreateScheduleBackupComponent
+  },
+  {
+    path: 'schedule/backup/edit/vm',
+    component: EditScheduleBackupVmComponent
   }
   ]
 @NgModule({

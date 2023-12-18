@@ -17,19 +17,19 @@ export class CreatePolicyComponent implements OnInit {
     project = JSON.parse(localStorage.getItem('projectId'));
 
     countPolicy: number
+    countPolicyByGroup: number
 
     value?: string
     checked = false;
     loading = false;
     indeterminate = false;
 
-    listOfData: { last_activity: string; name: string; created_at: string; id: number; group: string }[] = [];
-    listOfDataPolicies = []
     listOfCurrentPageData: readonly PolicyModel[] = [];
     setOfCheckedId = new Set<string>();
     expandSet = new Set<string>();
 
     listPolicies: PolicyModel[]
+    listPoliciesByGroup: PolicyModel[]
 
     formSearch: FormSearchUserGroup = new FormSearchUserGroup()
 
@@ -94,9 +94,23 @@ export class CreatePolicyComponent implements OnInit {
     getPolicies() {
         this.loading = true
         this.formSearch.name = this.value
+        this.formSearch.currentPage = 1
+        this.formSearch.pageSize = 100000000
         this.policyService.getPolicy(this.formSearch).subscribe(data => {
             this.listPolicies = data.records
             this.countPolicy = data.totalCount
+            this.loading = false
+            console.log('data', this.listPolicies)
+        })
+    }
+    getPoliciesByGroup() {
+        this.loading = true
+        this.formSearch.name = this.value
+        this.formSearch.currentPage = 1
+        this.formSearch.pageSize = 100000000
+        this.policyService.getPolicy(this.formSearch).subscribe(data => {
+            this.listPoliciesByGroup = data.records
+            this.countPolicyByGroup = data.totalCount
             this.loading = false
             console.log('data', this.listPolicies)
         })
@@ -113,5 +127,6 @@ export class CreatePolicyComponent implements OnInit {
         this.nameGroup = this.route.snapshot.paramMap.get('groupName')
         console.log(this.nameGroup)
         this.getPolicies()
+        this.getPoliciesByGroup()
     }
 }
