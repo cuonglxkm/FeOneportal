@@ -16,5 +16,8 @@
   "app.register.sign-in": "ĐĂNG NHẬP",
   "validation.phone-number.wrong-format": "Số điện thoại sai định dạng",
   "app.register-result.msg": "Tài khoản đã đăng ký thành công!",
-  "app.register-result.back-home": "Trở về trang chủ"
+  "app.register-result.back-home": "Trở về trang chủ",
+  "validation.firstName.required": "Vui lòng nhập tên",
+  "validation.lastName.required": "Vui lòng nhập họ",
+  "validation.province.required": "Vui lòng chọn tỉnh/thành phố"
 }

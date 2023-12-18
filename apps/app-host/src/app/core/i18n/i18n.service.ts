@@ -27,7 +27,7 @@ interface LangConfigData {
   delon: NzSafeAny;
 }
 
-const DEFAULT = 'en-US';
+const DEFAULT = 'vi-VI';
 const LANGS: { [key: string]: LangConfigData } = {
   'vi-VI': {
     text: 'Vietnamese',
