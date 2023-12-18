@@ -1,10 +1,20 @@
-<page-header [action]="action" [title]="'Danh sách Policies'">
-  <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-    </div>
-  </ng-template>
+<page-header [autoBreadcrumb]="false"
+             [autoTitle]="false"
+             style="background: white">
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item> IAM </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Polices </nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+
+  <div class="text-right non-pointer">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+  </div>
+  <div><h2>Danh sách Policies</h2></div>
   <div nz-row class="mb-md">
     <div nz-col nzSpan="14">
       <div class="row">
@@ -14,7 +24,7 @@
             <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
           </nz-select>
         </div>
-        <div class="col-md-6" style="margin-left: 30px">
+        <div class="col-md-6" style="margin-left: 20px">
           <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
             <input #searchBox type="text" nz-input placeholder="Tìm kiến tên,thời gian khởi tạo..."
                    style="width: 350px"/>
@@ -30,16 +40,10 @@
     </div>
     <div nz-col nzSpan="10">
       <div class="text-right">
-        <button
-          class="m-r-8"
-          nz-button
-          nzType="default"
-          style="background-color: white; margin-right: 10px;"
-          (click)="deletePolicy()"
-        >
-          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
+        <button nz-button nzSize="default" style="cursor: pointer;margin-right: 10px;" (click)="deletePolicy()">
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
         </button>
-        <nz-select [(ngModel)]="selectedAction" nzSize="default" style="width: 90px; margin-right: 10px;">
+        <nz-select [(ngModel)]="selectedAction" nzSize="default" style="width: 90px; margin-right: 10px;margin-left: 10px;">
           <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
         </nz-select>
         <button (click)="deletePolicy()" nz-button nzType="default" style="
@@ -48,11 +52,11 @@
             background-color: #808080;
             color: whitesmoke;
             margin-right: 10px;
+            margin-left: 10px;
           "><i nz-icon nzType="delete"></i> Xóa
         </button>
         <button (click)="createPolicy()" nz-button nzType="primary" style="
-            border: 1px solid #52c41a;
-            border-radius: 2px;
+            border: none;
             background-color: #52c41a;
           "><i nz-icon nzType="plus"></i> Tạo mới
         </button>
@@ -88,12 +92,25 @@
         <td>{{ item.description }}</td>
       </tr>
       <tr [nzExpand]="expandSet.has(item.id)">
-<!--        <json-editor [options]="options" [data]="item"></json-editor>-->
-        <json-editor
-          [options]="optionJsonEditor"
-          formControlName="myinput"
-          [data]="item.jsonData"
-        ></json-editor>
+<!--        <json-editor-->
+<!--          style="position: relative;"-->
+<!--          [options]="optionJsonEditor"-->
+<!--          formControlName="myinput"-->
+<!--          [data]="item.jsonData"-->
+<!--          [disabled]="true"-->
+<!--        ></json-editor>-->
+
+
+
+        <div class="json-viewer-bg">
+          <button (click)="copyText(item.jsonData)" style="z-index: 1;position: absolute; right: 20px; top: 21px;">
+            <span nz-icon nzType="copy" nzTheme="outline"></span> Copy JSON
+          </button>
+          <ngx-json-viewer [json]="item.jsonData" style="position: relative;"></ngx-json-viewer>
+        </div>
+
+
+
       </tr>
     </ng-container>
     </tbody>

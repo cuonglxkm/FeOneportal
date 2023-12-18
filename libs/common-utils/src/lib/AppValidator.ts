@@ -264,5 +264,24 @@ export class AppValidator {
   //   };
   // }
 
+  static validPolicyName(control: AbstractControl): ValidationErrors | null {
+    var regex = new RegExp("^[a-zA-Z0-9+=.@_-]{1,128}$")
+    if (control && control.value != null && control.value != undefined && control.value.length > 0) {
+      if (regex.test(control.value) == false) {
+        return {name: true};
+      }
+    }
+    return null;
+  }
+
+  static validPolicyDescription(control: AbstractControl): ValidationErrors | null {
+    var regex = new RegExp("^[A-Za-z0-9+\\-=.@_]+$")
+    if (control && control.value != null && control.value != undefined && control.value.length > 0) {
+      if (regex.test(control.value) == false) {
+        return {description: true};
+      }
+    }
+    return null;
+  }
 
 }

@@ -1,60 +1,76 @@
-import {Component, OnInit} from '@angular/core';
-import {UserGroup} from "../list/list-user-group.component";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {UserService} from "../../../../shared/services/user.service";
+import {User} from "../../../../shared/models/user.model";
 
 @Component({
-  selector: 'one-portal-users-table',
-  templateUrl: './users-table.component.html',
-  styleUrls: ['./create-user-group.component.less'],
+    selector: 'one-portal-users-table',
+    templateUrl: './users-table.component.html',
+    styleUrls: ['./create-user-group.component.less'],
 })
-export class UsersTableComponent implements OnInit{
-  value?: string;
-  listOfData: readonly UserGroup[] = [];
-  listOfCurrentPageData: readonly UserGroup[] = [];
-  checked = false;
-  indeterminate = false;
-  setOfCheckedId = new Set<number>();
-  listOfSelected: readonly any[] = []
+export class UsersTableComponent implements OnInit {
+    @Output() listUsersSelected = new EventEmitter<any>();
 
-  onInputChange(value: string) {
-    this.value = value;
-  }
-  onCurrentPageDataChange(listOfCurrentPageData: readonly UserGroup[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
+    value?: string;
+    listOfCurrentPageData: readonly User[] = [];
+    checked = false;
+    indeterminate = false;
+    setOfCheckedId = new Set<string>();
+    listOfSelected: readonly any[] = []
 
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
-  }
+    loading = false
 
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-      .forEach(({ id }) => this.updateCheckedSet(id, checked));
-    this.refreshCheckedStatus();
-  }
+    listUsers: User[] = []
+    countGroup: number = 0
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
-  }
-
-  updateCheckedSet(id: number, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(id);
-    } else {
-      this.setOfCheckedId.delete(id);
+    constructor(private userService: UserService) {
     }
-    this.listOfSelected = this.listOfData.filter(data => this.setOfCheckedId.has(data.id))
-  }
 
-  ngOnInit(): void {
-    this.listOfData = new Array(10).fill(0).map((_, index) => ({
-      id: index,
-      name: `TT ${index}`,
-      total_users: 32,
-      created_at: `${index}/10/2023 1${index}:00:2${index}`,
-    }));
-  }
+    onInputChange(value: string) {
+        this.value = value;
+    }
+
+    onCurrentPageDataChange(listOfCurrentPageData: readonly User[]): void {
+        this.listOfCurrentPageData = listOfCurrentPageData;
+        this.refreshCheckedStatus();
+    }
+
+    refreshCheckedStatus(): void {
+        const listOfEnabledData = this.listOfCurrentPageData;
+        this.checked = listOfEnabledData.every(({userName}) => this.setOfCheckedId.has(userName));
+        this.indeterminate = listOfEnabledData.some(({userName}) => this.setOfCheckedId.has(userName)) && !this.checked;
+    }
+
+    onAllChecked(checked: boolean): void {
+        this.listOfCurrentPageData
+            .forEach(({userName}) => this.updateCheckedSet(userName, checked));
+        this.refreshCheckedStatus();
+    }
+
+    onItemChecked(userName: string, checked: boolean): void {
+        this.updateCheckedSet(userName, checked);
+        this.refreshCheckedStatus();
+    }
+
+    updateCheckedSet(userName: string, checked: boolean): void {
+        if (checked) {
+            this.setOfCheckedId.add(userName);
+        } else {
+            this.setOfCheckedId.delete(userName);
+        }
+        this.listOfSelected = this.listUsers.filter(data => this.setOfCheckedId.has(data.userName))
+        this.listUsersSelected.emit(this.listOfSelected)
+    }
+
+    getUsers() {
+        this.loading = true
+        this.userService.search('', 1000000, 1).subscribe(data => {
+            this.listUsers = data.records
+            this.loading = false
+
+        })
+    }
+
+    ngOnInit(): void {
+        this.getUsers()
+    }
 }

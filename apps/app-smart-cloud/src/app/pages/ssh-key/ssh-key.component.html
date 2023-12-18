@@ -1,10 +1,17 @@
-<page-header [action]="action" [title]="'SSH Key'">
-  <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-    </div>
-  </ng-template>
+<page-header [autoBreadcrumb]="false"
+             [autoTitle]="false"
+             style="background: white">
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item> SSH Key</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right non-pointer">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+  </div>
+  <div><h2>SSH Key</h2></div>
   <div *ngIf="!isBegin" nz-row class="mb-md">
     <div nz-col nzSpan="12">
       <div class="text-left">
@@ -128,7 +135,8 @@
                 <Space>
                 <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
                       style="color: blue"></span>
-                  Chức năng được dùng khi quý khách đã có sẵn cặp SSH key.Vui lòng nhập Public Key để tạo vào tài khoản của quý khách.
+                  Chức năng được dùng khi quý khách đã có sẵn cặp SSH key.Vui lòng nhập Public Key để tạo vào tài khoản
+                  của quý khách.
                 </Space>
               </div>
               <h4>

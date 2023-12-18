@@ -35,7 +35,7 @@ export class BackupVolumeService extends BaseService {
   }
 
   //create
-  createVolume(data: any) {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/backups/volumes",data , this.httpOptions);
+  createBackupVolume(data: any) {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, data , this.httpOptions);
   }
 }
