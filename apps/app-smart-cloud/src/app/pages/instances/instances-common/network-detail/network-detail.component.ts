@@ -29,7 +29,6 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
-  regionId: number;
   listSecurityGroup: SecurityGroupModel[] = [];
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];

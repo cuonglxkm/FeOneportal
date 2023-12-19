@@ -30,7 +30,7 @@ export class UserDetailComponent implements OnInit {
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
-  id: any;
+  userName: any;
   searchParam: string;
   loading = true;
   typePolicy: string = '';
@@ -60,7 +60,7 @@ export class UserDetailComponent implements OnInit {
     test.userGroups = ['dkfjaldk'];
     test.createdDate = '2023-11-20T01:34:12.367Z';
     this.user = test;
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.userName = this.activatedRoute.snapshot.paramMap.get('userName');
     this.getGroup();
     this.getPolicies();
   }
@@ -222,12 +222,12 @@ export class UserDetailComponent implements OnInit {
 
   navigateToAddPolicies() {
     this.router.navigate([
-      '/app-smart-cloud/users/detail/' + this.id + '/add-policies',
+      '/app-smart-cloud/users/detail/' + this.userName + '/add-policies',
     ]);
   }
   navigateToAddToGroups() {
     this.router.navigate([
-      '/app-smart-cloud/users/detail/' + this.id + '/add-to-group',
+      '/app-smart-cloud/users/detail/' + this.userName + '/add-to-group',
     ]);
   }
 

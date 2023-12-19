@@ -8,16 +8,14 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {
-  CopyUserPolicies,
-  GroupCreateUser,
-  PermissionPolicies,
-} from 'src/app/shared/models/user.model';
+import { CopyUserPolicies, User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
-import { finalize } from 'rxjs';
+import { concatMap, finalize, from } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { UserGroupModel } from 'src/app/shared/models/user-group.model';
+import { PolicyInfo } from '../../policy/policy.model';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -26,23 +24,23 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttachPermissionPolicyComponent implements OnInit {
-  @Input() isCreate: boolean = true;
+  @Input() isCreate: boolean;
+  @Input() userName: any;
   @Output() listPolicyNames = new EventEmitter();
   @Output() listGroupNames = new EventEmitter();
 
-  listOfGroups: GroupCreateUser[] = [];
-  listOfUsers: CopyUserPolicies[] = [];
-  listOfpolicies: PermissionPolicies[] = [];
+  listOfGroups: UserGroupModel[] = [];
+  listOfUsers: User[] = [];
+  listOfpolicies: PolicyInfo[] = [];
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
-  baseResponse: BaseResponse<GroupCreateUser[]>;
   id: any;
   searchParam: string;
   loading = true;
   typePolicy: string = '';
   checkedAllInPage = false;
-  listCheckedInPage = []
+  listCheckedInPage = [];
 
   filterStatus = [
     { text: 'Tất cả các loại', value: '' },
@@ -57,6 +55,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   constructor(
     private service: UserService,
+    private policyService: PolicyService,
     public message: NzMessageService,
     private cdr: ChangeDetectorRef
   ) {
@@ -65,58 +64,16 @@ export class AttachPermissionPolicyComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('isCreate', this.isCreate);
+    console.log('userName', this.userName);
     this.service.model.subscribe((data) => {
       console.log(data);
     });
     this.getGroup();
-    this.getCopyUserPlicies();
-    this.getPermissionPolicies();
   }
 
   changeSearch(e: any): void {
     this.searchParam = e;
-  }
-
-  activeBlockAddUsertoGroup: boolean = true;
-  activeBlockCopyPolicies: boolean = false;
-  activeBlockAttachPolicies: boolean = false;
-
-  resetDataPicked(): void {
-    this.groupNames = [];
-    this.policyNames.clear();
-    this.listCheckedInPage = [];
-    this.checkedAllInPage = false;
-    this.emitData();
-  }
-  initAddUsertoGroup(): void {
-    this.activeBlockAddUsertoGroup = true;
-    this.activeBlockCopyPolicies = false;
-    this.activeBlockAttachPolicies = false;
-    this.resetDataPicked();
-    this.listGroupPicked = [];
-  }
-  initCopyPolicies(): void {
-    this.activeBlockAddUsertoGroup = false;
-    this.activeBlockCopyPolicies = true;
-    this.activeBlockAttachPolicies = false;
-    this.resetDataPicked();
-    this.listUserPicked = [];
-  }
-  initAttachPolicies(): void {
-    this.activeBlockAddUsertoGroup = false;
-    this.activeBlockCopyPolicies = false;
-    this.activeBlockAttachPolicies = true;
-    this.resetDataPicked();
-  }
-
-  // xử lý tập các quyền khi chọn
-  handlePolicyNames(listPicked: any[]) {
-    this.policyNames.clear();
-    listPicked.forEach((e) => {
-      e.attachedPolicies.forEach((element) => {
-        this.policyNames.add(element);
-      });
-    });
   }
 
   // Dùng để truyền dữ liệu khi có thay đổi
@@ -125,20 +82,85 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.listPolicyNames.emit(Array.from(this.policyNames));
   }
 
+  resetDataPicked(): void {
+    this.groupNames = [];
+    this.policyNames.clear();
+    this.listCheckedInPage = [];
+    this.checkedAllInPage = false;
+    this.emitData();
+  }
+
+  resetParams(): void {
+    this.searchParam = '';
+    this.pageSize = 10;
+    this.pageIndex = 1;
+  }
+
+  activeBlockAddUsertoGroup: boolean = true;
+  activeBlockCopyPolicies: boolean = false;
+  activeBlockAttachPolicies: boolean = false;
+  initAddUsertoGroup(): void {
+    this.activeBlockAddUsertoGroup = true;
+    this.activeBlockCopyPolicies = false;
+    this.activeBlockAttachPolicies = false;
+    this.resetParams();
+    this.getGroup();
+    this.listGroupPicked = [];
+  }
+  initCopyPolicies(): void {
+    this.activeBlockAddUsertoGroup = false;
+    this.activeBlockCopyPolicies = true;
+    this.activeBlockAttachPolicies = false;
+    this.resetParams();
+    this.getCopyUserPlicies();
+    this.listUserPicked = [];
+  }
+  initAttachPolicies(): void {
+    this.activeBlockAddUsertoGroup = false;
+    this.activeBlockCopyPolicies = false;
+    this.activeBlockAttachPolicies = true;
+    this.resetParams();
+    this.getPermissionPolicies();
+  }
+
+  // xử lý tập các quyền khi chọn
+  handlePolicyNames(listPicked: any[]) {
+    this.policyNames.clear();
+    listPicked.forEach((e) => {
+      e.userPolicies.forEach((element) => {
+        this.policyNames.add(element);
+      });
+    });
+  }
+    
+  // Kiểm tra xem có chọn tất cả không
+  checkPickAll(listPicked: any[], listCurrent: any[]): void {
+    if (listPicked.length == listCurrent.length) {
+      this.checkedAllInPage = true;
+    } else {
+      this.checkedAllInPage = false;
+    }
+  }
+
   // Danh sách Groups
   getGroup(): void {
     this.resetDataPicked();
     this.listGroupPicked = [];
     this.service
-      .getGroupsCreateUser()
+      .getGroups(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
         finalize(() => {
           this.loading = false;
           this.cdr.detectChanges();
         })
       )
-      .subscribe((baseResponse) => {
-        this.listOfGroups = baseResponse.records;
+      .subscribe((data) => {
+        this.listOfGroups = data.records;
+        if (!this.isCreate) {
+          this.listOfGroups = this.listOfGroups.filter((e) => {
+            !e.groupUsers.includes(this.userName);
+          });
+        }
         console.log(this.listOfGroups);
       });
     console.log('listGroupPicked', this.listGroupPicked);
@@ -149,10 +171,10 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.getGroup();
   }
 
-  listGroupPicked: GroupCreateUser[] = [];
+  listGroupPicked: UserGroupModel[] = [];
   groupNames = [];
   policyNames = new Set<string>();
-  onClickGroupItem(groupName: string, item: GroupCreateUser) {
+  onClickGroupItem(groupName: string, item: UserGroupModel) {
     var index = 0;
     var isAdded = true;
     // Kiểm tra mảng có phần tử đc chọn không
@@ -171,14 +193,14 @@ export class AttachPermissionPolicyComponent implements OnInit {
       this.listGroupPicked.push(item);
     }
 
-    // Kiểm tra xem có chọn tất cả không
-    if (this.listGroupPicked.length == this.listOfGroups.length) {
-      this.checkedAllInPage = true;
-    } else {
-      this.checkedAllInPage = false;
-    }
+    this.checkPickAll(this.listGroupPicked, this.listOfGroups);
 
-    this.handlePolicyNames(this.listGroupPicked);
+    this.policyNames.clear();
+    this.listGroupPicked.forEach((e) => {
+      e.policies.forEach((element) => {
+        this.policyNames.add(element);
+      });
+    });
     this.emitData();
 
     console.log('list groupNames', this.groupNames);
@@ -199,11 +221,12 @@ export class AttachPermissionPolicyComponent implements OnInit {
     } else {
       this.listGroupPicked = [];
     }
+
     this.groupNames = [];
     this.policyNames.clear();
     this.listGroupPicked.forEach((e) => {
       this.groupNames.push(e.name);
-      e.attachedPolicies.forEach((element) => {
+      e.policies.forEach((element) => {
         this.policyNames.add(element);
       });
     });
@@ -218,7 +241,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.resetDataPicked();
     this.listUserPicked = [];
     this.service
-      .getCopyUserPolicies()
+      .search(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -227,6 +250,11 @@ export class AttachPermissionPolicyComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfUsers = data.records;
+        if (!this.isCreate) {
+          this.listOfUsers = this.listOfUsers.filter(
+            (e) => e.userName !== this.userName
+          );
+        }
       });
 
     console.log('list groupNames', this.groupNames);
@@ -238,12 +266,12 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.getCopyUserPlicies();
   }
 
-  listUserPicked: CopyUserPolicies[] = [];
-  onClickUserItem(item: CopyUserPolicies) {
+  listUserPicked: User[] = [];
+  onClickUserItem(item: User) {
     var index = 0;
     var isAdded = true;
     this.listUserPicked.forEach((e) => {
-      if (e.name == item.name) {
+      if (e.userName == item.userName) {
         this.listUserPicked.splice(index, 1);
         isAdded = false;
       }
@@ -253,11 +281,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
       this.listUserPicked.push(item);
     }
 
-    if (this.listUserPicked.length == this.listOfUsers.length) {
-      this.checkedAllInPage = true;
-    } else {
-      this.checkedAllInPage = false;
-    }
+    this.checkPickAll(this.listUserPicked, this.listOfUsers);
 
     this.handlePolicyNames(this.listUserPicked);
     this.emitData();
@@ -289,10 +313,11 @@ export class AttachPermissionPolicyComponent implements OnInit {
   }
 
   //Danh sách Policies
+  listAttachedEntities = [];
   getPermissionPolicies() {
     this.resetDataPicked();
     this.service
-      .getPermissionPolicies()
+      .getPolicies(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -301,6 +326,15 @@ export class AttachPermissionPolicyComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfpolicies = data.records;
+        from(this.listOfpolicies)
+          .pipe(
+            concatMap((e) =>
+              this.policyService.getAttachedEntities(e.name, '', 1, 9999, 1)
+            )
+          )
+          .subscribe((result) => {
+            this.listAttachedEntities.push(result.totalCount);
+          });
       });
 
     console.log('list groupNames', this.groupNames);
@@ -324,11 +358,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
       this.policyNames.add(policyName);
     }
 
-    if (this.listOfpolicies.length == this.policyNames.size) {
-      this.checkedAllInPage = true;
-    } else {
-      this.checkedAllInPage = false;
-    }
+    this.checkPickAll(Array.from(this.policyNames), this.listOfpolicies);
 
     this.emitData();
     console.log('list groupNames', this.groupNames);
