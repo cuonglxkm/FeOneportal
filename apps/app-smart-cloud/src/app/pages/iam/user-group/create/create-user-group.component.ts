@@ -85,6 +85,7 @@ export class CreateUserGroupComponent implements OnInit {
     }
 
     submitForm(): void {
+        console.log(this.validateForm.valid);
         if (this.validateForm.valid) {
             this.listPolicies.forEach(item => {
                 if(this.listPoliciesSelected.length !== undefined) {

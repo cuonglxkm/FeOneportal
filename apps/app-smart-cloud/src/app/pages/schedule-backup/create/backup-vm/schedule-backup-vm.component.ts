@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";
 import {BackupSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {ScheduleService} from "../../../../shared/services/schedule.service";
-import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import {AppValidator, BaseResponse} from '../../../../../../../../libs/common-utils/src';
 import {InstancesService} from "../../../instances/instances.service";
 import {InstancesModel} from "../../../instances/instances.model";
 
@@ -22,7 +22,7 @@ export class ScheduleBackupVmComponent implements OnInit {
 
     isLoading: boolean = false
     validateForm: FormGroup<{
-        backupMode: FormControl<number>
+        backupMode: FormControl<string>
         name: FormControl<string>
         backupPackage: FormControl<number>
         description: FormControl<string>
@@ -30,24 +30,26 @@ export class ScheduleBackupVmComponent implements OnInit {
         months: FormControl<number>
         times: FormControl<string>
         numberOfWeek: FormControl<string>
+        date: FormControl<string>
         maxBackup: FormControl<number>
         volumeToBackupIds: FormControl<number[] | null>
         daysOfWeek: FormControl<string[] | null>
     }> = this.fb.group({
-        backupMode: [null as number, [Validators.required]],
+        backupMode: ['4', [Validators.required]],
         name: [null as string, [Validators.required]],
         backupPackage: [null as number, [Validators.required]],
         description: [null as string, [Validators.maxLength(700)]],
         instanceId: [null as number, [Validators.required]],
         months: [null as number, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
         times: [null as string, [Validators.required]],
-        numberOfWeek: [null as string, [Validators.required]],
+        numberOfWeek: [null as string],
+        date: [null as string, [Validators.required]],
         maxBackup: [null as number, [Validators.required]],
         volumeToBackupIds: [[] as number[]],
         daysOfWeek: [[] as string[]]
     })
 
-    modeType: any
+    modeType: string = '4'
     numberOfWeekChangeSelected: string
 
     backupPackages: BackupPackage[] = []
@@ -105,8 +107,14 @@ export class ScheduleBackupVmComponent implements OnInit {
     submitForm() {
         if (this.validateForm.valid) {
 
+        } else {
+            Object.values(this.validateForm.controls).forEach(control => {
+                if (control.invalid) {
+                    control.markAsDirty();
+                    control.updateValueAndValidity({onlySelf: true});
+                }
+            });
         }
-        console.log('form create', this.validateForm.getRawValue())
     }
 
     getBackupPackage() {
@@ -117,15 +125,43 @@ export class ScheduleBackupVmComponent implements OnInit {
     }
 
     modeChange(value: string) {
-        console.log('type', value)
+        this.validateForm.controls.daysOfWeek.clearValidators();
+        this.validateForm.controls.daysOfWeek.markAsPristine();
+        this.validateForm.controls.daysOfWeek.reset();
+
+        this.validateForm.controls.numberOfWeek.clearValidators();
+        this.validateForm.controls.numberOfWeek.markAsPristine();
+        this.validateForm.controls.numberOfWeek.reset();
+
+        this.validateForm.controls.months.clearValidators();
+        this.validateForm.controls.months.markAsPristine();
+        this.validateForm.controls.months.reset();
+
+        this.validateForm.controls.date.clearValidators();
+        this.validateForm.controls.date.markAsPristine();
+        this.validateForm.controls.date.reset();
         if (value === '1') {
             this.modeType = '1'
         } else if (value === '2') {
             this.modeType = '2'
+            this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
+            this.validateForm.controls.daysOfWeek.markAsDirty();
+            this.validateForm.controls.daysOfWeek.reset();
         } else if (value === '3') {
             this.modeType = '3'
+
+            this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
+            this.validateForm.controls.numberOfWeek.markAsDirty();
+            this.validateForm.controls.numberOfWeek.reset();
         } else if (value === '4') {
             this.modeType = '4'
+            this.validateForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
+            this.validateForm.controls.months.markAsDirty();
+            this.validateForm.controls.months.reset();
+
+            this.validateForm.controls.date.setValidators([Validators.required]);
+            this.validateForm.controls.date.markAsDirty();
+            this.validateForm.controls.date.reset();
         }
     }
 
@@ -151,15 +187,16 @@ export class ScheduleBackupVmComponent implements OnInit {
         this.formSearchBackup.currentPage = 1
         this.formSearchBackup.customerId = customerId
         this.instanceService.search(1, 10000000,
-            this.region, "", "", customerId).subscribe(data => {
-            this.listInstance = data.records
+            this.region, this.project, "", "",
+            false, customerId).subscribe(data => {
+            this.listInstance = data?.records
             this.backupVmService.search(this.formSearchBackup).subscribe(data => {
                 this.listBackupVM = data.records
                 console.log('instance', this.listInstance)
                 console.log('backup', this.listBackupVM)
                 const idSet = new Set(this.listBackupVM.map(item => item.instanceId));
                 const idSetUnique = Array.from(new Set(idSet))
-                this.listInstance.forEach(item1 => {
+                this.listInstance?.forEach(item1 => {
                     if (!idSetUnique.includes(item1.id)) {
                         if(this.listInstanceNotUse?.length > 0) {
                             this.listInstanceNotUse.push(item1)
