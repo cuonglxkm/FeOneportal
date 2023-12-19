@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";
 import {BackupSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {ScheduleService} from "../../../../shared/services/schedule.service";
-import {AppValidator, BaseResponse} from '../../../../../../../../libs/common-utils/src';
+import {BaseResponse} from '../../../../../../../../libs/common-utils/src';
 import {InstancesService} from "../../../instances/instances.service";
 import {InstancesModel} from "../../../instances/instances.model";
 
@@ -198,7 +198,7 @@ export class ScheduleBackupVmComponent implements OnInit {
                 const idSetUnique = Array.from(new Set(idSet))
                 this.listInstance?.forEach(item1 => {
                     if (!idSetUnique.includes(item1.id)) {
-                        if(this.listInstanceNotUse?.length > 0) {
+                        if (this.listInstanceNotUse?.length > 0) {
                             this.listInstanceNotUse.push(item1)
                         } else {
                             this.listInstanceNotUse = [item1]
