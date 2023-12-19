@@ -118,7 +118,7 @@ export class IpPublicComponent implements OnInit {
     if (event == false) {
       this.id = id;
       if (this.selectedAction === 'Gắn Ip Pulbic') {
-        this.instancService.search(1, 999, this.regionId, '', '', this.tokenService.get()?.userId).subscribe(
+        this.instancService.search(1, 999, this.regionId, this.projectId, '', '',true, this.tokenService.get()?.userId).subscribe(
           (data) => {
             this.listInstance = data.records;
           }

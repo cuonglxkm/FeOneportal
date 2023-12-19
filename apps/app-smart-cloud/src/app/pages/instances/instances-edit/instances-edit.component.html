@@ -12,13 +12,14 @@
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
     <project-select-dropdown
-      [regionId]="region" (valueChanged)="onProjectChange($event)"
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
     ></project-select-dropdown>
   </div>
-  <div style="margin-top: 15px;">
+  <div style="margin-top: 15px">
     <nz-row>
-      <h2 style="width: 50%;">Chỉnh sửa máy ảo</h2>
-      <div class="text-right non-pointer" style="width: 50%;">
+      <h2 style="width: 50%">Chỉnh sửa máy ảo</h2>
+      <div class="text-right non-pointer" style="width: 50%">
         <button
           nz-button
           [nzType]="'primary'"
@@ -108,6 +109,7 @@
               <ng-template #nzAvatarselectedHDDorSSD1>
                 <input
                   type="radio"
+                  [disabled]="true"
                   [checked]="activeBlockHDD"
                   (click)="initHDD()"
                 />
@@ -141,6 +143,7 @@
               <ng-template #nzAvatarselectedHDDorSSD2>
                 <input
                   type="radio"
+                  [disabled]="true"
                   [checked]="activeBlockSSD"
                   (click)="initSSD()"
                 />
@@ -187,7 +190,7 @@
               >
                 <tr>
                   <div>
-                    <b class="h4">{{ item.flavorName | slice:3 }}</b
+                    <b class="h4">{{ item.flavorName | slice : 3 }}</b
                     ><br />
                     <b class="h4">{{ item.price }}</b
                     ><span> đ/tháng</span><br />
@@ -354,10 +357,7 @@
     [listOfDataBlockStorage]="listOfDataBlockStorage"
   ></one-portal-blockstorage-detail>
 
-  <one-portal-network-detail
-    [instancesId]="id"
-    [listOfDataNetwork]="listOfDataNetwork"
-  ></one-portal-network-detail>
+  <one-portal-network-detail [instancesId]="id"></one-portal-network-detail>
 </form>
 <nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
   <div>

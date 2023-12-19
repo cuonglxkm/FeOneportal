@@ -6,22 +6,19 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { InstancesModel, SecurityGroupModel } from '../instances.model';
+import {
+  InstancesModel,
+  Network,
+  SecurityGroupModel,
+} from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-} from '@angular/forms';
 import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { G2TimelineData } from '@delon/chart/timeline';
-import { DatePipe } from '@angular/common';
 
 class BlockStorage {
   id: number = 0;
@@ -33,13 +30,6 @@ class BlockStorage {
   status?: string = '';
   typeVolume?: string = '';
   price?: string = '000';
-}
-
-class Network {
-  name?: string = 'prive_network';
-  mac?: string = '';
-  ip?: string = '';
-  status?: string = '';
 }
 
 @Component({
@@ -54,9 +44,7 @@ export class InstancesDetailComponent implements OnInit {
   instancesModel: InstancesModel;
   id: number;
   listOfDataBlockStorage: BlockStorage[] = [];
-  listOfDataNetwork: Network[] = [];
   listSecurityGroupModel: SecurityGroupModel[] = [];
-  defaultNetwork: Network = new Network();
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -84,35 +72,30 @@ export class InstancesDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-    this.listOfDataNetwork.push(this.defaultNetwork);
-
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        
-        this.dataService
-          .getById(this.id, false)
-          .subscribe(async (data: any) => {
-            this.instancesModel = data;
-            this.loading = false;
-            this.cloudId = this.instancesModel.cloudId;
-            this.regionId = this.instancesModel.regionId;
-            this.getMonitorData();
-            this.dataService
-              .getAllSecurityGroupByInstance(
-                this.cloudId,
-                this.regionId,
-                this.instancesModel.customerId,
-                this.instancesModel.projectId
-              )
-              .pipe(finalize(() => this.loadingSrv.close()))
-              .subscribe((datasg: any) => {
-                this.listSecurityGroupModel = datasg;
-                this.cdr.detectChanges();
-              });
-            this.cdr.detectChanges();
-          });
+
+        this.dataService.getById(this.id, false).subscribe((data: any) => {
+          this.instancesModel = data;
+          this.loading = false;
+          this.cloudId = this.instancesModel.cloudId;
+          this.regionId = this.instancesModel.regionId;
+          this.getMonitorData();
+          this.dataService
+            .getAllSecurityGroupByInstance(
+              this.cloudId,
+              this.regionId,
+              this.instancesModel.customerId,
+              this.instancesModel.projectId
+            )
+            .pipe(finalize(() => this.loadingSrv.close()))
+            .subscribe((datasg: any) => {
+              this.listSecurityGroupModel = datasg;
+              this.cdr.detectChanges();
+            });
+          this.cdr.detectChanges();
+        });
       }
     });
   }

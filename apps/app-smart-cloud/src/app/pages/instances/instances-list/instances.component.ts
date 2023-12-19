@@ -143,7 +143,6 @@ export class InstancesComponent implements OnInit {
     this.loading = true;
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
-    this.getDataList();
   }
 
   onProjectChange(project: ProjectModel) {
