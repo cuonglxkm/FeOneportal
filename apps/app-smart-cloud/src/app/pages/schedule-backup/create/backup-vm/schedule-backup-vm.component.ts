@@ -40,7 +40,7 @@ export class ScheduleBackupVmComponent implements OnInit {
         backupPackage: [null as number, [Validators.required]],
         description: [null as string, [Validators.maxLength(700)]],
         instanceId: [null as number, [Validators.required]],
-        months: [null as number, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
+        months: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
         times: [null as string, [Validators.required]],
         numberOfWeek: [null as string],
         date: [null as string, [Validators.required]],

@@ -37,6 +37,7 @@ export class NewVirtualMachineComponent implements OnInit {
         storage: FormControl<number>
         radio: FormControl<any>
         volumeToBackupIds: FormControl<number[] | null>
+        monthsUse: FormControl<number>
     }> = this.fb.group({
         name: ['', [Validators.required]],
         flavor: [null as Flavor | null, [Validators.required]],
@@ -45,7 +46,8 @@ export class NewVirtualMachineComponent implements OnInit {
         iops: [null as number | null, [Validators.required]],
         storage: [null as number | null, [Validators.required]],
         radio: [''],
-        volumeToBackupIds: [[] as number[]]
+        volumeToBackupIds: [[] as number[]],
+        monthsUse: [1, [Validators.required, Validators.max(24), Validators.pattern(/^[1-9]+$/)]]
     })
 
     conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition()
@@ -73,6 +75,7 @@ export class NewVirtualMachineComponent implements OnInit {
                 private notification: NzNotificationService,
                 private router: Router) {
     }
+
 
     goBack() {
         this.location.back();

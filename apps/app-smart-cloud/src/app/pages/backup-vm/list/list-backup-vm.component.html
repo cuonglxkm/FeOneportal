@@ -63,6 +63,7 @@
         <th nzAlign="center" class="text-th">Dung luợng</th>
         <th nzAlign="center" class="text-th">Gói backup</th>
         <th nzAlign="center" class="text-th">Thời gian tạo</th>
+        <th nzAlign="center" class="text-th">Hết hạn</th>
         <th nzAlign="center" class="text-th">Trạng thái</th>
         <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
         <th nzAlign="center" class="text-th">Thao tác</th>
@@ -72,8 +73,9 @@
       <tr *ngFor="let data of tableBackupVM.data">
         <td nzAlign="center"><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
         <td nzAlign="center"> {{ data.instanceName }}</td>
-        <td nzAlign="center">{{ data.size }}</td>
+        <td nzAlign="center">{{ data.size }} GB</td>
         <td nzAlign="center">{{ data.backupPackageName }}</td>
+        <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">
           <div class="status" [ngSwitch]="data.status">

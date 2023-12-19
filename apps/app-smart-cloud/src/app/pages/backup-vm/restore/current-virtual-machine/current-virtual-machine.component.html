@@ -22,9 +22,7 @@
         </div>
         <input nz-input value="{{ backupVm?.systemInfoBackups[0].osName }}" disabled="true"/>
       </div>
-    </nz-col>
-    <nz-col nzSpan="12">
-      <div>
+      <div style="margin-top: 10px">
         <div class="label">
           <span>Dung lượng ổ hệ điều hành</span>
           <span style="color: rgba(252, 16, 16, 1); "> *</span>
@@ -35,13 +33,27 @@
                    disabled="true"/>
           </nz-input-group>
         </div>
-
       </div>
-      <div style="margin-top: 10px">
+    </nz-col>
+    <nz-col nzSpan="12">
+      <div>
         <div class="label">
           <span>Security Group</span>
         </div>
-        <textarea nz-input rows="4" value="{{ securityGroupName }}" disabled="true"></textarea>
+        <textarea style="margin-top: 4px;" nz-input rows="4" value="{{ securityGroupName }}" disabled="true"></textarea>
+      </div>
+      <div style="margin-top: 14px">
+        <div class="label">
+          <span>IOPS</span>
+          <span style="color: rgba(252, 16, 16, 1); "> *</span>
+        </div>
+        <input nz-input value="{{ listIOPSUnique }}" disabled="true"/>
+      </div>
+      <div style="margin-top: 10px">
+        <div class="label">
+          <span>Thời gian hết hạn:</span>
+        </div>
+        <input nz-input value="{{ backupVm?.creationDate | date: 'dd/MM/yyyy - HH:ss:mm'}}" disabled="true"/>
       </div>
     </nz-col>
   </nz-row>
