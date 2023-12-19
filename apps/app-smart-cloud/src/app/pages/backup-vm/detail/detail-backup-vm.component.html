@@ -6,11 +6,14 @@
 />
 <nz-content style="margin-top: 10px">
     <nz-card>
-        <nz-descriptions nzTitle="Thông tin chung" nzLayout="vertical" nzColumn="5">
+        <nz-descriptions nzTitle="Thông tin chung" nzLayout="vertical" nzColumn="7">
             <nz-descriptions-item nzTitle="Tên backup VM">{{ backupVm?.name }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="VM gốc">{{ backupVm?.instanceName }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Gói backup">{{ backupVm?.backupPackageName }}</nz-descriptions-item>
             <nz-descriptions-item
                     nzTitle="Thời gian khởi tạo">{{ backupVm?.creationDate | date: "dd/MM/yyyy - HH:mm:ss" }}</nz-descriptions-item>
+            <nz-descriptions-item
+                    nzTitle="Thời gian kết thúc">{{ backupVm?.creationDate | date: "dd/MM/yyyy - HH:mm:ss" }}</nz-descriptions-item>
             <!--      <nz-descriptions-item nzTitle="Volume gắn ngoài">test1</nz-descriptions-item>-->
             <nz-descriptions-item nzTitle="Truy cập và bảo mật">{{ nameSecurityGroupText }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Mô tả">{{ backupVm?.description }}</nz-descriptions-item>

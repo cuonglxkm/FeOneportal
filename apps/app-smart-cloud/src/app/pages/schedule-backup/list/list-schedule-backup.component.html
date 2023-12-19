@@ -105,60 +105,83 @@
           <td nzAlign="center">
             <div [ngSwitch]="data.status">
               <div *ngSwitchCase="'ACTIVE'">
-                <button
-                  nz-button
-                  [nzType]="'primary'"
-                  nz-dropdown
-                  style="width: 100px"
-                  [nzDropdownMenu]="opMenu">
-                  <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
-                </button>
-                <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <div *ngIf="data.serviceType === 1">
-                      <li nz-menu-item [routerLink]="'/app-smart-cloud/schedule/backup/edit/vm'">Chỉnh sửa</li>
-                      <li nz-menu-item>Tạm dừng</li>
-                      <li nz-menu-item>Xóa</li>
+                <nz-select
+                  [nzPlaceHolder]="'Chọn thao tác'"
+                  ngModel="selectedOptionAction"
+                  name="selectedAction"
+                  (ngModelChange)="selectedOptionActionChange($event, data)">
+                  <nz-option
+                    nzValue="1"
+                    nzLabel="Chỉnh sửa"
+                  ></nz-option>
+                  <nz-option nzValue="2" nzLabel="Tạm dừng" (click)="showModalPaused()"></nz-option>
+                  <nz-modal [(nzVisible)]="isVisiblePaused" nzTitle="Xác nhận tạm dừng lịch backup"
+                            (nzOnCancel)="handlePausedCancel()" nzCentered>
+                    <div *nzModalTitle>
+                      <p class="text-h5"><b>Xác nhận tạm dừng lịch backup</b></p>
                     </div>
-                    <div *ngIf="data.serviceType === 2">
-                      <li nz-menu-item [routerLink]="'/app-smart-cloud/schedule/backup/edit/volume'">Chỉnh sửa</li>
-                      <li nz-menu-item>Tạm dừng</li>
-                      <li nz-menu-item>Xóa</li>
+                    <div *nzModalContent>
+                      <p class="text-p">Qúy khách có chắc chắn muốn tạm dừng lịch backup</p>
                     </div>
-                  </ul>
-                </nz-dropdown-menu>
+                    <div *nzModalFooter>
+                      <button nz-button nzType="default" (click)="handlePausedCancel()" class="button-cancel">Hủy
+                      </button>
+                      <button nz-button nzType="primary" (click)="handlePausedOk()"
+                              [nzLoading]="isLoadingModalPaused"
+                              class="button-ok">Đồng ý
+                      </button>
+                    </div>
+                  </nz-modal>
+                  <nz-option nzValue="3" nzLabel="Xóa" (click)="showModalDelete()"></nz-option>
+                  <one-portal-delete-schedule
+                    [isVisible]="isVisibleDelete"
+                    [isLoading]="isLoadingDelete"
+                    (onOk)="handleDeletedOk()"
+                    (onCancel)="handleDeleteCancel()" />
+                </nz-select>
               </div>
               <div *ngSwitchCase="'DISABLED'">
-                <button
-                  nz-button
-                  [nzType]="'primary'"
-                  nz-dropdown
-                  style="width: 100px"
-                  [nzDropdownMenu]="opMenu">
-                  <span>Khôi phục</span> <i nz-icon nzType="down"></i>
-                </button>
-                <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li nz-menu-item>Khôi phục</li>
-                    <li nz-menu-item>Xóa</li>
-                  </ul>
-                </nz-dropdown-menu>
+                <nz-select
+                  [nzPlaceHolder]="'Chọn thao tác'"
+                  ngModel="selectedOptionAction"
+                  name="selectedAction"
+                  (ngModelChange)="selectedOptionActionChange($event, data)">
+                  <nz-option
+                    nzValue="4"
+                    nzLabel="Khôi phục"
+                    (click)="showModalRestore()"></nz-option>
+                  <nz-modal [(nzVisible)]="isVisibleRestore" nzTitle="Khôi phục lập lịch backup bị tạm dừng"
+                            (nzOnCancel)="handleRestoreCancel()" nzCentered>
+                    <div *nzModalTitle>
+                      <p class="text-h5"><b>Khôi phục lập lịch backup bị tạm dừng</b></p>
+                    </div>
+                    <div *nzModalContent>
+                      <p class="text-p">Qúy khách có chắc chắn muốn khôi phục lại lịch backup về trạng thái ban đầu</p>
+                    </div>
+                    <div *nzModalFooter>
+                      <button nz-button nzType="default" (click)="handleRestoreCancel()" class="button-cancel">Hủy
+                      </button>
+                      <button nz-button nzType="primary" (click)="handleRestoredOk()"
+                              [nzLoading]="isLoadingRestore"
+                              class="button-ok">Đồng ý
+                      </button>
+                    </div>
+                  </nz-modal>
+                  <nz-option nzValue="3" nzLabel="Xóa"></nz-option>
+                </nz-select>
               </div>
               <div *ngSwitchCase="'PAUSED'">
-                <button
-                  nz-button
-                  [nzType]="'primary'"
-                  nz-dropdown
-                  style="width: 100px"
-                  [nzDropdownMenu]="opMenu">
-                  <span>Tiếp tục</span> <i nz-icon nzType="down"></i>
-                </button>
-                <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li nz-menu-item>Tiếp tục</li>
-                    <li nz-menu-item>Xóa</li>
-                  </ul>
-                </nz-dropdown-menu>
+                <nz-select
+                  [nzPlaceHolder]="'Chọn thao tác'"
+                  ngModel="selectedOptionAction"
+                  name="selectedAction"
+                  (ngModelChange)="selectedOptionActionChange($event, data)">
+                  <nz-option
+                    nzValue="5"
+                    nzLabel="Tiếp tục"
+                  ></nz-option>
+                  <nz-option nzValue="3" nzLabel="Xóa"></nz-option>
+                </nz-select>
               </div>
             </div>
           </td>
@@ -166,25 +189,24 @@
         </tbody>
       </nz-table>
     </div>
-<!--    <div style="margin-top: 30px;">-->
-<!--      <h3>Thông tin dung lượng Backup VPC</h3>-->
-<!--      <nz-table>-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--          <th>Tên VPC</th>-->
-<!--          <th>Hết hạn</th>-->
-<!--          <th>Dung lượng (GB)</th>-->
-<!--          <th>Đã dùng (GB)</th>-->
-<!--          <th>Còn lại (GB)</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr>-->
+    <div style="margin-top: 30px;">
+      <h3>Thông tin dung lượng Backup</h3>
+      <nz-table>
+        <thead>
+        <tr>
+          <th>Tên VPC</th>
+          <th>Hết hạn</th>
+          <th>Dung lượng (GB)</th>
+          <th>Đã dùng (GB)</th>
+          <th>Còn lại (GB)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
 
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--      </nz-table>-->
-<!--    </div>-->
-
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
   </nz-card>
 </nz-content>

@@ -37,12 +37,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-            <one-portal-image-select [region]="region"
-                                     [value]="validateForm.controls.image.value"
-                                     (onChange)="handleImageChange($event)"/>
-            <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-            </ng-template>
+            <input nz-input value="{{ backupVm?.systemInfoBackups[0].osName }}" disabled="true"/>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -70,6 +65,12 @@
             </ng-template>
           </nz-form-control>
         </nz-form-item>
+        <div style="margin-top: 10px">
+          <div class="label">
+            <span>Thời gian hết hạn:</span>
+          </div>
+          <input nz-input value="{{ backupVm?.creationDate | date: 'dd/MM/yyyy - HH:ss:mm'}}" disabled="true"/>
+        </div>
       </nz-col>
       <nz-col nzSpan="12">
         <nz-form-item>
@@ -116,6 +117,22 @@
           </nz-form-label>
           <nz-form-control>
             <input nz-input [disabled]="true" [value]="validateForm.controls.iops.getRawValue()"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="iops">
+            <div class="label">
+              <span>Thời gian sử dụng (tháng)</span>
+              <span style="color: rgba(252, 16, 16, 1); "> *</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsUseErrorTpl">
+            <nz-input-number style="width: 100%;" formControlName="monthsUse" id="monthsUse" [nzMin]="1" [nzMax]="24" [nzStep]="1" />
+            <ng-template #monthsUseErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số không quá 24 tháng</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </nz-col>

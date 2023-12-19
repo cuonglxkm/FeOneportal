@@ -100,6 +100,7 @@ import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/sc
 import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
 import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -187,6 +188,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ScheduleBackupVolumeComponent,
     EditScheduleBackupVolumeComponent,
     EditScheduleBackupVmComponent,
+    DeleteScheduleComponent,
   ],
   imports: [
     CommonModule,
