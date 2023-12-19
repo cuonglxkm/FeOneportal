@@ -36,6 +36,19 @@ export class ListScheduleBackupComponent implements OnInit{
 
   response: BaseResponse<BackupSchedule[]>
   isLoading: boolean = false
+
+  selectedOptionAction: any
+  selectedAction: BackupSchedule
+
+  isVisiblePaused: boolean = false
+  isLoadingModalPaused: boolean = false
+
+  isVisibleDelete: boolean = false
+  isLoadingDelete: boolean = false
+
+  isVisibleRestore: boolean = false
+  isLoadingRestore: boolean = false
+
   constructor(private router: Router,
               private backupScheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
@@ -85,6 +98,71 @@ export class ListScheduleBackupComponent implements OnInit{
       }
     })
   }
+
+  selectedOptionActionChange(value: any, data: any) {
+    this.selectedOptionAction = value
+    this.selectedAction = data
+    switch (parseInt(value, 10)){
+      case 1:
+        this.navigateToEdit(this.selectedAction.serviceType)
+        break;
+      case 2:
+        this.showModalPaused()
+        break;
+      case 3:
+        this.showModalDelete()
+        break;
+      case 4:
+        this.showModalRestore()
+        break;
+      case 5:
+        break;
+      default:
+        break;
+    }
+  }
+
+  navigateToEdit(serviceType: number) {
+    if(serviceType === 1) {
+      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm'])
+    } else if (serviceType === 2) {
+      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/volume'])
+    }
+  }
+
+  //paused
+  showModalPaused() {
+    this.isVisiblePaused = true;
+  }
+  handlePausedCancel() {
+    this.isVisiblePaused = false;
+  }
+  handlePausedOk() {
+    this.isVisiblePaused = false;
+  }
+
+  //delete
+  showModalDelete() {
+    this.isVisibleDelete = true;
+  }
+  handleDeleteCancel() {
+    this.isVisibleDelete = false;
+  }
+  handleDeletedOk() {
+    this.isVisibleDelete = false;
+  }
+
+  //restore
+  showModalRestore() {
+    this.isVisibleRestore = true;
+  }
+  handleRestoreCancel() {
+    this.isVisibleRestore = false;
+  }
+  handleRestoredOk() {
+    this.isVisibleRestore = false;
+  }
+
   ngOnInit(): void {
     this.formSearch.customerId = this.tokenService.get()?.userId
     this.formSearch.pageIndex = 1

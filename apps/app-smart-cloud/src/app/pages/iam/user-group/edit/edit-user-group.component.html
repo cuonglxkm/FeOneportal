@@ -15,7 +15,11 @@
                 </nz-form-label>
                 <nz-form-control>
                     <input nz-input formControlName="groupName" id="groupName" [maxlength]="128"/>
-                    <span style="color: #00000040; margin-top: 5px;">Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.</span>
+                    <div style=" margin-top: 5px;">
+                        <span [ngStyle]="{'color': validateForm.controls.groupName.touched && validateForm.controls.groupName.invalid ? 'rgba(252, 16, 16, 1)' : '#00000040'}">
+                            Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.
+                        </span>
+                    </div>
 <!--                    <ng-template #groupNameErrorTpl let-control>-->
 <!--                        <span style="color: #00000040; margin-top: 5px;">Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.</span>-->
 <!--                        <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder} from "@angular/forms";
 import {Location} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
@@ -10,7 +10,7 @@ import {ProjectModel} from "../../../shared/models/project.model";
   templateUrl: './create-schedule-backup.component.html',
   styleUrls: ['./create-schedule-backup.component.less'],
 })
-export class CreateScheduleBackupComponent {
+export class CreateScheduleBackupComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -29,6 +29,7 @@ export class CreateScheduleBackupComponent {
               private route: ActivatedRoute) {
   }
 
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId
 
@@ -45,4 +46,10 @@ export class CreateScheduleBackupComponent {
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
   }
+
+  ngOnInit(): void {
+    this.project = JSON.parse(localStorage.getItem('projectId'));
+  }
+
+
 }

@@ -55,6 +55,8 @@ export class ListBackupVmComponent implements OnInit {
 
     id: number
 
+    selectedOptionAction: string
+    selectedAction: BackupVm
 
     constructor(private backupVmService: BackupVmService,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -70,7 +72,8 @@ export class ListBackupVmComponent implements OnInit {
 
     projectChanged(project: ProjectModel) {
         this.project = project?.id
-        // this.formSearch.project = this.project
+        this.formSearch.projectId = this.project
+        this.getListBackupVM()
     }
 
     onInputChange(value: string) {
@@ -138,8 +141,8 @@ export class ListBackupVmComponent implements OnInit {
     getParam(): BackupVMFormSearch {
         this.formSearch.regionId = this.region
 
-        // this.formSearch.customerId = this.tokenService.get()?.userId
-        // this.formSearch.projectId = this.project
+        this.formSearch.customerId = this.tokenService.get()?.userId
+        this.formSearch.projectId = this.project
 
         this.formSearch.customerId = null
         this.formSearch.projectId = null
@@ -160,5 +163,20 @@ export class ListBackupVmComponent implements OnInit {
 
     navigateToRestore(id: number) {
         this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])
+    }
+
+    selectedActionChange(value: any, data: BackupVm) {
+        this.selectedOptionAction = value
+        this.selectedAction = data
+        switch (parseInt(value, 10)) {
+            case 1:
+                this.navigateToRestore(data.id)
+                break;
+            case 2:
+                this.showModalDelete(data.id)
+                break;
+            default:
+                break;
+        }
     }
 }
