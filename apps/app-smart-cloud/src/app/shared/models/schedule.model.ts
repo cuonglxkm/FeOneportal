@@ -35,7 +35,14 @@ export class FormSearchScheduleBackup {
   customerId: number
   region: number
   project: number
-  name: string
+  scheduleName: string
+  scheduleStatus: string
   pageIndex: number
   pageSize: number
+}
+
+export class FormAction {
+  customerId: number
+  scheduleId: number
+  actionType: 'pause' | 'play' | 'reactive'
 }

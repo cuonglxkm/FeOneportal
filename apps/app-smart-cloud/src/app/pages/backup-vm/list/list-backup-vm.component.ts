@@ -144,10 +144,6 @@ export class ListBackupVmComponent implements OnInit {
         this.formSearch.customerId = this.tokenService.get()?.userId
         this.formSearch.projectId = this.project
 
-        this.formSearch.customerId = null
-        this.formSearch.projectId = null
-
-
         if (this.value === undefined) {
             this.formSearch.instanceBackupName = null
         } else {

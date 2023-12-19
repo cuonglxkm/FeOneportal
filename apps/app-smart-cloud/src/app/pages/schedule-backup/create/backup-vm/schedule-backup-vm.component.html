@@ -242,7 +242,7 @@
       </button>
       <nz-form-control *nzSpaceItem>
         <button nz-button [nzLoading]="isLoading" nzType="primary"
-                class="button-create">Xác nhận</button>
+                class="button-create" [disabled]="!validateForm.valid">Xác nhận</button>
       </nz-form-control>
     </nz-space>
   </nz-form-item>
