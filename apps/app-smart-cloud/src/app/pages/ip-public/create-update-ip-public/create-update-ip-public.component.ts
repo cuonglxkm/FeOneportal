@@ -45,7 +45,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         this.listIpSubnet = data
       }
     )
-    this.instancService.search(1,999,this.regionId,'','',this.tokenService.get()?.userId).subscribe(
+    this.instancService.search(1,999,this.regionId, this.projectId,'','', true, this.tokenService.get()?.userId).subscribe(
       (data) => {
         this.listInstance = data.records;
       }

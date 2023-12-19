@@ -196,4 +196,13 @@ export class InstancesService extends BaseService{
   getConsoleUrl(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`)
   }
+
+  getPortByInstance(
+    instanceId: number,
+    region: number
+  ): Observable<any> {
+    let url_ = `/instances/port?instanceId=${instanceId}&region=${region}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
 }

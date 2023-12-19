@@ -129,8 +129,8 @@
                 class="images-body"
                 [id]="'images_' + data.id"
                 [ngClass]="{
-                  'images-body-active': data.id === listSelectedImageId[i],
-                  bgGray: !data.id === listSelectedImageId[i]
+                  'images-body-active': data.id === selectedImageTypeId,
+                  bgGray: !data.id === selectedImageTypeId
                 }"
               >
                 <tr>
@@ -144,16 +144,15 @@
                       <nz-select
                         nzShowSearch
                         [id]="'hdh_' + data.id"
-                        [(ngModel)]="listSelectedImageId[i]"
-                        (ngModelChange)="onInputHDH($event, i)"
-                        [nzLoading]="isLoading"
+                        [(ngModel)]="listSelectedImage[i]"
+                        (ngModelChange)="onInputHDH($event, i, data.id)"
                         nzPlaceHolder="Chọn phiên bản"
                         [ngModelOptions]="{ standalone: true }"
                         style="text-align: center; width: 100%"
                       >
                         <nz-option
                           *ngFor="let p of listOfImageByImageType[i]"
-                          [nzValue]="p.name"
+                          [nzValue]="p.id"
                           [nzLabel]="p.name"
                         ></nz-option>
                       </nz-select>
@@ -317,7 +316,11 @@
             [@slider]="ani"
           >
             <nz-row>
-              <table class="text-center" style="width: 100%;" (click)="onInputFlavors(item.id)">
+              <table
+                class="text-center"
+                style="width: 100%"
+                (click)="onInputFlavors(item.id)"
+              >
                 <tbody
                   class="flavor-body"
                   [id]="'flavor_' + item.id"
