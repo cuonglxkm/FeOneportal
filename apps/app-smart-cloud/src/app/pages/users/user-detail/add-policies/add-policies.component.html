@@ -5,7 +5,7 @@
       <a [routerLink]="['/app-smart-cloud/users']">Users</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/users/detail/' + id]"
+      <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
         >Chi tiết User</a
       >
     </nz-breadcrumb-item>
@@ -24,7 +24,8 @@
 </page-header>
 
 <one-portal-attach-permission-policy
-  [isCreate]="true"
+  [isCreate]="false"
+  [userName]="userName"
   (listGroupNames)="onChangeGroupNames($event)"
   (listPolicyNames)="onChangePolicyNames($event)"
 ></one-portal-attach-permission-policy>
@@ -53,7 +54,7 @@
       class="m-r-8"
       nz-button
       nzType="primary"
-      (click)="navigateToCreate()"
+      (click)="addPolicies()"
     >
       Thêm policies
     </button>

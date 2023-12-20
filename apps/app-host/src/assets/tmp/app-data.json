@@ -30,6 +30,11 @@
               "text": "User Group",
               "icon": "anticon-user",
               "link": "/app-smart-cloud/iam/user-group"
+            },
+            {
+              "text": "Users",
+              "icon": "anticon-user",
+              "link": "/app-smart-cloud/users"
             }
           ]
         },
@@ -87,11 +92,6 @@
           "text": "Quản lý Policy",
           "icon": "anticon-info",
           "link": "/app-smart-cloud/policy"
-        },
-        {
-          "text": "Users",
-          "icon": "anticon-user",
-          "link": "/app-smart-cloud/users"
         },
         {
           "text": "Lập lịch Backup",

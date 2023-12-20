@@ -22,10 +22,10 @@ export class UserService extends BaseService {
   search(
     userName: string,
     pageSize: number,
-    pageNumber: number
+    currentPage: number
   ): Observable<any> {
     if (userName == undefined) userName = '';
-    let url_ = `/users?userName=${userName}&pageSize=${pageSize}&pageNumber=${pageNumber}`
+    let url_ = `/users?userName=${userName}&pageSize=${pageSize}&currentPage=${currentPage}`
     url_ = url_.replace(/[?&]$/, '');
 
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_);
@@ -52,16 +52,39 @@ export class UserService extends BaseService {
     return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_);
   }
 
+  getGroups(
+    groupName: string,
+    pageSize: number,
+    currentPage: number
+  ): Observable<any> {
+    if (groupName == undefined) groupName = '';
+    let url_ = `/groups?groupName=${groupName}&pageSize=${pageSize}&currentPage=${currentPage}`
+    url_ = url_.replace(/[?&]$/, '');
+
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_);
+  }
+
+  getPolicies(
+    policyName: string,
+    pageSize: number,
+    currentPage: number
+  ): Observable<any> {
+    if (policyName == undefined) policyName = '';
+    let url_ = `/policies?policyName=${policyName}&pageSize=${pageSize}&currentPage=${currentPage}`
+    url_ = url_.replace(/[?&]$/, '');
+
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_);
+  }
+
+  // getPoliciesOfUser(
+  //   userName: string
+  // ): Observable<any> {
+  //   let url_ = `/users/${userName}/policies`
+  //   return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_);
+  // }
+
   getGroupsCreateUser(): Observable<BaseResponse<GroupCreateUser[]>> {
     return this.http.get<BaseResponse<GroupCreateUser[]>>('/groupCreateUsers');
-  }
-
-  getCopyUserPolicies(): Observable<BaseResponse<CopyUserPolicies[]>> {
-    return this.http.get<BaseResponse<CopyUserPolicies[]>>('/copyUserPlicies');
-  }
-
-  getPermissionPolicies(): Observable<BaseResponse<PermissionPolicies[]>> {
-    return this.http.get<BaseResponse<PermissionPolicies[]>>('/permissionPolicies');
   }
 
   getPoliciesOfUser(): Observable<BaseResponse<PoliciesOfUser[]>> {

@@ -117,15 +117,15 @@ export class UserComponent implements OnInit {
     if (this.codeVerify == 'delete') {
       this.service.deleteUsers(this.listUserPicked).subscribe((data) => {
         console.log(data);
-        this.message.success('Xóa các Users thành công');
+        this.message.success('Xóa ' + this.listUserPicked.length + ' Users thành công');
         this.reloadTable();
       }, 
       (error) => {
         console.log(error.error);
-        this.message.error('Xóa các Users không thành công')
+        this.message.error('Xóa Users không thành công')
       });
     } else {
-      this.message.error('Xóa các Users không thành công')
+      this.message.error('Xóa Users không thành công')
     }
   }
 
@@ -200,8 +200,8 @@ export class UserComponent implements OnInit {
     this.getData();
   }
 
-  getUserDetail(id: number) {
-    this.router.navigate(['/app-smart-cloud/users/detail/' + id]);
+  getUserDetail(userName: any) {
+    this.router.navigate(['/app-smart-cloud/users/detail/' + userName]);
   }
 
   navigateToCreate() {
