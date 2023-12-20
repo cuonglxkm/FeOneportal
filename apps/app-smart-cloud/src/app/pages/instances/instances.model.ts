@@ -391,3 +391,24 @@ export class Network {
   security_groups: string[];
   allowAddressPairs: any;
 }
+
+export class BlockStorageAttachments {
+  id: number;
+  cloudId: string;
+  name: string;
+  sizeInGB: number;
+  description: string;
+  instanceId: number;
+  postResizeVolumeId: number;
+  bootable: boolean;
+  regionId: number;
+  regionText: string;
+  offerId: number;
+  iops: number;
+  customerId: number;
+  createDate: string;
+  status: string;
+  cloudIdentityId: number;
+  projectName: string;
+  projectId: number;
+}

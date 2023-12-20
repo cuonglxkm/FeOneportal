@@ -661,25 +661,29 @@
       </div>
     </nz-row>
 
-    <nz-row nzGutter="16">
+    <nz-row style="margin-top: 20px; margin-bottom: -25px;" nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
+        <nz-form-item style="margin-bottom: 5px">
           <nz-form-label
             >Thời hạn sử dụng (Tháng)
             <span class="text-red">*</span></nz-form-label
           >
           <nz-form-control>
-            <nz-input-number
-              style="width: 100%"
-              [nzMin]="1"
-              [nzMax]="100"
-              [nzStep]="1"
-              [(ngModel)]="numberMonth"
-              [ngModelOptions]="{ standalone: true }"
-            ></nz-input-number>
+            <nz-row>
+              <nz-input-number
+                style="width: 50%"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                [(ngModel)]="numberMonth"
+                [ngModelOptions]="{ standalone: true }"
+              ></nz-input-number>
+              <div style="margin-left: 20px;">
+                Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}
+              </div>
+            </nz-row>
           </nz-form-control>
         </nz-form-item>
-        <div>Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}</div>
       </nz-col>
     </nz-row>
   </nz-card>
