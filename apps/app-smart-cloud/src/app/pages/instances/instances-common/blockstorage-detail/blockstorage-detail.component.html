@@ -1,17 +1,18 @@
-
 <nz-card
   [nzBordered]="false"
   nzTitle="
 Block Storage"
 >
   <div class="ant-table">
-    <table>
-      <thead class="ant-table-thead">
+    <nz-table
+      [nzData]="listOfDataBlockStorage"
+      [nzLoading]="loading"
+      [nzShowPagination]="false"
+    >
+      <thead>
         <tr>
           <th>Loại ổ cứng</th>
           <th>Tên Volume</th>
-          <th>VCPU</th>
-          <th>RAM (GB)</th>
           <th>Dung lượng (GB)</th>
           <th>Trạng thái Volume</th>
           <th>Kiểu Volume</th>
@@ -22,38 +23,38 @@ Block Storage"
       <tbody class="ant-table-tbody">
         <tr *ngFor="let data of listOfDataBlockStorage">
           <td>
-            <label>
-              {{ data.type }}
+            <label *ngIf="data.iops != 0"> SSD </label>
+            <label *ngIf="data.iops == 0 || data.iops == undefined">
+              HDD
             </label>
           </td>
           <td>
-            <label>
+            <label class="text-blue">
               {{ data.name }}
             </label>
           </td>
           <td>
             <label>
-              {{ data.vCPU }}
+              {{ data.sizeInGB }}
             </label>
           </td>
           <td>
-            <label>
-              {{ data.ram }}
+            <label *ngIf="data.status == 'KHOITAO'" style="color: #52c41a">
+              KHỞI TẠO
             </label>
           </td>
           <td>
-            <label>
-              {{ data.capacity }}
+            <label *ngIf="data.bootable">
+              <i nz-icon nzType="hdd"></i>
+              VOLUME ROOT
             </label>
-          </td>
-          <td>
-            <label>
-              {{ data.status }}
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.typeVolume }}
+            <label *ngIf="!data.bootable">
+              <img
+                style="width: 8%; height: 8%"
+                src="assets/imgs/attach_volume.png"
+                alt=""
+              />
+              VOLUME GẮN THÊM
             </label>
           </td>
           <td>
@@ -63,6 +64,6 @@ Block Storage"
           </td>
         </tr>
       </tbody>
-    </table>
+    </nz-table>
   </div>
 </nz-card>
