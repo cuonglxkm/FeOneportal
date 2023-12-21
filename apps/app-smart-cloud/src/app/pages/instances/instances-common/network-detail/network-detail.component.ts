@@ -14,8 +14,12 @@ import { InstancesService } from '../../instances.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { InstancesModel, SecurityGroupModel } from '../../instances.model';
-import { concatMap } from 'rxjs';
+import {
+  InstancesModel,
+  Network,
+  SecurityGroupModel,
+} from '../../instances.model';
+import { concatMap, finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-network-detail',
@@ -29,11 +33,11 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
-  regionId: number;
   listSecurityGroup: SecurityGroupModel[] = [];
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
-  listOfDataNetwork = [];
+  listOfDataNetwork: Network[] = [];
+  loading: boolean = true;
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
@@ -46,11 +50,17 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     this.dataService.getById(this.instancesId, false).subscribe((data: any) => {
       this.instancesModel = data;
       this.dataService
-      .getPortByInstance(this.instancesId, this.instancesModel.regionId)
-      .subscribe((dataNetwork: any) => {
-        this.listOfDataNetwork = dataNetwork;
-        this.cdr.detectChanges();
-      });
+        .getPortByInstance(this.instancesId, this.instancesModel.regionId)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe((dataNetwork: any) => {
+          this.listOfDataNetwork = dataNetwork;
+          this.cdr.detectChanges();
+        });
       this.dataService
         .getAllSecurityGroup(
           this.instancesModel.regionId,

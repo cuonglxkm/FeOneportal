@@ -209,15 +209,15 @@ const routes: Routes = [
     component: UserCreateComponent
   },
   {
-    path: 'users/detail/:id',
+    path: 'users/detail/:userName',
     component: UserDetailComponent
   },
   {
-    path: 'users/detail/:id/add-policies',
+    path: 'users/detail/:userName/add-policies',
     component: AddPoliciesComponent
   },
   {
-    path: 'users/detail/:id/add-to-group',
+    path: 'users/detail/:userName/add-to-group',
     component: AddToGroupComponent
   },
   {

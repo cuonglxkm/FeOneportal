@@ -1,7 +1,7 @@
 <nz-card nzTitle="Network">
   <nz-card nzHoverable>
     <div class="ant-table">
-      <table>
+      <nz-table [nzData]="listOfDataNetwork" [nzLoading]="loading" [nzShowPagination]="false">
         <thead class="ant-table-thead">
           <tr>
             <th>Tên Network</th>
@@ -30,7 +30,7 @@
               </label>
             </td>
             <td>
-              <label>
+              <label style="color: #52c41a">
                 {{ data.status }}
               </label>
             </td>
@@ -60,7 +60,7 @@
             </td>
           </tr>
         </tbody>
-      </table>
+      </nz-table>
     </div>
   </nz-card>
 </nz-card>

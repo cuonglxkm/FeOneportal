@@ -44,23 +44,6 @@ class ConfigCustom {
   priceHour?: string = '000';
   priceMonth?: string = '000';
 }
-class BlockStorage {
-  id: number = 0;
-  type?: string = '';
-  name?: string = '';
-  vCPU?: number = 0;
-  ram?: number = 0;
-  capacity?: number = 0;
-  code?: boolean = false;
-  multiattach?: boolean = false;
-  price?: string = '000';
-}
-class Network {
-  name?: string = 'pri_network';
-  mac?: string = '';
-  ip?: string = '';
-  status?: string = '';
-}
 
 @Component({
   selector: 'one-portal-instances-edit',
@@ -112,14 +95,6 @@ export class InstancesEditComponent implements OnInit {
     // interval: { timing: 1500 },
     animation: 'lazy',
   };
-
-  //#region Hệ điều hành
-
-  //#endregion
-
-  //#region  Snapshot
-
-  //#endregion
 
   //#region HDD hay SDD
   activeBlockHDD: boolean = true;
@@ -191,92 +166,10 @@ export class InstancesEditComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
-  // toggleClass(id: string) {
-  //   this.selectedElementFlavor = id;
-  //   if (this.selectedElementFlavor) {
-  //     this.isInitialClass = !this.isInitialClass;
-  //     this.isNewClass = !this.isNewClass;
-  //   } else {
-  //     this.isInitialClass = true;
-  //     this.isNewClass = false;
-  //   }
-
-  //   this.cdr.detectChanges();
-  // }
 
   selectElementInputFlavors(id: any) {
     this.selectedElementFlavor = id;
   }
-  //#endregion
-
-  //#region selectedPasswordOrSSHkey
-
-  //#endregion
-
-  //#region BlockStorage
-  activeBlockStorage: boolean = false;
-  idBlockStorage = 0;
-  listOfDataBlockStorage: BlockStorage[] = [];
-  defaultBlockStorage: BlockStorage = new BlockStorage();
-  typeBlockStorage: Array<{ value: string; label: string }> = [
-    { value: 'HDD', label: 'HDD' },
-    { value: 'SSD', label: 'SSD' },
-  ];
-
-  initBlockStorage(): void {
-    this.activeBlockStorage = true;
-    this.listOfDataBlockStorage.push(this.defaultBlockStorage);
-  }
-  deleteRowBlockStorage(id: number): void {
-    this.listOfDataBlockStorage = this.listOfDataBlockStorage.filter(
-      (d) => d.id !== id
-    );
-  }
-
-  onInputBlockStorage(index: number, event: any) {
-    // const inputElement = this.renderer.selectRootElement('#type_' + index);
-    // const inputValue = inputElement.value;
-    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataBlockStorage.filter(
-      (item) => item.type !== ''
-    );
-    const filteredArrayHas = this.listOfDataBlockStorage.filter(
-      (item) => item.type == ''
-    );
-
-    if (filteredArrayHas.length > 0) {
-      this.listOfDataBlockStorage[index].type = event;
-    } else {
-      // Add a new row with the same value as the current row
-      //const currentItem = this.itemsTest[count];
-      //this.itemsTest.splice(count + 1, 0, currentItem);
-      this.defaultBlockStorage = new BlockStorage();
-      this.idBlockStorage++;
-      this.defaultBlockStorage.id = this.idBlockStorage;
-      this.listOfDataBlockStorage.push(this.defaultBlockStorage);
-    }
-    this.cdr.detectChanges();
-  }
-  //#endregion
-  //#region Network
-  activeNetwork: boolean = false;
-  idNetwork = 0;
-  listOfDataNetwork: Network[] = [];
-  defaultNetwork: Network = new Network();
-  listIPSubnetModel: IPSubnetModel[] = [];
-
-  initNetwork(): void {
-    this.activeNetwork = true;
-    this.listOfDataNetwork.push(this.defaultNetwork);
-
-    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
-      // var resultHttp = data;
-      // this.listOfDataNetwork.push(...resultHttp);
-    });
-  }
-
-  //#endregion
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -310,7 +203,6 @@ export class InstancesEditComponent implements OnInit {
 
     this.userId = this.tokenService.get()?.userId;
     this.getAllSecurityGroup();
-    this.initNetwork();
 
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {

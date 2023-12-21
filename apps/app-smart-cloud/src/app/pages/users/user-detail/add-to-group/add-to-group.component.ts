@@ -25,7 +25,7 @@ export class AddToGroupComponent implements OnInit {
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
-  id: any;
+  userName: any;
   searchParam: string;
   loading = true;
   typePolicy: string = '';
@@ -39,7 +39,7 @@ export class AddToGroupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.userName = this.activatedRoute.snapshot.paramMap.get('userName');
     this.getGroup();
   }
 
@@ -157,6 +157,6 @@ export class AddToGroupComponent implements OnInit {
   navigateToCreate() {}
 
   navigateToDetail() {
-    this.router.navigate(['/app-smart-cloud/users/detail/' +this.id]);
+    this.router.navigate(['/app-smart-cloud/users/detail/' +this.userName]);
   }
 }

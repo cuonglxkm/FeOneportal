@@ -43,7 +43,6 @@ export class InstancesDetailComponent implements OnInit {
 
   instancesModel: InstancesModel;
   id: number;
-  listOfDataBlockStorage: BlockStorage[] = [];
   listSecurityGroupModel: SecurityGroupModel[] = [];
 
   constructor(

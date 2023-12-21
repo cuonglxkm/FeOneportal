@@ -217,21 +217,21 @@
               />
             </td>
             <td class="fieldColor">{{ item.name }}</td>
-            <td>{{ item.numberUsers }}</td>
-            <td *ngIf="item.attachedPolicies.length == 0">None</td>
-            <td class="fieldColor" *ngIf="item.attachedPolicies.length == 1">
-              {{ item.attachedPolicies[0] }}
+            <td>{{ item.userOfGroup }}</td>
+            <td *ngIf="item.policies.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.policies.length == 1">
+              {{ item.policies[0] }}
             </td>
-            <td class="fieldColor" *ngIf="item.attachedPolicies.length == 2">
-              {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+            <td class="fieldColor" *ngIf="item.policies.length == 2">
+              {{ item.policies[0] }}, {{ item.policies[1] }}
             </td>
-            <td class="fieldColor" *ngIf="item.attachedPolicies.length > 2">
-              {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+            <td class="fieldColor" *ngIf="item.policies.length > 2">
+              {{ item.policies[0] }}, {{ item.policies[1] }}
               <span class="nameField">
-                and {{ item.attachedPolicies.length - 2 }} groups
+                and {{ item.policies.length - 2 }} groups
               </span>
             </td>
-            <td>{{ item.createdTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ item.createdDate | date:'dd/MM/yyyy HH:mm:ss' }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -342,10 +342,34 @@
                 [(ngModel)]="listCheckedInPage[i]"
               />
             </td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.groups }}</td>
-            <td>{{ item.attachedPolicies }}</td>
-            <td>{{ item.createdTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ item.userName }}</td>
+            <td *ngIf="item.userGroups.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.userGroups.length == 1">
+              {{ item.userGroups[0] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.userGroups.length == 2">
+              {{ item.userGroups[0] }}, {{ item.userGroups[1] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.userGroups.length > 2">
+              {{ item.userGroups[0] }}, {{ item.userGroups[1] }}
+              <span class="nameField">
+                and {{ item.userGroups.length - 2 }} groups
+              </span>
+            </td>
+            <td *ngIf="item.userPolicies.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.userPolicies.length == 1">
+              {{ item.userPolicies[0] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.userPolicies.length == 2">
+              {{ item.userPolicies[0] }}, {{ item.userPolicies[1] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.userPolicies.length > 2">
+              {{ item.userPolicies[0] }}, {{ item.userPolicies[1] }}
+              <span class="nameField">
+                and {{ item.userPolicies.length - 2 }} policies
+              </span>
+            </td>
+            <td>{{ item.createdDate | date:'dd/MM/yyyy HH:mm:ss' }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -499,7 +523,7 @@
                 (nzExpandChange)="onExpandChange(item.name, $event)"
               >{{ item.name }}</td>
               <td>{{ item.type }}</td>
-              <td>{{ item.attachedEntities }}</td>
+              <td>{{ listAttachedEntities[i] }}</td>
             </tr>
             <tr [nzExpand]="expandSet.has(item.name)">
               <json-editor
