@@ -75,13 +75,20 @@ export class ListScheduleBackupComponent implements OnInit{
 
   onChange(value: string) {
     console.log('abc', this.selectedValue)
-    this.selectedValue = value;
+    if(value === 'all') {
+      this.selectedValue = ''
+    } else {
+      this.selectedValue = value;
+    }
+
     this.formSearch.scheduleStatus = this.selectedValue
+    this.getListScheduleBackup()
   }
 
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
+    this.formSearch.scheduleName = this.value
   }
 
   navigateToCreate() {
@@ -151,14 +158,19 @@ export class ListScheduleBackupComponent implements OnInit{
     this.isVisiblePaused = false;
   }
   handlePausedOk() {
-    this.formAction.customerId = this.customerId
+    this.formAction.customerId = this.tokenService.get()?.userId
     this.formAction.actionType = 'pause'
+    console.log('action', this.formAction)
     this.backupScheduleService.action(this.formAction).subscribe(data => {
       this.isVisiblePaused = false;
+      this.isVisiblePaused = false;
       this.notification.success('Thành công', 'Tạm dừng lịch backup thành công')
+      this.getListScheduleBackup()
     }, error =>  {
       this.isVisiblePaused = false;
+      this.isVisiblePaused = false;
       this.notification.error('Thất bại','Tạm dừng lịch backup thất bại')
+      this.getListScheduleBackup()
     })
 
   }
@@ -175,9 +187,11 @@ export class ListScheduleBackupComponent implements OnInit{
     this.backupScheduleService.delete(this.customerId, this.idSchedule).subscribe(data => {
       this.isVisibleDelete = false;
       this.notification.success('Thành công', 'Xóa lịch backup thành công')
+      this.getListScheduleBackup()
     }, error =>  {
       this.isVisibleDelete = false;
       this.notification.error('Thất bại','Xóa lịch backup thất bại')
+      this.getListScheduleBackup()
     })
   }
 
@@ -188,16 +202,21 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handlePlayCancel() {
     this.isVisiblePlay = false;
+    this.isLoadingPlay = false;
   }
   handlePlaydOk() {
-    this.formAction.customerId = this.customerId
+    this.formAction.customerId = this.tokenService.get()?.userId
     this.formAction.actionType = 'play'
     this.backupScheduleService.action(this.formAction).subscribe(data => {
       this.isVisiblePlay = false;
+      this.isLoadingPlay = false;
       this.notification.success('Thành công', 'Tiếp tục lịch backup thành công')
+      this.getListScheduleBackup()
     }, error =>  {
       this.isVisiblePlay = false;
+      this.isLoadingPlay = false;
       this.notification.error('Thất bại','Tiếp tục lịch backup thất bại')
+      this.getListScheduleBackup()
     })
   }
 
@@ -210,14 +229,16 @@ export class ListScheduleBackupComponent implements OnInit{
     this.isVisibleRestore = false;
   }
   handleRestoredOk() {
-    this.formAction.customerId = this.customerId
+    this.formAction.customerId = this.tokenService.get()?.userId
     this.formAction.actionType = 'reactive'
     this.backupScheduleService.action(this.formAction).subscribe(data => {
       this.isVisibleDelete = false;
       this.notification.success('Thành công', 'Khởi động lại lịch backup thành công')
+      this.getListScheduleBackup()
     }, error =>  {
       this.isVisibleDelete = false;
       this.notification.error('Thất bại','Khởi động lại lịch backup thất bại')
+      this.getListScheduleBackup()
     })
   }
 

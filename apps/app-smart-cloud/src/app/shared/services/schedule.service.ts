@@ -1,7 +1,13 @@
 import {Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {BackupSchedule, FormAction, FormSearchScheduleBackup} from "../models/schedule.model";
+import {
+  BackupSchedule,
+  FormAction,
+  FormCreateSchedule,
+  FormEditSchedule,
+  FormSearchScheduleBackup
+} from "../models/schedule.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 
 @Injectable({
@@ -55,7 +61,7 @@ export class ScheduleService extends BaseService {
 
   detail(customerId: number, id: number) {
     return this.http.get<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customer=${customerId}`)
+        `/backups/schedules/${id}?customerId=${customerId}`)
   }
 
   action(formAction: FormAction) {
@@ -66,5 +72,15 @@ export class ScheduleService extends BaseService {
   delete(customerId: number, id: number) {
     return this.http.delete<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
         `/backups/schedules/${id}?customer=${customerId}`)
+  }
+
+  create(formCreate: FormCreateSchedule) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
+        Object.assign(formCreate))
+  }
+
+  edit(formEdit: FormEditSchedule) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
+         Object.assign(formEdit))
   }
 }
