@@ -2,11 +2,12 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
-import {BackupSchedule, FormSearchScheduleBackup} from "../../../shared/models/schedule.model";
+import {BackupSchedule, FormAction, FormSearchScheduleBackup} from "../../../shared/models/schedule.model";
 import {ScheduleService} from "../../../shared/services/schedule.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {BaseResponse} from "../../../../../../../libs/common-utils/src";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -49,9 +50,16 @@ export class ListScheduleBackupComponent implements OnInit{
   isVisibleRestore: boolean = false
   isLoadingRestore: boolean = false
 
+  isVisiblePlay: boolean = false
+  isLoadingPlay: boolean = false
+
+  formAction: FormAction = new FormAction()
+  idSchedule: number
+
   constructor(private router: Router,
               private backupScheduleService: ScheduleService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -60,17 +68,27 @@ export class ListScheduleBackupComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
+    this.formSearch.pageIndex = this.pageIndex
+    this.formSearch.pageSize = this.pageSize
+    this.getListScheduleBackup()
   }
 
   onChange(value: string) {
     console.log('abc', this.selectedValue)
-    this.selectedValue = value;
+    if(value === 'all') {
+      this.selectedValue = ''
+    } else {
+      this.selectedValue = value;
+    }
 
+    this.formSearch.scheduleStatus = this.selectedValue
+    this.getListScheduleBackup()
   }
 
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
+    this.formSearch.scheduleName = this.value
   }
 
   navigateToCreate() {
@@ -79,23 +97,23 @@ export class ListScheduleBackupComponent implements OnInit{
 
   onQueryParamsChange(params: NzTableQueryParams) {
     const {pageSize, pageIndex} = params
-    this.formSearch.pageSize = pageSize;
-    this.formSearch.pageIndex = pageIndex
+    this.pageSize = pageSize;
+    this.pageIndex = pageIndex
+    this.formSearch.pageIndex = this.pageIndex
+    this.formSearch.pageSize = this.pageSize
     this.getListScheduleBackup();
   }
 
   getListScheduleBackup() {
     this.isLoading = true
+    console.log(this.formSearch.pageIndex)
+    console.log(this.formSearch.pageSize)
     this.backupScheduleService.search(this.formSearch).subscribe(data => {
       console.log(data)
-      if(data.totalCount == 0) {
-        this.isLoading = false
-        this.router.navigate(['/app-smart-cloud/schedule/backup/blank'])
-      } else {
         this.response = data
         this.listBackupSchedule = data.records
         this.isLoading = false
-      }
+
     })
   }
 
@@ -104,69 +122,132 @@ export class ListScheduleBackupComponent implements OnInit{
     this.selectedAction = data
     switch (parseInt(value, 10)){
       case 1:
-        this.navigateToEdit(this.selectedAction.serviceType)
+        this.navigateToEdit(this.selectedAction.serviceType, this.selectedAction.id)
         break;
       case 2:
-        this.showModalPaused()
+        this.showModalPaused(this.selectedAction.id)
         break;
       case 3:
-        this.showModalDelete()
+        this.showModalDelete(this.selectedAction.id)
         break;
       case 4:
-        this.showModalRestore()
+        this.showModalRestore(this.selectedAction.id)
         break;
       case 5:
+        this.showModalPlay(this.selectedAction.id)
         break;
       default:
         break;
     }
   }
 
-  navigateToEdit(serviceType: number) {
+  navigateToEdit(serviceType: number, id: number) {
     if(serviceType === 1) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm'])
+      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm',  id])
     } else if (serviceType === 2) {
       this.router.navigate(['/app-smart-cloud/schedule/backup/edit/volume'])
     }
   }
 
   //paused
-  showModalPaused() {
+  showModalPaused(id: number) {
     this.isVisiblePaused = true;
+    this.formAction.scheduleId = id
   }
   handlePausedCancel() {
     this.isVisiblePaused = false;
   }
   handlePausedOk() {
-    this.isVisiblePaused = false;
+    this.formAction.customerId = this.tokenService.get()?.userId
+    this.formAction.actionType = 'pause'
+    console.log('action', this.formAction)
+    this.backupScheduleService.action(this.formAction).subscribe(data => {
+      this.isVisiblePaused = false;
+      this.isVisiblePaused = false;
+      this.notification.success('Thành công', 'Tạm dừng lịch backup thành công')
+      this.getListScheduleBackup()
+    }, error =>  {
+      this.isVisiblePaused = false;
+      this.isVisiblePaused = false;
+      this.notification.error('Thất bại','Tạm dừng lịch backup thất bại')
+      this.getListScheduleBackup()
+    })
+
   }
 
   //delete
-  showModalDelete() {
+  showModalDelete(id: number) {
     this.isVisibleDelete = true;
+    this.idSchedule = id
   }
   handleDeleteCancel() {
     this.isVisibleDelete = false;
   }
   handleDeletedOk() {
-    this.isVisibleDelete = false;
+    this.backupScheduleService.delete(this.customerId, this.idSchedule).subscribe(data => {
+      this.isVisibleDelete = false;
+      this.notification.success('Thành công', 'Xóa lịch backup thành công')
+      this.getListScheduleBackup()
+    }, error =>  {
+      this.isVisibleDelete = false;
+      this.notification.error('Thất bại','Xóa lịch backup thất bại')
+      this.getListScheduleBackup()
+    })
   }
 
   //restore
-  showModalRestore() {
+  showModalPlay(id: number) {
+    this.formAction.scheduleId = id
+    this.isVisiblePlay = true;
+  }
+  handlePlayCancel() {
+    this.isVisiblePlay = false;
+    this.isLoadingPlay = false;
+  }
+  handlePlaydOk() {
+    this.formAction.customerId = this.tokenService.get()?.userId
+    this.formAction.actionType = 'play'
+    this.backupScheduleService.action(this.formAction).subscribe(data => {
+      this.isVisiblePlay = false;
+      this.isLoadingPlay = false;
+      this.notification.success('Thành công', 'Tiếp tục lịch backup thành công')
+      this.getListScheduleBackup()
+    }, error =>  {
+      this.isVisiblePlay = false;
+      this.isLoadingPlay = false;
+      this.notification.error('Thất bại','Tiếp tục lịch backup thất bại')
+      this.getListScheduleBackup()
+    })
+  }
+
+  //tiếp tục
+  showModalRestore(id: number) {
+    this.formAction.scheduleId = id
     this.isVisibleRestore = true;
   }
   handleRestoreCancel() {
     this.isVisibleRestore = false;
   }
   handleRestoredOk() {
-    this.isVisibleRestore = false;
+    this.formAction.customerId = this.tokenService.get()?.userId
+    this.formAction.actionType = 'reactive'
+    this.backupScheduleService.action(this.formAction).subscribe(data => {
+      this.isVisibleDelete = false;
+      this.notification.success('Thành công', 'Khởi động lại lịch backup thành công')
+      this.getListScheduleBackup()
+    }, error =>  {
+      this.isVisibleDelete = false;
+      this.notification.error('Thất bại','Khởi động lại lịch backup thất bại')
+      this.getListScheduleBackup()
+    })
   }
 
   ngOnInit(): void {
+    console.log(this.pageSize)
+    console.log(this.pageIndex)
     this.formSearch.customerId = this.tokenService.get()?.userId
-    this.formSearch.pageIndex = 1
-    this.formSearch.pageSize = 10
+    this.formSearch.pageIndex = this.pageIndex
+    this.formSearch.pageSize = this.pageSize
     this.getListScheduleBackup()
   }
 }

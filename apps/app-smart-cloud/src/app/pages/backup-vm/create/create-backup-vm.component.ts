@@ -1,5 +1,13 @@
 import {Component, Inject, OnChanges, OnInit} from '@angular/core';
-import {BackupPackage, BackupVm, CreateBackupVmOrderData, CreateBackupVmSpecification, FormCreateBackup, VolumeAttachment} from "../../../shared/models/backup-vm";
+import {
+    BackupPackage,
+    BackupVm,
+    BackupVMFormSearch,
+    CreateBackupVmOrderData,
+    CreateBackupVmSpecification,
+    FormCreateBackup,
+    VolumeAttachment
+} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
@@ -50,19 +58,25 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
         customerId: FormControl<number>
     }> = this.fb.group({
         instanceId: [0, [Validators.required]],
-        backupName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]*$/), Validators.minLength(3), Validators.maxLength(50)]],
+        backupName: ['', [Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+            Validators.minLength(3),
+            Validators.maxLength(50),
+            this.validateDuplicateName.bind(this)]],
         backupInstanceOfferId: [0, [Validators.required]],
         volumeToBackupIds: [[] as number[]],
         securityGroupToBackupIds: [[] as string[]],
         projectId: [0, [Validators.required]],
-        description: ['', [Validators.required, Validators.maxLength(500)]],
+        description: ['', [Validators.maxLength(500)]],
         scheduleId: [0, [Validators.required]],
         backupPacketId: [0, [Validators.required]],
         customerId: [0, [Validators.required]],
     });
 
     formCreateBackup: FormCreateBackup = new FormCreateBackup()
+    formSearch: BackupVMFormSearch = new BackupVMFormSearch()
 
+    listBackupVM: BackupVm[] = []
     constructor(
         private backupVmService: BackupVmService,
         private instanceService: InstancesService,
@@ -99,12 +113,41 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
     //     this.validateForm.controls.backupInstanceOfferId.setValue(value)
     // }
 
+    getParam(): BackupVMFormSearch {
+        this.formSearch.regionId = this.region
+
+        this.formSearch.customerId = this.tokenService.get()?.userId
+        this.formSearch.projectId = this.project
+
+        this.formSearch.instanceBackupName = null
+
+        return this.formSearch
+    }
+
+    validateDuplicateName(control) {
+        const value = control.value;
+        // Check if the input name is already in the list
+        this.backupVmService.search(this.formSearch).subscribe(data => {
+            this.listBackupVM = data.records
+            this.listBackupVM.forEach(item => {
+                if (item.name.includes(value)) {
+                    return { duplicateName: true }; // Duplicate name found
+                } else {
+                    return null; // Name is unique
+                }
+            })
+        })
+
+    }
+
     submitForm(): void {
         this.isLoading = true
         if (this.validateForm.valid) {
             console.log(this.validateForm.getRawValue());
             this.formCreateBackup = Object.assign(this.validateForm.value)
-            
+            this.formSearch = this.getParam()
+
+
             let createBackupVmSpecification = new CreateBackupVmSpecification();
             createBackupVmSpecification.instanceId = this.formCreateBackup.instanceId;
             createBackupVmSpecification.backupInstanceOfferId = 73; // dùng để tính giá về sau
@@ -116,7 +159,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
             createBackupVmSpecification.serviceName = this.formCreateBackup.backupName;
             createBackupVmSpecification.regionId =  this.region;
             createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
-            
+
             console.log(createBackupVmSpecification);
 
             let createBackupVmOrderData = new CreateBackupVmOrderData();

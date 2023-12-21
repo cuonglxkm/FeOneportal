@@ -241,7 +241,7 @@ const routes: Routes = [
     component: CreateScheduleBackupComponent
   },
   {
-    path: 'schedule/backup/edit/vm',
+    path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent
   }
   ]
