@@ -208,18 +208,40 @@
                             </nz-select>
                         </nz-form-control>
                     </nz-form-item>
-                </div>
-                <div *ngIf="['2', '3'].includes(modeType)">
                     <nz-form-item>
                         <nz-form-label nzFor="daysOfWeek">
                             <div class="label">
                                 <span>Chọn thứ</span>
-                                <span *ngIf="modeType == '2'" style="color: rgba(252, 16, 16, 1); "> *</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
                             </div>
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
                             <nz-select
                                     formControlName="daysOfWeek" id="daysOfWeek"
+                                    [nzPlaceHolder]="'Chọn thứ'"
+                                    [nzShowSearch]="false">
+                                <nz-option
+                                        *ngFor="let i of daysOfWeek"
+                                        [nzLabel]="i.label"
+                                        [nzValue]="i.value"/>
+                            </nz-select>
+                            <ng-template #daysOfWeekErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div *ngIf="modeType === '2'">
+                    <nz-form-item>
+                        <nz-form-label nzFor="daysOfWeekMultiple">
+                            <div class="label">
+                                <span>Chọn thứ</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
+                            <nz-select
+                                    formControlName="daysOfWeekMultiple" id="daysOfWeekMultiple"
                                     nzMode="multiple"
                                     [nzPlaceHolder]="'Chọn thứ'"
                                     [nzShowSearch]="false">

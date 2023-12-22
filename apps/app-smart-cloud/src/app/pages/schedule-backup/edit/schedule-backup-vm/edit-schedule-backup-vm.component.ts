@@ -59,7 +59,8 @@ export class EditScheduleBackupVmComponent implements OnInit {
         times: FormControl<Date>
         numberOfWeek: FormControl<number>
         date: FormControl<number>
-        daysOfWeek: FormControl<string[] | null>
+        daysOfWeek: FormControl<string>
+        daysOfWeekMultiple: FormControl<string[]>
     }> = this.fb.group({
         backupMode: ['4', [Validators.required]],
         name: [null as string, [Validators.required,
@@ -70,7 +71,8 @@ export class EditScheduleBackupVmComponent implements OnInit {
         times: [new Date(), [Validators.required]],
         numberOfWeek: [null as number],
         date: [1, [Validators.required]],
-        daysOfWeek: [[] as string[]]
+        daysOfWeek: [''],
+        daysOfWeekMultiple: [[] as string[]]
     })
 
 
@@ -165,62 +167,44 @@ export class EditScheduleBackupVmComponent implements OnInit {
     }
 
     getData(): FormEditSchedule {
-        this.validateForm.get('backupMode').valueChanges.subscribe(data => {
-            if(data != this.validateForm.get('backupMode').value) {
-                this.formEdit.mode = parseInt(data,10)
-            } else {
-                this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.value, 10)
-            }
-        })
-        this.validateForm.get('name').valueChanges.subscribe(data => {
-            if(data != this.validateForm.get('name').value) {
-                this.formEdit.name = data
-            } else {
-                this.formEdit.name =  this.validateForm.controls.name.value
-            }
-        })
-        this.validateForm.get('description').valueChanges.subscribe(data => {
-            if(data != this.validateForm.get('description').value) {
-                this.formEdit.description = data
-            } else {
-                this.formEdit.description =  this.validateForm.controls.description.value
-            }
-        })
-        this.validateForm.get('months').valueChanges.subscribe(data => {
-            if(data != this.validateForm.get('months').value) {
-                this.formEdit.intervalMonth = data
-            } else {
-                this.formEdit.intervalMonth =  this.validateForm.controls.months.value
-            }
-        })
-        this.validateForm.get('times').valueChanges.subscribe(data => {
-            if(data != this.validateForm.get('times').value) {
-                this.formEdit.runtime = data
-            } else {
-                this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
-            }
-        })
-
-        this.formEdit.dayOfMonth = this.validateForm.controls.date.getRawValue()
-        this.formEdit.intervalWeek = this.validateForm.controls.numberOfWeek.getRawValue()
-        this.formEdit.daysOfWeek = this.validateForm.controls.daysOfWeek.getRawValue()
-        this.formEdit.serviceType = 1
         this.formEdit.customerId = this.tokenService.get()?.userId
+        this.formEdit.name = this.validateForm.controls.name.value
+        this.formEdit.description = this.validateForm.controls.description.value
+        this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.value, 10)
+        this.formEdit.serviceType = 1
+        if(this.formEdit.mode === 3) {
+            this.formEdit.intervalWeek = this.validateForm.controls.numberOfWeek.value
+            this.formEdit.dayOfWeek = this.validateForm.controls.daysOfWeek.value
+        }
+        if(this.formEdit.mode === 2) {
+            this.formEdit.daysOfWeek = this.validateForm.controls.daysOfWeekMultiple.value
+        }
+        if(this.formEdit.mode === 4) {
+            this.formEdit.intervalMonth = this.validateForm.controls.months.value
+            this.formEdit.dayOfMonth = this.validateForm.controls.date.value
+        }
         return this.formEdit
     }
 
-
     submitForm() {
         if (this.validateForm.valid) {
-            console.log(this.validateForm.getRawValue())
             this.formEdit = this.getData()
+            this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
+
+            // this.route.params.subscribe((params) => {
+            //     this.idSchedule = params['id']
+                this.formEdit.scheduleId = this.idSchedule
+            // })
             this.scheduleService.edit(this.formEdit).subscribe(data => {
                 this.notification.success('Thành công', 'Chỉnh sửa lịch backup vm thành công')
+                this.nameList = []
+                this.getListScheduleBackup()
+                this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
             }, error => {
                 this.notification.error('Thất bai','Chỉnh sửa lịch backup vm thất bại')
             })
         } else {
-            console.log(this.validateForm.controls);
+            console.log('invalid', this.validateForm.controls);
             Object.values(this.validateForm.controls).forEach(control => {
                 if (control.invalid) {
                     control.markAsDirty();
@@ -234,16 +218,24 @@ export class EditScheduleBackupVmComponent implements OnInit {
         this.isLoading = true
 
         this.scheduleService.detail(customerId, id).subscribe(data => {
-            console.log('data', data)
             this.backupSchedule = data
             this.isLoading = false
             this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode.toString())
             this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
+            this.validateForm.controls.name.setValue(this.backupSchedule?.name)
+            this.validateForm.controls.description.setValue(this.backupSchedule?.description)
+            this.validateForm.controls.months.setValue(this.backupSchedule?.interval)
+            this.validateForm.controls.date.setValue(this.backupSchedule?.dates)
+            this.numberOfWeekChangeSelected = this.backupSchedule?.interval.toString()
+            this.validateForm.controls.numberOfWeek.setValue(parseInt(this.numberOfWeekChangeSelected, 10))
+            this.validateForm.controls.daysOfWeek.setValue(this.backupSchedule?.daysOfWeek)
+            this.validateForm.controls.daysOfWeekMultiple.setValue(this.backupSchedule?.daysOfWeek?.split(','))
+
             data.backupScheduleItems?.forEach(item => {
                 if (this.listVolume?.length > 0) {
-                    this.listVolume.push(item)
+                    this.listVolume.push(item.itemName)
                 } else {
-                    this.listVolume = [item]
+                    this.listVolume = [item.itemName]
                 }
             })
 
@@ -255,7 +247,6 @@ export class EditScheduleBackupVmComponent implements OnInit {
         this.formSearch.pageIndex = 1
         this.formSearch.customerId = this.tokenService.get()?.userId
         this.scheduleService.search(this.formSearch).subscribe(data => {
-            console.log('data', data)
             data.records?.forEach(item => {
                 if(!this.backupSchedule?.name.includes(item.name)) {
                     if (this.nameList?.length > 0) {
@@ -266,7 +257,6 @@ export class EditScheduleBackupVmComponent implements OnInit {
                 }
 
             })
-            console.log('name list', this.nameList)
         })
     }
 

@@ -35,7 +35,8 @@ export class ScheduleBackupVmComponent implements OnInit {
         date: FormControl<number>
         maxBackup: FormControl<number>
         volumeToBackupIds: FormControl<number[] | null>
-        daysOfWeek: FormControl<string[] | null>
+        daysOfWeek: FormControl<string>
+        daysOfWeekMultiple: FormControl<string[]>
     }> = this.fb.group({
         backupMode: ['1', [Validators.required]],
         name: [null as string, [Validators.required,
@@ -50,7 +51,8 @@ export class ScheduleBackupVmComponent implements OnInit {
         date: [1, [Validators.required]],
         maxBackup: [null as number, [Validators.required, Validators.min(1)]],
         volumeToBackupIds: [[] as number[]],
-        daysOfWeek: [[] as string[]]
+        daysOfWeek: [''],
+        daysOfWeekMultiple: [[] as string[]]
     })
 
     modeType: string = '1'
@@ -96,6 +98,7 @@ export class ScheduleBackupVmComponent implements OnInit {
     instanceSelected: InstancesModel
     formCreateSchedule: FormCreateSchedule = new FormCreateSchedule()
     nameList: string[] = []
+    interval: string = ''
 
     constructor(private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -130,19 +133,28 @@ export class ScheduleBackupVmComponent implements OnInit {
     }
 
     getData(): FormCreateSchedule {
-        this.formCreateSchedule.mode = parseInt(this.validateForm.controls.backupMode.getRawValue(), 10)
-        this.formCreateSchedule.name = this.validateForm.controls.name.getRawValue()
-        this.formCreateSchedule.backupPacketId = this.validateForm.controls.backupPackage.getRawValue()
-        this.formCreateSchedule.description = this.validateForm.controls.description.getRawValue()
-        this.formCreateSchedule.instanceId = this.validateForm.controls.instanceId.getRawValue()
-        this.formCreateSchedule.intervalMonth = this.validateForm.controls.months.getRawValue()
-        this.formCreateSchedule.dayOfMonth = this.validateForm.controls.date.getRawValue()
-        this.formCreateSchedule.intervalWeek = this.validateForm.controls.numberOfWeek.getRawValue()
-        this.formCreateSchedule.maxBackup = this.validateForm.controls.maxBackup.getRawValue()
-        this.formCreateSchedule.listAttachedVolume = this.validateForm.controls.volumeToBackupIds.getRawValue()
-        this.formCreateSchedule.daysOfWeek = this.validateForm.controls.daysOfWeek.getRawValue()
-        this.formCreateSchedule.serviceType = 1
+
         this.formCreateSchedule.customerId = this.tokenService.get()?.userId
+        this.formCreateSchedule.name = this.validateForm.controls.name.value
+        this.formCreateSchedule.description = this.validateForm.controls.description.value
+        this.formCreateSchedule.mode = parseInt(this.validateForm.controls.backupMode.value, 10)
+        this.formCreateSchedule.serviceType = 1
+        this.formCreateSchedule.instanceId = this.validateForm.controls.instanceId.value
+        this.formCreateSchedule.listAttachedVolume = this.validateForm.controls.volumeToBackupIds.value
+        this.formCreateSchedule.maxBackup = this.validateForm.controls.maxBackup.value
+        this.formCreateSchedule.backupPacketId = this.validateForm.controls.backupPackage.value
+        if(this.formCreateSchedule.mode === 3) {
+            this.formCreateSchedule.intervalWeek = this.validateForm.controls.numberOfWeek.value
+            this.formCreateSchedule.dayOfWeek = this.validateForm.controls.daysOfWeek.value
+        }
+        if(this.formCreateSchedule.mode === 2) {
+            this.formCreateSchedule.daysOfWeek = this.validateForm.controls.daysOfWeekMultiple.value
+        }
+        if(this.formCreateSchedule.mode === 4) {
+            this.formCreateSchedule.intervalMonth = this.validateForm.controls.months.value
+            this.formCreateSchedule.dayOfMonth = this.validateForm.controls.date.value
+        }
+
         return this.formCreateSchedule
     }
     submitForm() {
@@ -150,7 +162,6 @@ export class ScheduleBackupVmComponent implements OnInit {
 
             this.formCreateSchedule = this.getData()
             this.formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
-            console.log(this.formCreateSchedule.runtime)
             this.backupScheduleService.create(this.formCreateSchedule).subscribe(data => {
                 this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
                 this.nameList = []
@@ -173,7 +184,6 @@ export class ScheduleBackupVmComponent implements OnInit {
     getBackupPackage() {
         this.backupVmService.getBackupPackages(this.tokenService.get()?.userId).subscribe(data => {
             this.backupPackages = data
-            console.log('backup package', this.backupPackages)
         })
     }
 
@@ -181,6 +191,10 @@ export class ScheduleBackupVmComponent implements OnInit {
         this.validateForm.controls.daysOfWeek.clearValidators();
         this.validateForm.controls.daysOfWeek.markAsPristine();
         this.validateForm.controls.daysOfWeek.reset();
+
+        this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+        this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+        this.validateForm.controls.daysOfWeekMultiple.reset();
 
         this.validateForm.controls.numberOfWeek.clearValidators();
         this.validateForm.controls.numberOfWeek.markAsPristine();
@@ -197,11 +211,15 @@ export class ScheduleBackupVmComponent implements OnInit {
             this.modeType = '1'
         } else if (value === '2') {
             this.modeType = '2'
+            this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
+            this.validateForm.controls.daysOfWeekMultiple.markAsDirty();
+            this.validateForm.controls.daysOfWeekMultiple.reset();
+        } else if (value === '3') {
+            this.modeType = '3'
+
             this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
             this.validateForm.controls.daysOfWeek.markAsDirty();
             this.validateForm.controls.daysOfWeek.reset();
-        } else if (value === '3') {
-            this.modeType = '3'
 
             this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
             this.validateForm.controls.numberOfWeek.markAsDirty();
@@ -220,13 +238,11 @@ export class ScheduleBackupVmComponent implements OnInit {
 
     numberOfWeekChange(value: string) {
         this.numberOfWeekChangeSelected = value
-        console.log('weeek', this.numberOfWeekChangeSelected)
     }
 
     getVolumeInstanceAttachment(id: number) {
         this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
             this.volumeAttachments = data
-            console.log('volume attach', this.volumeAttachments)
         })
     }
 
@@ -243,11 +259,9 @@ export class ScheduleBackupVmComponent implements OnInit {
             this.region, this.project, "", "",
             true, customerId).subscribe(data => {
             this.listInstance = data?.records
-            console.log('instance', data)
             this.backupVmService.search(this.formSearchBackup).subscribe(data2 => {
                 this.listBackupVM = data2?.records
 
-                console.log('backup', this.listBackupVM)
                 const idSet = new Set(this.listBackupVM.map(item => item.instanceId));
                 const idSetUnique = Array.from(new Set(idSet))
                 this.listInstance?.forEach(item1 => {
@@ -266,7 +280,6 @@ export class ScheduleBackupVmComponent implements OnInit {
 
     selectInstanceChange(value) {
         // this.instanceSelected = value
-        console.log(value)
         this.getVolumeInstanceAttachment(value)
     }
 
@@ -275,7 +288,7 @@ export class ScheduleBackupVmComponent implements OnInit {
         this.formSearch.pageIndex = 1
         this.formSearch.customerId = this.tokenService.get()?.userId
         this.backupScheduleService.search(this.formSearch).subscribe(data => {
-            console.log('data', data)
+
             this.lstBackupSchedules = data.records
             this.lstBackupSchedules?.forEach(item => {
                 if (this.nameList?.length > 0) {
@@ -284,7 +297,6 @@ export class ScheduleBackupVmComponent implements OnInit {
                     this.nameList = [item.name]
                 }
             })
-            console.log('name list', this.nameList)
         })
     }
 
