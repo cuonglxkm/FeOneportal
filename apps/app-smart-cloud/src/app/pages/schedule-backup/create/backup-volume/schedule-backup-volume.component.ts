@@ -152,17 +152,16 @@ export class ScheduleBackupVolumeComponent implements OnInit{
   }
   submitForm() {
     if (this.validateForm.valid) {
-
       this.formCreateSchedule = this.getData()
       this.formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
       console.log(this.formCreateSchedule.runtime)
       this.backupScheduleService.create(this.formCreateSchedule).subscribe(data => {
-        this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
+        this.notification.success('Thành công', 'Tạo mới lịch backup volume thành công')
         this.nameList = []
         this.getListScheduleBackup()
         this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
       }, error => {
-        this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại')
+        this.notification.error('Thất bại', error.errorMessage)
       })
     } else {
       console.log(this.validateForm.controls);
