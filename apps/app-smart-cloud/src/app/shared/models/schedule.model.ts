@@ -1,4 +1,4 @@
-export class BackupSchedule {
+export interface BackupSchedule {
   id: number
   name: string
   serviceId: number
@@ -22,6 +22,8 @@ export class BackupSchedule {
   customerId: number
   regionId: number
   backupScheduleItems: BackupScheduleItem[]
+  serviceName: string
+  backupPackageName: string
 }
 
 export class BackupScheduleItem {
@@ -29,13 +31,57 @@ export class BackupScheduleItem {
   scheduleId: number
   itemId: number
   itemType: number
+  itemName: string
 }
 
 export class FormSearchScheduleBackup {
   customerId: number
   region: number
   project: number
-  name: string
+  scheduleName: string
+  scheduleStatus: string
   pageIndex: number
   pageSize: number
+}
+
+export class FormAction {
+  customerId: number
+  scheduleId: number
+  actionType: 'pause' | 'play' | 'reactive'
+}
+
+export class FormCreateSchedule {
+  customerId: number
+  name: string
+  description: string
+  mode: number
+  serviceType: number
+  instanceId: number
+  listAttachedVolume: number[]
+  volumeId: number
+  maxBackup: number
+  backupPacketId: number
+  runtime: any
+  daysOfWeek: string[]
+  intervalWeek: number
+  dayOfWeek: string
+  intervalMonth: number
+  dayOfMonth: number
+}
+
+export class FormEditSchedule {
+  scheduleId: number
+  customerId: number
+  name: string
+  description: string
+  mode: number
+  serviceType: number
+  volumeId: number
+  maxBackup: number
+  runtime: any
+  daysOfWeek: string[]
+  intervalWeek: number
+  dayOfWeek: string
+  intervalMonth: number
+  dayOfMonth: number
 }

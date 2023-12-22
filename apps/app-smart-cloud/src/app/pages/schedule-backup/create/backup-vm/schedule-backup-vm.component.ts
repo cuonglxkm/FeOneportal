@@ -1,15 +1,17 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidationErrors, Validators} from "@angular/forms";
 import {BackupPackage, BackupVm, BackupVMFormSearch, VolumeAttachment} from "../../../../shared/models/backup-vm";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";
-import {BackupSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
+import {BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {ScheduleService} from "../../../../shared/services/schedule.service";
 import {BaseResponse} from '../../../../../../../../libs/common-utils/src';
 import {InstancesService} from "../../../instances/instances.service";
 import {InstancesModel} from "../../../instances/instances.model";
+import {DatePipe} from "@angular/common";
+import {format} from "date-fns/fp";
 
 @Component({
     selector: 'one-portal-schedule-backup-vm',
@@ -28,28 +30,32 @@ export class ScheduleBackupVmComponent implements OnInit {
         description: FormControl<string>
         instanceId: FormControl<number>
         months: FormControl<number>
-        times: FormControl<string>
-        numberOfWeek: FormControl<string>
-        date: FormControl<string>
+        times: FormControl<Date>
+        numberOfWeek: FormControl<number>
+        date: FormControl<number>
         maxBackup: FormControl<number>
         volumeToBackupIds: FormControl<number[] | null>
-        daysOfWeek: FormControl<string[] | null>
+        daysOfWeek: FormControl<string>
+        daysOfWeekMultiple: FormControl<string[]>
     }> = this.fb.group({
-        backupMode: ['4', [Validators.required]],
-        name: [null as string, [Validators.required]],
+        backupMode: ['1', [Validators.required]],
+        name: [null as string, [Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9_]{1,255}$/),
+            this.validateSpecialCharacters.bind(this), this.duplicateNameValidator.bind(this)]],
         backupPackage: [null as number, [Validators.required]],
         description: [null as string, [Validators.maxLength(700)]],
         instanceId: [null as number, [Validators.required]],
         months: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
-        times: [null as string, [Validators.required]],
-        numberOfWeek: [null as string],
-        date: [null as string, [Validators.required]],
-        maxBackup: [null as number, [Validators.required]],
+        times: [new Date(), [Validators.required]],
+        numberOfWeek: [null as number],
+        date: [1, [Validators.required]],
+        maxBackup: [null as number, [Validators.required, Validators.min(1)]],
         volumeToBackupIds: [[] as number[]],
-        daysOfWeek: [[] as string[]]
+        daysOfWeek: [''],
+        daysOfWeekMultiple: [[] as string[]]
     })
 
-    modeType: string = '4'
+    modeType: string = '1'
     numberOfWeekChangeSelected: string
 
     backupPackages: BackupPackage[] = []
@@ -90,6 +96,9 @@ export class ScheduleBackupVmComponent implements OnInit {
     listInstanceNotUse: InstancesModel[] = []
     listInstanceNotUseUnique: InstancesModel[] = []
     instanceSelected: InstancesModel
+    formCreateSchedule: FormCreateSchedule = new FormCreateSchedule()
+    nameList: string[] = []
+    interval: string = ''
 
     constructor(private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -97,17 +106,72 @@ export class ScheduleBackupVmComponent implements OnInit {
                 private router: Router,
                 private backupVmService: BackupVmService,
                 private backupScheduleService: ScheduleService,
-                private instanceService: InstancesService) {
+                private instanceService: InstancesService,
+                public datepipe: DatePipe) {
     }
 
+    validateSpecialCharacters(control) {
+        const value = control.value;
+        if (/[^a-zA-Z0-9_]/.test(value)) {
+            return { invalidCharacters: true };
+        } else {
+            return null;
+        }
+    }
+
+    duplicateNameValidator(control) {
+        const value = control.value;
+        // Check if the input name is already in the list
+        if (this.nameList && this.nameList.includes(value)) {
+            return { duplicateName: true }; // Duplicate name found
+        } else {
+            return null; // Name is unique
+        }
+    }
     goBack() {
         this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
     }
 
+    getData(): FormCreateSchedule {
+
+        this.formCreateSchedule.customerId = this.tokenService.get()?.userId
+        this.formCreateSchedule.name = this.validateForm.controls.name.value
+        this.formCreateSchedule.description = this.validateForm.controls.description.value
+        this.formCreateSchedule.mode = parseInt(this.validateForm.controls.backupMode.value, 10)
+        this.formCreateSchedule.serviceType = 1
+        this.formCreateSchedule.instanceId = this.validateForm.controls.instanceId.value
+        this.formCreateSchedule.listAttachedVolume = this.validateForm.controls.volumeToBackupIds.value
+        this.formCreateSchedule.maxBackup = this.validateForm.controls.maxBackup.value
+        this.formCreateSchedule.backupPacketId = this.validateForm.controls.backupPackage.value
+        if(this.formCreateSchedule.mode === 3) {
+            this.formCreateSchedule.intervalWeek = this.validateForm.controls.numberOfWeek.value
+            this.formCreateSchedule.dayOfWeek = this.validateForm.controls.daysOfWeek.value
+        }
+        if(this.formCreateSchedule.mode === 2) {
+            this.formCreateSchedule.daysOfWeek = this.validateForm.controls.daysOfWeekMultiple.value
+        }
+        if(this.formCreateSchedule.mode === 4) {
+            this.formCreateSchedule.intervalMonth = this.validateForm.controls.months.value
+            this.formCreateSchedule.dayOfMonth = this.validateForm.controls.date.value
+        }
+
+        return this.formCreateSchedule
+    }
     submitForm() {
         if (this.validateForm.valid) {
 
+            this.formCreateSchedule = this.getData()
+            this.formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
+            this.backupScheduleService.create(this.formCreateSchedule).subscribe(data => {
+                this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
+                this.nameList = []
+                this.getListScheduleBackup()
+                this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+            }, error => {
+                this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại')
+            })
         } else {
+            console.log(this.validateForm.controls);
             Object.values(this.validateForm.controls).forEach(control => {
                 if (control.invalid) {
                     control.markAsDirty();
@@ -120,7 +184,6 @@ export class ScheduleBackupVmComponent implements OnInit {
     getBackupPackage() {
         this.backupVmService.getBackupPackages(this.tokenService.get()?.userId).subscribe(data => {
             this.backupPackages = data
-            console.log('backup package', this.backupPackages)
         })
     }
 
@@ -128,6 +191,10 @@ export class ScheduleBackupVmComponent implements OnInit {
         this.validateForm.controls.daysOfWeek.clearValidators();
         this.validateForm.controls.daysOfWeek.markAsPristine();
         this.validateForm.controls.daysOfWeek.reset();
+
+        this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+        this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+        this.validateForm.controls.daysOfWeekMultiple.reset();
 
         this.validateForm.controls.numberOfWeek.clearValidators();
         this.validateForm.controls.numberOfWeek.markAsPristine();
@@ -144,11 +211,15 @@ export class ScheduleBackupVmComponent implements OnInit {
             this.modeType = '1'
         } else if (value === '2') {
             this.modeType = '2'
+            this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
+            this.validateForm.controls.daysOfWeekMultiple.markAsDirty();
+            this.validateForm.controls.daysOfWeekMultiple.reset();
+        } else if (value === '3') {
+            this.modeType = '3'
+
             this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
             this.validateForm.controls.daysOfWeek.markAsDirty();
             this.validateForm.controls.daysOfWeek.reset();
-        } else if (value === '3') {
-            this.modeType = '3'
 
             this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
             this.validateForm.controls.numberOfWeek.markAsDirty();
@@ -167,13 +238,11 @@ export class ScheduleBackupVmComponent implements OnInit {
 
     numberOfWeekChange(value: string) {
         this.numberOfWeekChangeSelected = value
-        console.log('weeek', this.numberOfWeekChangeSelected)
     }
 
     getVolumeInstanceAttachment(id: number) {
         this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
             this.volumeAttachments = data
-            console.log('volume attach', this.volumeAttachments)
         })
     }
 
@@ -188,12 +257,11 @@ export class ScheduleBackupVmComponent implements OnInit {
         this.formSearchBackup.customerId = customerId
         this.instanceService.search(1, 10000000,
             this.region, this.project, "", "",
-            false, customerId).subscribe(data => {
+            true, customerId).subscribe(data => {
             this.listInstance = data?.records
-            this.backupVmService.search(this.formSearchBackup).subscribe(data => {
-                this.listBackupVM = data.records
-                console.log('instance', this.listInstance)
-                console.log('backup', this.listBackupVM)
+            this.backupVmService.search(this.formSearchBackup).subscribe(data2 => {
+                this.listBackupVM = data2?.records
+
                 const idSet = new Set(this.listBackupVM.map(item => item.instanceId));
                 const idSetUnique = Array.from(new Set(idSet))
                 this.listInstance?.forEach(item1 => {
@@ -212,21 +280,29 @@ export class ScheduleBackupVmComponent implements OnInit {
 
     selectInstanceChange(value) {
         // this.instanceSelected = value
-        console.log(value)
         this.getVolumeInstanceAttachment(value)
     }
 
     getListScheduleBackup() {
+        this.formSearch.pageSize = 1000000
+        this.formSearch.pageIndex = 1
+        this.formSearch.customerId = this.tokenService.get()?.userId
         this.backupScheduleService.search(this.formSearch).subscribe(data => {
-            console.log('data', data)
+
             this.lstBackupSchedules = data.records
+            this.lstBackupSchedules?.forEach(item => {
+                if (this.nameList?.length > 0) {
+                    this.nameList.push(item.name)
+                } else {
+                    this.nameList = [item.name]
+                }
+            })
         })
     }
 
     ngOnInit(): void {
+        this.getListScheduleBackup()
         this.getBackupPackage()
         this.getListInstances()
-        // this.getVolumeInstanceAttachment()
     }
-
 }

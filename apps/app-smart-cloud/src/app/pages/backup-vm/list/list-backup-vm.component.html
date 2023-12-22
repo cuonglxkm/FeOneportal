@@ -1,4 +1,4 @@
-<nz-header>
+<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">
   <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
     <nz-row nzJustify="space-between" nzAlign="middle">
       <nz-breadcrumb nz-page-header-breadcrumb>
@@ -30,7 +30,7 @@
         <div *nzSpaceItem>
           <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
             <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
-                   placeholder="Tìm kếm tên, dung lượng, volume ..."/>
+                   placeholder="Tìm kếm tên..."/>
           </nz-input-group>
           <ng-template #suffixButton>
             <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
@@ -42,7 +42,7 @@
       </nz-space>
     </nz-row>
   </nz-col>
-</nz-header>
+</page-header>
 
 <nz-content>
   <nz-card>
@@ -76,7 +76,7 @@
         <td nzAlign="center">{{ data.size }} GB</td>
         <td nzAlign="center">{{ data.backupPackageName }}</td>
         <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-        <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+        <td nzAlign="center">{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">
           <div class="status" [ngSwitch]="data.status">
             <span class="available" *ngSwitchCase="'AVAILABLE'">
