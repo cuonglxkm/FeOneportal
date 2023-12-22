@@ -146,7 +146,7 @@ export class ListScheduleBackupComponent implements OnInit{
     if(serviceType === 1) {
       this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm',  id])
     } else if (serviceType === 2) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/volume'])
+      this.router.navigate(['/app-smart-cloud/schedule/backup/edit/volume',  id])
     }
   }
 

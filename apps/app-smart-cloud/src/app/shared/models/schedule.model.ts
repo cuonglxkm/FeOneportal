@@ -84,4 +84,5 @@ export class FormEditSchedule {
   dayOfWeek: string
   intervalMonth: number
   dayOfMonth: number
+  scheduleId: number
 }
