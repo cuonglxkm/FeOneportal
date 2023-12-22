@@ -121,6 +121,10 @@ export class EditScheduleBackupVmComponent implements OnInit {
         this.validateForm.controls.daysOfWeek.markAsPristine();
         this.validateForm.controls.daysOfWeek.reset();
 
+        this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+        this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+        this.validateForm.controls.daysOfWeekMultiple.reset();
+
         this.validateForm.controls.numberOfWeek.clearValidators();
         this.validateForm.controls.numberOfWeek.markAsPristine();
         this.validateForm.controls.numberOfWeek.reset();
@@ -136,11 +140,17 @@ export class EditScheduleBackupVmComponent implements OnInit {
             this.modeType = '1'
         } else if (value === '2') {
             this.modeType = '2'
+
+            this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+            this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+            this.validateForm.controls.daysOfWeekMultiple.reset();
+
+        } else if (value === '3') {
+            this.modeType = '3'
+
             this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
             this.validateForm.controls.daysOfWeek.markAsDirty();
             this.validateForm.controls.daysOfWeek.reset();
-        } else if (value === '3') {
-            this.modeType = '3'
 
             this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
             this.validateForm.controls.numberOfWeek.markAsDirty();
@@ -204,7 +214,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
                 this.notification.error('Thất bai','Chỉnh sửa lịch backup vm thất bại')
             })
         } else {
-            console.log('invalid', this.validateForm.controls);
+            console.log('invalid', this.validateForm.getRawValue());
             Object.values(this.validateForm.controls).forEach(control => {
                 if (control.invalid) {
                     control.markAsDirty();
