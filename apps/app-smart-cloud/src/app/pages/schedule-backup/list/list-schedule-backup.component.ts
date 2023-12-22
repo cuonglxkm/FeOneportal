@@ -131,6 +131,7 @@ export class ListScheduleBackupComponent implements OnInit{
         this.showModalDelete(this.selectedAction.id)
         break;
       case 4:
+        console.log(this.selectedAction.id)
         this.showModalRestore(this.selectedAction.id)
         break;
       case 5:
@@ -156,6 +157,7 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handlePausedCancel() {
     this.isVisiblePaused = false;
+    this.getListScheduleBackup()
   }
   handlePausedOk() {
     this.formAction.customerId = this.tokenService.get()?.userId
@@ -182,6 +184,7 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handleDeleteCancel() {
     this.isVisibleDelete = false;
+    this.getListScheduleBackup()
   }
   handleDeletedOk() {
     this.backupScheduleService.delete(this.customerId, this.idSchedule).subscribe(data => {
@@ -195,14 +198,14 @@ export class ListScheduleBackupComponent implements OnInit{
     })
   }
 
-  //restore
+  //tiep tuc
   showModalPlay(id: number) {
     this.formAction.scheduleId = id
     this.isVisiblePlay = true;
   }
   handlePlayCancel() {
     this.isVisiblePlay = false;
-    this.isLoadingPlay = false;
+    this.getListScheduleBackup()
   }
   handlePlaydOk() {
     this.formAction.customerId = this.tokenService.get()?.userId
@@ -220,24 +223,28 @@ export class ListScheduleBackupComponent implements OnInit{
     })
   }
 
-  //tiếp tục
+  //khoi dong
   showModalRestore(id: number) {
     this.formAction.scheduleId = id
     this.isVisibleRestore = true;
   }
   handleRestoreCancel() {
     this.isVisibleRestore = false;
+    this.getListScheduleBackup()
   }
   handleRestoredOk() {
+    console.log('id', this.formAction)
     this.formAction.customerId = this.tokenService.get()?.userId
     this.formAction.actionType = 'reactive'
     this.backupScheduleService.action(this.formAction).subscribe(data => {
-      this.isVisibleDelete = false;
-      this.notification.success('Thành công', 'Khởi động lại lịch backup thành công')
+      this.isVisibleRestore = false;
+      this.isLoadingRestore = false
+      this.notification.success('Thành công', 'Khôi phục lập lịch backup thành công')
       this.getListScheduleBackup()
     }, error =>  {
-      this.isVisibleDelete = false;
-      this.notification.error('Thất bại','Khởi động lại lịch backup thất bại')
+      this.isVisibleRestore = false;
+      this.isLoadingRestore = false
+      this.notification.error('Thất bại','Khôi phục lập lịch backup thất bại')
       this.getListScheduleBackup()
     })
   }
