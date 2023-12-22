@@ -24,7 +24,7 @@
                             </div>
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                            <input nz-input value="{{backupSchedule?.name}}" formControlName="name" id="name"/>
+                            <input nz-input formControlName="name" id="name"/>
                             <ng-template #nameErrorTpl let-control>
                                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin
                                 </ng-container>
@@ -65,7 +65,6 @@
                                    value="{{backupSchedule?.backupPackageName}}"
                                    [disabled]="true"/>
                         </nz-form-control>
-
                     </nz-form-item>
                     <nz-form-item>
                         <nz-form-label nzFor="description">
@@ -78,7 +77,6 @@
                                       style="width: 100%;"
                                       formControlName="description"
                                       id="description"
-                                      value="{{backupSchedule?.description}}"
                                       [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
                             <ng-template #descriptionErrorTpl let-control>
                                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin
@@ -176,10 +174,17 @@
                                 </div>
                             </nz-form-label>
                             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                                <nz-date-picker formControlName="date" style="width:100%;" [nzFormat]="'dd/MM/yyyy'"
-                                                [nzPlaceHolder]="'Chọn ngày'"></nz-date-picker>
+                                <input nz-input type="number"
+                                       style="width:100%;"
+                                       formControlName="date"
+                                       id="date"
+                                       min="1"
+                                       max="31"
+                                       step="1"/>
                                 <ng-template #dateErrorTpl let-control>
-                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
+                                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
+                                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
                                 </ng-template>
                             </nz-form-control>
                         </nz-form-item>
@@ -206,8 +211,6 @@
                                 </nz-select>
                             </nz-form-control>
                         </nz-form-item>
-                    </div>
-                    <div *ngIf="['2', '3'].includes(modeType)">
                         <nz-form-item>
                             <nz-form-label nzFor="daysOfWeek">
                                 <div class="label">
@@ -218,6 +221,30 @@
                             <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
                                 <nz-select
                                         formControlName="daysOfWeek" id="daysOfWeek"
+                                        [nzPlaceHolder]="'Chọn thứ'"
+                                        [nzShowSearch]="false">
+                                    <nz-option
+                                            *ngFor="let i of daysOfWeek"
+                                            [nzLabel]="i.label"
+                                            [nzValue]="i.value"/>
+                                </nz-select>
+                                <ng-template #daysOfWeekErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div *ngIf="['2'].includes(modeType)">
+                        <nz-form-item>
+                            <nz-form-label nzFor="daysOfWeekMultiple">
+                                <div class="label">
+                                    <span>Chọn thứ</span>
+                                    <span *ngIf="modeType == '2'" style="color: rgba(252, 16, 16, 1); "> *</span>
+                                </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
+                                <nz-select
+                                        formControlName="daysOfWeekMultiple" id="daysOfWeekMultiple"
                                         nzMode="multiple"
                                         [nzPlaceHolder]="'Chọn thứ'"
                                         [nzShowSearch]="false">
@@ -241,6 +268,7 @@
                         <nz-form-control>
                             <input nz-input
                                    [disabled]="true"
+                                   value="{{listVolume?.join(', ')}}"
                                    style="width: 100%;"/>
                         </nz-form-control>
                     </nz-form-item>

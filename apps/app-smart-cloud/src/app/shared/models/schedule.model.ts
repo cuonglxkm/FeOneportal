@@ -31,6 +31,7 @@ export class BackupScheduleItem {
   scheduleId: number
   itemId: number
   itemType: number
+  itemName: string
 }
 
 export class FormSearchScheduleBackup {
@@ -69,6 +70,7 @@ export class FormCreateSchedule {
 }
 
 export class FormEditSchedule {
+  scheduleId: number
   customerId: number
   name: string
   description: string
@@ -82,5 +84,4 @@ export class FormEditSchedule {
   dayOfWeek: string
   intervalMonth: number
   dayOfMonth: number
-  scheduleId: number
 }

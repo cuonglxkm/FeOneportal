@@ -76,7 +76,7 @@
         <td nzAlign="center">{{ data.size }} GB</td>
         <td nzAlign="center">{{ data.backupPackageName }}</td>
         <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
-        <td nzAlign="center">{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+        <td nzAlign="center">{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">
           <div class="status" [ngSwitch]="data.status">
             <span class="available" *ngSwitchCase="'AVAILABLE'">
