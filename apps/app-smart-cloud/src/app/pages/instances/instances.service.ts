@@ -232,4 +232,12 @@ export class InstancesService extends BaseService {
       `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/instance-attachments`
     );
   }
+
+  updatePortVM(data: any) {
+    let url_ = `/instances/updateport`;
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
+  }
 }

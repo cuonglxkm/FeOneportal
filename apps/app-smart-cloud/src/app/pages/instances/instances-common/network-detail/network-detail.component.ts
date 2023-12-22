@@ -3,30 +3,28 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  Renderer2,
-  SimpleChanges,
   TemplateRef,
 } from '@angular/core';
 import { InstancesService } from '../../instances.service';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   InstancesModel,
   Network,
   SecurityGroupModel,
+  UpdatePortInstance,
 } from '../../instances.model';
-import { concatMap, finalize } from 'rxjs';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-network-detail',
   templateUrl: './network-detail.component.html',
   styleUrls: [],
 })
-export class NetworkDetailComponent implements OnInit, OnChanges {
+export class NetworkDetailComponent implements OnInit {
   selectedProject: any;
   @Input() instancesId: any;
 
@@ -37,13 +35,13 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
   listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
   listOfDataNetwork: Network[] = [];
+  updatePortInstance: UpdatePortInstance = new UpdatePortInstance();
   loading: boolean = true;
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
   ngOnInit(): void {
     this.getNetworkAndSecurityGroup();
-    this.loadList();
   }
 
   getNetworkAndSecurityGroup() {
@@ -70,38 +68,42 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
         .subscribe((dataSG: any) => {
           console.log('getAllSecurityGroup', dataSG);
           this.listSecurityGroup = dataSG;
-          //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
         });
     });
   }
 
-  onChangeSecurityGroup(even?: any) {
-    console.log(even);
-    console.log('selectedSecurityGroup', this.selectedSecurityGroup);
-  }
+  // onChangeSecurityGroup(even?: any) {
+  //   this.updatePortInstance.securityGroup = even;
+  // }
 
   constructor(
     private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
-    private router: ActivatedRoute,
-    public message: NzMessageService,
-    private renderer: Renderer2
+    public message: NzMessageService
   ) {}
 
-  editPort(tpl: TemplateRef<{}>): void {
+  editPort(tpl: TemplateRef<{}>, id: any): void {
+    this.selectedSecurityGroup = this.listOfDataNetwork.filter(
+      (e) => (e.id = id)
+    )[0].security_groups;
     this.modalSrv.create({
       nzTitle: 'Chỉnh sửa Port',
       nzContent: tpl,
       nzOkText: 'Chỉnh sửa',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        if (1 == 1) {
-          this.message.success('Chỉnh sửa port thành công');
-        } else {
-          this.message.error('Chỉnh sửa port không thành công!');
-        }
+        this.updatePortInstance.portId = id;
+        this.updatePortInstance.regionId = this.instancesModel.regionId;
+        this.updatePortInstance.customerId = this.instancesModel.customerId;
+        this.updatePortInstance.vpcId = this.instancesModel.projectId;
+        this.updatePortInstance.securityGroup = this.selectedSecurityGroup;
+        this.updatePortInstance.portSecurityEnanble = true;
+        console.log('Update Port VM', this.updatePortInstance);
+        this.dataService.updatePortVM(this.updatePortInstance).subscribe();
+        this.message.success('Chỉnh sửa port thành công!');
+        this.route.navigate(['/app-smart-cloud/instances']);
       },
     });
   }
@@ -110,20 +112,6 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     this.valueChanged.emit(project);
   }
 
-  loadList() {
-    // this.dataService.get(this.regionId).subscribe(data => {
-    //   console.log(data);
-    //   this.listProject = data;
-    // }, error => {
-    //   this.listProject = [];
-    // });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.regionId) {
-      this.loadList();
-    }
-  }
   navigateToCreate() {
     this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }

@@ -85,7 +85,7 @@ export class InstancesCreateComponent implements OnInit {
 
   public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 5, all: 0 },
     speed: 250,
     point: {
       visible: true,
