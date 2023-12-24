@@ -5,9 +5,15 @@ import {Observable, of} from "rxjs";
 import {EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
 import {catchError} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {EditSnapshotVolume, GetListSnapshotVlModel} from "../models/snapshotvl.model";
+import {
+  CreateScheduleSnapshotDTO,
+  EditSnapshotVolume,
+  GetListSnapshotVlModel,
+  ScheduleSnapshotVLDTO
+} from "../models/snapshotvl.model";
 import {VolumeDTO} from "../dto/volume.dto";
 import {SnapshotVolumeDto} from "../dto/snapshot-volume.dto";
+import {BaseResponse} from "../../../../../../libs/common-utils/src";
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +47,69 @@ export class SnapshotVolumeService extends BaseService {
     return this.http.delete<boolean>(this.urlSnapshotVl + '/' + idSnapshotVolume).pipe(
       catchError(this.handleError<boolean>('delete snapshot volume error.'))
     );
+  }
+
+  createSnapshotSchedule(request: CreateScheduleSnapshotDTO): Observable<any>{
+    let urlResult = this.urlSnapshotVl + '/schedule';
+    return this.http.post(urlResult, request).pipe(
+      catchError(this.handleError<any>('Create Snapshot schedule error.'))
+    );
+  }
+
+  getListSchedule(pageSize:number, currentPage:number, customerID: number, projectId: number, regionId: number, status: any): Observable<BaseResponse<ScheduleSnapshotVLDTO[]>>{
+    let urlResult = this.getConditionSearchScheduleSnapshotVl(pageSize,currentPage,customerID,projectId,regionId,status)
+    return this.http.get<GetListSnapshotVlModel>(urlResult).pipe(
+      catchError(this.handleError<GetListSnapshotVlModel>('get shedule-snapshot-volume-list error'))
+    );
+  }
+  private getConditionSearchScheduleSnapshotVl(pageSize:number, currentPage:number, customerId: number, projectId: number, regionId: number, status: any): string{
+    let urlResult = this.urlSnapshotVl + '/schedule';
+    let count = 0;
+    if (customerId !== undefined && customerId != null) {
+      urlResult += '?customerId=' + customerId;
+      count++;
+    }
+    if (projectId !== undefined && projectId != null) {
+      if (count == 0) {
+        urlResult += '?projectId=' + projectId;
+        count++;
+      } else {
+        urlResult += '&projectId=' + projectId;
+      }
+    }
+    if (regionId !== undefined && regionId != null) {
+      if (count == 0) {
+        urlResult += '?regionId=' + regionId;
+        count++;
+      } else {
+        urlResult += '&regionId=' + regionId;
+      }
+    }
+    if (pageSize !== undefined && pageSize != null) {
+      if (count == 0) {
+        urlResult += '?pageSize=' + pageSize;
+        count++;
+      } else {
+        urlResult += '&pageSize=' + pageSize;
+      }
+    }
+    if (currentPage !== undefined && currentPage != null) {
+      if (count == 0) {
+        urlResult += '?currentPage=' + currentPage;
+        count++;
+      } else {
+        urlResult += '&currentPage=' + currentPage;
+      }
+    }
+    if (status !== undefined && status != null) {
+      if (count == 0) {
+        urlResult += '?status=' + status;
+        count++;
+      } else {
+        urlResult += '&status=' + status;
+      }
+    }
+    return urlResult;
   }
 
   private getConditionSearchSnapshotVl(customerId: number, projectId: number, regionId: number, size: number, pageSize: number, currentPage: number, status: string, volumeName: string, name: string): string{

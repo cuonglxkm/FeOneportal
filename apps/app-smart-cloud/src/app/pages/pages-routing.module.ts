@@ -53,6 +53,12 @@ import {CreateScheduleBackupComponent} from "./schedule-backup/create/create-sch
 import {
   EditScheduleBackupVmComponent
 } from "./schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component";
+import {
+  SnapshotScheduleListComponent
+} from "./snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component";
+import {
+  SnapshotScheduleCreateComponent
+} from "./snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -243,6 +249,14 @@ const routes: Routes = [
   {
     path: 'schedule/backup/edit/vm',
     component: EditScheduleBackupVmComponent
+  },
+  {
+    path: 'schedule/snapshot/list',
+    component: SnapshotScheduleListComponent
+  },
+  {
+    path: 'schedule/snapshot/create',
+    component: SnapshotScheduleCreateComponent
   }
   ]
 @NgModule({
