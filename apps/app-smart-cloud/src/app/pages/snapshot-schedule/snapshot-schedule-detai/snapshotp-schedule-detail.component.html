@@ -13,21 +13,13 @@
     </nz-card>
     <nz-card>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên lịch Snapshot</nz-form-label>
-      <input nz-input placeholder="Nhập tên lịch Snapshot" [(ngModel)]="scheduleName" disabled="true" type="text"/>
+      <input nz-input  [(ngModel)]="scheduleName" disabled="true" type="text"/>
       <br>
       <br>
 
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn Volume</nz-form-label>
-      <input nz-input placeholder="Nhập tên lịch Snapshot" [(ngModel)]="volumeId" disabled="true" type="text"/>
-<!--      <nz-select nzSize="default"-->
-<!--                 [nzShowSearch]="true"-->
-<!--                 [nzPlaceHolder]="'-Chọn tên Volume-'"-->
-<!--                 [(ngModel)]="volumeId"-->
-<!--                 style="width: 100%;"-->
-<!--      >-->
-<!--        <nz-option *ngFor="let item of volumeList" [nzLabel]="item.label.toString()"-->
-<!--                   [nzValue]="item.value"></nz-option>-->
-<!--      </nz-select>-->
+      <input nz-input  [(ngModel)]="volumeId" disabled="true" type="text"/>
+
       <br>
       <br>
 
@@ -37,7 +29,7 @@
       <br>
 
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn thời điểm thực hiện Snapshot</nz-form-label>
-      <input nz-input placeholder="Nhập thời gian thực hiện Snapshot" [(ngModel)]="scheduleStartTime" disabled="true" type="text"/>
+      <input nz-input  [(ngModel)]="scheduleStartTime" disabled="true" type="text"/>
       <br>
       <br>
 
@@ -47,16 +39,6 @@
       <br>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn ngày</nz-form-label>
       <input nz-input placeholder="Chọn ngày" [(ngModel)]="dateStart" disabled="true" type="text"/>
-<!--      <nz-select nzSize="default"-->
-<!--                 nzMode="multiple"-->
-<!--                 [nzShowSearch]="true"-->
-<!--                 [nzPlaceHolder]="'-Chọn ngày-'"-->
-<!--                 [(ngModel)]="dateStart"-->
-<!--                 style="width: 100%;"-->
-<!--      >-->
-<!--        <nz-option *ngFor="let item of dateList" [nzLabel]="item.label.toString()"-->
-<!--                   [nzValue]="item.value"></nz-option>-->
-<!--      </nz-select>-->
       <br>
       <br>
 
@@ -76,10 +58,6 @@
             background-color: gray;
           ">Quay lại
       </button>
-<!--      <button (click)="create()" nz-button nzType="primary" style="-->
-<!--            border: none;-->
-<!--          ">Tạo mới-->
-<!--      </button>-->
     </div>
   </nz-spin>
 </nz-content>
