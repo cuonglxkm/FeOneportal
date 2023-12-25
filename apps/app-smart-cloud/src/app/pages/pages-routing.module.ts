@@ -54,6 +54,15 @@ import {
   EditScheduleBackupVmComponent
 } from "./schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component";
 import {
+  SnapshotScheduleListComponent
+} from "./snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component";
+import {
+  SnapshotScheduleCreateComponent
+} from "./snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component";
+import {
+  SnapshotScheduleDetailComponent
+} from "./snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component";
+import {
   EditScheduleBackupVolumeComponent
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
 
@@ -184,19 +193,19 @@ const routes: Routes = [
     component: DetailUserGroupComponent
   },
   {
-    path: 'policy/attach/:id',
+    path: 'policy/attach/:name',
     component: PolicyAttachComponent
   },
   {
-    path: 'policy/detach/:id',
+    path: 'policy/detach/:name',
     component: PolicyDetachComponent
   },
   {
-    path: 'policy/detail/:id',
+    path: 'policy/detail/:name',
     component: PolicyDetailComponent
   },
   {
-    path: 'policy/update/:id',
+    path: 'policy/update/:name',
     component: PolicyUpdateComponent
   },
   {
@@ -250,6 +259,18 @@ const routes: Routes = [
   {
     path: 'schedule/backup/edit/volume/:id',
     component: EditScheduleBackupVolumeComponent
+  },
+  {
+    path: 'schedule/snapshot/list',
+    component: SnapshotScheduleListComponent
+  },
+  {
+    path: 'schedule/snapshot/create',
+    component: SnapshotScheduleCreateComponent
+  },
+  {
+    path: 'schedule/snapshot/detail/:id',
+    component: SnapshotScheduleDetailComponent
   }
   ]
 @NgModule({

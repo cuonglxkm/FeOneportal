@@ -20,15 +20,35 @@ export interface AttachedEntitiesDTO{
   type: number;
 }
 
-export interface PermissionDTO{
+export class PermissionDTO{
   name: string;
   description: number;
+  isChecked = false;
 }
+
+export class UpdatePolicyRequest{
+  name: string;
+  effect: string;
+  resource: string;
+  actions: any;
+  desciption:string;
+}
+
+export class ServicePermissionDetail{
+  serviceName: string;
+  listPermission: any;
+}
+
+export class ServicePolicyDTO {
+  serviceName: string;
+  seviceCode: string;
+}
+
 export class PolicyInfo{
   name: string;
   effect: string;
   resource: string;
-  actions: [];
+  actions: any;
   type: string;
   description: string;
 }

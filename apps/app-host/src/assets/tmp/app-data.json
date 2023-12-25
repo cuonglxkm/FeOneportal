@@ -97,6 +97,11 @@
           "text": "Lập lịch Backup",
           "icon": "anticon-calendar",
           "link": "/app-smart-cloud/schedule/backup/list"
+        },
+        {
+          "text": "Lịch Snapshot",
+          "icon": "anticon-calendar",
+          "link": "/app-smart-cloud/schedule/snapshot/list"
         }
       ]
     }

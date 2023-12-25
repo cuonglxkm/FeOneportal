@@ -101,6 +101,15 @@ import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-v
 import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
 import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
 import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
+import {
+  SnapshotScheduleListComponent
+} from "./snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component";
+import {
+  SnapshotScheduleCreateComponent
+} from "./snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component";
+import {
+ SnapshotScheduleDetailComponent
+} from "./snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -189,6 +198,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     EditScheduleBackupVolumeComponent,
     EditScheduleBackupVmComponent,
     DeleteScheduleComponent,
+    SnapshotScheduleListComponent,
+    SnapshotScheduleCreateComponent,
+    SnapshotScheduleDetailComponent,
   ],
   imports: [
     CommonModule,
