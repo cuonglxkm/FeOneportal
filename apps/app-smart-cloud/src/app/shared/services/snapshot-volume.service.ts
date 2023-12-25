@@ -62,13 +62,13 @@ export class SnapshotVolumeService extends BaseService {
     )
   }
 
-  getListSchedule(pageSize:number, currentPage:number, customerID: number, projectId: number, regionId: number, status: any): Observable<BaseResponse<ScheduleSnapshotVLDTO[]>>{
+  getListSchedule(pageSize:number, currentPage:number, customerID: number, projectId: number, regionId: number, status: string): Observable<BaseResponse<ScheduleSnapshotVLDTO[]>>{
     let urlResult = this.getConditionSearchScheduleSnapshotVl(pageSize,currentPage,customerID,projectId,regionId,status)
     return this.http.get<GetListSnapshotVlModel>(urlResult).pipe(
       catchError(this.handleError<GetListSnapshotVlModel>('get shedule-snapshot-volume-list error'))
     );
   }
-  private getConditionSearchScheduleSnapshotVl(pageSize:number, currentPage:number, customerId: number, projectId: number, regionId: number, status: any): string{
+  private getConditionSearchScheduleSnapshotVl(pageSize:number, currentPage:number, customerId: number, projectId: number, regionId: number, status: string): string{
     let urlResult = this.urlSnapshotVl + '/schedule';
     let count = 0;
     if (customerId !== undefined && customerId != null) {
