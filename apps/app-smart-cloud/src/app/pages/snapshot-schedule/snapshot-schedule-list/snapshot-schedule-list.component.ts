@@ -6,6 +6,8 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {PopupAddVolumeComponent} from "../../volume/component/popup-volume/popup-add-volume.component";
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -35,12 +37,6 @@ export class SnapshotScheduleListComponent implements OnInit {
   customerID: number;
 
   actionSelected: number;
-  listAction = [
-    {label: 'Chọn thao tác', value: null},
-    {label: 'Chỉnh sửa', value: 1},
-    {label: 'Xóa', value: 2},
-    {label: 'Tạm dừng', value: 3}
-  ]
 
   onQueryParamsChange(params: NzTableQueryParams){
     const {pageSize, pageIndex} = params;
@@ -70,6 +66,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private snapshot: SnapshotVolumeService,
+              private modalService: NzModalService,
               private notification: NzNotificationService) {
   }
 
@@ -98,8 +95,84 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.searchSnapshotScheduleList();
   }
 
-  onChangeAction(value: number){
-    console.log(value);
+  onChangeAction(value: number , id: number){
+    if(value == 2){
+      const modal: NzModalRef = this.modalService.create({
+          nzTitle: 'Xóa lịch Snapshot',
+        nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện xóa lịch Snapshot?</p>`,
+        nzFooter: [
+          {
+            label: 'Hủy',
+            type: 'default',
+            onClick: () => modal.destroy()
+          },
+          {
+            label: 'Đồng ý',
+            type: 'primary',
+            onClick: () => {
+              this.doDeleteSnapshotSchedule(id);
+              modal.destroy()
+            }
+          }
+        ]
+      });
+    }
+    if(value == 3){
+      const modal: NzModalRef = this.modalService.create({
+        nzTitle: 'Xóa lịch Snapshot',
+        nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện Tạm dừng lịch Snapshot?</p>`,
+        nzFooter: [
+          {
+            label: 'Hủy',
+            type: 'default',
+            onClick: () => modal.destroy()
+          },
+          {
+            label: 'Đồng ý',
+            type: 'primary',
+            onClick: () => {
+              this.doPauseSnapshotSchedule(id);
+              modal.destroy()
+            }
+          }
+        ]
+      });
+    }
+    if(value == 4){
+      const modal: NzModalRef = this.modalService.create({
+        nzTitle: 'Xóa lịch Snapshot',
+        nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện Tiếp tục lịch Snapshot?</p>`,
+        nzFooter: [
+          {
+            label: 'Hủy',
+            type: 'default',
+            onClick: () => modal.destroy()
+          },
+          {
+            label: 'Đồng ý',
+            type: 'primary',
+            onClick: () => {
+              this.doResumeSnapshotSchedule(id);
+              modal.destroy()
+            }
+          }
+        ]
+      });
+    }
+  }
+
+  doDeleteSnapshotSchedule(id: number){
+    console.log('Delete:  '+id);
+  }
+  doPauseSnapshotSchedule(id: number){
+    console.log('Pause:  '+id);
+  }
+  doResumeSnapshotSchedule(id: number){
+    console.log('Resume:  '+id);
+  }
+
+  navigateToDetail(id: number){
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/detail/'+id])
   }
 
   onInputChange(value: string) {

@@ -56,8 +56,8 @@ export class SnapshotVolumeService extends BaseService {
     );
   }
 
-  getDetailSnapshotSchedule(id: number):Observable<SnapshotScheduleDetailDTO>{
-    return this.http.get<SnapshotScheduleDetailDTO>(this.urlSnapshotVl + '/schedule/'  + id).pipe(
+  getDetailSnapshotSchedule(id: number, customerId: number):Observable<SnapshotScheduleDetailDTO>{
+    return this.http.get<SnapshotScheduleDetailDTO>(this.urlSnapshotVl + '/schedule/'  + id + '?customerId='+customerId).pipe(
       catchError(this.handleError<SnapshotScheduleDetailDTO>('get snapshot snapshot-schedule-detail error'))
     )
   }
@@ -66,6 +66,13 @@ export class SnapshotVolumeService extends BaseService {
     let urlResult = this.getConditionSearchScheduleSnapshotVl(pageSize,currentPage,customerID,projectId,regionId,status)
     return this.http.get<GetListSnapshotVlModel>(urlResult).pipe(
       catchError(this.handleError<GetListSnapshotVlModel>('get shedule-snapshot-volume-list error'))
+    );
+  }
+
+  actionSchedule(scheduleId: number, action:string, customerId: number, regionId: number, projectId: number): Observable<boolean>{
+    let urlResult = this.urlSnapshotVl + '/schedule/' + scheduleId + '/action';
+    return this.http.post<boolean>(urlResult, null).pipe(
+      catchError(this.handleError<boolean>('get shedule-snapshot-volume-list error'))
     );
   }
   private getConditionSearchScheduleSnapshotVl(pageSize:number, currentPage:number, customerId: number, projectId: number, regionId: number, status: string): string{

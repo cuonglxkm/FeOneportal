@@ -75,7 +75,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of rowSelectionTable.data">
-        <td>{{ data.name }}</td>
+        <td><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
         <td>{{ data.volumeName }}</td>
         <td>{{ data.maxSnapshot }}</td>
         <td>Theo tuần</td>
@@ -84,9 +84,15 @@
         <td>
           <nz-select [(ngModel)]="actionSelected"
                      style="width: 160px;"
-                     (ngModelChange)="onChangeAction($event)"
+                     (ngModelChange)="onChangeAction($event, data.id)"
                      nzPlaceHolder="Chọn thao tác">
-            <nz-option *ngFor="let item of listAction" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+<!--            <nz-option *ngFor="let item of listAction" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>-->
+            <nz-option [nzValue]="null" [nzLabel]="'Chọn thao tác'"></nz-option>
+            <nz-option [nzValue]="1" [nzLabel]="'Chỉnh sửa'"></nz-option>
+            <nz-option [nzValue]="2" [nzLabel]="'Xóa'"></nz-option>
+            <nz-option *ngIf="data.status == 'ACTIVE'" [nzValue]="3" [nzLabel]="'Tạm dừng'"></nz-option>
+            <nz-option *ngIf="data.status == 'PAUSED'" [nzValue]="4" [nzLabel]="'Tiếp tục'"></nz-option>
+
           </nz-select>
         </td>
       </tr>
