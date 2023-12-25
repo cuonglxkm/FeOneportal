@@ -22,10 +22,10 @@
 <nz-card
   [nzBordered]="false"
   nzTitle="Thay đổi hệ điều hành"
-  *ngIf="selectedImage"
+  *ngIf="currentImage"
 >
   <nz-row>
-    <p>Hệ điều hành hiện tại: {{ selectedImage.name }}</p>
+    <p>Hệ điều hành hiện tại: {{ currentImage.name }}</p>
   </nz-row>
   <nz-row>
     <p>Lựa chọn hệ điều hành mới</p>
@@ -40,46 +40,48 @@
       *nguCarouselDef="let data; index as i; let ani = animate"
       [@slider]="ani"
     >
-      <nz-row>
-        <table class="text-center" style="width: 100%">
-          <tbody
-            class="images-body"
-            [id]="'images_' + data.id"
-            [ngClass]="{
-              'images-body-active': data.id === selectedImageTypeId,
-              bgGray: !data.id === selectedImageTypeId
-            }"
-          >
-            <tr>
-              <div class="images-body-tr">
-                <span>{{ data.name }}</span>
-              </div>
-            </tr>
-            <tr>
-              <div>
-                <nz-row>
-                  <nz-select
-                    nzShowSearch
-                    [id]="'hdh_' + data.id"
-                    [(ngModel)]="listSelectedImage[i]"
-                    (ngModelChange)="onInputHDH($event, i, data.id)"
-                    nzPlaceHolder="Chọn phiên bản"
-                    [ngModelOptions]="{ standalone: true }"
-                    style="text-align: center; width: 100%"
-                  >
-                    <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
-                    <nz-option
-                      *ngFor="let p of listOfImageByImageType[i]"
-                      [nzValue]="p.id"
-                      [nzLabel]="p.name"
-                    ></nz-option>
-                  </nz-select>
-                </nz-row>
-              </div>
-            </tr>
-          </tbody>
-        </table>
-      </nz-row>
+      <table class="text-center" style="width: 100%">
+        <tbody
+          class="images-body"
+          [id]="'images_' + data.id"
+          [ngClass]="{
+            'images-body-active': data.id === selectedImageTypeId,
+            bgGray: !data.id === selectedImageTypeId
+          }"
+        >
+          <tr>
+            <img
+              *ngIf="data.name == 'Linux'"
+              src="assets/imgs/ubuntu.png"
+              alt=""
+            />
+            <img
+              *ngIf="data.name == 'Windows'"
+              src="assets/imgs/window.png"
+              alt=""
+            />
+          </tr>
+          <tr>
+            <div style="margin-top: 15px; margin-bottom: 15px">
+              <nz-select
+                nzShowSearch
+                [id]="'hdh_' + data.id"
+                [(ngModel)]="listSelectedImage[i]"
+                (ngModelChange)="onInputHDH($event, i, data.id)"
+                nzPlaceHolder="Chọn phiên bản"
+                [ngModelOptions]="{ standalone: true }"
+                style="text-align: center; width: 150px"
+              >
+                <nz-option
+                  *ngFor="let p of listOfImageByImageType[i]"
+                  [nzValue]="p.id"
+                  [nzLabel]="p.name"
+                ></nz-option>
+              </nz-select>
+            </div>
+          </tr>
+        </tbody>
+      </table>
     </ngu-tile>
 
     <ul class="myPoint" NguCarouselPoint>
@@ -137,7 +139,7 @@
         nz-button
         [nzType]="'primary'"
         (click)="modify()"
-        [disabled]="!hdh"
+        [disabled]="!isSelected"
       >
         Chỉnh sửa
       </button>

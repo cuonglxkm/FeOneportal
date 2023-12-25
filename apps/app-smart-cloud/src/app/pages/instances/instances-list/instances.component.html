@@ -1,7 +1,11 @@
 <!--Head section-->
 <!-- <app-page-header [pageHeaderInfo]="pageHeaderInfo"></app-page-header> -->
 
-<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: white;">
+<page-header
+  [autoBreadcrumb]="false"
+  [autoTitle]="false"
+  style="background: white"
+>
   <nz-breadcrumb style="float: left">
     <nz-breadcrumb-item>Home</nz-breadcrumb-item>
     <nz-breadcrumb-item> Quản lý máy ảo </nz-breadcrumb-item>
@@ -10,11 +14,18 @@
     <region-select-dropdown
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
-    <project-select-dropdown [regionId]="region" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+    ></project-select-dropdown>
   </div>
   <div><h2>Danh sách máy ảo</h2></div>
   <form nz-form *ngIf="isSearch">
-    <div style="margin-bottom: -10px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div
+      style="margin-bottom: -10px"
+      nz-row
+      [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
+    >
       <div
         nz-col
         [nzLg]="7"
@@ -53,8 +64,8 @@
         [nzXXl]="11"
       >
         <nz-form-item>
-          <nz-row style="width: 100%;">
-            <nz-col style="width: 60%;">
+          <nz-row style="width: 100%">
+            <nz-col style="width: 60%">
               <nz-form-control>
                 <input
                   name="name"
@@ -190,48 +201,19 @@
 <div *ngIf="!loading && activeCreate && !isSearch">
   <nz-card>
     <result>
-      <img nz-image style="height: 100%; width: 100%;" nzSrc="assets/imgs/blank_vm.png" alt=""/>
+      <img
+        nz-image
+        style="height: 100%; width: 100%"
+        nzSrc="assets/imgs/blank_vm.png"
+        alt=""
+      />
 
       <button nz-button [nzType]="'primary'" (click)="navigateToCreate()">
-        <!-- <a routerLink="/pages/instances/instances-create"> Khởi tạo ngay</a>
-          -->
         Khởi tạo ngay
       </button>
     </result>
   </nz-card>
 </div>
-
-<!-- <ng-template #modalContentGanVLAN>
-  <nz-form-item>
-    <nz-form-label>Danh sách VLAN</nz-form-label>
-    <nz-form-control>
-      <nz-select [nzPlaceHolder]="'-- Chọn VLAN --'" [nzShowSearch]="true">
-        <nz-option
-          *ngFor="let i of listVLAN"
-          [nzLabel]="i.text"
-          [nzValue]="i.id"
-        />
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <div><a>Nhập IP Address</a></div>
-  </nz-form-item>
-  <nz-alert
-    nzType="warning"
-    [nzMessage]="customTemplateMessageGanVLAN"
-    nzShowIcon
-  ></nz-alert>
-  <ng-template #customTemplateMessageGanVLAN>
-    <div>
-      Trong trường hợp 1 Network của quý khách có nhiều subnet, quý khách cần
-      lựa chọn subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP vui
-      lòng chọn IP chưa được sửa dụng bởi máy ảo nào và IP này thuộc dải IP được
-      cấu hình trong Subnet tương ứng
-    </div>
-  </ng-template>
-  <br />
-</ng-template> -->
 
 <nz-modal
   [(nzVisible)]="isVisibleGanVLAN"
@@ -244,8 +226,12 @@
   <ng-container *nzModalContent>
     <nz-form-item>
       <nz-form-label>Danh sách VLAN</nz-form-label>
-      <nz-form-control>
-        <nz-select [nzPlaceHolder]="'-- Chọn VLAN --'" [nzShowSearch]="true">
+      <nz-form-control class="text-right">
+        <nz-select
+          [nzPlaceHolder]="'-- Chọn VLAN --'"
+          [nzShowSearch]="true"
+          style="width: 340px"
+        >
           <nz-option
             *ngFor="let i of listVLAN"
             [nzLabel]="i.text"
@@ -255,7 +241,44 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <div><a (click)="clickIPAddress()">Nhập IP Address</a></div>
+      <div>
+        <a (click)="clickIPAddress()"
+          >Nhập IP Address <i *ngIf="!isExpand" nz-icon nzType="down"></i
+          ><i *ngIf="isExpand" nz-icon nzType="up"></i
+        ></a>
+      </div>
+    </nz-form-item>
+    <nz-form-item *ngIf="isExpand">
+      <nz-form-label>Danh sách Subnet</nz-form-label>
+      <nz-form-control class="text-right">
+        <nz-select
+          [nzPlaceHolder]="'-- Chọn Subnet --'"
+          [nzShowSearch]="true"
+          style="width: 340px"
+        >
+          <nz-option
+            *ngFor="let i of listSubnet"
+            [nzLabel]="i.text"
+            [nzValue]="i.id"
+          />
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isExpand">
+      <nz-form-label>Địa chỉ IP</nz-form-label>
+      <nz-form-control class="text-right">
+        <nz-select
+          [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
+          [nzShowSearch]="true"
+          style="width: 340px"
+        >
+          <nz-option
+            *ngFor="let i of listIPAddress"
+            [nzLabel]="i.text"
+            [nzValue]="i.id"
+          />
+        </nz-select>
+      </nz-form-control>
     </nz-form-item>
     <nz-alert
       nzType="warning"
@@ -270,5 +293,44 @@
         IP được cấu hình trong Subnet tương ứng
       </div>
     </ng-template>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleGoKhoiVLAN"
+  nzTitle="Gỡ khỏi VLAN"
+  (nzOnCancel)="handleCancelGoKhoiVLAN()"
+  (nzOnOk)="handleOkGoKhoiVLAN()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="customTemplateMessageGanVLAN"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageGanVLAN>
+      <div>
+        Mỗi kết nối từ máy ảo với VLAN tương ứng với 1 IP được cấp, lựa chọn IP
+        từ danh sách dưới đây để thực hiện gỡ kết nối máy ảo khỏi VLAN
+      </div>
+    </ng-template>
+    <br />
+    <nz-form-item>
+      <nz-form-label>Danh sách IP trên VLAN</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
+          [nzShowSearch]="true"
+        >
+          <nz-option
+            *ngFor="let i of listIPAddressOnVLAN"
+            [nzLabel]="i.text"
+            [nzValue]="i.id"
+          />
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
   </ng-container>
 </nz-modal>

@@ -234,7 +234,7 @@
                             </nz-form-control>
                         </nz-form-item>
                     </div>
-                    <div *ngIf="['2'].includes(modeType)">
+                    <div *ngIf="modeType==='2'">
                         <nz-form-item>
                             <nz-form-label nzFor="daysOfWeekMultiple">
                                 <div class="label">
@@ -281,7 +281,7 @@
                     </button>
                     <nz-form-control *nzSpaceItem>
                         <button nz-button [nzLoading]="isLoading" nzType="primary"
-                                class="button-create">Xác nhận
+                                class="button-create" [disabled]="!validateForm.valid">Xác nhận
                         </button>
                     </nz-form-control>
                 </nz-space>

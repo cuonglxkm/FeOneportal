@@ -40,7 +40,7 @@ class SearchParam {
 @Component({
   selector: 'one-portal-instances',
   templateUrl: './instances.component.html',
-  styleUrls: ['./instances.component.less']
+  styleUrls: ['./instances.component.less'],
 })
 export class InstancesComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
@@ -73,6 +73,9 @@ export class InstancesComponent implements OnInit {
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
+  listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
+  listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
+  listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
 
   selectedOptionAction: string;
   actionData: InstancesModel;
@@ -82,8 +85,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isSearch: boolean = false;
   isVisibleGanVLAN: boolean = false;
-  isVisibleGanVLANIPAddress: boolean = false;
-
+  isVisibleGoKhoiVLAN: boolean = false;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -95,7 +97,7 @@ export class InstancesComponent implements OnInit {
     private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
-  showModal(cs  : string, data: any): void {
+  showModal(cs: string, data: any): void {
     this.actionData = data;
     this.selectedOptionAction = '';
     switch (parseInt(cs, 10)) {
@@ -113,6 +115,7 @@ export class InstancesComponent implements OnInit {
         this.isVisibleGanVLAN = true;
         break;
       case 6:
+        this.isVisibleGoKhoiVLAN = true;
         break;
       case 7:
         this.restartInstance();
@@ -162,7 +165,10 @@ export class InstancesComponent implements OnInit {
     if (reset) {
       this.pageIndex = 1;
     }
-    if (this.searchParam.name != undefined || this.searchParam.status != undefined) {
+    if (
+      this.searchParam.name != undefined ||
+      this.searchParam.status != undefined
+    ) {
       this.isSearch = true;
       this.cdr.detectChanges();
     }
@@ -179,12 +185,15 @@ export class InstancesComponent implements OnInit {
           this.searchParam.status,
           true,
           this.tokenService.get()?.userId
-        ).pipe(
+        )
+        .pipe(
           finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-        ).subscribe(data => {
+            this.loading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe(
+          (data) => {
             // Update your component properties with the received data
             if (data != null && data.records && data.records.length > 0) {
               this.activeCreate = false;
@@ -198,10 +207,12 @@ export class InstancesComponent implements OnInit {
             } else {
               this.activeCreate = true;
             }
-            this.cdr.detectChanges()
-        }, error => {
-              this.activeCreate = true;
-        })
+            this.cdr.detectChanges();
+          },
+          (error) => {
+            this.activeCreate = true;
+          }
+        );
     }
   }
 
@@ -329,13 +340,20 @@ export class InstancesComponent implements OnInit {
     // );
   }
 
-  clickIPAddress(): void {
-    this.isVisibleGanVLAN = false;
-    this.isVisibleGanVLANIPAddress = true;
-    this.message.success('Thành công');
-
+  handleCancelGoKhoiVLAN(): void {
+    this.actionData = null;
+    this.isVisibleGoKhoiVLAN = false;
   }
 
+  handleOkGoKhoiVLAN(): void {
+    this.message.success('Gỡ khỏi VLAN thành công');
+    this.isVisibleGoKhoiVLAN = false;
+  }
+
+  isExpand = false;
+  clickIPAddress(): void {
+    this.isExpand = !this.isExpand;
+  }
 
   shutdownInstance(): void {
     this.modalSrv.create({
@@ -403,6 +421,8 @@ export class InstancesComponent implements OnInit {
   navigateToCreateBackup(id: number) {
     console.log('data ', id);
     // this.dataService.setSelectedObjectId(id)
-    this.router.navigate(['/app-smart-cloud/instance/' + id + '/create-backup-vm']);
+    this.router.navigate([
+      '/app-smart-cloud/instance/' + id + '/create-backup-vm',
+    ]);
   }
 }

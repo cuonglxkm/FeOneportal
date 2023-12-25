@@ -99,17 +99,17 @@
   <nz-row class="customRow">
     <div nz-col nzSpan="12">
       <nz-row style="height: 50px">
-        <span class="customSpan" style="width: 50%">Tên máy ảo:</span>
+        <span class="customSpan" style="width: 40%">Tên máy ảo:</span>
         <span class="fw-600 customSpan">{{ instancesModel.name || '' }}</span>
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
-        <span class="customSpan" style="width: 50%">Gói cấu hình:</span>
+        <span class="customSpan" style="width: 40%">Gói cấu hình:</span>
         <span class="fw-600 customSpan">{{
           instancesModel.flavorName | slice : 3
         }}</span>
       </nz-row>
       <nz-row style="height: 50px">
-        <span class="customSpan" style="width: 50%">Trạng thái:</span>
+        <span class="customSpan" style="width: 40%">Trạng thái:</span>
         <span
           *ngIf="instancesModel.status == 'KHOITAO'"
           class="fw-600 customSpan"
@@ -118,13 +118,13 @@
         >
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
-        <span class="customSpan" style="width: 50%">Thời gian khởi tạo:</span>
+        <span class="customSpan" style="width: 40%">Thời gian khởi tạo:</span>
         <span class="fw-600 customSpan">{{
           instancesModel.createdDate | date : 'dd/MM/yyyy'
         }}</span>
       </nz-row>
       <nz-row style="height: 50px">
-        <span class="customSpan" style="width: 50%">Băng thông trong nước:</span>
+        <span class="customSpan" style="width: 40%">Băng thông trong nước:</span>
         <span class="fw-600 customSpan"
           >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
         >
@@ -132,7 +132,7 @@
     </div>
     <div nz-col nzSpan="12">
       <nz-row style="height: 50px">
-        <span class="customSpan1" style="width: 50%">Hệ điều hành:</span>
+        <span class="customSpan1" style="width: 40%">Hệ điều hành:</span>
         <span class="fw-600 customSpan1"
           >{{ instancesModel.imageName }}
           <a
@@ -148,7 +148,7 @@
         >
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
-        <span class="customSpan1" style="width: 50%;">Truy cập và bảo mật:</span>
+        <span class="customSpan1" style="width: 40%;">Truy cập và bảo mật:</span>
         <span
           class="fw-600 customSpan1"
           *ngFor="let item of listSecurityGroupModel; let first = first"
@@ -156,19 +156,19 @@
         </span>
       </nz-row>
       <nz-row style="height: 50px">
-        <span class="customSpan1" style="width: 50%">IP Public:</span>
+        <span class="customSpan1" style="width: 40%">IP Public:</span>
         <span class="fw-600 customSpan1">{{
           instancesModel.ipPublic
         }}</span>
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
-        <span class="customSpan1" style="width: 50%">IP LAN:</span>
+        <span class="customSpan1" style="width: 40%">IP LAN:</span>
         <span class="fw-600 customSpan1">{{
           instancesModel.ipPrivate
         }}</span>
       </nz-row>
       <nz-row style="height: 50px">
-        <span class="customSpan1" style="width: 50%">Băng thông quốc tế:</span>
+        <span class="customSpan1" style="width: 40%">Băng thông quốc tế:</span>
         <span class="fw-600 customSpan1"
           >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
         >
