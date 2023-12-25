@@ -1,0 +1,87 @@
+<one-portal-header
+  title="Tạo lịch Snapshot"
+  [path]="['Home', 'Dịch vụ', 'Quản lý lịch Snapshot']"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content style="padding: 5px">
+  <nz-spin [nzSpinning]="isLoading" nzSize="large">
+    <nz-card>
+      <div>
+        <h4>Thông tin lịch Snapshot</h4>
+      </div>
+    </nz-card>
+    <nz-card>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên lịch Snapshot</nz-form-label>
+      <nz-form-control [nzValidateStatus]="showWarningName?'error':''">
+        <input nz-input placeholder="Nhập tên lịch Snapshot" [(ngModel)]="scheduleName"
+               (ngModelChange)="changeName()" type="text"/>
+        <nz-form-explain class="warning-message" st *ngIf="showWarningName">{{contentShowWarningName}}
+        </nz-form-explain>
+      </nz-form-control>
+      <br>
+
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn Volume</nz-form-label>
+      <nz-select nzSize="default"
+                 [nzShowSearch]="true"
+                 [nzPlaceHolder]="'-Chọn tên Volume-'"
+                 [(ngModel)]="volumeId"
+                 style="width: 100%;"
+      >
+        <nz-option *ngFor="let item of volumeList" [nzLabel]="item.label.toString()"
+                   [nzValue]="item.value"></nz-option>
+      </nz-select>
+      <br>
+      <br>
+
+      <nz-form-label [nzSm]="6" [nzXs]="24">Chế độ Snapshot</nz-form-label>
+      <input nz-input placeholder="Theo tuần" disabled="true" type="text"/>
+      <br>
+      <br>
+
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn thời điểm thực hiện Snapshot</nz-form-label>
+      <input nz-input placeholder="Nhập thời gian thực hiện Snapshot" [(ngModel)]="scheduleStartTime"
+             (ngModelChange)="changeScheduleName()" type="text"/>
+      <br>
+      <br>
+
+      <nz-form-label [nzSm]="6" [nzXs]="24">Số tuần</nz-form-label>
+      <input nz-input placeholder="1 tuần" disabled="true" type="text"/>
+      <br>
+      <br>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn ngày</nz-form-label>
+      <nz-select nzSize="default"
+                 [nzShowSearch]="true"
+                 [nzPlaceHolder]="'-Chọn ngày-'"
+                 [(ngModel)]="dateStart"
+                 style="width: 100%;"
+      >
+        <nz-option *ngFor="let item of dateList" [nzLabel]="item.label.toString()"
+                   [nzValue]="item.value"></nz-option>
+      </nz-select>
+      <br>
+      <br>
+
+      <nz-form-label [nzSm]="6" [nzXs]="24">Số bản Snapshot lưu trữ</nz-form-label>
+      <input nz-input placeholder="1" disabled="true" type="text"/>
+      <br>
+      <br>
+
+      <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+      <textarea rows="4" nz-input [(ngModel)]="descSchedule"></textarea>
+
+    </nz-card>
+
+    <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
+      <button (click)="goBack()" nz-button nzType="primary" style="
+            border: none;
+            background-color: gray;
+          ">Quay lại
+      </button>
+      <button (click)="create()" nz-button nzType="primary" style="
+            border: none;
+          ">Tạo mới
+      </button>
+    </div>
+  </nz-spin>
+</nz-content>

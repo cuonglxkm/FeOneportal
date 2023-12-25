@@ -1,4 +1,4 @@
-<nz-header>
+<page-header  [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">
   <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
     <nz-row nzJustify="space-between" nzAlign="middle">
       <nz-breadcrumb nz-page-header-breadcrumb>
@@ -21,7 +21,7 @@
     </nz-row>
     <h3 style="margin-top: 5px">Tạo User Group</h3>
   </nz-col>
-</nz-header>
+</page-header>
 <nz-content>
   <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
     <nz-card nzTitle="Tên của Group">
@@ -32,12 +32,11 @@
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
           </div>
         </nz-form-label>
-        <nz-form-control>
+        <nz-form-control >
           <input nz-input formControlName="groupName" id="groupName" [maxlength]="128"/>
-          <span style="color: #00000040;">Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.</span>
-<!--          <ng-template #protocolErrorTpl let-control>-->
-<!--            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>-->
-<!--          </ng-template>-->
+          <span [ngStyle]="{'color': validateForm.controls.groupName.touched && validateForm.controls.groupName.invalid ? 'rgba(252, 16, 16, 1)' : '#00000040'}">
+            Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.
+          </span>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>

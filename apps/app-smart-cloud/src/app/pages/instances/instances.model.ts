@@ -359,22 +359,65 @@ export interface InstanceResize {
 }
 
 export class InstanceAttachment {
-  cloudId: string
-  name: string
-  sizeInGB: number
-  description: string
-  instanceId: any
-  postResizeVolumeId: any
-  bootable: boolean
-  regionId: number
-  regionText: string
-  offerId: number
-  iops: number
-  customerId: number
-  createDate: string
-  status: string
-  cloudIdentityId: number
-  projectName: string
-  projectId: number
-  id: number
+  cloudId: string;
+  name: string;
+  sizeInGB: number;
+  description: string;
+  instanceId: any;
+  postResizeVolumeId: any;
+  bootable: boolean;
+  regionId: number;
+  regionText: string;
+  offerId: number;
+  iops: number;
+  customerId: number;
+  createDate: string;
+  status: string;
+  cloudIdentityId: number;
+  projectName: string;
+  projectId: number;
+  id: number;
+}
+
+export class Network {
+  isExternal: boolean;
+  id: string;
+  name: string;
+  network: any;
+  fixedIPs: string[];
+  macAddress: string;
+  status: string;
+  port_security_enabled: boolean;
+  security_groups: string[];
+  allowAddressPairs: any;
+}
+
+export class BlockStorageAttachments {
+  id: number;
+  cloudId: string;
+  name: string;
+  sizeInGB: number;
+  description: string;
+  instanceId: number;
+  postResizeVolumeId: number;
+  bootable: boolean;
+  regionId: number;
+  regionText: string;
+  offerId: number;
+  iops: number;
+  customerId: number;
+  createDate: string;
+  status: string;
+  cloudIdentityId: number;
+  projectName: string;
+  projectId: number;
+}
+
+export class UpdatePortInstance {
+  portId: string;
+  regionId: number;
+  customerId: number;
+  vpcId: number;
+  securityGroup: any[];
+  portSecurityEnanble: boolean;
 }

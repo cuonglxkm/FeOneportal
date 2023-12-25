@@ -6,35 +6,26 @@ import {
   OnInit,
   Renderer2,
 } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
-  FormControl,
-  FormGroup,
-  Validators,
-  FormArray,
-  AbstractControl,
-} from '@angular/forms';
-import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import {
-  CreateInstances,
   Flavors,
   IPPublicModel,
   IPSubnetModel,
-  ImageTypesModel,
-  Images,
   InstancesModel,
   SecurityGroupModel,
-  Snapshot,
   UpdateInstances,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { da, tr } from 'date-fns/locale';
-import { Observable, finalize } from 'rxjs';
+import { finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
+import { ProjectModel } from 'src/app/shared/models/project.model';
+import { NguCarouselConfig } from '@ngu/carousel';
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -48,29 +39,13 @@ class ConfigCustom {
   priceHour?: string = '000';
   priceMonth?: string = '000';
 }
-class BlockStorage {
-  id: number = 0;
-  type?: string = '';
-  name?: string = '';
-  vCPU?: number = 0;
-  ram?: number = 0;
-  capacity?: number = 0;
-  code?: boolean = false;
-  multiattach?: boolean = false;
-  price?: string = '000';
-}
-class Network {
-  name?: string = 'pri_network';
-  mac?: string = '';
-  ip?: string = '';
-  status?: string = '';
-}
 
 @Component({
   selector: 'one-portal-instances-edit',
   templateUrl: './instances-edit.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class InstancesEditComponent implements OnInit {
   listOfOption: Array<{ value: string; label: string }> = [];
@@ -88,7 +63,7 @@ export class InstancesEditComponent implements OnInit {
   instancesModel: InstancesModel;
 
   updateInstances: UpdateInstances = new UpdateInstances();
-  region: number = 3;
+  region: number;
   projectId: number = 4079;
   customerId: number = 669;
   userId: number = 669;
@@ -104,13 +79,17 @@ export class InstancesEditComponent implements OnInit {
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
 
-  //#region Hệ điều hành
-
-  //#endregion
-
-  //#region  Snapshot
-
-  //#endregion
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    speed: 250,
+    point: {
+      visible: true,
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy',
+  };
 
   //#region HDD hay SDD
   activeBlockHDD: boolean = true;
@@ -182,92 +161,10 @@ export class InstancesEditComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
-  // toggleClass(id: string) {
-  //   this.selectedElementFlavor = id;
-  //   if (this.selectedElementFlavor) {
-  //     this.isInitialClass = !this.isInitialClass;
-  //     this.isNewClass = !this.isNewClass;
-  //   } else {
-  //     this.isInitialClass = true;
-  //     this.isNewClass = false;
-  //   }
-
-  //   this.cdr.detectChanges();
-  // }
 
   selectElementInputFlavors(id: any) {
     this.selectedElementFlavor = id;
   }
-  //#endregion
-
-  //#region selectedPasswordOrSSHkey
-
-  //#endregion
-
-  //#region BlockStorage
-  activeBlockStorage: boolean = false;
-  idBlockStorage = 0;
-  listOfDataBlockStorage: BlockStorage[] = [];
-  defaultBlockStorage: BlockStorage = new BlockStorage();
-  typeBlockStorage: Array<{ value: string; label: string }> = [
-    { value: 'HDD', label: 'HDD' },
-    { value: 'SSD', label: 'SSD' },
-  ];
-
-  initBlockStorage(): void {
-    this.activeBlockStorage = true;
-    this.listOfDataBlockStorage.push(this.defaultBlockStorage);
-  }
-  deleteRowBlockStorage(id: number): void {
-    this.listOfDataBlockStorage = this.listOfDataBlockStorage.filter(
-      (d) => d.id !== id
-    );
-  }
-
-  onInputBlockStorage(index: number, event: any) {
-    // const inputElement = this.renderer.selectRootElement('#type_' + index);
-    // const inputValue = inputElement.value;
-    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataBlockStorage.filter(
-      (item) => item.type !== ''
-    );
-    const filteredArrayHas = this.listOfDataBlockStorage.filter(
-      (item) => item.type == ''
-    );
-
-    if (filteredArrayHas.length > 0) {
-      this.listOfDataBlockStorage[index].type = event;
-    } else {
-      // Add a new row with the same value as the current row
-      //const currentItem = this.itemsTest[count];
-      //this.itemsTest.splice(count + 1, 0, currentItem);
-      this.defaultBlockStorage = new BlockStorage();
-      this.idBlockStorage++;
-      this.defaultBlockStorage.id = this.idBlockStorage;
-      this.listOfDataBlockStorage.push(this.defaultBlockStorage);
-    }
-    this.cdr.detectChanges();
-  }
-  //#endregion
-  //#region Network
-  activeNetwork: boolean = false;
-  idNetwork = 0;
-  listOfDataNetwork: Network[] = [];
-  defaultNetwork: Network = new Network();
-  listIPSubnetModel: IPSubnetModel[] = [];
-
-  initNetwork(): void {
-    this.activeNetwork = true;
-    this.listOfDataNetwork.push(this.defaultNetwork);
-
-    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
-      // var resultHttp = data;
-      // this.listOfDataNetwork.push(...resultHttp);
-    });
-  }
-
-  //#endregion
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -280,19 +177,27 @@ export class InstancesEditComponent implements OnInit {
     private renderer: Renderer2,
     private loadingSrv: LoadingService
   ) {}
+
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
+    this.initFlavors();
+    this.selectedSecurityGroup = [];
+    this.getAllSecurityGroup();
     console.log(this.tokenService.get()?.userId);
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
+    this.selectedSecurityGroup = [];
+    this.getAllSecurityGroup();
   }
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
 
     this.userId = this.tokenService.get()?.userId;
-    this.initFlavors();
     this.getAllSecurityGroup();
-    this.initNetwork();
 
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
@@ -302,6 +207,7 @@ export class InstancesEditComponent implements OnInit {
           this.selectedElementFlavor = this.instancesModel.flavorId;
           this.region = this.instancesModel.regionId;
           this.projectId = this.instancesModel.projectId;
+          this.initFlavors();
           this.dataService
             .getAllSecurityGroupByInstance(
               this.instancesModel.cloudId,
@@ -366,16 +272,17 @@ export class InstancesEditComponent implements OnInit {
     this.updateInstances.listServicesToBeExtended = null;
     this.updateInstances.newExpiredDate = null;
 
-    this.dataService.update(this.updateInstances).subscribe(
-      (data: any) => {
-        console.log(data);
+    this.dataService.update(this.updateInstances).subscribe({
+      next: (next) => {
+        console.log(next);
         this.message.success('Cập nhật máy ảo thành công');
+        this.route.navigate(['/app-smart-cloud/instances']);
       },
-      (error) => {
-        console.log(error.error);
+      error: (e) => {
+        console.log(e);
         this.message.error('Cập nhật máy ảo không thành công');
-      }
-    );
+      },
+    });
   }
 
   cancel(): void {

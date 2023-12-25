@@ -1,21 +1,13 @@
-import { Inject, Injectable, Optional, inject } from '@angular/core';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-  DocumentChangeAction,
-  Query,
-  QuerySnapshot,
-} from '@angular/fire/compat/firestore';
-import { Observable, from, map } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class InstancesService extends BaseService{
-
+export class InstancesService extends BaseService {
   constructor(private http: HttpClient) {
     super();
   }
@@ -25,7 +17,10 @@ export class InstancesService extends BaseService{
     let url_ = `/instances/${id}/action`;
     url_ = url_.replace(/[?&]$/, '');
     // const _body = JSON.stringify(data)
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
   }
 
   //hệ điều hành là Image, gói cấu hình là Flavors
@@ -76,7 +71,7 @@ export class InstancesService extends BaseService{
     regionId: any,
     userId: any,
     pageSize: any,
-    currentPage: any,
+    currentPage: any
   ): Observable<any> {
     let url_ = `/keypair?vpcId=${vpcId}&regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
     url_ = url_.replace(/[?&]$/, '');
@@ -110,7 +105,9 @@ export class InstancesService extends BaseService{
     let url_ = `/images?region=${region}&type=${type}&customerId=${customerId}`;
     // let url_ = `/images?region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<Images[]>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<Images[]>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
   }
 
   getAllImageType(): Observable<{}> {
@@ -128,19 +125,23 @@ export class InstancesService extends BaseService{
   ): Observable<Flavors[]> {
     let url_ = `/flavors?show=${show}&region=${region}&isBasic=${isBasic}&isVpc=${isVpc}&showAll=${showAll}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<Flavors[]>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<Flavors[]>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
   }
 
   search(
     pageNumber: number,
     pageSize: number,
     region: number,
+    projectId: number,
     searchValue: string = '',
     status: string = '',
+    isCheckState: boolean,
     userId: number
   ): Observable<any> {
     if (searchValue == undefined) searchValue = '';
-    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&searchValue=${searchValue}&status=${status}&userId=${userId}`;
+    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&projectId=${projectId}&searchValue=${searchValue}&status=${status}&isCheckState=${isCheckState}&userId=${userId}`;
     url_ = url_.replace(/[?&]$/, '');
 
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
@@ -156,49 +157,87 @@ export class InstancesService extends BaseService{
   delete(id: number): Observable<any> {
     let url_ = `/instances/${id}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
   }
 
   create(data: any): Observable<any> {
     let url_ = ``;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders + url_, data);
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + url_,
+      data
+    );
   }
 
   resetpassword(data: any): Observable<any> {
     let url_ = `/instances/resetpassword?id=${data.id}&newPassword=${data.newPassword}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, '');
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      ''
+    );
   }
 
   rebuild(data: any): Observable<any> {
     let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
   }
 
   update(data: any): Observable<any> {
     let url_ = `/instances/${data.id}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
   }
 
   getInstanceById(id: number) {
-    return this.http.get<InstancesModel>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`)
+    return this.http.get<InstancesModel>(
+      this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`
+    );
   }
 
   getMonitorByCloudId(
     cloudId: string,
     regionId: number,
     during: number,
-    type: string,
-    ): Observable<any> {
+    type: string
+  ): Observable<any> {
     let url_ = `/instances/monitor?instanceId=${cloudId}&regionId=${regionId}&during=${during}&type=${type}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
   getConsoleUrl(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`)
+    return this.http.get(
+      `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`
+    );
+  }
+
+  getPortByInstance(instanceId: number, region: number): Observable<any> {
+    let url_ = `/instances/port?instanceId=${instanceId}&region=${region}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
+
+  getBlockStorage(id: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/instance-attachments`
+    );
+  }
+
+  updatePortVM(data: any) {
+    let url_ = `/instances/updateport`;
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
   }
 }

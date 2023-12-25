@@ -31,12 +31,11 @@ import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import {Observable, finalize, of} from 'rxjs';
+import { Observable, concatMap, finalize, from, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import { OwlOptions } from 'ngx-owl-carousel-o';
-import {NguCarouselConfig} from "@ngu/carousel";
+import { NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 interface InstancesForm {
@@ -77,22 +76,26 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
-
-
-  images = ['assets/logo.svg', 'assets/logo.svg', 'assets/logo.svg', 'assets/logo.svg'];
+  images = [
+    'assets/logo.svg',
+    'assets/logo.svg',
+    'assets/logo.svg',
+    'assets/logo.svg',
+  ];
 
   public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 5, all: 0 },
     speed: 250,
     point: {
-      visible: true
+      visible: true,
     },
     touch: true,
     loop: true,
     // interval: { timing: 1500 },
-    animation: 'lazy'
+    animation: 'lazy',
   };
+
   tempData: any[];
 
   reverse = true;
@@ -111,8 +114,7 @@ export class InstancesCreateComponent implements OnInit {
   orderItem: OrderItem[] = [];
   region: number = 3;
   projectId: number = 4079;
-  customerId: number = 669;
-  userId: number = 669;
+  userId: number;
   today: Date = new Date();
   ipPublicValue: string = '';
   isUseIPv6: boolean = false;
@@ -129,74 +131,47 @@ export class InstancesCreateComponent implements OnInit {
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
-  listImageVersionByType: Images[] = [];
-  selectedValueVersion: any;
   isLoading = false;
-  selectedTypeImageId: number;
-  pagedCardListImages: Array<Array<any>> = [];
+  listSelectedImage = [];
+  selectedImageTypeId: number;
+  listOfImageByImageType = [];
+  imageTypeId = [];
 
-  customOptions: OwlOptions = {
-    autoWidth: true,
-    loop: true,
-    items: 4,
-    margin: 50,
-    // slideBy: 'page',
-    // mergeFit: true,
-    // merge: true,
-    // autoplay: true,
-    // autoplayTimeout: 5000,
-    // autoplayHoverPause: true,
-    // autoplaySpeed: 4000,
-    dotsSpeed: 500,
-    // rewind: false,
-    // dots: false,
-    // dotsData: true,
-    // mouseDrag: true,
-    // touchDrag: false,
-    pullDrag: true,
-    smartSpeed: 400,
-    // fluidSpeed: 499,
-    dragEndSpeed: 350,
-    dotsEach: 5,
-    // center: true,
-    // rewind: true,
-    // rtl: true,
-    // startPosition: 1,
-    // navText: [ '<i class=fa-chevron-left>left</i>', '<i class=fa-chevron-right>right</i>' ],
-    slideBy: 'page',
-    responsive: {
-      0: {
-        items: 4,
-        dotsEach: 5,
-      },
-      300: {
-        items: 4,
-        dotsEach: 5,
-      }
-    },
-    // stagePadding: 40,
-    nav: false,
-  };
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
-      for (let i = 0; i < this.listImageTypes.length; i += 4) {
-        this.pagedCardListImages.push(this.listImageTypes.slice(i, i + 4));
-      }
+      this.listImageTypes.forEach (e => {
+        this.imageTypeId.push(e.id);
+      })
+      console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllImageVersionByType(type: number) {
-    this.dataService
-      .getAllImage(null, this.region, type, this.customerId)
-      .subscribe((data: any) => {
-        this.listImageVersionByType = data;
+  getAllImageByImageType(imageTypeId: any[]) {
+    this.listOfImageByImageType = [];
+    // Đảm bảo tuần tự ds Image theo như ds ImageType tương ứng
+    from(imageTypeId)
+      .pipe(
+        concatMap((e) =>
+          this.dataService.getAllImage(null, this.region, e, this.userId)
+        )
+      )
+      .subscribe((result) => {
+        this.listOfImageByImageType.push(result);
       });
+    console.log('list of image by imagetype', this.listOfImageByImageType);
   }
 
-  onInputHDH(index: number, event: any) {
-    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
-    this.selectedTypeImageId = this.hdh.imageTypeId;
+  onInputHDH(event: any, index: number, imageTypeId: number) {
+    this.hdh = event;
+    this.selectedImageTypeId = imageTypeId;
+    for (let i = 0; i < this.listSelectedImage.length; ++i) {
+      if (i != index) {
+        this.listSelectedImage[i] = 0;
+      }
+    }
+    console.log('Hệ điều hành', this.hdh);
+    console.log('list seleted Image', this.listSelectedImage);
   }
 
   //#endregion
@@ -209,7 +184,7 @@ export class InstancesCreateComponent implements OnInit {
   initSnapshot(): void {
     if (this.isSnapshot) {
       this.dataService
-        .getAllSnapshot('', '', this.region, this.customerId)
+        .getAllSnapshot('', '', this.region, this.userId)
         .subscribe((data: any) => {
           this.listSnapshot = data;
         });
@@ -243,7 +218,7 @@ export class InstancesCreateComponent implements OnInit {
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(this.region, this.customerId, 0, 9999, 1, false, '')
+      .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
       .subscribe((data: any) => {
         this.listIPPublic = data.records;
       });
@@ -293,7 +268,7 @@ export class InstancesCreateComponent implements OnInit {
     this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
     console.log(this.flavor);
   }
-  
+
   toggleClass(id: string) {
     this.selectedElementFlavor = id;
     if (this.selectedElementFlavor) {
@@ -330,7 +305,7 @@ export class InstancesCreateComponent implements OnInit {
   getAllSSHKey() {
     this.listSSHKey = [];
     this.dataService
-      .getAllSSHKey(this.projectId, this.region, this.customerId, 999999, 0)
+      .getAllSSHKey(this.projectId, this.region, this.userId, 999999, 0)
       .subscribe((data: any) => {
         data.records.forEach((e) => {
           const itemMapper = new SHHKeyModel();
@@ -438,9 +413,7 @@ export class InstancesCreateComponent implements OnInit {
     // const inputElement = this.renderer.selectRootElement('#type_' + index);
     // const inputValue = inputElement.value;
     // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataIPv4.filter(
-      (item) => item.ip !== ''
-    );
+    const filteredArray = this.listOfDataIPv4.filter((item) => item.ip !== '');
     const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
     );
@@ -463,9 +436,7 @@ export class InstancesCreateComponent implements OnInit {
     // const inputElement = this.renderer.selectRootElement('#type_' + index);
     // const inputValue = inputElement.value;
     // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataIPv6.filter(
-      (item) => item.ip !== ''
-    );
+    const filteredArray = this.listOfDataIPv6.filter((item) => item.ip !== '');
     const filteredArrayHas = this.listOfDataIPv6.filter(
       (item) => item.ip == ''
     );
@@ -495,8 +466,7 @@ export class InstancesCreateComponent implements OnInit {
     private renderer: Renderer2,
     private loadingSrv: LoadingService
   ) {
-
-    this.tempData = [ this.images[Math.floor(Math.random() * this.images.length)],
+    this.tempData = [
       this.images[Math.floor(Math.random() * this.images.length)],
       this.images[Math.floor(Math.random() * this.images.length)],
       this.images[Math.floor(Math.random() * this.images.length)],
@@ -507,7 +477,7 @@ export class InstancesCreateComponent implements OnInit {
       this.images[Math.floor(Math.random() * this.images.length)],
       this.images[Math.floor(Math.random() * this.images.length)],
       this.images[Math.floor(Math.random() * this.images.length)],
-
+      this.images[Math.floor(Math.random() * this.images.length)],
     ];
 
     this.carouselTileItems$ = of(this.tempData);
@@ -524,7 +494,6 @@ export class InstancesCreateComponent implements OnInit {
     //     return data;
     //   })
     // );
-
   }
   onRegionChange(region: RegionModel) {
     // Handle the region change event
@@ -538,6 +507,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllSSHKey();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
+    this.getAllImageByImageType(this.imageTypeId);
     this.cdr.detectChanges();
   }
 
@@ -611,7 +581,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.customerUsingMss = null;
     this.instanceCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceCreate.vpcId = "4079";
+    this.instanceCreate.vpcId = '4079';
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
@@ -681,7 +651,7 @@ export class InstancesCreateComponent implements OnInit {
     let orderItemInstance = new OrderItem();
     orderItemInstance.orderItemQuantity = 1;
     orderItemInstance.specification = specificationInstance;
-    orderItemInstance.specificationType = "instance_create";
+    orderItemInstance.specificationType = 'instance_create';
     orderItemInstance.price = 1;
     orderItemInstance.serviceDuration = 1;
     this.orderItem.push(orderItemInstance);
@@ -690,14 +660,14 @@ export class InstancesCreateComponent implements OnInit {
     let orderItemVolume = new OrderItem();
     orderItemVolume.orderItemQuantity = 1;
     orderItemVolume.specification = specificationVolume;
-    orderItemVolume.specificationType = "volume_create";
+    orderItemVolume.specificationType = 'volume_create';
     orderItemVolume.price = 1;
     orderItemVolume.serviceDuration = 1;
     this.orderItem.push(orderItemVolume);
 
     this.order.customerId = this.tokenService.get()?.userId;
     this.order.createdByUserId = this.tokenService.get()?.userId;
-    this.order.note = "tạo vm";
+    this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
 
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });

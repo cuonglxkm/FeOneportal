@@ -92,6 +92,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   resetPasswordRepeat: string = '';
   check = true;
   isOk = false;
+  passwordVisible = false;
+  passwordRepeatVisible = false;
 
   resetPasswordFc(tpl: TemplateRef<{}>): void {
     //Reset mật khẩu máy ảo

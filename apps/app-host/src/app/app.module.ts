@@ -16,7 +16,7 @@ import {RoutesModule} from "./routes/routes.module";
 import {LayoutModule} from "./layout/layout.module";
 import {JsonSchemaModule, SharedModule} from "./shared";
 import {CoreModule} from "./core/core.module";
-import {registerLocaleData} from "@angular/common";
+import {DatePipe, registerLocaleData} from "@angular/common";
 import {NZ_DATE_LOCALE, provideNzI18n,  zh_CN as zorroLang} from "ng-zorro-antd/i18n";
 import {DELON_LOCALE, zh_CN as delonLang, ALAIN_I18N_TOKEN} from "@delon/theme";
 import {zhCN as dateLang} from "date-fns/locale";
@@ -90,7 +90,7 @@ const APPINIT_PROVIDES = [
     // ...GLOBAL_THIRD_MODULES,
     ...FORM_MODULES
   ],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES],
+  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
