@@ -84,8 +84,8 @@
                   "link": "/app-smart-cloud/snapshotvls"
                 },
                 {
-                  "text": "Lịch snapshot",
-                  "link": "/app-smart-cloud/snapshotvls"
+                  "text": "Lịch Snapshot",
+                  "link": "/app-smart-cloud/schedule/snapshot/list"
                 }
               ]
             },
