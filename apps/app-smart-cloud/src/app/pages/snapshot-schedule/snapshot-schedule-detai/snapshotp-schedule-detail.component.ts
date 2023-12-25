@@ -39,6 +39,9 @@ export class SnapshotScheduleDetailComponent implements OnInit {
               private notification: NzNotificationService) {
   }
 
+  goBack(){
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+  }
   regionChanged(region: RegionModel) {
     this.region = region.regionId
   }

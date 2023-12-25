@@ -31,6 +31,9 @@ export class CurrentVirtualMachineComponent implements OnInit {
 
     form: RestoreFormCurrent = new RestoreFormCurrent()
 
+    listIOPS: any[] = []
+    listIOPSUnique: any[] = []
+
     constructor(private location: Location,
                 private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -57,9 +60,18 @@ export class CurrentVirtualMachineComponent implements OnInit {
                     this.securityGroup.push(item.sgName)
 
                 })
-                console.log('detail', this.securityGroup)
                 this.securityGroupUnique = Array.from(new Set(this.securityGroup))
                 this.securityGroupName = this.securityGroupUnique.join(', ')
+                console.log(this.backupVm.volumeBackups)
+                this.backupVm.volumeBackups.forEach(item1 => {
+                    if(this.listIOPS?.length > 0) {
+                        this.listIOPS.push(item1.iops)
+                    } else {
+                        this.listIOPS = [item1.iops]
+                    }
+                    console.log(this.listIOPS)
+                    this.listIOPSUnique = Array.from(new Set(this.listIOPS.join(', ')))
+                })
             }
             console.log('backupvm', this.backupVm)
         })

@@ -54,11 +54,11 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       password: ['', [Validators.required, Validators.minLength(6), UserRegisterComponent.checkPassword.bind(this)]],
       confirm: ['', [Validators.required, Validators.minLength(6)]],
       // mobilePrefix: ['+86'],
-      firstName: ['', []],
-      lastName: ['', []],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
       mobile: ['', [Validators.pattern(/^0\d{8,10}$/)]],
-      province: ['', []],
-      agreement: ['', []]
+      province: ['', [Validators.required]],
+      agreement: ['', [Validators.required]]
     },
     {
       validators: MatchControl('password', 'confirm')

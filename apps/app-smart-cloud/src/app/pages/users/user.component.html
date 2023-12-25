@@ -15,7 +15,11 @@
   </div>
   <div><h2>Danh sách Users</h2></div>
   <form nz-form>
-    <div style="margin-bottom: -10px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div
+      style="margin-bottom: -10px"
+      nz-row
+      [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
+    >
       <div
         nz-col
         [nzLg]="10"
@@ -60,18 +64,17 @@
         <button
           class="m-r-8"
           nz-button
-          nzType="default"
-          style="background-color: white"
+          style="cursor: pointer"
           (click)="reloadTable()"
         >
-          <img style="margin-bottom: 4px" src="assets/imgs/undo.png" alt="" />
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
         </button>
         <button
           class="m-r-8"
           nz-button
           nzType="default"
           style="background-color: #9c9c9c; color: white"
-          (click)="showModal(); renameModal()"
+          (click)="showModal()"
         >
           <i nz-icon nzType="delete"></i>
           Xóa
@@ -107,24 +110,33 @@
       >
         <thead>
           <tr>
-            <th style="width: 20px"></th>
+            <th style="width: 20px">
+              <input
+                nz-input
+                type="checkbox"
+                (change)="onChangeCheckAll($event.target.checked)"
+                [(ngModel)]="checkedAllInPage"
+              />
+            </th>
             <th>Tên User</th>
             <th>Groups</th>
             <th>Thời gian tạo</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of listOfUser">
+          <tr *ngFor="let item of listOfUser; let i = index">
             <td>
-              <input nz-input type="checkbox"
-                (change)="onClickItem(item.userName)"
-              >
+              <input
+                type="checkbox"
+                (change)="onClickItem(item.userName, $event.target.checked)"
+                [(ngModel)]="listCheckedInPage[i]"
+              />
             </td>
-            <td (click)="getUserDetail(item.id)">
+            <td (click)="getUserDetail(item.userName)">
               <a>{{ item.userName }}</a>
             </td>
             <td>{{ item.userOfGroups }}</td>
-            <td>{{ item.createdDate }}</td>
+            <td>{{ item.createdDate | date:'dd/MM/yyyy HH:mm:ss' }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -148,20 +160,64 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
       <div>
-        Bạn đang thực hiện xóa User <span> {{userDelete}} </span>
+        Bạn đang thực hiện xóa User <span> {{ userDelete }} </span>
       </div>
       <div>
-        Việc thực hiện xóa User cũng sẽ xóa tất cả dữ liệu liên quan tới User này
+        Việc thực hiện xóa User cũng sẽ xóa tất cả dữ liệu liên quan tới User
+        này
       </div>
-      <div>
-        Hành động này không thể được hoàn tác
-      </div>
+      <div>Hành động này không thể được hoàn tác</div>
     </ng-template>
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="name"
             >Để thực hiện xóa User, vui lòng nhập tên User để xác
+            nhận.</nz-form-label
+          >
+          <nz-form-control>
+            <input
+              name="name"
+              nz-input
+              [ngModel]="codeVerify"
+              (ngModelChange)="changecodeVerify($event)"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDeleteUsers"
+  [nzTitle]="nameModal"
+  (nzOnCancel)="handleCancelDeleteUsers()"
+  (nzOnOk)="handleOkDeleteUsers()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="customTemplateMessageDeleteUsers"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageDeleteUsers>
+      <div>
+        Bạn đang thực hiện xóa <span>{{ listUserPicked.length }}</span> User
+      </div>
+      <div>
+        Việc thực hiện xóa các Users đồng thời cũng sẽ xóa toàn bộ dữ liệu liên
+        quan tới những User đó
+      </div>
+      <div>Hành động này không thể được hoàn tác</div>
+    </ng-template>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Để thực hiện xóa các Users, vui lòng nhập "delete" để xác
             nhận.</nz-form-label
           >
           <nz-form-control>

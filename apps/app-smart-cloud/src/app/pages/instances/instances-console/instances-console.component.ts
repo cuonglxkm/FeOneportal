@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {LoadingService, LoadingType} from "@delon/abc/loading";
 import {finalize} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
+import {InstancesService} from "../instances.service";
 
 @Component({
   selector: 'one-portal-instances-console',
@@ -21,7 +22,9 @@ export class InstancesConsoleComponent implements OnInit, AfterViewInit {
   constructor(
     private fullContentService: FullContentService,
     private http: HttpClient,
-    private loadingSrv: LoadingService, private route: ActivatedRoute) {
+    private loadingSrv: LoadingService,
+    private route: ActivatedRoute,
+    private service: InstancesService) {
   }
 
 
@@ -46,7 +49,7 @@ export class InstancesConsoleComponent implements OnInit, AfterViewInit {
 
   getUrl() {
     this.loadingSrv.open({type: "spin", text: "Loading..."});
-    this.http.get(`http://172.16.68.200:1009/instances/${this.vmId}/console`).pipe(
+    this.service.getConsoleUrl(this.vmId).pipe(
       finalize(() => this.loadingSrv.close())
     )
       .subscribe(res => {

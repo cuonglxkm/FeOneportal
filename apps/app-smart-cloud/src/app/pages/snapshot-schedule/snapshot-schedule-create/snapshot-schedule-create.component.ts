@@ -30,7 +30,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   volumeList: NzSelectOptionInterface[];
   userId: number;
   scheduleStartTime:string;
-  dateStart: any;
+  dateStart: string;
   descSchedule: string;
 
   dateList: NzSelectOptionInterface[] = [
@@ -81,8 +81,8 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
   create(){
     let request = new CreateScheduleSnapshotDTO();
-    request.daysOfWeek = this.dateStart;
-    request.dayOfWeek = null;
+    request.dayOfWeek = this.dateStart;
+    request.daysOfWeek = null;
     request.description = this.descSchedule;
     request.intervalWeek = 1 // fix cứng số tuần  = 1;
     request.mode = 3 //fix cứng chế độ = theo tuần ;
@@ -90,7 +90,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     request.duration = null;
     request.name = this.scheduleName;
     request.volumeId = this.volumeId;
-    request.runtime = new Date().toString();
+    request.runtime = new Date().toISOString();
     request.intervalMonth = null;
     request.maxBaxup = 1 // fix cứng số bản
     request.snapshotPacketId = null;

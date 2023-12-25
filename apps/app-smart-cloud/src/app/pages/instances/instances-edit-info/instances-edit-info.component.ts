@@ -19,19 +19,22 @@ import {
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { finalize } from 'rxjs';
+import { concatMap, finalize, from } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
+import { NguCarouselConfig } from '@ngu/carousel';
+import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
   templateUrl: './instances-edit-info.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slider],
 })
 export class InstancesEditInfoComponent implements OnInit {
   loading = true;
 
-  region: number = 3;
+  region: number;
   projectId: number = 310;
   customerId: number = 669;
   //userId: number = this.tokenService.get()?.userId;
@@ -45,24 +48,36 @@ export class InstancesEditInfoComponent implements OnInit {
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
-  listImageVersionByType: Images[] = [];
-  selectedValueVersion: any;
   isLoading = false;
   hdh: Images;
-  selectedTypeImageId: number;
   selectedImage: Images;
+  listSelectedImage = [];
+  selectedImageTypeId: number;
+  listOfImageByImageType = [];
+  imageTypeId = [];
 
-  getAllImageVersionByType(type: number) {
-    this.dataService
-      .getAllImage(null, this.region, type, this.customerId)
-      .subscribe((data: any) => {
-        this.listImageVersionByType = data;
-      });
-  }
+  public carouselTileConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    speed: 250,
+    point: {
+      visible: true,
+    },
+    touch: true,
+    loop: true,
+    // interval: { timing: 1500 },
+    animation: 'lazy',
+  };
 
-  onInputHDH(index: number, event: any) {
-    this.hdh = this.listImageVersionByType.find((x) => (x.id = event));
-    this.selectedTypeImageId = this.hdh.imageTypeId;
+  onInputHDH(event: any, index: number, imageTypeId: number) {
+    this.hdh = event;
+    this.selectedImageTypeId = imageTypeId;
+    for (let i = 0; i < this.listSelectedImage.length; ++i) {
+      if (i != index) {
+        this.listSelectedImage[i] = 0;
+      }
+    }
+    console.log('Hệ điều hành', this.hdh);
+    console.log('list seleted Image', this.listSelectedImage);
   }
 
   //#endregion
@@ -82,38 +97,80 @@ export class InstancesEditInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
+    this.getAllImageType();
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService
           .getById(this.id, false)
-          .subscribe((dataInstae: any) => {
-            this.instancesModel = dataInstae;
-            this.dataService.getAllImageType().subscribe((data: any) => {
-              this.listImageTypes = data;
-              for (let i = 0; i < this.listImageTypes.length; i += 4) {
-                this.pagedCardListImages.push(
-                  this.listImageTypes.slice(i, i + 4)
-                );
-              }
-              this.dataService
-                .getImageById(this.instancesModel.imageId)
-                .pipe(finalize(() => this.loadingSrv.close()))
+          .subscribe((dataInstance: any) => {
+            this.instancesModel = dataInstance;
+            this.region = this.instancesModel.regionId;
+            this.getAllImageByImageType(this.imageTypeId);
+            this.dataService
+              .getImageById(this.instancesModel.imageId)
+              .pipe(finalize(() => this.loadingSrv.close()))
 
-                .subscribe((dataimge: any) => {
-                  //this.hdh = dataimge;
-                  this.selectedImage = dataimge;
-                  //  this.selectedTypeImageId = this.hdh.imageTypeId;
-                  this.loading = false;
-                  this.cdr.detectChanges();
-                });
-            });
+              .subscribe((dataimage: any) => {
+                //this.hdh = dataimge;
+                this.selectedImage = dataimage;
+                //  this.selectedTypeImageId = this.hdh.imageTypeId;
+                this.loading = false;
+                this.cdr.detectChanges();
+              });
           });
       }
     });
     this.cdr.detectChanges();
   }
+
+  getAllImageType() {
+    this.dataService.getAllImageType().subscribe((data: any) => {
+      this.listImageTypes = data;
+      this.listImageTypes.forEach (e => {
+        this.imageTypeId.push(e.id);
+      })
+      console.log('list image types', this.listImageTypes);
+    });
+  }
+
+  getAllImageByImageType(imageTypeId: any[]) {
+    this.listOfImageByImageType = [];
+    // Đảm bảo tuần tự ds Image theo như ds ImageType tương ứng
+    from(imageTypeId)
+      .pipe(
+        concatMap((e) =>
+          this.dataService.getAllImage(null, this.region, e, this.customerId)
+        )
+      )
+      .subscribe((result) => {
+        this.listOfImageByImageType.push(result);
+      });
+    console.log('list of image by imagetype', this.listOfImageByImageType);
+  }
+
+  onRegionChange(region: RegionModel) {
+    // Handle the region change event
+    this.region = region.regionId;
+    console.log(this.tokenService.get()?.userId);
+    this.getAllImageByImageType(this.imageTypeId);
+    this.cdr.detectChanges();
+  }
+  onProjectChange(project: any) {}
+
+  modify(): void {
+    this.modalSrv.create({
+      nzTitle: 'Xác nhận thay đổi hệ điều hành',
+      nzContent:
+        'Quý khách chắn chắn muốn thực hiện thay đổi hệ điều hành máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        this.save();
+      },
+    });
+  }
+
   save(): void {
     this.rebuildInstances.regionId = this.instancesModel.regionId;
     this.rebuildInstances.customerId = this.instancesModel.customerId;
@@ -124,17 +181,13 @@ export class InstancesEditInfoComponent implements OnInit {
       (data: any) => {
         console.log(data);
         this.message.success('Thay đổi hệ điều hành thành công');
+        this.returnPage();
       },
       (error) => {
         console.log(error.error);
         this.message.error('Thay đổi hệ điều hành không thành công');
       }
     );
-  }
-  onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    console.log(this.tokenService.get()?.userId);
   }
 
   navigateToEdit() {

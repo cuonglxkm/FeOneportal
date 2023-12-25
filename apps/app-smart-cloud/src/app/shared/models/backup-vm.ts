@@ -21,7 +21,8 @@ export interface BackupVm {
   instanceName: string,
   size: number,
   backupPackageName: string,
-  volumeBackups: VolumeBackup[]
+  volumeBackups: VolumeBackup[],
+  expirationDate: any
 }
 
 export interface VolumeBackup {

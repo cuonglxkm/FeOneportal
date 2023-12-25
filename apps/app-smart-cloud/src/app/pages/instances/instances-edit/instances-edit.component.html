@@ -8,13 +8,18 @@
     </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right non-pointer">
-    <region-select-dropdown></region-select-dropdown>
-    <project-select-dropdown></project-select-dropdown>
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="region"
+      (valueChanged)="onProjectChange($event)"
+    ></project-select-dropdown>
   </div>
-  <div style="margin-top: 15px;">
+  <div style="margin-top: 15px">
     <nz-row>
-      <h2 style="width: 50%;">Chỉnh sửa máy ảo</h2>
-      <div class="text-right non-pointer" style="width: 50%;">
+      <h2 style="width: 50%">Chỉnh sửa máy ảo</h2>
+      <div class="text-right non-pointer" style="width: 50%">
         <button
           nz-button
           [nzType]="'primary'"
@@ -66,7 +71,7 @@
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Hệ điều hành: {{ instancesModel.imageId }}
+            >Hệ điều hành: {{ instancesModel.imageName }}
             <a
               class="text-blue"
               (click)="navigateToChangeImage()"
@@ -104,6 +109,7 @@
               <ng-template #nzAvatarselectedHDDorSSD1>
                 <input
                   type="radio"
+                  [disabled]="true"
                   [checked]="activeBlockHDD"
                   (click)="initHDD()"
                 />
@@ -137,6 +143,7 @@
               <ng-template #nzAvatarselectedHDDorSSD2>
                 <input
                   type="radio"
+                  [disabled]="true"
                   [checked]="activeBlockSSD"
                   (click)="initSSD()"
                 />
@@ -159,53 +166,63 @@
 
     <nz-tabset>
       <nz-tab nzTitle="Gói cấu hình">
-        <nz-carousel
-          [nzEffect]="effect"
-          style="overflow: initial"
-          style="height: 200px"
+        <ngu-carousel
+          #myCarousel
+          [inputs]="carouselTileConfig"
+          [dataSource]="listFlavors"
         >
-          <div nz-carousel-content *ngFor="let page of pagedCardList">
-            <div nz-row>
-              <div nz-col nzSpan="6" *ngFor="let data of page">
-                <table
-                  class="flavor-card text-center"
-                  (click)="onInputFlavors(data.id)"
+          <ngu-tile
+            *nguCarouselDef="let item; index as i; let ani = animate"
+            [@slider]="ani"
+          >
+            <table class="text-center" (click)="onInputFlavors(item.id)">
+              <tbody
+                class="flavor-body"
+                [id]="'flavor_' + item.id"
+                [class.initialClassFlavor]="
+                  selectedElementFlavor === 'flavor_' + item.id &&
+                  isInitialClass
+                "
+                [class.newClassFlavor]="
+                  selectedElementFlavor === 'flavor_' + item.id && isNewClass
+                "
+                (click)="selectElementInputFlavors('flavor_' + item.id)"
+              >
+                <tr>
+                  <div>
+                    <b class="h4">{{ item.flavorName | slice : 3 }}</b
+                    ><br />
+                    <b class="h4">{{ item.price }}</b
+                    ><span> đ/tháng</span><br />
+                    <span>đ/giờ</span>
+                  </div>
+                </tr>
+                <tr
+                  class="flavorfooter"
+                  [class.flavor-footer-active]="
+                    selectedElementFlavor === 'flavor_' + item.id
+                  "
+                  [class.flavor-footer]="
+                    selectedElementFlavor != 'flavor_' + item.id
+                  "
                 >
-                  <tbody
-                    class="flavor-body"
-                    [id]="'flavor_' + data.id"
-                    [ngClass]="{
-                      initialClassFlavor: data.id === selectedElementFlavor,
-                      newClassFlavor: !data.id === selectedElementFlavor
-                    }"
-                    (click)="selectElementInputFlavors(data.id)"
-                  >
-                    <tr>
-                      <div>
-                        <b class="h4">{{ data.flavorName }}</b
-                        ><br />
-                        <b class="h4">{{ data.price }}đ/tháng</b><br />
-                        <span>đ/giờ</span>
-                      </div>
-                    </tr>
-                    <tr
-                      class="flavor-footer"
-                      [class.flavor-footer-active]="
-                        selectedElementFlavor === data.id
-                      "
-                      [class.flavor-footer]="selectedElementFlavor != data.id"
-                    >
-                      <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
-                      <div>
-                        <p>{{ data.description }}</p>
-                      </div>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </nz-carousel>
+                  <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
+                  <div>
+                    <p>{{ item.description }}</p>
+                  </div>
+                </tr>
+              </tbody>
+            </table>
+          </ngu-tile>
+
+          <ul class="myPoint" NguCarouselPoint>
+            <li
+              *ngFor="let i of myCarousel.pointNumbers"
+              [class.active]="i === myCarousel.activePoint"
+              (click)="myCarousel.moveTo(i)"
+            ></li>
+          </ul>
+        </ngu-carousel>
       </nz-tab>
       <nz-tab nzTitle="Cấu hình tuỳ chỉnh">
         <div class="ant-table">
@@ -337,13 +354,9 @@
   </nz-card>
   <one-portal-blockstorage-detail
     [instancesId]="id"
-    [listOfDataBlockStorage]="listOfDataBlockStorage"
   ></one-portal-blockstorage-detail>
 
-  <one-portal-network-detail
-    [instancesId]="id"
-    [listOfDataNetwork]="listOfDataNetwork"
-  ></one-portal-network-detail>
+  <one-portal-network-detail [instancesId]="id"></one-portal-network-detail>
 </form>
 <nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
   <div>

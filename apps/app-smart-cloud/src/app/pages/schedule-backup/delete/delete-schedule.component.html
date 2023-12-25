@@ -1,0 +1,17 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa lịch backup"
+          (nzOnCancel)="handleCancel()" nzCentered>
+  <div *nzModalTitle>
+    <p class="text-h5"><b>Xác nhận xóa lịch backup</b></p>
+  </div>
+  <div *nzModalContent>
+    <p class="text-p">Qúy khách có chắc chắn muốn xóa lịch backup</p>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">Đồng ý
+    </button>
+  </div>
+</nz-modal>

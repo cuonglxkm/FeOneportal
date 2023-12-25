@@ -60,8 +60,11 @@ import {
   SnapshotScheduleCreateComponent
 } from "./snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component";
 import {
-  SnapshotpScheduleDetailComponent, SnapshotScheduleDetailComponent
+  SnapshotScheduleDetailComponent
 } from "./snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component";
+import {
+  EditScheduleBackupVolumeComponent
+} from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -190,7 +193,7 @@ const routes: Routes = [
     component: DetailUserGroupComponent
   },
   {
-    path: 'policy/attach/:id',
+    path: 'policy/attach/:name',
     component: PolicyAttachComponent
   },
   {
@@ -218,15 +221,15 @@ const routes: Routes = [
     component: UserCreateComponent
   },
   {
-    path: 'users/detail/:id',
+    path: 'users/detail/:userName',
     component: UserDetailComponent
   },
   {
-    path: 'users/detail/:id/add-policies',
+    path: 'users/detail/:userName/add-policies',
     component: AddPoliciesComponent
   },
   {
-    path: 'users/detail/:id/add-to-group',
+    path: 'users/detail/:userName/add-to-group',
     component: AddToGroupComponent
   },
   {
@@ -250,8 +253,12 @@ const routes: Routes = [
     component: CreateScheduleBackupComponent
   },
   {
-    path: 'schedule/backup/edit/vm',
+    path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent
+  },
+  {
+    path: 'schedule/backup/edit/volume/:id',
+    component: EditScheduleBackupVolumeComponent
   },
   {
     path: 'schedule/snapshot/list',
@@ -262,7 +269,7 @@ const routes: Routes = [
     component: SnapshotScheduleCreateComponent
   },
   {
-    path: 'schedule/snapshot/detail:id',
+    path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent
   }
   ]

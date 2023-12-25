@@ -30,6 +30,7 @@ import { da } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { InstancesVlanGimComponent } from './instances-vlan-gim/instances-vlan-gim.component';
+import { ProjectModel } from 'src/app/shared/models/project.model';
 
 class SearchParam {
   status: string = '';
@@ -77,6 +78,7 @@ export class InstancesComponent implements OnInit {
   actionData: InstancesModel;
 
   region: number;
+  projectId: number;
   activeCreate: boolean = false;
   isSearch: boolean = false;
   isVisibleGanVLAN: boolean = false;
@@ -133,6 +135,7 @@ export class InstancesComponent implements OnInit {
     // @ts-ignore
     this.checkedCashArray = [...e];
   }
+
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.activeCreate = false;
@@ -140,8 +143,16 @@ export class InstancesComponent implements OnInit {
     this.loading = true;
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.activeCreate = false;
+    this.isSearch = false;
+    this.loading = true;
+    this.projectId = project.id;
     this.getDataList();
   }
+
   resetForm(): void {
     this.searchParam = {};
     this.getDataList();
@@ -163,8 +174,10 @@ export class InstancesComponent implements OnInit {
           this.pageIndex,
           this.pageSize,
           this.region,
+          this.projectId,
           this.searchParam.name,
           this.searchParam.status,
+          true,
           this.tokenService.get()?.userId
         ).pipe(
           finalize(() => {
