@@ -1,24 +1,3 @@
-<!--<page-header  [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">-->
-<!--    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">-->
-<!--        <nz-row nzJustify="space-between" nzAlign="middle">-->
-<!--            <nz-breadcrumb nz-page-header-breadcrumb>-->
-<!--                <nz-breadcrumb-item>Home</nz-breadcrumb-item>-->
-<!--                <nz-breadcrumb-item>-->
-<!--                    IAM-->
-<!--                </nz-breadcrumb-item>-->
-<!--                <nz-breadcrumb-item>-->
-<!--                    <a routerLink="/app-smart-cloud/iam/user-group">User Groups</a>-->
-<!--                </nz-breadcrumb-item>-->
-<!--            </nz-breadcrumb>-->
-<!--            <nz-space>-->
-<!--                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--                <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                                         [regionId]="region"></project-select-dropdown>-->
-<!--            </nz-space>-->
-<!--        </nz-row>-->
-<!--        <h3 style="margin-top: 5px">Thông tin Group</h3>-->
-<!--    </nz-col>-->
-<!--</page-header>-->
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
              [title]="'Thông tin Group'">
@@ -83,8 +62,8 @@
                   <ng-template #user>
                       <div>Users</div>
                   </ng-template>
+                  <!---Thông tin User -->
                   <nz-tab [nzTitle]="user">
-
                       <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
                           <nz-space [nzSize]="24">
                               <div *nzSpaceItem>
@@ -94,17 +73,21 @@
                                              placeholder="Tìm kếm tên..."/>
                                   </nz-input-group>
                                   <ng-template #suffixButton>
-                                      <button nz-button nzType="primary" nzSearch>
+                                      <button nz-button nzType="primary" nzSearch (click)="searchUsers()">
                                           <span nz-icon nzType="search" nzTheme="outline"></span>Search
                                       </button>
                                   </ng-template>
                               </div>
                           </nz-space>
                           <nz-row nzAlign="middle">
-                              <button nz-button nzSize="default" style="cursor: pointer;">
+                              <button nz-button nzSize="default" style="cursor: pointer;" >
                                   <span nz-icon nzType="reload" nzTheme="outline"></span>
                               </button>
-                              <button nz-button class="button-del" nzSize="default" style="cursor: pointer;">
+                              <button nz-button
+                                      class="button-del"
+                                      nzSize="default"
+                                      style="cursor: pointer;"
+                                      (click)="removeUser()">
                                   <span nz-icon nzType="rest" nzTheme="outline"></span>
                                   Xóa
                               </button>
@@ -126,15 +109,15 @@
                           nzShowSizeChanger
                           [nzData]="listUsers"
                           [nzLoading]="loading"
-                          (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+                          (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)"
                       >
                           <thead>
                           <tr>
                               <th
-                                      [nzChecked]="checked"
-                                      [nzIndeterminate]="indeterminate"
+                                      [nzChecked]="checkedUser"
+                                      [nzIndeterminate]="indeterminateUser"
                                       nzLabel="Select all"
-                                      (nzCheckedChange)="onAllChecked($event)"
+                                      (nzCheckedChange)="onAllCheckedUser($event)"
                               ></th>
                               <th>Name</th>
                               <th>Group</th>
@@ -144,8 +127,8 @@
                           <tbody>
                           <tr *ngFor="let data of rowSelectionTable.data">
                               <td
-                                      [nzChecked]="setOfCheckedId.has(data.userName)"
-                                      (nzCheckedChange)="onItemChecked(data.userName, $event)"
+                                      [nzChecked]="setOfCheckedIdUser.has(data.userName)"
+                                      (nzCheckedChange)="onItemCheckedUser(data.userName, $event)"
                               ></td>
                               <td>
                                   <a [href]="'/app-smart-cloud/iam/user-group/' + data.userName">{{ data.userName }}</a>
@@ -156,6 +139,7 @@
                           </tbody>
                       </nz-table>
                   </nz-tab>
+                  <!---Thông tin Policies -->
                   <nz-tab nzTitle="Policies">
                       <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
                           <nz-space [nzSize]="24">
@@ -173,7 +157,7 @@
                                              placeholder="Tìm kếm tên..."/>
                                   </nz-input-group>
                                   <ng-template #suffixButton2>
-                                      <button nz-button nzType="primary" nzSearch>
+                                      <button nz-button nzType="primary" nzSearch (click)="searchPolicies()">
                                           <span nz-icon nzType="search" nzTheme="outline"></span>Search
                                       </button>
                                   </ng-template>
@@ -183,7 +167,11 @@
                               <button nz-button nzSize="default" style="cursor: pointer;">
                                   <span nz-icon nzType="reload" nzTheme="outline"></span>
                               </button>
-                              <button nz-button class="button-del" nzSize="default" style="cursor: pointer;">
+                              <button nz-button
+                                      class="button-del"
+                                      nzSize="default"
+                                      style="cursor: pointer;"
+                                      (click)="removePolicy()">
                                   <span nz-icon nzType="rest" nzTheme="outline"></span>
                                   Xóa
                               </button>
@@ -208,15 +196,15 @@
                           nzShowSizeChanger
                           [nzData]="listOfDataPolicies"
                           [nzLoading]="loading"
-                          (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+                          (nzCurrentPageDataChange)="onCurrentPageDataChangePolicy($event)"
                       >
                           <thead>
                           <tr>
                               <th
-                                      [nzChecked]="checked"
-                                      [nzIndeterminate]="indeterminate"
+                                      [nzChecked]="checkedPolicy"
+                                      [nzIndeterminate]="indeterminatePolicy"
                                       nzLabel="Select all"
-                                      (nzCheckedChange)="onAllChecked($event)"
+                                      (nzCheckedChange)="onAllCheckedPolicy($event)"
                               ></th>
                               <th>Name</th>
                               <th [nzWidth]="'207px'">Type</th>
@@ -226,8 +214,8 @@
                           <tbody *ngFor="let data of rowSelectionTable2.data">
                           <tr>
                               <td
-                                      [nzChecked]="setOfCheckedId.has(data.name)"
-                                      (nzCheckedChange)="onItemChecked(data.name, $event)"
+                                      [nzChecked]="setOfCheckedIdPolicy.has(data.name)"
+                                      (nzCheckedChange)="onItemCheckedPolicy(data.name, $event)"
                               ></td>
                               <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
                                   {{ data.name }}

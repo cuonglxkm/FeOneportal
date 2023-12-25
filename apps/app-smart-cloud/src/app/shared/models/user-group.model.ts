@@ -1,6 +1,6 @@
 export interface UserGroupModel {
     name: string
-    parent: string[]
+    parent: string
     policies: string[]
     groupUsers: string[]
     userOfGroup: number
@@ -13,21 +13,22 @@ export class FormSearchUserGroup {
     currentPage: number
 }
 
-export class FormEditUserGroup {
-    groupName: string
-}
-
-export class FormDeleteOneUserGroup {
-    groupName: string
-}
-
 export class FormDeleteUserGroups {
     groupName: string[]
 }
 
-export class FormCreateUserGroup {
+export class FormUserGroup {
     groupName: string
-    parentName: string[]
+    parentName: string
     policyNames: string[]
     userNames: string[]
+}
+
+export class RemovePolicy {
+  groupName: string
+  items: ItemDetachPolicy[]
+}
+
+export class ItemDetachPolicy {
+  itemName: string
 }

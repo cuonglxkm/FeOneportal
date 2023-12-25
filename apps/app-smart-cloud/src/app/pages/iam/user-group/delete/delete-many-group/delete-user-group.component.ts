@@ -1,32 +1,50 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {FormDeleteUserGroups} from "../../../../../shared/models/user-group.model";
+import {UserGroupService} from "../../../../../shared/services/user-group.service";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
-  selector: 'one-portal-delete-user-group',
-  templateUrl: './delete-user-group.component.html',
-  styleUrls: ['./delete-user-group.component.less'],
+    selector: 'one-portal-delete-user-group',
+    templateUrl: './delete-user-group.component.html',
+    styleUrls: ['./delete-user-group.component.less'],
 })
-export class DeleteUserGroupComponent{
-  @Input() items: any[]
-  @Input() isVisible: boolean
-  @Output() onCancel = new EventEmitter<void>()
-  @Output() onOk = new EventEmitter<void>()
+export class DeleteUserGroupComponent {
+    @Input() items: any[]
+    @Input() isVisible: boolean
+    @Output() onCancel = new EventEmitter<void>()
+    @Output() onOk = new EventEmitter<void>()
 
-  value: string
-  isLoading: boolean
-  handleCancel(): void {
-    this.onCancel.emit();
-  }
+    value: string
+    isLoading: boolean
+    formDelete: FormDeleteUserGroups
 
-  handleOk(): void {
-    if(this.value.includes('delete')){
-
+    constructor(private userGroupService: UserGroupService,
+                private notification: NzNotificationService) {
     }
-    this.onOk.emit();
-  }
 
-  onInputChange() {
-    console.log('input change', this.value)
-  }
+    handleCancel(): void {
+        this.onCancel.emit();
+    }
+
+    handleOk(): void {
+        if (this.value.includes('delete')) {
+            this.formDelete.groupName = this.items
+            this.userGroupService.delete(this.formDelete).subscribe(data => {
+                this.notification.success('Thành công', 'Xóa User Group thành công')
+                this.isLoading = false
+                this.onOk.emit();
+            }, error => {
+                this.notification.error('Thất bại', 'Xóa User Group thất bại')
+            })
+        } else {
+            this.isLoading = false
+            this.notification.error('Thất bại', 'Không thể xóa User Group ')
+        }
+    }
+
+    onInputChange() {
+        console.log('input change', this.value)
+    }
 
 
 }
