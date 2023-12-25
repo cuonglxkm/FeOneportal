@@ -35,8 +35,8 @@ export class InstancesEditInfoComponent implements OnInit {
   loading = true;
 
   region: number;
-  projectId: number = 310;
-  customerId: number = 669;
+  projectId: number;
+  customerId: number;
   //userId: number = this.tokenService.get()?.userId;
 
   rebuildInstances: RebuildInstances = new RebuildInstances();
@@ -48,9 +48,9 @@ export class InstancesEditInfoComponent implements OnInit {
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
-  isLoading = false;
+  isSelected: boolean = false;
   hdh: Images;
-  selectedImage: Images;
+  currentImage: Images;
   listSelectedImage = [];
   selectedImageTypeId: number;
   listOfImageByImageType = [];
@@ -75,6 +75,11 @@ export class InstancesEditInfoComponent implements OnInit {
       if (i != index) {
         this.listSelectedImage[i] = 0;
       }
+    }
+    if (this.currentImage.id != event) {
+      this.isSelected = true;
+    } else {
+      this.isSelected = false;
     }
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
@@ -113,7 +118,7 @@ export class InstancesEditInfoComponent implements OnInit {
 
               .subscribe((dataimage: any) => {
                 //this.hdh = dataimge;
-                this.selectedImage = dataimage;
+                this.currentImage = dataimage;
                 //  this.selectedTypeImageId = this.hdh.imageTypeId;
                 this.loading = false;
                 this.cdr.detectChanges();
@@ -140,7 +145,7 @@ export class InstancesEditInfoComponent implements OnInit {
     from(imageTypeId)
       .pipe(
         concatMap((e) =>
-          this.dataService.getAllImage(null, this.region, e, this.customerId)
+          this.dataService.getAllImage(null, this.region, e, this.tokenService.get()?.userId)
         )
       )
       .subscribe((result) => {

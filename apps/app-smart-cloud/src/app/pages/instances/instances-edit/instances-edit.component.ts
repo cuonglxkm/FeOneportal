@@ -6,11 +6,7 @@ import {
   OnInit,
   Renderer2,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   Flavors,
   IPPublicModel,
@@ -28,9 +24,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { ProjectModel } from 'src/app/shared/models/project.model';
-import {NguCarouselConfig} from "@ngu/carousel";
+import { NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
-
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -277,17 +272,17 @@ export class InstancesEditComponent implements OnInit {
     this.updateInstances.listServicesToBeExtended = null;
     this.updateInstances.newExpiredDate = null;
 
-    this.dataService.update(this.updateInstances).subscribe(
-      (data: any) => {
-        console.log(data);
+    this.dataService.update(this.updateInstances).subscribe({
+      next: (next) => {
+        console.log(next);
         this.message.success('Cập nhật máy ảo thành công');
         this.route.navigate(['/app-smart-cloud/instances']);
       },
-      (error) => {
-        console.log(error.error);
+      error: (e) => {
+        console.log(e);
         this.message.error('Cập nhật máy ảo không thành công');
-      }
-    );
+      },
+    });
   }
 
   cancel(): void {

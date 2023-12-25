@@ -1,68 +1,70 @@
 <nz-card nzTitle="Network">
-  <nz-card nzHoverable>
-    <div class="ant-table">
-      <nz-table [nzData]="listOfDataNetwork" [nzLoading]="loading" [nzShowPagination]="false">
-        <thead class="ant-table-thead">
-          <tr>
-            <th>Tên Network</th>
-            <th>MAC Address</th>
-            <th>FixedIPs</th>
-            <th>Status</th>
-            <th>Thao tác</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody class="ant-table-tbody">
-          <tr *ngFor="let data of listOfDataNetwork">
-            <td>
-              <label>
-                {{ data.name }}
-              </label>
-            </td>
-            <td>
-              <label>
-                {{ data.macAddress }}
-              </label>
-            </td>
-            <td>
-              <label>
-                {{ data.fixedIPs }}
-              </label>
-            </td>
-            <td>
-              <label style="color: #52c41a">
-                {{ data.status }}
-              </label>
-            </td>
-            <td>
-              <button
-                nz-button
-                [nzType]="'primary'"
-                nz-dropdown
-                [nzDropdownMenu]="opMenu"
-              >
-                <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
-              </button>
-              <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="editPort(modalContentEditPort)">
-                    Chỉnh sửa
-                  </li>
-                  <li
-                    nz-menu-item
-                    [routerLink]="['/app-smart-cloud/allow-address-pair']"
-                    [queryParams]="{ param: portId }"
-                  >
-                    Address Pair
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </div>
-  </nz-card>
+  <div class="ant-table">
+    <nz-table
+      [nzData]="listOfDataNetwork"
+      [nzLoading]="loading"
+      [nzShowPagination]="false"
+    >
+      <thead class="ant-table-thead">
+        <tr>
+          <th>Tên Network</th>
+          <th>MAC Address</th>
+          <th>FixedIPs</th>
+          <th>Status</th>
+          <th>Thao tác</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="ant-table-tbody">
+        <tr *ngFor="let data of listOfDataNetwork">
+          <td>
+            <label>
+              {{ data.name }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.macAddress }}
+            </label>
+          </td>
+          <td>
+            <label>
+              {{ data.fixedIPs }}
+            </label>
+          </td>
+          <td>
+            <label style="color: #52c41a">
+              {{ data.status }}
+            </label>
+          </td>
+          <td>
+            <button
+              nz-button
+              [nzType]="'primary'"
+              nz-dropdown
+              [nzDropdownMenu]="opMenu"
+            >
+              <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
+            </button>
+            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="editPort(modalContentEditPort, data.id)">
+                  Chỉnh sửa
+                </li>
+                <li
+                  nz-menu-item
+                  [routerLink]="['/app-smart-cloud/allow-address-pair']"
+                  [queryParams]="{ param: portId }"
+                >
+                  Address Pair
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 </nz-card>
 
 <ng-template #modalContentEditPort>
@@ -83,7 +85,6 @@
       nzPlaceHolder="Chọn Security Group"
       [ngModelOptions]="{ standalone: true }"
       [(ngModel)]="selectedSecurityGroup"
-      (ngModelChange)="onChangeSecurityGroup($event)"
     >
       <nz-option
         *ngFor="let i of listSecurityGroup"

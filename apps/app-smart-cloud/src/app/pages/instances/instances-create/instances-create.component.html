@@ -113,7 +113,7 @@
       </nz-col>
     </div>
     <div *ngIf="!isSnapshot">
-      <h6 class="h6">Hệ điều hành</h6>
+      <h6 class="h6">Hệ điều hành<span class="text-red">*</span></h6>
       <ngu-carousel
         #myCarousel
         [inputs]="carouselTileConfig"
@@ -123,45 +123,48 @@
           *nguCarouselDef="let data; index as i; let ani = animate"
           [@slider]="ani"
         >
-          <nz-row>
-            <table class="text-center" style="width: 100%">
-              <tbody
-                class="images-body"
-                [id]="'images_' + data.id"
-                [ngClass]="{
-                  'images-body-active': data.id === selectedImageTypeId,
-                  bgGray: !data.id === selectedImageTypeId
-                }"
-              >
-                <tr>
-                  <div class="images-body-tr">
-                    <span>{{ data.name }}</span>
-                  </div>
-                </tr>
-                <tr>
-                  <div>
-                    <nz-row>
-                      <nz-select
-                        nzShowSearch
-                        [id]="'hdh_' + data.id"
-                        [(ngModel)]="listSelectedImage[i]"
-                        (ngModelChange)="onInputHDH($event, i, data.id)"
-                        nzPlaceHolder="Chọn phiên bản"
-                        [ngModelOptions]="{ standalone: true }"
-                        style="text-align: center; width: 100%"
-                      >
-                        <nz-option
-                          *ngFor="let p of listOfImageByImageType[i]"
-                          [nzValue]="p.id"
-                          [nzLabel]="p.name"
-                        ></nz-option>
-                      </nz-select>
-                    </nz-row>
-                  </div>
-                </tr>
-              </tbody>
-            </table>
-          </nz-row>
+          <table class="text-center" style="width: 100%">
+            <tbody
+              class="images-body"
+              [id]="'images_' + data.id"
+              [ngClass]="{
+                'images-body-active': data.id === selectedImageTypeId,
+                bgGray: !data.id === selectedImageTypeId
+              }"
+            >
+              <tr>
+                <img
+                  *ngIf="data.name == 'Linux'"
+                  src="assets/imgs/ubuntu.png"
+                  alt=""
+                />
+                <img
+                  *ngIf="data.name == 'Windows'"
+                  src="assets/imgs/window.png"
+                  alt=""
+                />
+              </tr>
+              <tr>
+                <div style="margin-top: 15px; margin-bottom: 15px;">
+                    <nz-select
+                      nzShowSearch
+                      [id]="'hdh_' + data.id"
+                      [(ngModel)]="listSelectedImage[i]"
+                      (ngModelChange)="onInputHDH($event, i, data.id)"
+                      nzPlaceHolder="Chọn phiên bản"
+                      [ngModelOptions]="{ standalone: true }"
+                      style="text-align: center; width: 150px;"
+                    >
+                      <nz-option
+                        *ngFor="let p of listOfImageByImageType[i]"
+                        [nzValue]="p.id"
+                        [nzLabel]="p.name"
+                      ></nz-option>
+                    </nz-select>
+                </div>
+              </tr>
+            </tbody>
+          </table>
         </ngu-tile>
 
         <ul class="myPoint" NguCarouselPoint>
@@ -594,7 +597,7 @@
               <ng-template #suffixTemplate>
                 <i
                   nz-icon
-                  [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                  [nzType]="'eye'"
                   (click)="passwordVisible = !passwordVisible"
                 ></i>
               </ng-template>
@@ -661,7 +664,7 @@
       </div>
     </nz-row>
 
-    <nz-row style="margin-top: 20px; margin-bottom: -25px;" nzGutter="16">
+    <nz-row style="margin-top: 20px; margin-bottom: -25px" nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item style="margin-bottom: 5px">
           <nz-form-label
@@ -678,7 +681,7 @@
                 [(ngModel)]="numberMonth"
                 [ngModelOptions]="{ standalone: true }"
               ></nz-input-number>
-              <div style="margin-left: 20px;">
+              <div style="margin-left: 20px">
                 Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}
               </div>
             </nz-row>

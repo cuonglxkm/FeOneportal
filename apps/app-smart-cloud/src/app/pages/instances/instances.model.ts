@@ -412,3 +412,12 @@ export class BlockStorageAttachments {
   projectName: string;
   projectId: number;
 }
+
+export class UpdatePortInstance {
+  portId: string;
+  regionId: number;
+  customerId: number;
+  vpcId: number;
+  securityGroup: any[];
+  portSecurityEnanble: boolean;
+}

@@ -53,7 +53,9 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label nzFor="name">Tên máy ảo</nz-form-label>
+          <nz-form-label nzFor="name"
+            >Tên máy ảo<span class="text-red">*</span></nz-form-label
+          >
           <nz-form-control nzErrorTip="Vui lòng nhập tên máy ảo">
             <input
               nz-input
@@ -292,15 +294,13 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >IP Public * : {{ instancesModel.ipPublic }}</nz-form-label
+            >IP Public: {{ instancesModel.ipPublic }}</nz-form-label
           >
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >IP LAN * : {{ instancesModel.ipPrivate }}</nz-form-label
-          >
+          <nz-form-label>IP LAN: {{ instancesModel.ipPrivate }}</nz-form-label>
         </nz-form-item>
       </nz-col>
     </nz-row>
@@ -326,7 +326,7 @@
       ></nz-col>
     </nz-row>
 
-    <nz-row nzGutter="16">
+    <nz-row style="margin-bottom: -40px;" nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
@@ -334,21 +334,23 @@
             <span class="text-red">*</span></nz-form-label
           >
           <nz-form-control>
-            <nz-input-number
-              [nzReadOnly]="true"
-              style="width: 100%"
-              [nzMin]="1"
-              [nzMax]="100"
-              [nzStep]="1"
-              [(ngModel)]="numberMonth"
-              [ngModelOptions]="{ standalone: true }"
-            ></nz-input-number>
+            <nz-row>
+              <nz-input-number
+                [nzReadOnly]="true"
+                style="width: 50%"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                [(ngModel)]="numberMonth"
+                [ngModelOptions]="{ standalone: true }"
+              ></nz-input-number>
+              <div style="margin-left: 20px;">
+                Thời gian bắt đầu sử dụng:
+                {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
+              </div>
+            </nz-row>
           </nz-form-control>
         </nz-form-item>
-        <div>
-          Thời gian bắt đầu sử dụng:
-          {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
-        </div>
       </nz-col>
     </nz-row>
   </nz-card>
