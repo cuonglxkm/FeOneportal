@@ -9,7 +9,7 @@ import {
   CreateScheduleSnapshotDTO,
   EditSnapshotVolume,
   GetListSnapshotVlModel,
-  ScheduleSnapshotVLDTO
+  ScheduleSnapshotVLDTO, SnapshotScheduleDetailDTO
 } from "../models/snapshotvl.model";
 import {VolumeDTO} from "../dto/volume.dto";
 import {SnapshotVolumeDto} from "../dto/snapshot-volume.dto";
@@ -54,6 +54,12 @@ export class SnapshotVolumeService extends BaseService {
     return this.http.post(urlResult, request).pipe(
       catchError(this.handleError<any>('Create Snapshot schedule error.'))
     );
+  }
+
+  getDetailSnapshotSchedule(id: number):Observable<SnapshotScheduleDetailDTO>{
+    return this.http.get<SnapshotScheduleDetailDTO>(this.urlSnapshotVl + '/schedule/'  + id).pipe(
+      catchError(this.handleError<SnapshotScheduleDetailDTO>('get snapshot snapshot-schedule-detail error'))
+    )
   }
 
   getListSchedule(pageSize:number, currentPage:number, customerID: number, projectId: number, regionId: number, status: any): Observable<BaseResponse<ScheduleSnapshotVLDTO[]>>{

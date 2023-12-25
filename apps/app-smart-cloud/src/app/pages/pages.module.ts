@@ -105,6 +105,9 @@ import {
 import {
   SnapshotScheduleCreateComponent
 } from "./snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component";
+import {
+  SnapshotpScheduleDetailComponent, SnapshotScheduleDetailComponent
+} from "./snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -193,6 +196,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     EditScheduleBackupVmComponent,
     SnapshotScheduleListComponent,
     SnapshotScheduleCreateComponent,
+    SnapshotScheduleDetailComponent,
   ],
   imports: [
     CommonModule,

@@ -59,6 +59,9 @@ import {
 import {
   SnapshotScheduleCreateComponent
 } from "./snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component";
+import {
+  SnapshotpScheduleDetailComponent, SnapshotScheduleDetailComponent
+} from "./snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -257,6 +260,10 @@ const routes: Routes = [
   {
     path: 'schedule/snapshot/create',
     component: SnapshotScheduleCreateComponent
+  },
+  {
+    path: 'schedule/snapshot/detail:id',
+    component: SnapshotScheduleDetailComponent
   }
   ]
 @NgModule({

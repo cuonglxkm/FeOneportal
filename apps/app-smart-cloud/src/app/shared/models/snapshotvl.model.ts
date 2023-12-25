@@ -36,3 +36,27 @@ export class CreateScheduleSnapshotDTO{
   projectId: number;
   regionId: number;
 }
+
+export class SnapshotScheduleDetailDTO{
+  id: number;
+  name: string;
+  serviceId: number;
+  description: string;
+  mode: number;
+  runtime: string;
+  maxSnapshot: number;
+  interval: number;
+  duration: number;
+  dates: number;
+  daysOfWeek: string;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+  nextRuntime: string;
+  currentSnapshot: number;
+  proccessId: string;
+  serviceType: number;
+  warningMessage: string;
+  snapshotPackageId: number;
+  volumeName: string
+}
