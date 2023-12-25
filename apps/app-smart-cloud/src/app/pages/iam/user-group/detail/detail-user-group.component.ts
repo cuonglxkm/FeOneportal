@@ -57,8 +57,8 @@ export class DetailUserGroupComponent {
     formSearch: FormSearchUserGroup = new FormSearchUserGroup()
 
     removePolicyModel: RemovePolicy = new RemovePolicy()
-    itemDetachPolicy: ItemDetachPolicy[] = []
-
+    itemDetachPolicy: ItemDetachPolicy = new ItemDetachPolicy()
+    items: ItemDetachPolicy[] = []
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 private userGroupService: UserGroupService,
@@ -220,11 +220,21 @@ export class DetailUserGroupComponent {
     }
 
     removePolicy() {
-        this.itemDetachPolicy.forEach(item => {
-
+        this.setOfCheckedIdPolicy.forEach(item => {
+            this.itemDetachPolicy.itemName = item
+            if(this.items?.length > 0) {
+                this.items.push(this.itemDetachPolicy)
+            } else {
+                this.items = [this.itemDetachPolicy]
+            }
         })
-
-
+        this.removePolicyModel.groupName = this.groupName
+        this.removePolicyModel.items = this.items
+        this.userGroupService.removePolicy(this.removePolicyModel).subscribe(data => {
+            this.notification.success('Thành công', 'Gỡ policy ra khỏi Group thành công')
+        }, error => {
+            this.notification.error('Thất bại','Gỡ policy ra khỏi Group thất bại')
+        })
     }
 
     removeUser() {
@@ -234,6 +244,7 @@ export class DetailUserGroupComponent {
             this.notification.error('Thất bại', 'Gỡ người dùng ra khỏi Group thất bại')
         })
     }
+
     ngOnInit(): void {
         this.route.params.subscribe((params) => {
             this.groupName = params['name']
