@@ -107,7 +107,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     handleOkDelete() {
         console.log('value')
         this.deleteList = []
-        this.getData(this.form)
+        this.getData()
 
     }
 
@@ -115,10 +115,11 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
         this.deleteList = []
     }
 
-    getData(form: FormSearchUserGroup) {
+    getData() {
         console.log('begin')
+      this.form.name = this.value
         this.loading = true
-        this.userGroupService.search(form).subscribe(data => {
+        this.userGroupService.search(this.form).subscribe(data => {
             this.collection = data
             console.log('data', this.collection)
             this.loading = false
@@ -128,8 +129,8 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         this.form.currentPage = 1
         this.form.pageSize = 10
-        this.form.name = this.value
-        this.getData(this.form)
+
+        this.getData()
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -143,7 +144,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     refresh() {
         this.loading = true
         setTimeout(() => {
-            this.getData(this.form);
+            this.getData();
         }, 2000);
     }
 }

@@ -31,11 +31,9 @@ export class BackupVmService extends BaseService {
       'Content-Type': 'application/json'
     })
   }
-  c
-
   search(form: BackupVMFormSearch) {
     let params = new HttpParams();
-    if(form.customerId != null){
+    if(form.customerId != null || form.customerId != undefined){
       params = params.append('customerId', form.customerId);
     }
     if(form.projectId !=null) {

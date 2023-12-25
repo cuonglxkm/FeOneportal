@@ -1,169 +1,171 @@
-<nz-header>
-    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
-        <nz-row nzJustify="space-between" nzAlign="middle">
-            <nz-breadcrumb nz-page-header-breadcrumb>
-                <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-                <nz-breadcrumb-item>
-                    IAM
-                </nz-breadcrumb-item>
-                <nz-breadcrumb-item>
-                    <a [href]="'/app-smart-cloud/iam/user-group'">User Groups</a>
-                </nz-breadcrumb-item>
-                <nz-breadcrumb-item>
-                    <a [href]="'/app-smart-cloud/iam/user-group/' + nameGroup">{{ nameGroup }}</a>
-                </nz-breadcrumb-item>
-                <nz-breadcrumb-item>
-                    Add Policies
-                </nz-breadcrumb-item>
-            </nz-breadcrumb>
-            <nz-space>
-                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-                <project-select-dropdown (valueChanged)="projectChanged($event)"
-                                         [regionId]="region"></project-select-dropdown>
-            </nz-space>
-        </nz-row>
-        <h3 style="margin-top: 5px">Thêm Policies cho Group</h3>
-    </nz-col>
-</nz-header>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Thêm Policies cho Group'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        IAM
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [href]="'/app-smart-cloud/iam/user-group'">User Groups</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [href]="'/app-smart-cloud/iam/user-group/' + nameGroup">{{ nameGroup }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Add Policies
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-content>
-    <nz-card>
-        <nz-collapse [nzBordered]="false" nzGhost>
-            <nz-collapse-panel
-                    [nzHeader]="'Danh sách Policy trong Group ('  + countPolicyByGroup + ')'"
-                    [nzActive]="false">
-                <nz-table
-                    #rowSelectionTable1
-                    nzShowPagination
-                    nzShowSizeChanger
-                    [nzData]="listPoliciesByGroup"
-                    [nzLoading]="loading"
-                    [nzPageSize]="5">
-
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Attached entities</th>
-                    </tr>
-                    </thead>
-                    <tbody *ngFor="let data of rowSelectionTable1.data">
-                    <tr>
-                        <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
-                            <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
-                        </td>
-                        <td>{{ data.type }}</td>
-                        <td></td>
-                    </tr>
-                    <tr [nzExpand]="expandSet.has(data.name)">
-                        <div *ngIf="data.type ==='Portal managed'">
-                            <pre [innerHTML]="data | prettyprint"></pre>
-                        </div>
-                        <div *ngIf="data.type === 'Customer Manager'">
-                            <nz-row nzAlign="middle" nzJustify="space-between">
-                                <nz-space [nzSize]="24">
-                                    <pre [innerHTML]="data | prettyprint"></pre>
-                                </nz-space>
-                                <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
-                                    <button nz-button
-                                            nzSize="default"
-                                            style="cursor: pointer;"
-                                            [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
-                                            class="button-cancel">Chỉnh sửa
-                                    </button>
-                                </nz-row>
-                            </nz-row>
-                        </div>
-                    </tr>
-                    </tbody>
-                </nz-table>
-            </nz-collapse-panel>
-        </nz-collapse>
-    </nz-card>
-    <nz-card nzTitle="Danh sách Policy chưa có trong Group ({{countPolicy}})">
-        <nz-row nzAlign="middle" style="margin-bottom: 22px;" nzJustify="space-between">
-            <nz-space [nzSize]="24">
-                <div *nzSpaceItem>
-                    <nz-input-group nzSearch [nzAddOnAfter]="suffixButton2">
-                        <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
-                               placeholder="Tìm kếm tên..."/>
-                    </nz-input-group>
-                    <ng-template #suffixButton2>
-                        <button nz-button nzType="primary" nzSearch (click)="getPolicies()">
-                            <span nz-icon nzType="search" nzTheme="outline"></span>Search
-                        </button>
-                    </ng-template>
-                </div>
-            </nz-space>
-            <nz-row nzAlign="middle">
-                <button nz-button nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
-                    <span nz-icon nzType="reload" nzTheme="outline"></span>
-                </button>
-            </nz-row>
-        </nz-row>
+  <nz-card>
+    <nz-collapse [nzBordered]="false" nzGhost>
+      <nz-collapse-panel
+        [nzHeader]="'Danh sách Policy trong Group ('  + countPolicyByGroup + ')'"
+        [nzActive]="false">
         <nz-table
-            #rowSelectionTable2
-            nzShowPagination
-            nzShowSizeChanger
-            [nzData]="listPolicies"
-            [nzLoading]="loading"
-            [nzPageSize]="5">
-            <thead>
-            <tr>
-                <th
-                        [nzChecked]="checked"
-                        [nzIndeterminate]="indeterminate"
-                        nzLabel="Select all"
-                        (nzCheckedChange)="onAllChecked($event)"
-                ></th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Mô tả</th>
-            </tr>
-            </thead>
-            <tbody *ngFor="let data of rowSelectionTable2.data">
-            <tr>
-                <td
-                        [nzChecked]="setOfCheckedId.has(data.name)"
-                        (nzCheckedChange)="onItemChecked(data.name, $event)"
-                ></td>
-                <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
-                    <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
-                </td>
-                <td>{{ data.type }}</td>
-                <td>{{ data.description }}</td>
-            </tr>
-            <tr [nzExpand]="expandSet.has(data.name)">
-                <div *ngIf="data.type ==='Portal managed'">
-                    <pre [innerHTML]="data | prettyprint"></pre>
-                </div>
-                <div *ngIf="data.type === 'Customer Manager'">
-                    <nz-row nzAlign="middle" nzJustify="space-between">
-                        <nz-space [nzSize]="24">
-                            <pre [innerHTML]="data | prettyprint"></pre>
-                        </nz-space>
-                        <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
-                            <button nz-button
-                                    nzSize="default"
-                                    style="cursor: pointer;"
-                                    [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
-                                    class="button-cancel">Chỉnh sửa
-                            </button>
-                        </nz-row>
-                    </nz-row>
-                </div>
-            </tr>
-            </tbody>
+          #rowSelectionTable1
+          nzShowPagination
+          nzShowSizeChanger
+          [nzData]="listPoliciesByGroup"
+          [nzLoading]="loading"
+          [nzPageSize]="5">
+
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attached entities</th>
+          </tr>
+          </thead>
+          <tbody *ngFor="let data of rowSelectionTable1.data">
+          <tr>
+            <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
+              <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
+            </td>
+            <td>{{ data.type }}</td>
+            <td></td>
+          </tr>
+          <tr [nzExpand]="expandSet.has(data.name)">
+            <div *ngIf="data.type ==='Portal managed'">
+              <pre [innerHTML]="data | prettyprint"></pre>
+            </div>
+            <div *ngIf="data.type === 'Customer Manager'">
+              <nz-row nzAlign="middle" nzJustify="space-between">
+                <nz-space [nzSize]="24">
+                  <pre [innerHTML]="data | prettyprint"></pre>
+                </nz-space>
+                <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
+                  <button nz-button
+                          nzSize="default"
+                          style="cursor: pointer;"
+                          [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
+                          class="button-cancel">Chỉnh sửa
+                  </button>
+                </nz-row>
+              </nz-row>
+            </div>
+          </tr>
+          </tbody>
         </nz-table>
-        <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 48px">
-            <nz-space nzSize="middle">
-                <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-cancel">Quay lại
-                </button>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </nz-card>
+  <nz-card nzTitle="Danh sách Policy chưa có trong Group ({{countPolicy}})">
+    <nz-row nzAlign="middle" style="margin-bottom: 22px;" nzJustify="space-between">
+      <nz-space [nzSize]="24">
+        <div *nzSpaceItem>
+          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton2">
+            <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
+                   nz-input
+                   placeholder="Tìm kếm tên..."/>
+          </nz-input-group>
+          <ng-template #suffixButton2>
+            <button nz-button nzType="primary" nzSearch (click)="getPolicies()">
+              <span nz-icon nzType="search" nzTheme="outline"></span>Search
+            </button>
+          </ng-template>
+        </div>
+      </nz-space>
+      <nz-row nzAlign="middle">
+        <button nz-button nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+      </nz-row>
+    </nz-row>
+    <nz-table
+      #rowSelectionTable2
+      nzShowPagination
+      nzShowSizeChanger
+      [nzData]="listPolicies"
+      [nzLoading]="loading"
+      [nzPageSize]="5">
+      <thead>
+      <tr>
+        <th
+          [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          nzLabel="Select all"
+          (nzCheckedChange)="onAllChecked($event)"
+        ></th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mô tả</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let data of rowSelectionTable2.data">
+      <tr>
+        <td
+          [nzChecked]="setOfCheckedId.has(data.name)"
+          (nzCheckedChange)="onItemChecked(data.name, $event)"
+        ></td>
+        <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
+          <a [routerLink]="'/app-smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
+        </td>
+        <td>{{ data.type }}</td>
+        <td>{{ data.description }}</td>
+      </tr>
+      <tr [nzExpand]="expandSet.has(data.name)">
+        <div *ngIf="data.type ==='Portal managed'">
+          <pre [innerHTML]="data | prettyprint"></pre>
+        </div>
+        <div *ngIf="data.type === 'Customer Manager'">
+          <nz-row nzAlign="middle" nzJustify="space-between">
+            <nz-space [nzSize]="24">
+              <pre [innerHTML]="data | prettyprint"></pre>
             </nz-space>
-            <nz-space nzSize="middle" style="margin-left: 5px">
-                <button nz-button nzType="primary" [nzLoading]="loading" class="button-create" (click)="create()">Thêm
-                    Policies
-                </button>
-            </nz-space>
-        </nz-form-item>
-    </nz-card>
+            <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
+              <button nz-button
+                      nzSize="default"
+                      style="cursor: pointer;"
+                      [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
+                      class="button-cancel">Chỉnh sửa
+              </button>
+            </nz-row>
+          </nz-row>
+        </div>
+      </tr>
+      </tbody>
+    </nz-table>
+    <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 48px">
+      <nz-space nzSize="middle">
+        <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-cancel">Quay lại
+        </button>
+      </nz-space>
+      <nz-space nzSize="middle" style="margin-left: 5px">
+        <button nz-button nzType="primary" [nzLoading]="loading" class="button-create" (click)="create()">Thêm
+          Policies
+        </button>
+      </nz-space>
+    </nz-form-item>
+  </nz-card>
 </nz-content>
