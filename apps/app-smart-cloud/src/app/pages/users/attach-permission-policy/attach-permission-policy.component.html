@@ -112,70 +112,68 @@
   [nzBordered]="false"
   nzTitle="Thông tin Groups"
 >
-  <form nz-form>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-      <div
-        nz-col
-        [nzLg]="10"
-        [nzMd]="10"
-        [nzSm]="24"
-        [nzXl]="10"
-        [nzXs]="24"
-        [nzXXl]="10"
-      >
-        <nz-form-item>
-          <nz-row style="width: 100%">
-            <nz-col style="width: 60%">
-              <nz-form-control>
-                <input
-                  name="name"
-                  nz-input
-                  placeholder="Tìm kiếm tên, thời gian tạo ..."
-                  [ngModel]="searchParam"
-                  (ngModelChange)="changeSearch($event)"
-                />
-              </nz-form-control>
-            </nz-col>
-            <nz-form-control>
-              <button nz-button [nzType]="'primary'" (click)="getGroup()">
-                <i nz-icon nzType="search"></i>
-                Search
-              </button>
-            </nz-form-control>
-          </nz-row>
-        </nz-form-item>
-      </div>
-      <div
-        class="text-right p-0 m-b-0"
-        nz-col
-        [nzLg]="14"
-        [nzMd]="14"
-        [nzSm]="24"
-        [nzXl]="14"
-        [nzXs]="24"
-        [nzXXl]="14"
-      >
-        <button
-          class="m-r-8"
-          nz-button
-          style="cursor: pointer"
-          (click)="reloadGroupTable()"
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div
+      nz-col
+      [nzLg]="10"
+      [nzMd]="10"
+      [nzSm]="24"
+      [nzXl]="10"
+      [nzXs]="24"
+      [nzXXl]="10"
+    >
+      <nz-row>
+        <nz-input-group
+          style="width: 100%"
+          nzSearch
+          [nzAddOnAfter]="suffixButton"
         >
-          <span nz-icon nzType="reload" nzTheme="outline"></span>
-        </button>
-        <button
-          class="m-r-8"
-          class="bg-success border-success"
-          nz-button
-          nzType="primary"
-          (click)="navigateToCreate()"
-        >
-          <i nz-icon nzType="plus"></i>
-          Tạo mới
-        </button>
-      </div>
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [ngModel]="searchParam"
+            (ngModelChange)="changeSearch($event)"
+          />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSearch (click)="getGroup()">
+            <i nz-icon nzType="search"></i>
+            Search
+          </button>
+        </ng-template>
+      </nz-row>
     </div>
-  </form>
+    <div
+      class="text-right p-0 m-b-0"
+      nz-col
+      [nzLg]="14"
+      [nzMd]="14"
+      [nzSm]="24"
+      [nzXl]="14"
+      [nzXs]="24"
+      [nzXXl]="14"
+    >
+      <button
+        class="m-r-8"
+        nz-button
+        style="cursor: pointer"
+        (click)="reloadGroupTable()"
+      >
+        <span nz-icon nzType="reload" nzTheme="outline"></span>
+      </button>
+      <button
+        class="m-r-8"
+        class="bg-success border-success"
+        nz-button
+        nzType="primary"
+        (click)="navigateToCreate()"
+      >
+        <i nz-icon nzType="plus"></i>
+        Tạo mới
+      </button>
+    </div>
+  </div>
   <ng-container>
     <ng-container>
       <nz-table
@@ -231,7 +229,7 @@
                 and {{ item.policies.length - 2 }} groups
               </span>
             </td>
-            <td>{{ item.createdDate | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -244,64 +242,63 @@
   [nzBordered]="false"
   nzTitle="Thông tin Users"
 >
-  <form nz-form>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-      <div
-        nz-col
-        [nzLg]="10"
-        [nzMd]="10"
-        [nzSm]="24"
-        [nzXl]="10"
-        [nzXs]="24"
-        [nzXXl]="10"
-      >
-        <nz-form-item>
-          <nz-row style="width: 100%">
-            <nz-col style="width: 60%">
-              <nz-form-control>
-                <input
-                  name="name"
-                  nz-input
-                  placeholder="Tìm kiếm tên, thời gian tạo ..."
-                  [ngModel]="searchParam"
-                  (ngModelChange)="changeSearch($event)"
-                />
-              </nz-form-control>
-            </nz-col>
-            <nz-form-control>
-              <button
-                nz-button
-                [nzType]="'primary'"
-                (click)="getCopyUserPlicies()"
-              >
-                <i nz-icon nzType="search"></i>
-                Search
-              </button>
-            </nz-form-control>
-          </nz-row>
-        </nz-form-item>
-      </div>
-      <div
-        class="text-right p-0 m-b-0"
-        nz-col
-        [nzLg]="14"
-        [nzMd]="14"
-        [nzSm]="24"
-        [nzXl]="14"
-        [nzXs]="24"
-        [nzXXl]="14"
-      >
-        <button
-          class="m-r-8"
-          nz-button
-          style="cursor: pointer"
-          (click)="reloadUserTable()"
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div
+      nz-col
+      [nzLg]="10"
+      [nzMd]="10"
+      [nzSm]="24"
+      [nzXl]="10"
+      [nzXs]="24"
+      [nzXXl]="10"
+    >
+      <nz-row>
+        <nz-input-group
+          style="width: 100%"
+          nzSearch
+          [nzAddOnAfter]="suffixButton"
         >
-          <span nz-icon nzType="reload" nzTheme="outline"></span>
-        </button>
-      </div>
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [ngModel]="searchParam"
+            (ngModelChange)="changeSearch($event)"
+          />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button
+            nz-button
+            nzType="primary"
+            nzSearch
+            (click)="getCopyUserPlicies()"
+          >
+            <i nz-icon nzType="search"></i>
+            Search
+          </button>
+        </ng-template>
+      </nz-row>
     </div>
-  </form>
+    <div
+      class="text-right p-0 m-b-0"
+      nz-col
+      [nzLg]="14"
+      [nzMd]="14"
+      [nzSm]="24"
+      [nzXl]="14"
+      [nzXs]="24"
+      [nzXXl]="14"
+    >
+      <button
+        class="m-r-8"
+        nz-button
+        style="cursor: pointer"
+        (click)="reloadUserTable()"
+      >
+        <span nz-icon nzType="reload" nzTheme="outline"></span>
+      </button>
+    </div>
+  </div>
   <ng-container>
     <ng-container>
       <nz-table
@@ -369,7 +366,7 @@
                 and {{ item.userPolicies.length - 2 }} policies
               </span>
             </td>
-            <td>{{ item.createdDate | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -394,7 +391,7 @@
         [nzXXl]="6"
       >
         <nz-form-item>
-          <nz-form-label [nzFor]="">Loại Policy:</nz-form-label>
+          <nz-form-label [nzFor]="">Loại Policy</nz-form-label>
           <nz-form-control>
             <nz-select
               [ngModel]="typePolicy"
@@ -421,31 +418,32 @@
         [nzXs]="24"
         [nzXXl]="10"
       >
-        <nz-form-item>
-          <nz-row style="width: 100%">
-            <nz-col style="width: 60%">
-              <nz-form-control>
-                <input
-                  name="name"
-                  nz-input
-                  placeholder="Tìm kiếm tên, thời gian tạo ..."
-                  [ngModel]="searchParam"
-                  (ngModelChange)="changeSearch($event)"
-                />
-              </nz-form-control>
-            </nz-col>
-            <nz-form-control>
-              <button
-                nz-button
-                [nzType]="'primary'"
-                (click)="getPermissionPolicies()"
-              >
-                <i nz-icon nzType="search"></i>
-                Search
-              </button>
-            </nz-form-control>
-          </nz-row>
-        </nz-form-item>
+        <nz-row style="margin-left: -14px;">
+          <nz-input-group
+            style="width: 100%"
+            nzSearch
+            [nzAddOnAfter]="suffixButton"
+          >
+            <input
+              name="name"
+              nz-input
+              placeholder="Tìm kiếm tên, thời gian tạo ..."
+              [ngModel]="searchParam"
+              (ngModelChange)="changeSearch($event)"
+            />
+          </nz-input-group>
+          <ng-template #suffixButton>
+            <button
+              nz-button
+              nzType="primary"
+              nzSearch
+              (click)="getPermissionPolicies()"
+            >
+              <i nz-icon nzType="search"></i>
+              Search
+            </button>
+          </ng-template>
+        </nz-row>
       </div>
       <div
         class="text-right p-0 m-b-0"
@@ -521,7 +519,9 @@
               <td
                 [nzExpand]="expandSet.has(item.name)"
                 (nzExpandChange)="onExpandChange(item.name, $event)"
-              >{{ item.name }}</td>
+              >
+                {{ item.name }}
+              </td>
               <td>{{ item.type }}</td>
               <td>{{ listAttachedEntities[i] }}</td>
             </tr>

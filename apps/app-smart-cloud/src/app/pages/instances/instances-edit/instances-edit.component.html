@@ -1,5 +1,5 @@
 <page-header>
-  <nz-breadcrumb style="width: 50%; float: left">
+  <nz-breadcrumb style="float: left">
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Quản lý máy ảo</a>
     </nz-breadcrumb-item>
@@ -7,18 +7,18 @@
       <a [routerLink]="['/']">Chỉnh sửa máy ảo</a>
     </nz-breadcrumb-item>
   </nz-breadcrumb>
-  <div class="text-right non-pointer">
+  <div class="text-right">
     <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
+      (valueChanged)="onRegionChange($event)" 
     ></region-select-dropdown>
     <project-select-dropdown
       [regionId]="region"
       (valueChanged)="onProjectChange($event)"
     ></project-select-dropdown>
   </div>
-  <div style="margin-top: 15px">
-    <nz-row>
-      <h2 style="width: 50%">Chỉnh sửa máy ảo</h2>
+  <div>
+    <nz-row style="margin-bottom: -10px;">
+      <h1 style="width: 50%; font-size: 20px;">Chỉnh sửa máy ảo</h1>
       <div class="text-right non-pointer" style="width: 50%">
         <button
           nz-button

@@ -29,25 +29,32 @@
   </ul>
 </ngu-carousel> -->
 
-<page-header>
-  <nz-breadcrumb style="width: 50%; float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Tạo máy ảo</a>
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
-    ></project-select-dropdown>
-  </div>
-  <div><h2>Tạo máy ảo</h2></div>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Tạo máy ảo'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Quản lý máy ảo</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Tạo máy ảo</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
@@ -145,22 +152,22 @@
                 />
               </tr>
               <tr>
-                <div style="margin-top: 15px; margin-bottom: 15px;">
-                    <nz-select
-                      nzShowSearch
-                      [id]="'hdh_' + data.id"
-                      [(ngModel)]="listSelectedImage[i]"
-                      (ngModelChange)="onInputHDH($event, i, data.id)"
-                      nzPlaceHolder="Chọn phiên bản"
-                      [ngModelOptions]="{ standalone: true }"
-                      style="text-align: center; width: 150px;"
-                    >
-                      <nz-option
-                        *ngFor="let p of listOfImageByImageType[i]"
-                        [nzValue]="p.id"
-                        [nzLabel]="p.name"
-                      ></nz-option>
-                    </nz-select>
+                <div style="margin-top: 15px; margin-bottom: 15px">
+                  <nz-select
+                    nzShowSearch
+                    [id]="'hdh_' + data.id"
+                    [(ngModel)]="listSelectedImage[i]"
+                    (ngModelChange)="onInputHDH($event, i, data.id)"
+                    nzPlaceHolder="Chọn phiên bản"
+                    [ngModelOptions]="{ standalone: true }"
+                    style="text-align: center; width: 150px"
+                  >
+                    <nz-option
+                      *ngFor="let p of listOfImageByImageType[i]"
+                      [nzValue]="p.id"
+                      [nzLabel]="p.name"
+                    ></nz-option>
+                  </nz-select>
                 </div>
               </tr>
             </tbody>
@@ -484,11 +491,12 @@
               nzPlaceHolder="Chọn Security Group"
               [ngModelOptions]="{ standalone: true }"
               [(ngModel)]="selectedSecurityGroup"
+              (ngModelChange)="onSelectedSecurityGroup($event)"
             >
               <nz-option
                 *ngFor="let i of listSecurityGroup"
                 [nzLabel]="i.name"
-                [nzValue]="i.id"
+                [nzValue]="i.name"
               />
             </nz-select>
           </nz-form-control>
@@ -631,13 +639,13 @@
                 [nzPlaceHolder]="'--Chọn SSH key--'"
                 [nzShowSearch]="true"
                 [ngModelOptions]="{ standalone: true }"
-                [(ngModel)]="selectedSSHKeyId"
+                [(ngModel)]="selectedSSHKeyName"
                 (ngModelChange)="onSSHKeyChange($event)"
               >
                 <nz-option
                   *ngFor="let i of listSSHKey"
                   [nzLabel]="i.displayName"
-                  [nzValue]="i.id"
+                  [nzValue]="i.displayName"
                 />
               </nz-select>
             </nz-form-control>
