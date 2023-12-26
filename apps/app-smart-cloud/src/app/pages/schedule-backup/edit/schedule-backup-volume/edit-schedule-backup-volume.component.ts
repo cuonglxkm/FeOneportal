@@ -58,7 +58,8 @@ export class EditScheduleBackupVolumeComponent {
     times: FormControl<Date>
     numberOfWeek: FormControl<number>
     date: FormControl<number>
-    daysOfWeek: FormControl<string[] | null>
+    daysOfWeek: FormControl<string>
+    daysOfWeekMultiple: FormControl<string[]>
   }> = this.fb.group({
     backupMode: ['4', [Validators.required]],
     name: [null as string, [Validators.required,
@@ -69,7 +70,8 @@ export class EditScheduleBackupVolumeComponent {
     times: [new Date(), [Validators.required]],
     numberOfWeek: [null as number],
     date: [1, [Validators.required]],
-    daysOfWeek: [[] as string[]]
+    daysOfWeek: [''],
+    daysOfWeekMultiple: [[] as string[]],
   })
 
 
@@ -118,6 +120,10 @@ export class EditScheduleBackupVolumeComponent {
     this.validateForm.controls.daysOfWeek.markAsPristine();
     this.validateForm.controls.daysOfWeek.reset();
 
+    this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+    this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+    this.validateForm.controls.daysOfWeekMultiple.reset();
+
     this.validateForm.controls.numberOfWeek.clearValidators();
     this.validateForm.controls.numberOfWeek.markAsPristine();
     this.validateForm.controls.numberOfWeek.reset();
@@ -133,15 +139,19 @@ export class EditScheduleBackupVolumeComponent {
       this.modeType = '1'
     } else if (value === '2') {
       this.modeType = '2'
-      this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
-      this.validateForm.controls.daysOfWeek.markAsDirty();
-      this.validateForm.controls.daysOfWeek.reset();
+      this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+      this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+      this.validateForm.controls.daysOfWeekMultiple.reset();
     } else if (value === '3') {
       this.modeType = '3'
 
       this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.numberOfWeek.markAsDirty();
       this.validateForm.controls.numberOfWeek.reset();
+
+      this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
+      this.validateForm.controls.daysOfWeek.markAsDirty();
+      this.validateForm.controls.daysOfWeek.reset();
     } else if (value === '4') {
       this.modeType = '4'
       this.validateForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
@@ -200,10 +210,7 @@ export class EditScheduleBackupVolumeComponent {
       }
     })
 
-    this.formEdit.intervalMonth = this.validateForm.controls.months.getRawValue()
     this.formEdit.dayOfMonth = this.validateForm.controls.date.getRawValue()
-    this.formEdit.intervalWeek = this.validateForm.controls.numberOfWeek.getRawValue()
-    this.formEdit.daysOfWeek = this.validateForm.controls.daysOfWeek.getRawValue()
     this.formEdit.serviceType = 2
     this.formEdit.customerId = this.tokenService.get()?.userId
     this.formEdit.name = this.validateForm.controls.name.getRawValue();
@@ -211,6 +218,17 @@ export class EditScheduleBackupVolumeComponent {
     this.formEdit.scheduleId = this.idSchedule;
     this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.getRawValue(), 10)
     this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
+    if(this.formEdit.mode === 3) {
+      this.formEdit.intervalWeek = this.validateForm.controls.numberOfWeek.value
+      this.formEdit.dayOfWeek = this.validateForm.controls.daysOfWeek.value
+    }
+    if(this.formEdit.mode === 2) {
+      this.formEdit.daysOfWeek = this.validateForm.controls.daysOfWeekMultiple.value
+    }
+    if(this.formEdit.mode === 4) {
+      this.formEdit.intervalMonth = this.validateForm.controls.months.value
+      this.formEdit.dayOfMonth = this.validateForm.controls.date.value
+    }
     return this.formEdit
   }
 
@@ -240,16 +258,24 @@ export class EditScheduleBackupVolumeComponent {
     this.isLoading = true
 
     this.scheduleService.detail(customerId, id).subscribe(data => {
-      console.log('data', data)
       this.backupSchedule = data
       this.isLoading = false
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode.toString())
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
+      this.validateForm.controls.name.setValue(this.backupSchedule?.name)
+      this.validateForm.controls.description.setValue(this.backupSchedule?.description)
+      this.validateForm.controls.months.setValue(this.backupSchedule?.interval)
+      this.validateForm.controls.date.setValue(this.backupSchedule?.dates)
+      this.numberOfWeekChangeSelected = this.backupSchedule?.interval.toString()
+      this.validateForm.controls.numberOfWeek.setValue(parseInt(this.numberOfWeekChangeSelected, 10))
+      this.validateForm.controls.daysOfWeek.setValue(this.backupSchedule?.daysOfWeek)
+      this.validateForm.controls.daysOfWeekMultiple.setValue(this.backupSchedule?.daysOfWeek?.split(','))
+
       data.backupScheduleItems?.forEach(item => {
         if (this.listVolume?.length > 0) {
-          this.listVolume.push(item)
+          this.listVolume.push(item.itemName)
         } else {
-          this.listVolume = [item]
+          this.listVolume = [item.itemName]
         }
       })
 
