@@ -42,7 +42,8 @@ export class ScheduleBackupVolumeComponent implements OnInit{
     numberOfWeek: FormControl<number>
     date: FormControl<number>
     maxBackup: FormControl<number>
-    daysOfWeek: FormControl<string[] | null>
+    daysOfWeek: FormControl<string>
+    daysOfWeekMultiple: FormControl<string[]>
   }> = this.fb.group({
     backupMode: ['1', [Validators.required]],
     name: [null as string, [Validators.required,
@@ -56,7 +57,8 @@ export class ScheduleBackupVolumeComponent implements OnInit{
     numberOfWeek: [null as number],
     date: [1, [Validators.required]],
     maxBackup: [null as number, [Validators.required, Validators.min(1)]],
-    daysOfWeek: [[] as string[]]
+    daysOfWeek: [''],
+    daysOfWeekMultiple: [[] as string[]],
   })
 
   modeType: string = '1'
@@ -141,13 +143,22 @@ export class ScheduleBackupVolumeComponent implements OnInit{
     this.formCreateSchedule.backupPacketId = this.validateForm.controls.backupPackage.getRawValue()
     this.formCreateSchedule.description = this.validateForm.controls.description.getRawValue()
     this.formCreateSchedule.volumeId = this.validateForm.controls.volumeId.getRawValue()
-    this.formCreateSchedule.intervalMonth = this.validateForm.controls.months.getRawValue()
     this.formCreateSchedule.dayOfMonth = this.validateForm.controls.date.getRawValue()
-    this.formCreateSchedule.intervalWeek = this.validateForm.controls.numberOfWeek.getRawValue()
     this.formCreateSchedule.maxBackup = this.validateForm.controls.maxBackup.getRawValue()
-    this.formCreateSchedule.daysOfWeek = this.validateForm.controls.daysOfWeek.getRawValue()
     this.formCreateSchedule.serviceType = 2
     this.formCreateSchedule.customerId = this.tokenService.get()?.userId
+    if(this.formCreateSchedule.mode === 3) {
+      this.formCreateSchedule.intervalWeek = this.validateForm.controls.numberOfWeek.value
+      this.formCreateSchedule.dayOfWeek = this.validateForm.controls.daysOfWeek.value
+    }
+    if(this.formCreateSchedule.mode === 2) {
+      this.formCreateSchedule.daysOfWeek = this.validateForm.controls.daysOfWeekMultiple.value
+    }
+    if(this.formCreateSchedule.mode === 4) {
+      this.formCreateSchedule.intervalMonth = this.validateForm.controls.months.value
+      this.formCreateSchedule.dayOfMonth = this.validateForm.controls.date.value
+    }
+
     return this.formCreateSchedule
   }
   submitForm() {
@@ -186,6 +197,10 @@ export class ScheduleBackupVolumeComponent implements OnInit{
     this.validateForm.controls.daysOfWeek.markAsPristine();
     this.validateForm.controls.daysOfWeek.reset();
 
+    this.validateForm.controls.daysOfWeekMultiple.clearValidators();
+    this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
+    this.validateForm.controls.daysOfWeekMultiple.reset();
+
     this.validateForm.controls.numberOfWeek.clearValidators();
     this.validateForm.controls.numberOfWeek.markAsPristine();
     this.validateForm.controls.numberOfWeek.reset();
@@ -201,9 +216,9 @@ export class ScheduleBackupVolumeComponent implements OnInit{
       this.modeType = '1'
     } else if (value === '2') {
       this.modeType = '2'
-      this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
-      this.validateForm.controls.daysOfWeek.markAsDirty();
-      this.validateForm.controls.daysOfWeek.reset();
+      this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
+      this.validateForm.controls.daysOfWeekMultiple.markAsDirty();
+      this.validateForm.controls.daysOfWeekMultiple.reset();
     } else if (value === '3') {
       this.modeType = '3'
 

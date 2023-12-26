@@ -13,7 +13,7 @@
         <nz-form-label nzRequired>Chọn dải</nz-form-label>
         <nz-input-group nzCompact>
           <nz-select style="width: 100%" nzPlaceHolder="--Chọn dải IP--" formControlName="ipSubnet">
-            <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.gatewayIp" [nzValue]="i.networkId" />
+            <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.networkId" />
           </nz-select>
         </nz-input-group>
       </div>
