@@ -101,7 +101,7 @@
                           </nz-row>
                       </nz-row>
                       <div style="margin-bottom: 8px; margin-top: 8px">Users trong Group
-                          <span>({{listUsers.length}})</span>
+                          <span>({{listUsers?.length}})</span>
                       </div>
                       <nz-table
                           #rowSelectionTable
@@ -185,7 +185,7 @@
                           </nz-row>
                       </nz-row>
                       <div style="margin-bottom: 8px; margin-top: 8px">Policies
-                          <span>({{listOfDataPolicies.length}})</span>
+                          <span>({{listOfDataPolicies?.length}})</span>
                           <br/>
                           <span style="color: #00000040;">Có thể đính kèm tối đa 10 policies</span>
                       </div>
@@ -207,7 +207,7 @@
                                       (nzCheckedChange)="onAllCheckedPolicy($event)"
                               ></th>
                               <th>Name</th>
-                              <th [nzWidth]="'207px'">Type</th>
+                              <th>Type</th>
                               <th>Attached Entities</th>
                           </tr>
                           </thead>

@@ -123,6 +123,8 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
             this.collection = data
             console.log('data', this.collection)
             this.loading = false
+        }, error => {
+            this.collection = null
         })
     }
 

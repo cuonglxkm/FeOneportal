@@ -68,7 +68,7 @@ export class CreateUserGroupComponent implements OnInit {
   getGroupParent() {
     this.userGroupService.search(this.formSearch).subscribe(data => {
       data.records.forEach(item => {
-        if (this.listGroupParent.length > 0) {
+        if (this.listGroupParent?.length > 0) {
           this.listGroupParent.push(item.parent)
         } else {
           this.listGroupParent = [item.parent]
@@ -81,6 +81,8 @@ export class CreateUserGroupComponent implements OnInit {
       console.log('list data', this.listGroupParent)
       console.log('ist data unique', this.listGroupParentUnique)
 
+    }, error => {
+      this.listGroupParentUnique = []
     })
   }
 
@@ -93,7 +95,12 @@ export class CreateUserGroupComponent implements OnInit {
         } else {
           this.listPoliciesSelected = [item.name]
         }
-        this.validateForm.controls.policyNames.setValue(this.listPoliciesSelected)
+        if(this.listPoliciesSelected?.length > 0) {
+          this.validateForm.controls.policyNames?.setValue(this.listPoliciesSelected)
+        } else {
+          this.validateForm.controls.policyNames?.setValue([])
+        }
+
       })
       this.listUsers.forEach(item => {
         if (this.listUsersSelected.length !== undefined) {
@@ -101,7 +108,11 @@ export class CreateUserGroupComponent implements OnInit {
         } else {
           this.listUsersSelected = [item.userName]
         }
-        this.validateForm.controls.userNames.setValue(this.listUsersSelected)
+        if(this.listUsersSelected?.length > 0) {
+          this.validateForm.controls.userNames?.setValue(this.listUsersSelected)
+        } else {
+          this.validateForm.controls.userNames?.setValue([])
+        }
       })
       console.log(this.validateForm.getRawValue());
       this.formCreate.groupName = this.validateForm.value.groupName
@@ -130,12 +141,21 @@ export class CreateUserGroupComponent implements OnInit {
   }
 
   receivedListPoliciesSelected(object: any) {
-    this.listPolicies = object
+    if(this.listPolicies?.length > 0) {
+      this.listPolicies = object
+    } else {
+      this.listPolicies = null
+    }
+
     console.log('selected', this.listPolicies)
   }
 
   receivedListUsersSelected(object: any) {
-    this.listUsers = object
+    if(this.listUsers?.length > 0) {
+      this.listUsers = object
+    } else {
+      this.listUsers = null
+    }
     console.log('selected', this.listUsers)
   }
 

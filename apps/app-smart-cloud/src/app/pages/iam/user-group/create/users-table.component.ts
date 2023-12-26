@@ -8,7 +8,7 @@ import {User} from "../../../../shared/models/user.model";
     styleUrls: ['./create-user-group.component.less'],
 })
 export class UsersTableComponent implements OnInit {
-    @Output() listUsersSelected = new EventEmitter<any>();
+    @Output() listUsersSelected? = new EventEmitter<any>();
 
     value?: string;
     listOfCurrentPageData: readonly User[] = [];
@@ -67,6 +67,8 @@ export class UsersTableComponent implements OnInit {
             this.listUsers = data.records
             this.loading = false
 
+        }, error => {
+            this.listUsers = null
         })
     }
 

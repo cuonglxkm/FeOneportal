@@ -41,14 +41,14 @@
     <tbody>
     <tr *ngFor="let data of rowSelectionTable.data">
       <td
-        [nzChecked]="setOfCheckedId.has(data.userName)"
-        (nzCheckedChange)="onItemChecked(data.userName, $event)"
+        [nzChecked]="setOfCheckedId.has(data?.userName)"
+        (nzCheckedChange)="onItemChecked(data?.userName, $event)"
       ></td>
       <td>
-        <a [routerLink]="">{{ data.userName }}</a>
+        <a [routerLink]="">{{ data?.userName }}</a>
       </td>
-      <td>{{ data.userOfGroups }}</td>
-      <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+      <td>{{ data?.userOfGroups }}</td>
+      <td>{{ data?.createdDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
     </tr>
     </tbody>
   </nz-table>

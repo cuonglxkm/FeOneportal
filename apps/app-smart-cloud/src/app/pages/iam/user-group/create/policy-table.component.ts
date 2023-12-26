@@ -9,7 +9,7 @@ import { FormSearchUserGroup } from 'src/app/shared/models/user-group.model';
   styleUrls: ['./create-user-group.component.less'],
 })
 export class PolicyTableComponent {
-  @Output() listPoliciesSelected = new EventEmitter<any>();
+  @Output() listPoliciesSelected? = new EventEmitter<any>();
 
   value?: string;
   loading = false
@@ -70,14 +70,16 @@ export class PolicyTableComponent {
   getPolicies() {
     this.loading = true
     const form: FormSearchUserGroup = new FormSearchUserGroup()
-    form.name = ''
+    form.name = null
     form.currentPage = 1
-    form.pageSize = 10000000
-    this.policyService.getPolicy(form).subscribe(data => {
-      this.listPolicies = data.records
-      this.loading = false
-      console.log('data', this.listPolicies)
-    })
+    form.pageSize = 10000
+    // this.policyService.getPolicy(form).subscribe(data => {
+    //   this.listPolicies = data.records
+    //   this.loading = false
+    //   console.log('data', this.listPolicies)
+    // }, error => {
+    //   this.listPolicies = null
+    // })
   }
 
   sendListPoliciesSelected() {

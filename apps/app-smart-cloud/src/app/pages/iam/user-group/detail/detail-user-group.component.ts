@@ -202,17 +202,18 @@ export class DetailUserGroupComponent {
         this.userGroupService.detail(groupName).subscribe(data => {
             this.groupModel = data
             this.loading = false
-            this.groupModel.policies?.forEach(item => {
+            console.log('list policies', this.groupModel?.policies)
+            this.groupModel?.policies?.forEach(item => {
                 this.policyService.detail(item).subscribe(data2 => {
                     // get policy
-                    if (this.listOfDataPolicies.length > 0) {
+                    if (this.listOfDataPolicies?.length > 0) {
                         this.listOfDataPolicies.push(data2)
                     } else {
                         this.listOfDataPolicies = [data2]
                     }
                 })
             })
-            this.userGroupService.getUserByGroup(groupName).subscribe(data3 => {
+            this.userGroupService.getUserByGroup(groupName, 5, 1).subscribe(data3 => {
                 this.listUsers = data3.records
                 console.log('user', this.listUsers)
             })

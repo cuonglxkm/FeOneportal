@@ -68,6 +68,8 @@ export class EditUserGroupComponent {
         this.onOk.emit();
       }, error => {
         this.notification.error('Thất bại', 'Chỉnh sửa thông tin Group thất bại')
+        this.isLoading = false
+        this.validateForm.reset()
       })
     }
   }

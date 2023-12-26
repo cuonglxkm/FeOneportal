@@ -56,13 +56,13 @@
     <nz-table
       #rowSelectionTable
       nzShowSizeChanger
-      [nzData]="collection.records"
+      [nzData]="collection?.records"
       (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
       [nzLoading]="loading"
       [nzFrontPagination]="false"
-      [nzTotal]="collection.totalCount"
-      [nzPageSize]="collection.pageSize"
-      [nzPageIndex]="collection.currentPage"
+      [nzTotal]="collection?.totalCount"
+      [nzPageSize]="collection?.pageSize"
+      [nzPageIndex]="collection?.currentPage"
     >
       <thead>
       <tr>

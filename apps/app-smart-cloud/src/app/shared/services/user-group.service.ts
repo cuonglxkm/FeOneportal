@@ -27,7 +27,8 @@ export class UserGroupService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId
+      // 'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
 
@@ -60,8 +61,9 @@ export class UserGroupService extends BaseService {
     })
   }
 
-  getUserByGroup(groupName: string) {
-    return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam + `/users/group/${groupName}`, {
+  getUserByGroup(groupName: string, pageSize: number, currentPage: number) {
+    return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam +
+        `/users/groupName=${groupName}&pageSize=${pageSize}&currentPage=${currentPage}`, {
       headers: this.getHeaders()
     })
   }

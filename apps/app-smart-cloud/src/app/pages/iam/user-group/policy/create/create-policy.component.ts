@@ -4,7 +4,9 @@ import {RegionModel} from "../../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {PolicyService} from "../../../../../shared/services/policy.service";
 import {PolicyModel} from "../../../../policy/policy.model";
-import {FormSearchUserGroup} from "../../../../../shared/models/user-group.model";
+import {FormSearchUserGroup, FormUserGroup, UserGroupModel} from "../../../../../shared/models/user-group.model";
+import {UserGroupService} from "../../../../../shared/services/user-group.service";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
     selector: 'one-portal-create-policy',
@@ -33,9 +35,15 @@ export class CreatePolicyComponent implements OnInit {
 
     formSearch: FormSearchUserGroup = new FormSearchUserGroup()
 
+    formCreate: FormUserGroup = new FormUserGroup()
+
+    userGroup: UserGroupModel
+
     constructor(private route: ActivatedRoute,
                 private router: Router,
-                private policyService: PolicyService) {
+                private policyService: PolicyService,
+                private userGroupService: UserGroupService,
+                private notification: NzNotificationService) {
     }
 
     onExpandChange(name: string, checked: boolean): void {
@@ -93,26 +101,40 @@ export class CreatePolicyComponent implements OnInit {
 
     getPolicies() {
         this.loading = true
-        this.formSearch.name = this.value
+        if(this.value === undefined) {
+            this.formSearch.name = null
+        } else {
+            this.formSearch.name = this.value
+        }
         this.formSearch.currentPage = 1
         this.formSearch.pageSize = 100000000
-        this.policyService.getPolicy(this.formSearch).subscribe(data => {
-            this.listPolicies = data.records
-            this.countPolicy = data.totalCount
-            this.loading = false
-            console.log('data', this.listPolicies)
-        })
+        // this.policyService.getPolicy(this.formSearch).subscribe(data => {
+        //     this.listPolicies = data.records
+        //     this.countPolicy = data.totalCount
+        //     this.loading = false
+        //     console.log('data', this.listPolicies)
+        // })
     }
     getPoliciesByGroup() {
         this.loading = true
-        this.formSearch.name = this.value
+        if(this.value === undefined) {
+            this.formSearch.name = null
+        } else {
+            this.formSearch.name = this.value
+        }
         this.formSearch.currentPage = 1
         this.formSearch.pageSize = 100000000
-        this.policyService.getPolicy(this.formSearch).subscribe(data => {
-            this.listPoliciesByGroup = data.records
-            this.countPolicyByGroup = data.totalCount
-            this.loading = false
-            console.log('data', this.listPolicies)
+        // this.policyService.getPolicy(this.formSearch).subscribe(data => {
+        //     this.listPoliciesByGroup = data.records
+        //     this.countPolicyByGroup = data.totalCount
+        //     this.loading = false
+        //     console.log('data', this.listPolicies)
+        // })
+    }
+
+    getGroup() {
+        this.userGroupService.detail(this.nameGroup).subscribe(data => {
+            this.userGroup = data
         })
     }
 
@@ -121,6 +143,14 @@ export class CreatePolicyComponent implements OnInit {
     }
 
     create() {
+        this.formCreate.groupName = this.nameGroup
+        this.formCreate.parentName = this.userGroup.parent
+        this.formCreate.policyNames = Array.from(this.setOfCheckedId)
+        this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
+            this.notification.success('Thành công', 'Thêm policy thành công')
+        }, error => {
+            this.notification.error('Thất bại', 'Thêm policy thất bại')
+        })
     }
 
     ngOnInit(): void {
@@ -128,5 +158,6 @@ export class CreatePolicyComponent implements OnInit {
         console.log(this.nameGroup)
         this.getPolicies()
         this.getPoliciesByGroup()
+        this.getGroup()
     }
 }
