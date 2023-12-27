@@ -20,7 +20,11 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 export class PolicyService extends BaseService {
 
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json' ,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
+      'user_root_id': this.tokenService.get()?.userId,
+    })
   };
 
   private urlIAM = this.baseUrl + this.ENDPOINT.iam + '/policies';
@@ -232,11 +236,7 @@ export class PolicyService extends BaseService {
     return this.http.get<PermissionPolicyModel[]>(this.urlIAM + '/ServiceAction/'+name, {headers: reqHeader});
   }
 
-  createPolicy(request: any, token: any) : Observable<any>{
-    var reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
-    });
+  createPolicy(request: any) : Observable<any>{
     return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
   }
 }

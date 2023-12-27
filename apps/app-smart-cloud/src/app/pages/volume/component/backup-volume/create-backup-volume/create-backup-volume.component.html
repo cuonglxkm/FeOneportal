@@ -1,17 +1,17 @@
-<page-header [autoBreadcrumb]="false"
-             [autoTitle]="false"
-             style="background: white">
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item>Volume</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-  </div>
-  <div><h2>Volume</h2></div>
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Volume'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 <nz-card>
   <h1>Thông tin Volume</h1>

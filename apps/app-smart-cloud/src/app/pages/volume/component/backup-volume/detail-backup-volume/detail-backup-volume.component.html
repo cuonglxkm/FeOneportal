@@ -1,17 +1,17 @@
-<page-header [autoBreadcrumb]="false"
-             [autoTitle]="false"
-             style="background: white">
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-  </div>
-  <div><h2>Backup Volume</h2></div>
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Backup Volume'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết Backup Volume</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 <nz-card style="height: 80%">
   <h1>Thông tin Backup Volume</h1>
@@ -24,9 +24,9 @@
       <h3 style=" font-weight: normal;">Ngày tạo: {{receivedData.creationDate| date:'dd/MM/yyyy'}}</h3>
       <h3 style=" margin-top: 20px;font-weight: normal;">Dung lượng: {{receivedData.size}}GB</h3>
     </td>
-<!--    <td>-->
-<!--      <h3>Ngày hết hạn: {{receivedData.suspendDate| date:'dd/MM/yyyy'}}</h3>-->
-<!--    </td>-->
+    <td>
+      <h3 style="font-weight: normal;">Ngày hết hạn: {{receivedData.expirationDate| date:'dd/MM/yyyy'}}</h3>
+    </td>
   </table>
 
   <div nz-row class="mb-md">

@@ -9,6 +9,7 @@ import {ClipboardService} from "ngx-clipboard";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {finalize} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
@@ -46,7 +47,7 @@ export class PolicyListComponent {
   constructor(private service: PolicyService,private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private message: NzMessageService,) {
+              private notification: NzNotificationService,) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = "view";
   }
@@ -84,10 +85,10 @@ export class PolicyListComponent {
       .pipe(finalize(() => {this.nameDelete = ""}))
       .subscribe(
       () =>{
-        this.message.create('success', `Xóa thành công Policy`);
+        this.notification.success('Thành công', '`Xóa thành công Policy')
       },
       error => {
-        this.message.create('error', `Xóa thất bại Policy`);
+        this.notification.error('Thất bại', 'Xóa thất bại Policy')
       }
     );
   }

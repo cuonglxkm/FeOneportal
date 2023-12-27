@@ -1,6 +1,13 @@
-<page-header [action]="action" [title]="'Tạo IP Public'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo IP Public'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo Ip Public</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
   <ng-template #action>
-    <div class="text-right">
+    <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
@@ -26,10 +33,11 @@
         </nz-input-group>
       </div>
     </div>
-
-    <nz-form-item>
-      <label nz-checkbox [(ngModel)]="checked">IPv6</label>
-    </nz-form-item>
+    <div *ngIf="checkIpv6 !== null">
+      <nz-form-item>
+        <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }">IPv6</label>
+      </nz-form-item>
+    </div>
     <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
     <nz-input-group nzCompact>
       <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn thời gian sử dụng--"
