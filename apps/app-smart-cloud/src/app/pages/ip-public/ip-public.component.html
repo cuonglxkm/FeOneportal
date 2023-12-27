@@ -1,19 +1,19 @@
-<page-header  [autoBreadcrumb]="false"
-              [autoTitle]="false"
-              style="background: white">
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-  </div>
-  <div><h2>Danh sách Ip Public</h2></div>
-  <div *ngIf="!isBegin" nz-row class="mb-md">
-    <div nz-col nzSpan="18">
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách IP Public'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <div *ngIf="!isBegin" nz-row class="mb-md">
       <div class="row">
         <div class="col-md-6" style="display:flex;">
           <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái Ip Public:</h4>
@@ -34,18 +34,18 @@
         </div>
       </div>
     </div>
-    <div nz-col nzSpan="6">
-      <div class="text-right">
-        <button nzSize="default" (click)="createIp()" nz-button nzType="primary" style="
+  </ng-template>
+
+  <ng-template #extra>
+    <button *ngIf="!isBegin" nzSize="default" (click)="createIp()" nz-button nzType="primary" style="
             border: 1px solid #52c41a;
             border-radius: 2px;
             background-color: #52c41a;
           ">+ Tạo mới
-        </button>
-      </div>
-    </div>
-  </div>
+    </button>
+  </ng-template>
 </page-header>
+
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false>
@@ -86,10 +86,14 @@
       </nz-table>
     </ng-container>
     <ng-container *ngSwitchDefault >
-      <nz-result nzStatus="403" nzTitle="SSH KEY - Ổ Khóa truy cp dịch vụ" nzSubTitle="Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối">
-<!--        <div nz-result-extra>-->
-<!--          <button (click)="createKey()" nz-button nzType="primary">Khởi tạo ngay</button>-->
-<!--        </div>-->
+      <nz-result [nzIcon]="customIcon" nzTitle="Volume - Lưu trữ ổ đĩa máy chủ"
+                 nzSubTitle="Dịch vụ cung cấp dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.">
+        <ng-template #customIcon>
+          <img src="assets/imgs/Ip-Public.png" alt="Custom Icon">
+        </ng-template>
+        <div nz-result-extra>
+          <button (click)="createIp()" nz-button nzType="primary">Khởi tạo ngay</button>
+        </div>
       </nz-result>
     </ng-container>
   </ng-container>

@@ -29,7 +29,7 @@ export class IpPublicService extends BaseService{
     return this.http.get<BaseResponse<IpPublicModel[]>>("/ip");
   }
   createIpPublic(IP: any): Observable<HttpResponse<any>>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip", IP, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
   }
 
   remove(id: any) :Observable<HttpResponse<any>>  {
