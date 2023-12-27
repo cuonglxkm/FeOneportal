@@ -104,6 +104,9 @@ export class IpPublicComponent implements OnInit {
     this.index = event;
     this.getData(false);
   }
+  navigatorToDetail(id: number){
+    this.router.navigate(['/app-smart-cloud/ip-public/detail/'+id]);
+  }
 
   createIp() {
     this.router.navigate(['/app-smart-cloud/ip-public/create']);
@@ -197,4 +200,6 @@ export class IpPublicComponent implements OnInit {
     this.total = 0;
     this.ipAddress = '';
   }
+
+    protected readonly navigator = navigator;
 }

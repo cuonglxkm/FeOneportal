@@ -148,7 +148,7 @@ export class PolicyListComponent {
   selectAction(event: any) {
     if (this.radioValue !== undefined && this.radioValue !== null) {
       if (event === false) {
-        if (this.selectedAction === 0) {
+        if (this.selectedAction == 0) {
           //attach
           this.router.navigate(['/app-smart-cloud/policy/attach', this.radioValue])
         } else {

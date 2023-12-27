@@ -44,4 +44,8 @@ export class IpPublicService extends BaseService{
   attachIpPublic(IP: any): Observable<HttpResponse<any>>  {
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip", IP, this.httpOptions);
   }
+
+  getDetailIpPublic(id: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id);
+  }
 }

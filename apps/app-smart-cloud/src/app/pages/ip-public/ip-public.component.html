@@ -65,9 +65,9 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfIp">
-          <td style="color: #0D67B0">{{ item.ipAddress }}</td>
-          <td>loại ip</td>
-          <td>{{ item.iPv6Address === null ? 'IPv4' : 'IPv6' }}</td>
+          <td style="color: #0D67B0"><a (click)="navigatorToDetail(item.id)">{{ item.ipAddress }}</a></td>
+          <td><a (click)="navigatorToDetail(item.id)">loại ip</a></td>
+          <td><a (click)="navigatorToDetail(item.id)">{{ item.iPv6Address === null ? 'IPv4' : 'IPv6' }}</a></td>
           <td *ngIf="item.status === 0" style="color: forestgreen">Khởi tạo</td>
           <td *ngIf="item.status !== 0" style="color: red">Đang sử dụng</td>
 <!--          <td style="color: forestgreen">{{ item.status === 0 ? 'Khởi tạo' : 'Đang sử dụng' }}</td>-->
