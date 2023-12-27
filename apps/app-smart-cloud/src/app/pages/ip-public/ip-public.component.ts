@@ -17,8 +17,8 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
   styleUrls: ['./ip-public.component.less'],
 })
 export class IpPublicComponent implements OnInit {
-  regionId: number;
-  projectId: number;
+  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  projectId = JSON.parse(localStorage.getItem('projectId'));
   listOfIp: IpPublicModel[] = [];
   checkEmpty: IpPublicModel[] = [];
   isBegin: Boolean = false;
