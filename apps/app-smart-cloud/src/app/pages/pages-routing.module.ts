@@ -65,6 +65,7 @@ import {
 import {
   EditScheduleBackupVolumeComponent
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
+import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-public.component";
 import { PaymentDetailComponent } from "./payment/payment-detail.component";
 import { PaymentSuccessComponent } from "../shared/components/payment-success/payment-success.component";
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
@@ -110,6 +111,10 @@ const routes: Routes = [
   {
     path: "ip-public/create",
     component: CreateUpdateIpPublicComponent
+  },
+  {
+    path: "ip-public/detail/:id",
+    component: DetailIpPublicComponent
   },
   {
     path: 'security-group',

@@ -1,40 +1,39 @@
-<page-header [autoBreadcrumb]="false"
-             [autoTitle]="false"
-             style="background: white">
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-  </div>
-  <div><h2>Backup Volume</h2></div>
-  <div *ngIf="!isBegin" nz-row class="mb-md" style="display: flex; flex-direction: column;">
-    <!--    <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>-->
-    <div style="display: flex; align-items: center;">
-      <h3 style="display: inline-block; margin-right: 90px;">Trạng thái</h3>
-      <nz-select nzPlaceHolder="Tất cả trạng thái" [(ngModel)]="selectedStatus"
-                 (nzOpenChange)="search('')" style="width: 150px">
-        <nz-option *ngFor="let s of listStatus" [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
-      </nz-select>
-      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-left: 25px;">
-        <!--            <nz-select [(ngModel)]="selectedStatus" nzSize="default">-->
-        <!--              <nz-option [nzValue]="" [nzLabel]="" ></nz-option>-->
-        <!--            </nz-select>-->
-        <input #searchBox type="text" nz-input placeholder="Tìm kiến tên,dung lượng,volume..."
-               style="width: 350px"/>
-        <ng-template #suffixButton>
-          <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-            <i nz-icon nzType="search"></i>
-            Tim kiếm
-          </button>
-        </ng-template>
-      </nz-input-group>
+<page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Backup Volume'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
-  </div>
+  </ng-template>
+
+  <ng-template #content>
+    <div *ngIf="!isBegin" nz-row class="mb-md" style="display: flex; flex-direction: column;">
+      <!--    <h2 style="margin-bottom: 30px;">Danh sách Backup volume</h2>-->
+      <div style="display: flex; align-items: center;">
+        <h4 style="display: inline-block; margin-right: 20px;">Trạng thái:</h4>
+        <nz-select nzPlaceHolder="Tất cả trạng thái" [(ngModel)]="selectedStatus"
+                   (nzOpenChange)="search('')" style="width: 150px">
+          <nz-option *ngFor="let s of listStatus" [nzLabel]="s.label" [nzValue]="s.value"></nz-option>
+        </nz-select>
+        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-left: 25px;">
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên,dung lượng,volume..."
+                 style="width: 350px"/>
+          <ng-template #suffixButton>
+            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+              <i nz-icon nzType="search"></i>
+              Tim kiếm
+            </button>
+          </ng-template>
+        </nz-input-group>
+      </div>
+    </div>
+  </ng-template>
 </page-header>
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
@@ -47,9 +46,11 @@
         <tr>
           <th>Tên</th>
           <th>Volume gốc</th>
+          <th>VPC</th>
           <th>Dung lượng</th>
           <th>Gói backup</th>
           <th>Ngày tạo</th>
+          <th>Hết hạn</th>
           <th>Trạng thái</th>
           <th>Trạng thái tác vụ</th>
           <th>Thao tác vụ</th>
@@ -59,9 +60,11 @@
         <tr *ngFor="let data of listOfData">
           <td (click)="detailKey(data)" style="color: royalblue">{{ data.name }}</td>
           <td (click)="detailKey(data)">{{ data.volumeName }}</td>
-          <td (click)="detailKey(data)">{{ data.volumeName }}</td>
+          <td (click)="detailKey(data)">{{ data.vpcName }}</td>
+          <td (click)="detailKey(data)">{{ data.size }}GB</td>
           <td (click)="detailKey(data)">{{ data.backupPackgeName }}</td>
           <td (click)="detailKey(data)">{{ data.creationDate | date:'HH:mm:ss - dd/MM/yyyy' }}</td>
+          <td (click)="detailKey(data)">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
           <td (click)="detailKey(data)" [ngStyle]="{'color': getStatusColor(data.status)}">
             {{ getStatusLabel(data.status) }}</td>
           <td (click)="detailKey(data)">{{ data.serviceStatus == 'KHOITAO' ? '-' : data.serviceStatus }}</td>
@@ -126,7 +129,7 @@
           <img src="assets/imgs/backup-volume.png" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
-          <button nz-button nzType="primary">Khởi tạo ngay</button>
+          <button (click)="goScheduleBackupVolume()" nz-button nzType="primary">Khởi tạo ngay</button>
         </div>
       </nz-result>
     </ng-container>

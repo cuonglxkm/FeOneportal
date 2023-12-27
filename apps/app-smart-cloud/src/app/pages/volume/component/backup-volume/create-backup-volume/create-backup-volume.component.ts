@@ -9,6 +9,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
 import {NzMessageService} from "ng-zorro-antd/message";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-create-backup-volume',
@@ -83,7 +84,7 @@ export class CreateBackupVolumeComponent implements OnInit{
 
     this.backupVolumeService.createBackupVolume(createBackupVolumeOrderData).subscribe(
       () => {
-        this.message.create('success', `Yêu cầu tạo backup volume đã được gửi đi`);
+        this.notification.success('Thành công', 'Yêu cầu tạo backup volume đã được gửi đi')
       }
     );
     this.router.navigate(['/app-smart-cloud/backup-volume']);
@@ -106,7 +107,7 @@ export class CreateBackupVolumeComponent implements OnInit{
               private router: Router,
               private backupVmService: BackupVmService,
               private backupVolumeService: BackupVolumeService,
-              private message: NzMessageService,
+              private notification: NzNotificationService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 

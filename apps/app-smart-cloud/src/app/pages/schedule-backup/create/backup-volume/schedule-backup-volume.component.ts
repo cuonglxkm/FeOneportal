@@ -27,8 +27,8 @@ import {DatePipe} from "@angular/common";
   styleUrls: ['./schedule-backup-volume.component.less'],
 })
 export class ScheduleBackupVolumeComponent implements OnInit{
-  @Input() region: number
-  @Input() project: number
+  region = JSON.parse(localStorage.getItem('region')).regionId;
+  project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false
   validateForm: FormGroup<{
@@ -254,10 +254,33 @@ export class ScheduleBackupVolumeComponent implements OnInit{
   }
 
   getListVolume() {
+    // this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project,this.region,null,999,1,null,null)
+    //   .subscribe(data => {
+    //     this.listVolume = data.records;
+    //   })
+    let customerId = this.tokenService.get()?.userId
+    this.formSearchBackup.pageSize = 10000000
+    this.formSearchBackup.currentPage = 1
+    this.formSearchBackup.customerId = customerId
     this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project,this.region,null,999,1,null,null)
       .subscribe(data => {
-        this.listVolume = data.records;
-      })
+      this.listVolume = data?.records
+      // this.backupVmService.search(this.formSearchBackup).subscribe(data2 => {
+      //   this.listBackupVM = data2?.records
+      //
+      //   const idSet = new Set(this.listBackupVM.map(item => item.instanceId));
+      //   const idSetUnique = Array.from(new Set(idSet))
+      //   this.listInstance?.forEach(item1 => {
+      //     if (!idSetUnique.includes(item1.id)) {
+      //       if (this.listInstanceNotUse?.length > 0) {
+      //         this.listInstanceNotUse.push(item1)
+      //       } else {
+      //         this.listInstanceNotUse = [item1]
+      //       }
+      //     }
+      //   })
+      // })
+    })
   }
 
   selectInstanceChange(value) {

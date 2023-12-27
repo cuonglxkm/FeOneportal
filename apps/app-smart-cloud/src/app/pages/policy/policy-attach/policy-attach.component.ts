@@ -9,6 +9,9 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PolicyService} from "../../../shared/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {AttachOrDetachRequest} from "../policy.model";
+import {UserGroupService} from "../../../shared/services/user-group.service";
+import {UserService} from "../../../shared/services/user.service";
+import {FormSearchUserGroup} from "../../../shared/models/user-group.model";
 
 
 
@@ -23,7 +26,7 @@ export class PolicyAttachComponent implements OnInit {
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  typeSearch : number;
+  typeSearch : number = 2 ;
 
   entitiesNameSearch : string;
 
@@ -150,20 +153,52 @@ export class PolicyAttachComponent implements OnInit {
 
   private doGetAttachedEntities(policyName: string, entityName: string, type: number, pageSize:number, currentPage:number){
     this.isLoadingEntities = true;
-    this.policiService.getAttachedEntities(policyName,entityName,type,pageSize,currentPage).subscribe(
-      data => {
-        this.totalData = data.totalCount;
-        this.listOfData = data.records;
-        this.isLoadingEntities = false;
-      },
-      error => {
-        this.notification.error('Có lỗi xảy ra','Lấy danh sách Attached Entities thất bại');
-        this.isLoadingEntities = false;
-      }
-    )
+    //USER
+    if(type == 1){
+      this.userService.search(entityName,pageSize,currentPage).subscribe(
+        data => {
+          this.totalData = data.totalCount;
+          this.listOfData = data.records;
+          this.isLoadingEntities = false;
+        },
+        error => {
+          this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached USER thất bại');
+          this.isLoadingEntities = false;
+        }
+      )
+    }else{
+      let request = new FormSearchUserGroup();
+      request.name = entityName;
+      request.currentPage = currentPage;
+      request.pageSize =pageSize;
+      this.userGroupService.search(request).subscribe(
+        data => {
+          this.totalData = data.totalCount;
+          this.listOfData = data.records;
+          this.isLoadingEntities = false;
+        },
+        error => {
+          this.notification.error('Có lỗi xảy ra', 'Lấy danh sách Attached USER GROUPS thất bại');
+          this.isLoadingEntities = false;
+        }
+      )
+    }
+    // this.policiService.getAttachedEntities(policyName,entityName,type,pageSize,currentPage).subscribe(
+    //   data => {
+    //     this.totalData = data.totalCount;
+    //     this.listOfData = data.records;
+    //     this.isLoadingEntities = false;
+    //   },
+    //   error => {
+    //     this.notification.error('Có lỗi xảy ra','Lấy danh sách Attached Entities thất bại');
+    //     this.isLoadingEntities = false;
+    //   }
+    // )
   }
   constructor(
     private policiService: PolicyService,
+    private userGroupService: UserGroupService,
+    private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
     private notification: NzNotificationService,) {

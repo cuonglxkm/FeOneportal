@@ -11,6 +11,8 @@ import {ClipboardService} from "ngx-clipboard";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {finalize} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
+import qrcodegen from "ng-zorro-antd/qr-code/qrcodegen";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-policy-create',
@@ -29,12 +31,17 @@ export class PolicyCreateComponent {
   optionData = 1;
   countOrderNum: number = 1;
   listService: string[] = [];
+  searchKey: any;
   listServiceAvaiable : string[] = [];
   public optionJsonEditor: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   listOfPermissionSelectedView: string[] = [];
+  listOfPermissionSelectedViewStep2: string[] = [];
+  listOfPermissionSelectedViewFilter: string[] = [];
   listOfPermissionSelectedViewFinal: string[] = [];
-  listOfPermissionSelectedViewFinalFilter: string[] = [];
+  total: number = 3;
+  index: number = 1;
+  size: number = 10;
 
   defaultService = {
     orderNum: 0,
@@ -63,7 +70,7 @@ export class PolicyCreateComponent {
   constructor(private service: PolicyService, private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private message: NzMessageService,) {
+              private notification: NzNotificationService,) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = "code";
   }
@@ -203,40 +210,68 @@ export class PolicyCreateComponent {
       if (this.optionData !== 1) {
         const processedStr = this.editor.getText().slice(1, -1);
         const lst = processedStr.split(',').map((item) => item.trim().slice(1, -1));
-        this.listOfPermissionSelectedViewFinal = [...lst]
+        this.listOfPermissionSelectedViewStep2 = [...lst]
       } else {
-        this.listOfPermissionSelectedViewFinal = [...this.listOfPermissionSelectedView];
+        this.listOfPermissionSelectedViewStep2 = [...this.listOfPermissionSelectedView];
       }
 
-      if (this.listOfPermissionSelectedViewFinal.length === 0 || this.listOfPermissionSelectedViewFinal[0] === "") {
+      if (this.listOfPermissionSelectedViewStep2.length === 0 || this.listOfPermissionSelectedViewStep2[0] === "") {
         this.isVisibleNoticeCreate = true;
         return;
       }
+      this.listOfPermissionSelectedViewFilter = [...this.listOfPermissionSelectedViewStep2];
+      this.loadData(false);
     } else {
-      this.listOfPermissionSelectedViewFinal = [];
+      this.listOfPermissionSelectedViewStep2 = [];
+      this.index = 1;
+      this.size = 10;
+      this.searchKey = "";
     }
 
-    this.listOfPermissionSelectedViewFinalFilter = [...this.listOfPermissionSelectedViewFinal];
     this.currentStep = step;
   }
 
-  search(search: any) {
+  search(search: any, isloadData: boolean) {
     if (search === undefined || search === null || search === null) {
-      this.listOfPermissionSelectedViewFinalFilter = [...this.listOfPermissionSelectedViewFinal];
+      this.listOfPermissionSelectedViewFilter = [...this.listOfPermissionSelectedViewStep2];
     } else {
-      this.listOfPermissionSelectedViewFinalFilter = [];
-      for(let item of this.listOfPermissionSelectedViewFinal) {
-        if (item.includes(search)) this.listOfPermissionSelectedViewFinalFilter.push(item);
+        this.listOfPermissionSelectedViewFilter = [];
+      for(let item of this.listOfPermissionSelectedViewStep2) {
+        if (item.includes(search)) this.listOfPermissionSelectedViewFilter.push(item);
       }
+    }
+
+    this.searchKey = search;
+    if (isloadData) {
+      this.loadData(false);
     }
   }
 
   onPageSizeChange(event: any) {
-
+    this.size = event;
+    this.loadData(true);
   }
 
   onPageIndexChange(event: any) {
+    this.index = event;
+    this.loadData(true);
+  }
 
+  loadData(isSearch: boolean){
+    this.listOfPermissionSelectedViewFinal = [];
+    if (isSearch) {
+      this.search(this.searchKey, false);
+    }
+
+    let begin = this.size * (this.index - 1);
+    let end = begin + this.size;
+    for (let i = 0; i < this.listOfPermissionSelectedViewFilter.length; i++) {
+      if (i >= begin && i < end) {
+        this.listOfPermissionSelectedViewFinal.push(this.listOfPermissionSelectedViewFilter[i]);
+      }
+    }
+
+    console.log(this.listOfPermissionSelectedViewFinal);
   }
 
   createPolicy() {
@@ -248,18 +283,18 @@ export class PolicyCreateComponent {
     const request = {
       name: this.form.controls['name'].value,
       description: this.form.controls['description'].value,
-      action: this.listOfPermissionSelectedViewFinal,
+      action: this.listOfPermissionSelectedViewStep2,
       resource : "*",
       effect: "allow",
     }
-    this.service.createPolicy(request, this.tokenService.get()?.token)
+    this.service.createPolicy(request)
       .subscribe({
         next: post => {
-          this.message.create('success', `Tạo mới thành công policy`);
+          this.notification.success('Thành công', 'Tạo mới thành công policy')
           this.router.navigate(['/app-smart-cloud/policy']);
         },
         error: e => {
-          this.message.create('error', `Tạo mới thất bại policy`);
+          this.notification.error('Thất bại', 'Tạo mới thất bại policy')
         },
       });
     this.isVisibleCreate = false;
