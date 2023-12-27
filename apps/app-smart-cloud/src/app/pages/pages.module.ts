@@ -104,6 +104,7 @@ import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedul
 import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
 import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
 import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { PaymentDetailComponent } from './payment/payment-detail.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
@@ -197,6 +198,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SnapshotScheduleCreateComponent,
     SnapshotScheduleDetailComponent,
     PaymentDetailComponent,
+    DashboardComponent,
   ],
   imports: [
     CommonModule,
