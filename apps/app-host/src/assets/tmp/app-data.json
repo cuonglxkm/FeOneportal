@@ -16,7 +16,8 @@
       "children": [
         {
           "text": "Dashboard",
-          "icon": "anticon-team"
+          "icon": "anticon-team",
+          "link": "/app-smart-cloud/dashboard"
         },
         {
           "text": "Tài khoản",
@@ -146,7 +147,8 @@
                   "link": "/app-smart-cloud/object"
                 }
               ]
-            }, {
+            },
+            {
               "text": "VPC",
               "icon": "anticon-profile",
               "children": [
@@ -212,8 +214,6 @@
             }
           ]
         },
-
-
         {
           "text": "Dịch vụ nền tảng",
           "icon": "anticon-edit",
