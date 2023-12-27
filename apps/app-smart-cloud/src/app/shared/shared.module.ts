@@ -16,6 +16,8 @@ import {NZ_ICONS} from 'ng-zorro-antd/icon';
 import {FlavorSelectComponent} from './components/flavor-select/flavor-select.component';
 import {ImageSelectComponent} from './components/image-select/image-select.component';
 import {SecurityGroupSelectComponent} from './components/security-group-select/security-group-select.component';
+import { PaymentSuccessComponent } from './components/payment-success/payment-success.component';
+import { PaymentFailedComponent } from './components/payment-failed/payment-failed.component';
 
 const antDesignIcons = AllIcons as {
     [key: string]: any;
@@ -36,6 +38,8 @@ const COMPONENTS: Array<Type<any>> = [
     FlavorSelectComponent,
     ImageSelectComponent,
     SecurityGroupSelectComponent,
+    PaymentSuccessComponent,
+    PaymentFailedComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 

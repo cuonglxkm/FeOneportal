@@ -112,7 +112,11 @@
   [nzBordered]="false"
   nzTitle="Thông tin Groups"
 >
-  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+  <div
+    style="margin-bottom: 2%"
+    nz-row
+    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
+  >
     <div
       nz-col
       [nzLg]="10"
@@ -122,27 +126,25 @@
       [nzXs]="24"
       [nzXXl]="10"
     >
-      <nz-row>
-        <nz-input-group
-          style="width: 100%"
-          nzSearch
-          [nzAddOnAfter]="suffixButton"
-        >
-          <input
-            name="name"
-            nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
-            [ngModel]="searchParam"
-            (ngModelChange)="changeSearch($event)"
-          />
-        </nz-input-group>
-        <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="getGroup()">
-            <i nz-icon nzType="search"></i>
-            Search
-          </button>
-        </ng-template>
-      </nz-row>
+      <nz-input-group
+        style="width: 100%"
+        nzSearch
+        [nzAddOnAfter]="suffixButton"
+      >
+        <input
+          name="name"
+          nz-input
+          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [ngModel]="searchParam"
+          (ngModelChange)="changeSearch($event)"
+        />
+      </nz-input-group>
+      <ng-template #suffixButton>
+        <button nz-button nzType="primary" nzSearch (click)="getGroup()">
+          <i nz-icon nzType="search"></i>
+          Search
+        </button>
+      </ng-template>
     </div>
     <div
       class="text-right p-0 m-b-0"
@@ -174,67 +176,63 @@
       </button>
     </div>
   </div>
-  <ng-container>
-    <ng-container>
-      <nz-table
-        #rowSelectionTable
-        nzShowSizeChanger
-        [nzFrontPagination]="false"
-        [nzData]="listOfGroups"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="getGroup()"
-        (nzPageSizeChange)="getGroup()"
-      >
-        <thead>
-          <tr>
-            <th style="width: 20px">
-              <input
-                nz-input
-                type="checkbox"
-                (change)="onChangeCheckAllGroup($event.target.checked)"
-                [(ngModel)]="checkedAllInPage"
-              />
-            </th>
-            <th>Tên Group</th>
-            <th>Số lượng User</th>
-            <th>Attached policies</th>
-            <th>Thời gian tạo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of listOfGroups; let i = index">
-            <td>
-              <input
-                nz-input
-                type="checkbox"
-                (change)="onClickGroupItem(item.name, item)"
-                [(ngModel)]="listCheckedInPage[i]"
-              />
-            </td>
-            <td class="fieldColor">{{ item.name }}</td>
-            <td>{{ item.userOfGroup }}</td>
-            <td *ngIf="item.policies.length == 0">None</td>
-            <td class="fieldColor" *ngIf="item.policies.length == 1">
-              {{ item.policies[0] }}
-            </td>
-            <td class="fieldColor" *ngIf="item.policies.length == 2">
-              {{ item.policies[0] }}, {{ item.policies[1] }}
-            </td>
-            <td class="fieldColor" *ngIf="item.policies.length > 2">
-              {{ item.policies[0] }}, {{ item.policies[1] }}
-              <span class="nameField">
-                and {{ item.policies.length - 2 }} groups
-              </span>
-            </td>
-            <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </ng-container>
-  </ng-container>
+  <nz-table
+    #rowSelectionTable
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="listOfGroups"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getGroup()"
+    (nzPageSizeChange)="getGroup()"
+  >
+    <thead>
+      <tr>
+        <th style="width: 20px">
+          <input
+            nz-input
+            type="checkbox"
+            (change)="onChangeCheckAllGroup($event.target.checked)"
+            [(ngModel)]="checkedAllInPage"
+          />
+        </th>
+        <th>Tên Group</th>
+        <th>Số lượng User</th>
+        <th>Attached policies</th>
+        <th>Thời gian tạo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfGroups; let i = index">
+        <td>
+          <input
+            nz-input
+            type="checkbox"
+            (change)="onClickGroupItem(item.name, item)"
+            [(ngModel)]="listCheckedInPage[i]"
+          />
+        </td>
+        <td class="fieldColor">{{ item.name }}</td>
+        <td>{{ item.userOfGroup }}</td>
+        <td *ngIf="item.policies.length == 0">None</td>
+        <td class="fieldColor" *ngIf="item.policies.length == 1">
+          {{ item.policies[0] }}
+        </td>
+        <td class="fieldColor" *ngIf="item.policies.length == 2">
+          {{ item.policies[0] }}, {{ item.policies[1] }}
+        </td>
+        <td class="fieldColor" *ngIf="item.policies.length > 2">
+          {{ item.policies[0] }}, {{ item.policies[1] }}
+          <span class="nameField">
+            and {{ item.policies.length - 2 }} groups
+          </span>
+        </td>
+        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
 </nz-card>
 
 <nz-card
@@ -242,7 +240,11 @@
   [nzBordered]="false"
   nzTitle="Thông tin Users"
 >
-  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+  <div
+    style="margin-bottom: 2%"
+    nz-row
+    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
+  >
     <div
       nz-col
       [nzLg]="10"
@@ -252,32 +254,30 @@
       [nzXs]="24"
       [nzXXl]="10"
     >
-      <nz-row>
-        <nz-input-group
-          style="width: 100%"
+      <nz-input-group
+        style="width: 100%"
+        nzSearch
+        [nzAddOnAfter]="suffixButton"
+      >
+        <input
+          name="name"
+          nz-input
+          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [ngModel]="searchParam"
+          (ngModelChange)="changeSearch($event)"
+        />
+      </nz-input-group>
+      <ng-template #suffixButton>
+        <button
+          nz-button
+          nzType="primary"
           nzSearch
-          [nzAddOnAfter]="suffixButton"
+          (click)="getCopyUserPlicies()"
         >
-          <input
-            name="name"
-            nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
-            [ngModel]="searchParam"
-            (ngModelChange)="changeSearch($event)"
-          />
-        </nz-input-group>
-        <ng-template #suffixButton>
-          <button
-            nz-button
-            nzType="primary"
-            nzSearch
-            (click)="getCopyUserPlicies()"
-          >
-            <i nz-icon nzType="search"></i>
-            Search
-          </button>
-        </ng-template>
-      </nz-row>
+          <i nz-icon nzType="search"></i>
+          Search
+        </button>
+      </ng-template>
     </div>
     <div
       class="text-right p-0 m-b-0"
@@ -299,79 +299,75 @@
       </button>
     </div>
   </div>
-  <ng-container>
-    <ng-container>
-      <nz-table
-        #rowSelectionTable
-        nzShowSizeChanger
-        [nzFrontPagination]="false"
-        [nzData]="listOfUsers"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="getCopyUserPlicies()"
-        (nzPageSizeChange)="getCopyUserPlicies()"
-      >
-        <thead>
-          <tr>
-            <th style="width: 20px">
-              <input
-                nz-input
-                type="checkbox"
-                (change)="onChangeCheckAllUser($event.target.checked)"
-                [(ngModel)]="checkedAllInPage"
-              />
-            </th>
-            <th>Tên User</th>
-            <th>Groups</th>
-            <th>Attached policies</th>
-            <th>Thời gian tạo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of listOfUsers; let i = index">
-            <td>
-              <input
-                nz-input
-                type="checkbox"
-                (change)="onClickUserItem(item)"
-                [(ngModel)]="listCheckedInPage[i]"
-              />
-            </td>
-            <td>{{ item.userName }}</td>
-            <td *ngIf="item.userGroups.length == 0">None</td>
-            <td class="fieldColor" *ngIf="item.userGroups.length == 1">
-              {{ item.userGroups[0] }}
-            </td>
-            <td class="fieldColor" *ngIf="item.userGroups.length == 2">
-              {{ item.userGroups[0] }}, {{ item.userGroups[1] }}
-            </td>
-            <td class="fieldColor" *ngIf="item.userGroups.length > 2">
-              {{ item.userGroups[0] }}, {{ item.userGroups[1] }}
-              <span class="nameField">
-                and {{ item.userGroups.length - 2 }} groups
-              </span>
-            </td>
-            <td *ngIf="item.userPolicies.length == 0">None</td>
-            <td class="fieldColor" *ngIf="item.userPolicies.length == 1">
-              {{ item.userPolicies[0] }}
-            </td>
-            <td class="fieldColor" *ngIf="item.userPolicies.length == 2">
-              {{ item.userPolicies[0] }}, {{ item.userPolicies[1] }}
-            </td>
-            <td class="fieldColor" *ngIf="item.userPolicies.length > 2">
-              {{ item.userPolicies[0] }}, {{ item.userPolicies[1] }}
-              <span class="nameField">
-                and {{ item.userPolicies.length - 2 }} policies
-              </span>
-            </td>
-            <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </ng-container>
-  </ng-container>
+  <nz-table
+    #rowSelectionTable
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="listOfUsers"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getCopyUserPlicies()"
+    (nzPageSizeChange)="getCopyUserPlicies()"
+  >
+    <thead>
+      <tr>
+        <th style="width: 20px">
+          <input
+            nz-input
+            type="checkbox"
+            (change)="onChangeCheckAllUser($event.target.checked)"
+            [(ngModel)]="checkedAllInPage"
+          />
+        </th>
+        <th>Tên User</th>
+        <th>Groups</th>
+        <th>Attached policies</th>
+        <th>Thời gian tạo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfUsers; let i = index">
+        <td>
+          <input
+            nz-input
+            type="checkbox"
+            (change)="onClickUserItem(item)"
+            [(ngModel)]="listCheckedInPage[i]"
+          />
+        </td>
+        <td>{{ item.userName }}</td>
+        <td *ngIf="item.userGroups.length == 0">None</td>
+        <td class="fieldColor" *ngIf="item.userGroups.length == 1">
+          {{ item.userGroups[0] }}
+        </td>
+        <td class="fieldColor" *ngIf="item.userGroups.length == 2">
+          {{ item.userGroups[0] }}, {{ item.userGroups[1] }}
+        </td>
+        <td class="fieldColor" *ngIf="item.userGroups.length > 2">
+          {{ item.userGroups[0] }}, {{ item.userGroups[1] }}
+          <span class="nameField">
+            and {{ item.userGroups.length - 2 }} groups
+          </span>
+        </td>
+        <td *ngIf="item.userPolicies.length == 0">None</td>
+        <td class="fieldColor" *ngIf="item.userPolicies.length == 1">
+          {{ item.userPolicies[0] }}
+        </td>
+        <td class="fieldColor" *ngIf="item.userPolicies.length == 2">
+          {{ item.userPolicies[0] }}, {{ item.userPolicies[1] }}
+        </td>
+        <td class="fieldColor" *ngIf="item.userPolicies.length > 2">
+          {{ item.userPolicies[0] }}, {{ item.userPolicies[1] }}
+          <span class="nameField">
+            and {{ item.userPolicies.length - 2 }} policies
+          </span>
+        </td>
+        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
 </nz-card>
 
 <nz-card
@@ -418,7 +414,7 @@
         [nzXs]="24"
         [nzXXl]="10"
       >
-        <nz-row style="margin-left: -14px;">
+        <nz-row style="margin-left: -14px">
           <nz-input-group
             style="width: 100%"
             nzSearch
@@ -476,64 +472,57 @@
       </div>
     </div>
   </form>
-  <ng-container>
-    <ng-container>
-      <nz-table
-        #rowSelectionTable
-        nzShowSizeChanger
-        [nzFrontPagination]="false"
-        [nzData]="listOfpolicies"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="getPermissionPolicies()"
-        (nzPageSizeChange)="getPermissionPolicies()"
-      >
-        <thead>
-          <tr>
-            <th style="width: 20px">
-              <input
-                nz-input
-                type="checkbox"
-                (change)="onChangeCheckAllPolicy($event.target.checked)"
-                [(ngModel)]="checkedAllInPage"
-              />
-            </th>
-            <th>Tên Policy</th>
-            <th>Type</th>
-            <th>Attached entities</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let item of listOfpolicies; let i = index">
-            <tr>
-              <td>
-                <input
-                  nz-input
-                  type="checkbox"
-                  (change)="onClickPolicyItem(item.name)"
-                  [(ngModel)]="listCheckedInPage[i]"
-                />
-              </td>
-              <td
-                [nzExpand]="expandSet.has(item.name)"
-                (nzExpandChange)="onExpandChange(item.name, $event)"
-              >
-                {{ item.name }}
-              </td>
-              <td>{{ item.type }}</td>
-              <td>{{ listAttachedEntities[i] }}</td>
-            </tr>
-            <tr [nzExpand]="expandSet.has(item.name)">
-              <json-editor
-                [options]="optionJsonEditor"
-                [data]="item"
-              ></json-editor>
-            </tr>
-          </ng-container>
-        </tbody>
-      </nz-table>
-    </ng-container>
-  </ng-container>
+  <nz-table
+    #rowSelectionTable
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="listOfpolicies"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getPermissionPolicies()"
+    (nzPageSizeChange)="getPermissionPolicies()"
+  >
+    <thead>
+      <tr>
+        <th style="width: 20px">
+          <input
+            nz-input
+            type="checkbox"
+            (change)="onChangeCheckAllPolicy($event.target.checked)"
+            [(ngModel)]="checkedAllInPage"
+          />
+        </th>
+        <th>Tên Policy</th>
+        <th>Type</th>
+        <th>Attached entities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of listOfpolicies; let i = index">
+        <tr>
+          <td>
+            <input
+              nz-input
+              type="checkbox"
+              (change)="onClickPolicyItem(item.name)"
+              [(ngModel)]="listCheckedInPage[i]"
+            />
+          </td>
+          <td
+            [nzExpand]="expandSet.has(item.name)"
+            (nzExpandChange)="onExpandChange(item.name, $event)"
+          >
+            {{ item.name }}
+          </td>
+          <td>{{ item.type }}</td>
+          <td>{{ listAttachedEntities[i] }}</td>
+        </tr>
+        <tr [nzExpand]="expandSet.has(item.name)">
+          <json-editor [options]="optionJsonEditor" [data]="item"></json-editor>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
 </nz-card>

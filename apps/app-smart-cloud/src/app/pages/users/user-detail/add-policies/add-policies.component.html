@@ -1,26 +1,33 @@
-<page-header>
-  <nz-breadcrumb style="width: 50%; float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/users']">Users</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
-        >Chi tiết User</a
-      >
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Thêm Policies </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="regionId"
-      (valueChanged)="onProjectChange($event)"
-    ></project-select-dropdown>
-  </div>
-  <div><h2>Thêm Policies</h2></div>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Thêm Policies'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
+          >Chi tiết User</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Thêm Policies </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 
 <one-portal-attach-permission-policy
@@ -50,12 +57,7 @@
     >
       Quay lại
     </button>
-    <button
-      class="m-r-8"
-      nz-button
-      nzType="primary"
-      (click)="addPolicies()"
-    >
+    <button class="m-r-8" nz-button nzType="primary" (click)="addPolicies()">
       Thêm policies
     </button>
   </div>

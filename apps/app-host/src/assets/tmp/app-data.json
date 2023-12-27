@@ -209,6 +209,11 @@
                   ]
                 }
               ]
+            }, 
+            {
+              "text": "Chi tiết thanh toán",
+              "icon": "anticon-pay-circle",
+              "link": "/app-smart-cloud/paymentDetail"
             }
           ]
         },

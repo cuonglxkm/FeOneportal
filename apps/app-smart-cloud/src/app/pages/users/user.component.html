@@ -23,10 +23,7 @@
   </ng-template>
 
   <ng-template #content>
-    <div
-      nz-row
-      [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
-    >
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
       <div
         nz-col
         [nzLg]="8"
@@ -36,23 +33,25 @@
         [nzXs]="24"
         [nzXXl]="8"
       >
-        <nz-row>
-          <nz-input-group style="width: 100%" nzSearch [nzAddOnAfter]="suffixButton">
-            <input
-              name="name"
-              nz-input
-              placeholder="Tìm kiếm tên, thời gian tạo ..."
-              [ngModel]="searchParam"
-              (ngModelChange)="changeSearch($event)"
-            />
-          </nz-input-group>
-          <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch (click)="getData()">
-              <i nz-icon nzType="search"></i>
-              Search
-            </button>
-          </ng-template>
-        </nz-row>
+        <nz-input-group
+          style="width: 100%"
+          nzSearch
+          [nzAddOnAfter]="suffixButton"
+        >
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [ngModel]="searchParam"
+            (ngModelChange)="changeSearch($event)"
+          />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSearch (click)="getData()">
+            <i nz-icon nzType="search"></i>
+            Search
+          </button>
+        </ng-template>
       </div>
       <div
         class="text-right p-0 m-b-0"
@@ -102,54 +101,50 @@
 </page-header>
 
 <nz-card>
-  <ng-container>
-    <ng-container>
-      <nz-table
-        #rowSelectionTable
-        nzShowSizeChanger
-        [nzFrontPagination]="false"
-        [nzData]="listOfUser"
-        [nzLoading]="loading"
-        [nzTotal]="total"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="getData()"
-        (nzPageSizeChange)="getData()"
-      >
-        <thead>
-          <tr>
-            <th style="width: 20px">
-              <input
-                nz-input
-                type="checkbox"
-                (change)="onChangeCheckAll($event.target.checked)"
-                [(ngModel)]="checkedAllInPage"
-              />
-            </th>
-            <th>Tên User</th>
-            <th>Groups</th>
-            <th>Thời gian tạo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of listOfUser; let i = index">
-            <td>
-              <input
-                type="checkbox"
-                (change)="onClickItem(item.userName, $event.target.checked)"
-                [(ngModel)]="listCheckedInPage[i]"
-              />
-            </td>
-            <td (click)="getUserDetail(item.userName)">
-              <a>{{ item.userName }}</a>
-            </td>
-            <td>{{ item.userOfGroups }}</td>
-            <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </ng-container>
-  </ng-container>
+  <nz-table
+    #rowSelectionTable
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="listOfUser"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="getData()"
+    (nzPageSizeChange)="getData()"
+  >
+    <thead>
+      <tr>
+        <th style="width: 20px">
+          <input
+            nz-input
+            type="checkbox"
+            (change)="onChangeCheckAll($event.target.checked)"
+            [(ngModel)]="checkedAllInPage"
+          />
+        </th>
+        <th>Tên User</th>
+        <th>Groups</th>
+        <th>Thời gian tạo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfUser; let i = index">
+        <td>
+          <input
+            type="checkbox"
+            (change)="onClickItem(item.userName, $event.target.checked)"
+            [(ngModel)]="listCheckedInPage[i]"
+          />
+        </td>
+        <td (click)="getUserDetail(item.userName)">
+          <a>{{ item.userName }}</a>
+        </td>
+        <td>{{ item.userOfGroups }}</td>
+        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
 </nz-card>
 
 <nz-modal

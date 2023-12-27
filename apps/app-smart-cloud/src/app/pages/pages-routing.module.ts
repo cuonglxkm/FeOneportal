@@ -65,6 +65,9 @@ import {
 import {
   EditScheduleBackupVolumeComponent
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
+import { PaymentDetailComponent } from "./payment/payment-detail.component";
+import { PaymentSuccessComponent } from "../shared/components/payment-success/payment-success.component";
+import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'instances', pathMatch: 'full'},
@@ -271,7 +274,19 @@ const routes: Routes = [
   {
     path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent
-  }
+  },
+  {
+    path: 'paymentDetail',
+    component: PaymentDetailComponent
+  },
+  {
+    path: 'paymentSuccess',
+    component: PaymentSuccessComponent
+  },
+  {
+    path: 'paymentFailed',
+    component: PaymentFailedComponent
+  },
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
