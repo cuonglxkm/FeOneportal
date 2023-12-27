@@ -3,10 +3,11 @@ import {BaseResponse} from "../../../../../../libs/common-utils/src";
 export interface PolicyModel {
   id: any;
   name: any;
-  type: any;
-  description: any;
-  jsonData: string;
-  expand: boolean;
+  effect: any;
+  resource: any;
+  actions: any;
+  type: string;
+  description: boolean;
 }
 
 export interface PermissionPolicyModel {

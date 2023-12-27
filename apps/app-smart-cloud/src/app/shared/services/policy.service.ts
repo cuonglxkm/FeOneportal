@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
 import {Observable, of} from "rxjs";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {
     AttachedEntitiesDTO,
     AttachOrDetachRequest,
@@ -11,6 +11,7 @@ import {
     PolicyInfo,
     PolicyModel
 } from "../../pages/policy/policy.model";
+import {PermissionPolicies} from "../models/user.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
@@ -33,9 +34,17 @@ export class PolicyService extends BaseService {
         super();
     }
 
-    searchPolicy(): Observable<BaseResponse<PolicyModel[]>> {
-        return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
-    }
+  // searchPolicy(): Observable<BaseResponse<PolicyModel[]>> {
+  //   return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
+  // }
+  searchPolicy(policyName: any, size: any, page: any, userId: any, token: any): Observable<BaseResponse<PolicyModel[]>> {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size +
+      "&user_root_id=" + userId, {headers: reqHeader});
+  }
 
     searchPolicyPermisstion(): Observable<BaseResponse<PermissionPolicyModel[]>> {
         return this.http.get<BaseResponse<PermissionPolicyModel[]>>("/policy/permission");
@@ -161,6 +170,35 @@ export class PolicyService extends BaseService {
         return this.http.get<PolicyModel>(this.baseUrl + this.ENDPOINT.iam + `/policies/${policyName}`, {
             headers: this.httpOptions.headers
         })
-    }
-}
+    }deletePolicy(nameDelete: any, token: any) {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.delete<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyNames=" + nameDelete, {headers: reqHeader});
+  }
 
+  getListServices(token: any) : Observable<string[]> {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get<string[]>(this.urlIAM + '/services', {headers: reqHeader});
+  }
+
+  getAllPermissions(name:any, token: any) : Observable<PermissionPolicyModel[]> {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get<PermissionPolicyModel[]>(this.urlIAM + '/ServiceAction/'+name, {headers: reqHeader});
+  }
+
+  createPolicy(request: any, token: any) : Observable<any>{
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
+  }
+}

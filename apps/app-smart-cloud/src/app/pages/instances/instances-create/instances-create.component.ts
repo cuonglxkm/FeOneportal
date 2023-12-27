@@ -37,6 +37,8 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
+import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
+import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -112,11 +114,12 @@ export class InstancesCreateComponent implements OnInit {
   volumeCreate: VolumeCreate = new VolumeCreate();
   order: Order = new Order();
   orderItem: OrderItem[] = [];
-  region: number = 3;
-  projectId: number = 4079;
+  region: number;
+  projectId: number;
   userId: number;
+  user: any;
   today: Date = new Date();
-  ipPublicValue: string = '';
+  ipPublicValue: number;
   isUseIPv6: boolean = false;
   isUseLAN: boolean = false;
   passwordVisible = false;
@@ -126,9 +129,12 @@ export class InstancesCreateComponent implements OnInit {
   flavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
-  selectedSSHKeyId: string = '';
+  selectedSSHKeyName: string;
   selectedSnapshot: number;
 
+  getUser() {
+
+  }
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
   isLoading = false;
@@ -140,9 +146,9 @@ export class InstancesCreateComponent implements OnInit {
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
-      this.listImageTypes.forEach (e => {
+      this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
-      })
+      });
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -179,14 +185,29 @@ export class InstancesCreateComponent implements OnInit {
   //#region  Snapshot
   isSnapshot: boolean = true;
   listImages: Images[] = [];
-  listSnapshot: Snapshot[] = [];
+  listSnapshot: SnapshotVolumeDto[] = [];
+  size: number;
+  status: string;
 
   initSnapshot(): void {
     if (this.isSnapshot) {
-      this.dataService
-        .getAllSnapshot('', '', this.region, this.userId)
+      this.snapshotVLService
+        .getSnapshotVolumes(
+          this.tokenService.get()?.userId,
+          this.projectId,
+          this.region,
+          this.size,
+          99999,
+          1,
+          this.status,
+          '',
+          ''
+        )
         .subscribe((data: any) => {
-          this.listSnapshot = data;
+          this.listSnapshot = data.records.filter(
+            (e: any) => e.fromRootVolume == true
+          );
+          console.log('list snapshot volume root', this.listSnapshot);
         });
     }
   }
@@ -221,17 +242,21 @@ export class InstancesCreateComponent implements OnInit {
       .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
       .subscribe((data: any) => {
         this.listIPPublic = data.records;
+        console.log('list IP public', this.listIPPublic);
       });
   }
 
   getAllSecurityGroup() {
     this.dataService
-      .getAllSecurityGroup(this.region, this.userId, this.projectId)
+      .getAllSecurityGroup(
+        this.region,
+        this.tokenService.get()?.userId,
+        this.projectId
+      )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
       });
   }
-
   //#endregion
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
@@ -256,6 +281,7 @@ export class InstancesCreateComponent implements OnInit {
         for (let i = 0; i < this.listFlavors.length; i += 4) {
           this.pagedCardList.push(this.listFlavors.slice(i, i + 4));
         }
+        this.cdr.detectChanges();
       });
   }
 
@@ -287,6 +313,11 @@ export class InstancesCreateComponent implements OnInit {
   }
   //#endregion
 
+  onSelectedSecurityGroup(event: any) {
+    this.selectedSecurityGroup = event;
+    console.log('list selected Security Group', this.selectedSecurityGroup);
+  }
+
   //#region selectedPasswordOrSSHkey
   listSSHKey: SHHKeyModel[] = [];
   activeBlockPassword: boolean = true;
@@ -295,10 +326,12 @@ export class InstancesCreateComponent implements OnInit {
   initPassword(): void {
     this.activeBlockPassword = true;
     this.activeBlockSSHKey = false;
+    this.selectedSSHKeyName = null;
   }
   initSSHkey(): void {
     this.activeBlockPassword = false;
     this.activeBlockSSHKey = true;
+    this.password = null;
     this.getAllSSHKey();
   }
 
@@ -317,7 +350,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onSSHKeyChange(event?: any) {
-    this.selectedSSHKeyId = event;
+    this.selectedSSHKeyName = event;
     console.log('sshkey', event);
   }
 
@@ -459,6 +492,7 @@ export class InstancesCreateComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
+    private snapshotVLService: SnapshotVolumeService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -498,15 +532,13 @@ export class InstancesCreateComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
-    console.log(this.tokenService.get()?.userId);
     this.listSecurityGroup = [];
     this.listIPPublic = [];
     this.selectedSecurityGroup = [];
-    this.ipPublicValue = '';
+    this.ipPublicValue = 0;
+    this.initFlavors();
     this.initSnapshot();
-    this.getAllSSHKey();
     this.getAllIPPublic();
-    this.getAllSecurityGroup();
     this.getAllImageByImageType(this.imageTypeId);
     this.cdr.detectChanges();
   }
@@ -524,9 +556,6 @@ export class InstancesCreateComponent implements OnInit {
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.getAllImageType();
-    this.initFlavors();
-    this.getAllIPPublic();
-    this.getAllSecurityGroup();
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -557,21 +586,21 @@ export class InstancesCreateComponent implements OnInit {
       this.message.error('Vui lòng chọn gói cấu hình');
       return;
     }
-    this.instanceCreate.description = null; // this.region;
-    this.instanceCreate.flavorId = 368; //this.flavor.id;
-    this.instanceCreate.imageId = 113;
-    this.instanceCreate.iops = 300;
-    this.instanceCreate.vmType = null;
-    this.instanceCreate.keypairName = null;
-    this.instanceCreate.securityGroups = null;
+    this.instanceCreate.description = null;
+    this.instanceCreate.flavorId = this.flavor.id;
+    this.instanceCreate.imageId = this.hdh;
+    this.instanceCreate.iops = 0;
+    this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
+    this.instanceCreate.keypairName = this.selectedSSHKeyName;
+    this.instanceCreate.securityGroups = this.selectedSecurityGroup;
     this.instanceCreate.network = null;
-    this.instanceCreate.volumeSize = 1;
-    this.instanceCreate.isUsePrivateNetwork = true;
-    this.instanceCreate.ipPublic = null;
-    this.instanceCreate.password = null;
-    this.instanceCreate.snapshotCloudId = null;
+    this.instanceCreate.volumeSize = this.flavor.hdd;
+    this.instanceCreate.isUsePrivateNetwork = this.isUseLAN;
+    this.instanceCreate.ipPublic = this.ipPublicValue;
+    this.instanceCreate.password = this.password;
+    this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
     this.instanceCreate.encryption = false;
-    this.instanceCreate.isUseIPv6 = false;
+    this.instanceCreate.isUseIPv6 = this.isUseIPv6;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;
@@ -581,7 +610,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.customerUsingMss = null;
     this.instanceCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceCreate.vpcId = '4079';
+    this.instanceCreate.vpcId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
@@ -605,9 +634,9 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.dSubscriptionType = null;
     this.instanceCreate.oneSME_SubscriptionId = null;
     this.instanceCreate.actionType = 0;
-    this.instanceCreate.regionId = 3;
-    this.instanceCreate.userEmail = 'toannv8@yandex.com';
-    this.instanceCreate.actorEmail = 'toannv8@yandex.com';
+    this.instanceCreate.regionId = this.region;
+    this.instanceCreate.userEmail = this.tokenService.get()['email'];
+    this.instanceCreate.actorEmail = this.tokenService.get()['email'];
 
     this.volumeCreate.volumeType = 'hdd';
     this.volumeCreate.volumeSize = 1;
@@ -616,7 +645,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.instanceToAttachId = null;
     this.volumeCreate.isMultiAttach = false;
     this.volumeCreate.isEncryption = false;
-    this.volumeCreate.vpcId = 4079;
+    this.volumeCreate.vpcId = this.projectId;
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
@@ -669,6 +698,8 @@ export class InstancesCreateComponent implements OnInit {
     this.order.createdByUserId = this.tokenService.get()?.userId;
     this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
+
+    console.log('instance create', this.instanceCreate);
 
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
 
