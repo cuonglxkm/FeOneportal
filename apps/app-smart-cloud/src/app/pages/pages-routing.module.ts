@@ -65,9 +65,14 @@ import {
 import {
   EditScheduleBackupVolumeComponent
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
+import {DashboardComponent} from "./dashboard/dashboard.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'instances', pathMatch: 'full'},
+  {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+  {
+    path: 'dashboard',
+    component: DashboardComponent
+  },
   {
     path: 'user-profile',
     component: UserProfileComponent
