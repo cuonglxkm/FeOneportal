@@ -151,7 +151,7 @@ export class ListBackupVolumeComponent {
       .subscribe(() => {
       this.searchKey = "";
       this.loadBackupVolume(true);
-      this.message.create('success', `Xóa thành công keypair`);
+      this.message.create('success', `Xóa thành công backup volume`);
     });
     this.isVisibleDelete = false;
   }
@@ -194,5 +194,9 @@ export class ListBackupVolumeComponent {
     );
 
     this.handleCancel(null);
+  }
+
+  goScheduleBackupVolume() {
+    this.router.navigate(['/app-smart-cloud/schedule/backup/create'])
   }
 }

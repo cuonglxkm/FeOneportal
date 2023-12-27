@@ -9,6 +9,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {InstancesService} from "../instances/instances.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -46,7 +47,7 @@ export class IpPublicComponent implements OnInit {
   constructor(private service: IpPublicService, private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancService: InstancesService,
-              private message: NzMessageService,) {
+              private notification: NzNotificationService,) {
 
   }
 
@@ -63,31 +64,30 @@ export class IpPublicComponent implements OnInit {
     })
   }
 
-  getData(): void {
+  getData(isCheckBegin: boolean): void {
     this.loading = true;
     this.service.getData(this.ipAddress, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.isCheckState, this.size, this.index)
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
         this.listOfIp = baseResponse.records;
-        console.log(this.listOfIp);
+
+        if (isCheckBegin) {
+          this.isBegin = this.listOfIp === null || this.listOfIp.length < 1 ? true : false;
+        }
       });
-    // this.service.getTest()
-    //   .subscribe(baseResponse => {
-    //   this.listOfIp = baseResponse.records;
-    //     console.log(this.listOfIp);
-    // });
   }
 
   search(inputSearch: any) {
     if (inputSearch !== null) {
       this.ipAddress = inputSearch;
     }
-    this.getData();
+    this.getData(false);
   }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.getData();
+    this.refreshParams();
+    this.getData(true);
   }
 
   projectChange(project: ProjectModel) {
@@ -96,12 +96,13 @@ export class IpPublicComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event
-    this.getData();
+    this.refreshParams();
+    this.getData(false);
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
-    this.getData();
+    this.getData(false);
   }
 
   createIp() {
@@ -140,30 +141,32 @@ export class IpPublicComponent implements OnInit {
     this.service.attachIpPublic(request).subscribe(
       {
         next: post => {
-          this.message.create('success', `Xóa thành công Ip Public`);
+          this.notification.success('Thành công', 'Xóa thành công Ip Public')
         },
         error: e => {
-          this.message.create('error', `Xóa thất bại Ip Public`);
+          this.notification.error('Thất bại', 'Xóa thất bại Ip Public')
         },
       }
     )
     this.isVisibleRemove = false;
-    this.getData();
+    this.refreshParams();
+    this.getData(true);
   }
 
   openIpDelete() {
     this.service.remove(this.id).subscribe(
       {
         next: post => {
-          this.message.create('success', `Xóa thành công Ip Public`);
+          this.notification.success('Thành công', 'Xóa thành công Ip Public')
         },
         error: e => {
-          this.message.create('error', `Xóa thất bại Ip Public`);
+          this.notification.error('Thất bại', 'Xóa thất bại Ip Public')
         },
       }
     )
     this.isVisibleDelete = false;
-    this.getData();
+    this.refreshParams();
+    this.getData(true);
   }
 
   Mounted() {
@@ -176,14 +179,22 @@ export class IpPublicComponent implements OnInit {
     this.service.attachIpPublic(request).subscribe(
       {
         next: post => {
-          this.message.create('success', 'Gắn thành công Ip Public');
+          this.notification.success('Thành công', 'Gắn thành công Ip Public')
         },
         error: e => {
-          this.message.create('error',  'Gắn thất bại IP Public');
+          this.notification.error('Thất bại', 'Gắn thất bại IP Public')
         },
       }
     )
     this.isVisibleMounted = false;
-    this.getData();
+    this.refreshParams();
+    this.getData(true);
+  }
+
+  refreshParams() {
+    this.size = 10;
+    this.index = 1;
+    this.total = 0;
+    this.ipAddress = '';
   }
 }

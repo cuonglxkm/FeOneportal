@@ -9,6 +9,7 @@ import {AppValidator} from "../../../../../../../libs/common-utils/src";
 import {finalize} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-create-update-ip-public',
@@ -18,7 +19,7 @@ import {Router} from "@angular/router";
 export class CreateUpdateIpPublicComponent implements OnInit{
   regionId: number;
   projectId: number;
-  checked = true;
+  checkIpv6: boolean;
   selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
@@ -31,7 +32,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
  });
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private message: NzMessageService,
+              private notification: NzNotificationService,
               private router: Router) {
   }
 
@@ -40,6 +41,12 @@ export class CreateUpdateIpPublicComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if (this.regionId === 3 || this.regionId === 5) {
+      this.checkIpv6 = true;
+    } else {
+      this.checkIpv6 = null;
+    }
+
     this.instancService.getAllIPSubnet(this.regionId).subscribe(
       (data) => {
         this.listIpSubnet = data
@@ -63,22 +70,36 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   }
 
   createIpPublic(){
-    const request = {
+    const requestBody = {
       customerId: this.tokenService.get()?.userId,
-      attachedVmId: this.instanceSelected,
+      vmToAttachId: this.instanceSelected,
       regionId: this.regionId,
       projectId: this.projectId,
       networkId: this.form.controls['ipSubnet'].value,
-      useIpv6:this.checked,
+      useIpv6:this.checkIpv6,
     }
 
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Tạo Ip Public",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: "ip_create",
+          price: 0,
+          serviceDuration: this.form.controls['numOfMonth'].value
+        }
+      ]
+    }
     this.service.createIpPublic(request)
       .subscribe({
         next: post => {
-          this.message.create('success', `Tạo mới thành công Ip Public`);
+          this.notification.success('Thành công', 'Tạo mới thành công Ip Public')
         },
         error: e => {
-          this.message.create('error', `Tạo mới thất bại Ip Public`);
+          this.notification.error('Thất bại', 'Tạo mới thất bại Ip Public')
         },
       });
 

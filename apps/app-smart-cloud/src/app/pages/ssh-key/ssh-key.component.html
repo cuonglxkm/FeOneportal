@@ -1,42 +1,39 @@
-<page-header [autoBreadcrumb]="false"
-             [autoTitle]="false"
-             style="background: white">
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item> SSH Key</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-  </div>
-  <div><h2>SSH Key</h2></div>
-  <div *ngIf="!isBegin" nz-row class="mb-md">
-    <div nz-col nzSpan="12">
-      <div class="text-left">
-        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
-          <ng-template #suffixButton>
-            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-              <i nz-icon nzType="search"></i>
-              Tim kiếm
-            </button>
-          </ng-template>
-        </nz-input-group>
-      </div>
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'SSH Key'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> SSH Key</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
-    <div nz-col nzSpan="12">
-      <div class="text-right">
-        <button (click)="createKey()" nz-button nzType="primary" style="
+  </ng-template>
+  <ng-template #content>
+    <div *ngIf="!isBegin" nz-row class="mb-md">
+      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+        <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+        <ng-template #suffixButton>
+          <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+            <i nz-icon nzType="search"></i>
+            Tim kiếm
+          </button>
+        </ng-template>
+      </nz-input-group>
+    </div>
+  </ng-template>
+  <ng-template #extra>
+    <button *ngIf="!isBegin" (click)="createKey()" nz-button nzType="primary" style="
             border: 1px solid #52c41a;
             border-radius: 2px;
             background-color: #52c41a;
           "><i nz-icon nzType="plus"></i> Tạo mới
-        </button>
-      </div>
-    </div>
-  </div>
+    </button>
+  </ng-template>
+
 </page-header>
 
 <nz-card>
