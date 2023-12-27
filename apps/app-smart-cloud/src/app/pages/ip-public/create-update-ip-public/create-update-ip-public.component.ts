@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
@@ -17,8 +17,8 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
   styleUrls: ['./create-update-ip-public.component.less'],
 })
 export class CreateUpdateIpPublicComponent implements OnInit{
-  regionId: number;
-  projectId: number;
+  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean;
   selectedAction: any;
   listIpSubnet: any[];
@@ -52,17 +52,15 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         this.listIpSubnet = data
       }
     )
+  }
+
+  projectChange(project: ProjectModel) {
+    this.projectId = project.id;
     this.instancService.search(1,999,this.regionId, this.projectId,'','', true, this.tokenService.get()?.userId).subscribe(
       (data) => {
         this.listInstance = data.records;
       }
     )
-    // this.getSshKeys();
-  }
-
-  projectChange(project: ProjectModel) {
-    this.projectId = project.id;
-    // this.getSshKeys();
   }
 
   backToList(){
@@ -77,8 +75,38 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       projectId: this.projectId,
       networkId: this.form.controls['ipSubnet'].value,
       useIpv6:this.checkIpv6,
+      id: 0,
+      duration: 0,
+      ipAddress: null,
+      offerId: 0,
+      useIPv6: null,
+      vpcId: null,
+      oneSMEAddonId: null,
+      serviceType: 0,
+      serviceInstanceId: 0,
+      createDate: "0001-01-01T00:00:00",
+      expireDate: "0001-01-01T00:00:00",
+      saleDept: null,
+      saleDeptCode: null,
+      contactPersonEmail: null,
+      contactPersonPhone: null,
+      contactPersonName: null,
+      note: null,
+      createDateInContract: null,
+      am: null,
+      amManager: null,
+      isTrial: false,
+      couponCode: null,
+      dhsxkd_SubscriptionId: null,
+      dSubscriptionNumber: null,
+      dSubscriptionType: null,
+      oneSME_SubscriptionId: null,
+      actionType: 0,
+      serviceName: null,
+      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      userEmail: null,
+      actorEmail: null
     }
-
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
 import {Observable, of} from "rxjs";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
@@ -11,6 +11,7 @@ import {
 } from "../../pages/policy/policy.model";
 import {PermissionPolicies} from "../models/user.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 
 @Injectable({
@@ -19,12 +20,16 @@ import {FormSearchUserGroup} from "../models/user-group.model";
 export class PolicyService extends BaseService {
 
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json' ,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
+      'user_root_id': this.tokenService.get()?.userId,
+    })
   };
 
   private urlIAM = this.baseUrl + this.ENDPOINT.iam + '/policies';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
@@ -205,11 +210,7 @@ export class PolicyService extends BaseService {
     return this.http.get<PermissionPolicyModel[]>(this.urlIAM + '/ServiceAction/'+name, {headers: reqHeader});
   }
 
-  createPolicy(request: any, token: any) : Observable<any>{
-    var reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
-    });
+  createPolicy(request: any) : Observable<any>{
     return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
   }
 }

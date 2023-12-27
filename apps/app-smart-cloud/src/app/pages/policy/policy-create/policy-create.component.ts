@@ -287,7 +287,7 @@ export class PolicyCreateComponent {
       resource : "*",
       effect: "allow",
     }
-    this.service.createPolicy(request, this.tokenService.get()?.token)
+    this.service.createPolicy(request)
       .subscribe({
         next: post => {
           this.notification.success('Thành công', 'Tạo mới thành công policy')
