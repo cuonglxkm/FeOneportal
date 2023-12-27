@@ -45,6 +45,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
 
     isVisibleDelete: boolean = false
     deleteList: UserGroupModel[] = [];
+    nameList: string[]
 
     constructor(private router: Router,
                 private userGroupService: UserGroupService) {

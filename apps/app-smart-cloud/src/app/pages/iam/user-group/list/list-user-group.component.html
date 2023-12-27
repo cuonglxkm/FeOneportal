@@ -95,7 +95,7 @@
   </nz-card>
 </nz-content>
 <ng-container *ngIf="deleteList.length == 1; else elseBlock">
-  <one-portal-delete-one-user-group [isVisible]="!!deleteList.length" [nameGroup]="deleteList[0].name"
+  <one-portal-delete-one-user-group [isVisible]="!!deleteList.length" [nameGroup]="nameList"
                                     (onCancel)="handleCancelDelete()" (onOk)="handleOkDelete()"/>
 </ng-container>
 <ng-template #elseBlock>
