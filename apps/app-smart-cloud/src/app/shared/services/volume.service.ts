@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Inject, Injectable, OnInit} from '@angular/core';
 import {catchError} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -10,6 +10,7 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 import {PriceVolumeDto} from "../dto/volume.dto";
 import {CreateVolumeRequestModel} from "../models/volume.model";
 import {CreateVolumeResponseModel} from "../models/volume.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,12 @@ export class VolumeService extends BaseService {
   }
 
   createNewVolume(request: CreateVolumeRequestModel): Observable<CreateVolumeResponseModel> {
-    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request).pipe(
+    const token = this.tokenService.get()?.token;
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: reqHeader}).pipe(
       catchError(this.handleError<CreateVolumeResponseModel>('create volume error.'))
     );
   }
@@ -99,7 +105,9 @@ export class VolumeService extends BaseService {
     );
   }
 
-  constructor(private http: HttpClient, private message: NzMessageService) {
+  constructor(private http: HttpClient,
+              private message: NzMessageService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     super();
   }
 
@@ -211,5 +219,6 @@ export class VolumeService extends BaseService {
 
     return urlResult;
   }
+
 
 }

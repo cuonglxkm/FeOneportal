@@ -27,7 +27,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
   volumeId: number;
 
-  volumeList: NzSelectOptionInterface[];
+  volumeList: NzSelectOptionInterface[] = [];
   userId: number;
   scheduleStartTime:string;
   dateStart: string;
@@ -80,6 +80,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
   }
   create(){
+    this.isLoading = true
     let request = new CreateScheduleSnapshotDTO();
     request.dayOfWeek = this.dateStart;
     request.daysOfWeek = null;
@@ -99,11 +100,21 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     request.regionId = this.region;
     console.log(request);
     this.snapshotService.createSnapshotSchedule(request).subscribe(
-      data =>{
-        console.log(data);
+      (data) =>{
+        if(data != null){
+          console.log(data);
+          this.isLoading = false;
+          this.notification.success('Success', 'Tạo lịch thành công');
+          this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+        }else{
+          this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
+          this.isLoading = false;
+        }
       },
-      error => {
+      (error) => {
         console.log(error);
+        this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
+        this.isLoading = false;
       }
     )
   }

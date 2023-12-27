@@ -1,24 +1,27 @@
-<page-header [autoBreadcrumb]="false"
-             [autoTitle]="false"
-             style="background: white">
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item> IAM</nz-breadcrumb-item>
-    <nz-breadcrumb-item> Polices</nz-breadcrumb-item>
-    <nz-breadcrumb-item> Tạo Policy</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
-  </div>
-  <div><h2>Tạo Policy</h2></div>
-  <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;">
-    <nz-step nzTitle="Bước 1" nzDescription="Thiết lập Permission policies" style="width:900px"></nz-step>
-    <nz-step nzTitle="Bước 2" nzDescription="Review and Create"></nz-step>
-  </nz-steps>
+<page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo Policy'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> IAM</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Polices</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo Policy</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <nz-steps [nzCurrent]="currentStep" style="width: 55%; margin: 0 auto;">
+      <nz-step nzTitle="Bước 1" nzDescription="Thiết lập Permission policies" style="width:900px"></nz-step>
+      <nz-step nzTitle="Bước 2" nzDescription="Review and Create"></nz-step>
+    </nz-steps>
+  </ng-template>
 </page-header>
+
 <ng-container [ngSwitch]="currentStep">
   <ng-container *ngSwitchCase=0>
     <!--BƯỚC 1-->
@@ -66,12 +69,12 @@
                   vụ</p>
                 <!--                              {{JSON.stringify(serviceArray)}}-->
               </div>
-              <div *ngIf="serviceItem.serviceId === null">
+              <div *ngIf="serviceItem.serviceName === null">
                 <h3>Chọn dịch vụ</h3>
                 <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn dịch vụ--"
-                           [(ngModel)]="serviceItem.serviceId"
+                           [(ngModel)]="serviceItem.serviceName"
                            (ngModelChange)="selectService($event, serviceItem)" style="width: 100%">
-                  <nz-option *ngFor="let sv of listServiceAvaiable" [nzLabel]="sv.serviceName" [nzValue]="sv.serviceId">
+                  <nz-option *ngFor="let sv of listServiceAvaiable" [nzLabel]="sv" [nzValue]="sv">
                   </nz-option>
                 </nz-select>
               </div>
@@ -80,6 +83,7 @@
                 #rowSelectionTable
                 [nzData]="serviceItem.permissions"
                 [nzFrontPagination]="false"
+                [nzLoading]="serviceItem.loading"
                 style="margin-top: 20px;"
               >
                 <thead>
@@ -87,7 +91,7 @@
                   <th
                     [(nzChecked)]="serviceItem.checked"
                     [nzIndeterminate]="serviceItem.indeterminate"
-                    (nzCheckedChange)="onAllChecked(serviceItem.serviceId ,$event)"
+                    (nzCheckedChange)="onAllChecked(serviceItem.serviceName ,$event)"
                   ></th>
                   <th>Permission policies</th>
                   <th>Mô tả</th>
@@ -95,8 +99,8 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of rowSelectionTable.data">
-                  <td [nzChecked]="setOfCheckedId.has(data.id)"
-                      (nzCheckedChange)="onItemChecked(serviceItem.serviceId ,data, $event)"></td>
+                  <td [nzChecked]="setOfCheckedId.has(data.name)"
+                      (nzCheckedChange)="onItemChecked(serviceItem.serviceName ,data, $event)"></td>
                   <td>{{ data.name }}</td>
                   <td>{{ data.description }}</td>
                 </tr>
@@ -120,10 +124,10 @@
       <ng-container *ngSwitchCase=false>
         <nz-card>
           <json-editor style="position: relative;"
-            [options]="optionJsonEditor"
-            [data]="listOfPermissionSelectedView"
+                       [options]="optionJsonEditor"
+                       [data]="listOfPermissionSelectedView"
           ></json-editor>
-          <button (click)="copyText()" style="z-index: 1;position: absolute; right: 30px; top: 30px;">
+          <button (click)="copyText()" style="z-index: 1;position: absolute; right: 30px; top: 28px;">
             <span nz-icon nzType="copy" nzTheme="outline"></span> Copy JSON
           </button>
         </nz-card>
@@ -162,14 +166,20 @@
         <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-bottom: 20px;">
           <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..." style="width: 350px"/>
           <ng-template #suffixButton>
-            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value, true)">
               <i nz-icon nzType="search"></i>
               Tim kiếm
             </button>
           </ng-template>
         </nz-input-group>
-        <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfPermissionSelectedViewFinal"
-                  [nzTotal]="2" [nzPageSize]="5" (nzPageSizeChange)="onPageSizeChange($event)"
+        <nz-table #tableListPermissions
+                  nzShowSizeChanger
+                  [nzFrontPagination]="false"
+                  [nzData]="listOfPermissionSelectedViewFinal"
+                  [nzTotal]="listOfPermissionSelectedViewFilter.length"
+                  [nzPageSize]="size"
+                  [nzPageIndex]="index"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
                   (nzPageIndexChange)="onPageIndexChange($event)">
           <thead>
           <tr>
@@ -178,7 +188,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let data of listOfPermissionSelectedViewFinal">
+          <tr *ngFor="let data of tableListPermissions.data">
             <td>{{ data }}</td>
             <td>{{ data }}</td>
           </tr>

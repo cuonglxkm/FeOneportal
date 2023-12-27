@@ -10,6 +10,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ProjectModel} from "../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -47,7 +48,7 @@ export class SshKeyComponent implements OnInit {
   };
 
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private message: NzMessageService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private notification: NzNotificationService) {
   }
 
   onPageSizeChange(event: any) {
@@ -76,6 +77,7 @@ export class SshKeyComponent implements OnInit {
           this.index = (this.checkNullObject(response) ? 0 : response.currentPage);
           if (isCheckBegin) {
             this.isBegin = this.checkNullObject(this.listOfData) || this.listOfData.length < 1 ? true : false;
+            this.refreshParams();
           }
       });
 
@@ -116,9 +118,8 @@ export class SshKeyComponent implements OnInit {
     this.sshKeyService.deleteSshKey(this.data.id)
       .pipe(finalize(() => this.loading = false))
       .subscribe(() => {
-      this.searchKey = "";
       this.loadSshKeys(true);
-      this.message.create('success', `Xóa thành công keypair`);
+      this.notification.success('Thành công', 'Xóa thành công keypair')
     });
     this.isVisibleDelete = false;
   }
@@ -158,11 +159,11 @@ export class SshKeyComponent implements OnInit {
       .subscribe({
       next: post => {
         this.loadSshKeys(true);
-        this.message.create('success', `Tạo mới thành công keypair`);
+        this.notification.success('Thành công', 'Tạo mới thành công keypair')
       },
       error: e => {
         this.loadSshKeys(true);
-        this.message.create('error', `Tạo mới thất bại keypair`);
+        this.notification.error('Thất bại', 'Tạo mới thất bại keypair')
       },
     });
     this.isVisibleCreate = false;
@@ -199,10 +200,7 @@ export class SshKeyComponent implements OnInit {
   }
 
   projectChange(project: ProjectModel) {
-      // this.listOfData = []
-      // return;
     this.projectId =  this.checkNullObject(project) ? "" : project.id;
-    this.searchKey = '';
     this.loadSshKeys(true);
   }
 
@@ -212,5 +210,11 @@ export class SshKeyComponent implements OnInit {
     }
 
     return false;
+  }
+
+  refreshParams() {
+    this.searchKey = '';
+    this.size = 10;
+    this.index = 0;
   }
 }

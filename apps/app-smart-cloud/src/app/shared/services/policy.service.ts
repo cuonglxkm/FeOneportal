@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
 import {Observable, of} from "rxjs";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {
   AttachedEntitiesDTO,
   AttachOrDetachRequest, PermissionDTO,
@@ -11,6 +11,7 @@ import {
 } from "../../pages/policy/policy.model";
 import {PermissionPolicies} from "../models/user.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 
 @Injectable({
@@ -19,17 +20,30 @@ import {FormSearchUserGroup} from "../models/user-group.model";
 export class PolicyService extends BaseService {
 
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json' ,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
+      'user_root_id': this.tokenService.get()?.userId,
+    })
   };
 
   private urlIAM = this.baseUrl + this.ENDPOINT.iam + '/policies';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     super();
   }
 
-  searchPolicy(): Observable<BaseResponse<PolicyModel[]>> {
-    return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
+  // searchPolicy(): Observable<BaseResponse<PolicyModel[]>> {
+  //   return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
+  // }
+  searchPolicy(policyName: any, size: any, page: any, userId: any, token: any): Observable<BaseResponse<PolicyModel[]>> {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size +
+      "&user_root_id=" + userId, {headers: reqHeader});
   }
 
   searchPolicyPermisstion(): Observable<BaseResponse<PermissionPolicyModel[]>> {
@@ -37,11 +51,16 @@ export class PolicyService extends BaseService {
   }
 
   getAttachedEntities(policyName: string, entityName: string, type: number, pageSize: number, currentPage: number): Observable<BaseResponse<AttachedEntitiesDTO[]>> {
+    const token = this.tokenService.get()?.token;
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
     let url = this.getConditionSearchAttachedEntities(policyName, entityName, type, pageSize, currentPage);
-    return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url);
+    return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url,{headers: reqHeader});
   }
 
-  getListService(): Observable<any>{
+  getListService(): Observable<any> {
     return of([
       "volume",
       "instance",
@@ -52,28 +71,48 @@ export class PolicyService extends BaseService {
   }
 
   getListPermissionOfService(serviceName: string): Observable<PermissionDTO[]>{
+    const token = this.tokenService.get()?.token;
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
     let url = this.urlIAM + '/ServiceAction' + '/'  + serviceName;
-    return this.http.get<PermissionDTO[]>(url);
+    return this.http.get<PermissionDTO[]>(url,{headers: reqHeader});
   }
 
 
   getPermisssions(policyName: string, actionName: string, pageSize: number, currentPage: number): Observable<BaseResponse<PermissionDTO[]>>{
+    const token = this.tokenService.get()?.token;
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
     let url = this.getConditionSearchPermission(policyName, actionName, pageSize, currentPage);
-    return this.http.get<BaseResponse<PermissionDTO[]>>(url);
+    return this.http.get<BaseResponse<PermissionDTO[]>>(url,{headers: reqHeader});
   }
-
 
 
   attachOrDetach(request: AttachOrDetachRequest): Observable<boolean> {
+    const token = this.tokenService.get()?.token;
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
     let url = this.urlIAM + "/AttachOrDetach";
-    return this.http.put<boolean>(url, request);
+    return this.http.put<boolean>(url, request, {headers: reqHeader});
   }
 
   getPolicyInfo(policyName: string): Observable<PolicyInfo>{
+    const token = this.tokenService.get()?.token;
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
     let url = this.urlIAM + "/" + policyName;
-    return this.http.get<PolicyInfo>(url);
+    return this.http.get<PolicyInfo>(url,{headers: reqHeader});
   }
-  private getConditionSearchPermission(policyName: string, actionName: string, pageSize: number, currentPage: number): string{
+
+  private getConditionSearchPermission(policyName: string, actionName: string, pageSize: number, currentPage: number): string {
     let urlResult = this.urlIAM + '/Actions';
     let count = 0;
     if (policyName !== undefined && policyName != null) {
@@ -161,15 +200,43 @@ export class PolicyService extends BaseService {
     if (form.name != null) {
       params = params.append('policyName', form.name)
     }
-    if(form.pageSize != null) {
+    if (form.pageSize != null) {
       params = params.append('pageSize', form.pageSize);
     }
-    if(form.currentPage != null) {
+    if (form.currentPage != null) {
       params = params.append('currentPage', form.currentPage);
     }
     return this.http.get<BaseResponse<PolicyModel[]>>(this.baseUrl + this.ENDPOINT.iam + '/policies', {
       headers: this.httpOptions.headers,
       params: params
     })
+  }
+
+  deletePolicy(nameDelete: any, token: any) {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.delete<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyNames=" + nameDelete, {headers: reqHeader});
+  }
+
+  getListServices(token: any) : Observable<string[]> {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get<string[]>(this.urlIAM + '/services', {headers: reqHeader});
+  }
+
+  getAllPermissions(name:any, token: any) : Observable<PermissionPolicyModel[]> {
+    var reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get<PermissionPolicyModel[]>(this.urlIAM + '/ServiceAction/'+name, {headers: reqHeader});
+  }
+
+  createPolicy(request: any) : Observable<any>{
+    return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
   }
 }

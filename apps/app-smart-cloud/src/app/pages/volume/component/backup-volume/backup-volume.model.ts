@@ -25,4 +25,5 @@ export interface BackupVolume {
   backupPackageId: any;
   status: any;
   id: any;
+  expirationDate: any;
 }

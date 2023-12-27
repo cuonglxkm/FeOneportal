@@ -138,8 +138,8 @@ export class UserComponent implements OnInit {
     // this.getSshKeys();
   }
 
-  projectChange(project: ProjectModel) {
-    // this.projectId = project.id;
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
     // this.getSshKeys();
   }
 

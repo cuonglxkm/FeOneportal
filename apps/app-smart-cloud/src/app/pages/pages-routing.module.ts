@@ -66,6 +66,7 @@ import {
   EditScheduleBackupVolumeComponent
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
+import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-public.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -112,6 +113,10 @@ const routes: Routes = [
   {
     path: "ip-public/create",
     component: CreateUpdateIpPublicComponent
+  },
+  {
+    path: "ip-public/detail/:id",
+    component: DetailIpPublicComponent
   },
   {
     path: 'security-group',

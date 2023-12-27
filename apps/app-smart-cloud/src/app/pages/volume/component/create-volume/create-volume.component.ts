@@ -195,8 +195,13 @@ export class CreateVolumeComponent implements OnInit {
         this.nzMessage.create('success', 'Tạo Volume thành công.')
         console.log(data);
         this.router.navigate(['/app-smart-cloud/volume']);
+      }else{
+        this.isLoadingAction = false;
       }
-    })
+    },
+      error => {
+        this.isLoadingAction = false;
+      })
     // this.router.navigate(['/app-smart-cloud/volume']);
   }
 

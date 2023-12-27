@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
@@ -17,19 +16,14 @@ import { Router } from '@angular/router';
 // import { ModalBtnStatus } from '@widget/base-modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import { AntTableConfig } from 'src/app/core/models/interfaces/table';
 import { PageHeaderType } from 'src/app/core/models/interfaces/page';
 import { Role } from 'src/app/core/models/interfaces/role';
-import { SearchCommonVO } from 'src/app/core/models/interfaces/types';
 import { InstancesModel } from '../instances.model';
-import { async } from 'rxjs';
-import { da } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { InstancesVlanGimComponent } from './instances-vlan-gim/instances-vlan-gim.component';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 
 class SearchParam {
@@ -255,6 +249,7 @@ export class InstancesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.searchParam.status = '';
     // this.dataService
     // .getUsers2(1,10, this.sortKey!, this.sortValue!, this.searchGenderList)
     // .subscribe((data: any) => {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {PermissionPolicyModel} from "../policy.model";
@@ -8,22 +8,11 @@ import {Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";
 import {ClipboardService} from "ngx-clipboard";
-
-
-const listService = [
-  {
-    serviceId: 1,
-    serviceName: "SSH KEY"
-  },
-  {
-    serviceId: 2,
-    serviceName: "Volume"
-  },
-  {
-    serviceId: 3,
-    serviceName: "IP Public"
-  }
-]
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {finalize} from "rxjs";
+import {NzMessageService} from "ng-zorro-antd/message";
+import qrcodegen from "ng-zorro-antd/qr-code/qrcodegen";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-policy-create',
@@ -38,86 +27,50 @@ export class PolicyCreateComponent {
   isVisibleCreate: boolean = false;
   isVisibleNoticeCreate: boolean = false;
   listPermission: readonly PermissionPolicyModel[] = [];
-  setOfCheckedId = new Set<number>();
+  setOfCheckedId = new Set<string>();
   optionData = 1;
   countOrderNum: number = 1;
+  listService: string[] = [];
+  searchKey: any;
+  listServiceAvaiable : string[] = [];
   public optionJsonEditor: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   listOfPermissionSelectedView: string[] = [];
+  listOfPermissionSelectedViewStep2: string[] = [];
+  listOfPermissionSelectedViewFilter: string[] = [];
   listOfPermissionSelectedViewFinal: string[] = [];
+  total: number = 3;
+  index: number = 1;
+  size: number = 10;
 
   defaultService = {
     orderNum: 0,
     serviceName: null,
     isVisualTablePermiss: false,
+    loading: false,
     isVisualSelecService: true,
     isActive: false,
     serviceId: null,
     checked: false,
     indeterminate: false,
     permissions: [
-      {
-        id: 999,
-        name: "Hàm tạo",
-        description: "mô tả"
-      },
-      {
-        id: 333,
-        name: "Hàm xóa",
-        description: "Xóa theo id"
-      }
+
     ],
     selectedPermission: []
   }
 
-  serviceArray = [
-    {
-      orderNum: 0,
-      isInit: false,
-      isVisualTablePermiss: false,
-      isVisualSelecService: true,
-      serviceName: null,
-      isActive: false,
-      serviceId: null,
-      checked: false,
-      indeterminate: false,
-      permissions: [
-        {
-          id: 1,
-          name: "Hàm tạo policy",
-          description: "mô tả"
-        },
-        {
-          id: 2,
-          name: "Hàm xóa policy",
-          description: "Xóa theo id"
-        }
-      ],
-      selectedPermission: []
-    }
-  ]
+  serviceArray = [];
 
-  listServiceAvaiable = [
-    {
-      serviceId: 1,
-      serviceName: "SSH KEY"
-    },
-    {
-      serviceId: 2,
-      serviceName: "Volume"
-    },
-    {
-      serviceId: 3,
-      serviceName: "IP Public"
-    }
-  ]
 
   form = new FormGroup({
     name: new FormControl('', {validators: [Validators.required, AppValidator.validPolicyName]}),
     description: new FormControl('', {validators: [AppValidator.validPolicyDescription]}),
   });
 
-  constructor(private service: PolicyService, private router: Router, private clipboardService: ClipboardService) {
+  constructor(private service: PolicyService, private router: Router,
+              private clipboardService: ClipboardService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notification: NzNotificationService,) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = "code";
   }
@@ -146,10 +99,19 @@ export class PolicyCreateComponent {
     // this.getSshKeys();
   }
 
+  ngOnInit() {
+    this.service.getListServices(this.tokenService.get()?.token).subscribe(
+      (data) => {
+        this.listService = [... data];
+        this.listServiceAvaiable = data;
+      }
+    );
+  }
   selectService(newServiceId: any, serviceItem: any) {
+    serviceItem.loading = true;
     this.serviceArray = this.serviceArray.map(item => {
       if (item.orderNum === serviceItem.orderNum) {
-        item.serviceName = this.listServiceAvaiable.find(item => item.serviceId === newServiceId).serviceName;
+        item.serviceName = this.listServiceAvaiable.find(item => item === newServiceId);
         item.isVisualTablePermiss = true;
         item.isVisualSelecService = true;
         return item;
@@ -157,39 +119,49 @@ export class PolicyCreateComponent {
       return item;
     });
 
-    this.listServiceAvaiable.splice(this.listServiceAvaiable.findIndex(item => item.serviceId === newServiceId),1);
+    this.listServiceAvaiable.splice(this.listServiceAvaiable.findIndex(item => item === newServiceId),1);
     if (serviceItem.isInit) {
-      const index = this.listService.findIndex(item => item.serviceId === serviceItem.serviceId);
+      const index = this.listService.findIndex(item => item === serviceItem.serviceId);
       if (index > -1) {
-        this.listServiceAvaiable.push(listService[index]);
+        this.listServiceAvaiable.push(this.listService[index]);
       }
     } else {
       serviceItem.isInit = true;
     }
+
+    this.service.getAllPermissions(serviceItem.serviceName, this.tokenService.get()?.token)
+      .pipe(finalize(() => {serviceItem.loading = false;}))
+      .subscribe(
+      (data) => {
+        serviceItem.permissions = data;
+      }
+    );
   }
 
-  onItemChecked(serviceID: any, data: any, checked: boolean): void {
-    this.updateCheckedSet(data.id, checked, data.name);
+  onItemChecked(serviceName: any, data: any, checked: boolean): void {
+    this.updateCheckedSet(checked, data.name);
     this.serviceArray.map(item => {
-      if (item.serviceId === serviceID) {
-        const index = item.selectedPermission.findIndex(data => data.id === data.id);
-        if (checked && index == -1) {
+      if (item.serviceName === serviceName) {
+        const index = item.selectedPermission.findIndex(data => data.name === data.name);
+        if (checked && index === -1) {
           item.selectedPermission.push(data);
         } else {
-          item.selectedPermission.splice(index, 1);
+          if (index !== -1) {
+            item.selectedPermission.splice(index, 1);
+          }
         }
         return item;
       }
       return item;
     });
-    this.refreshCheckedStatus(serviceID);
+    this.refreshCheckedStatus(serviceName);
   }
 
-  onAllChecked(serviceID: any, isAddAll: boolean): void {
+  onAllChecked(serviceName: any, isAddAll: boolean): void {
     this.serviceArray = this.serviceArray.map(serviceItem => {
-      if (serviceItem.serviceId === serviceID) {
+      if (serviceItem.serviceName === serviceName) {
         serviceItem.permissions
-          .forEach(permission => this.updateCheckedSet(permission.id, isAddAll, permission.name));
+          .forEach(permission => this.updateCheckedSet(isAddAll, permission.name));
         if (isAddAll) {
           // serviceItem.selectedPermission = Object.assign({}, serviceItem.permissions);
           serviceItem.selectedPermission = [...serviceItem.permissions];
@@ -201,7 +173,7 @@ export class PolicyCreateComponent {
       return serviceItem;
     });
 
-    this.refreshCheckedStatus(serviceID);
+    this.refreshCheckedStatus(serviceName);
   }
 
   refreshCheckedStatus(serviceId: any): void {
@@ -214,15 +186,15 @@ export class PolicyCreateComponent {
     }
   }
 
-  updateCheckedSet(id: number, checked: boolean, name: string): void {
+  updateCheckedSet(checked: boolean, name: string): void {
     const indexString = this.listOfPermissionSelectedView.findIndex(item => item === name);
     if (checked) {
-      this.setOfCheckedId.add(id);
+      this.setOfCheckedId.add(name);
       if (indexString == -1) {
         this.listOfPermissionSelectedView.push(name);
       }
     } else {
-      this.setOfCheckedId.delete(id);
+      this.setOfCheckedId.delete(name);
       if (indexString !== -1) {
         this.listOfPermissionSelectedView.splice(indexString, 1);
       }
@@ -238,32 +210,68 @@ export class PolicyCreateComponent {
       if (this.optionData !== 1) {
         const processedStr = this.editor.getText().slice(1, -1);
         const lst = processedStr.split(',').map((item) => item.trim().slice(1, -1));
-        this.listOfPermissionSelectedViewFinal = [...lst]
+        this.listOfPermissionSelectedViewStep2 = [...lst]
       } else {
-        this.listOfPermissionSelectedViewFinal = [...this.listOfPermissionSelectedView];
+        this.listOfPermissionSelectedViewStep2 = [...this.listOfPermissionSelectedView];
       }
 
-      if (this.listOfPermissionSelectedViewFinal.length === 0 || this.listOfPermissionSelectedViewFinal[0] === "") {
+      if (this.listOfPermissionSelectedViewStep2.length === 0 || this.listOfPermissionSelectedViewStep2[0] === "") {
         this.isVisibleNoticeCreate = true;
         return;
       }
+      this.listOfPermissionSelectedViewFilter = [...this.listOfPermissionSelectedViewStep2];
+      this.loadData(false);
     } else {
-      this.listOfPermissionSelectedViewFinal = [];
+      this.listOfPermissionSelectedViewStep2 = [];
+      this.index = 1;
+      this.size = 10;
+      this.searchKey = "";
     }
 
     this.currentStep = step;
   }
 
-  search(search: any) {
+  search(search: any, isloadData: boolean) {
+    if (search === undefined || search === null || search === null) {
+      this.listOfPermissionSelectedViewFilter = [...this.listOfPermissionSelectedViewStep2];
+    } else {
+        this.listOfPermissionSelectedViewFilter = [];
+      for(let item of this.listOfPermissionSelectedViewStep2) {
+        if (item.includes(search)) this.listOfPermissionSelectedViewFilter.push(item);
+      }
+    }
 
+    this.searchKey = search;
+    if (isloadData) {
+      this.loadData(false);
+    }
   }
 
   onPageSizeChange(event: any) {
-
+    this.size = event;
+    this.loadData(true);
   }
 
   onPageIndexChange(event: any) {
+    this.index = event;
+    this.loadData(true);
+  }
 
+  loadData(isSearch: boolean){
+    this.listOfPermissionSelectedViewFinal = [];
+    if (isSearch) {
+      this.search(this.searchKey, false);
+    }
+
+    let begin = this.size * (this.index - 1);
+    let end = begin + this.size;
+    for (let i = 0; i < this.listOfPermissionSelectedViewFilter.length; i++) {
+      if (i >= begin && i < end) {
+        this.listOfPermissionSelectedViewFinal.push(this.listOfPermissionSelectedViewFilter[i]);
+      }
+    }
+
+    console.log(this.listOfPermissionSelectedViewFinal);
   }
 
   createPolicy() {
@@ -272,16 +280,30 @@ export class PolicyCreateComponent {
 
   handleCreate() {
     this.isVisibleCreate = false;
-    this.router.navigate(['/app-smart-cloud/policy']);
+    const request = {
+      name: this.form.controls['name'].value,
+      description: this.form.controls['description'].value,
+      action: this.listOfPermissionSelectedViewStep2,
+      resource : "*",
+      effect: "allow",
+    }
+    this.service.createPolicy(request)
+      .subscribe({
+        next: post => {
+          this.notification.success('Thành công', 'Tạo mới thành công policy')
+          this.router.navigate(['/app-smart-cloud/policy']);
+        },
+        error: e => {
+          this.notification.error('Thất bại', 'Tạo mới thất bại policy')
+        },
+      });
+    this.isVisibleCreate = false;
   }
 
   handleCancel() {
     this.isVisibleCreate = false;
     this.isVisibleNoticeCreate = false;
   }
-
-  // protected readonly JSON = JSON;
-  protected listService = listService;
 
   deleteService(serviceItem: any) {
     const index : number = this.serviceArray.findIndex(item => item.orderNum === serviceItem.orderNum);
@@ -293,10 +315,10 @@ export class PolicyCreateComponent {
     }
 
     this.serviceArray.splice(index, 1);
-    if (serviceItem.serviceId !== undefined && serviceItem.serviceId !== null) {
-      const index = listService.findIndex(item => item.serviceId === serviceItem.serviceId);
+    if (serviceItem.serviceName !== undefined && serviceItem.serviceName !== null) {
+      const index = this.listService.findIndex(item => item === serviceItem.serviceName);
       if (index > -1) {
-        this.listServiceAvaiable.push(listService[index]);
+        this.listServiceAvaiable.push(this.listService[index]);
       }
     }
 
@@ -307,4 +329,5 @@ export class PolicyCreateComponent {
   }
 
   protected readonly JSON = JSON;
+
 }
