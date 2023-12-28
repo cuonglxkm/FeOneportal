@@ -27,7 +27,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
   volumeId: number;
 
-  volumeList: NzSelectOptionInterface[];
+  volumeList: NzSelectOptionInterface[] = [];
   userId: number;
   scheduleStartTime:string;
   dateStart: string;

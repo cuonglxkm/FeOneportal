@@ -57,7 +57,7 @@ export class SnapshotScheduleListComponent implements OnInit {
         this.isLoadingEntities = false;
       },
       error => {
-        this.notification.error('Có lỗi xảy ra','Lấy danh sách Attached Entities thất bại');
+        this.notification.error('Có lỗi xảy ra','Lấy danh sách lịch Snapshot thất bại');
         this.isLoadingEntities = false;
       }
     )
@@ -67,6 +67,7 @@ export class SnapshotScheduleListComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private snapshot: SnapshotVolumeService,
               private modalService: NzModalService,
+              private snapshotVolumeService: SnapshotVolumeService,
               private notification: NzNotificationService) {
   }
 
@@ -165,10 +166,32 @@ export class SnapshotScheduleListComponent implements OnInit {
     console.log('Delete:  '+id);
   }
   doPauseSnapshotSchedule(id: number){
-    console.log('Pause:  '+id);
+    this.isLoadingEntities = true;
+    this.snapshotVolumeService.actionSchedule(id,'suspend',this.customerID, this.region, this.project).subscribe(
+      data =>{
+        if(data){
+          this.notification.success('Success','Tạm dừng lịch thành công.');
+          this.isLoadingEntities = false;
+        }else{
+          this.notification.error('Có lỗi xảy ra','Tạm dừng Entities thất bại.');
+          this.isLoadingEntities = false;
+        }
+      }
+    )
   }
   doResumeSnapshotSchedule(id: number){
-    console.log('Resume:  '+id);
+    this.isLoadingEntities = true;
+    this.snapshotVolumeService.actionSchedule(id,'restore',this.customerID, this.region, this.project).subscribe(
+      data =>{
+        if(data){
+          this.notification.success('Success','Tiếp tục lịch thành công.');
+          this.isLoadingEntities = false;
+        }else{
+          this.notification.error('Có lỗi xảy ra','Tiếp tục lịch thất bại.');
+          this.isLoadingEntities = false;
+        }
+      }
+    )
   }
 
   navigateToDetail(id: number){

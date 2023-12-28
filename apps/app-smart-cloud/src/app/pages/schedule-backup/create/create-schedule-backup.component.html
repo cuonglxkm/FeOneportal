@@ -1,10 +1,18 @@
-<one-portal-header
-        title="Lập lịch Backup"
-        [path]="['Home', 'Dịch vụ', 'Lập lịch Backup']"
-        [regionId]="region"
-        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
-
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Lập lịch Backup'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Lập lịch Backup</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="projectChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="regionChanged($event)"></project-select-dropdown>
+    </div>
+    </ng-template>
+</page-header>
 <nz-content>
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
         <!--    <nz-card>-->
