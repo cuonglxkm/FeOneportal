@@ -40,6 +40,12 @@ export class CreateUserGroupComponent implements OnInit {
 
   formCreate: FormUserGroup = new FormUserGroup()
 
+  pageSize: number = 5
+  pageIndex: number = 1
+
+  listUserSelected: any
+  listPolicySelected: any
+
   constructor(
     private fb: NonNullableFormBuilder,
     private location: Location,
@@ -73,9 +79,7 @@ export class CreateUserGroupComponent implements OnInit {
         } else {
           this.listGroupParent = [item.parent]
         }
-        this.listGroupParentUnique = this.listGroupParent
-          .map(innerArray => innerArray[0])
-          .filter((value, index, self) => self.indexOf(value) === index)
+        this.listGroupParentUnique = [...new Set(this.listGroupParent)]
 
       })
       console.log('list data', this.listGroupParent)
@@ -89,7 +93,7 @@ export class CreateUserGroupComponent implements OnInit {
   submitForm(): void {
     console.log(this.validateForm.valid);
     if (this.validateForm.valid) {
-      this.listPolicies.forEach(item => {
+      this.listPolicySelected.forEach(item => {
         if (this.listPoliciesSelected.length !== undefined) {
           this.listPoliciesSelected.push(item.name)
         } else {
@@ -102,24 +106,24 @@ export class CreateUserGroupComponent implements OnInit {
         }
 
       })
-      this.listUsers.forEach(item => {
+      this.listUserSelected.forEach(item => {
         if (this.listUsersSelected.length !== undefined) {
           this.listUsersSelected.push(item.userName)
         } else {
           this.listUsersSelected = [item.userName]
         }
         if(this.listUsersSelected?.length > 0) {
-          this.validateForm.controls.userNames?.setValue(this.listUsersSelected)
+          this.validateForm.controls.userNames.setValue(this.listUsersSelected)
         } else {
-          this.validateForm.controls.userNames?.setValue([])
+          this.validateForm.controls.userNames.setValue([])
         }
       })
       console.log(this.validateForm.getRawValue());
       this.formCreate.groupName = this.validateForm.value.groupName
-      this.formCreate.parentName = this.validateForm.value.parentName
+      this.formCreate.parentName = this.validateForm.value.parentName.toString()
 
       this.formCreate.policyNames = this.validateForm.value.policyNames
-      this.formCreate.userNames = this.validateForm.value.userNames
+      this.formCreate.users = this.validateForm.value.userNames
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
         console.log('data return', data)
         this.notification.success('Thành công', 'Tạo mới group thành công')
@@ -141,22 +145,14 @@ export class CreateUserGroupComponent implements OnInit {
   }
 
   receivedListPoliciesSelected(object: any) {
-    if(this.listPolicies?.length > 0) {
-      this.listPolicies = object
-    } else {
-      this.listPolicies = null
-    }
+    this.listPolicySelected = object
 
-    console.log('selected', this.listPolicies)
+    console.log('selected', this.listPolicySelected)
   }
 
   receivedListUsersSelected(object: any) {
-    if(this.listUsers?.length > 0) {
-      this.listUsers = object
-    } else {
-      this.listUsers = null
-    }
-    console.log('selected', this.listUsers)
+    this.listUserSelected = object
+    console.log('selected', this.listUserSelected)
   }
 
   ngOnInit(): void {

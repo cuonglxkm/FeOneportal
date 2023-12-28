@@ -14,14 +14,14 @@ export class FormSearchUserGroup {
 }
 
 export class FormDeleteUserGroups {
-    groupName: string[]
+    groupNames: string[]
 }
 
 export class FormUserGroup {
     groupName: string
     parentName: string
     policyNames: string[]
-    userNames: string[]
+    users: string[]
 }
 
 export class RemovePolicy {
@@ -29,6 +29,16 @@ export class RemovePolicy {
   items: ItemDetachPolicy[]
 }
 
+// export class RemoveUser {
+//   userList: string[]
+// }
+
 export class ItemDetachPolicy {
   itemName: string
+}
+
+export class FormSearchPolicy {
+    policyName: string
+    pageSize: number
+    currentPage: number
 }

@@ -1,7 +1,10 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {PolicyService} from "../../../../shared/services/policy.service";
 import {PolicyModel} from "../../../policy/policy.model";
-import { FormSearchUserGroup } from 'src/app/shared/models/user-group.model';
+import {FormSearchPolicy, FormSearchUserGroup} from 'src/app/shared/models/user-group.model';
+import {UserGroupService} from "../../../../shared/services/user-group.service";
+import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
+import {NzTableQueryParams} from "ng-zorro-antd/table";
 
 @Component({
   selector: 'one-portal-policy-table',
@@ -13,7 +16,7 @@ export class PolicyTableComponent {
 
   value?: string;
   loading = false
-  listOfCurrentPageData: readonly [] = [];
+  listOfCurrentPageData: readonly PolicyModel[] = [];
   checked = false;
   indeterminate = false;
   setOfCheckedId = new Set<string>();
@@ -22,7 +25,10 @@ export class PolicyTableComponent {
 
   listPolicies: PolicyModel[]
 
-  constructor(private policyService: PolicyService) {
+  response: BaseResponse<PolicyModel[]>
+
+  form: FormSearchPolicy = new FormSearchPolicy()
+  constructor(private userGroupService: UserGroupService) {
   }
   onExpandChange(name: string, checked: boolean): void {
     if (checked) {
@@ -35,9 +41,13 @@ export class PolicyTableComponent {
   onInputChange(value: string) {
     this.value = value;
   }
-  onCurrentPageDataChange(listOfCurrentPageData: readonly []): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex} = params
+    this.form.pageSize = pageSize;
+    this.form.currentPage = pageIndex
+    this.listOfCurrentPageData = this.listPolicies
+    this.getPolicies()
+    this.refreshCheckedStatus()
   }
 
   refreshCheckedStatus(): void {
@@ -69,17 +79,16 @@ export class PolicyTableComponent {
 
   getPolicies() {
     this.loading = true
-    const form: FormSearchUserGroup = new FormSearchUserGroup()
-    form.name = null
-    form.currentPage = 1
-    form.pageSize = 10000
-    // this.policyService.getPolicy(form).subscribe(data => {
-    //   this.listPolicies = data.records
-    //   this.loading = false
-    //   console.log('data', this.listPolicies)
-    // }, error => {
-    //   this.listPolicies = null
-    // })
+    this.userGroupService.getPolicy(this.form).subscribe(data => {
+      this.response = data
+      this.listPolicies = data.records
+      this.listOfCurrentPageData = data.records
+      this.loading = false
+      console.log('data', this.listPolicies)
+    }, error => {
+      this.response = null
+      this.listPolicies = null
+    })
   }
 
   sendListPoliciesSelected() {
@@ -89,6 +98,4 @@ export class PolicyTableComponent {
   ngOnInit(): void {
     this.getPolicies()
   }
-
-  protected readonly JSON = JSON;
 }

@@ -82,18 +82,18 @@
             <tr *ngFor="let data of rowSelectionTable.data">
                 <td [nzChecked]="setOfCheckedId.has(data.id)"
                     (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-                <td>{{data.contractCode}}</td>
-                <td>{{data.invoiceCode}}</td>
-                <td>{{data.toltalAmount}}</td>
-                <td>{{data.paidDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
-                <td *ngIf="data.isPaid === true">
+                <td>{{data.paymentNumber}}</td>
+                <td>{{data.orderNumber}}</td>
+                <td>{{data.amount}}</td>
+                <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
+                <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid">
                     Đã thanh toán
                 </td>
-                <td...........smksj *ngIf="data.isPaid === false">
-                    Đã thanh toán
-                </td...........smksj>
+                <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not">
+                    Chưa thanh toán
+                </td>
                 <td [nzAlign]="'left'">
-                    <span nz-icon nzType="download" nzTheme="outline"></span>
+                    <span nz-icon nzType="download" nzTheme="outline" ></span>
                 </td>
             </tr>
             </tbody>

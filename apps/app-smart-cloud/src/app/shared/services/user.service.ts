@@ -1,21 +1,26 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import { BaseService } from './base.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CopyUserPolicies, GroupCreateUser, PermissionPolicies, PoliciesOfUser, User } from '../models/user.model';
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService extends BaseService {
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      // 'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token }),
   };
 
   public model: BehaviorSubject<String> = new BehaviorSubject<String>('1');
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
@@ -28,7 +33,9 @@ export class UserService extends BaseService {
     let url_ = `/users?userName=${userName}&pageSize=${pageSize}&currentPage=${currentPage}`
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, {
+      headers: this.httpOptions.headers
+    });
   }
 
   create(data: any): Observable<any> {

@@ -9,14 +9,14 @@ import {FormDeleteUserGroups} from "../../../../../shared/models/user-group.mode
     styleUrls: ['./delete-one-user-group.component.less'],
 })
 export class DeleteOneUserGroupComponent {
-    @Input() nameGroup: string[]
+    @Input() nameGroup: any[]
     @Input() isVisible: boolean
     @Input() isLoading: boolean
     @Output() onCancel = new EventEmitter<void>()
     @Output() onOk = new EventEmitter<void>()
 
     value: string
-    formDelete: FormDeleteUserGroups
+    formDelete: FormDeleteUserGroups = new FormDeleteUserGroups()
 
     constructor(private userGroupService: UserGroupService,
                 private notification: NzNotificationService) {
@@ -29,20 +29,20 @@ export class DeleteOneUserGroupComponent {
 
     handleOk(): void {
         this.isLoading = true
-        if (this.nameGroup.includes(this.value)) {
-            this.formDelete.groupName = this.nameGroup
-            this.userGroupService.delete(this.formDelete).subscribe(data => {
-                this.notification.success('Thành công', 'Xóa User Group ' + this.nameGroup + ' thành công')
+        console.log('name',this.nameGroup)
+        console.log('name', this.nameGroup[0]?.name)
+        if (this.nameGroup[0]?.name == this.value) {
+            this.userGroupService.delete(this.nameGroup[0].name).subscribe(data => {
+                this.notification.success('Thành công', 'Xóa User Group ' + this.nameGroup[0]?.name + ' thành công')
                 this.isLoading = false
                 this.onOk.emit();
             }, error => {
-                this.notification.error('Thất bại', 'Xóa User Group ' + this.nameGroup + ' thất bại')
+                this.notification.error('Thất bại', 'Xóa User Group ' + this.nameGroup[0]?.name + ' thất bại')
             })
         } else {
             this.isLoading = false
             this.notification.error('Thất bại', 'Không thể xóa User Group ' + this.nameGroup)
         }
-
     }
 
     onInputChange() {

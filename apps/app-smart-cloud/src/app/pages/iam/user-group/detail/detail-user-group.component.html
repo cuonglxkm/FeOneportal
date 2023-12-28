@@ -45,16 +45,18 @@
                           </ng-template>
                       </nz-descriptions>
                   </nz-col>
-                  <nz-col>
-                      <button nz-button class="button-del" nzSize="default" style="cursor: pointer;"
-                              (click)="showModalEdit()">
-                          Chỉnh sửa
-                      </button>
-                      <one-portal-edit-user-group [isVisible]="isVisibleEdit" [groupNameCurrent]="groupName"
-                                                  (onOk)="handleOkEdit()"
-                                                  (onCancel)="handleCancelEdit()"
-                      />
-                  </nz-col>
+<!--                  <nz-col>-->
+<!--                      <button nz-button class="button-del" nzSize="default" style="cursor: pointer;"-->
+<!--                              (click)="showModalEdit()">-->
+<!--                          Chỉnh sửa-->
+<!--                      </button>-->
+<!--                      <one-portal-edit-user-group [isVisible]="isVisibleEdit"-->
+<!--                                                  [groupNameCurrent]="groupName"-->
+<!--                                                  [parent]="parentGroup"-->
+<!--                                                  (onOk)="handleOkEdit()"-->
+<!--                                                  (onCancel)="handleCancelEdit()"-->
+<!--                      />-->
+<!--                  </nz-col>-->
               </nz-row>
           </nz-card>
           <nz-card nzTitle="Thông tin bổ sung">
@@ -109,8 +111,7 @@
                           nzShowSizeChanger
                           [nzData]="listUsers"
                           [nzLoading]="loading"
-                          (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)"
-                      >
+                          (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)">
                           <thead>
                           <tr>
                               <th
@@ -131,9 +132,9 @@
                                       (nzCheckedChange)="onItemCheckedUser(data.userName, $event)"
                               ></td>
                               <td>
-                                  <a [href]="'/app-smart-cloud/iam/user-group/' + data.userName">{{ data.userName }}</a>
+                                  <a [href]="'/app-smart-cloud/users/detail/' + data.userName">{{ data.userName }}</a>
                               </td>
-                              <td>{{ data.userOfGroups }}</td>
+                              <td>{{data.userGroups}}</td>
                               <td>{{ data.createdDate | date: 'dd/MM/yyyy - HH:ss:mm' }}</td>
                           </tr>
                           </tbody>
@@ -143,13 +144,17 @@
                   <nz-tab nzTitle="Policies">
                       <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
                           <nz-space [nzSize]="24">
-                              <div *nzSpaceItem>
-                                  <p>Loại Policies:</p>
-                              </div>
-                              <div *nzSpaceItem>
-                                  <nz-select nzPlaceHolder="Tất cả các loại">
-                                  </nz-select>
-                              </div>
+<!--                              <div *nzSpaceItem>-->
+<!--                                  <p>Loại Policies:</p>-->
+<!--                              </div>-->
+<!--                              <div *nzSpaceItem>-->
+<!--                                  <nz-select [(ngModel)]="selectedValue"-->
+<!--                                             (ngModelChange)="onChange($event)"-->
+<!--                                             nzPlaceHolder="Tất cả trạng thái">-->
+<!--                                      <nz-option *ngFor="let item of status" [nzValue]="item.value"-->
+<!--                                                 [nzLabel]="item.label"></nz-option>-->
+<!--                                  </nz-select>-->
+<!--                              </div>-->
                               <div *nzSpaceItem>
                                   <nz-input-group nzSearch [nzAddOnAfter]="suffixButton2">
                                       <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
@@ -196,6 +201,9 @@
                           nzShowSizeChanger
                           [nzData]="listOfDataPolicies"
                           [nzLoading]="loading"
+                          [nzTotal]="listOfDataPolicies?.length"
+                          [nzPageSize]="5"
+                          [nzPageIndex]="1"
                           (nzCurrentPageDataChange)="onCurrentPageDataChangePolicy($event)"
                       >
                           <thead>
@@ -208,11 +216,10 @@
                               ></th>
                               <th>Name</th>
                               <th>Type</th>
-                              <th>Attached Entities</th>
                           </tr>
                           </thead>
-                          <tbody *ngFor="let data of rowSelectionTable2.data">
-                          <tr>
+                          <tbody >
+                          <tr *ngFor="let data of rowSelectionTable2.data">
                               <td
                                       [nzChecked]="setOfCheckedIdPolicy.has(data.name)"
                                       (nzCheckedChange)="onItemCheckedPolicy(data.name, $event)"
@@ -221,9 +228,8 @@
                                   {{ data.name }}
                               </td>
                               <td>{{ data.type }}</td>
-                              <td></td>
                           </tr>
-                          <tr [nzExpand]="expandSet.has(data.name)">
+                          <tr *ngFor="let data of rowSelectionTable2.data" [nzExpand]="expandSet.has(data.name)">
                               <div *ngIf="data.type ==='Portal managed'">
                                   <pre [innerHTML]="data | prettyprint"></pre>
                               </div>
