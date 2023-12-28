@@ -1,7 +1,8 @@
 <nz-card [nzTitle]="policyCardTitle">
     <nz-row style="margin-bottom: 16px" nzJustify="space-between">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+            <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
+                   nz-input
                    placeholder="Tìm kếm tên."/>
         </nz-input-group>
         <ng-template #suffixButton>
@@ -20,13 +21,14 @@
     </nz-row>
     <nz-table
         #rowSelectionTable
-        nzShowPagination
         nzShowSizeChanger
+        [nzFrontPagination]="false"
         [nzData]="listPolicies"
-        [nzPageSize]="5"
+        (nzQueryParams)="onQueryParamsChange($event)"
         [nzLoading]="loading"
-        (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-    >
+        [nzTotal]="response?.totalCount"
+        [nzPageSize]="response?.pageSize"
+        [nzPageIndex]="response?.currentPage">
         <thead>
         <tr>
             <th [nzChecked]="checked"
@@ -43,20 +45,20 @@
         <ng-container *ngFor="let data of rowSelectionTable.data">
             <tr>
                 <td
-                        [nzChecked]="setOfCheckedId.has(data.name)"
-                        (nzCheckedChange)="onItemChecked(data.name, $event)"
+                        [nzChecked]="setOfCheckedId.has(data?.name)"
+                        (nzCheckedChange)="onItemChecked(data?.name, $event)"
                 ></td>
-                <td [nzExpand]="expandSet.has(data.name)" (nzExpandChange)="onExpandChange(data.name, $event)">
-                    <a [routerLink]="'/app=smart-cloud/policy/detail/' + data.name">{{ data.name }}</a>
+                <td [nzExpand]="expandSet.has(data?.name)" (nzExpandChange)="onExpandChange(data?.name, $event)">
+                    <a [routerLink]="'/app=smart-cloud/policy/detail/' + data?.name">{{ data?.name }}</a>
                 </td>
-                <td>{{ data.type }}</td>
-                <td>{{ data.description }}</td>
+                <td>{{ data?.type }}</td>
+                <td>{{ data?.description }}</td>
             </tr>
-            <tr [nzExpand]="expandSet.has(data.name)">
-                <div *ngIf="data.type ==='Portal managed'">
+            <tr [nzExpand]="expandSet.has(data?.name)">
+                <div *ngIf="data?.type ==='Portal managed'">
                     <pre [innerHTML]="data | prettyprint"></pre>
                 </div>
-                <div *ngIf="data.type === 'Customer Manager'">
+                <div *ngIf="data?.type === 'Customer Manager'">
                     <nz-row nzAlign="middle" nzJustify="space-between">
                         <nz-space [nzSize]="24">
                             <pre [innerHTML]="data | prettyprint"></pre>

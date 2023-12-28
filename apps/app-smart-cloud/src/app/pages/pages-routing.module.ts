@@ -67,6 +67,7 @@ import {
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-public.component";
+import {ListInvoicesComponent} from "./billing/invoice/list/list-invoices.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -281,6 +282,10 @@ const routes: Routes = [
   {
     path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent
+  },
+  {
+    path: 'billing/invoices',
+    component: ListInvoicesComponent
   }
   ]
 @NgModule({
