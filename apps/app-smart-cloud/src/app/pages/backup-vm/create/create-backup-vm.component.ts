@@ -173,7 +173,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
       console.log(createBackupVmSpecification);
 
       let createBackupVmOrderData = new CreateBackupVmOrderData();
-      createBackupVmOrderData.customerId = this.formCreateBackup.customerId;
+      createBackupVmOrderData.customerId = this.tokenService.get()?.userId;
       createBackupVmOrderData.createdByUserId = this.formCreateBackup.customerId;
       createBackupVmOrderData.note = 'tạo backup máy ảo';
       createBackupVmOrderData.orderItems = [

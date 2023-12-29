@@ -17,6 +17,7 @@ import {InstancesService} from "../../../instances/instances.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {InstanceCreate, Order, OrderItem, VolumeCreate} from "../../../instances/instances.model";
 import {Router} from "@angular/router";
+import {formatValidator} from "@angular-devkit/schematics/src/formats/format-validator";
 
 @Component({
     selector: 'one-portal-new-virtual-machine',
@@ -31,7 +32,7 @@ export class NewVirtualMachineComponent implements OnInit {
     validateForm: FormGroup<{
         name: FormControl<string>
         flavor: FormControl<Flavor | null>
-        image: FormControl<Image | null>
+        // image: FormControl<Image | null>
         securityGroup: FormControl<SecurityGroupBackup[]>
         iops: FormControl<number>
         storage: FormControl<number>
@@ -41,7 +42,7 @@ export class NewVirtualMachineComponent implements OnInit {
     }> = this.fb.group({
         name: ['', [Validators.required]],
         flavor: [null as Flavor | null, [Validators.required]],
-        image: [null as Image | null, [Validators.required]],
+        // image: [null as Image | null, [Validators.required]],
         securityGroup: [[] as SecurityGroupBackup[], [Validators.required]],
         iops: [null as number | null, [Validators.required]],
         storage: [null as number | null, [Validators.required]],
@@ -89,7 +90,7 @@ export class NewVirtualMachineComponent implements OnInit {
     }
 
     handleImageChange(image: Image) {
-        this.validateForm.controls.image.setValue(image)
+        // this.validateForm.controls.image.setValue(image)
     }
 
     getDetailBackupVM() {
@@ -135,7 +136,7 @@ export class NewVirtualMachineComponent implements OnInit {
             console.log('form', this.validateForm.getRawValue())
             this.instanceCreate.description = null; // this.region;
             this.instanceCreate.flavorId = this.validateForm.controls.flavor.value.id; //this.flavor.id;
-            this.instanceCreate.imageId = this.validateForm.controls.image.value.id;
+            // this.instanceCreate.imageId = this.validateForm.controls.image.value.id;
             this.instanceCreate.iops = this.validateForm.controls.iops.getRawValue();
             this.instanceCreate.vmType = null;
             this.instanceCreate.keypairName = null;
@@ -248,12 +249,12 @@ export class NewVirtualMachineComponent implements OnInit {
             this.order.note = "tạo vm";
             this.order.orderItems = this.orderItem;
             console.log('order', this.order)
-            // this.instanceService.create(this.order).subscribe(data => {
-            //     this.notification.success('Thành công', 'Restore vào máy ảo mới thành công')
-            //     this.router.navigateByUrl(`/app-smart-cloud/instances`);
-            // }, error => {
-            //     this.notification.error('Thất bại', 'Restore vào máy ảo mới thất bại')
-            // })
+            this.instanceService.create(this.order).subscribe(data => {
+                this.notification.success('Thành công', 'Yêu cầu Restore vào máy ảo mới thành công')
+                this.router.navigateByUrl(`/app-smart-cloud/instances`);
+            }, error => {
+                this.notification.error('Thất bại', 'Yêu cầu Restore vào máy ảo mới thất bại')
+            })
         } else {
             console.log('click')
         }

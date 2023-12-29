@@ -29,7 +29,7 @@ export class BackupVmService extends BaseService {
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      // 'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
@@ -87,6 +87,8 @@ export class BackupVmService extends BaseService {
   }
 
   create(data: CreateBackupVmOrderData) {
-    return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
+    return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data), {
+      headers: this.getHeaders()
+    })
   }
 }

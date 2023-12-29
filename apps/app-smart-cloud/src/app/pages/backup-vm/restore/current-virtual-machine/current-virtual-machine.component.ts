@@ -89,7 +89,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
             this.router.navigate(['/app-smart-cloud/backup-vm'])
         }, error => {
             this.isLoading = false
-            this.notification.error('Thất bại', 'Restore thất bại')
+            this.notification.error('Thất bại', 'Restore backup-vm thất bại.')
         })
     }
 }

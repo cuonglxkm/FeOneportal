@@ -41,25 +41,25 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label nzFor="flavor">
+          <nz-form-label nzFor="volumeToBackupIds">
             <div class="label">
               <span>Chọn Volume gắn ngoài cần Restore</span>
             </div>
           </nz-form-label>
-<!--          <nz-form-control>-->
-<!--            <nz-select-->
-<!--              id="volumeToBackupIds"-->
-<!--              formControlName="volumeToBackupIds"-->
-<!--              [nzPlaceHolder]="'Volume gắn ngoài'"-->
-<!--              nzMode="multiple"-->
-<!--              [nzShowSearch]="false">-->
-<!--              <nz-option-->
-<!--                *ngFor="let i of volumeAttachments"-->
-<!--                [nzLabel]="i.name"-->
-<!--                [nzValue]="i.id"-->
-<!--                />-->
-<!--            </nz-select>-->
-<!--          </nz-form-control>-->
+          <nz-form-control>
+            <nz-select
+              id="volumeToBackupIds"
+              formControlName="volumeToBackupIds"
+              [nzPlaceHolder]="'Volume gắn ngoài'"
+              nzMode="multiple"
+              [nzShowSearch]="false">
+              <nz-option
+                *ngFor="let i of volumeAttachments"
+                [nzLabel]="i.name"
+                [nzValue]="i.id"
+                />
+            </nz-select>
+          </nz-form-control>
         </nz-form-item>
         <div style="margin-top: 10px">
           <div class="label">
