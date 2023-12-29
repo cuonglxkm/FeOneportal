@@ -239,8 +239,8 @@
                               <th>Type</th>
                           </tr>
                           </thead>
-                          <tbody >
-                          <tr *ngFor="let data of rowSelectionTable2.data">
+                          <tbody *ngFor="let data of rowSelectionTable2.data">
+                          <tr >
                               <td
                                       [nzChecked]="setOfCheckedIdPolicy.has(data.name)"
                                       (nzCheckedChange)="onItemCheckedPolicy(data.name, $event)"
@@ -250,7 +250,7 @@
                               </td>
                               <td>{{ data.type }}</td>
                           </tr>
-                          <tr *ngFor="let data of rowSelectionTable2.data" [nzExpand]="expandSet.has(data.name)">
+                          <tr [nzExpand]="expandSet.has(data.name)">
                               <div *ngIf="data.type ==='Portal managed'">
                                   <pre [innerHTML]="data | prettyprint"></pre>
                               </div>
