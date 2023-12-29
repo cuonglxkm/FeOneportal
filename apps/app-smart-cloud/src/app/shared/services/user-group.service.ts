@@ -29,7 +29,7 @@ export class UserGroupService extends BaseService {
     private getHeaders() {
         return new HttpHeaders({
             'Content-Type': 'application/json',
-            // 'user_root_id': this.tokenService.get()?.userId,
+            'user_root_id': this.tokenService.get()?.userId,
             'Authorization': 'Bearer ' + this.tokenService.get()?.token
         })
     }
