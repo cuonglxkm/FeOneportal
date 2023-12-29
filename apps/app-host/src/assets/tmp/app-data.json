@@ -29,6 +29,19 @@
               "link": "/profile"
             },
             {
+              "text": "Billing",
+              "icon": "anticon-dashboard",
+              "group": true,
+              "link": "/billing",
+              "children": [
+                {
+                  "text": "Thanh toán",
+                  "icon": "anticon-dashboard",
+                  "link": "/app-smart-cloud/billing/invoices"
+                }
+              ]
+            },
+            {
               "text": "IAM",
               "group": true,
               "link": "/app-smart-cloud/iam/dashboard",

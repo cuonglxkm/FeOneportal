@@ -70,6 +70,7 @@ import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-pu
 import { PaymentDetailComponent } from "./payment/payment-detail.component";
 import { PaymentSuccessComponent } from "../shared/components/payment-success/payment-success.component";
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
+import {ListInvoicesComponent} from "./billing/invoice/list/list-invoices.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -297,6 +298,11 @@ const routes: Routes = [
     path: 'paymentFailed',
     component: PaymentFailedComponent
   },
+  },
+  {
+    path: 'billing/invoices',
+    component: ListInvoicesComponent
+  }
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],

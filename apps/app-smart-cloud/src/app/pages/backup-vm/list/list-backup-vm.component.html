@@ -1,47 +1,53 @@
-<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">
-  <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
-    <nz-row nzJustify="space-between" nzAlign="middle">
-      <nz-breadcrumb nz-page-header-breadcrumb>
-        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-        <nz-breadcrumb-item>
-          Dịch vụ
-        </nz-breadcrumb-item>
-        <nz-breadcrumb-item>
-          <a routerLink="/app-smart-cloud/backup-vm">Backup VM</a>
-        </nz-breadcrumb-item>
-      </nz-breadcrumb>
-      <nz-space>
-        <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-        <project-select-dropdown (valueChanged)="projectChanged($event)"
-                                 [regionId]="region"></project-select-dropdown>
-      </nz-space>
+<page-header [content]="content"
+             [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Danh sách Backup VM'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Dịch vụ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/backup-vm'">
+          Backup VM
+        </a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
 
-    </nz-row>
-    <h3 style="margin-top: 10px">Danh sách Backup VM</h3>
-    <nz-row nzAlign="middle" style="margin-top:10px">
-      <nz-space [nzSize]="24">
-        <div *nzSpaceItem>
-          <nz-select [(ngModel)]="selectedValue"
-                     (ngModelChange)="onChange($event)"
-                     nzPlaceHolder="Tất cả trạng thái">
-            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-          </nz-select>
-        </div>
-        <div *nzSpaceItem>
-          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
-                   placeholder="Tìm kếm tên..."/>
-          </nz-input-group>
-          <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
-              <span nz-icon nzType="search" nzTheme="outline"></span>
-              Search
-            </button>
-          </ng-template>
-        </div>
-      </nz-space>
-    </nz-row>
-  </nz-col>
+  <ng-template #content>
+    <nz-space [nzSize]="24">
+      <div *nzSpaceItem>
+        <nz-select [(ngModel)]="selectedValue"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="Tất cả trạng thái">
+          <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+      </div>
+      <div *nzSpaceItem>
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+          <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
+                 nz-input
+                 placeholder="Tìm kếm tên..."/>
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
+            <span nz-icon nzType="search" nzTheme="outline"></span>
+            Search
+          </button>
+        </ng-template>
+      </div>
+    </nz-space>
+  </ng-template>
 </page-header>
 
 <nz-content>
@@ -79,24 +85,24 @@
         <td nzAlign="center">{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
         <td nzAlign="center">
           <div class="status" [ngSwitch]="data.status">
-            <span class="available" *ngSwitchCase="'AVAILABLE'">
-              Hoạt động
-            </span>
+                                          <span class="available" *ngSwitchCase="'AVAILABLE'">
+                                            Hoạt động
+                                          </span>
             <span class="suspended" *ngSwitchCase="'SUSPENDED'">
-              Tạm dừng
-            </span>
+                                            Tạm dừng
+                                          </span>
             <span class="available" *ngSwitchCase="'CREATING'">
-              Đang khởi tạo
-            </span>
+                                            Đang khởi tạo
+                                          </span>
             <span class="suspended" *ngSwitchCase="'DELETING'">
-              Đang xóa
-            </span>
+                                            Đang xóa
+                                          </span>
           </div>
         </td>
         <td nzAlign="center">
-          <span *ngIf="data.serviceStatus === 'KHOITAO'">
-            -
-          </span>
+                                        <span *ngIf="data.serviceStatus === 'KHOITAO'">
+                                          -
+                                        </span>
           <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
         </td>
         <td nzAlign="center">
