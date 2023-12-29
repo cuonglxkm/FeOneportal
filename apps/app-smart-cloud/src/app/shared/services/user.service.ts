@@ -28,36 +28,20 @@ export class UserService extends BaseService {
     userName: string,
     pageSize: number,
     currentPage: number,
-    userId: any,
-    token: any
   ): Observable<any> {
-    var reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    });
     if (userName == undefined) userName = '';
-    let url_ = `/users?userName=${userName}&pageSize=${pageSize}&currentPage=${currentPage}&user_root_id=${userId}`;
+    let url_ = `/users?userName=${userName}&pageSize=${pageSize}&currentPage=${currentPage}`;
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, {
-      headers: reqHeader,
-    });
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, this.httpOptions);
   }
 
   getUserByUsername(
     userName: string,
-    userId: any,
-    token: any
   ): Observable<any> {
-    var reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    });
     if (userName == undefined) userName = '';
-    let url_ = `/users/${userName}?user_root_id=${userId}`;
+    let url_ = `/users/${userName}`;
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, {
-      headers: reqHeader,
-    });
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, this.httpOptions);
   }
 
   create(data: any): Observable<any> {

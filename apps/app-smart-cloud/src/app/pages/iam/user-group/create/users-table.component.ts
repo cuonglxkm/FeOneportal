@@ -25,7 +25,6 @@ export class UsersTableComponent implements OnInit {
     listUsers: User[] = []
     countGroup: number = 0
 
-    constructor(private userService: UserService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     response: BaseResponse<User[]>
     pageSize = 5
     pageIndex = 1

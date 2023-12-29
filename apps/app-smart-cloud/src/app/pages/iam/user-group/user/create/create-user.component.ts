@@ -4,7 +4,6 @@ import {RegionModel} from "../../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {UserService} from "../../../../../shared/services/user.service";
 import {User} from "../../../../../shared/models/user.model";
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {FormUserGroup} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
@@ -44,10 +43,6 @@ export class CreateUserComponent implements OnInit {
 
   listPolicies: any[] = []
 
-    constructor(private route: ActivatedRoute,
-                private router: Router,
-                private userService: UserService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    }
   constructor(private route: ActivatedRoute,
               private router: Router,
               private userService: UserService,
@@ -130,15 +125,6 @@ export class CreateUserComponent implements OnInit {
       this.loading = false
     })
   }
-    getUsers() {
-        this.loading = true
-        this.userService.search('', 1000000, 1, this.tokenService.get()?.userId, this.tokenService.get()?.token).subscribe(data => {
-            this.listUsers = data.records
-            this.loading = false
-            this.loading = false
-            console.log('data', this.listUsers)
-        })
-    }
 
   create() {
     this.userGroupService.detail(this.nameGroup).subscribe( data => {

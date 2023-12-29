@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
   OnInit,
 } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
@@ -13,7 +12,6 @@ import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-user',
@@ -39,7 +37,6 @@ export class UserComponent implements OnInit {
 
   constructor(
     private service: UserService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private router: Router,
     public message: NzMessageService,
     private cdr: ChangeDetectorRef
@@ -59,7 +56,7 @@ export class UserComponent implements OnInit {
     this.listCheckedInPage = [];
     this.checkedAllInPage = false;
     this.service
-      .search(this.searchParam, this.pageSize, this.pageIndex, this.tokenService.get()?.userId, this.tokenService.get()?.token)
+      .search(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
         finalize(() => {
           this.loading = false;

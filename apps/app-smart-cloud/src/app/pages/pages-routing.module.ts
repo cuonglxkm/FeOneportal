@@ -298,7 +298,6 @@ const routes: Routes = [
     path: 'paymentFailed',
     component: PaymentFailedComponent
   },
-  },
   {
     path: 'billing/invoices',
     component: ListInvoicesComponent

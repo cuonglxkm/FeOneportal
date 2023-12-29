@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +13,6 @@ import {
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { concatMap, from } from 'rxjs';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -47,7 +45,6 @@ export class UserDetailComponent implements OnInit {
 
   constructor(
     private service: UserService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef
@@ -64,8 +61,6 @@ export class UserDetailComponent implements OnInit {
     this.service
       .getUserByUsername(
         this.userName,
-        this.tokenService.get()?.userId,
-        this.tokenService.get()?.token
       )
       .subscribe((data: any) => {
         this.user = data;

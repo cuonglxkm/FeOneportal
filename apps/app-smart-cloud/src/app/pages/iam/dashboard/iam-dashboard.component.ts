@@ -52,7 +52,7 @@ export class IamDashboardComponent implements OnInit{
             this.count.count_group = data.totalCount
             console.log('count', this.count
             )
-            this.userService.search('', 100000, 1, this.tokenService.get()?.userId, this.tokenService.get()?.token).subscribe(data => {
+            this.userService.search('', 100000, 1).subscribe(data => {
                 this.listUsers = data
                 this.count.count_user = this.listUsers.totalCount
             })

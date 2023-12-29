@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnInit,
   Output,
@@ -15,7 +14,6 @@ import { finalize } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { PolicyService } from 'src/app/shared/services/policy.service';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -55,7 +53,6 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   constructor(
     private service: UserService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private policyService: PolicyService,
     public message: NzMessageService,
     private cdr: ChangeDetectorRef
@@ -257,8 +254,6 @@ export class AttachPermissionPolicyComponent implements OnInit {
         this.searchParam,
         this.pageSize,
         this.pageIndex,
-        this.tokenService.get()?.userId,
-        this.tokenService.get()?.token
       )
       .pipe(
         finalize(() => {
