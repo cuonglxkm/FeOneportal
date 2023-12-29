@@ -53,7 +53,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
 
     getDetail(id: number) {
         this.userId = this.tokenService.get()?.userId
-        this.backupVmService.detail(id, this.userId).subscribe(data => {
+        this.backupVmService.detail(id).subscribe(data => {
             if (data) {
                 this.backupVm = data
                 this.backupVm.securityGroupBackups.forEach(item => {
@@ -79,7 +79,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
     }
 
     restoreCurrent() {
-        this.form.customerId = this.tokenService.get()?.userId
+        // this.form.customerId = this.tokenService.get()?.userId
         this.form.instanceBackupId = this.backupVmId
         this.isLoading = true;
         console.log('this.form', this.form)

@@ -28,7 +28,9 @@ export class BackupVmService extends BaseService {
 
   private getHeaders() {
     return new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      // 'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
   search(form: BackupVMFormSearch) {
@@ -57,17 +59,23 @@ export class BackupVmService extends BaseService {
     })
   }
 
-  detail(id: number, userId: number) {
-    return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}?customerId=${userId}`)
+  detail(id: number) {
+    return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
+      headers: this.getHeaders()
+    })
   }
 
-  delete(id: number, userId: number) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}?customerId=${userId}`)
+  delete(id: number) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
+      headers: this.getHeaders()
+    })
         .pipe(catchError(this.errorCode))
   }
 
   restoreCurrentBackupVm(form: RestoreFormCurrent) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form))
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form), {
+      headers: this.getHeaders()
+    })
   }
 
   getVolumeInstanceAttachment(id: number){

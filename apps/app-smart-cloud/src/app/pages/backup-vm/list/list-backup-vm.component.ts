@@ -93,13 +93,14 @@ export class ListBackupVmComponent implements OnInit {
     handleOkDelete() {
         this.isLoading = true
         this.isVisibleDelete = false
-        this.backupVmService.delete(this.id, this.userId).subscribe(data => {
+        this.backupVmService.delete(this.id).subscribe(data => {
             this.isLoading = false
             this.notification.success('Thành công', 'Xóa thành công')
             this.getListBackupVM()
         }, error => {
             this.isLoading = false
             this.notification.error('Thất bại', 'Xóa thất bại')
+            this.getListBackupVM()
         })
     }
 

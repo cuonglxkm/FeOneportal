@@ -94,7 +94,7 @@ export class NewVirtualMachineComponent implements OnInit {
 
     getDetailBackupVM() {
         if (this.backupVmId != undefined) {
-            this.backupVmService.detail(this.backupVmId, this.userId).subscribe(data => {
+            this.backupVmService.detail(this.backupVmId).subscribe(data => {
                 this.backupVm = data
                 this.securityGroupLst = this.backupVm.securityGroupBackups
                 this.systemInfoBackups = this.backupVm.systemInfoBackups
@@ -128,6 +128,8 @@ export class NewVirtualMachineComponent implements OnInit {
         console.log(this.validateForm);
         const now = new Date();
         const expiredDate = new Date();
+
+        console.log('form', this.validateForm.getRawValue())
 
         if (this.validateForm.valid) {
             console.log('form', this.validateForm.getRawValue())
@@ -265,9 +267,4 @@ export class NewVirtualMachineComponent implements OnInit {
         this.getDetailBackupVM()
     }
 
-    // ngOnChanges(changes: SimpleChanges): void {
-    //     if (changes.project) {
-    //         this.getSecurityGroup()
-    //     }
-    // }
 }
