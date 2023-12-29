@@ -44,7 +44,7 @@ export class UserService extends BaseService {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, this.httpOptions);
   }
 
-  create(data: any): Observable<any> {
+  createOrUpdate(data: any): Observable<any> {
     let url_ = `/users`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.iam + url_, data, this.httpOptions);

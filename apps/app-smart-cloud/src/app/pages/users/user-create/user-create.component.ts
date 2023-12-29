@@ -103,7 +103,7 @@ export class UserCreateComponent implements OnInit {
     this.userCreate.policyNames = this.policyNames;
     this.isVisibleCreate = false;
     this.service
-      .create(this.userCreate)
+      .createOrUpdate(this.userCreate)
       .pipe(
         finalize(() => {
           this.loadingSrv.close();
