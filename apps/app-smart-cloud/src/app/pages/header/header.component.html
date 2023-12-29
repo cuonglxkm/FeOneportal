@@ -1,14 +1,33 @@
-<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">
-    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
-        <nz-row nzJustify="space-between" nzAlign="middle">
-            <nz-breadcrumb nz-page-header-breadcrumb>
-                <nz-breadcrumb-item *ngFor="let i of path; let idx = index">{{ i }}</nz-breadcrumb-item>
-            </nz-breadcrumb>
-            <nz-space>
-                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-                <project-select-dropdown *ngIf="!!regionId" (valueChanged)="projectChanged($event)" [regionId]="regionId"></project-select-dropdown>
-            </nz-space>
-        </nz-row>
-        <h3>{{ title }}</h3>
-    </nz-col>
+<!--<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">-->
+<!--    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">-->
+<!--        <nz-row nzJustify="space-between" nzAlign="middle">-->
+<!--            <nz-breadcrumb>-->
+<!--                <nz-breadcrumb-item *ngFor="let i of path; let idx = index">{{ i }}</nz-breadcrumb-item>-->
+<!--            </nz-breadcrumb>-->
+<!--            <nz-space>-->
+<!--                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--                <project-select-dropdown *ngIf="!!regionId" (valueChanged)="projectChanged($event)" [regionId]="regionId"></project-select-dropdown>-->
+<!--            </nz-space>-->
+<!--        </nz-row>-->
+<!--        <h3>{{ title }}</h3>-->
+<!--    </nz-col>-->
+<!--</page-header>-->
+
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="title">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item *ngFor="let i of path; let idx = index">{{ i }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown *ngIf="!!regionId"
+                               (valueChanged)="projectChanged($event)"
+                               [regionId]="regionId">
+      </project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>

@@ -65,10 +65,16 @@ import {
 import {
   EditScheduleBackupVolumeComponent
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
+import {DashboardComponent} from "./dashboard/dashboard.component";
 import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-public.component";
+import {ListInvoicesComponent} from "./billing/invoice/list/list-invoices.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'instances', pathMatch: 'full'},
+  {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+  {
+    path: 'dashboard',
+    component: DashboardComponent
+  },
   {
     path: 'user-profile',
     component: UserProfileComponent
@@ -276,6 +282,10 @@ const routes: Routes = [
   {
     path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent
+  },
+  {
+    path: 'billing/invoices',
+    component: ListInvoicesComponent
   }
   ]
 @NgModule({
