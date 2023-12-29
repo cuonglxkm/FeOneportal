@@ -3,43 +3,37 @@ export class User {
   email: string;
   userGroups: string[];
   userPolicies: string[];
-  userOfGroups: number;
   createdDate: string;
 }
-
 export class UseCreate {
   userName: string;
   email: string;
   groupNames: string[];
   policyNames: string[];
 }
-
-export class GroupCreateUser {
-    id: number;
-    name: string;
-    numberUsers: number;
-    attachedPolicies: string[];
-    createdTime: string;
-}
-
-export class CopyUserPolicies {
-    id: number;
-    name: string;
-    groups: string[];
-    attachedPolicies: string[];
-    createdTime: string;
-}
-
 export class PermissionPolicies {
-  id: number;
   name: string;
+  effect: string;
+  resource: string;
+  actions: any;
   type: string;
+  description: string;
   attachedEntities: number;
 }
 
-export class PoliciesOfUser {
-  id: number;
+export class UserGroup {
   name: string;
-  type: string;
-  attachedVia: string[];
+  parent: string;
+  policies: string[];
+  numberOfUser: number;
+}
+
+export class DetachPoliciesOrGroups {
+  userName: string;
+  items: ItemDetach[];
+}
+
+export class ItemDetach {
+  itemName: string;
+  type: number;
 }

@@ -13,11 +13,9 @@ import {
 import { Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import {
-  GroupCreateUser,
   UseCreate,
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
@@ -34,7 +32,6 @@ export class UserCreateComponent implements OnInit {
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
-  baseResponse: BaseResponse<GroupCreateUser[]>;
   id: any;
   searchParam: string;
   loading = true;

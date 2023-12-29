@@ -5,7 +5,7 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
@@ -29,12 +29,7 @@
   </ng-template>
 </page-header>
 
-<nz-card
-  [nzLoading]="loading"
-  [nzBordered]="false"
-  nzTitle="Thông tin chính của User"
-  *ngIf="user"
->
+<nz-card [nzBordered]="false" nzTitle="Thông tin chính của User" *ngIf="user">
   <div nz-row>
     <div nz-col nzSpan="12">
       <label style="font-weight: 500"
@@ -126,7 +121,6 @@
                   nz-button
                   nzType="primary"
                   nzSearch
-                  (click)="getPolicies()"
                 >
                   <i nz-icon nzType="search"></i>
                   Search
@@ -182,7 +176,7 @@
         nzShowSizeChanger
         [nzFrontPagination]="false"
         [nzData]="listOfPolicies"
-        [nzLoading]="loading"
+        [nzLoading]="loadingPolicies"
       >
         <thead>
           <tr>
@@ -242,7 +236,7 @@
               />
             </nz-input-group>
             <ng-template #suffixButton>
-              <button nz-button nzType="primary" nzSearch (click)="getGroup()">
+              <button nz-button nzType="primary" nzSearch>
                 <i nz-icon nzType="search"></i>
                 Search
               </button>
@@ -298,7 +292,6 @@
         nzShowSizeChanger
         [nzFrontPagination]="false"
         [nzData]="listOfGroups"
-        [nzLoading]="loading"
       >
         <thead>
           <tr>
@@ -328,7 +321,7 @@
             </td>
             <td>{{ item.name }}</td>
             <td>{{ item.numberUsers }}</td>
-            <td>{{ item.attachedPolicies }}</td>
+            <td>{{ item.policies }}</td>
             <td>{{ item.createdTime }}</td>
           </tr>
         </tbody>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
@@ -12,6 +12,7 @@ import {AttachOrDetachRequest} from "../policy.model";
 import {UserGroupService} from "../../../shared/services/user-group.service";
 import {UserService} from "../../../shared/services/user.service";
 import {FormSearchUserGroup} from "../../../shared/models/user-group.model";
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 
 
@@ -155,7 +156,7 @@ export class PolicyAttachComponent implements OnInit {
     this.isLoadingEntities = true;
     //USER
     if(type == 1){
-      this.userService.search(entityName,pageSize,currentPage).subscribe(
+      this.userService.search(entityName,pageSize,currentPage, this.tokenService.get()?.userId, this.tokenService.get()?.token).subscribe(
         data => {
           this.totalData = data.totalCount;
           this.listOfData = data.records;
@@ -201,7 +202,8 @@ export class PolicyAttachComponent implements OnInit {
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
-    private notification: NzNotificationService,) {
+    private notification: NzNotificationService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
   }
 
 }

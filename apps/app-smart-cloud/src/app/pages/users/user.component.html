@@ -6,7 +6,7 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
       <nz-breadcrumb-item> Users </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -140,7 +140,7 @@
         <td (click)="getUserDetail(item.userName)">
           <a>{{ item.userName }}</a>
         </td>
-        <td>{{ item.userOfGroups }}</td>
+        <td>{{ item.userGroups.length }}</td>
         <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
       </tr>
     </tbody>

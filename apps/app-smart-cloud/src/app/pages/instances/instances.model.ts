@@ -393,13 +393,24 @@ export class Network {
 }
 
 export class BlockStorageAttachments {
-  id: number;
+  attachedInstances: any;
+  isMultiAttach: boolean;
+  isEncryption: boolean;
+  serviceStatus: any;
+  creationDate: string;
+  expirationDate: string;
+  deletedDate: any;
+  suspendDate: any;
+  suspendType: any;
+  vpcName: any;
+  volumeType: string;
+  customerEmail: any;
   cloudId: string;
   name: string;
   sizeInGB: number;
   description: string;
   instanceId: number;
-  postResizeVolumeId: number;
+  postResizeVolumeId: any;
   bootable: boolean;
   regionId: number;
   regionText: string;
@@ -411,6 +422,7 @@ export class BlockStorageAttachments {
   cloudIdentityId: number;
   projectName: string;
   projectId: number;
+  id: number;
 }
 
 export class UpdatePortInstance {

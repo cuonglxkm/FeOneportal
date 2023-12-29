@@ -5,7 +5,7 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
@@ -131,21 +131,21 @@
           />
         </td>
         <td class="fieldColor">{{ item.name }}</td>
-        <td>{{ item.numberUsers }}</td>
-        <td *ngIf="item.attachedPolicies.length == 0">None</td>
-        <td class="fieldColor" *ngIf="item.attachedPolicies.length == 1">
-          {{ item.attachedPolicies[0] }}
+        <td>{{ item.numberOfUser }}</td>
+        <td *ngIf="item.policies.length == 0">None</td>
+        <td class="fieldColor" *ngIf="item.policies.length == 1">
+          {{ item.policies[0] }}
         </td>
-        <td class="fieldColor" *ngIf="item.attachedPolicies.length == 2">
-          {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+        <td class="fieldColor" *ngIf="item.policies.length == 2">
+          {{ item.policies[0] }}, {{ item.policies[1] }}
         </td>
-        <td class="fieldColor" *ngIf="item.attachedPolicies.length > 2">
-          {{ item.attachedPolicies[0] }}, {{ item.attachedPolicies[1] }}
+        <td class="fieldColor" *ngIf="item.policies.length > 2">
+          {{ item.policies[0] }}, {{ item.policies[1] }}
           <span class="nameField">
-            and {{ item.attachedPolicies.length - 2 }} groups
+            and {{ item.policies.length - 2 }} policies
           </span>
         </td>
-        <td>{{ item.createdTime | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
       </tr>
     </tbody>
   </nz-table>

@@ -44,7 +44,7 @@ export class AddPoliciesComponent implements OnInit {
   }
 
   onProjectChange(project: ProjectModel) {
-    // this.projectId = project.id;
+    this.projectId = project.id;
     // this.getSshKeys();
   }
 

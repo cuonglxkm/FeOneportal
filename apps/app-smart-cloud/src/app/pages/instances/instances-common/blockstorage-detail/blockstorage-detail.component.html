@@ -23,10 +23,8 @@ Block Storage"
       <tbody class="ant-table-tbody">
         <tr *ngFor="let data of listOfDataBlockStorage">
           <td>
-            <label *ngIf="data.iops != 0"> SSD </label>
-            <label *ngIf="data.iops == 0 || data.iops == undefined">
-              HDD
-            </label>
+            <label *ngIf="data.volumeType == 'ssd'"> SSD </label>
+            <label *ngIf="data.volumeType == 'hdd'"> HDD </label>
           </td>
           <td>
             <label class="text-blue">

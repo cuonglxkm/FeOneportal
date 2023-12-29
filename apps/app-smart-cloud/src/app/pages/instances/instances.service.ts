@@ -13,7 +13,6 @@ export class InstancesService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      user_root_id: this.tokenService.get()?.userId,
     }),
   };
 
@@ -179,7 +178,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + url_,
-      data,
+      data, 
       this.httpOptions
     );
   }

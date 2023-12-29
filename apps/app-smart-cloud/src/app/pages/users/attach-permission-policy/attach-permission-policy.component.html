@@ -215,7 +215,7 @@
           />
         </td>
         <td class="fieldColor">{{ item.name }}</td>
-        <td>{{ item.userOfGroup }}</td>
+        <td>{{ item.numberOfUser }}</td>
         <td *ngIf="item.policies.length == 0">None</td>
         <td class="fieldColor" *ngIf="item.policies.length == 1">
           {{ item.policies[0] }}
@@ -517,10 +517,21 @@
             {{ item.name }}
           </td>
           <td>{{ item.type }}</td>
-          <td>{{ listAttachedEntities[i] }}</td>
+          <td>{{ item.attachedEntities }}</td>
         </tr>
         <tr [nzExpand]="expandSet.has(item.name)">
-          <json-editor [options]="optionJsonEditor" [data]="item"></json-editor>
+          <div class="json-viewer-bg">
+            <button
+              (click)="copyText(item)"
+              style="z-index: 1; position: absolute; right: 20px; top: 21px"
+            >
+              <span nz-icon nzType="copy" nzTheme="outline"></span> Copy JSON
+            </button>
+            <ngx-json-viewer
+              [json]="item"
+              style="position: relative"
+            ></ngx-json-viewer>
+          </div>
         </tr>
       </ng-container>
     </tbody>

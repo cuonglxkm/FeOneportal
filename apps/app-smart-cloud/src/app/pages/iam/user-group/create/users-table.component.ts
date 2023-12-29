@@ -1,6 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {UserService} from "../../../../shared/services/user.service";
 import {User} from "../../../../shared/models/user.model";
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
     selector: 'one-portal-users-table',
@@ -22,7 +23,7 @@ export class UsersTableComponent implements OnInit {
     listUsers: User[] = []
     countGroup: number = 0
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     }
 
     onInputChange(value: string) {
@@ -63,7 +64,7 @@ export class UsersTableComponent implements OnInit {
 
     getUsers() {
         this.loading = true
-        this.userService.search('', 1000000, 1).subscribe(data => {
+        this.userService.search('', 1000000, 1, this.tokenService.get()?.userId, this.tokenService.get()?.token).subscribe(data => {
             this.listUsers = data.records
             this.loading = false
 

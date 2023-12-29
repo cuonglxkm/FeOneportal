@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {RegionModel} from "../../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {UserService} from "../../../../../shared/services/user.service";
 import {User} from "../../../../../shared/models/user.model";
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
     selector: 'one-portal-create-user',
@@ -28,7 +29,7 @@ export class CreateUserComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
-                private userService: UserService) {
+                private userService: UserService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     }
 
     regionChanged(region: RegionModel) {
@@ -82,7 +83,7 @@ export class CreateUserComponent implements OnInit {
 
     getUsers() {
         this.loading = true
-        this.userService.search('', 1000000, 1).subscribe(data => {
+        this.userService.search('', 1000000, 1, this.tokenService.get()?.userId, this.tokenService.get()?.token).subscribe(data => {
             this.listUsers = data.records
             this.loading = false
             this.loading = false
