@@ -29,6 +29,8 @@ export class PolicyTableComponent {
   response: BaseResponse<PolicyModel[]>
 
   form: FormSearchPolicy = new FormSearchPolicy()
+
+  countPolicy: number = 0
   constructor(private userGroupService: UserGroupService) {
   }
   onExpandChange(name: string, checked: boolean): void {
@@ -85,6 +87,7 @@ export class PolicyTableComponent {
       this.listPolicies = data.records
       this.filteredPolicies = data.records
       this.listOfCurrentPageData = data.records
+      this.countPolicy = data.totalCount
       this.loading = false
       console.log('data', this.listPolicies)
     }, error => {
