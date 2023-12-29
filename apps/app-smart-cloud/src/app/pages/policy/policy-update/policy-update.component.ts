@@ -123,6 +123,7 @@ export class PolicyUpdateComponent implements OnInit {
           this.allService.push(objData.service);
         });
         this.doSetDataPermissionService(result).then(result => {
+          // console.log(result);
           this.listServiceWithPer = result;
           //Lấy thông tin Permission of Policy set vào local variable
           this.listServiceWithPer.forEach(serviceLocal => {
@@ -159,12 +160,12 @@ export class PolicyUpdateComponent implements OnInit {
 
     let updateRequest = new UpdatePolicyRequest();
     let listAcction = [];
-    console.log(this.panels);
+    // console.log(this.panels);
     if(this.panels.length>0){
       this.panels.forEach(panel => {
         panel.listPer.forEach(per => {
           if(per.isChecked){
-            listAcction.push(per);
+            listAcction.push(per.name);
           }
         })
       })
@@ -174,6 +175,11 @@ export class PolicyUpdateComponent implements OnInit {
       updateRequest.resource = this.policyInfo.resource;
       updateRequest.actions = listAcction;
 
+      this.policyService.createPolicy(updateRequest).subscribe(data => {
+        this.notification.success('Thành công ', 'Chỉnh sửa thành công');
+      },error => {
+        this.notification.error('Có lỗi xảy ra ', 'Chỉnh sửa thất bại');
+      })
       console.log(updateRequest);
     }else{
       this.notification.warning('Cảnh báo', 'Chưa có dịch vào được chọn');
@@ -308,9 +314,9 @@ export class PolicyUpdateComponent implements OnInit {
     for (const actionString of this.allPermission) {
       const [service, action] = actionString.split(":");
       if (actions.hasOwnProperty(service)) {
-        actions[service].push(action);
+        actions[service].push(service + ':' +action);
       } else {
-        actions[service] = [action];
+        actions[service] = [service + ':' +action];
       }
     }
 
@@ -325,7 +331,7 @@ export class PolicyUpdateComponent implements OnInit {
         objectList.push(objectData);
       }
     }
-
+    console.log(objectList);
     return objectList;
   }
 
@@ -340,18 +346,19 @@ export class PolicyUpdateComponent implements OnInit {
 
   async doSetDataPermissionService(listService: any) {
     let tempList: ServicePermissionDetail[] = [];
-    const getAllPermissionPromises: Promise<void>[] = [];
+    // const getAllPermissionPromises: Promise<void>[] = [];
     listService.forEach((srv: ObjectData) => {
       let srvPerDetail: ServicePermissionDetail = new ServicePermissionDetail();
-      console.log(srv);
       srvPerDetail.serviceName = srv.service;
-      const promise = this.doGetAllPermissionOfServices(srv.service).then((result) => {
-        srvPerDetail.listPermission = result;
-        tempList.push(srvPerDetail);
+      let listPermission : PermissionDTO[] = [];
+      srv.actions.forEach(action => {
+        listPermission.push({name: action, description:action, isChecked:false});
       });
-      getAllPermissionPromises.push(promise);
+      srvPerDetail.listPermission = listPermission;
+
+      tempList.push(srvPerDetail);
     })
-    await Promise.all(getAllPermissionPromises);
+
     return tempList;
   }
 
