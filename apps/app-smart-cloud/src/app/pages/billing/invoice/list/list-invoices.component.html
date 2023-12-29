@@ -29,7 +29,11 @@
                 </nz-select>
             </div>
             <div *nzSpaceItem>
-                <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
+                <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']"
+                                 [(ngModel)]="dateRange"
+                                 (ngModelChange)="onDateRangeChange($event)"
+                                 [nzDisabledDate]="disabledDate"
+                                 [nzFormat]="dateFormat"></nz-range-picker>
             </div>
             <div *nzSpaceItem>
                 <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
@@ -38,7 +42,7 @@
                            placeholder="Tìm kiếm mã thanh toán, mã đơn hàng"/>
                 </nz-input-group>
                 <ng-template #suffixButton>
-                    <button nz-button nzType="primary" nzSearch>
+                    <button nz-button nzType="primary" nzSearch (click)="getListInvoices()">
                         <span nz-icon nzType="search" nzTheme="outline"></span>
                         Search
                     </button>
@@ -58,7 +62,7 @@
         <nz-table  #rowSelectionTable
                    nzShowSizeChanger
                    [nzFrontPagination]="false"
-                   [nzData]="response?.records"
+                   [nzData]="listFilteredData"
                    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
                    [nzLoading]="loading"
                    [nzTotal]="response?.totalCount"
@@ -92,7 +96,7 @@
                 <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not">
                     Chưa thanh toán
                 </td>
-                <td [nzAlign]="'left'">
+                <td [nzAlign]="'left'" (click)="download(data.invoiceIssuedId)">
                     <span nz-icon nzType="download" nzTheme="outline" ></span>
                 </td>
             </tr>

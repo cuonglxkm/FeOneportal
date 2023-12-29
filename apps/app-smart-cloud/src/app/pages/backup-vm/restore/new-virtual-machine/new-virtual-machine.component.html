@@ -46,7 +46,7 @@
               <span>Chọn Volume gắn ngoài cần Restore</span>
             </div>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <nz-form-control>
             <nz-select
               id="volumeToBackupIds"
               formControlName="volumeToBackupIds"
@@ -60,9 +60,6 @@
                 [nzValue]="i.id"
                 />
             </nz-select>
-            <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <div style="margin-top: 10px">
@@ -127,7 +124,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsUseErrorTpl">
-            <nz-input-number style="width: 100%;" formControlName="monthsUse" id="monthsUse" [nzMin]="1" [nzMax]="24" [nzStep]="1" />
+            <input nz-input type="number" style="width: 100%;" formControlName="monthsUse" id="monthsUse" min="1" max="24" step="1" />
             <ng-template #monthsUseErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số</ng-container>

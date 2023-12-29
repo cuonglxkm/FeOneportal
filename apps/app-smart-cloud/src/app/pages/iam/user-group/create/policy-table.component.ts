@@ -24,6 +24,7 @@ export class PolicyTableComponent {
   listOfSelected: readonly any[] = []
 
   listPolicies: PolicyModel[]
+  filteredPolicies: PolicyModel[]
 
   response: BaseResponse<PolicyModel[]>
 
@@ -82,13 +83,26 @@ export class PolicyTableComponent {
     this.userGroupService.getPolicy(this.form).subscribe(data => {
       this.response = data
       this.listPolicies = data.records
+      this.filteredPolicies = data.records
       this.listOfCurrentPageData = data.records
       this.loading = false
       console.log('data', this.listPolicies)
     }, error => {
       this.response = null
-      this.listPolicies = null
+      this.listPolicies = []
+      this.filteredPolicies = []
     })
+  }
+
+  filterPolicies() {
+    console.log(this.value);
+    return this.listPolicies.filter(item => (!item || item.name.includes(this.value)))
+  }
+
+  searchPolicies() {
+
+    console.log("a");
+    this.filteredPolicies = this.filterPolicies()
   }
 
   sendListPoliciesSelected() {

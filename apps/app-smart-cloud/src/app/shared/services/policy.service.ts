@@ -25,7 +25,7 @@ export class PolicyService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json' ,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': this.tokenService.get()?.userId,
+// 'user_root_id': this.tokenService.get()?.userId,
     })
   };
 

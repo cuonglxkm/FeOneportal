@@ -6,8 +6,8 @@
                    placeholder="Tìm kếm tên."/>
         </nz-input-group>
         <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch>
-                <span nz-icon nzType="search" nzTheme="outline"></span>Search
+            <button nz-button nzType="primary" nzSearch htmlType="button" (click)="searchPolicies()">
+                <span nz-icon nzTheme="outline"></span>Search
             </button>
         </ng-template>
         <nz-row nzAlign="middle">
@@ -23,7 +23,7 @@
         #rowSelectionTable
         nzShowSizeChanger
         [nzFrontPagination]="false"
-        [nzData]="listPolicies"
+        [nzData]="filteredPolicies"
         (nzQueryParams)="onQueryParamsChange($event)"
         [nzLoading]="loading"
         [nzTotal]="response?.totalCount"
@@ -80,5 +80,5 @@
     </nz-table>
 </nz-card>
 <ng-template #policyCardTitle>
-    <div>Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
+    <div>Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{filteredPolicies?.length}})</div>
 </ng-template>

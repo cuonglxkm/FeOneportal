@@ -22,6 +22,7 @@ export class UsersTableComponent implements OnInit {
     loading = false
 
     listUsers: User[] = []
+    filteredUsers: User[] = []
     countGroup: number = 0
 
     response: BaseResponse<User[]>
@@ -60,6 +61,15 @@ export class UsersTableComponent implements OnInit {
         this.refreshCheckedStatus();
     }
 
+  filterPolicies() {
+    return this.listUsers.filter(item => (!item || item.userName.includes(this.value)))
+  }
+
+  searchUsers() {
+
+    this.filteredUsers = this.filterPolicies()
+  }
+
     updateCheckedSet(userName: string, checked: boolean): void {
         if (checked) {
             this.setOfCheckedId.add(userName);
@@ -73,13 +83,15 @@ export class UsersTableComponent implements OnInit {
 
     getUsers() {
         this.loading = true
-        this.userService.search('', this.pageSize, this.pageIndex).subscribe(data => {
+        this.userService.search('', 9999, 1).subscribe(data => {
             this.listUsers = data.records
+            this.filteredUsers = data.records
             this.loading = false
             this.response = data
         }, error => {
             this.response = null
-            this.listUsers = null
+            this.listUsers = []
+          this.filteredUsers=[]
         })
     }
 

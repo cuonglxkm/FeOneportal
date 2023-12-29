@@ -51,6 +51,6 @@ export class PaymentService extends BaseService {
 
   }
   export(id: number) {
-    return this.http.get(this.baseUrl + `/invoices/export/${id}`)
+    return this.http.get<string>(this.baseUrl + `/invoices/export/${id}`)
   }
 }
