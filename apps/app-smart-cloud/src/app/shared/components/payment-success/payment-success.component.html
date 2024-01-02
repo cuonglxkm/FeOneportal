@@ -1,0 +1,27 @@
+<page-header [breadcrumb]="breadcrumb" [title]="false">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item> Home </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Billing </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-card class="customCard">
+  <div class="text-center">
+    <img
+      style="margin-bottom: 10px"
+      src="assets/imgs/check-circle.png"
+      alt=""
+    />
+    <br />
+    <span style="font-weight: 600; font-size: 20px; color: #52c41a"
+      >THANH TOÁN THÀNH CÔNG</span
+    >
+    <br />
+    <span>Mã thanh toán:</span>
+    <span> - Tổng tiền:</span> <br />
+    <span> Kiểu thanh toán: </span>
+  </div>
+</nz-card>

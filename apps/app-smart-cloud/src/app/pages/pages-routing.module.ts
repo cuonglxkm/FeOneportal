@@ -67,6 +67,9 @@ import {
 } from "./schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-public.component";
+import { PaymentDetailComponent } from "./payment/payment-detail.component";
+import { PaymentSuccessComponent } from "../shared/components/payment-success/payment-success.component";
+import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 import {ListInvoicesComponent} from "./billing/invoice/list/list-invoices.component";
 import {OrderListComponent} from "./order/order-list/order-list.component";
 
@@ -283,6 +286,18 @@ const routes: Routes = [
   {
     path: 'schedule/snapshot/detail/:id',
     component: SnapshotScheduleDetailComponent
+  },
+  {
+    path: 'paymentDetail',
+    component: PaymentDetailComponent
+  },
+  {
+    path: 'paymentSuccess',
+    component: PaymentSuccessComponent
+  },
+  {
+    path: 'paymentFailed',
+    component: PaymentFailedComponent
   },
   {
     path: 'billing/invoices',

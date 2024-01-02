@@ -6,11 +6,9 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import {
-  GroupCreateUser,
-} from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
+import { UserGroup } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'one-portal-add-to-group',
@@ -21,10 +19,10 @@ import { finalize } from 'rxjs';
 export class AddToGroupComponent implements OnInit {
   regionId: number;
   projectId: number;
-  listOfGroups: GroupCreateUser[] = [];
+  listOfGroups: UserGroup[] = [];
   pageIndex = 1;
   pageSize = 10;
-  total: number = 3;
+  total: number;
   userName: any;
   searchParam: string;
   loading = true;
@@ -51,15 +49,32 @@ export class AddToGroupComponent implements OnInit {
     this.listCheckedGroupInPage = [];
     this.checkedAllInPage = false;
     this.service
-      .getGroupsCreateUser()
+      .getGroups(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
         finalize(() => {
           this.loading = false;
           this.cdr.detectChanges();
         })
       )
-      .subscribe((baseResponse) => {
-        this.listOfGroups = baseResponse.records;
+      .subscribe((data) => {
+        this.total = data.totalCount;
+        this.listOfGroups = data.records;
+        this.listOfGroups.forEach((e) => {
+          this.service
+            .getUsersOfGroup(e.name, 9999, 1)
+            .subscribe((data: any) => {
+              e.numberOfUser = data.totalCount;
+              data.records.forEach((user: any) => {
+                if (user.userName == this.userName) {
+                  this.listOfGroups = this.listOfGroups.filter(
+                    (item) => item != e
+                  );
+                }
+                this.cdr.detectChanges();
+              });
+            });
+        });
+
         console.log(this.listOfGroups);
       });
 
@@ -72,10 +87,10 @@ export class AddToGroupComponent implements OnInit {
     this.getGroup();
   }
 
-  listGroupPicked: GroupCreateUser[] = [];
+  listGroupPicked: any[] = [];
   groupNames = [];
   policyNames = new Set<string>();
-  onClickGroupItem(groupName: string, item: GroupCreateUser) {
+  onClickGroupItem(groupName: string, item: any) {
     var index = 0;
     var isAdded = true;
     this.groupNames.forEach((e) => {
@@ -157,6 +172,6 @@ export class AddToGroupComponent implements OnInit {
   navigateToCreate() {}
 
   navigateToDetail() {
-    this.router.navigate(['/app-smart-cloud/users/detail/' +this.userName]);
+    this.router.navigate(['/app-smart-cloud/users/detail/' + this.userName]);
   }
 }

@@ -645,7 +645,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.instanceToAttachId = null;
     this.volumeCreate.isMultiAttach = false;
     this.volumeCreate.isEncryption = false;
-    this.volumeCreate.vpcId = this.projectId;
+    this.volumeCreate.vpcId = this.projectId.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
@@ -684,6 +684,7 @@ export class InstancesCreateComponent implements OnInit {
     orderItemInstance.price = 1;
     orderItemInstance.serviceDuration = 1;
     this.orderItem.push(orderItemInstance);
+    console.log("order instance", orderItemInstance);
 
     let specificationVolume = JSON.stringify(this.volumeCreate);
     let orderItemVolume = new OrderItem();
@@ -713,12 +714,12 @@ export class InstancesCreateComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.message.success('Tạo mới máy ảo thành công');
+          this.message.success('Tạo order máy ảo thành công');
           this.router.navigateByUrl(`/app-smart-cloud/instances`);
         },
         (error) => {
           console.log(error.error);
-          this.message.error('Tạo mới máy ảo không thành công');
+          this.message.error('Tạo order máy ảo không thành công');
         }
       );
   }

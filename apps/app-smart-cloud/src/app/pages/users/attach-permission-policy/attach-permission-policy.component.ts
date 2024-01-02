@@ -8,13 +8,11 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { CopyUserPolicies, User } from 'src/app/shared/models/user.model';
+import { PermissionPolicies, User, UserGroup } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { concatMap, finalize, from } from 'rxjs';
+import { finalize } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UserGroupModel } from 'src/app/shared/models/user-group.model';
-import { PolicyInfo } from '../../policy/policy.model';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
@@ -29,9 +27,9 @@ export class AttachPermissionPolicyComponent implements OnInit {
   @Output() listPolicyNames = new EventEmitter();
   @Output() listGroupNames = new EventEmitter();
 
-  listOfGroups: UserGroupModel[] = [];
+  listOfGroups: UserGroup[] = [];
   listOfUsers: User[] = [];
-  listOfpolicies: PolicyInfo[] = [];
+  listOfpolicies: PermissionPolicies[] = [];
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
@@ -132,7 +130,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
       });
     });
   }
-    
+
   // Kiểm tra xem có chọn tất cả không
   checkPickAll(listPicked: any[], listCurrent: any[]): void {
     if (listPicked.length == listCurrent.length) {
@@ -156,11 +154,22 @@ export class AttachPermissionPolicyComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfGroups = data.records;
-        if (!this.isCreate) {
-          this.listOfGroups = this.listOfGroups.filter((e) => {
-            !e.groupUsers.includes(this.userName);
-          });
-        }
+        this.listOfGroups.forEach((e) => {
+          this.service
+            .getUsersOfGroup(e.name, 9999, 1)
+            .subscribe((data: any) => {
+              e.numberOfUser = data.totalCount;
+              data.records.forEach((user: any) => {
+                if (!this.isCreate && user.userName == this.userName) {
+                  this.listOfGroups = this.listOfGroups.filter(
+                    (item) => item != e
+                  );
+                }
+                this.cdr.detectChanges();
+              });
+            });
+        });
+
         console.log(this.listOfGroups);
       });
     console.log('listGroupPicked', this.listGroupPicked);
@@ -171,10 +180,10 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.getGroup();
   }
 
-  listGroupPicked: UserGroupModel[] = [];
+  listGroupPicked: UserGroup[] = [];
   groupNames = [];
   policyNames = new Set<string>();
-  onClickGroupItem(groupName: string, item: UserGroupModel) {
+  onClickGroupItem(groupName: string, item: UserGroup) {
     var index = 0;
     var isAdded = true;
     // Kiểm tra mảng có phần tử đc chọn không
@@ -241,7 +250,11 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.resetDataPicked();
     this.listUserPicked = [];
     this.service
-      .search(this.searchParam, this.pageSize, this.pageIndex)
+      .search(
+        this.searchParam,
+        this.pageSize,
+        this.pageIndex,
+      )
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -313,7 +326,6 @@ export class AttachPermissionPolicyComponent implements OnInit {
   }
 
   //Danh sách Policies
-  listAttachedEntities = [];
   getPermissionPolicies() {
     this.resetDataPicked();
     this.service
@@ -326,15 +338,14 @@ export class AttachPermissionPolicyComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfpolicies = data.records;
-        from(this.listOfpolicies)
-          .pipe(
-            concatMap((e) =>
-              this.policyService.getAttachedEntities(e.name, '', 1, 9999, 1)
-            )
-          )
-          .subscribe((result) => {
-            this.listAttachedEntities.push(result.totalCount);
-          });
+        this.listOfpolicies.forEach((e: any) => {
+          this.policyService
+            .getAttachedEntities(e.name, '', 1, 9999, 1)
+            .subscribe((result) => {
+              e.attachedEntities = result.totalCount;
+              this.cdr.detectChanges();
+            });
+        });
       });
 
     console.log('list groupNames', this.groupNames);

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {RegionModel} from "../../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../../shared/models/project.model";

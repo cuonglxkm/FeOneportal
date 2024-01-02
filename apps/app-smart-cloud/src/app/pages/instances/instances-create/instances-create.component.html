@@ -29,19 +29,16 @@
   </ul>
 </ngu-carousel> -->
 
-<page-header
-  [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'Tạo máy ảo'"
->
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo máy ảo'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Quản lý máy ảo</a>
+        <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Tạo máy ảo</a>
+        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo máy ảo </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>

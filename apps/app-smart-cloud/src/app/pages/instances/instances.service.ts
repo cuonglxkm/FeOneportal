@@ -1,14 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InstancesService extends BaseService {
-  constructor(private http: HttpClient) {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
+  constructor(
+    private http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+  ) {
     super();
   }
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
@@ -167,7 +178,8 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + url_,
-      data
+      data, 
+      this.httpOptions
     );
   }
 
@@ -229,7 +241,9 @@ export class InstancesService extends BaseService {
 
   getBlockStorage(id: number): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/instance-attachments`
+      `${
+        this.baseUrl + this.ENDPOINT.provisions
+      }/instances/${id}/instance-attachments`
     );
   }
 
