@@ -26,8 +26,8 @@ export class ListInvoicesComponent implements OnInit {
 
   status = [
     {label: 'Tất cả', value: 'all'},
-    {label: 'Đã thanh toán', value: 'ACTIVE'},
-    {label: 'Chưa thanh toán', value: 'DISABLED'}
+    {label: 'Đã thanh toán', value: 'PAID'},
+    {label: 'Chưa thanh toán', value: 'NO'}
   ]
 
   dateFormat = 'dd/MM/yyyy';
@@ -36,10 +36,16 @@ export class ListInvoicesComponent implements OnInit {
   loading = false;
   indeterminate = false;
   listOfData: readonly PaymentModel[] = [];
+  listFilteredData: readonly PaymentModel[] = [];
   listOfCurrentPageData: readonly PaymentModel[] = [];
   setOfCheckedId = new Set<number>();
 
   response: BaseResponse<PaymentModel[]>
+
+  dateRange: Date[] | null = null;
+  fromDate: Date | null = null;
+  toDate: Date | null = null;
+
 
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -61,11 +67,20 @@ export class ListInvoicesComponent implements OnInit {
     } else {
       this.selectedValue = value;
     }
+    this.getListInvoices()
+  }
+
+  onDateRangeChange(value: Date[]): void {
+    this.dateRange = value
+    this.fromDate = value[0]
+    this.toDate = value[1]
+    this.getListInvoices()
   }
 
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
+    this.getListInvoices()
   }
 
   updateCheckedSet(id: number, checked: boolean): void {
@@ -106,6 +121,21 @@ export class ListInvoicesComponent implements OnInit {
     } else {
       formSearch.code = this.value
     }
+
+    if(this.selectedValue === 'all') {
+      formSearch.status = ''
+    }
+    else {
+      formSearch.status = this.selectedValue
+    }
+
+    if(this.dateRange) {
+      formSearch.fromDate = this.dateRange[0].toLocaleString()
+      formSearch.toDate = this.dateRange[1].toLocaleString()
+    } else {
+      formSearch.fromDate = ''
+      formSearch.toDate = ''
+    }
     formSearch.pageSize = this.pageSize
     formSearch.currentPage = this.pageIndex
     this.isLoading = true
@@ -113,6 +143,7 @@ export class ListInvoicesComponent implements OnInit {
       this.isLoading = false
       this.response = data
       this.listOfData = data.records
+      this.listFilteredData = data.records
     }, error => {
       this.isLoading = false
       this.response = null
@@ -120,13 +151,32 @@ export class ListInvoicesComponent implements OnInit {
     })
   }
 
+  disabledDate = (current: Date): boolean => {
+
+    const now = new Date();
+    // Nếu "from date" đã được chọn, tính 30 ngày từ "from date", ngược lại tính từ ngày hiện tại
+    const startDate = this.fromDate || now;
+    const thirtyDaysAgo = new Date(startDate);
+    thirtyDaysAgo.setDate(startDate.getDate() - 30);
+
+    const thirtyDaysLeft = new Date();
+    thirtyDaysLeft.setDate(startDate.getDate() + 30);
+
+    // Disable các ngày trước ngày tính từ "from date"
+    return current < thirtyDaysAgo || current > thirtyDaysLeft;
+  };
+
+  download(id: number) {
+    this.paymentService.export(id).subscribe(data => {
+      this.handleFileDownload(data)
+    })
+  }
   handleFileDownload(downloadUrl: string) {
     const link = document.createElement('a');
     link.href = downloadUrl;
     link.target = '_blank'; // Open the link in a new tab/window
     link.click();
   }
-
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId
     this.getListInvoices()
