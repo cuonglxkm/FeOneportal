@@ -68,6 +68,7 @@ import {
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {DetailIpPublicComponent} from "./ip-public/detail-ip-public/detail-ip-public.component";
 import {ListInvoicesComponent} from "./billing/invoice/list/list-invoices.component";
+import {OrderListComponent} from "./order/order-list/order-list.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -286,6 +287,9 @@ const routes: Routes = [
   {
     path: 'billing/invoices',
     component: ListInvoicesComponent
+  },{
+    path: 'order/list',
+    component: OrderListComponent
   }
   ]
 @NgModule({
