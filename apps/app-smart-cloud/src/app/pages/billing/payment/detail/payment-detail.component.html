@@ -1,0 +1,141 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'Chi tiết thanh toán'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item> Home </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Billing </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<div style="background-color: white">
+  <nz-row class="customRow">
+    <nz-col style="width: 50%">
+      <span style="font-weight: 600"
+        >MÃ THANH TOÁN {{ payment.paymentNumber }}</span
+      >
+      <br />
+      <span class="nameField" *ngIf="payment.paymentLatestStatus == 'PAID'"
+        >Đã thanh toán</span
+      >
+      <span class="nameField" *ngIf="payment.paymentLatestStatus == 'INIT'"
+        >Chờ thanh toán</span
+      >
+    </nz-col>
+    <nz-col class="text-right" style="width: 50%">
+      <div>
+        <button
+          *ngIf="payment.paymentLatestStatus == 'INIT'"
+          nz-button
+          [nzType]="'primary'"
+          (click)="payNow()"
+          class="bg-success border-success"
+        >
+          <span>Thanh toán ngay</span>
+        </button>
+      </div>
+    </nz-col>
+  </nz-row>
+  <nz-row style="padding: 2%">
+    <div nz-col nzSpan="12">
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Tên khách hàng:</span>
+        <span>{{ userPayment.name || '' }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Số điện thoại:</span>
+        <span>{{ userPayment.phoneNumber }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Email:</span>
+        <span> {{ userPayment.email }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Địa chỉ:</span>
+        <span>{{ userPayment.address }}</span>
+      </nz-row>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Ngày tạo:</span>
+        <span>{{ payment.createdDate | date : 'dd/MM/yyyy' }} </span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Hình thức thanh toán:</span>
+        <span> {{ payment.paymentLatestStatus }} </span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Mã đơn hàng:</span>
+        <span>{{ payment.orderNumber }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="fw-600" style="width: 40%">Mã hóa đơn:</span>
+        <span>{{ payment.invoiceIssuedId }}</span>
+      </nz-row>
+    </div>
+  </nz-row>
+  <nz-row
+    style="
+      border-bottom: 1px solid #f2f2f2;
+      padding-left: 2%;
+      padding-bottom: 2%;
+    "
+  >
+    <span style="font-weight: 600">Thông tin dịch vụ</span> <br />
+  </nz-row>
+  <nz-table
+    style="padding: 2%"
+    #rowSelectionTable
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="listServiceInfo"
+  >
+    <thead>
+      <tr>
+        <th style="width: 20px">STT</th>
+        <th>Dịch vụ</th>
+        <th>Đơn giá (VNĐ)</th>
+        <th>Thời hạn (Tháng)</th>
+        <th>Số lượng</th>
+        <th>Số tiền (VNĐ)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listServiceInfo; let i = index">
+        <td>
+          {{ i + 1 }}
+        </td>
+        <td class="text-blue">{{ item.name }}</td>
+        <td>{{ item.price }}</td>
+        <td>{{ item.duration }}</td>
+        <td>{{ item.amount }}</td>
+        <td>{{ item.currency }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <nz-row style="padding-right: 2%">
+    <nz-col [nzSpan]="24">
+      <div style="float: right">
+        <nz-table style="width: 400px">
+          <tr>
+            <td class="cell-content fw-600">Tổng tiền</td>
+            <td class="float-right cell-content">1.000.000 VNĐ</td>
+          </tr>
+          <tr>
+            <td class="cell-content fw-600">VAT 10%</td>
+            <td class="float-right cell-content">100.000 VNĐ</td>
+          </tr>
+          <tr>
+            <td class="cell-content fw-600">Tổng tiền thanh toán</td>
+            <td class="float-right cell-content">1.000.000 VNĐ</td>
+          </tr>
+        </nz-table>
+      </div>
+    </nz-col>
+  </nz-row>
+  <nz-row style="padding: 2%">
+    <nz-col [nzSpan]="24" class="text-right">
+      <button nz-button nzType="primary">DOWNLOAD PDF</button>
+    </nz-col>
+  </nz-row>
+</div>
