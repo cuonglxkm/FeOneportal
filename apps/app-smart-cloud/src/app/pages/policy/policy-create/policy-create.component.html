@@ -83,7 +83,6 @@
                 #rowSelectionTable
                 [nzData]="serviceItem.permissions"
                 [nzFrontPagination]="false"
-                [nzLoading]="serviceItem.loading"
                 style="margin-top: 20px;"
               >
                 <thead>
@@ -99,10 +98,10 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of rowSelectionTable.data">
-                  <td [nzChecked]="setOfCheckedId.has(data.name)"
+                  <td [nzChecked]="setOfCheckedId.has(data)"
                       (nzCheckedChange)="onItemChecked(serviceItem.serviceName ,data, $event)"></td>
-                  <td>{{ data.name }}</td>
-                  <td>{{ data.description }}</td>
+                  <td>{{ data }}</td>
+                  <td>{{ data }}</td>
                 </tr>
                 </tbody>
               </nz-table>

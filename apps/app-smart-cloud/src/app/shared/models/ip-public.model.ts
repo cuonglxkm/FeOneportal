@@ -4,7 +4,6 @@ export class IpPublicModel {
   portCloudId?: string;
   customerId?: number;
   attachedVmId?: number;
-  attachedVm?:string;
   region?: number;
   regionText?: string;
   createDate?: Date;
@@ -18,4 +17,6 @@ export class IpPublicModel {
   serviceStatus?: string;
   regionId?: number;
   useIpv6?: boolean;
+  attachedVm: string;
+  SuspendType: string;
 }
