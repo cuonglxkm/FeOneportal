@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { User } from 'src/app/shared/models/user.model';
+import { UserCreate, User } from 'src/app/shared/models/user.model';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
@@ -18,7 +18,8 @@ export class AddPoliciesComponent implements OnInit {
   regionId: number;
   projectId: number;
   userName: any;
-  user: User;
+  userDetail: User;
+  userUpdate: UserCreate = new UserCreate();
   originGroupNames = [];
   originPolicyNames = [];
   groupNames: any[] = [];
@@ -39,10 +40,7 @@ export class AddPoliciesComponent implements OnInit {
 
   getuserDetail() {
     this.service.getUserByUsername(this.userName).subscribe((data: any) => {
-      this.user = data;
-      this.user.userPolicies.forEach((e) => {
-        this.policyNames.add(e);
-      });
+      this.userDetail = data;
     });
   }
 
@@ -57,38 +55,48 @@ export class AddPoliciesComponent implements OnInit {
   }
 
   onChangeGroupNames(event: any[]) {
-    this.groupNames = [];
-    this.groupNames = event.concat(this.user.userGroups);
+    this.groupNames = event;
+    console.log("list groupNames bổ sung", this.groupNames);
   }
 
   onChangePolicyNames(event: any[]) {
+    this.policyNames.clear();
     event.forEach((e) => {
       this.policyNames.add(e);
     });
+    console.log("list policyNames bổ sung", this.policyNames);
   }
 
-  addPolicies() {
-    this.user.userGroups = this.groupNames;
-    this.user.userPolicies = Array.from(this.policyNames);
-    console.log("user update", this.user);
+  addPolicies(): void {
+    //thêm groups, policies cũ của user
+    this.userDetail.userPolicies.forEach((e) => {
+      this.policyNames.add(e);
+    });
+    this.groupNames = this.groupNames.concat(this.userDetail.userGroups);
+    
+    this.userUpdate.userName = this.userDetail.userName;
+    this.userUpdate.email = this.userDetail.email;
+    this.userUpdate.groupNames = this.groupNames;
+    this.userUpdate.policyNames = Array.from(this.policyNames);
+    console.log('user update', this.userUpdate);
     this.service
-    .createOrUpdate(this.user)
-    .pipe(
-      finalize(() => {
-        this.loadingSrv.close();
-      })
-    )
-    .subscribe(
-      (data: any) => {
-        console.log(data);
-        this.message.success('Cập nhật User thành công');
-        this.navigateToDetail();
-      },
-      (error) => {
-        console.log(error.error);
-        this.message.error('Cập nhật User không thành công');
-      }
-    );
+      .createOrUpdate(this.userUpdate)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe(
+        (data: any) => {
+          console.log(data);
+          this.message.success('Cập nhật User thành công');
+          this.navigateToDetail();
+        },
+        (error) => {
+          console.log(error.error);
+          this.message.error('Cập nhật User không thành công');
+        }
+      );
   }
 
   navigateToDetail() {

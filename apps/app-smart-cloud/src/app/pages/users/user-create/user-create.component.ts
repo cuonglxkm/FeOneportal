@@ -12,9 +12,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import {
-  UseCreate,
-} from 'src/app/shared/models/user.model';
+import { UserCreate } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -26,17 +24,14 @@ import { LoadingService } from '@delon/abc/loading';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCreateComponent implements OnInit {
-  userCreate: UseCreate = new UseCreate();
+  userCreate: UserCreate = new UserCreate();
   regionId: number;
   projectId: number;
-  pageIndex = 1;
-  pageSize = 10;
-  total: number = 3;
   id: any;
   searchParam: string;
   loading = true;
   groupNames: any[] = [];
-  policyNames: any[] =[]
+  policyNames: any[] = [];
 
   form: FormGroup<{
     name: FormControl<string>;
@@ -56,14 +51,12 @@ export class UserCreateComponent implements OnInit {
     public message: NzMessageService,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.service.model.subscribe((data) => {
       console.log(data);
     });
-
   }
 
   onRegionChange(region: RegionModel) {
@@ -89,8 +82,8 @@ export class UserCreateComponent implements OnInit {
   //Tạo User
   isVisibleCreate: boolean = false;
   showModal() {
-    console.log("listGroupNames Create", this.groupNames);
-    console.log("listPolicyNames Create", this.policyNames);
+    console.log('listGroupNames Create', this.groupNames);
+    console.log('listPolicyNames Create', this.policyNames);
     this.isVisibleCreate = true;
   }
 
@@ -102,6 +95,7 @@ export class UserCreateComponent implements OnInit {
     this.userCreate.groupNames = this.groupNames;
     this.userCreate.policyNames = this.policyNames;
     this.isVisibleCreate = false;
+    console.log("user create", this.userCreate);
     this.service
       .createOrUpdate(this.userCreate)
       .pipe(
