@@ -5,6 +5,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {PaymentService} from "../../../../shared/services/payment.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -49,7 +50,7 @@ export class ListPaymentComponent implements OnInit{
 
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private paymentService: PaymentService) {
+              private paymentService: PaymentService, private router: Router,) {
   }
 
   regionChanged(region: RegionModel) {
@@ -190,5 +191,9 @@ export class ListPaymentComponent implements OnInit{
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId
     this.getListInvoices()
+  }
+
+  getPayMentDetail(id: any) {
+    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id]);
   }
 }

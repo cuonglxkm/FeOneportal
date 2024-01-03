@@ -3,6 +3,7 @@ import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {PaymentModel, PaymentSearch} from "../models/payment.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,9 @@ export class PaymentService extends BaseService {
   }
   export(id: number) {
     return this.http.get<string>(this.baseUrl + `/invoices/export/${id}`)
+  }
+
+  getPaymentById(id: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/${id}`);
   }
 }
