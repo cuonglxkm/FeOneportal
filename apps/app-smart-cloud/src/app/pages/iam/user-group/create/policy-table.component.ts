@@ -55,8 +55,8 @@ export class PolicyTableComponent {
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ name }) => this.setOfCheckedId.has(name));
-    this.indeterminate = listOfEnabledData.some(({ name }) => this.setOfCheckedId.has(name)) && !this.checked;
+    this.checked = listOfEnabledData?.every(({ name }) => this.setOfCheckedId.has(name));
+    this.indeterminate = listOfEnabledData?.some(({ name }) => this.setOfCheckedId.has(name)) && !this.checked;
   }
 
   onAllChecked(checked: boolean): void {

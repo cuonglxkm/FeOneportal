@@ -1,14 +1,24 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
   providedIn: 'root',
 })
 export class InstancesService extends BaseService {
-  constructor(private http: HttpClient) {
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
+  constructor(private http: HttpClient,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
@@ -151,7 +161,7 @@ export class InstancesService extends BaseService {
     let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {headers: this.getHeaders()});
   }
 
   delete(id: number): Observable<any> {

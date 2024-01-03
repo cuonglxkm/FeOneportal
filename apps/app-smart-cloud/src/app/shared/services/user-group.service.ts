@@ -59,7 +59,7 @@ export class UserGroupService extends BaseService {
 
     delete(nameGroup: string[]) {
         let url_ = `/groups?`;
-        nameGroup.forEach(e => {
+        nameGroup?.forEach(e => {
             url_ += `groupNames=${e}&`;
         })
         url_ = url_.replace(/[?&]$/, '');

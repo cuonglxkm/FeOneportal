@@ -111,6 +111,7 @@ export class CreateUserComponent implements OnInit {
   getUsers() {
     this.loading = true
     this.userService.search('', 1000000, 1).subscribe(data => {
+      this.loading = false
       this.listUsers = data.records
       this.listUsers.forEach(item => {
         if (!(item.userGroups.includes(this.nameGroup))) {
@@ -122,7 +123,6 @@ export class CreateUserComponent implements OnInit {
         }
         this.listOfCurrentPageData = this.listUsersUnique
       })
-      this.loading = false
     })
   }
 
@@ -148,7 +148,7 @@ export class CreateUserComponent implements OnInit {
     this.listUserSelected.forEach(item => {
       if(this.listUserNameSelected?.length > 0){
         this.listUserNameSelected.push(item.userName)
-      } else{
+      } else {
         this.listUserNameSelected = [item.userName]
       }
     })

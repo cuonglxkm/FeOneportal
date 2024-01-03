@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SecurityGroupSearchCondition} from "../models/security-group";
 import SecurityGroupRule, {
@@ -9,24 +9,30 @@ import SecurityGroupRule, {
 import {BaseService} from "./base.service";
 import {catchError, Observable, throwError} from "rxjs";
 import Pagination from "../models/pagination";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class SecurityGroupRuleService extends BaseService {
-    constructor(public http: HttpClient) {
+    constructor(public http: HttpClient,
+                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
         super();
     }
 
     private getHeaders() {
         return new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'user_root_id': this.tokenService.get()?.userId,
+            'Authorization': 'Bearer ' + this.tokenService.get()?.token
         })
     }
 
     create(form: SecurityGroupRuleCreateForm) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form))
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form), {
+            headers: this.getHeaders()
+        })
             .pipe(catchError(this.errorCode));
     }
 

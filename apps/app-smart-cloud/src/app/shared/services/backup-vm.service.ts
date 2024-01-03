@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {
   BackupPackage,
   BackupVm,
@@ -12,7 +12,8 @@ import {
 import Pagination from "../models/pagination";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import { catchError } from "rxjs/internal/operators/catchError";
+import {catchError} from "rxjs/internal/operators/catchError";
+import {ErrorModel} from "../models/error.model";
 
 @Injectable({
   providedIn: 'root'
@@ -33,15 +34,16 @@ export class BackupVmService extends BaseService {
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
+
   search(form: BackupVMFormSearch) {
     let params = new HttpParams();
-    if(form.customerId != null || form.customerId != undefined){
+    if (form.customerId != null || form.customerId != undefined) {
       params = params.append('customerId', form.customerId);
     }
-    if(form.projectId !=null) {
+    if (form.projectId != null) {
       params = params.append('projectId', form.projectId);
     }
-    if(form.regionId != null) {
+    if (form.regionId != null) {
       params = params.append('regionId', form.regionId);
     }
     if (form.status != null) {
@@ -69,21 +71,21 @@ export class BackupVmService extends BaseService {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
       headers: this.getHeaders()
     })
-        .pipe(catchError(this.errorCode))
+      .pipe(catchError(this.errorCode))
   }
 
   restoreCurrentBackupVm(form: RestoreFormCurrent) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form), {
+    return this.http.post<ErrorModel>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form), {
       headers: this.getHeaders()
     })
   }
 
-  getVolumeInstanceAttachment(id: number){
-    return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments`)
+  getVolumeInstanceAttachment(id: number) {
+    return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments`, {headers: this.getHeaders()})
   }
 
   getBackupPackages(customerId: number) {
-    return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages?customerId=${customerId}`)
+    return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages?customerId=${customerId}`,{headers: this.getHeaders()})
   }
 
   create(data: CreateBackupVmOrderData) {

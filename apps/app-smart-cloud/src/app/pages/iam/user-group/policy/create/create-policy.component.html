@@ -54,12 +54,16 @@
           </tr>
           <tr [nzExpand]="expandSet.has(data.name)">
             <div *ngIf="data.type ==='Portal managed'">
-              <pre [innerHTML]="data | prettyprint"></pre>
+              <div class="json-viewer-bg">
+                <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+              </div>
             </div>
             <div *ngIf="data.type === 'Customer Manager'">
               <nz-row nzAlign="middle" nzJustify="space-between">
                 <nz-space [nzSize]="24">
-                  <pre [innerHTML]="data | prettyprint"></pre>
+                  <div class="json-viewer-bg">
+                    <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+                  </div>
                 </nz-space>
                 <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
                   <button nz-button
@@ -132,12 +136,16 @@
       </tr>
       <tr [nzExpand]="expandSet.has(data.name)">
         <div *ngIf="data.type ==='Portal managed'">
-          <pre [innerHTML]="data | prettyprint"></pre>
+          <div class="json-viewer-bg">
+            <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+          </div>
         </div>
         <div *ngIf="data.type === 'Customer Manager'">
           <nz-row nzAlign="middle" nzJustify="space-between">
             <nz-space [nzSize]="24">
-              <pre [innerHTML]="data | prettyprint"></pre>
+              <div class="json-viewer-bg">
+                <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+              </div>
             </nz-space>
             <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
               <button nz-button

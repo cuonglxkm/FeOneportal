@@ -252,22 +252,18 @@
                           </tr>
                           <tr [nzExpand]="expandSet.has(data.name)">
                               <div *ngIf="data.type ==='Portal managed'">
-                                  <pre [innerHTML]="data | prettyprint"></pre>
+                                <div class="json-viewer-bg">
+                                  <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+                                </div>
                               </div>
-                              <div *ngIf="data.type === 'Customer Manager'">
-                                  <nz-row nzAlign="middle" nzJustify="space-between">
-                                      <nz-space [nzSize]="24">
-                                          <pre [innerHTML]="data | prettyprint"></pre>
-                                      </nz-space>
-                                      <nz-row nzAlign="middle" style="margin-bottom: 250px; margin-right: 50px;">
-                                          <button nz-button
-                                                  nzSize="default"
-                                                  style="cursor: pointer;"
-                                                  [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
-                                                  class="button-cancel">Chỉnh sửa
-                                          </button>
-                                      </nz-row>
-                                  </nz-row>
+                              <div *ngIf="data.type === 'Customer managed'">
+                                <div class="json-viewer-bg">
+                                  <button nz-button
+                                          style="z-index: 1;position: absolute; right: 20px; top: 21px;"
+                                          [routerLink]="'/app-smart-cloud/policy/update/' +  data.name">Chỉnh sửa
+                                  </button>
+                                  <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
+                                </div>
                               </div>
                           </tr>
                           </tbody>

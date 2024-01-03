@@ -64,7 +64,7 @@
                    [nzFrontPagination]="false"
                    [nzData]="listFilteredData"
                    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-                   [nzLoading]="loading"
+                   [nzLoading]="isLoading"
                    [nzTotal]="response?.totalCount"
                    [nzPageSize]="response?.pageSize"
                    [nzPageIndex]="response?.currentPage">
@@ -96,7 +96,7 @@
                 <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not">
                     Chưa thanh toán
                 </td>
-                <td [nzAlign]="'left'" (click)="download(data.invoiceIssuedId)">
+                <td [nzAlign]="'left'" style="cursor: pointer;"  (click)="download(data.invoiceIssuedId)">
                     <span nz-icon nzType="download" nzTheme="outline" ></span>
                 </td>
             </tr>

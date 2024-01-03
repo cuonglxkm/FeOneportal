@@ -71,10 +71,18 @@ export class ListInvoicesComponent implements OnInit {
   }
 
   onDateRangeChange(value: Date[]): void {
-    this.dateRange = value
-    this.fromDate = value[0]
-    this.toDate = value[1]
-    this.getListInvoices()
+    if(value) {
+      this.dateRange = value
+      this.fromDate = value[0]
+      this.toDate = value[1]
+      this.getListInvoices()
+    } else {
+      this.dateRange = null
+      // this.fromDate = value[0]
+      // this.toDate = value[1]
+      this.getListInvoices()
+    }
+
   }
 
   onInputChange(value: string) {
@@ -113,6 +121,8 @@ export class ListInvoicesComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
+
+
   getListInvoices() {
     const formSearch: PaymentSearch = new PaymentSearch()
     formSearch.customerId = this.customerId
@@ -128,8 +138,8 @@ export class ListInvoicesComponent implements OnInit {
     else {
       formSearch.status = this.selectedValue
     }
-
-    if(this.dateRange) {
+    console.log(this.dateRange)
+    if(this.dateRange?.length > 0) {
       formSearch.fromDate = this.dateRange[0].toLocaleString()
       formSearch.toDate = this.dateRange[1].toLocaleString()
     } else {
