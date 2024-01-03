@@ -8,12 +8,17 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { PermissionPolicies, User, UserGroup } from 'src/app/shared/models/user.model';
+import {
+  PermissionPolicies,
+  User,
+  UserGroup,
+} from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { PolicyService } from 'src/app/shared/services/policy.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -55,6 +60,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
     private service: UserService,
     private policyService: PolicyService,
     public message: NzMessageService,
+    private router: Router,
     private cdr: ChangeDetectorRef
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
@@ -142,6 +148,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   // Danh sách Groups
   getGroup(): void {
+    this.loading = true;
     this.resetDataPicked();
     this.listGroupPicked = [];
     this.service
@@ -247,14 +254,11 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   //Danh sách Users
   getCopyUserPlicies() {
+    this.loading = true;
     this.resetDataPicked();
     this.listUserPicked = [];
     this.service
-      .search(
-        this.searchParam,
-        this.pageSize,
-        this.pageIndex,
-      )
+      .search(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -327,6 +331,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   //Danh sách Policies
   getPermissionPolicies() {
+    this.loading = true;
     this.resetDataPicked();
     this.service
       .getPolicies(this.searchParam, this.pageSize, this.pageIndex)
@@ -406,5 +411,13 @@ export class AttachPermissionPolicyComponent implements OnInit {
     } else {
       this.expandSet.delete(name);
     }
+  }
+
+  navigateToCreateGroup() {
+    this.router.navigate(['/app-smart-cloud/iam/user-group/create']);
+  }
+
+  navigateToCreatePolicy() {
+    this.router.navigate(['/app-smart-cloud/policy/create']);
   }
 }

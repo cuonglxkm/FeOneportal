@@ -169,7 +169,7 @@
         class="bg-success border-success"
         nz-button
         nzType="primary"
-        (click)="navigateToCreate()"
+        (click)="navigateToCreateGroup()"
       >
         <i nz-icon nzType="plus"></i>
         Tạo mới
@@ -226,7 +226,7 @@
         <td class="fieldColor" *ngIf="item.policies.length > 2">
           {{ item.policies[0] }}, {{ item.policies[1] }}
           <span class="nameField">
-            and {{ item.policies.length - 2 }} groups
+            and {{ item.policies.length - 2 }} policies
           </span>
         </td>
         <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
@@ -464,7 +464,7 @@
           class="bg-success border-success"
           nz-button
           nzType="primary"
-          (click)="navigateToCreate()"
+          (click)="navigateToCreatePolicy()"
         >
           <i nz-icon nzType="plus"></i>
           Tạo mới

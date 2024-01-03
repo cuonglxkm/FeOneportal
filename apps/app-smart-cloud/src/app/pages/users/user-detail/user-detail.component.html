@@ -106,21 +106,22 @@
               <nz-input-group
                 style="width: 100%"
                 nzSearch
-                [nzAddOnAfter]="suffixButton"
+                [nzAddOnAfter]="suffixButtonPolicy"
               >
                 <input
-                  name="name"
+                  name="namePolicy"
                   nz-input
                   placeholder="Tìm kiếm tên, thời gian tạo ..."
-                  [ngModel]="searchParam"
-                  (ngModelChange)="changeSearch($event)"
+                  [ngModel]="policyParam"
+                  (ngModelChange)="changePolicyParam($event)"
                 />
               </nz-input-group>
-              <ng-template #suffixButton>
+              <ng-template #suffixButtonPolicy>
                 <button
                   nz-button
                   nzType="primary"
                   nzSearch
+                  (click)="searchPolicy()"
                 >
                   <i nz-icon nzType="search"></i>
                   Search
@@ -176,7 +177,7 @@
         nzShowSizeChanger
         [nzFrontPagination]="false"
         [nzData]="listOfPolicies"
-        [nzLoading]="loadingPolicies"
+        [nzLoading]="loading"
       >
         <thead>
           <tr>
@@ -225,18 +226,23 @@
             <nz-input-group
               style="width: 100%"
               nzSearch
-              [nzAddOnAfter]="suffixButton"
+              [nzAddOnAfter]="suffixButtonGroup"
             >
               <input
-                name="name"
+                name="nameGroup"
                 nz-input
                 placeholder="Tìm kiếm tên, thời gian tạo ..."
-                [ngModel]="searchParam"
-                (ngModelChange)="changeSearch($event)"
+                [ngModel]="groupParam"
+                (ngModelChange)="changeGroupParam($event)"
               />
             </nz-input-group>
-            <ng-template #suffixButton>
-              <button nz-button nzType="primary" nzSearch>
+            <ng-template #suffixButtonGroup>
+              <button
+                nz-button
+                nzType="primary"
+                nzSearch
+                (click)="searchGroup()"
+              >
                 <i nz-icon nzType="search"></i>
                 Search
               </button>
@@ -292,6 +298,7 @@
         nzShowSizeChanger
         [nzFrontPagination]="false"
         [nzData]="listOfGroups"
+        [nzLoading]="loading"
       >
         <thead>
           <tr>
@@ -320,8 +327,20 @@
               />
             </td>
             <td>{{ item.name }}</td>
-            <td>{{ item.numberUsers }}</td>
-            <td>{{ item.policies }}</td>
+            <td>{{ item.numberOfUser }}</td>
+            <td *ngIf="item.policies.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.policies.length == 1">
+              {{ item.policies[0] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.policies.length == 2">
+              {{ item.policies[0] }}, {{ item.policies[1] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.policies.length > 2">
+              {{ item.policies[0] }}, {{ item.policies[1] }}
+              <span class="nameField">
+                and {{ item.policies.length - 2 }} policies
+              </span>
+            </td>
             <td>{{ item.createdTime }}</td>
           </tr>
         </tbody>
