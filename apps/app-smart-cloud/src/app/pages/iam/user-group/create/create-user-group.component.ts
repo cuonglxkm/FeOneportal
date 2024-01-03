@@ -46,6 +46,8 @@ export class CreateUserGroupComponent implements OnInit {
   listUserSelected: any
   listPolicySelected: any
 
+  isVisibleCreate: boolean = false
+
   constructor(
     private fb: NonNullableFormBuilder,
     private location: Location,
@@ -57,7 +59,7 @@ export class CreateUserGroupComponent implements OnInit {
       groupName: ['', [Validators.required,
         Validators.pattern(/^[\w+=,.@\-_]{1,128}$/),
         Validators.maxLength(128)]],
-      parentName: [null as string | null, [Validators.required]],
+      parentName: [null as string | null],
       policyNames: [null as string[] | null],
       userNames: [null as string[] | null]
     });
@@ -93,7 +95,7 @@ export class CreateUserGroupComponent implements OnInit {
   submitForm(): void {
     console.log(this.validateForm.valid);
     if (this.validateForm.valid) {
-      this.listPolicySelected.forEach(item => {
+      this.listPolicySelected?.forEach(item => {
         if (this.listPoliciesSelected.length !== undefined) {
           this.listPoliciesSelected.push(item.name)
         } else {
@@ -106,7 +108,7 @@ export class CreateUserGroupComponent implements OnInit {
         }
 
       })
-      this.listUserSelected.forEach(item => {
+      this.listUserSelected?.forEach(item => {
         if (this.listUsersSelected.length !== undefined) {
           this.listUsersSelected.push(item.userName)
         } else {
@@ -120,16 +122,19 @@ export class CreateUserGroupComponent implements OnInit {
       })
       console.log(this.validateForm.getRawValue());
       this.formCreate.groupName = this.validateForm.value.groupName
-      this.formCreate.parentName = this.validateForm.value.parentName.toString()
-
+      if(this.validateForm.value.parentName != null) {
+        this.formCreate.parentName = this.validateForm.value.parentName.toString()
+      }
       this.formCreate.policyNames = this.validateForm.value.policyNames
       this.formCreate.users = this.validateForm.value.userNames
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
         console.log('data return', data)
+        this.isVisibleCreate = false
         this.notification.success('Thành công', 'Tạo mới group thành công')
         this.validateForm.reset()
         this.router.navigate(['/app-smart-cloud/iam/user-group'])
       }, error => {
+
         this.notification.error('Thất bại', 'Tạo mới thất bại')
       })
 
@@ -142,6 +147,19 @@ export class CreateUserGroupComponent implements OnInit {
         }
       });
     }
+  }
+
+  showCreatePolicy() {
+    this.isVisibleCreate = true;
+  }
+
+  handleCancel() {
+    this.isVisibleCreate = false
+  }
+
+  handleCreate(){
+
+    this.submitForm()
   }
 
   receivedListPoliciesSelected(object: any) {

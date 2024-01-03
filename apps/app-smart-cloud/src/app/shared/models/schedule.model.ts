@@ -85,3 +85,14 @@ export class FormEditSchedule {
   intervalMonth: number
   dayOfMonth: number
 }
+
+export class CapacityBackupSchedule {
+  packageType: string
+  packageName: string
+  expirationDate: any
+  totalCapacity: number
+  usedCapacity: number
+  remainingCapacity: number
+}
+
+

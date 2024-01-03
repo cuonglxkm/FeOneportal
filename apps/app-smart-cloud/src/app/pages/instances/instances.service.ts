@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders } from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -12,6 +12,7 @@ export class InstancesService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
+        'user_root_id': this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -162,7 +163,7 @@ export class InstancesService extends BaseService {
     let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {headers: this.httpOptions.headers});
   }
 
   delete(id: number): Observable<any> {
@@ -178,7 +179,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + url_,
-      data, 
+      data,
       this.httpOptions
     );
   }

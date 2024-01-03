@@ -2,7 +2,7 @@ import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {
-  BackupSchedule,
+  BackupSchedule, CapacityBackupSchedule,
   FormAction,
   FormCreateSchedule,
   FormEditSchedule,
@@ -65,26 +65,33 @@ export class ScheduleService extends BaseService {
 
   detail(customerId: number, id: number) {
     return this.http.get<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customerId=${customerId}`)
+        `/backups/schedules/${id}?customerId=${customerId}`, {headers: this.getHeaders()})
   }
 
   action(formAction: FormAction) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules/action',
-        Object.assign(formAction))
+        Object.assign(formAction), {headers: this.getHeaders()})
   }
 
   delete(customerId: number, id: number) {
     return this.http.delete<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customer=${customerId}`)
+        `/backups/schedules/${id}?customer=${customerId}`, {headers: this.getHeaders()})
   }
 
   create(formCreate: FormCreateSchedule) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
-        Object.assign(formCreate))
+        Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
   edit(formEdit: FormEditSchedule) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
-         Object.assign(formEdit))
+         Object.assign(formEdit), {headers: this.getHeaders()})
+  }
+
+  getCapacityBackup(regionId: number, projectId: number) {
+    return this.http.get<CapacityBackupSchedule[]>(this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/backups/capacity?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}&projectId=${projectId}`,
+        {headers: this.getHeaders()})
   }
 }

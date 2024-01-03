@@ -232,10 +232,13 @@
     </div>
     <div style="margin-top: 30px;">
       <h3>Thông tin dung lượng Backup</h3>
-      <nz-table>
+      <nz-table #tableScheduleCapacityBackup
+                [nzData]="responseCapacityBackup"
+                nzShowSizeChanger
+                [nzLoading]="loadingCapacity">
         <thead>
         <tr>
-          <th>Tên VPC</th>
+          <th>Tên Backup</th>
           <th>Hết hạn</th>
           <th>Dung lượng (GB)</th>
           <th>Đã dùng (GB)</th>
@@ -243,8 +246,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-
+        <tr *ngFor="let i of tableScheduleCapacityBackup.data">
+          <td>{{i.packageName}}</td>
+          <td>{{i.expirationDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+          <td>{{i.totalCapacity}}</td>
+          <td>{{i.usedCapacity}}</td>
+          <td>{{i.remainingCapacity}}</td>
         </tr>
         </tbody>
       </nz-table>

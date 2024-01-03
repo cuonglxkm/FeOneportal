@@ -1,17 +1,17 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import {PaymentModel, PaymentSearch} from "../../../../shared/models/payment.model";
+import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {PaymentService} from "../../../../shared/services/payment.service";
-import {BaseResponse} from '../../../../../../../../libs/common-utils/src';
-import {PaymentModel, PaymentSearch} from "../../../../shared/models/payment.model";
+import {RegionModel} from "../../../../shared/models/region.model";
+import {ProjectModel} from "../../../../shared/models/project.model";
 
 @Component({
-  selector: 'one-portal-list-invoices',
-  templateUrl: './list-invoices.component.html',
-  styleUrls: ['./list-invoices.component.less'],
+  selector: 'one-portal-list-payment',
+  templateUrl: './list-payment.component.html',
+  styleUrls: ['./list-payment.component.less'],
 })
-export class ListInvoicesComponent implements OnInit {
+export class ListPaymentComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -71,10 +71,18 @@ export class ListInvoicesComponent implements OnInit {
   }
 
   onDateRangeChange(value: Date[]): void {
-    this.dateRange = value
-    this.fromDate = value[0]
-    this.toDate = value[1]
-    this.getListInvoices()
+    if(value) {
+      this.dateRange = value
+      this.fromDate = value[0]
+      this.toDate = value[1]
+      this.getListInvoices()
+    } else {
+      this.dateRange = null
+      // this.fromDate = value[0]
+      // this.toDate = value[1]
+      this.getListInvoices()
+    }
+
   }
 
   onInputChange(value: string) {
@@ -109,9 +117,11 @@ export class ListInvoicesComponent implements OnInit {
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({id}) => this.updateCheckedSet(id, checked));
+        .forEach(({id}) => this.updateCheckedSet(id, checked));
     this.refreshCheckedStatus();
   }
+
+
 
   getListInvoices() {
     const formSearch: PaymentSearch = new PaymentSearch()
@@ -128,8 +138,8 @@ export class ListInvoicesComponent implements OnInit {
     else {
       formSearch.status = this.selectedValue
     }
-
-    if(this.dateRange) {
+    console.log(this.dateRange)
+    if(this.dateRange?.length > 0) {
       formSearch.fromDate = this.dateRange[0].toLocaleString()
       formSearch.toDate = this.dateRange[1].toLocaleString()
     } else {

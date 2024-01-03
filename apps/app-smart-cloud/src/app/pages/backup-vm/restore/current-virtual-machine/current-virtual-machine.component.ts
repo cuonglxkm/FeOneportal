@@ -6,7 +6,6 @@ import {BackupVmService} from "../../../../shared/services/backup-vm.service";
 import {BackupVm, RestoreFormCurrent} from "../../../../shared/models/backup-vm";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
-
 @Component({
     selector: 'one-portal-current-virtual-machine',
     templateUrl: './current-virtual-machine.component.html',
@@ -64,7 +63,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
                 this.securityGroupName = this.securityGroupUnique.join(', ')
                 console.log(this.backupVm.volumeBackups)
                 this.backupVm.volumeBackups.forEach(item1 => {
-                    if(this.listIOPS?.length > 0) {
+                    if (this.listIOPS?.length > 0) {
                         this.listIOPS.push(item1.iops)
                     } else {
                         this.listIOPS = [item1.iops]
@@ -89,7 +88,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
             this.router.navigate(['/app-smart-cloud/backup-vm'])
         }, error => {
             this.isLoading = false
-            this.notification.error('Thất bại', 'Restore backup-vm thất bại.')
+            this.notification.error('Thất bại', 'Restore backup-vm thất bại. Không có quyền thao tác với bản backup này.')
         })
     }
 }

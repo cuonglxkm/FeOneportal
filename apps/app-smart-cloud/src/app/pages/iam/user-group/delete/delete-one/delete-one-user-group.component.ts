@@ -17,6 +17,7 @@ export class DeleteOneUserGroupComponent {
 
     value: string
     formDelete: FormDeleteUserGroups = new FormDeleteUserGroups()
+    nameList: string[] = []
 
     constructor(private userGroupService: UserGroupService,
                 private notification: NzNotificationService) {
@@ -29,10 +30,11 @@ export class DeleteOneUserGroupComponent {
 
     handleOk(): void {
         this.isLoading = true
-        console.log('name',this.nameGroup)
+        console.log('name', this.nameGroup)
         console.log('name', this.nameGroup[0]?.name)
         if (this.nameGroup[0]?.name == this.value) {
-            this.userGroupService.delete(this.nameGroup[0].name).subscribe(data => {
+            this.nameList.push(this.nameGroup[0].name)
+            this.userGroupService.delete(this.nameList).subscribe(data => {
                 this.notification.success('Thành công', 'Xóa User Group ' + this.nameGroup[0]?.name + ' thành công')
                 this.isLoading = false
                 this.onOk.emit();

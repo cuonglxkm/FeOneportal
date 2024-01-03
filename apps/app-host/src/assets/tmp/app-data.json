@@ -37,7 +37,7 @@
                 {
                   "text": "Thanh toán",
                   "icon": "anticon-dashboard",
-                  "link": "/app-smart-cloud/billing/invoices"
+                  "link": "/app-smart-cloud/billing/payments"
                 }
               ]
             },
@@ -224,7 +224,7 @@
                   ]
                 }
               ]
-            }, 
+            },
             {
               "text": "Chi tiết thanh toán",
               "icon": "anticon-pay-circle",

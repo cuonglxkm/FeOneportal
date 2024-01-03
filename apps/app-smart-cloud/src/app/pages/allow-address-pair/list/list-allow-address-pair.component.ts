@@ -81,7 +81,7 @@ export class ListAllowAddressPairComponent implements OnInit {
     this.formSearch.vpcId = this.project;
     this.formSearch.region = this.region;
     this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-    this.formSearch.pageSize = 10;
+    this.formSearch.pageSize = 5;
     this.formSearch.currentPage = 1;
     if (this.value === undefined) {
       this.formSearch.search = null;
