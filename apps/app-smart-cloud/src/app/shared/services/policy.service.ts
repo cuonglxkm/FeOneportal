@@ -24,14 +24,13 @@ export class PolicyService extends BaseService {
     headers: new HttpHeaders({
       'Content-Type': 'application/json' ,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-'user_root_id': this.tokenService.get()?.userId,
+      'user_root_id': this.tokenService.get()?.userId,
     })
   };
 
     private urlIAM = this.baseUrl + this.ENDPOINT.iam + '/policies';
 
-  constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
+  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
@@ -207,15 +206,12 @@ export class PolicyService extends BaseService {
     return this.http.get<string[]>(this.urlIAM + '/services', {headers: reqHeader});
   }
 
-  getAllPermissions(name:any, token: any) : Observable<PermissionPolicyModel[]> {
-    var reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
-    });
-    return this.http.get<PermissionPolicyModel[]>(this.urlIAM + '/ServiceAction/'+name, {headers: reqHeader});
+  getAllPermissions() : Observable<string[]> {
+    return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam + '/permissions', this.httpOptions);
   }
 
   createPolicy(request: any) : Observable<any>{
     return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
   }
+
 }

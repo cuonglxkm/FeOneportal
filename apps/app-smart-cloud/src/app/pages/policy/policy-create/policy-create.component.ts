@@ -30,9 +30,32 @@ export class PolicyCreateComponent {
   setOfCheckedId = new Set<string>();
   optionData = 1;
   countOrderNum: number = 1;
-  listService: string[] = [];
   searchKey: any;
+  listService: any[] = [];
   listServiceAvaiable : string[] = [];
+  // listServiceAvaiable : string[] = [
+  //   "product",
+  //   "ippublic"
+  // ];
+  // listService = [
+  //   {
+  //     name: "product",
+  //     actions : [
+  //       "product:Update",
+  //       "product:Create",
+  //       "product:Push",
+  //     ]
+  //   },
+  //   {
+  //     name: "ippublic",
+  //     actions : [
+  //       "ippublic:Create",
+  //       "ippublic:Update",
+  //       "ippublic:Delete",
+  //     ]
+  //   }
+  // ]
+
   public optionJsonEditor: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   listOfPermissionSelectedView: string[] = [];
@@ -100,18 +123,36 @@ export class PolicyCreateComponent {
   }
 
   ngOnInit() {
-    this.service.getListServices(this.tokenService.get()?.token).subscribe(
-      (data) => {
-        this.listService = [... data];
-        this.listServiceAvaiable = data;
+    this.service.getAllPermissions()
+      .pipe()
+      .subscribe(
+      (lstPermission) => {
+        for (let item of lstPermission) {
+          let name = item.split(":")[0];
+          let index = this.listService.findIndex(value => value.name === name);
+          if (index > -1) {
+            let service = this.listService[index];
+            service.actions.push(item);
+          } else {
+            let serviceNew = {
+              name: name,
+              actions: [item]
+            }
+            this.listService.push(serviceNew);
+          }
+        }
+
+        for (let service of this.listService) {
+          this.listServiceAvaiable.push(service.name);
+        }
       }
-    );
+    )
   }
-  selectService(newServiceId: any, serviceItem: any) {
-    serviceItem.loading = true;
+  selectService(newServiceName: any, serviceItem: any) {
+    // serviceItem.loading = true;
     this.serviceArray = this.serviceArray.map(item => {
       if (item.orderNum === serviceItem.orderNum) {
-        item.serviceName = this.listServiceAvaiable.find(item => item === newServiceId);
+        item.serviceName = this.listServiceAvaiable.find(item => item === newServiceName);
         item.isVisualTablePermiss = true;
         item.isVisualSelecService = true;
         return item;
@@ -119,30 +160,32 @@ export class PolicyCreateComponent {
       return item;
     });
 
-    this.listServiceAvaiable.splice(this.listServiceAvaiable.findIndex(item => item === newServiceId),1);
+    this.listServiceAvaiable.splice(this.listServiceAvaiable.findIndex(item => item === newServiceName),1);
     if (serviceItem.isInit) {
-      const index = this.listService.findIndex(item => item === serviceItem.serviceId);
+      const index = this.listService.findIndex(item => item.name === serviceItem.serviceId);
       if (index > -1) {
-        this.listServiceAvaiable.push(this.listService[index]);
+        this.listServiceAvaiable.push(this.listService[index].name);
       }
     } else {
       serviceItem.isInit = true;
     }
 
-    this.service.getAllPermissions(serviceItem.serviceName, this.tokenService.get()?.token)
-      .pipe(finalize(() => {serviceItem.loading = false;}))
-      .subscribe(
-      (data) => {
-        serviceItem.permissions = data;
-      }
-    );
+    const index = this.listService.findIndex(item => item.name === newServiceName);
+    serviceItem.permissions = [...this.listService[index].actions];
+    // this.service.getAllPermissions(serviceItem.serviceName, this.tokenService.get()?.token)
+    //   .pipe(finalize(() => {serviceItem.loading = false;}))
+    //   .subscribe(
+    //   (data) => {
+    //     serviceItem.permissions = data;
+    //   }
+    // );
   }
 
   onItemChecked(serviceName: any, data: any, checked: boolean): void {
-    this.updateCheckedSet(checked, data.name);
+    this.updateCheckedSet(checked, data);
     this.serviceArray.map(item => {
       if (item.serviceName === serviceName) {
-        const index = item.selectedPermission.findIndex(data => data.name === data.name);
+        const index = item.selectedPermission.findIndex(item1 => item1 === data);
         if (checked && index === -1) {
           item.selectedPermission.push(data);
         } else {
@@ -161,7 +204,7 @@ export class PolicyCreateComponent {
     this.serviceArray = this.serviceArray.map(serviceItem => {
       if (serviceItem.serviceName === serviceName) {
         serviceItem.permissions
-          .forEach(permission => this.updateCheckedSet(isAddAll, permission.name));
+          .forEach(permission => this.updateCheckedSet(isAddAll, permission));
         if (isAddAll) {
           // serviceItem.selectedPermission = Object.assign({}, serviceItem.permissions);
           serviceItem.selectedPermission = [...serviceItem.permissions];
@@ -176,11 +219,11 @@ export class PolicyCreateComponent {
     this.refreshCheckedStatus(serviceName);
   }
 
-  refreshCheckedStatus(serviceId: any): void {
+  refreshCheckedStatus(serviceName: any): void {
     for (let item of this.serviceArray) {
-      if (serviceId == item.serviceId) {
-        item.checked = item.permissions.every(item => this.setOfCheckedId.has(item.id));
-        item.indeterminate = item.permissions.some(item => this.setOfCheckedId.has(item.id)) && !item.checked;
+      if (serviceName == item.serviceName) {
+        item.checked = item.permissions.every(itemPermisstion => this.setOfCheckedId.has(itemPermisstion));
+        item.indeterminate = item.permissions.some(itemPermisstion => this.setOfCheckedId.has(itemPermisstion)) && !item.checked;
         break;
       }
     }
@@ -308,7 +351,7 @@ export class PolicyCreateComponent {
   deleteService(serviceItem: any) {
     const index : number = this.serviceArray.findIndex(item => item.orderNum === serviceItem.orderNum);
     for (let per of this.serviceArray[index].selectedPermission) {
-      const indexString = this.listOfPermissionSelectedView.findIndex(item => item === per.name);
+      const indexString = this.listOfPermissionSelectedView.findIndex(item => item === per);
       if (indexString !== -1) {
         this.listOfPermissionSelectedView.splice(indexString, 1);
       }
@@ -316,9 +359,9 @@ export class PolicyCreateComponent {
 
     this.serviceArray.splice(index, 1);
     if (serviceItem.serviceName !== undefined && serviceItem.serviceName !== null) {
-      const index = this.listService.findIndex(item => item === serviceItem.serviceName);
+      const index = this.listService.findIndex(item => item.name === serviceItem.serviceName);
       if (index > -1) {
-        this.listServiceAvaiable.push(this.listService[index]);
+        this.listServiceAvaiable.push(this.listService[index].name);
       }
     }
 
