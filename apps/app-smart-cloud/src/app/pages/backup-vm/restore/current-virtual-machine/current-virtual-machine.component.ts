@@ -6,8 +6,6 @@ import {BackupVmService} from "../../../../shared/services/backup-vm.service";
 import {BackupVm, RestoreFormCurrent} from "../../../../shared/models/backup-vm";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
-import {ErrorModel} from "../../../../shared/models/error.model";
-
 @Component({
     selector: 'one-portal-current-virtual-machine',
     templateUrl: './current-virtual-machine.component.html',
@@ -34,7 +32,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
 
     listIOPS: any[] = []
     listIOPSUnique: any[] = []
-    response: ErrorModel = new ErrorModel();
+
     constructor(private location: Location,
                 private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -65,7 +63,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
                 this.securityGroupName = this.securityGroupUnique.join(', ')
                 console.log(this.backupVm.volumeBackups)
                 this.backupVm.volumeBackups.forEach(item1 => {
-                    if(this.listIOPS?.length > 0) {
+                    if (this.listIOPS?.length > 0) {
                         this.listIOPS.push(item1.iops)
                     } else {
                         this.listIOPS = [item1.iops]
@@ -86,12 +84,11 @@ export class CurrentVirtualMachineComponent implements OnInit {
         console.log('this.form', this.form)
         this.backupVmService.restoreCurrentBackupVm(this.form).subscribe(data => {
             this.isLoading = false
-            this.response = data
             this.notification.success('Thành công', 'Restore thành công')
             this.router.navigate(['/app-smart-cloud/backup-vm'])
         }, error => {
             this.isLoading = false
-            this.notification.error('Thất bại', 'Restore backup-vm thất bại. Không có quyền thao tác với bản backup này.' )
+            this.notification.error('Thất bại', 'Restore backup-vm thất bại. Không có quyền thao tác với bản backup này.')
         })
     }
 }
