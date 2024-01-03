@@ -2,7 +2,7 @@ import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {
-  BackupSchedule,
+  BackupSchedule, CapacityBackupSchedule,
   FormAction,
   FormCreateSchedule,
   FormEditSchedule,
@@ -86,5 +86,12 @@ export class ScheduleService extends BaseService {
   edit(formEdit: FormEditSchedule) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
          Object.assign(formEdit), {headers: this.getHeaders()})
+  }
+
+  getCapacityBackup(regionId: number, projectId: number) {
+    return this.http.get<CapacityBackupSchedule[]>(this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/backups/capacity?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}&projectId=${projectId}`,
+        {headers: this.getHeaders()})
   }
 }

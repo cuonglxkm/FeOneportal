@@ -6,7 +6,6 @@ import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {
   FormSearchUserGroup,
-  ItemDetachPolicy,
   RemovePolicy,
   UserGroupModel
 } from "../../../../shared/models/user-group.model";
@@ -63,8 +62,6 @@ export class DetailUserGroupComponent {
   formSearch: FormSearchUserGroup = new FormSearchUserGroup()
 
   removePolicyModel: RemovePolicy = new RemovePolicy()
-  itemDetachPolicy: ItemDetachPolicy = new ItemDetachPolicy()
-  items: ItemDetachPolicy[] = []
 
   status = [
     {label: 'Tất cả', value: 'all'},
@@ -250,7 +247,7 @@ export class DetailUserGroupComponent {
       this.groupModel = data
       this.loading = false
       this.parentGroup = this.groupModel.parent
-      data.policies.map((name) => {
+      data.policies?.map((name) => {
         this.policyService.detail(name).subscribe(data => {
           if (data) {
 
@@ -269,17 +266,21 @@ export class DetailUserGroupComponent {
     })
   }
 
+  itemName: string
+
   removePolicy() {
-    this.setOfCheckedIdPolicy.forEach(item => {
-      this.itemDetachPolicy.itemName = item
-      if (this.items?.length > 0) {
-        this.items.push(this.itemDetachPolicy)
+    console.log('selected', Array.from(new Set(this.setOfCheckedIdPolicy)))
+    let array = Array.from(new Set(this.setOfCheckedIdPolicy))
+    for(let i = 0; i < array?.length; i++){
+      this.itemName = array[i]
+      if(this.removePolicyModel.items?.length > 0) {
+        this.removePolicyModel.items.push({itemName: this.itemName})
       } else {
-        this.items = [this.itemDetachPolicy]
+        this.removePolicyModel.items = [{itemName: this.itemName}]
       }
-    })
+    }
     this.removePolicyModel.groupName = this.groupName
-    this.removePolicyModel.items = this.items
+    console.log(this.removePolicyModel)
     this.userGroupService.removePolicy(this.removePolicyModel).subscribe(data => {
       this.notification.success('Thành công', 'Gỡ policy ra khỏi Group thành công')
       this.listOfDataPolicies = []

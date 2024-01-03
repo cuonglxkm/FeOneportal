@@ -2,7 +2,12 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
-import {BackupSchedule, FormAction, FormSearchScheduleBackup} from "../../../shared/models/schedule.model";
+import {
+  BackupSchedule,
+  CapacityBackupSchedule,
+  FormAction,
+  FormSearchScheduleBackup
+} from "../../../shared/models/schedule.model";
 import {ScheduleService} from "../../../shared/services/schedule.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
@@ -56,6 +61,8 @@ export class ListScheduleBackupComponent implements OnInit{
   formAction: FormAction = new FormAction()
   idSchedule: number
 
+  responseCapacityBackup: CapacityBackupSchedule[] = []
+  loadingCapacity: boolean = false
   constructor(private router: Router,
               private backupScheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -249,6 +256,17 @@ export class ListScheduleBackupComponent implements OnInit{
     })
   }
 
+  getCapacityBackup() {
+    this.loadingCapacity = true
+    this.backupScheduleService.getCapacityBackup(this.region, this.project).subscribe(data => {
+      this.loadingCapacity = false
+      this.responseCapacityBackup = data
+    }, error => {
+      this.loadingCapacity = false
+      this.responseCapacityBackup = null
+    })
+  }
+
   ngOnInit(): void {
     console.log(this.pageSize)
     console.log(this.pageIndex)
@@ -256,5 +274,6 @@ export class ListScheduleBackupComponent implements OnInit{
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
     this.getListScheduleBackup()
+    this.getCapacityBackup()
   }
 }

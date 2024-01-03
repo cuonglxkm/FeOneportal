@@ -26,16 +26,16 @@ export class FormUserGroup {
 
 export class RemovePolicy {
   groupName: string
-  items: ItemDetachPolicy[]
+  items: [
+      {itemName: string}
+  ]
 }
 
 // export class RemoveUser {
 //   userList: string[]
 // }
 
-export class ItemDetachPolicy {
-  itemName: string
-}
+
 
 export class FormSearchPolicy {
     policyName: string
