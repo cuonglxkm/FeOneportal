@@ -105,7 +105,9 @@ import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-sche
 import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
 import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { PaymentDetailComponent } from './payment/payment-detail.component';
 import { ListInvoicesComponent } from './billing/invoice/list/list-invoices.component';
+import {OrderListComponent} from "./order/order-list/order-list.component";
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -197,8 +199,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SnapshotScheduleListComponent,
     SnapshotScheduleCreateComponent,
     SnapshotScheduleDetailComponent,
+    PaymentDetailComponent,
     ListInvoicesComponent,
     DashboardComponent,
+    OrderListComponent,
   ],
   imports: [
     CommonModule,

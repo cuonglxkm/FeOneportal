@@ -20,18 +20,6 @@ import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { G2TimelineData } from '@delon/chart/timeline';
 
-class BlockStorage {
-  id: number = 0;
-  type?: string = '';
-  name?: string = '';
-  vCPU?: string = '';
-  ram?: string = '';
-  capacity?: string = '';
-  status?: string = '';
-  typeVolume?: string = '';
-  price?: string = '000';
-}
-
 @Component({
   selector: 'one-portal-instances-detail',
   templateUrl: './instances-detail.component.html',

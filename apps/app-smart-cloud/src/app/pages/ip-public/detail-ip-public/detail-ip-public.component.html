@@ -77,7 +77,7 @@
           <p><b>Địa chỉ IP: </b> {{ipInfo.ipAddress}} </p>
         </td>
         <td style="padding-left: 35%;">
-          <p><b>Gắn vào máy ảo: </b>{{ipInfo.attachedVmId ? ipInfo.attachedVmId : 'Không có máy ảo'}}</p>
+          <p><b>Gắn vào máy ảo: </b>{{ipInfo.attachedVm ? ipInfo.attachedVm : 'Không có máy ảo'}}</p>
         </td>
       </tr>
     </nz-table>
@@ -87,7 +87,7 @@
 
     <br>
     <br>
-    <p><b>thời gian khởi tạo: </b>{{ipInfo.createDate | date : "dd/MM/YYYY"}}</p>
+    <p><b>Thời gian khởi tạo: </b>{{ipInfo.createDate | date : "dd/MM/YYYY"}}</p>
   </div>
 
   <br>

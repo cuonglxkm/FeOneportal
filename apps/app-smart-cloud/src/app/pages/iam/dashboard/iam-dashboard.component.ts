@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {FormSearchUserGroup, UserGroupModel} from "../../../shared/models/user-group.model";
@@ -7,6 +7,7 @@ import {UserGroupService} from "../../../shared/services/user-group.service";
 import Pagination from "../../../shared/models/pagination";
 import {UserService} from "../../../shared/services/user.service";
 import {BaseResponse} from "../../../../../../../libs/common-utils/src";
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 export class Count {
     count_group: number
@@ -31,7 +32,7 @@ export class IamDashboardComponent implements OnInit{
 
     count: Count = new Count()
     constructor(private userGroupService: UserGroupService,
-                private userService: UserService) {
+                private userService: UserService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     }
 
     regionChanged(region: RegionModel) {

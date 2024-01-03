@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
@@ -92,7 +92,13 @@ export class PolicyAttachComponent implements OnInit {
   }
 
   attachPolicy(){
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
+    let requestData;
+    if(this.typeSearch == 2){
+      requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
+    }else{
+      requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.userName));
+    }
+
 
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Attach Policy',

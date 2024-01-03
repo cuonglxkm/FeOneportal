@@ -11,7 +11,6 @@ import {
     PolicyInfo,
     PolicyModel
 } from "../../pages/policy/policy.model";
-import {PermissionPolicies} from "../models/user.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 

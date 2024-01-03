@@ -6,7 +6,7 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
       <nz-breadcrumb-item> Quản lý máy ảo </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -25,9 +25,7 @@
   <ng-template #content>
     <nz-row *ngIf="isSearch">
       <nz-col style="width: 70%">
-        <nz-form-label>
-          Trạng thái máy ảo
-        </nz-form-label>
+        <nz-form-label> Trạng thái máy ảo </nz-form-label>
         <nz-select
           [ngModel]="searchParam.status"
           [nzPlaceHolder]="'Trạng thái máy ảo'"
@@ -65,22 +63,22 @@
           </button>
         </ng-template>
       </nz-col>
-      <nz-col class="text-right" style="width: 30%;">
-          <button
-            class="bg-success border-success"
-            nz-button
-            nzType="primary"
-            (click)="navigateToCreate()"
+      <nz-col class="text-right" style="width: 30%">
+        <button
+          class="bg-success border-success"
+          nz-button
+          nzType="primary"
+          (click)="navigateToCreate()"
+        >
+          <span
+            nz-icon
+            nzType="plus"
+            nzTheme="outline"
+            style="margin-right: 10px"
           >
-            <span
-              nz-icon
-              nzType="plus"
-              nzTheme="outline"
-              style="margin-right: 10px"
-            >
-            </span>
-            Tạo mới
-          </button>
+          </span>
+          Tạo mới
+        </button>
       </nz-col>
     </nz-row>
   </ng-template>

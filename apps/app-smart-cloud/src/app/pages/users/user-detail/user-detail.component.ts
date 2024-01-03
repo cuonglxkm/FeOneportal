@@ -7,13 +7,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import {
-  GroupCreateUser,
-  PoliciesOfUser,
+  DetachPoliciesOrGroups,
+  ItemDetach,
   User,
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { finalize } from 'rxjs';
-import { te } from 'date-fns/locale';
+import { concatMap, from } from 'rxjs';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -22,17 +21,15 @@ import { te } from 'date-fns/locale';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserDetailComponent implements OnInit {
-  user: User;
+  user: User = new User();
   regionId: number;
   projectId: number;
-  listOfGroups: GroupCreateUser[] = [];
-  listOfPolicies: PoliciesOfUser[] = [];
-  pageIndex = 1;
-  pageSize = 10;
-  total: number = 3;
+  listOfGroups: any[] = [];
+  listOfPolicies: any[] = [];
+  listGroupNames: string[] = [];
+  listPolicyNames: string[] = [];
   userName: any;
   searchParam: string;
-  loading = true;
   typePolicy: string = '';
 
   filterStatus = [
@@ -54,15 +51,27 @@ export class UserDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let test = new User();
-    test.userName = 'nguyen';
-    test.email = 'nguyen@gmail.com';
-    test.userGroups = ['dkfjaldk'];
-    test.createdDate = '2023-11-20T01:34:12.367Z';
-    this.user = test;
     this.userName = this.activatedRoute.snapshot.paramMap.get('userName');
-    this.getGroup();
-    this.getPolicies();
+    this.getUserByUserName();
+  }
+
+  getUserByUserName() {
+    this.listGroupNames = [];
+    this.listPolicyNames = [];
+    this.service
+      .getUserByUsername(
+        this.userName,
+      )
+      .subscribe((data: any) => {
+        this.user = data;
+        console.log('user detail', this.user);
+        this.listGroupNames = this.user.userGroups;
+        this.listGroupNames = this.listGroupNames.filter((e) => e != '');
+        this.listPolicyNames = this.user.userPolicies;
+        this.listPolicyNames = this.listPolicyNames.filter((e) => e != '');
+        this.getGroup();
+        this.getPolicies();
+      });
   }
 
   onRegionChange(region: RegionModel) {
@@ -82,50 +91,52 @@ export class UserDetailComponent implements OnInit {
   }
 
   //Danh sách Policies
+  loadingPolicies: boolean = true;
   getPolicies() {
-    this.listPolicyPicked = [];
+    this.listOfPolicies = [];
+    this.listItemDetachPolicy = [];
     this.listCheckedPolicyInPage = [];
     this.checkedAllPolicyInPage = false;
-    this.service
-      .getPoliciesOfUser()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe((data) => {
-        this.listOfPolicies = data.records;
+    from(this.listPolicyNames)
+      .pipe(concatMap((e) => this.service.getPolicy(e)))
+      .subscribe((result) => {
+        this.listOfPolicies = this.listOfPolicies.concat([result]);
+        this.cdr.detectChanges();
       });
-    console.log('list policy picked', this.listPolicyPicked);
+
+    this.loadingPolicies = false;
+    console.log('Policies of user', this.listOfPolicies);
   }
 
   reloadPolicies() {
-    this.listOfPolicies = [];
+    this.loadingPolicies = true;
     this.getPolicies();
   }
 
-  listPolicyPicked = [];
+  listItemDetachPolicy: ItemDetach[] = [];
   onClickPolicyItem(policyName: string) {
     var index = 0;
     var isAdded = true;
-    this.listPolicyPicked.forEach((e) => {
-      if (e == policyName) {
-        this.listPolicyPicked.splice(index, 1);
+    this.listItemDetachPolicy.forEach((e) => {
+      if (e.itemName == policyName) {
+        this.listItemDetachPolicy.splice(index, 1);
         isAdded = false;
       }
       index++;
     });
     if (isAdded) {
-      this.listPolicyPicked.push(policyName);
+      var itemDetach: ItemDetach = new ItemDetach();
+      itemDetach.itemName = policyName;
+      itemDetach.type = 2;
+      this.listItemDetachPolicy.push(itemDetach);
     }
 
-    if (this.listPolicyPicked.length == this.listOfPolicies.length) {
+    if (this.listItemDetachPolicy.length == this.listOfPolicies.length) {
       this.checkedAllPolicyInPage = true;
     } else {
       this.checkedAllPolicyInPage = false;
     }
-    console.log('list policy picked', this.listPolicyPicked);
+    console.log('list detach policy picked', this.listItemDetachPolicy);
   }
 
   listCheckedPolicyInPage = [];
@@ -137,35 +148,42 @@ export class UserDetailComponent implements OnInit {
     });
     this.listCheckedPolicyInPage = listChecked;
     if (checked == true) {
-      this.listPolicyPicked = [];
+      this.listItemDetachPolicy = [];
       this.listOfPolicies.forEach((e) => {
-        this.listPolicyPicked.push(e.name);
+        var itemDetach: ItemDetach = new ItemDetach();
+        itemDetach.itemName = e.name;
+        itemDetach.type = 2;
+        this.listItemDetachPolicy.push(itemDetach);
       });
     } else {
-      this.listPolicyPicked = [];
+      this.listItemDetachPolicy = [];
     }
-    console.log('list policy picked', this.listPolicyPicked);
+    console.log('list detach policy picked', this.listItemDetachPolicy);
+  }
+
+  deletePolicies() {
+    var detachPolicy: DetachPoliciesOrGroups = new DetachPoliciesOrGroups();
+    detachPolicy.userName = this.userName;
+    detachPolicy.items = this.listItemDetachPolicy;
+    this.service.detachPoliciesOrGroups(detachPolicy).subscribe(() => {
+      this.getUserByUserName();
+    });
   }
 
   // Danh sách Groups
   getGroup(): void {
-    this.listGroupPicked = [];
+    this.listOfGroups = [];
+    this.listItemDetachGroup = [];
     this.listCheckedGroupInPage = [];
     this.checkedAllGroupInPage = false;
-    this.service
-      .getGroupsCreateUser()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe((baseResponse) => {
-        this.listOfGroups = baseResponse.records;
-        console.log(this.listOfGroups);
+    from(this.listGroupNames)
+      .pipe(concatMap((e) => this.service.getGroup(e)))
+      .subscribe((result) => {
+        this.listOfGroups = this.listOfGroups.concat([result]);
+        this.cdr.detectChanges();
       });
 
-    console.log('list group picked', this.listGroupPicked);
+    console.log('groups of user', this.listOfGroups);
   }
 
   reloadGroupOfUser() {
@@ -173,28 +191,31 @@ export class UserDetailComponent implements OnInit {
     this.getGroup();
   }
 
-  listGroupPicked = [];
+  listItemDetachGroup: ItemDetach[] = [];
   onClickGroupItem(groupName: string) {
     var index = 0;
     var isAdded = true;
-    this.listGroupPicked.forEach((e) => {
-      if (e == groupName) {
-        this.listGroupPicked.splice(index, 1);
+    this.listItemDetachGroup.forEach((e) => {
+      if (e.itemName == groupName) {
+        this.listItemDetachGroup.splice(index, 1);
         isAdded = false;
       }
       index++;
     });
     if (isAdded) {
-      this.listGroupPicked.push(groupName);
+      var itemDetach: ItemDetach = new ItemDetach();
+      itemDetach.itemName = groupName;
+      itemDetach.type = 1;
+      this.listItemDetachGroup.push(itemDetach);
     }
 
-    if (this.listGroupPicked.length == this.listOfGroups.length) {
+    if (this.listItemDetachGroup.length == this.listOfGroups.length) {
       this.checkedAllGroupInPage = true;
     } else {
       this.checkedAllGroupInPage = false;
     }
 
-    console.log('list group picked', this.listGroupPicked);
+    console.log('list detach group picked', this.listItemDetachGroup);
   }
 
   listCheckedGroupInPage = [];
@@ -206,19 +227,28 @@ export class UserDetailComponent implements OnInit {
     });
     this.listCheckedGroupInPage = listChecked;
     if (checked == true) {
-      this.listGroupPicked = [];
+      this.listItemDetachGroup = [];
       this.listOfGroups.forEach((e) => {
-        this.listGroupPicked.push(e.name);
+        var itemDetach: ItemDetach = new ItemDetach();
+        itemDetach.itemName = e.name;
+        itemDetach.type = 1;
+        this.listItemDetachGroup.push(itemDetach);
       });
     } else {
-      this.listGroupPicked = [];
+      this.listItemDetachGroup = [];
     }
-    console.log('list group picked', this.listGroupPicked);
+    console.log('list detach group picked', this.listItemDetachGroup);
     this.cdr.detectChanges();
   }
 
-  deletePolicies() {}
-  deleteGroups() {}
+  deleteGroups() {
+    var detachGroup: DetachPoliciesOrGroups = new DetachPoliciesOrGroups();
+    detachGroup.userName = this.userName;
+    detachGroup.items = this.listItemDetachGroup;
+    this.service.detachPoliciesOrGroups(detachGroup).subscribe(() => {
+      this.getUserByUserName();
+    });
+  }
 
   navigateToAddPolicies() {
     this.router.navigate([

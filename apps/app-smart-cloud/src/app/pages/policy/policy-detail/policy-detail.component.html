@@ -179,7 +179,7 @@
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
               <td>{{ data.name }}</td>
-              <td>{{ data.type}}</td>
+              <td>{{ data.type==1?'USER':'GROUP USERS'}}</td>
             </tr>
             </tbody>
           </nz-table>

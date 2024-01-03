@@ -1,15 +1,16 @@
 <page-header>
   <nz-breadcrumb style="float: left">
     <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Quản lý máy ảo</a>
+      <a [routerLink]="['/']">Home</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Chỉnh sửa máy ảo</a>
+      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
     </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Chỉnh sửa máy ảo </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right">
     <region-select-dropdown
-      (valueChanged)="onRegionChange($event)" 
+      (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
     <project-select-dropdown
       [regionId]="region"
@@ -17,8 +18,8 @@
     ></project-select-dropdown>
   </div>
   <div>
-    <nz-row style="margin-bottom: -10px;">
-      <h1 style="width: 50%; font-size: 20px;">Chỉnh sửa máy ảo</h1>
+    <nz-row style="margin-bottom: -10px">
+      <h1 style="width: 50%; font-size: 20px">Chỉnh sửa máy ảo</h1>
       <div class="text-right non-pointer" style="width: 50%">
         <button
           nz-button
@@ -326,7 +327,7 @@
       ></nz-col>
     </nz-row>
 
-    <nz-row style="margin-bottom: -40px;" nzGutter="16">
+    <nz-row style="margin-bottom: -40px" nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
@@ -344,7 +345,7 @@
                 [(ngModel)]="numberMonth"
                 [ngModelOptions]="{ standalone: true }"
               ></nz-input-number>
-              <div style="margin-left: 20px;">
+              <div style="margin-left: 20px">
                 Thời gian bắt đầu sử dụng:
                 {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
               </div>

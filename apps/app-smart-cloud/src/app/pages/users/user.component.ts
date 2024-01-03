@@ -98,7 +98,7 @@ export class UserComponent implements OnInit {
   handleOkDelete() {
     this.isVisibleDelete = false;
     if (this.codeVerify == this.userDelete) {
-      this.service.deleteUser(this.userDelete).subscribe((data) => {
+      this.service.deleteUsers(this.listUserPicked).subscribe((data) => {
         console.log(data);
         this.message.success('Xóa User thành công');
         this.reloadTable();
