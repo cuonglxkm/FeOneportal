@@ -12,20 +12,20 @@
   <nz-row class="customRow">
     <nz-col style="width: 50%">
       <span style="font-weight: 600"
-        >MÃ THANH TOÁN {{ payment.paymentCode }}</span
+        >MÃ THANH TOÁN {{ payment.paymentNumber }}</span
       >
       <br />
-      <span class="nameField" *ngIf="payment.status == 'DATHANHTOAN'"
+      <span class="nameField" *ngIf="payment.paymentLatestStatus == 'PAID'"
         >Đã thanh toán</span
       >
-      <span class="nameField" *ngIf="payment.status == 'CHOTHANHTOAN'"
+      <span class="nameField" *ngIf="payment.paymentLatestStatus == 'INIT'"
         >Chờ thanh toán</span
       >
     </nz-col>
     <nz-col class="text-right" style="width: 50%">
       <div>
         <button
-          *ngIf="payment.status == 'CHOTHANHTOAN'"
+          *ngIf="payment.paymentLatestStatus == 'INIT'"
           nz-button
           [nzType]="'primary'"
           (click)="payNow()"
@@ -62,15 +62,15 @@
       </nz-row>
       <nz-row style="height: 50px">
         <span class="fw-600" style="width: 40%">Hình thức thanh toán:</span>
-        <span> {{ payment.paymentMethod }} </span>
+        <span> {{ payment.paymentLatestStatus }} </span>
       </nz-row>
       <nz-row style="height: 50px">
         <span class="fw-600" style="width: 40%">Mã đơn hàng:</span>
-        <span>{{ payment.orderCode }}</span>
+        <span>{{ payment.orderNumber }}</span>
       </nz-row>
       <nz-row style="height: 50px">
         <span class="fw-600" style="width: 40%">Mã hóa đơn:</span>
-        <span>{{ payment.billCode }}</span>
+        <span>{{ payment.invoiceIssuedId }}</span>
       </nz-row>
     </div>
   </nz-row>
