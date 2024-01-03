@@ -81,13 +81,9 @@
         </nz-form-control>
       </nz-form-item>
     </nz-card>
-
-    <nz-form-item>
-      <nz-form-control>
-        <one-portal-policy-table formControlName="policyNames" id="policyNames"
-                                 (listPoliciesSelected)="receivedListPoliciesSelected($event)"/>
-      </nz-form-control>
-    </nz-form-item>
+    <div>
+      <one-portal-policy-table (listPoliciesSelected)="receivedListPoliciesSelected($event)"/>
+    </div>
     <nz-form-item>
       <nz-form-control>
         <one-portal-users-table formControlName="userNames" id="userNames"

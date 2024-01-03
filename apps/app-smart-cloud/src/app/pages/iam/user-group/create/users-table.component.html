@@ -5,7 +5,7 @@
              placeholder="Tìm kếm tên..."/>
     </nz-input-group>
     <ng-template #suffixButton>
-      <button nz-button nzType="primary" nzSearch>
+      <button nz-button nzType="primary" nzSearch (click)="searchUsers()">
         <span nz-icon nzType="search" nzTheme="outline"></span>Search
       </button>
     </ng-template>
@@ -22,11 +22,11 @@
           #rowSelectionTable
           nzShowSizeChanger
           [nzFrontPagination]="false"
-          [nzData]="listUsers"
+          [nzData]="filteredUsers"
           (nzQueryParams)="onQueryParamsChange($event)"
           [nzLoading]="loading"
           [nzTotal]="response?.totalCount"
-          [nzPageSize]="response?.pageSize"
+          [nzPageSize]="5"
           [nzPageIndex]="response?.currentPage">
     <thead>
     <tr>
@@ -55,5 +55,5 @@
   </nz-table>
 </nz-card>
 <ng-template #userCardTitle>
-  <div>Thêm User vào Group (Optional) ({{listOfSelected?.length}}/{{listUsers?.length}})</div>
+  <div>Thêm User vào Group (Optional) ({{listOfSelected?.length}}/{{filteredUsers?.length}})</div>
 </ng-template>

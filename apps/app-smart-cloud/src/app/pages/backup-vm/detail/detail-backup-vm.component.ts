@@ -50,7 +50,7 @@ export class DetailBackupVmComponent implements OnInit {
         const selectedDetailBackupId = this.route.snapshot.paramMap.get('id')
         console.log(selectedDetailBackupId);
         if (selectedDetailBackupId !== undefined) {
-            this.backupVmService.detail(parseInt(selectedDetailBackupId), this.userId).subscribe(data => {
+            this.backupVmService.detail(parseInt(selectedDetailBackupId)).subscribe(data => {
                 this.backupVm = data
                 this.systemInfoBackups = this.backupVm.systemInfoBackups
                 this.volumeBackups = this.backupVm.volumeBackups

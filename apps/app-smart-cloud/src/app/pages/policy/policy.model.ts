@@ -23,7 +23,7 @@ export interface AttachedEntitiesDTO{
 
 export class PermissionDTO{
   name: string;
-  description: number;
+  description: any;
   isChecked = false;
 }
 

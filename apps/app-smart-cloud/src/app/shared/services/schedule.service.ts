@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {
@@ -9,6 +9,7 @@ import {
   FormSearchScheduleBackup
 } from "../models/schedule.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,16 @@ import {BaseResponse} from "../../../../../../libs/common-utils/src";
 
 export class ScheduleService extends BaseService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
   private getHeaders() {
     return new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
 

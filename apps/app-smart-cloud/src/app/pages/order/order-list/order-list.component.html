@@ -1,0 +1,87 @@
+<one-portal-header
+  title="Danh sách đơn hàng"
+  [path]="['Home', 'Billing', 'Đơn hàng']"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content>
+  <nz-card>
+    <div>
+      <nz-row nzAlign="middle" style="margin-top: 20px;" nzJustify="space-between">
+        <nz-space [nzSize]="24">
+          <div style="margin-right: 10px;">Trạng thái</div>
+          <div *nzSpaceItem>
+            <nz-select [(ngModel)]="searchStatus"
+                       style="width: 160px;"
+                       (ngModelChange)="onChange($event)"
+                       nzPlaceHolder="Tất cả trạng thái">
+              <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+            </nz-select>
+          </div>
+        </nz-space>
+        <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
+        <div  style="width: 410px;">
+          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+            <input style="width: 380px;" [(ngModel)]="searchName" (input)="onInputChange($event.target['value'])"
+                   type="text" nz-input
+                   placeholder="Tìm kếm mã đơn hàng, tên dịch vụ..."/>
+          </nz-input-group>
+          <ng-template #suffixButton>
+            <button nz-button nzType="primary" nzSearch>
+              <span nz-icon nzType="search" nzTheme="outline"></span>
+              Search
+            </button>
+          </ng-template>
+        </div>
+
+        <nz-row nzAlign="middle">
+          <button class="bg-success border-success"
+                  nz-button
+                  nzType="primary"
+                  (click)="navigateToCreate()"
+          >
+            <span
+              nz-icon nzType="plus"
+              nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
+            </span>
+            Tạo mới
+          </button>
+        </nz-row>
+      </nz-row>
+    </div>
+
+    <nz-table
+      style="margin-top: 2%;"
+      class="table-data"
+      #rowSelectionTable
+      [nzData]="listOfData"
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzTotal]="totalData"
+      [nzPageSize]="pageSize"
+      [nzPageIndex]="currentPage"
+      [nzLoading]="isLoadingEntities"
+      (nzQueryParams)="onQueryParamsChange($event)"
+    >
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Mã đơn hàng</th>
+        <th>Dịch vụ</th>
+        <th>Thời gian đặt hàng</th>
+        <th>Trạng thái cài đặt</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td>1</td>
+        <td>{{data.orderCode}}</td>
+        <td>{{ data.note }}</td>
+        <td>{{ data.orderDate | date: 'dd/MM/YYYY' }}</td>
+        <td>{{ data.statusCode }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </nz-card>
+</nz-content>

@@ -14,7 +14,7 @@ import {PolicyService} from "../../../../shared/services/policy.service";
 import {PolicyModel} from "../../../policy/policy.model";
 import {User} from "../../../../shared/models/user.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {Subject} from "rxjs";
+import {FormControl, FormGroup, NonNullableFormBuilder} from '@angular/forms';
 
 @Component({
   selector: 'one-portal-detail-user-group',
@@ -24,7 +24,9 @@ import {Subject} from "rxjs";
 export class DetailUserGroupComponent {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
+
   value?: string;
+
   isVisibleEdit: boolean = false
 
   loading = false;
@@ -36,7 +38,7 @@ export class DetailUserGroupComponent {
   checkedPolicy = false;
 
   listOfDataPolicies: PolicyModel[] = []
-  listPolicies: PolicyModel[] = []
+  filteredPolicies: PolicyModel[] = []
 
   listOfCurrentPageDataUser: readonly User[] = [];
   setOfCheckedIdUser = new Set<string>();
@@ -54,7 +56,7 @@ export class DetailUserGroupComponent {
 
   listUsersFromGroup: User[] = []
   listUsers: User[] = []
-
+  filteredUsers: User[] = []
 
   countUser = 0
 
@@ -74,11 +76,26 @@ export class DetailUserGroupComponent {
 
   policyModel: PolicyModel
 
+  filterPoliciesForm: FormGroup<{
+    keyword: FormControl<string>;
+    status: FormControl<string>;
+  }> = this.fb.group({
+    keyword: [''],
+    status: ['all'],
+  });
+
+  filterUsersForm: FormGroup<{
+    keyword: FormControl<string>;
+  }> = this.fb.group({
+    keyword: [''],
+  });
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private userGroupService: UserGroupService,
               private policyService: PolicyService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private fb: NonNullableFormBuilder) {
   }
 
   onExpandChange(name: string, checked: boolean): void {
@@ -102,7 +119,7 @@ export class DetailUserGroupComponent {
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
-    if(this.value) {
+    if (this.value) {
 
     }
   }
@@ -207,19 +224,22 @@ export class DetailUserGroupComponent {
 
   }
 
+  filterUsers(condition: Partial<{ keyword: string; }>) {
+    const {keyword} = condition
+    return this.listUsers.filter(item => (!item || item.userName.includes(keyword)))
+  }
+
   searchUsers() {
-    // this.listUsers.filter(item => {
-    //   item.userName.toLowerCase().includes(this.value.toLowerCase())
-    // })
+    this.filteredUsers = this.filterUsers(this.filterUsersForm.value)
+  }
+
+  filterPolicies(condition: Partial<{ keyword: string; status: string; }>) {
+    const {keyword, status} = condition;
+    return this.listOfDataPolicies.filter(item => (!item || item.name.includes(keyword)) && (status === 'all' || item.type === status))
   }
 
   searchPolicies() {
-    // if(this.value) {
-    //   this.listOfDataPolicies = this.listOfDataPolicies.filter(item => {
-    //     item.name.toLowerCase().includes(this.value.toLowerCase())
-    //   })
-    // }
-
+    this.filteredPolicies = this.filterPolicies(this.filterPoliciesForm.value)
   }
 
 
@@ -233,15 +253,18 @@ export class DetailUserGroupComponent {
       data.policies.map((name) => {
         this.policyService.detail(name).subscribe(data => {
           if (data) {
-            console.log(data, 'data');
+
             this.listOfDataPolicies = [...this.listOfDataPolicies, data]
+              console.log(this.listOfDataPolicies);
+            this.filteredPolicies = this.listOfDataPolicies
+            console.log(this.filteredPolicies);
           }
         })
       })
     })
-    console.log('list policies', this.listOfDataPolicies)
     this.userGroupService.getUserByGroup(groupName, 5, 1).subscribe(data3 => {
       this.listUsers = data3.records
+      this.filteredUsers = data3.records
       console.log('user', this.listUsers)
     })
   }
@@ -260,6 +283,7 @@ export class DetailUserGroupComponent {
     this.userGroupService.removePolicy(this.removePolicyModel).subscribe(data => {
       this.notification.success('Thành công', 'Gỡ policy ra khỏi Group thành công')
       this.listOfDataPolicies = []
+      this.filteredPolicies = []
       this.getData(this.groupName)
     }, error => {
       this.notification.error('Thất bại', 'Gỡ policy ra khỏi Group thất bại')
@@ -275,14 +299,14 @@ export class DetailUserGroupComponent {
     })
   }
 
-  ngOnInit()
-    :
-    void {
+  ngOnInit(): void {
     this.route.params.subscribe((params) => {
+      this.listOfDataPolicies = []
+      this.filteredPolicies = []
       this.groupName = params['name']
       if (this.groupName !== undefined) {
         this.getData(this.groupName)
-        this.countUser = this.listUsersFromGroup.length
+        // this.countUser = this.listUsersFromGroup.length
       }
     })
   }

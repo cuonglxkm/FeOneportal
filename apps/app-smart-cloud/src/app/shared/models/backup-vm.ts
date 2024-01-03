@@ -81,7 +81,6 @@ export class BackupVMFormSearch {
 }
 
 export class RestoreFormCurrent {
-  customerId: number
   instanceBackupId: number
 }
 

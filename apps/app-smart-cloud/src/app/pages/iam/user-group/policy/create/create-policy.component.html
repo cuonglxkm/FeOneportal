@@ -77,7 +77,7 @@
       </nz-collapse-panel>
     </nz-collapse>
   </nz-card>
-  <nz-card nzTitle="Danh sách Policy chưa có trong Group ({{listPoliciesUnique?.length}})">
+  <nz-card nzTitle="Danh sách Policy chưa có trong Group">
     <nz-row nzAlign="middle" style="margin-bottom: 22px;" nzJustify="space-between">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
@@ -87,7 +87,7 @@
                    placeholder="Tìm kếm tên..."/>
           </nz-input-group>
           <ng-template #suffixButton2>
-            <button nz-button nzType="primary" nzSearch (click)="getPolicies()">
+            <button nz-button nzType="primary" nzSearch (click)="searchPolicies()">
               <span nz-icon nzType="search" nzTheme="outline"></span>Search
             </button>
           </ng-template>
@@ -103,7 +103,7 @@
       #rowSelectionTable2
       nzShowPagination
       nzShowSizeChanger
-      [nzData]="listPoliciesUnique"
+      [nzData]="filteredPoliciesUnique"
       [nzPageSize]="5">
       <thead>
       <tr>
