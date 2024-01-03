@@ -8,7 +8,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
-import { UserGroup } from 'src/app/shared/models/user.model';
+import { User, UserCreate, UserGroup } from 'src/app/shared/models/user.model';
+import { LoadingService } from '@delon/abc/loading';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'one-portal-add-to-group',
@@ -24,6 +26,8 @@ export class AddToGroupComponent implements OnInit {
   pageSize = 10;
   total: number;
   userName: any;
+  userDetail: User;
+  userUpdate: UserCreate = new UserCreate();
   searchParam: string;
   loading = true;
   typePolicy: string = '';
@@ -33,12 +37,20 @@ export class AddToGroupComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    public message: NzMessageService,
+    private loadingSrv: LoadingService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.userName = this.activatedRoute.snapshot.paramMap.get('userName');
     this.getGroup();
+    this.getuserDetail();
+  }
+  getuserDetail() {
+    this.service.getUserByUsername(this.userName).subscribe((data: any) => {
+      this.userDetail = data;
+    });
   }
 
   // Danh sách Groups
@@ -87,7 +99,7 @@ export class AddToGroupComponent implements OnInit {
     this.getGroup();
   }
 
-  listGroupPicked: any[] = [];
+  listGroupPicked: UserGroup[] = [];
   groupNames = [];
   policyNames = new Set<string>();
   onClickGroupItem(groupName: string, item: any) {
@@ -108,7 +120,7 @@ export class AddToGroupComponent implements OnInit {
 
     this.policyNames.clear();
     this.listGroupPicked.forEach((e) => {
-      e.attachedPolicies.forEach((element) => {
+      e.policies.forEach((element) => {
         this.policyNames.add(element);
       });
     });
@@ -142,13 +154,45 @@ export class AddToGroupComponent implements OnInit {
     this.policyNames.clear();
     this.listGroupPicked.forEach((e) => {
       this.groupNames.push(e.name);
-      e.attachedPolicies.forEach((element) => {
+      e.policies.forEach((element) => {
         this.policyNames.add(element);
       });
     });
 
     console.log('list groupNames', this.groupNames);
     console.log('list policyNames', this.policyNames);
+  }
+
+  addToGroups() {
+    //thêm groups, policies cũ của user
+    this.userDetail.userPolicies.forEach((e) => {
+      this.policyNames.add(e);
+    });
+    this.groupNames = this.groupNames.concat(this.userDetail.userGroups);
+
+    this.userUpdate.userName = this.userDetail.userName;
+    this.userUpdate.email = this.userDetail.email;
+    this.userUpdate.groupNames = this.groupNames;
+    this.userUpdate.policyNames = Array.from(this.policyNames);
+    console.log('user update', this.userUpdate);
+    this.service
+      .createOrUpdate(this.userUpdate)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe(
+        (data: any) => {
+          console.log(data);
+          this.message.success('Cập nhật User thành công');
+          this.navigateToDetail();
+        },
+        (error) => {
+          console.log(error.error);
+          this.message.error('Cập nhật User không thành công');
+        }
+      );
   }
 
   onRegionChange(region: RegionModel) {
@@ -167,9 +211,9 @@ export class AddToGroupComponent implements OnInit {
     this.searchParam = e;
   }
 
-  addToGroups() {}
-
-  navigateToCreate() {}
+  navigateToCreateGroup() {
+    this.router.navigate(['/app-smart-cloud/iam/user-group/create']);
+  }
 
   navigateToDetail() {
     this.router.navigate(['/app-smart-cloud/users/detail/' + this.userName]);

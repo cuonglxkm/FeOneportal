@@ -29,7 +29,8 @@ export class UserDetailComponent implements OnInit {
   listGroupNames: string[] = [];
   listPolicyNames: string[] = [];
   userName: any;
-  searchParam: string;
+  policyParam: string;
+  groupParam: string;
   typePolicy: string = '';
 
   filterStatus = [
@@ -58,20 +59,16 @@ export class UserDetailComponent implements OnInit {
   getUserByUserName() {
     this.listGroupNames = [];
     this.listPolicyNames = [];
-    this.service
-      .getUserByUsername(
-        this.userName,
-      )
-      .subscribe((data: any) => {
-        this.user = data;
-        console.log('user detail', this.user);
-        this.listGroupNames = this.user.userGroups;
-        this.listGroupNames = this.listGroupNames.filter((e) => e != '');
-        this.listPolicyNames = this.user.userPolicies;
-        this.listPolicyNames = this.listPolicyNames.filter((e) => e != '');
-        this.getGroup();
-        this.getPolicies();
-      });
+    this.service.getUserByUsername(this.userName).subscribe((data: any) => {
+      this.user = data;
+      console.log('user detail', this.user);
+      this.listGroupNames = this.user.userGroups;
+      this.listGroupNames = this.listGroupNames.filter((e) => e != '');
+      this.listPolicyNames = this.user.userPolicies;
+      this.listPolicyNames = this.listPolicyNames.filter((e) => e != '');
+      this.getGroup();
+      this.getPolicies();
+    });
   }
 
   onRegionChange(region: RegionModel) {
@@ -86,8 +83,12 @@ export class UserDetailComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  changeSearch(e: any): void {
-    this.searchParam = e;
+  changePolicyParam(e: any): void {
+    this.policyParam = e;
+  }
+
+  changeGroupParam(e: any): void {
+    this.groupParam = e;
   }
 
   //Danh sách Policies
@@ -111,6 +112,18 @@ export class UserDetailComponent implements OnInit {
   reloadPolicies() {
     this.loadingPolicies = true;
     this.getPolicies();
+  }
+
+  searchPolicy() {
+    this.listOfPolicies = [];
+    from(this.listPolicyNames)
+      .pipe(concatMap((e) => this.service.getPolicy(e)))
+      .subscribe((result) => {
+        if (result.name.includes(this.policyParam)) {
+          this.listOfPolicies = this.listOfPolicies.concat([result]);
+        }
+        this.cdr.detectChanges();
+      });
   }
 
   listItemDetachPolicy: ItemDetach[] = [];
@@ -180,6 +193,11 @@ export class UserDetailComponent implements OnInit {
       .pipe(concatMap((e) => this.service.getGroup(e)))
       .subscribe((result) => {
         this.listOfGroups = this.listOfGroups.concat([result]);
+        this.service
+          .getUsersOfGroup(result.name, 9999, 1)
+          .subscribe((data: any) => {
+            result.numberOfUser = data.totalCount;
+          });
         this.cdr.detectChanges();
       });
 
@@ -189,6 +207,23 @@ export class UserDetailComponent implements OnInit {
   reloadGroupOfUser() {
     this.listOfGroups = [];
     this.getGroup();
+  }
+
+  searchGroup() {
+    this.listOfGroups = [];
+    from(this.listGroupNames)
+      .pipe(concatMap((e) => this.service.getGroup(e)))
+      .subscribe((result) => {
+        if (result.name.includes(this.groupParam)) {
+          this.listOfGroups = this.listOfGroups.concat([result]);
+          this.service
+            .getUsersOfGroup(result.name, 9999, 1)
+            .subscribe((data: any) => {
+              result.numberOfUser = data.totalCount;
+            });
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   listItemDetachGroup: ItemDetach[] = [];

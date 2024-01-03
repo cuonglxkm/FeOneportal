@@ -5,7 +5,7 @@ export class User {
   userPolicies: string[];
   createdDate: string;
 }
-export class UseCreate {
+export class UserCreate {
   userName: string;
   email: string;
   groupNames: string[];
