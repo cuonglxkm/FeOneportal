@@ -52,6 +52,7 @@ export class UserComponent implements OnInit {
   ngOnChange(): void {}
 
   getData(): void {
+    this.loading = true;
     this.listUserPicked = [];
     this.listCheckedInPage = [];
     this.checkedAllInPage = false;

@@ -55,6 +55,7 @@ export class AddToGroupComponent implements OnInit {
 
   // Danh sách Groups
   getGroup(): void {
+    this.loading = true;
     this.listGroupPicked = [];
     this.groupNames = [];
     this.policyNames.clear();

@@ -12,7 +12,7 @@ import {
   User,
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { concatMap, from } from 'rxjs';
+import { concatMap, finalize, from } from 'rxjs';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -29,9 +29,10 @@ export class UserDetailComponent implements OnInit {
   listGroupNames: string[] = [];
   listPolicyNames: string[] = [];
   userName: any;
-  policyParam: string;
-  groupParam: string;
+  policyParam: string = '';
+  groupParam: string = '';
   typePolicy: string = '';
+  loading: boolean = true;
 
   filterStatus = [
     { text: 'Tất cả các loại', value: '' },
@@ -92,34 +93,49 @@ export class UserDetailComponent implements OnInit {
   }
 
   //Danh sách Policies
-  loadingPolicies: boolean = true;
   getPolicies() {
+    this.loading = true;
     this.listOfPolicies = [];
     this.listItemDetachPolicy = [];
     this.listCheckedPolicyInPage = [];
     this.checkedAllPolicyInPage = false;
     from(this.listPolicyNames)
       .pipe(concatMap((e) => this.service.getPolicy(e)))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe((result) => {
-        this.listOfPolicies = this.listOfPolicies.concat([result]);
+        if (result.name != null && result.name != undefined) {
+          this.listOfPolicies = this.listOfPolicies.concat([result]);
+        }
         this.cdr.detectChanges();
       });
 
-    this.loadingPolicies = false;
     console.log('Policies of user', this.listOfPolicies);
   }
 
   reloadPolicies() {
-    this.loadingPolicies = true;
     this.getPolicies();
   }
 
   searchPolicy() {
+    this.loading = true;
     this.listOfPolicies = [];
     from(this.listPolicyNames)
       .pipe(concatMap((e) => this.service.getPolicy(e)))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe((result) => {
-        if (result.name.includes(this.policyParam)) {
+        if (
+          result.name.toLowerCase().includes(this.policyParam.toLowerCase())
+        ) {
           this.listOfPolicies = this.listOfPolicies.concat([result]);
         }
         this.cdr.detectChanges();
@@ -185,36 +201,50 @@ export class UserDetailComponent implements OnInit {
 
   // Danh sách Groups
   getGroup(): void {
+    this.loading = true;
     this.listOfGroups = [];
     this.listItemDetachGroup = [];
     this.listCheckedGroupInPage = [];
     this.checkedAllGroupInPage = false;
     from(this.listGroupNames)
       .pipe(concatMap((e) => this.service.getGroup(e)))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe((result) => {
-        this.listOfGroups = this.listOfGroups.concat([result]);
-        this.service
-          .getUsersOfGroup(result.name, 9999, 1)
-          .subscribe((data: any) => {
-            result.numberOfUser = data.totalCount;
-          });
+        if (result.name != null && result.name != undefined) {
+          this.listOfGroups = this.listOfGroups.concat([result]);
+          this.service
+            .getUsersOfGroup(result.name, 9999, 1)
+            .subscribe((data: any) => {
+              result.numberOfUser = data.totalCount;
+            });
+        }
         this.cdr.detectChanges();
       });
-
     console.log('groups of user', this.listOfGroups);
   }
 
   reloadGroupOfUser() {
-    this.listOfGroups = [];
     this.getGroup();
   }
 
   searchGroup() {
+    this.loading = true;
     this.listOfGroups = [];
     from(this.listGroupNames)
       .pipe(concatMap((e) => this.service.getGroup(e)))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe((result) => {
-        if (result.name.includes(this.groupParam)) {
+        if (result.name.toLowerCase().includes(this.groupParam.toLowerCase())) {
           this.listOfGroups = this.listOfGroups.concat([result]);
           this.service
             .getUsersOfGroup(result.name, 9999, 1)

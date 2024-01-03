@@ -148,6 +148,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   // Danh sách Groups
   getGroup(): void {
+    this.loading = true;
     this.resetDataPicked();
     this.listGroupPicked = [];
     this.service
@@ -253,6 +254,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   //Danh sách Users
   getCopyUserPlicies() {
+    this.loading = true;
     this.resetDataPicked();
     this.listUserPicked = [];
     this.service
@@ -329,6 +331,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   //Danh sách Policies
   getPermissionPolicies() {
+    this.loading = true;
     this.resetDataPicked();
     this.service
       .getPolicies(this.searchParam, this.pageSize, this.pageIndex)
