@@ -273,7 +273,23 @@ export class ListScheduleBackupComponent implements OnInit{
     this.formSearch.customerId = this.tokenService.get()?.userId
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
-    this.getListScheduleBackup()
+
+    const initFormSearch = new FormSearchScheduleBackup()
+    initFormSearch.customerId = this.tokenService.get()?.userId
+    initFormSearch.pageIndex = this.pageIndex
+    initFormSearch.pageSize = this.pageSize
+
+    this.isLoading = true
+    this.backupScheduleService.search(initFormSearch).subscribe(data => {
+      if (!data.totalCount) {
+        this.router.navigate(['/app-smart-cloud/schedule/backup/blank'])
+      }
+      this.response = data
+      this.listBackupSchedule = data.records
+      this.isLoading = false
+
+    })
+    // this.getListScheduleBackup()
     this.getCapacityBackup()
   }
 }
