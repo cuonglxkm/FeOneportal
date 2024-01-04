@@ -285,7 +285,6 @@ export class EditScheduleBackupVolumeComponent {
   getListScheduleBackup() {
     this.formSearch.pageSize = 1000000
     this.formSearch.pageIndex = 1
-    this.formSearch.customerId = this.tokenService.get()?.userId
     this.scheduleService.search(this.formSearch).subscribe(data => {
       console.log('data', data)
       data.records?.forEach(item => {
