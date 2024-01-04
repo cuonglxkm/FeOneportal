@@ -156,7 +156,6 @@ export class ListBackupVmComponent implements OnInit {
         this.collection = data
       })
     }
-
     getParam(): BackupVMFormSearch {
         this.formSearch.regionId = this.region
 

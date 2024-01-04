@@ -179,7 +179,7 @@ export class ListPaymentComponent implements OnInit{
 
   download(id: number) {
     this.paymentService.export(id).subscribe((data: Blob) => {
-      const blob = new Blob([data], {type: 'application/docx' });
+      // const blob = new Blob([data], {type: 'application/docx' });
 
       let downloadURL = window.URL.createObjectURL(data);
       let link = document.createElement('a');
