@@ -59,19 +59,19 @@
           <th>Loại IP</th>
           <th>Máy ảo</th>
           <th>Trạng thái IP Public</th>
-          <th>Trạng thái dịch vụ</th>
+          <th>Trạng thái tác vụ</th>
           <th>Thao tác</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfIp">
-          <td style="color: #0D67B0"><a (click)="navigatorToDetail(item.id)">{{ item.ipAddress }}</a></td>
-          <td><a (click)="navigatorToDetail(item.id)">loại ip</a></td>
-          <td><a (click)="navigatorToDetail(item.id)">{{ item.iPv6Address === null ? 'IPv4' : 'IPv6' }}</a></td>
-          <td *ngIf="item.status === 0" style="color: forestgreen">Khởi tạo</td>
-          <td *ngIf="item.status !== 0" style="color: red">Đang sử dụng</td>
-<!--          <td style="color: forestgreen">{{ item.status === 0 ? 'Khởi tạo' : 'Đang sử dụng' }}</td>-->
-          <td>{{ item.serviceStatus }}</td>
+          <td (click)="navigatorToDetail(item.id)" style="color: #0D67B0">{{ item.ipAddress }}</td>
+          <td (click)="navigatorToDetail(item.id)">{{ item.iPv6Address === null ? 'IPv4' : 'IPv6' }}</td>
+          <td (click)="navigatorToDetail(item.id)">{{ item.attachedVm }}</td>
+          <td (click)="navigatorToDetail(item.id)" *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>
+          <td (click)="navigatorToDetail(item.id)" *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>
+          <td (click)="navigatorToDetail(item.id)" *ngIf="item.status === 0">-</td>
+          <td (click)="navigatorToDetail(item.id)" *ngIf="item.status === 2">IN-USE</td>
           <td width="15%">
             <nz-input-group nzCompact>
               <nz-select [(ngModel)]="selectedAction" nzSize="small" (nzOpenChange)="openIpMounted($event, item.id)">

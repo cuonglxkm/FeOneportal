@@ -39,7 +39,6 @@ export class UserService extends BaseService {
   getUserByUsername(
     userName: string,
   ): Observable<any> {
-    if (userName == undefined) userName = '';
     let url_ = `/users/${userName}`;
 
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + url_, this.httpOptions);

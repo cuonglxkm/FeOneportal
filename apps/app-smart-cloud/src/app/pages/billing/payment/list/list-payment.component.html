@@ -37,7 +37,7 @@
       </div>
       <div *nzSpaceItem>
         <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-          <input style="width: 380px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+          <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
                  type="text" nz-input
                  placeholder="Tìm kiếm mã thanh toán, mã đơn hàng"/>
         </nz-input-group>
@@ -51,7 +51,7 @@
     </nz-space>
   </ng-template>
   <ng-template #extra>
-    <button nz-button nzSize="default" style="cursor: pointer; margin-left: 5px;">
+    <button nz-button nzSize="default" style="cursor: pointer; margin-left: 5px">
       <span nz-icon nzType="download" nzTheme="outline"></span>
       Download
     </button>
@@ -86,7 +86,7 @@
       <tr *ngFor="let data of rowSelectionTable.data">
         <td [nzChecked]="setOfCheckedId.has(data.id)"
             (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-        <td>{{data.paymentNumber}}</td>
+        <td class="text-blue" (click)="getPayMentDetail(data.id)">{{data.paymentNumber}}</td>
         <td>{{data.orderNumber}}</td>
         <td>{{data.amount}}</td>
         <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
@@ -97,7 +97,7 @@
           Chưa thanh toán
         </td>
         <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="download(data.invoiceIssuedId)"
-            style="cursor: pointer;">
+            style="cursor: pointer">
           <span nz-icon nzType="download" nzTheme="outline"></span>
         </td>
         <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid">

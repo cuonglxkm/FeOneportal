@@ -1,10 +1,9 @@
-// @ts-ignore
-
-import {Inject, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {PaymentModel, PaymentSearch} from "../models/payment.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import { Observable } from "rxjs";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
@@ -60,4 +59,8 @@ export class PaymentService extends BaseService {
       {headers: this.getHeaders(), responseType: 'blob' as 'json'})
   }
 
+
+  getPaymentById(id: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/${id}`);
+  }
 }
