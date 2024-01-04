@@ -142,7 +142,7 @@ export class ListBackupVmComponent implements OnInit {
       const initFormSearch = new BackupVMFormSearch();
 
       initFormSearch.regionId = this.region
-      initFormSearch.customerId = this.tokenService.get()?.userId
+      // initFormSearch.customerId = this.tokenService.get()?.userId
       initFormSearch.projectId = this.project
       initFormSearch.instanceBackupName = this.value || null
       initFormSearch.currentPage = 1
