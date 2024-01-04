@@ -80,7 +80,7 @@ export class NewVirtualMachineComponent implements OnInit {
 
 
     goBack() {
-        this.location.back();
+        this.router.navigate(['/app-smart-cloud/backup-vm'])
     }
 
     handleFlavorChange(flavor: Flavor) {
