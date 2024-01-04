@@ -66,6 +66,7 @@ export class NewVirtualMachineComponent implements OnInit {
     volumeCreate: VolumeCreate = new VolumeCreate()
     orderItem: OrderItem[] = []
     order: Order = new Order();
+    backupSecurityGroupItem: any[] = []
 
 
     constructor(private location: Location,
@@ -97,11 +98,16 @@ export class NewVirtualMachineComponent implements OnInit {
         if (this.backupVmId != undefined) {
             this.backupVmService.detail(this.backupVmId).subscribe(data => {
                 this.backupVm = data
-                this.securityGroupLst = this.backupVm.securityGroupBackups
+                this.backupVm.securityGroupBackups.forEach(item => {
+                  this.backupSecurityGroupItem.push(item.sgName)
+                  this.securityGroupLst =  [...new Set(this.backupSecurityGroupItem)]
+                })
+
                 this.systemInfoBackups = this.backupVm.systemInfoBackups
                 this.volumeBackups = this.backupVm.volumeBackups
                 console.log('backup', this.backupVm)
                 console.log('systemInfo,', this.systemInfoBackups)
+                console.log('securityGroupLst,', this.securityGroupLst)
                 console.log('volume', this.volumeBackups)
                 this.volumeBackups.forEach(item => {
                     if (!item.iops) {
