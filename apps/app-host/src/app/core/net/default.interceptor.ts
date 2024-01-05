@@ -282,13 +282,13 @@ export class DefaultInterceptor implements HttpInterceptor {
 
     const newReq = req.clone({url, setHeaders: this.getAdditionalHeaders(req.headers)});
     return next.handle(newReq).pipe(
-      // mergeMap(ev => {
-      //   if (ev instanceof HttpResponseBase) {
-      //     return this.handleError(ev, newReq, next);
-      //   }
-      //   return of(ev);
-      // }),
-      // catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
+      mergeMap(ev => {
+        if (ev instanceof HttpResponseBase) {
+          return this.handleError(ev, newReq, next);
+        }
+        return of(ev);
+      }),
+      catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
     );
 
   }
