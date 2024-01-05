@@ -79,6 +79,7 @@ export class CallbackComponent implements OnInit {
             email: decodedToken['email'],
             time: token.expires_in,
             id_token: decodedToken['oi_au_id'],
+            exp: decodedToken['exp']
           };
 
           return this.httpClient.get<UserModel>(`${baseUrl}/users/` + info.email, {
