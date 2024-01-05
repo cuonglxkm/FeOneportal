@@ -182,7 +182,8 @@ export class ScheduleBackupVmComponent implements OnInit {
     }
 
     getBackupPackage() {
-        this.backupVmService.getBackupPackages(this.tokenService.get()?.userId).subscribe(data => {
+        this.backupVmService.getBackupPackages(this.tokenService.get()?.userId)
+          .subscribe(data => {
             this.backupPackages = data
         })
     }
@@ -258,7 +259,8 @@ export class ScheduleBackupVmComponent implements OnInit {
         this.instanceService.search(1, 10000000,
             this.region, this.project, "", "",
             true, customerId).subscribe(data => {
-            this.listInstance = data?.records
+
+            this.listInstance = data?.records.filter(value => (value.taskState == 'ACTIVE'))
             this.backupVmService.search(this.formSearchBackup).subscribe(data2 => {
                 this.listBackupVM = data2?.records
 

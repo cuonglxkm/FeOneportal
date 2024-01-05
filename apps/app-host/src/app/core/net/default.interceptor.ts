@@ -7,13 +7,13 @@ import {
   HttpRequest,
   HttpResponseBase
 } from '@angular/common/http';
-import { Injectable, Injector } from '@angular/core';
-import { Router } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { ALAIN_I18N_TOKEN, IGNORE_BASE_URL, _HttpClient, CUSTOM_ERROR, RAW_BODY } from '@delon/theme';
-import { environment } from '@env/environment';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { BehaviorSubject, Observable, of, throwError, catchError, filter, mergeMap, switchMap, take } from 'rxjs';
+import {Injectable, Injector} from '@angular/core';
+import {Router} from '@angular/router';
+import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
+import {ALAIN_I18N_TOKEN, IGNORE_BASE_URL, _HttpClient, CUSTOM_ERROR, RAW_BODY} from '@delon/theme';
+import {environment} from '@env/environment';
+import {NzNotificationService} from 'ng-zorro-antd/notification';
+import {BehaviorSubject, Observable, of, throwError, catchError, filter, mergeMap, switchMap, take} from 'rxjs';
 
 const CODEMESSAGE: { [key: number]: string } = {
   200: 'Máy chủ trả về thành công dữ liệu được yêu cầu. ',
@@ -62,7 +62,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   private goTo(url: string): void {
-    setTimeout(() => this.injector.get(Router).navigateByUrl(url));
+    setTimeout(() => this.injector.get(Router).navigateByUrl(url), 1000);
   }
 
   private checkStatus(ev: HttpResponseBase): void {
@@ -79,7 +79,7 @@ export class DefaultInterceptor implements HttpInterceptor {
    */
   private refreshTokenRequest(): Observable<any> {
     const model = this.tokenSrv.get();
-    return this.http.post(`/api/auth/refresh`, null, null, { headers: { refresh_token: model?.['refresh_token'] || '' } });
+    return this.http.post(`/api/auth/refresh`, null, null, {headers: {refresh_token: model?.['refresh_token'] || ''}});
   }
 
   // #region 刷新Token方式一：使用 401 重新刷新 Token
@@ -166,8 +166,9 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #endregion
 
   private toLogin(): void {
-    this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
+    this.notification.error(`Hết phiên đăng nhập`, ``);
     this.goTo(this.tokenSrv.login_url!);
+
   }
 
   private handleData(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
@@ -214,7 +215,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       default:
         if (ev instanceof HttpErrorResponse) {
           console.warn(
-            'Lỗi không xác định, chủ yếu là do phần phụ trợ không hỗ trợ CORS tên miền chéo hoặc cấu hình không hợp lệ, vui lòng tham khảo https://ng-alain.com/docs/server để giải quyết các vấn đề về tên miền chéo',            ev
+            'Lỗi không xác định, chủ yếu là do phần phụ trợ không hỗ trợ CORS tên miền chéo hoặc cấu hình không hợp lệ, vui lòng tham khảo https://ng-alain.com/docs/server để giải quyết các vấn đề về tên miền chéo', ev
           );
         }
         break;
@@ -235,23 +236,54 @@ export class DefaultInterceptor implements HttpInterceptor {
     return res;
   }
 
+  private handleError(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
+    switch (ev.status) {
+      case 200:
+        break;
+      case 401:
+        // if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
+        //   return this.tryRefreshToken(ev, req, next);
+        // }
+        this.toLogin();
+        break;
+      case 403:
+      case 404:
+      case 500:
+        // this.goTo(`/exception/${ev.status}?url=${req.urlWithParams}`);
+        this.tokenSrv.clear()
+        this.toLogin();
+        break;
+      default:
+        if (ev instanceof HttpErrorResponse) {
+          console.warn(
+            'Lỗi không xác định!', ev
+          );
+        }
+        break;
+    }
+    if (ev instanceof HttpErrorResponse) {
+      return throwError(() => ev);
+    } else {
+      return of(ev);
+    }
+  }
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let url = req.url;
     if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
-      const { baseUrl } = environment.api;
+      const {baseUrl} = environment.api;
       url = baseUrl + (baseUrl.endsWith('/') && url.startsWith('/') ? url.substring(1) : url);
     }
 
-    const newReq = req.clone({ url, setHeaders: this.getAdditionalHeaders(req.headers) });
+    const newReq = req.clone({url, setHeaders: this.getAdditionalHeaders(req.headers)});
     return next.handle(newReq).pipe(
-      // mergeMap(ev => {
-      //   if (ev instanceof HttpResponseBase) {
-      //     return this.handleData(ev, newReq, next);
-      //   }
-      //   // 若一切都正常，则后续操作
-      //   return of(ev);
-      // })
-      // catchError((err: HttpErrorResponse) => this.handleData(err, newReq, next))
+      mergeMap(ev => {
+        if (ev instanceof HttpResponseBase) {
+          return this.handleError(ev, newReq, next);
+        }
+        return of(ev);
+      }),
+      catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
     );
   }
 }

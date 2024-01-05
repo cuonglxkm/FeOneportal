@@ -36,9 +36,9 @@ export class BackupVmService extends BaseService {
 
     search(form: BackupVMFormSearch) {
         let params = new HttpParams();
-        if (form.customerId != null || form.customerId != undefined) {
-            params = params.append('customerId', form.customerId);
-        }
+        // if (form.customerId != null || form.customerId != undefined) {
+        //     params = params.append('customerId', form.customerId);
+        // }
         if (form.projectId != null) {
             params = params.append('projectId', form.projectId);
         }
