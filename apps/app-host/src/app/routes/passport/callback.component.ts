@@ -83,9 +83,9 @@ export class CallbackComponent implements OnInit {
           };
 
           return this.httpClient.get<UserModel>(`${baseUrl}/users/` + info.email, {
-            headers: new HttpHeaders({
-              'Authorization': "Bearer " + accessToken
-            }),
+            // headers: new HttpHeaders({
+            //   'Authorization': "Bearer " + accessToken
+            // }),
             context: new HttpContext().set(ALLOW_ANONYMOUS, true)
           }).pipe(switchMap(user => {
             let additionInfo = {
