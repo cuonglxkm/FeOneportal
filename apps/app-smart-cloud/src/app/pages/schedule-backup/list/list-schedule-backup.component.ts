@@ -63,6 +63,7 @@ export class ListScheduleBackupComponent implements OnInit{
 
   responseCapacityBackup: CapacityBackupSchedule[] = []
   loadingCapacity: boolean = false
+
   constructor(private router: Router,
               private backupScheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,

@@ -34,36 +34,11 @@ export class BlankBackupVmComponent {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.getListBackupVM()
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     console.log('select')
-    this.getListBackupVM()
   }
-
-  getListBackupVM() {
-    const initFormSearch = new BackupVMFormSearch();
-    initFormSearch.regionId = this.region
-    // initFormSearch.customerId = this.tokenService.get()?.userId
-    initFormSearch.projectId = this.project
-    initFormSearch.instanceBackupName = null
-    initFormSearch.currentPage = 1
-    initFormSearch.pageSize = 10
-    this.isLoading = true
-    this.backupVmService.search(initFormSearch).subscribe(data => {
-      this.isLoading = false
-      console.log('data', data)
-      if (data.totalCount) {
-        this.router.navigate(['/app-smart-cloud/backup-vm'])
-      }
-      this.collection = data
-
-    })
-  }
-
-
-
 
 }
