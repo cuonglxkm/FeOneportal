@@ -1,37 +1,54 @@
-<page-header [action]="action" [title]="'Danh sách Snapshot Volume'">
+<page-header [content]="content"
+             [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Danh sách Snapshot Volumes'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Dịch vụ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/snapshotvls'">
+          Danh sách Snapshot Volume
+        </a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
   <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown
-        (valueChanged)="getRegionId($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="getProjectId($event)"></project-select-dropdown>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="getRegionId($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="getProjectId($event)"
+                               [regionId]="regionId"></project-select-dropdown>
     </div>
   </ng-template>
-  <div
-    class="m-b-10"
-  >
-    <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
-    <nz-select nzSize="default"
-               [nzPlaceHolder]="'Tất cả trạng thái'"
-               [nzOptions]="options"
-               [(ngModel)]="snapshotStatusSearch"
-               (ngModelChange)="searchSnapshot()"
-               style="width: 170px;"
-    >
-    </nz-select>
 
-    <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-      <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
-             style="width: 300px; margin-left: 30px;"/>
-    </nz-input-group>
-    <ng-template #suffixButton>
-      <button nz-button nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
-      </button>
+    <ng-template
+      #content
+      class="m-b-10"
+    >
+      <nz-form-label [nzFor]="'volumeStatus'">Trạng thái dịch vụ</nz-form-label>
+      <nz-select nzSize="default"
+                 [nzPlaceHolder]="'Tất cả trạng thái'"
+                 [nzOptions]="options"
+                 [(ngModel)]="snapshotStatusSearch"
+                 (ngModelChange)="searchSnapshot()"
+                 style="width: 170px;"
+      >
+      </nz-select>
+
+      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+        <input type="text" [(ngModel)]="snapshotNameSearch" nz-input placeholder="Tìm kiếm tên, vpc,..."
+               style="width: 300px; margin-left: 30px;"/>
+      </nz-input-group>
+      <ng-template #suffixButton>
+        <button nz-button nzType="primary" (click)="searchSnapshot()" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+        </button>
+      </ng-template>
     </ng-template>
-  </div>
 
 </page-header>
-
 
 <div class="snapshot-volume-list">
   <nz-spin [nzSpinning]="isLoading">

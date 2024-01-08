@@ -18,7 +18,11 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 export class VolumeService extends BaseService {
 
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json' ,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
+      'user_root_id': this.tokenService.get()?.userId,
+    })
   };
   //API GW
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
@@ -27,13 +31,13 @@ export class VolumeService extends BaseService {
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): Observable<GetListVolumeModel> {
     let urlResult = this.getConditionSearchVolume(customerId, projectId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName);
-    return this.http.get<GetListVolumeModel>(urlResult).pipe(
+    return this.http.get<GetListVolumeModel>(urlResult, this.httpOptions).pipe(
       catchError(this.handleError<GetListVolumeModel>('get volume-list error'))
     );
   }
 
   getVolummeById(volumeId: string) {
-    return this.http.get<VolumeDTO>(this.urlVolumeGW + '/' + volumeId).pipe(
+    return this.http.get<VolumeDTO>(this.urlVolumeGW + '/' + volumeId,this.httpOptions).pipe(
       catchError(this.handleError<VolumeDTO>('get volume-detail error'))
     )
   }
@@ -41,7 +45,7 @@ export class VolumeService extends BaseService {
   //tinh phi Volume : FAKE
   getPremium(volumeType: string, size: number, duration: number): Observable<PriceVolumeDto> {
     let urlResult = this.getConditionGetPremiumVolume(volumeType, size, duration);
-    return this.http.get<PriceVolumeDto>(urlResult).pipe(
+    return this.http.get<PriceVolumeDto>(urlResult,this.httpOptions).pipe(
       catchError(this.handleError<PriceVolumeDto>('get premium-volume error'))
     );
   }
@@ -53,7 +57,7 @@ export class VolumeService extends BaseService {
     if (userId != null){
       url += '&userId='+userId;
     }
-    return this.http.get<GetAllVmModel>(url).pipe(
+    return this.http.get<GetAllVmModel>(url,this.httpOptions).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
     );
   }
@@ -70,37 +74,37 @@ export class VolumeService extends BaseService {
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOrderGW, request).pipe(
+    return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
       catchError(this.handleError<any>('Edit size volume error.'))
     );
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume).pipe(
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions).pipe(
       catchError(this.handleError<boolean>('delete volume error.'))
     );
   }
 
   addVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request).pipe(
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request,this.httpOptions).pipe(
       catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
 
   detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/detach', request).pipe(
+    return this.http.post<boolean>(this.urlVolumeGW + '/detach', request,this.httpOptions).pipe(
       catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
 
   editTextVolume(request: EditTextVolumeModel): Observable<any> {
-    return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request).pipe(
+    return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request,this.httpOptions).pipe(
       catchError(this.handleError<any>('Edit Volume to VM error.'))
     );
   }
 
   extendsVolume(request: EditSizeVolumeModel): Observable<any>{
-    return this.http.post<any>(this.urlOrderGW, request).pipe(
+    return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
       catchError(this.handleError<any>('Extends size volume error.'))
     );
   }
