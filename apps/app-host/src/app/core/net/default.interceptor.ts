@@ -288,7 +288,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         }
         return of(ev);
       }),
-      catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
+      // catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
     );
 
   }
