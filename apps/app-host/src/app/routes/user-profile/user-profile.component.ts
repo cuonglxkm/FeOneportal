@@ -69,11 +69,6 @@ export class UserProfileComponent implements OnInit {
 
     let baseUrl = environment['baseUrl'];
     this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
-      // context: new HttpContext()
-      //   .set(ALLOW_ANONYMOUS, true)
-      // headers: {
-      //   'Authorization': 'Bearer ' + this.tokenService.get()?.token
-      // }
     })
       .subscribe(res => {
 

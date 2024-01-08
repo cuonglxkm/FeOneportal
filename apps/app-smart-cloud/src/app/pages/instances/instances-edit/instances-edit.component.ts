@@ -120,10 +120,6 @@ export class InstancesEditComponent implements OnInit {
         //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
       });
   }
-  onChangeSecurityGroup(even?: any) {
-    console.log(even);
-    console.log('selectedSecurityGroup', this.selectedSecurityGroup);
-  }
 
   //#endregion
 
@@ -261,16 +257,12 @@ export class InstancesEditComponent implements OnInit {
   readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
     this.updateInstances.name = this.instancesModel.name;
-    this.updateInstances.regionId = 3; // this.region;
-    this.updateInstances.projectId = 4079; // this.projectId;
-    this.updateInstances.customerId = 669; // this.customerId;
-    this.updateInstances.imageId = 113; // this.hdh.id;
-    this.updateInstances.flavorId = 368; //this.flavor.id;
-    this.updateInstances.storage = 1;
-    this.updateInstances.securityGroups = null;
-    this.updateInstances.duration = 0;
-    this.updateInstances.listServicesToBeExtended = null;
-    this.updateInstances.newExpiredDate = null;
+    this.updateInstances.regionId = this.region;
+    this.updateInstances.projectId = this.projectId;
+    this.updateInstances.customerId = this.tokenService.get()?.userId;
+    this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
+
+    console.log("update instance", this.updateInstances);
 
     this.dataService.update(this.updateInstances).subscribe({
       next: (next) => {

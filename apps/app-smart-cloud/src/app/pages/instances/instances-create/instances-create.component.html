@@ -259,7 +259,7 @@
     </nz-row>
 
     <nz-tabset>
-      <nz-tab nzTitle="Gói cấu hình">
+      <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
         <!-- <nz-carousel
           [nzEffect]="effect"
           style="overflow: initial"
@@ -324,7 +324,7 @@
           >
             <nz-row>
               <table
-                class="text-center"
+                class="custom-table text-center"
                 style="width: 100%"
                 (click)="onInputFlavors(item.id)"
               >
@@ -377,7 +377,7 @@
           </ul>
         </ngu-carousel>
       </nz-tab>
-      <nz-tab nzTitle="Cấu hình tuỳ chỉnh">
+      <nz-tab nzTitle="Cấu hình tuỳ chỉnh" (nzClick)="onClickCustomConfig()">
         <div class="ant-table">
           <table>
             <thead class="ant-table-thead">
@@ -724,8 +724,6 @@
               <tr>
                 <th>Loại Volumn</th>
                 <th>Tên Volume</th>
-                <th>VCPU</th>
-                <th>RAM (GB)</th>
                 <th>Dung lượng (GB)</th>
                 <th>Mã hóa</th>
                 <th>Multi Attach</th>
@@ -762,26 +760,6 @@
                 </td>
                 <td>
                   <nz-input-number
-                    [(ngModel)]="data.vCPU"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'vCPU_' + data.id"
-                    [nzMin]="0"
-                    [nzMax]="62"
-                    [nzStep]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <nz-input-number
-                    [(ngModel)]="data.ram"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'ram_' + data.id"
-                    [nzMin]="0"
-                    [nzMax]="62"
-                    [nzStep]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <nz-input-number
                     [(ngModel)]="data.capacity"
                     [ngModelOptions]="{ standalone: true }"
                     [id]="'capacity_' + data.id"
@@ -793,9 +771,9 @@
                 <td>
                   <label
                     nz-checkbox
-                    [(ngModel)]="data.code"
+                    [(ngModel)]="data.encrypt"
                     [ngModelOptions]="{ standalone: true }"
-                    [id]="'code_' + data.id"
+                    [id]="'encrypt_' + data.id"
                   ></label>
                 </td>
                 <td>
@@ -871,7 +849,7 @@
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="data.ip"
                     [id]="'ip_' + data.id"
-                    (ngModelChange)="onInputIPv4(data.id, $event)"
+                    (ngModelChange)="onInputIPv4()"
                   >
                     <nz-option
                       *ngFor="let p of listIPSubnetModel"
@@ -952,7 +930,7 @@
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="data.ip"
                     [id]="'ip_' + data.id"
-                    (ngModelChange)="onInputIPv6(data.id, $event)"
+                    (ngModelChange)="onInputIPv6()"
                   >
                     <nz-option
                       *ngFor="let p of listIPSubnetModel"
