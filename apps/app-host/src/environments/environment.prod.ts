@@ -1,4 +1,5 @@
 import { Environment } from '@delon/theme';
+import {DelonMockModule} from "@delon/mock";
 import * as MOCKDATA from "@_mock";
 
 // export const environment = {
@@ -38,5 +39,6 @@ export const environment = {
     logout_callback: env['sso']['logout_callback'] || 'https://oneportal.onsmartcloud.com',
     scope: env['sso']['scope'] || 'openid email roles',
   },
+  modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 

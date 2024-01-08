@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
-import {EnvironmentProviders, ModuleWithProviders, NgModule, Optional, Provider, SkipSelf} from '@angular/core';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { DelonACLModule } from '@delon/acl';
-import {AlainThemeModule, provideAlain} from '@delon/theme';
+import { AlainThemeModule } from '@delon/theme';
 import { AlainConfig, ALAIN_CONFIG } from '@delon/util/config';
 
 import { throwIfAlreadyLoaded } from '@core';
@@ -23,11 +23,11 @@ const alainConfig: AlainConfig = {
     token_send_place: 'header',
     token_send_template: 'Bearer ${token}',
     token_send_key: 'Authorization',
-    ignores: [/\/login/, /assets\//, /passport\// ],
+    ignores: [/\/login/, /assets\//, /passport\//],
   }
 };
 
-const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule];
+const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule.forRoot()];
 const alainProvides = [{ provide: ALAIN_CONFIG, useValue: alainConfig }];
 
 // #region reuse-tab
@@ -59,9 +59,6 @@ const alainProvides = [{ provide: ALAIN_CONFIG, useValue: alainConfig }];
 // #region NG-ZORRO Config
 
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
-import {provideAnimations} from "@angular/platform-browser/animations";
-
-import {provideAuth} from "@delon/auth";
 
 const ngZorroConfig: NzConfig = {};
 
@@ -80,7 +77,7 @@ export class GlobalConfigModule {
   static forRoot(): ModuleWithProviders<GlobalConfigModule> {
     return {
       ngModule: GlobalConfigModule,
-      // providers: [...alainProvides, ...zorroProvides]
+      providers: [...alainProvides, ...zorroProvides]
     };
   }
 }

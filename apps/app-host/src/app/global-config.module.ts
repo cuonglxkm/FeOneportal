@@ -1,10 +1,10 @@
 /* eslint-disable import/order */
-import {EnvironmentProviders, ModuleWithProviders, NgModule, Optional, Provider, SkipSelf} from '@angular/core';
+import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {DelonACLModule} from '@delon/acl';
-import {AlainThemeModule, provideAlain} from '@delon/theme';
+import {AlainThemeModule} from '@delon/theme';
 import {AlainConfig, ALAIN_CONFIG} from '@delon/util/config';
 
-import {I18NService, throwIfAlreadyLoaded} from '@core';
+import {throwIfAlreadyLoaded} from '@core';
 
 import {environment} from '@env/environment';
 
@@ -21,15 +21,17 @@ const alainConfig: AlainConfig = {
   },
   auth: {
     // @ts-ignore
-    login_url: '/welcome',
+    login_url: `${environment.sso.issuer}/connect/authorize?response_type=code&client_id=${environment.sso.clientId}&scope=${decodeURIComponent(environment.sso.scope)}&redirect_uri=${decodeURIComponent(environment.sso.callback)}`,
     token_send_place: 'header',
     token_send_template: 'Bearer ${token}',
     token_send_key: 'Authorization',
     ignores: [/\/login/, /assets\//, /passport\//],
   },
+
 };
 
-const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule];
+const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule.forRoot()];
+const alainProvides = [{provide: ALAIN_CONFIG, useValue: alainConfig}];
 
 // #region reuse-tab
 /**
@@ -60,27 +62,13 @@ const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule];
 // #region NG-ZORRO Config
 
 import {NzConfig, provideNzConfig} from 'ng-zorro-antd/core/config';
-import {provideHttpClient, withInterceptors} from "@angular/common/http";
-import {authSimpleInterceptor, provideAuth} from "@delon/auth";
-import {provideAnimations} from "@angular/platform-browser/animations";
-import {ICONS_AUTO} from "../style-icons-auto";
-import {ICONS} from "../style-icons";
-// import {DelonMockModule} from "@delon/mock";
+import {DelonMockModule} from "@delon/mock";
 
 const ngZorroConfig: NzConfig = {};
 
 const zorroProvides = [provideNzConfig(ngZorroConfig)];
 
 // #endregion
-
-const providers: Array<Provider | EnvironmentProviders> = [
-  provideAnimations(),
-  // provideRouter(routes, ...routerFeatures),
-  provideAlain({config: alainConfig, i18nClass: I18NService, icons: [...ICONS_AUTO, ...ICONS]}),
-  provideNzConfig(ngZorroConfig),
-  provideAuth()
-];
-
 
 @NgModule({
   imports: [...alainModules, ...(environment.modules || [])]
@@ -93,7 +81,7 @@ export class GlobalConfigModule {
   static forRoot(): ModuleWithProviders<GlobalConfigModule> {
     return {
       ngModule: GlobalConfigModule,
-      providers: [...zorroProvides]
+      providers: [...alainProvides, ...zorroProvides]
     };
   }
 }
