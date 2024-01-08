@@ -71,7 +71,7 @@ export class CallbackComponent implements OnInit {
       })
       .pipe(
         switchMap(token => {
-          let accessToken = token.access_token || '';
+          const accessToken = token.access_token || '';
           const decodedToken = helper.decodeToken(accessToken);
 
           let info = {
