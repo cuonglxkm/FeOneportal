@@ -134,11 +134,28 @@ export class ListBackupVmComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.userId = this.tokenService.get()?.userId
-        this.formSearch.currentPage = 1
-        this.formSearch.pageSize = 10
-    }
+      this.userId = this.tokenService.get()?.userId
+      this.formSearch.currentPage = 1
+      this.formSearch.pageSize = 10
+      this.isLoading = true;
 
+      const initFormSearch = new BackupVMFormSearch();
+
+      initFormSearch.regionId = this.region
+      initFormSearch.customerId = this.tokenService.get()?.userId
+      initFormSearch.projectId = this.project
+      initFormSearch.instanceBackupName = this.value || null
+      initFormSearch.currentPage = 1
+      initFormSearch.pageSize = 10
+
+      this.backupVmService.search(initFormSearch).subscribe(data => {
+        this.isLoading = false
+        if (!data.totalCount) {
+          this.router.navigate(['/app-smart-cloud/blank-backup-vm'])
+        }
+        this.collection = data
+      })
+    }
     getParam(): BackupVMFormSearch {
         this.formSearch.regionId = this.region
 

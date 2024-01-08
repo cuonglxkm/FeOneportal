@@ -1,56 +1,79 @@
-<page-header [action]="action" [title]="'Danh sách Volume'">
+<page-header [content]="content"
+             [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Danh sách Volume'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Dịch vụ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/volume'">
+          Danh sách Volume
+        </a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
   <ng-template #action>
-    <div class="text-right">
-      <region-select-dropdown
-        (valueChanged)="getRegionId($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionSearch" (valueChanged)="getProjectId($event)"></project-select-dropdown>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="getRegionId($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="getProjectId($event)"
+                               [regionId]="regionSearch"></project-select-dropdown>
     </div>
   </ng-template>
 
-  <div
+  <ng-template
     class="row"
+    #content
   >
-    <div style="display: inline-block; margin-right: auto;">
-      <nz-form-label [nzFor]="'volumeStatus'"><b>Trạng thái Volume</b></nz-form-label>
-      <nz-select nzSize="default"
-                 [nzPlaceHolder]="'Tất cả trạng thái'"
-                 [nzOptions]="options"
-                 [(ngModel)]="volumeStatusSearch"
-                 (ngModelChange)="searchVolumes()"
-                 style="width: 170px;"
-      >
-      </nz-select>
+    <nz-row>
+      <nz-col style="width: 85%">
+        <nz-form-label [nzFor]="'volumeStatus'"><b>Trạng thái Volume</b></nz-form-label>
+        <nz-select nzSize="default"
+                   [nzPlaceHolder]="'Tất cả trạng thái'"
+                   [nzOptions]="options"
+                   [(ngModel)]="volumeStatusSearch"
+                   (ngModelChange)="searchVolumes()"
+                   style="width: 170px;"
+        >
+        </nz-select>
 
-      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-        <input type="text" [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume"
-               style="width: 300px; margin-left: 30px;"/>
-      </nz-input-group>
-      <ng-template #suffixButton>
-        <button nz-button nzType="primary" nzSize="default" (click)="searchVolumes()" nzSearch><i nz-icon
-                                                                                                  [nzType]="'search'"></i>Search
+        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+          <input type="text" [(ngModel)]="volumeNameSearch" nz-input placeholder="Tìm kiếm Volume"
+                 style="width: 300px; margin-left: 30px;" />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSize="default" (click)="searchVolumes()" nzSearch><i nz-icon
+                                                                                                    [nzType]="'search'"></i>Search
+          </button>
+        </ng-template>
+      </nz-col>
+      <nz-col>
+        <button class="bg-success border-success"
+                nz-button
+                nzType="primary"
+                (click)="navigateToCreateVolume()"
+        >
+            <span
+              nz-icon nzType="plus"
+              nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
+            </span>
+          Tạo mới
         </button>
-      </ng-template>
-    </div>
+      </nz-col>
+    </nz-row>
+<!--    <div style="display: inline-block; margin-right: auto;">-->
+<!--      -->
+<!--    </div>-->
 
-    <div style="display: inline-block; margin-left: auto; text-align: right;">
-      <button class="bg-success border-success"
-              nz-button
-              nzType="primary"
-              (click)="navigateToCreateVolume()"
-      >
-        <span
-          nz-icon nzType="plus"
-          nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
-        </span>
-        Tạo mới
-      </button>
-    </div>
-  </div>
-
+<!--    <div style="display: inline-block; margin-left: auto; text-align: right;">-->
+<!--      -->
+<!--    </div>-->
+  </ng-template>
 
 </page-header>
-
 
 <nz-spin [nzSpinning]="isLoadingAction">
   <div class="search-volume" *ngIf="!isBlankVolume; else elsePage">
@@ -73,10 +96,12 @@
           <tbody>
           <tr *ngFor="let data of tableRoot.data; let i = index">
             <td (click)="getDetailVolume(data.id)"><a>{{ data.name }}</a></td>
-            <td>{{ data.sizeInGB}}</td>
+            <td>{{ data.sizeInGB }}</td>
             <td>{{ data.iops }}</td>
-            <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
-            <td *ngIf="data.status === 'ERROR' || data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
+            <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status) }}</td>
+            <td *ngIf="data.status === 'ERROR' || data.status === 'SUSPENDED'"
+                style="color: red">{{ volumeStatus.get(data.status) }}
+            </td>
             <td>{{ data.serviceStatus }}</td>
             <td>{{ data.instanceName }}</td>
             <td>
@@ -113,11 +138,11 @@
           <tbody>
           <tr *ngFor="let data of tableAdd.data; let i = index">
             <td (click)="getDetailVolume(data.id)"><a>{{ data.name }}</a></td>
-            <td>{{ data.sizeInGB}}</td>
+            <td>{{ data.sizeInGB }}</td>
             <td>{{ data.iops }}</td>
-            <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status)}}</td>
-            <td *ngIf="data.status === 'ERROR'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
-            <td *ngIf="data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status)}}</td>
+            <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status) }}</td>
+            <td *ngIf="data.status === 'ERROR'" style="color: red">{{ volumeStatus.get(data.status) }}</td>
+            <td *ngIf="data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status) }}</td>
             <td>{{ data.serviceStatus }}</td>
             <td>{{ data.instanceName }}</td>
             <td>
@@ -144,7 +169,7 @@
 <ng-template #elsePage>
   <nz-card>
     <result>
-      <img nz-image style="height: 100%; width: 100%;" nzSrc="assets/imgs/blank_volume.png" alt=""/>
+      <img nz-image style="height: 100%; width: 100%;" nzSrc="assets/imgs/blank_volume.png" alt="" />
 
       <button nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()">
         <!-- <a routerLink="/pages/instances/instances-create"> Khởi tạo ngay</a>

@@ -250,6 +250,12 @@
               "icon": "anticon-team"
             }
           ]
+        },
+        {
+          "text": "Operation History",
+          "icon": "anticon-edit",
+          "link": "/app-smart-cloud/operation-history"
+          
         }
       ]
     }

@@ -108,6 +108,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
 import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
+import { OperationHistoryComponent } from './operation-history/operation-history.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -203,6 +204,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DashboardComponent,
     OrderListComponent,
     ListPaymentComponent,
+    OperationHistoryComponent
   ],
   imports: [
     CommonModule,

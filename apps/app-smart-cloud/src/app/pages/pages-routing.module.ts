@@ -72,6 +72,7 @@ import { PaymentSuccessComponent } from "../shared/components/payment-success/pa
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 import {OrderListComponent} from "./order/order-list/order-list.component";
 import {ListPaymentComponent} from "./billing/payment/list/list-payment.component";
+import { OperationHistoryComponent } from "./operation-history/operation-history.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -306,6 +307,10 @@ const routes: Routes = [
   {
     path: 'order/list',
     component: OrderListComponent
+  },
+  {
+    path: 'operation-history',
+    component: OperationHistoryComponent
   }
   ]
 @NgModule({

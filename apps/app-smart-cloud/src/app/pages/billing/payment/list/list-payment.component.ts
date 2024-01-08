@@ -126,7 +126,7 @@ export class ListPaymentComponent implements OnInit{
 
   getListInvoices() {
     const formSearch: PaymentSearch = new PaymentSearch()
-    formSearch.customerId = this.customerId
+    formSearch.customerId = this.tokenService.get()?.userId
     if (this.value === null || this.value === undefined) {
       formSearch.code = ''
     } else {
@@ -178,22 +178,23 @@ export class ListPaymentComponent implements OnInit{
   };
 
   download(id: number) {
-    this.paymentService.export(id).subscribe(data => {
-      this.handleFileDownload(data)
+    this.paymentService.export(id).subscribe((data: Blob) => {
+      // const blob = new Blob([data], {type: 'application/docx' });
+
+      let downloadURL = window.URL.createObjectURL(data);
+      let link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = 'invoice_' + id + '.docx'
+      link.click();
     })
   }
-  handleFileDownload(downloadUrl: string) {
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.target = '_blank'; // Open the link in a new tab/window
-    link.click();
-  }
+
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId
     this.getListInvoices()
   }
 
-  getPayMentDetail(id: any) {
+  getPaymentDetail(id: any) {
     this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id]);
   }
 }

@@ -57,19 +57,22 @@ export class CurrentVirtualMachineComponent implements OnInit {
                 this.backupVm = data
                 this.backupVm.securityGroupBackups.forEach(item => {
                     this.securityGroup.push(item.sgName)
-
                 })
                 this.securityGroupUnique = Array.from(new Set(this.securityGroup))
                 this.securityGroupName = this.securityGroupUnique.join(', ')
-                console.log(this.backupVm.volumeBackups)
+                console.log('volume',this.backupVm.volumeBackups)
                 this.backupVm.volumeBackups.forEach(item1 => {
-                    if (this.listIOPS?.length > 0) {
+                  if(item1) {
+                    if(item1.iops != null) {
+                      if (this.listIOPS?.length > 0) {
                         this.listIOPS.push(item1.iops)
-                    } else {
+                      } else {
                         this.listIOPS = [item1.iops]
+                      }
+                      console.log(this.listIOPS)
+                      this.listIOPSUnique = Array.from(new Set(this.listIOPS.join(', ')))
                     }
-                    console.log(this.listIOPS)
-                    this.listIOPSUnique = Array.from(new Set(this.listIOPS.join(', ')))
+                  }
                 })
             }
             console.log('backupvm', this.backupVm)

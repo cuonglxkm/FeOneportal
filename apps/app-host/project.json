@@ -4,26 +4,25 @@
   "projectType": "application",
   "prefix": "one-portal",
   "sourceRoot": "apps/app-host/src",
-  "tags": [
-    "app-host"
-  ],
+  "tags": ["app-host"],
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/app-host",
         "index": "apps/app-host/src/index.html",
         "main": "apps/app-host/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/app-host/tsconfig.app.json",
         "assets": [
           "apps/app-host/src/favicon.ico",
-          "apps/app-host/src/assets"
+          "apps/app-host/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+            "output": "/assets/"
+          }
         ],
         "styles": [
           "apps/app-host/src/styles.less",
@@ -43,9 +42,7 @@
           "crypto"
         ],
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "node_modules/"
-          ]
+          "includePaths": ["node_modules/"]
         }
       },
       "configurations": {
@@ -89,10 +86,10 @@
       },
       "configurations": {
         "production": {
-          "browserTarget": "app-host:build:production"
+          "buildTarget": "app-host:build:production"
         },
         "development": {
-          "browserTarget": "app-host:build:development"
+          "buildTarget": "app-host:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -100,20 +97,12 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "app-host:build"
+        "buildTarget": "app-host:build"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
-      "options": {
-        "lintFilePatterns": [
-          "apps/app-host/**/*.ts",
-          "apps/app-host/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   }
 }

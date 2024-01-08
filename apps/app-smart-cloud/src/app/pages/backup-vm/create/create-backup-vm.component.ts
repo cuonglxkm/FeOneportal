@@ -68,7 +68,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
     securityGroupToBackupIds: [[] as string[]],
     projectId: [0, [Validators.required]],
     description: ['', [Validators.maxLength(500)]],
-    scheduleId: [0, [Validators.required]],
+    scheduleId: [0, [Validators.required, Validators.required]],
     backupPacketId: [0, [Validators.required]],
     customerId: [0, [Validators.required]],
   });
