@@ -111,7 +111,7 @@
     <tbody>
       <tr *ngFor="let data of ajaxTable3.data">
         <td class="text-blue" (click)="navigateToDetail(data.id)">
-          {{ data.name }}
+          <a>{{ data.name }}</a>
         </td>
         <td>
           {{ data.flavorName }}
