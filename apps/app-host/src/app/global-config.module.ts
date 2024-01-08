@@ -22,10 +22,10 @@ const alainConfig: AlainConfig = {
   auth: {
     // @ts-ignore
     login_url: `${environment.sso.issuer}/connect/authorize?response_type=code&client_id=${environment.sso.clientId}&scope=${decodeURIComponent(environment.sso.scope)}&redirect_uri=${decodeURIComponent(environment.sso.callback)}`,
-    token_send_place: 'body',
+    token_send_place: 'header',
     token_send_template: 'Bearer ${token}',
     token_send_key: 'Authorization',
-    ignores: [/\/login/, /assets\//, /passport\//, /provisions\//, /\/keypair/],
+    ignores: [/\/login/, /assets\//, /passport\//],
   },
 
 };
