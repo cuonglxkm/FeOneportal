@@ -122,15 +122,9 @@ export class RebuildInstances {
 export class UpdateInstances {
   regionId: number;
   customerId: number;
-  imageId: number;
-  flavorId: number;
-  duration: number;
   name: string;
-  storage: number;
   projectId: number;
   securityGroups: string;
-  listServicesToBeExtended: string;
-  newExpiredDate: string;
   id: number;
 }
 
@@ -340,7 +334,7 @@ export class OrderItem {
   serviceDuration: number;
 }
 
-export interface InstanceResize {
+export class InstanceResize {
   description: any;
   currentFlavorId: number;
   newFlavorId: number;
@@ -348,6 +342,8 @@ export interface InstanceResize {
   addCpu: number;
   addBttn: number;
   addBtqt: number;
+  ram: number;
+  cpu: number;
   typeName: string;
   newOfferId: number;
   serviceType: number;
@@ -360,7 +356,6 @@ export interface InstanceResize {
   userEmail: any;
   actorEmail: any;
 }
-
 export class InstanceAttachment {
   cloudId: string;
   name: string;
@@ -435,4 +430,42 @@ export class UpdatePortInstance {
   vpcId: number;
   securityGroup: any[];
   portSecurityEnanble: boolean;
+}
+
+export class IpCreate {
+  id: number;
+  duration: number;
+  ipAddress: any;
+  vmToAttachId: any;
+  offerId: number;
+  networkId: any;
+  useIPv6: any;
+  vpcId: any;
+  oneSMEAddonId: any;
+  serviceType: number;
+  serviceInstanceId: number;
+  customerId: number;
+  createDate: string;
+  expireDate: string;
+  saleDept: any;
+  saleDeptCode: any;
+  contactPersonEmail: any;
+  contactPersonPhone: any;
+  contactPersonName: any;
+  note: any;
+  createDateInContract: any;
+  am: any;
+  amManager: any;
+  isTrial: boolean;
+  couponCode: any;
+  dhsxkd_SubscriptionId: any;
+  dSubscriptionNumber: any;
+  dSubscriptionType: any;
+  oneSME_SubscriptionId: any;
+  actionType: number;
+  regionId: number;
+  serviceName: any;
+  typeName: string;
+  userEmail: any;
+  actorEmail: any;
 }

@@ -178,7 +178,7 @@
             *nguCarouselDef="let item; index as i; let ani = animate"
             [@slider]="ani"
           >
-            <table class="text-center" (click)="onInputFlavors(item.id)">
+            <table class="custom-table text-center" (click)="onInputFlavors(item.id)">
               <tbody
                 class="flavor-body"
                 [id]="'flavor_' + item.id"
@@ -315,7 +315,6 @@
               nzPlaceHolder="Chọn Security Group"
               [ngModelOptions]="{ standalone: true }"
               [(ngModel)]="selectedSecurityGroup"
-              (ngModelChange)="onChangeSecurityGroup($event)"
             >
               <nz-option
                 *ngFor="let i of listSecurityGroup"
