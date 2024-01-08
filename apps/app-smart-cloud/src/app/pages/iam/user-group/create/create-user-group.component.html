@@ -63,7 +63,7 @@
           <input nz-input formControlName="groupName" id="groupName" [maxlength]="128"/>
           <span
             [ngStyle]="{'color': validateForm.controls.groupName.touched && validateForm.controls.groupName.invalid ? 'rgba(252, 16, 16, 1)' : '#00000040'}">
-                                Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.
+                                Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.&#64;-_'.
                               </span>
         </nz-form-control>
       </nz-form-item>
