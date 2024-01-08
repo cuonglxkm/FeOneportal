@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { UserModel } from '../../../../../../../../libs/common-utils/src';
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { PaymentService } from 'src/app/shared/services/payment.service';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
@@ -62,10 +62,14 @@ export class PaymentDetailComponent implements OnInit {
 
   ngOnInit(): void {
     let email = this.tokenService.get()?.email;
-
+    const accessToken = this.tokenService.get()?.token;
+    
     let baseUrl = environment['baseUrl'];
     this.http
       .get<UserModel>(`${baseUrl}/users/${email}`, {
+        headers: new HttpHeaders({
+          'Authorization': "Bearer " + accessToken
+        }),
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
       })
       .subscribe(

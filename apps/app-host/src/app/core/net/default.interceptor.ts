@@ -45,7 +45,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
   constructor(private injector: Injector) {
     if (this.refreshTokenType === 'auth-refresh') {
-      this.buildAuthRefresh();
+      // this.buildAuthRefresh();
     }
   }
 
@@ -166,7 +166,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #endregion
 
   private toLogin(): void {
-    this.notification.error(`Hết phiên đăng nhập`, ``);
+    // this.notification.error(`Hết phiên đăng nhập`, ``);
     this.goTo(this.tokenSrv.login_url!);
 
   }
@@ -244,15 +244,14 @@ export class DefaultInterceptor implements HttpInterceptor {
         // if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
         //   return this.tryRefreshToken(ev, req, next);
         // }
+        this.tokenSrv.clear()
         this.toLogin();
         break;
       case 403:
       case 404:
       case 500:
         // this.goTo(`/exception/${ev.status}?url=${req.urlWithParams}`);
-        this.tokenSrv.clear()
-        this.toLogin();
-        break;
+
       default:
         if (ev instanceof HttpErrorResponse) {
           console.warn(
@@ -269,10 +268,16 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
     let url = req.url;
     if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
       const {baseUrl} = environment.api;
       url = baseUrl + (baseUrl.endsWith('/') && url.startsWith('/') ? url.substring(1) : url);
+    }
+
+    if (this.checkTokenExpired()) {
+      this.tokenSrv.clear();
+      this.toLogin();
     }
 
     const newReq = req.clone({url, setHeaders: this.getAdditionalHeaders(req.headers)});
@@ -285,5 +290,17 @@ export class DefaultInterceptor implements HttpInterceptor {
       }),
       catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
     );
+
   }
+
+  checkTokenExpired() {
+    // @ts-ignore
+    let exp = this.tokenSrv.get()?.exp;
+    if (exp == null) return false;
+
+    const expirationTime = exp * 1000;
+    const currentTime = Date.now();
+    return currentTime > expirationTime;
+  }
+
 }

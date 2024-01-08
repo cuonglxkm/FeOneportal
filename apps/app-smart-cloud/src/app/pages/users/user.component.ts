@@ -103,7 +103,7 @@ export class UserComponent implements OnInit {
         console.log(data);
         this.message.success('Xóa User thành công');
         this.reloadTable();
-      }, 
+      },
       (error) => {
         console.log(error.error);
         this.message.error('Xóa User không thành công')
@@ -120,7 +120,7 @@ export class UserComponent implements OnInit {
         console.log(data);
         this.message.success('Xóa ' + this.listUserPicked.length + ' Users thành công');
         this.reloadTable();
-      }, 
+      },
       (error) => {
         console.log(error.error);
         this.message.error('Xóa Users không thành công')
@@ -184,16 +184,6 @@ export class UserComponent implements OnInit {
 
     console.log('list user picked', this.listUserPicked);
     this.cdr.detectChanges();
-  }
-
-  onPageSizeChange(event: any) {
-    // this.size = event
-    // this.getSshKeys();
-  }
-
-  onPageIndexChange(event: any) {
-    // this.index = event;
-    // this.getSshKeys();
   }
 
   reloadTable(): void {

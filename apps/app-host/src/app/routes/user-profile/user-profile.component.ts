@@ -66,9 +66,13 @@ export class UserProfileComponent implements OnInit {
   loadUserProfile() {
     // @ts-ignore
     let email = this.tokenService.get()['email'];
+    const accessToken = this.tokenService.get()?.token;
 
     let baseUrl = environment['baseUrl'];
     this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
+      headers: new HttpHeaders({
+        'Authorization': "Bearer " + accessToken
+      }),
       context: new HttpContext()
         .set(ALLOW_ANONYMOUS, true)
     })

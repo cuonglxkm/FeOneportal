@@ -252,6 +252,9 @@ export class InstanceCreate {
   poolName: any;
   usedMss: boolean;
   customerUsingMss: any;
+  ram: number;
+  cpu: number;
+  volumeType: any;
   typeName: string;
   vpcId: any;
   oneSMEAddonId: any;
