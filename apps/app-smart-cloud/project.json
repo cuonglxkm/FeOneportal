@@ -19,7 +19,8 @@
           "apps/app-smart-cloud/src/favicon.ico",
           "apps/app-smart-cloud/src/assets"
         ],
-        "styles": ["apps/app-smart-cloud/src/styles.less",
+        "styles": [
+          "apps/app-smart-cloud/src/styles.less",
           "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
           "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css"
         ],
@@ -28,9 +29,7 @@
           "path": "apps/app-smart-cloud/webpack.config.ts"
         },
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "node_modules/"
-          ]
+          "includePaths": ["node_modules/"]
         }
       },
       "configurations": {
@@ -64,17 +63,17 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:webpack-dev-server",
+      "executor": "@nx/angular:dev-server",
       "options": {
         "port": 4203,
         "publicHost": "http://localhost:4203"
       },
       "configurations": {
         "production": {
-          "browserTarget": "app-smart-cloud:build:production"
+          "buildTarget": "app-smart-cloud:build:production"
         },
         "development": {
-          "browserTarget": "app-smart-cloud:build:development"
+          "buildTarget": "app-smart-cloud:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -82,7 +81,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "app-smart-cloud:build"
+        "buildTarget": "app-smart-cloud:build"
       }
     },
     "serve-static": {

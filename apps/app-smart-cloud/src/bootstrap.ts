@@ -1,8 +1,8 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
-import {preloaderFinished} from "@delon/theme";
+// import {preloaderFinished} from "@delon/theme";
 
-preloaderFinished();
+// preloaderFinished();
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
