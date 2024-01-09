@@ -21,17 +21,17 @@ export class OrderService extends BaseService {
   getOrders(pageSize: number,
             pageNumber: number,
             orderCode: string,
-            customerId: number,
             saleDept: string,
             saleDeptCode: string,
             seller: string,
             ticketCode: string,
             dSubscriptionNumber: string,
             dSubscriptionType: string,
-            orderAfter: string,
-            resultNote: string
+            fromDate: Date,
+            toDate:Date,
+            status: number
   ): Observable<BaseResponse<OrderDTO[]>>{
-    let urlResult = this.getConditionSearcOrders(pageSize, pageNumber, orderCode, customerId, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, orderAfter, resultNote);
+    let urlResult = this.getConditionSearcOrders(pageSize, pageNumber, orderCode, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, fromDate, toDate, status );
     return this.http.get<BaseResponse<OrderDTO[]>>(urlResult).pipe(
       catchError(this.handleError<BaseResponse<OrderDTO[]>>('get order-list error'))
     );
@@ -40,21 +40,17 @@ export class OrderService extends BaseService {
   private getConditionSearcOrders(pageSize: number,
                                   pageNumber: number,
                                   orderCode: string,
-                                  customerId: number,
                                   saleDept: string,
                                   saleDeptCode: string,
                                   seller: string,
                                   ticketCode: string,
                                   dSubscriptionNumber: string,
                                   dSubscriptionType: string,
-                                  orderAfter: string,
-                                  resultNote: string): string {
+                                  fromDate: Date,
+                                  toDate: Date,
+                                  status: number): string {
     let urlResult = this.urlSnapshotVl;
     let count = 0;
-    if (customerId !== undefined && customerId != null) {
-      urlResult += '?customerId=' + customerId;
-      count++;
-    }
     if (pageSize !== undefined && pageSize != null) {
       if (count == 0) {
         urlResult += '?pageSize=' + pageSize;
@@ -136,20 +132,28 @@ export class OrderService extends BaseService {
         urlResult += '&dSubscriptionType=' + dSubscriptionType;
       }
     }
-    if (orderAfter !== undefined && orderAfter != null) {
+    if (fromDate !== undefined && fromDate != null) {
       if (count == 0) {
-        urlResult += '?orderAfter=' + orderAfter;
+        urlResult += '?fromDate=' + fromDate.toISOString();
         count++;
       } else {
-        urlResult += '&orderAfter=' + orderAfter;
+        urlResult += '&fromDate=' + fromDate.toISOString();
       }
     }
-    if (resultNote !== undefined && resultNote != null) {
+    if (toDate !== undefined && toDate != null) {
       if (count == 0) {
-        urlResult += '?resultNote=' + resultNote;
+        urlResult += '?toDate=' + toDate.toISOString();
         count++;
       } else {
-        urlResult += '&resultNote=' + resultNote;
+        urlResult += '&toDate=' + toDate.toISOString();
+      }
+    }
+    if (status !== undefined && status != null) {
+      if (count == 0) {
+        urlResult += '?status=' + status;
+        count++;
+      } else {
+        urlResult += '&status=' + status;
       }
     }
     return urlResult;
