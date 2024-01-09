@@ -48,6 +48,7 @@
             [ngModel]="searchParam.name"
             (ngModelChange)="changeName($event)"
             style="width: 300px; margin-left: 10px"
+            (keyup.enter)="handleEnterKeyPress()"
           />
         </nz-input-group>
         <ng-template #suffixButton>
@@ -96,59 +97,80 @@
     [(nzPageSize)]="pageSize"
     (nzPageIndexChange)="getDataList()"
     (nzPageSizeChange)="getDataList(true)"
+    [nzVirtualItemSize]="54"
+    [nzScroll]="{ x: '1000px', y: '240px' }"
   >
     <thead>
       <tr>
-        <th>Tên máy ảo</th>
+        <th nzLeft>Tên máy ảo</th>
         <th>Gói cấu hình</th>
         <th>Trạng thái máy ảo</th>
         <th>Trạng thái tác vụ</th>
         <th>IP LAN</th>
         <th>IP Public</th>
-        <th>Thao tác</th>
+        <th nzRight>Thao tác</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of ajaxTable3.data">
-        <td class="text-blue" (click)="navigateToDetail(data.id)">
+        <td class="text-blue" (click)="navigateToDetail(data.id)" nzLeft>
           <a>{{ data.name }}</a>
         </td>
-        <td>
+        <td nzBreakWord>
           {{ data.flavorName }}
           <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
         </td>
-        <td>
+        <td nzBreakWord>
           <div>
             {{ getStatus(data.status) }}
           </div>
         </td>
-        <td>{{ data.taskState }}</td>
-        <td>{{ data.ipPrivate }}</td>
-        <td>{{ data.ipPublic }}</td>
-        <td>
-          <nz-select
-            [nzPlaceHolder]="'Chọn thao tác'"
-            ngModel="selectedOptionAction"
-            name="selectAction"
-            (ngModelChange)="showModal($event, data)"
-          >
-            <nz-option
-              nzValue="1"
-              nzLabel="Tạo Backup"
-              (click)="navigateToCreateBackup(data.id)"
-            ></nz-option>
-            <nz-option nzValue="2" nzLabel="Tạo lịch Backup"></nz-option>
-            <nz-option
-              nzValue="3"
-              nzLabel="Chỉnh sửa Security Group"
-            ></nz-option>
-            <nz-option nzValue="4" nzLabel="Chỉnh sửa"></nz-option>
-            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"></nz-option>
-            <nz-option nzValue="6" nzLabel="Gỡ khỏi VLAN"></nz-option>
-            <nz-option nzValue="7" nzLabel="Khởi động lại"></nz-option>
-            <nz-option nzValue="8" nzLabel="Tắt máy ảo"></nz-option>
-            <nz-option nzValue="9" nzLabel="RESCUE"></nz-option>
-          </nz-select>
+        <td nzBreakWord>{{ data.taskState }}</td>
+        <td nzBreakWord>{{ data.ipPrivate }}</td>
+        <td nzBreakWord>{{ data.ipPublic }}</td>
+        <td nzRight>
+<!--          <nz-select-->
+<!--            [nzPlaceHolder]="'Chọn thao tác'"-->
+<!--            ngModel="selectedOptionAction"-->
+<!--            name="selectAction"-->
+<!--            (ngModelChange)="showModal($event, data)"-->
+<!--          >-->
+<!--            <nz-option-->
+<!--              nzValue="1"-->
+<!--              nzLabel="Tạo Backup"-->
+<!--              (click)="navigateToCreateBackup(data.id)"-->
+<!--            ></nz-option>-->
+<!--            <nz-option nzValue="2" nzLabel="Tạo lịch Backup"></nz-option>-->
+<!--            <nz-option-->
+<!--              nzValue="3"-->
+<!--              nzLabel="Chỉnh sửa Security Group"-->
+<!--            ></nz-option>-->
+<!--            <nz-option nzValue="4" nzLabel="Chỉnh sửa"></nz-option>-->
+<!--            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"></nz-option>-->
+<!--            <nz-option nzValue="6" nzLabel="Gỡ khỏi VLAN"></nz-option>-->
+<!--            <nz-option nzValue="7" nzLabel="Khởi động lại"></nz-option>-->
+<!--            <nz-option nzValue="8" nzLabel="Tắt máy ảo"></nz-option>-->
+<!--            <nz-option nzValue="9" nzLabel="RESCUE"></nz-option>-->
+<!--          </nz-select>-->
+          <button nz-button
+                  [nzType]="'primary'"
+                  nz-dropdown
+                  [nzDropdownMenu]="opMenu">
+            <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
+          </button>
+          <nz-dropdown-menu #opMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="navigateToCreateBackup(data.id)">Tạo Backup</li>
+              <li nz-menu-item>Tạo lịch Backup</li>
+              <li nz-menu-item>Chỉnh sửa Security Group</li>
+              <li nz-menu-item (click)="navigateToEdit(data.id)">Chỉnh sửa</li>
+              <li nz-menu-item (click)="showHandleGanVLAN()">Gắn vào VLAN</li>
+              <li nz-menu-item (click)="showHandleGoKhoiVLAN()">Gỡ khỏi VLAN</li>
+              <li nz-menu-item (click)="restartInstance(data.id)">Khởi động lại</li>
+              <li nz-menu-item (click)="shutdownInstance(data.id)">Tắt máy ảo</li>
+              <li nz-menu-item>RESCUE</li>
+            </ul>
+          </nz-dropdown-menu>
         </td>
       </tr>
     </tbody>

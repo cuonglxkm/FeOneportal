@@ -1,5 +1,13 @@
 <page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Allow Address Pair'">
+             [title]="title">
+  <ng-template #title>
+    <span nz-icon
+          nzType="arrow-left"
+          nzTheme="outline"
+          [routerLink]="'/app-smart-cloud/instances/instances-detail/' + instanceId"
+          style="margin-right: 10px;"></span>
+    Danh sách Allow Address Pair
+  </ng-template>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -9,7 +17,7 @@
         <a>Dịch vụ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/instances/instances-detail/8101'">VM</a>
+        <a [routerLink]="'/app-smart-cloud/instances/instances-detail/' + instanceId">VM</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -50,6 +58,7 @@
                                [region]="region"
                                [project]="project"
                                [userId]="userId"
+                               [portId]="portId"
                                (onCancel)="handleCloseCreate()"
                                (onOk)="handleOkCreate()"/>
   </ng-template>
@@ -58,25 +67,23 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <nz-table #tablePair
+    <nz-table #fixedTable
+              [nzScroll]="{ x: '1000px', y: '240px' }"
               [nzData]="collection.records"
               nzShowSizeChanger
               [nzFrontPagination]="false"
-              [nzTotal]="collection.totalCount"
-              [nzPageSize]="collection.pageSize"
-              [nzPageIndex]="collection.currentPage"
               [nzLoading]="isLoading"
-              (nzQueryParams)="onQueryParamsChange($event)"
-    >
+              [nzFrontPagination]="false"
+              [nzShowPagination]="false">
       <thead>
       <tr>
-        <th nzAlign="center" class="text-th">IP Address/CIDR</th>
-        <th nzAlign="center" class="text-th">MAC Address</th>
-        <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+        <th nzAlign="center" >IP Address/CIDR</th>
+        <th nzAlign="center" >MAC Address</th>
+        <th nzAlign="center" style="width: 216px;">Thao tác</th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let data of tablePair.data">
+      <tr *ngFor="let data of fixedTable.data">
         <td nzAlign="center">{{ data.ipAddress }}</td>
         <td nzAlign="center">{{ data.macAddress }}</td>
         <td nzAlign="center">

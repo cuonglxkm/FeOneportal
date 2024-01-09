@@ -140,7 +140,7 @@ const routes: Routes = [
     component: CreateOutboundComponent
   },
   {
-    path: 'allow-address-pair',
+    path: 'instance/:instanceId/allow-address-pair/:portId',
     component: ListAllowAddressPairComponent
   },
   {

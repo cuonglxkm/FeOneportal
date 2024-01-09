@@ -101,7 +101,7 @@ export class InstancesCreateComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.max(50), Validators.pattern(/^[a-zA-Z0-9]+$/)],
     }),
     // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
@@ -560,7 +560,7 @@ export class InstancesCreateComponent implements OnInit {
       return;
     }
     this.instanceCreate.description = null;
-    
+
     this.instanceCreate.imageId = this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
