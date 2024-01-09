@@ -239,15 +239,19 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
 
   //id: id của máy ảo
   getVolumeInstanceAttachment(id: number) {
+    this.isLoading = true
     this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
       this.volumeAttachments = data
+      this.isLoading = false
       console.log('volume attach', this.volumeAttachments)
     })
   }
 
   getBackupPackage() {
+    this.isLoading = true
     this.backupVmService.getBackupPackages(this.customerId).subscribe(data => {
       this.backupPackages = data
+      this.isLoading = true
       console.log('backup package', this.backupPackages)
     })
   }

@@ -17,6 +17,7 @@
                             *nzSpaceItem
                             nzShowSearch
                             nzAllowClear
+                            nz-tooltip nzTooltipTitle="Chọn Security Group" nzTooltipPlacement="bottom"
                             nzPlaceHolder="Select a security"
                             [(ngModel)]="selectedValue"
                             (ngModelChange)="onSecurityGroupChange()">
@@ -24,6 +25,7 @@
                     </nz-select>
                     <div *nzSpaceItem>
                         <one-portal-delete-security-group
+                                 nz-tooltip nzTooltipTitle="Xóa Security Group" nzTooltipPlacement="bottom"
                                 *ngIf="!!selectedValue"
                                 [condition]="conditionSearch"
                                 [id]="selectedValue.id"
@@ -36,6 +38,7 @@
             <nz-col nzSpan="6">
                 <nz-row nzJustify="end">
                     <one-portal-create-security-group
+                      nz-tooltip nzTooltipTitle="Thêm mới Security Group" nzTooltipPlacement="bottom"
                             [conditionSearch]="conditionSearch"
                             (onOk)="handleOkCreate()"
                     />

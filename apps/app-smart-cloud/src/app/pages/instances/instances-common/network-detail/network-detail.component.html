@@ -52,10 +52,9 @@
                 </li>
                 <li
                   nz-menu-item
-                  [routerLink]="['/app-smart-cloud/allow-address-pair']"
-                  [queryParams]="{ param: portId }"
+                  [routerLink]="['/app-smart-cloud/instance/'+ instancesId +'/allow-address-pair/' + data.id]"
                 >
-                  Address Pair
+                  Quản lý Address Pair
                 </li>
               </ul>
             </nz-dropdown-menu>

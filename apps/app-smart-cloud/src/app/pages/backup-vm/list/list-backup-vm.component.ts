@@ -67,7 +67,6 @@ export class ListBackupVmComponent implements OnInit {
     regionChanged(region: RegionModel) {
         this.region = region.regionId
         this.formSearch.regionId = this.region
-        this.getListBackupVM()
     }
 
     projectChanged(project: ProjectModel) {
@@ -110,7 +109,6 @@ export class ListBackupVmComponent implements OnInit {
         this.backupVmService.search(this.formSearch).subscribe(data => {
             this.isLoading = false
             this.collection = data
-            console.log(this.collection)
         })
     }
 
@@ -142,7 +140,7 @@ export class ListBackupVmComponent implements OnInit {
       const initFormSearch = new BackupVMFormSearch();
 
       initFormSearch.regionId = this.region
-      initFormSearch.customerId = this.tokenService.get()?.userId
+      // initFormSearch.customerId = this.tokenService.get()?.userId
       initFormSearch.projectId = this.project
       initFormSearch.instanceBackupName = this.value || null
       initFormSearch.currentPage = 1

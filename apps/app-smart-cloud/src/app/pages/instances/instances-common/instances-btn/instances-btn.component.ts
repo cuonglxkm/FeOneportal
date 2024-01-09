@@ -4,6 +4,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
 import { tr } from 'date-fns/locale';
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -15,6 +16,10 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
   @Output() valueChanged = new EventEmitter();
 
+
+  isLoadingDelete:boolean = false
+  isVisibleDelete: boolean = false
+
   constructor(
     private dataService: InstancesService,
     private modalSrv: NzModalService,
@@ -22,13 +27,14 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     private route: Router,
     private router: ActivatedRoute,
     public message: NzMessageService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private notification: NzNotificationService
   ) {}
 
   ngOnInit(): void {
   }
 
-  
+
   openConsole(): void {
     this.route.navigateByUrl('/app-smart-cloud/instances/instances-console/' + this.instancesId, {
       state: {
@@ -44,23 +50,50 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       nzContent: tpl,
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
+      nzOkLoading: this.isLoadingDelete,
       nzOnOk: () => {
         this.dataService.delete(this.instancesId).subscribe(
           (data: any) => {
             console.log(data);
-            if (data == true) {
-              this.message.success('Xóa máy ảo thành công');
-            } else {
-              this.message.error('Xóa máy ảo không thành công');
-            }
+            this.isLoadingDelete = true;
+            this.route.navigate(['/app-smart-cloud/instances'])
+            this.notification.success('Thành công', 'Xóa máy ảo thành công');
           },
           () => {
-            this.message.error('Xóa máy ảo không thành công');
+            this.isLoadingDelete = false
+            this.notification.error('Thất bại','Xóa máy ảo thất bại');
           }
         );
       },
     });
   }
+
+  showModalDelete() {
+    this.isVisibleDelete = true
+  }
+
+  handleOk() {
+    this.isLoadingDelete = true
+    this.dataService.delete(this.instancesId).subscribe((data: any) => {
+        console.log(data);
+        this.isVisibleDelete = false
+        this.isLoadingDelete = false;
+        this.route.navigate(['/app-smart-cloud/instances'])
+        this.notification.success('Thành công', 'Xóa máy ảo thành công');
+      },
+      () => {
+        this.isVisibleDelete = false
+        this.isLoadingDelete = false
+        this.notification.error('Thất bại','Xóa máy ảo thất bại');
+      }
+    );
+  }
+
+  handleCancel() {
+    this.isVisibleDelete = false
+    this.isLoadingDelete = false
+  }
+
 
   continue(tpl: TemplateRef<{}>): void {
     //gia hạn
@@ -140,7 +173,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       this.isOk = false;
     }
   }
-  
+
   shutdownInstance(): void {
     this.modalSrv.create({
       nzTitle: 'Tắt máy ảo',

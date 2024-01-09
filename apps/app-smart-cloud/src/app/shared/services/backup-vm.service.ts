@@ -80,7 +80,7 @@ export class BackupVmService extends BaseService {
     }
 
     getVolumeInstanceAttachment(id: number) {
-        return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments`, {headers: this.getHeaders()})
+        return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments?includeVolumeRoot=false`, {headers: this.getHeaders()})
     }
 
     getBackupPackages(customerId: number) {

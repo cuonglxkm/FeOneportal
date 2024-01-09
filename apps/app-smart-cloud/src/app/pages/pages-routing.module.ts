@@ -72,6 +72,7 @@ import { PaymentSuccessComponent } from "../shared/components/payment-success/pa
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 import {OrderListComponent} from "./order/order-list/order-list.component";
 import {ListPaymentComponent} from "./billing/payment/list/list-payment.component";
+import {OrderDetailComponent} from "./order/order-detail/order-detail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -140,7 +141,7 @@ const routes: Routes = [
     component: CreateOutboundComponent
   },
   {
-    path: 'allow-address-pair',
+    path: 'instance/:instanceId/allow-address-pair/:portId',
     component: ListAllowAddressPairComponent
   },
   {
@@ -306,6 +307,10 @@ const routes: Routes = [
   {
     path: 'order/list',
     component: OrderListComponent
+  },
+  {
+    path: 'order/detail/:id',
+    component: OrderDetailComponent
   }
   ]
 @NgModule({

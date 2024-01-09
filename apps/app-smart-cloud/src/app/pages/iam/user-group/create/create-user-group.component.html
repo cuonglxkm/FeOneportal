@@ -1,29 +1,4 @@
-<!--<page-header  [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">-->
-<!--  <nz-col nzSpan="24" style="display: flex; flex-direction: column;">-->
-<!--    <nz-row nzJustify="space-between" nzAlign="middle">-->
-<!--      <nz-breadcrumb nz-page-header-breadcrumb>-->
-<!--        <nz-breadcrumb-item>Home</nz-breadcrumb-item>-->
-<!--        <nz-breadcrumb-item>-->
-<!--          IAM-->
-<!--        </nz-breadcrumb-item>-->
-<!--        <nz-breadcrumb-item>-->
-<!--          <a routerLink="/app-smart-cloud/iam/user-group">User Groups</a>-->
-<!--        </nz-breadcrumb-item>-->
-<!--        <nz-breadcrumb-item>-->
-<!--          <a routerLink="/app-smart-cloud/iam/user-group/create">Tạo User Group</a>-->
-<!--        </nz-breadcrumb-item>-->
-<!--      </nz-breadcrumb>-->
-<!--      <nz-space>-->
-<!--        <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--        <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                                 [regionId]="region"></project-select-dropdown>-->
-<!--      </nz-space>-->
-<!--    </nz-row>-->
-<!--    <h3 style="margin-top: 5px">Tạo User Group</h3>-->
-<!--  </nz-col>-->
-<!--</page-header>-->
 <page-header [breadcrumb]="breadcrumb"
-             [action]="action"
              [title]="'Tạo User Group'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -41,13 +16,13 @@
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
-    </div>
-  </ng-template>
+<!--  <ng-template #action>-->
+<!--    <div class="alain-custom-action text-right">-->
+<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
+<!--                               [regionId]="region"></project-select-dropdown>-->
+<!--    </div>-->
+<!--  </ng-template>-->
 </page-header>
 <nz-content>
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
@@ -76,7 +51,7 @@
         </nz-form-label>
         <nz-form-control>
           <nz-select nzPlaceHolder="-----Chọn Group-----" formControlName="parentName" id="parentName">
-            <nz-option *ngFor="let item of listGroupParentUnique" [nzValue]="[item]" nzLabel="{{ item }}"></nz-option>
+            <nz-option *ngFor="let item of listNameParent" [nzValue]="[item]" nzLabel="{{ item }}"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -96,7 +71,7 @@
           <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back">Quay lại</button>
           <nz-form-control *nzSpaceItem>
             <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-create"
-                    [disabled]="!validateForm.valid" (click)="showCreatePolicy()">Tạo mới
+                    [disabled]="!validateForm.valid" (click)="showCreate()">Tạo mới
             </button>
           </nz-form-control>
         </nz-space>
@@ -106,7 +81,8 @@
   <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Xác nhận tạo User Groups"
             (nzOnCancel)="handleCancel()"
             (nzOnOk)="handleCreate()"
-            nzOkText="Đồng ý" nzCancelText="Hủy">
+            nzOkText="Đồng ý" nzCancelText="Hủy"
+            [nzOkLoading]="isLoadingConfirm">
     <ng-container *nzModalContent>
       <nz-alert nzBanner nzMessage="Bạn đang thực hiện tạo Group {{this.validateForm.value.groupName}}"></nz-alert>
       <h3 style="margin-top: 10px;">Đế thực hiện tạo mới Group, vui lòng chọn “Đồng ý” để xác nhận.</h3>

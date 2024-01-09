@@ -80,6 +80,7 @@ export class InstancesComponent implements OnInit {
   isSearch: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
+  inputValue: string
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -112,10 +113,10 @@ export class InstancesComponent implements OnInit {
         this.isVisibleGoKhoiVLAN = true;
         break;
       case 7:
-        this.restartInstance();
+        this.restartInstance(this.actionData.id);
         break;
       case 8:
-        this.shutdownInstance();
+        this.shutdownInstance(this.actionData.id);
         break;
       default:
     }
@@ -123,9 +124,14 @@ export class InstancesComponent implements OnInit {
 
   changeFilterStatus(e: any): void {
     this.searchParam.status = e;
+    this.getDataList()
   }
   changeName(e: any): void {
     this.searchParam.name = e;
+  }
+  handleEnterKeyPress() {
+    this.inputValue = this.searchParam.name;
+    this.getDataList()
   }
 
   selectedChecked(e: any): void {
@@ -310,6 +316,10 @@ export class InstancesComponent implements OnInit {
     }
   }
 
+  showHandleGanVLAN() {
+    this.isVisibleGanVLAN = true
+  }
+
   handleCancelGanVLAN(): void {
     this.actionData = null;
     this.isVisibleGanVLAN = false;
@@ -335,6 +345,10 @@ export class InstancesComponent implements OnInit {
     // );
   }
 
+  showHandleGoKhoiVLAN() {
+    this.isVisibleGoKhoiVLAN = true
+  }
+
   handleCancelGoKhoiVLAN(): void {
     this.actionData = null;
     this.isVisibleGoKhoiVLAN = false;
@@ -350,7 +364,7 @@ export class InstancesComponent implements OnInit {
     this.isExpand = !this.isExpand;
   }
 
-  shutdownInstance(): void {
+  shutdownInstance(id: number): void {
     this.modalSrv.create({
       nzTitle: 'Tắt máy ảo',
       nzContent: 'Quý khách chắn chắn muốn thực hiện tắt máy ảo?',
@@ -359,9 +373,9 @@ export class InstancesComponent implements OnInit {
       nzOnOk: () => {
         var body = {
           command: 'shutdown',
-          id: this.actionData.id,
+          id: id,
         };
-        this.dataService.postAction(this.actionData.id, body).subscribe(
+        this.dataService.postAction(id, body).subscribe(
           (data: any) => {
             if (data == true) {
               this.message.success('Tắt máy ảo thành công');
@@ -376,7 +390,7 @@ export class InstancesComponent implements OnInit {
       },
     });
   }
-  restartInstance(): void {
+  restartInstance(id: number): void {
     this.modalSrv.create({
       nzTitle: 'Khởi động lại máy ảo',
       nzContent: 'Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?',
@@ -385,9 +399,9 @@ export class InstancesComponent implements OnInit {
       nzOnOk: () => {
         var body = {
           command: 'restart',
-          id: this.actionData.id,
+          id: id,
         };
-        this.dataService.postAction(this.actionData.id, body).subscribe(
+        this.dataService.postAction(id, body).subscribe(
           (data: any) => {
             console.log(data);
             if (data == true) {
@@ -420,4 +434,5 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/instance/' + id + '/create-backup-vm',
     ]);
   }
+
 }

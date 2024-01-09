@@ -24,6 +24,7 @@
       <div style="margin-right: 10px;">Trạng thái</div>
       <div *nzSpaceItem>
         <nz-select [(ngModel)]="selectedValue"
+                   nz-tooltip nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom"
                    (ngModelChange)="onChange($event)"
                    nzPlaceHolder="Tất cả trạng thái">
           <nz-option *ngFor="let item of status" [nzValue]="item.value"
@@ -37,7 +38,7 @@
                  placeholder="Tìm kếm tên..."/>
         </nz-input-group>
         <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="getListScheduleBackup()">
+          <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="getListScheduleBackup()">
             <span nz-icon nzType="search" nzTheme="outline"></span>
             Search
           </button>
@@ -47,7 +48,7 @@
   </ng-template>
 
   <ng-template #extra>
-    <button nz-button class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
+    <button nz-button nz-tooltip nzTooltipTitle="Tạo mới lịch backup" nzTooltipPlacement="bottom" class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
             (click)="navigateToCreate()">
       <span nz-icon nzType="plus" nzTheme="outline"></span>
       Tạo mới
