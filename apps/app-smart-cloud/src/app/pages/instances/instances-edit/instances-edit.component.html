@@ -358,9 +358,9 @@
     [instancesId]="id"
   ></one-portal-blockstorage-detail>
 
-  <one-portal-network-detail [instancesId]="id"></one-portal-network-detail>
+  <one-portal-network-detail [instancesId]="id" [isDetail]="false"></one-portal-network-detail>
 </form>
-<nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
+<nz-card nzTitle="Thành tiền">
   <div>
     <nz-table>
       <tr>
@@ -382,6 +382,3 @@
     </div>
   </div>
 </nz-card>
-<ng-template #extraTemplate>
-  <a>More</a>
-</ng-template>

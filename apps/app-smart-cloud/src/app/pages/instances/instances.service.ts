@@ -1,6 +1,6 @@
-import { Inject, Injectable} from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Flavors, Images, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -12,7 +12,7 @@ export class InstancesService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-        'user_root_id': this.tokenService.get()?.userId,
+      user_root_id: this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -163,7 +163,9 @@ export class InstancesService extends BaseService {
     let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {headers: this.httpOptions.headers});
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+    });
   }
 
   delete(id: number): Observable<any> {
@@ -253,6 +255,18 @@ export class InstancesService extends BaseService {
     return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data
+    );
+  }
+
+  getListOffers(
+    productId: number,
+    regionId: number,
+    unitOfMeasure: string
+  ): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}&regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
     );
   }
 }

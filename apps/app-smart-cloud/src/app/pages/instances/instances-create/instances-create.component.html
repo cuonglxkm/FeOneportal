@@ -316,7 +316,7 @@
         <ngu-carousel
           #myCarousel
           [inputs]="carouselTileConfig"
-          [dataSource]="listFlavors"
+          [dataSource]="listOfferFlavors"
         >
           <ngu-tile
             *nguCarouselDef="let item; index as i; let ani = animate"
@@ -342,9 +342,9 @@
                 >
                   <tr>
                     <div>
-                      <b class="h4">{{ item.flavorName | slice : 3 }}</b
+                      <b class="h4">{{ item.offerName | slice : 3 : -4 }}</b
                       ><br />
-                      <b class="h4">{{ item.price }}</b
+                      <b class="h4">{{ item.price.fixedPrice.amount }}</b
                       ><span> đ/tháng</span><br />
                       <span>đ/giờ</span>
                     </div>

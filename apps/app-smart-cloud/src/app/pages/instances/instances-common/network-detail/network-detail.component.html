@@ -11,8 +11,7 @@
           <th>MAC Address</th>
           <th>FixedIPs</th>
           <th>Status</th>
-          <th>Thao tác</th>
-          <th></th>
+          <th *ngIf="isDetail">Thao tác</th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
@@ -37,7 +36,7 @@
               {{ data.status }}
             </label>
           </td>
-          <td>
+          <td *ngIf="isDetail">
             <button
               nz-button
               [nzType]="'primary'"
