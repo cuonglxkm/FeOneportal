@@ -63,6 +63,7 @@ export class ListScheduleBackupComponent implements OnInit{
 
   responseCapacityBackup: CapacityBackupSchedule[] = []
   loadingCapacity: boolean = false
+
   constructor(private router: Router,
               private backupScheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -270,12 +271,10 @@ export class ListScheduleBackupComponent implements OnInit{
   ngOnInit(): void {
     console.log(this.pageSize)
     console.log(this.pageIndex)
-    this.formSearch.customerId = this.tokenService.get()?.userId
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
 
     const initFormSearch = new FormSearchScheduleBackup()
-    initFormSearch.customerId = this.tokenService.get()?.userId
     initFormSearch.pageIndex = this.pageIndex
     initFormSearch.pageSize = this.pageSize
 

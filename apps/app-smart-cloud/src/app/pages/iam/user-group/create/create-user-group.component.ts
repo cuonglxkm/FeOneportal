@@ -48,6 +48,8 @@ export class CreateUserGroupComponent implements OnInit {
 
   isVisibleCreate: boolean = false
 
+  listNameParent: string[] = []
+
   constructor(
     private fb: NonNullableFormBuilder,
     private location: Location,
@@ -173,8 +175,15 @@ export class CreateUserGroupComponent implements OnInit {
     console.log('selected', this.listUserSelected)
   }
 
+  getNameParent() {
+    this.userGroupService.getName().subscribe(data => {
+      this.listNameParent = data
+    })
+  }
+
   ngOnInit(): void {
     this.getGroupParent()
+    this.getNameParent()
   }
 
   goBack(): void {

@@ -1,27 +1,3 @@
-<!--<page-header  [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">-->
-<!--  <nz-col nzSpan="24" style="display: flex; flex-direction: column;">-->
-<!--    <nz-row nzJustify="space-between" nzAlign="middle">-->
-<!--      <nz-breadcrumb nz-page-header-breadcrumb>-->
-<!--        <nz-breadcrumb-item>Home</nz-breadcrumb-item>-->
-<!--        <nz-breadcrumb-item>-->
-<!--          IAM-->
-<!--        </nz-breadcrumb-item>-->
-<!--        <nz-breadcrumb-item>-->
-<!--          <a routerLink="/app-smart-cloud/iam/user-group">User Groups</a>-->
-<!--        </nz-breadcrumb-item>-->
-<!--        <nz-breadcrumb-item>-->
-<!--          <a routerLink="/app-smart-cloud/iam/user-group/create">Tạo User Group</a>-->
-<!--        </nz-breadcrumb-item>-->
-<!--      </nz-breadcrumb>-->
-<!--      <nz-space>-->
-<!--        <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--        <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                                 [regionId]="region"></project-select-dropdown>-->
-<!--      </nz-space>-->
-<!--    </nz-row>-->
-<!--    <h3 style="margin-top: 5px">Tạo User Group</h3>-->
-<!--  </nz-col>-->
-<!--</page-header>-->
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
              [title]="'Tạo User Group'">
@@ -76,7 +52,7 @@
         </nz-form-label>
         <nz-form-control>
           <nz-select nzPlaceHolder="-----Chọn Group-----" formControlName="parentName" id="parentName">
-            <nz-option *ngFor="let item of listGroupParentUnique" [nzValue]="[item]" nzLabel="{{ item }}"></nz-option>
+            <nz-option *ngFor="let item of listNameParent" [nzValue]="[item]" nzLabel="{{ item }}"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>

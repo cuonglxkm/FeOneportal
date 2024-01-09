@@ -91,7 +91,7 @@ export class CurrentVirtualMachineComponent implements OnInit {
             this.router.navigate(['/app-smart-cloud/backup-vm'])
         }, error => {
             this.isLoading = false
-            this.notification.error('Thất bại', 'Restore backup-vm thất bại. Không có quyền thao tác với bản backup này.')
+            this.notification.error('Thất bại', 'Máy ảo hiện tại đang ở trạng thái tạm ngưng hoặc đang điều chỉnh, không thể thực hiện restore.')
         })
     }
 }
