@@ -41,7 +41,7 @@
              (input)="onInputChange($event.target['value'])"/>
     </nz-input-group>
     <ng-template #suffixButton>
-      <button nz-button nzSize="default" class="button-search" (click)="search()" style="cursor: pointer;">
+      <button nz-button nzSize="default" nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip class="button-search" (click)="search()" style="cursor: pointer;">
         <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
         Search
       </button>
@@ -49,7 +49,7 @@
   </ng-template>
 
   <ng-template #extra>
-    <button nz-button class="button-create" nzSize="default" (click)="showModalCreate()" style="cursor: pointer;">
+    <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create" nzSize="default" (click)="showModalCreate()" style="cursor: pointer;">
       <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 5px;"></span>
       Tạo mới
     </button>

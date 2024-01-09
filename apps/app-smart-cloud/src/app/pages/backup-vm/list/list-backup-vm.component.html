@@ -29,7 +29,10 @@
       <div *nzSpaceItem>
         <nz-select [(ngModel)]="selectedValue"
                    (ngModelChange)="onChange($event)"
-                   nzPlaceHolder="Tất cả trạng thái">
+                   nzPlaceHolder="Tất cả trạng thái"
+                   nzTooltipTitle="Tìm kiếm theo trạng thái"
+                   nzTooltipPlacement="bottom"
+                   nz-tooltip>
           <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
       </div>
@@ -40,7 +43,7 @@
                  placeholder="Tìm kếm tên..."/>
         </nz-input-group>
         <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="getListBackupVM()">
+          <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getListBackupVM()">
             <span nz-icon nzType="search" nzTheme="outline"></span>
             Search
           </button>
@@ -78,7 +81,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
-        <td nzAlign="center" nzLeft><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
+        <td nzAlign="center" nzLeft><a (click)="navigateToDetail(data.id)" nzTooltipTitle="Xem chi tết" nzTooltipPlacement="bottom" nz-tooltip>{{ data.name }}</a></td>
         <td nzAlign="center" nzBreakWord> {{ data.instanceName }}</td>
         <td nzAlign="center" nzBreakWord>{{ data.size }} GB</td>
         <td nzAlign="center" nzBreakWord>{{ data.backupPackageName }}</td>

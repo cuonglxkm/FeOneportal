@@ -7,6 +7,7 @@
         <div class="code-box-description">
             <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
                 <one-portal-create-security-group-inbound
+                  nz-tooltip nzTooltipTitle="Thêm mới Inbound" nzTooltipPlacement="bottom"
                         [disabled]="!securityGroupId"
                         [condition]="{
                           userId: condition.userId,
@@ -45,6 +46,7 @@
                         <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá
                         </button>
                         <one-portal-delete-security-group-rule
+                          nz-tooltip nzTooltipTitle="Xóa Inbound" nzTooltipPlacement="bottom"
                                 [isVisible]="isVisible"
                                 [condition]="{
                                   userId: condition.userId,
