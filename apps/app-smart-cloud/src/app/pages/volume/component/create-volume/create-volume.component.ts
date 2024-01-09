@@ -202,7 +202,8 @@ export class CreateVolumeComponent implements OnInit {
         //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
         else if(data.code == 310){
           this.isLoadingAction = false;
-          this.router.navigate([data.data]);
+          // this.router.navigate([data.data]);
+          window.location.href = data.data;
         }else{
 
         }
