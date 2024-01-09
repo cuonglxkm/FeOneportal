@@ -1,12 +1,13 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {Observable, of} from "rxjs";
 import {GetListSnapshotVlModel} from "../models/snapshotvl.model";
 import {catchError} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {OrderDTO} from "../models/order.model";
+import {OrderDTO, OrderDTOSonch} from "../models/order.model";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,15 @@ import {OrderDTO} from "../models/order.model";
 export class OrderService extends BaseService {
   private urlSnapshotVl = this.baseUrl + this.ENDPOINT.orders;
 
-  constructor(private http: HttpClient, private message: NzMessageService) {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json' ,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
+      'user_root_id': this.tokenService.get()?.userId,
+    })
+  };
+
+  constructor(private http: HttpClient, private message: NzMessageService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
@@ -30,7 +39,7 @@ export class OrderService extends BaseService {
             dSubscriptionType: string,
             orderAfter: string,
             resultNote: string
-  ): Observable<BaseResponse<OrderDTO[]>>{
+  ): Observable<BaseResponse<OrderDTO[]>> {
     let urlResult = this.getConditionSearcOrders(pageSize, pageNumber, orderCode, customerId, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, orderAfter, resultNote);
     return this.http.get<BaseResponse<OrderDTO[]>>(urlResult).pipe(
       catchError(this.handleError<BaseResponse<OrderDTO[]>>('get order-list error'))
@@ -164,5 +173,9 @@ export class OrderService extends BaseService {
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
+  }
+
+  getDetail(id: any): Observable<OrderDTOSonch> {
+    return this.http.get<OrderDTOSonch>(this.urlSnapshotVl + "/" + id, this.httpOptions);
   }
 }

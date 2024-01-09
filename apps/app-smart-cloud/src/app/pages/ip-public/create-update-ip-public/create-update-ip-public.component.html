@@ -27,7 +27,7 @@
       <div nz-col nzSpan="12" style="margin-left: 15px">
         <nz-form-label>Chọn máy ảo</nz-form-label>
         <nz-input-group nzCompact>
-          <nz-select [(ngModel)]="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--">
+          <nz-select [nzAllowClear]="true" [(ngModel)]="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--">
             <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id" />
           </nz-select>
         </nz-input-group>
