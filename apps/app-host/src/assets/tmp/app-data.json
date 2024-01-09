@@ -38,6 +38,11 @@
                   "text": "Thanh toán",
                   "icon": "anticon-dashboard",
                   "link": "/app-smart-cloud/billing/payments"
+                },
+                {
+                  "text": "Đơn hàng",
+                  "icon": "anticon-dashboard",
+                  "link": "/app-smart-cloud/order/list"
                 }
               ]
             },

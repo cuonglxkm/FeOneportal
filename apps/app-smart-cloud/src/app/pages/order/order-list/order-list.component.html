@@ -7,7 +7,7 @@
 <nz-content>
   <nz-card>
     <div>
-      <nz-row nzAlign="middle" style="margin-top: 20px;" nzJustify="space-between">
+      <nz-row nzAlign="middle" style="margin-top: 20px; padding: 10px;">
         <nz-space [nzSize]="24">
           <div style="margin-right: 10px;">Trạng thái</div>
           <div *nzSpaceItem>
@@ -19,34 +19,21 @@
             </nz-select>
           </div>
         </nz-space>
-        <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
-        <div  style="width: 410px;">
+        <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']" style="margin-left: 10px;" [(ngModel)]="date"
+                         (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
+        <div style="width: 300px; margin-left: 10px;">
           <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
             <input style="width: 380px;" [(ngModel)]="searchName" (input)="onInputChange($event.target['value'])"
                    type="text" nz-input
-                   placeholder="Tìm kếm mã đơn hàng, tên dịch vụ..."/>
+                   placeholder="Tìm kếm mã đơn hàng, tên dịch vụ..." />
           </nz-input-group>
           <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch>
+            <button nz-button nzType="primary" nzSearch (click)="searchSnapshotScheduleList()">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               Search
             </button>
           </ng-template>
         </div>
-
-        <nz-row nzAlign="middle">
-          <button class="bg-success border-success"
-                  nz-button
-                  nzType="primary"
-                  (click)="navigateToCreate()"
-          >
-            <span
-              nz-icon nzType="plus"
-              nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
-            </span>
-            Tạo mới
-          </button>
-        </nz-row>
       </nz-row>
     </div>
 
@@ -73,9 +60,9 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let data of rowSelectionTable.data">
-        <td>1</td>
-        <td>{{data.orderCode}}</td>
+      <tr *ngFor="let data of rowSelectionTable.data; let i  = index">
+        <td><a (click)="navigateToDetail(data.id)">{{ i + 1 }}</a></td>
+        <td><a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a></td>
         <td>{{ data.note }}</td>
         <td>{{ data.orderDate | date: 'dd/MM/YYYY' }}</td>
         <td>{{ data.statusCode }}</td>
