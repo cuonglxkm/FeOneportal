@@ -36,10 +36,11 @@ export class BackupScheduleItem {
 
 export class FormSearchScheduleBackup {
   customerId: number
-  region: number
-  project: number
+  regionId: number
+  projectId: number
   scheduleName: string
   scheduleStatus: string
+  serviceType: number
   pageIndex: number
   pageSize: number
 }

@@ -116,6 +116,12 @@ export class ListScheduleBackupComponent implements OnInit{
     this.isLoading = true
     console.log(this.formSearch.pageIndex)
     console.log(this.formSearch.pageSize)
+
+    this.formSearch.regionId = this.region;
+    this.formSearch.projectId = this.project;
+
+    console.log(this.formSearch)
+
     this.backupScheduleService.search(this.formSearch).subscribe(data => {
       console.log(data)
         this.response = data
@@ -273,11 +279,15 @@ export class ListScheduleBackupComponent implements OnInit{
     console.log(this.pageIndex)
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
+    this.formSearch.regionId = this.region;
+    this.formSearch.projectId = this.project;
 
     const initFormSearch = new FormSearchScheduleBackup()
     initFormSearch.pageIndex = this.pageIndex
     initFormSearch.pageSize = this.pageSize
-
+    initFormSearch.regionId = this.region;
+    initFormSearch.projectId = this.project;
+    
     this.isLoading = true
     this.backupScheduleService.search(initFormSearch).subscribe(data => {
       if (!data.totalCount) {
