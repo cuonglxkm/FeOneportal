@@ -11,6 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-create-volume',
@@ -101,6 +102,7 @@ export class CreateVolumeComponent implements OnInit {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService,
               private snapshotvlService: SnapshotVolumeService, private activatedRoute: ActivatedRoute,
+              private notificationService: NzNotificationService,
               private nzMessage: NzMessageService, private router: Router) {
   }
 
@@ -191,10 +193,21 @@ export class CreateVolumeComponent implements OnInit {
     console.log(request);
     this.volumeSevice.createNewVolume(request).subscribe(data => {
       if (data != null) {
-        this.isLoadingAction = false;
-        this.nzMessage.create('success', 'Tạo Volume thành công.')
-        console.log(data);
-        this.router.navigate(['/app-smart-cloud/volume']);
+        //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
+        if(data.code == 200){
+          this.isLoadingAction = false;
+          this.notificationService.success('success', 'Tạo Volume thành công.')
+          this.router.navigate(['/app-smart-cloud/volume']);
+        }
+        //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
+        else if(data.code == 310){
+          this.isLoadingAction = false;
+          // this.router.navigate([data.data]);
+          window.location.href = data.data;
+        }else{
+
+        }
+
       }else{
         this.isLoadingAction = false;
       }
@@ -202,7 +215,6 @@ export class CreateVolumeComponent implements OnInit {
       error => {
         this.isLoadingAction = false;
       })
-    // this.router.navigate(['/app-smart-cloud/volume']);
   }
 
 
