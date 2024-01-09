@@ -16,6 +16,7 @@ export class CreateAllowAddressPairComponent implements OnInit {
   @Input() userId: number
   @Input() region: number
   @Input() project: number
+  @Input() portId: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
@@ -37,7 +38,7 @@ export class CreateAllowAddressPairComponent implements OnInit {
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+      this.formDeleteOrCreate.portId = this.portId;
       this.formDeleteOrCreate.pairInfos = [this.validateForm.value];
       this.formDeleteOrCreate.isDelete = false;
       this.formDeleteOrCreate.region = this.region;
@@ -57,7 +58,7 @@ export class CreateAllowAddressPairComponent implements OnInit {
           this.isLoading = false;
           this.validateForm.reset();
           console.log('error', error.status)
-          this.notification.error('Thất bại', 'Tạo Allow Address Pair thất bại');
+          this.notification.error('Thất bại', 'Địa chỉ IP đã tồn tại!');
           this.onOk.emit();
         })
     }

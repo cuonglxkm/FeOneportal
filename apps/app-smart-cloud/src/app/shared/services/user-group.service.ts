@@ -115,7 +115,7 @@ export class UserGroupService extends BaseService {
     }
 
     getName() {
-      return this.http.get<string[]>(this.baseUrl + '/get-groupname',
+      return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam +'/groups/names',
         {headers: this.getHeaders()})
     }
 

@@ -1,7 +1,6 @@
 <page-header [extra]="extra"
              [content]="content"
              [breadcrumb]="breadcrumb"
-             [action]="action"
              [title]="'Danh sách User Groups'">
     <ng-template #breadcrumb>
         <nz-breadcrumb>
@@ -16,13 +15,13 @@
             </nz-breadcrumb-item>
         </nz-breadcrumb>
     </ng-template>
-    <ng-template #action>
-        <div class="alain-custom-action text-right">
-            <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-            <project-select-dropdown (valueChanged)="projectChanged($event)"
-                                     [regionId]="region"></project-select-dropdown>
-        </div>
-    </ng-template>
+<!--    <ng-template #action>-->
+<!--        <div class="alain-custom-action text-right">-->
+<!--            <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--            <project-select-dropdown (valueChanged)="projectChanged($event)"-->
+<!--                                     [regionId]="region"></project-select-dropdown>-->
+<!--        </div>-->
+<!--    </ng-template>-->
     <ng-template #content>
         <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
             <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
@@ -30,21 +29,21 @@
                    placeholder="Tìm kếm tên..."/>
         </nz-input-group>
         <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch>
+            <button nz-button nzType="primary" nzSearch nz-tooltip nzTooltipTitle="Tìm kiếm tên Group" nzTooltipPlacement="bottom">
                 <span nz-icon nzType="search" nzTheme="outline" (click)="getData()"></span>Search
             </button>
         </ng-template>
     </ng-template>
 
     <ng-template #extra>
-        <button nz-button nzSize="default" style="cursor: pointer; margin-right: 5px;" (click)="refresh()">
+        <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default" style="cursor: pointer; margin-right: 5px;" (click)="refresh()">
             <span nz-icon nzType="reload" nzTheme="outline"></span>
         </button>
-        <button nz-button class="button-del" nzSize="default" (click)="showModalDelete()">
+        <button nz-button nz-tooltip nzTooltipTitle="Xóa" nzTooltipPlacement="bottom" class="button-del" nzSize="default" (click)="showModalDelete()">
             <span nz-icon nzType="delete" nzTheme="outline"></span>
             Xóa
         </button>
-        <button nz-button class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
+        <button nz-button nz-tooltip nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
                 (click)="navigateToCreate()">
             <span nz-icon nzType="plus" nzTheme="outline"></span>
             Tạo mới
@@ -82,7 +81,7 @@
                         (nzCheckedChange)="onItemChecked(data.name, $event)"
                 ></td>
                 <td>
-                    <a [href]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
+                    <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom" [href]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
                 </td>
                 <td>{{data.userOfGroup}}</td>
                 <td *ngIf="data.parent === null"></td>

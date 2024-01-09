@@ -1,5 +1,4 @@
 <page-header [breadcrumb]="breadcrumb"
-             [action]="action"
              [title]="'Thêm Policies cho Group'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -18,13 +17,13 @@
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
-    </div>
-  </ng-template>
+<!--  <ng-template #action>-->
+<!--    <div class="alain-custom-action text-right">-->
+<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
+<!--                               [regionId]="region"></project-select-dropdown>-->
+<!--    </div>-->
+<!--  </ng-template>-->
 </page-header>
 <nz-content>
   <nz-card>
@@ -91,14 +90,14 @@
                    placeholder="Tìm kếm tên..."/>
           </nz-input-group>
           <ng-template #suffixButton2>
-            <button nz-button nzType="primary" nzSearch (click)="searchPolicies()">
+            <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên Policy" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="searchPolicies()">
               <span nz-icon nzType="search" nzTheme="outline"></span>Search
             </button>
           </ng-template>
         </div>
       </nz-space>
       <nz-row nzAlign="middle">
-        <button nz-button nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
+        <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
           <span nz-icon nzType="reload" nzTheme="outline"></span>
         </button>
       </nz-row>

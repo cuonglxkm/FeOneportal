@@ -57,6 +57,7 @@ export class NetworkDetailComponent implements OnInit {
         )
         .subscribe((dataNetwork: any) => {
           this.listOfDataNetwork = dataNetwork;
+
           this.cdr.detectChanges();
         });
       this.dataService

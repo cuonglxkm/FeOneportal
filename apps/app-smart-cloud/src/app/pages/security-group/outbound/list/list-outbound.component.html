@@ -6,6 +6,7 @@
         <div class="code-box-description">
             <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
                 <one-portal-outbound
+                  nz-tooltip nzTooltipTitle="Thêm mới Outbound" nzTooltipPlacement="bottom"
                     [disabled]="!securityGroupId"
                     [condition]="{
                       userId: condition.userId,
@@ -43,6 +44,7 @@
                     <td nzAlign="center">
                         <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
                         <one-portal-delete-security-group-rule
+                          nz-tooltip nzTooltipTitle="Xóa Outbound" nzTooltipPlacement="bottom"
                                 [isVisible]="isVisible"
                                 [condition]="{
                                   userId: condition.userId,
