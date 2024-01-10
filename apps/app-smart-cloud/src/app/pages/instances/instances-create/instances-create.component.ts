@@ -857,7 +857,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe(
         (data: any) => {
-          // window.location.href = data.data;
+          window.location.href = data.data;
         },
         (error) => {
           console.log(error.error);
