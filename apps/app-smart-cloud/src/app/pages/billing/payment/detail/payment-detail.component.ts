@@ -63,7 +63,7 @@ export class PaymentDetailComponent implements OnInit {
   ngOnInit(): void {
     let email = this.tokenService.get()?.email;
     const accessToken = this.tokenService.get()?.token;
-    
+
     let baseUrl = environment['baseUrl'];
     this.http
       .get<UserModel>(`${baseUrl}/users/${email}`, {
@@ -100,6 +100,17 @@ export class PaymentDetailComponent implements OnInit {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
       this.payment = data;
     });
+  }
+
+  download(id: number) {
+    this.service.export(id).subscribe((data: Blob) => {
+      // const blob = new Blob([data], {type: 'application/docx' });
+      let downloadURL = window.URL.createObjectURL(data);
+      let link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = 'invoice_' + id + '.docx'
+      link.click();
+    })
   }
 
   payNow() {}

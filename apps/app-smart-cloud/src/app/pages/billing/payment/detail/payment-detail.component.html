@@ -135,7 +135,9 @@
   </nz-row>
   <nz-row style="padding: 2%">
     <nz-col [nzSpan]="24" class="text-right">
-      <button nz-button nzType="primary">DOWNLOAD PDF</button>
+      <div *ngIf="payment.paymentLatestStatus == 'PAID'">
+        <button nz-button nzType="primary" (click)="download(payment.invoiceIssuedId)">DOWNLOAD PDF</button>
+      </div>
     </nz-col>
   </nz-row>
 </div>
