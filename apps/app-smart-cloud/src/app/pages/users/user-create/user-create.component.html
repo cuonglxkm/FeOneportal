@@ -169,14 +169,11 @@
         Bạn đang thực hiện tạo mới User <span>{{ userCreate.userName }}</span>
       </div>
     </ng-template>
-    <nz-row nzGutter="16">
+    <nz-row nzGutter="16" style="margin-top: 10px;">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Để thực hiện tạo mới User, vui lòng chọn "Đồng ý" để xác nhận.
-            nhận</nz-form-label
-          >
-        </nz-form-item>
+        <span class="customModal"
+          >Để thực hiện tạo mới User, vui lòng chọn "Đồng ý" để xác nhận.</span
+        >
       </nz-col>
     </nz-row>
   </ng-container>

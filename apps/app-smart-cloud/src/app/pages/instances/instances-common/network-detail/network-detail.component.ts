@@ -27,12 +27,12 @@ import { finalize } from 'rxjs';
 export class NetworkDetailComponent implements OnInit {
   selectedProject: any;
   @Input() instancesId: any;
+  @Input() isDetail: any;
 
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
   listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
   listOfDataNetwork: Network[] = [];
   updatePortInstance: UpdatePortInstance = new UpdatePortInstance();
@@ -56,8 +56,7 @@ export class NetworkDetailComponent implements OnInit {
           })
         )
         .subscribe((dataNetwork: any) => {
-          this.listOfDataNetwork = dataNetwork;
-
+          this.listOfDataNetwork = dataNetwork.filter((e: Network) => e.isExternal == false);
           this.cdr.detectChanges();
         });
       this.dataService
