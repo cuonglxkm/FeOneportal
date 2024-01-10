@@ -1,5 +1,4 @@
 <page-header [breadcrumb]="breadcrumb"
-
              [title]="'Thông tin Group'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -13,17 +12,10 @@
         <a routerLink="/app-smart-cloud/iam/user-group">User Groups</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/iam/user-group/detail">Group {{groupName}}</a>
+        <a [routerLink]="'/app-smart-cloud/iam/user-group/' + groupName">Group {{groupName}}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-<!--  <ng-template #action>-->
-<!--    <div class="alain-custom-action text-right">-->
-<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                               [regionId]="region"></project-select-dropdown>-->
-<!--    </div>-->
-<!--  </ng-template>-->
 </page-header>
 <nz-content>
   <nz-card nzTitle="Thông tin chính của Group" [nzLoading]="loading">
@@ -75,7 +67,7 @@
           </form>
           <nz-row nzAlign="middle">
             <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default"
-                    style="cursor: pointer;">
+                    style="cursor: pointer;" >
               <span nz-icon nzType="reload" nzTheme="outline"></span>
             </button>
             <button nz-button

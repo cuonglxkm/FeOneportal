@@ -43,34 +43,8 @@ export class UsersTableComponent implements OnInit {
     const {pageSize, pageIndex} = params
     this.pageSize = pageSize;
     this.pageIndex = pageIndex
-    this.getUsers()
     this.refreshCheckedStatus()
-  }
-
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({userName}) => this.setOfCheckedId.has(userName));
-    this.indeterminate = listOfEnabledData.some(({userName}) => this.setOfCheckedId.has(userName)) && !this.checked;
-  }
-
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-      .forEach(({userName}) => this.updateCheckedSet(userName, checked));
-    this.refreshCheckedStatus();
-  }
-
-  onItemChecked(userName: string, checked: boolean): void {
-    this.updateCheckedSet(userName, checked);
-    this.refreshCheckedStatus();
-  }
-
-  filterPolicies() {
-    return this.listUsers.filter(item => (!item || item.userName.includes(this.value)))
-  }
-
-  searchUsers() {
-
-    this.filteredUsers = this.filterPolicies()
+    this.getUsers()
   }
 
   updateCheckedSet(userName: string, checked: boolean): void {
@@ -79,10 +53,46 @@ export class UsersTableComponent implements OnInit {
     } else {
       this.setOfCheckedId.delete(userName);
     }
-    this.listOfSelected = this.listUsers.filter(data => this.setOfCheckedId.has(data.userName))
-    console.log('user selected', this.listOfSelected)
-    this.listUsersSelected.emit(this.listOfSelected)
   }
+
+  onItemChecked(userName: string, checked: boolean): void {
+    this.updateCheckedSet(userName, checked);
+    this.refreshCheckedStatus();
+  }
+
+  onAllChecked(value: boolean): void {
+    this.listOfCurrentPageData.forEach(item => this.updateCheckedSet(item.userName, value));
+    this.refreshCheckedStatus();
+  }
+
+  onCurrentPageDataChange($event: readonly User[]): void {
+    this.listOfCurrentPageData = $event;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.userName));
+    this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.userName)) && !this.checked;
+  }
+
+  filterUser() {
+    return this.listUsers.filter(item => (!item || item.userName.includes(this.value)))
+  }
+
+  searchUsers() {
+    this.filteredUsers = this.filterUser()
+  }
+
+  // updateCheckedSet(userName: string, checked: boolean): void {
+  //   if (checked) {
+  //     this.setOfCheckedId.add(userName);
+  //   } else {
+  //     this.setOfCheckedId.delete(userName);
+  //   }
+  //   this.listOfSelected = this.listUsers.filter(data => this.setOfCheckedId.has(data.userName))
+  //   console.log('user selected', this.listOfSelected)
+  //   this.listUsersSelected.emit(this.listOfSelected)
+  // }
 
   getUsers() {
     this.loading = true
@@ -91,6 +101,7 @@ export class UsersTableComponent implements OnInit {
       this.listUsers = data.records
       this.filteredUsers = data.records
       this.response = data
+      this.listOfCurrentPageData = this.listUsers
     }, error => {
       this.loading = false
       this.response = null
