@@ -469,3 +469,47 @@ export class IpCreate {
   userEmail: any;
   actorEmail: any;
 }
+
+export class OfferItem {
+  id: number;
+  productId: number;
+  offerName: string;
+  price: Price;
+  status: string;
+  unitOfMeasure: string;
+  timePeriod: TimePeriod;
+  regions: Region[];
+  discounts: any[];
+  characteristicValues: CharacteristicValue[];
+  description: string;
+}
+
+export class Price {
+  fixedPrice: FixedPrice;
+  priceType: number;
+  chargeType: number;
+}
+
+export class FixedPrice {
+  amount: number;
+  currency: string;
+}
+
+export class TimePeriod {
+  startDateTime: string;
+  endDateTime: any;
+}
+
+export class Region {
+  id: number;
+  offerId: number;
+  regionId: number;
+}
+
+export class CharacteristicValue {
+  id: number;
+  charName: string;
+  type: number;
+  charOptionValues: string[];
+  productOfferId: number;
+}

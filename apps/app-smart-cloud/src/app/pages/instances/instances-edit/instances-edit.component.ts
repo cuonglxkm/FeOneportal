@@ -64,9 +64,9 @@ export class InstancesEditComponent implements OnInit {
 
   updateInstances: UpdateInstances = new UpdateInstances();
   region: number;
-  projectId: number = 4079;
-  customerId: number = 669;
-  userId: number = 669;
+  projectId: number;
+  customerId: number;
+  userId: number;
   today: Date = new Date();
   ipPublicValue: string = '';
   isUseIPv6: boolean = false;
@@ -179,7 +179,6 @@ export class InstancesEditComponent implements OnInit {
     this.region = region.regionId;
     this.initFlavors();
     this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
     console.log(this.tokenService.get()?.userId);
   }
 
@@ -193,7 +192,7 @@ export class InstancesEditComponent implements OnInit {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
 
     this.userId = this.tokenService.get()?.userId;
-    this.getAllSecurityGroup();
+    this.customerId = this.tokenService.get()?.userId;
 
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
@@ -262,19 +261,28 @@ export class InstancesEditComponent implements OnInit {
     this.updateInstances.customerId = this.tokenService.get()?.userId;
     this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
 
-    console.log("update instance", this.updateInstances);
+    console.log('update instance', this.updateInstances);
 
-    this.dataService.update(this.updateInstances).subscribe({
-      next: (next) => {
-        console.log(next);
-        this.message.success('Cập nhật máy ảo thành công');
-        this.route.navigate(['/app-smart-cloud/instances']);
-      },
-      error: (e) => {
-        console.log(e);
-        this.message.error('Cập nhật máy ảo không thành công');
-      },
-    });
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+
+    this.dataService
+      .update(this.updateInstances)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe({
+        next: (next) => {
+          console.log(next);
+          this.message.success('Cập nhật máy ảo thành công');
+          this.route.navigate(['/app-smart-cloud/instances']);
+        },
+        error: (e) => {
+          console.log(e);
+          this.message.error('Cập nhật máy ảo không thành công');
+        },
+      });
   }
 
   cancel(): void {

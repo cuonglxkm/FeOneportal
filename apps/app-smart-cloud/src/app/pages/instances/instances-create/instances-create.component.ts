@@ -27,6 +27,7 @@ import {
   Order,
   OrderItem,
   IpCreate,
+  OfferItem,
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -122,7 +123,7 @@ export class InstancesCreateComponent implements OnInit {
   password?: string;
   numberMonth: number = 1;
   hdh: any = null;
-  flavor: any = null;
+  offerFlavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   selectedSSHKeyName: string;
@@ -219,10 +220,12 @@ export class InstancesCreateComponent implements OnInit {
   initHDD(): void {
     this.activeBlockHDD = true;
     this.activeBlockSSD = false;
+    this.initFlavors();
   }
   initSSD(): void {
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
+    this.initFlavors();
   }
 
   isCustomconfig = false;
@@ -265,7 +268,7 @@ export class InstancesCreateComponent implements OnInit {
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   activeBlockFlavors: boolean = true;
   activeBlockFlavorCloud: boolean = false;
-  listFlavors: Flavors[] = [];
+  listOfferFlavors: OfferItem[] = [];
   pagedCardList: Array<Array<any>> = [];
   effect = 'scrollx';
 
@@ -277,13 +280,36 @@ export class InstancesCreateComponent implements OnInit {
     this.activeBlockFlavors = true;
     this.activeBlockFlavorCloud = false;
     this.dataService
-      .getAllFlavors(false, this.region, false, false, true)
+      .getListOffers(136, this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listFlavors = data;
-        // Divide the cardList into pages with 4 cards per page
-        for (let i = 0; i < this.listFlavors.length; i += 4) {
-          this.pagedCardList.push(this.listFlavors.slice(i, i + 4));
+        this.listOfferFlavors = data;
+        if (this.activeBlockHDD) {
+          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+            e.offerName.includes('HDD')
+          );
+        } else {
+          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+            e.offerName.includes('SSD')
+          );
         }
+        this.listOfferFlavors.forEach((e: OfferItem) => {
+          e.description = '';
+          e.characteristicValues.forEach((ch) => {
+            if (ch.charOptionValues[0] == 'CPU') {
+              e.description += ch.charOptionValues[1] + ' VCPU / ';
+            }
+            if (ch.charOptionValues[0] == 'RAM') {
+              e.description += ch.charOptionValues[1] + ' GB RAM / ';
+            }
+            if (ch.charOptionValues[0] == 'HDD') {
+              if (this.activeBlockHDD) {
+                e.description += ch.charOptionValues[1] + ' GB HDD';
+              } else {
+                e.description += ch.charOptionValues[1] + ' GB SSD';
+              }
+            }
+          });
+        });
         this.cdr.detectChanges();
       });
   }
@@ -294,8 +320,10 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onInputFlavors(event: any) {
-    this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
-    console.log(this.flavor);
+    this.offerFlavor = this.listOfferFlavors.find(
+      (flavor) => flavor.id === event
+    );
+    console.log(this.offerFlavor);
   }
 
   toggleClass(id: string) {
@@ -555,7 +583,7 @@ export class InstancesCreateComponent implements OnInit {
       this.message.error('Vui lòng chọn hệ điều hành');
       return;
     }
-    if (this.flavor == null) {
+    if (this.offerFlavor == null) {
       this.message.error('Vui lòng chọn gói cấu hình');
       return;
     }
@@ -586,10 +614,22 @@ export class InstancesCreateComponent implements OnInit {
       this.instanceCreate.cpu = this.configCustom.vCPU;
       this.instanceCreate.volumeSize = this.configCustom.capacity;
     } else {
-      this.instanceCreate.flavorId = this.flavor.id;
-      this.instanceCreate.ram = this.flavor.ram;
-      this.instanceCreate.cpu = this.flavor.cpu;
-      this.instanceCreate.volumeSize = this.flavor.hdd;
+      this.offerFlavor.characteristicValues.forEach((e) => {
+        if ((e.charOptionValues[0] == 'Id')) {
+          this.instanceCreate.flavorId = Number.parseInt(e.charOptionValues[1]);
+        }
+        if ((e.charOptionValues[0] == 'RAM')) {
+          this.instanceCreate.ram = Number.parseInt(e.charOptionValues[1]);
+        }
+        if ((e.charOptionValues[0] == 'CPU')) {
+          this.instanceCreate.cpu = Number.parseInt(e.charOptionValues[1]);
+        }
+        if ((e.charOptionValues[0] == 'HDD')) {
+          this.instanceCreate.volumeSize = Number.parseInt(
+            e.charOptionValues[1]
+          );
+        }
+      });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.typeName =
@@ -611,7 +651,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.am = null;
     this.instanceCreate.amManager = null;
     this.instanceCreate.isTrial = false;
-    this.instanceCreate.offerId = -2446;
+    this.instanceCreate.offerId = this.offerFlavor.id;
     this.instanceCreate.couponCode = null;
     this.instanceCreate.dhsxkd_SubscriptionId = null;
     this.instanceCreate.dSubscriptionNumber = null;
@@ -804,9 +844,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe(
         (data: any) => {
-          console.log(data);
-          this.message.success('Tạo order máy ảo thành công');
-          this.router.navigateByUrl(`/app-smart-cloud/instances`);
+          window.location.href = data.data;
         },
         (error) => {
           console.log(error.error);
