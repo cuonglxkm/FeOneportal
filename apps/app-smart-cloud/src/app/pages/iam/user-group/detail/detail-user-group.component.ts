@@ -30,6 +30,9 @@ export class DetailUserGroupComponent {
 
   loading = false;
 
+  isLoadingUser: boolean = false
+  isLoadingPolicy: boolean = false
+
   indeterminateUser = false;
   checkedUser = false;
 
@@ -101,16 +104,6 @@ export class DetailUserGroupComponent {
     } else {
       this.expandSet.delete(name);
     }
-  }
-
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    // this.formSearch.regionId = this.region
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    // this.formSearch.project = this.project
   }
 
   onInputChange(value: string) {
@@ -196,22 +189,22 @@ export class DetailUserGroupComponent {
     this.router.navigate(['/app-smart-cloud/iam/user-group'])
   }
 
-  showModalEdit() {
-    this.isVisibleEdit = true
-  }
-
-  handleCancelEdit() {
-    this.isVisibleEdit = false
-  }
-
-  handleOkEdit() {
-    this.isVisibleEdit = false
-    this.route.params.subscribe((params) => {
-      const newName = params['name']
-      console.log('new name', newName)
-      this.getData(newName)
-    })
-  }
+  // showModalEdit() {
+  //   this.isVisibleEdit = true
+  // }
+  //
+  // handleCancelEdit() {
+  //   this.isVisibleEdit = false
+  // }
+  //
+  // handleOkEdit() {
+  //   this.isVisibleEdit = false
+  //   this.route.params.subscribe((params) => {
+  //     const newName = params['name']
+  //     console.log('new name', newName)
+  //     this.getData(newName)
+  //   })
+  // }
 
   nzEvent(event: NzFormatEmitEvent): void {
     console.log(event);
@@ -312,7 +305,7 @@ export class DetailUserGroupComponent {
     })
   }
 
-  reload() {
+  reloadPolicy() {
   }
 
 }

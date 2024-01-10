@@ -7,6 +7,7 @@ import {PolicyModel} from "../../../../policy/policy.model";
 import {FormSearchPolicy, FormUserGroup, UserGroupModel} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {NzTableQueryParams} from "ng-zorro-antd/table";
 
 @Component({
   selector: 'one-portal-create-policy',
@@ -42,6 +43,9 @@ export class CreatePolicyComponent implements OnInit {
 
   userGroup: UserGroupModel
 
+    pageIndex: number = 1
+    pageSize: number = 10
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private policyService: PolicyService,
@@ -72,10 +76,13 @@ export class CreatePolicyComponent implements OnInit {
     console.log('input text: ', this.value)
   }
 
-  onCurrentPageDataChange(listOfCurrentPageData: readonly PolicyModel[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
+    onQueryParamsChange(params: NzTableQueryParams) {
+        const {pageSize, pageIndex} = params
+        this.pageSize = pageSize;
+        this.pageIndex = pageIndex
+        this.refreshCheckedStatus()
+        this.getPolicies()
+    }
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
@@ -120,8 +127,8 @@ export class CreatePolicyComponent implements OnInit {
     } else {
       this.formSearch.policyName = this.value
     }
-    this.formSearch.currentPage = 1
-    this.formSearch.pageSize = 9999
+    this.formSearch.currentPage = this.pageIndex
+    this.formSearch.pageSize = this.pageSize
     this.userGroupService.getPolicy(this.formSearch).subscribe(data => {
       this.listPolicies = data.records
       this.listPoliciesUnique = this.removeDuplicate(this.listPolicies, this.listPoliciesByGroup)

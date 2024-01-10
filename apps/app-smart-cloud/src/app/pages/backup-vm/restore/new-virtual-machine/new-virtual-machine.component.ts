@@ -15,7 +15,7 @@ import {
 } from "../../../../shared/models/backup-vm";
 import {InstancesService} from "../../../instances/instances.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {InstanceCreate, Order, OrderItem, VolumeCreate} from "../../../instances/instances.model";
+import {InstanceCreate, IPPublicModel, Order, OrderItem, VolumeCreate} from "../../../instances/instances.model";
 import {Router} from "@angular/router";
 import {formatValidator} from "@angular-devkit/schematics/src/formats/format-validator";
 
@@ -68,7 +68,10 @@ export class NewVirtualMachineComponent implements OnInit {
     order: Order = new Order();
     backupSecurityGroupItem: any[] = []
 
-
+    isUseIPv6: boolean = false
+    isUseLAN: boolean = false
+    listIPPublic: IPPublicModel[] = []
+    ipPublicValue: number = 0
     constructor(private location: Location,
                 private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -82,6 +85,15 @@ export class NewVirtualMachineComponent implements OnInit {
     goBack() {
         this.router.navigate(['/app-smart-cloud/backup-vm'])
     }
+
+  getAllIPPublic() {
+    this.instanceService
+      .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
+      .subscribe((data: any) => {
+        this.listIPPublic = data.records;
+        console.log('list IP public', this.listIPPublic);
+      });
+  }
 
     handleFlavorChange(flavor: Flavor) {
         this.validateForm.controls.flavor.setValue(flavor)
@@ -272,6 +284,7 @@ export class NewVirtualMachineComponent implements OnInit {
         this.userId = this.tokenService.get()?.userId
 
         this.getDetailBackupVM()
+        this.getAllIPPublic()
     }
 
 }

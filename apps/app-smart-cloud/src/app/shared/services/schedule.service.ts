@@ -35,11 +35,11 @@ export class ScheduleService extends BaseService {
     if(formSearch.scheduleName !== undefined) {
       params = params.append('scheduleName', formSearch.scheduleName)
     }
-    if(formSearch.region !== undefined) {
-      params = params.append('region', formSearch.region)
+    if(formSearch.regionId !== undefined) {
+      params = params.append('regionId', formSearch.regionId)
     }
-    if(formSearch.project !== undefined) {
-      params = params.append('project', formSearch.project)
+    if(formSearch.projectId !== undefined) {
+      params = params.append('projectId', formSearch.projectId)
     }
     if(formSearch.pageSize !== null) {
       params = params.append('pageSize', formSearch.pageSize)
