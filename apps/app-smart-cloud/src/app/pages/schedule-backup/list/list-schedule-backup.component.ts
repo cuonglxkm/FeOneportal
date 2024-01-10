@@ -20,6 +20,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
   styleUrls: ['./list-schedule-backup.component.less'],
 })
 export class ListScheduleBackupComponent implements OnInit{
+
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -287,7 +288,7 @@ export class ListScheduleBackupComponent implements OnInit{
     initFormSearch.pageSize = this.pageSize
     initFormSearch.regionId = this.region;
     initFormSearch.projectId = this.project;
-    
+
     this.isLoading = true
     this.backupScheduleService.search(initFormSearch).subscribe(data => {
       if (!data.totalCount) {
