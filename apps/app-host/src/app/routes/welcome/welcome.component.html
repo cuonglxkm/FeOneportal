@@ -27,16 +27,19 @@
 
         </div>
 
-        <div class="mt-7" nz-row nzJustify="center" nzAlign="bottom">
-          <div>
-            <button (click)="clickLogin()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
+        <div class="mt-5" nz-row nzJustify="center" nzAlign="bottom">
+            <button style="min-width: 250px !important;" (click)="clickLogin()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
               Đăng nhập vào Portal
             </button>
+<!--            <button (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">-->
+<!--              Đăng ký tài khoản Portal-->
+<!--            </button>-->
+        </div>
+        <div class="mt-3" nz-row nzJustify="center" nzAlign="bottom">
 
-            <button (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
+            <button style="min-width: 250px !important;" (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
               Đăng ký tài khoản Portal
             </button>
-          </div>
         </div>
 
       </div>
