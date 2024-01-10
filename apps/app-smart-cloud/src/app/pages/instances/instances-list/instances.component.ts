@@ -61,8 +61,8 @@ export class InstancesComponent implements OnInit {
   searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
+    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
     { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Hủy', value: 'HUY' },
     { text: 'Tạm ngưng', value: 'TAMNGUNG' },
   ];
 

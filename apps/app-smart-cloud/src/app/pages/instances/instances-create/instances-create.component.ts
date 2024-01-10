@@ -15,25 +15,23 @@ import {
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import {
   InstanceCreate,
-  Flavors,
   IPPublicModel,
   IPSubnetModel,
   ImageTypesModel,
-  Images,
   SHHKeyModel,
   SecurityGroupModel,
-  Snapshot,
   VolumeCreate,
   Order,
   OrderItem,
   IpCreate,
   OfferItem,
+  Image,
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { Observable, concatMap, finalize, from, of } from 'rxjs';
+import { Observable, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -102,7 +100,11 @@ export class InstancesCreateComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.max(50), Validators.pattern(/^[a-zA-Z0-9]+$/)],
+      validators: [
+        Validators.required,
+        Validators.max(50),
+        Validators.pattern(/^[a-zA-Z0-9]+$/),
+      ],
     }),
     // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
@@ -135,7 +137,7 @@ export class InstancesCreateComponent implements OnInit {
   isLoading = false;
   listSelectedImage = [];
   selectedImageTypeId: number;
-  listOfImageByImageType = [];
+  listOfImageByImageType: Map<number, Image[]> = new Map();
   imageTypeId = [];
 
   getAllImageType() {
@@ -148,19 +150,31 @@ export class InstancesCreateComponent implements OnInit {
     });
   }
 
-  getAllImageByImageType(imageTypeId: any[]) {
-    this.listOfImageByImageType = [];
-    // Đảm bảo tuần tự ds Image theo như ds ImageType tương ứng
-    from(imageTypeId)
-      .pipe(
-        concatMap((e) =>
-          this.dataService.getAllImage(null, this.region, e, this.userId)
-        )
-      )
-      .subscribe((result) => {
-        this.listOfImageByImageType.push(result);
+  getAllOfferImage(imageTypeId: any[]) {
+    imageTypeId.forEach((id) => {
+      let listImage: Image[] = [];
+      this.listOfImageByImageType.set(id, listImage);
+    });
+    this.dataService
+      .getListOffers(144, this.region, 'VM-Image')
+      .subscribe((data: OfferItem[]) => {
+        data.forEach((e: OfferItem) => {
+          let tempImage = new Image();
+          e.characteristicValues.forEach((char) => {
+            if (char.charOptionValues[0] == 'Id') {
+              tempImage.id = Number.parseInt(char.charOptionValues[1]);
+              tempImage.name = e.offerName;
+            }
+            if (char.charOptionValues[0] == 'ImageTypeId') {
+              this.listOfImageByImageType
+                .get(Number.parseInt(char.charOptionValues[1]))
+                .push(tempImage);
+            }
+          });
+        });
+        this.cdr.detectChanges();
+        console.log('list Images', this.listOfImageByImageType);
       });
-    console.log('list of image by imagetype', this.listOfImageByImageType);
   }
 
   onInputHDH(event: any, index: number, imageTypeId: number) {
@@ -178,8 +192,7 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region  Snapshot
-  isSnapshot: boolean = true;
-  listImages: Images[] = [];
+  isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
   size: number;
   status: string;
@@ -540,7 +553,7 @@ export class InstancesCreateComponent implements OnInit {
     this.initFlavors();
     this.initSnapshot();
     this.getAllIPPublic();
-    this.getAllImageByImageType(this.imageTypeId);
+    this.getAllOfferImage(this.imageTypeId);
     this.cdr.detectChanges();
   }
 
@@ -615,16 +628,16 @@ export class InstancesCreateComponent implements OnInit {
       this.instanceCreate.volumeSize = this.configCustom.capacity;
     } else {
       this.offerFlavor.characteristicValues.forEach((e) => {
-        if ((e.charOptionValues[0] == 'Id')) {
+        if (e.charOptionValues[0] == 'Id') {
           this.instanceCreate.flavorId = Number.parseInt(e.charOptionValues[1]);
         }
-        if ((e.charOptionValues[0] == 'RAM')) {
+        if (e.charOptionValues[0] == 'RAM') {
           this.instanceCreate.ram = Number.parseInt(e.charOptionValues[1]);
         }
-        if ((e.charOptionValues[0] == 'CPU')) {
+        if (e.charOptionValues[0] == 'CPU') {
           this.instanceCreate.cpu = Number.parseInt(e.charOptionValues[1]);
         }
-        if ((e.charOptionValues[0] == 'HDD')) {
+        if (e.charOptionValues[0] == 'HDD') {
           this.instanceCreate.volumeSize = Number.parseInt(
             e.charOptionValues[1]
           );
@@ -844,7 +857,7 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe(
         (data: any) => {
-          window.location.href = data.data;
+          // window.location.href = data.data;
         },
         (error) => {
           console.log(error.error);

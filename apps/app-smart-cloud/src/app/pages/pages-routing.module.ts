@@ -293,7 +293,8 @@ const routes: Routes = [
     component: PaymentDetailComponent
   },
   {
-    path: 'paymentSuccess',
+
+    path: 'billing/payments/success',
     component: PaymentSuccessComponent
   },
   {

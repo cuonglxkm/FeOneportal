@@ -175,24 +175,9 @@
       </nz-row>
     </div>
   </nz-row>
-  <div style="width: 100%">
-    <nz-alert
-      nzType="warning"
-      [nzMessage]="nzDescriptionWarning06"
-      nzShowIcon
-    ></nz-alert>
-    <ng-template #nzDescriptionWarning06>
-      <div>
-        Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển thị
-        loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy ảo đã
-        được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và tốc độ
-        truy xuất.
-      </div>
-    </ng-template>
-  </div>
 </nz-card>
 <one-portal-blockstorage-detail
-  [instancesId]="id"
+  [instancesId]="id" [isDetail]="true"
 ></one-portal-blockstorage-detail>
 <one-portal-network-detail [instancesId]="id" [isDetail]="true"></one-portal-network-detail>
 
