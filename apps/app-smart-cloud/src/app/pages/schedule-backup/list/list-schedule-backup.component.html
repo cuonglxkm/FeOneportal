@@ -68,15 +68,15 @@
                 [nzPageSize]="response?.pageSize"
                 [nzPageIndex]="response?.currentPage"
                 [nzLoading]="isLoading"
-                [nzScroll]="{ x: '1000px', y: '240px' }"
+                [nzScroll]="{ x: '1200px', y: '240px' }"
                 (nzQueryParams)="onQueryParamsChange($event)">
         <thead>
         <tr>
-          <th nzLeft>Tên</th>
+          <th nzLeft nzWidth="120px">Tên</th>
           <th nzBreakWord>Đối tượng backup</th>
           <th nzBreakWord>Số bản ghi tối đa</th>
-          <th nzAlign="center" nzBreakWord>Trạng thái</th>
-          <th nzBreakWord>Lần backup tiếp theo</th>
+          <th nzAlign="center" nzBreakWord >Trạng thái</th>
+          <th nzBreakWord >Lần backup tiếp theo</th>
           <th nzBreakWord>Ngày tạo</th>
           <th nzAlign="center" nzBreakWord>Thao tác</th>
         </tr>
