@@ -161,7 +161,7 @@
                   style="text-align: center; width: 150px"
                 >
                   <nz-option
-                    *ngFor="let p of listOfImageByImageType[i]"
+                    *ngFor="let p of listOfImageByImageType.get(data.id)"
                     [nzValue]="p.id"
                     [nzLabel]="p.name"
                   ></nz-option>

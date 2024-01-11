@@ -144,7 +144,7 @@
     >
       Quay lại
     </button>
-    <button class="m-r-8" nz-button nzType="primary" (click)="showModal()">
+    <button class="m-r-8" nz-button nzType="primary" [disabled]="!form.valid" (click)="showModal()">
       Tạo mới
     </button>
   </div>

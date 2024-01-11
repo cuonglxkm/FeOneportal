@@ -19,6 +19,7 @@ import { finalize } from 'rxjs';
 })
 export class BlockstorageDetailComponent implements OnInit {
   @Input() instancesId: any;
+  @Input() isDetail: any;
   @Output() valueChanged = new EventEmitter();
 
   loading: boolean = true;

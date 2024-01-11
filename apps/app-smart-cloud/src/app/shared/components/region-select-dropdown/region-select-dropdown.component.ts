@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {RegionModel} from "../../models/region.model";
 import {RegionService} from "../../services/region.service";
 
@@ -9,6 +9,7 @@ import {RegionService} from "../../services/region.service";
 })
 export class RegionSelectDropdownComponent implements OnInit {
 
+  @Input() isDetail = false;
   @Output() valueChanged = new EventEmitter();
   selectedRegion: RegionModel;
   listRegion: RegionModel[] = []

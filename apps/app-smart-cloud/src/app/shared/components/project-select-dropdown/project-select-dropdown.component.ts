@@ -16,6 +16,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   selectedProject: ProjectModel;
+  @Input() isDetail = false;
   @Input() regionId: number;
   @Output() valueChanged = new EventEmitter();
 

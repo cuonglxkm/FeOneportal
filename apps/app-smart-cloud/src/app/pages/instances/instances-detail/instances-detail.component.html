@@ -1,20 +1,45 @@
-<page-header [title]="'Chi tiết máy ảo'" [action]="action">
-  <ng-template #action>
-    <button
-      nz-button
-      [nzType]="'primary'"
-      (click)="activeGSCard()"
-      *ngIf="!activeGS"
-    >
-      <i nz-icon nzType="eye"></i> <span>Giám sát</span>
-    </button>
-    <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
-      <i nz-icon nzType="edit"></i>
-      <span>Chỉnh sửa</span>
-    </button>
-    <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
-    </one-portal-instances-btn>
-  </ng-template>
+<page-header>
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Chi tiết máy ảo </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right">
+    <region-select-dropdown
+      [isDetail]="true"
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [isDetail]="true"
+      [regionId]="regionId"
+      (valueChanged)="onProjectChange($event)"
+    ></project-select-dropdown>
+  </div>
+  <div>
+    <nz-row style="margin-bottom: -10px">
+      <h1 style="width: 50%; font-size: 20px">Chi tiết máy ảo</h1>
+      <div class="text-right non-pointer" style="width: 50%">
+        <button
+          nz-button
+          [nzType]="'primary'"
+          (click)="activeGSCard()"
+          *ngIf="!activeGS"
+        >
+          <i nz-icon nzType="eye"></i> <span>Giám sát</span>
+        </button>
+        <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
+          <i nz-icon nzType="edit"></i>
+          <span>Chỉnh sửa</span>
+        </button>
+        <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
+        </one-portal-instances-btn>
+      </div>
+    </nz-row>
+  </div>
 </page-header>
 
 <nz-card nzTitle="Giám sát" [nzBordered]="false" *ngIf="activeGS">
@@ -67,7 +92,9 @@
           <i nz-icon nzType="laptop" class="display-2 text-blue"></i>
         </div>
         <div nz-col [nzSpan]="22">
-          <div class="fs-md text-black mb0" style="font-weight: 600;">Chu kì thanh toán</div>
+          <div class="fs-md text-black mb0" style="font-weight: 600">
+            Chu kì thanh toán
+          </div>
           <div class="text-black">1 tháng</div>
           <div class="text-black">Chu kỳ hiện tại: 1</div>
         </div>
@@ -79,7 +106,9 @@
           <i nz-icon nzType="laptop" class="display-2 text-blue"></i>
         </div>
         <div nz-col [nzSpan]="22">
-          <div class="fs-md text-black mb0" style="font-weight: 600;">Thông tin thanh toán kỳ tới</div>
+          <div class="fs-md text-black mb0" style="font-weight: 600">
+            Thông tin thanh toán kỳ tới
+          </div>
           <div class="text-black">
             Số tiền: 1.210.000 VNĐ ( Từ 23/10/2023 đến 24/11/2023)
           </div>
@@ -124,7 +153,9 @@
         }}</span>
       </nz-row>
       <nz-row style="height: 50px">
-        <span class="customSpan" style="width: 40%">Băng thông trong nước:</span>
+        <span class="customSpan" style="width: 40%"
+          >Băng thông trong nước:</span
+        >
         <span class="fw-600 customSpan"
           >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
         >
@@ -148,7 +179,7 @@
         >
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
-        <span class="customSpan1" style="width: 40%;">Truy cập và bảo mật:</span>
+        <span class="customSpan1" style="width: 40%">Truy cập và bảo mật:</span>
         <span
           class="fw-600 customSpan1"
           *ngFor="let item of listSecurityGroupModel; let first = first"
@@ -157,15 +188,11 @@
       </nz-row>
       <nz-row style="height: 50px">
         <span class="customSpan1" style="width: 40%">IP Public:</span>
-        <span class="fw-600 customSpan1">{{
-          instancesModel.ipPublic
-        }}</span>
+        <span class="fw-600 customSpan1">{{ instancesModel.ipPublic }}</span>
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
         <span class="customSpan1" style="width: 40%">IP LAN:</span>
-        <span class="fw-600 customSpan1">{{
-          instancesModel.ipPrivate
-        }}</span>
+        <span class="fw-600 customSpan1">{{ instancesModel.ipPrivate }}</span>
       </nz-row>
       <nz-row style="height: 50px">
         <span class="customSpan1" style="width: 40%">Băng thông quốc tế:</span>
@@ -175,26 +202,15 @@
       </nz-row>
     </div>
   </nz-row>
-  <div style="width: 100%">
-    <nz-alert
-      nzType="warning"
-      [nzMessage]="nzDescriptionWarning06"
-      nzShowIcon
-    ></nz-alert>
-    <ng-template #nzDescriptionWarning06>
-      <div>
-        Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển thị
-        loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy ảo đã
-        được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và tốc độ
-        truy xuất.
-      </div>
-    </ng-template>
-  </div>
 </nz-card>
 <one-portal-blockstorage-detail
   [instancesId]="id"
+  [isDetail]="true"
 ></one-portal-blockstorage-detail>
-<one-portal-network-detail [instancesId]="id" [isDetail]="true"></one-portal-network-detail>
+<one-portal-network-detail
+  [instancesId]="id"
+  [isDetail]="true"
+></one-portal-network-detail>
 
 <nz-card
   [nzBordered]="false"
