@@ -502,3 +502,15 @@ export class CharacteristicValue {
   charOptionValues: string[];
   productOfferId: number;
 }
+
+export class DataPayment {
+  orderItems: ItemPayment[];
+  projectId: number;
+}
+
+export class ItemPayment {
+  orderItemQuantity: number;
+  specificationString: string;
+  specificationType: string;
+  sortItem: number;
+}

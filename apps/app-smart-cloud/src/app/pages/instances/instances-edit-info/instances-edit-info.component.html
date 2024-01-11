@@ -150,7 +150,13 @@
   >
   <nz-row nzGutter="16" style="display: inline">
     <div style="float: right">
-      <button nz-button (click)="returnPage()">Quay lại</button>
+      <button
+        nz-button
+        style="background-color: #9c9c9c; color: white"
+        (click)="returnPage()"
+      >
+        Hủy
+      </button>
       <button
         nz-button
         [nzType]="'primary'"
