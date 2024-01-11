@@ -146,7 +146,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     let listGroup = this.collection.records;
     listGroup.forEach(item => {
       this.userGroupService
-        .getUserByGroup(item.name, 9999, 1)
+        .getUserByGroup(null, item.name, 9999, 1)
         .subscribe(data => {
           listGroup.forEach(group => {
             if (group.name == item.name)

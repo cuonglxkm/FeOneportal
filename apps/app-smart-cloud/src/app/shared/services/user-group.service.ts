@@ -4,7 +4,6 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import Pagination from "../models/pagination";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {
-    FormDeleteUserGroups,
     FormSearchPolicy,
     FormSearchUserGroup,
     FormUserGroup,
@@ -67,11 +66,14 @@ export class UserGroupService extends BaseService {
             {headers: this.getHeaders()});
     }
 
-    getUserByGroup(groupName: string, pageSize: number, currentPage: number) {
-        return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam +
-            `/users/group?groupName=${groupName}&pageSize=${pageSize}&currentPage=${currentPage}`, {
+    getUserByGroup(userName: string, groupName: string, pageSize: number, currentPage: number) {
+      if (userName == undefined) {
+        userName = ''
+      }
+      let url_ = `/users/group?userName=${userName}&groupName=${groupName}&pageSize=${pageSize}&currentPage=${currentPage}`;
+      return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam + url_, {
             headers: this.getHeaders()
-        })
+      })
     }
 
     createOrEdit(formCreate: FormUserGroup) {
@@ -82,18 +84,18 @@ export class UserGroupService extends BaseService {
 
     removeUsers(groupName: string, usersList: string[]) {
         return this.http.put(this.baseUrl + this.ENDPOINT.iam + `/groups/${groupName}/remove-users`,
-          Object.assign(usersList),
-          {
-            headers: this.getHeaders(),
-        })
+            Object.assign(usersList),
+            {
+                headers: this.getHeaders(),
+            })
     }
 
     removePolicy(removePolicy: RemovePolicy) {
-      return this.http.put(this.baseUrl + this.ENDPOINT.iam + `/groups/Detach`,
-        Object.assign(removePolicy),
-        {
-          headers: this.getHeaders(),
-        })
+        return this.http.put(this.baseUrl + this.ENDPOINT.iam + `/groups/Detach`,
+            Object.assign(removePolicy),
+            {
+                headers: this.getHeaders(),
+            })
     }
 
     getPolicy(formSearch: FormSearchPolicy) {
@@ -115,8 +117,21 @@ export class UserGroupService extends BaseService {
     }
 
     getName() {
-      return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam +'/groups/names',
-        {headers: this.getHeaders()})
+        return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam + '/groups/names',
+            {headers: this.getHeaders()})
     }
 
+    getPoliciesByGroupName(form: FormSearchPolicy) {
+        let params = new HttpParams()
+        if(form.policyName != undefined || form.policyName != null) {
+            params = params.append('policyName', form.policyName)
+        }
+        params = params.append('pageSize', form.pageSize);
+        params = params.append('currentPage', form.currentPage);
+        return this.http.get<BaseResponse<PolicyModel[]>>(this.baseUrl + this.ENDPOINT.iam +
+            `/groups/Policies/${form.groupName}`, {
+            headers: this.getHeaders(),
+            params: params
+        })
+    }
 }
