@@ -6,6 +6,7 @@ import {PaymentService} from "../../../../shared/services/payment.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 import { Router } from '@angular/router';
+import {NzTableQueryParams} from "ng-zorro-antd/table";
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -101,11 +102,17 @@ export class ListPaymentComponent implements OnInit{
     }
   }
 
-  onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
+  // onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
+  //   this.listOfCurrentPageData = listOfCurrentPageData;
+  //   this.refreshCheckedStatus();
+  // }
 
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex} = params
+    this.pageSize = pageSize;
+    this.pageIndex = pageIndex
+    this.getListInvoices();
+  }
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData
     this.checked = listOfEnabledData.every(({id}) => this.setOfCheckedId.has(id));

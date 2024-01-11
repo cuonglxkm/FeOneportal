@@ -63,7 +63,7 @@
               nzShowSizeChanger
               [nzFrontPagination]="false"
               [nzData]="listFilteredData"
-              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+              (nzQueryParams)="onQueryParamsChange($event)"
               [nzLoading]="isLoading"
               [nzTotal]="response?.totalCount"
               [nzPageSize]="response?.pageSize"
