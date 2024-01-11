@@ -107,7 +107,7 @@ export class UserCreateComponent implements OnInit {
         (data: any) => {
           console.log(data);
           this.message.success('Tạo mới User thành công');
-          this.router.navigateByUrl(`/app-smart-cloud/users`);
+          this.navigateToList();
         },
         (error) => {
           console.log(error.error);

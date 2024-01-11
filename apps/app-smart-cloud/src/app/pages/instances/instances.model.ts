@@ -63,27 +63,16 @@ export class Flavors {
   id: number;
 }
 
-export class Images {
-  name: string;
-  imageTypeId: number;
-  cloudId: string;
-  flavorId: number;
-  show: number;
-  regionId: number;
-  regionText: string;
-  status: string;
-  isLicense: boolean;
-  isForAllUser: boolean;
+export class Image {
   id: number;
+  name: string;
 }
 
 export class ImageTypesModel {
+  id: number;
   name: string;
   uniqueKey: string;
-  id: number;
-  isChecked: boolean = false;
-  items: Images[] = [];
-  versionId: any;
+  images: OfferItem[];
 }
 
 export class Snapshot {

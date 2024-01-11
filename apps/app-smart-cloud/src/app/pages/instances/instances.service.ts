@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Flavors, Images, InstancesModel } from './instances.model';
+import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
@@ -106,20 +106,6 @@ export class InstancesService extends BaseService {
     let url_ = `/images/${id}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_);
-  }
-
-  getAllImage(
-    show: any,
-    region: any,
-    type: any,
-    customerId: any
-  ): Observable<Images[]> {
-    let url_ = `/images?region=${region}&type=${type}&customerId=${customerId}`;
-    // let url_ = `/images?region=${region}`;
-    url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<Images[]>(
-      this.baseUrl + this.ENDPOINT.provisions + url_
-    );
   }
 
   getAllImageType(): Observable<{}> {
