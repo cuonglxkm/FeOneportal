@@ -19,6 +19,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { G2TimelineData } from '@delon/chart/timeline';
+import { RegionModel } from 'src/app/shared/models/region.model';
+import { ProjectModel } from 'src/app/shared/models/project.model';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -87,6 +89,15 @@ export class InstancesDetailComponent implements OnInit {
     });
   }
 
+  onRegionChange(region: RegionModel) {
+    // Handle the region change event
+    this.regionId = region.regionId;
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
+  }
+
   navigateToEdit() {
     this.route.navigate([
       '/app-smart-cloud/instances/instances-edit/' + this.id,
@@ -121,6 +132,7 @@ export class InstancesDetailComponent implements OnInit {
   valueGSTIME: number = 5;
   cloudId: string;
   regionId: number;
+  projectId: number; 
   chartData: G2TimelineData[] = [];
 
   GSCPU = [

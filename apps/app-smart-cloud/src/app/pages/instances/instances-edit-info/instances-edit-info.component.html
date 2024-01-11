@@ -1,24 +1,33 @@
-<!-- <page-header [title]="'Chỉnh sửa thông tin máy ảo'"> </page-header> -->
-<div style="padding-top: 1%">
-  <nz-breadcrumb style="width: 50%; float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Chỉnh sửa thông tin máy ảo</a>
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right non-pointer">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
-    ></project-select-dropdown>
-  </div>
-  <div><h2>Chỉnh sửa thông tin máy ảo</h2></div>
-</div>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Chỉnh sửa thông tin máy ảo'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chỉnh sửa thông tin máy ảo</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        [isDetail]="true"
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [isDetail]="true"
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-card
   [nzBordered]="false"
   nzTitle="Thay đổi hệ điều hành"
