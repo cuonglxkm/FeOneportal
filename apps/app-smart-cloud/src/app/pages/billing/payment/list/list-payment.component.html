@@ -61,6 +61,7 @@
   <nz-card>
     <nz-table #rowSelectionTable
               nzShowSizeChanger
+              [nzScroll]="{ x: '1000px', y: '240px' }"
               [nzFrontPagination]="false"
               [nzData]="listFilteredData"
               (nzQueryParams)="onQueryParamsChange($event)"
@@ -73,8 +74,9 @@
         <th [nzChecked]="checked"
             [nzIndeterminate]="indeterminate"
             nzLabel="Select all"
-            (nzCheckedChange)="onAllChecked($event)"></th>
-        <th>Mã thanh toán</th>
+            (nzCheckedChange)="onAllChecked($event)"
+            nzLeft></th>
+        <th nzLeft>Mã thanh toán</th>
         <th>Mã đơn hàng</th>
         <th>Tổng tiền (VNĐ)</th>
         <th>Ngày tạo</th>
@@ -85,22 +87,22 @@
       <tbody>
       <tr *ngFor="let data of rowSelectionTable.data">
         <td [nzChecked]="setOfCheckedId.has(data.id)"
-            (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-        <td><a (click)="getPaymentDetail(data.id)" >{{data.paymentNumber}}</a></td>
-        <td>{{data.orderNumber}}</td>
-        <td>{{data.amount}}</td>
-        <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
-        <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid">
+            (nzCheckedChange)="onItemChecked(data.id, $event)" nzLeft></td>
+        <td nzLeft><a (click)="getPaymentDetail(data.id)" >{{data.paymentNumber}}</a></td>
+        <td nzBreakWord>{{data.orderNumber}}</td>
+        <td nzBreakWord>{{data.amount}}</td>
+        <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
+        <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
           Đã thanh toán
         </td>
-        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not">
+        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not" nzBreakWord>
           Chưa thanh toán
         </td>
         <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="serviceDownload(data.invoiceIssuedId)"
-            style="cursor: pointer">
+            style="cursor: pointer" nzBreakWord>
           <span nz-icon nzType="download" nzTheme="outline"></span>
         </td>
-        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid">
+        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid" nzBreakWord>
           <span nz-icon nzType="download" nzTheme="outline"></span>
         </td>
       </tr>

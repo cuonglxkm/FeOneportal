@@ -20,6 +20,7 @@
             <nz-table #tableOutbound
                       [nzData]="collection?.records || []"
                       nzShowSizeChanger
+                      [nzScroll]="{ x: '1000px', y: '240px' }"
                       [nzFrontPagination]="false"
                       [nzTotal]="collection?.totalCount || 0"
                       [nzPageSize]="collection?.pageSize || 0"
@@ -28,20 +29,20 @@
             >
                 <thead>
                 <tr>
-                    <th nzAlign="center" class="text-th">IP Version</th>
-                    <th nzAlign="center" class="text-th">Protocol</th>
-                    <th nzAlign="center" class="text-th">PortRange</th>
-                    <th nzAlign="center" class="text-th">RemoteIPPrefix</th>
-                    <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+                    <th nzAlign="center" class="text-th" nzLeft>IP Version</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>Protocol</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>PortRange</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>RemoteIPPrefix</th>
+                    <th nzAlign="center" class="text-th" style="width: 216px;" nzBreakWord>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of tableOutbound.data">
-                    <td nzAlign="center">{{ data.remoteIp }}</td>
-                    <td nzAlign="center">{{ data.protocol }}</td>
-                    <td nzAlign="center">{{ data.portRange }}</td>
-                    <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
-                    <td nzAlign="center">
+                    <td nzAlign="center" nzLeft>{{ data.remoteIp }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
+                    <td nzAlign="center" nzBreakWord>
                         <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
                         <one-portal-delete-security-group-rule
                           nz-tooltip nzTooltipTitle="Xóa Outbound" nzTooltipPlacement="bottom"
