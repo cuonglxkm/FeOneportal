@@ -131,8 +131,8 @@
             <div *nzSpaceItem>
               <nz-select [(ngModel)]="selectedValue"
                          (ngModelChange)="onChange($event)"
-                         nzPlaceHolder="Tất cả trạng thái"
-                         nzTooltipTitle="Tìm kiếm theo trạng thái"
+                         nzPlaceHolder="Tất cả các loại"
+                         nzTooltipTitle="Tìm kiếm theo loại"
                          nzTooltipPlacement="bottom"
                          nz-tooltip>
                 <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>

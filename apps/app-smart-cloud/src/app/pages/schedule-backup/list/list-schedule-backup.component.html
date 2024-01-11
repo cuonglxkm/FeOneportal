@@ -68,17 +68,17 @@
                 [nzPageSize]="response?.pageSize"
                 [nzPageIndex]="response?.currentPage"
                 [nzLoading]="isLoading"
-                [nzScroll]="{ x: '1000px', y: '240px' }"
+                [nzScroll]="{ x: '1200px', y: '240px' }"
                 (nzQueryParams)="onQueryParamsChange($event)">
         <thead>
         <tr>
-          <th nzLeft>Tên</th>
-          <th>Đối tượng backup</th>
-          <th>Số bản ghi tối đa</th>
-          <th nzAlign="center">Trạng thái</th>
-          <th>Lần backup tiếp theo</th>
-          <th>Ngày tạo</th>
-          <th nzAlign="center" nzRight>Thao tác</th>
+          <th nzLeft nzWidth="120px">Tên</th>
+          <th nzBreakWord>Đối tượng backup</th>
+          <th nzBreakWord>Số bản ghi tối đa</th>
+          <th nzAlign="center" nzBreakWord >Trạng thái</th>
+          <th nzBreakWord >Lần backup tiếp theo</th>
+          <th nzBreakWord>Ngày tạo</th>
+          <th nzAlign="center" nzBreakWord>Thao tác</th>
         </tr>
         </thead>
         <tbody>
@@ -123,14 +123,14 @@
           </td>
           <td nzBreakWord>{{ data.nextRuntime | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
           <td nzBreakWord>{{ data.createdAt | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
-          <td nzAlign="center">
+          <td nzAlign="center" nzBreakWord>
             <div [ngSwitch]="data.status">
               <div *ngSwitchCase="'ACTIVE'">
                 <button nz-button
                         [nzType]="'primary'"
                         nz-dropdown
                         [nzDropdownMenu]="opMenu">
-                  <span>Thêm</span> <i nz-icon nzType="down"></i>
+                  <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
                 </button>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
@@ -168,7 +168,7 @@
                         [nzType]="'primary'"
                         nz-dropdown
                         [nzDropdownMenu]="opMenu">
-                  <span>Thêm</span> <i nz-icon nzType="down"></i>
+                  <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
                 </button>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
@@ -207,7 +207,7 @@
                         [nzType]="'primary'"
                         nz-dropdown
                         [nzDropdownMenu]="opMenu">
-                  <span>Thêm</span> <i nz-icon nzType="down"></i>
+                  <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
                 </button>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
@@ -251,23 +251,24 @@
       <nz-table #tableScheduleCapacityBackup
                 [nzData]="responseCapacityBackup"
                 nzShowSizeChanger
+                [nzScroll]="{ x: '1000px', y: '240px' }"
                 [nzLoading]="loadingCapacity">
         <thead>
         <tr>
-          <th>Tên Backup</th>
-          <th>Hết hạn</th>
-          <th>Dung lượng (GB)</th>
-          <th>Đã dùng (GB)</th>
-          <th>Còn lại (GB)</th>
+          <th nzLeft>Tên Backup</th>
+          <th nzBreakWord>Hết hạn</th>
+          <th nzBreakWord>Dung lượng (GB)</th>
+          <th nzBreakWord>Đã dùng (GB)</th>
+          <th nzBreakWord>Còn lại (GB)</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let i of tableScheduleCapacityBackup.data">
-          <td>{{i.packageName}}</td>
-          <td>{{i.expirationDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-          <td>{{i.totalCapacity}}</td>
-          <td>{{i.usedCapacity}}</td>
-          <td>{{i.remainingCapacity}}</td>
+          <td nzLeft>{{i.packageName}}</td>
+          <td nzBreakWord>{{i.expirationDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+          <td nzBreakWord>{{i.totalCapacity}}</td>
+          <td nzBreakWord>{{i.usedCapacity}}</td>
+          <td nzBreakWord>{{i.remainingCapacity}}</td>
         </tr>
         </tbody>
       </nz-table>

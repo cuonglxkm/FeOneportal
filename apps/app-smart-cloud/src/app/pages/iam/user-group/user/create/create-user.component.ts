@@ -104,7 +104,7 @@ export class CreateUserComponent implements OnInit {
       this.formCreate.groupName = this.nameGroup
       this.formCreate.parentName = data.parent
       this.formCreate.policyNames = data.policies
-      this.formCreate.users = this.getListUserName()
+      this.formCreate.users = Array.from(this.setOfCheckedId)
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
         this.notification.success('Thành công', 'Thêm user vào group thành công')
         this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.nameGroup])

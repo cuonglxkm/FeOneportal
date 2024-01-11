@@ -67,7 +67,7 @@ export class DetailUserGroupComponent {
     removePolicyModel: RemovePolicy = new RemovePolicy()
 
     status = [
-        {label: 'Tất cả', value: 'all'},
+        {label: 'Tất cả các loại', value: 'all'},
         {label: 'Portal Managed', value: 'Portal managed'},
         {label: 'Custom Managed', value: 'Custom managed'}
     ]

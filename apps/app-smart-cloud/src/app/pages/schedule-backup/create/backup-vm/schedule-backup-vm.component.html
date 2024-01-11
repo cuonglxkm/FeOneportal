@@ -31,10 +31,10 @@
                         </div>
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                        <input nz-input type="number" formControlName="maxBackup" id="maxBackup" min="1" step="1"
+                        <nz-input-number formControlName="maxBackup" id="maxBackup" nzMin="1" nzStep="1"
                                style="width: 100%"/>
                         <ng-template #nameErrorTpl let-control>
-                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0</ng-container>
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
@@ -149,13 +149,13 @@
                             </div>
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsErrorTpl">
-                            <input nz-input type="number"
+                            <nz-input-number
                                    style="width:100%;"
                                    formControlName="months"
                                    id="months"
-                                   min="1"
-                                   max="24"
-                                   step="1"/>
+                                   nzMin="1"
+                                   nzMax="24"
+                                   nzStep="1"/>
                             <ng-template #monthsErrorTpl let-control>
                                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
                                 <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 24</ng-container>
@@ -171,13 +171,13 @@
                             </div>
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-                            <input nz-input type="number"
+                            <nz-input-number
                                    style="width:100%;"
                                    formControlName="date"
                                    id="date"
-                                   min="1"
-                                   max="31"
-                                   step="1"/>
+                                   nzMin="1"
+                                   nzMax="31"
+                                   nzStep="1"/>
                             <ng-template #dateErrorTpl let-control>
                                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
                                 <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
