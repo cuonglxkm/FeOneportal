@@ -51,7 +51,7 @@
     </nz-space>
   </ng-template>
   <ng-template #extra>
-    <button nz-button nzSize="default" style="cursor: pointer; margin-left: 5px">
+    <button nz-button nzSize="default" style="cursor: pointer; margin-left: 5px" (click)="downloadMany()" [disabled]="!downloadList.length">
       <span nz-icon nzType="download" nzTheme="outline"></span>
       Download
     </button>
@@ -63,7 +63,7 @@
               nzShowSizeChanger
               [nzFrontPagination]="false"
               [nzData]="listFilteredData"
-              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+              (nzQueryParams)="onQueryParamsChange($event)"
               [nzLoading]="isLoading"
               [nzTotal]="response?.totalCount"
               [nzPageSize]="response?.pageSize"
@@ -96,7 +96,7 @@
         <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not">
           Chưa thanh toán
         </td>
-        <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="download(data.invoiceIssuedId)"
+        <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="serviceDownload(data.invoiceIssuedId)"
             style="cursor: pointer">
           <span nz-icon nzType="download" nzTheme="outline"></span>
         </td>

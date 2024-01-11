@@ -169,6 +169,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
       createBackupVmSpecification.serviceName = this.formCreateBackup.backupName;
       createBackupVmSpecification.regionId = this.region;
       createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
+      createBackupVmSpecification.vpcId = this.project
 
       console.log(createBackupVmSpecification);
 
@@ -215,7 +216,6 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
   }
 
   loadData() {
-
     this.route.params.subscribe((params) => {
       const selectedInstanceId = params['id']
       console.log('receive: ', selectedInstanceId)

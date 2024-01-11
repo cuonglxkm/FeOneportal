@@ -15,13 +15,6 @@
             </nz-breadcrumb-item>
         </nz-breadcrumb>
     </ng-template>
-<!--    <ng-template #action>-->
-<!--        <div class="alain-custom-action text-right">-->
-<!--            <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--            <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                                     [regionId]="region"></project-select-dropdown>-->
-<!--        </div>-->
-<!--    </ng-template>-->
     <ng-template #content>
         <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
             <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
@@ -81,7 +74,7 @@
                         (nzCheckedChange)="onItemChecked(data.name, $event)"
                 ></td>
                 <td>
-                    <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom" [href]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
+                    <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom" [routerLink]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
                 </td>
                 <td>{{data.userOfGroup}}</td>
                 <td *ngIf="data.parent === null"></td>

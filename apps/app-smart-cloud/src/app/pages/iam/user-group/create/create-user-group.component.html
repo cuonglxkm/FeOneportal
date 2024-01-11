@@ -49,10 +49,13 @@
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
           </div>
         </nz-form-label>
-        <nz-form-control>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="parentNameErrorTpl">
           <nz-select nzPlaceHolder="-----Chọn Group-----" formControlName="parentName" id="parentName">
             <nz-option *ngFor="let item of listNameParent" [nzValue]="[item]" nzLabel="{{ item }}"></nz-option>
           </nz-select>
+          <ng-template #parentNameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
     </nz-card>
