@@ -132,9 +132,9 @@ export class InstancesEditInfoComponent implements OnInit {
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
-      this.listImageTypes.forEach (e => {
+      this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
-      })
+      });
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -212,11 +212,7 @@ export class InstancesEditInfoComponent implements OnInit {
       '/app-smart-cloud/instances/instances-edit/' + this.id,
     ]);
   }
-  navigateToChangeImage() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
-    ]);
-  }
+
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/instances']);
   }

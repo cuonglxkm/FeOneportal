@@ -255,4 +255,11 @@ export class InstancesService extends BaseService {
       }/offers?productId=${productId}&regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
     );
   }
+
+  getTotalAmount(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
 }
