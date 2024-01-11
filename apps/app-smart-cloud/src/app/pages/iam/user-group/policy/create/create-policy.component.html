@@ -29,13 +29,13 @@
   <nz-card>
     <nz-collapse [nzBordered]="false" nzGhost>
       <nz-collapse-panel
-        [nzHeader]="'Danh sách Policy trong Group ('  + listPoliciesByGroup?.length + ')'"
+        [nzHeader]="'Danh sách Policy trong Group ('  + response?.totalCount + ')'"
         [nzActive]="false">
         <nz-table
           #rowSelectionTable1
           nzShowPagination
           nzShowSizeChanger
-          [nzData]="listPoliciesByGroup"
+          [nzData]="response?.records"
           [nzLoading]="loadingCollapse"
           [nzPageSize]="5">
           <thead>
@@ -57,7 +57,7 @@
                 <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
               </div>
             </div>
-            <div *ngIf="data.type === 'Customer Manager'">
+            <div *ngIf="data.type === 'Custom Managed'">
               <nz-row nzAlign="middle" nzJustify="space-between">
                 <nz-space [nzSize]="24">
                   <div class="json-viewer-bg">
@@ -90,7 +90,7 @@
                    placeholder="Tìm kếm tên..."/>
           </nz-input-group>
           <ng-template #suffixButton2>
-            <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên Policy" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="searchPolicies()">
+            <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên Policy" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="getPolicies()">
               <span nz-icon nzType="search" nzTheme="outline"></span>Search
             </button>
           </ng-template>
@@ -106,7 +106,7 @@
       #rowSelectionTable2
       nzShowPagination
       nzShowSizeChanger
-      [nzData]="filteredPoliciesUnique"
+      [nzData]="listPolicies"
       [nzPageSize]="5">
       <thead>
       <tr>

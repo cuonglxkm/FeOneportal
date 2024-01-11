@@ -8,6 +8,7 @@ import {FormSearchPolicy, FormUserGroup, UserGroupModel} from "../../../../../sh
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import { BaseResponse } from '../../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-policy',
@@ -33,9 +34,9 @@ export class CreatePolicyComponent implements OnInit {
 
   listPolicies: PolicyModel[] = []
   listPoliciesByGroup: PolicyModel[] = []
-  listPoliciesUnique: PolicyModel[] = []
   filteredPoliciesUnique: PolicyModel[] = []
 
+  response: BaseResponse<PolicyModel[]>
 
   formSearch: FormSearchPolicy = new FormSearchPolicy()
 
@@ -109,50 +110,43 @@ export class CreatePolicyComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
-  filterPolicies() {
-    return this.listPoliciesUnique.filter(item => (!item || item.name.includes(this.value)))
-  }
+  // filterPolicies() {
+  //   return this.listPoliciesUnique.filter(item => (!item || item.name.includes(this.value)))
+  // }
 
-  searchPolicies() {
-    this.filteredPoliciesUnique = this.filterPolicies()
-  }
+  // searchPolicies() {
+  //   this.filteredPoliciesUnique = this.filterPolicies()
+  // }
 
   removeDuplicate(arrA, arrB) {
     return arrA.filter(itemA => !arrB.includes(itemA));
   }
 
   getPolicies() {
+    let form = new FormSearchPolicy()
     if (this.value === undefined) {
-      this.formSearch.policyName = null
+      form.policyName = null
     } else {
-      this.formSearch.policyName = this.value
+      form.policyName = this.value
     }
-    this.formSearch.currentPage = this.pageIndex
-    this.formSearch.pageSize = this.pageSize
-    this.userGroupService.getPolicy(this.formSearch).subscribe(data => {
+    form.currentPage = 1
+    form.pageSize = 9999
+    this.userGroupService.getPolicy(form).subscribe(data => {
+      console.log(data.records)
       this.listPolicies = data.records
-      this.listPoliciesUnique = this.removeDuplicate(this.listPolicies, this.listPoliciesByGroup)
-      this.filteredPoliciesUnique = this.listPoliciesUnique
     })
   }
-
-
   getPoliciesByGroup() {
     this.loadingCollapse = true
     this.formSearch.currentPage = 1
     this.formSearch.pageSize = 9999
-    this.userGroupService.detail(this.nameGroup).subscribe(data => {
+    this.formSearch.groupName = this.nameGroup
+    this.userGroupService.getPoliciesByGroupName(this.formSearch).subscribe(data => {
       this.loadingCollapse = false
-      data.policies.map((name) => {
-        this.policyService.detail(name).subscribe(data => {
-          if (data) {
-            this.setOfCheckedId.add(name)
-            console.log(data, 'data');
-            this.listPoliciesByGroup = [...this.listPoliciesByGroup, data]
-          } else {
-            this.listPoliciesByGroup = null
-          }
-        })
+      this.response = data
+      this.listPoliciesByGroup = data.records
+      this.listPoliciesByGroup.forEach(item => {
+        this.setOfCheckedId.add(item.name)
       })
     })
     console.log('list policies', this.listPoliciesByGroup)
@@ -185,42 +179,6 @@ export class CreatePolicyComponent implements OnInit {
     }
   }
 
-  getPoliciesUnique() {
-    // if (this.value === undefined) {
-    //   this.formSearch.policyName = null
-    // } else {
-    //   this.formSearch.policyName = this.value
-    // }
-    // this.formSearch.currentPage = 1
-    // this.formSearch.pageSize = 9999
-    // this.userGroupService.getPolicy(this.formSearch).subscribe(data => {
-    //   this.listPolicies = data.records
-    //
-    //   this.userGroupService.detail(this.nameGroup).subscribe(data2 => {
-    //     this.loadingCollapse = false
-    //     data2.policies.map((name) => {
-    //       this.policyService.detail(name).subscribe(data3 => {
-    //         if (data3) {
-    //           this.listPolicies.forEach(item2 => {
-    //             if(item2.name != data3.name) {
-    //               if(this.listPoliciesUnique?.length > 0) {
-    //                 this.listPoliciesUnique.push(item2.name)
-    //               } else {
-    //                 this.listPoliciesUnique = [item2]
-    //               }this.filteredPoliciesUnique = this.listPoliciesUnique
-    //
-    //             }
-    //
-    //           })
-    //         }
-    //       })
-    //     })
-    //   })
-
-      // this.listPoliciesUnique = this.removeDuplicate(this.listPolicies, this.listPoliciesByGroup)
-      // this.filteredPoliciesUnique = this.listPoliciesUnique
-    // })
-  }
 
   ngOnInit() {
     this.nameGroup = this.route.snapshot.paramMap.get('groupName')
@@ -228,7 +186,7 @@ export class CreatePolicyComponent implements OnInit {
     this.getPoliciesByGroup()
     this.getPolicies()
     this.getGroup()
-    this.getPoliciesUnique()
+    // this.getPoliciesUnique()
   }
 
 }

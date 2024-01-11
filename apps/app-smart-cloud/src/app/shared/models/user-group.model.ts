@@ -38,7 +38,9 @@ export class RemovePolicy {
 
 
 export class FormSearchPolicy {
+    groupName: string
     policyName: string
     pageSize: number
     currentPage: number
 }
+

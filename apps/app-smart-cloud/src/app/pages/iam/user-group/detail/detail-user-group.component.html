@@ -47,27 +47,24 @@
       <!---Thông tin User -->
       <nz-tab [nzTitle]="user">
         <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
-          <form nz-form [nzLayout]="'inline'" [formGroup]="filterUsersForm" (ngSubmit)="searchUsers()">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-group>
-                  <input formControlName="keyword" nz-input placeholder="Tìm kếm tên..."/>
-                </nz-input-group>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-control>
-                <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên User" nzTooltipPlacement="bottom"
-                        nzType="primary">
+          <nz-space [nzSize]="24">
+            <div *nzSpaceItem>
+              <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+                <input [(ngModel)]="valueUser" (input)="onInputChangeUser($event.target['value'])" type="text"
+                       nz-input
+                       placeholder="Tìm kếm tên..."/>
+              </nz-input-group>
+              <ng-template #suffixButton>
+                <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getListBackupVM()">
                   <span nz-icon nzType="search" nzTheme="outline"></span>
-                  Tìm kếm
+                  Search
                 </button>
-              </nz-form-control>
-            </nz-form-item>
-          </form>
+              </ng-template>
+            </div>
+          </nz-space>
           <nz-row nzAlign="middle">
             <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default"
-                    style="cursor: pointer;" >
+                    style="cursor: pointer;" (click)="getUsersByGroupName()">
               <span nz-icon nzType="reload" nzTheme="outline"></span>
             </button>
             <button nz-button
@@ -131,40 +128,33 @@
       <nz-tab nzTitle="Policies">
         <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
           <nz-space [nzSize]="24">
-            <form nz-form [nzLayout]="'inline'" [formGroup]="filterPoliciesForm" (ngSubmit)="searchPolicies()">
-              <nz-form-item>
-                <nz-form-label nzFor="status">Trạng thái</nz-form-label>
-                <nz-form-control>
-                  <nz-input-group>
-                    <nz-select formControlName="status" style="width: 155px">
-                      <nz-option nzLabel="Tất cả" nzValue="all"></nz-option>
-                      <nz-option nzLabel="Portal Managed" nzValue="Portal managed"></nz-option>
-                      <nz-option nzLabel="Custom Managed" nzValue="Custom managed"></nz-option>
-                    </nz-select>
-                  </nz-input-group>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-control>
-                  <nz-input-group>
-                    <input formControlName="keyword" nz-input placeholder="Tìm kếm tên..."/>
-                  </nz-input-group>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-control>
-                  <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm loại, tên Policy" nzTooltipPlacement="bottom"
-                          nzType="primary">
-                    <span nz-icon nzType="search" nzTheme="outline"></span>
-                    Tìm kếm
-                  </button>
-                </nz-form-control>
-              </nz-form-item>
-            </form>
+            <div *nzSpaceItem>
+              <nz-select [(ngModel)]="selectedValue"
+                         (ngModelChange)="onChange($event)"
+                         nzPlaceHolder="Tất cả trạng thái"
+                         nzTooltipTitle="Tìm kiếm theo trạng thái"
+                         nzTooltipPlacement="bottom"
+                         nz-tooltip>
+                <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+              </nz-select>
+            </div>
+            <div *nzSpaceItem>
+              <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+                <input [(ngModel)]="value" (input)="onInputChangePolicy($event.target['value'])" type="text"
+                       nz-input
+                       placeholder="Tìm kếm tên..."/>
+              </nz-input-group>
+              <ng-template #suffixButton>
+                <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getPoliciesByGroupName()">
+                  <span nz-icon nzType="search" nzTheme="outline"></span>
+                  Search
+                </button>
+              </ng-template>
+            </div>
           </nz-space>
           <nz-row nzAlign="middle">
             <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default"
-                    style="cursor: pointer;">
+                    style="cursor: pointer;" (click)="getPoliciesByGroupName()">
               <span nz-icon nzType="reload" nzTheme="outline"></span>
             </button>
             <button nz-button
@@ -180,14 +170,14 @@
                     class="button-create"
                     nzSize="default" style="cursor: pointer;"
                     nz-tooltip nzTooltipTitle="Gán thêm Policy cho Group" nzTooltipPlacement="bottom"
-                    [routerLink]="'/app-smart-cloud/iam/user-group/'+groupName+'/add-policy'">
+                    (click)="navigateToAttachPolicy()">
               <span nz-icon nzType="plus" nzTheme="outline"></span>
               Thêm policies
             </button>
           </nz-row>
         </nz-row>
         <div style="margin-bottom: 8px; margin-top: 8px">Policies
-          <span>({{filteredPolicies?.length}})</span>
+          <span>({{responsePolicies?.totalCount}})</span>
           <br/>
           <span style="color: #00000040;">Có thể đính kèm tối đa 10 policies</span>
         </div>
@@ -197,11 +187,11 @@
           nzShowPagination
           nzShowSizeChanger
           [nzData]="filteredPolicies"
-          [nzLoading]="loading"
-          [nzTotal]="filteredPolicies?.length"
-          [nzPageSize]="5"
-          [nzPageIndex]="1"
-          (nzCurrentPageDataChange)="onCurrentPageDataChangePolicy($event)"
+          [nzLoading]="isLoadingPolicy"
+          [nzTotal]="responsePolicies?.totalCount"
+          [nzPageSize]="responsePolicies?.pageSize"
+          [nzFrontPagination]="false"
+          (nzQueryParams)="onQueryParamsPolicyChange($event)"
         >
           <thead>
           <tr>
