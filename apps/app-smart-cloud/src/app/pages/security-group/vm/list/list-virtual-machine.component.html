@@ -7,6 +7,7 @@
             <nz-table #basicTable
                       [nzData]="collection?.records || []"
                       nzShowSizeChanger
+                      [nzScroll]="{ x: '1000px', y: '240px' }"
                       [nzFrontPagination]="false"
                       [nzTotal]="collection?.totalCount || 0"
                       [nzPageSize]="collection?.pageSize || 0"
@@ -15,22 +16,22 @@
             >
                 <thead>
                 <tr>
-                    <th nzAlign="center" class="text-th">Tên máy ảo</th>
-                    <th nzAlign="center" class="text-th">Trạng thái</th>
-                    <th nzAlign="center" class="text-th">Trạng thái tác vụ</th>
-                    <th nzAlign="center" class="text-th">IP LAN</th>
-                    <th nzAlign="center" class="text-th">IP Public</th>
-                    <th nzAlign="center" class="text-th" style="width: 216px; ">Thao tác</th>
+                    <th nzAlign="center" class="text-th" nzLeft>Tên máy ảo</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>Trạng thái</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>Trạng thái tác vụ</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>IP LAN</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>IP Public</th>
+                    <th nzAlign="center" class="text-th" style="width: 216px; " nzBreakWord>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of basicTable.data">
-                    <td nzAlign="center">{{ data.name }}</td>
-                    <td nzAlign="center">{{ data.status }}</td>
-                    <td nzAlign="center">{{ data.taskState }}</td>
-                    <td nzAlign="center">{{ data.ipPrivate }}</td>
-                    <td nzAlign="center">{{ data.ipPublic }}</td>
-                    <td nzAlign="center">
+                    <td nzAlign="center" nzLeft>{{ data.name }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.status }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.taskState }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.ipPrivate }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.ipPublic }}</td>
+                    <td nzAlign="center" nzBreakWord>
                         <ng-container *ngIf="data.securityGroups.includes(securityGroupId); else elseBlock">
                             <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModalDetach(data.id)">Gỡ</button>
                           <one-portal-attach-or-detach [isVisible]="isVisibleDetach"

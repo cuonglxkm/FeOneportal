@@ -48,6 +48,7 @@
         <nz-table
             #rowSelectionTable
             nzShowSizeChanger
+            [nzScroll]="{ x: '1000px', y: '240px' }"
             [nzData]="collection?.records"
             (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
             [nzLoading]="loading"
@@ -61,24 +62,28 @@
                 <th [nzChecked]="checked"
                     [nzIndeterminate]="indeterminate"
                     nzLabel="Select all"
-                    (nzCheckedChange)="onAllChecked($event)"></th>
-                <th>Name</th>
-                <th>Số lượng users</th>
-                <th>Group Parent</th>
+                    [nzWidth]="'50px'"
+                    (nzCheckedChange)="onAllChecked($event)" nzLeft></th>
+                <th nzLeft>Name</th>
+                <th nzBreakWord>Số lượng users</th>
+                <th nzBreakWord>Group Parent</th>
+                <th nzBreakWord>Thời gian tạo</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
                 <td
-                        [nzChecked]="setOfCheckedId.has(data.name)"
+                  [nzChecked]="setOfCheckedId.has(data.name)"
                         (nzCheckedChange)="onItemChecked(data.name, $event)"
+                        nzLeft
                 ></td>
-                <td>
+                <td nzLeft>
                     <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom" [routerLink]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
                 </td>
-                <td>{{data.userOfGroup}}</td>
-                <td *ngIf="data.parent === null"></td>
-                <td *ngIf="data.parent !== null">{{ data.parent }}</td>
+                <td nzBreakWord>{{data.userOfGroup}}</td>
+                <td *ngIf="data.parent === null" nzBreakWord></td>
+                <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td>
+                <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
             </tr>
             </tbody>
         </nz-table>

@@ -73,20 +73,19 @@
               nzShowSizeChanger
               [nzFrontPagination]="false"
               [nzLoading]="isLoading"
-              [nzFrontPagination]="false"
               [nzShowPagination]="false">
       <thead>
       <tr>
-        <th nzAlign="center" >IP Address/CIDR</th>
+        <th nzAlign="center" nzLeft>IP Address/CIDR</th>
         <th nzAlign="center" >MAC Address</th>
         <th nzAlign="center" style="width: 216px;">Thao tác</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
-        <td nzAlign="center">{{ data.ipAddress }}</td>
-        <td nzAlign="center">{{ data.macAddress }}</td>
-        <td nzAlign="center">
+        <td nzAlign="center" nzLeft>{{ data.ipAddress }}</td>
+        <td nzAlign="center" nzBreakWord>{{ data.macAddress }}</td>
+        <td nzAlign="center" nzBreakWord>
           <button nz-button nzType="primary" nzDanger
                   class="button-delete"
                   (click)="showModalDelete()">

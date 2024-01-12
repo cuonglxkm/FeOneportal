@@ -69,14 +69,14 @@
       <thead>
       <tr>
         <th nzAlign="center" nzLeft>Tên</th>
-        <th nzAlign="center">VM gốc</th>
-        <th nzAlign="center">Dung luợng</th>
-        <th nzAlign="center">Gói backup</th>
-        <th nzAlign="center">Thời gian tạo</th>
-        <th nzAlign="center">Hết hạn</th>
-        <th nzAlign="center">Trạng thái</th>
-        <th nzAlign="center">Trạng thái tác vụ</th>
-        <th nzAlign="center" nzRight>Thao tác</th>
+        <th nzAlign="center" nzBreakWord>VM gốc</th>
+        <th nzAlign="center" nzBreakWord>Dung lượng</th>
+        <th nzAlign="center" nzBreakWord>Gói backup</th>
+        <th nzAlign="center" nzBreakWord>Thời gian tạo</th>
+        <th nzAlign="center" nzBreakWord>Hết hạn</th>
+        <th nzAlign="center" nzBreakWord>Trạng thái</th>
+        <th nzAlign="center" nzBreakWord [nzWidth]="'100px'">Trạng thái tác vụ</th>
+        <th nzAlign="center" nzBreakWord>Thao tác</th>
       </tr>
       </thead>
       <tbody>
@@ -109,14 +109,14 @@
                                         </span>
           <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
         </td>
-        <td nzAlign="center" nzRight>
+        <td nzAlign="center" nzBreakWord>
           <div [ngSwitch]="data.status">
             <div *ngSwitchCase="'AVAILABLE'">
               <button nz-button
                       [nzType]="'primary'"
                       nz-dropdown
                       [nzDropdownMenu]="opMenu">
-                <span>Thêm</span> <i nz-icon nzType="down"></i>
+                <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
               </button>
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
                 <ul nz-menu>

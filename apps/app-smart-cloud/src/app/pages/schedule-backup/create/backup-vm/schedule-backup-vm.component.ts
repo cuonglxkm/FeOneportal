@@ -48,7 +48,7 @@ export class ScheduleBackupVmComponent implements OnInit {
     times: [new Date(), [Validators.required]],
     numberOfWeek: [null as number],
     date: [1, [Validators.required]],
-    maxBackup: [null as number, [Validators.required, Validators.min(1)]],
+    maxBackup: [1, [Validators.required, Validators.min(1)]],
     volumeToBackupIds: [[] as number[]],
     daysOfWeek: [''],
     daysOfWeekMultiple: [[] as string[]]
