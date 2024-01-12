@@ -404,6 +404,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="configCustom.vCPU"
+                    (ngModelChange)="onChangeVCPU()"
                     [ngModelOptions]="{ standalone: true }"
                     [nzMin]="0"
                     [nzMax]="62"
@@ -413,6 +414,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="configCustom.ram"
+                    (ngModelChange)="onChangeRam()"
                     [ngModelOptions]="{ standalone: true }"
                     [nzMin]="0"
                     [nzMax]="62"
@@ -422,6 +424,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="configCustom.capacity"
+                    (ngModelChange)="onChangeCapacity()"
                     [ngModelOptions]="{ standalone: true }"
                     [nzMin]="0"
                     [nzMax]="100"
@@ -497,7 +500,7 @@
               nzPlaceHolder="Chọn Security Group"
               [ngModelOptions]="{ standalone: true }"
               [(ngModel)]="selectedSecurityGroup"
-              (ngModelChange)="onSelectedSecurityGroup($event)"
+              [nzServerSearch]="true"
             >
               <nz-option
                 *ngFor="let i of listSecurityGroup"
@@ -750,7 +753,7 @@
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="data.type"
                     [id]="'type_' + data.id"
-                    (ngModelChange)="onInputBlockStorage(data.id, $event)"
+                    (ngModelChange)="onInputBlockStorage()"
                   >
                     <nz-option
                       *ngFor="let p of typeBlockStorage"
@@ -771,6 +774,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="data.capacity"
+                    (ngModelChange)="getTotalAmountBlockStorage()"
                     [ngModelOptions]="{ standalone: true }"
                     [id]="'capacity_' + data.id"
                     [nzMin]="0"
@@ -873,9 +877,8 @@
                     [(ngModel)]="data.amount"
                     [ngModelOptions]="{ standalone: true }"
                     [id]="'amount_' + data.id"
-                    [nzMin]="0"
-                    [nzMax]="7"
-                    [nzStep]="1"
+                    [nzMin]="1"
+                    [nzMax]="1"
                   ></nz-input-number>
                 </td>
                 <td>
@@ -954,9 +957,8 @@
                     [(ngModel)]="data.amount"
                     [ngModelOptions]="{ standalone: true }"
                     [id]="'amount_' + data.id"
-                    [nzMin]="0"
-                    [nzMax]="7"
-                    [nzStep]="1"
+                    [nzMin]="1"
+                    [nzMax]="1"
                   ></nz-input-number>
                 </td>
                 <td>
@@ -987,16 +989,34 @@
   <div>
     <nz-table>
       <tr>
-        <td>Chi phí máy ảo ( 1 tháng )</td>
+        <td>
+          Chi phí máy ảo (<span>{{ numberMonth }}</span> tháng )
+        </td>
         <td class="float-right">{{ totalAmount }} VNĐ</td>
       </tr>
-      <!-- <tr>
-        <td>Chi phí Volume bổ sung (1 tháng)</td>
-        <td class="float-right">1.000.000 VNĐ</td>
-      </tr> -->
       <tr>
-        <td>Thành tiền ( Đã bao gồm 10% VAT)</td>
-        <td class="float-right">{{ totalincludesVAT }} VNĐ</td>
+        <td>
+          Chi phí Volume bổ sung (<span>{{ numberMonth }}</span> tháng)
+        </td>
+        <td class="float-right">{{ totalAmountVolume }} VNĐ</td>
+      </tr>
+      <tr>
+        <td>
+          Chi phí Network bổ sung (<span>{{ numberMonth }}</span> tháng)
+        </td>
+        <td class="float-right">{{ totalAmountIPv4 + totalAmountIPv6 }} VNĐ</td>
+      </tr>
+      <tr>
+        <td>Thành tiền (Đã bao gồm 10% VAT)</td>
+        <td class="float-right">
+          {{
+            totalincludesVAT +
+              totalAmountVolumeVAT +
+              totalAmountIPv4VAT +
+              totalAmountIPv6VAT
+          }}
+          VNĐ
+        </td>
       </tr>
     </nz-table>
     <div style="float: right; padding-top: 1%">
