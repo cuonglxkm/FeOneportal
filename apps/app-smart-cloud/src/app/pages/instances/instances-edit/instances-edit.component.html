@@ -178,7 +178,10 @@
             *nguCarouselDef="let item; index as i; let ani = animate"
             [@slider]="ani"
           >
-            <table class="custom-table text-center" (click)="onInputFlavors(item.id)">
+            <table
+              class="custom-table text-center"
+              (click)="onInputFlavors(item.id)"
+            >
               <tbody
                 class="flavor-body"
                 [id]="'flavor_' + item.id"
@@ -355,10 +358,14 @@
     </nz-row>
   </nz-card>
   <one-portal-blockstorage-detail
-    [instancesId]="id" [isDetail]="false"
+    [instancesId]="id"
+    [isDetail]="false"
   ></one-portal-blockstorage-detail>
 
-  <one-portal-network-detail [instancesId]="id" [isDetail]="false"></one-portal-network-detail>
+  <one-portal-network-detail
+    [instancesId]="id"
+    [isDetail]="false"
+  ></one-portal-network-detail>
 </form>
 <nz-card nzTitle="Thành tiền">
   <div>
@@ -377,7 +384,14 @@
       </tr>
     </nz-table>
     <div style="float: right; padding-top: 1%">
-      <button nz-button nzType="default" (click)="cancel()">Quay lại</button>
+      <button
+        nz-button
+        nzType="default"
+        style="background-color: #9c9c9c; color: white"
+        (click)="cancel()"
+      >
+        Hủy
+      </button>
       <button nz-button nzType="primary" (click)="save()">Chỉnh sửa</button>
     </div>
   </div>

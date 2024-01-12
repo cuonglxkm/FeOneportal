@@ -4,8 +4,12 @@ export class PaymentModel {
   amount: number
   currency: string
   orderNumber: string
-  createdDate: any
+  createdDate: string
   paymentLatestStatus: string
+  vat: number
+  totalAmount: number
+  paymentMethod: string
+  paymentUrl: string
   statusTransitionHistory: StatusTransitionHistory[]
   invoiceIssuedId: number
 }

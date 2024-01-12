@@ -63,4 +63,8 @@ export class PaymentService extends BaseService {
   getPaymentById(id: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/${id}`);
   }
+
+  getPaymentByPaymentNumber(paymentNumber: string): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/PaymentByPaymentNumber/${paymentNumber}`);
+  }
 }

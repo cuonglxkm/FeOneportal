@@ -26,6 +26,8 @@ import {
   IpCreate,
   OfferItem,
   Image,
+  DataPayment,
+  ItemPayment,
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -185,6 +187,9 @@ export class InstancesCreateComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
+    if (this.offerFlavor != null) {
+      this.getTotalAmount();
+    }
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -336,6 +341,9 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
     );
+    if (this.hdh != null) {
+      this.getTotalAmount();
+    }
     console.log(this.offerFlavor);
   }
 
@@ -398,6 +406,11 @@ export class InstancesCreateComponent implements OnInit {
     console.log('sshkey', event);
   }
 
+  onChangeTime() {
+    if (this.hdh != null && this.offerFlavor != null) {
+      this.getTotalAmount();
+    }
+  }
   //#endregion
 
   //#region BlockStorage
@@ -585,21 +598,7 @@ export class InstancesCreateComponent implements OnInit {
   //   return this.form.controls.items;
   // }
 
-  save(): void {
-    let arraylistSecurityGroup = null;
-    // if (this.selectedSecurityGroup.length > 0) {
-    //   arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
-    //     obj.id.toString()
-    //   );
-    // }
-    if (!this.isSnapshot && this.hdh == null) {
-      this.message.error('Vui lòng chọn hệ điều hành');
-      return;
-    }
-    if (this.offerFlavor == null) {
-      this.message.error('Vui lòng chọn gói cấu hình');
-      return;
-    }
+  initInstance() {
     this.instanceCreate.description = null;
 
     this.instanceCreate.imageId = this.hdh;
@@ -627,6 +626,7 @@ export class InstancesCreateComponent implements OnInit {
       this.instanceCreate.cpu = this.configCustom.vCPU;
       this.instanceCreate.volumeSize = this.configCustom.capacity;
     } else {
+      this.instanceCreate.offerId = this.offerFlavor.id;
       this.offerFlavor.characteristicValues.forEach((e) => {
         if (e.charOptionValues[0] == 'Id') {
           this.instanceCreate.flavorId = Number.parseInt(e.charOptionValues[1]);
@@ -652,8 +652,13 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
     this.instanceCreate.customerId = this.tokenService.get()?.userId;
-    this.instanceCreate.createDate = '2023-11-01T00:00:00';
-    this.instanceCreate.expireDate = '2023-12-01T00:00:00';
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
+    this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
+
     this.instanceCreate.saleDept = null;
     this.instanceCreate.saleDeptCode = null;
     this.instanceCreate.contactPersonEmail = null;
@@ -664,7 +669,6 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.am = null;
     this.instanceCreate.amManager = null;
     this.instanceCreate.isTrial = false;
-    this.instanceCreate.offerId = this.offerFlavor.id;
     this.instanceCreate.couponCode = null;
     this.instanceCreate.dhsxkd_SubscriptionId = null;
     this.instanceCreate.dSubscriptionNumber = null;
@@ -674,6 +678,24 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.regionId = this.region;
     this.instanceCreate.userEmail = this.tokenService.get()['email'];
     this.instanceCreate.actorEmail = this.tokenService.get()['email'];
+  }
+
+  save(): void {
+    let arraylistSecurityGroup = null;
+    // if (this.selectedSecurityGroup.length > 0) {
+    //   arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
+    //     obj.id.toString()
+    //   );
+    // }
+    if (!this.isSnapshot && this.hdh == null) {
+      this.message.error('Vui lòng chọn hệ điều hành');
+      return;
+    }
+    if (this.offerFlavor == null) {
+      this.message.error('Vui lòng chọn gói cấu hình');
+      return;
+    }
+    this.initInstance();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
     let orderItemInstance = new OrderItem();
@@ -864,6 +886,26 @@ export class InstancesCreateComponent implements OnInit {
           this.message.error('Tạo order máy ảo không thành công');
         }
       );
+  }
+
+  totalAmount: string = '0';
+  totalincludesVAT: string = '0';
+  getTotalAmount() {
+    this.initInstance();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.instanceCreate);
+    itemPayment.specificationType = 'instance_create';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.projectId;
+    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = result.data.totalAmount.amount;
+      this.totalincludesVAT = result.data.totalPayment.amount;
+      this.cdr.detectChanges();
+    });
   }
 
   cancel(): void {
