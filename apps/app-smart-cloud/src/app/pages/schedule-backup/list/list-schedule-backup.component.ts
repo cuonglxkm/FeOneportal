@@ -132,31 +132,6 @@ export class ListScheduleBackupComponent implements OnInit{
     })
   }
 
-  selectedOptionActionChange(value: any, data: any) {
-    this.selectedOptionAction = value
-    this.selectedAction = data
-    switch (parseInt(value, 10)){
-      case 1:
-        this.navigateToEdit(this.selectedAction.serviceType, this.selectedAction.id)
-        break;
-      case 2:
-        this.showModalPaused(this.selectedAction.id)
-        break;
-      case 3:
-        this.showModalDelete(this.selectedAction.id)
-        break;
-      case 4:
-        console.log(this.selectedAction.id)
-        this.showModalRestore(this.selectedAction.id)
-        break;
-      case 5:
-        this.showModalPlay(this.selectedAction.id)
-        break;
-      default:
-        break;
-    }
-  }
-
   navigateToEdit(serviceType: number, id: number) {
     if(serviceType === 1) {
       this.router.navigate(['/app-smart-cloud/schedule/backup/edit/vm',  id])
@@ -276,8 +251,6 @@ export class ListScheduleBackupComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    console.log(this.pageSize)
-    console.log(this.pageIndex)
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
     this.formSearch.regionId = this.region;
@@ -291,12 +264,13 @@ export class ListScheduleBackupComponent implements OnInit{
 
     this.isLoading = true
     this.backupScheduleService.search(initFormSearch).subscribe(data => {
+      this.isLoading = false
       if (!data.totalCount) {
         this.router.navigate(['/app-smart-cloud/schedule/backup/blank'])
       }
       this.response = data
       this.listBackupSchedule = data.records
-      this.isLoading = false
+
 
     })
     // this.getListScheduleBackup()
