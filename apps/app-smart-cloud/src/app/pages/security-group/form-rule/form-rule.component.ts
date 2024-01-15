@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
@@ -9,6 +9,7 @@ import {SecurityGroupRuleService} from "../../../shared/services/security-group-
 import {SecurityGroupRuleCreateForm} from "../../../shared/models/security-group-rule";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'one-portal-form-rule',
@@ -189,45 +190,30 @@ export class FormRuleComponent implements OnInit {
     }
 
     remoteTypeChange(type: 'CIDR' | 'SecurityGroup'): void {
-        if (type === 'CIDR') {
-            this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, Validators.min(1),
-                AppValidator.ipWithCIDRValidator]);
-            this.validateForm.controls.remoteIpPrefix.markAsDirty();
-            this.validateForm.controls.remoteIpPrefix.reset();
-
-            this.validateForm.controls.securityGroupId.clearValidators();
-            this.validateForm.controls.securityGroupId.markAsPristine();
-            this.validateForm.controls.securityGroupId.reset();
-
-            this.validateForm.controls.etherType.clearValidators();
-            this.validateForm.controls.etherType.markAsPristine();
-            this.validateForm.controls.etherType.reset();
-        }
-        if (type === 'SecurityGroup') {
-            this.validateForm.controls.remoteIpPrefix.clearValidators();
-            this.validateForm.controls.remoteIpPrefix.markAsPristine();
-            this.validateForm.controls.remoteIpPrefix.reset();
-
-            this.validateForm.controls.securityGroupId.setValidators([Validators.required]);
-            this.validateForm.controls.securityGroupId.markAsDirty();
-            this.validateForm.controls.securityGroupId.reset();
-
-            this.validateForm.controls.etherType.setValidators([Validators.required]);
-            this.validateForm.controls.etherType.markAsDirty();
-            this.validateForm.controls.etherType.reset();
-        }
-        this.validateForm.controls.remoteIpPrefix.updateValueAndValidity();
-        this.validateForm.controls.securityGroupId.updateValueAndValidity();
-        this.validateForm.controls.etherType.updateValueAndValidity();
-
         this.remoteType = type
+        if(this.remoteType == 'CIDR') {
+          this.validateForm.controls.remoteIpPrefix.reset();
+        }
+        if(this.remoteType == 'SecurityGroup') {
+          this.validateForm.controls.securityGroupId.reset();
+          this.validateForm.controls.etherType.reset();
+        }
+        console.log('type=',type)
+        console.log('remote type =',this.remoteType)
+        console.log(this.validateForm.controls.remoteIpPrefix.valid)
     }
 
     getSecurityGroup() {
         this.securityGroupService.search(this.conditionSearch)
-            .subscribe((data) => {
-                this.listSecurityGroup = data;
+          .pipe(
+            finalize(() => {
+              this.isLoading = false;
+              this.cdr.detectChanges();
             })
+          )
+          .subscribe((data) => {
+            this.listSecurityGroup = data;
+          })
     }
 
     goBack(): void {
@@ -241,6 +227,7 @@ export class FormRuleComponent implements OnInit {
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
         private securityGroupRuleService: SecurityGroupRuleService,
         private notification: NzNotificationService,
+        private cdr: ChangeDetectorRef,
         private router: Router) {
         this.validateForm = this.fb.group({
             rule: ['', [Validators.required]],

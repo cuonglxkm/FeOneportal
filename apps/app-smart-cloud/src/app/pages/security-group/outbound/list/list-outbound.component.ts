@@ -53,7 +53,7 @@ export class ListOutboundComponent implements OnInit{
         records: [],
         currentPage: 1,
         totalCount: 0,
-        pageSize: 20
+        pageSize: 10
       }
       this.isLoading = false
       return;

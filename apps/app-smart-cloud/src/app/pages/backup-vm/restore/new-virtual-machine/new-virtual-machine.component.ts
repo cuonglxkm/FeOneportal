@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, Input, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import Flavor from "../../../../shared/models/flavor.model";
@@ -15,7 +15,7 @@ import {
 } from "../../../../shared/models/backup-vm";
 import {InstancesService} from "../../../instances/instances.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {InstanceCreate, IPPublicModel, Order, OrderItem, VolumeCreate} from "../../../instances/instances.model";
+import {DataPayment, InstanceCreate, IPPublicModel, ItemPayment, Order, OrderItem, VolumeCreate} from "../../../instances/instances.model";
 import {Router} from "@angular/router";
 import {formatValidator} from "@angular-devkit/schematics/src/formats/format-validator";
 
@@ -78,7 +78,8 @@ export class NewVirtualMachineComponent implements OnInit {
                 private backupVmService: BackupVmService,
                 private instanceService: InstancesService,
                 private notification: NzNotificationService,
-                private router: Router) {
+                private router: Router,
+                private cdr: ChangeDetectorRef) {
     }
 
 
@@ -98,12 +99,8 @@ export class NewVirtualMachineComponent implements OnInit {
     handleFlavorChange(flavor: Flavor) {
         this.validateForm.controls.flavor.setValue(flavor)
         if (flavor) {
-            this.price = flavor.price
+           this.getTotalAmount()
         }
-    }
-
-    handleImageChange(image: Image) {
-        // this.validateForm.controls.image.setValue(image)
     }
 
     getDetailBackupVM() {
@@ -143,7 +140,66 @@ export class NewVirtualMachineComponent implements OnInit {
         })
     }
 
-    submitForm() {
+  instanceInit() {
+    const now = new Date();
+    const expiredDate = new Date();
+
+    this.instanceCreate.description = null; // this.region;
+    this.instanceCreate.flavorId = this.validateForm.controls.flavor.value.id; //this.flavor.id;
+    this.instanceCreate.imageId = this.backupVm?.systemInfoBackups[0].id;
+    this.instanceCreate.iops = this.validateForm.controls.iops.value;
+    this.instanceCreate.vmType = null;
+    this.instanceCreate.keypairName = null;
+    this.instanceCreate.securityGroups = this.validateForm.controls.securityGroup.value;
+    this.instanceCreate.network = null;
+    this.instanceCreate.volumeSize = this.validateForm.controls.storage.value;
+    this.instanceCreate.isUsePrivateNetwork = true;
+    this.instanceCreate.ipPublic = this.ipPublicValue;
+    this.instanceCreate.password = null;
+    this.instanceCreate.snapshotCloudId = null;
+    this.instanceCreate.encryption = false;
+    this.instanceCreate.isUseIPv6 = this.isUseIPv6;
+    this.instanceCreate.addRam = this.validateForm.controls.flavor.value.ram;
+    this.instanceCreate.addCpu = this.validateForm.controls.flavor.value.cpu;
+    this.instanceCreate.addBttn = this.validateForm.controls.flavor.value.bttn;
+    this.instanceCreate.addBtqt = this.validateForm.controls.flavor.value.btqt;
+    this.instanceCreate.poolName = null;
+    this.instanceCreate.usedMss = false;
+    this.instanceCreate.customerUsingMss = null;
+    this.instanceCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.instanceCreate.vpcId = JSON.stringify(this.project);
+    this.instanceCreate.oneSMEAddonId = null;
+    this.instanceCreate.serviceType = 1;
+    this.instanceCreate.serviceInstanceId = 0;
+    this.instanceCreate.customerId = this.userId;
+    this.instanceCreate.createDate = now.toLocaleString();
+    expiredDate.setMonth(now.getMonth() + 1);
+    this.instanceCreate.expireDate = expiredDate.toLocaleString()
+    this.instanceCreate.saleDept = null;
+    this.instanceCreate.saleDeptCode = null;
+    this.instanceCreate.contactPersonEmail = null;
+    this.instanceCreate.contactPersonPhone = null;
+    this.instanceCreate.contactPersonName = null;
+    this.instanceCreate.note = null;
+    this.instanceCreate.createDateInContract = null;
+    this.instanceCreate.am = null;
+    this.instanceCreate.amManager = null;
+    this.instanceCreate.isTrial = false;
+    this.instanceCreate.offerId = 73;
+    this.instanceCreate.couponCode = null;
+    this.instanceCreate.dhsxkd_SubscriptionId = null;
+    this.instanceCreate.dSubscriptionNumber = null;
+    this.instanceCreate.dSubscriptionType = null;
+    this.instanceCreate.oneSME_SubscriptionId = null;
+    this.instanceCreate.actionType = 0;
+    this.instanceCreate.regionId = this.region;
+    this.instanceCreate.userEmail = this.tokenService.get()['email'];
+    this.instanceCreate.actorEmail = this.tokenService.get()['email'];
+
+  }
+
+  submitForm() {
         console.log(this.validateForm);
         const now = new Date();
         const expiredDate = new Date();
@@ -152,60 +208,9 @@ export class NewVirtualMachineComponent implements OnInit {
 
         if (this.validateForm.valid) {
             console.log('form', this.validateForm.getRawValue())
-            this.instanceCreate.description = null; // this.region;
-            this.instanceCreate.flavorId = this.validateForm.controls.flavor.value.id; //this.flavor.id;
-            // this.instanceCreate.imageId = this.validateForm.controls.image.value.id;
-            this.instanceCreate.iops = this.validateForm.controls.iops.getRawValue();
-            this.instanceCreate.vmType = null;
-            this.instanceCreate.keypairName = null;
-            this.instanceCreate.securityGroups = this.validateForm.controls.securityGroup.value;
-            this.instanceCreate.network = null;
-            this.instanceCreate.volumeSize = this.validateForm.controls.storage.value;
-            this.instanceCreate.isUsePrivateNetwork = true;
-            this.instanceCreate.ipPublic = null;
-            this.instanceCreate.password = null;
-            this.instanceCreate.snapshotCloudId = null;
-            this.instanceCreate.encryption = false;
-            this.instanceCreate.isUseIPv6 = false;
-            this.instanceCreate.addRam = this.validateForm.controls.flavor.value.ram;
-            this.instanceCreate.addCpu = this.validateForm.controls.flavor.value.cpu;
-            this.instanceCreate.addBttn = this.validateForm.controls.flavor.value.bttn;
-            this.instanceCreate.addBtqt = this.validateForm.controls.flavor.value.btqt;
-            this.instanceCreate.poolName = null;
-            this.instanceCreate.usedMss = false;
-            this.instanceCreate.customerUsingMss = null;
-            this.instanceCreate.typeName =
-                'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-            this.instanceCreate.vpcId = JSON.stringify(this.project);
-            this.instanceCreate.oneSMEAddonId = null;
-            this.instanceCreate.serviceType = 1;
-            this.instanceCreate.serviceInstanceId = 0;
-            this.instanceCreate.customerId = this.userId;
-            this.instanceCreate.createDate = now.toLocaleString();
-            expiredDate.setMonth(now.getMonth() + 1);
-            this.instanceCreate.expireDate = expiredDate.toLocaleString()
-            this.instanceCreate.saleDept = null;
-            this.instanceCreate.saleDeptCode = null;
-            this.instanceCreate.contactPersonEmail = null;
-            this.instanceCreate.contactPersonPhone = null;
-            this.instanceCreate.contactPersonName = null;
-            this.instanceCreate.note = null;
-            this.instanceCreate.createDateInContract = null;
-            this.instanceCreate.am = null;
-            this.instanceCreate.amManager = null;
-            this.instanceCreate.isTrial = false;
-            this.instanceCreate.offerId = -2446;
-            this.instanceCreate.couponCode = null;
-            this.instanceCreate.dhsxkd_SubscriptionId = null;
-            this.instanceCreate.dSubscriptionNumber = null;
-            this.instanceCreate.dSubscriptionType = null;
-            this.instanceCreate.oneSME_SubscriptionId = null;
-            this.instanceCreate.actionType = 0;
-            this.instanceCreate.regionId = this.region;
-            this.instanceCreate.userEmail = 'toannv8@yandex.com';
-            this.instanceCreate.actorEmail = 'toannv8@yandex.com';
+            this.instanceInit()
 
-            this.volumeBackups.forEach(item => {
+          this.volumeBackups.forEach(item => {
                 this.volumeCreate.volumeType = item.typeName;
                 this.volumeCreate.volumeSize = item.size;
                 this.volumeCreate.description = item.description;
@@ -278,7 +283,30 @@ export class NewVirtualMachineComponent implements OnInit {
         }
     }
 
-    ngOnInit(): void {
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
+  getTotalAmount() {
+    this.instanceInit();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.instanceCreate);
+    itemPayment.specificationType = 'instance_create';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.project;
+    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.cdr.detectChanges();
+    });
+  }
+
+
+  ngOnInit(): void {
         this.region = JSON.parse(localStorage.getItem('region')).regionId;
         this.project = JSON.parse(localStorage.getItem('projectId'));
         this.userId = this.tokenService.get()?.userId

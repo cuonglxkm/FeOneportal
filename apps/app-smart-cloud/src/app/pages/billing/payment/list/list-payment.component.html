@@ -61,19 +61,18 @@
   <nz-card>
     <nz-table #rowSelectionTable
               nzShowSizeChanger
-              [nzScroll]="{ x: '1000px', y: '240px' }"
-              [nzFrontPagination]="false"
-              [nzData]="listFilteredData"
+
+              [nzData]="response?.records"
+
+              [nzPageIndex]="response?.currentPage"
+              [nzTotal]="response?.totalCount"
               (nzQueryParams)="onQueryParamsChange($event)"
               [nzLoading]="isLoading"
-              [nzTotal]="response?.totalCount"
-              [nzPageSize]="response?.pageSize"
-              [nzPageIndex]="response?.currentPage">
+              [nzFrontPagination]="false">
       <thead>
       <tr>
         <th [nzChecked]="checked"
             [nzIndeterminate]="indeterminate"
-            nzLabel="Select all"
             (nzCheckedChange)="onAllChecked($event)"
             nzLeft></th>
         <th nzLeft>Mã thanh toán</th>
