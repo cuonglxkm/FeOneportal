@@ -12,6 +12,7 @@ import {
   IPPublicModel,
   IPSubnetModel,
   InstancesModel,
+  OfferItem,
   SecurityGroupModel,
   UpdateInstances,
 } from '../instances.model';
@@ -75,7 +76,7 @@ export class InstancesEditComponent implements OnInit {
   password?: string;
   numberMonth: number = 1;
   hdh: any;
-  flavor: any;
+  offerFlavor: any;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
 
@@ -124,38 +125,52 @@ export class InstancesEditComponent implements OnInit {
   //#endregion
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
-  activeBlockFlavors: boolean = true;
-  activeBlockFlavorCloud: boolean = false;
-  listFlavors: Flavors[] = [];
-  pagedCardList: Array<Array<any>> = [];
-  effect = 'scrollx';
+  listOfferFlavors: OfferItem[] = [];
+
 
   selectedElementFlavor: number = null;
   isInitialClass = true;
   isNewClass = false;
 
   initFlavors(): void {
-    this.activeBlockFlavors = true;
-    this.activeBlockFlavorCloud = false;
     this.dataService
-      .getAllFlavors(false, this.region, false, false, true)
+      .getListOffers(136, this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listFlavors = data;
-        // Divide the cardList into pages with 4 cards per page
-        for (let i = 0; i < this.listFlavors.length; i += 4) {
-          this.pagedCardList.push(this.listFlavors.slice(i, i + 4));
+        this.listOfferFlavors = data;
+        if (this.activeBlockHDD) {
+          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+            e.offerName.includes('HDD')
+          );
+        } else {
+          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+            e.offerName.includes('SSD')
+          );
         }
+        this.listOfferFlavors.forEach((e: OfferItem) => {
+          e.description = '';
+          e.characteristicValues.forEach((ch) => {
+            if (ch.charOptionValues[0] == 'CPU') {
+              e.description += ch.charOptionValues[1] + ' VCPU / ';
+            }
+            if (ch.charOptionValues[0] == 'RAM') {
+              e.description += ch.charOptionValues[1] + ' GB RAM / ';
+            }
+            if (ch.charOptionValues[0] == 'HDD') {
+              if (this.activeBlockHDD) {
+                e.description += ch.charOptionValues[1] + ' GB HDD';
+              } else {
+                e.description += ch.charOptionValues[1] + ' GB SSD';
+              }
+            }
+          });
+        });
+        this.cdr.detectChanges();
       });
   }
 
-  initFlavorCloud(): void {
-    this.activeBlockFlavors = false;
-    this.activeBlockFlavorCloud = true;
-  }
-
   onInputFlavors(event: any) {
-    this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
-    console.log(this.flavor);
+    this.offerFlavor = this.listOfferFlavors.find((flavor) => flavor.id === event);
+    console.log(this.offerFlavor);
   }
 
   selectElementInputFlavors(id: any) {

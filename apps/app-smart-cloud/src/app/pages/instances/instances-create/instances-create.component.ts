@@ -61,13 +61,15 @@ class BlockStorage {
   capacity?: number = 0;
   encrypt?: boolean = false;
   multiattach?: boolean = false;
-  price?: number = 1;
+  price?: number = 0;
+  priceAndVAT?: number = 0;
 }
 class Network {
   id: number = 0;
   ip?: string = '';
-  amount?: number = 0;
-  price?: number = 1;
+  amount?: number = 1;
+  price?: number = 0;
+  priceAndVAT?: number = 0;
 }
 @Component({
   selector: 'one-portal-instances-create',
@@ -238,11 +240,35 @@ export class InstancesCreateComponent implements OnInit {
   initHDD(): void {
     this.activeBlockHDD = true;
     this.activeBlockSSD = false;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
+    if (
+      this.isCustomconfig &&
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0
+    ) {
+      this.getTotalAmount();
+    }
     this.initFlavors();
   }
   initSSD(): void {
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
+    if (
+      this.isCustomconfig &&
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0
+    ) {
+      this.getTotalAmount();
+    }
     this.initFlavors();
   }
 
@@ -279,24 +305,19 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
+        this.cdr.detectChanges();
       });
   }
   //#endregion
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
-  activeBlockFlavors: boolean = true;
-  activeBlockFlavorCloud: boolean = false;
   listOfferFlavors: OfferItem[] = [];
-  pagedCardList: Array<Array<any>> = [];
-  effect = 'scrollx';
 
   selectedElementFlavor: string = null;
   isInitialClass = true;
   isNewClass = false;
 
   initFlavors(): void {
-    this.activeBlockFlavors = true;
-    this.activeBlockFlavorCloud = false;
     this.dataService
       .getListOffers(136, this.region, 'VM-Flavor')
       .subscribe((data: any) => {
@@ -332,11 +353,6 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
-  initFlavorCloud(): void {
-    this.activeBlockFlavors = false;
-    this.activeBlockFlavorCloud = true;
-  }
-
   onInputFlavors(event: any) {
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
@@ -363,12 +379,37 @@ export class InstancesCreateComponent implements OnInit {
   selectElementInputFlavors(id: string) {
     this.selectedElementFlavor = id;
   }
-  //#endregion
 
-  onSelectedSecurityGroup(event: any) {
-    this.selectedSecurityGroup = event;
-    console.log('list selected Security Group', this.selectedSecurityGroup);
+  onChangeVCPU() {
+    if (
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    }
   }
+
+  onChangeRam() {
+    if (
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.capacity != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    }
+  }
+
+  onChangeCapacity() {
+    if (
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    }
+  }
+  //#endregion
 
   //#region selectedPasswordOrSSHkey
   listSSHKey: SHHKeyModel[] = [];
@@ -433,23 +474,13 @@ export class InstancesCreateComponent implements OnInit {
     );
   }
 
-  onInputBlockStorage(index: number, event: any) {
-    // const inputElement = this.renderer.selectRootElement('#type_' + index);
-    // const inputValue = inputElement.value;
-    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataBlockStorage.filter(
-      (item) => item.type !== ''
-    );
+  onInputBlockStorage() {
+    this.getTotalAmountBlockStorage();
     const filteredArrayHas = this.listOfDataBlockStorage.filter(
       (item) => item.type == ''
     );
 
-    if (filteredArrayHas.length > 0) {
-      this.listOfDataBlockStorage[index].type = event;
-    } else {
-      // Add a new row with the same value as the current row
-      //const currentItem = this.itemsTest[count];
-      //this.itemsTest.splice(count + 1, 0, currentItem);
+    if (filteredArrayHas.length == 0) {
       this.defaultBlockStorage = new BlockStorage();
       this.idBlockStorage++;
       this.defaultBlockStorage.id = this.idBlockStorage;
@@ -469,26 +500,21 @@ export class InstancesCreateComponent implements OnInit {
   defaultIPv6: Network = new Network();
   listIPSubnetModel: IPSubnetModel[] = [];
 
+  initIpSubnet(): void {
+    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
+      this.listIPSubnetModel = data;
+      this.cdr.detectChanges();
+    });
+  }
+
   initIPv4(): void {
     this.activeIPv4 = true;
     this.listOfDataIPv4.push(this.defaultIPv4);
-
-    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
-      // var resultHttp = data;
-      // this.listOfDataNetwork.push(...resultHttp);
-    });
   }
 
   initIPv6(): void {
     this.activeIPv6 = true;
     this.listOfDataIPv6.push(this.defaultIPv6);
-
-    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
-      // var resultHttp = data;
-      // this.listOfDataNetwork.push(...resultHttp);
-    });
   }
 
   deleteRowIPv4(id: number): void {
@@ -500,18 +526,32 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onInputIPv4() {
-    this.defaultIPv4 = new Network();
-    this.idIPv4++;
-    this.defaultIPv4.id = this.idIPv4;
-    this.listOfDataIPv4.push(this.defaultIPv4);
+    this.getTotalAmountIPv4();
+    const filteredArrayHas = this.listOfDataIPv4.filter(
+      (item) => item.ip == ''
+    );
+
+    if (filteredArrayHas.length == 0) {
+      this.defaultIPv4 = new Network();
+      this.idIPv4++;
+      this.defaultIPv4.id = this.idIPv4;
+      this.listOfDataIPv4.push(this.defaultIPv4);
+    }
     this.cdr.detectChanges();
   }
 
   onInputIPv6() {
-    this.defaultIPv6 = new Network();
-    this.idIPv6++;
-    this.defaultIPv6.id = this.idIPv6;
-    this.listOfDataIPv6.push(this.defaultIPv6);
+    this.getTotalAmountIPv6();
+    const filteredArrayHas = this.listOfDataIPv6.filter(
+      (item) => item.ip == ''
+    );
+
+    if (filteredArrayHas.length == 0) {
+      this.defaultIPv6 = new Network();
+      this.idIPv6++;
+      this.defaultIPv6.id = this.idIPv6;
+      this.listOfDataIPv6.push(this.defaultIPv6);
+    }
     this.cdr.detectChanges();
   }
   //#endregion
@@ -563,6 +603,7 @@ export class InstancesCreateComponent implements OnInit {
     this.listIPPublic = [];
     this.selectedSecurityGroup = [];
     this.ipPublicValue = 0;
+    this.initIpSubnet();
     this.initFlavors();
     this.initSnapshot();
     this.getAllIPPublic();
@@ -598,7 +639,7 @@ export class InstancesCreateComponent implements OnInit {
   //   return this.form.controls.items;
   // }
 
-  initInstance() {
+  instanceInit() {
     this.instanceCreate.description = null;
 
     this.instanceCreate.imageId = this.hdh;
@@ -621,6 +662,7 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.usedMss = false;
     this.instanceCreate.customerUsingMss = null;
     if (this.isCustomconfig) {
+      this.instanceCreate.offerId = 0;
       this.instanceCreate.flavorId = 0;
       this.instanceCreate.ram = this.configCustom.ram;
       this.instanceCreate.cpu = this.configCustom.vCPU;
@@ -680,13 +722,99 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
+  volumeCreate: VolumeCreate = new VolumeCreate();
+  volumeInit(blockStorage: BlockStorage) {
+    this.volumeCreate.volumeType = blockStorage.type;
+    this.volumeCreate.volumeSize = blockStorage.capacity;
+    this.volumeCreate.description = null;
+    this.volumeCreate.createFromSnapshotId = null;
+    this.volumeCreate.instanceToAttachId = null;
+    this.volumeCreate.isMultiAttach = blockStorage.multiattach;
+    this.volumeCreate.isEncryption = blockStorage.encrypt;
+    this.volumeCreate.vpcId = this.projectId.toString();
+    this.volumeCreate.oneSMEAddonId = null;
+    this.volumeCreate.serviceType = 2;
+    this.volumeCreate.serviceInstanceId = 0;
+    this.volumeCreate.customerId = this.tokenService.get()?.userId;
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.volumeCreate.createDate = currentDate.toISOString().substring(0, 19);
+    this.volumeCreate.expireDate = lastDate.toISOString().substring(0, 19);
+
+    this.volumeCreate.saleDept = null;
+    this.volumeCreate.saleDeptCode = null;
+    this.volumeCreate.contactPersonEmail = null;
+    this.volumeCreate.contactPersonPhone = null;
+    this.volumeCreate.contactPersonName = null;
+    this.volumeCreate.note = null;
+    this.volumeCreate.createDateInContract = null;
+    this.volumeCreate.am = null;
+    this.volumeCreate.amManager = null;
+    this.volumeCreate.isTrial = false;
+    this.volumeCreate.offerId =
+      this.volumeCreate.volumeType == 'hdd' ? 145 : 156;
+    this.volumeCreate.couponCode = null;
+    this.volumeCreate.dhsxkd_SubscriptionId = null;
+    this.volumeCreate.dSubscriptionNumber = null;
+    this.volumeCreate.dSubscriptionType = null;
+    this.volumeCreate.oneSME_SubscriptionId = null;
+    this.volumeCreate.actionType = 1;
+    this.volumeCreate.regionId = this.region;
+    this.volumeCreate.serviceName = blockStorage.name;
+    this.volumeCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
+    this.volumeCreate.userEmail = this.tokenService.get()?.email;
+    this.volumeCreate.actorEmail = this.tokenService.get()?.email;
+  }
+
+  ipCreate: IpCreate = new IpCreate();
+  ipInit(ip: Network) {
+    this.ipCreate.id = 0;
+    this.ipCreate.duration = 0;
+    this.ipCreate.ipAddress = null;
+    this.ipCreate.vmToAttachId = null;
+    this.ipCreate.offerId = 50;
+    this.ipCreate.networkId = ip.ip;
+    this.ipCreate.useIPv6 = null;
+    this.ipCreate.vpcId = this.projectId;
+    this.ipCreate.oneSMEAddonId = null;
+    this.ipCreate.serviceType = 0;
+    this.ipCreate.serviceInstanceId = 0;
+    this.ipCreate.customerId = this.tokenService.get()?.userId;
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.ipCreate.createDate = currentDate.toISOString().substring(0, 19);
+    this.ipCreate.expireDate = lastDate.toISOString().substring(0, 19);
+
+    this.ipCreate.saleDept = null;
+    this.ipCreate.saleDeptCode = null;
+    this.ipCreate.contactPersonEmail = null;
+    this.ipCreate.contactPersonPhone = null;
+    this.ipCreate.contactPersonName = null;
+    this.ipCreate.note = null;
+    this.ipCreate.createDateInContract = null;
+    this.ipCreate.am = null;
+    this.ipCreate.amManager = null;
+    this.ipCreate.isTrial = false;
+    this.ipCreate.couponCode = null;
+    this.ipCreate.dhsxkd_SubscriptionId = null;
+    this.ipCreate.dSubscriptionNumber = null;
+    this.ipCreate.dSubscriptionType = null;
+    this.ipCreate.oneSME_SubscriptionId = null;
+    this.ipCreate.actionType = 0;
+    this.ipCreate.regionId = this.region;
+    this.ipCreate.serviceName = null;
+    this.ipCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.ipCreate.userEmail = this.tokenService.get()?.email;
+    this.ipCreate.actorEmail = this.tokenService.get()?.email;
+  }
+
   save(): void {
-    let arraylistSecurityGroup = null;
-    // if (this.selectedSecurityGroup.length > 0) {
-    //   arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
-    //     obj.id.toString()
-    //   );
-    // }
     if (!this.isSnapshot && this.hdh == null) {
       this.message.error('Vui lòng chọn hệ điều hành');
       return;
@@ -695,7 +823,7 @@ export class InstancesCreateComponent implements OnInit {
       this.message.error('Vui lòng chọn gói cấu hình');
       return;
     }
-    this.initInstance();
+    this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
     let orderItemInstance = new OrderItem();
@@ -708,47 +836,9 @@ export class InstancesCreateComponent implements OnInit {
     console.log('order instance', orderItemInstance);
 
     this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-      if (e.type != '' && e.name != '' && e.capacity) {
-        let volumeCreate = new VolumeCreate();
-        volumeCreate.volumeType = e.type;
-        volumeCreate.volumeSize = e.capacity;
-        volumeCreate.description = null;
-        volumeCreate.createFromSnapshotId = null;
-        volumeCreate.instanceToAttachId = null;
-        volumeCreate.isMultiAttach = e.multiattach;
-        volumeCreate.isEncryption = e.encrypt;
-        volumeCreate.vpcId = this.projectId.toString();
-        volumeCreate.oneSMEAddonId = null;
-        volumeCreate.serviceType = 2;
-        volumeCreate.serviceInstanceId = 0;
-        volumeCreate.customerId = this.tokenService.get()?.userId;
-        volumeCreate.createDate = '0001-01-01T00:00:00';
-        volumeCreate.expireDate = '0001-01-01T00:00:00';
-        volumeCreate.saleDept = null;
-        volumeCreate.saleDeptCode = null;
-        volumeCreate.contactPersonEmail = null;
-        volumeCreate.contactPersonPhone = null;
-        volumeCreate.contactPersonName = null;
-        volumeCreate.note = null;
-        volumeCreate.createDateInContract = null;
-        volumeCreate.am = null;
-        volumeCreate.amManager = null;
-        volumeCreate.isTrial = false;
-        volumeCreate.offerId = 2;
-        volumeCreate.couponCode = null;
-        volumeCreate.dhsxkd_SubscriptionId = null;
-        volumeCreate.dSubscriptionNumber = null;
-        volumeCreate.dSubscriptionType = null;
-        volumeCreate.oneSME_SubscriptionId = null;
-        volumeCreate.actionType = 1;
-        volumeCreate.regionId = this.region;
-        volumeCreate.serviceName = e.name;
-        volumeCreate.typeName =
-          'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
-        volumeCreate.userEmail = this.tokenService.get()?.email;
-        volumeCreate.actorEmail = this.tokenService.get()?.email;
-
-        let specificationVolume = JSON.stringify(volumeCreate);
+      if (e.type != '' && e.capacity != 0) {
+        this.volumeInit(e);
+        let specificationVolume = JSON.stringify(this.volumeCreate);
         let orderItemVolume = new OrderItem();
         orderItemVolume.orderItemQuantity = 1;
         orderItemVolume.specification = specificationVolume;
@@ -760,46 +850,9 @@ export class InstancesCreateComponent implements OnInit {
     });
 
     this.listOfDataIPv4.forEach((e: Network) => {
-      let ipCreate = new IpCreate();
-      if (e.ip != '' && e.amount != 0) {
-        ipCreate.id = 0;
-        ipCreate.duration = 0;
-        ipCreate.ipAddress = null;
-        ipCreate.vmToAttachId = null;
-        ipCreate.offerId = 0;
-        ipCreate.networkId = e.ip;
-        ipCreate.useIPv6 = null;
-        ipCreate.vpcId = this.projectId;
-        ipCreate.oneSMEAddonId = null;
-        ipCreate.serviceType = 0;
-        ipCreate.serviceInstanceId = 0;
-        ipCreate.customerId = this.tokenService.get()?.userId;
-        ipCreate.createDate = '0001-01-01T00:00:00';
-        ipCreate.expireDate = '0001-01-01T00:00:00';
-        ipCreate.saleDept = null;
-        ipCreate.saleDeptCode = null;
-        ipCreate.contactPersonEmail = null;
-        ipCreate.contactPersonPhone = null;
-        ipCreate.contactPersonName = null;
-        ipCreate.note = null;
-        ipCreate.createDateInContract = null;
-        ipCreate.am = null;
-        ipCreate.amManager = null;
-        ipCreate.isTrial = false;
-        ipCreate.couponCode = null;
-        ipCreate.dhsxkd_SubscriptionId = null;
-        ipCreate.dSubscriptionNumber = null;
-        ipCreate.dSubscriptionType = null;
-        ipCreate.oneSME_SubscriptionId = null;
-        ipCreate.actionType = 0;
-        ipCreate.regionId = this.region;
-        ipCreate.serviceName = null;
-        ipCreate.typeName =
-          'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-        ipCreate.userEmail = this.tokenService.get()?.email;
-        ipCreate.actorEmail = this.tokenService.get()?.email;
-
-        let specificationIP = JSON.stringify(ipCreate);
+      if (e.ip != '') {
+        this.ipInit(e);
+        let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
         orderItemIP.orderItemQuantity = 1;
         orderItemIP.specification = specificationIP;
@@ -811,46 +864,9 @@ export class InstancesCreateComponent implements OnInit {
     });
 
     this.listOfDataIPv6.forEach((e: Network) => {
-      let ipCreate = new IpCreate();
-      if (e.ip != '' && e.amount != 0) {
-        ipCreate.id = 0;
-        ipCreate.duration = 0;
-        ipCreate.ipAddress = null;
-        ipCreate.vmToAttachId = null;
-        ipCreate.offerId = 0;
-        ipCreate.networkId = e.ip;
-        ipCreate.useIPv6 = null;
-        ipCreate.vpcId = this.projectId;
-        ipCreate.oneSMEAddonId = null;
-        ipCreate.serviceType = 0;
-        ipCreate.serviceInstanceId = 0;
-        ipCreate.customerId = this.tokenService.get()?.userId;
-        ipCreate.createDate = '0001-01-01T00:00:00';
-        ipCreate.expireDate = '0001-01-01T00:00:00';
-        ipCreate.saleDept = null;
-        ipCreate.saleDeptCode = null;
-        ipCreate.contactPersonEmail = null;
-        ipCreate.contactPersonPhone = null;
-        ipCreate.contactPersonName = null;
-        ipCreate.note = null;
-        ipCreate.createDateInContract = null;
-        ipCreate.am = null;
-        ipCreate.amManager = null;
-        ipCreate.isTrial = false;
-        ipCreate.couponCode = null;
-        ipCreate.dhsxkd_SubscriptionId = null;
-        ipCreate.dSubscriptionNumber = null;
-        ipCreate.dSubscriptionType = null;
-        ipCreate.oneSME_SubscriptionId = null;
-        ipCreate.actionType = 0;
-        ipCreate.regionId = this.region;
-        ipCreate.serviceName = null;
-        ipCreate.typeName =
-          'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-        ipCreate.userEmail = this.tokenService.get()?.email;
-        ipCreate.actorEmail = this.tokenService.get()?.email;
-
-        let specificationIP = JSON.stringify(ipCreate);
+      if (e.ip != '') {
+        this.ipInit(e);
+        let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
         orderItemIP.orderItemQuantity = 1;
         orderItemIP.specification = specificationIP;
@@ -888,10 +904,10 @@ export class InstancesCreateComponent implements OnInit {
       );
   }
 
-  totalAmount: string = '0';
-  totalincludesVAT: string = '0';
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
   getTotalAmount() {
-    this.initInstance();
+    this.instanceInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceCreate);
@@ -902,9 +918,95 @@ export class InstancesCreateComponent implements OnInit {
     dataPayment.projectId = this.projectId;
     this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
-      this.totalAmount = result.data.totalAmount.amount;
-      this.totalincludesVAT = result.data.totalPayment.amount;
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
       this.cdr.detectChanges();
+    });
+  }
+
+  totalAmountVolume = 0;
+  totalAmountVolumeVAT = 0;
+  getTotalAmountBlockStorage() {
+    this.totalAmountVolume = 0;
+    this.totalAmountVolumeVAT = 0;
+    this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+      if (e.type != '') {
+        this.volumeInit(e);
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(this.volumeCreate);
+        itemPayment.specificationType = 'volume_create';
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+          console.log('thanh tien volume', result);
+          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          this.totalAmountVolume += e.price;
+          e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
+          this.totalAmountVolumeVAT += e.priceAndVAT;
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  totalAmountIPv4 = 0;
+  totalAmountIPv4VAT = 0;
+  getTotalAmountIPv4() {
+    this.totalAmountIPv4 = 0;
+    this.totalAmountIPv4VAT = 0;
+    this.listOfDataIPv4.forEach((e: Network) => {
+      if (e.ip != '') {
+        this.ipInit(e);
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(this.ipCreate);
+        itemPayment.specificationType = 'ip_create';
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+          console.log('thanh tien ipv4', result);
+          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          this.totalAmountIPv4 += e.price;
+          e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
+          this.totalAmountIPv4VAT += e.priceAndVAT;
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  totalAmountIPv6 = 0;
+  totalAmountIPv6VAT = 0;
+  getTotalAmountIPv6() {
+    this.totalAmountIPv6 = 0;
+    this.totalAmountIPv6VAT = 0;
+    this.listOfDataIPv6.forEach((e: Network) => {
+      if (e.ip != '') {
+        this.ipInit(e);
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(this.ipCreate);
+        itemPayment.specificationType = 'ip_create';
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        dataPayment.projectId = this.projectId;
+        this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+          console.log('thanh tien ipv6', result);
+          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          this.totalAmountIPv6 += e.price;
+          e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
+          this.totalAmountIPv6VAT += e.priceAndVAT;
+          this.cdr.detectChanges();
+        });
+      }
     });
   }
 
