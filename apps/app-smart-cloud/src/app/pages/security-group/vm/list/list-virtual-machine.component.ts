@@ -31,6 +31,7 @@ export class ListVirtualMachineComponent implements OnInit, OnChanges {
     isVisibleAttach = false
     isVisibleDetach = false
     instanceId: number
+    isLoadingAttach = false
 
 
     constructor(
@@ -76,13 +77,16 @@ export class ListVirtualMachineComponent implements OnInit, OnChanges {
     handleOkAttach(): void {
         console.log('id', this.instanceId)
         this.isVisibleAttach = false;
+
         this.attachOrDetachForm.securityGroupId = this.securityGroupId
         this.attachOrDetachForm.instanceId = this.instanceId
         this.attachOrDetachForm.action = 'attach'
         this.attachOrDetachForm.userId = this.tokenService.get()?.userId
         this.attachOrDetachForm.regionId = this.regionId
         this.attachOrDetachForm.projectId = this.projectId
+        this.isLoadingAttach = true
         this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
+            this.isLoadingAttach = false
             this.notification.success('Thành công', 'Gán Security Group vào máy ảo thành công')
             this.getInstances()
         }, error => {
