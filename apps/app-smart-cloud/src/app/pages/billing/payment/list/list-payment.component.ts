@@ -128,9 +128,8 @@ export class ListPaymentComponent implements OnInit{
     this.refreshCheckedStatus();
   }
 
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-        .forEach(({id}) => this.updateCheckedSet(id, checked));
+  onAllChecked(value: boolean): void {
+    this.listOfCurrentPageData.forEach(item => this.updateCheckedSet(item.id, value));
     this.refreshCheckedStatus();
   }
 
