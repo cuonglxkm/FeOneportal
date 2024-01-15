@@ -24,34 +24,22 @@ export class InstanceService extends BaseService {
         })
     }
 
-    search(form: InstanceFormSearch): Observable<Pagination<Instance>> {
-        let params = new HttpParams();
-        if (form.searchValue !== undefined) {
-            params = params.append('searchValue', form.searchValue)
-        }
-        if (form.status !== undefined) {
-            params = params.append('status', form.status)
-        }
-        params = params.append('isCheckState', true)
-        if (form.fromDate !== undefined) {
-            params = params.append('formDate', form.fromDate)
-        }
-        if (form.toDate !== undefined) {
-            params = params.append('toDate', form.toDate)
-        }
-        if(form.securityGroupId !== undefined) {
-            params = params.append('id', form.searchValue)
-        }
-        params = params.append('region', form.region)
-        params = params.append('userId', form.userId)
-        params = params.append('pageSize', form.pageSize)
-        params = params.append('pageNumber', form.pageNumber)
+  search(
+    pageNumber: number,
+    pageSize: number,
+    region: number,
+    projectId: number,
+    searchValue: string = '',
+    status: string = '',
+    isCheckState: boolean,
+    userId: number
+  ): Observable<any> {
+    if (searchValue == undefined) searchValue = '';
+    let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&projectId=${projectId}&searchValue=${searchValue}&status=${status}&isCheckState=${isCheckState}&userId=${userId}`;
+    url_ = url_.replace(/[?&]$/, '');
 
-        return this.http.get<Pagination<Instance>>(this.baseUrl + this.ENDPOINT.provisions + '/instances/getpaging', {
-            headers: this.getHeaders(),
-            params: params
-        })
-    }
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
 
     searchBySecurityGroupId(form: InstanceFormSearch) {
         let params = new HttpParams();
