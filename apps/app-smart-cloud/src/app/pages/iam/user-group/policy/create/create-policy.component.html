@@ -107,7 +107,8 @@
       nzShowPagination
       nzShowSizeChanger
       [nzData]="listPolicies"
-      [nzPageSize]="5">
+      [nzPageSize]="5"
+      (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
       <thead>
       <tr>
         <th

@@ -95,6 +95,7 @@
           nzShowSizeChanger
           [nzData]="filteredUsers"
           [nzLoading]="loading"
+          (nzQueryParams)="onQueryParamsUserChange($event)"
           (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)">
           <thead>
           <tr>
@@ -192,6 +193,7 @@
           [nzPageSize]="responsePolicies?.pageSize"
           [nzFrontPagination]="false"
           (nzQueryParams)="onQueryParamsPolicyChange($event)"
+          (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
         >
           <thead>
           <tr>

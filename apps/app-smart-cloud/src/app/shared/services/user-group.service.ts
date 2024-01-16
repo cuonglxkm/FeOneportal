@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import Pagination from "../models/pagination";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {
@@ -13,6 +13,8 @@ import {
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {User} from "../models/user.model";
 import {PolicyModel} from "../../pages/policy/policy.model";
+import {Observable, throwError} from "rxjs";
+import {catchError} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -79,7 +81,7 @@ export class UserGroupService extends BaseService {
     createOrEdit(formCreate: FormUserGroup) {
         return this.http.post<UserGroupModel>(this.baseUrl + this.ENDPOINT.iam + '/groups', Object.assign(formCreate), {
             headers: this.getHeaders()
-        })
+        }).pipe(catchError(this.handleError))
     }
 
     removeUsers(groupName: string, usersList: string[]) {
@@ -133,5 +135,25 @@ export class UserGroupService extends BaseService {
             headers: this.getHeaders(),
             params: params
         })
+    }
+
+    private handleError(error: HttpErrorResponse): Observable<never> {
+      let errorMessage = 'An error occurred';
+
+      if (error.error instanceof ErrorEvent) {
+        // Client-side errors
+        errorMessage = `Error: ${error.error.message}`;
+      } else {
+        // Server-side errors
+        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        if (error.error && error.error.details) {
+          // Lấy thông tin chi tiết lỗi từ response
+          errorMessage += `\nDetails: ${error.error.details}`;
+        }
+      }
+
+      console.error(errorMessage);
+
+      return throwError(errorMessage);
     }
 }

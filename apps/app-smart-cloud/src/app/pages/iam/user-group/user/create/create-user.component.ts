@@ -6,6 +6,7 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {FormUserGroup} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {PolicyModel} from "../../../../policy/policy.model";
 
 @Component({
   selector: 'one-portal-create-user',
@@ -86,8 +87,13 @@ export class CreateUserComponent implements OnInit {
     const {pageSize, pageIndex} = params
     this.pageSize = pageSize;
     this.pageIndex = pageIndex
-    this.refreshCheckedStatus()
     this.getUsers()
+    this.refreshCheckedStatus()
+  }
+
+  onCurrentPageDataChange(listOfCurrentPageData: readonly User[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
@@ -116,7 +122,6 @@ export class CreateUserComponent implements OnInit {
     })
 
   }
-
   getListUserName() {
     this.listUserSelected.forEach(item => {
       if (this.listUserNameSelected?.length > 0) {

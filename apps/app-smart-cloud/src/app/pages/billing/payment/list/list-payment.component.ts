@@ -7,6 +7,7 @@ import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 import { Router } from '@angular/router';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {PolicyModel} from "../../../policy/policy.model";
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -123,6 +124,10 @@ export class ListPaymentComponent implements OnInit{
     this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
   }
 
+  onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
   onItemChecked(id: number, checked: boolean): void {
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
