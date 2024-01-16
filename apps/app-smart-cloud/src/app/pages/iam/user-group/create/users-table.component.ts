@@ -53,6 +53,7 @@ export class UsersTableComponent implements OnInit {
       this.setOfCheckedId.delete(userName);
     }
     this.listOfSelected = this.listUsers.filter(data => this.setOfCheckedId.has(data.userName))
+    this.listUsersSelected.emit(this.listOfSelected)
   }
 
   onItemChecked(userName: string, checked: boolean): void {

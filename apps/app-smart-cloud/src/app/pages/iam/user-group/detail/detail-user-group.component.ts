@@ -14,6 +14,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NonNullableFormBuilder} from '@angular/forms';
 import {BaseResponse} from '../../../../../../../../libs/common-utils/src';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {debounceTime} from "rxjs";
 
 @Component({
   selector: 'one-portal-detail-user-group',
@@ -241,12 +242,19 @@ export class DetailUserGroupComponent {
 
   getData(groupName: string) {
     this.loading = true;
+
+    this.formSearchPolicy.groupName = this.groupName
+    this.formSearchPolicy.pageSize = this.pageSizePolicy
+    this.formSearchPolicy.currentPage = this.pageIndexPolicy
+
     //get group
-    this.userGroupService.detail(groupName).subscribe(data => {
-      this.groupModel = data
-      this.loading = false
-      this.parentGroup = this.groupModel.parent
-    })
+    this.userGroupService.detail(groupName)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        this.groupModel = data
+        this.loading = false
+        this.parentGroup = this.groupModel.parent
+      })
     //get policy
     this.getPoliciesByGroupName()
     //get user
@@ -256,13 +264,13 @@ export class DetailUserGroupComponent {
 
   getPoliciesByGroupName() {
     this.isLoadingPolicy = true
-    this.formSearchPolicy.groupName = this.groupName
-    this.formSearchPolicy.pageSize = this.pageSizePolicy
-    this.formSearchPolicy.currentPage = this.pageIndexPolicy
+
     if (this.value != undefined || this.value != null) {
       this.formSearchPolicy.policyName = this.value
     }
-    this.userGroupService.getPoliciesByGroupName(this.formSearchPolicy).subscribe(data => {
+    this.userGroupService.getPoliciesByGroupName(this.formSearchPolicy)
+      .pipe(debounceTime(600))
+      .subscribe(data => {
       this.isLoadingPolicy = false
       this.responsePolicies = data
       this.listOfCurrentPageDataPolicy = data.records
@@ -273,7 +281,9 @@ export class DetailUserGroupComponent {
 
   getUsersByGroupName() {
     this.isLoadingUser = true
-    this.userGroupService.getUserByGroup(this.valueUser, this.groupName, this.pageSizeUser, this.pageIndexUser).subscribe(data => {
+    this.userGroupService.getUserByGroup(this.valueUser, this.groupName, this.pageSizeUser, this.pageIndexUser)
+      .pipe(debounceTime(600))
+      .subscribe(data => {
       this.isLoadingUser = false
       this.responseUsers = data
       this.filteredUsers = data.records
@@ -314,15 +324,15 @@ export class DetailUserGroupComponent {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.listOfDataPolicies = []
-      this.filteredPolicies = []
-      this.groupName = params['name']
-      if (this.groupName !== undefined) {
-        this.getData(this.groupName)
-        // this.countUser = this.listUsersFromGroup.length
-      }
-    })
+    this.route.params
+      .subscribe((params) => {
+        this.listOfDataPolicies = []
+        this.filteredPolicies = []
+        this.groupName = params['name']
+        if (this.groupName !== undefined) {
+          this.getData(this.groupName)
+        }
+      })
   }
 
   navigateToAttachPolicy() {
