@@ -10,6 +10,7 @@ import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {Instance, InstanceFormSearch} from "../../instances/instances.model";
 import {InstanceService} from "../../../shared/services/instance.service";
 import Pagination from "../../../shared/models/pagination";
+import {debounceTime, finalize} from "rxjs/operators";
 
 @Component({
     selector: 'one-portal-security-group',
@@ -48,7 +49,7 @@ export class SecurityGroupComponent implements OnInit {
     }
 
     onSecurityGroupChange(): void {
-        this.getListInbound();
+        // this.getListInbound();
         this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
         this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
         this.getInstances()
@@ -68,49 +69,49 @@ export class SecurityGroupComponent implements OnInit {
 
     regionChanged(region: RegionModel) {
         this.region = region.regionId
-        this.conditionSearch.regionId = this.region;
+        // this.conditionSearch.regionId = this.region;
     }
+
 
     projectChanged(project: ProjectModel) {
         this.project = project?.id
-        this.conditionSearch.projectId = project?.id;
+        // this.conditionSearch.projectId = project?.id;
         this.selectedValue = undefined
         this.listInbound = []
         this.listOutbound = []
         this.listInstance = []
         this.getSecurityGroup();
+        // this.getInstances()
     }
 
     getSecurityGroup() {
+      this.conditionSearch.regionId = this.region
+      this.conditionSearch.projectId = this.project
         if (this.conditionSearch.regionId
             && this.conditionSearch.userId
             && this.conditionSearch.projectId) {
             this.securityGroupService.search(this.conditionSearch)
-                .subscribe((data) => {
-                    this.options = data;
-                    console.log('sg', this.options)
-                })
+              .pipe(
+                debounceTime(300)
+              )
+              .subscribe((data) => {
+                  this.options = data;
+              })
         }
     }
 
     getInstances() {
-        this.condition.userId = this.tokenService.get()?.userId
-
-        this.condition.region = this.region
-        this.condition.pageNumber = this.pageNumber
-        this.condition.pageSize = this.pageSize
-        this.condition.isCheckState = true
-        this.instanceService.search(this.condition).subscribe(data => {
+        this.instanceService.search(this.pageNumber, this.pageSize, this.region,
+          this.project, '', '', true, this.tokenService.get()?.userId)
+          .pipe(
+            debounceTime(300)
+          )
+          .subscribe(data => {
             this.listInstance = data.records
-            console.log('data', this.listInstance)
+            // console.log('data', this.listInstance)
         }, error => {
             this.notification.error('Thất bại', 'Lấy thông tin máy ảo thất bại')
         })
-    }
-
-    getListInbound() {
-        console.log('condition, ', this.conditionSearch);
-        // this.securityGroupRuleService.getInbound(this.conditionSearch)
     }
 
     ngOnInit() {

@@ -8,6 +8,8 @@ import {ExecuteAttachOrDetach} from "../../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../../shared/services/security-group.service";
 import {Instance} from 'src/app/pages/instances/instances.model';
 import {InstanceFormSearch} from "../../../instances/instances.model";
+import {RegionModel} from "../../../../shared/models/region.model";
+import {ProjectModel} from "../../../../shared/models/project.model";
 
 @Component({
     selector: 'one-portal-list-virtual-machine',
@@ -31,6 +33,7 @@ export class ListVirtualMachineComponent implements OnInit, OnChanges {
     isVisibleAttach = false
     isVisibleDetach = false
     instanceId: number
+    isLoadingAttach = false
 
 
     constructor(
@@ -51,17 +54,12 @@ export class ListVirtualMachineComponent implements OnInit, OnChanges {
     }
 
     getInstances() {
-        this.condition.userId = this.tokenService.get()?.userId
-
-        this.condition.region = this.regionId
-        this.condition.pageNumber = this.pageNumber
-        this.condition.pageSize = this.pageSize
-        this.condition.isCheckState = true
         this.isLoading = true
-        this.instanceService.search(this.condition).subscribe(data => {
+        this.instanceService.search(this.pageNumber, this.pageSize, this.regionId,
+          this.projectId, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
             this.isLoading = false
             this.collection = data
-            console.log('data', this.collection)
+            // console.log('data', this.collection)
         }, error => {
             this.isLoading = false
             this.notification.error('Thất bại', 'Lấy thông tin máy ảo thất bại')
@@ -76,13 +74,16 @@ export class ListVirtualMachineComponent implements OnInit, OnChanges {
     handleOkAttach(): void {
         console.log('id', this.instanceId)
         this.isVisibleAttach = false;
+
         this.attachOrDetachForm.securityGroupId = this.securityGroupId
         this.attachOrDetachForm.instanceId = this.instanceId
         this.attachOrDetachForm.action = 'attach'
         this.attachOrDetachForm.userId = this.tokenService.get()?.userId
         this.attachOrDetachForm.regionId = this.regionId
         this.attachOrDetachForm.projectId = this.projectId
+        this.isLoadingAttach = true
         this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
+            this.isLoadingAttach = false
             this.notification.success('Thành công', 'Gán Security Group vào máy ảo thành công')
             this.getInstances()
         }, error => {
@@ -108,10 +109,10 @@ export class ListVirtualMachineComponent implements OnInit, OnChanges {
         this.attachOrDetachForm.regionId = this.regionId
         this.attachOrDetachForm.projectId = this.projectId
         this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
-            this.notification.success('Thành công', 'Gỡ Security Group vào máy ảo thành công')
+            this.notification.success('Thành công', 'Gỡ Security Group ra khỏi máy ảo thành công')
             this.getInstances()
         }, error => {
-            this.notification.error('Thất bại', 'Gỡ Security Group vào máy ảo thất bại')
+            this.notification.error('Thất bại', 'Gỡ Security Group ra khỏi máy ảo thất bại')
         })
     }
 
