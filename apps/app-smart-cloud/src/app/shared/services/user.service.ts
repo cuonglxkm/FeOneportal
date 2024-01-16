@@ -50,7 +50,7 @@ export class UserService extends BaseService {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.iam + url_, data, this.httpOptions);
   }
 
-  deleteUsers(userNames: string[]): Observable<any> {
+  deleteUsers(userNames: Set<string>): Observable<any> {
     let url_ = `/users?`;
     userNames.forEach((e) => {
       url_ += `userNames=${e}&`;

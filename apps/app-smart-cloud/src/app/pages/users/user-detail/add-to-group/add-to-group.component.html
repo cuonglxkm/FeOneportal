@@ -132,14 +132,14 @@
         </td>
         <td class="fieldColor">{{ item.name }}</td>
         <td>{{ item.numberOfUser }}</td>
-        <td *ngIf="item.policies.length == 0">None</td>
-        <td class="fieldColor" *ngIf="item.policies.length == 1">
+        <td *ngIf="item.policies == null || item.policies.length == 0">None</td>
+        <td class="fieldColor" *ngIf="item.policies != null && item.policies.length == 1">
           {{ item.policies[0] }}
         </td>
-        <td class="fieldColor" *ngIf="item.policies.length == 2">
+        <td class="fieldColor" *ngIf="item.policies != null && item.policies.length == 2">
           {{ item.policies[0] }}, {{ item.policies[1] }}
         </td>
-        <td class="fieldColor" *ngIf="item.policies.length > 2">
+        <td class="fieldColor" *ngIf="item.policies != null && item.policies.length > 2">
           {{ item.policies[0] }}, {{ item.policies[1] }}
           <span class="nameField">
             and {{ item.policies.length - 2 }} policies

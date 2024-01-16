@@ -17,6 +17,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Component({
   selector: 'one-portal-user-create',
   templateUrl: './user-create.component.html',
@@ -48,7 +49,7 @@ export class UserCreateComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private service: UserService,
     private router: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService
   ) {}
@@ -106,12 +107,12 @@ export class UserCreateComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.message.success('Tạo mới User thành công');
+          this.notification.success('', 'Tạo mới User thành công');
           this.navigateToList();
         },
         (error) => {
           console.log(error.error);
-          this.message.error('Tạo mới User không thành công');
+          this.notification.error('', 'Tạo mới User không thành công');
         }
       );
   }

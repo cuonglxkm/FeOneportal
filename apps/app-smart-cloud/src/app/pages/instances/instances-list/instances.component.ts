@@ -25,6 +25,7 @@ import { InstancesModel } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 class SearchParam {
   status: string = '';
@@ -88,7 +89,7 @@ export class InstancesComponent implements OnInit {
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
@@ -229,7 +230,6 @@ export class InstancesComponent implements OnInit {
   }
 
   reloadTable(): void {
-    this.message.info('Refresh successfully');
     this.getDataList();
   }
 
@@ -326,7 +326,7 @@ export class InstancesComponent implements OnInit {
   }
 
   handleOkGanVLAN(): void {
-    this.message.success('Gắn VLAN thành công');
+    this.notification.success('', 'Gắn VLAN thành công');
     //this.actionData = null;
     this.isVisibleGanVLAN = false;
     // var body = {};
@@ -334,13 +334,13 @@ export class InstancesComponent implements OnInit {
     //   (data: any) => {
     //     console.log(data);
     //     if (data == true) {
-    //       this.message.success('Gắn VLAN thành công');
+    //       this.notification.success('', 'Gắn VLAN thành công');
     //     } else {
-    //       this.message.error('Gắn VLAN không thành công');
+    //       this.notification.error('', 'Gắn VLAN không thành công');
     //     }
     //   },
     //   () => {
-    //     this.message.error('Gắn VLAN không thành công');
+    //     this.notification.error('', 'Gắn VLAN không thành công');
     //   }
     // );
   }
@@ -355,7 +355,7 @@ export class InstancesComponent implements OnInit {
   }
 
   handleOkGoKhoiVLAN(): void {
-    this.message.success('Gỡ khỏi VLAN thành công');
+    this.notification.success('', 'Gỡ khỏi VLAN thành công');
     this.isVisibleGoKhoiVLAN = false;
   }
 
@@ -378,13 +378,13 @@ export class InstancesComponent implements OnInit {
         this.dataService.postAction(id, body).subscribe(
           (data: any) => {
             if (data == true) {
-              this.message.success('Tắt máy ảo thành công');
+              this.notification.success('', 'Tắt máy ảo thành công');
             } else {
-              this.message.error('Tắt máy ảo không thành công');
+              this.notification.error('', 'Tắt máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Tắt máy ảo không thành công');
+            this.notification.error('', 'Tắt máy ảo không thành công');
           }
         );
       },
@@ -405,13 +405,13 @@ export class InstancesComponent implements OnInit {
           (data: any) => {
             console.log(data);
             if (data == true) {
-              this.message.success('Khởi động lại máy ảo thành công');
+              this.notification.success('', 'Khởi động lại máy ảo thành công');
             } else {
-              this.message.error('Khởi động lại máy ảo không thành công');
+              this.notification.error('', 'Khởi động lại máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Khởi động lại máy ảo không thành công');
+            this.notification.error('', 'Khởi động lại máy ảo không thành công');
           }
         );
       },
@@ -422,9 +422,6 @@ export class InstancesComponent implements OnInit {
   }
   navigateToEdit(id: number) {
     this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
-  }
-  navigateToDetail(id: number) {
-    this.router.navigate(['/app-smart-cloud/instances/instances-detail/' + id]);
   }
 
   navigateToCreateBackup(id: number) {

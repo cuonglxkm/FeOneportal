@@ -10,6 +10,7 @@ import {
   DetachPoliciesOrGroups,
   ItemDetach,
   User,
+  UserGroup,
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { concatMap, finalize, from } from 'rxjs';
@@ -24,7 +25,7 @@ export class UserDetailComponent implements OnInit {
   user: User = new User();
   regionId: number;
   projectId: number;
-  listOfGroups: any[] = [];
+  listOfGroups: UserGroup[] = [];
   listOfPolicies: any[] = [];
   listGroupNames: string[] = [];
   listPolicyNames: string[] = [];
@@ -96,9 +97,6 @@ export class UserDetailComponent implements OnInit {
   getPolicies() {
     this.loading = true;
     this.listOfPolicies = [];
-    this.listItemDetachPolicy = [];
-    this.listCheckedPolicyInPage = [];
-    this.checkedAllPolicyInPage = false;
     from(this.listPolicyNames)
       .pipe(concatMap((e) => this.service.getPolicy(e)))
       .pipe(
@@ -118,7 +116,12 @@ export class UserDetailComponent implements OnInit {
   }
 
   reloadPolicies() {
+    this.isReload = true;
     this.getPolicies();
+    setTimeout(() => {
+      this.isReload = false;
+      this.cdr.detectChanges();
+    }, 1500);
   }
 
   searchPolicy() {
@@ -143,54 +146,52 @@ export class UserDetailComponent implements OnInit {
   }
 
   listItemDetachPolicy: ItemDetach[] = [];
-  onClickPolicyItem(policyName: string) {
-    var index = 0;
-    var isAdded = true;
-    this.listItemDetachPolicy.forEach((e) => {
-      if (e.itemName == policyName) {
-        this.listItemDetachPolicy.splice(index, 1);
-        isAdded = false;
-      }
-      index++;
-    });
-    if (isAdded) {
-      var itemDetach: ItemDetach = new ItemDetach();
-      itemDetach.itemName = policyName;
-      itemDetach.type = 2;
-      this.listItemDetachPolicy.push(itemDetach);
-    }
+  checkedPolicy = false;
+  indeterminatePolicy = false;
+  setOfCheckedPolicy = new Set<string>();
 
-    if (this.listItemDetachPolicy.length == this.listOfPolicies.length) {
-      this.checkedAllPolicyInPage = true;
-    } else {
-      this.checkedAllPolicyInPage = false;
-    }
-    console.log('list detach policy picked', this.listItemDetachPolicy);
+  onCurrentPageDataChangePolicy(listOfCurrentPageData: any[]): void {
+    this.listOfPolicies = listOfCurrentPageData;
+    this.refreshCheckedStatusPolicy();
   }
 
-  listCheckedPolicyInPage = [];
-  checkedAllPolicyInPage = false;
-  onChangeCheckAllPolicy(checked: any) {
-    let listChecked = [];
-    this.listOfPolicies.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedPolicyInPage = listChecked;
-    if (checked == true) {
-      this.listItemDetachPolicy = [];
-      this.listOfPolicies.forEach((e) => {
-        var itemDetach: ItemDetach = new ItemDetach();
-        itemDetach.itemName = e.name;
-        itemDetach.type = 2;
-        this.listItemDetachPolicy.push(itemDetach);
-      });
+  refreshCheckedStatusPolicy(): void {
+    const listOfEnabledData = this.listOfPolicies;
+    this.checkedPolicy = listOfEnabledData.every(({ name }) =>
+      this.setOfCheckedPolicy.has(name)
+    );
+    this.indeterminatePolicy =
+      listOfEnabledData.some(({ name }) => this.setOfCheckedPolicy.has(name)) &&
+      !this.checkedPolicy;
+  }
+
+  updateCheckedSetPolicy(name: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedPolicy.add(name);
     } else {
-      this.listItemDetachPolicy = [];
+      this.setOfCheckedPolicy.delete(name);
     }
-    console.log('list detach policy picked', this.listItemDetachPolicy);
+  }
+
+  onItemCheckedPolicy(name: string, checked: boolean): void {
+    this.updateCheckedSetPolicy(name, checked);
+    this.refreshCheckedStatusPolicy();
+  }
+
+  onAllCheckedPolicy(checked: boolean): void {
+    this.listOfPolicies.forEach(({ name }) =>
+      this.updateCheckedSetPolicy(name, checked)
+    );
+    this.refreshCheckedStatusPolicy();
   }
 
   deletePolicies() {
+    this.setOfCheckedPolicy.forEach((e) => {
+      var itemDetach: ItemDetach = new ItemDetach();
+      itemDetach.itemName = e;
+      itemDetach.type = 2;
+      this.listItemDetachPolicy.push(itemDetach);
+    });
     var detachPolicy: DetachPoliciesOrGroups = new DetachPoliciesOrGroups();
     detachPolicy.userName = this.userName;
     detachPolicy.items = this.listItemDetachPolicy;
@@ -203,9 +204,6 @@ export class UserDetailComponent implements OnInit {
   getGroup(): void {
     this.loading = true;
     this.listOfGroups = [];
-    this.listItemDetachGroup = [];
-    this.listCheckedGroupInPage = [];
-    this.checkedAllGroupInPage = false;
     from(this.listGroupNames)
       .pipe(concatMap((e) => this.service.getGroup(e)))
       .pipe(
@@ -221,6 +219,7 @@ export class UserDetailComponent implements OnInit {
             .getUsersOfGroup(result.name, 9999, 1)
             .subscribe((data: any) => {
               result.numberOfUser = data.totalCount;
+              this.cdr.detectChanges();
             });
         }
         this.cdr.detectChanges();
@@ -228,8 +227,14 @@ export class UserDetailComponent implements OnInit {
     console.log('groups of user', this.listOfGroups);
   }
 
+  isReload = false;
   reloadGroupOfUser() {
+    this.isReload = true;
     this.getGroup();
+    setTimeout(() => {
+      this.isReload = false;
+      this.cdr.detectChanges();
+    }, 1500);
   }
 
   searchGroup() {
@@ -257,56 +262,52 @@ export class UserDetailComponent implements OnInit {
   }
 
   listItemDetachGroup: ItemDetach[] = [];
-  onClickGroupItem(groupName: string) {
-    var index = 0;
-    var isAdded = true;
-    this.listItemDetachGroup.forEach((e) => {
-      if (e.itemName == groupName) {
-        this.listItemDetachGroup.splice(index, 1);
-        isAdded = false;
-      }
-      index++;
-    });
-    if (isAdded) {
-      var itemDetach: ItemDetach = new ItemDetach();
-      itemDetach.itemName = groupName;
-      itemDetach.type = 1;
-      this.listItemDetachGroup.push(itemDetach);
-    }
+  checkedGroup = false;
+  indeterminateGroup = false;
+  setOfCheckedGroup = new Set<string>();
 
-    if (this.listItemDetachGroup.length == this.listOfGroups.length) {
-      this.checkedAllGroupInPage = true;
-    } else {
-      this.checkedAllGroupInPage = false;
-    }
-
-    console.log('list detach group picked', this.listItemDetachGroup);
+  onCurrentPageDataChangeGroup(listOfCurrentPageData: UserGroup[]): void {
+    this.listOfGroups = listOfCurrentPageData;
+    this.refreshCheckedStatusGroup();
   }
 
-  listCheckedGroupInPage = [];
-  checkedAllGroupInPage = false;
-  onChangeCheckAllGroup(checked: any) {
-    let listChecked = [];
-    this.listOfGroups.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedGroupInPage = listChecked;
-    if (checked == true) {
-      this.listItemDetachGroup = [];
-      this.listOfGroups.forEach((e) => {
-        var itemDetach: ItemDetach = new ItemDetach();
-        itemDetach.itemName = e.name;
-        itemDetach.type = 1;
-        this.listItemDetachGroup.push(itemDetach);
-      });
+  refreshCheckedStatusGroup(): void {
+    const listOfEnabledData = this.listOfGroups;
+    this.checkedGroup = listOfEnabledData.every(({ name }) =>
+      this.setOfCheckedGroup.has(name)
+    );
+    this.indeterminateGroup =
+      listOfEnabledData.some(({ name }) => this.setOfCheckedGroup.has(name)) &&
+      !this.checkedGroup;
+  }
+
+  updateCheckedSetGroup(name: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedGroup.add(name);
     } else {
-      this.listItemDetachGroup = [];
+      this.setOfCheckedGroup.delete(name);
     }
-    console.log('list detach group picked', this.listItemDetachGroup);
-    this.cdr.detectChanges();
+  }
+
+  onItemCheckedGroup(name: string, checked: boolean): void {
+    this.updateCheckedSetGroup(name, checked);
+    this.refreshCheckedStatusGroup();
+  }
+
+  onAllCheckedGroup(checked: boolean): void {
+    this.listOfGroups.forEach(({ name }) =>
+      this.updateCheckedSetGroup(name, checked)
+    );
+    this.refreshCheckedStatusGroup();
   }
 
   deleteGroups() {
+    this.setOfCheckedGroup.forEach((e) => {
+      var itemDetach: ItemDetach = new ItemDetach();
+      itemDetach.itemName = e;
+      itemDetach.type = 1;
+      this.listItemDetachGroup.push(itemDetach);
+    });
     var detachGroup: DetachPoliciesOrGroups = new DetachPoliciesOrGroups();
     detachGroup.userName = this.userName;
     detachGroup.items = this.listItemDetachGroup;
