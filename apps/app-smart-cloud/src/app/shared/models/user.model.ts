@@ -26,6 +26,7 @@ export class UserGroup {
   parent: string;
   policies: string[];
   numberOfUser: number;
+  createdDate: string;
 }
 
 export class DetachPoliciesOrGroups {

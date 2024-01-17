@@ -104,8 +104,10 @@
   <nz-table
     #rowSelectionTable
     nzShowSizeChanger
+    [nzScroll]="{ x: '100%', y: '100%' }"
     [nzFrontPagination]="false"
-    [nzData]="listOfUser"
+    [nzData]="listOfCurrentPageData"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
     [nzLoading]="loading"
     [nzTotal]="total"
     [(nzPageIndex)]="pageIndex"
@@ -115,30 +117,34 @@
   >
     <thead>
       <tr>
-        <th style="width: 20px">
-          <input
-            nz-input
-            type="checkbox"
-            (change)="onChangeCheckAll($event.target.checked)"
-            [(ngModel)]="checkedAllInPage"
-          />
-        </th>
+        <th
+          [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          nzLabel="Select all"
+          [nzWidth]="'50px'"
+          (nzCheckedChange)="onAllChecked($event)"
+          nzLeft
+        ></th>
         <th>Tên User</th>
         <th>Groups</th>
         <th>Thời gian tạo</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of listOfUser; let i = index">
-        <td>
-          <input
-            type="checkbox"
-            (change)="onClickItem(item.userName, $event.target.checked)"
-            [(ngModel)]="listCheckedInPage[i]"
-          />
-        </td>
-        <td (click)="getUserDetail(item.userName)">
-          <a>{{ item.userName }}</a>
+      <tr *ngFor="let item of listOfCurrentPageData; let i = index">
+        <td
+          [nzChecked]="setOfCheckedName.has(item.userName)"
+          (nzCheckedChange)="onItemChecked(item.userName, $event)"
+          nzLeft
+        ></td>
+        <td nzLeft>
+          <a
+            nz-tooltip
+            nzTooltipTitle="Xem chi tiết"
+            nzTooltipPlacement="bottom"
+            [routerLink]="'/app-smart-cloud/users/detail/' + item.userName"
+            >{{ item.userName }}</a
+          >
         </td>
         <td>{{ item.userGroups.length }}</td>
         <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
@@ -208,7 +214,7 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDeleteUsers>
       <div>
-        Bạn đang thực hiện xóa <span>{{ listUserPicked.length }}</span> User
+        Bạn đang thực hiện xóa <span>{{ setOfCheckedName.size }}</span> User
       </div>
       <div>
         Việc thực hiện xóa các Users đồng thời cũng sẽ xóa toàn bộ dữ liệu liên

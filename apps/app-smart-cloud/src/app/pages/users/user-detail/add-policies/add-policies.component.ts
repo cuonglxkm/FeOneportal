@@ -7,6 +7,7 @@ import { UserCreate, User } from 'src/app/shared/models/user.model';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-add-policies',
@@ -28,7 +29,7 @@ export class AddPoliciesComponent implements OnInit {
   constructor(
     private service: UserService,
     private router: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService
   ) {}
@@ -56,7 +57,7 @@ export class AddPoliciesComponent implements OnInit {
 
   onChangeGroupNames(event: any[]) {
     this.groupNames = event;
-    console.log("list groupNames bổ sung", this.groupNames);
+    console.log('list groupNames bổ sung', this.groupNames);
   }
 
   onChangePolicyNames(event: any[]) {
@@ -64,7 +65,7 @@ export class AddPoliciesComponent implements OnInit {
     event.forEach((e) => {
       this.policyNames.add(e);
     });
-    console.log("list policyNames bổ sung", this.policyNames);
+    console.log('list policyNames bổ sung', this.policyNames);
   }
 
   addPolicies(): void {
@@ -73,7 +74,7 @@ export class AddPoliciesComponent implements OnInit {
       this.policyNames.add(e);
     });
     this.groupNames = this.groupNames.concat(this.userDetail.userGroups);
-    
+
     this.userUpdate.userName = this.userDetail.userName;
     this.userUpdate.email = this.userDetail.email;
     this.userUpdate.groupNames = this.groupNames;
@@ -89,12 +90,12 @@ export class AddPoliciesComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.message.success('Cập nhật User thành công');
+          this.notification.success('', 'Cập nhật User thành công');
           this.navigateToDetail();
         },
         (error) => {
           console.log(error.error);
-          this.message.error('Cập nhật User không thành công');
+          this.notification.error('', 'Cập nhật User không thành công');
         }
       );
   }
