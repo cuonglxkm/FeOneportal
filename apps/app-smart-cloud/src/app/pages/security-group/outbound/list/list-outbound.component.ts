@@ -24,7 +24,7 @@ export class ListOutboundComponent implements OnInit{
   condition = new RuleSearchCondition()
   isVisible = false;
   isLoading = false;
-  pageSize: number = 20
+  pageSize: number = 5
   pageNumber: number = 1
 
   constructor(

@@ -276,7 +276,13 @@ export class DetailUserGroupComponent {
       this.listOfCurrentPageDataPolicy = data.records
       this.listOfDataPolicies = data.records
       this.filteredPolicies = data.records
-    })
+    }, error => {
+        this.isLoadingPolicy = false
+        this.responsePolicies = null
+        this.listOfCurrentPageDataPolicy = null
+        this.listOfDataPolicies = null
+        this.filteredPolicies = null
+      })
   }
 
   getUsersByGroupName() {

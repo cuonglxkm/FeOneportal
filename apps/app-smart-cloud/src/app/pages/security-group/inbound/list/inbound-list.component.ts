@@ -23,7 +23,7 @@ export class InboundListComponent implements OnInit, OnChanges {
     condition = new RuleSearchCondition()
     isVisible = false;
     isLoading = false;
-    pageSize: number = 10
+    pageSize: number = 5
     pageNumber: number = 1
 
     constructor(
