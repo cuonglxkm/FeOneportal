@@ -298,7 +298,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >IP Public: {{ instancesModel.ipPublic }}</nz-form-label
+            >IP Public: {{ listIPStr }}</nz-form-label
           >
         </nz-form-item>
       </nz-col>
@@ -371,16 +371,12 @@
   <div>
     <nz-table>
       <tr>
-        <td>Chi phí máy ảo ( 1 tháng )</td>
-        <td class="float-right">1.000.000 VNĐ</td>
-      </tr>
-      <tr>
-        <td>Chi phí Volume bổ sung (1 tháng)</td>
-        <td class="float-right">1.000.000 VNĐ</td>
+        <td>Chi phí thay đổi cấu hình máy ảo</td>
+        <td class="float-right">{{ totalAmount }} VNĐ</td>
       </tr>
       <tr>
         <td>Thành tiền ( Đã bao gồm 10% VAT)</td>
-        <td class="float-right">1.000.000 VNĐ</td>
+        <td class="float-right">{{ totalincludesVAT }} VNĐ</td>
       </tr>
     </nz-table>
     <div style="float: right; padding-top: 1%">
