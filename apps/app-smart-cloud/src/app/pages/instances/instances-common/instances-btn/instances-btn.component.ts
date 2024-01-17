@@ -25,9 +25,6 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
-    private router: ActivatedRoute,
-    public message: NzMessageService,
-    private renderer: Renderer2,
     private notification: NzNotificationService
   ) {}
 
@@ -103,20 +100,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        this.message.success('Gia hạn thành công');
-        //  this.dataService.delete(this.id).subscribe(
-        //   (data: any) => {
-        //     console.log(data);
-        //     if (data == true) {
-        //       this.message.success('Xóa máy ảo thành công');
-        //     } else {
-        //       this.message.error('Xóa máy ảo không thành công');
-        //     }
-        //   },
-        //   () => {
-        //     this.message.error('Xóa máy ảo không thành công');
-        //   }
-        // );
+        this.notification.success('', 'Gia hạn thành công');
       },
     });
   }
@@ -137,24 +121,24 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       nzCancelText: 'Hủy',
       nzOnOk: () => {
         if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
-          this.message.success('Reset mật khẩu máy ảo thành công');
+          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
           // this.dataService
           //   .resetpassword({ id: this.instancesId, newPassword: this.resetPassword })
           //   .subscribe(
           //     (data: any) => {
           //       console.log("reset password", data);
           //       if (data == true) {
-          //         this.message.success('Reset mật khẩu máy ảo thành công');
+          //         this.notification.success('', 'Reset mật khẩu máy ảo thành công');
           //       } else {
-          //         this.message.error('Reset mật khẩu không thành công');
+          //         this.notification.error('', 'Reset mật khẩu không thành công');
           //       }
           //     },
           //     () => {
-          //       this.message.error('Reset mật khẩu không thành công');
+          //       this.notification.error('', 'Reset mật khẩu không thành công');
           //     }
           //   );
         } else {
-          this.message.error('Reset mật khẩu không thành công');
+          this.notification.error('', 'Reset mật khẩu không thành công');
         }
       },
     });
@@ -188,13 +172,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         this.dataService.postAction(this.instancesId, body).subscribe(
           (data: any) => {
             if (data == true) {
-              this.message.success('Tắt máy ảo thành công');
+              this.notification.success('', 'Tắt máy ảo thành công');
             } else {
-              this.message.error('Tắt máy ảo không thành công');
+              this.notification.error('', 'Tắt máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Tắt máy ảo không thành công');
+            this.notification.error('', 'Tắt máy ảo không thành công');
           }
         );
       },
@@ -215,13 +199,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           (data: any) => {
             console.log(data);
             if (data == true) {
-              this.message.success('Khởi động lại máy ảo thành công');
+              this.notification.success('', 'Khởi động lại máy ảo thành công');
             } else {
-              this.message.error('Khởi động lại máy ảo không thành công');
+              this.notification.error('', 'Khởi động lại máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Khởi động lại máy ảo không thành công');
+            this.notification.error('', 'Khởi động lại máy ảo không thành công');
           }
         );
       },

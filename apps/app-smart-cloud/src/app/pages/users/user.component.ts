@@ -6,12 +6,12 @@ import {
 } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
-import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-user',
@@ -22,23 +22,23 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class UserComponent implements OnInit {
   regionId: number;
   projectId: number;
-  listOfUser: User[] = [];
+  listOfCurrentPageData: User[] = [];
   pageIndex = 1;
   pageSize = 10;
   total: number = 3;
-  baseResponse: BaseResponse<User[]>;
-  id: any;
   searchParam: string;
   loading = true;
+  checked = false;
+  indeterminate = false;
+  setOfCheckedName = new Set<string>();
 
   userDelete: string;
-  listUserPicked = [];
   nameModal: string;
 
   constructor(
     private service: UserService,
     private router: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -53,9 +53,6 @@ export class UserComponent implements OnInit {
 
   getData(): void {
     this.loading = true;
-    this.listUserPicked = [];
-    this.listCheckedInPage = [];
-    this.checkedAllInPage = false;
     this.service
       .search(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
@@ -65,8 +62,8 @@ export class UserComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        this.listOfUser = data.records;
-        console.log("list users", this.listOfUser);
+        this.listOfCurrentPageData = data.records;
+        console.log('list users', this.listOfCurrentPageData);
       });
   }
 
@@ -74,14 +71,16 @@ export class UserComponent implements OnInit {
   isVisibleDeleteUsers: boolean = false;
   codeVerify: string;
   showModal() {
-    if (this.listUserPicked.length == 1) {
-      this.userDelete = this.listUserPicked[0];
+    if (this.setOfCheckedName.size == 1) {
+      let arrayFromSet = Array.from(this.setOfCheckedName);
+      this.userDelete = arrayFromSet[0];
       this.isVisibleDelete = true;
       this.nameModal = 'Xóa User ' + this.userDelete;
-    } else if (this.listUserPicked.length > 1) {
-      this.nameModal = 'Xóa ' + this.listUserPicked.length + ' User';
+    } else if (this.setOfCheckedName.size > 1) {
+      this.nameModal = 'Xóa ' + this.setOfCheckedName.size + ' User';
       this.isVisibleDeleteUsers = true;
     }
+    console.log('user delete', this.userDelete);
   }
 
   changecodeVerify(e: string) {
@@ -99,34 +98,42 @@ export class UserComponent implements OnInit {
   handleOkDelete() {
     this.isVisibleDelete = false;
     if (this.codeVerify == this.userDelete) {
-      this.service.deleteUsers(this.listUserPicked).subscribe((data) => {
-        console.log(data);
-        this.message.success('Xóa User thành công');
-        this.reloadTable();
-      },
-      (error) => {
-        console.log(error.error);
-        this.message.error('Xóa User không thành công')
-      });
+      this.service.deleteUsers(this.setOfCheckedName).subscribe(
+        (data) => {
+          console.log(data);
+          this.notification.success('', 'Xóa User thành công');
+          this.reloadTable();
+        },
+        (error) => {
+          console.log(error.error);
+          this.notification.error('', 'Xóa User không thành công');
+        }
+      );
     } else {
-      this.message.error('Xóa User không thành công')
+      this.notification.error('', 'Xóa User không thành công');
     }
   }
 
   handleOkDeleteUsers() {
     this.isVisibleDeleteUsers = false;
     if (this.codeVerify == 'delete') {
-      this.service.deleteUsers(this.listUserPicked).subscribe((data) => {
-        console.log(data);
-        this.message.success('Xóa ' + this.listUserPicked.length + ' Users thành công');
-        this.reloadTable();
-      },
-      (error) => {
-        console.log(error.error);
-        this.message.error('Xóa Users không thành công')
-      });
+      this.service.deleteUsers(this.setOfCheckedName).subscribe(
+        (data) => {
+          console.log(data);
+          this.notification.success(
+            '',
+            'Xóa ' + this.setOfCheckedName.size + ' Users thành công'
+          );
+          this.setOfCheckedName.clear();
+          this.reloadTable();
+        },
+        (error) => {
+          console.log(error.error);
+          this.notification.error('', 'Xóa Users không thành công');
+        }
+      );
     } else {
-      this.message.error('Xóa Users không thành công')
+      this.notification.error('', 'Xóa Users không thành công');
     }
   }
 
@@ -136,58 +143,50 @@ export class UserComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    // this.getSshKeys();
   }
 
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
-    // this.getSshKeys();
   }
 
-  onClickItem(userName: string, checked: any) {
-    var index = 0;
-    var isAdded = true;
-    this.listUserPicked.forEach((e) => {
-      if (e == userName) {
-        this.listUserPicked.splice(index, 1);
-        isAdded = false;
-      }
-      index++;
-    });
-    if (isAdded) {
-      this.listUserPicked.push(userName);
-    }
-    if (this.listUserPicked.length == this.listOfUser.length) {
-      this.checkedAllInPage = true;
-    } else {
-      this.checkedAllInPage = false;
-    }
-    console.log('list user picked', this.listUserPicked);
+  onCurrentPageDataChange(listOfCurrentPageData: User[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
   }
 
-  listCheckedInPage = [];
-  checkedAllInPage = false;
-  onChangeCheckAll(checked: any) {
-    let listChecked = [];
-    this.listOfUser.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedInPage = listChecked;
-    if (checked == true) {
-      this.listUserPicked = [];
-      this.listOfUser.forEach(e => {
-        this.listUserPicked.push(e.userName);
-      });
-    } else {
-      this.listUserPicked = [];
-    }
+  refreshCheckedStatus(): void {
+    const listOfEnabledData = this.listOfCurrentPageData;
+    this.checked = listOfEnabledData.every(({ userName }) =>
+      this.setOfCheckedName.has(userName)
+    );
+    this.indeterminate =
+      listOfEnabledData.some(({ userName }) =>
+        this.setOfCheckedName.has(userName)
+      ) && !this.checked;
+  }
 
-    console.log('list user picked', this.listUserPicked);
-    this.cdr.detectChanges();
+  updateCheckedSet(userName: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedName.add(userName);
+    } else {
+      this.setOfCheckedName.delete(userName);
+    }
+  }
+
+  onItemChecked(userName: string, checked: boolean): void {
+    this.updateCheckedSet(userName, checked);
+    this.refreshCheckedStatus();
+  }
+
+  onAllChecked(checked: boolean): void {
+    this.listOfCurrentPageData.forEach(({ userName }) =>
+      this.updateCheckedSet(userName, checked)
+    );
+    this.refreshCheckedStatus();
   }
 
   reloadTable(): void {
-    this.listOfUser = [];
+    this.listOfCurrentPageData = [];
     this.getData();
   }
 

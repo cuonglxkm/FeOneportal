@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
 import { User, UserCreate, UserGroup } from 'src/app/shared/models/user.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-add-to-group',
@@ -37,7 +38,7 @@ export class AddToGroupComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private loadingSrv: LoadingService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -186,12 +187,12 @@ export class AddToGroupComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.message.success('Cập nhật User thành công');
+          this.notification.success('', 'Cập nhật User thành công');
           this.navigateToDetail();
         },
         (error) => {
           console.log(error.error);
-          this.message.error('Cập nhật User không thành công');
+          this.notification.error('', 'Cập nhật User không thành công');
         }
       );
   }

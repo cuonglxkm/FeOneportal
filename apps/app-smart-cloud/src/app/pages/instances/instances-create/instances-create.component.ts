@@ -10,9 +10,7 @@ import {
   FormControl,
   FormGroup,
   Validators,
-  AbstractControl,
 } from '@angular/forms';
-import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import {
   InstanceCreate,
   IPPublicModel,
@@ -41,6 +39,7 @@ import { NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -134,6 +133,45 @@ export class InstancesCreateComponent implements OnInit {
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   selectedSSHKeyName: string;
   selectedSnapshot: number;
+
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private dataService: InstancesService,
+    private snapshotVLService: SnapshotVolumeService,
+    private notification: NzNotificationService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private loadingSrv: LoadingService
+  ) {
+    this.tempData = [
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+      this.images[Math.floor(Math.random() * this.images.length)],
+    ];
+
+    this.carouselTileItems$ = of(this.tempData);
+
+    // this.carouselTileItems$ = interval(500).pipe(
+    //   startWith(-1),
+    //   take(30),
+    //   map(() => {
+    //     const data = (this.tempData = [
+    //       ...this.tempData,
+    //       this.images[Math.floor(Math.random() * this.images.length)]
+    //     ]);
+    //
+    //     return data;
+    //   })
+    // );
+  }
 
   getUser() {}
   //#region Hệ điều hành
@@ -556,46 +594,7 @@ export class InstancesCreateComponent implements OnInit {
   }
   //#endregion
 
-  constructor(
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private dataService: InstancesService,
-    private snapshotVLService: SnapshotVolumeService,
-    private modalSrv: NzModalService,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
-    public message: NzMessageService,
-    private renderer: Renderer2,
-    private loadingSrv: LoadingService
-  ) {
-    this.tempData = [
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-    ];
-
-    this.carouselTileItems$ = of(this.tempData);
-
-    // this.carouselTileItems$ = interval(500).pipe(
-    //   startWith(-1),
-    //   take(30),
-    //   map(() => {
-    //     const data = (this.tempData = [
-    //       ...this.tempData,
-    //       this.images[Math.floor(Math.random() * this.images.length)]
-    //     ]);
-    //
-    //     return data;
-    //   })
-    // );
-  }
+  
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
@@ -634,10 +633,6 @@ export class InstancesCreateComponent implements OnInit {
       }),
     });
   }
-
-  // get items(): FormArray<FormGroup<InstancesForm>> {
-  //   return this.form.controls.items;
-  // }
 
   instanceInit() {
     this.instanceCreate.description = null;
@@ -816,11 +811,11 @@ export class InstancesCreateComponent implements OnInit {
 
   save(): void {
     if (!this.isSnapshot && this.hdh == null) {
-      this.message.error('Vui lòng chọn hệ điều hành');
+      this.notification.error('', 'Vui lòng chọn hệ điều hành');
       return;
     }
     if (this.offerFlavor == null) {
-      this.message.error('Vui lòng chọn gói cấu hình');
+      this.notification.error('', 'Vui lòng chọn gói cấu hình');
       return;
     }
     this.instanceInit();
@@ -899,7 +894,7 @@ export class InstancesCreateComponent implements OnInit {
         },
         (error) => {
           console.log(error.error);
-          this.message.error('Tạo order máy ảo không thành công');
+          this.notification.error('', 'Tạo order máy ảo không thành công');
         }
       );
   }
@@ -1012,21 +1007,5 @@ export class InstancesCreateComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/app-smart-cloud/instances']);
-  }
-
-  _submitForm(): void {
-    // this.formValidity(this.form.controls);
-    // if (this.form.invalid) {
-    //   return;
-    // }
-    this.save();
-  }
-
-  private formValidity(controls: NzSafeAny): void {
-    Object.keys(controls).forEach((key) => {
-      const control = (controls as NzSafeAny)[key] as AbstractControl;
-      control.markAsDirty();
-      control.updateValueAndValidity();
-    });
   }
 }

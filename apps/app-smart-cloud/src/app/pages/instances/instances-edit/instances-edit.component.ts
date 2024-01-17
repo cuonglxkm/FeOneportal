@@ -27,6 +27,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -91,6 +92,17 @@ export class InstancesEditComponent implements OnInit {
     // interval: { timing: 1500 },
     animation: 'lazy',
   };
+
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private dataService: InstancesService,
+    private modalSrv: NzModalService,
+    private cdr: ChangeDetectorRef,
+    private notification: NzNotificationService,
+    private route: Router,
+    private router: ActivatedRoute,
+    private loadingSrv: LoadingService
+  ) {}
 
   //#region HDD hay SDD
   activeBlockHDD: boolean = true;
@@ -176,18 +188,6 @@ export class InstancesEditComponent implements OnInit {
   selectElementInputFlavors(id: any) {
     this.selectedElementFlavor = id;
   }
-
-  constructor(
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private dataService: InstancesService,
-    private modalSrv: NzModalService,
-    private cdr: ChangeDetectorRef,
-    private route: Router,
-    private router: ActivatedRoute,
-    public message: NzMessageService,
-    private renderer: Renderer2,
-    private loadingSrv: LoadingService
-  ) {}
 
   onRegionChange(region: RegionModel) {
     // Handle the region change event
@@ -290,12 +290,12 @@ export class InstancesEditComponent implements OnInit {
       .subscribe({
         next: (next) => {
           console.log(next);
-          this.message.success('Cập nhật máy ảo thành công');
+          this.notification.success('', 'Cập nhật máy ảo thành công');
           this.route.navigate(['/app-smart-cloud/instances']);
         },
         error: (e) => {
           console.log(e);
-          this.message.error('Cập nhật máy ảo không thành công');
+          this.notification.error('', 'Cập nhật máy ảo không thành công');
         },
       });
   }

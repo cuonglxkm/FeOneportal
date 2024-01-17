@@ -24,6 +24,7 @@ import { concatMap, finalize, from } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -95,7 +96,7 @@ export class InstancesEditInfoComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private loadingSrv: LoadingService
   ) {}
 
@@ -197,12 +198,12 @@ export class InstancesEditInfoComponent implements OnInit {
     this.dataService.rebuild(this.rebuildInstances).subscribe(
       (data: any) => {
         console.log(data);
-        this.message.success('Thay đổi hệ điều hành thành công');
+        this.notification.success('', 'Thay đổi hệ điều hành thành công');
         this.returnPage();
       },
       (error) => {
         console.log(error.error);
-        this.message.error('Thay đổi hệ điều hành không thành công');
+        this.notification.error('', 'Thay đổi hệ điều hành không thành công');
       }
     );
   }
