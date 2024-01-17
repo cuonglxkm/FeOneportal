@@ -174,7 +174,7 @@ export class CreateUserGroupComponent implements OnInit {
 
   receivedListUsersSelected(object: any) {
     this.listUserSelected = object
-    console.log('selected', this.listUserSelected)
+    console.log('selected user', this.listUserSelected)
   }
 
   getNameParent() {

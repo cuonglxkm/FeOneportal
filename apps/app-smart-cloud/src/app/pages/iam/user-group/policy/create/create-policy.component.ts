@@ -54,6 +54,10 @@ export class CreatePolicyComponent implements OnInit {
               private notification: NzNotificationService) {
   }
 
+  onCurrentPageDataChange(listOfCurrentPageData: readonly PolicyModel[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
   onExpandChange(name: string, checked: boolean): void {
     if (checked) {
       this.expandSet.add(name);
@@ -106,7 +110,7 @@ export class CreatePolicyComponent implements OnInit {
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({id}) => this.updateCheckedSet(id, checked));
+      .forEach(({name}) => this.updateCheckedSet(name, checked));
     this.refreshCheckedStatus();
   }
 
@@ -134,6 +138,7 @@ export class CreatePolicyComponent implements OnInit {
     this.userGroupService.getPolicy(form).subscribe(data => {
       console.log(data.records)
       this.listPolicies = data.records
+      // this.listOfCurrentPageData = data.records
     })
   }
   getPoliciesByGroup() {

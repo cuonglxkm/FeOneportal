@@ -5,6 +5,7 @@ import {FormSearchPolicy, FormSearchUserGroup} from 'src/app/shared/models/user-
 import {UserGroupService} from "../../../../shared/services/user-group.service";
 import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {PaymentModel} from "../../../../shared/models/payment.model";
 
 @Component({
   selector: 'one-portal-policy-table',
@@ -59,6 +60,10 @@ export class PolicyTableComponent {
     this.indeterminate = listOfEnabledData?.some(({ name }) => this.setOfCheckedId.has(name)) && !this.checked;
   }
 
+  onCurrentPageDataChange(listOfCurrentPageData: readonly PolicyModel[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
       .forEach(({ name }) => this.updateCheckedSet(name, checked));

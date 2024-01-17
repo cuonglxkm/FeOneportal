@@ -21,7 +21,6 @@ import { InboundListComponent } from './security-group/inbound/list/inbound-list
 import { ListOutboundComponent } from './security-group/outbound/list/list-outbound.component';
 import { CreateOutboundComponent } from './security-group/outbound/create/create-outbound.component';
 import { CreateAllowAddressPairComponent } from './allow-address-pair/create/create-allow-address-pair.component';
-import { ListVirtualMachineComponent } from './security-group/vm/list/list-virtual-machine.component';
 import { BlankSecurityGroupComponent } from './security-group/blank-security-group/blank-security-group.component';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzImageModule } from 'ng-zorro-antd/image';
@@ -129,7 +128,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     InboundListComponent,
     ListOutboundComponent,
     CreateAllowAddressPairComponent,
-    ListVirtualMachineComponent,
     BlankSecurityGroupComponent,
     FormRuleComponent,
     SshKeyComponent,

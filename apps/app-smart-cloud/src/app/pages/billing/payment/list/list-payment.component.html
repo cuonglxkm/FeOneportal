@@ -68,7 +68,8 @@
               [nzTotal]="response?.totalCount"
               (nzQueryParams)="onQueryParamsChange($event)"
               [nzLoading]="isLoading"
-              [nzFrontPagination]="false">
+              [nzFrontPagination]="false"
+              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
       <thead>
       <tr>
         <th [nzChecked]="checked"

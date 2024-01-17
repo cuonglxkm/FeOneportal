@@ -1,5 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {SecurityGroup, SecurityGroupSearchCondition} from "../../../shared/models/security-group";
+import {
+    ExecuteAttachOrDetach,
+    SecurityGroup,
+    SecurityGroupSearchCondition
+} from "../../../shared/models/security-group";
 import {SecurityGroupService} from "../../../shared/services/security-group.service";
 import SecurityGroupRule from "../../../shared/models/security-group-rule";
 import {RegionModel} from "../../../shared/models/region.model";
@@ -10,7 +14,8 @@ import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {Instance, InstanceFormSearch} from "../../instances/instances.model";
 import {InstanceService} from "../../../shared/services/instance.service";
 import Pagination from "../../../shared/models/pagination";
-import {debounceTime, finalize} from "rxjs/operators";
+import {debounceTime} from "rxjs/operators";
+import {NzTableQueryParams} from "ng-zorro-antd/table";
 
 @Component({
     selector: 'one-portal-security-group',
@@ -37,8 +42,20 @@ export class SecurityGroupComponent implements OnInit {
 
     project = JSON.parse(localStorage.getItem('projectId'));
 
-    pageSize: number = 10
+    pageSize: number = 5
     pageNumber: number = 1
+
+    isVisibleAttach = false
+    attachOrDetachForm: ExecuteAttachOrDetach = new ExecuteAttachOrDetach()
+    isLoadingAttach = false
+
+    isVisibleDetach = false
+
+    instanceId: number
+
+    collection: Pagination<Instance>
+
+    isLoading = false
 
 
     constructor(private securityGroupService: SecurityGroupService,
@@ -81,37 +98,54 @@ export class SecurityGroupComponent implements OnInit {
         this.listOutbound = []
         this.listInstance = []
         this.getSecurityGroup();
-        // this.getInstances()
+        this.getInstances()
     }
 
     getSecurityGroup() {
-      this.conditionSearch.regionId = this.region
-      this.conditionSearch.projectId = this.project
+        this.isLoading = true
+        this.conditionSearch.regionId = this.region
+        this.conditionSearch.projectId = this.project
         if (this.conditionSearch.regionId
             && this.conditionSearch.userId
             && this.conditionSearch.projectId) {
             this.securityGroupService.search(this.conditionSearch)
-              .pipe(
-                debounceTime(300)
-              )
-              .subscribe((data) => {
-                  this.options = data;
-              })
+                .pipe(
+                    debounceTime(300)
+                )
+                .subscribe((data) => {
+                    this.isLoading = false
+                    this.options = data;
+                }, error => {
+                    this.isLoading = false
+                    this.options = null;
+                })
         }
     }
 
     getInstances() {
+        this.isLoading = true
         this.instanceService.search(this.pageNumber, this.pageSize, this.region,
-          this.project, '', '', true, this.tokenService.get()?.userId)
-          .pipe(
-            debounceTime(300)
-          )
-          .subscribe(data => {
-            this.listInstance = data.records
-            // console.log('data', this.listInstance)
-        }, error => {
-            this.notification.error('Thất bại', 'Lấy thông tin máy ảo thất bại')
-        })
+            this.project, '', '', true, this.tokenService.get()?.userId)
+            .pipe(
+                debounceTime(300)
+            )
+            .subscribe(data => {
+                this.isLoading = false
+                this.collection = data
+                this.listInstance = data.records
+                // console.log('data', this.listInstance)
+            }, error => {
+                this.isLoading = false
+                this.collection = null
+                this.notification.error('Thất bại', 'Lấy thông tin máy ảo thất bại')
+            })
+    }
+
+    onQueryParamsInstanceChange(params: NzTableQueryParams) {
+        const {pageSize, pageIndex} = params
+        this.pageSize = pageSize;
+        this.pageNumber = pageIndex
+        this.getInstances()
     }
 
     ngOnInit() {
@@ -138,7 +172,66 @@ export class SecurityGroupComponent implements OnInit {
                     })
 
             }
+
+            this.getInstances()
+
         });
+    }
+
+    //attach
+    showModalAttach(instanceId): void {
+        this.instanceId = instanceId
+        this.isVisibleAttach = true;
+    }
+
+    handleOkAttach(): void {
+        // console.log('id', this.instanceId)
+        this.isVisibleAttach = false;
+
+        this.attachOrDetachForm.securityGroupId = this.selectedValue.id
+        this.attachOrDetachForm.instanceId = this.instanceId
+        this.attachOrDetachForm.action = 'attach'
+        this.attachOrDetachForm.userId = this.tokenService.get()?.userId
+        this.attachOrDetachForm.regionId = this.region
+        this.attachOrDetachForm.projectId = this.project
+        this.isLoadingAttach = true
+        this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
+            this.isLoadingAttach = false
+            this.notification.success('Thành công', 'Gán Security Group vào máy ảo thành công')
+            this.getInstances()
+        }, error => {
+            this.notification.error('Thất bại', 'Gán Security Group vào máy ảo thất bại')
+        })
+    }
+
+    handleCancelAttach(): void {
+        this.isVisibleAttach = false;
+    }
+
+    //detach
+    showModalDetach(instanceId: number): void {
+        // this.instanceId = instanceId
+        this.isVisibleDetach = true;
+    }
+
+    handleOkDetach(): void {
+        this.isVisibleDetach = false;
+        this.attachOrDetachForm.securityGroupId = this.selectedValue.id
+        this.attachOrDetachForm.instanceId = this.instanceId
+        this.attachOrDetachForm.action = 'detach'
+        this.attachOrDetachForm.userId = this.tokenService.get()?.userId
+        this.attachOrDetachForm.regionId = this.region
+        this.attachOrDetachForm.projectId = this.project
+        this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
+            this.notification.success('Thành công', 'Gỡ Security Group ra khỏi máy ảo thành công')
+            this.getInstances()
+        }, error => {
+            this.notification.error('Thất bại', 'Gỡ Security Group ra khỏi máy ảo thất bại')
+        })
+    }
+
+    handleCancelDetach(): void {
+        this.isVisibleDetach = false;
     }
 
 }
