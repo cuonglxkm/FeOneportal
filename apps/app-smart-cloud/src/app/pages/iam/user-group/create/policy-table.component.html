@@ -28,7 +28,8 @@
         [nzLoading]="loading"
         [nzTotal]="response?.totalCount"
         [nzPageSize]="response?.pageSize"
-        [nzPageIndex]="response?.currentPage">
+        [nzPageIndex]="response?.currentPage"
+        (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
         <thead>
         <tr>
             <th [nzChecked]="checked"

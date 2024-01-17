@@ -45,6 +45,7 @@
                   nzShowPagination
                   [nzData]="listUsersUnique"
                   [nzLoading]="loading"
+                  (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
                   (nzQueryParams)="onQueryParamsChange($event)">
             <thead>
             <tr>

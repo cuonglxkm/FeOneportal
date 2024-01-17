@@ -1,9 +1,8 @@
-import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {UserService} from "../../../../shared/services/user.service";
 import {User} from "../../../../shared/models/user.model";
 import {BaseResponse} from '../../../../../../../../libs/common-utils/src';
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-users-table',
@@ -53,6 +52,8 @@ export class UsersTableComponent implements OnInit {
     } else {
       this.setOfCheckedId.delete(userName);
     }
+    this.listOfSelected = this.listUsers.filter(data => this.setOfCheckedId.has(data.userName))
+    this.listUsersSelected.emit(this.listOfSelected)
   }
 
   onItemChecked(userName: string, checked: boolean): void {
