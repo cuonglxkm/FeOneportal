@@ -54,7 +54,7 @@ export class NetworkDetailComponent implements OnInit {
   }
 
   getNetworkAndSecurityGroup() {
-    this.dataService.getById(this.instancesId, false).subscribe((data: any) => {
+    this.dataService.getById(this.instancesId, true).subscribe((data: any) => {
       this.instancesModel = data;
       this.dataService
         .getPortByInstance(this.instancesId, this.instancesModel.regionId)

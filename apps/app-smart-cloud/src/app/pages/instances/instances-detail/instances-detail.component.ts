@@ -65,11 +65,12 @@ export class InstancesDetailComponent implements OnInit {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
 
-        this.dataService.getById(this.id, false).subscribe((data: any) => {
+        this.dataService.getById(this.id, true).subscribe((data: any) => {
           this.instancesModel = data;
           this.loading = false;
           this.cloudId = this.instancesModel.cloudId;
           this.regionId = this.instancesModel.regionId;
+          this.getListIpPublic();
           this.getMonitorData();
           this.dataService
             .getAllSecurityGroupByInstance(
@@ -87,6 +88,23 @@ export class InstancesDetailComponent implements OnInit {
         });
       }
     });
+  }
+
+  listIPStr = '';
+  getListIpPublic() {
+    this.dataService
+      .getPortByInstance(this.id, this.regionId)
+      .subscribe((dataNetwork: any) => {
+        let listOfDataNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == true
+        );
+        let listIP: string[] = [];
+        listOfDataNetwork.forEach((e) => {
+          listIP = listIP.concat(e.fixedIPs);
+        })
+        this.listIPStr = listIP.join(', ');
+        this.cdr.detectChanges();
+      });
   }
 
   onRegionChange(region: RegionModel) {
@@ -132,7 +150,7 @@ export class InstancesDetailComponent implements OnInit {
   valueGSTIME: number = 5;
   cloudId: string;
   regionId: number;
-  projectId: number; 
+  projectId: number;
   chartData: G2TimelineData[] = [];
 
   GSCPU = [
@@ -203,7 +221,8 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onChangeCPU(event?: any) {
-    this.valueGSTIME = null;
+    this.valueGSCPU = event;
+    this.getMonitorData();
   }
   onChangeTIME(event?: any) {
     this.valueGSTIME = event;

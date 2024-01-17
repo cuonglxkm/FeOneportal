@@ -145,7 +145,7 @@ export class InstancesService extends BaseService {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
-  getById(id: number, checkState: boolean = false): Observable<any> {
+  getById(id: number, checkState: boolean = true): Observable<any> {
     let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
