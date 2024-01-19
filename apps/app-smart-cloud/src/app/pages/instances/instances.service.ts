@@ -244,10 +244,7 @@ export class InstancesService extends BaseService {
     );
   }
 
-  getListOffers(
-    regionId: number,
-    unitOfMeasure: string
-  ): Observable<any> {
+  getListOffers(regionId: number, unitOfMeasure: string): Observable<any> {
     return this.http.get<any>(
       `${
         this.baseUrl + this.ENDPOINT.catalogs
