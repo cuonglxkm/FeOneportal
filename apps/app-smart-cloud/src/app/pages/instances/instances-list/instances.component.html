@@ -72,9 +72,8 @@
                 name="name"
                 nz-input
                 placeholder="Tìm kiếm tên máy ảo, gói cấu hình ..."
-                [ngModel]="searchParam.name"
-                (ngModelChange)="changeName($event)"
-                (keyup.enter)="handleEnterKeyPress()"
+                [(ngModel)]="searchParam.name"
+                (keyup.enter)="getDataList()"
               />
             </nz-input-group>
             <ng-template #suffixButton>
@@ -134,7 +133,7 @@
     (nzPageIndexChange)="getDataList()"
     (nzPageSizeChange)="getDataList(true)"
     [nzVirtualItemSize]="54"
-    [nzScroll]="{ x: '1000px', y: '240px' }"
+    [nzScroll]="{ x: '100%', y: '100%' }"
   >
     <thead>
       <tr>
@@ -173,29 +172,6 @@
         <td nzBreakWord>{{ data.ipPrivate }}</td>
         <td nzBreakWord>{{ data.ipPublic }}</td>
         <td nzRight>
-          <!--          <nz-select-->
-          <!--            [nzPlaceHolder]="'Chọn thao tác'"-->
-          <!--            ngModel="selectedOptionAction"-->
-          <!--            name="selectAction"-->
-          <!--            (ngModelChange)="showModal($event, data)"-->
-          <!--          >-->
-          <!--            <nz-option-->
-          <!--              nzValue="1"-->
-          <!--              nzLabel="Tạo Backup"-->
-          <!--              (click)="navigateToCreateBackup(data.id)"-->
-          <!--            ></nz-option>-->
-          <!--            <nz-option nzValue="2" nzLabel="Tạo lịch Backup"></nz-option>-->
-          <!--            <nz-option-->
-          <!--              nzValue="3"-->
-          <!--              nzLabel="Chỉnh sửa Security Group"-->
-          <!--            ></nz-option>-->
-          <!--            <nz-option nzValue="4" nzLabel="Chỉnh sửa"></nz-option>-->
-          <!--            <nz-option nzValue="5" nzLabel="Gắn vào VLAN"></nz-option>-->
-          <!--            <nz-option nzValue="6" nzLabel="Gỡ khỏi VLAN"></nz-option>-->
-          <!--            <nz-option nzValue="7" nzLabel="Khởi động lại"></nz-option>-->
-          <!--            <nz-option nzValue="8" nzLabel="Tắt máy ảo"></nz-option>-->
-          <!--            <nz-option nzValue="9" nzLabel="RESCUE"></nz-option>-->
-          <!--          </nz-select>-->
           <button
             nz-button
             [nzType]="'primary'"

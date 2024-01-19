@@ -81,7 +81,6 @@ export class InstancesComponent implements OnInit {
   isSearch: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
-  inputValue: string
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -125,13 +124,6 @@ export class InstancesComponent implements OnInit {
 
   changeFilterStatus(e: any): void {
     this.searchParam.status = e;
-    this.getDataList()
-  }
-  changeName(e: any): void {
-    this.searchParam.name = e;
-  }
-  handleEnterKeyPress() {
-    this.inputValue = this.searchParam.name;
     this.getDataList()
   }
 
