@@ -245,14 +245,13 @@ export class InstancesService extends BaseService {
   }
 
   getListOffers(
-    productId: number,
     regionId: number,
     unitOfMeasure: string
   ): Observable<any> {
     return this.http.get<any>(
       `${
         this.baseUrl + this.ENDPOINT.catalogs
-      }/offers?productId=${productId}&regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
+      }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
     );
   }
 

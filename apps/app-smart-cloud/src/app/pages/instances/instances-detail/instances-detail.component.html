@@ -145,6 +145,12 @@
           style="color: #52c41a"
           >KHỞI TẠO</span
         >
+        <span
+          *ngIf="instancesModel.status == 'ACTIVE'"
+          class="fw-600 customSpan"
+          style="color: #52c41a"
+          >ACTIVE</span
+        >
       </nz-row>
       <nz-row style="height: 50px; background-color: #f2f2f2">
         <span class="customSpan" style="width: 40%">Thời gian khởi tạo:</span>

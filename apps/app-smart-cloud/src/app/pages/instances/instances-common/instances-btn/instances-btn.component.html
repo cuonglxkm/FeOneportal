@@ -3,7 +3,7 @@
 </button>
 <nz-dropdown-menu #opMenu="nzDropdownMenu">
   <ul nz-menu>
-    <li nz-menu-item (click)="continue(modalContentContiniue)">Gia hạn</li>
+    <li nz-menu-item (click)="continue()">Gia hạn</li>
     <li nz-menu-item (click)="openConsole()">Truy cập</li>
     <li nz-menu-item (click)="restartInstance()">Khởi động lại</li>
     <li nz-menu-item (click)="shutdownInstance()">Tắt</li>
@@ -77,9 +77,6 @@
 <!--    </div>-->
 <!--  </nz-form-item>-->
 <!--</ng-template>-->
-<ng-template #modalContentContiniue>
-  <nz-form-item> Quý khách chắc chắn muốn gia hạn dịch vụ này? </nz-form-item>
-</ng-template>
 <ng-template #modalContentResetPassword>
   <nz-alert
     nzType="warning"

@@ -170,7 +170,7 @@
     <nz-tabset>
       <nz-tab nzTitle="Gói cấu hình">
         <ngu-carousel
-          #myCarousel
+          #myCarouselFlavor
           [inputs]="carouselTileConfig"
           [dataSource]="listOfferFlavors"
         >
@@ -180,6 +180,7 @@
           >
             <table
               class="custom-table text-center"
+              style="width: 100%"
               (click)="onInputFlavors(item.id)"
             >
               <tbody
@@ -223,9 +224,9 @@
 
           <ul class="myPoint" NguCarouselPoint>
             <li
-              *ngFor="let i of myCarousel.pointNumbers"
-              [class.active]="i === myCarousel.activePoint"
-              (click)="myCarousel.moveTo(i)"
+              *ngFor="let i of myCarouselFlavor.pointNumbers"
+              [class.active]="i === myCarouselFlavor.activePoint"
+              (click)="myCarouselFlavor.moveTo(i)"
             ></li>
           </ul>
         </ngu-carousel>
@@ -297,9 +298,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >IP Public: {{ listIPStr }}</nz-form-label
-          >
+          <nz-form-label>IP Public: {{ listIPStr }}</nz-form-label>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="12" nzMd="12" nzSm="24">
