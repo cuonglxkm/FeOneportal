@@ -2,15 +2,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostListener,
   Inject,
   OnInit,
-  Renderer2,
+  ViewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   InstanceCreate,
   IPPublicModel,
@@ -28,14 +25,12 @@ import {
   ItemPayment,
 } from '../instances.model';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { Observable, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
@@ -141,7 +136,7 @@ export class InstancesCreateComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
   ) {
     this.tempData = [
       this.images[Math.floor(Math.random() * this.images.length)],
@@ -173,6 +168,36 @@ export class InstancesCreateComponent implements OnInit {
     // );
   }
 
+  @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
+  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselImage.reset();
+        this.myCarouselFlavor.reset();
+      }, 100);
+    }
+  }
+
+  ngOnInit(): void {
+    this.userId = this.tokenService.get()?.userId;
+    this.getAllImageType();
+  }
+
   getUser() {}
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
@@ -198,21 +223,23 @@ export class InstancesCreateComponent implements OnInit {
       this.listOfImageByImageType.set(id, listImage);
     });
     this.dataService
-      .getListOffers(144, this.region, 'VM-Image')
+      .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
-          let tempImage = new Image();
-          e.characteristicValues.forEach((char) => {
-            if (char.charOptionValues[0] == 'Id') {
-              tempImage.id = Number.parseInt(char.charOptionValues[1]);
-              tempImage.name = e.offerName;
-            }
-            if (char.charOptionValues[0] == 'ImageTypeId') {
-              this.listOfImageByImageType
-                .get(Number.parseInt(char.charOptionValues[1]))
-                .push(tempImage);
-            }
-          });
+          if (e.status == 'Active') {
+            let tempImage = new Image();
+            e.characteristicValues.forEach((char) => {
+              if (char.charOptionValues[0] == 'Id') {
+                tempImage.id = Number.parseInt(char.charOptionValues[1]);
+                tempImage.name = e.offerName;
+              }
+              if (char.charOptionValues[0] == 'ImageTypeId') {
+                this.listOfImageByImageType
+                  .get(Number.parseInt(char.charOptionValues[1]))
+                  .push(tempImage);
+              }
+            });
+          }
         });
         this.cdr.detectChanges();
         console.log('list Images', this.listOfImageByImageType);
@@ -357,9 +384,11 @@ export class InstancesCreateComponent implements OnInit {
 
   initFlavors(): void {
     this.dataService
-      .getListOffers(136, this.region, 'VM-Flavor')
+      .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listOfferFlavors = data;
+        this.listOfferFlavors = data.filter(
+          (e: OfferItem) => e.status == 'Active'
+        );
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
             e.offerName.includes('HDD')
@@ -594,7 +623,6 @@ export class InstancesCreateComponent implements OnInit {
   }
   //#endregion
 
-  
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
@@ -618,11 +646,6 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllSecurityGroup();
     this.getAllSSHKey();
     this.cdr.detectChanges();
-  }
-
-  ngOnInit(): void {
-    this.userId = this.tokenService.get()?.userId;
-    this.getAllImageType();
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {

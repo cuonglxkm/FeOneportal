@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostListener,
   Inject,
   OnInit,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
@@ -30,7 +32,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { ProjectModel } from 'src/app/shared/models/project.model';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
@@ -112,6 +114,29 @@ export class InstancesEditComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselFlavor.reset();
+      }, 100);
+    }
+  }
+
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.userId = this.tokenService.get()?.userId;
@@ -160,9 +185,9 @@ export class InstancesEditComponent implements OnInit {
 
   initFlavors(): void {
     this.dataService
-      .getListOffers(136, this.region, 'VM-Flavor')
+      .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listOfferFlavors = data;
+        this.listOfferFlavors = data.filter((e: OfferItem) => e.status == 'Active');
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
             e.offerName.includes('HDD')
@@ -358,7 +383,7 @@ export class InstancesEditComponent implements OnInit {
     this.instanceResize.customerId = this.userId;
     this.instanceResize.vpcId = this.projectId;
     this.instanceResize.userEmail = this.userEmail;
-    this.instanceResize.actorEmail = this.tokenService.get()?.email;
+    this.instanceResize.actorEmail = this.userEmail;
   }
 
   readyEdit(): void {
@@ -405,7 +430,7 @@ export class InstancesEditComponent implements OnInit {
             console.log(error.error);
             this.notification.error(
               '',
-              'Tạo order thay đổi cấu hình không thành công'
+              'Tạo order thay đổi cấu hình máy ảo không thành công'
             );
           }
         );

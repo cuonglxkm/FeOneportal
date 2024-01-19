@@ -92,17 +92,11 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   }
 
 
-  continue(tpl: TemplateRef<{}>): void {
+  continue(): void {
     //gia hạn
-    this.modalSrv.create({
-      nzTitle: 'Gia hạn',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.notification.success('', 'Gia hạn thành công');
-      },
-    });
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-extend/' + this.instancesId,
+    ]);
   }
 
   resetPassword: string = '';

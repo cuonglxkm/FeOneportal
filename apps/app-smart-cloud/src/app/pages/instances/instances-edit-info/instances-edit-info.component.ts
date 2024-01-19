@@ -3,9 +3,11 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   Inject,
   OnInit,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -23,7 +25,7 @@ import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { concatMap, finalize, from } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
@@ -102,6 +104,29 @@ export class InstancesEditInfoComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselImage.reset();
+      }, 100);
+    }
+  }
+
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.email = this.tokenService.get()?.email;
@@ -174,7 +199,7 @@ export class InstancesEditInfoComponent implements OnInit {
       this.listOfImageByImageType.set(id, listImage);
     });
     this.dataService
-      .getListOffers(144, this.region, 'VM-Image')
+      .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
           let tempImage = new Image();

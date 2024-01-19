@@ -2,10 +2,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import {
@@ -19,7 +21,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { Router } from '@angular/router';
-import { map } from 'lodash';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -43,6 +45,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
   typePolicy: string = '';
   groupNames: string[] = [];
   policyNames = new Set<string>();
+  cardHeight: string = '130px';
 
   filterStatus = [
     { text: 'Tất cả các loại', value: '' },
@@ -60,18 +63,44 @@ export class AttachPermissionPolicyComponent implements OnInit {
     private policyService: PolicyService,
     public message: NzMessageService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
   }
 
   ngOnInit(): void {
-    console.log('isCreate', this.isCreate);
-    console.log('userName', this.userName);
-    this.service.model.subscribe((data) => {
-      console.log(data);
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large,
+      Breakpoints.XLarge
+    ]).subscribe(result => {
+      if (result.breakpoints[Breakpoints.XSmall]) {
+        // Màn hình cỡ nhỏ
+        this.cardHeight = '110px';
+      } else if (result.breakpoints[Breakpoints.Small]) {
+        // Màn hình cỡ nhỏ - trung bình
+        this.cardHeight = '110px';
+      } else if (result.breakpoints[Breakpoints.Medium]) {
+        // Màn hình trung bình
+        this.cardHeight = '170px';
+      } else if (result.breakpoints[Breakpoints.Large]) {
+        // Màn hình lớn
+        this.cardHeight = '160px';
+      } else if (result.breakpoints[Breakpoints.XLarge]) {
+        // Màn hình rất lớn
+        this.cardHeight = '120px';
+      }
+
+      // Cập nhật chiều cao của card bằng Renderer2
+      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
     });
+
     this.getGroup();
   }
 

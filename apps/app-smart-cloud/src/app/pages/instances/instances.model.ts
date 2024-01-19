@@ -518,3 +518,17 @@ export class ItemPayment {
   specificationType: string;
   sortItem: number;
 }
+
+export class InstanceExtend {
+  regionId: number;
+  serviceName: any;
+  customerId: number;
+  vpcId: any;
+  typeName: string;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  newExpireDate: string;
+  userEmail: any;
+  actorEmail: any;
+}

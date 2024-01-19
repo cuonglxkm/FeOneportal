@@ -128,7 +128,7 @@
     <div *ngIf="!isSnapshot">
       <h6 class="h6">Hệ điều hành<span class="text-red">*</span></h6>
       <ngu-carousel
-        #myCarousel
+        #myCarouselImage
         [inputs]="carouselTileConfig"
         [dataSource]="listImageTypes"
       >
@@ -182,9 +182,9 @@
 
         <ul class="myPoint" NguCarouselPoint>
           <li
-            *ngFor="let i of myCarousel.pointNumbers"
-            [class.active]="i === myCarousel.activePoint"
-            (click)="myCarousel.moveTo(i)"
+            *ngFor="let i of myCarouselImage.pointNumbers"
+            [class.active]="i === myCarouselImage.activePoint"
+            (click)="myCarouselImage.moveTo(i)"
           ></li>
         </ul>
       </ngu-carousel>
@@ -323,7 +323,7 @@
           </div>
         </nz-carousel> -->
         <ngu-carousel
-          #myCarousel
+          #myCarouselFlavor
           [inputs]="carouselTileConfig"
           [dataSource]="listOfferFlavors"
         >
@@ -379,9 +379,9 @@
 
           <ul class="myPoint" NguCarouselPoint>
             <li
-              *ngFor="let i of myCarousel.pointNumbers"
-              [class.active]="i === myCarousel.activePoint"
-              (click)="myCarousel.moveTo(i)"
+              *ngFor="let i of myCarouselFlavor.pointNumbers"
+              [class.active]="i === myCarouselFlavor.activePoint"
+              (click)="myCarouselFlavor.moveTo(i)"
             ></li>
           </ul>
         </ngu-carousel>
@@ -990,7 +990,7 @@
     <nz-table>
       <tr>
         <td>
-          Chi phí máy ảo (<span>{{ numberMonth }}</span> tháng )
+          Chi phí máy ảo (<span>{{ numberMonth }}</span> tháng)
         </td>
         <td class="float-right">{{ totalAmount }} VNĐ</td>
       </tr>

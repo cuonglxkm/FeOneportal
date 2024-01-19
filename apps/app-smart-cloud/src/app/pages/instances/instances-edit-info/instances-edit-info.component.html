@@ -40,7 +40,7 @@
     <p>Lựa chọn hệ điều hành mới</p>
   </nz-row>
   <ngu-carousel
-    #myCarousel
+    #myCarouselImage
     [inputs]="carouselTileConfig"
     [dataSource]="listImageTypes"
     style="width: 100%"
@@ -95,9 +95,9 @@
 
     <ul class="myPoint" NguCarouselPoint>
       <li
-        *ngFor="let i of myCarousel.pointNumbers"
-        [class.active]="i === myCarousel.activePoint"
-        (click)="myCarousel.moveTo(i)"
+        *ngFor="let i of myCarouselImage.pointNumbers"
+        [class.active]="i === myCarouselImage.activePoint"
+        (click)="myCarouselImage.moveTo(i)"
       ></li>
     </ul>
   </ngu-carousel>
