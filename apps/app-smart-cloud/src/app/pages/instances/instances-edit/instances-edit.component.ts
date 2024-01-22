@@ -2,22 +2,29 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostListener,
   Inject,
   OnInit,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+  DataPayment,
   Flavors,
   IPPublicModel,
   IPSubnetModel,
+  InstanceResize,
   InstancesModel,
+  ItemPayment,
+  Network,
   OfferItem,
+  Order,
+  OrderItem,
   SecurityGroupModel,
   UpdateInstances,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { finalize } from 'rxjs';
@@ -25,7 +32,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
 import { ProjectModel } from 'src/app/shared/models/project.model';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
@@ -65,10 +72,13 @@ export class InstancesEditComponent implements OnInit {
   instancesModel: InstancesModel;
 
   updateInstances: UpdateInstances = new UpdateInstances();
+  instanceResize: InstanceResize = new InstanceResize();
+  order: Order = new Order();
+  orderItem: OrderItem[] = [];
   region: number;
   projectId: number;
-  customerId: number;
   userId: number;
+  userEmail: string;
   today: Date = new Date();
   ipPublicValue: string = '';
   isUseIPv6: boolean = false;
@@ -77,7 +87,7 @@ export class InstancesEditComponent implements OnInit {
   password?: string;
   numberMonth: number = 1;
   hdh: any;
-  offerFlavor: any;
+  offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
 
@@ -103,6 +113,36 @@ export class InstancesEditComponent implements OnInit {
     private router: ActivatedRoute,
     private loadingSrv: LoadingService
   ) {}
+
+  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselFlavor.reset();
+      }, 100);
+    }
+  }
+
+  ngOnInit(): void {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.userId = this.tokenService.get()?.userId;
+    this.userEmail = this.tokenService.get()?.email;
+    this.id = Number.parseInt(this.router.snapshot.paramMap.get('id'));
+  }
 
   //#region HDD hay SDD
   activeBlockHDD: boolean = true;
@@ -139,16 +179,15 @@ export class InstancesEditComponent implements OnInit {
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   listOfferFlavors: OfferItem[] = [];
 
-
   selectedElementFlavor: number = null;
   isInitialClass = true;
   isNewClass = false;
 
   initFlavors(): void {
     this.dataService
-      .getListOffers(136, this.region, 'VM-Flavor')
+      .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listOfferFlavors = data;
+        this.listOfferFlavors = data.filter((e: OfferItem) => e.status == 'Active');
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
             e.offerName.includes('HDD')
@@ -158,14 +197,33 @@ export class InstancesEditComponent implements OnInit {
             e.offerName.includes('SSD')
           );
         }
-        this.listOfferFlavors.forEach((e: OfferItem) => {
+        this.listOfferFlavors.forEach((e: OfferItem, index: number) => {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
+            if (
+              ch.charOptionValues[0] == 'Id' &&
+              Number.parseInt(ch.charOptionValues[1]) ===
+                this.instancesModel.flavorId
+            ) {
+              this.listOfferFlavors[index] = null;
+            }
             if (ch.charOptionValues[0] == 'CPU') {
               e.description += ch.charOptionValues[1] + ' VCPU / ';
+              if (
+                Number.parseInt(ch.charOptionValues[1]) <
+                this.instancesModel.cpu
+              ) {
+                this.listOfferFlavors[index] = null;
+              }
             }
             if (ch.charOptionValues[0] == 'RAM') {
               e.description += ch.charOptionValues[1] + ' GB RAM / ';
+              if (
+                Number.parseInt(ch.charOptionValues[1]) <
+                this.instancesModel.ram
+              ) {
+                this.listOfferFlavors[index] = null;
+              }
             }
             if (ch.charOptionValues[0] == 'HDD') {
               if (this.activeBlockHDD) {
@@ -173,16 +231,26 @@ export class InstancesEditComponent implements OnInit {
               } else {
                 e.description += ch.charOptionValues[1] + ' GB SSD';
               }
+              if (
+                Number.parseInt(ch.charOptionValues[1]) !=
+                this.instancesModel.storage
+              ) {
+                this.listOfferFlavors[index] = null;
+              }
             }
           });
         });
+        this.listOfferFlavors = this.listOfferFlavors.filter((e) => e != null);
+        console.log('list offer flavor chỉnh sửa', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
   }
 
-  onInputFlavors(event: any) {
-    this.offerFlavor = this.listOfferFlavors.find((flavor) => flavor.id === event);
-    console.log(this.offerFlavor);
+  onInputFlavors(flavorId: any) {
+    this.offerFlavor = this.listOfferFlavors.find(
+      (flavor) => flavor.id === flavorId
+    );
+    this.getTotalAmount();
   }
 
   selectElementInputFlavors(id: any) {
@@ -192,9 +260,9 @@ export class InstancesEditComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.region = region.regionId;
-    this.initFlavors();
+    this.id = Number.parseInt(this.router.snapshot.paramMap.get('id'));
+    this.getCurrentInfoInstance(this.id);
     this.selectedSecurityGroup = [];
-    console.log(this.tokenService.get()?.userId);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -203,41 +271,57 @@ export class InstancesEditComponent implements OnInit {
     this.getAllSecurityGroup();
   }
 
-  ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-    this.userId = this.tokenService.get()?.userId;
-    this.customerId = this.tokenService.get()?.userId;
-
-    this.router.paramMap.subscribe((param) => {
-      if (param.get('id') != null) {
-        this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, false).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.selectedElementFlavor = this.instancesModel.flavorId;
-          this.region = this.instancesModel.regionId;
-          this.projectId = this.instancesModel.projectId;
-          this.initFlavors();
-          this.dataService
-            .getAllSecurityGroupByInstance(
-              this.instancesModel.cloudId,
-              this.instancesModel.regionId,
-              this.instancesModel.customerId,
-              this.instancesModel.projectId
-            )
-            .pipe(finalize(() => this.loadingSrv.close()))
-            .subscribe((datasg: any) => {
-              console.log('getAllSecurityGroupByInstance', datasg);
-              var arraylistSecurityGroup = datasg.map((obj) =>
-                obj.id.toString()
-              );
-              this.selectedSecurityGroup = arraylistSecurityGroup;
-              this.cdr.detectChanges();
-            });
-        });
+  getCurrentInfoInstance(instanceId: number): void {
+    this.dataService.getById(instanceId, true).subscribe((data: any) => {
+      this.instancesModel = data;
+      if (this.instancesModel.volumeType == 0) {
+        this.activeBlockHDD = true;
+        this.activeBlockSSD = false;
       }
+      if (this.instancesModel.volumeType == 1) {
+        this.activeBlockHDD = false;
+        this.activeBlockSSD = true;
+      }
+      this.cdr.detectChanges();
+      this.selectedElementFlavor = this.instancesModel.flavorId;
+      this.region = this.instancesModel.regionId;
+      this.projectId = this.instancesModel.projectId;
+      this.dataService
+        .getAllSecurityGroupByInstance(
+          this.instancesModel.cloudId,
+          this.instancesModel.regionId,
+          this.instancesModel.customerId,
+          this.instancesModel.projectId
+        )
+        .pipe(finalize(() => this.loadingSrv.close()))
+        .subscribe((datasg: any) => {
+          console.log('getAllSecurityGroupByInstance', datasg);
+          var arraylistSecurityGroup = datasg.map((obj) => obj.id.toString());
+          this.selectedSecurityGroup = arraylistSecurityGroup;
+          this.cdr.detectChanges();
+        });
+      this.initFlavors();
+      this.getListIpPublic();
     });
   }
+
+  listIPStr = '';
+  getListIpPublic() {
+    this.dataService
+      .getPortByInstance(this.id, this.region)
+      .subscribe((dataNetwork: any) => {
+        let listOfDataNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == true
+        );
+        let listIP: string[] = [];
+        listOfDataNetwork.forEach((e) => {
+          listIP = listIP.concat(e.fixedIPs);
+        });
+        this.listIPStr = listIP.join(', ');
+        this.cdr.detectChanges();
+      });
+  }
+
   navigateToCreate() {
     this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
@@ -268,15 +352,89 @@ export class InstancesEditComponent implements OnInit {
     });
   }
 
+  instanceResizeInit() {
+    this.instanceResize.description = null;
+    this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
+    this.offerFlavor.characteristicValues.forEach((e) => {
+      if (e.charOptionValues[0] == 'Id') {
+        this.instanceResize.newFlavorId = Number.parseInt(
+          e.charOptionValues[1]
+        );
+      }
+      if (e.charOptionValues[0] == 'RAM') {
+        this.instanceResize.ram = Number.parseInt(e.charOptionValues[1]);
+      }
+      if (e.charOptionValues[0] == 'CPU') {
+        this.instanceResize.cpu = Number.parseInt(e.charOptionValues[1]);
+      }
+    });
+    this.instanceResize.addRam = 0;
+    this.instanceResize.addCpu = 0;
+    this.instanceResize.addBtqt = 0;
+    this.instanceResize.addBttn = 0;
+    this.instanceResize.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.instanceResize.newOfferId = this.offerFlavor.id;
+    this.instanceResize.serviceType = 1;
+    this.instanceResize.actionType = 4;
+    this.instanceResize.serviceInstanceId = this.instancesModel.id;
+    this.instanceResize.regionId = this.region;
+    this.instanceResize.serviceName = null;
+    this.instanceResize.customerId = this.userId;
+    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.userEmail = this.userEmail;
+    this.instanceResize.actorEmail = this.userEmail;
+  }
+
   readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
     this.updateInstances.name = this.instancesModel.name;
     this.updateInstances.regionId = this.region;
     this.updateInstances.projectId = this.projectId;
-    this.updateInstances.customerId = this.tokenService.get()?.userId;
+    this.updateInstances.customerId = this.userId;
     this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
-
     console.log('update instance', this.updateInstances);
+
+    if (this.offerFlavor != null) {
+      this.instanceResizeInit();
+      let specificationInstance = JSON.stringify(this.instanceResize);
+      let orderItemInstanceResize = new OrderItem();
+      orderItemInstanceResize.orderItemQuantity = 1;
+      orderItemInstanceResize.specification = specificationInstance;
+      orderItemInstanceResize.specificationType = 'instance_resize';
+      orderItemInstanceResize.price = this.totalincludesVAT;
+      orderItemInstanceResize.serviceDuration = this.numberMonth;
+      this.orderItem.push(orderItemInstanceResize);
+
+      this.order.customerId = this.userId;
+      this.order.createdByUserId = this.userId;
+      this.order.note = 'instance resize';
+      this.order.orderItems = this.orderItem;
+
+      console.log('order instance resize', this.order);
+
+      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+
+      this.dataService
+        .create(this.order)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close();
+          })
+        )
+        .subscribe(
+          (data: any) => {
+            window.location.href = data.data;
+          },
+          (error) => {
+            console.log(error.error);
+            this.notification.error(
+              '',
+              'Tạo order thay đổi cấu hình máy ảo không thành công'
+            );
+          }
+        );
+    }
 
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
 
@@ -298,6 +456,28 @@ export class InstancesEditComponent implements OnInit {
           this.notification.error('', 'Cập nhật máy ảo không thành công');
         },
       });
+  }
+
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
+  getTotalAmount() {
+    this.instanceResizeInit();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.instanceResize);
+    itemPayment.specificationType = 'instance_create';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.projectId;
+    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.cdr.detectChanges();
+    });
   }
 
   cancel(): void {

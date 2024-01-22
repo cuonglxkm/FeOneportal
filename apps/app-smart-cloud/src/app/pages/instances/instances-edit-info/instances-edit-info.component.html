@@ -40,7 +40,7 @@
     <p>Lựa chọn hệ điều hành mới</p>
   </nz-row>
   <ngu-carousel
-    #myCarousel
+    #myCarouselImage
     [inputs]="carouselTileConfig"
     [dataSource]="listImageTypes"
     style="width: 100%"
@@ -95,9 +95,9 @@
 
     <ul class="myPoint" NguCarouselPoint>
       <li
-        *ngFor="let i of myCarousel.pointNumbers"
-        [class.active]="i === myCarousel.activePoint"
-        (click)="myCarousel.moveTo(i)"
+        *ngFor="let i of myCarouselImage.pointNumbers"
+        [class.active]="i === myCarouselImage.activePoint"
+        (click)="myCarouselImage.moveTo(i)"
       ></li>
     </ul>
   </ngu-carousel>
@@ -138,10 +138,10 @@
           >. <br />- Quá trình điều chỉnh hệ điều hành sẽ mất khoảng 15 đến 20
           phút tùy dung lượng của volume root của máy ảo. <br />- Cấu hình máy
           ảo (<span>{{ instancesModel.flavorName | slice : 3 }}</span
-          >), ip (<span>{{ instancesModel.ipPublic }}</span
+          >), ip (<span>{{ listIPStr }}</span
           >), security group (<span
             *ngIf="instancesModel.securityGroupStr !== null; else defaultValue"
-            >{{ instancesModel.securityGroupStr }}</span
+            >{{ securityGroupStr }}</span
           >
           <ng-template #defaultValue>default</ng-template>) sẽ được giữ nguyên.
         </div>

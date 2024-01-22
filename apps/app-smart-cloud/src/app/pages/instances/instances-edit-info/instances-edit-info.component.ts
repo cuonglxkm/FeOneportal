@@ -3,9 +3,11 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   Inject,
   OnInit,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -17,12 +19,13 @@ import {
   InstancesModel,
   RebuildInstances,
   OfferItem,
+  Network,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { concatMap, finalize, from } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
@@ -57,6 +60,7 @@ export class InstancesEditInfoComponent implements OnInit {
   selectedImageTypeId: number;
   listOfImageByImageType: Map<number, Image[]> = new Map();
   imageTypeId = [];
+  securityGroupStr = '';
 
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
@@ -100,6 +104,29 @@ export class InstancesEditInfoComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselImage.reset();
+      }, 100);
+    }
+  }
+
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.email = this.tokenService.get()?.email;
@@ -108,10 +135,18 @@ export class InstancesEditInfoComponent implements OnInit {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService
-          .getById(this.id, false)
+          .getById(this.id, true)
           .subscribe((dataInstance: any) => {
             this.instancesModel = dataInstance;
+
+            if (this.instancesModel.securityGroupStr != null) {
+              let SGSet = new Set<string>(
+                this.instancesModel.securityGroupStr.split(',')
+              );
+              this.securityGroupStr = Array.from(SGSet).join(', ');
+            }
             this.region = this.instancesModel.regionId;
+            this.getListIpPublic();
             this.getAllOfferImage(this.imageTypeId);
             this.dataService
               .getImageById(this.instancesModel.imageId)
@@ -124,10 +159,28 @@ export class InstancesEditInfoComponent implements OnInit {
                 this.loading = false;
                 this.cdr.detectChanges();
               });
+            this.cdr.detectChanges();
           });
       }
     });
     this.cdr.detectChanges();
+  }
+
+  listIPStr = '';
+  getListIpPublic() {
+    this.dataService
+      .getPortByInstance(this.id, this.region)
+      .subscribe((dataNetwork: any) => {
+        let listOfDataNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == true
+        );
+        let listIP: string[] = [];
+        listOfDataNetwork.forEach((e) => {
+          listIP = listIP.concat(e.fixedIPs);
+        });
+        this.listIPStr = listIP.join(', ');
+        this.cdr.detectChanges();
+      });
   }
 
   getAllImageType() {
@@ -146,7 +199,7 @@ export class InstancesEditInfoComponent implements OnInit {
       this.listOfImageByImageType.set(id, listImage);
     });
     this.dataService
-      .getListOffers(144, this.region, 'VM-Image')
+      .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
           let tempImage = new Image();

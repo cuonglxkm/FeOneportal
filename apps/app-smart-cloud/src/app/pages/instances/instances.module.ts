@@ -14,16 +14,17 @@ import { FullContentModule } from '@delon/abc/full-content';
 import { SafePipe } from '../../../../../../libs/common-utils/src';
 import { InstancesBtnComponent } from './instances-common/instances-btn/instances-btn.component';
 import { InstancesVlanGimComponent } from './instances-list/instances-vlan-gim/instances-vlan-gim.component';
-import {CarouselModule} from "ngx-owl-carousel-o";
+import { CarouselModule } from 'ngx-owl-carousel-o';
 import {
   NguCarousel,
   NguCarouselDefDirective,
   NguCarouselNextDirective,
   NguCarouselPrevDirective,
   NguItemComponent,
-  NguTileComponent
+  NguTileComponent,
 } from '@ngu/carousel';
 import { CommonModule } from '@angular/common';
+import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
 
 @NgModule({
   declarations: [
@@ -37,15 +38,23 @@ import { CommonModule } from '@angular/common';
     BlockstorageDetailComponent,
     InstancesBtnComponent,
     InstancesVlanGimComponent,
+    InstancesExtendComponent,
   ],
-  imports: [InstancesRoutingModule, SharedModule, FullContentModule, SafePipe, CarouselModule, SafePipe,
+  imports: [
+    InstancesRoutingModule,
+    SharedModule,
+    FullContentModule,
+    SafePipe,
+    CarouselModule,
+    SafePipe,
     NguCarousel,
     NguTileComponent,
     NguCarousel,
     NguCarouselDefDirective,
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
-    NguItemComponent, CommonModule
+    NguItemComponent,
+    CommonModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

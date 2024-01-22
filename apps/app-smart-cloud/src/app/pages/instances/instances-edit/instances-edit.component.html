@@ -170,7 +170,7 @@
     <nz-tabset>
       <nz-tab nzTitle="Gói cấu hình">
         <ngu-carousel
-          #myCarousel
+          #myCarouselFlavor
           [inputs]="carouselTileConfig"
           [dataSource]="listOfferFlavors"
         >
@@ -180,6 +180,7 @@
           >
             <table
               class="custom-table text-center"
+              style="width: 100%"
               (click)="onInputFlavors(item.id)"
             >
               <tbody
@@ -223,9 +224,9 @@
 
           <ul class="myPoint" NguCarouselPoint>
             <li
-              *ngFor="let i of myCarousel.pointNumbers"
-              [class.active]="i === myCarousel.activePoint"
-              (click)="myCarousel.moveTo(i)"
+              *ngFor="let i of myCarouselFlavor.pointNumbers"
+              [class.active]="i === myCarouselFlavor.activePoint"
+              (click)="myCarouselFlavor.moveTo(i)"
             ></li>
           </ul>
         </ngu-carousel>
@@ -297,9 +298,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label
-            >IP Public: {{ instancesModel.ipPublic }}</nz-form-label
-          >
+          <nz-form-label>IP Public: {{ listIPStr }}</nz-form-label>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="12" nzMd="12" nzSm="24">
@@ -371,16 +370,12 @@
   <div>
     <nz-table>
       <tr>
-        <td>Chi phí máy ảo ( 1 tháng )</td>
-        <td class="float-right">1.000.000 VNĐ</td>
-      </tr>
-      <tr>
-        <td>Chi phí Volume bổ sung (1 tháng)</td>
-        <td class="float-right">1.000.000 VNĐ</td>
+        <td>Chi phí thay đổi cấu hình máy ảo</td>
+        <td class="float-right">{{ totalAmount }} VNĐ</td>
       </tr>
       <tr>
         <td>Thành tiền ( Đã bao gồm 10% VAT)</td>
-        <td class="float-right">1.000.000 VNĐ</td>
+        <td class="float-right">{{ totalincludesVAT }} VNĐ</td>
       </tr>
     </nz-table>
     <div style="float: right; padding-top: 1%">

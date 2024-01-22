@@ -142,16 +142,15 @@ export class CreateInstances {
 }
 
 export class InstancesModel {
+  id: number;
   cloudId: string;
   name: string;
   flavorId: number;
-  flavorName: string;
   flavorCloudId: string;
   imageId: number;
-  imageName: string;
   customerId: number;
   ipPublic: string;
-  ipPrivate: null;
+  ipPrivate: string;
   cpu: number;
   ram: number;
   storage: number;
@@ -159,8 +158,6 @@ export class InstancesModel {
   preResizeInstanceId: number;
   regionId: number;
   regionText: string;
-  createdDate: Date;
-  expiredDate: Date;
   cloudIdentityId: number;
   projectName: string;
   projectId: number;
@@ -172,9 +169,16 @@ export class InstancesModel {
   btqtAdditional: number;
   volumeRootId: number;
   status: string;
-  taskState: null;
-  project: null;
-  id: number;
+  taskState: string;
+  securityGroupStr: string;
+  computeHost: string;
+  type: string;
+  flavorName: string;
+  volumeType: number;
+  createdDate: string;
+  expiredDate: string;
+  totalCount: number;
+  imageName: string;
 }
 
 export class InstanceFormSearch {
@@ -513,4 +517,18 @@ export class ItemPayment {
   specificationString: string;
   specificationType: string;
   sortItem: number;
+}
+
+export class InstanceExtend {
+  regionId: number;
+  serviceName: any;
+  customerId: number;
+  vpcId: any;
+  typeName: string;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  newExpireDate: string;
+  userEmail: any;
+  actorEmail: any;
 }

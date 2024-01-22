@@ -6,6 +6,7 @@ import { InstancesDetailComponent } from './instances-detail/instances-detail.co
 import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit-info.component';
 import { InstancesEditComponent } from './instances-edit/instances-edit.component';
 import {InstancesConsoleComponent} from "./instances-console/instances-console.component";
+import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,11 @@ const routes: Routes = [
     path: 'instances-console/:id',
     component: InstancesConsoleComponent,
     data: { title: 'Console máy ảo', key: 'instances-console' },
+  },
+  {
+    path: 'instances-extend/:id',
+    component: InstancesExtendComponent,
+    data: { title: 'Gia hạn máy ảo', key: 'instances-extend' },
   }
 ];
 

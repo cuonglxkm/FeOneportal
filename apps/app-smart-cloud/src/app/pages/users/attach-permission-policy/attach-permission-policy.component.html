@@ -1,17 +1,20 @@
 <nz-card [nzBordered]="false">
   <span class="title-card">Chọn kiểu gán Permissions cho User</span>
-  <nz-row nzGutter="16" style="margin-top: 10px">
+  <nz-row
+    [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
+    style="margin-top: 10px"
+  >
     <nz-radio-group
       style="width: 100%; display: inline-flex"
       name="selectedPasswordOrSSHkey"
     >
-      <nz-col nzXs="24" nzMd="8">
+      <div nz-col [nzLg]="8" [nzMd]="24" [nzSm]="24" [nzXl]="8" [nzXs]="24">
         <nz-card
           [ngStyle]="{
             'background-color': activeBlockAddUsertoGroup
               ? '#e6f7ff'
               : '#fcfcfc',
-            height: '130px'
+            height: cardHeight
           }"
         >
           <nz-card-meta
@@ -37,13 +40,13 @@
               >
             </ng-template>
           </nz-card-meta>
-        </nz-card></nz-col
-      >
-      <nz-col nzXs="24" nzMd="8">
+        </nz-card>
+      </div>
+      <div nz-col [nzLg]="8" [nzMd]="24" [nzSm]="24" [nzXl]="8" [nzXs]="24">
         <nz-card
           [ngStyle]="{
             'background-color': activeBlockCopyPolicies ? '#e6f7ff' : '#fcfcfc',
-            height: '130px'
+            height: cardHeight
           }"
         >
           <nz-card-meta
@@ -69,14 +72,14 @@
             </ng-template>
           </nz-card-meta>
         </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzMd="8">
+      </div>
+      <div nz-col [nzLg]="8" [nzMd]="24" [nzSm]="24" [nzXl]="8" [nzXs]="24">
         <nz-card
           [ngStyle]="{
             'background-color': activeBlockAttachPolicies
               ? '#e6f7ff'
               : '#fcfcfc',
-            height: '130px'
+            height: cardHeight
           }"
         >
           <nz-card-meta
@@ -102,7 +105,7 @@
             </ng-template>
           </nz-card-meta>
         </nz-card>
-      </nz-col>
+      </div>
     </nz-radio-group>
   </nz-row>
 </nz-card>
