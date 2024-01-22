@@ -1,27 +1,100 @@
-<app-header-volume [headerInfo]="headerInfo" xmlns="http://www.w3.org/1999/html"></app-header-volume>
-
+<page-header [breadcrumb]="breadcrumb"
+             [title]="title">
+    <ng-template #breadcrumb>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Dịch vụ</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="'/app-smart-cloud/volumes'">
+            Volume
+          </a></nz-breadcrumb-item>
+      </nz-breadcrumb>
+          <div class="alain-custom-action text-right">
+            <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+            <project-select-dropdown (valueChanged)="projectChanged($event)"
+                                     [regionId]="region"></project-select-dropdown>
+          </div>
+    </ng-template>
+    <ng-template #title>
+      <nz-row>
+        <nz-col nzSpan="12">
+          <div>
+          <span nz-icon
+                nzType="arrow-left"
+                nzTheme="outline"
+                [routerLink]="'/app-smart-cloud/volumes'"
+                style="margin-right: 10px;"></span>
+            Chi tiết Volume
+          </div>
+        </nz-col>
+        <nz-col>
+          <div style="float: right;">
+            <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
+                    nzType="primary">
+              <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
+            </button>
+            <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
+                    (click)="navigateEditVolume(volumeInfo.id)"
+                    nz-button nzType="primary">
+              <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+            </button>
+          </div>
+        </nz-col>
+      </nz-row>
+    </ng-template>
+</page-header>
+  <!--<page-header [breadcrumb]="breadcrumb"-->
+<!--             [action]="action"-->
+<!--             [title]="title">-->
+<!--  <ng-template #title style="width: 100%;">-->
+<!--         <span nz-icon-->
+<!--               nzType="arrow-left"-->
+<!--               nzTheme="outline"-->
+<!--               [routerLink]="'/app-smart-cloud/volumes'"-->
+<!--               style="margin-right: 10px;"></span>-->
+<!--        Chi tiết Volume-->
+<!--    <nz-space style="float: right">-->
+<!--      <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button-->
+<!--              nzType="primary">-->
+<!--        <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn-->
+<!--      </button>-->
+<!--      <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"-->
+<!--              (click)="navigateEditVolume(volumeInfo.id)"-->
+<!--              nz-button nzType="primary">-->
+<!--        <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa-->
+<!--      </button>-->
+<!--    </nz-space>-->
+<!--  </ng-template>-->
+<!--  <ng-template #breadcrumb>-->
+<!--    <nz-breadcrumb>-->
+<!--      <nz-breadcrumb-item>-->
+<!--        <a [routerLink]="['/']">Home</a>-->
+<!--      </nz-breadcrumb-item>-->
+<!--      <nz-breadcrumb-item>-->
+<!--        <a [routerLink]="['/']">Dịch vụ</a>-->
+<!--      </nz-breadcrumb-item>-->
+<!--      <nz-breadcrumb-item>-->
+<!--        <a [routerLink]="'/app-smart-cloud/volumes'">-->
+<!--          Volume-->
+<!--        </a></nz-breadcrumb-item>-->
+<!--    </nz-breadcrumb>-->
+<!--  </ng-template>-->
+<!--  <ng-template #action>-->
+<!--    <div class="alain-custom-action text-right">-->
+<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
+<!--                               [regionId]="region"></project-select-dropdown>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+<!--</page-header>-->
 
 <nz-spin [nzSpinning]="isLoading" nzSize="large">
-  <div class="detail-volume">
-    <div class="row">
-      <h3 style="display: inline-block; margin-right: auto;">Chi tiết dịch vụ</h3>
-      <div class="action-detail-volume">
-        <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
-                nzType="primary">
-          <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
-        </button>
-        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
-                (click)="navigateEditVolume(volumeInfo.id)"
-                nz-button nzType="primary">
-          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-        </button>
-      </div>
-    </div>
-    <br>
-    <hr style="opacity: 0.1">
-    <br>
 
-
+  <nz-card  nzTitle="Chi tiết dịch vụ">
     <nz-table [nzTemplateMode]="true" style="border: none;">
       <tbody>
       <tr>
@@ -66,17 +139,8 @@
       </tr>
       </tbody>
     </nz-table>
-
-  </div>
-
-  <br>
-  <br>
-
-  <div class="info-volume">
-    <h3>Thông tin Volume</h3>
-    <br>
-    <hr style="opacity: 0.1">
-    <br>
+  </nz-card>
+  <nz-card  nzTitle="Thông tin Volume">
     <nz-table [nzTemplateMode]="true" style="border: none;">
       <tbody>
 
@@ -94,7 +158,6 @@
       </td>
       </tbody>
     </nz-table>
-
     <nz-table [nzTemplateMode]="true">
       <thead>
       <tr>
@@ -132,27 +195,42 @@
 
       </tbody>
     </nz-table>
-
-    <br>
-    <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
-    <br>
-    <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
-    <br>
-    <br>
-    <br>
-    <p>
-      <b>
-        Thời gian khởi tạo:
-      </b>
-      <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
-    </p>
-    <p>
-      <b>
-        Ngày hết hạn:
-      </b>
-      <span>{{ volumeInfo.expirationDate | date:'dd/MM/yyyy' }}</span>
-    </p>
-
-
-  </div>
+    <div>
+      <label nz-checkbox [nzChecked]="volumeInfo.isEncryption" nzDisabled >Mã hóa Volume</label>
+    </div>
+    <div>
+      <label nz-checkbox [nzChecked]="volumeInfo.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
+    </div>
+    <div>
+      <p>
+        <strong>
+          Thời gian khởi tạo:
+        </strong>
+        <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
+      </p>
+    </div>
+    <div>
+      <p>
+        <strong>
+          Ngày hết hạn:
+        </strong>
+        <span>{{ volumeInfo.expirationDate | date:'dd/MM/yyyy' }}</span>
+      </p>
+    </div>
+  </nz-card>
+  <nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
+    <nz-table>
+      <tr>
+        <td>Chi phí volume (1 tháng)</td>
+        <td nzAlign="right">1.100.000</td>
+      </tr>
+      <tr>
+        <td>Thành tiền (Đã bao gồm 10% VAT)</td>
+        <td nzAlign="right">1.100.000</td>
+      </tr>
+    </nz-table>
+  </nz-card>
+  <ng-template #extraTemplate>
+    <a>More</a>
+  </ng-template>
 </nz-spin>

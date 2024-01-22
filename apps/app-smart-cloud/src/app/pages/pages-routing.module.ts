@@ -89,7 +89,7 @@ const routes: Routes = [
     component: V1Component
   },
   {
-    path: 'volume',
+    path: 'volumes',
     component: VolumeComponent
   },
   {

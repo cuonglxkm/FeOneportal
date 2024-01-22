@@ -58,7 +58,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   doGetListVolume() {
     this.isLoading = true;
     this.volumeList = [];
-    this.volumeService.getVolumes(this.userId, this.project, this.region, null, 1000, 1, null, null).subscribe(data => {
+    this.volumeService.getVolumes(this.userId, this.project, this.region, 1000, 1, null, null).subscribe(data => {
       data.records.forEach(volume => {
         this.volumeList.push({value: volume.id , label: volume.name});
       })

@@ -262,7 +262,7 @@ export class ScheduleBackupVolumeComponent implements OnInit{
     this.formSearchBackup.pageSize = 10000000
     this.formSearchBackup.currentPage = 1
     this.formSearchBackup.customerId = customerId
-    this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project,this.region,null,999,1,null,null)
+    this.volumeService.getVolumes(this.tokenService.get()?.userId,this.project,this.region,999,1,null,null)
       .subscribe(data => {
       this.listVolume = data?.records
       // this.backupVmService.search(this.formSearchBackup).subscribe(data2 => {

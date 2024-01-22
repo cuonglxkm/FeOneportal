@@ -1,7 +1,7 @@
 import {Inject, Injectable, OnInit} from '@angular/core';
 import {catchError} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {VolumeDTO} from "../dto/volume.dto";
 import {BaseService} from "./base.service";
 import {AddVolumetoVmModel, EditSizeVolumeModel, EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
@@ -11,6 +11,7 @@ import {PriceVolumeDto} from "../dto/volume.dto";
 import {CreateVolumeRequestModel} from "../models/volume.model";
 import {CreateVolumeResponseModel} from "../models/volume.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {BaseResponse} from "../../../../../../libs/common-utils/src";
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +30,22 @@ export class VolumeService extends BaseService {
   private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
   private  urlOrderGW = this.baseUrl + this.ENDPOINT.orders;
   //search List Volumes
-  getVolumes(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): Observable<GetListVolumeModel> {
-    let urlResult = this.getConditionSearchVolume(customerId, projectId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName);
-    return this.http.get<GetListVolumeModel>(urlResult, this.httpOptions).pipe(
-      catchError(this.handleError<GetListVolumeModel>('get volume-list error'))
-    );
+  getVolumes(customerId: number, projectId: number, regionId: number,
+             pageSize: number, currentPage: number, status: string, volumeName: string) {
+    let param = new HttpParams()
+    if(customerId != undefined || customerId != null) param = param.append('customerId', customerId)
+    if(regionId != undefined || regionId != null) param = param.append('regionId', regionId)
+    if(projectId != undefined || projectId != null) param = param.append('projectId', projectId)
+    if(status != undefined || status != null) param = param.append('status', status)
+    if(volumeName != undefined || volumeName != null) param = param.append('volumeName', volumeName)
+    param = param.append('volumeRootOnly', 'false')
+    if(pageSize != undefined || pageSize != null) param = param.append('pageSize', pageSize)
+    if(currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage)
+
+    return this.http.get<BaseResponse<VolumeDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
+      headers: this.httpOptions.headers,
+      params: param
+    })
   }
 
   getVolummeById(volumeId: string) {
@@ -66,11 +78,11 @@ export class VolumeService extends BaseService {
     const token = this.tokenService.get()?.token;
     var reqHeader = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      'Authorization': 'Bearer ' + token,
+      'user_root_id': this.tokenService.get()?.userId
     });
-    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: reqHeader}).pipe(
-      catchError(this.handleError<CreateVolumeResponseModel>('create volume error.'))
-    );
+    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: reqHeader})
+
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
@@ -127,74 +139,15 @@ export class VolumeService extends BaseService {
     };
   }
 
-  private getConditionSearchVolume(customerId: number, projectId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string): string {
-
-    let urlResult = this.urlVolumeGW;
-    let count = 0;
-    if (customerId !== undefined && customerId != null) {
-      urlResult += '?customerId=' + customerId;
-      count++;
-    }
-    if (projectId !== undefined && projectId != null) {
-      if (count == 0) {
-        urlResult += '?projectId=' + projectId;
-        count++;
-      } else {
-        urlResult += '&projectId=' + projectId;
-      }
-    }
-    if (regionId !== undefined && regionId != null) {
-      if (count == 0) {
-        urlResult += '?regionId=' + regionId;
-        count++;
-      } else {
-        urlResult += '&regionId=' + regionId;
-      }
-    }
-    if (volumeRootOnly !== undefined && volumeRootOnly != null) {
-      if (count == 0) {
-        urlResult += '?volumeRootOnly=' + volumeRootOnly;
-        count++;
-      } else {
-        urlResult += '&volumeRootOnly=' + volumeRootOnly;
-      }
-    }
-
-    if (pageSize !== undefined && pageSize != null) {
-      if (count == 0) {
-        urlResult += '?pageSize=' + pageSize;
-        count++;
-      } else {
-        urlResult += '&pageSize=' + pageSize;
-      }
-    }
-    if (currentPage !== undefined && currentPage != null) {
-      if (count == 0) {
-        urlResult += '?currentPage=' + currentPage;
-        count++;
-      } else {
-        urlResult += '&currentPage=' + currentPage;
-      }
-    }
-    if (status !== undefined && status != null) {
-      if (count == 0) {
-        urlResult += '?status=' + status;
-        count++;
-      } else {
-        urlResult += '&status=' + status;
-      }
-    }
-    if (volumeName !== undefined && volumeName != null) {
-      if (count == 0) {
-        urlResult += '?volumeName=' + volumeName;
-        count++;
-      } else {
-        urlResult += '&volumeName=' + volumeName;
-      }
-    }
-    return urlResult;
-
-  }
+  // private getConditionSearchVolume(regionId: number, customerId: number, projectId: number,
+  //                                  volumeRootOnly: boolean, pageSize: number, currentPage: number,
+  //                                  status: string, volumeName: string): string {
+  //
+  //   let urlResult = this.urlVolumeGW;
+  //   let param
+  //   return urlResult;
+  //
+  // }
 
   private getConditionGetPremiumVolume(volumeType: string, size: number, duration: number): string {
     let urlResult = this.urlVolumeGW + '/getcreateprice';

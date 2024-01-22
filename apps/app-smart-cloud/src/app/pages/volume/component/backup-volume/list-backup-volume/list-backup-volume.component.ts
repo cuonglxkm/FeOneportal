@@ -71,7 +71,7 @@ export class ListBackupVolumeComponent {
 
   loadBackupVolume(isCheckBegin: boolean) {
     this.loading = true;
-    this.service.getbackupVolumeKeys(this.tokenService.get()?.userId, this.projectId, this.regionId,
+    this.service.getbackupVolumeKeys(this.projectId, this.regionId,
       this.index, this.size, this.searchKey, this.selectedStatus)
       .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
@@ -159,7 +159,7 @@ export class ListBackupVolumeComponent {
   openDataMounted(event: any, data: BackupVolume): void {
     this.data = data;
     if (event == "1") {
-      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.projectId, this.regionId, false,
+      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.projectId, this.regionId,
         999, 1, '','').subscribe(
         (data) => {
           this.listOfVolume = data.records;

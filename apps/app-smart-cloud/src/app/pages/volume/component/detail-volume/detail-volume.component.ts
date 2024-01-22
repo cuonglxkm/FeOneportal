@@ -7,6 +7,8 @@ import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupExtendVolumeComponent} from "../popup-volume/popup-extend-volume.component";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
+import {RegionModel} from "../../../../shared/models/region.model";
+import {ProjectModel} from "../../../../shared/models/project.model";
 
 @Component({
   selector: 'app-detail-volume',
@@ -14,6 +16,9 @@ import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
   styleUrls: ['./detail-volume.component.less'],
 })
 export class DetailVolumeComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('region')).regionId;
+  project = JSON.parse(localStorage.getItem('projectId'));
+
   headerInfo = {
     breadcrumb1: 'Home',
     breadcrumb2: 'Dịch vụ',
@@ -29,11 +34,23 @@ export class DetailVolumeComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.project = project.id
+    // this.getListVolumes()
+  }
+
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
     this.getVolumeById(idVolume);
   }
 
+  onModelChange() {
+
+  }
   private getVolumeById(idVolume: string) {
     this.isLoading = true;
 

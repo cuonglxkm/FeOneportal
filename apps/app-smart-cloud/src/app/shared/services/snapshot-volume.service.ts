@@ -38,8 +38,8 @@ export class SnapshotVolumeService extends BaseService {
     );
   }
 
-  getSnapshotVolummeById(snapshotVlID: string) {
-    return this.http.get<SnapshotVolumeDto>(this.urlSnapshotVl + '/' + snapshotVlID,this.httpOptions).pipe(
+  getSnapshotVolumeById(snapshotVlID: string) {
+    return this.http.get<SnapshotVolumeDto>(this.urlSnapshotVl + `/${snapshotVlID}`, this.httpOptions).pipe(
       catchError(this.handleError<SnapshotVolumeDto>('get snapshot volume-detail error'))
     )
   }

@@ -96,7 +96,7 @@
               "children": [
                 {
                   "text": "Volume",
-                  "link": "/app-smart-cloud/volume"
+                  "link": "/app-smart-cloud/volumes"
                 },
                 {
                   "text": "Snapshot Volume",
