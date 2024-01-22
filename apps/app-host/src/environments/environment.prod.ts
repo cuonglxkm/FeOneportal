@@ -37,7 +37,7 @@ export const environment = {
     clientId: env['sso']['clientId'] || 'frontend-client',
     callback: env['sso']['callback'] || 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
     logout_callback: env['sso']['logout_callback'] || 'https://oneportal.onsmartcloud.com',
-    scope: env['sso']['scope'] || 'openid email roles',
+    scope: env['sso']['scope'] || 'openid email roles offline_access',
   },
   modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;

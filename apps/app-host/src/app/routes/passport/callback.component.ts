@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ALLOW_ANONYMOUS, SocialService} from '@delon/auth';
+import {Component, Inject, Input, OnInit} from '@angular/core';
+import {ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService, SocialService} from '@delon/auth';
 import {SettingsService} from '@delon/theme';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpContext, HttpHeaders, HttpParams} from "@angular/common/http";
@@ -19,6 +19,7 @@ export interface TokenResponse {
   expires_in?: number;
   /** Email for current user */
   access_token?: string;
+  refresh_token?: string;
 }
 
 @Component({
@@ -75,11 +76,12 @@ export class CallbackComponent implements OnInit {
           const decodedToken = helper.decodeToken(accessToken);
 
           let info = {
-            token: token.access_token,
-            email: decodedToken['email'],
-            time: token.expires_in,
-            id_token: decodedToken['oi_au_id'],
-            exp: decodedToken['exp']
+              token: token.access_token,
+              email: decodedToken['email'],
+              time: token.expires_in,
+              id_token: decodedToken['oi_au_id'],
+              exp: decodedToken['exp'],
+              refresh_token: token.refresh_token,
           };
 
           return this.httpClient.get<UserModel>(`${baseUrl}/users/` + info.email, {
