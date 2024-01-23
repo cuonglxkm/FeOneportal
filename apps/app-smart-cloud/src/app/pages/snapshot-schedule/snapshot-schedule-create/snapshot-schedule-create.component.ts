@@ -71,12 +71,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   doGetListVolume() {
     this.isLoading = true;
     this.volumeList = [];
-    this.volumeService
-      .getVolumes(
-        this.userId,
-        this.project,
-        this.region,
-        null,
+    this.volumeService.getVolumes(this.userId, this.project, this.region,
         1000,
         1,
         null,

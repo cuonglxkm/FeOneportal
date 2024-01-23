@@ -1,100 +1,65 @@
-<app-header-volume [headerInfo]="headerInfo" xmlns="http://www.w3.org/1999/html"></app-header-volume>
-
-
-<nz-spin [nzSpinning]="isLoading" nzSize="large">
-  <div class="detail-volume">
-    <div class="row">
-      <h3 style="display: inline-block; margin-right: auto;">Chi tiết dịch vụ</h3>
-      <div class="action-detail-volume">
-        <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
-                nzType="primary">
-          <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
-        </button>
-        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
-                (click)="navigateEditVolume(volumeInfo.id)"
-                nz-button nzType="primary">
-          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-        </button>
-      </div>
-    </div>
-    <br>
-    <hr style="opacity: 0.1">
-    <br>
-
-
+<page-header [breadcrumb]="breadcrumb"
+             [title]="title">
+    <ng-template #breadcrumb>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/']">Dịch vụ</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="'/app-smart-cloud/volumes'">
+            Volume
+          </a></nz-breadcrumb-item>
+      </nz-breadcrumb>
+          <div class="alain-custom-action text-right">
+            <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+            <project-select-dropdown (valueChanged)="projectChanged($event)"
+                                     [regionId]="region"></project-select-dropdown>
+          </div>
+    </ng-template>
+    <ng-template #title>
+      <nz-row>
+        <nz-col nzSpan="8">
+          <span nz-icon
+                nzType="arrow-left"
+                nzTheme="outline"
+                [routerLink]="'/app-smart-cloud/volumes'"
+                style="margin-right: 10px;"></span>
+            Chi tiết Volume
+        </nz-col>
+        <nz-col nzSpan="8" nzOffset="8" style="padding-left: 96px;">
+            <button class="button-fee" style="width: 160px; height: 40px;" (click)="navigateToRenew(volumeInfo.id)" nz-button
+                    nzType="primary">Gia hạn
+            </button>
+            <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
+                    (click)="navigateEditVolume(volumeInfo.id)"
+                    nz-button nzType="primary">
+              <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+            </button>
+        </nz-col>
+      </nz-row>
+    </ng-template>
+</page-header>
+<nz-spin [nzSpinning]="isLoading" nzSize="small">
+  <nz-card  nzTitle="Thông tin Volume">
     <nz-table [nzTemplateMode]="true" style="border: none;">
       <tbody>
-      <tr>
-        <td style="border-bottom: none; ">
-          <div style="display: flex; padding-left: 10%;">
-            <div style="width: 100px; height: 100px;">
-              <img nz-image
-                   width="100%"
-                   height="100%"
-                   nzSrc="assets/imgs/icon_cycle.png"
-                   alt=""
-              />
-            </div>
-            <div style="padding-left: 20px;">
-              <b>Chu kỳ thanh toán</b>
-              <br>
-              <p>1 tháng</p>
-              <p>Chu kỳ hiện tại: 1</p>
-            </div>
-          </div>
-
-        </td>
-        <td style="border-bottom: none; ">
-          <div style=" display: flex;  padding-left: 40%">
-            <div style="width: 100px; height: 100px;">
-              <img nz-image
-                   width="100%"
-                   height="100%"
-                   nzSrc="assets/imgs/icon_money.png"
-                   alt=""
-              />
-            </div>
-            <div style="padding-left: 20px;">
-              <b>Thông tin thanh toán kỳ tới</b>
-              <br>
-              <p>số tiền: 1.210.000VNĐ (từ 10/10/2023 đến 20/11/2023)</p>
-              <p>Ngày thanh toán: 20/10/2023</p>
-            </div>
-          </div>
-
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
-
-  </div>
-
-  <br>
-  <br>
-
-  <div class="info-volume">
-    <h3>Thông tin Volume</h3>
-    <br>
-    <hr style="opacity: 0.1">
-    <br>
-    <nz-table [nzTemplateMode]="true" style="border: none;">
-      <tbody>
-
       <td style="border-bottom: none; ">
         <p>
           <b>Tên Volume: </b>
-          {{volumeInfo.name}}
+          {{volumeInfo?.name}}
         </p>
       </td>
       <td style="border-bottom: none; ">
         <p>
           <b>Loại Volume: </b>
-          {{volumeInfo.volumeType}}
+          {{volumeInfo?.volumeType}}
         </p>
       </td>
       </tbody>
     </nz-table>
-
     <nz-table [nzTemplateMode]="true">
       <thead>
       <tr>
@@ -132,27 +97,19 @@
 
       </tbody>
     </nz-table>
-
-    <br>
-    <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
-    <br>
-    <label nz-checkbox [nzDisabled]="true" [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
-    <br>
-    <br>
-    <br>
-    <p>
-      <b>
-        Thời gian khởi tạo:
-      </b>
-      <span>{{ volumeInfo.creationDate | date:'dd/MM/yyyy' }}</span>
-    </p>
-    <p>
-      <b>
-        Ngày hết hạn:
-      </b>
-      <span>{{ volumeInfo.expirationDate | date:'dd/MM/yyyy' }}</span>
-    </p>
-
-
-  </div>
+    <div style="margin-top: 15px;">
+      <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >Mã hóa Volume</label>
+    </div>
+    <div style="margin-top: 15px;">
+      <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
+    </div>
+    <div style="margin-top: 15px;">
+      <p>
+        <strong>
+          Thời gian khởi tạo:
+        </strong>
+        <span>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</span>
+      </p>
+    </div>
+  </nz-card>
 </nz-spin>

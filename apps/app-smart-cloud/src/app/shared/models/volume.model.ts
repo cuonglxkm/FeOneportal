@@ -4,6 +4,7 @@ export class CreateVolumeRequestModel {
   customerId: number;
   createdByUserId: number;
   note: string;
+  couponCode: string
   orderItems: [
     {
       orderItemQuantity: number;
@@ -12,7 +13,8 @@ export class CreateVolumeRequestModel {
       price: number;
       serviceDuration: number;
     }
-  ]
+  ];
+
 }
 export class CreateVolumeResponseModel{
   success: boolean;
