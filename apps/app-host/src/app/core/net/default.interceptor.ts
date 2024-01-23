@@ -1,19 +1,24 @@
 import {
+  HttpClient,
+  HttpContext,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpHeaders,
-  HttpInterceptor,
+  HttpInterceptor, HttpParams,
   HttpRequest,
   HttpResponseBase
 } from '@angular/common/http';
 import {Injectable, Injector} from '@angular/core';
 import {Router} from '@angular/router';
-import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
-import {ALAIN_I18N_TOKEN, IGNORE_BASE_URL, _HttpClient, CUSTOM_ERROR, RAW_BODY} from '@delon/theme';
+import {ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService, SocialService} from '@delon/auth';
+import {ALAIN_I18N_TOKEN, IGNORE_BASE_URL, _HttpClient, CUSTOM_ERROR, RAW_BODY, SettingsService} from '@delon/theme';
 import {environment} from '@env/environment';
 import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {BehaviorSubject, Observable, of, throwError, catchError, filter, mergeMap, switchMap, take} from 'rxjs';
+import {CallbackComponent, TokenResponse} from "../../routes/passport/callback.component";
+import {JwtHelperService} from "@auth0/angular-jwt";
+import {UserModel} from "../../../../../../libs/common-utils/src";
 
 const CODEMESSAGE: { [key: number]: string } = {
   200: 'Máy chủ trả về thành công dữ liệu được yêu cầu. ',
@@ -42,8 +47,9 @@ export class DefaultInterceptor implements HttpInterceptor {
   private refreshTokenType: 're-request' | 'auth-refresh' = environment.api.refreshTokenType;
   private refreshToking = false;
   private refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-
-  constructor(private injector: Injector) {
+// @ts-ignore
+  url = environment.sso.issuer
+  constructor(private injector: Injector,private httpClient: HttpClient,private settingsSrv: SettingsService,) {
     if (this.refreshTokenType === 'auth-refresh') {
       // this.buildAuthRefresh();
     }
@@ -79,12 +85,26 @@ export class DefaultInterceptor implements HttpInterceptor {
    */
   private refreshTokenRequest(): Observable<any> {
     const model = this.tokenSrv.get();
-    return this.http.post(`/api/auth/refresh`, null, null, {headers: {refresh_token: model?.['refresh_token'] || ''}});
+    const params = new HttpParams()
+      .set('grant_type', 'refresh_token')
+      .set('refresh_token', this.tokenSrv.get()?.['refresh_token']);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + btoa(environment['sso'].clientId + ':')
+    });
+    const result = this.httpClient.post<TokenResponse>(this.url + '/connect/token', params.toString(),
+      {
+        headers,
+        responseType: 'json',
+        context: new HttpContext().set(ALLOW_ANONYMOUS, true)
+      });
+    return result;
+    // return this.http.post(`/api/auth/refresh`, null, null, {headers: {refresh_token: model?.['refresh_token'] || ''}});
   }
 
   // #region 刷新Token方式一：使用 401 重新刷新 Token
 
-  private tryRefreshToken(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
+  private tryRefreshToken(ev: any, req: HttpRequest<any>, next: HttpHandler): any {
     // 1、若请求为刷新Token请求，表示来自刷新Token可以直接跳转登录页
     if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
       this.toLogin();
@@ -101,23 +121,58 @@ export class DefaultInterceptor implements HttpInterceptor {
     // 3、尝试调用刷新 Token
     this.refreshToking = true;
     this.refreshToken$.next(null);
-
-    return this.refreshTokenRequest().pipe(
-      switchMap(res => {
-        // 通知后续请求继续执行
+    const helper = new JwtHelperService();
+    let result: any;
+    const rs = this.refreshTokenRequest()
+      .subscribe(
+        data => {
+        const accessToken = data.access_token || '';
+        const decodedToken = helper.decodeToken(accessToken);
         this.refreshToking = false;
-        this.refreshToken$.next(res);
-        // 重新保存新 token
-        this.tokenSrv.set(res);
-        // 重新发起请求
+        this.refreshToken$.next(data.refresh_token);
+        result = {
+          token: data.access_token,
+          email: decodedToken['email'],
+          time: data.expires_in,
+          id_token: decodedToken['oi_au_id'],
+          exp: decodedToken['exp'],
+          refresh_token: data.refresh_token,
+        };
+        this.tokenSrv.set(result);
+        this.settingsSrv.setUser({
+          ...this.settingsSrv.user,
+          ...result
+        });
         return next.handle(this.reAttachToken(req));
-      }),
-      catchError(err => {
-        this.refreshToking = false;
-        this.toLogin();
-        return throwError(() => err);
-      })
-    );
+      },
+        error => {
+          this.tokenSrv.clear();
+          this.toLogin();
+        })
+    //   .pipe(
+    //   switchMap(res => {
+    //     const accessToken = res.access_token || '';
+    //     const decodedToken = helper.decodeToken(accessToken);
+    //     // 通知后续请求继续执行
+    //     this.refreshToking = false;
+    //     this.refreshToken$.next(res.refresh_token);
+    //     // 重新保存新 token
+    //     // this.tokenSrv.set(res);
+    //
+    //     const info = {
+    //
+    //     };
+    //     this.tokenSrv.set(info);
+    //     // 重新发起请求
+    //     return next.handle(this.reAttachToken(req));
+    //   }),
+    //   catchError(err => {
+    //     this.refreshToking = false;
+    //     this.toLogin();
+    //     return throwError(() => err);
+    //   })
+    // );
+    return rs;
   }
 
   /**
@@ -147,7 +202,6 @@ export class DefaultInterceptor implements HttpInterceptor {
       .pipe(
         filter(() => !this.refreshToking),
         switchMap(res => {
-          console.log(res);
           this.refreshToking = true;
           return this.refreshTokenRequest();
         })
@@ -202,9 +256,9 @@ export class DefaultInterceptor implements HttpInterceptor {
         // }
         break;
       case 401:
-        if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
-          return this.tryRefreshToken(ev, req, next);
-        }
+        // if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
+        //   this.tryRefreshToken(ev, req, next);
+        // }
         this.toLogin();
         break;
       case 403:
@@ -241,11 +295,12 @@ export class DefaultInterceptor implements HttpInterceptor {
       case 200:
         break;
       case 401:
+        this.tryRefreshToken(null, req, next);
+        // this.tokenSrv.clear()
         // if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
-        //   return this.tryRefreshToken(ev, req, next);
+        //   this.tryRefreshToken(req, next);
         // }
-        this.tokenSrv.clear()
-        this.toLogin();
+        // this.toLogin();
         break;
       case 403:
       case 404:
@@ -274,10 +329,8 @@ export class DefaultInterceptor implements HttpInterceptor {
       const {baseUrl} = environment.api;
       url = baseUrl + (baseUrl.endsWith('/') && url.startsWith('/') ? url.substring(1) : url);
     }
-
     if (this.checkTokenExpired()) {
-      this.tokenSrv.clear();
-      this.toLogin();
+      this.tryRefreshToken(null, req, next);
     }
 
     const newReq = req.clone({url, setHeaders: this.getAdditionalHeaders(req.headers)});
