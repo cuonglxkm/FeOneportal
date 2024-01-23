@@ -63,7 +63,7 @@ export class SnappshotvlDetailComponent implements OnInit {
 
   private getSnapshotVolume(idSnapshotVl: string) {
     this.isLoading = true;
-    this.snapshotVlService.getSnapshotVolummeById(idSnapshotVl).subscribe(data => {
+    this.snapshotVlService.getSnapshotVolumeById(idSnapshotVl).subscribe(data => {
       if (data !== undefined && data != null){
         this.snapshotName = data.name;
         this.snapshotSize = data.sizeInGB;
