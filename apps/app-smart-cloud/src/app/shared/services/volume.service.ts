@@ -48,10 +48,9 @@ export class VolumeService extends BaseService {
     })
   }
 
-  getVolummeById(volumeId: string) {
-    return this.http.get<VolumeDTO>(this.urlVolumeGW + '/' + volumeId,this.httpOptions).pipe(
-      catchError(this.handleError<VolumeDTO>('get volume-detail error'))
-    )
+  getVolummeById(volumeId: number) {
+    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`, {
+      headers: this.httpOptions.headers})
   }
 
   //tinh phi Volume : FAKE

@@ -73,6 +73,7 @@ import { PaymentFailedComponent } from "../shared/components/payment-failed/paym
 import {OrderListComponent} from "./order/order-list/order-list.component";
 import {ListPaymentComponent} from "./billing/payment/list/list-payment.component";
 import {OrderDetailComponent} from "./order/order-detail/order-detail.component";
+import {RenewVolumeComponent} from "./volume/component/renew-volume/renew-volume.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -312,6 +313,10 @@ const routes: Routes = [
   {
     path: 'order/detail/:id',
     component: OrderDetailComponent
+  },
+  {
+    path: 'volumes/renew/:id',
+    component: RenewVolumeComponent
   }
   ]
 @NgModule({

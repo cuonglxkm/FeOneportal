@@ -310,6 +310,7 @@ export class VolumeCreate {
   typeName: string;
   userEmail: any;
   actorEmail: any;
+  iops: number;
 }
 
 export class Order {

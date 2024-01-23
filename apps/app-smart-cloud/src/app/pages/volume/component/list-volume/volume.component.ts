@@ -238,73 +238,13 @@ export class VolumeComponent implements OnInit {
   navigateToCreateVolume() {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
-  //
-  // searchVolumes() {
-  //   this.userId = this.tokenService.get()?.userId;
-  //   // tabIndex = 0 : RootVolume
-  //   // tabIndex = 1 : AddVolume
-  //   if (this.tabVolumeIndex == 0) {
-  //     this.getListVolume(this.userId, this.projectSearch, this.regionSearch, true, 10, 1, this.volumeStatusSearch, this.volumeNameSearch)
-  //   } else {
-  //     this.getListVolume(this.userId, this.projectSearch, this.regionSearch, false, 10, 1, this.volumeStatusSearch, this.volumeNameSearch)
-  //   }
-  // }
-  //
-  // reloadDataVolumeRoot() {
-  //   this.getListVolume(this.userId, this.projectSearch, this.regionSearch, true, 10, 1, null, null)
-  //   this.volumeNameSearch = null;
-  //   this.volumeStatusSearch = null;
-  // }
-  //
-  // reloadDataVolumeAdd() {
-  //   this.getListVolume(this.userId, this.projectSearch, this.regionSearch, false, 10, 1, null, null)
-  //   this.volumeNameSearch = null;
-  //   this.volumeStatusSearch = null;
-  // }
-  //
-  // getDetailVolume(idVolume: number) {
-  //   console.log(idVolume);
-  //   this.router.navigate(['/app-smart-cloud/volume/detail/' + idVolume]);
-  // }
-  //
-  //
-  // private getListVolume(userId: number, vpcId: number, regionId: number, volumeRootOnly: boolean, pageSize: number, currentPage: number, status: string, volumeName: string) {
-  //   this.isLoadingSearch = true;
-  //   this.listVolumeAdd = [];
-  //   this.listVolumeRoot = [];
-  //   this.volumeSevice.getVolumes(userId, vpcId, regionId, volumeRootOnly, pageSize, currentPage, status, volumeName).subscribe(data => {
-  //
-  //     if (volumeRootOnly === true) {
-  //       if (data.records.length > 0) {
-  //         this.listVolumeRootResponse = data;
-  //         this.listVolumeRoot = data.records;
-  //         this.totalRoot = data.totalCount;
-  //         this.isLoadingSearch = false;
-  //       } else{
-  //         this.isLoadingSearch = false;
-  //       }
-  //
-  //
-  //     } else {
-  //       if (data.records.length > 0) {
-  //         this.listVolumeAddVolumeResponse = data;
-  //         this.listVolumeAdd = data.records;
-  //         this.totalAdd = data.totalCount;
-  //         this.isLoadingSearch = false;
-  //       } else{
-  //         this.isLoadingSearch = false;
-  //       }
-  //     }
-  //   })
-  // }
-  //
   async doDeleteVolume(volumeId: number): Promise<any> {
     let result = this.volumeService.deleteVolume(volumeId).toPromise();
     return !!result;
   }
   //
   addVolumeToVM(volume: VolumeDTO, vmId: number): void {
-    this.volumeService.getVolummeById(volume.id.toString()).toPromise().then(data => {
+    this.volumeService.getVolummeById(volume.id).toPromise().then(data => {
       if (data != null) {
         this.isLoadingAction = true;
         if (data.isMultiAttach == false && data.attachedInstances.length == 1) {

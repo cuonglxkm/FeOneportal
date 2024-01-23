@@ -114,18 +114,18 @@ export class CreateVolumeComponent implements OnInit {
     snapshot: FormControl<number>
     radio: FormControl<any>
     instanceId: FormControl<number>
-    time: FormControl<number[]>
+    time: FormControl<number>
     description: FormControl<string>
     storage: FormControl<number>
     isEncryption: FormControl<boolean>
     isMultiAttach: FormControl<boolean>
   }> = this.fb.group({
-    name: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/)]],
+    name: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     isSnapshot: [false, []],
     snapshot: [null as number , []],
     radio: [''],
     instanceId: [null as number, Validators.required],
-    time: [[] as number[], Validators.required],
+    time: [null as number, Validators.required],
     description: ['', Validators.maxLength(700)],
     storage: [1, Validators.required],
     isEncryption: [false, Validators.required],
@@ -146,8 +146,10 @@ export class CreateVolumeComponent implements OnInit {
 
   iops: number
 
+  nameList: string[] = []
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private volumeSevice: VolumeService,
+              private volumeService: VolumeService,
               private snapshotvlService: SnapshotVolumeService,
               private route: ActivatedRoute,
               private notification: NzNotificationService,
@@ -158,16 +160,52 @@ export class CreateVolumeComponent implements OnInit {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value
       this.validateForm.get('instanceId').reset()
-      // Do something with the changed value, e.g., display a message
+    });
+
+    this.validateForm.get('storage').valueChanges.subscribe((value) => {
+      if ([1, 2].includes(this.region)) {
+        if (value < 20) return this.iops = 0
+        if (value <= 200) return this.iops = 600
+        if (value <= 500) return this.iops = 1200
+        if (value <= 1000) return this.iops = 3000
+        if (value <= 2000) return this.iops = 6000
+      }
+      if ([3, 4].includes(this.region)) {
+        if (value < 40) return this.iops = 400
+        this.iops = value * 10
+      }
     });
   }
 
-  getSelectMode(): string {
-    return this.validateForm.get('multipleVolume').value ? 'multiple' : 'default';
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return {duplicateName: true}; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListVolumes() {
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region,
+        9999, 1, null, null)
+        .subscribe(data => {
+          data.records.forEach(item => {
+            if(this.nameList.length > 0) {
+              this.nameList.push(item.name)
+            } else {
+              this.nameList = [item.name]
+            }
+          })
+        }, error => {
+          this.nameList = null
+        })
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.validateForm.get('storage').reset()
   }
 
   projectChanged(project: ProjectModel) {
@@ -199,12 +237,15 @@ export class CreateVolumeComponent implements OnInit {
         })
   }
 
+  getAmountIops() {
+
+    return 0
+  }
   instanceSelectedChange(value: any) {
     this.instanceSelected = value
   }
 
-  timeSelectedChange(value) {
-    this.timeSelected = value
+  timeSelectedChange() {
     this.getTotalAmount()
   }
 
@@ -218,19 +259,29 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.volumeType = this.selectedValueRadio;
     this.volumeCreate.volumeSize = this.validateForm.controls.storage.value;
     this.volumeCreate.description = null;
-    this.volumeCreate.createFromSnapshotId = null;
-    this.volumeCreate.instanceToAttachId = null;
-    this.volumeCreate.isMultiAttach = false;
-    this.volumeCreate.isEncryption = false;
+    if(this.validateForm.controls.isSnapshot.value == true) {
+      this.volumeCreate.createFromSnapshotId = this.validateForm.controls.snapshot.value;
+    } else {
+      this.volumeCreate.createFromSnapshotId = null
+    }
+
+    this.volumeCreate.instanceToAttachId = this.validateForm.controls.instanceId.value;
+    this.volumeCreate.isMultiAttach = this.validateForm.controls.isMultiAttach.value;
+    this.volumeCreate.isEncryption = this.validateForm.controls.isEncryption.value;
     this.volumeCreate.vpcId = this.project.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
+    this.volumeCreate.iops = this.iops
 
     let currentDate = new Date();
     let lastDate = new Date();
-    lastDate.setDate(currentDate.getDate() + this.timeSelected * 30);
+    if(this.timeSelected == undefined || this.timeSelected == null) {
+      lastDate.setDate(currentDate.getDate() + 30);
+    } else {
+      lastDate.setDate(currentDate.getDate() + this.timeSelected * 30);
+    }
     this.volumeCreate.createDate = currentDate?.toISOString().substring(0, 19);
     this.volumeCreate.expireDate = lastDate?.toISOString().substring(0, 19);
 
@@ -244,14 +295,14 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.am = null;
     this.volumeCreate.amManager = null;
     this.volumeCreate.isTrial = false;
-    this.volumeCreate.offerId =
-        this.volumeCreate.volumeType == 'hdd' ? 2 : 156;
+    // this.volumeCreate.offerId =
+    //     this.volumeCreate.volumeType == 'hdd' ? 2 : 156;
     this.volumeCreate.couponCode = null;
     this.volumeCreate.dhsxkd_SubscriptionId = null;
     this.volumeCreate.dSubscriptionNumber = null;
     this.volumeCreate.dSubscriptionType = null;
     this.volumeCreate.oneSME_SubscriptionId = null;
-    this.volumeCreate.actionType = 1;
+    this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
     this.volumeCreate.serviceName = this.validateForm.controls.name.value ;
     this.volumeCreate.typeName =
@@ -263,6 +314,12 @@ export class CreateVolumeComponent implements OnInit {
   totalAmountVolume = 0;
   totalAmountVolumeVAT = 0;
   orderItem: OrderItem = new OrderItem()
+  unitPrice = 0
+
+  changeValueInput() {
+    console.log('total amount')
+    this.getTotalAmount()
+  }
 
   getTotalAmount() {
     this.volumeInit()
@@ -277,6 +334,7 @@ export class CreateVolumeComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data
+      this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
     });
   }
 
@@ -284,55 +342,8 @@ export class CreateVolumeComponent implements OnInit {
     this.date = new Date()
   }
 
-  // async ngOnInit(): Promise<void> {
-  //   this.activatedRoute.queryParams.subscribe(params => {
-  //     console.log(params);
-  //     const createdFromSnapshot = params['createdFromSnapshot'];
-  //     const idSnapshot = params['idSnapshot'];
-  //     const sizeSnapshot = params['sizeSnapshot'];
-  //     const typeSnapshot = params['typeSnapshot'];
-  //
-  //     if (createdFromSnapshot == 'true') {
-  //       this.isInitSnapshot = true;
-  //       this.createVolumeInfo.createFromSnapshotId = Number.parseInt(idSnapshot);
-  //       this.createVolumeInfo.volumeSize = Number.parseInt(sizeSnapshot);
-  //       this.createVolumeInfo.volumeType = typeSnapshot;
-  //     }
-  //
-  //   });
-  //
-  // }
-  //
-  // getPremiumVolume(volumeType: string, size: number, duration: number) {
-  //   this.showWarningVolumeType = false;
-  //   this.showWarningVolumeExpTime = false;
-  //
-  //   if (duration !== undefined && duration != null) {
-  //     this.endDateVolume = new Date(this.createDateVolume.getFullYear(), this.createDateVolume.getMonth()
-  //       + this.volumeExpiryTime, this.createDateVolume.getDate());
-  //     this.createVolumeInfo.createDate = this.createDateVolume.toISOString()
-  //     this.createVolumeInfo.expireDate = this.endDateVolume.toISOString();
-  //     if (volumeType !== undefined && volumeType != null && volumeType != ''
-  //       && size !== undefined && size != null) {
-  //
-  //
-  //       this.volumeSevice.getPremium(volumeType, size, duration).subscribe(data => {
-  //         if (data != null) {
-  //           this.nzMessage.create('success', 'Phí đã được cập nhật.')
-  //           this.priceVolumeInfo = data;
-  //         }
-  //       })
-  //     }
-  //   }
-  //
-  //
-  // }
-  // checkDisableCreate(): boolean{
-  //   return this.createVolumeInfo.serviceName == null || this.createVolumeInfo.volumeType == null || this.createVolumeInfo.expireDate == null;
-  // }
-  //
-
   submitForm() {
+    this.nameList = []
     console.log(this.validateForm.value);
     this.createNewVolume()
   }
@@ -364,12 +375,12 @@ export class CreateVolumeComponent implements OnInit {
     ]
 
     console.log(request);
-    this.volumeSevice.createNewVolume(request).subscribe(data => {
+    this.volumeService.createNewVolume(request).subscribe(data => {
       if (data != null) {
         //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
         if(data.code == 200){
           this.isLoadingAction = false;
-          this.notification.success('success', 'Yêu cầu tạo Volume thành công.')
+          this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.')
           this.router.navigate(['/app-smart-cloud/volumes']);
         }
         //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310

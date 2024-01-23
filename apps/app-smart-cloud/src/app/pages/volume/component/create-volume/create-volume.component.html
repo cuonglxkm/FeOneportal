@@ -44,8 +44,9 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input formControlName="name" id="name" [maxlength]="70"/>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Vui lòng chỉ nhập kí tự là chữ hoặc số</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume này đã được sử dụng, vui lòng chọn tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -116,7 +117,6 @@
             <th>Dung lượng(GB)</th>
             <th>IOPS</th>
             <th>Giá theo tháng(VNĐ)</th>
-            <th>Giá theo giờ(VNĐ)</th>
           </tr>
           </thead>
           <tbody>
@@ -124,16 +124,18 @@
             <td>
               <nz-input-number formControlName="storage"
                                id="storage"
+                               (ngModelChange)="changeValueInput()"
                                [nzMin]="1" [nzStep]="1"></nz-input-number>
             </td>
-            <td>200</td>
-            <td>360.712</td>
-            <td>484</td>
+            <td>{{iops}}</td>
+            <td>{{unitPrice}}</td>
+<!--            <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>-->
+<!--            <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.orderItemPrices[0].unitPrice}}</td>-->
           </tr>
           </tbody>
         </nz-table>
       </nz-form-item>
-      <label nz-checkbox formControlName="isEncryption">Mã hóa Volume</label>
+      <label nz-checkbox formControlName="isEncryption" >Mã hóa Volume</label>
       <br>
       <label nz-checkbox style="margin-top: 10px;" formControlName="isMultiAttach">Gắn nhiều máy ảo</label>
       <nz-form-item style="margin-top: 10px;">
@@ -170,25 +172,27 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item>
+      <nz-form-item >
         <nz-form-label nzFor="time">
           <div class="label">
             <span>Thời gian sử dụng (Tháng)</span>
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
           </div>
         </nz-form-label>
-        <nz-select nzSize="default"
-                   formControlName="time"
-                   id="time"
-                   [nzPlaceHolder]="'-Chọn thời gian sử dụng-'"
-                   [nzShowSearch]="false"
-                   [(ngModel)]="timeSelected"
-                   (ngModelChange)="timeSelectedChange($event)"
-                   [nzMode]="'tags'"
-                   style="width: 100%;">
-          <nz-option *ngFor="let item of expiryTimeList" [nzLabel]="item.label"
-                     [nzValue]="item.value"></nz-option>
-        </nz-select>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+          <nz-input-number
+            style="width:100%;"
+            formControlName="time"
+            (ngModelChange)="timeSelectedChange()"
+            nzMin="1"
+            nzMax="100"
+            nzStep="1"/>
+          <ng-template #dateErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+            <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+            <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+          </ng-template>
+        </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label nzFor="now">
@@ -197,6 +201,7 @@
             <span>{{ date | date: 'dd/MM/yyyy' }}</span>
           </div>
         </nz-form-label>
+
       </nz-form-item>
     </nz-card>
     <nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
