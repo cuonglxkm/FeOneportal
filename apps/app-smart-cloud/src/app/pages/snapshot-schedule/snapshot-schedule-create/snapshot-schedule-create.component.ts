@@ -25,7 +25,6 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean;
-  scheduleName: string;
   showWarningName: boolean;
   contentShowWarningName: string;
   volumeId: number;
@@ -34,17 +33,20 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   scheduleStartTime: string;
   dateStart: string;
   descSchedule: string;
+  snapshotMode: string = 'Theo tuần'
+  numberArchivedCopies = 1;
 
-  time: Date | null = null;
+  time: Date = new Date(0, 0, 0, 0, 0, 0);
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 
   form: FormGroup<{
     name: FormControl<string>;
+    volume: FormControl<number>;
+    selectedDate: FormControl<string>;
   }> = this.fb.group({
-    name: [
-      '',
-      [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)],
-    ],
+    name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
+    volume: [0, [Validators.required]],
+    selectedDate: ['', [Validators.required]],
   });
 
   dateList: NzSelectOptionInterface[] = [
@@ -111,27 +113,26 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   goBack() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
   }
+  request = new CreateScheduleSnapshotDTO();
   create() {
     this.isLoading = true;
-    let request = new CreateScheduleSnapshotDTO();
-    request.dayOfWeek = this.dateStart;
-    request.daysOfWeek = null;
-    request.description = this.descSchedule;
-    request.intervalWeek = 1; // fix cứng số tuần  = 1;
-    request.mode = 3; //fix cứng chế độ = theo tuần ;
-    request.dates = null;
-    request.duration = null;
-    request.name = this.scheduleName;
-    request.volumeId = this.volumeId;
-    request.runtime = new Date().toISOString();
-    request.intervalMonth = null;
-    request.maxBaxup = 1; // fix cứng số bản
-    request.snapshotPacketId = null;
-    request.customerId = this.userId;
-    request.projectId = this.project;
-    request.regionId = this.region;
-    console.log(request);
-    this.snapshotService.createSnapshotSchedule(request).subscribe(
+    this.request.dayOfWeek = this.dateStart;
+    this.request.daysOfWeek = null;
+    this.request.description = this.descSchedule;
+    this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
+    this.request.mode = 3; //fix cứng chế độ = theo tuần ;
+    this.request.dates = null;
+    this.request.duration = null;
+    this.request.volumeId = this.volumeId;
+    this.request.runtime = new Date().toISOString();
+    this.request.intervalMonth = null;
+    this.request.maxBaxup = 1; // fix cứng số bản
+    this.request.snapshotPacketId = null;
+    this.request.customerId = this.userId;
+    this.request.projectId = this.project;
+    this.request.regionId = this.region;
+    console.log(this.request);
+    this.snapshotService.createSnapshotSchedule(this.request).subscribe(
       (data) => {
         if (data != null) {
           console.log(data);
@@ -149,21 +150,6 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         this.isLoading = false;
       }
     );
-  }
-
-  changeName() {
-    this.scheduleName = this.scheduleName.trim();
-    if (this.checkSpecialSnapshotName(this.scheduleName)) {
-      this.showWarningName = true;
-      this.contentShowWarningName =
-        'Tên lịch Snapshot không được chứa ký tự đặc biệt.';
-    } else if (this.scheduleName === null || this.scheduleName == '') {
-      this.showWarningName = true;
-      this.contentShowWarningName = 'Tên lịch Snapshot không được để trống';
-    } else {
-      this.showWarningName = false;
-      this.contentShowWarningName = '';
-    }
   }
 
   checkSpecialSnapshotName(str: string): boolean {

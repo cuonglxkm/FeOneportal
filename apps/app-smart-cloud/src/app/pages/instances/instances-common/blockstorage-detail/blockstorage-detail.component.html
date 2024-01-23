@@ -31,7 +31,6 @@ Block Storage"
           <th>Dung lượng (GB)</th>
           <th>Trạng thái Volume</th>
           <th>Kiểu Volume</th>
-          <th>Giá theo tháng (VNĐ)</th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
@@ -40,10 +39,16 @@ Block Storage"
             <label *ngIf="data.volumeType == 'ssd'"> SSD </label>
             <label *ngIf="data.volumeType == 'hdd'"> HDD </label>
           </td>
-          <td>
-            <label class="text-blue">
-              {{ data.name }}
-            </label>
+          <td nzLeft>
+            <a
+              nz-tooltip
+              nzTooltipTitle="Xem chi tiết"
+              nzTooltipPlacement="bottom"
+              [routerLink]="
+                '/app-smart-cloud/volume/detail/' + data.id
+              "
+              >{{ data.name }}</a
+            >
           </td>
           <td>
             <label>
@@ -67,11 +72,6 @@ Block Storage"
                 alt=""
               />
               VOLUME GẮN THÊM
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.price }}
             </label>
           </td>
         </tr>

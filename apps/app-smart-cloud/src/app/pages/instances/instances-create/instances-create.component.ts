@@ -136,7 +136,7 @@ export class InstancesCreateComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private loadingSrv: LoadingService,
+    private loadingSrv: LoadingService
   ) {
     this.tempData = [
       this.images[Math.floor(Math.random() * this.images.length)],
@@ -340,9 +340,16 @@ export class InstancesCreateComponent implements OnInit {
   isCustomconfig = false;
   onClickConfigPackage() {
     this.isCustomconfig = false;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
   }
 
   onClickCustomConfig() {
+    this.configCustom = new ConfigCustom();
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
     this.isCustomconfig = true;
   }
   //#endregion
@@ -449,21 +456,29 @@ export class InstancesCreateComponent implements OnInit {
 
   onChangeVCPU() {
     if (
+      this.configCustom.vCPU != 0 &&
       this.configCustom.ram != 0 &&
       this.configCustom.capacity != 0 &&
       this.hdh != null
     ) {
       this.getTotalAmount();
+    } else if (this.configCustom.vCPU == 0) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
     }
   }
 
   onChangeRam() {
     if (
       this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
       this.configCustom.capacity != 0 &&
       this.hdh != null
     ) {
       this.getTotalAmount();
+    } else if (this.configCustom.ram == 0) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
     }
   }
 
@@ -471,9 +486,13 @@ export class InstancesCreateComponent implements OnInit {
     if (
       this.configCustom.vCPU != 0 &&
       this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0 &&
       this.hdh != null
     ) {
       this.getTotalAmount();
+    } else if (this.configCustom.capacity == 0) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
     }
   }
   //#endregion
@@ -837,11 +856,20 @@ export class InstancesCreateComponent implements OnInit {
       this.notification.error('', 'Vui lòng chọn hệ điều hành');
       return;
     }
-    if (this.offerFlavor == null) {
+    if (this.isCustomconfig == false && this.offerFlavor == null) {
       this.notification.error('', 'Vui lòng chọn gói cấu hình');
       return;
     }
-    this.instanceInit();
+    if (
+      this.isCustomconfig == true &&
+      (this.configCustom.vCPU == 0 ||
+        this.configCustom.ram == 0 ||
+        this.configCustom.capacity == 0)
+    ) {
+      this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
+      return;
+    }
+      this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
     let orderItemInstance = new OrderItem();
