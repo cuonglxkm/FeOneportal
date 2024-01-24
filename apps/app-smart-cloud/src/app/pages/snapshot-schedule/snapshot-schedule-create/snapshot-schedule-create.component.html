@@ -43,12 +43,12 @@
           <input
             nz-input
             formControlName="name"
-            [(ngModel)]="scheduleName"
+            [(ngModel)]="request.name"
             id="name"
             placeholder="Nhập tên lịch Snapshot"
             maxlength="64"
             minlength="1"
-            (change)="scheduleName = scheduleName.trim()"
+            (change)="request.name = request.name.trim()"
           />
           <span class="nameField"
             >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
@@ -71,6 +71,8 @@
       <nz-select
         nzSize="default"
         [nzShowSearch]="true"
+        formControlName="volume"
+        id="volume"
         [nzPlaceHolder]="'-Chọn tên Volume-'"
         [(ngModel)]="volumeId"
         style="width: 100%"
@@ -85,7 +87,13 @@
       <br />
 
       <nz-form-label [nzSm]="6" [nzXs]="24">Chế độ Snapshot</nz-form-label>
-      <input nz-input placeholder="Theo tuần" disabled="true" type="text" />
+      <input
+        nz-input
+        disabled="true"
+        type="text"
+        [(ngModel)]="snapshotMode"
+        [ngModelOptions]="{ standalone: true }"
+      />
       <br />
       <br />
 
@@ -95,6 +103,7 @@
       <nz-time-picker
         style="width: 100%"
         [(ngModel)]="time"
+        [ngModelOptions]="{ standalone: true }"
         [nzDefaultOpenValue]="defaultOpenValue"
       ></nz-time-picker>
       <br />
@@ -108,6 +117,8 @@
       <nz-select
         nzSize="default"
         [nzShowSearch]="true"
+        formControlName="selectedDate"
+        id="selectedDate"
         [nzPlaceHolder]="'-Chọn ngày-'"
         [(ngModel)]="dateStart"
         style="width: 100%"
@@ -124,12 +135,24 @@
       <nz-form-label [nzSm]="6" [nzXs]="24"
         >Số bản Snapshot lưu trữ</nz-form-label
       >
-      <input nz-input placeholder="1" disabled="true" type="text" />
+      <input
+        nz-input
+        disabled="true"
+        type="text"
+        [(ngModel)]="numberArchivedCopies"
+        [ngModelOptions]="{ standalone: true }"
+      />
       <br />
       <br />
 
       <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
-      <textarea rows="4" nz-input [(ngModel)]="descSchedule"></textarea>
+      <textarea
+        rows="4"
+        nz-input
+        [maxlength]="255"
+        [(ngModel)]="descSchedule"
+        [ngModelOptions]="{ standalone: true }"
+      ></textarea>
     </nz-card>
 
     <div
