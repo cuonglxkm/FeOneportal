@@ -183,7 +183,7 @@
           <nz-input-number
             style="width:100%;"
             formControlName="time"
-            (ngModelChange)="timeSelectedChange()"
+            (ngModelChange)="timeSelectedChange($event)"
             nzMin="1"
             nzMax="100"
             nzStep="1"/>

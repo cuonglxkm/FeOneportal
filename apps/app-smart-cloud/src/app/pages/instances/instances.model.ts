@@ -518,6 +518,7 @@ export class ItemPayment {
   specificationString: string;
   specificationType: string;
   sortItem: number;
+  serviceDuration: number
 }
 
 export class InstanceExtend {

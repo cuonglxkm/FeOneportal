@@ -125,7 +125,7 @@ export class CreateVolumeComponent implements OnInit {
     snapshot: [null as number , []],
     radio: [''],
     instanceId: [null as number, Validators.required],
-    time: [null as number, Validators.required],
+    time: [1, Validators.required],
     description: ['', Validators.maxLength(700)],
     storage: [1, Validators.required],
     isEncryption: [false, Validators.required],
@@ -245,7 +245,9 @@ export class CreateVolumeComponent implements OnInit {
     this.instanceSelected = value
   }
 
-  timeSelectedChange() {
+  timeSelectedChange(value) {
+    this.timeSelected = value
+    console.log(this.timeSelected)
     this.getTotalAmount()
   }
 
@@ -257,8 +259,8 @@ export class CreateVolumeComponent implements OnInit {
 
   volumeInit() {
     this.volumeCreate.volumeType = this.selectedValueRadio;
-    this.volumeCreate.volumeSize = this.validateForm.controls.storage.value;
-    this.volumeCreate.description = null;
+    this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
+    this.volumeCreate.description = this.validateForm.get('description').value;
     if(this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId = this.validateForm.controls.snapshot.value;
     } else {
@@ -323,10 +325,13 @@ export class CreateVolumeComponent implements OnInit {
 
   getTotalAmount() {
     this.volumeInit()
+
+    console.log('time', this.timeSelected)
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.volumeCreate);
     itemPayment.specificationType = 'volume_create';
+    itemPayment.serviceDuration = this.validateForm.get('time').value;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -350,7 +355,6 @@ export class CreateVolumeComponent implements OnInit {
 
   createNewVolume() {
     if (this.validateForm.valid) {
-      this.volumeInit()
       this.doCreateVolume();
       console.log(this.volumeCreate);
     } else {
@@ -360,6 +364,7 @@ export class CreateVolumeComponent implements OnInit {
   //
   doCreateVolume() {
     this.isLoadingAction = true;
+    this.getTotalAmount()
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.volumeCreate.customerId;
     request.createdByUserId = this.volumeCreate.customerId;
@@ -369,7 +374,7 @@ export class CreateVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.volumeCreate),
         specificationType: 'volume_create',
-        price: this.priceVolumeInfo.price,
+        price: this.orderItem?.totalPayment?.amount,
         serviceDuration: this.volumeExpiryTime
       }
     ]
