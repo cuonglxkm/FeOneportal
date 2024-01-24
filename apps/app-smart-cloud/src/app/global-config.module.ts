@@ -19,11 +19,11 @@ const alainConfig: AlainConfig = {
     licenseA: `C94CEE276DB2187AE6B65D56B3FC2848`
   },
   auth: {
-    login_url: '/passport/login',
-    token_send_place: 'body',
+    login_url: '/welcome',
+    token_send_place: 'header',
     token_send_template: 'Bearer ${token}',
     token_send_key: 'Authorization',
-    ignores: [/\/login/, /assets\//, /passport\//, /provisions\//,/\/keypair/ ],
+    ignores: [/\/login/, /assets\//, /passport\//],
   }
 };
 

@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {RegionModel} from "../../../shared/models/region.model";
+import {ProjectModel} from "../../../shared/models/project.model";
+import {SecurityGroupSearchCondition} from "../../../shared/models/security-group";
 
 @Component({
   selector: 'one-portal-bank-security-group',
@@ -6,5 +9,28 @@ import { Component } from '@angular/core';
   styleUrls: ['./blank-security-group.component.less'],
 })
 export class BlankSecurityGroupComponent {
-   // ngZorroIconLiteral = '<img src="./assets/img/logo.svg" width="450" height="450" alt="a">';
+  region: number;
+  project: number;
+
+  conditionSearch: SecurityGroupSearchCondition = new SecurityGroupSearchCondition();
+
+  isVisible = false;
+
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.project = project?.id
+  }
+
+  showModalCreate(){
+    this.isVisible = true
+  }
+
+  handleOkCreate() {
+    this.isVisible = false
+  }
+
+
 }

@@ -1,0 +1,122 @@
+<one-portal-header
+  title="Chỉnh sửa Policy"
+  [path]="['Home', 'IAM', 'Policies', 'Edit policy' ]"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-spin nzTip="Loading..." [nzSpinning]="isLoadding">
+  <nz-content>
+    <nz-card>
+      <div nz-row class="mb-md">
+        <div nz-col nzSpan="18">
+          <h3>Policy editor</h3>
+          <p style="color: #888;">Thêm quyền bằng cách chọn dịch vụ,hành động,tài nguyên và điều kiện hoặc xây dựng câu
+            lệnh
+            bằng trình soạn thảo JSON</p>
+        </div>
+        <div nz-col nzSpan="6">
+          <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
+            <button (click)="visualOption(true)" nz-button [nzType]="isVisual?'primary':'default'">Visual
+            </button>
+            <button (click)="visualOption(false)" nz-button [nzType]="!isVisual?'primary':'default'">Json
+            </button>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+
+    <nz-card *ngFor="let panel of panels">
+      <nz-collapse nzBordered="false">
+        <nz-collapse-panel
+          [nzHeader]="panel.name==null?'Chọn dịch vụ':panel.name"
+        >
+
+
+          <div nz-row class="mb-md">
+            <div nz-col nzSpan="18">
+              <p style="margin:0; opacity: 0.5">
+                Chỉ định những hành động nào có thể được thực hiện trên các tài nguyên cụ thể trong một dịch vụ.
+              </p>
+            </div>
+            <div nz-col nzSpan="6">
+              <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
+                <button (click)="deleteService(panel)" nz-button [nzType]="'default'">Xóa
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <br>
+
+          <nz-select nzSize="default"
+                     [nzPlaceHolder]="'-Chọn dịch vụ-'"
+                     [(ngModel)]="panel.idService"
+                     (ngModelChange)="changeService(panel)"
+                     style="width: 100%;"
+          >
+            <nz-option *ngFor="let item of allService" [nzLabel]="item.toString()"
+                       [nzValue]="item"></nz-option>
+          </nz-select>
+
+          <br>
+
+          <nz-table
+            *ngIf="isVisual && panel.idService != null"
+            class="table-data"
+            #rowSelectionTable
+            nzShowPagination
+            nzShowSizeChanger
+            [nzData]="panel.listPer"
+          >
+            <thead>
+            <tr>
+              <th
+                [(nzChecked)]="checkedAll"
+                (nzCheckedChange)="onAllChecked($event, panel)"
+              ></th>
+              <th>Permission Policíe</th>
+              <th>Mô tả</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+              <td
+                [nzChecked]="data.isChecked"
+                (nzCheckedChange)="onOneChecked($event, data)"
+              ></td>
+              <td>{{ data.name }}</td>
+              <td>{{ data.description}}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+
+          <json-editor *ngIf="!isVisual && panel.idService != null" style="min-height: 300px;" [options]="editorOptions"
+                       [data]="panel.listPer"></json-editor>
+
+        </nz-collapse-panel>
+      </nz-collapse>
+
+    </nz-card>
+
+    <button (click)="addService()"
+            nz-button nzType="primary"
+    >Thêm Permission policies
+    </button>
+
+    <br>
+    <br>
+
+    <nz-card
+      [nzBodyStyle]="{ 'padding': '30px' }"
+    >
+      <div class="footer-detail">
+        <button class="buttonBack" nz-button nzType="default" (click)="backToListPage()">Quay lại
+        </button>
+        <button class="buttonEdit" nz-button nzType="primary"
+                (click)="editPolicy()">Chỉnh sửa
+        </button>
+      </div>
+    </nz-card>
+
+  </nz-content>
+</nz-spin>

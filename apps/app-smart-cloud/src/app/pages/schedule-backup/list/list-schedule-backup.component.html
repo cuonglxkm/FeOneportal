@@ -1,0 +1,277 @@
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Danh sách lịch Backup'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/schedule/list">Lập lịch Backup</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <nz-space [nzSize]="24">
+      <div style="margin-right: 10px;">Trạng thái</div>
+      <div *nzSpaceItem>
+        <nz-select [(ngModel)]="selectedValue"
+                   nz-tooltip nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="Tất cả trạng thái">
+          <nz-option *ngFor="let item of status" [nzValue]="item.value"
+                     [nzLabel]="item.label"></nz-option>
+        </nz-select>
+      </div>
+      <div *nzSpaceItem>
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+          <input style="width: 380px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+                 type="text" nz-input
+                 placeholder="Tìm kếm tên..."/>
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="getListScheduleBackup()">
+            <span nz-icon nzType="search" nzTheme="outline"></span>
+            Search
+          </button>
+        </ng-template>
+      </div>
+    </nz-space>
+  </ng-template>
+
+  <ng-template #extra>
+    <button nz-button nz-tooltip nzTooltipTitle="Tạo mới lịch backup" nzTooltipPlacement="bottom" class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
+            (click)="navigateToCreate()">
+      <span nz-icon nzType="plus" nzTheme="outline"></span>
+      Tạo mới
+    </button>
+  </ng-template>
+
+
+</page-header>
+<nz-content>
+  <nz-card>
+    <div>
+      <nz-table #tableScheduleBackup
+                [nzData]="response?.records"
+                nzShowSizeChanger
+                [nzFrontPagination]="false"
+                [nzTotal]="response?.totalCount"
+                [nzPageSize]="response?.pageSize"
+                [nzPageIndex]="response?.currentPage"
+                [nzLoading]="isLoading"
+                [nzScroll]="{ x: '1200px', y: '240px' }"
+                (nzQueryParams)="onQueryParamsChange($event)">
+        <thead>
+        <tr>
+          <th nzLeft nzWidth="120px">Tên</th>
+          <th nzBreakWord>Đối tượng backup</th>
+          <th nzBreakWord>Số bản ghi tối đa</th>
+          <th nzAlign="center" nzBreakWord >Trạng thái</th>
+          <th nzBreakWord >Lần backup tiếp theo</th>
+          <th nzBreakWord>Ngày tạo</th>
+          <th nzAlign="center" nzBreakWord>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of tableScheduleBackup.data">
+          <td nzLeft>{{ data.name }}</td>
+          <td nzBreakWord>
+            <span *ngIf="data.serviceType === 1">VM - {{ data.serviceName }}</span>
+            <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
+          </td>
+          <td nzBreakWord>{{ data.maxBackup }}</td>
+          <td nzAlign="center" nzBreakWord>
+            <div class="status" [ngSwitch]="data.status">
+              <div *ngIf="data.warningMessage !== null">
+                <div *ngSwitchCase="'ACTIVE'">
+                  <span class="active">Hoạt động</span>
+                  <br>
+                  <span style="text-align: center">{{ data.warningMessage }}</span>
+                </div>
+                <div *ngSwitchCase="'DISABLED'">
+                  <span class="disabled">Gián đoạn</span>
+                  <br>
+                  <span style="text-align: center"> {{ data.warningMessage }}</span>
+                </div>
+                <div *ngSwitchCase="'PAUSED'">
+                  <span class="paused">Tạm dừng</span>
+                  <br>
+                  <span style="text-align: center">{{ data.warningMessage }}</span>
+                </div>
+              </div>
+              <div *ngIf="data.warningMessage === null">
+                <div *ngSwitchCase="'ACTIVE'">
+                  <span class="active">Hoạt động</span>
+                </div>
+                <div *ngSwitchCase="'DISABLED'">
+                  <span class="disabled">Gián đoạn</span>
+                </div>
+                <div *ngSwitchCase="'PAUSED'">
+                  <span class="paused">Tạm dừng</span>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td nzBreakWord>{{ data.nextRuntime | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+          <td nzBreakWord>{{ data.createdAt | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+          <td nzAlign="center" nzBreakWord>
+            <div [ngSwitch]="data.status">
+              <div *ngSwitchCase="'ACTIVE'">
+                <button nz-button
+                        [nzType]="'primary'"
+                        nz-dropdown
+                        [nzDropdownMenu]="opMenu">
+                  <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="navigateToEdit(data.serviceType, data.id)">Chỉnh sửa</li>
+                    <li nz-menu-item (click)="showModalPaused(data.id)">Tạm dừng</li>
+                    <nz-modal [(nzVisible)]="isVisiblePaused" nzTitle="Xác nhận tạm dừng lịch backup"
+                              (nzOnCancel)="handlePausedCancel()" nzCentered>
+                      <div *nzModalTitle>
+                        <p class="text-h5"><b>Xác nhận tạm dừng lịch backup</b></p>
+                      </div>
+                      <div *nzModalContent>
+                        <p class="text-p">Qúy khách có chắc chắn muốn tạm dừng lịch backup</p>
+                      </div>
+                      <div *nzModalFooter>
+                        <button nz-button nzType="default" (click)="handlePausedCancel()"
+                                class="button-cancel">Hủy
+                        </button>
+                        <button nz-button nzType="primary" (click)="handlePausedOk()"
+                                [nzLoading]="isLoadingModalPaused"
+                                class="button-ok">Đồng ý
+                        </button>
+                      </div>
+                    </nz-modal>
+                    <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
+                    <one-portal-delete-schedule
+                            [isVisible]="isVisibleDelete"
+                            [isLoading]="isLoadingDelete"
+                            (onOk)="handleDeletedOk()"
+                            (onCancel)="handleDeleteCancel()"/>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div *ngSwitchCase="'DISABLED'">
+                <button nz-button
+                        [nzType]="'primary'"
+                        nz-dropdown
+                        [nzDropdownMenu]="opMenu">
+                  <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="showModalRestore(data.id)">Khôi phục</li>
+                    <nz-modal [(nzVisible)]="isVisibleRestore"
+                              nzTitle="Khôi phục lập lịch backup bị tạm dừng"
+                              (nzOnCancel)="handleRestoreCancel()" nzCentered>
+                      <div *nzModalTitle>
+                        <p class="text-h5"><b>Khôi phục lập lịch backup bị tạm dừng</b></p>
+                      </div>
+                      <div *nzModalContent>
+                        <p class="text-p">Qúy khách có chắc chắn muốn khôi phục lại lịch backup về
+                          trạng thái ban đầu</p>
+                      </div>
+                      <div *nzModalFooter>
+                        <button nz-button nzType="default" (click)="handleRestoreCancel()"
+                                class="button-cancel">Hủy
+                        </button>
+                        <button nz-button nzType="primary" (click)="handleRestoredOk()"
+                                [nzLoading]="isLoadingRestore"
+                                class="button-ok">Đồng ý
+                        </button>
+                      </div>
+                    </nz-modal>
+                    <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
+                    <one-portal-delete-schedule
+                            [isVisible]="isVisibleDelete"
+                            [isLoading]="isLoadingDelete"
+                            (onOk)="handleDeletedOk()"
+                            (onCancel)="handleDeleteCancel()"/>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div *ngSwitchCase="'PAUSED'">
+                <button nz-button
+                        [nzType]="'primary'"
+                        nz-dropdown
+                        [nzDropdownMenu]="opMenu">
+                  <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="showModalPlay(data.id)">Tiếp tục</li>
+                    <nz-modal [(nzVisible)]="isVisiblePlay"
+                              nzTitle="Xác nhận tiếp tục lịch backup đã tạm dừng"
+                              (nzOnCancel)="handlePlayCancel()" nzCentered>
+                      <div *nzModalTitle>
+                        <p class="text-h5"><b>Xác nhận tiếp tục lịch backup đã tạm dừng</b></p>
+                      </div>
+                      <div *nzModalContent>
+                        <p class="text-p">Qúy khách có chắc chắn muốn tiếp tục lịch backup</p>
+                      </div>
+                      <div *nzModalFooter>
+                        <button nz-button nzType="default" (click)="handlePlayCancel()"
+                                class="button-cancel">Hủy
+                        </button>
+                        <button nz-button nzType="primary" (click)="handlePlaydOk()"
+                                [nzLoading]="isLoadingPlay"
+                                class="button-ok">Đồng ý
+                        </button>
+                      </div>
+                    </nz-modal>
+                    <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
+                    <one-portal-delete-schedule
+                            [isVisible]="isVisibleDelete"
+                            [isLoading]="isLoadingDelete"
+                            (onOk)="handleDeletedOk()"
+                            (onCancel)="handleDeleteCancel()"/>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+    <div style="margin-top: 30px;">
+      <h3>Thông tin dung lượng Backup</h3>
+      <nz-table #tableScheduleCapacityBackup
+                [nzData]="responseCapacityBackup"
+                nzShowSizeChanger
+                [nzScroll]="{ x: '1000px', y: '240px' }"
+                [nzLoading]="loadingCapacity">
+        <thead>
+        <tr>
+          <th nzLeft>Tên Backup</th>
+          <th nzBreakWord>Hết hạn</th>
+          <th nzBreakWord>Dung lượng (GB)</th>
+          <th nzBreakWord>Đã dùng (GB)</th>
+          <th nzBreakWord>Còn lại (GB)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let i of tableScheduleCapacityBackup.data">
+          <td nzLeft>{{i.packageName}}</td>
+          <td nzBreakWord>{{i.expirationDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+          <td nzBreakWord>{{i.totalCapacity}}</td>
+          <td nzBreakWord>{{i.usedCapacity}}</td>
+          <td nzBreakWord>{{i.remainingCapacity}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-card>
+</nz-content>

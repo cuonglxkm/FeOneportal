@@ -1,0 +1,196 @@
+<one-portal-header
+  title="Thông tin Policy"
+  [path]="['Home', 'IAM', 'Policies', 'Detail policy' ]"
+  [regionId]="region"
+  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+
+<nz-spin [nzSpinning]="isLoadingPolicyInfo" nzSize="large">
+  <nz-content>
+
+    <nz-card nzTitle="Thông tin chính của Policy">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Tên Policy</b></nz-form-label>
+      <br>
+      <p style="opacity: 0.5;">{{policyInfo.name}}</p>
+      <br>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Type</b></nz-form-label>
+      <br>
+      <p style="opacity: 0.5;">{{policyInfo.type}}</p>
+      <br>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Thời gian khởi tạo</b></nz-form-label>
+      <br>
+      <p style="opacity: 0.5;">16/12/2023 12:12:12(fix)</p>
+      <br>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Chỉnh sửa lần cuối </b></nz-form-label>
+      <br>
+      <p style="opacity: 0.5;">16/12/2023 12:12:12(fix)</p>
+      <br>
+    </nz-card>
+
+    <nz-card nzTitle="Thông tin bổ sung">
+      <nz-tabset [(nzSelectedIndex)]="tabPolicyIndex">
+        <nz-tab nzTitle="Permissions policies">
+
+          <div
+            class="row"
+          >
+            <div style="display: inline-block; margin-right: auto;">
+              <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="permissionNameSearh" nz-input placeholder="Tìm kiếm tên, thời gian tạo..."
+                       style="width: 300px;"/>
+              </nz-input-group>
+              <ng-template #suffixButton>
+                <button nz-button nzType="primary" nzSize="default" (click)="searchPermission()" nzSearch><i nz-icon
+                                                                                                            [nzType]="'search'"></i>Search
+                </button>
+              </ng-template>
+            </div>
+
+            <div style="display: inline-block; margin-left: auto; text-align: right;">
+              <button nz-button
+                      nzType="default"
+                      (click)="edit()"
+              >
+                Edit
+              </button>
+              <button nz-button
+                      [nzType]="!isJson ? 'primary' : 'default' "
+                      (click)="toVisual()"
+              >
+                Visual
+              </button>
+              <button nz-button
+                      [nzType]="isJson ? 'primary' : 'default' "
+                      (click)="toJson()"
+              >
+                Json
+              </button>
+            </div>
+          </div>
+          <div style="padding-top: 10px;">
+            <json-editor *ngIf="isJson" style="min-height: 300px;" [options]="editorOptions"
+                         [data]="jsonPermission"></json-editor>
+          </div>
+
+          <nz-table
+            style="padding-top: 10px;"
+            *ngIf="!isJson"
+            class="table-data"
+            #tablePermission
+            [nzData]="jsonPermission"
+            nzShowSizeChanger
+            [nzFrontPagination]="false"
+            [nzTotal]="perTotalData"
+            [nzPageSize]="perPageSize"
+            [nzPageIndex]="perCurrentPage"
+            [nzLoading]="isLoadingPer"
+            (nzQueryParams)="onPerQueryParamsChange($event)"
+          >
+            <thead>
+            <tr>
+              <th>Permission</th>
+              <th>Mô tả</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of tablePermission.data">
+              <td>{{ data.name }}</td>
+              <td>{{ data.description}}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+
+        </nz-tab>
+
+        <nz-tab nzTitle="Entities attached">
+          <div
+            class="row"
+          >
+<!--            <div style="display: inline-block; margin-right: auto;">-->
+<!--              <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">-->
+<!--                <input type="text" [(ngModel)]="permissionNameSearh" nz-input placeholder="Tìm kiếm tên, thời gian tạo..."-->
+<!--                       style="width: 300px;"/>-->
+<!--              </nz-input-group>-->
+<!--              <ng-template #suffixButton>-->
+<!--                <button nz-button nzType="primary" nzSize="default" (click)="searchPermission()" nzSearch><i nz-icon-->
+<!--                                                                                                            [nzType]="'search'"></i>Search-->
+<!--                </button>-->
+<!--              </ng-template>-->
+<!--            </div>-->
+
+            <div style="display: inline-block; margin-right: auto;">
+              <nz-form-label [nzFor]="'volumeStatus'"><b>Loại Entities</b></nz-form-label>
+              <nz-select nzSize="default"
+                         [nzPlaceHolder]="'Tất cả các loại'"
+                         [nzOptions]="optionsEntities"
+                         [(ngModel)]="entitiesTypeSearch"
+                         (ngModelChange)="searchEntities()"
+                         style="width: 170px;"
+              >
+              </nz-select>
+
+              <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="entitiesNameSearch" nz-input placeholder="Tìm kiếm theo tên"
+                       style="width: 300px; margin-left: 30px;"/>
+              </nz-input-group>
+              <ng-template #suffixButton>
+                <button nz-button nzType="primary" nzSize="default" (click)="searchEntities()" nzSearch><i nz-icon
+                                                                                                           [nzType]="'search'"></i>Search
+                </button>
+              </ng-template>
+            </div>
+
+            <div style="display: inline-block; margin-left: auto; text-align: right;">
+              <button nz-button
+                      [nzType]="'default'"
+                      (click)="navigateToAttach()"
+              >
+                Attach
+              </button>
+              <button nz-button
+                      [nzType]="'default'"
+                      (click)="navigateToDetach()"
+              >
+                Detach
+              </button>
+            </div>
+          </div>
+
+
+          <nz-table style="padding-top: 10px;"
+                    *ngIf="!isJson"
+                    class="table-data"
+                    #rowSelectionTable
+                    [nzData]="jsonEntities"
+                    nzShowSizeChanger
+                    [nzFrontPagination]="false"
+                    [nzTotal]="entTotalData"
+                    [nzPageSize]="entPageSize"
+                    [nzPageIndex]="entCurrentPage"
+                    [nzLoading]="isLoadingEntities"
+                    (nzQueryParams)="onEntitiesQueryParamsChange($event)"
+          >
+            <thead>
+            <tr>
+              <th>Entity Name</th>
+              <th>Entity Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+              <td>{{ data.name }}</td>
+              <td>{{ data.type==1?'USER':'GROUP USERS'}}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+          <div style="padding-top: 10px;">
+            <json-editor *ngIf="isJson" [options]="editorOptions" [data]="jsonEntities"></json-editor>
+          </div>
+
+        </nz-tab>
+      </nz-tabset>
+    </nz-card>
+  </nz-content>
+</nz-spin>
+
+

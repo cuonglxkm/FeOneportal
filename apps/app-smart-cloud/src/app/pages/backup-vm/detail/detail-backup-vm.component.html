@@ -1,0 +1,83 @@
+<one-portal-header
+        title="Backup VM"
+        [path]="['Home', 'Dịch vụ', 'Backup VM']"
+        [regionId]="region"
+        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content>
+    <nz-card>
+        <nz-descriptions nzTitle="Thông tin chung" nzLayout="vertical" nzColumn="7">
+            <nz-descriptions-item nzTitle="Tên backup VM">{{ backupVm?.name }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="VM gốc">{{ backupVm?.instanceName }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Gói backup">{{ backupVm?.backupPackageName }}</nz-descriptions-item>
+            <nz-descriptions-item
+                    nzTitle="Thời gian khởi tạo">{{ backupVm?.creationDate | date: "dd/MM/yyyy - HH:mm:ss" }}</nz-descriptions-item>
+            <nz-descriptions-item
+                    nzTitle="Thời gian kết thúc">{{ backupVm?.expirationDate | date: "dd/MM/yyyy - HH:mm:ss" }}</nz-descriptions-item>
+            <!--      <nz-descriptions-item nzTitle="Volume gắn ngoài">test1</nz-descriptions-item>-->
+            <nz-descriptions-item nzTitle="Truy cập và bảo mật">{{ nameSecurityGroupText }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Mô tả">{{ backupVm?.description }}</nz-descriptions-item>
+        </nz-descriptions>
+    </nz-card>
+    <nz-card>
+        <div class="title"><h3><b>Cấu hình</b></h3></div>
+        <!--    <div class="code-box-description">-->
+        <nz-table #tableSystemInfoBackupVM
+                  [nzShowPagination]="false"
+                  [nzFrontPagination]="false"
+                  [nzData]="systemInfoBackups">
+            <thead>
+            <tr>
+                <th nzAlign="center" class="text-th">Tham số</th>
+                <th nzAlign="center" class="text-th">Số lượng</th>
+                <th nzAlign="center" class="text-th">Đơn vị</th>
+            </tr>
+            </thead>
+            <tbody *ngFor="let data of tableSystemInfoBackupVM.data ">
+            <tr>
+                <td nzAlign="center">RAM</td>
+                <td nzAlign="center">{{ data.ram }}</td>
+                <td nzAlign="center">CPU</td>
+            </tr>
+            <tr>
+                <td nzAlign="center">CPU</td>
+                <td nzAlign="center">{{ data.cpu }}</td>
+                <td nzAlign="center">GB</td>
+            </tr>
+            <tr>
+                <td nzAlign="center">HDD</td>
+                <td nzAlign="center">{{ data.rootSize }}</td>
+                <td nzAlign="center">GB</td>
+            </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <nz-card>
+        <div class="title"><h3><b>Volume gắn ngoài</b></h3></div>
+        <!--    <div class="code-box-description">-->
+        <nz-table #tableVolumeBackupVM
+                  [nzShowPagination]="false"
+                  [nzFrontPagination]="false"
+                  [nzData]="volumeBackups">
+            <thead>
+                <tr>
+                    <th nzAlign="center" class="text-th">Tên</th>
+                    <th nzAlign="center" class="text-th">Dung lượng (GB)</th>
+                    <th nzAlign="center" class="text-th">Kiểu volume</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let data of tableVolumeBackupVM.data">
+                <tr *ngIf="data.isBootable === false">
+                    <td nzAlign="center">{{ data.name }}</td>
+                    <td nzAlign="center">{{ data.size }}</td>
+                    <td nzAlign="center">{{ data.typeName }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+        <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 48px">
+            <nz-space nzSize="large">
+                <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-cancel">Quay lại</button>
+            </nz-space>
+        </nz-form-item>
+    </nz-card>
+</nz-content>

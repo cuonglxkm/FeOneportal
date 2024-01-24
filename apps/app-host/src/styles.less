@@ -17,3 +17,23 @@
 @import './styles/index';
 @import './styles/theme';
 @import 'antd-css-utilities/utility.min.css';
+@import "~jsoneditor/dist/jsoneditor.min.css";
+
+@alain-default-header-hg: 60px;
+
+
+::ng-deep .page-header {
+  position: relative;
+}
+
+.alain-custom-action {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: @alain-default-header-hg + 10px;
+  margin-right: 24px;
+}
+
+.alain-default__aside-inner {
+  overflow: hidden scroll;
+}

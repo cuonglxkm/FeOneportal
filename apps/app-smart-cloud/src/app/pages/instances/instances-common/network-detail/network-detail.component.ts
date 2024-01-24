@@ -3,85 +3,110 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  Renderer2,
-  SimpleChanges,
   TemplateRef,
 } from '@angular/core';
 import { InstancesService } from '../../instances.service';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { SecurityGroupModel } from '../../instances.model';
-class Network {
-  name?: string = 'pri_network';
-  mac?: string = '';
-  ip?: string = '';
-  status?: string = '';
-}
+import {
+  InstancesModel,
+  Network,
+  SecurityGroupModel,
+  UpdatePortInstance,
+} from '../../instances.model';
+import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-network-detail',
   templateUrl: './network-detail.component.html',
   styleUrls: [],
 })
-export class NetworkDetailComponent implements OnInit, OnChanges {
+export class NetworkDetailComponent implements OnInit {
   selectedProject: any;
   @Input() instancesId: any;
-  @Input() instances: any;
-  @Input() listOfDataNetwork: any;
+  @Input() isDetail: any;
 
   @Output() valueChanged = new EventEmitter();
 
+  instancesModel: InstancesModel;
   listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
+  listOfDataNetwork: Network[] = [];
+  updatePortInstance: UpdatePortInstance = new UpdatePortInstance();
+  loading: boolean = true;
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
-
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(
-        this.instances.region,
-        this.instances.userId,
-        this.instances.projectId
-      )
-      .subscribe((data: any) => {
-        console.log('getAllSecurityGroup', data);
-        this.listSecurityGroup = data;
-        //this.selectedSecurityGroup.push(this.listSecurityGroup[0]);
-      });
-  }
-  onChangeSecurityGroup(even?: any) {
-    console.log(even);
-    console.log('selectedSecurityGroup', this.selectedSecurityGroup);
-  }
 
   constructor(
     private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
-    private router: ActivatedRoute,
-    public message: NzMessageService,
-    private renderer: Renderer2
+    private notification: NzNotificationService
   ) {}
 
-  editPort(tpl: TemplateRef<{}>): void {
-    //Reset mật khẩu máy ảo
+  ngOnInit(): void {
+    this.getNetworkAndSecurityGroup();
+  }
+
+  getNetworkAndSecurityGroup() {
+    this.dataService.getById(this.instancesId, true).subscribe((data: any) => {
+      this.instancesModel = data;
+      this.dataService
+        .getPortByInstance(this.instancesId, this.instancesModel.regionId)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe((dataNetwork: any) => {
+          this.listOfDataNetwork = dataNetwork.filter(
+            (e: Network) => e.isExternal == false
+          );
+          this.cdr.detectChanges();
+        });
+      this.dataService
+        .getAllSecurityGroup(
+          this.instancesModel.regionId,
+          this.instancesModel.customerId,
+          this.instancesModel.projectId
+        )
+        .subscribe((dataSG: any) => {
+          console.log('getAllSecurityGroup', dataSG);
+          this.listSecurityGroup = dataSG;
+        });
+    });
+  }
+
+  // onChangeSecurityGroup(even?: any) {
+  //   this.updatePortInstance.securityGroup = even;
+  // }
+
+  editPort(tpl: TemplateRef<{}>, id: any): void {
+    this.selectedSecurityGroup = this.listOfDataNetwork.filter(
+      (e) => (e.id = id)
+    )[0].security_groups;
     this.modalSrv.create({
       nzTitle: 'Chỉnh sửa Port',
       nzContent: tpl,
       nzOkText: 'Chỉnh sửa',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        if (1 == 1) {
-          this.message.success('Chỉnh sửa port thành công');
-        } else {
-          this.message.error('Chỉnh sửa port không thành công!');
-        }
+        this.updatePortInstance.portId = id;
+        this.updatePortInstance.regionId = this.instancesModel.regionId;
+        this.updatePortInstance.customerId = this.instancesModel.customerId;
+        this.updatePortInstance.vpcId = this.instancesModel.projectId;
+        this.updatePortInstance.securityGroup = this.selectedSecurityGroup;
+        this.updatePortInstance.portSecurityEnanble = true;
+        console.log('Update Port VM', this.updatePortInstance);
+        this.dataService.updatePortVM(this.updatePortInstance).subscribe();
+        this.notification.success('', 'Chỉnh sửa port thành công!');
+        this.route.navigate(['/app-smart-cloud/instances']);
       },
     });
   }
@@ -90,24 +115,6 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     this.valueChanged.emit(project);
   }
 
-  ngOnInit(): void {
-    this.loadList();
-  }
-
-  loadList() {
-    // this.dataService.get(this.regionId).subscribe(data => {
-    //   console.log(data);
-    //   this.listProject = data;
-    // }, error => {
-    //   this.listProject = [];
-    // });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.regionId) {
-      this.loadList();
-    }
-  }
   navigateToCreate() {
     this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
@@ -122,12 +129,10 @@ export class NetworkDetailComponent implements OnInit, OnChanges {
     ]);
   }
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToAllowAddressPair() {
-    this.route.navigate([
-        '/app-smart-cloud/allow-address-pair/' + this.portId,
-    ]);
+    this.route.navigate(['/app-smart-cloud/allow-address-pair/' + this.portId]);
   }
 }

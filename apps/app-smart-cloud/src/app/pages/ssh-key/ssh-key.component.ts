@@ -10,6 +10,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {ProjectModel} from "../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -19,8 +20,8 @@ import {finalize} from "rxjs/operators";
 export class SshKeyComponent implements OnInit {
   //input
   searchKey: string = "";
-  regionId: any = '';
-  projectId: any = '';
+  regionId: any;
+  projectId: any;
   size = 10;
   index: any = 0;
   total: any = 0;
@@ -47,17 +48,17 @@ export class SshKeyComponent implements OnInit {
   };
 
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private message: NzMessageService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private notification: NzNotificationService) {
   }
 
   onPageSizeChange(event: any) {
     this.size = event
-    this.loadSshKeys();
+    this.loadSshKeys(false);
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
-    this.loadSshKeys();
+    this.loadSshKeys(false);
   }
 
   ngOnInit() {
@@ -66,21 +67,26 @@ export class SshKeyComponent implements OnInit {
     this.form.get('public_key').disable();
   }
 
-  loadSshKeys(): void {
+  loadSshKeys(isCheckBegin: boolean): void {
     this.loading = true;
     this.sshKeyService.getSshKeys(this.tokenService.get()?.userId, this.projectId, this.regionId, this.index, this.size, this.searchKey)
       .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
-        this.listOfData = (this.checkNullObject(response) ? [] : response.records),
-          this.total = (this.checkNullObject(response) ? 0 : response.totalCount),
-          this.index = (this.checkNullObject(response) ? 0 : response.currentPage)
+        this.listOfData = (this.checkNullObject(response) ? [] : response.records);
+          this.total = (this.checkNullObject(response) ? 0 : response.totalCount);
+          this.index = (this.checkNullObject(response) ? 0 : response.currentPage);
+          if (isCheckBegin) {
+            this.isBegin = this.checkNullObject(this.listOfData) || this.listOfData.length < 1 ? true : false;
+            this.refreshParams();
+          }
       });
+
   }
 
   //SEARCH
   search(search: string) {
     this.searchKey = search;
-    this.loadSshKeys();
+    this.loadSshKeys(false);
   }
 
   //DELETE
@@ -107,10 +113,13 @@ export class SshKeyComponent implements OnInit {
   }
 
   handleDelete(number: any): void {
+    this.loading = true;
     // call api
-    this.sshKeyService.deleteSshKey(this.data.id).subscribe(() => {
-      this.loadSshKeys();
-      this.message.create('success', `Xóa thành công keypair`);
+    this.sshKeyService.deleteSshKey(this.data.id)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe(() => {
+      this.loadSshKeys(true);
+      this.notification.success('Thành công', 'Xóa thành công keypair')
     });
     this.isVisibleDelete = false;
   }
@@ -126,6 +135,7 @@ export class SshKeyComponent implements OnInit {
   indexTab: number = 0;
 
   handleCreate(form: any): void {
+    this.loading = true;
     let namePrivate: string;
     let publickey: string = "";
 
@@ -144,14 +154,16 @@ export class SshKeyComponent implements OnInit {
       publicKey: publickey,
     }
 
-    this.sshKeyService.createSshKey(ax).subscribe({
+    this.sshKeyService.createSshKey(ax)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
       next: post => {
-        this.loadSshKeys();
-        this.message.create('success', `Tạo mới thành công keypair`);
+        this.loadSshKeys(true);
+        this.notification.success('Thành công', 'Tạo mới thành công keypair')
       },
       error: e => {
-        this.loadSshKeys();
-        this.message.create('error', `Tạo mới thất bại keypair`);
+        this.loadSshKeys(true);
+        this.notification.error('Thất bại', 'Tạo mới thất bại keypair')
       },
     });
     this.isVisibleCreate = false;
@@ -184,19 +196,12 @@ export class SshKeyComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    this.regionId = (this.checkNullObject(region) ? "" : region.regionId);
-
+    this.regionId = this.checkNullObject(region) ? "" : region.regionId;
   }
 
   projectChange(project: ProjectModel) {
-    if (project != null) {
-      // this.listOfData = []
-      // return;
-      this.projectId = project.id;
-    }
-
-
-    this.loadSshKeys();
+    this.projectId =  this.checkNullObject(project) ? "" : project.id;
+    this.loadSshKeys(true);
   }
 
   checkNullObject(object: any): Boolean {
@@ -205,5 +210,11 @@ export class SshKeyComponent implements OnInit {
     }
 
     return false;
+  }
+
+  refreshParams() {
+    this.searchKey = '';
+    this.size = 10;
+    this.index = 0;
   }
 }

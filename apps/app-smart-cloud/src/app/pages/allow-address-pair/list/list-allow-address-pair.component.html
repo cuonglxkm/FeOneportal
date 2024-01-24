@@ -1,83 +1,104 @@
-<nz-header>
-    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">
-        <nz-row nzJustify="space-between" nzAlign="middle">
-            <nz-breadcrumb nz-page-header-breadcrumb>
-                <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-                <nz-breadcrumb-item>
-                    Dịch vụ
-                </nz-breadcrumb-item>
-                <nz-breadcrumb-item>
-                    <a routerLink="/app-smart-cloud/instances/instances-detail/8101">VM</a>
-                </nz-breadcrumb-item>
-            </nz-breadcrumb>
-            <nz-space>
-                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-                <project-select-dropdown (valueChanged)="projectChanged($event)"
-                                         [regionId]="region"></project-select-dropdown>
-            </nz-space>
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+             [title]="title">
+  <ng-template #title>
+    <span nz-icon
+          nzType="arrow-left"
+          nzTheme="outline"
+          [routerLink]="'/app-smart-cloud/instances/instances-detail/' + instanceId"
+          style="margin-right: 10px;"></span>
+    Danh sách Allow Address Pair
+  </ng-template>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a>Dịch vụ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/instances/instances-detail/' + instanceId">VM</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
 
-        </nz-row>
-        <h4>Danh sách Allow Address Pair</h4>
-        <nz-row nzJustify="space-between" nzAlign="middle">
-            <div style="margin-top: 20px;">
-                <input nz-input placeholder="Tìm kiếm IP Address" [(ngModel)]="value" type="text"
-                       style="width: 396px; height: 40px;" (input)="onInputChange($event.target['value'])"/>
-                <button class="button-search" (click)="search()" style="cursor: pointer;">
-                    <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
-                    Search
-                </button>
-            </div>
-            <div style="margin-top: 20px;">
-                <nz-space>
-                    <button nz-button (click)="showModalCreate()" class="button-create">
-                        <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 12px;"></span>
-                        Tạo mới
-                    </button>
-                    <create-allow-address-pair [isVisible]="isVisibleCreate"
-                                               (onCancel)="handleCloseCreate()"
-                                               (onOk)="handleOkCreate($event)"/>
-                </nz-space>
-            </div>
-        </nz-row>
-    </nz-col>
-</nz-header>
-<nz-content style="margin-top: 10px">
-    <nz-card>
-        <div class="code-box-description">
-            <nz-table #tablePair
-                      [nzData]="listPairInfo"
-                      nzShowSizeChanger
-                      [nzFrontPagination]="false"
-                      [nzTotal]="listPairInfo.length"
-                      [nzPageSize]="10"
-                      [nzPageIndex]="1"
-                      [nzLoading]="isLoading"
-            >
-                <thead>
-                <tr>
-                    <th nzAlign="center" class="text-th">IP Address/CIDR</th>
-                    <th nzAlign="center" class="text-th">MAC Address</th>
-                    <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let data of tablePair.data">
-                    <td nzAlign="center">{{ data.ipAddress }}</td>
-                    <td nzAlign="center">{{ data.macAddress }}</td>
-                    <td nzAlign="center">
-                        <button nz-button nzType="primary" nzDanger
-                                class="button-delete"
-                                (click)="showModalDelete()">
-                            Xoá
-                        </button>
-                        <delete-allow-address-pair [isVisible]="isVisibleDelete"
-                                                   (onCancel)="handleCancelDelete()"
-                                                   (onOk)="handleOkDelete(data)"
-                        ></delete-allow-address-pair>
-                    </td>
-                </tr>
-                </tbody>
-            </nz-table>
-        </div>
-    </nz-card>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+      <input nz-input
+             placeholder="Tìm kiếm IP Address"
+             [(ngModel)]="value"
+             type="text"
+             nzSize="default"
+             style="width: 400px;"
+             (input)="onInputChange($event.target['value'])"/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzSize="default" nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip class="button-search" (click)="search()" style="cursor: pointer;">
+        <span nz-icon nzType="setting" nzTheme="outline" style="margin-right: 5px;"></span>
+        Search
+      </button>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #extra>
+    <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create" nzSize="default" (click)="showModalCreate()" style="cursor: pointer;">
+      <span nz-icon nzType="plus" nzTheme="outline" style="margin-right: 5px;"></span>
+      Tạo mới
+    </button>
+    <create-allow-address-pair [isVisible]="isVisibleCreate"
+                               [isLoading]="isLoading"
+                               [region]="region"
+                               [project]="project"
+                               [userId]="userId"
+                               [portId]="portId"
+                               (onCancel)="handleCloseCreate()"
+                               (onOk)="handleOkCreate()"/>
+  </ng-template>
+
+
+</page-header>
+<nz-content>
+  <nz-card>
+    <nz-table #fixedTable
+              [nzScroll]="{ x: '1000px', y: '240px' }"
+              [nzData]="collection.records"
+              nzShowSizeChanger
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading"
+              [nzShowPagination]="false">
+      <thead>
+      <tr>
+        <th nzAlign="center" nzLeft>IP Address/CIDR</th>
+        <th nzAlign="center" >MAC Address</th>
+        <th nzAlign="center" style="width: 216px;">Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzAlign="center" nzLeft>{{ data.ipAddress }}</td>
+        <td nzAlign="center" nzBreakWord>{{ data.macAddress }}</td>
+        <td nzAlign="center" nzBreakWord>
+          <button nz-button nzType="primary" nzDanger
+                  class="button-delete"
+                  (click)="showModalDelete()">
+            Xoá
+          </button>
+          <delete-allow-address-pair [isVisible]="isVisibleDelete"
+                                     [isLoading]="isLoading"
+                                     (onCancel)="handleCancelDelete()"
+                                     (onOk)="handleOkDelete(data)"
+          ></delete-allow-address-pair>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
 </nz-content>

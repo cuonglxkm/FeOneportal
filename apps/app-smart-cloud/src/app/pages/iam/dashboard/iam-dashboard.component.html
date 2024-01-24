@@ -1,0 +1,59 @@
+<page-header [breadcrumb]="breadcrumb"
+             [title]="'IAM Dashboard'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">IAM</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/iam/dashboard'">IAM Dashboard</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+<!--  <ng-template #action>-->
+<!--    <div class="alain-custom-action text-right">-->
+<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
+<!--                               [regionId]="region"></project-select-dropdown>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+</page-header>
+<nz-content>
+  <nz-card [nzLoading]="loading">
+    <h3>Thông tin chung</h3>
+    <nz-table #rowSelectionTable
+              [nzData]="listOfData"
+              [nzShowPagination]="false">
+      <thead>
+      <tr>
+        <th>Số lượng Groups</th>
+        <th>Số lượng Users</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let data of rowSelectionTable.data">
+      <tr>
+        <td>{{ data?.count_group }}</td>
+        <td>{{ data?.count_user }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+  <nz-card nzTitle="Tìm hiểu thêm về IAM">
+    <div style="line-height: 28px">
+      <div>
+        <a>Khái niệm về IAM ?</a>
+      </div>
+      <div>
+        <a>Khái niệm về Policy ?</a>
+      </div>
+      <div>
+        <a>Cách khởi tạo Group ?</a>
+      </div>
+    </div>
+
+  </nz-card>
+</nz-content>
+

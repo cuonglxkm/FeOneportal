@@ -1,0 +1,291 @@
+<one-portal-header
+        title="Lập lịch Backup"
+        [path]="['Home', 'Dịch vụ', 'Lập lịch Backup']"
+        [regionId]="region"
+        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content>
+    <nz-card>
+        <div class="title"><h3>Điều chỉnh Backup</h3></div>
+        <nz-row>
+            <div style="display: block;">
+                <label nz-radio nzValue="VM" class="label" [ngModel]="true" [nzDisabled]="true">Backup VM</label>
+                <label nz-radio nzValue="VOLUME" class="label" [nzDisabled]="true">Backup Volume</label>
+            </div>
+        </nz-row>
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
+            <nz-row nzGutter="24" style="margin-top: 20px;">
+                <nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzFor="name">
+                            <div class="label">
+                                <span>Tên lịch Backup</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                            <input nz-input formControlName="name" id="name"/>
+                            <ng-template #nameErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('pattern')">Tên gồm 255 ký tự viết liền không dấu
+                                    cách
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('invalidCharacters')">Tên không chứa ký tự đặc
+                                    biệt ngoại trừ dấu “_”
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('duplicateName')"> Tên không được trùng với tên lịch đã có</ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzFor="maxBackup">
+                            <div class="label">
+                                <span>Số bản lưu trữ backup</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control>
+                            <input nz-input
+                                   style="width: 100%;"
+                                   value="{{backupSchedule?.maxBackup}}"
+                                   disabled="true"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label>
+                            <div class="label">
+                                <span>Gói backup</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control nzDisableAutoTips>
+                            <input nz-input
+                                   style="width: 100%;"
+                                   value="{{backupSchedule?.backupPackageName}}"
+                                   [disabled]="true"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzFor="description">
+                            <div class="label">
+                                <span>Mô tả</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                            <textarea nz-input
+                                      style="width: 100%;"
+                                      formControlName="description"
+                                      id="description"
+                                      [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                            <ng-template #descriptionErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 500 kí tự
+                                </ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzFor="instanceId">
+                            <div class="label">
+                                <span>Chọn máy ảo</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control>
+                            <input nz-input
+                                   style="width: 100%;"
+                                   value="{{backupSchedule?.serviceName}}"
+                                   [disabled]="true"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzFor="backupMode">
+                            <div class="label">
+                                <span>Chế độ Backup</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control nzDisableAutoTips [nzErrorTip]="backupModeErrorTpl">
+                            <nz-select
+                                    formControlName="backupMode" id="backupMode"
+                                    [nzPlaceHolder]="'Chế độ Backup'"
+                                    [nzShowSearch]="false"
+                                    (ngModelChange)="modeChange($event)">
+                                <nz-option
+                                        *ngFor="let i of mode"
+                                        [nzLabel]="i.label"
+                                        [nzValue]="i.value"/>
+                            </nz-select>
+                            <ng-template #backupModeErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin
+                                </ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzFor="times">
+                            <div class="label">
+                                <span>Thời gian thực hiện</span>
+                                <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
+                            <nz-time-picker formControlName=times
+                                            id="times"
+                                            [nzPlaceHolder]="'Chọn thời gian'"
+                                            style="width: 100%"></nz-time-picker>
+                            <ng-template #timeErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin
+                                </ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <div *ngIf="modeType === '4'">
+                        <nz-form-item>
+                            <nz-form-label nzFor="months">
+                                <div class="label">
+                                    <span>Số tháng thực hiện</span>
+                                    <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                                </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsErrorTpl">
+                                <input nz-input type="number" style="width:100%;"
+                                       formControlName="months"
+                                       id="months"
+                                       min="1"
+                                       max="24"
+                                       step="1"/>
+                                <ng-template #monthsErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ
+                                        hơn 24
+                                    </ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label nzFor="date">
+                                <div class="label">
+                                    <span>Ngày thực hiện</span>
+                                    <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                                </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                                <input nz-input type="number"
+                                       style="width:100%;"
+                                       formControlName="date"
+                                       id="date"
+                                       min="1"
+                                       max="31"
+                                       step="1"/>
+                                <ng-template #dateErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
+                                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
+                                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 31</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div *ngIf="modeType === '3'">
+                        <nz-form-item>
+                            <nz-form-label nzFor="numberOfWeek">
+                                <div class="label">
+                                    <span>Số tuần thực hiện</span>
+                                    <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                                </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips>
+                                <nz-select
+                                        formControlName="numberOfWeek" id="numberOfWeek"
+                                        [nzPlaceHolder]="'Số tuần thực hiện'"
+                                        [nzShowSearch]="false"
+                                        [(ngModel)]="numberOfWeekChangeSelected"
+                                        (ngModelChange)="numberOfWeekChange($event)">
+                                    <nz-option
+                                            *ngFor="let i of numberOfWeek"
+                                            [nzLabel]="i.label"
+                                            [nzValue]="i.value"/>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label nzFor="daysOfWeek">
+                                <div class="label">
+                                    <span>Chọn thứ</span>
+                                    <span *ngIf="modeType == '2'" style="color: rgba(252, 16, 16, 1); "> *</span>
+                                </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
+                                <nz-select
+                                        formControlName="daysOfWeek" id="daysOfWeek"
+                                        [nzPlaceHolder]="'Chọn thứ'"
+                                        [nzShowSearch]="false">
+                                    <nz-option
+                                            *ngFor="let i of daysOfWeek"
+                                            [nzLabel]="i.label"
+                                            [nzValue]="i.value"/>
+                                </nz-select>
+                                <ng-template #daysOfWeekErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div *ngIf="modeType==='2'">
+                        <nz-form-item>
+                            <nz-form-label nzFor="daysOfWeekMultiple">
+                                <div class="label">
+                                    <span>Chọn thứ</span>
+                                    <span *ngIf="modeType == '2'" style="color: rgba(252, 16, 16, 1); "> *</span>
+                                </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
+                                <nz-select
+                                        formControlName="daysOfWeekMultiple" id="daysOfWeekMultiple"
+                                        nzMode="multiple"
+                                        [nzPlaceHolder]="'Chọn thứ'"
+                                        [nzShowSearch]="false">
+                                    <nz-option
+                                            *ngFor="let i of daysOfWeek"
+                                            [nzLabel]="i.label"
+                                            [nzValue]="i.value"/>
+                                </nz-select>
+                                <ng-template #daysOfWeekErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập ngày</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <nz-form-item>
+                        <nz-form-label nzFor="listAttachedVolume">
+                            <div class="label">
+                                <span>Chọn Volume gắn ngoài cần backup</span>
+                            </div>
+                        </nz-form-label>
+                        <nz-form-control>
+                            <input nz-input
+                                   [disabled]="true"
+                                   value="{{listVolume?.join(', ')}}"
+                                   style="width: 100%;"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+            <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 30px">
+                <nz-space nzSize="large">
+                    <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back">Quay
+                        lại
+                    </button>
+                    <nz-form-control *nzSpaceItem>
+                        <button nz-button [nzLoading]="isLoading" nzType="primary"
+                                class="button-create" [disabled]="!validateForm.valid">Xác nhận
+                        </button>
+                    </nz-form-control>
+                </nz-space>
+            </nz-form-item>
+        </form>
+    </nz-card>
+</nz-content>

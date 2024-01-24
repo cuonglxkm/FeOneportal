@@ -1,79 +1,106 @@
-<!-- <page-header [title]="'Chỉnh sửa thông tin máy ảo'"> </page-header> -->
-<div style="padding-top: 1%">
-  <nz-breadcrumb style="width: 50%; float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Chỉnh sửa thông tin máy ảo</a>
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown [regionId]="region"></project-select-dropdown>
-  </div>
-  <div><h2>Chỉnh sửa thông tin máy ảo</h2></div>
-</div>
-<nz-card [nzBordered]="false" nzTitle="Thay đổi hệ điều hành" *ngIf="selectedImage">
-  <nz-row nzGutter="16">
-    <p>Hệ điều hành hiện tại: {{ selectedImage.name }}</p>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Chỉnh sửa thông tin máy ảo'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chỉnh sửa thông tin máy ảo</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        [isDetail]="true"
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [isDetail]="true"
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-card
+  [nzBordered]="false"
+  nzTitle="Thay đổi hệ điều hành"
+  *ngIf="currentImage"
+>
+  <nz-row>
+    <p>Hệ điều hành hiện tại: {{ currentImage.name }}</p>
   </nz-row>
-  <nz-row nzGutter="16">
+  <nz-row>
     <p>Lựa chọn hệ điều hành mới</p>
   </nz-row>
-  <nz-row nzGutter="16">
-  <nz-carousel
-    [nzEffect]="effect"
-    style="overflow: initial"
-    style="height: 250px"
+  <ngu-carousel
+    #myCarouselImage
+    [inputs]="carouselTileConfig"
+    [dataSource]="listImageTypes"
+    style="width: 100%"
   >
-    <div nz-carousel-content *ngFor="let page of pagedCardListImages">
-      <div nz-row>
-        <div nz-col nzSpan="6" *ngFor="let data of page">
-          <table class="images-card text-center">
-            <tbody class="images-body images-body-wh" [id]="'images_' + data.id"  
-            [ngClass]="{
-              'images-body-active': data.id === selectedTypeImageId,
-              'bgGray': !data.id === selectedTypeImageId
-            }">
-              <tr >
-                <div class="images-body-tr">
-                  <span nz-icon nzType="windows" nzTheme="outline">{{
-                    data.name
-                  }}</span>
-                </div>
-              </tr>
-              <tr>
-                <div>
-                  <nz-select
-                    [id]="'hdh_' + data.id"
-                    [(ngModel)]="data.versionId"
-                    (ngModelChange)="onInputHDH(data.id, $event)"
-                    (nzOpenChange)="getAllImageVersionByType(data.id)"
-                    [nzLoading]="isLoading"
-                    nzPlaceHolder="Chọn phiên bản"
-                    [ngModelOptions]="{ standalone: true }"
-                    style="text-align: center"
-                    class="images-body-select"
-                  >
-                    <nz-option nzValue="" nzLabel="Chọn phiên bản"></nz-option>
-                    <nz-option
-                      *ngFor="let p of listImageVersionByType"
-                      [nzValue]="p.id"
-                      [nzLabel]="p.name"
-                    ></nz-option>
-                  </nz-select>
-                </div>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </nz-carousel>
-</nz-row>
+    <ngu-tile
+      *nguCarouselDef="let data; index as i; let ani = animate"
+      [@slider]="ani"
+    >
+      <table class="text-center" style="width: 100%">
+        <tbody
+          class="images-body"
+          [id]="'images_' + data.id"
+          [ngClass]="{
+            'images-body-active': data.id === selectedImageTypeId,
+            bgGray: !data.id === selectedImageTypeId
+          }"
+        >
+          <tr>
+            <img
+              *ngIf="data.name == 'Linux'"
+              src="assets/imgs/ubuntu.png"
+              alt=""
+            />
+            <img
+              *ngIf="data.name == 'Windows'"
+              src="assets/imgs/window.png"
+              alt=""
+            />
+          </tr>
+          <tr>
+            <div style="margin-top: 15px; margin-bottom: 15px">
+              <nz-select
+                nzShowSearch
+                [id]="'hdh_' + data.id"
+                [(ngModel)]="listSelectedImage[i]"
+                (ngModelChange)="onInputHDH($event, i, data.id)"
+                nzPlaceHolder="Chọn phiên bản"
+                [ngModelOptions]="{ standalone: true }"
+                style="text-align: center; width: 150px"
+              >
+                <nz-option
+                  *ngFor="let p of listOfImageByImageType.get(data.id)"
+                  [nzValue]="p.id"
+                  [nzLabel]="p.name"
+                ></nz-option>
+              </nz-select>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+    </ngu-tile>
+
+    <ul class="myPoint" NguCarouselPoint>
+      <li
+        *ngFor="let i of myCarouselImage.pointNumbers"
+        [class.active]="i === myCarouselImage.activePoint"
+        (click)="myCarouselImage.moveTo(i)"
+      ></li>
+    </ul>
+  </ngu-carousel>
   <br />
   <br />
   <nz-row nzGutter="16">
@@ -101,23 +128,41 @@
         <div>
           <b> Quý khách lưu ý:</b><br />
           <b style="color: red">
-            - Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng 2 GB)
-            sẽ bị xóa và không thể khôi phục lại.</b
+            - Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng
+            <span>{{ instancesModel.storage }}</span> GB) sẽ bị xóa và không thể
+            khôi phục lại.</b
           >
           <br />- Dữ liệu nằm trên volume gắn ngoài sẽ không bị ảnh hưởng.
           <br />- Sau khi điều chỉnh thành công, mật khẩu đăng nhập mới sẽ được
-          gửi vào email khaitestportal2@yopmail.com . <br />- Quá trình điều
-          chỉnh hệ điều hành sẽ mất khoảng 15 đến 20 phút tùy dung lượng của
-          volume root của máy ảo. <br />- Cấu hình máy ảo (SMC01), ip (,
-          192.168.0.109), security group (default) sẽ được giữ nguyên.
+          gửi vào email <b>{{ email }}</b
+          >. <br />- Quá trình điều chỉnh hệ điều hành sẽ mất khoảng 15 đến 20
+          phút tùy dung lượng của volume root của máy ảo. <br />- Cấu hình máy
+          ảo (<span>{{ instancesModel.flavorName | slice : 3 }}</span
+          >), ip (<span>{{ listIPStr }}</span
+          >), security group (<span
+            *ngIf="instancesModel.securityGroupStr !== null; else defaultValue"
+            >{{ securityGroupStr }}</span
+          >
+          <ng-template #defaultValue>default</ng-template>) sẽ được giữ nguyên.
         </div>
       </ng-template>
     </div></nz-row
   >
   <nz-row nzGutter="16" style="display: inline">
     <div style="float: right">
-      <button nz-button (click)="returnPage()">Quay lại</button>
-      <button nz-button [nzType]="'primary'" (click)="save()" [disabled]="!hdh">
+      <button
+        nz-button
+        style="background-color: #9c9c9c; color: white"
+        (click)="returnPage()"
+      >
+        Hủy
+      </button>
+      <button
+        nz-button
+        [nzType]="'primary'"
+        (click)="modify()"
+        [disabled]="!isSelected"
+      >
         Chỉnh sửa
       </button>
     </div>

@@ -1,0 +1,127 @@
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách Policies'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> IAM </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Polices </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <div class="row">
+      <div class="col-md-6" style="display:flex;">
+        <h4 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h4>
+        <nz-select [(ngModel)]="selectedStatus" nzSize="default" style="width: 150px">
+          <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+        </nz-select>
+      </div>
+      <div class="col-md-6" style="margin-left: 20px">
+        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên"
+                 style="width: 350px"/>
+          <ng-template #suffixButton>
+            <button nz-button nzType="primary" nzSize="default" nzSearch (click)="search(searchBox.value)">
+              <span nz-icon nzType="search" nzTheme="outline"></span>
+              Tim kiếm
+            </button>
+          </ng-template>
+        </nz-input-group>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #extra>
+    <button nz-button nzSize="default" style="cursor: pointer;margin-right: 10px;" (click)="reload()">
+      <span nz-icon nzType="reload" nzTheme="outline"></span>
+    </button>
+    <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="default" style="width: 90px; margin-right: 10px;margin-left: 10px;">
+      <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+    </nz-select>
+    <button (click)="deletePolicy()" nz-button nzType="default" style="
+            border: 1px solid #808080;
+            border-radius: 2px;
+            background-color: #808080;
+            color: whitesmoke;
+            margin-right: 10px;
+            margin-left: 10px;
+          "><i nz-icon nzType="delete"></i> Xóa
+    </button>
+    <button (click)="createPolicy()" nz-button nzType="primary" style="
+            border: none;
+            background-color: #52c41a;
+          "><i nz-icon nzType="plus"></i> Tạo mới
+    </button>
+  </ng-template>
+</page-header>
+<nz-card>
+  <!-- Bảng-->
+  <nz-table #rowSelectionTable [nzLoading]="loading" [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
+            [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
+            (nzPageIndexChange)="onPageIndexChange($event)">
+    <thead>
+    <tr>
+      <th nzWidth="40px"></th>
+      <th nzWidth="40px"></th>
+      <th>Tên</th>
+      <th>Type</th>
+      <th>Mô tả</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let item of listOfData">
+      <tr>
+        <td>
+          <nz-radio-group [(ngModel)]="radioValue">
+            <label nz-radio [nzValue]="item.name"></label>
+          </nz-radio-group>
+        </td>
+        <td [nzExpand]="expandSet.has(item.name)" (nzExpandChange)="onExpandChange(item.name, $event)"></td>
+        <td (click)="detail(item.name)">{{ item.name }}</td>
+        <td (click)="detail(item.name)">{{ item.type }}</td>
+        <td (click)="detail(item.name)">{{ item.description }}</td>
+      </tr>
+      <tr [nzExpand]="expandSet.has(item.name)">
+<!--        <json-editor-->
+<!--          style="position: relative;"-->
+<!--          [options]="optionJsonEditor"-->
+<!--          formControlName="myinput"-->
+<!--          [data]="item.jsonData"-->
+<!--          [disabled]="true"-->
+<!--        ></json-editor>-->
+
+
+
+        <div class="json-viewer-bg">
+          <button (click)="copyText(item)" style="z-index: 1;position: absolute; right: 20px; top: 21px;">
+            <span nz-icon nzType="copy" nzTheme="outline"></span> Copy JSON
+          </button>
+          <ngx-json-viewer [json]="item" style="position: relative;"></ngx-json-viewer>
+        </div>
+
+
+
+      </tr>
+    </ng-container>
+    </tbody>
+  </nz-table>
+  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa [name] Policy"
+            nzOkText="Đồng ý" nzCancelText="Hủy"
+            (nzOnCancel)="handleCancel()"
+            (nzOnOk)="deleteHandlePolicy()">
+    <ng-container *nzModalContent>
+      <nz-alert nzType="warning" nzShowIcon nzMessage="Bạn đang thực hiện xóa [name] policy. Hành động này không thể được hoàn tác"></nz-alert>
+      <br>
+      <p><b>Để thực hiện Xóa Policy, vui lòng nhập tên Policy để xác nhận</b></p>
+
+      <input nz-input placeholder="Nhập tên policy" [(ngModel)]="nameDelete" type="text" />
+      <br />
+    </ng-container>
+  </nz-modal>
+</nz-card>
+

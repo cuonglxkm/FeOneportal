@@ -1,0 +1,37 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Lập lịch Backup'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Lập lịch Backup</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="projectChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="regionChanged($event)"></project-select-dropdown>
+    </div>
+    </ng-template>
+</page-header>
+<nz-content>
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+        <!--    <nz-card>-->
+        <nz-card>
+            <div class="title"><h4><b>Tạo lịch Backup</b></h4></div>
+            <nz-row>
+                <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
+                                formControlName="radio">
+                    <label nz-radio nzValue="VM" class="label">Backup VM</label>
+                    <label nz-radio nzValue="VOLUME" class="label">Backup Volume</label>
+                </nz-radio-group>
+            </nz-row>
+        </nz-card>
+    </form>
+    <div *ngIf="selectedValueRadio === 'VM'">
+        <one-portal-schedule-backup-vm [region]="region"
+                                        [project]="project"/>
+    </div>
+    <div *ngIf="selectedValueRadio === 'VOLUME'">
+        <one-portal-schedule-backup-volume />
+    </div>
+</nz-content>

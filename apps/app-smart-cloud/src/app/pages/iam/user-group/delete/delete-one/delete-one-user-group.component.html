@@ -1,0 +1,21 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa User Groups"
+          (nzOnCancel)="handleCancel()" nzCentered>
+    <div *nzModalTitle>
+        <p class="text-h5"><b>Xóa User Groups</b></p>
+    </div>
+    <div *nzModalContent>
+        <nz-alert nzBanner nzMessage="Bạn đang thực hiện xoá Groups {{ nameGroup[0].name }}
+Việc thực hiện xoá Groups sẽ khiến tất cả người dùng trong nhóm này bị mất quyền (Permission của nhóm).
+Hành động này không thể được hoàn tác"></nz-alert>
+        <p class="text-p" style="margin-top: 5px"><b>Đế thực hiện xoá Group, vui lòng nhập tên Group để xác nhận.</b></p>
+        <input nz-input  [(ngModel)]="value" (ngModelChange)="onInputChange()" type="text" />
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy
+        </button>
+        <button nz-button nzType="primary" (click)="handleOk()"
+                [nzLoading]="isLoading"
+                class="button-ok">Đồng ý
+        </button>
+    </div>
+</nz-modal>

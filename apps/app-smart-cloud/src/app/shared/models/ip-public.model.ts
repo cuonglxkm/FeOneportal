@@ -17,4 +17,6 @@ export class IpPublicModel {
   serviceStatus?: string;
   regionId?: number;
   useIpv6?: boolean;
+  attachedVm: string;
+  SuspendType: string;
 }

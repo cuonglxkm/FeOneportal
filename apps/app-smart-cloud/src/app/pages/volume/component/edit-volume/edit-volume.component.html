@@ -1,140 +1,175 @@
-<app-header-volume [headerInfo]="headerInfo"></app-header-volume>
-<br>
-<div class="create-volume">
-  <h3>Thông tin Volume</h3>
-  <hr>
-  <br>
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Volume</nz-form-label>
-  <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="volumeInfo.name" type="text"/>
-  <br>
-  <br>
-  <p>
-    <nz-switch [(ngModel)]="isInitSnapshot" nzCheckedChildren="ON" nzUnCheckedChildren="OFF"
-               style="padding-right: 10px;"></nz-switch>
-    Tạo từ Snapshot
-  </p>
+<page-header [breadcrumb]="breadcrumb"
+             [title]="title">
+    <ng-template #breadcrumb>
+        <nz-breadcrumb>
+            <nz-breadcrumb-item>
+                <a [routerLink]="['/']">Home</a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a [routerLink]="['/']">Dịch vụ</a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a [routerLink]="'/app-smart-cloud/volumes'">
+                    Volume
+                </a></nz-breadcrumb-item>
+        </nz-breadcrumb>
+        <div class="alain-custom-action text-right">
+            <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+            <project-select-dropdown (valueChanged)="projectChanged($event)"
+                                     [regionId]="region"></project-select-dropdown>
+        </div>
+    </ng-template>
+    <ng-template #title>
+          <span nz-icon
+                nzType="arrow-left"
+                nzTheme="outline"
+                [routerLink]="'/app-smart-cloud/volume/detail/' + this.volumeId"
+                style="margin-right: 10px;"></span>
+        Chỉnh sửa Volume
+    </ng-template>
+</page-header>
+<nz-content>
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
+        <nz-card nzTitle="Thông tin Volume">
+            <nz-form-item>
+                <nz-form-label nzFor="name">
+                    <div class="label">
+                        <span>Tên Volume</span>
+                        <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                    </div>
+                </nz-form-label>
+                <nz-form-control>
+                    <input nz-input formControlName="name" value="{{volumeInfo?.name}}" [maxlength]="70"/>
+                    <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">Vui lòng chỉ nhập kí tự là chữ hoặc số
+                        </ng-container>
+                        <ng-container *ngIf="control.haassError('duplicateName')">Tên Volume này đã được sử dụng, vui
+                            lòng chọn tên khác
+                        </ng-container>
+                    </ng-template>
+                </nz-form-control>
+            </nz-form-item>
+<!--            <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()" [disabled]="true">-->
+<!--                <div style="display: flex; padding: 20px;">-->
+<!--                    <div nz-radio nzValue="hdd"-->
+<!--                         [ngStyle]="{'background-color': volumeInfo?.volumeType === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"-->
+<!--                         style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">-->
+<!--                        HDD-->
+<!--                        <br>-->
+<!--                        Additional description and information about copywriting.-->
+<!--                    </div>-->
+<!--                    <div nz-radio nzValue="ssd"-->
+<!--                         [ngStyle]="{'background-color': volumeInfo.volumeType === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"-->
+<!--                         style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">-->
+<!--                        SSD-->
+<!--                        <br>-->
+<!--                        Additional description and information about copywriting.-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </nz-radio-group>-->
+            <nz-form-item>
+                <nz-table [nzTemplateMode]=true>
+                    <thead>
+                    <tr>
+                        <th>Dung lượng(GB)</th>
+                        <th>IOPS</th>
+                        <th>Giá theo tháng(VNĐ)</th>
+                        <th>Giá theo giờ(VNĐ)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <nz-input-number formControlName="storage"
+                                             [nzMin]="oldSize" [nzStep]="1"></nz-input-number>
+                        </td>
+                        <td>200</td>
+                        <td>360.712</td>
+                        <td>484</td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </nz-form-item>
+            <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" [nzDisabled]="true">Mã hóa Volume</label>
+            <br>
+            <label nz-checkbox style="margin-top: 10px;" [nzChecked]="volumeInfo?.isMultiAttach" [nzDisabled]="true">Gắn nhiều máy ảo</label>
+            <nz-form-item>
+                <nz-form-label nzFor="name">
+                    <div class="label">
+                        <span>Chọn máy ảo</span>
+                        <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                    </div>
+                </nz-form-label>
+                <nz-form-control>
+                    <input nz-input value="{{instance?.name}}" [disabled]="true"/>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzFor="description">
+                    <div class="label">
+                        <span>Mô tả</span>
+                    </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                    <textarea nz-input formControlName="description" id="description" [maxLength]="700" [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                    <ng-template #descriptionErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 700 kí tự</ng-container>
+                    </ng-template>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzFor="name">
+                    <div class="label">
+                        <span>Thời gian sử dụng (Tháng)</span>
+                        <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                    </div>
+                </nz-form-label>
+                <nz-form-control>
+                    <input nz-input  value="{{expiryTime}}" disabled="true"/>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzFor="name">
+                    <div class="label">
+                        <span>Thời gian bắt đầu sử dụng:</span>
+                    </div>
+                </nz-form-label>
+                <nz-form-control>
+                    <span>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</span>
+                </nz-form-control>
+            </nz-form-item>
+        </nz-card>
+        <nz-card nzTitle="Thành tiền" [nzExtra]="extraTemplate">
+            <nz-table>
+<!--                <tr>-->
+<!--                    <td>Chi phí volume (1 tháng)</td>-->
+<!--                    <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>-->
+<!--                    <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.totalAmount?.amount}} {{orderItem?.totalAmount?.currency}}</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Thành tiền (Đã bao gồm 10% VAT)</td>-->
+<!--                    <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>-->
+<!--                    <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</td>-->
+<!--                </tr>-->
+            </nz-table>
+            <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 24px; margin-bottom: 0;">
+                <nz-space nzSize="middle">
+                    <button *nzSpaceItem nz-button nzType="default" class="button-back" (click)="goBack()">Quay lại</button>
+                    <nz-form-control *nzSpaceItem>
+                        <button nz-button
+                                nzType="primary"
+                                [nzLoading]="isLoading"
+                                class="button-create"
+                                [disabled]="!validateForm.valid">Tạo mới</button>
+                    </nz-form-control>
+                </nz-space>
+            </nz-form-item>
+        </nz-card>
+        <ng-template #extraTemplate>
+            <a>More</a>
+        </ng-template>
+    </form>
 
-  <div *ngIf="isInitSnapshot === true">
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn Snapshot</nz-form-label>
-    <br>
-
-    <nz-select nzSize="default"
-               [nzPlaceHolder]="'-Chọn Snapshot-'"
-               [(ngModel)]="snapshot"
-               (ngModelChange)="changeExpTime()"
-               style="width: 100%;"
-    >
-      <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
-    </nz-select>
-  </div>
-
-
-  <br>
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn loại Volume</nz-form-label>
-  <br>
-
-  <nz-radio-group [(ngModel)]="volumeInfo.volumeType" (click)="changeVolumeType()">
-    <div style="display: flex; padding: 20px;">
-      <div nz-radio nzValue="1" [ngStyle]="{'background-color': volumeInfo.volumeType === '1' ? '#e6f7ff' : '#fcfcfc'}"
-           style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
-        HDD
-        <br>
-        Additional description and information about copywriting.
-      </div>
-      <div nz-radio nzValue="0" [ngStyle]="{'background-color': volumeInfo.volumeType === '0' ? '#e6f7ff' : '#fcfcfc'}"
-           style="width: 50%; height: 80px; padding: 10px;border: thin; border-radius: 5px;">
-        SSD
-        <br>
-        Additional description and information about copywriting.
-      </div>
-    </div>
-  </nz-radio-group>
-
-  <br>
-  <br>
-
-
-  <nz-table [nzTemplateMode]=true>
-    <thead>
-    <tr>
-      <th>Dung lượng(GB)</th>
-      <th>IOPS</th>
-      <th>Giá theo tháng(VNĐ)</th>
-      <th>Giá theo giờ(VNĐ)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>
-        <nz-input-number [(ngModel)]="volumeInfo.sizeInGB" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
-      </td>
-      <td>200</td>
-      <td>360.712</td>
-      <td>484</td>
-    </tr>
-    </tbody>
-  </nz-table>
-  <br>
-  <br>
-  <label nz-checkbox [(ngModel)]="volumeInfo.isEncryption">Mã hóa Volume</label>
-  <br>
-  <label nz-checkbox [(ngModel)]="volumeInfo.isMultiAttach">Gắn nhiều máy ảo</label>
-  <br>
-  <br>
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn máy ảo</nz-form-label>
-  <br>
-  <nz-select nzSize="default"
-             [nzPlaceHolder]="'-Chọn máy ảo-'"
-             [(ngModel)]="volumeInfo.instanceId"
-             style="width: 100%;"
-  >
-    <nz-option *ngFor="let item of vmList" [nzLabel]="item.label.toString()" [nzValue]="item.value"></nz-option>
-  </nz-select>
-  <br>
-  <br>
-  <p>Mô tả</p>
-  <textarea rows="4" nz-input [(ngModel)]="volumeInfo.description"></textarea>
-  <br>
-  <br>
-
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Thời hạn sử dụng</nz-form-label>
-  <br>
-
-  <nz-select nzSize="default"
-             [nzPlaceHolder]="'-Chọn thời hạn sử dụng-'"
-             [nzOptions]="expiryTimeList"
-             [(ngModel)]="expiryTime"
-             (ngModelChange)="changeExpTime()"
-             style="width: 100%;"
-  >
-  </nz-select>
-  <p>
-    Thời gian bắt đầu sử dụng:
-    <span>{{ volumeInfo.createDate | date:'dd/MM/yyyy' }}</span>
-  </p>
-</div>
-<br>
-<b>Thành tiền</b>
-<br>
-<hr>
-<br>
-<nz-table [nzTemplateMode]=true style="border: none;">
-  <tbody>
-  <tr>
-    <td style="border-bottom: none"><p>Chi phí sử dụng ({{ expiryTime }} tháng)</p></td>
-    <td style="border-bottom: none; text-align: right"><p>1.000.000 VNĐ</p></td>
-  </tr>
-  <tr>
-    <td style="border-bottom: none">Thành tiền (Đã bao gồm 10% VAT)</td>
-    <td style="border-bottom: none; text-align: right">1.100.000 VND</td>
-  </tr>
-  <tr>
-    <td style="border-bottom: none"></td>
-    <td style="border-bottom: none; text-align: right; padding-right: 30px;">
-      <button nz-button nzType="primary" style="background-color: #9c9c9c; padding-right: 20px;">Hủy</button>
-      <button nz-button nzType="primary">Chỉnh sửa</button>
-    </td>
-  </tr>
-  </tbody>
-</nz-table>
+</nz-content>
 

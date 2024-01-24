@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
+import { tr } from 'date-fns/locale';
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -14,20 +16,22 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
   @Output() valueChanged = new EventEmitter();
 
+
+  isLoadingDelete:boolean = false
+  isVisibleDelete: boolean = false
+
   constructor(
     private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
-    private router: ActivatedRoute,
-    public message: NzMessageService,
-    private renderer: Renderer2
+    private notification: NzNotificationService
   ) {}
 
   ngOnInit(): void {
   }
 
-  
+
   openConsole(): void {
     this.route.navigateByUrl('/app-smart-cloud/instances/instances-console/' + this.instancesId, {
       state: {
@@ -43,52 +47,64 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       nzContent: tpl,
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
+      nzOkLoading: this.isLoadingDelete,
       nzOnOk: () => {
         this.dataService.delete(this.instancesId).subscribe(
           (data: any) => {
             console.log(data);
-            if (data == true) {
-              this.message.success('Xóa máy ảo thành công');
-            } else {
-              this.message.error('Xóa máy ảo không thành công');
-            }
+            this.isLoadingDelete = true;
+            this.route.navigate(['/app-smart-cloud/instances'])
+            this.notification.success('Thành công', 'Xóa máy ảo thành công');
           },
           () => {
-            this.message.error('Xóa máy ảo không thành công');
+            this.isLoadingDelete = false
+            this.notification.error('Thất bại','Xóa máy ảo thất bại');
           }
         );
       },
     });
   }
 
-  continue(tpl: TemplateRef<{}>): void {
-    //gia hạn
-    this.modalSrv.create({
-      nzTitle: 'Gia hạn',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.message.success('Gia hạn thành công');
-        //  this.dataService.delete(this.id).subscribe(
-        //   (data: any) => {
-        //     console.log(data);
-        //     if (data == true) {
-        //       this.message.success('Xóa máy ảo thành công');
-        //     } else {
-        //       this.message.error('Xóa máy ảo không thành công');
-        //     }
-        //   },
-        //   () => {
-        //     this.message.error('Xóa máy ảo không thành công');
-        //   }
-        // );
+  showModalDelete() {
+    this.isVisibleDelete = true
+  }
+
+  handleOk() {
+    this.isLoadingDelete = true
+    this.dataService.delete(this.instancesId).subscribe((data: any) => {
+        console.log(data);
+        this.isVisibleDelete = false
+        this.isLoadingDelete = false;
+        this.route.navigate(['/app-smart-cloud/instances'])
+        this.notification.success('Thành công', 'Xóa máy ảo thành công');
       },
-    });
+      () => {
+        this.isVisibleDelete = false
+        this.isLoadingDelete = false
+        this.notification.error('Thất bại','Xóa máy ảo thất bại');
+      }
+    );
+  }
+
+  handleCancel() {
+    this.isVisibleDelete = false
+    this.isLoadingDelete = false
+  }
+
+
+  continue(): void {
+    //gia hạn
+    this.route.navigate([
+      '/app-smart-cloud/instances/instances-extend/' + this.instancesId,
+    ]);
   }
 
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
+  check = true;
+  isOk = false;
+  passwordVisible = false;
+  passwordRepeatVisible = false;
 
   resetPasswordFc(tpl: TemplateRef<{}>): void {
     //Reset mật khẩu máy ảo
@@ -98,31 +114,44 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        if (this.resetPassword == this.resetPasswordRepeat) {
-          this.message.success('Reset mật khẩu máy ảo thành công');
+        if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
+          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
           // this.dataService
-          //   .resetpassword({ id: this.id, newPassword: this.resetPassword })
+          //   .resetpassword({ id: this.instancesId, newPassword: this.resetPassword })
           //   .subscribe(
           //     (data: any) => {
-          //       console.log(data);
+          //       console.log("reset password", data);
           //       if (data == true) {
-          //         this.message.success('Reset mật khẩu máy ảo thành công');
+          //         this.notification.success('', 'Reset mật khẩu máy ảo thành công');
           //       } else {
-          //         this.message.error('Reset mật khẩu không thành công');
+          //         this.notification.error('', 'Reset mật khẩu không thành công');
           //       }
           //     },
           //     () => {
-          //       this.message.error('Reset mật khẩu không thành công');
+          //       this.notification.error('', 'Reset mật khẩu không thành công');
           //     }
           //   );
         } else {
-          this.message.error('Mật khẩu không khớp!');
+          this.notification.error('', 'Reset mật khẩu không thành công');
         }
       },
     });
   }
 
-  
+  onInputChange(event: Event): void {
+    if (this.resetPassword == this.resetPasswordRepeat) {
+      this.check = true;
+    } else {
+      this.check = false;
+      this.isOk = false;
+    }
+    if (this.resetPassword == this.resetPasswordRepeat && this.resetPasswordRepeat != '') {
+      this.isOk = true;
+    } else {
+      this.isOk = false;
+    }
+  }
+
   shutdownInstance(): void {
     this.modalSrv.create({
       nzTitle: 'Tắt máy ảo',
@@ -137,13 +166,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         this.dataService.postAction(this.instancesId, body).subscribe(
           (data: any) => {
             if (data == true) {
-              this.message.success('Tắt máy ảo thành công');
+              this.notification.success('', 'Tắt máy ảo thành công');
             } else {
-              this.message.error('Tắt máy ảo không thành công');
+              this.notification.error('', 'Tắt máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Tắt máy ảo không thành công');
+            this.notification.error('', 'Tắt máy ảo không thành công');
           }
         );
       },
@@ -164,13 +193,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           (data: any) => {
             console.log(data);
             if (data == true) {
-              this.message.success('Khởi động lại máy ảo thành công');
+              this.notification.success('', 'Khởi động lại máy ảo thành công');
             } else {
-              this.message.error('Khởi động lại máy ảo không thành công');
+              this.notification.error('', 'Khởi động lại máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Khởi động lại máy ảo không thành công');
+            this.notification.error('', 'Khởi động lại máy ảo không thành công');
           }
         );
       },
@@ -196,7 +225,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     ]);
   }
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/vm']);
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 }
 

@@ -1,0 +1,42 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Backup Volume'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết Backup Volume</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-card style="height: 80%">
+  <h1>Thông tin Backup Volume</h1>
+  <table style="width: 100%; margin-top: 40px;">
+    <td>
+      <h3 style=" font-weight: normal;">Tên backupvolume: {{receivedData.name}}</h3>
+      <h3 style=" margin-top: 20px;font-weight: normal;">Tên volume: {{receivedData.volumeName}}</h3>
+    </td>
+    <td>
+      <h3 style=" font-weight: normal;">Ngày tạo: {{receivedData.creationDate| date:'dd/MM/yyyy'}}</h3>
+      <h3 style=" margin-top: 20px;font-weight: normal;">Dung lượng: {{receivedData.size}}GB</h3>
+    </td>
+    <td>
+      <h3 style="font-weight: normal;">Ngày hết hạn: {{receivedData.expirationDate| date:'dd/MM/yyyy'}}</h3>
+    </td>
+  </table>
+
+  <div nz-row class="mb-md">
+    <div nz-col nzSpan="21">
+    </div>
+    <div nz-col nzSpan="3">
+      <nz-form-item style="margin-top: 100%">
+        <button (click)="backToList()" nz-button style="background-color: darkgray; color: white">Quay lại</button>
+      </nz-form-item>
+    </div>
+  </div>
+
+</nz-card>

@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
@@ -17,19 +16,16 @@ import { Router } from '@angular/router';
 // import { ModalBtnStatus } from '@widget/base-modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import { AntTableConfig } from 'src/app/core/models/interfaces/table';
 import { PageHeaderType } from 'src/app/core/models/interfaces/page';
 import { Role } from 'src/app/core/models/interfaces/role';
-import { SearchCommonVO } from 'src/app/core/models/interfaces/types';
 import { InstancesModel } from '../instances.model';
-import { async } from 'rxjs';
-import { da } from 'date-fns/locale';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { InstancesVlanGimComponent } from './instances-vlan-gim/instances-vlan-gim.component';
+import { ProjectModel } from 'src/app/shared/models/project.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 class SearchParam {
   status: string = '';
@@ -40,7 +36,6 @@ class SearchParam {
   selector: 'one-portal-instances',
   templateUrl: './instances.component.html',
   styleUrls: ['./instances.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstancesComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
@@ -51,6 +46,7 @@ export class InstancesComponent implements OnInit {
     breadcrumb: ['Home', 'Dịch vụ', 'VM'],
   };
   dataList: InstancesModel[] = [];
+  emptyList: InstancesModel[] = [];
   checkedCashArray = [];
 
   pageIndex = 1;
@@ -66,22 +62,25 @@ export class InstancesComponent implements OnInit {
   searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
+    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
     { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Hủy', value: 'HUY' },
     { text: 'Tạm ngưng', value: 'TAMNGUNG' },
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
+  listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
+  listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
+  listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
 
   selectedOptionAction: string;
   actionData: InstancesModel;
 
   region: number;
-
-  activeCreate: boolean = true;
+  projectId: number;
+  activeCreate: boolean = false;
+  isSearch: boolean = false;
   isVisibleGanVLAN: boolean = false;
-  isVisibleGanVLANIPAddress: boolean = false;
-
+  isVisibleGoKhoiVLAN: boolean = false;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -89,7 +88,7 @@ export class InstancesComponent implements OnInit {
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private viewContainerRef: ViewContainerRef // private bsModalRef: BsModalRef
   ) {}
 
@@ -98,6 +97,7 @@ export class InstancesComponent implements OnInit {
     this.selectedOptionAction = '';
     switch (parseInt(cs, 10)) {
       case 1:
+        this.navigateToCreateBackup(this.actionData.id);
         break;
       case 2:
         break;
@@ -110,12 +110,13 @@ export class InstancesComponent implements OnInit {
         this.isVisibleGanVLAN = true;
         break;
       case 6:
+        this.isVisibleGoKhoiVLAN = true;
         break;
       case 7:
-        this.restartInstance();
+        this.restartInstance(this.actionData.id);
         break;
       case 8:
-        this.shutdownInstance();
+        this.shutdownInstance(this.actionData.id);
         break;
       default:
     }
@@ -123,21 +124,31 @@ export class InstancesComponent implements OnInit {
 
   changeFilterStatus(e: any): void {
     this.searchParam.status = e;
-  }
-  changeName(e: any): void {
-    this.searchParam.name = e;
+    this.getDataList()
   }
 
   selectedChecked(e: any): void {
     // @ts-ignore
     this.checkedCashArray = [...e];
   }
+
   onRegionChange(region: RegionModel) {
     // Handle the region change event
+    this.activeCreate = false;
+    this.isSearch = false;
+    this.loading = true;
     this.region = region.regionId;
     console.log(this.tokenService.get()?.userId);
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.activeCreate = false;
+    this.isSearch = false;
+    this.loading = true;
+    this.projectId = project.id;
     this.getDataList();
   }
+
   resetForm(): void {
     this.searchParam = {};
     this.getDataList();
@@ -147,6 +158,14 @@ export class InstancesComponent implements OnInit {
     if (reset) {
       this.pageIndex = 1;
     }
+    if (
+      this.searchParam.name != undefined ||
+      this.searchParam.status != undefined
+    ) {
+      this.isSearch = true;
+      this.cdr.detectChanges();
+    }
+
     if (this.region != undefined && this.region != null) {
       this.loading = true;
       this.dataService
@@ -154,33 +173,39 @@ export class InstancesComponent implements OnInit {
           this.pageIndex,
           this.pageSize,
           this.region,
+          this.projectId,
           this.searchParam.name,
-          this.searchParam.status
+          this.searchParam.status,
+          true,
+          this.tokenService.get()?.userId
         )
-        .subscribe({
-          next: (data: any) => {
+        .pipe(
+          finalize(() => {
             this.loading = false;
-
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe(
+          (data) => {
             // Update your component properties with the received data
-            if (data.records && data.records.length > 0) {
+            if (data != null && data.records && data.records.length > 0) {
               this.activeCreate = false;
+              this.isSearch = true;
+              this.dataList = data.records; // Assuming 'records' property contains your data
+              this.tableConfig.total = data.totalCount;
+              this.total = data.totalCount;
+              this.tableConfig.pageIndex = this.pageIndex;
+              this.tableLoading(false);
+              this.checkedCashArray = [...this.checkedCashArray];
             } else {
               this.activeCreate = true;
             }
-            this.dataList = data.records; // Assuming 'records' property contains your data
-            this.tableConfig.total = data.totalCount;
-            this.total = data.totalCount;
-            this.tableConfig.pageIndex = this.pageIndex;
-            this.tableLoading(false);
-            this.checkedCashArray = [...this.checkedCashArray];
+            this.cdr.detectChanges();
           },
-          error: (error) => {
-            // Handle the error, e.g., display an error message to the user
-          },
-          complete: () => {
-            console.log('Completed'); // This is called when the observable completes
-          },
-        });
+          (error) => {
+            this.activeCreate = true;
+          }
+        );
     }
   }
 
@@ -197,7 +222,6 @@ export class InstancesComponent implements OnInit {
   }
 
   reloadTable(): void {
-    this.message.info('Refresh successfully');
     this.getDataList();
   }
 
@@ -222,7 +246,8 @@ export class InstancesComponent implements OnInit {
     this.tableConfig.pageSize = e;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.searchParam.status = '';
     // this.dataService
     // .getUsers2(1,10, this.sortKey!, this.sortValue!, this.searchGenderList)
     // .subscribe((data: any) => {
@@ -283,13 +308,17 @@ export class InstancesComponent implements OnInit {
     }
   }
 
+  showHandleGanVLAN() {
+    this.isVisibleGanVLAN = true
+  }
+
   handleCancelGanVLAN(): void {
     this.actionData = null;
     this.isVisibleGanVLAN = false;
   }
 
   handleOkGanVLAN(): void {
-    this.message.success('Gắn VLAN thành công');
+    this.notification.success('', 'Gắn VLAN thành công');
     //this.actionData = null;
     this.isVisibleGanVLAN = false;
     // var body = {};
@@ -297,26 +326,37 @@ export class InstancesComponent implements OnInit {
     //   (data: any) => {
     //     console.log(data);
     //     if (data == true) {
-    //       this.message.success('Gắn VLAN thành công');
+    //       this.notification.success('', 'Gắn VLAN thành công');
     //     } else {
-    //       this.message.error('Gắn VLAN không thành công');
+    //       this.notification.error('', 'Gắn VLAN không thành công');
     //     }
     //   },
     //   () => {
-    //     this.message.error('Gắn VLAN không thành công');
+    //     this.notification.error('', 'Gắn VLAN không thành công');
     //   }
     // );
   }
 
-  clickIPAddress(): void {
-    this.isVisibleGanVLAN = false;
-    this.isVisibleGanVLANIPAddress = true;
-    this.message.success('Thành công');
-
+  showHandleGoKhoiVLAN() {
+    this.isVisibleGoKhoiVLAN = true
   }
 
+  handleCancelGoKhoiVLAN(): void {
+    this.actionData = null;
+    this.isVisibleGoKhoiVLAN = false;
+  }
 
-  shutdownInstance(): void {
+  handleOkGoKhoiVLAN(): void {
+    this.notification.success('', 'Gỡ khỏi VLAN thành công');
+    this.isVisibleGoKhoiVLAN = false;
+  }
+
+  isExpand = false;
+  clickIPAddress(): void {
+    this.isExpand = !this.isExpand;
+  }
+
+  shutdownInstance(id: number): void {
     this.modalSrv.create({
       nzTitle: 'Tắt máy ảo',
       nzContent: 'Quý khách chắn chắn muốn thực hiện tắt máy ảo?',
@@ -325,24 +365,24 @@ export class InstancesComponent implements OnInit {
       nzOnOk: () => {
         var body = {
           command: 'shutdown',
-          id: this.actionData.id,
+          id: id,
         };
-        this.dataService.postAction(this.actionData.id, body).subscribe(
+        this.dataService.postAction(id, body).subscribe(
           (data: any) => {
             if (data == true) {
-              this.message.success('Tắt máy ảo thành công');
+              this.notification.success('', 'Tắt máy ảo thành công');
             } else {
-              this.message.error('Tắt máy ảo không thành công');
+              this.notification.error('', 'Tắt máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Tắt máy ảo không thành công');
+            this.notification.error('', 'Tắt máy ảo không thành công');
           }
         );
       },
     });
   }
-  restartInstance(): void {
+  restartInstance(id: number): void {
     this.modalSrv.create({
       nzTitle: 'Khởi động lại máy ảo',
       nzContent: 'Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?',
@@ -351,19 +391,19 @@ export class InstancesComponent implements OnInit {
       nzOnOk: () => {
         var body = {
           command: 'restart',
-          id: this.actionData.id,
+          id: id,
         };
-        this.dataService.postAction(this.actionData.id, body).subscribe(
+        this.dataService.postAction(id, body).subscribe(
           (data: any) => {
             console.log(data);
             if (data == true) {
-              this.message.success('Khởi động lại máy ảo thành công');
+              this.notification.success('', 'Khởi động lại máy ảo thành công');
             } else {
-              this.message.error('Khởi động lại máy ảo không thành công');
+              this.notification.error('', 'Khởi động lại máy ảo không thành công');
             }
           },
           () => {
-            this.message.error('Khởi động lại máy ảo không thành công');
+            this.notification.error('', 'Khởi động lại máy ảo không thành công');
           }
         );
       },
@@ -375,7 +415,13 @@ export class InstancesComponent implements OnInit {
   navigateToEdit(id: number) {
     this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
   }
-  navigateToDetail(id: number) {
-    this.router.navigate(['/app-smart-cloud/instances/instances-detail/' + id]);
+
+  navigateToCreateBackup(id: number) {
+    console.log('data ', id);
+    // this.dataService.setSelectedObjectId(id)
+    this.router.navigate([
+      '/app-smart-cloud/instance/' + id + '/create-backup-vm',
+    ]);
   }
+
 }

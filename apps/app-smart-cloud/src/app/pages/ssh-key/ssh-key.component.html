@@ -1,41 +1,46 @@
-<page-header [action]="action" [title]="'SSH Key'">
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'SSH Key'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> SSH Key</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
   <ng-template #action>
-    <div class="text-right">
+    <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
+  <ng-template #content>
+    <div *ngIf="!isBegin" nz-row class="mb-md">
+      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+        <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
+        <ng-template #suffixButton>
+          <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+            <i nz-icon nzType="search"></i>
+            Tim kiếm
+          </button>
+        </ng-template>
+      </nz-input-group>
+    </div>
+  </ng-template>
+  <ng-template #extra>
+    <button *ngIf="!isBegin" (click)="createKey()" nz-button nzType="primary" style="
+            border: 1px solid #52c41a;
+            border-radius: 2px;
+            background-color: #52c41a;
+          "><i nz-icon nzType="plus"></i> Tạo mới
+    </button>
+  </ng-template>
+
 </page-header>
 
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
-      <h2>Danh sách SSH Key</h2>
-      <div nz-row class="mb-md">
-        <div nz-col nzSpan="12">
-          <div class="text-left">
-            <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-              <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
-            </nz-input-group>
-            <ng-template #suffixButton>
-              <button nz-button nzType="primary" nzSize="large" nzSearch (click)="search(searchBox.value)">
-                <span nz-icon nzType="setting" nzTheme="outline"></span>
-                Tim kiếm
-              </button>
-            </ng-template>
-          </div>
-        </div>
-        <div nz-col nzSpan="12">
-          <div class="text-right">
-            <button nzSize="large" (click)="createKey()" nz-button nzType="primary" style="
-            border: 1px solid #52c41a;
-            border-radius: 2px;
-            background-color: #52c41a;
-          ">+ Tạo mới
-            </button>
-          </div>
-        </div>
-      </div>
+      <!--      <h2>Danh sách SSH Key</h2>-->
+
       <!--  Bảng-->
       <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
@@ -50,18 +55,20 @@
         <tbody>
         <tr *ngFor="let data of listOfData">
           <td (click)="detailKey(data)">{{ data.name }}</td>
-          <td>{{ data.fingerprint }}</td>
+          <td (click)="detailKey(data)">{{ data.fingerprint }}</td>
           <td>
             <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">
               Xóa
             </button>
           </td>
-          <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Bạn có đồng ý xóa keypair này?"
-                    (nzOnCancel)="handleCancel(null)"
-                    (nzOnOk)="handleDelete(data.id)">
-            <ng-container *nzModalContent></ng-container>
-          </nz-modal>
         </tr>
+        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xác nhận xóa SSH Key"
+                  (nzOnCancel)="handleCancel(null)"
+                  (nzOnOk)="handleDelete(data.id)">
+          <ng-container *nzModalContent>
+            <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn xóa SSH Key?</h3>
+          </ng-container>
+        </nz-modal>
         </tbody>
       </nz-table>
     </ng-container>
@@ -90,6 +97,7 @@
             <nz-tab nzTitle="Tạo SSH Key mới">
               <div class="mb-5 mt-5 pt-3 pb-3" style="
               border-style: solid;
+              border-width: 1px;
               border-color: #0493fa;
               background-color: #d6eeff;
             ">
@@ -119,12 +127,13 @@
               border-style: solid;
               border-color: #0493fa;
               background-color: #d6eeff;
+              border-width: 1px;
             ">
                 <Space>
                 <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
                       style="color: blue"></span>
-                  Private key sẽ được gửi vào email khách hàng đăng ký tài khoản.
-                  Quý khách lưu ý giữ private key này an toàn bảo mật cho server.
+                  Chức năng được dùng khi quý khách đã có sẵn cặp SSH key.Vui lòng nhập Public Key để tạo vào tài khoản
+                  của quý khách.
                 </Space>
               </div>
               <h4>
@@ -161,7 +170,8 @@
   </nz-form-control>
 
   <!-- chi tiết  -->
-  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel(null)" [nzOkText]="null"
+  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel(null)"
+            [nzOkText]="null"
             nzCancelText="Quay lại" [nzStyle]="modalStyle">
     <ng-container *nzModalContent>
       <h4>Tên key pair:</h4>

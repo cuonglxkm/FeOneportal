@@ -1,71 +1,82 @@
-<page-header [action]="action" [title]="'Tạo IP Public'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo IP Public'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo Ip Public</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
   <ng-template #action>
-    <div class="text-right">
+    <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-card nzTitle="Thông tin IP Pulbic">
-  <div nz-row class="mb-md">
-    <div nz-col nzSpan="11">
-      <nz-form-label nzRequired>Chọn dải</nz-form-label>
-      <nz-input-group nzCompact>
-        <nz-select [(ngModel)]="selectedAction" style="width: 100%">
-          <nz-option nzValue="Gắn Ip Pulbic" nzLabel="Gắn Ip Pulbic"></nz-option>
-          <nz-option nzValue="Gỡ Ip Pulbic" nzLabel="Gỡ Ip Pulbic"></nz-option>
-          <nz-option nzValue="Xóa" nzLabel="Xóa"></nz-option>
-        </nz-select>
-      </nz-input-group>
-    </div>
-    <div nz-col nzSpan="12" style="margin-left: 15px">
-      <nz-form-label>Chọn máy ảo</nz-form-label>
-      <nz-input-group nzCompact>
-        <nz-select [(ngModel)]="selectedAction" style="width: 96%">
-          <nz-option nzValue="Gắn Ip Pulbic" nzLabel="Gắn Ip Pulbic"></nz-option>
-          <nz-option nzValue="Gỡ Ip Pulbic" nzLabel="Gỡ Ip Pulbic"></nz-option>
-          <nz-option nzValue="Xóa" nzLabel="Xóa"></nz-option>
-        </nz-select>
-      </nz-input-group>
-    </div>
-  </div>
-
-  <nz-form-item>
-    <label nz-checkbox [(ngModel)]="checked">IPv6</label>
-  </nz-form-item>
-  <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
-  <nz-input-group nzCompact>
-    <nz-select [(ngModel)]="selectedAction" style="width: 95%">
-      <nz-option nzValue="Gắn Ip Pulbic" nzLabel="Gắn Ip Pulbic"></nz-option>
-      <nz-option nzValue="Gỡ Ip Pulbic" nzLabel="Gỡ Ip Pulbic"></nz-option>
-      <nz-option nzValue="Xóa" nzLabel="Xóa"></nz-option>
-    </nz-select>
-  </nz-input-group>
-  <p style="margin-top: 10px">Thời gian tạo: {{checked}}</p>
-</nz-card>
-<nz-card nzTitle="Thành tiền" nzBorderless='false' nzSize='small'>
-  <div nz-row class="mb-md">
-    <div nz-col nzSpan="12">
-      <p style="margin-top: 10px">Chi phí volume ( 1 tháng )</p>
-      <p style="margin-top: 10px">Thành tiền ( Đã bao gồm 10% VAT )</p>
-    </div>
-    <div nz-col nzSpan="12">
-      <div class="text-right">
-        <p style="margin-top: 10px">1 .000.000 VNĐ</p>
-        <p style="margin-top: 10px">1.000.000 VNĐ</p>
+<form nz-form [formGroup]="form" >
+  <nz-card nzTitle="Thông tin IP Pulbic">
+    <div nz-row class="mb-md">
+      <div nz-col nzSpan="11">
+        <nz-form-label nzRequired>Chọn dải</nz-form-label>
+        <nz-input-group nzCompact>
+          <nz-select style="width: 100%" nzPlaceHolder="--Chọn dải IP--" formControlName="ipSubnet">
+            <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.networkId" />
+          </nz-select>
+        </nz-input-group>
+      </div>
+      <div nz-col nzSpan="12" style="margin-left: 15px">
+        <nz-form-label>Chọn máy ảo</nz-form-label>
+        <nz-input-group nzCompact>
+          <nz-select [nzAllowClear]="true" [(ngModel)]="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--">
+            <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id" />
+          </nz-select>
+        </nz-input-group>
       </div>
     </div>
-  </div>
-  <div nz-row class="mb-md">
-    <div nz-col nzSpan="20">
-    </div>
-    <div nz-col nzSpan="4">
+    <div *ngIf="checkIpv6 !== null">
       <nz-form-item>
-        <button nz-button nzType="default">Quay lại</button>
-        <button nz-button nzType="primary">Tạo IP Public</button>
+        <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }">IPv6</label>
       </nz-form-item>
     </div>
-  </div>
-</nz-card>
+    <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
+    <nz-input-group nzCompact>
+      <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn thời gian sử dụng--"
+                 style="width: 95%"
+                 formControlName="numOfMonth" >
+        <nz-option nzValue="1" nzLabel="1"></nz-option>
+        <nz-option nzValue="3" nzLabel="3"></nz-option>
+        <nz-option nzValue="6" nzLabel="6"></nz-option>
+        <nz-option nzValue="9" nzLabel="9"></nz-option>
+        <nz-option nzValue="12" nzLabel="12"></nz-option>
+      </nz-select>
+    </nz-input-group>
+    <p style="margin-top: 40px">Thời gian tạo: {{dateString | date:'dd/MM/yyyy'}}</p>
+  </nz-card>
+  <nz-card nzTitle="Thành tiền" nzBorderless='false'  [nzExtra]="extraTemplate">
+    <div nz-row class="mb-md">
+      <div nz-col nzSpan="12">
+        <p style="margin-top: 10px">Chi phí Ip Public ( {{this.form.controls['numOfMonth'].value}} tháng )</p>
+        <p style="margin-top: 10px">Thành tiền ( Đã bao gồm 10% VAT )</p>
+      </div>
+      <div nz-col nzSpan="12">
+        <div class="text-right">
+          <p style="margin-top: 10px">1.000.000 VNĐ</p>
+          <p style="margin-top: 10px">1.000.000 VNĐ</p>
+        </div>
+      </div>
+    </div>
+    <div style="float: right; padding-top: 1%">
+      <nz-form-item>
+        <button nz-button nzType="default" (click)="backToList()">Quay lại</button>
+        <button nz-button nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">Tạo IP Public</button>
+      </nz-form-item>
+    </div>
+  </nz-card>
+
+  <ng-template #extraTemplate>
+    <a>More</a>
+  </ng-template>
+</form>
+
 
 

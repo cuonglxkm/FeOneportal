@@ -1,0 +1,110 @@
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Lịch sử thao tác'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/home2']">Home2</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Action History</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <nz-select nzSize="default"
+               [nzPlaceHolder]="'Tất cả trạng thái'">
+    </nz-select>
+    <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
+      <input type="text" nz-input placeholder="Tìm kiếm"
+             style="width: 300px; margin-left: 10px;"/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" nzSize="default" nzSearch><i nz-icon [nzType]="'search'"></i>Search
+      </button>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #extra>
+      <button class="bg-success border-success"
+              nz-button
+              nzType="primary">
+        <span
+          nz-icon nzType="plus"
+          nzTheme="outline" style="margin-left: 10px; margin-right: 10px;">
+        </span>
+        Tạo mới
+      </button>
+  </ng-template>
+
+
+</page-header>
+<nz-card>
+  <ng-container [ngSwitch]="isBegin">
+    <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
+      <div nz-row class="mb-md">
+        <div nz-col nzSpan="18">
+          <div class="row">
+            <div class="col-md-4" style="display:flex;">
+              <h4 style="margin-left: 0px; align-items: center; margin-right:10px">Thao tác:</h4>
+              <nz-input-group nzCompact>
+                <nz-select [(ngModel)]="selectedAction" nzSize="large">
+                  <nz-option *ngFor="let p of actionData" [nzValue]="p" [nzLabel]="p"></nz-option>
+                </nz-select>
+              </nz-input-group>
+            </div>
+            <div class="col-md-4" style="display:flex;">
+              <h4 style="margin-left: 30px; align-items: center; margin-right:10px">Loại dịch vụ:</h4>
+              <nz-input-group nzCompact>
+                <nz-select [(ngModel)]="selectedAction" nzSize="large">
+                  <nz-option *ngFor="let p of actionData" [nzValue]="p" [nzLabel]="p"></nz-option>
+                </nz-select>
+              </nz-input-group>
+            </div>
+            <div class="col-md-4" style="display:flex;">
+              <se-container style="margin-left: 30px;">
+                <nz-range-picker formControlName="date"/>
+              </se-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Bảng-->
+      <nz-table #rowSelectionTable [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger
+                [nzData]="listOfActionHistory"
+                [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
+                (nzPageIndexChange)="onPageIndexChange($event)">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Thao tác</th>
+          <th>Loại dịch vụ</th>
+          <th>Tên dịch vụ</th>
+          <th>Thời gian</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of listOfActionHistory">
+          <td>{{ item.eventID }}</td>
+          <td>{{ item.eventName }}</td>
+          <td>{{ item.resourceType }}</td>
+          <td>{{ item.resourceName }}</td>
+          <td>{{ item.createdTime }}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <nz-result nzStatus="403" nzTitle="SSH KEY - Ổ Khóa truy cp dịch vụ"
+                 nzSubTitle="Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối">
+      </nz-result>
+    </ng-container>
+  </ng-container>
+</nz-card>
+

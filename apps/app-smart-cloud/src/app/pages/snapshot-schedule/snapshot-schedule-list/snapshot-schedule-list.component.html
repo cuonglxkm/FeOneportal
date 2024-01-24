@@ -1,0 +1,180 @@
+<page-header
+  [content]="content"
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Danh sách lịch Snapshot'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> Lịch Snapshot </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <form nz-form style="margin-bottom: -16px">
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+        <div
+          nz-col
+          [nzLg]="6"
+          [nzMd]="6"
+          [nzSm]="24"
+          [nzXl]="6"
+          [nzXs]="24"
+          [nzXXl]="6"
+        >
+          <nz-form-item>
+            <nz-form-label [nzFor]="">Trạng thái dịch vụ </nz-form-label>
+            <nz-form-control>
+              <nz-select
+                [(ngModel)]="searchStatus"
+                [ngModelOptions]="{ standalone: true }"
+                [nzPlaceHolder]="'Trạng thái dịch vụ'"
+                [nzShowSearch]="false"
+                (ngModelChange)="searchSnapshotScheduleList()"
+              >
+                <nz-option
+                  *ngFor="let i of status"
+                  [nzLabel]="i.label"
+                  [nzValue]="i.value"
+                />
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div
+          nz-col
+          [nzLg]="8"
+          [nzMd]="8"
+          [nzSm]="24"
+          [nzXl]="8"
+          [nzXs]="24"
+          [nzXXl]="8"
+        >
+          <nz-row style="margin-left: -14px">
+            <nz-input-group
+              style="width: 100%"
+              nzSearch
+              [nzAddOnAfter]="suffixButton"
+            >
+              <input
+                name="name"
+                nz-input
+                placeholder="Tìm kiếm tên"
+                [(ngModel)]="searchName"
+                (keyup.enter)="searchSnapshotScheduleList()"
+              />
+            </nz-input-group>
+            <ng-template #suffixButton>
+              <button
+                nz-button
+                nzType="primary"
+                nzSearch
+                (click)="searchSnapshotScheduleList()"
+              >
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </ng-template>
+          </nz-row>
+        </div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="10"
+          [nzMd]="10"
+          [nzSm]="24"
+          [nzXl]="10"
+          [nzXs]="24"
+          [nzXXl]="10"
+        >
+          <button
+            class="bg-success border-success"
+            nz-button
+            nzType="primary"
+            (click)="navigateToCreate()"
+          >
+            <span
+              nz-icon
+              nzType="plus"
+              nzTheme="outline"
+              style="margin-right: 10px"
+            >
+            </span>
+            Tạo mới
+          </button>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</page-header>
+
+  <div class="normal-table-wrap">
+    <nz-table
+      style="margin-top: 2%;"
+      class="table-data"
+      #rowSelectionTable
+      [nzData]="listOfData"
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzTotal]="totalData"
+      [nzPageSize]="pageSize"
+      [nzPageIndex]="pageNumber"
+      [nzLoading]="isLoadingEntities"
+      [nzScroll]="{ x: '100%', y: '100%' }"
+      (nzQueryParams)="onQueryParamsChange($event)"
+    >
+      <thead>
+      <tr>
+        <th>Tên</th>
+        <th>Volume</th>
+        <th>Số bản ghi tối đa</th>
+        <th>Chu kỳ</th>
+        <th>Trạng thái dịch vụ</th>
+        <th>Lần Snapshot tiếp theo</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
+        <td>{{ data.volumeName }}</td>
+        <td>{{ data.maxSnapshot }}</td>
+        <td>Theo tuần</td>
+        <td *ngIf="data.serviceStatus=='HUY'" style="color: red">Hủy</td>
+        <td>{{ data.nextRuntime | date:'dd/MM/yyyy'}}</td>
+        <td nzRight>
+          <button
+            nz-button
+            [nzType]="'primary'"
+            nz-dropdown
+            [nzDropdownMenu]="opMenu"
+          >
+            <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
+          </button>
+          <nz-dropdown-menu #opMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="navigateToEdit(data.id)">Chỉnh sửa</li>
+              <li nz-menu-item (click)="stopSnapshot()">Tạm dừng</li>
+              
+              <li nz-menu-item (click)="DeleteSnapshot(data.id)">
+                Xóa
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>

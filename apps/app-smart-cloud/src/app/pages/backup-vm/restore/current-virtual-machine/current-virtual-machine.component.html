@@ -1,0 +1,72 @@
+<nz-card>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="12">
+      <div>
+        <div class="label">
+          <span>Tên máy ảo</span>
+          <span style="color: rgba(252, 16, 16, 1); "> *</span>
+        </div>
+        <input nz-input value="{{ backupVm?.instanceName }}" disabled="true"/>
+      </div>
+      <div style="margin-top: 10px">
+        <div class="label">
+          <span>Gói cấu hình</span>
+          <span style="color: rgba(252, 16, 16, 1); "> *</span>
+        </div>
+        <input nz-input value="{{ backupVm?.systemInfoBackups[0].flavorName }}" disabled="true"/>
+      </div>
+      <div style="margin-top: 10px">
+        <div class="label">
+          <span>Hệ điều hành</span>
+          <span style="color: rgba(252, 16, 16, 1); "> *</span>
+        </div>
+        <input nz-input value="{{ backupVm?.systemInfoBackups[0].osName }}" disabled="true"/>
+      </div>
+      <div style="margin-top: 10px">
+        <div class="label">
+          <span>Dung lượng ổ hệ điều hành</span>
+          <span style="color: rgba(252, 16, 16, 1); "> *</span>
+        </div>
+        <div>
+          <nz-input-group nzAddOnAfter="GB" style="width: 100%; margin-top: 5px;">
+            <input style="margin-top: 0;" nz-input value="{{ backupVm?.systemInfoBackups[0].rootSize }}"
+                   disabled="true"/>
+          </nz-input-group>
+        </div>
+      </div>
+    </nz-col>
+    <nz-col nzSpan="12">
+      <div>
+        <div class="label">
+          <span>Security Group</span>
+        </div>
+        <textarea style="margin-top: 4px;" nz-input rows="4" value="{{ securityGroupName }}" disabled="true"></textarea>
+      </div>
+      <div style="margin-top: 14px">
+        <div class="label">
+          <span>IOPS</span>
+          <span style="color: rgba(252, 16, 16, 1); "> *</span>
+        </div>
+        <input nz-input value="{{ listIOPSUnique }}" disabled="true"/>
+      </div>
+      <div style="margin-top: 10px">
+        <div class="label">
+          <span>Thời gian hết hạn:</span>
+        </div>
+        <input nz-input value="{{ backupVm?.expirationDate | date: 'dd/MM/yyyy - HH:ss:mm'}}" disabled="true"/>
+      </div>
+    </nz-col>
+  </nz-row>
+  <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 30px">
+    <nz-space nzSize="large">
+      <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back">Quay
+        lại
+      </button>
+      <nz-form-control *nzSpaceItem>
+        <button nz-button [nzLoading]="isLoading" nzType="primary" class="button-create" (click)="restoreCurrent()">Xác
+          nhận
+        </button>
+      </nz-form-control>
+    </nz-space>
+  </nz-form-item>
+</nz-card>

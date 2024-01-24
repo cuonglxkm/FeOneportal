@@ -1,0 +1,112 @@
+<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Danh sách thanh toán'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Billing
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/billing/invoices">Thanh toán</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <ng-template #content>
+    <nz-space [nzSize]="24">
+      <div *nzSpaceItem>
+        <nz-select [(ngModel)]="selectedValue"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="Tất cả trạng thái">
+          <nz-option *ngFor="let item of status" [nzValue]="item.value"
+                     [nzLabel]="item.label"></nz-option>
+        </nz-select>
+      </div>
+      <div *nzSpaceItem>
+        <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']"
+                         [(ngModel)]="dateRange"
+                         (ngModelChange)="onDateRangeChange($event)"
+                         [nzDisabledDate]="disabledDate"
+                         [nzFormat]="dateFormat"></nz-range-picker>
+      </div>
+      <div *nzSpaceItem>
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+          <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+                 type="text" nz-input
+                 placeholder="Tìm kiếm mã thanh toán, mã đơn hàng"/>
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSearch (click)="getListInvoices()">
+            <span nz-icon nzType="search" nzTheme="outline"></span>
+            Search
+          </button>
+        </ng-template>
+      </div>
+    </nz-space>
+  </ng-template>
+  <ng-template #extra>
+    <button nz-button nzSize="default" style="cursor: pointer; margin-left: 5px" (click)="downloadMany()" [disabled]="!downloadList.length">
+      <span nz-icon nzType="download" nzTheme="outline"></span>
+      Download
+    </button>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <nz-table #rowSelectionTable
+              nzShowSizeChanger
+
+              [nzData]="response?.records"
+
+              [nzPageIndex]="response?.currentPage"
+              [nzTotal]="response?.totalCount"
+              (nzQueryParams)="onQueryParamsChange($event)"
+              [nzLoading]="isLoading"
+              [nzFrontPagination]="false"
+              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+      <thead>
+      <tr>
+        <th [nzChecked]="checked"
+            [nzIndeterminate]="indeterminate"
+            (nzCheckedChange)="onAllChecked($event)"
+            nzLeft></th>
+        <th nzLeft>Mã thanh toán</th>
+        <th>Mã đơn hàng</th>
+        <th>Tổng tiền (VNĐ)</th>
+        <th>Ngày tạo</th>
+        <th>Trạng thái</th>
+        <th>Download Hóa dơn/ Hóa đơn nháp</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td [nzChecked]="setOfCheckedId.has(data.id)"
+            (nzCheckedChange)="onItemChecked(data.id, $event)" nzLeft></td>
+        <td nzLeft><a (click)="getPaymentDetail(data.id)" >{{data.paymentNumber}}</a></td>
+        <td nzBreakWord>{{data.orderNumber}}</td>
+        <td nzBreakWord>{{data.amount}}</td>
+        <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
+        <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
+          Đã thanh toán
+        </td>
+        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not" nzBreakWord>
+          Chưa thanh toán
+        </td>
+        <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="serviceDownload(data.invoiceIssuedId)"
+            style="cursor: pointer" nzBreakWord>
+          <span nz-icon nzType="download" nzTheme="outline"></span>
+        </td>
+        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid" nzBreakWord>
+          <span nz-icon nzType="download" nzTheme="outline"></span>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

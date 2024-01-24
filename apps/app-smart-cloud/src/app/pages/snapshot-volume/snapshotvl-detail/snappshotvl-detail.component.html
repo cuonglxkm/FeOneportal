@@ -1,0 +1,58 @@
+<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
+                   [headerInfo]="headerInfo"></app-header-volume>
+
+<nz-spin [nzSpinning]="isLoading">
+  <nz-card
+    class="m-b-10"
+    [nzBodyStyle]="{ 'padding': '30px' }"
+    nzTitle="Thông tin Snapshot Volume"
+  >
+
+    <!--  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Snapshot Volume</nz-form-label>-->
+    <!--  <input nz-input [disabled]="!isEdit" type="text" [ngModel]="snapshotName" (ngModelChange)="changeSnapshotName()"/>-->
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Snapshot Volume</nz-form-label>
+    <nz-form-control [nzValidateStatus]="isShowWarningSnapshotVlName?'error':''">
+      <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="snapshotName" [disabled]="!isEdit"
+             (ngModelChange)="changeSnapshotName()" type="text"/>
+      <nz-form-explain class="warning-message" st *ngIf="isShowWarningSnapshotVlName">{{contentWarningSnapshotVlName}}
+      </nz-form-explain>
+    </nz-form-control>
+    <br>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24">Dung lượng (GB)</nz-form-label>
+    <input nz-input [disabled]="true" type="number" [(ngModel)]="snapshotSize"/>
+
+    <br>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+    <textarea rows="4" [disabled]="!isEdit" nz-input maxlength="255" [(ngModel)]="snapshotDesc"></textarea>
+
+    <br>
+    <br>
+    <nz-form-label [nzSm]="6" [nzXs]="24">Volume</nz-form-label>
+    <input nz-input [disabled]="true" type="text" [ngModel]="snapshotVolumeName"/>
+
+    <div *ngIf="projectSearch == null || projectSearch === undefined">
+      <br>
+      <br>
+      <nz-form-label [nzSm]="6" [nzXs]="24">VPC</nz-form-label>
+      <input nz-input [disabled]="true" [(ngModel)]="snapshotVPC" type="text"/>
+    </div>
+    <br>
+    <br>
+    <p>Thời gian khởi tạo: <span>{{ snapshotVlCreateDate | date:'dd/MM/yyyy' }}</span></p>
+
+  </nz-card>
+
+  <nz-card
+    [nzBodyStyle]="{ 'padding': '30px' }"
+  >
+    <div class="footer-detail">
+      <button class="buttonBack" nz-button nzType="default" (click)="backTOListPage()">Quay lại
+      </button>
+      <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="isShowWarningSnapshotVlName"
+              (click)="editSnapshot()">Chỉnh sửa
+      </button>
+    </div>
+  </nz-card>
+</nz-spin>

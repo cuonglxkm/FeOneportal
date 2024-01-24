@@ -12,31 +12,42 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 export class DeleteSecurityGroupComponent {
   @Input() id: string
   @Input() condition: SecurityGroupSearchCondition
-  @Input() isVisible: boolean
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
-  isConfirmLoading = false;
+  isVisible: boolean = false;
+  isLoading = false;
+  constructor(
+      private securityGroupService: SecurityGroupService,
+      private message: NzMessageService,
+      private notification: NzNotificationService
+  ) {}
 
-  constructor(private securityGroupService: SecurityGroupService, private message: NzMessageService,
-              private notification: NzNotificationService) {}
 
-
+  showModal(): void {
+    this.isVisible = true;
+  }
 
   handleCancel(): void {
+    this.isVisible = false;
     this.onCancel.emit();
   }
 
+
   handleOk(): void {
-    // this.isConfirmLoading = true;
+    this.isLoading = true;
     this.securityGroupService.delete(this.id, this.condition)
         .subscribe((data) => {
           this.notification.success('Thành công', `Đã xóa thành công`);
+          this.isLoading = false;
+          this.isVisible = false;
+          this.onOk.emit();
 
         }, error => {
-          this.notification.error('Thất bại', `Đã xóa thất bại`);
+          this.isVisible = false;
+          this.notification.error('Thất bại', `Đã xóa thất bại do Security Group đang được sử dụng.`);
         })
-    this.onOk.emit();
+
 
   }
 }

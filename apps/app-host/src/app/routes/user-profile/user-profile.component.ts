@@ -6,6 +6,7 @@ import {ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AppValidator, UserModel} from "../../../../../../libs/common-utils/src";
 import {_HttpClient} from "@delon/theme";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {environment} from "../../../../../app-smart-cloud/src/environments/environment";
 
 
 @Component({
@@ -18,6 +19,7 @@ export class UserProfileComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               public message: NzMessageService) {
   }
+
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -64,9 +66,9 @@ export class UserProfileComponent implements OnInit {
   loadUserProfile() {
     // @ts-ignore
     let email = this.tokenService.get()['email'];
-    this.http.get<UserModel>(`http://172.16.68.200:1006/users/${email}`, {
-      context: new HttpContext()
-        .set(ALLOW_ANONYMOUS, true)
+
+    let baseUrl = environment['baseUrl'];
+    this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
     })
       .subscribe(res => {
 
@@ -88,6 +90,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   updateProfile() {
+    let baseUrl = environment['baseUrl'];
     let updatedUser = {
       id: this.userModel.id,
       email: this.form.controls['email'].value!,
@@ -99,7 +102,7 @@ export class UserProfileComponent implements OnInit {
       birthDay: "2023-11-10T07:42:22.355Z",
     }
 
-    this.http.put(`http://172.16.68.200:1006/users`, updatedUser, {
+    this.http.put(`${baseUrl}/users`, updatedUser, {
       context: new HttpContext().set(ALLOW_ANONYMOUS, true)
     }).subscribe(res => {
       console.log(res)

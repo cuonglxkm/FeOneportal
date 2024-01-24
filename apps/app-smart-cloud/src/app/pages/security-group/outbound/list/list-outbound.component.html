@@ -5,45 +5,59 @@
         </div>
         <div class="code-box-description">
             <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-                <button nz-button nzType="primary" class="button-crate-new"
-                        [routerLink]="['/app-smart-cloud/create-security-group-outbound']"
-                        [queryParams]="{param: securityGroupId, region: region, project: project  }">Thêm mới Outbound
-                </button>
+                <one-portal-outbound
+                  nz-tooltip nzTooltipTitle="Thêm mới Outbound" nzTooltipPlacement="bottom"
+                    [disabled]="!securityGroupId"
+                    [condition]="{
+                      userId: condition.userId,
+                      regionId: condition.regionId,
+                      projectId: condition.projectId,
+                      securityGroupId: securityGroupId
+                    }"
+                    (onOk)="getRule()"
+                />
             </nz-row>
             <nz-table #tableOutbound
-                      [nzData]="listOutbound"
+                      [nzData]="collection?.records || []"
                       nzShowSizeChanger
+                      [nzScroll]="{ x: '1000px', y: '240px' }"
                       [nzFrontPagination]="false"
-                      [nzTotal]="listOutbound.length"
-                      [nzPageSize]="10"
+                      [nzTotal]="collection?.totalCount || 0"
+                      [nzPageSize]="collection?.pageSize || 0"
+                      (nzQueryParams)="onQueryParamsChange($event)"
                       [nzLoading]="isLoading"
             >
                 <thead>
                 <tr>
-                    <th nzAlign="center" class="text-th">IP Version</th>
-                    <th nzAlign="center" class="text-th">Protocol</th>
-                    <th nzAlign="center" class="text-th">PortRange</th>
-                    <th nzAlign="center" class="text-th">RemoteIPPrefix</th>
-                    <th nzAlign="center" class="text-th" style="width: 216px;">Thao tác</th>
+                    <th nzAlign="center" class="text-th" nzLeft>IP Version</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>Protocol</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>PortRange</th>
+                    <th nzAlign="center" class="text-th" nzBreakWord>RemoteIPPrefix</th>
+                    <th nzAlign="center" class="text-th" style="width: 216px;" nzBreakWord>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of tableOutbound.data">
-                    <td nzAlign="center">{{ data.remoteIp }}</td>
-                    <td nzAlign="center">{{ data.protocol }}</td>
-                    <td nzAlign="center">{{ data.portRange }}</td>
-                    <td nzAlign="center">{{ data.remoteIpPrefix }}</td>
-                    <td nzAlign="center">
+                    <td nzAlign="center" nzLeft>{{ data.remoteIp }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
+                    <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
+                    <td nzAlign="center" nzBreakWord>
                         <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
                         <one-portal-delete-security-group-rule
+                          nz-tooltip nzTooltipTitle="Xóa Outbound" nzTooltipPlacement="bottom"
                                 [isVisible]="isVisible"
-                                [condition]="conditionSearch"
+                                [condition]="{
+                                  userId: condition.userId,
+                                  regionId: condition.regionId,
+                                  projectId: condition.projectId,
+                                }"
                                 [id]="data.id"
                                 [title]="title"
                                 [content]="content"
                                 (onCancel)="handleCancel()"
-                                (onOk)="handleOk(data.id)">
-                        </one-portal-delete-security-group-rule>
+                                (onOk)="handleOk(data.id)"
+                        />
                     </td>
                 </tr>
                 </tbody>

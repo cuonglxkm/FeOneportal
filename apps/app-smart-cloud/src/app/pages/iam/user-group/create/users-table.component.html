@@ -1,0 +1,59 @@
+<nz-card [nzTitle]="userCardTitle">
+  <nz-row style="margin-bottom: 16px" nzJustify="space-between">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+      <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+             placeholder="Tìm kếm tên..."/>
+    </nz-input-group>
+    <ng-template #suffixButton>
+      <button nz-button nzType="primary" nzSearch (click)="searchUsers()">
+        <span nz-icon nzType="search" nzTheme="outline"></span>Search
+      </button>
+    </ng-template>
+    <nz-row nzAlign="middle">
+      <button nz-button nzSize="default" style="cursor: pointer;" (click)="getUsers()">
+        <span nz-icon nzType="reload" nzTheme="outline"></span>
+      </button>
+    </nz-row>
+  </nz-row>
+  <nz-row>
+    <h3>Thông tin User</h3>
+  </nz-row>
+  <nz-table
+          #rowSelectionTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="filteredUsers"
+          (nzQueryParams)="onQueryParamsChange($event)"
+          [nzLoading]="loading"
+          [nzTotal]="response?.totalCount"
+          [nzPageSize]="5"
+          [nzPageIndex]="response?.currentPage">
+    <thead>
+    <tr>
+      <th [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          nzLabel="Select all"
+          (nzCheckedChange)="onAllChecked($event)"></th>
+      <th>Name</th>
+      <th>Groups</th>
+      <th>Thời gian tạo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of rowSelectionTable.data">
+      <td
+        [nzChecked]="setOfCheckedId.has(data?.userName)"
+        (nzCheckedChange)="onItemChecked(data?.userName, $event)"
+      ></td>
+      <td>
+        <a [routerLink]="">{{ data?.userName }}</a>
+      </td>
+      <td>{{ data?.userGroups }}</td>
+      <td>{{ data?.createdDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+<ng-template #userCardTitle>
+  <div>Thêm User vào Group (Optional) ({{listOfSelected?.length}}/{{filteredUsers?.length}})</div>
+</ng-template>

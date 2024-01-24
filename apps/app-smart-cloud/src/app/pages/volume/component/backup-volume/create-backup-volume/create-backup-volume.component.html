@@ -1,0 +1,61 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Volume'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-card>
+  <h1>Thông tin Volume</h1>
+  <table style="width: 100%; margin-top: 40px;">
+    <td>
+      <h3 style=" font-weight: normal;">Tên volume: {{nameVolume}}</h3>
+    </td>
+    <td>
+      <h3 style=" font-weight: normal;">Ngày tạo: {{startDate| date:'dd/MM/yyyy'}}</h3>
+    </td>
+    <td>
+      <h3 style=" font-weight: normal;">Ngày hết hạn: {{endDate| date:'dd/MM/yyyy'}}</h3>
+    </td>
+  </table>
+</nz-card>
+<nz-card>
+  <h1>Thông tin Backup Volume</h1>
+  <form #myForm="ngForm" nz-form [formGroup]="form"  [nzLayout]="'vertical'">
+    <nz-table style="height: 30%">
+      <td style="width: 50%">
+        <h3 style=" font-weight: normal;">Tên backup<span nz-typography nzType="danger" style="color: red">*</span></h3>
+        <nz-form-item>
+          <nz-form-control>
+                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Nhập tên"
+                              nzErrorTip="Tên backup volume không được chống"
+                              maxlength="20" formControlName="name" style="width: 90%"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <h3 style=" font-weight: normal; margin-top: 20px">Mô tả</h3>
+        <nz-form-item>
+          <nz-form-control>
+            <textarea nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 90%" formControlName="description"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </td>
+      <td style="width: 50%">
+        <h3 style=" font-weight: normal;">Gói backup <span nz-typography nzType="danger" style="color: red">*</span></h3>
+        <nz-select nzPlaceHolder="-- Chọn gói backup --"
+                   formControlName="select" style="width: 90%">
+          <nz-option *ngFor="let s of listOfPackage" [nzLabel]="s.packageName" [nzValue]="s.id"></nz-option>
+        </nz-select>
+      </td>
+    </nz-table>
+    <button (click)="backToList()" nz-button style="background-color: darkgray; color: white; margin: 60px 3% 0 80%;">Quay lại</button>
+    <button (click)="createBackup()" [disabled]="form.invalid" nz-button nzType="primary">Xác nhận</button>
+  </form>
+</nz-card>

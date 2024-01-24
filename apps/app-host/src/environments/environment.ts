@@ -21,7 +21,7 @@ export const environment = {
     clientId: 'frontend-client',
     callback: 'http://localhost:4200/passport/callback/oneportal',
     logout_callback: 'http://localhost:4200',
-    scope: 'openid email roles',
+    scope: 'openid email roles offline_access',
   },
   modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;

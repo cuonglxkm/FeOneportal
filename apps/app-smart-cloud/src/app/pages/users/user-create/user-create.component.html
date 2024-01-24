@@ -1,0 +1,180 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo User'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo User </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-card [nzBordered]="false" nzTitle="Thông tin của User">
+    <nz-row nzGutter="16">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Tên của User<span class="text-red">*</span></nz-form-label
+          >
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input
+              nz-input
+              formControlName="name"
+              [(ngModel)]="userCreate.userName"
+              id="name"
+              placeholder="Nhập tên của User"
+              maxlength="64"
+              minlength="1"
+              (change)="userCreate.userName = userCreate.userName.trim()"
+            />
+            <span class="nameField"
+              >Tên người dùng có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z, a-z,
+              0-9, và + = , . @ _ -</span
+            >
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập tên User
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên người dùng không hợp lệ
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="email"
+            >Email của User<span class="text-red">*</span></nz-form-label
+          >
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
+            <input
+              nz-input
+              formControlName="email"
+              [(ngModel)]="userCreate.email"
+              id="email"
+              placeholder="Nhập email của User"
+              maxlength="250"
+              minlength="1"
+              (change)="userCreate.email = userCreate.email.trim()"
+            />
+            <ng-template #emailErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập email của User
+              </ng-container>
+              <ng-container *ngIf="control.hasError('email')"
+                >Email không hợp lệ
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <nz-alert
+          nzType="warning"
+          [nzMessage]="nzDescriptionWarning06"
+          nzShowIcon
+        ></nz-alert>
+        <ng-template #nzDescriptionWarning06>
+          <div>
+            User sẽ nhận thông tin đăng nhập vào hệ thống thông qua Email được
+            điền phía trên.
+          </div>
+          <div>
+            Tài khoản Email của User phải là tài khoản Email đã được sử dụng để
+            đăng ký trên hệ thống.
+          </div>
+          <div>
+            Nếu User chưa có tài khoản Email, vui lòng truy cập
+            <a
+              href="https://workspace.google.com/business/signup/welcome?hl=vi&source=gafb-gmail-hero-vi&ga_region=japac&ga_country=vi&ga_lang=vi&__utma=61317162.261098870.1701847451.1701847451.1701847477.2&__utmb=61317162.0.10.1701847477&__utmc=61317162&__utmx=-&__utmz=61317162.1701847477.2.2.utmcsr=google|utmgclid=Cj0KCQiAsburBhCIARIsAExmsu4c4aTp3VM7eYOsERmsjtaT7CEB2NOhMpNItqa7LdD0KZyuGJcYPakaAggUEALw_wcB|utmgclsrc=aw.ds|utmccn=1605214-Workspace-APAC-VN-vi-BKWS-BRO-Gmai-DesknTabl|utmcmd=cpc|utmctr=KW_%C4%91%C4%83ng%20nh%E1%BA%ADp%20gmail%20m%E1%BB%9Bi|utmcct=text-ad-none-none-DEV_c-CRE_629112839914-ADGP_Hybrid%20|%20BKWS%20-%20BRO%20|%20Txt_Gmail_New-KWID_43700077974856437-kwd-315104593351&__utmv=-&__utmk=185946606"
+              target="_blank"
+              rel="noreferrer"
+              class="list-item-link"
+              >[link đăng ký]</a
+            >
+            để thực hiện đăng ký.
+          </div>
+        </ng-template>
+      </nz-col>
+    </nz-row>
+  </nz-card>
+</form>
+
+<one-portal-attach-permission-policy
+  [isCreate]="true"
+  (listGroupNames)="onChangeGroupNames($event)"
+  (listPolicyNames)="onChangePolicyNames($event)"
+></one-portal-attach-permission-policy>
+
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+  <div
+    class="text-right p-0 m-b-0"
+    nz-col
+    [nzLg]="24"
+    [nzMd]="24"
+    [nzSm]="24"
+    [nzXl]="24"
+    [nzXs]="24"
+    [nzXXl]="24"
+  >
+    <button
+      class="m-r-8"
+      nz-button
+      nzType="default"
+      style="background-color: #9c9c9c; color: white"
+      (click)="navigateToList()"
+    >
+      Quay lại
+    </button>
+    <button class="m-r-8" nz-button nzType="primary" [disabled]="!form.valid" (click)="showModal()">
+      Tạo mới
+    </button>
+  </div>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleCreate"
+  nzTitle="Xác nhận tạo User"
+  (nzOnCancel)="handleCancelCreate()"
+  (nzOnOk)="handleOkCreate()"
+  nzOkText="Xác nhận"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="customTemplateMessageCreate"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageCreate>
+      <div>
+        Bạn đang thực hiện tạo mới User <span>{{ userCreate.userName }}</span>
+      </div>
+    </ng-template>
+    <nz-row nzGutter="16" style="margin-top: 10px;">
+      <nz-col nzLg="24" nzMd="12" nzSm="24">
+        <span class="customModal"
+          >Để thực hiện tạo mới User, vui lòng chọn "Đồng ý" để xác nhận.</span
+        >
+      </nz-col>
+    </nz-row>
+  </ng-container>
+</nz-modal>

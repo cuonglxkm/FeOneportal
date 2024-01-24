@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-host-deployment
+  namespace: vnptcloud
+  labels:
+    app: app-host
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: app-host
+  template:
+    metadata:
+      labels:
+        app: app-host
+        service: app-host
+    spec:
+      containers:
+        - name: app-host
+          image: registry.onsmartcloud.com/cloudportal/oneportal-app-host
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: APP_SMART_CLOUD_URL
+              value: https://appsmartcloud.onsmartcloud.com
+            - name: BASE_URL
+              value: https://api.onsmartcloud.com
+            - name: ISSUER
+              value: https://identity.onsmartcloud.com
+            - name: CALLBACK
+              value: https://oneportal.onsmartcloud.com/passport/callback/oneportal
+            - name: LOGOUT_CALLBACK
+              value: https://oneportal.onsmartcloud.com
+            - name: SCOPE
+              value: openid profile email
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-host
+  namespace: vnptcloud
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      name: port1
+      nodePort: 30766
+  selector:
+    app: app-host

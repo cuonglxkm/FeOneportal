@@ -1,0 +1,25 @@
+<one-portal-header
+        title="Lập lịch Backup"
+        [path]="['Home', 'Dịch vụ', 'Lập lịch Backup']"
+        [regionId]="region"
+        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content >
+    <nz-card>
+        <nz-row nzJustify="center">
+            <img src="/assets/tmp/schedule-backup.png" width="400" height="400" alt="blank-schedule-backup">
+        </nz-row>
+        <nz-row nzJustify="center" style="margin-top: -12px">
+            <div class="text-title">
+                <h1>Đặt lịch Backup - Tự động sao lưu</h1>
+            </div>
+        </nz-row>
+        <nz-row nzJustify="center">
+            <div class="text-subtitle" style="max-width: 885px; text-wrap: normal">Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết.
+                Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm</div>
+        </nz-row>
+        <nz-row nzJustify="center">
+            <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" routerLink="/app-smart-cloud/schedule/backup/create">Khởi tạo ngay</button>
+        </nz-row>
+    </nz-card>
+</nz-content>

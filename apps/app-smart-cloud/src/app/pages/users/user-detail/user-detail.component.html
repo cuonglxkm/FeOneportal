@@ -1,0 +1,359 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Thông tin User'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
+          >Chi tiết User</a
+        >
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<nz-card [nzBordered]="false" nzTitle="Thông tin chính của User" *ngIf="user">
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <label style="font-weight: 500"
+        >Tên User<span class="text-red">*</span></label
+      >
+      <div class="nameField" style="margin-bottom: 10px">
+        {{ user.userName }}
+      </div>
+    </div>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <label style="font-weight: 500"
+        >Email<span class="text-red">*</span></label
+      >
+      <div class="nameField" style="margin-bottom: 10px">{{ user.email }}</div>
+    </div>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <label style="font-weight: 500"
+        >Thời gian khởi tạo<span class="text-red">*</span></label
+      >
+      <div class="nameField">
+        {{ user.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}
+      </div>
+    </div>
+  </div>
+</nz-card>
+
+<nz-card [nzBordered]="false" nzTitle="Thông tin bổ sung">
+  <nz-tabset>
+    <nz-tab nzTitle="Policies">
+      <form nz-form style="margin-bottom: -2%">
+        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+          <div
+            nz-col
+            [nzLg]="6"
+            [nzMd]="6"
+            [nzSm]="24"
+            [nzXl]="6"
+            [nzXs]="24"
+            [nzXXl]="6"
+          >
+            <nz-form-item>
+              <nz-form-label [nzFor]="">Loại Policy</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                  [ngModel]="typePolicy"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzPlaceHolder]="'Tất cả các loại'"
+                  [nzShowSearch]="false"
+                  (ngModelChange)="changeFilterStatus($event)"
+                >
+                  <nz-option
+                    *ngFor="let i of filterStatus"
+                    [nzLabel]="i.text"
+                    [nzValue]="i.value"
+                  />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div
+            nz-col
+            [nzLg]="10"
+            [nzMd]="10"
+            [nzSm]="24"
+            [nzXl]="10"
+            [nzXs]="24"
+            [nzXXl]="10"
+          >
+            <nz-row style="margin-left: -14px">
+              <nz-input-group
+                style="width: 100%"
+                nzSearch
+                [nzAddOnAfter]="suffixButtonPolicy"
+              >
+                <input
+                  name="namePolicy"
+                  nz-input
+                  placeholder="Tìm kiếm tên, thời gian tạo ..."
+                  [ngModel]="policyParam"
+                  (ngModelChange)="changePolicyParam($event)"
+                />
+              </nz-input-group>
+              <ng-template #suffixButtonPolicy>
+                <button
+                  nz-button
+                  nzType="primary"
+                  nzSearch
+                  (click)="searchPolicy()"
+                >
+                  <i nz-icon nzType="search"></i>
+                  Search
+                </button>
+              </ng-template>
+            </nz-row>
+          </div>
+          <div
+            class="text-right p-0 m-b-0"
+            nz-col
+            [nzLg]="8"
+            [nzMd]="8"
+            [nzSm]="24"
+            [nzXl]="8"
+            [nzXs]="24"
+            [nzXXl]="8"
+          >
+            <button
+              class="m-r-8"
+              nz-button
+              style="cursor: pointer"
+              [disabled]="isReload"
+              (click)="reloadPolicies()"
+            >
+              <span nz-icon nzType="reload" nzTheme="outline"></span>
+            </button>
+            <button
+              class="m-r-8"
+              nz-button
+              nzType="default"
+              style="background-color: #9c9c9c; color: white"
+              (click)="deletePolicies()"
+            >
+              <i nz-icon nzType="delete"></i>
+              Xóa
+            </button>
+            <button
+              class="m-r-8"
+              class="bg-success border-success"
+              nz-button
+              nzType="primary"
+              (click)="navigateToAddPolicies()"
+            >
+              <i nz-icon nzType="plus"></i>
+              Thêm policies
+            </button>
+          </div>
+        </div>
+      </form>
+      <div stype="font-weight: 500">Policies</div>
+      <div class="nameField">có thể đính kèm tối đa 10 policies</div>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
+        [nzFrontPagination]="false"
+        [nzData]="listOfPolicies"
+        (nzCurrentPageDataChange)="onCurrentPageDataChangePolicy($event)"
+        [nzLoading]="loading"
+      >
+        <thead>
+          <tr>
+            <th
+              [nzChecked]="checkedPolicy"
+              [nzIndeterminate]="indeterminatePolicy"
+              nzLabel="Select all policy"
+              [nzWidth]="'50px'"
+              (nzCheckedChange)="onAllCheckedPolicy($event)"
+              nzLeft
+            ></th>
+            <th>Tên Policy</th>
+            <th>Type</th>
+            <th>Attached via</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfPolicies; let i = index">
+            <td
+              [nzChecked]="setOfCheckedPolicy.has(item.name)"
+              (nzCheckedChange)="onItemCheckedPolicy(item.name, $event)"
+              nzLeft
+            ></td>
+            <td class="fieldColor">{{ item.name }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.attachedVia }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="Groups">
+      <form nz-form>
+        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+          <div
+            nz-col
+            [nzLg]="10"
+            [nzMd]="10"
+            [nzSm]="24"
+            [nzXl]="10"
+            [nzXs]="24"
+            [nzXXl]="10"
+          >
+            <nz-input-group
+              style="width: 100%"
+              nzSearch
+              [nzAddOnAfter]="suffixButtonGroup"
+            >
+              <input
+                name="nameGroup"
+                nz-input
+                placeholder="Tìm kiếm tên, thời gian tạo ..."
+                [ngModel]="groupParam"
+                (ngModelChange)="changeGroupParam($event)"
+              />
+            </nz-input-group>
+            <ng-template #suffixButtonGroup>
+              <button
+                nz-button
+                nzType="primary"
+                nzSearch
+                (click)="searchGroup()"
+              >
+                <i nz-icon nzType="search"></i>
+                Search
+              </button>
+            </ng-template>
+          </div>
+          <div
+            class="text-right p-0 m-b-0"
+            nz-col
+            [nzLg]="14"
+            [nzMd]="14"
+            [nzSm]="24"
+            [nzXl]="14"
+            [nzXs]="24"
+            [nzXXl]="14"
+          >
+            <button
+              class="m-r-8"
+              nz-button
+              style="cursor: pointer"
+              [disabled]="isReload"
+              (click)="reloadGroupOfUser()"
+            >
+              <span nz-icon nzType="reload" nzTheme="outline"></span>
+            </button>
+            <button
+              class="m-r-8"
+              nz-button
+              nzType="default"
+              style="background-color: #9c9c9c; color: white"
+              (click)="deleteGroups()"
+            >
+              <i nz-icon nzType="delete"></i>
+              Xóa
+            </button>
+            <button
+              class="m-r-8"
+              class="bg-success border-success"
+              nz-button
+              nzType="primary"
+              (click)="navigateToAddToGroups()"
+            >
+              <i nz-icon nzType="plus"></i>
+              Add to Groups
+            </button>
+          </div>
+        </div>
+      </form>
+      <div stype="font-weight: 500">Các Groups mà User đang tham gia</div>
+      <div class="nameField">
+        Một người dùng có thể là thành viên của tối đa 10 nhóm cùng một lúc
+      </div>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listOfGroups"
+        (nzCurrentPageDataChange)="onCurrentPageDataChangeGroup($event)"
+        [nzLoading]="loading"
+      >
+        <thead>
+          <tr>
+            <th
+              [nzChecked]="checkedGroup"
+              [nzIndeterminate]="indeterminateGroup"
+              nzLabel="Select all group"
+              [nzWidth]="'50px'"
+              (nzCheckedChange)="onAllCheckedGroup($event)"
+              nzLeft
+            ></th>
+            <th>Tên Group</th>
+            <th>Số lượng User</th>
+            <th>Attached policies</th>
+            <th>Thời gian tạo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfGroups; let i = index">
+            <td
+              [nzChecked]="setOfCheckedGroup.has(item.name)"
+              (nzCheckedChange)="onItemCheckedGroup(item.name, $event)"
+              nzLeft
+            ></td>
+            <td class="fieldColor">{{ item.name }}</td>
+            <td>{{ item.numberOfUser }}</td>
+            <td *ngIf="item.policies.length == 0">None</td>
+            <td class="fieldColor" *ngIf="item.policies.length == 1">
+              {{ item.policies[0] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.policies.length == 2">
+              {{ item.policies[0] }}, {{ item.policies[1] }}
+            </td>
+            <td class="fieldColor" *ngIf="item.policies.length > 2">
+              {{ item.policies[0] }}, {{ item.policies[1] }}
+              <span class="nameField">
+                and {{ item.policies.length - 2 }} policies
+              </span>
+            </td>
+            <td>{{ item.createdDate }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+<div class="text-right">
+  <button
+    nz-button
+    nzType="default"
+    style="background-color: #9c9c9c; color: white"
+    (click)="navigateToList()"
+  >
+    Quay lại
+  </button>
+</div>

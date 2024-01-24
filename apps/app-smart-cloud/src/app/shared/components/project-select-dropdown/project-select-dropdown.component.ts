@@ -16,6 +16,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   selectedProject: ProjectModel;
+  @Input() isDetail = false;
   @Input() regionId: number;
   @Output() valueChanged = new EventEmitter();
 
@@ -42,17 +43,18 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       this.listProject = data;
       if (this.listProject.length > 0) {
         if (localStorage.getItem('projectId') != null) {
-
           this.selectedProject = this.listProject.find(item =>
             item.id == JSON.parse(localStorage.getItem('projectId')));
+          if (this.selectedProject == null) {
+            this.selectedProject = this.listProject[0];
+            localStorage.setItem('projectId', this.selectedProject.id + "")
+          }
           this.valueChanged.emit(this.selectedProject)
-
         } else {
           this.selectedProject = this.listProject[0];
           this.valueChanged.emit(this.listProject[0])
           localStorage.setItem('projectId', this.selectedProject.id + "")
         }
-
 
       }
     }, error => {

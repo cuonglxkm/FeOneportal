@@ -1,0 +1,150 @@
+<page-header [content]="content"
+             [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Danh sách Backup VM'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Dịch vụ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/backup-vm'">
+          Backup VM
+        </a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <nz-space [nzSize]="24">
+      <div *nzSpaceItem>
+        <nz-select [(ngModel)]="selectedValue"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="Tất cả trạng thái"
+                   nzTooltipTitle="Tìm kiếm theo trạng thái"
+                   nzTooltipPlacement="bottom"
+                   nz-tooltip>
+          <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+      </div>
+      <div *nzSpaceItem>
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+          <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
+                 nz-input
+                 placeholder="Tìm kếm tên..."/>
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getListBackupVM()">
+            <span nz-icon nzType="search" nzTheme="outline"></span>
+            Search
+          </button>
+        </ng-template>
+      </div>
+    </nz-space>
+  </ng-template>
+</page-header>
+
+<nz-content>
+  <nz-card>
+    <nz-table #fixedTable
+              [nzScroll]="{ x: '1000px', y: '240px' }"
+              [nzData]="collection.records"
+              nzShowSizeChanger
+              [nzFrontPagination]="false"
+              [nzTotal]="collection.totalCount"
+              [nzPageSize]="collection.pageSize"
+              [nzPageIndex]="collection.currentPage"
+              [nzLoading]="isLoading"
+              (nzQueryParams)="onQueryParamsChange($event)"
+    >
+      <thead>
+      <tr>
+        <th nzAlign="center" nzLeft>Tên</th>
+        <th nzAlign="center" nzBreakWord>VM gốc</th>
+        <th nzAlign="center" nzBreakWord>Dung lượng</th>
+        <th nzAlign="center" nzBreakWord>Gói backup</th>
+        <th nzAlign="center" nzBreakWord>Thời gian tạo</th>
+        <th nzAlign="center" nzBreakWord>Hết hạn</th>
+        <th nzAlign="center" nzBreakWord>Trạng thái</th>
+        <th nzAlign="center" nzBreakWord [nzWidth]="'100px'">Trạng thái tác vụ</th>
+        <th nzAlign="center" nzBreakWord>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzAlign="center" nzLeft><a (click)="navigateToDetail(data.id)" nzTooltipTitle="Xem chi tết" nzTooltipPlacement="bottom" nz-tooltip>{{ data.name }}</a></td>
+        <td nzAlign="center" nzBreakWord> {{ data.instanceName }}</td>
+        <td nzAlign="center" nzBreakWord>{{ data.size }} GB</td>
+        <td nzAlign="center" nzBreakWord>{{ data.backupPackageName }}</td>
+        <td nzAlign="center" nzBreakWord>{{ data.creationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+        <td nzAlign="center" nzBreakWord>{{ data.expirationDate | date: "HH:mm:ss - dd/MM/yyyy" }}</td>
+        <td nzAlign="center" nzBreakWord>
+          <div class="status" [ngSwitch]="data.status">
+                                          <span class="available" *ngSwitchCase="'AVAILABLE'">
+                                            Hoạt động
+                                          </span>
+            <span class="suspended" *ngSwitchCase="'SUSPENDED'">
+                                            Tạm dừng
+                                          </span>
+            <span class="available" *ngSwitchCase="'CREATING'">
+                                            Đang khởi tạo
+                                          </span>
+            <span class="suspended" *ngSwitchCase="'DELETING'">
+                                            Đang xóa
+                                          </span>
+          </div>
+        </td>
+        <td nzAlign="center" nzBreakWord>
+                                        <span *ngIf="data.serviceStatus === 'KHOITAO'">
+                                          -
+                                        </span>
+          <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
+        </td>
+        <td nzAlign="center" nzBreakWord>
+          <div [ngSwitch]="data.status">
+            <div *ngSwitchCase="'AVAILABLE'">
+              <button nz-button
+                      [nzType]="'primary'"
+                      nz-dropdown
+                      [nzDropdownMenu]="opMenu">
+                <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
+              </button>
+              <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="navigateToRestore(data.id)">Restore</li>
+                  <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
+                  <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                               [isLoading]="isLoading"
+                                               (onCancel)="handleCancelDelete()"
+                                               (onOk)="handleOkDelete()"/>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div *ngSwitchCase="'SUSPENDED'">
+              <button nz-button
+                      nzType="primary"
+                      nzDanger
+                      (click)="showModalDelete(data.id)">Xóa
+              </button>
+              <one-portal-delete-backup-vm [isVisible]="isVisibleDelete"
+                                           [isLoading]="isLoading"
+                                           (onCancel)="handleCancelDelete()"
+                                           (onOk)="handleOkDelete()"/>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </nz-card>
+</nz-content>

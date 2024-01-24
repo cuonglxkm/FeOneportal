@@ -1,0 +1,112 @@
+<app-header-volume [headerInfo]="headerInfo" xmlns="http://www.w3.org/1999/html"></app-header-volume>
+
+
+<nz-spin [nzSpinning]="isLoading" nzSize="large">
+  <div class="detail-volume">
+    <div class="row">
+      <h3 style="display: inline-block; margin-right: auto;">Chi tiết dịch vụ</h3>
+      <div class="action-detail-volume">
+        <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
+                nzType="primary">
+          <i nz-icon [nzType]="'stockIcon'"></i>Gia hạn
+        </button>
+      </div>
+    </div>
+    <br>
+    <hr style="opacity: 0.1">
+    <br>
+
+
+    <nz-table [nzTemplateMode]="true" style="border: none;">
+      <tbody>
+      <tr>
+        <td style="border-bottom: none; ">
+          <div style="display: flex; padding-left: 10%;">
+            <div style="width: 100px; height: 100px;">
+              <img nz-image
+                   width="100%"
+                   height="100%"
+                   nzSrc="assets/imgs/icon_cycle.png"
+                   alt=""
+              />
+            </div>
+            <div style="padding-left: 20px;">
+              <b>Chu kỳ thanh toán</b>
+              <br>
+              <p>1 tháng</p>
+              <p>Chu kỳ hiện tại: 1</p>
+            </div>
+          </div>
+
+        </td>
+        <td style="border-bottom: none; ">
+          <div style=" display: flex;  padding-left: 40%">
+            <div style="width: 100px; height: 100px;">
+              <img nz-image
+                   width="100%"
+                   height="100%"
+                   nzSrc="assets/imgs/icon_money.png"
+                   alt=""
+              />
+            </div>
+            <div style="padding-left: 20px;">
+              <b>Thông tin thanh toán kỳ tới</b>
+              <br>
+              <p>số tiền: 1.210.000VNĐ (từ 10/10/2023 đến 20/11/2023)</p>
+              <p>Ngày thanh toán: 20/10/2023</p>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </div>
+
+  <br>
+  <br>
+
+  <div class="info-volume">
+    <h3>Thông tin IP Public</h3>
+    <hr>
+    <br>
+    <nz-table [nzTemplateMode]="true" style="border: none;">
+      <tr>
+        <td>
+          <p><b>Địa chỉ IP: </b> {{ipInfo.ipAddress}} </p>
+        </td>
+        <td style="padding-left: 35%;">
+          <p><b>Gắn vào máy ảo: </b>{{ipInfo.attachedVm ? ipInfo.attachedVm : 'Không có máy ảo'}}</p>
+        </td>
+      </tr>
+    </nz-table>
+
+    <br>
+    <label nz-checkbox [(ngModel)]="isIpV6">IPv6</label>
+
+    <br>
+    <br>
+    <p><b>Thời gian khởi tạo: </b>{{ipInfo.createDate | date : "dd/MM/YYYY"}}</p>
+  </div>
+
+  <br>
+  <nz-card>
+    <b>Thành tiền</b>
+    <br>
+    <hr>
+    <br>
+    <nz-table [nzTemplateMode]=true style="border: none;">
+      <tbody>
+      <tr>
+        <td style="border-bottom: none"><p>Chi phí sử dụng (12 tháng)</p></td>
+        <td style="border-bottom: none; text-align: right"><p>1.000.000. VNĐ</p></td>
+      </tr>
+      <tr>
+        <td style="border-bottom: none">Thành tiền (Đã bao gồm 10% VAT)</td>
+        <td style="border-bottom: none; text-align: right">1.000.000 VND</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-spin>

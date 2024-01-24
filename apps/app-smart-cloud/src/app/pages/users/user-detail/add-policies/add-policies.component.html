@@ -1,0 +1,64 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Thêm Policies'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
+          >Chi tiết User</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Thêm Policies </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<one-portal-attach-permission-policy
+  [isCreate]="false"
+  [userName]="userName"
+  (listGroupNames)="onChangeGroupNames($event)"
+  (listPolicyNames)="onChangePolicyNames($event)"
+></one-portal-attach-permission-policy>
+
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+  <div
+    class="text-right p-0 m-b-0"
+    nz-col
+    [nzLg]="24"
+    [nzMd]="24"
+    [nzSm]="24"
+    [nzXl]="24"
+    [nzXs]="24"
+    [nzXXl]="24"
+  >
+    <button
+      class="m-r-8"
+      nz-button
+      nzType="default"
+      style="background-color: #9c9c9c; color: white"
+      (click)="navigateToDetail()"
+    >
+      Quay lại
+    </button>
+    <button class="m-r-8" nz-button nzType="primary" (click)="addPolicies()">
+      Thêm policies
+    </button>
+  </div>
+</div>
