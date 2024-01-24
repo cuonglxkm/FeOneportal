@@ -168,7 +168,7 @@
     </nz-row>
 
     <nz-tabset>
-      <nz-tab nzTitle="Gói cấu hình">
+      <nz-tab *ngIf="isConfigPackage" nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
         <ngu-carousel
           #myCarouselFlavor
           [inputs]="carouselTileConfig"
@@ -231,7 +231,7 @@
           </ul>
         </ngu-carousel>
       </nz-tab>
-      <nz-tab nzTitle="Cấu hình tuỳ chỉnh">
+      <nz-tab nzTitle="Cấu hình tuỳ chỉnh" (nzClick)="onClickCustomConfig()">
         <div class="ant-table">
           <table>
             <thead class="ant-table-thead">
@@ -250,7 +250,7 @@
                   <nz-input-number
                     [(ngModel)]="configCustom.vCPU"
                     [ngModelOptions]="{ standalone: true }"
-                    [nzMin]="0"
+                    [nzMin]="instancesModel.cpu"
                     [nzMax]="62"
                     [nzStep]="1"
                   ></nz-input-number>
@@ -259,7 +259,7 @@
                   <nz-input-number
                     [(ngModel)]="configCustom.ram"
                     [ngModelOptions]="{ standalone: true }"
-                    [nzMin]="0"
+                    [nzMin]="instancesModel.ram"
                     [nzMax]="62"
                     [nzStep]="1"
                   ></nz-input-number>
@@ -268,7 +268,7 @@
                   <nz-input-number
                     [(ngModel)]="configCustom.capacity"
                     [ngModelOptions]="{ standalone: true }"
-                    [nzMin]="0"
+                    [nzMin]="instancesModel.storage"
                     [nzMax]="100"
                     [nzStep]="1"
                   ></nz-input-number>
@@ -298,12 +298,12 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>IP Public: {{ listIPStr }}</nz-form-label>
+          <nz-form-label>IP Public: {{ listIPPublicStr }}</nz-form-label>
         </nz-form-item>
       </nz-col>
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>IP LAN: {{ instancesModel.ipPrivate }}</nz-form-label>
+          <nz-form-label>IP LAN: {{ listIPLanStr }}</nz-form-label>
         </nz-form-item>
       </nz-col>
     </nz-row>

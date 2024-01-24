@@ -171,11 +171,8 @@ export class InstancesEditInfoComponent implements OnInit {
     this.dataService
       .getPortByInstance(this.id, this.region)
       .subscribe((dataNetwork: any) => {
-        let listOfDataNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == true
-        );
         let listIP: string[] = [];
-        listOfDataNetwork.forEach((e) => {
+        dataNetwork.forEach((e) => {
           listIP = listIP.concat(e.fixedIPs);
         });
         this.listIPStr = listIP.join(', ');

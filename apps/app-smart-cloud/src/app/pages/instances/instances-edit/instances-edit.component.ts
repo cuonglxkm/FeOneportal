@@ -90,6 +90,7 @@ export class InstancesEditComponent implements OnInit {
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  isConfigPackage: boolean = true;
 
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
@@ -158,6 +159,27 @@ export class InstancesEditComponent implements OnInit {
   }
   //#endregion
 
+  isCustomconfig = false;
+  onClickConfigPackage() {
+    this.resetChangeConfig();
+    this.isCustomconfig = false;
+  }
+
+  onClickCustomConfig() {
+    this.resetChangeConfig();
+    this.isCustomconfig = true;
+  }
+
+  resetChangeConfig(): void {
+    this.configCustom.vCPU = this.instancesModel.cpu;
+    this.configCustom.ram = this.instancesModel.ram;
+    this.configCustom.capacity = this.instancesModel.storage;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
+  }
+
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
@@ -187,7 +209,9 @@ export class InstancesEditComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listOfferFlavors = data.filter((e: OfferItem) => e.status == 'Active');
+        this.listOfferFlavors = data.filter(
+          (e: OfferItem) => e.status == 'Active'
+        );
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
             e.offerName.includes('HDD')
@@ -232,7 +256,7 @@ export class InstancesEditComponent implements OnInit {
                 e.description += ch.charOptionValues[1] + ' GB SSD';
               }
               if (
-                Number.parseInt(ch.charOptionValues[1]) !=
+                Number.parseInt(ch.charOptionValues[1]) <
                 this.instancesModel.storage
               ) {
                 this.listOfferFlavors[index] = null;
@@ -282,6 +306,16 @@ export class InstancesEditComponent implements OnInit {
         this.activeBlockHDD = false;
         this.activeBlockSSD = true;
       }
+      if (
+        this.instancesModel.flavorId == 0 ||
+        this.instancesModel.flavorId == null
+      ) {
+        this.isConfigPackage = false;
+        this.isCustomconfig = true;
+      }
+      this.configCustom.vCPU = this.instancesModel.cpu;
+      this.configCustom.ram = this.instancesModel.ram;
+      this.configCustom.capacity = this.instancesModel.storage;
       this.cdr.detectChanges();
       this.selectedElementFlavor = this.instancesModel.flavorId;
       this.region = this.instancesModel.regionId;
@@ -305,19 +339,31 @@ export class InstancesEditComponent implements OnInit {
     });
   }
 
-  listIPStr = '';
+  listIPPublicStr = '';
+  listIPLanStr = '';
   getListIpPublic() {
     this.dataService
       .getPortByInstance(this.id, this.region)
       .subscribe((dataNetwork: any) => {
-        let listOfDataNetwork: Network[] = dataNetwork.filter(
+        //list IP public
+        let listOfPublicNetwork: Network[] = dataNetwork.filter(
           (e: Network) => e.isExternal == true
         );
-        let listIP: string[] = [];
-        listOfDataNetwork.forEach((e) => {
-          listIP = listIP.concat(e.fixedIPs);
+        let listIPPublic: string[] = [];
+        listOfPublicNetwork.forEach((e) => {
+          listIPPublic = listIPPublic.concat(e.fixedIPs);
         });
-        this.listIPStr = listIP.join(', ');
+        this.listIPPublicStr = listIPPublic.join(', ');
+
+        //list IP Lan
+        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        let listIPLan: string[] = [];
+        listOfPrivateNetwork.forEach((e) => {
+          listIPLan = listIPLan.concat(e.fixedIPs);
+        });
+        this.listIPLanStr = listIPLan.join(', ');
         this.cdr.detectChanges();
       });
   }
@@ -355,26 +401,33 @@ export class InstancesEditComponent implements OnInit {
   instanceResizeInit() {
     this.instanceResize.description = null;
     this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
-    this.offerFlavor.characteristicValues.forEach((e) => {
-      if (e.charOptionValues[0] == 'Id') {
-        this.instanceResize.newFlavorId = Number.parseInt(
-          e.charOptionValues[1]
-        );
-      }
-      if (e.charOptionValues[0] == 'RAM') {
-        this.instanceResize.ram = Number.parseInt(e.charOptionValues[1]);
-      }
-      if (e.charOptionValues[0] == 'CPU') {
-        this.instanceResize.cpu = Number.parseInt(e.charOptionValues[1]);
-      }
-    });
+    if (this.isCustomconfig) {
+      this.instanceResize.cpu = this.configCustom.vCPU;
+      this.instanceResize.ram = this.configCustom.ram;
+      this.instanceResize.newOfferId = 0;
+      this.instanceResize.newFlavorId = 0;
+    } else {
+      this.instanceResize.newOfferId = this.offerFlavor.id;
+      this.offerFlavor.characteristicValues.forEach((e) => {
+        if (e.charOptionValues[0] == 'Id') {
+          this.instanceResize.newFlavorId = Number.parseInt(
+            e.charOptionValues[1]
+          );
+        }
+        if (e.charOptionValues[0] == 'RAM') {
+          this.instanceResize.ram = Number.parseInt(e.charOptionValues[1]);
+        }
+        if (e.charOptionValues[0] == 'CPU') {
+          this.instanceResize.cpu = Number.parseInt(e.charOptionValues[1]);
+        }
+      });
+    }
     this.instanceResize.addRam = 0;
     this.instanceResize.addCpu = 0;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     this.instanceResize.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceResize.newOfferId = this.offerFlavor.id;
     this.instanceResize.serviceType = 1;
     this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
@@ -395,7 +448,12 @@ export class InstancesEditComponent implements OnInit {
     this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
     console.log('update instance', this.updateInstances);
 
-    if (this.offerFlavor != null) {
+    if (
+      this.offerFlavor != null ||
+      this.configCustom.vCPU != this.instancesModel.cpu ||
+      this.configCustom.ram != this.instancesModel.ram ||
+      this.configCustom.capacity != this.instancesModel.storage
+    ) {
       this.instanceResizeInit();
       let specificationInstance = JSON.stringify(this.instanceResize);
       let orderItemInstanceResize = new OrderItem();
