@@ -86,7 +86,6 @@ export class InstancesEditComponent implements OnInit {
   passwordVisible = false;
   password?: string;
   numberMonth: number = 1;
-  hdh: any;
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
@@ -396,6 +395,19 @@ export class InstancesEditComponent implements OnInit {
         this.readyEdit();
       },
     });
+  }
+
+  onChangeConfigCustom() {
+    if (
+      this.configCustom.vCPU ==  this.instancesModel.cpu &&
+      this.configCustom.ram ==  this.instancesModel.ram &&
+      this.configCustom.capacity ==  this.instancesModel.storage
+    ) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+    } else {
+      this.getTotalAmount()
+    }
   }
 
   instanceResizeInit() {
