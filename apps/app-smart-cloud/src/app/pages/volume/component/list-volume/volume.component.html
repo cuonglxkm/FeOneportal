@@ -78,9 +78,6 @@
               [nzData]="response?.records"
               nzShowSizeChanger
               [nzFrontPagination]="false"
-              [nzTotal]="response?.totalCount"
-              [nzPageSize]="response?.pageSize"
-              [nzPageIndex]="response?.currentPage"
               [nzLoading]="isLoading"
               (nzQueryParams)="onQueryParamsChange($event)">
       <thead>

@@ -4,18 +4,16 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from "@angular/router";
 import {VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
-import {AddVolumetoVmModel, GetListVolumeModel} from "../../../../shared/models/volume.model";
-import {NzMessageService} from "ng-zorro-antd/message";
+import {AddVolumetoVmModel} from "../../../../shared/models/volume.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {debounce, debounceTime} from "rxjs";
 import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
-import { PopupAddVolumeComponent } from '../popup-volume/popup-add-volume.component';
-import { PopupCancelVolumeComponent } from '../popup-volume/popup-cancel-volume.component';
-import { PopupDeleteVolumeComponent } from '../popup-volume/popup-delete-volume.component';
+import {PopupAddVolumeComponent} from '../popup-volume/popup-add-volume.component';
+import {PopupCancelVolumeComponent} from '../popup-volume/popup-cancel-volume.component';
+import {PopupDeleteVolumeComponent} from '../popup-volume/popup-delete-volume.component';
 
 @Component({
   selector: 'app-volume',
@@ -68,13 +66,14 @@ export class VolumeComponent implements OnInit {
 
   isLoadingAction = false
 
+  isVisibleConfirmEdit: boolean = false
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
               private notification: NzNotificationService,
               private modalService: NzModalService) {
   }
-
 
 
   regionChanged(region: RegionModel) {
@@ -130,18 +129,6 @@ export class VolumeComponent implements OnInit {
     this.getListVolumes()
   }
 
-  // onRootPageIndexChange(event: any) {
-  //   this.curentPageRoot = event;
-  //   this.getListVolume(this.userId, this.projectSearch, this.regionSearch, true, 10, this.curentPageRoot, this.volumeStatusSearch, this.volumeNameSearch)
-  // }
-  //
-  // onAddPageIndexChange(event: any) {
-  //   this.curentPageAdd = event;
-  //   this.getListVolume(this.userId, this.projectSearch, this.regionSearch, false, 10, this.curentPageAdd, this.volumeStatusSearch, this.volumeNameSearch)
-  // }
-  //
-  // isVisible = false;
-  //
   onSelectionChange(value: any, volume: VolumeDTO) {
     if (value === 'addVolume') {
       const modal: NzModalRef = this.modalService.create({
@@ -229,19 +216,27 @@ export class VolumeComponent implements OnInit {
     }
 
     if (value === 'initBackup') {
-      this.router.navigate(['/app-smart-cloud/backup-volume/create'],{
-        queryParams:{idVolume:volume.id, startDate: volume.creationDate , endDate: volume.expirationDate, nameVolume:volume.name }
+      this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
+        queryParams: {
+          idVolume: volume.id,
+          startDate: volume.creationDate,
+          endDate: volume.expirationDate,
+          nameVolume: volume.name
+        }
       });
     }
   }
+
   //
   navigateToCreateVolume() {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
+
   async doDeleteVolume(volumeId: number): Promise<any> {
     let result = this.volumeService.deleteVolume(volumeId).toPromise();
     return !!result;
   }
+
   //
   addVolumeToVM(volume: VolumeDTO, vmId: number): void {
     this.volumeService.getVolummeById(volume.id).toPromise().then(data => {
@@ -260,16 +255,19 @@ export class VolumeComponent implements OnInit {
           this.volumeService.addVolumeToVm(addVolumetoVmRequest).toPromise().then(data => {
             if (data == true) {
               this.notification.success('Thành công', 'Gắn Volume thành công.')
+              this.getListVolumes()
             }
             this.isLoadingAction = false;
           })
         }
-      } else{
+      } else {
         this.notification.error('Thất bại', 'Gắn Volume thất bại.')
+        this.getListVolumes()
         this.isLoadingAction = false;
       }
     })
   }
+
   //
   doDetachVolumeToVm(volume: VolumeDTO, vmId: number) {
     this.isLoadingAction = true;
@@ -280,9 +278,11 @@ export class VolumeComponent implements OnInit {
     this.volumeService.detachVolumeToVm(addVolumetoVmRequest).toPromise().then(data => {
       if (data == true) {
         this.notification.success('Thành công', `Gỡ volume thành công`);
+        this.getListVolumes()
         this.isLoadingAction = false;
       } else {
         this.notification.error('Thất bại', `Gỡ volume thất bại`);
+        this.getListVolumes()
         this.isLoadingAction = false;
       }
     })

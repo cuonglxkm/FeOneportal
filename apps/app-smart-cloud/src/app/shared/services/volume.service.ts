@@ -85,9 +85,7 @@ export class VolumeService extends BaseService {
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
-      catchError(this.handleError<any>('Edit size volume error.'))
-    );
+    return this.http.post<any>(this.urlOrderGW, request, {headers: this.httpOptions.headers})
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
