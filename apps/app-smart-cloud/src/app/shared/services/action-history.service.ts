@@ -1,31 +1,54 @@
-import { Injectable } from '@angular/core';
-import {BaseService} from "./base.service";
-import {BehaviorSubject, Observable} from "rxjs";
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import { ActionHistoryModel } from '../models/action-history.model';
+import { Inject, Injectable } from '@angular/core';
+import { BaseService } from './base.service';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class ActionHistoryService extends BaseService{
-
+export class ActionHistoryService extends BaseService {
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    Authorization: 'Bearer ' + this.tokenService.get()?.token,
   };
 
-  public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
-
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+  ) {
     super();
   }
 
-  getData( email: any, action: any, resourceName: any, resourceType: any, regionId: any, fromDate : any, toDate : any, pageSize: any, currentPage: any): Observable<BaseResponse<ActionHistoryModel[]>> {
-    return this.http.get<BaseResponse<ActionHistoryModel[]>>(this.baseUrl + '/actionlogs?email=' + email+ '&action=' + action+ '&resourceName=' + resourceName+ '&resourceType=' + resourceType+
-      '&regionId=' + regionId+ '&fromDate=' + fromDate+ '&toDate=' + toDate+ '&pageSize=' + pageSize+ '&currentPage=' + currentPage);
-  }
-
-  getActionLogs() : Observable<BaseResponse<ActionHistoryModel[]>> {
-    return this.http.get<BaseResponse<ActionHistoryModel[]>>("/actionlogs");
+  getData(
+    pageSize: number,
+    pageNumber: number,
+    fromDate: string,
+    toDate: string,
+    email: string,
+    action: string,
+    resourceName: string,
+    resourceType: string
+  ): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl +
+        '/actionlogs?pageSize=' +
+        pageSize +
+        '&pageNumber=' +
+        pageNumber +
+        '&fromDate=' +
+        fromDate +
+        '&toDate=' +
+        toDate +
+        '&email=' +
+        email +
+        '&action=' +
+        action +
+        '&resourceName=' +
+        resourceName +
+        '&resourceType=' +
+        resourceType,
+      this.httpOptions
+    );
   }
 }

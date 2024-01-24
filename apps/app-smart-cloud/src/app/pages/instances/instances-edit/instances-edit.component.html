@@ -249,6 +249,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="configCustom.vCPU"
+                    (ngModelChange)="onChangeConfigCustom()"
                     [ngModelOptions]="{ standalone: true }"
                     [nzMin]="instancesModel.cpu"
                     [nzMax]="62"
@@ -258,6 +259,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="configCustom.ram"
+                    (ngModelChange)="onChangeConfigCustom()"
                     [ngModelOptions]="{ standalone: true }"
                     [nzMin]="instancesModel.ram"
                     [nzMax]="62"
@@ -267,6 +269,7 @@
                 <td>
                   <nz-input-number
                     [(ngModel)]="configCustom.capacity"
+                    (ngModelChange)="onChangeConfigCustom()"
                     [ngModelOptions]="{ standalone: true }"
                     [nzMin]="instancesModel.storage"
                     [nzMax]="100"
