@@ -42,6 +42,11 @@ const routes: Routes = [
             (m) => m.RemoteEntryModule
           ),
       },
+      {
+        path: 'app-kafka',
+        loadChildren: () =>
+          loadRemoteModule('app-kafka', './Module').then((m) => m.RemoteEntryModule),
+      },
     ]
   },
   // Blak Layout 空白布局

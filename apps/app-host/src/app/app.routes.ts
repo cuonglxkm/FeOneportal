@@ -3,6 +3,18 @@ import { Route } from '@angular/router';
 import { loadRemoteModule } from '@nx/angular/mf';
 
 export const appRoutes: Route[] = [
+  // {
+  //   path: 'app-kafka',
+  //   loadChildren: () =>
+  //     loadRemoteModule('app-kafka', './Routes').then((m) => m.remoteRoutes),
+  // },
+  {
+    path: 'app-kafka',
+    loadChildren: () =>
+      loadRemoteModule('app-kafka', './Module').then(
+        (m) => m.RemoteEntryModule
+      ),
+  },
   {
     path: 'app-smart-cloud',
     loadChildren: () =>
