@@ -27,14 +27,6 @@
     <nz-row>
       <nz-col style="width: 85%">
         <nz-form-label [nzFor]="'volumeStatus'">Trạng thái Volume</nz-form-label>
-        <!--        <nz-select nzSize="default"-->
-        <!--                   [nzPlaceHolder]="'Tất cả trạng thái'"-->
-        <!--                   [nzOptions]="options"-->
-        <!--                   [(ngModel)]="volumeStatusSearch"-->
-        <!--                   (ngModelChange)="searchVolumes()"-->
-        <!--                   style="width: 170px;"-->
-        <!--        >-->
-        <!--        </nz-select>-->
         <nz-select [(ngModel)]="selectedValue"
                    (ngModelChange)="onChange($event)"
                    style="width: 150px;"
@@ -79,7 +71,11 @@
               nzShowSizeChanger
               [nzFrontPagination]="false"
               [nzLoading]="isLoading"
-              (nzQueryParams)="onQueryParamsChange($event)">
+              [nzPageSize]="response?.pageSize"
+              [nzPageIndex]="response?.currentPage"
+              [nzTotal]="response?.totalCount"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              (nzPageIndexChange)="onPageIndexChange($event)">
       <thead>
       <tr>
         <th nzLeft>Tên Volume</th>
@@ -136,92 +132,6 @@
       </tr>
       </tbody>
     </nz-table>
-    <!--    <nz-tabset [(nzSelectedIndex)]="tabVolumeIndex">-->
-    <!--      <nz-tab nzTitle="Volume Root" (nzClick)="reloadDataVolumeRoot()">-->
-
-    <!--        <nz-table #tableRoot [nzData]="listVolumeRoot" [nzFrontPagination]="false" [nzTotal]="totalRoot"-->
-    <!--                  (nzPageIndexChange)="onRootPageIndexChange($event)" [nzLoading]="isLoadingSearch">-->
-    <!--          <thead>-->
-    <!--          <tr>-->
-    <!--            <th>Tên Volume</th>-->
-    <!--            <th>Dung lượng(GB)</th>-->
-    <!--            <th>IPOPS</th>-->
-    <!--            <th>Trạng thái Volume</th>-->
-    <!--            <th>Trạng thái tác vụ</th>-->
-    <!--            <th>Máy ảo</th>-->
-    <!--            <th>Thao tác</th>-->
-    <!--          </tr>-->
-    <!--          </thead>-->
-    <!--          <tbody>-->
-    <!--          <tr *ngFor="let data of tableRoot.data; let i = index">-->
-    <!--            <td (click)="getDetailVolume(data.id)"><a>{{ data.name }}</a></td>-->
-    <!--            <td>{{ data.sizeInGB }}</td>-->
-    <!--            <td>{{ data.iops }}</td>-->
-    <!--            <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status) }}</td>-->
-    <!--            <td *ngIf="data.status === 'ERROR' || data.status === 'SUSPENDED'"-->
-    <!--                style="color: red">{{ volumeStatus.get(data.status) }}-->
-    <!--            </td>-->
-    <!--            <td>{{ data.serviceStatus }}</td>-->
-    <!--            <td>{{ data.instanceName }}</td>-->
-    <!--            <td>-->
-    <!--              <nz-select nzSize="default"-->
-    <!--                         class="custom-background"-->
-    <!--                         [nzPlaceHolder]="'Tạo Snapshot'"-->
-    <!--                         [nzOptions]="optionVolumeRoot"-->
-    <!--                         style="width: 150px;"-->
-    <!--                         [ngModel]="selectedOptionAction"-->
-    <!--                         (ngModelChange)="onSelectionChange($event , data)"-->
-    <!--              >-->
-    <!--              </nz-select>-->
-    <!--            </td>-->
-    <!--          </tr>-->
-    <!--          </tbody>-->
-    <!--        </nz-table>-->
-
-    <!--      </nz-tab>-->
-    <!--      <nz-tab nzTitle="Volume gắn thêm" (nzClick)="reloadDataVolumeAdd()">-->
-
-    <!--        <nz-table #tableAdd [nzData]="listVolumeAdd" [nzFrontPagination]="false" [nzTotal]="totalAdd"-->
-    <!--                  (nzPageIndexChange)="onAddPageIndexChange($event)" [nzLoading]="isLoadingSearch">-->
-    <!--          <thead>-->
-    <!--          <tr>-->
-    <!--            <th>Tên Volume</th>-->
-    <!--            <th>Dung lượng(GB)</th>-->
-    <!--            <th>IPOPS</th>-->
-    <!--            <th>Trạng thái Volume</th>-->
-    <!--            <th>Trạng thái tác vụ</th>-->
-    <!--            <th>Máy ảo</th>-->
-    <!--            <th>Thao tác</th>-->
-    <!--          </tr>-->
-    <!--          </thead>-->
-    <!--          <tbody>-->
-    <!--          <tr *ngFor="let data of tableAdd.data; let i = index">-->
-    <!--            <td (click)="getDetailVolume(data.id)"><a>{{ data.name }}</a></td>-->
-    <!--            <td>{{ data.sizeInGB }}</td>-->
-    <!--            <td>{{ data.iops }}</td>-->
-    <!--            <td *ngIf="data.status === 'KHOITAO'" style="color: #6abe39">{{ volumeStatus.get(data.status) }}</td>-->
-    <!--            <td *ngIf="data.status === 'ERROR'" style="color: red">{{ volumeStatus.get(data.status) }}</td>-->
-    <!--            <td *ngIf="data.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(data.status) }}</td>-->
-    <!--            <td>{{ data.serviceStatus }}</td>-->
-    <!--            <td>{{ data.instanceName }}</td>-->
-    <!--            <td>-->
-    <!--              <nz-select nzSize="default"-->
-    <!--                         class="custom-background"-->
-    <!--                         [nzPlaceHolder]="'Gắn Volume'"-->
-    <!--                         [nzOptions]="optionVolumeAdd"-->
-    <!--                         style="width: 150px;"-->
-    <!--                         [ngModel]="selectedOptionAction"-->
-    <!--                         (ngModelChange)="onSelectionChange($event , data)"-->
-    <!--              >-->
-    <!--              </nz-select>-->
-    <!--            </td>-->
-    <!--          </tr>-->
-    <!--          </tbody>-->
-    <!--        </nz-table>-->
-
-
-    <!--      </nz-tab>-->
-    <!--    </nz-tabset>-->
   </div>
 </nz-content>
 
@@ -229,9 +139,9 @@
   <nz-card>
     <result>
       <img nz-image style="height: 100%; width: 100%;" nzSrc="assets/imgs/blank_volume.png" alt=""/>
-            <button nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()">
-              Khởi tạo ngay
-            </button>
+      <button nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()">
+        Khởi tạo ngay
+      </button>
     </result>
   </nz-card>
 </ng-template>

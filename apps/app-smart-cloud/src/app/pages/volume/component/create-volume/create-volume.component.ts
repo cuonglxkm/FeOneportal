@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit, ViewChildren} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {GetAllVmModel} from "../../../../shared/models/volume.model";
 import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
@@ -16,6 +16,7 @@ import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angul
 import {InstancesService} from "../../../instances/instances.service";
 import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../instances/instances.model";
 import { OrderItem } from 'src/app/shared/models/price';
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-create-volume',
@@ -155,7 +156,8 @@ export class CreateVolumeComponent implements OnInit {
               private notification: NzNotificationService,
               private router: Router,
               private fb: NonNullableFormBuilder,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              private cdr: ChangeDetectorRef) {
 
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value
@@ -234,6 +236,7 @@ export class CreateVolumeComponent implements OnInit {
         '', '', false, this.tokenService.get()?.userId)
         .subscribe(data => {
           this.listInstances = data.records
+          this.cdr.detectChanges()
         })
   }
 
