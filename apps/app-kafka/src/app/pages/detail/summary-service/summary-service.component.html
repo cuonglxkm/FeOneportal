@@ -1,0 +1,79 @@
+
+<nz-card>
+    <fieldset class="custom-legend">
+        <legend>Thông tin cấu hình Kafka Instance</legend>
+        <div class="table-info">
+            <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
+                <tbody>
+                    <tr>
+                        <td class="w-30">RAM</td>
+                        <td>{{4}} GiB</td>
+                    </tr>
+                    <tr>
+                        <td class="w-30">CPU</td>
+                        <td>{{4}} vCPU</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </fieldset>
+    <fieldset class="custom-legend mb-5">
+        <legend>Thông tin cấu hình Endpoint</legend>
+        <div class="copy-btn">
+            <button nz-button nzType="text" nzTooltipTitle="Copy" nzTooltipPlacement="top" nz-tooltip
+                (click)="handleCopy()">
+                <span nz-icon nzType="copy" style="color:#2F54EB"></span>
+            </button>
+        </div>
+        <div class="table-info">
+            <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
+                <tbody>
+                    <tr>
+                        <td class="w-30">Bootstrap server</td>
+                        <td>Lorem ipsum dolor sit amet consectetur adipisicing elit.</td>
+                    </tr>
+                    <tr>
+                        <td class="w-30">Sasl Mechanism</td>
+                        <td>Lorem ipsum dolor sit amet consectetur adipisicing elit.</td>
+                    </tr>
+                    <tr>
+                        <td class="w-30">Security Protocol</td>
+                        <td>Lorem ipsum dolor sit amet consectetur adipisicing elit.</td>
+                    </tr>
+                    <tr>
+                        <td class="w-30">Sasl Jaas Config</td>
+                        <td>Lorem ipsum dolor sit amet consectetur adipisicing elit.</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </fieldset>
+    <fieldset class="custom-legend mb-5">
+        <legend>Thông tin cấu hình Brokers</legend>
+        <div class="copy-btn">
+            <button nz-button nzType="text" nzTooltipTitle="Copy" nzTooltipPlacement="top" nz-tooltip
+                (click)="handleCopy()">
+                <span nz-icon nzType="copy" style="color:#2F54EB"></span>
+            </button>
+        </div>
+        <div class="table-info">
+            <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
+                <tbody>
+                    <tr *ngFor="let item of listOfBrokerConfigs">
+                        <td class="w-30">
+                            <div class="label-config">
+                                min.insync.replicas
+                                <span class="ml-2" 
+                                    nzTooltipTitle="Lorem ipsum dolor sit amet consectetur adipisicing elit." nzTooltipPlacement="rightTop" nz-tooltip>
+                                    <span nz-icon nzType="info-circle" nzTheme="fill" style="color:#2F54EB"></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td>Lorem ipsum dolor sit amet consectetur adipisicing elit.</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </fieldset>
+</nz-card>
+

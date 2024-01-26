@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RoutesModule } from './routes/routes.module';
-import {SharedModule} from './shared/shared.module';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
