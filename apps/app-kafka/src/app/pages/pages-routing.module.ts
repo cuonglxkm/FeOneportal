@@ -3,9 +3,9 @@ import { DetailComponent } from "./detail/detail.component";
 import { NgModule } from "@angular/core";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+  {path: '', redirectTo: 'detail', pathMatch: 'full'},
   {
-    path: 'dashboard',
+    path: 'detail',
     component: DetailComponent
   }
   ]
