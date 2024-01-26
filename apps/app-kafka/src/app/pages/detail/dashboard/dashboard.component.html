@@ -1,1 +1,78 @@
-<p>dashboard works!</p>
+<div nz-row nzGutter="16">
+    <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+        <div nz-row nzType="flex" nzAlign="middle" class="bg-primary rounded-md">
+            <div nz-col nzSpan="12" class="p-md text-white">
+                <div class="h2 mt0">1000</div>
+                <p class="text-nowrap mb0">Tổng số topic</p>
+            </div>
+            <div nz-col nzSpan="12">
+                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
+                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
+            </div>
+        </div>
+    </div>
+    <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+        <div nz-row nzType="flex" nzAlign="middle" class="bg-success rounded-md">
+            <div nz-col nzSpan="12" class="p-md text-white">
+                <div class="h2 mt0">234</div>
+                <p class="text-nowrap mb0">Tổng số partition</p>
+            </div>
+            <div nz-col nzSpan="12">
+                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
+                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
+            </div>
+        </div>
+    </div>
+    <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+        <div nz-row nzType="flex" nzAlign="middle" class="bg-orange rounded-md">
+            <div nz-col nzSpan="12" class="p-md text-white">
+                <div class="h2 mt0">3</div>
+                <p class="text-nowrap mb0">Tổng số message</p>
+            </div>
+            <div nz-col nzSpan="12">
+                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
+                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
+            </div>
+        </div>
+    </div>
+    <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+        <div nz-row nzType="flex" nzAlign="middle" class="bg-magenta rounded-md">
+            <div nz-col nzSpan="12" class="p-md text-white">
+                <div class="h2 mt0">456</div>
+                <p class="text-nowrap mb0">Tổng số partition offline</p>
+            </div>
+            <div nz-col nzSpan="12">
+                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
+                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
+            </div>
+        </div>
+    </div>
+</div>
+<div nz-row nzGutter="16">
+    <div nz-col nzXs="24" nzMd="12">
+        <nz-card [nzTitle]="growthTitle" [nzBordered]="false">
+            <ng-template #growthTitle>
+                Growth Rate
+                <small class="text-sm font-weight-normal">Business Expectations & Retail Sales Statistics</small>
+            </ng-template>
+            <ng-container *ngIf="offlineChartData">
+                <g2-timeline [data]="offlineChartData" [height]="289" [titleMap]="{ y1: '客流量', y2: '支付笔数' }" />
+            </ng-container>
+        </nz-card>
+    </div>
+    <div nz-col nzXs="24" nzMd="12">
+        <nz-card [nzTitle]="growthTitle" [nzBordered]="false">
+            <ng-template #growthTitle>
+                Growth Rate
+                <small class="text-sm font-weight-normal">Business Expectations & Retail Sales Statistics</small>
+            </ng-template>
+            <ng-container *ngIf="offlineChartData">
+                <g2-mini-area line color="#cceafe" height="45" [data]="visitData" yTooltipSuffix="%" [xAxis]=" {
+                    line: {
+                      stroke: '#ff8800'
+                    }
+                  }" />
+            </ng-container>
+        </nz-card>
+    </div>
+</div>
