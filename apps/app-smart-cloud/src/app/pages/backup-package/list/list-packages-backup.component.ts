@@ -28,6 +28,10 @@ export class ListPackagesBackupComponent implements OnInit {
 
   packageBackupModel: PackageBackupModel = new PackageBackupModel()
   response: BaseResponse<PackageBackupModel[]>
+
+  isVisibleDelete: boolean = false
+  isLoadingDelete: boolean = false
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -72,7 +76,24 @@ export class ListPackagesBackupComponent implements OnInit {
     })
   }
 
-  ngOnInit() {
+
+  navigateToEdit(id) {
+    this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + id])
+  }
+
+  showDelete() {
+    this.isVisibleDelete = true
+
+  }
+
+  handleDeletedOk() {
+    this.isVisibleDelete = false
+  }
+
+  handleDeleteCancel() {
+    this.isVisibleDelete = false
+  }
+   ngOnInit() {
     this.customerId = this.tokenService.get()?.userId
     // this.getListPackageBackups()
   }

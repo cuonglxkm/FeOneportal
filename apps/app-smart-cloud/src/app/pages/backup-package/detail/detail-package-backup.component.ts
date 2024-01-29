@@ -44,7 +44,13 @@ export class DetailPackageBackupComponent implements OnInit{
     })
   }
 
+  navigateToExtend() {
+    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + this.idPackageBackup])
+  }
 
+  navigateToEdit() {
+    this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + this.idPackageBackup])
+  }
   ngOnInit() {
     this.idPackageBackup = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     if(this.idPackageBackup != null) {

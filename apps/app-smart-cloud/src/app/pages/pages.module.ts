@@ -113,6 +113,9 @@ import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-sche
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
+import { ExtendBackupPackageComponent } from './backup-package/extend/extend-backup-package.component';
+import { EditBackupPackageComponent } from './backup-package/edit/edit-backup-package.component';
+import { DeleteBackupPackageComponent } from './backup-package/delete/delete-backup-package.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -213,6 +216,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListPackagesBackupComponent,
     DetailPackageBackupComponent,
     CreatePackageBackupComponent,
+    ExtendBackupPackageComponent,
+    EditBackupPackageComponent,
+    DeleteBackupPackageComponent,
   ],
   imports: [
     CommonModule,

@@ -55,12 +55,12 @@
     </nz-row>
     <nz-table #fixedTable
               style="margin-top: 15px;"
-              [nzScroll]="{ x: '1000px', y: '240px' }"
+              nzShowPagination="false"
+              [nzScroll]="{ x: '1000px', y: '450px' }"
               [nzData]="response?.records"
               nzShowSizeChanger
               [nzFrontPagination]="false"
-              [nzLoading]="isLoading"
-              [nzTotal]="response?.totalCount">
+              [nzLoading]="isLoading">
       <thead>
       <tr>
         <th nzLeft>Tên gói</th>
@@ -93,8 +93,15 @@
           </button>
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item >Chỉnh sửa</li>
-              <li nz-menu-item >Xóa</li>
+              <li nz-menu-item (click)="navigateToEdit(data.id)" >Chỉnh sửa</li>
+              <li nz-menu-item (click)="showDelete()" >Xóa</li>
+              <one-portal-delete-backup-package [isVisible]="isVisibleDelete"
+                                                [id]="data.id"
+                                                [region]="region"
+                                                [project]="project"
+                                                [isLoading]="isLoadingDelete"
+                                                (onOk)="handleDeletedOk()"
+                                                (onCancel)="handleDeleteCancel()"/>
             </ul>
           </nz-dropdown-menu>
         </td>

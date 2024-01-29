@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb"
+<page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="title">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -13,10 +13,29 @@
           Volume
         </a></nz-breadcrumb-item>
     </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
+    </div>
+    <div style="margin-right: 15px;">
+      <div nz-col nzSpan="4">
+        <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
+                nz-button
+                nzType="primary">Gia hạn
+        </button>
+      </div>
+    </div>
+    <div>
+      <div nz-col nzSpan="4">
+        <button class="button-edit" style="background-color: #061178"
+                (click)="navigateEditVolume(volumeInfo.id)"
+                nz-button nzType="primary">
+          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+        </button>
+      </div>
     </div>
   </ng-template>
   <ng-template #title>
@@ -28,17 +47,6 @@
                 [routerLink]="'/app-smart-cloud/volumes'"
                 style="margin-right: 10px;"></span>
         Chi tiết Volume
-      </nz-col>
-      <nz-col nzSpan="8" nzOffset="8" style="padding-left: 96px;">
-        <button class="button-fee" style="width: 160px; height: 40px;" (click)="navigateToRenew(volumeInfo.id)"
-                nz-button
-                nzType="primary">Gia hạn
-        </button>
-        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
-                (click)="navigateEditVolume(volumeInfo.id)"
-                nz-button nzType="primary">
-          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-        </button>
       </nz-col>
     </nz-row>
   </ng-template>
@@ -113,8 +121,7 @@
   <!--      </p>-->
   <!--    </div>-->
   <!--  </nz-card>-->
-
-  <nz-card nzTitle="Thông tin Volume" [nzLoading]="isLoading">
+  <nz-card nzTitle="Thông tin Volume" [nzLoading]="isLoading" >
     <nz-descriptions [nzColumn]="2">
       <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
@@ -175,4 +182,5 @@
       </ng-template>
     </nz-descriptions>
   </nz-card>
+
 </nz-content>
