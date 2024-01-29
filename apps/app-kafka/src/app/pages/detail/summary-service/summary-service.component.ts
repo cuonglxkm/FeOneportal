@@ -1,33 +1,85 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { KafkaService } from '../../../services/kafka.service';
+import { filter, map } from 'rxjs/operators';
+import { ClipboardService } from 'ngx-clipboard';
+import { InfoConnection } from '../../../core/models/info-connection.model';
+import { BrokerConfig } from '../../../core/models/broker-config.model';
+import { AppConstants } from '../../../core/constants/app-constant';
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-summary-service',
   templateUrl: './summary-service.component.html',
   styleUrls: ['./summary-service.component.css'],
 })
-export class SummaryServiceComponent implements OnInit{
-  listOfBrokerConfigs = [1, 2, 3]
+export class SummaryServiceComponent implements OnInit {
+  @Input() serviceOrderCode: string;
+  @Input() ram: number;
+  @Input() cpu: number;
 
-  constructor(private kafkaService: KafkaService){
-  }
+  infoConnection: InfoConnection;
+  brokerConfigs: BrokerConfig[];
 
-  handleCopy(){
-    return 
+  constructor(
+    private kafkaService: KafkaService,
+    private clipboardService: ClipboardService,
+    private notification: NzNotificationService
+  ) {}
+
+  handleCopy() {
+    const bs =
+      AppConstants.BOOSTRAP_SERVER +
+      AppConstants.EQUAL_SIGN +
+      this.infoConnection.bootstrapServer;
+    const sm =
+      AppConstants.SASL_MECHANISM +
+      AppConstants.EQUAL_SIGN +
+      this.infoConnection.saslMechanism;
+    const sp =
+      AppConstants.SECURITY_PROTOCOL +
+      AppConstants.EQUAL_SIGN +
+      this.infoConnection.securityProtocol;
+    const sjc =
+      AppConstants.SASL_JAAS_CONFIG +
+      AppConstants.EQUAL_SIGN +
+      this.infoConnection.saslJaasConfig;
+
+    const res = bs + '\n' + sm + '\n' + sp + '\n' + sjc;
+    this.clipboardService.copy(res);
+
+    this.notification.success('Thành công!', 'Đã copy', {
+      nzDuration: 2000
+    });
   }
 
   ngOnInit(): void {
-    
-      this.getBrokerConfigOfService();
+    this.getInfoConnection();
+    this.getBrokerConfigOfService();
 
-       return
+    return;
   }
 
-  getBrokerConfigOfService(){
-    
-    this.kafkaService.getBrokerConfigOfService('kafka-s1hnuicj7u7g').subscribe(data => {
-      
-      console.log(data);
-    })
+  getInfoConnection() {
+    this.kafkaService
+      .getInfoConnection(this.serviceOrderCode)
+      .pipe(
+        filter((r) => r && r.code == 200),
+        map((r) => r.data)
+      )
+      .subscribe((data) => {
+        this.infoConnection = data;
+      });
+  }
+
+  getBrokerConfigOfService() {
+    this.kafkaService
+      .getBrokerConfigOfService(this.serviceOrderCode)
+      .pipe(
+        filter((r) => r && r.code == 200),
+        map((r) => r.data)
+      )
+      .subscribe((data) => {
+        this.brokerConfigs = data;
+      });
   }
 }
