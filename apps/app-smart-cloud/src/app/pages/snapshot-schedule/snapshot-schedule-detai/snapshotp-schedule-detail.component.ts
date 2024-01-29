@@ -1,12 +1,12 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {ActivatedRoute, Router} from "@angular/router";
-import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {VolumeService} from "../../../shared/services/volume.service";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {NzSelectOptionInterface} from "ng-zorro-antd/select";
+import { Component, Inject, OnInit } from '@angular/core';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { VolumeService } from '../../../shared/services/volume.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'one-portal-detail-schedule-snapshot',
@@ -23,12 +23,11 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   contentShowWarningName: string;
 
   customerID: number;
-
   volumeId: number;
+  volumeName: string;
 
-  volumeList: NzSelectOptionInterface[];
   userId: number;
-  scheduleStartTime:string;
+  scheduleStartTime: string;
   dateStart: any;
   descSchedule: string;
 
@@ -47,41 +46,53 @@ export class SnapshotScheduleDetailComponent implements OnInit {
 
     this.doGetDetailSnapshotSchedule(id, this.customerID);
   }
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private snapshotService: SnapshotVolumeService,
-              private volumeService: VolumeService,
-              private notification: NzNotificationService) {
-  }
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private snapshotService: SnapshotVolumeService,
+    private volumeService: VolumeService,
+    private notification: NzNotificationService
+  ) {}
 
-  doGetDetailSnapshotSchedule(id: number, userId: number){
+  doGetDetailSnapshotSchedule(id: number, userId: number) {
     this.isLoading = true;
-    this.snapshotService.getDetailSnapshotSchedule(id, userId).subscribe(
-      data => {
-        if(data != null){
+    this.snapshotService
+      .getDetailSnapshotSchedule(id, userId)
+      .subscribe((data) => {
+        if (data != null) {
           this.isLoading = false;
           this.scheduleName = data.name;
           this.volumeId = data.serviceId;
-          this.scheduleStartTime = data.runtime;
+          this.volumeName = data.volumeName;
+
+          let myRuntime: Date = new Date(data.runtime);
+          this.scheduleStartTime =
+            myRuntime.getHours().toString().padStart(2, '0') +
+            ':' +
+            myRuntime.getMinutes().toString().padStart(2, '0') +
+            ':' +
+            myRuntime.getSeconds().toString().padStart(2, '0');
           this.dateStart = this.dateList.get(data.daysOfWeek);
           this.descSchedule = data.description;
           console.log(data);
-        }else{
+        } else {
           this.isLoading = false;
-          this.notification.error('Có lỗi xảy ra','Lấy thông tin Snapshot Schedule thất bại');
+          this.notification.error(
+            'Có lỗi xảy ra',
+            'Lấy thông tin Snapshot Schedule thất bại'
+          );
         }
-      }
-    )
+      });
   }
-  goBack(){
+  goBack() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
   }
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
   }
 
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
+  onProjectChange(project: ProjectModel) {
+    this.project = project?.id;
   }
 }
