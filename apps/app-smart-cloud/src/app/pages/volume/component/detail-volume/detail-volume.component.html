@@ -121,8 +121,7 @@
   <!--      </p>-->
   <!--    </div>-->
   <!--  </nz-card>-->
-
-  <nz-card nzTitle="Thông tin Volume" [nzLoading]="isLoading">
+  <nz-card nzTitle="Thông tin Volume" [nzLoading]="isLoading" >
     <nz-descriptions [nzColumn]="2">
       <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
@@ -183,4 +182,5 @@
       </ng-template>
     </nz-descriptions>
   </nz-card>
+
 </nz-content>
