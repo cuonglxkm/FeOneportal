@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from 'ng-zorro-antd/select';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from "@angular/router";
@@ -14,6 +14,7 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {PopupAddVolumeComponent} from '../popup-volume/popup-add-volume.component';
 import {PopupCancelVolumeComponent} from '../popup-volume/popup-cancel-volume.component';
 import {PopupDeleteVolumeComponent} from '../popup-volume/popup-delete-volume.component';
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-volume',
@@ -72,17 +73,19 @@ export class VolumeComponent implements OnInit {
               private router: Router,
               private volumeService: VolumeService,
               private notification: NzNotificationService,
-              private modalService: NzModalService) {
+              private modalService: NzModalService,
+              private cdr: ChangeDetectorRef) {
   }
 
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.getListVolumes()
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
-    this.getListVolumes()
+
   }
 
   onChange(value: string) {
@@ -102,10 +105,13 @@ export class VolumeComponent implements OnInit {
     console.log('input text: ', this.value)
   }
 
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const {pageSize, pageIndex} = params
-    this.pageSize = pageSize;
-    this.pageIndex = pageIndex
+  onPageSizeChange(event: any) {
+    this.pageSize = event
+    this.getListVolumes();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageIndex = event;
     this.getListVolumes();
   }
 
@@ -113,9 +119,11 @@ export class VolumeComponent implements OnInit {
     this.isLoading = true
     this.volumeService.getVolumes(this.userId, this.project, this.region,
       this.pageSize, this.pageIndex, this.status, this.value)
+      .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
         this.isLoading = false
         this.response = data
+        this.cdr.detectChanges()
       }, error => {
         this.isLoading = false
         this.response = null
@@ -123,10 +131,9 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userId = this.tokenService.get()?.userId
-    this.pageSize = 10
-    this.pageIndex = 1
-    this.getListVolumes()
+    this.volumeService.model.subscribe(data => {
+      console.log(data)
+    })
   }
 
   onSelectionChange(value: any, volume: VolumeDTO) {

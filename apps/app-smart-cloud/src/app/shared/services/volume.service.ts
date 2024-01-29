@@ -1,6 +1,6 @@
 import {Inject, Injectable, OnInit} from '@angular/core';
 import {catchError} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {VolumeDTO} from "../dto/volume.dto";
 import {BaseService} from "./base.service";
@@ -29,6 +29,8 @@ export class VolumeService extends BaseService {
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
   private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
   private  urlOrderGW = this.baseUrl + this.ENDPOINT.orders;
+
+  public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number,
              pageSize: number, currentPage: number, status: string, volumeName: string) {
