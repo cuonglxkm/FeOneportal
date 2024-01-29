@@ -126,6 +126,11 @@
                   "text": "Lập lịch Backup",
                   "icon": "anticon-calendar",
                   "link": "/app-smart-cloud/schedule/backup/list"
+                },
+                {
+                  "text": "Gói Backup",
+                  "icon": "anticon-calendar",
+                  "link": "/app-smart-cloud/backup/packages"
                 }
               ]
             },

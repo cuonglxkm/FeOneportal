@@ -83,8 +83,8 @@ export class BackupVmService extends BaseService {
         return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments?includeVolumeRoot=false`, {headers: this.getHeaders()})
     }
 
-    getBackupPackages(customerId: number) {
-        return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages?customerId=${customerId}`, {headers: this.getHeaders()})
+    getBackupPackages() {
+        return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages`, {headers: this.getHeaders()})
     }
 
     create(data: CreateBackupVmOrderData) {

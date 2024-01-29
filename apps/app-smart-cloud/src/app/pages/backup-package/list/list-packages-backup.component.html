@@ -1,0 +1,105 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="title" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Backup
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/backup/packages">Quản lý gói Backup</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+    <div>
+      <div nz-col nzSpan="4">
+        <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create"
+                nzSize="default" (click)="navigateToCreate()" style="cursor: pointer;">
+          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+          Tạo gói Backup
+        </button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #title>
+    <div nz-row nzJustify="space-between">
+      <div nz-col nzSpan="8" style="color: #035DED;">Quản lý gói Backup</div>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <nz-row>
+      <nz-col nzSpan="8"><b>Danh sách Backup</b></nz-col>
+      <nz-col nzSpan="8" nzOffset="8" style="display: grid;">
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+          <input nz-input
+                 [(ngModel)]="value"
+                 (input)="onInputChange($event.target['value'])"
+                 [placeholder]="'Tìm kiếm ...'"/>
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search"></span>
+        </ng-template>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixedTable
+              style="margin-top: 15px;"
+              [nzScroll]="{ x: '1000px', y: '240px' }"
+              [nzData]="response?.records"
+              nzShowSizeChanger
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading"
+              [nzTotal]="response?.totalCount">
+      <thead>
+      <tr>
+        <th nzLeft>Tên gói</th>
+        <th nzBreakWord>Dung lượng</th>
+        <th nzBreakWord>Dung lượng đã dùng</th>
+        <th nzBreakWord>Dung lượng còn lại</th>
+        <th nzBreakWord>Ngày hết hạn</th>
+        <th nzBreakWord>Trạng thái</th>
+        <th nzBreakWord>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td><a [routerLink]="'/app-smart-cloud/backup/packages/detail/'+ data.id">{{data.packageName}}</a></td>
+        <td>{{data.sizeInGB}} (GB)</td>
+        <td>{{data.usedSize}} (GB)</td>
+        <td>{{data.totalSize - data.usedSize}} (GB)</td>
+        <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
+        <td [ngSwitch]="data.status.trim()">
+            <span *ngSwitchCase="'AVAILABLE'" class="available">Đang hoạt động</span>
+            <span *ngSwitchCase="'SUSPENDED'" class="error">Tạm ngưng</span>
+            <span *ngSwitchCase="'DELETEING'" class="error">Đang xóa</span>
+        </td>
+        <td>
+          <button nz-button
+                  [nzType]="'primary'"
+                  nz-dropdown
+                  [nzDropdownMenu]="opMenu">
+            <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
+          </button>
+          <nz-dropdown-menu #opMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item >Chỉnh sửa</li>
+              <li nz-menu-item >Xóa</li>
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

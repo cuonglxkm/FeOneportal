@@ -249,7 +249,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
 
   getBackupPackage() {
     this.isLoading = true
-    this.backupVmService.getBackupPackages(this.customerId).subscribe(data => {
+    this.backupVmService.getBackupPackages().subscribe(data => {
       this.backupPackages = data
       this.isLoading = true
       console.log('backup package', this.backupPackages)

@@ -1,0 +1,154 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="title">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Backup
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/backup/packages">Tạo gói Backup</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <ng-template #title>
+    <div nz-row nzJustify="space-between">
+      <div nz-col nzSpan="8" style="color: #035DED;">Tạo gói Backup</div>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm" nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card>
+          <h3><b>Thông tin của gói Backup</b></h3>
+          <nz-form-item>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Tên gói Backup</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+              <input nz-input
+                     formControlName="namePackage"
+                     [placeholder]="'Nhập tên gói'"/>
+              <ng-template #nameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="storage">
+              <div class="label">
+                <span>Dung lượng gói Backup</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl" >
+              <nz-input-number formControlName="storage"
+                               id="storage"
+                               style="width: 100%;"
+                               [nzMin]="1"
+                               [nzStep]="1"/>
+              <ng-template #storageErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Backup</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="description">
+              <div class="label">
+                <span>Mô tả</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+          <textarea nz-input
+                    formControlName="description"
+                    id="description"
+                    [placeholder]="'Nhập mô tả'"
+                    [maxLength]="255"
+                    [nzAutosize]="{ minRows: 3, maxRows: 5 }">
+          </textarea>
+              <ng-template #descriptionErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-row nzGutter="24">
+            <nz-col nzSpan="16">
+              <nz-form-item>
+                <nz-form-label nzFor="time">
+                  <div class="label">
+                    <span>Thời gian sử dụng</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - Tháng
+                  </div>
+                </nz-form-label>
+                <nz-form-control>
+                  <nz-select formControlName="time"
+                             id="time"
+                             (ngModelChange)="onTimeSelected($event)"
+                             [nzShowSearch]="false">
+                    <nz-option *ngFor="let i of time" [nzLabel]="i.label" [nzValue]="i.value" />
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="8" class="create-date">
+              <span>Ngày khởi tạo: {{createdDate | date: 'dd/MM/yyyy'}}</span>
+            </nz-col>
+          </nz-row>
+          <nz-form-item>
+            <nz-form-label nzFor="time">
+              <div class="label">
+                <span style="color: rgba(252, 16, 16, 1);">Ngày hết hạn: {{expiredDate | date: 'dd/MM/yyyy'}}</span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card [nzTitle]="'Thành tiền'">
+          <nz-table>
+            <tr>
+              <td>Chi phí volume (1 tháng)</td>
+<!--              <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>-->
+<!--              <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.totalAmount?.amount}} {{orderItem?.totalAmount?.currency}}</td>-->
+            </tr>
+            <tr>
+              <td>Thành tiền (Đã bao gồm 10% VAT)</td>
+<!--              <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>-->
+<!--              <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</td>-->
+            </tr>
+          </nz-table>
+          <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 24px; margin-bottom: 0;">
+            <nz-space nzSize="middle">
+              <button *nzSpaceItem nz-button nzType="default" class="button-back" (click)="goBack()">Quay lại</button>
+              <nz-form-control *nzSpaceItem>
+                <button nz-button
+                        nzType="primary"
+                        [nzLoading]="isLoading"
+                        class="button-create"
+                        [disabled]="!validateForm.valid">Tạo mới</button>
+              </nz-form-control>
+            </nz-space>
+          </nz-form-item>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+
+  </form>
+
+</nz-content>

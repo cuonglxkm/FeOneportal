@@ -183,7 +183,7 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   getBackupPackage() {
-    this.backupVmService.getBackupPackages(this.tokenService.get()?.userId)
+    this.backupVmService.getBackupPackages()
       .subscribe(data => {
         this.backupPackages = data
       })

@@ -98,7 +98,7 @@ export class CreateBackupVolumeComponent implements OnInit{
       this.endDate = data['endDate'];this.tokenService.get()?.userId
     });
 
-    this.backupVmService.getBackupPackages(this.tokenService.get()?.userId).subscribe(data => {
+    this.backupVmService.getBackupPackages().subscribe(data => {
       this.listOfPackage = data;
     })
   }
