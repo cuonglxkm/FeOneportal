@@ -109,6 +109,7 @@ import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
+import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
@@ -211,6 +212,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListPaymentComponent,
     OrderDetailComponent,
     RenewVolumeComponent,
+    SnapshotScheduleEditComponent,
     ListPackagesBackupComponent,
     DetailPackageBackupComponent,
     CreatePackageBackupComponent,

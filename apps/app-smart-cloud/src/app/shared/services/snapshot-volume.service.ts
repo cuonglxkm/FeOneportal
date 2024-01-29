@@ -8,7 +8,7 @@ import {
   CreateScheduleSnapshotDTO,
   EditSnapshotVolume,
   GetListSnapshotVlModel,
-  SnapshotScheduleDetailDTO,
+  UpdateScheduleSnapshot,
 } from '../models/snapshotvl.model';
 import { SnapshotVolumeDto } from '../dto/snapshot-volume.dto';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -64,19 +64,20 @@ export class SnapshotVolumeService extends BaseService {
   getSnapshotVolumeById(snapshotVlID: string) {
     return this.http
       .get<SnapshotVolumeDto>(
-        this.urlSnapshotVl + `/${snapshotVlID}`, this.httpOptions).pipe(
-      catchError(this.handleError<SnapshotVolumeDto>('get snapshot volume-detail error'
+        this.urlSnapshotVl + `/${snapshotVlID}`,
+        this.httpOptions
+      )
+      .pipe(
+        catchError(
+          this.handleError<SnapshotVolumeDto>(
+            'get snapshot volume-detail error'
           )
         )
       );
   }
 
   editSnapshotVolume(request: EditSnapshotVolume): Observable<any> {
-    return this.http
-      .put(this.urlSnapshotVl, request, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('Edit Snapshot Volume to VM error.'))
-      );
+    return this.http.put(this.urlSnapshotVl, request, this.httpOptions);
   }
 
   deleteSnapshotVolume(idSnapshotVolume: number): Observable<boolean> {
@@ -99,36 +100,27 @@ export class SnapshotVolumeService extends BaseService {
       );
   }
 
-  getDetailSnapshotSchedule(
-    id: number,
-    customerId: number
-  ): Observable<SnapshotScheduleDetailDTO> {
-    return this.http
-      .get<SnapshotScheduleDetailDTO>(
-        this.urlSnapshotVl + '/schedule/' + id + '?customerId=' + customerId,
-        this.httpOptions
-      )
-      .pipe(
-        catchError(
-          this.handleError<SnapshotScheduleDetailDTO>(
-            'get snapshot snapshot-schedule-detail error'
-          )
-        )
-      );
+  getDetailSnapshotSchedule(id: number, customerId: number): Observable<any> {
+    return this.http.get<any>(
+      this.urlSnapshotVl + '/schedule/' + id + '?customerId=' + customerId,
+      this.httpOptions
+    );
   }
 
   getListSchedule(
     pageSize: number,
-    pageNumber : number,
+    pageNumber: number,
     regionId: number,
     projectId: number,
     name: string,
-    volumeName: string,
-    status: string
+    volumeName: string
   ): Observable<any> {
-    let urlResult = `/vlsnapshots?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}&status=${status}`;
+    let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}`;
     return this.http
-      .get<any>(this.baseUrl + this.ENDPOINT.provisions + urlResult, this.httpOptions)
+      .get<any>(
+        this.baseUrl + this.ENDPOINT.provisions + urlResult,
+        this.httpOptions
+      )
       .pipe(
         catchError(
           this.handleError<GetListSnapshotVlModel>(
@@ -138,21 +130,56 @@ export class SnapshotVolumeService extends BaseService {
       );
   }
 
+  editSnapshotSchedule(editRequest: any): Observable<any> {
+    return this.http.put<any>(
+      this.urlSnapshotVl + '/schedule',
+      editRequest,
+      this.httpOptions
+    );
+  }
+
+  deleteSnapshotSchedule(
+    id: number,
+    customerId: number,
+    regionId: number,
+    projectId: number
+  ): Observable<any> {
+    return this.http.delete<any>(
+      this.urlSnapshotVl +
+        '/schedule' +
+        '?scheduleId=' +
+        id +
+        '&customerId=' +
+        customerId +
+        '&regionId=' +
+        regionId +
+        '&projectId=' +
+        projectId,
+      this.httpOptions
+    );
+  }
+
   actionSchedule(
-    scheduleId: number,
+    id: number,
     action: string,
     customerId: number,
     regionId: number,
     projectId: number
   ): Observable<boolean> {
-    let urlResult = this.urlSnapshotVl + '/schedule/' + scheduleId + '/action';
-    return this.http
-      .post<boolean>(urlResult, null, this.httpOptions)
-      .pipe(
-        catchError(
-          this.handleError<boolean>('get shedule-snapshot-volume-list error')
-        )
-      );
+    let urlResult =
+      this.urlSnapshotVl +
+      '/schedule/' +
+      id +
+      '/action' +
+      '?action=' +
+      action +
+      '&customerId=' +
+      customerId +
+      '&regionId=' +
+      regionId +
+      '&projectId=' +
+      projectId;
+    return this.http.post<boolean>(urlResult, null, this.httpOptions);
   }
 
   private getConditionSearchSnapshotVl(
