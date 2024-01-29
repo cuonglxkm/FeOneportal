@@ -9,6 +9,7 @@ import { G2BarModule } from '@delon/chart/bar';
 import { G2TimelineModule } from '@delon/chart/timeline';
 import { G2MiniAreaModule } from '@delon/chart/mini-area';
 import { DashboardComponent } from './detail/dashboard/dashboard.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { DashboardComponent } from './detail/dashboard/dashboard.component';
     G2BarModule,
     G2TimelineModule,
     G2MiniAreaModule,
+    NgApexchartsModule,
   ],
 })
 export class PagesModule {}

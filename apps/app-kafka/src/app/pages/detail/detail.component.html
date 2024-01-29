@@ -10,7 +10,42 @@
         </nz-breadcrumb>
     </ng-template>
 
-<one-portal-summary-service></one-portal-summary-service>
 </page-header>
 
-<kafka-dashboard></kafka-dashboard>
+<nz-tabset>
+    <nz-tab nzTitle="Dashboard">
+        <ng-template nz-tab>
+            <kafka-dashboard></kafka-dashboard>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Tổng quan">
+        <ng-template nz-tab>
+            <one-portal-summary-service></one-portal-summary-service>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Topic">
+        <ng-template nz-tab>
+            <span>Coming soon!</span>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Consumer Group">
+        <ng-template nz-tab>
+            <span>Coming soon!</span>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Phân quyền (ACLs)">
+        <ng-template nz-tab>
+            <span>Coming soon!</span>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Monitor">
+        <ng-template nz-tab>
+            <span>Coming soon!</span>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Nhật ký truy cập">
+        <ng-template nz-tab>
+            <span>Coming soon!</span>
+        </ng-template>
+    </nz-tab>
+</nz-tabset>

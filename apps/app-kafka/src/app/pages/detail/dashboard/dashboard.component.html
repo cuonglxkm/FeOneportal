@@ -5,10 +5,6 @@
                 <div class="h2 mt0">1000</div>
                 <p class="text-nowrap mb0">Tổng số topic</p>
             </div>
-            <div nz-col nzSpan="12">
-                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
-                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
-            </div>
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
@@ -16,10 +12,6 @@
             <div nz-col nzSpan="12" class="p-md text-white">
                 <div class="h2 mt0">234</div>
                 <p class="text-nowrap mb0">Tổng số partition</p>
-            </div>
-            <div nz-col nzSpan="12">
-                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
-                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
             </div>
         </div>
     </div>
@@ -29,10 +21,6 @@
                 <div class="h2 mt0">3</div>
                 <p class="text-nowrap mb0">Tổng số message</p>
             </div>
-            <div nz-col nzSpan="12">
-                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
-                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
-            </div>
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
@@ -41,38 +29,107 @@
                 <div class="h2 mt0">456</div>
                 <p class="text-nowrap mb0">Tổng số partition offline</p>
             </div>
-            <div nz-col nzSpan="12">
-                <g2-mini-bar *ngIf="webSite" height="35" color="#fff" borderWidth="3" [padding]="[5, 30]"
-                    [data]="webSite" tooltipType="mini" (ready)="fixDark($event)" />
-            </div>
         </div>
     </div>
 </div>
+
+<div nz-row nzGutter="16">
+    <div nz-col nzXs="24" nzMd="24">
+        <nz-card [nzTitle]="healthCheck" [nzBordered]="false">
+            <ng-template #healthCheck>
+                Health check
+            </ng-template>
+            <div id="health-chart">
+                <apx-chart *ngIf="chartHealthCheck && chartHealthCheck.series"
+                    [series]="chartHealthCheck.series"
+                    [chart]="chartHealthCheck.chart"
+                    [xaxis]="chartHealthCheck.xaxis"
+                    [yaxis]="chartHealthCheck.yaxis"
+                    [dataLabels]="chartHealthCheck.dataLabels"
+                    [grid]="chartHealthCheck.grid"
+                    [colors]="chartHealthCheck.colors"
+                    [legend]="chartHealthCheck.legend"
+                    [tooltip]="chartHealthCheck.tooltip">
+                </apx-chart>
+            </div>
+        </nz-card>
+    </div>
+</div>
+
 <div nz-row nzGutter="16">
     <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="growthTitle" [nzBordered]="false">
-            <ng-template #growthTitle>
-                Growth Rate
-                <small class="text-sm font-weight-normal">Business Expectations & Retail Sales Statistics</small>
-            </ng-template>
-            <ng-container *ngIf="offlineChartData">
-                <g2-timeline [data]="offlineChartData" [height]="289" [titleMap]="{ y1: '客流量', y2: '支付笔数' }" />
-            </ng-container>
+        <nz-card [nzBordered]="false">
+            <div id="chart-producers">
+                <apx-chart *ngIf="chartProducers && chartProducers.series"
+                    [series]="chartProducers.series"
+                    [chart]="chartProducers.chart"
+                    [xaxis]="chartProducers.xaxis"
+                    [yaxis]="chartProducers.yaxis"
+                    [dataLabels]="chartProducers.dataLabels"
+                    [fill]="chartProducers.fill"
+                    [grid]="chartProducers.grid"
+                    [stroke]="chartProducers.stroke"
+                    [title]="chartProducers.title"
+                    [tooltip]="chartProducers.tooltip">
+                </apx-chart>
+            </div>
         </nz-card>
     </div>
     <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="growthTitle" [nzBordered]="false">
-            <ng-template #growthTitle>
-                Growth Rate
-                <small class="text-sm font-weight-normal">Business Expectations & Retail Sales Statistics</small>
-            </ng-template>
-            <ng-container *ngIf="offlineChartData">
-                <g2-mini-area line color="#cceafe" height="45" [data]="visitData" yTooltipSuffix="%" [xAxis]=" {
-                    line: {
-                      stroke: '#ff8800'
-                    }
-                  }" />
-            </ng-container>
+        <nz-card [nzBordered]="false">
+            <div id="chart-consumers">
+                <apx-chart *ngIf="chartConsumers && chartConsumers.series"
+                    [series]="chartConsumers.series"
+                    [chart]="chartConsumers.chart"
+                    [xaxis]="chartConsumers.xaxis"
+                    [yaxis]="chartConsumers.yaxis"
+                    [dataLabels]="chartConsumers.dataLabels"
+                    [fill]="chartConsumers.fill"
+                    [grid]="chartConsumers.grid"
+                    [stroke]="chartConsumers.stroke"
+                    [title]="chartConsumers.title"
+                    [tooltip]="chartConsumers.tooltip">
+                </apx-chart>
+            </div>
+        </nz-card>
+    </div>
+</div>
+
+<div nz-row nzGutter="16">
+    <div nz-col nzXs="24" nzMd="12">
+        <nz-card [nzBordered]="false">
+            <div id="chart-message">
+                <apx-chart *ngIf="chartMessage && chartMessage.series"
+                    [series]="chartMessage.series"
+                    [chart]="chartMessage.chart"
+                    [xaxis]="chartMessage.xaxis"
+                    [yaxis]="chartMessage.yaxis"
+                    [dataLabels]="chartMessage.dataLabels"
+                    [fill]="chartMessage.fill"
+                    [grid]="chartMessage.grid"
+                    [stroke]="chartMessage.stroke"
+                    [title]="chartMessage.title"
+                    [tooltip]="chartMessage.tooltip">
+                </apx-chart>
+            </div>
+        </nz-card>
+    </div>
+    <div nz-col nzXs="24" nzMd="12">
+        <nz-card [nzBordered]="false">
+            <div id="chart-storage">
+                <apx-chart *ngIf="chartStorage && chartStorage.series"
+                    [series]="chartStorage.series"
+                    [chart]="chartStorage.chart"
+                    [xaxis]="chartStorage.xaxis"
+                    [yaxis]="chartStorage.yaxis"
+                    [dataLabels]="chartStorage.dataLabels"
+                    [fill]="chartStorage.fill"
+                    [grid]="chartStorage.grid"
+                    [stroke]="chartStorage.stroke"
+                    [title]="chartStorage.title"
+                    [tooltip]="chartStorage.tooltip">
+                </apx-chart>
+            </div>
         </nz-card>
     </div>
 </div>
