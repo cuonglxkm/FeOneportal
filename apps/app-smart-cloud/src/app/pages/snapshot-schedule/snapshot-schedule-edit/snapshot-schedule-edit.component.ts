@@ -168,7 +168,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
                   console.log(next);
                   this.notification.success(
                     '',
-                    'Cập nhật lịch Snapshot thành công'
+                    'Điều chỉnh lịch Snapshot thành công'
                   );
                   this.router.navigate([
                     '/app-smart-cloud/schedule/snapshot/list',
@@ -178,7 +178,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
                   console.log(e);
                   this.notification.error(
                     '',
-                    'Cập nhật lịch Snapshot không thành công'
+                    'Điều chỉnh lịch Snapshot không thành công'
                   );
                 },
               });

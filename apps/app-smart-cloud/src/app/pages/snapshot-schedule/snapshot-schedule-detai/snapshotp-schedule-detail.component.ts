@@ -6,7 +6,6 @@ import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'one-portal-detail-schedule-snapshot',

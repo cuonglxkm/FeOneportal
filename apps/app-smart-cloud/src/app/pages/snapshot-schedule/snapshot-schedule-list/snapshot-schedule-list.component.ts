@@ -67,20 +67,20 @@ export class SnapshotScheduleListComponent implements OnInit {
         name,
         volumeName
       )
-      .subscribe(
-        (data) => {
-          this.totalData = data.totalCount;
-          this.listOfData = data.records;
+      .subscribe({
+        next: (next) => {
+          this.totalData = next.totalCount;
+          this.listOfData = next.records;
           this.isLoadingEntities = false;
         },
-        (error) => {
+        error: (error) => {
           this.notification.error(
             'Có lỗi xảy ra',
             'Lấy danh sách lịch Snapshot thất bại'
           );
           this.isLoadingEntities = false;
-        }
-      );
+        },
+      });
   }
 
   constructor(
@@ -95,8 +95,6 @@ export class SnapshotScheduleListComponent implements OnInit {
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
   }
-
-  selectedActionChange(value: any, data: any) {}
 
   navigateToUpdate(id: number) {
     console.log(id);
