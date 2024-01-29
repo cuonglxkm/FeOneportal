@@ -1,4 +1,5 @@
 <page-header [breadcrumb]="breadcrumb"
+             [action]="action"
              [title]="title">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -13,10 +14,22 @@
           Volume
         </a></nz-breadcrumb-item>
     </nz-breadcrumb>
+
+  </ng-template>
+  <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
+    </div>
+    <div>
+      <div nz-col nzSpan="4">
+        <button class="button-edit" style="background-color: #061178"
+                (click)="navigateEditVolume(volumeInfo.id)"
+                nz-button nzType="primary">
+          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
+        </button>
+      </div>
     </div>
   </ng-template>
   <ng-template #title>
@@ -28,13 +41,6 @@
                 [routerLink]="'/app-smart-cloud/volume/detail/' + idVolume"
                 style="margin-right: 10px;"></span>
         Gia hạn Volume
-      </nz-col>
-      <nz-col nzSpan="8" nzOffset="8" style="padding-left: 267px;">
-        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
-                (click)="navigateEditVolume(idVolume)"
-                nz-button nzType="primary">
-          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-        </button>
       </nz-col>
     </nz-row>
   </ng-template>
