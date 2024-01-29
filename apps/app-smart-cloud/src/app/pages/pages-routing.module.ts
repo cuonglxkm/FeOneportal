@@ -77,6 +77,8 @@ import {RenewVolumeComponent} from "./volume/component/renew-volume/renew-volume
 import {ListPackagesBackupComponent} from "./backup-package/list/list-packages-backup.component";
 import {CreatePackageBackupComponent} from "./backup-package/create/create-package-backup.component";
 import {DetailPackageBackupComponent} from "./backup-package/detail/detail-package-backup.component";
+import {EditBackupPackageComponent} from "./backup-package/edit/edit-backup-package.component";
+import {ExtendBackupPackageComponent} from "./backup-package/extend/extend-backup-package.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -332,6 +334,14 @@ const routes: Routes = [
   {
     path: 'backup/packages/create',
     component: CreatePackageBackupComponent
+  },
+  {
+    path: 'backup/packages/edit/:id',
+    component: EditBackupPackageComponent
+  },
+  {
+    path: 'backup/packages/extend/:id',
+    component: ExtendBackupPackageComponent
   }
   ]
 @NgModule({

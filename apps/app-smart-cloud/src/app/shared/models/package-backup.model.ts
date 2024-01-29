@@ -10,6 +10,7 @@ export class PackageBackupModel {
   expirationDate: Date
   totalSize: number
   usedSize: number
+  description: string
 }
 
 export class FormUpdatePackage {

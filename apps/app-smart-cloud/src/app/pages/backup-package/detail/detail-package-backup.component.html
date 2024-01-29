@@ -24,7 +24,7 @@
     <div style="margin-right: 15px;">
       <div nz-col nzSpan="4">
         <button nz-button nzTooltipTitle="Gia hạn" nzTooltipPlacement="bottom" nz-tooltip class="btn-extend"
-                nzSize="default" style="cursor: pointer;">
+                nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
           <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
           Gia hạn
         </button>
@@ -33,7 +33,7 @@
     <div>
       <div nz-col nzSpan="4">
         <button nz-button nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" nz-tooltip class="btn-edit"
-                nzSize="default" style="cursor: pointer;">
+                nzSize="default" style="cursor: pointer;" (click)="navigateToEdit()">
           <span nz-icon nzType="edit" nzTheme="outline"></span>
           Chỉnh sửa
         </button>
@@ -58,8 +58,7 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-card>
-    <h3><b>Thông tin của gói Backup</b></h3>
+  <nz-card [nzTitle]="'Thông tin của gói Backup'">
     <form nz-form nzLayout="vertical">
       <nz-form-item>
         <nz-form-label>
@@ -82,13 +81,15 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label nzFor="description">
+        <nz-form-label>
           <div class="label">
             <span>Mô tả</span>
           </div>
         </nz-form-label>
         <nz-form-control>
-          <textarea nz-input [disabled]="true">
+          <textarea nz-input *ngIf="packageBackupModel.description != undefined" [value]="packageBackupModel.description" [disabled]="true">
+          </textarea>
+          <textarea nz-input *ngIf="packageBackupModel.description == undefined" [disabled]="true">
           </textarea>
         </nz-form-control>
       </nz-form-item>
@@ -101,12 +102,11 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <div>
+          <div style="color:#FC1010;">
             <span>Ngày hết hạn:</span> {{packageBackupModel.expirationDate | date: 'dd/MM/yyyy'}}
           </div>
         </nz-form-label>
       </nz-form-item>
     </form>
-
   </nz-card>
 </nz-content>
