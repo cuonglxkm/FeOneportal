@@ -36,7 +36,7 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'kafka-dashboard',
+  selector: 'one-portal-kafka-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
