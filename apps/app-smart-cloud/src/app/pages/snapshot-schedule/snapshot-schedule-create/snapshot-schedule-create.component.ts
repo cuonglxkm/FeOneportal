@@ -14,6 +14,7 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -21,8 +22,8 @@ import {
   styleUrls: ['./snapshot-schedule-create.component.less'],
 })
 export class SnapshotScheduleCreateComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
+  region: number;
+  project: number;
 
   isLoading: boolean;
   showWarningName: boolean;
@@ -32,11 +33,11 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   userId: number;
   scheduleStartTime: string;
   dateStart: string;
-  descSchedule: string;
-  snapshotMode: string = 'Theo tuần'
+  descSchedule: string = '';
+  snapshotMode: string = 'Theo tuần';
   numberArchivedCopies = 1;
 
-  time: Date = new Date(0, 0, 0, 0, 0, 0);
+  time: Date = new Date();
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 
   form: FormGroup<{
@@ -73,27 +74,24 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   doGetListVolume() {
     this.isLoading = true;
     this.volumeList = [];
-    this.volumeService.getVolumes(this.userId, this.project, this.region,
-        1000,
-        1,
-        null,
-        null
-      )
-      .subscribe(
-        (data) => {
-          data.records.forEach((volume) => {
+    this.volumeService
+      .getVolumes(this.userId, this.project, this.region, 1000, 1, null, null)
+      .subscribe({
+        next: (next) => {
+          next.records.forEach((volume) => {
             this.volumeList.push({ value: volume.id, label: volume.name });
           });
           this.isLoading = false;
+          console.log('list volumes', this.volumeList);
         },
-        (error) => {
+        error: (e) => {
           this.notification.error(
             'Có lỗi xảy ra',
             'Lấy danh sách Volume thất bại'
           );
           this.isLoading = false;
-        }
-      );
+        },
+      });
   }
 
   constructor(
@@ -102,6 +100,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private snapshotService: SnapshotVolumeService,
     private volumeService: VolumeService,
+    private modalService: NzModalService,
     private notification: NzNotificationService
   ) {}
 
@@ -110,41 +109,61 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
   request = new CreateScheduleSnapshotDTO();
   create() {
-    this.isLoading = true;
-    this.request.dayOfWeek = this.dateStart;
-    this.request.daysOfWeek = null;
-    this.request.description = this.descSchedule;
-    this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
-    this.request.mode = 3; //fix cứng chế độ = theo tuần ;
-    this.request.dates = null;
-    this.request.duration = null;
-    this.request.volumeId = this.volumeId;
-    this.request.runtime = new Date().toISOString();
-    this.request.intervalMonth = null;
-    this.request.maxBaxup = 1; // fix cứng số bản
-    this.request.snapshotPacketId = null;
-    this.request.customerId = this.userId;
-    this.request.projectId = this.project;
-    this.request.regionId = this.region;
-    console.log(this.request);
-    this.snapshotService.createSnapshotSchedule(this.request).subscribe(
-      (data) => {
-        if (data != null) {
-          console.log(data);
-          this.isLoading = false;
-          this.notification.success('Success', 'Tạo lịch thành công');
-          this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
-        } else {
-          this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-          this.isLoading = false;
-        }
-      },
-      (error) => {
-        console.log(error);
-        this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-        this.isLoading = false;
-      }
-    );
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Xác nhận tạo lịch Snapshot',
+      nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tạo lịch Snapshot?</p>`,
+      nzFooter: [
+        {
+          label: 'Hủy',
+          type: 'default',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Đồng ý',
+          type: 'primary',
+          onClick: () => {
+            this.isLoading = true;
+            this.request.dayOfWeek = this.dateStart;
+            this.request.daysOfWeek = [];
+            this.request.description = this.descSchedule;
+            this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
+            this.request.mode = 3; //fix cứng chế độ = theo tuần ;
+            this.request.dates = 0;
+            this.request.duration = 0;
+            this.request.volumeId = this.volumeId;
+            this.request.runtime = this.time.toISOString();
+            this.request.intervalMonth = 0;
+            this.request.maxBaxup = 1; // fix cứng số bản
+            this.request.snapshotPacketId = 0;
+            this.request.customerId = this.userId;
+            this.request.projectId = this.project;
+            this.request.regionId = this.region;
+            console.log(this.request);
+            this.snapshotService.createSnapshotSchedule(this.request).subscribe(
+              (data) => {
+                if (data != null) {
+                  console.log(data);
+                  this.isLoading = false;
+                  this.notification.success('Success', 'Tạo lịch thành công');
+                  this.router.navigate([
+                    '/app-smart-cloud/schedule/snapshot/list',
+                  ]);
+                } else {
+                  this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
+                  this.isLoading = false;
+                }
+              },
+              (error) => {
+                console.log(error);
+                this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
+                this.isLoading = false;
+              }
+            );
+            modal.destroy();
+          },
+        },
+      ],
+    });
   }
 
   checkSpecialSnapshotName(str: string): boolean {

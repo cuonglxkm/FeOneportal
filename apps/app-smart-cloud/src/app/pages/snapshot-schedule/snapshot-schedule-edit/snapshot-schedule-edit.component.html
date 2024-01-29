@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Tạo lịch Snapshot'"
+  [title]="'Chỉnh sửa lịch Snapshot'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -13,7 +13,7 @@
           >Lịch Snapshot</a
         >
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo lịch Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Chỉnh sửa lịch Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -38,12 +38,11 @@
           <input
             nz-input
             formControlName="name"
-            [(ngModel)]="request.name"
+            [(ngModel)]="scheduleSnapshot.name"
             id="name"
             placeholder="Nhập tên lịch Snapshot"
             maxlength="64"
             minlength="1"
-            (change)="request.name = request.name.trim()"
           />
           <span class="nameField"
             >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
@@ -66,10 +65,9 @@
       <nz-select
         nzSize="default"
         [nzShowSearch]="true"
-        formControlName="volume"
-        id="volume"
         [nzPlaceHolder]="'-Chọn tên Volume-'"
-        [(ngModel)]="volumeId"
+        [(ngModel)]="scheduleSnapshot.serviceId"
+        [ngModelOptions]="{ standalone: true }"
         style="width: 100%"
       >
         <nz-option
@@ -82,13 +80,7 @@
       <br />
 
       <nz-form-label [nzSm]="6" [nzXs]="24">Chế độ Snapshot</nz-form-label>
-      <input
-        nz-input
-        disabled="true"
-        type="text"
-        [(ngModel)]="snapshotMode"
-        [ngModelOptions]="{ standalone: true }"
-      />
+      <input nz-input placeholder="Theo tuần" disabled="true" type="text" />
       <br />
       <br />
 
@@ -97,7 +89,7 @@
       >
       <nz-time-picker
         style="width: 100%"
-        [(ngModel)]="time"
+        [(ngModel)]="scheduleSnapshot.runtime"
         [ngModelOptions]="{ standalone: true }"
         [nzDefaultOpenValue]="defaultOpenValue"
       ></nz-time-picker>
@@ -113,10 +105,8 @@
       <nz-select
         nzSize="default"
         [nzShowSearch]="true"
-        formControlName="selectedDate"
-        id="selectedDate"
-        [nzPlaceHolder]="'-Chọn ngày-'"
-        [(ngModel)]="dateStart"
+        [(ngModel)]="scheduleSnapshot.daysOfWeek"
+        [ngModelOptions]="{ standalone: true }"
         style="width: 100%"
       >
         <nz-option
@@ -131,13 +121,7 @@
       <nz-form-label [nzSm]="6" [nzXs]="24"
         >Số bản Snapshot lưu trữ</nz-form-label
       >
-      <input
-        nz-input
-        disabled="true"
-        type="text"
-        [(ngModel)]="numberArchivedCopies"
-        [ngModelOptions]="{ standalone: true }"
-      />
+      <input nz-input placeholder="1" disabled="true" type="text" />
       <br />
       <br />
 
@@ -145,8 +129,7 @@
       <textarea
         rows="4"
         nz-input
-        [maxlength]="255"
-        [(ngModel)]="descSchedule"
+        [(ngModel)]="scheduleSnapshot.description"
         [ngModelOptions]="{ standalone: true }"
       ></textarea>
     </nz-spin>
@@ -172,11 +155,11 @@
   </button>
   <button
     [disabled]="!form.valid"
-    (click)="create()"
+    (click)="update()"
     nz-button
     nzType="primary"
     style="border: none"
   >
-    Tạo mới
+    Chỉnh sửa
   </button>
 </div>

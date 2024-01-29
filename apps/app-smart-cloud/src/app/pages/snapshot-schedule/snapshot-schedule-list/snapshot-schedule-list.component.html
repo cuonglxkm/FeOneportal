@@ -129,11 +129,12 @@
       nzShowSizeChanger
       [nzFrontPagination]="false"
       [nzTotal]="totalData"
-      [nzPageSize]="pageSize"
-      [nzPageIndex]="pageNumber"
+      [(nzPageSize)]="pageSize"
+      [(nzPageIndex)]="pageNumber"
+      (nzPageSizeChange)="searchSnapshotScheduleList()"
+      (nzPageIndexChange)="searchSnapshotScheduleList()"
       [nzLoading]="isLoadingEntities"
       [nzScroll]="{ x: '100%', y: '100%' }"
-      (nzQueryParams)="onQueryParamsChange($event)"
     >
       <thead>
       <tr>
@@ -152,8 +153,8 @@
         <td>{{ data.volumeName }}</td>
         <td>{{ data.maxSnapshot }}</td>
         <td>Theo tuần</td>
-        <td *ngIf="data.serviceStatus=='HUY'" style="color: red">Hủy</td>
-        <td>{{ data.nextRuntime | date:'dd/MM/yyyy'}}</td>
+        <td *ngIf="data.status=='ACTIVE'" style="color: #52c41a">Đang hoạt động</td>
+        <td>{{ data.nextRuntime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
         <td nzRight>
           <button
             nz-button
@@ -166,8 +167,8 @@
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
               <li nz-menu-item (click)="navigateToEdit(data.id)">Chỉnh sửa</li>
-              <li nz-menu-item (click)="stopSnapshot()">Tạm dừng</li>
-              
+              <li *ngIf="data.status=='ACTIVE'" nz-menu-item (click)="doPauseSnapshotSchedule(data.id)">Tạm dừng</li>
+              <li *ngIf="data.status=='TAMNGUNG'" nz-menu-item (click)="doResumeSnapshotSchedule(data.id)">Tiếp tục</li>
               <li nz-menu-item (click)="DeleteSnapshot(data.id)">
                 Xóa
               </li>
