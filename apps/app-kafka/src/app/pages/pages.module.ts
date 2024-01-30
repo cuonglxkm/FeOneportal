@@ -12,8 +12,9 @@ import { DetailComponent } from './detail/detail.component';
 import { SummaryServiceComponent } from './detail/summary-service/summary-service.component';
 import { PagesRoutingModule } from './pages-routing.module';
 
-
 import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
+import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
+import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/acl-consumer-group.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,8 @@ import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
     SummaryServiceComponent,
     CredentialsComponent,
     MngtAclComponent,
+    AclTopicComponent,
+    AclConsumerGroupComponent,
   ],
   imports: [
     PagesRoutingModule,
