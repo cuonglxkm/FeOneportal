@@ -33,10 +33,13 @@ export class IpPublicService extends BaseService{
   getTest() : Observable<BaseResponse<IpPublicModel[]>> {
     return this.http.get<BaseResponse<IpPublicModel[]>>("/ip");
   }
-  createIpPublic(IP: any): Observable<HttpResponse<any>>  {
+  createIpPublic(IP: any): Observable<any>  {
     return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
   }
 
+  extendIpPublic(IP: any): Observable<any>  {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+  }
   remove(id: any) :Observable<HttpResponse<any>>  {
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip?id="+ id);
   }
@@ -47,5 +50,12 @@ export class IpPublicService extends BaseService{
 
   getDetailIpPublic(id: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id);
+  }
+
+  getTotalAmount(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
   }
 }

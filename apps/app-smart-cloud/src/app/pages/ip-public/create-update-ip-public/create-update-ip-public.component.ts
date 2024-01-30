@@ -23,12 +23,14 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
-  instanceSelected;
+  instanceSelected: any;
   dateString = new Date();
+  total: any;
 
   form = new FormGroup({
     ipSubnet: new FormControl('', {validators: [Validators.required]}),
     numOfMonth: new FormControl('', {validators: [Validators.required]}),
+    instanceSelected: new FormControl('', {}),
  });
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -70,7 +72,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   createIpPublic(){
     const requestBody = {
       customerId: this.tokenService.get()?.userId,
-      vmToAttachId: this.instanceSelected,
+      vmToAttachId: this.form.controls['instanceSelected'].value,
       regionId: this.regionId,
       projectId: this.projectId,
       networkId: this.form.controls['ipSubnet'].value,
@@ -82,7 +84,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       useIPv6: null,
       vpcId: null,
       oneSMEAddonId: null,
-      serviceType: 0,
+      serviceType: 4,
       serviceInstanceId: 0,
       createDate: "0001-01-01T00:00:00",
       expireDate: "0001-01-01T00:00:00",
@@ -123,15 +125,85 @@ export class CreateUpdateIpPublicComponent implements OnInit{
     }
     this.service.createIpPublic(request)
       .subscribe({
-        next: post => {
-          this.notification.success('Thành công', 'Tạo mới thành công Ip Public')
+        next: data => {
+          if (data.code == '310') {
+            window.location.href = data.data
+          } else {
+            this.notification.success('Thành công', 'Tạo mới thành công Ip Public');
+            this.router.navigate(['/app-smart-cloud/ip-public']);
+          }
         },
         error: e => {
           this.notification.error('Thất bại', 'Tạo mới thất bại Ip Public')
         },
       });
-
-    this.router.navigate(['/app-smart-cloud/ip-public']);
+    // this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 
+  caculator()   {
+
+    let ip = this.form.controls['ipSubnet'].value;
+    let num = this.form.controls['numOfMonth'].value;
+
+    if (ip != null && ip != undefined && ip != '' &&
+      num != null && num != undefined && num != '') {
+      const requestBody = {
+        customerId: this.tokenService.get()?.userId,
+        vmToAttachId: this.form.controls['instanceSelected'].value,
+        regionId: this.regionId,
+        projectId: this.projectId,
+        networkId: this.form.controls['ipSubnet'].value,
+        useIpv6:this.checkIpv6,
+        id: 0,
+        duration: 0,
+        ipAddress: null,
+        offerId: 0,
+        useIPv6: null,
+        vpcId: null,
+        oneSMEAddonId: null,
+        serviceType: 4,
+        serviceInstanceId: 0,
+        createDate: "0001-01-01T00:00:00",
+        expireDate: "0001-01-01T00:00:00",
+        saleDept: null,
+        saleDeptCode: null,
+        contactPersonEmail: null,
+        contactPersonPhone: null,
+        contactPersonName: null,
+        note: null,
+        createDateInContract: null,
+        am: null,
+        amManager: null,
+        isTrial: false,
+        couponCode: null,
+        dhsxkd_SubscriptionId: null,
+        dSubscriptionNumber: null,
+        dSubscriptionType: null,
+        oneSME_SubscriptionId: null,
+        actionType: 0,
+        serviceName: null,
+        typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        userEmail: null,
+        actorEmail: null
+      }
+      const request = {
+        projectId: this.projectId,
+        orderItems: [
+          {
+            orderItemQuantity: 1,
+            specificationString: JSON.stringify(requestBody),
+            specificationType: "ip_create",
+            serviceDuration: this.form.controls['numOfMonth'].value
+          }
+        ]
+      }
+      this.service.getTotalAmount(request).subscribe(
+        data => {
+          this.total = data;
+        }
+      );
+    } else {
+      this.total = undefined;
+    }
+  }
 }
