@@ -13,6 +13,7 @@ import { SummaryServiceComponent } from './detail/summary-service/summary-servic
 import { PagesRoutingModule } from './pages-routing.module';
 
 
+import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { PagesRoutingModule } from './pages-routing.module';
     DashboardComponent,
     SummaryServiceComponent,
     CredentialsComponent,
+    MngtAclComponent,
   ],
   imports: [
     PagesRoutingModule,

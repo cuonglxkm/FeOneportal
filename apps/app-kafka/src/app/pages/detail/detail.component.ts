@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css'],
 })
-export class DetailComponent {}
+export class DetailComponent {
+  selectedIndex = 0;
+}

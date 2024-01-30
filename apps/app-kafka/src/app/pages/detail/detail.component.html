@@ -12,7 +12,7 @@
 
 </page-header>
 
-<nz-tabset>
+<nz-tabset [nzSelectedIndex]="selectedIndex">
     <nz-tab nzTitle="Dashboard">
         <ng-template nz-tab>
             <one-portal-kafka-dashboard></one-portal-kafka-dashboard>
