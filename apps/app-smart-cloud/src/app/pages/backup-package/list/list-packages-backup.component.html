@@ -39,20 +39,28 @@
 </page-header>
 <nz-content>
   <nz-card>
+    <h3>Danh sách gói Backup</h3>
     <nz-row>
-      <nz-col nzSpan="8"><b>Danh sách Backup</b></nz-col>
-      <nz-col nzSpan="8" nzOffset="8" style="display: grid;">
-        <nz-input-group [nzSuffix]="suffixIconSearch">
-          <input nz-input
-                 [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"
-                 [placeholder]="'Tìm kiếm ...'"/>
-        </nz-input-group>
-        <ng-template #suffixIconSearch>
-          <span nz-icon nzType="search"></span>
-        </ng-template>
-      </nz-col>
+      <nz-select [nzPlaceHolder]="'Trạng thái'"
+                 style="width: 150px;"
+                 [ngModel]="selected"
+                 (ngModelChange)="onChangeSelected($event)"
+                 nzShowSearch="false">
+        <nz-option nzValue="ALL" nzLabel="Tất cả trạng thái"></nz-option>
+        <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
+        <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
+      </nz-select>
+      <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px;">
+        <input nz-input
+               [(ngModel)]="value"
+               (input)="onInputChange($event.target['value'])"
+               [placeholder]="'Tìm kiếm'"/>
+      </nz-input-group>
     </nz-row>
+
+    <ng-template #suffixIconSearch>
+      <span nz-icon nzType="search"></span>
+    </ng-template>
     <nz-table #fixedTable
               style="margin-top: 15px;"
               nzShowPagination="false"
@@ -80,9 +88,9 @@
         <td>{{data.totalSize - data.usedSize}} (GB)</td>
         <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
         <td [ngSwitch]="data.status.trim()">
-            <span *ngSwitchCase="'AVAILABLE'" class="available">Đang hoạt động</span>
-            <span *ngSwitchCase="'SUSPENDED'" class="error">Tạm ngưng</span>
-            <span *ngSwitchCase="'DELETEING'" class="error">Đang xóa</span>
+          <span *ngSwitchCase="'AVAILABLE'" class="available">Đang hoạt động</span>
+          <span *ngSwitchCase="'SUSPENDED'" class="error">Tạm ngưng</span>
+          <span *ngSwitchCase="'DELETEING'" class="error">Đang xóa</span>
         </td>
         <td>
           <button nz-button
@@ -93,8 +101,8 @@
           </button>
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="navigateToEdit(data.id)" >Chỉnh sửa</li>
-              <li nz-menu-item (click)="showDelete()" >Xóa</li>
+              <li nz-menu-item (click)="navigateToEdit(data.id)">Chỉnh sửa</li>
+              <li nz-menu-item (click)="showDelete()">Xóa</li>
               <one-portal-delete-backup-package [isVisible]="isVisibleDelete"
                                                 [id]="data.id"
                                                 [region]="region"

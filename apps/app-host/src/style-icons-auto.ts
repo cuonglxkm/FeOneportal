@@ -56,7 +56,8 @@ import {
   UserOutline,
   WeiboCircleOutline,
   CheckOutline,
-  CloseOutline
+  CloseOutline,
+  WalletOutline
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS_AUTO = [
@@ -112,5 +113,6 @@ export const ICONS_AUTO = [
   ReloadOutline,
   PlusCircleOutline,
   CheckOutline,
-  CloseOutline
+  CloseOutline,
+  WalletOutline
 ];

@@ -32,6 +32,7 @@ export class ListPackagesBackupComponent implements OnInit {
   isVisibleDelete: boolean = false
   isLoadingDelete: boolean = false
 
+  selected: any = 'ALL'
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -67,6 +68,9 @@ export class ListPackagesBackupComponent implements OnInit {
     this.getListPackageBackups()
   }
 
+  onChangeSelected(value) {
+    this.selected = value
+  }
 
   getListPackageBackups() {
     this.isLoading = true

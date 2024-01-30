@@ -193,8 +193,8 @@ export class CreatePackageBackupComponent implements OnInit{
   ngOnInit() {
     this.backupPackageDate.createdDate = new Date()
     this.backupPackageDate.expiredDate = new Date(new Date().setDate(this.backupPackageDate.createdDate.getDate() + 30))
-    console.log('created date', this.backupPackageDate.createdDate?.toISOString())
-    console.log('expired date', this.backupPackageDate.expiredDate?.toISOString())
+    console.log('time', this.validateForm.controls.time.value)
+    console.log('storage', this.validateForm.controls.storage.value)
     this.getTotalAmount()
   }
 }

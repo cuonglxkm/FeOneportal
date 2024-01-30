@@ -10,7 +10,6 @@ import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
-import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {PopupAddVolumeComponent} from '../popup-volume/popup-add-volume.component';
 import {PopupCancelVolumeComponent} from '../popup-volume/popup-cancel-volume.component';
 import {PopupDeleteVolumeComponent} from '../popup-volume/popup-delete-volume.component';
@@ -206,15 +205,24 @@ export class VolumeComponent implements OnInit {
             label: 'Đồng ý',
             type: 'primary',
             onClick: () => {
+              this.isLoading = true
+              this.volumeService.deleteVolume(volume.id).subscribe(data => {
+                this.isLoading = false
+                console.log(data)
+                if(data == true) {
+                  this.notification.success('Thành công', `Xóa volume ` + volume.name + ' thành công');
+                } else {
+                  this.notification.error('Thất bại', `Xóa volume ` + volume.name + ' thất bại');
+                }
 
-              let deleteVolume = this.doDeleteVolume(volume.id);
-              if (deleteVolume) {
-                this.notification.success('Thành công', `Xóa volume ` + volume.name + 'thành công');
                 this.getListVolumes();
-              } else {
-                this.notification.error('Thất bại', `Xóa volume ` + volume.name + 'thất bại');
-                console.log('Delete volume Fail: ' + volume.name);
-              }
+              })
+              // if (deleteVolume) {
+              //
+              // } else {
+              //   this.notification.error('Thất bại', `Xóa volume ` + volume.name + ' thất bại');
+              //   console.log('Delete volume Fail: ' + volume.name);
+              // }
               modal.destroy();
             }
           }
@@ -239,8 +247,9 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
-  async doDeleteVolume(volumeId: number): Promise<any> {
-    let result = this.volumeService.deleteVolume(volumeId).toPromise();
+  doDeleteVolume(volumeId: number) {
+    let result = this.volumeService.deleteVolume(volumeId)
+    console.log('result', result)
     return !!result;
   }
 

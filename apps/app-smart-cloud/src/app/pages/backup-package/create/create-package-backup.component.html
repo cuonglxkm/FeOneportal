@@ -33,7 +33,7 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card>
-          <h3><b>Thông tin của gói Backup</b></h3>
+          <h3>Thông tin của gói Backup</h3>
           <nz-form-item>
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
@@ -47,7 +47,9 @@
                      [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
+                  Việt
+                </ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
               </ng-template>
             </nz-form-control>
@@ -59,14 +61,15 @@
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
               </div>
             </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl" >
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
               <nz-input-number formControlName="storage"
                                id="storage"
                                style="width: 100%;"
                                [nzMin]="1"
                                [nzStep]="1"/>
               <ng-template #storageErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Backup</ng-container>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Backup
+                </ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -103,7 +106,7 @@
                              id="time"
                              (ngModelChange)="onTimeSelected($event)"
                              [nzShowSearch]="false">
-                    <nz-option *ngFor="let i of time" [nzLabel]="i.label" [nzValue]="i.value" />
+                    <nz-option *ngFor="let i of time" [nzLabel]="i.label" [nzValue]="i.value"/>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
@@ -115,42 +118,42 @@
           <nz-form-item>
             <nz-form-label nzFor="time">
               <div class="label">
-                <span style="color: rgba(252, 16, 16, 1);">Ngày hết hạn: {{backupPackageDate.expiredDate | date: 'dd/MM/yyyy'}}</span>
+                <span
+                  style="color: rgba(252, 16, 16, 1);">Ngày hết hạn: {{backupPackageDate.expiredDate | date: 'dd/MM/yyyy'}}</span>
               </div>
             </nz-form-label>
           </nz-form-item>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card [nzTitle]="'Thành tiền'">
-          <nz-table>
-            <tr>
-              <td>Chi phí gói backup (1 tháng)</td>
-              <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>
-              <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.totalAmount?.amount}} {{orderItem?.totalAmount?.currency}}</td>
-            </tr>
-            <tr>
-              <td>Thành tiền (Đã bao gồm 10% VAT)</td>
-              <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>
-              <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</td>
-            </tr>
-          </nz-table>
-          <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 24px; margin-bottom: 0;">
-            <nz-space nzSize="middle">
-              <button *nzSpaceItem nz-button nzType="default" class="button-back" (click)="goBack()">Quay lại</button>
-              <nz-form-control *nzSpaceItem>
-                <button nz-button
-                        nzType="primary"
-                        [nzLoading]="isLoading"
-                        class="button-create"
-                        [disabled]="!validateForm.valid">Tạo mới</button>
-              </nz-form-control>
-            </nz-space>
-          </nz-form-item>
+        <nz-card>
+          <h3>Thành tiền</h3>
+          <div class="total-amount">
+            <div class="amount">Chi phí gói Backup:</div>
+            <div style="flex-direction: column; justify-content: flex-start; align-items: flex-end; display: inline-flex">
+              <div class="unit-price">1.000.000 VNĐ</div>
+              <div class="unit">VNĐ/tháng</div>
+            </div>
+          </div>
+          <div style="width: 100%; height: 100%; padding: 9px 12px; background: #CCE9FF; border-radius: 8px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+            <div style="width: 262px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
+              <div style="color: #333333; line-height: 24px; letter-spacing: 0.10px; word-wrap: break-word">Thành tiền </div>
+              <div style="color: #4C4F67; line-height: 16.80px; letter-spacing: 0.10px; word-wrap: break-word"><i>( Đã bao gồm 10% VAT)</i></div>
+            </div>
+            <div style="flex-direction: column; justify-content: flex-start; align-items: flex-end; display: inline-flex">
+              <div style="color: #EA3829; line-height: 24px; letter-spacing: 0.10px; word-wrap: break-word">2.500.000 VNĐ</div>
+              <div style="color: #4C4F67; line-height: 20px; letter-spacing: 0.10px; word-wrap: break-word">VNĐ/tháng</div>
+            </div>
+          </div>
+          <div class="btn-create">
+            <div style="color: white;line-height: 24px; word-wrap: break-word">
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              Khởi tạo
+            </div>
+          </div>
         </nz-card>
       </nz-col>
     </nz-row>
-
   </form>
 
 </nz-content>
