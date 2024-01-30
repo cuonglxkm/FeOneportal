@@ -55,8 +55,6 @@ export class SummaryServiceComponent implements OnInit {
   ngOnInit(): void {
     this.getInfoConnection();
     this.getBrokerConfigOfService();
-
-    return;
   }
 
   getInfoConnection() {

@@ -14,8 +14,8 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutBlankComponent,
-    canActivate: [startPageGuard, authSimpleCanActivate],
-    canActivateChild: [authSimpleCanActivateChild],
+    // canActivate: [startPageGuard, authSimpleCanActivate],
+    // canActivateChild: [authSimpleCanActivateChild],
     data: {},
     children: [
       {path: '', redirectTo: 'pages', pathMatch: 'full'},

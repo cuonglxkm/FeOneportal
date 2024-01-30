@@ -20,7 +20,7 @@
     </nz-tab>
     <nz-tab nzTitle="Tổng quan">
         <ng-template nz-tab>
-            <one-portal-summary-service></one-portal-summary-service>
+            <one-portal-summary-service serviceOrderCode="kafka-s1hnuicj7u7g" [ram]="4" [cpu]="4"></one-portal-summary-service>
         </ng-template>
     </nz-tab>
     <nz-tab nzTitle="Topic">
@@ -31,6 +31,11 @@
     <nz-tab nzTitle="Consumer Group">
         <ng-template nz-tab>
             <span>Coming soon!</span>
+        </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Tài khoản">
+        <ng-template nz-tab>
+            <one-portal-credentials serviceOrderCode="kafka-s1hnuicj7u7g"></one-portal-credentials>
         </ng-template>
     </nz-tab>
     <nz-tab nzTitle="Phân quyền (ACLs)">
@@ -49,3 +54,4 @@
         </ng-template>
     </nz-tab>
 </nz-tabset>
+
