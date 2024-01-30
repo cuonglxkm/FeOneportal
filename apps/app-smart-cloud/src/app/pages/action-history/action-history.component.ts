@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActionHistoryModel } from 'src/app/shared/models/action-history.model';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { ActionHistoryService } from 'src/app/shared/services/action-history.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 @Component({
   selector: 'one-portal-action-history',
   templateUrl: './action-history.component.html',
@@ -26,41 +25,10 @@ export class ActionHistoryComponent implements OnInit {
   actionData = ['Tất cả', 'Tạo mới', 'Sửa', 'Xóa'];
   constructor(
     private service: ActionHistoryService,
-    private cdr: ChangeDetectorRef,
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.breakpoints[Breakpoints.XSmall]) {
-        // Màn hình cỡ nhỏ
-        this.tableHeight = '120px';
-      } else if (result.breakpoints[Breakpoints.Small]) {
-        // Màn hình cỡ nhỏ - trung bình
-        this.tableHeight = '250px';
-      } else if (result.breakpoints[Breakpoints.Medium]) {
-        // Màn hình trung bình
-        this.tableHeight = '300px';
-      } else if (result.breakpoints[Breakpoints.Large]) {
-        // Màn hình lớn
-        this.tableHeight = '500px';
-      } else if (result.breakpoints[Breakpoints.XLarge]) {
-        // Màn hình rất lớn
-        this.tableHeight = '600px';
-      }
-
-      // Cập nhật chiều cao của card bằng Renderer2
-      this.renderer.setStyle(this.el.nativeElement, 'height', this.tableHeight);
-    });
-
     let currentDate = new Date();
     this.fromDate = currentDate.toISOString().substring(0, 10);
     this.toDate = currentDate.toISOString().substring(0, 10);
