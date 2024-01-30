@@ -51,22 +51,81 @@ export class DashboardComponent implements OnInit {
   // Tạo Subject để đánh dấu khi có lỗi
   private unsubscribe$ = new Subject<void>();
 
-  serviceOrderCode: string = 'kafka-s1hnuicj7u7g';
+  serviceOrderCode = 'kafka-s1hnuicj7u7g';
   healthCheckData: HealthCheckModel = new HealthCheckModel();
   byteInData: ChartData = new ChartData();
   byteOutData: ChartData = new ChartData();
   messageRateData: ChartData = new ChartData();
   storageData: ChartData = new ChartData();
 
-  previousTimeMins: number = 5;
-  numPoints: number = 15;
+  previousTimeMins = 5;
+  numPoints = 15;
 
-  messageRateQuery: string = 'msg_rate';
-  byteInQuery: string = 'byte_in';
-  byteOutQuery: string = 'byte_out';
-  storageQuery: string = 'storage';
+  messageRateQuery = 'msg_rate';
+  byteInQuery = 'byte_in';
+  byteOutQuery = 'byte_out';
+  storageQuery = 'storage';
 
-  unitStorage: string = 'MB';
+  isHealth = 1;
+  isHealthMsg = 'Test';
+  clusterHealth = 1;
+  clusterUnHealth = 0;
+  clusterWarning = 2;
+
+  listUnit = [
+    {
+      value: 'Byte',
+      label: 'Byte'
+    },
+    {
+      value: 'KB',
+      label: 'KB'
+    },
+    {
+      value: 'MB',
+      label: 'MB'
+    },
+    {
+      value: 'GB',
+      label: 'GB'
+    },
+  ]
+  unitStorage = 'MB';
+
+  listRangeTime = [
+    {
+      value: 5,
+      label: '5 phút trước'
+    },
+    {
+      value: 15,
+      label: '15 phút trước'
+    },
+    {
+      value: 30,
+      label: '30 phút trước'
+    },
+    {
+      value: 60,
+      label: '1 giờ trước'
+    },
+    {
+      value: 240,
+      label: '4 giờ trước'
+    },
+    {
+      value: 480,
+      label: '8 giờ trước'
+    },
+    {
+      value: 720,
+      label: '12 giờ trước'
+    },
+    {
+      value: 1440,
+      label: '24 giờ trước'
+    }
+  ]
 
   constructor(
     private dashBoardService: DashBoardService,
@@ -81,6 +140,29 @@ export class DashboardComponent implements OnInit {
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
 
 
+  }
+
+  onChangeUnitStorage() {
+    this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
+  }
+
+  onChangeTime() {
+    this.getInfo4Chart();
+  }
+
+  getInfo4Chart() {
+    if (this.previousTimeMins <= 5) {
+      this.numPoints = 15;
+    } else if (this.previousTimeMins > 5 && this.previousTimeMins <= 60) {
+      this.numPoints = 30;
+    } else if (this.previousTimeMins > 60 && this.previousTimeMins <= 240) {
+      this.numPoints = 60;
+    } else this.numPoints = 80;
+
+    this.getMessageRateChart(this.serviceOrderCode, this.previousTimeMins, this.messageRateQuery, this.numPoints);
+    this.getByteInChart(this.serviceOrderCode, this.previousTimeMins, this.byteInQuery, this.numPoints);
+    this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
+    this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
   }
 
   getCheckHealthChart(serviceOrderCode: string, fromTime: number, toTime: number) {
@@ -99,7 +181,7 @@ export class DashboardComponent implements OnInit {
   }
 
   setDataHealthCheckChart() {
-    let unCheckArr = this.healthCheckData.unCheck.map((e) => [e[0], null]);
+    const unCheckArr = this.healthCheckData.unCheck.map((e) => [e[0], null]);
     this.chartHealthCheck = {
       series: [
         {
@@ -177,9 +259,8 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  setDataChart(chartData: ChartData, seriesName: string, titleName: string, yaxisTitle: string): Partial<ChartOptions> {
-    let chartOptions: Partial<ChartOptions>;
-    chartOptions = {
+  setDataChart(chartData: ChartData, seriesName: string, yaxisTitle: string): Partial<ChartOptions> {
+    const chartOptions: Partial<ChartOptions> = {
       series: [
         {
           name: seriesName,
@@ -212,10 +293,6 @@ export class DashboardComponent implements OnInit {
           opacityTo: 0,
           stops: [0, 90, 100]
         },
-      },
-      title: {
-        text: titleName,
-        align: "center"
       },
       grid: {
         xaxis: {
@@ -278,7 +355,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteInData = res.data;
           if (this.byteInData) {
-            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Producers', 'Base Byte In (B/s)',)
+            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Base Byte In (B/s)',)
           }
         } else {
           this.unsubscribe$.next();
@@ -293,7 +370,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteOutData = res.data;
           if (this.byteOutData) {
-            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Consumers', 'Base Byte Out (B/s)');
+            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Base Byte Out (B/s)');
           }
         } else {
           this.unsubscribe$.next();
@@ -308,7 +385,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.messageRateData = res.data;
           if (this.messageRateData) {
-            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'Message', 'Message rate/s');
+            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'Message rate/s');
           }
         } else {
           this.unsubscribe$.next();
@@ -323,7 +400,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.storageData = res.data;
           if (this.storageData) {
-            this.chartStorage = this.setDataChart(this.storageData, this.unitStorage, 'Storage', this.unitStorage)
+            this.chartStorage = this.setDataChart(this.storageData, this.unitStorage, this.unitStorage)
           }
         } else {
           this.unsubscribe$.next();

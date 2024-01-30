@@ -1,0 +1,76 @@
+.div-check {
+    border: 1px solid #35d135;
+    text-align: center;
+    box-shadow: 3px 4px #8eb2d9;
+    border-radius: 2px;
+    background-image: linear-gradient(to right, #2eb82e, #5cd65c);
+}
+
+.div-unhealth {
+    border: 1px solid #f27573;
+    text-align: center;
+    box-shadow: 3px 4px #8eb2d9;
+    border-radius: 2px;
+    background-image: linear-gradient(to right, #ef5350, #f27573);
+}
+
+.div-warning {
+    border: 1px solid #ffb84d;
+    text-align: center;
+    box-shadow: 3px 4px #8eb2d9;
+    border-radius: 2px;
+    background-image: linear-gradient(to right, #ff9800, #ffb84d);
+}
+
+.text-health {
+    color: #ffffff;
+    font-weight: 600;
+    width: 100%;
+    font-size: 16px;
+}
+
+.text-check {
+    color: #ffffff;
+    font-weight: 700;
+    width: 100%;
+    font-size: 24px;
+}
+
+.sum-info {
+    border: 1px solid #1363B9;
+    text-align: center;
+    box-shadow: 3px 4px #8eb2d9;
+    border-radius: 2px;
+}
+
+.sum-value {
+    color: #308ef3;
+    font-weight: 700;
+    width: 100%;
+    font-size: 24px;
+}
+
+.sum-offline {
+    color: #ff0000;
+    font-weight: 700;
+    width: 100%;
+}
+
+.sum-lbl {
+    font-weight: 600;
+    width: 100%;
+    font-size: 16px;
+}
+
+.general {
+    background: #ffffff;
+    margin-bottom: 16px;
+}
+
+.tooltip-health {
+    font-size: 10px !important;
+}
+
+::ng-deep .ant-card-head-title {
+    min-height: 64px;
+}
