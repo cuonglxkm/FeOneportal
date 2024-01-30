@@ -19,30 +19,30 @@
       <div nz-col nzSpan="11">
         <nz-form-label nzRequired>Chọn dải</nz-form-label>
         <nz-input-group nzCompact>
-          <nz-select style="width: 100%" nzPlaceHolder="--Chọn dải IP--" formControlName="ipSubnet">
-            <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.networkId" />
+          <nz-select style="width: 100%" nzPlaceHolder="--Chọn dải IP--" formControlName="ipSubnet" (nzOpenChange)="caculator()">
+            <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.networkId"/>
           </nz-select>
         </nz-input-group>
       </div>
       <div nz-col nzSpan="12" style="margin-left: 15px">
         <nz-form-label>Chọn máy ảo</nz-form-label>
         <nz-input-group nzCompact>
-          <nz-select [nzAllowClear]="true" [(ngModel)]="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--">
-            <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id" />
+          <nz-select [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--" (nzOpenChange)="caculator()">
+            <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
           </nz-select>
         </nz-input-group>
       </div>
     </div>
     <div *ngIf="checkIpv6 !== null">
       <nz-form-item>
-        <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }">IPv6</label>
+        <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }" (ngModelChange)="caculator()">IPv6</label>
       </nz-form-item>
     </div>
     <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
     <nz-input-group nzCompact>
       <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn thời gian sử dụng--"
                  style="width: 95%"
-                 formControlName="numOfMonth" >
+                 formControlName="numOfMonth" (nzOpenChange)="caculator()">
         <nz-option nzValue="1" nzLabel="1"></nz-option>
         <nz-option nzValue="3" nzLabel="3"></nz-option>
         <nz-option nzValue="6" nzLabel="6"></nz-option>
@@ -55,13 +55,13 @@
   <nz-card nzTitle="Thành tiền" nzBorderless='false'  [nzExtra]="extraTemplate">
     <div nz-row class="mb-md">
       <div nz-col nzSpan="12">
-        <p style="margin-top: 10px">Chi phí Ip Public ( {{this.form.controls['numOfMonth'].value}} tháng )</p>
-        <p style="margin-top: 10px">Thành tiền ( Đã bao gồm 10% VAT )</p>
+        <p style="margin-top: 10px">Chi phí IP Public ( {{this.form.controls['numOfMonth'].value}} tháng )</p>
+        <p style="margin-top: 10px">Thành tiền ( Đã bao gồm VAT )</p>
       </div>
       <div nz-col nzSpan="12">
         <div class="text-right">
-          <p style="margin-top: 10px">1.000.000 VNĐ</p>
-          <p style="margin-top: 10px">1.000.000 VNĐ</p>
+          <p *ngIf="total != undefined" style="margin-top: 10px">{{total.data.totalAmount.amount.toLocaleString()}} VNĐ</p>
+          <p *ngIf="total != undefined" style="margin-top: 10px">{{total.data.totalPayment.amount.toLocaleString()}} VNĐ</p>
         </div>
       </div>
     </div>
