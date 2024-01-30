@@ -12,8 +12,8 @@ import { DetailComponent } from './detail/detail.component';
 import { SummaryServiceComponent } from './detail/summary-service/summary-service.component';
 import { PagesRoutingModule } from './pages-routing.module';
 
-
 import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
+import { CreateCredentialComponent } from './detail/credentials/create-credential/create-credential.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +22,7 @@ import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
     SummaryServiceComponent,
     CredentialsComponent,
     MngtAclComponent,
+    CreateCredentialComponent,
   ],
   imports: [
     PagesRoutingModule,
