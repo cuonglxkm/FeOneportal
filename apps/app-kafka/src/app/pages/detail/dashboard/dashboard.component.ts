@@ -16,8 +16,9 @@ import {
 } from 'ng-apexcharts';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { Subject, takeUntil } from 'rxjs';
-import { ChartData } from '../../../models/chart-data.model';
-import { HealthCheckModel } from '../../../models/health-check.model';
+
+import { ChartData } from '../../../core/models/chart-data.model';
+import { HealthCheckModel } from '../../../core/models/health-check.model';
 import { DashBoardService } from '../../../services/dashboard.service';
 
 export type ChartOptions = {
@@ -138,8 +139,6 @@ export class DashboardComponent implements OnInit {
     this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
     this.getMessageRateChart(this.serviceOrderCode, this.previousTimeMins, this.messageRateQuery, this.numPoints);
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
-
-
   }
 
   onChangeUnitStorage() {
