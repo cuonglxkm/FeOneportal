@@ -66,7 +66,7 @@
 <nz-content>
   <div class="search-volume" *ngIf="!isBlankVolume; else elsePage">
     <nz-table #fixedTable
-              [nzScroll]="{ x: '1000px', y: '450px' }"
+              [nzScroll]="{ x: '100%', y: '55vh' }"
               [nzData]="response?.records"
               nzShowSizeChanger
               [nzFrontPagination]="false"

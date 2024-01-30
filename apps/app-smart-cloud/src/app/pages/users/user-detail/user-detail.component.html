@@ -297,6 +297,7 @@
       <nz-table
         #rowSelectionTable
         nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
         [nzFrontPagination]="false"
         [nzData]="listOfGroups"
         (nzCurrentPageDataChange)="onCurrentPageDataChangeGroup($event)"

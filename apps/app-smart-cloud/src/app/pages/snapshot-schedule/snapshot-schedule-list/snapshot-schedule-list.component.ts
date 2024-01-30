@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { RegionModel } from '../../../shared/models/region.model';
 import { ProjectModel } from '../../../shared/models/project.model';
 import { Router } from '@angular/router';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
