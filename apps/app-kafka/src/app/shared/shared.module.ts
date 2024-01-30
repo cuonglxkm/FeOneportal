@@ -1,22 +1,22 @@
-import {CommonModule} from '@angular/common';
-import {NgModule, Type} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-import {DelonACLModule} from '@delon/acl';
-import {DelonFormModule} from '@delon/form';
-import {AlainThemeModule} from '@delon/theme';
+import { CommonModule } from '@angular/common';
+import { NgModule, Type } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { DelonACLModule } from '@delon/acl';
+import { DelonFormModule } from '@delon/form';
+import { AlainThemeModule } from '@delon/theme';
 
-import {SHARED_DELON_MODULES} from './shared-delon.module';
-import {SHARED_ZORRO_MODULES} from './shared-zorro.module';
+import { IconDefinition } from '@ant-design/icons-angular';
 import * as AllIcons from '@ant-design/icons-angular/icons';
-import {NZ_ICONS} from 'ng-zorro-antd/icon';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { SHARED_DELON_MODULES } from './shared-delon.module';
+import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
 
 const antDesignIcons = AllIcons as {
-    [key: string]: any;
-};
-const icons: any[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
-
+    [key: string]: IconDefinition;
+  };
+  const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -42,7 +42,8 @@ const DIRECTIVES: Array<Type<any>> = [];
         ...SHARED_DELON_MODULES,
         ...SHARED_ZORRO_MODULES,
         // third libs
-        ...THIRDMODULES
+        ...THIRDMODULES,
+        NzIconModule.forChild(icons)
     ],
     declarations: [
         // your components
@@ -63,9 +64,10 @@ const DIRECTIVES: Array<Type<any>> = [];
         ...THIRDMODULES,
         // your components
         ...COMPONENTS,
-        ...DIRECTIVES
+        ...DIRECTIVES,
+        NzIconModule
     ],
-    providers: [{provide: NZ_ICONS, useValue: icons}]
+    providers: []
 })
 export class SharedModule {
 }
