@@ -15,6 +15,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
 import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
 import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/acl-consumer-group.component';
+import { CreateCredentialComponent } from './detail/credentials/create-credential/create-credential.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/
     MngtAclComponent,
     AclTopicComponent,
     AclConsumerGroupComponent,
+    CreateCredentialComponent,
   ],
   imports: [
     PagesRoutingModule,

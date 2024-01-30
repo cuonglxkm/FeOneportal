@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { filter, map } from 'rxjs/operators';
 import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
 import { KafkaCredential } from '../../../core/models/kafka-credential.model';
+import { camelizeKeys } from 'humps';
 
 @Component({
   selector: 'one-portal-credentials',
@@ -11,6 +12,9 @@ import { KafkaCredential } from '../../../core/models/kafka-credential.model';
 export class CredentialsComponent implements OnInit {
   @Input() serviceOrderCode: string;
 
+  // 0: list, 1: create
+  tabStatus: number;
+
   stringSearch: string;
   page: number;
   size: number;
@@ -18,6 +22,8 @@ export class CredentialsComponent implements OnInit {
   credentials: KafkaCredential[];
 
   constructor(private kafkaCredentialService: KafkaCredentialsService) {
+    this.tabStatus = 0;
+    
     this.stringSearch = '';
     this.page = 1;
     this.size = 10;
@@ -49,8 +55,8 @@ export class CredentialsComponent implements OnInit {
     this.getCredentials();
   }
 
-  createForm() {
-    //
+  changeTabStatus(tab: number) {
+    this.tabStatus = tab;
   }
 
   getCredentials() {
@@ -68,7 +74,7 @@ export class CredentialsComponent implements OnInit {
       .subscribe((data) => {
         this.total = data.totals;
         this.size = data.size;
-        this.credentials = data.results;
+        this.credentials = camelizeKeys(data.results);
       });
   }
 }
