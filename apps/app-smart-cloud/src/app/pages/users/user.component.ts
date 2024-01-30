@@ -20,8 +20,6 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserComponent implements OnInit {
-  regionId: number;
-  projectId: number;
   listOfCurrentPageData: User[] = [];
   pageIndex = 1;
   pageSize = 10;
@@ -139,14 +137,6 @@ export class UserComponent implements OnInit {
 
   changeSearch(e: any): void {
     this.searchParam = e;
-  }
-
-  onRegionChange(region: RegionModel) {
-    this.regionId = region.regionId;
-  }
-
-  onProjectChange(project: ProjectModel) {
-    this.projectId = project.id;
   }
 
   onCurrentPageDataChange(listOfCurrentPageData: User[]): void {

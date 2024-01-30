@@ -17,10 +17,9 @@
 @import './styles/index';
 @import './styles/theme';
 @import 'antd-css-utilities/utility.min.css';
-@import "~jsoneditor/dist/jsoneditor.min.css";
+@import '~jsoneditor/dist/jsoneditor.min.css';
 
 @alain-default-header-hg: 60px;
-
 
 ::ng-deep .page-header {
   position: relative;
@@ -36,4 +35,45 @@
 
 .alain-default__aside-inner {
   overflow: hidden scroll;
+}
+
+.table-title {
+  color: #333;
+  /* Heading/18px - Bold */
+  font-family: Inter;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 36px; /* 200% */
+  letter-spacing: 0.1px;
+}
+
+.button-text-primary {
+  color: var(--Button-bg_default, #fff);
+  /* Body/16px/Medium */
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+}
+
+.button-text-default {
+  /* Body/16px/Medium */
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+}
+
+.button-custom {
+  color: #0066b0;
+  border-color: #0066b0;
+  background-color: #fff;
+
+  &:hover {
+    color: #005999;
+    border-color: #005999;
+  }
 }
