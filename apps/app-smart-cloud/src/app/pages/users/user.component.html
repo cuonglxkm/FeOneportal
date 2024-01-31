@@ -37,8 +37,9 @@
       [nzXXl]="12"
     >
       <nz-input-group
-        style="margin-right: 8px; width: 50%; border-radius: 4px; height: 38px;"
+        style="margin-right: 8px; width: 50%; border-radius: 4px"
         [nzSuffix]="suffixIconSearch"
+        nzSize="large"
       >
         <input
           name="name"
@@ -63,19 +64,30 @@
         nz-button
         style="color: var(--Primary-1, #0066b3)"
         (click)="reloadTable()"
+        nzSize="large"
       >
-        <img src="assets/imgs/refresh.svg" alt="" />
+        <img style="margin-top: -4px;" src="assets/imgs/refresh.svg" alt="" />
       </button>
-      <button class="button-custom" nz-button (click)="showModal()">
+      <button
+        class="button-custom"
+        nz-button
+        (click)="showModal()"
+        nzSize="large"
+      >
         <img
-          style="padding-right: 10px;"
+          style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/delete.svg"
         />
         <span class="button-text-default">Xóa</span>
       </button>
-      <button nz-button nzType="primary" (click)="navigateToCreate()">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="navigateToCreate()"
+        nzSize="large"
+      >
         <img
-          style="padding-right: 10px;"
+          style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/add-circle.svg"
           alt=""
         />
@@ -128,7 +140,7 @@
             >{{ item.userName }}</a
           >
         </td>
-        <td style="color: #248FCC;">{{ item.userGroups.length }}</td>
+        <td style="color: #248fcc">{{ item.userGroups.length }}</td>
         <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>
