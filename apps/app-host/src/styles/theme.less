@@ -33,7 +33,9 @@
 }
 
 .ant-btn-primary {
-  background-color: #0066B0;
+  background-color: #0066b0;
+  border-radius: 4px;
+  height: 40px;
 }
 
 .ant-btn-primary:hover,
@@ -41,12 +43,12 @@
   color: #fff;
   border-color: #005999;
   background: #005999;
+  border-radius: 4px;
 }
 
 .page-header__title {
   color: var(--Primary-2, #0074cc);
   /* Heading/24px - Bold */
-  font-family: Inter;
   font-size: 24px;
   font-style: normal;
   font-weight: 700;
@@ -54,10 +56,49 @@
   letter-spacing: 0.1px;
 }
 
-.ant-breadcrumb>nz-breadcrumb-item:last-child {
-  color: var(--Primary-2, #0074CC);
+.ant-breadcrumb > nz-breadcrumb-item:last-child {
+  color: var(--Primary-2, #0074cc);
 }
 
-.ant-breadcrumb>nz-breadcrumb-item:hover a{
-  color: var(--Primary-2, #0074CC);
+.ant-breadcrumb > nz-breadcrumb-item:hover a {
+  color: var(--Primary-2, #0074cc);
+}
+
+.ant-table-thead > tr > th {
+  position: relative;
+  color: var(--Dark, #2b2d3b);
+  /* Body/16px - Bold */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.1px;
+  text-align: left;
+  background: #cce9ff;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.3s ease;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0;
+  color: var(--Dark, #2b2d3b);
+  /* Body/16px - Regular */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.1px;
+  transition: background 0.3s;
+}
+
+a {
+  color: #248fcc;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  -webkit-text-decoration-skip: objects;
+  &:hover {
+    color: #005999;
+  }
 }
