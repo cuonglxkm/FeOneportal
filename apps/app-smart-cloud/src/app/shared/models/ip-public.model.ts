@@ -7,6 +7,7 @@ export class IpPublicModel {
   region?: number;
   regionText?: string;
   createDate?: Date;
+  expiredDate?: Date;
   status?: number;
   statusName?: number;
   cloudIdentity?: number;

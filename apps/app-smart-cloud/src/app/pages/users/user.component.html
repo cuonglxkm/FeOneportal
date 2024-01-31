@@ -37,7 +37,7 @@
       [nzXXl]="12"
     >
       <nz-input-group
-        style="margin-right: 8px; width: 50%"
+        style="margin-right: 8px; width: 50%; border-radius: 4px; height: 38px;"
         [nzSuffix]="suffixIconSearch"
       >
         <input
@@ -49,13 +49,13 @@
         />
       </nz-input-group>
       <ng-template #suffixIconSearch>
-        <span
-          nz-icon
-          nzType="search"
-          style="color: var(--Primary-1, #0066b3); cursor: pointer"
+        <img
+          src="assets/imgs/search.svg"
+          alt=""
+          style="cursor: pointer"
           nz-tooltip="Tìm kiếm"
           (click)="getData()"
-        ></span>
+        />
       </ng-template>
 
       <button
@@ -64,20 +64,21 @@
         style="color: var(--Primary-1, #0066b3)"
         (click)="reloadTable()"
       >
-        <i nz-icon nzType="reload"></i>
+        <img src="assets/imgs/refresh.svg" alt="" />
       </button>
       <button class="button-custom" nz-button (click)="showModal()">
-        <i nz-icon nzType="delete" style="margin-right: 10px"></i>
+        <img
+          style="padding-right: 10px;"
+          src="assets/imgs/delete.svg"
+        />
         <span class="button-text-default">Xóa</span>
       </button>
       <button nz-button nzType="primary" (click)="navigateToCreate()">
-        <span
-          nz-icon
-          nzType="plus"
-          nzTheme="outline"
-          style="margin-right: 10px"
-        >
-        </span>
+        <img
+          style="padding-right: 10px;"
+          src="assets/imgs/add-circle.svg"
+          alt=""
+        />
         <span class="button-text-primary">Tạo mới</span>
       </button>
     </div>
@@ -127,8 +128,8 @@
             >{{ item.userName }}</a
           >
         </td>
-        <td>{{ item.userGroups.length }}</td>
-        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+        <td style="color: #248FCC;">{{ item.userGroups.length }}</td>
+        <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>
   </nz-table>

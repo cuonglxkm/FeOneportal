@@ -157,7 +157,9 @@ export class IpPublicComponent implements OnInit {
   }
 
   openIpDelete() {
-    this.service.remove(this.id).subscribe(
+    this.service.remove(this.id)
+      .pipe(finalize(() => {this.getData(true);}))
+      .subscribe(
       {
         next: post => {
           this.notification.success('Thành công', 'Xóa thành công Ip Public')
@@ -169,7 +171,7 @@ export class IpPublicComponent implements OnInit {
     )
     this.isVisibleDelete = false;
     this.refreshParams();
-    this.getData(true);
+
   }
 
   Mounted() {

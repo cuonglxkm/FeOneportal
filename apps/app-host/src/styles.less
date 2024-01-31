@@ -40,7 +40,6 @@
 .table-title {
   color: #333;
   /* Heading/18px - Bold */
-  font-family: Inter;
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
@@ -51,7 +50,6 @@
 .button-text-primary {
   color: var(--Button-bg_default, #fff);
   /* Body/16px/Medium */
-  font-family: Inter;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -60,7 +58,6 @@
 
 .button-text-default {
   /* Body/16px/Medium */
-  font-family: Inter;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -69,11 +66,20 @@
 
 .button-custom {
   color: #0066b0;
+  height: 40px;
   border-color: #0066b0;
   background-color: #fff;
+  border-radius: 4px;
 
   &:hover {
     color: #005999;
     border-color: #005999;
   }
+}
+
+.input-custom {
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
 }
