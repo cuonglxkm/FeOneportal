@@ -1,4 +1,4 @@
-<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách Policies'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách Policies'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Home</nz-breadcrumb-item>
@@ -12,54 +12,49 @@
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
-
-  <ng-template #content>
-    <div class="row">
-      <div class="col-md-6" style="display:flex;">
+</page-header>
+<nz-card>
+  <span class="table-title">Thông tin Policies</span>
+  <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+      <div style="display:flex;">
         <h4 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h4>
         <nz-select [(ngModel)]="selectedStatus" nzSize="default" style="width: 150px">
           <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
         </nz-select>
       </div>
-      <div class="col-md-6" style="margin-left: 20px">
-        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên"
-                 style="width: 350px"/>
-          <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSize="default" nzSearch (click)="search(searchBox.value)">
-              <span nz-icon nzType="search" nzTheme="outline"></span>
-              Tim kiếm
-            </button>
-          </ng-template>
+    </div>
+    <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+      <div>
+        <nz-input-group style="margin-right: 8px; width: 40%" [nzSuffix]="suffixIconSearch">
+          <input name="name" nz-input placeholder="Tìm kiếm" [ngModel]="searchValue" (ngModelChange)="changeSearch($event)"/>
         </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search" style="color: var(--Primary-1, #0066b3); cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"></span>
+        </ng-template>
+        <button nz-button nzSize="default" style="cursor: pointer;margin-right: 10px;" (click)="reload()">
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+        <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="default" style="width: 90px; margin-right: 10px;margin-left: 10px;">
+          <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+        </nz-select>
+        <button class="button-custom" nz-button (click)="deletePolicy()">
+          <i nz-icon nzType="delete" style="margin-right: 10px"></i>
+          <span class="button-text-default">Xóa</span>
+        </button>
+        <button nz-button nzType="primary" (click)="createPolicy()">
+        <span
+          nz-icon
+          nzType="plus"
+          nzTheme="outline"
+          style="margin-right: 10px"
+        >
+        </span>
+          <span class="button-text-primary">Tạo mới</span>
+        </button>
       </div>
     </div>
-  </ng-template>
-
-  <ng-template #extra>
-    <button nz-button nzSize="default" style="cursor: pointer;margin-right: 10px;" (click)="reload()">
-      <span nz-icon nzType="reload" nzTheme="outline"></span>
-    </button>
-    <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="default" style="width: 90px; margin-right: 10px;margin-left: 10px;">
-      <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
-    </nz-select>
-    <button (click)="deletePolicy()" nz-button nzType="default" style="
-            border: 1px solid #808080;
-            border-radius: 2px;
-            background-color: #808080;
-            color: whitesmoke;
-            margin-right: 10px;
-            margin-left: 10px;
-          "><i nz-icon nzType="delete"></i> Xóa
-    </button>
-    <button (click)="createPolicy()" nz-button nzType="primary" style="
-            border: none;
-            background-color: #52c41a;
-          "><i nz-icon nzType="plus"></i> Tạo mới
-    </button>
-  </ng-template>
-</page-header>
-<nz-card>
+  </div>
   <!-- Bảng-->
   <nz-table #rowSelectionTable [nzLoading]="loading" [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
             [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
