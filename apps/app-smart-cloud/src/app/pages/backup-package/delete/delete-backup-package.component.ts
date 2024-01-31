@@ -55,6 +55,6 @@ export class DeleteBackupPackageComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.getDetailPackageBackup(this.id)
+    // this.getDetailPackageBackup(this.id)
   }
 }

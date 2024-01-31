@@ -99,6 +99,5 @@ export class ListPackagesBackupComponent implements OnInit {
   }
    ngOnInit() {
     this.customerId = this.tokenService.get()?.userId
-    // this.getListPackageBackups()
   }
 }

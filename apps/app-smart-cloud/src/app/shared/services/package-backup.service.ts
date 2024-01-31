@@ -3,8 +3,13 @@ import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {FormUpdatePackage, PackageBackupModel} from "../models/package-backup.model";
+import {
+  BackupPackageRequestModel,
+  BackupPackageResponseModel,
+  PackageBackupModel
+} from "../models/package-backup.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +31,7 @@ export class PackageBackupService extends BaseService {
   }
 
   search(packageName: string) {
-    if(packageName == undefined) {
+    if (packageName == undefined) {
       packageName = ''
     }
     return this.http.get<BaseResponse<PackageBackupModel[]>>(this.baseUrl + this.ENDPOINT.provisions
@@ -50,6 +55,11 @@ export class PackageBackupService extends BaseService {
   delete(id: number) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
       + `/backups/packages/${id}`, {headers: this.getHeaders()})
+  }
+
+  createOrder(request: BackupPackageRequestModel) {
+    return this.http.post<BackupPackageResponseModel>(this.baseUrl + this.ENDPOINT.orders,
+      Object.assign(request), {headers: this.getHeaders()})
   }
 
 }

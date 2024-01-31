@@ -6,7 +6,7 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {PackageBackupModel} from "../../../shared/models/package-backup.model";
+import {FormExtendBackupPackageModel, PackageBackupModel} from "../../../shared/models/package-backup.model";
 
 @Component({
   selector: 'one-portal-extend-backup-package',
@@ -96,11 +96,23 @@ export class ExtendBackupPackageComponent implements OnInit{
 
   handleCancel() {
     this.isVisibleConfirmExtend = false
-    this.validateForm.reset()
   }
 
   reset() {
     this.validateForm.reset()
+  }
+
+  formExtendBackupPackage: FormExtendBackupPackageModel = new FormExtendBackupPackageModel()
+  backupPackageInit() {
+    this.formExtendBackupPackage.regionId = this.region
+    this.formExtendBackupPackage.serviceName = this.packageBackupModel.packageName
+    this.formExtendBackupPackage.customerId = this.packageBackupModel.customerId
+    this.formExtendBackupPackage.vpcId = this.project.toString()
+    this.formExtendBackupPackage.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupPacketExtendSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null'
+    this.formExtendBackupPackage.serviceType = 14
+    this.formExtendBackupPackage.actionType = 3
+    this.formExtendBackupPackage.serviceInstanceId = this.packageBackupModel.id
+    this.formExtendBackupPackage.newExpireDate = this.estimateExpiredDate
   }
 
   ngOnInit() {
