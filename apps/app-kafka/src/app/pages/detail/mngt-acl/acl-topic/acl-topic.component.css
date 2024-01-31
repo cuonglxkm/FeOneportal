@@ -16,12 +16,16 @@
     justify-content: space-between;
 }
 
-.btn-search {
+.btn-create {
     height: 40px;
     background-color: #0066B0;
     border-radius: 8px;
     font-weight: 600;
     font-size: 16px;
+}
+
+::ng-deep .ant-btn-primary {
+    border-color: #0066B0;
 }
 
 .tbl-acl {
@@ -32,7 +36,7 @@ nz-table.tbl-acl th {
     background-color: #E2EEFC;
     font-size: 16px;
     font-weight: 700;
-    line-height: 24px; 
+    line-height: 24px;
     letter-spacing: 0.1px;
 }
 
@@ -50,6 +54,44 @@ nz-table.tbl-acl th {
     color: #ffffff;
 }
 
-::ng-deep .ant-pagination-item  {
+::ng-deep .ant-pagination-item {
     border-radius: 8px;
+}
+
+.lbl-form {
+    text-align: left;
+}
+
+.footer-btn {
+    float: right;
+}
+
+.cancel-btn {
+    margin-right: 10px;
+    height: 40px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #0066B3;
+    border-color: #0066B3;
+}
+
+.exclamation-icon {
+    padding-left: 10px;
+}
+
+.topic-radio {
+    width: 100%;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.exact-lbl {
+    width: 50%;
+}
+
+.prefixed-lbl {
+    width: 50%;
+    margin-right: 0px;
+    border-color: #8A8886;
 }
