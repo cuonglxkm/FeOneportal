@@ -116,6 +116,7 @@ import { CreatePackageBackupComponent } from './backup-package/create/create-pac
 import { ExtendBackupPackageComponent } from './backup-package/extend/extend-backup-package.component';
 import { EditBackupPackageComponent } from './backup-package/edit/edit-backup-package.component';
 import { DeleteBackupPackageComponent } from './backup-package/delete/delete-backup-package.component';
+import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-public.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -212,6 +213,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListPaymentComponent,
     OrderDetailComponent,
     RenewVolumeComponent,
+    ExtendIpPublicComponent,
     SnapshotScheduleEditComponent,
     ListPackagesBackupComponent,
     DetailPackageBackupComponent,
