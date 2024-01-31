@@ -30,6 +30,7 @@ export class PolicyListComponent {
   size: any = 10;
   searchValue: any = "";
   loading: boolean = false;
+  searchParam: any;
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
 
@@ -93,8 +94,7 @@ export class PolicyListComponent {
     );
   }
 
-  search(search: any) {
-    this.searchValue = search;
+  search() {
     this.loadData();
   }
 
@@ -166,4 +166,10 @@ export class PolicyListComponent {
   reload() {
     this.loadData();
   }
+
+  changeSearch(e: any): void {
+    this.searchValue = e;
+  }
+
+
 }
