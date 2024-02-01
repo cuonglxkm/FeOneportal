@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./detail.component.css'],
 })
 export class DetailComponent {
-  selectedIndex = 5;
+  selectedIndex = 2;
+  serviceOrderCode: string = 'kafka-s1hnuicj7u7g';
+
 }

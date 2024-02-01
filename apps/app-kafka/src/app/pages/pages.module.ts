@@ -17,6 +17,12 @@ import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/
 import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
 import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
 
+import { TopicMngtComponent } from './detail/topic-mngt/topic-mngt.component';
+import { CreateTopicComponent } from './detail/topic-mngt/create-topic/create-topic.component';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message-topic.component';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -27,6 +33,9 @@ import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
     AclTopicComponent,
     AclConsumerGroupComponent,
     CreateCredentialComponent,
+    TopicMngtComponent,
+    CreateTopicComponent,
+    MessageTopicComponent
   ],
   imports: [
     PagesRoutingModule,
@@ -37,6 +46,9 @@ import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
     G2TimelineModule,
     G2MiniAreaModule,
     NgApexchartsModule,
+    NzIconModule,
+    NzDescriptionsModule,
+    NzSelectModule
   ],
 })
 export class PagesModule {}

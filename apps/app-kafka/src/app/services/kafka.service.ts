@@ -1,11 +1,11 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
-import { BaseResponse } from '../core/models/base-response.model';
-import { InfoConnection } from '../core/models/info-connection.model';
 import { Observable } from 'rxjs';
-import { BrokerConfig } from '../core/models/broker-config.model';
 import { AppConstants } from '../core/constants/app-constant';
+import { BaseResponse } from '../core/models/base-response.model';
+import { BrokerConfig } from '../core/models/broker-config.model';
+import { InfoConnection } from '../core/models/info-connection.model';
+import { ListTopicResponse } from '../core/models/topic-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -72,5 +72,32 @@ export class KafkaService {
         }),
       }
     );
+  }
+
+  getListTopic(serviceOrderCode: string): Observable<BaseResponse<ListTopicResponse>> {
+    const params = new HttpParams().set('service_order_code', serviceOrderCode);
+    return this.http.get<BaseResponse<ListTopicResponse>>(`${this.baseUrl}/topic/listTopicPortal?page=1&size=100&stringToSearch=&serviceOrderCode=${serviceOrderCode}`);
+  }
+
+  getListPartitions(topicName: string, serviceOrderCode: string): Observable<BaseResponse<any>> {
+    const params = new HttpParams().set('service_order_code', serviceOrderCode);
+    return this.http.get<BaseResponse<any>>(`${this.baseUrl}/topic/listPartitions?topic=${topicName || ''}&serviceOrderCode=${serviceOrderCode || ''}`);
+  }
+
+  getMessageTopicKafka(nameTopic: string,
+    serviceOderCode: string,
+    page: number,
+    size: number,
+    from: number,
+    to: number,
+    listPar: string
+  ) {
+    nameTopic = nameTopic ? nameTopic : "";
+    const local_url = `${this.baseUrl}/topic/listMessages?page=${page}&from=${from || ''}&to=${to || ''}&size=${size}&topic=${nameTopic}&partitions=${listPar}&serviceOrderCode=${serviceOderCode}`;
+    return this.http.get(local_url);
+  }
+
+  getSyncTime(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`);
   }
 }
