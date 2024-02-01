@@ -47,7 +47,7 @@ export class SummaryServiceComponent implements OnInit {
     const res = bs + '\n' + sm + '\n' + sp + '\n' + sjc;
     this.clipboardService.copy(res);
 
-    this.notification.success('Thành công!', 'Đã copy', {
+    this.notification.success('Thông báo', 'Đã copy', {
       nzDuration: 2000
     });
   }

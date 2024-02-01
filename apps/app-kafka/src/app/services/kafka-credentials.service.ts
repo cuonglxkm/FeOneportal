@@ -1,17 +1,32 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { decamelizeKeys } from 'humps';
+import { Observable, ReplaySubject } from 'rxjs';
 import { BaseResponse } from '../core/models/base-response.model';
-import { KafkaCredential } from '../core/models/kafka-credential.model';
+import {
+  ChangePasswordKafkaCredential,
+  CreateKafkaCredentialData,
+  KafkaCredential,
+  NewPasswordKafkaCredential,
+} from '../core/models/kafka-credential.model';
 import { Pagination } from '../core/models/pagination.model';
-
 @Injectable({
   providedIn: 'root',
 })
 export class KafkaCredentialsService {
   private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
+  selectedCredential = new ReplaySubject<KafkaCredential>();
+  activatedTab = new ReplaySubject<number>();
 
   constructor(private http: HttpClient) {}
+
+  setCredential(credential: KafkaCredential) {
+    this.selectedCredential.next(credential);
+  }
+
+  setActivateTab(tab: number) {
+    this.activatedTab.next(tab);
+  }
 
   getCredentials(
     stringSearch: string,
@@ -30,6 +45,44 @@ export class KafkaCredentialsService {
       {
         params,
       }
+    );
+  }
+
+  createCredential(
+    data: CreateKafkaCredentialData
+  ): Observable<BaseResponse<null>> {
+    return this.http.post<BaseResponse<null>>(
+      `${this.baseUrl}/users/createUser`,
+      decamelizeKeys(data)
+    );
+  }
+
+  deleteUser(
+    serviceOrderCode: string,
+    username: string
+  ): Observable<BaseResponse<null>> {
+    return this.http.post<BaseResponse<null>>(
+      `${this.baseUrl}/users/deleteUser`,
+      {
+        service_order_code: serviceOrderCode,
+        username,
+      }
+    );
+  }
+
+  updatePassword(
+    data: ChangePasswordKafkaCredential
+  ): Observable<BaseResponse<null>> {
+    return this.http.post<BaseResponse<null>>(
+      `${this.baseUrl}/users/updateUser`,
+      decamelizeKeys(data)
+    );
+  }
+
+  createNewPassword(data: NewPasswordKafkaCredential) {
+    return this.http.post<BaseResponse<null>>(
+      `${this.baseUrl}/users/createNewPass`,
+      decamelizeKeys(data)
     );
   }
 }
