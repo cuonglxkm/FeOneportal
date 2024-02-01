@@ -251,6 +251,7 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
         !passwordControll.hasError('pattern')
       ) {
         passwordControll.updateValueAndValidity();
+        this.validatePassword();
       }
     });
   }
@@ -272,6 +273,7 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
 
     Promise.resolve().then(() => {
       this.validateForm.controls.checkPassword.updateValueAndValidity();
+      this.validateCheckPassword();
     });
   }
 
