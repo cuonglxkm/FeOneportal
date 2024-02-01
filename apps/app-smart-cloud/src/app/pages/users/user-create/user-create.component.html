@@ -1,8 +1,4 @@
-<page-header
-  [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'Khởi tạo User'"
->
+<page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo User'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
@@ -14,22 +10,13 @@
       <nz-breadcrumb-item> Tạo User </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
-    </div>
-  </ng-template>
 </page-header>
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false" style="border-radius: 4px">
-    <div style="margin-bottom: 20px;"><span class="table-title">Thông tin của User</span></div>
+    <div style="margin-bottom: 20px">
+      <span class="table-title">Thông tin của User</span>
+    </div>
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
@@ -94,7 +81,7 @@
     </nz-row>
     <nz-row nzGutter="16"> </nz-row>
     <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
+      <nz-col nzLg="24" style="border-radius: 4px">
         <nz-alert
           nzType="warning"
           [nzMessage]="nzDescriptionWarning06"
@@ -144,22 +131,32 @@
     [nzXXl]="24"
   >
     <button
-      class="m-r-8"
+      class="button-custom"
       nz-button
-      nzType="default"
-      style="background-color: #9c9c9c; color: white"
+      style="color: var(--Primary-1, #0066b3)"
       (click)="navigateToList()"
+      nzSize="large"
     >
-      Quay lại
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/arrow-left-2.svg"
+        alt=""
+      />
+      <span class="button-text-default">Quay lại</span>
     </button>
     <button
-      class="m-r-8"
       nz-button
       nzType="primary"
       [disabled]="!form.valid"
       (click)="showModal()"
+      nzSize="large"
     >
-      Tạo mới
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/add-circle.svg"
+        alt=""
+      />
+      <span class="button-text-primary">Thêm User</span>
     </button>
   </div>
 </div>
