@@ -24,7 +24,18 @@
   </ng-template>
   <ng-template #title>
     <div nz-row nzJustify="space-between">
-      <div nz-col nzSpan="8" style="color: #035DED;">Tạo gói Backup</div>
+      <nz-row>
+        <nz-col>
+          <span nz-icon
+                nzType="arrow-left"
+                nzTheme="outline"
+                [routerLink]="'/app-smart-cloud/backup/packages'"
+                style="margin-right: 10px;"></span>
+        </nz-col>
+        <nz-col>
+          <div style="color: #035DED;">Tạo gói Backup</div>
+        </nz-col>
+      </nz-row>
     </div>
   </ng-template>
 </page-header>
@@ -39,6 +50,7 @@
               <div style="margin-top: 15px;">
                 <span>Tên gói Backup</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle" nzTheme="outline"></span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -59,6 +71,7 @@
               <div class="label">
                 <span>Dung lượng gói Backup</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle" nzTheme="outline"></span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
@@ -99,6 +112,7 @@
                   <div class="label">
                     <span>Thời gian sử dụng</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - Tháng
+                    <span nz-icon nzType="question-circle" nzTheme="outline"></span>
                   </div>
                 </nz-form-label>
                 <nz-form-control>

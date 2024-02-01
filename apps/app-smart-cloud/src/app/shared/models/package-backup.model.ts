@@ -126,3 +126,10 @@ export class FormExtendBackupPackageModel {
   userEmail: string
   actorEmail: string
 }
+
+export class FormUpdate {
+  customerId: number
+  packageId: number
+  packageName: string
+  description: string
+}

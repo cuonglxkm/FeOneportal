@@ -58,10 +58,15 @@
     </ng-template>
     <nz-table #fixedTable
               style="margin-top: 15px;"
-              nzShowPagination="false"
+              nzShowPagination
               [nzScroll]="{ x: '100%', y: '55vh' }"
               [nzData]="response?.records"
-              nzShowSizeChanger
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              nzShowSizeChanger="true"
               [nzFrontPagination]="false"
               [nzLoading]="isLoading">
       <thead>
@@ -84,29 +89,143 @@
         <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
         <td [ngSwitch]="data.status.trim()">
           <span *ngSwitchCase="'AVAILABLE'" class="available">Đang hoạt động</span>
+          <span *ngSwitchCase="'CREATING'" class="available">Đang khởi tạo</span>
           <span *ngSwitchCase="'SUSPENDED'" class="error">Tạm ngưng</span>
           <span *ngSwitchCase="'DELETEING'" class="error">Đang xóa</span>
         </td>
         <td>
-          <button nz-button
-                  [nzType]="'primary'"
-                  nz-dropdown
-                  [nzDropdownMenu]="opMenu">
-            <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
-          </button>
-          <nz-dropdown-menu #opMenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item (click)="navigateToEdit(data.id)">Chỉnh sửa</li>
-              <li nz-menu-item (click)="showDelete()">Xóa</li>
-<!--              <one-portal-delete-backup-package [isVisible]="isVisibleDelete"-->
-<!--                                                [id]="data.id"-->
-<!--                                                [region]="region"-->
-<!--                                                [project]="project"-->
-<!--                                                [isLoading]="isLoadingDelete"-->
-<!--                                                (onOk)="handleDeletedOk()"-->
-<!--                                                (onCancel)="handleDeleteCancel()"/>-->
-            </ul>
-          </nz-dropdown-menu>
+          <div>
+            <!---Chỉnh sửa------>
+            <span style="color: #0066B3; margin-right: 10px;"
+                  nz-tooltip
+                  nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
+                  nz-icon
+                  nzType="edit"
+                  nzTheme="outline"
+                  (click)="showUpdate(data)"></span>
+            <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin gói Backup" nzTabScrollList="true"
+                      (nzOnCancel)="handleUpdateCancel()" nzCentered>
+              <div *nzModalTitle>
+                <p class="text-h5"><b>Chỉnh sửa thông tin gói Backup</b></p>
+              </div>
+              <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
+                <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+                  <nz-form-item>
+                    <nz-form-label nzFor="name">
+                      <div style="margin-top: 15px;">
+                        <span>Tên gói Backup</span>
+                        (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                        <span nz-icon nzType="question-circle" nzTheme="outline"></span>
+                      </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                      <input nz-input
+                             formControlName="namePackage"
+                             [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
+                        <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label nzFor="description">
+                      <div class="label">
+                        <span>Mô tả</span>
+                      </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                    <textarea nz-input
+                              formControlName="description"
+                              id="description"
+                              [placeholder]="'Nhập mô tả'"
+                              [maxLength]="255"
+                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                      <ng-template #descriptionErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </form>
+              </div>
+              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                <button nz-button nzType="default" (click)="handleUpdateCancel()" class="button-cancel">
+                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                </button>
+                <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleUpdateOk()"
+                        [nzLoading]="isLoadingUpdate"
+                        class="button-ok">
+                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                </button>
+              </div>
+            </nz-modal>
+            <!---Điều chỉnh dung lượng------>
+            <span style="color: #0066B3; margin-right: 10px;"
+                  nz-tooltip
+                  nzTooltipTitle="Điều chỉnh dung lượng" nzTooltipPlacement="bottom"
+                  nz-icon nzType="arrows-alt" nzTheme="outline" (click)="navigateToEdit(data.id)"> </span>
+            <!---Xóa------>
+            <span style="color: #0066B3"
+                  nz-tooltip
+                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline"
+                  (click)="showDelete(data)"></span>
+            <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá gói Backup" nzTabScrollList="true"
+                      (nzOnCancel)="handleDeleteCancel()" nzCentered>
+              <div *nzModalTitle>
+                <p class="text-h5"><b>Xoá gói Backup</b></p>
+              </div>
+              <div *nzModalContent>
+                <nz-alert nzBanner
+                          [nzMessage]="'Bạn đang thực hiện xoá gói Backup ' + packageName"
+                          nzShowIcon
+                ></nz-alert>
+                <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Backup, vui lòng nhập tên gói để xác nhận.</p>
+                <input nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
+                <nz-alert nzBanner
+                          style="margin-top: 10px;"
+                          [nzMessage]="'Các bản backup VM của gói backup này cũng sẽ bị xóa.'"
+                          nzShowIcon
+                ></nz-alert>
+                <nz-table nzShowPagination="false" style="margin-top: 15px;">
+                  <thead>
+                  <tr>
+                    <th>Tên bản Backup</th>
+                    <th>Dung lượng</th>
+                  </tr>
+                  </thead>
+                </nz-table>
+                <nz-alert nzBanner  style="margin-top: 15px;"
+                          [nzMessage]="'Các bản backup Volume của gói backup này cũng sẽ bị xóa.'"
+                          nzShowIcon
+                ></nz-alert>
+                <nz-table nzShowPagination="false" style="margin-top: 15px;">
+                  <thead>
+                  <tr>
+                    <th>Tên bản Backup</th>
+                    <th>Dung lượng</th>
+                  </tr>
+                  </thead>
+                </nz-table>
+                <nz-alert nzBanner style="margin-top: 15px;"
+                          [nzMessage]="'Các lịch backup tự động được tạo từ Gói backup này cũng sẽ bị xóa.'"
+                          nzShowIcon
+                ></nz-alert>
+              </div>
+              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                <button nz-button nzType="default" (click)="handleDeleteCancel()" class="button-cancel">
+                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                </button>
+                <button nz-button nzType="primary"
+                        (click)="handleDeletedOk()"
+                        [nzLoading]="isLoading"
+                        class="button-ok">
+                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>
+              </div>
+            </nz-modal>
+          </div>
         </td>
       </tr>
       </tbody>

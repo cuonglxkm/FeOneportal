@@ -4,22 +4,22 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NonNullableFormBuilder} from "@angular/forms";
+import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 
 @Component({
   selector: 'one-portal-delete-backup-package',
   templateUrl: './delete-backup-package.component.html',
   styleUrls: ['./delete-backup-package.component.less'],
 })
-export class DeleteBackupPackageComponent implements OnInit{
+export class DeleteBackupPackageComponent {
   @Input() isVisible: boolean
   @Input() region: number
   @Input() project: number
-  @Input() id: number
   @Input() isLoading: boolean
+  @Input() packageBackupModel: PackageBackupModel
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
-  namePackage: string
   value: string
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -29,12 +29,27 @@ export class DeleteBackupPackageComponent implements OnInit{
               private fb: NonNullableFormBuilder) {
   }
 
-  showModalDelete() {
-    this.isVisible = true
-  }
-
   handleOk() {
-    this.onOk.emit();
+
+    this.isLoading = true
+    if(this.value.trim().includes(this.packageBackupModel?.packageName)){
+      this.packageBackupService.delete(this.packageBackupModel?.id).subscribe(data => {
+        if(data == true){
+          this.isLoading = false
+          this.isVisible = false
+          this.notification.success('Thành công', 'Xóa gói backup thành công')
+          this.onOk.emit();
+        } else {
+          this.isLoading = false
+          this.isVisible = false
+          this.notification.error('Thất bại', 'Xóa gói backup thất bại')
+          this.onOk.emit();
+        }
+      })
+    } else {
+      this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
+    }
+
   }
 
   handleCancel() {
@@ -47,14 +62,4 @@ export class DeleteBackupPackageComponent implements OnInit{
   }
 
 
-  getDetailPackageBackup(id) {
-    this.packageBackupService.detail(id).subscribe(data => {
-      console.log('data', data)
-      this.namePackage = data.packageName
-    })
-  }
-
-  ngOnInit() {
-    // this.getDetailPackageBackup(this.id)
-  }
 }

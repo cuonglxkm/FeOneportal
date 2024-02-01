@@ -40,6 +40,8 @@ export class EditBackupPackageComponent implements OnInit{
 
   storage: number
 
+  resizeDate: Date;
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -181,6 +183,7 @@ export class EditBackupPackageComponent implements OnInit{
     if(this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage)
       this.getTotalAmount()
+      this.resizeDate = new Date()
     }
   }
 }
