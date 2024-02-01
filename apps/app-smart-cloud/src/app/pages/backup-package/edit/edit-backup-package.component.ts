@@ -68,6 +68,7 @@ export class EditBackupPackageComponent implements OnInit{
       this.packageBackupModel = data
       this.storage = this.packageBackupModel.sizeInGB
       this.validateForm.controls.storage.setValue(this.packageBackupModel.sizeInGB)
+      this.getTotalAmount()
     })
   }
 
@@ -182,7 +183,7 @@ export class EditBackupPackageComponent implements OnInit{
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     if(this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage)
-      this.getTotalAmount()
+
       this.resizeDate = new Date()
     }
   }

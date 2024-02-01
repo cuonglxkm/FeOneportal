@@ -6,7 +6,14 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {FormExtendBackupPackageModel, PackageBackupModel} from "../../../shared/models/package-backup.model";
+import {
+  BackupPackageRequestModel,
+  FormExtendBackupPackageModel,
+  PackageBackupModel
+} from "../../../shared/models/package-backup.model";
+import {OrderItem} from "../../../shared/models/price";
+import {DataPayment, ItemPayment} from "../../instances/instances.model";
+import {InstancesService} from "../../instances/instances.service";
 
 @Component({
   selector: 'one-portal-extend-backup-package',
@@ -55,10 +62,8 @@ export class ExtendBackupPackageComponent implements OnInit{
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private route: ActivatedRoute,
-              private fb: NonNullableFormBuilder) {
-    this.validateForm.get('time').valueChanges.subscribe(data => {
-      this.estimateExpiredDate = new Date(new Date().setDate(this.expiredDate.getDate() + data*30))
-    })
+              private fb: NonNullableFormBuilder,
+              private instanceService: InstancesService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -74,17 +79,60 @@ export class ExtendBackupPackageComponent implements OnInit{
       console.log('data', data)
       this.packageBackupModel = data
       this.expiredDate = this.packageBackupModel.expirationDate
+      console.log('estimate', new Date(new Date().setDate(new Date(this.expiredDate).getDate() + 30)))
+      this.estimateExpiredDate = new Date(new Date().setDate(new Date(this.expiredDate).getDate() + 30))
+      this.getTotalAmount()
     })
   }
 
-  onTimeSelected(value){
-
-  }
-
   submitForm() {
-
+    if(this.validateForm.valid) {
+      this.doExtend()
+    }
   }
 
+  doExtend() {
+    this.isLoading = true
+    this.getTotalAmount()
+    let request: BackupPackageRequestModel = new BackupPackageRequestModel()
+    request.customerId = this.formExtendBackupPackage.customerId;
+    request.createdByUserId = this.formExtendBackupPackage.customerId;
+    request.note = 'gia hạn gói backup';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.formExtendBackupPackage),
+        specificationType: 'backuppacket_extend',
+        price: this.orderItem?.totalPayment?.amount,
+        serviceDuration: this.validateForm.controls.time.value
+      }
+    ]
+    console.log('request', request)
+    this.packageBackupService.createOrder(request).subscribe(data => {
+      if (data != undefined || data != null) {
+        //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
+        if (data.code == 200) {
+          this.isLoading = false;
+          this.notification.success('Thành công', 'Gia hạn gói backup thành công.')
+          this.router.navigate(['/app-smart-cloud/backup/packages']);
+        }
+        //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
+        else if (data.code == 310) {
+          this.isLoading = false;
+          // this.router.navigate([data.data]);
+          window.location.href = data.data;
+        }
+      } else {
+        this.isLoading = false;
+        this.notification.error('Thất bại', 'Gia hạn gói backup thất bại.' + data.message)
+      }
+    })
+  }
+
+  onTimeSelected(value) {
+    console.log('value selected', value)
+    this.getTotalAmount()
+  }
   showConfirmExtend() {
     this.isVisibleConfirmExtend = true
   }
@@ -113,12 +161,40 @@ export class ExtendBackupPackageComponent implements OnInit{
     this.formExtendBackupPackage.actionType = 3
     this.formExtendBackupPackage.serviceInstanceId = this.packageBackupModel.id
     this.formExtendBackupPackage.newExpireDate = this.estimateExpiredDate
+    this.formExtendBackupPackage.userEmail = this.tokenService.get()?.email;
+    this.formExtendBackupPackage.actorEmail = this.tokenService.get()?.email;
+  }
+
+  totalAmountVolume = 0;
+  totalAmountVolumeVAT = 0;
+  orderItem: OrderItem = new OrderItem()
+  unitPrice = 0
+
+  getTotalAmount() {
+    this.backupPackageInit()
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.formExtendBackupPackage);
+    itemPayment.specificationType = 'backuppacket_extend';
+    itemPayment.sortItem = 0;
+    itemPayment.serviceDuration = this.validateForm.controls.time.value
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.project;
+    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien backup package', result.data);
+      this.orderItem = result.data
+      this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
+      this.estimateExpiredDate = this.orderItem.orderItemPrices[0].expiredDate
+    });
   }
 
   ngOnInit() {
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     if(this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage)
+
+      // this.getTotalAmount()
     }
   }
 }
