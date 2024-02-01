@@ -15,41 +15,35 @@
 </page-header>
 <nz-card>
   <span class="table-title">Thông tin Policies</span>
-  <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+  <div style="margin-bottom: 20px; margin-top: 30px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
     <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
       <div style="display:flex;">
-        <h4 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h4>
-        <nz-select [(ngModel)]="selectedStatus" nzSize="default" style="width: 150px">
+        <h3 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h3>
+        <nz-select [(ngModel)]="selectedStatus" nzSize="large" style="width: 170px">
           <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
         </nz-select>
       </div>
     </div>
-    <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+    <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
       <div>
-        <nz-input-group style="margin-right: 8px; width: 40%" [nzSuffix]="suffixIconSearch">
+        <nz-input-group style="margin-right: 8px; width: 40%" [nzSuffix]="suffixIconSearch" nzSize="large">
           <input name="name" nz-input placeholder="Tìm kiếm" [ngModel]="searchValue" (ngModelChange)="changeSearch($event)"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
-          <span nz-icon nzType="search" style="color: var(--Primary-1, #0066b3); cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"></span>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"/>
         </ng-template>
-        <button nz-button nzSize="default" style="cursor: pointer;margin-right: 10px;" (click)="reload()">
-          <span nz-icon nzType="reload" nzTheme="outline"></span>
-        </button>
-        <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="default" style="width: 90px; margin-right: 10px;margin-left: 10px;">
+        <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="large" style="width: 90px; margin-right: 10px;margin-left: 10px;">
           <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
         </nz-select>
-        <button class="button-custom" nz-button (click)="deletePolicy()">
-          <i nz-icon nzType="delete" style="margin-right: 10px"></i>
+        <button class="button-custom" nz-button style="color: var(--Primary-1, #0066b3)" (click)="reload()" nzSize="large">
+          <img style="margin-top: -4px;" src="assets/imgs/refresh.svg" alt="" />
+        </button>
+        <button class="button-custom" nz-button (click)="deletePolicy()" nzSize="large">
+          <img style="padding-right: 10px;" src="assets/imgs/delete.svg"/>
           <span class="button-text-default">Xóa</span>
         </button>
-        <button nz-button nzType="primary" (click)="createPolicy()">
-        <span
-          nz-icon
-          nzType="plus"
-          nzTheme="outline"
-          style="margin-right: 10px"
-        >
-        </span>
+        <button nz-button nzType="primary" (click)="createPolicy()" nzSize="large">
+          <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
           <span class="button-text-primary">Tạo mới</span>
         </button>
       </div>
@@ -77,7 +71,7 @@
           </nz-radio-group>
         </td>
         <td [nzExpand]="expandSet.has(item.name)" (nzExpandChange)="onExpandChange(item.name, $event)"></td>
-        <td (click)="detail(item.name)">{{ item.name }}</td>
+        <td (click)="detail(item.name)" style="color: #248FCC">{{ item.name }}</td>
         <td (click)="detail(item.name)">{{ item.type }}</td>
         <td (click)="detail(item.name)">{{ item.description }}</td>
       </tr>

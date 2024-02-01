@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.component";
@@ -49,6 +49,10 @@ export class PolicyDetachComponent implements OnInit {
     this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
   }
 
+  reload() {
+    this.entitiesNameSearch = '';
+    this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
+  }
 
   updateCheckedSet(name: string, checked: boolean): void {
     if (checked) {
@@ -125,7 +129,7 @@ export class PolicyDetachComponent implements OnInit {
   }
 
   goBack() {
-
+    this.router.navigate(['/app-smart-cloud/policy']);
   }
 
   projectChanged(project: ProjectModel) {
@@ -168,7 +172,8 @@ export class PolicyDetachComponent implements OnInit {
     private policiService: PolicyService,
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
-    private notification: NzNotificationService,) {
+    private notification: NzNotificationService,
+    private router: Router,) {
   }
 
 }

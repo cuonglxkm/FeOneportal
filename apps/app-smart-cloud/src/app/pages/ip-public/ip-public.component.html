@@ -86,13 +86,13 @@
       </nz-table>
     </ng-container>
     <ng-container *ngSwitchDefault >
-      <nz-result [nzIcon]="customIcon" nzTitle="Volume - Lưu trữ ổ đĩa máy chủ"
-                 nzSubTitle="Dịch vụ cung cấp dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.">
+      <nz-result [nzIcon]="customIcon" nzTitle="Ip Pulbic - Hỗ trợ các thiết bị kết nối internet"
+                 nzSubTitle="Giao thức hỗ trợ kết nối an toàn, tạo điều kiện để các thiết bị giao tiếp với nhau qua mạng internet. Cho phép truy cập internet nhanh hơn">
         <ng-template #customIcon>
-          <img src="assets/imgs/Ip-Public.png" alt="Custom Icon">
+          <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
-          <button (click)="createIp()" nz-button nzType="primary">Khởi tạo ngay</button>
+          <button (click)="createIp()" nz-button nzSize="large" nzType="primary">Khởi tạo ngay</button>
         </div>
       </nz-result>
     </ng-container>
