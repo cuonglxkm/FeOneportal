@@ -12,10 +12,10 @@ import { DetailComponent } from './detail/detail.component';
 import { SummaryServiceComponent } from './detail/summary-service/summary-service.component';
 import { PagesRoutingModule } from './pages-routing.module';
 
-import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
-import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
+import { CreateCredentialComponent } from './detail/credentials/credential-action/credential-action.component';
 import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/acl-consumer-group.component';
-import { CreateCredentialComponent } from './detail/credentials/create-credential/create-credential.component';
+import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
+import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
 
 @NgModule({
   declarations: [
