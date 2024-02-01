@@ -140,10 +140,10 @@
           <nz-form-item>
             <nz-form-label>
               <div>
-                <span *ngIf="orderItem != null">
+                <span *ngIf="orderItem != undefined">
                   <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0].unitPricePerDay.amount}} {{orderItem?.orderItemPrices[0].unitPricePerDay.currency}}/GB/ngày
                 </span>
-                <span *ngIf="orderItem == null">
+                <span *ngIf="orderItem == undefined">
                   <b>Đơn giá: </b> 0 VNĐ/GB/ngày
                 </span>
               </div>
