@@ -1,0 +1,72 @@
+.filters {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 14px 36px;
+}
+
+.w-10 {
+  width: 10%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+nz-table#access-logs th {
+  background-color: #e2eefc;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}
+
+.table{
+  padding: 14px 36px;
+}
+
+.search-icon {
+  color: #989bb3;
+  display: flex;
+  font-size: 20px;
+  padding: 0.833px;
+  justify-content: center;
+  align-items: center;
+}
+
+.filters nz-input-group,
+::ng-deep .filters .ant-select-selector,
+.filters nz-range-picker
+{
+  border-radius: 8px !important;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  opacity: 0;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn2top {
+  height: fit-content;
+}
+
+.description-end {
+  text-align: center;
+  color: grey;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.spin-style {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.show-scrollTop {
+  opacity: 1;
+  transition: all 0.2s ease-in-out;
+}

@@ -7,6 +7,6 @@ import { Component } from '@angular/core';
 })
 export class DetailComponent {
   selectedIndex = 2;
-  serviceOrderCode: string = 'kafka-s1hnuicj7u7g';
+  serviceOrderCode = 'kafka-s1hnuicj7u7g';
 
 }

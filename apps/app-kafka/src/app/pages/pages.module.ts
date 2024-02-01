@@ -16,6 +16,7 @@ import { CreateCredentialComponent } from './detail/credentials/credential-actio
 import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/acl-consumer-group.component';
 import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
 import { MngtAclComponent } from './detail/mngt-acl/mngt-acl.component';
+import { AccessLogComponent } from './detail/access-log/access-log.component';
 
 import { TopicMngtComponent } from './detail/topic-mngt/topic-mngt.component';
 import { CreateTopicComponent } from './detail/topic-mngt/create-topic/create-topic.component';
@@ -35,7 +36,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     CreateCredentialComponent,
     TopicMngtComponent,
     CreateTopicComponent,
-    MessageTopicComponent
+    MessageTopicComponent,
+    AccessLogComponent,
   ],
   imports: [
     PagesRoutingModule,

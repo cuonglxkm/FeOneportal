@@ -6,6 +6,9 @@ import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
 import { ListTopicResponse } from '../core/models/topic-response.model';
+import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
+import { Pagination2 } from '../core/models/pagination2.model';
+import { decamelize } from 'humps';
 
 @Injectable({
   providedIn: 'root',
@@ -74,17 +77,29 @@ export class KafkaService {
     );
   }
 
-  getListTopic(serviceOrderCode: string): Observable<BaseResponse<ListTopicResponse>> {
+  getListTopic(
+    serviceOrderCode: string
+  ): Observable<BaseResponse<ListTopicResponse>> {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
-    return this.http.get<BaseResponse<ListTopicResponse>>(`${this.baseUrl}/topic/listTopicPortal?page=1&size=100&stringToSearch=&serviceOrderCode=${serviceOrderCode}`);
+    return this.http.get<BaseResponse<ListTopicResponse>>(
+      `${this.baseUrl}/topic/listTopicPortal?page=1&size=100&stringToSearch=&serviceOrderCode=${serviceOrderCode}`
+    );
   }
 
-  getListPartitions(topicName: string, serviceOrderCode: string): Observable<BaseResponse<any>> {
+  getListPartitions(
+    topicName: string,
+    serviceOrderCode: string
+  ): Observable<BaseResponse<any>> {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
-    return this.http.get<BaseResponse<any>>(`${this.baseUrl}/topic/listPartitions?topic=${topicName || ''}&serviceOrderCode=${serviceOrderCode || ''}`);
+    return this.http.get<BaseResponse<any>>(
+      `${this.baseUrl}/topic/listPartitions?topic=${
+        topicName || ''
+      }&serviceOrderCode=${serviceOrderCode || ''}`
+    );
   }
 
-  getMessageTopicKafka(nameTopic: string,
+  getMessageTopicKafka(
+    nameTopic: string,
     serviceOderCode: string,
     page: number,
     size: number,
@@ -92,12 +107,34 @@ export class KafkaService {
     to: number,
     listPar: string
   ) {
-    nameTopic = nameTopic ? nameTopic : "";
-    const local_url = `${this.baseUrl}/topic/listMessages?page=${page}&from=${from || ''}&to=${to || ''}&size=${size}&topic=${nameTopic}&partitions=${listPar}&serviceOrderCode=${serviceOderCode}`;
+    nameTopic = nameTopic ? nameTopic : '';
+    const local_url = `${this.baseUrl}/topic/listMessages?page=${page}&from=${
+      from || ''
+    }&to=${
+      to || ''
+    }&size=${size}&topic=${nameTopic}&partitions=${listPar}&serviceOrderCode=${serviceOderCode}`;
     return this.http.get(local_url);
   }
 
   getSyncTime(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`);
+    return this.http.get(
+      `${this.baseUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
+    );
+  }
+  getAccessLogs(
+    filters: FetchAccessLogs
+  ): Observable<BaseResponse<Pagination2<AccessLog[]>>> {
+    let params = new HttpParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      params = params.set(decamelize(key), value || '');
+    });
+    console.log(params);
+
+    return this.http.get<BaseResponse<Pagination2<AccessLog[]>>>(
+      `${this.baseUrl}/kafka/search-logs`,
+      {
+        params,
+      }
+    );
   }
 }

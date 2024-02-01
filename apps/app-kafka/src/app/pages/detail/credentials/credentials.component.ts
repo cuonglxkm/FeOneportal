@@ -147,7 +147,7 @@ export class CredentialsComponent implements OnInit {
   getCredentials() {
     this.kafkaCredentialService
       .getCredentials(
-        this.stringSearch,
+        this.stringSearch.trim(),
         this.serviceOrderCode,
         this.page,
         this.size
