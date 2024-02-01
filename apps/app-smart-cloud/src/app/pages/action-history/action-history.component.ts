@@ -17,7 +17,7 @@ export class ActionHistoryComponent implements OnInit {
   projectId: number;
   listOfActionHistory: ActionHistoryModel[] = [];
   pageSize = 10;
-  pageNumber: number = 0;
+  pageNumber: number = 1;
   total: number;
   selectedAction = 'Tất cả';
   tableHeight: string;
