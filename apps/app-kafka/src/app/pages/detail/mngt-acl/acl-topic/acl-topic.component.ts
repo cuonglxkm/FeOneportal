@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { AclDeleteModel } from 'apps/app-kafka/src/app/core/models/acl-delete.model';
 import { AclReqModel } from 'apps/app-kafka/src/app/core/models/acl-req.model';
 import { AclModel } from 'apps/app-kafka/src/app/core/models/acl.model';
 import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'one-portal-acl-topic',
@@ -15,35 +17,26 @@ export class AclTopicComponent implements OnInit {
     {
       "service_order_code": "kafka-s1hnuicj7u7g",
       "username": "nhienn01",
-      "email": "fake@vnpt.vn",
-      "created_date": "18-01-2024 14:07:46",
-      "updated_date": "19-01-2024 14:50:06",
-      "created_user": "jzxlwtviacd",
-      "created_name": "Nguyễn Đức Nhiên",
-      "updated_user": "jzxlwtviacd",
-      "updated_name": "Nguyễn Đức Nhiên"
     },
     {
       "service_order_code": "kafka-s1hnuicj7u7g",
       "username": "bbbbbb",
-      "email": "fake@vnpt.vn",
-      "created_date": "12-01-2024 09:26:26",
-      "updated_date": "12-01-2024 09:26:26",
-      "created_user": "jzxlwtviacd",
-      "created_name": "Nguyễn Đức Nhiên",
-      "updated_user": null,
-      "updated_name": null
     },
     {
       "service_order_code": "kafka-s1hnuicj7u7g",
       "username": "aaaaa",
-      "email": "fake@vnpt.vn",
-      "created_date": "09-01-2024 14:59:41",
-      "updated_date": "12-01-2024 10:56:37",
-      "created_user": "jzxlwtviacd",
-      "created_name": "Nguyễn Đức Nhiên",
-      "updated_user": "jzxlwtviacd",
-      "updated_name": "Nguyễn Đức Nhiên"
+    },
+    {
+      "service_order_code": "kafka-s1hnuicj7u7g",
+      "username": "user2",
+    },
+    {
+      "service_order_code": "kafka-s1hnuicj7u7g",
+      "username": "user3",
+    },
+    {
+      "service_order_code": "kafka-s1hnuicj7u7g",
+      "username": "user4",
     }
   ];
   listOfTopic = [
@@ -83,6 +76,7 @@ export class AclTopicComponent implements OnInit {
   isEdit = false;
   defaultHost = '0.0.0.0';
   isLoadingTopic = false;
+  searchText = '';
 
   total = 1;
   pageSize = 10;
@@ -94,7 +88,8 @@ export class AclTopicComponent implements OnInit {
 
   constructor(
     private fb: NonNullableFormBuilder,
-    private aclKafkaService: AclKafkaService
+    private aclKafkaService: AclKafkaService,
+    private modal: NzModalService
   ) {
 
   }
@@ -116,15 +111,30 @@ export class AclTopicComponent implements OnInit {
   }
 
   getListAcl(page: number, limit: number, keySearch: string, serviceOrderCode: string, resourceType: string) {
-    this.aclKafkaService.getListAcl(page, limit, keySearch, serviceOrderCode, resourceType)
+    this.aclKafkaService.getListAcl(page, limit, keySearch.trim(), serviceOrderCode, resourceType)
       .subscribe(
         (res) => {
           if (res && res.code == 200) {
             this.total = res.data.totalElements
+            console.log('total: ', this.total);
             this.listAclTopic = res.data.content;
           }
         }
       );
+  }
+
+  changePage(event: number) {
+    this.pageIndex = event;
+    this.getListAcl(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode, this.resourceTypeTopic);
+  }
+
+  changeSize(event: number) {
+    this.pageSize = event;
+    this.getListAcl(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode, this.resourceTypeTopic);
+  }
+
+  onSearch() {
+    this.getListAcl(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode, this.resourceTypeTopic);
   }
 
   createForm() {
@@ -141,6 +151,11 @@ export class AclTopicComponent implements OnInit {
   }
 
   cancelCreate() {
+    this.aclTopicForm.reset();
+    for (const key in this.aclTopicForm.controls) {
+      this.aclTopicForm.controls[key].markAsPristine();
+      this.aclTopicForm.controls[key].updateValueAndValidity();
+    }
     this.showForm = this.idListForm;
   }
 
@@ -180,14 +195,61 @@ export class AclTopicComponent implements OnInit {
 
   onChangeRadioTopic() {
     if (this.tabTopicValue == this.topicExtract) {
-      this.aclTopicForm.get('topics').setValidators(Validators.required);
+      this.aclTopicForm.get('topic').setValidators(Validators.required);
       this.aclTopicForm.get('topicPrefixed').clearValidators();
     } else {
       this.aclTopicForm.get('topicPrefixed').setValidators(Validators.required);
-      this.aclTopicForm.get('topics').clearValidators();
+      this.aclTopicForm.get('topic').clearValidators();
     }
     this.aclTopicForm.get('topicPrefixed').updateValueAndValidity();
-    this.aclTopicForm.get('topics').updateValueAndValidity();
+    this.aclTopicForm.get('topic').updateValueAndValidity();
   }
 
+  updateACLTopic(data: AclModel) {
+    this.isEdit = true;
+    this.showForm = this.idUpdateForm;
+    let selectedPrincipal = [];
+    selectedPrincipal.push(data.principal);
+    this.aclTopicForm.get('principal').setValue(selectedPrincipal);
+    if (data.patternType == this.topicExtract) {
+      let selectedResource = [];
+      selectedResource.push(data.resourceName);
+      this.aclTopicForm.get('topic').setValue(selectedResource);
+      this.tabTopicValue = this.topicExtract;
+    }
+    if (data.patternType == this.topicPrefixed) {
+      this.aclTopicForm.get('topicPrefixed').setValue(data.resourceName);
+      this.aclTopicForm.get('topicPrefixed').disable({ onlySelf: true });
+      this.tabTopicValue = this.topicPrefixed;
+      this.aclTopicForm.get('topic').clearValidators();
+      this.aclTopicForm.get('topic').updateValueAndValidity();
+    }
+    this.aclTopicForm.get('permissionGroup').setValue(data.permissionGroupCode);
+    this.aclTopicForm.get('permission').setValue(data.allowDeny);
+    this.aclTopicForm.get('host').setValue(data.host);
+  }
+
+  showDeleteConfirm(data: AclDeleteModel) {
+    this.modal.create({
+      nzTitle: 'Xóa ACL',
+      nzContent: '<h3>Quý khách chắc chắn muốn thực hiện xóa ACL của ' + data.resourceName + '? </h3>'
+      + '<br> <i>Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý</i>',
+      nzBodyStyle: {textAlign: 'center'},
+      nzOkText: 'Đồng ý',
+      nzOkType: 'primary',
+      nzOkDanger: false,
+      nzOnOk: () => {
+        this.aclKafkaService.deleteAcl(data).pipe()
+          .subscribe(
+            (data: any) => {
+              if (data && data.code == 200) {
+                this.showForm = this.idListForm;
+                this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
+              }
+            }
+          );
+      },
+      nzCancelText: 'Hủy'
+    });
+  }
 }

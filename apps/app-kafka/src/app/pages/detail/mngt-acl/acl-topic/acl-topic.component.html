@@ -4,7 +4,8 @@
         <ng-container *ngIf="showForm===idListForm">
             <div class="filter">
                 <nz-input-group [nzPrefix]="prefixTemplateUser" class="search">
-                    <input type="text" nz-input placeholder="Tìm kiếm" />
+                    <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
+                        [(ngModel)]="searchText" />
                 </nz-input-group>
                 <ng-template #prefixTemplateUser><span nz-icon nzType="search" nzTheme="outline"></span></ng-template>
 
@@ -14,7 +15,10 @@
                 </button>
             </div>
             <div>
-                <nz-table nzShowPagination nzShowSizeChanger #aclTopic [nzData]="listAclTopic" class="tbl-acl">
+                <nz-table nzShowPagination [nzFrontPagination]="false" nzShowSizeChanger #aclTopic
+                    [nzData]="listAclTopic" class="tbl-acl" [nzTotal]="total" [nzPageIndex]="pageIndex"
+                    [nzPageSize]="pageSize" (nzPageSizeChange)="changeSize($event)"
+                    (nzPageIndexChange)="changePage($event)">
                     <thead>
                         <tr>
                             <th nzWidth="5%">STT</th>
@@ -40,10 +44,10 @@
                             </td>
                             <td>{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
                             <td>
-                                <button nz-button nzType="text">
+                                <button nz-button nzType="text" (click)="updateACLTopic(data)">
                                     <span nz-icon nzType="edit" nzTheme="twotone" nzTwotoneColor="#0066B0"></span>
                                 </button>
-                                <button nz-button nzType="text">
+                                <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
                                     <span nz-icon nzType="delete" nzTheme="twotone" nzTwotoneColor="#0066B0"></span>
                                 </button>
                             </td>
@@ -54,7 +58,7 @@
         </ng-container>
 
         <!-- display create form -->
-        <ng-container *ngIf="showForm===idCreateForm">
+        <ng-container *ngIf="showForm===idCreateForm || showForm===idUpdateForm">
             <form nz-form [formGroup]="aclTopicForm" nzLabelAlign="left" (ngSubmit)="submitForm()">
                 <!-- Tài khoản -->
                 <nz-form-item>
@@ -92,19 +96,22 @@
                                         <span nz-icon nzType="loading" nzTheme="outline"></span> Loading Data...
                                     </nz-option>
                                 </nz-select>
-                                <ng-template #topicPlaceHolder let-selectedList> và {{ selectedList.length }} topic</ng-template>
+                                <ng-template #topicPlaceHolder let-selectedList> và {{ selectedList.length }}
+                                    topic</ng-template>
                             </nz-form-control>
                         </ng-container>
                         <ng-template #prefixedBlock>
                             <nz-form-control nzErrorTip="Vui lòng nhập prefixed">
-                                <input nz-input class="prefixed-input" type="text" formControlName="topicPrefixed" placeholder="Nhập prefixed">
+                                <input nz-input class="prefixed-input" type="text" formControlName="topicPrefixed"
+                                    placeholder="Nhập prefixed">
                             </nz-form-control>
                         </ng-template>
                     </div>
                 </nz-form-item>
                 <!-- Nhóm quyền -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="permissionGroup" class="lbl-form">Nhóm quyền</nz-form-label>
+                    <nz-form-label [nzSpan]="2" nzRequired nzFor="permissionGroup" class="lbl-form">Nhóm
+                        quyền</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn nhóm quyền">
                         <nz-select nzPlaceHolder="Nhóm quyền" formControlName="permissionGroup">
                             <nz-option *ngFor="let item of listOfPermissionGroup" [nzLabel]="item.value"
@@ -159,8 +166,10 @@
                                 </button>
                             </ng-container>
                             <ng-container *ngIf="showForm===idUpdateForm">
-                                <span nz-icon nzType="check" nzTheme="outline"></span>
-                                <button nz-button nzType="primary">Cập nhật</button>
+                                <button nz-button nzType="primary" class="btn-create">
+                                    <span nz-icon nzType="check" nzTheme="outline"></span>
+                                    Cập nhật
+                                </button>
                             </ng-container>
                         </div>
                     </nz-form-control>

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BaseResponse } from '../core/models/base-response.model';
+import { AclDeleteModel } from '../core/models/acl-delete.model';
 import { AclReqModel } from '../core/models/acl-req.model';
+import { BaseResponse } from '../core/models/base-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,19 @@ export class AclKafkaService {
       is_edit: data.isEdit
     };
     return this.http.post(`${this.baseUrl}/acl/createAcl`, json);
+  }
+
+  deleteAcl(data: AclDeleteModel): Observable<any> {
+    const json = {
+      service_order_code: data.serviceOrderCode,
+      principal: data.principal,
+      resource_type: data.resourceType,
+      resource_name: data.resourceName,
+      permission_group_code: data.permissionGroupCode,
+      allow_deny: data.allowDeny,
+      host: data.host
+    };
+    return this.http.post('/kafka-service/acl/deleteAcl', json);
   }
 
 }
