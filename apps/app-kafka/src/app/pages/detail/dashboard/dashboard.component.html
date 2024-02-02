@@ -45,13 +45,13 @@
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">3</div>
+            <div class="sum-value">3000</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số message</p>
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">456</div>
+            <div class="sum-value">0</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số partition offline</p>
         </div>
     </div>
@@ -95,6 +95,9 @@
             <ng-template #consumerTitle>
                 <span>Giám sát Consumers</span>
                 <div style="float: right">
+                    <button nz-button nzType="default" style="margin-right: 15px;" (click)="getInfo4Chart()">
+                        Refresh
+                    </button>
                     <nz-select id="range-time" [(ngModel)]="previousTimeMins" (ngModelChange)="onChangeTime()">
                         <nz-option *ngFor="let time of listRangeTime" [nzLabel]="time.label" [nzValue]="time.value"></nz-option>
                     </nz-select>
