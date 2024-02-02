@@ -32,29 +32,12 @@ export class CreatePackageBackupComponent implements OnInit {
     time: FormControl<number>
   }> = this.fb.group({
     namePackage: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+      Validators.pattern(/^[a-zA-Z0-9]*$/),
       Validators.maxLength(70)]],
     storage: [1, [Validators.required]],
     description: [null as string, [Validators.maxLength(255)]],
     time: [1, [Validators.required]]
   })
-
-  time = [
-    {label: '1 tháng', value: 1},
-    {label: '2 tháng', value: 2},
-    {label: '3 tháng', value: 3},
-    {label: '4 tháng', value: 4},
-    {label: '5 tháng', value: 5},
-    {label: '6 tháng', value: 6},
-    {label: '7 tháng', value: 7},
-    {label: '8 tháng', value: 8},
-    {label: '9 tháng', value: 9},
-    {label: '10 tháng', value: 10},
-    {label: '11 tháng', value: 11},
-    {label: '12 tháng', value: 12}
-  ]
-
-  timeSelected: any
 
   isLoading: boolean = false
 
@@ -87,10 +70,6 @@ export class CreatePackageBackupComponent implements OnInit {
     this.project = project?.id
   }
 
-  onTimeSelected(value) {
-    console.log('value selected', value)
-    this.getTotalAmount()
-  }
 
   submitForm() {
     console.log(this.validateForm.getRawValue())
@@ -186,7 +165,6 @@ export class CreatePackageBackupComponent implements OnInit {
 
   getTotalAmount() {
     this.packageBackupInit()
-    console.log('time', this.timeSelected)
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.formCreateBackupPackage);
