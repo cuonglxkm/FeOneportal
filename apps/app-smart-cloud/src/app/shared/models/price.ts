@@ -8,6 +8,10 @@ export class OrderItemPrices {
   daysOfMonth: number
   createdDate: Date
   expiredDate: Date
+  unitPricePerDay: {
+    amount: number
+    currency: string
+  }
 }
 
 export class TotalAmount {
@@ -36,4 +40,5 @@ export class OrderItem {
   currentVAT: number
   totalVAT: TotalVAT
   totalPayment: TotalPayment
+
 }

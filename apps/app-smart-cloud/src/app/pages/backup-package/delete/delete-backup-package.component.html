@@ -5,7 +5,7 @@
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
-      [nzMessage]="'Bạn đang thực hiện xoá gói Backup ' + namePackage"
+      [nzMessage]="'Bạn đang thực hiện xoá gói Backup ' + packageBackupModel?.packageName"
       nzShowIcon
     ></nz-alert>
     <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Backup, vui lòng nhập tên gói để xác nhận.</p>
@@ -40,11 +40,12 @@
               nzShowIcon
     ></nz-alert>
   </div>
-  <div *nzModalFooter>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
       <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOk()"
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>

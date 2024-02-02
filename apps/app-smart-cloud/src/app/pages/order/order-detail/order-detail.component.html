@@ -120,10 +120,10 @@
           </tr>
         </nz-table>
         <div class="float-right">
-          <button *ngIf="data.statusCode != 4 && titleStepFour != 'Gặp sự cố'" nz-button style="background-color: darkgray; color: white;">Quay lại</button>
+          <button *ngIf="data.statusCode != 4 && data.statusCode < 2 && titleStepFour != 'Gặp sự cố'" nz-button style="background-color: darkgray; color: white;">Quay lại</button>
           <button *ngIf="data.statusCode == 5 && data.invoiceCode == ''" nz-button style="border-color: blue; color: blue;">Mua lại</button>
-          <button *ngIf="data.statusCode < 4 && titleStepFour != 'Gặp sự cố'" nz-button style="border-color: blue; color: blue;">Hủy đơn hàng</button>
-          <button *ngIf="data.statusCode < 4" nz-button style="background-color: #52c41a; color: white;">Thanh toán</button>
+          <button *ngIf="data.statusCode < 2 && titleStepFour != 'Gặp sự cố'" nz-button style="border-color: blue; color: blue;">Hủy đơn hàng</button>
+          <button *ngIf="data.statusCode < 2" nz-button style="background-color: #52c41a; color: white;">Thanh toán</button>
         </div>
       </div>
     </nz-col>
