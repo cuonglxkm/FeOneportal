@@ -60,18 +60,6 @@ export class UserCreateComponent implements OnInit {
     });
   }
 
-  onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.regionId = region.regionId;
-    this.cdr.detectChanges();
-  }
-
-  onProjectChange(project: any) {
-    // Handle the region change event
-    this.projectId = project.id;
-    this.cdr.detectChanges();
-  }
-
   onChangeGroupNames(event: any[]) {
     this.groupNames = event;
   }

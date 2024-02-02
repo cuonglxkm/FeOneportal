@@ -35,7 +35,7 @@ export class PolicyListComponent {
   public optionJsonEditor: JsonEditorOptions;
 
   listPolicyType =[
-    {label:"Tất cả trạng thái",value :"0"},
+    {label:"Tất cả loại policy",value :"0"},
     {label:"Họat động",value :"1"},
     {label:"Ngừng hoạt động",value :"2"}
   ];
