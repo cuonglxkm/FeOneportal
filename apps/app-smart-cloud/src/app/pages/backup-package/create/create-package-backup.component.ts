@@ -75,6 +75,8 @@ export class CreatePackageBackupComponent implements OnInit {
     console.log(this.validateForm.getRawValue())
     if(this.validateForm.valid){
       this.doCreate()
+    } else {
+      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
     }
   }
 

@@ -32,7 +32,7 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
     <nz-card nzTitle="Thông tin Volume">
       <nz-form-item>
         <nz-form-label nzFor="name">
@@ -223,8 +223,7 @@
             <button nz-button
                     nzType="primary"
                     [nzLoading]="isLoadingAction"
-                    class="button-create"
-                    [disabled]="!validateForm.valid">Tạo mới</button>
+                    class="button-create">Tạo mới</button>
           </nz-form-control>
         </nz-space>
       </nz-form-item>
