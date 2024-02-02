@@ -59,10 +59,10 @@
 
         <!-- display create form -->
         <ng-container *ngIf="showForm===idCreateForm || showForm===idUpdateForm">
-            <form nz-form [formGroup]="aclTopicForm" nzLabelAlign="left" (ngSubmit)="submitForm()">
+            <form nz-form [formGroup]="aclTopicForm" [nzLabelAlign]="'left'" (ngSubmit)="submitForm()">
                 <!-- Tài khoản -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
                         <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder"
                             id="principal" formControlName="principal" [nzDisabled]="isEdit">
@@ -75,7 +75,7 @@
                 </nz-form-item>
                 <!-- Topic -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="topic" class="lbl-form">Topic</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="topic" class="lbl-form">Topic</nz-form-label>
                     <div nz-col [nzSpan]="8">
                         <nz-radio-group [(ngModel)]="tabTopicValue" (ngModelChange)="onChangeRadioTopic()"
                             [ngModelOptions]="{standalone: true}" class="topic-radio" nzButtonStyle="solid">
@@ -110,7 +110,7 @@
                 </nz-form-item>
                 <!-- Nhóm quyền -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="permissionGroup" class="lbl-form">Nhóm
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permissionGroup" class="lbl-form">Nhóm
                         quyền</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn nhóm quyền">
                         <nz-select nzPlaceHolder="Nhóm quyền" formControlName="permissionGroup">
@@ -122,7 +122,7 @@
                 </nz-form-item>
                 <!-- Permission -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="permission"
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permission"
                         class="lbl-form">Permission</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn permission">
                         <nz-select nzPlaceHolder="Permission" formControlName="permission">
@@ -133,7 +133,7 @@
                 </nz-form-item>
                 <!-- Máy chủ -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="host" class="lbl-form">Máy chủ
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="host" class="lbl-form">Máy chủ
                         <span class="exclamation-icon" nz-icon nzType="exclamation-circle" nzTheme="twotone"
                             nzTooltipTitle="Giá trị mặc định 0.0.0.0 nghĩa là cho phép kết nối từ bất cứ đâu."
                             nzTooltipPlacement="bottom" nz-tooltip>
@@ -153,7 +153,7 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-control [nzSpan]="10">
+                    <nz-form-control [nzSpan]="12">
                         <div class="footer-btn">
                             <button nz-button class="cancel-btn" (click)="cancelCreate()">
                                 <span nz-icon nzType="close" nzTheme="outline"></span>

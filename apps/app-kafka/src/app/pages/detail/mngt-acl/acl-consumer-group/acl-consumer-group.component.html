@@ -55,10 +55,10 @@
 
         <!-- display create form -->
         <ng-container *ngIf="showForm===idCreateForm">
-            <form nz-form [formGroup]="aclConsumerGroupForm" nzLabelAlign="left" (ngSubmit)="submitForm()">
+            <form nz-form [formGroup]="aclConsumerGroupForm" [nzLabelAlign]="'left'" (ngSubmit)="submitForm()">
                 <!-- Tài khoản -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
                         <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder"
                             id="principal" formControlName="principal">
@@ -71,7 +71,7 @@
                 </nz-form-item>
                 <!-- Consumer group -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="consumerGroups" class="lbl-form">Consumer
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="consumerGroups" class="lbl-form">Consumer
                         Group</nz-form-label>
                     <div nz-col [nzSpan]="8">
                         <nz-radio-group [(ngModel)]="tabGroupValue" (ngModelChange)="onChangeRadio()"
@@ -106,7 +106,7 @@
 
                 <!-- Máy chủ -->
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="2" nzRequired nzFor="host" class="lbl-form">Máy chủ
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="host" class="lbl-form">Máy chủ
                         <span class="exclamation-icon" nz-icon nzType="exclamation-circle" nzTheme="twotone"
                             nzTooltipTitle="Giá trị mặc định 0.0.0.0 nghĩa là cho phép kết nối từ bất cứ đâu."
                             nzTooltipPlacement="bottom" nz-tooltip>
@@ -126,7 +126,7 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-control [nzSpan]="10">
+                    <nz-form-control [nzSpan]="12">
                         <div class="footer-btn">
                             <button nz-button class="cancel-btn" (click)="cancelCreate()">
                                 <span nz-icon nzType="close" nzTheme="outline"></span>

@@ -208,11 +208,11 @@ export class AclTopicComponent implements OnInit {
   updateACLTopic(data: AclModel) {
     this.isEdit = true;
     this.showForm = this.idUpdateForm;
-    let selectedPrincipal = [];
+    const selectedPrincipal = [];
     selectedPrincipal.push(data.principal);
     this.aclTopicForm.get('principal').setValue(selectedPrincipal);
     if (data.patternType == this.topicExtract) {
-      let selectedResource = [];
+      const selectedResource = [];
       selectedResource.push(data.resourceName);
       this.aclTopicForm.get('topic').setValue(selectedResource);
       this.tabTopicValue = this.topicExtract;

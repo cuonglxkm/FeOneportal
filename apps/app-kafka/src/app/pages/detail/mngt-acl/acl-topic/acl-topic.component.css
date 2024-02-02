@@ -58,10 +58,6 @@ nz-table.tbl-acl th {
     border-radius: 8px;
 }
 
-.lbl-form {
-    text-align: left;
-}
-
 .footer-btn {
     float: right;
 }
@@ -95,3 +91,12 @@ nz-table.tbl-acl th {
     margin-right: 0px;
     border-color: #8A8886;
 }
+
+::ng-deep .ant-select-selector {
+    border-radius: 4px !important;
+}
+
+::ng-deep .ant-input {
+    border-radius: 4px !important;
+}
+

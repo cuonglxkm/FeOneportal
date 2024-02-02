@@ -34,8 +34,8 @@ export class AclConsumerGroupComponent implements OnInit {
   ]
   aclConsumerGroupForm: FormGroup;
 
-  permissionGroupCode: string = 'group';
-  permissionGroupName: string = 'READ';
+  permissionGroupCode = 'group';
+  permissionGroupName = 'READ';
 
   listOfPrincipals = [
     {
@@ -104,7 +104,7 @@ export class AclConsumerGroupComponent implements OnInit {
   total: number;
   pageSize: number;
   pageIndex: number;
-  resourceTypeGroup: string = 'consumer_group';
+  resourceTypeGroup = 'consumer_group';
   serviceOrderCode = 'kafka-s1hnuicj7u7g';
 
 
