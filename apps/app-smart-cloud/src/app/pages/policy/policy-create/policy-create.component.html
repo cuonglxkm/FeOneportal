@@ -32,20 +32,27 @@
           <p style="color: #888;">Thêm quyền bằng cách chọn dịch vụ,hành động,tài nguyên và điều kiện hoặc xây dựng câu
             lệnh
             bằng trình soạn thảo JSON</p>
-        </div>
-        <div nz-col nzSpan="6">
-          <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
-            <button (click)="visualOption(1)" nz-button nzType="primary" style="
-            border: none;
-            background-color: {{isVisual ? 'blue' : 'gray'}};
-          ">Visual
+          <div style="display: flex;align-items: center">
+            <button (click)="visualOption(1)" nz-button nzType="primary" nzSize="large" style="
+            border-color: #0066B3;
+            background-color: {{isVisual ? '#0066B3' : 'white'}};
+            width: 140px;
+            height: 40px;
+          ">
+              <span class="button-text-primary" style="color: {{isVisual ? 'white' : '#0066B3'}};" >Visual</span>
             </button>
-            <button (click)="visualOption(2)" nz-button nzType="primary" style="
-            border: none;
-            background-color: {{isVisual ? 'gray' : 'blue'}};
-          ">Json
+            <button (click)="visualOption(2)" nz-button nzType="primary" nzSize="large" style="
+            border-color: #0066B3;
+            background-color: {{isVisual ? 'white' : '#0066B3'}};
+            width: 140px;
+            height: 40px;
+          ">
+              <span class="button-text-primary" style="color: {{isVisual ? '#0066B3' : 'white'}};" >Json</span>
             </button>
           </div>
+        </div>
+        <div nz-col nzSpan="6">
+
         </div>
       </div>
     </nz-card>
@@ -110,13 +117,15 @@
         </nz-card>
 
         <!--button thêm perrmisstion-->
-        <nz-card>
-          <button (click)="addService()" nz-button nzType="primary" style="
+
+          <button (click)="addService()" nz-button nzType="primary" nzSize="large" style="
             border: none;
-            background-color: gray;
-          ">Thêm Permission policies
+            background-color: #f5f7fa;
+
+          ">
+            <img style="padding-right: 10px;" src="assets/imgs/add-square.svg" alt=""/>
+            <span class="button-text-primary" style="color: #0066B3" >Thêm Permission policies</span>
           </button>
-        </nz-card>
       </ng-container>
 
       <!--      json-->
@@ -162,15 +171,12 @@
       <nz-card>
         <h2>Thông tin của Permissions được xác định trong Policy</h2>
         <hr style="opacity: 0.5px; margin-bottom: 25px">
-        <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton" style="margin-bottom: 20px;">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..." style="width: 350px"/>
-          <ng-template #suffixButton>
-            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value, true)">
-              <i nz-icon nzType="search"></i>
-              Tim kiếm
-            </button>
-          </ng-template>
+        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px" [nzSuffix]="suffixIconSearch" nzSize="large">
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..."/>
         </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search(searchBox.value, true)"/>
+        </ng-template>
         <nz-table #tableListPermissions
                   nzShowSizeChanger
                   [nzFrontPagination]="false"
@@ -195,12 +201,12 @@
         </nz-table>
       </nz-card>
       <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
-        <button *ngIf="currentStep==1" (click)="setStep(0)" nz-button nzType="primary" style="
-            border: none;
-            background-color: gray;
-          ">Trở lại
+        <button *ngIf="currentStep==1" (click)="setStep(0)" nzSize="large" nz-button nzType="primary" style="
+            border-color: #0066B3;
+            background-color: white;
+          ">  <span class="button-text-primary" style="color:#0066B3" >Trở lại</span>
         </button>
-        <button *ngIf="currentStep==1" [disabled]="form.invalid" (click)="createPolicy()" nz-button nzType="primary"
+        <button *ngIf="currentStep==1" [disabled]="form.invalid" nzSize="large" (click)="createPolicy()" nz-button nzType="primary"
                 style="
             border: none;
           ">Xác nhận
@@ -212,14 +218,17 @@
 
 
 <div class="text-right" style="display: flex;align-items: center;justify-content: flex-end;height: 100%;">
-  <button *ngIf="currentStep!=1" (click)="goBack()" nz-button nzType="primary" style="
-            border: none;
-            background-color: gray;
-          ">Quay lại
+  <button *ngIf="currentStep!=1" (click)="goBack()" nzSize="large" nz-button nzType="primary" style="
+            border-color: #0066B3;
+            background-color: white;
+          ">
+    <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt=""/>
+    <span class="button-text-primary" style="color:#0066B3" >Quay lại</span>
   </button>
-  <button *ngIf="currentStep!=1" (click)="setStep(1)" nz-button nzType="primary" style="
+  <button *ngIf="currentStep!=1" (click)="setStep(1)" nzSize="large" nz-button nzType="primary" style="
             border: none;
-          ">Tiếp tục
+          "><span class="button-text-primary" style="color:white" >Tiếp tục</span>
+    <img style="padding-left: 10px;" src="assets/imgs/arrow-right-3.svg" alt=""/>
   </button>
 </div>
 
