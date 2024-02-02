@@ -1,3 +1,8 @@
+import {InstancesModel} from "../../pages/instances/instances.model";
+import {VolumeDTO} from "../dto/volume.dto";
+import {BackupVm} from "./backup-vm";
+import {BackupSchedule} from "./schedule.model";
+
 export class PackageBackupModel {
   id: number
   sizeInGB: number
@@ -132,4 +137,10 @@ export class FormUpdate {
   packageId: number
   packageName: string
   description: string
+}
+
+export class ServiceInPackage {
+  instanceBackups: BackupVm[]
+  volumeBackups: VolumeDTO[]
+  backupSchedules: BackupSchedule[]
 }
