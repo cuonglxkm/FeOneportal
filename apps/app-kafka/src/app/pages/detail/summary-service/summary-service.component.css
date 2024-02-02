@@ -1,5 +1,9 @@
-.w-30 {
-  width: 30%;
+.config-label {
+  width: 16%;
+}
+
+#brokers-config .config-label {
+  width: 20%;
 }
 
 .custom-legend {
@@ -38,4 +42,9 @@
   position: relative;
   float: right;
   margin-right: 25px;
+}
+
+#endpoint-config nz-table tr:nth-child(even),
+#brokers-config nz-table tr:nth-child(even) {
+  background-color: #e2e2e9;
 }

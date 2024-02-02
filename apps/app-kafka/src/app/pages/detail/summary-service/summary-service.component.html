@@ -1,21 +1,23 @@
-<nz-card>
+<nz-card id="kafka-config">
     <fieldset class="custom-legend">
         <legend>Thông tin cấu hình Kafka Instance</legend>
         <div class="table-info">
             <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                 <tbody>
                     <tr>
-                        <td class="w-30">RAM</td>
-                        <td>{{ram}} GiB</td>
+                        <td class="config-label">RAM:</td>
+                        <td><b>{{ram}} GiB</b></td>
                     </tr>
                     <tr>
-                        <td class="w-30">CPU</td>
-                        <td>{{cpu}} vCPU</td>
+                        <td class="config-label">CPU:</td>
+                        <td><b>{{cpu}} vCPU</b></td>
                     </tr>
                 </tbody>
             </nz-table>
         </div>
     </fieldset>
+</nz-card>
+<nz-card id="endpoint-config">
     <fieldset class="custom-legend mb-5">
         <legend>Thông tin cấu hình Endpoint</legend>
         <div class="copy-btn">
@@ -29,20 +31,20 @@
                 <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                     <tbody>
                         <tr>
-                            <td class="w-30">Bootstrap server</td>
-                            <td>{{infoConnection.bootstrapServer}}</td>
+                            <td class="config-label">Bootstrap server:</td>
+                            <td><b>{{infoConnection.bootstrapServer}}</b></td>
                         </tr>
                         <tr>
-                            <td class="w-30">Sasl Mechanism</td>
-                            <td>{{infoConnection.saslMechanism}}</td>
+                            <td class="config-label">Sasl Mechanism:</td>
+                            <td><b>{{infoConnection.saslMechanism}}</b></td>
                         </tr>
                         <tr>
-                            <td class="w-30">Security Protocol</td>
-                            <td>{{infoConnection.securityProtocol}}</td>
+                            <td class="config-label">Security Protocol:</td>
+                            <td><b>{{infoConnection.securityProtocol}}</b></td>
                         </tr>
                         <tr>
-                            <td class="w-30">Sasl Jaas Config</td>
-                            <td>{{infoConnection.saslJaasConfig}}</td>
+                            <td class="config-label">Sasl Jaas Config:</td>
+                            <td><b>{{infoConnection.saslJaasConfig}}</b></td>
                         </tr>
                     </tbody>
                 </nz-table>
@@ -50,6 +52,8 @@
 
         </div>
     </fieldset>
+</nz-card>
+<nz-card id="brokers-config">
     <fieldset class="custom-legend mb-5">
         <legend>Thông tin cấu hình Brokers</legend>
         <div class="table-info">
@@ -57,9 +61,9 @@
                 <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                     <tbody>
                         <tr *ngFor="let item of brokerConfigs">
-                            <td class="w-30">
-                                <div class="label-config">
-                                    {{item.configName}}
+                            <td class="config-label">
+                                <div>
+                                    {{item.configName}}:
                                     <span class="ml-2"
                                         [nzTooltipTitle]="item.description"
                                         nzTooltipPlacement="rightTop" nz-tooltip>
@@ -67,7 +71,7 @@
                                     </span>
                                 </div>
                             </td>
-                            <td>{{item.configValue}}</td>
+                            <td><b>{{item.configValue}}</b></td>
                         </tr>
                     </tbody>
                 </nz-table>
