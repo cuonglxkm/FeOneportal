@@ -154,7 +154,7 @@
         <td>{{ data.maxSnapshot }}</td>
         <td>Theo tuần</td>
         <td *ngIf="data.status=='ACTIVE'" style="color: #52c41a">Đang hoạt động</td>
-        <td>{{ data.nextRuntime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+        <td>{{ data.nextRuntime | date:'HH:mm:ss dd/MM/yyyy'}}</td>
         <td nzRight>
           <button
             nz-button

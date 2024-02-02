@@ -104,10 +104,6 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.getGroup();
   }
 
-  changeSearch(e: any): void {
-    this.searchParam = e;
-  }
-
   // Dùng để truyền dữ liệu khi có thay đổi
   emitData() {
     this.listGroupNames.emit(this.groupNames);

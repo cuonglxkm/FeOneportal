@@ -147,19 +147,18 @@
       [nzXXl]="12"
     >
       <nz-input-group
-        style="margin-right: 8px; width: 50%; border-radius: 4px"
-        [nzSuffix]="suffixIconSearch"
+        style="margin-right: 8px; width: 50%; border-radius: 8px"
+        [nzPrefix]="prefixIconSearch"
         nzSize="large"
       >
         <input
           name="name"
           nz-input
           placeholder="Tìm kiếm tên, thời gian tạo ..."
-          [ngModel]="searchParam"
-          (ngModelChange)="changeSearch($event)"
+          [(ngModel)]="searchParam"
         />
       </nz-input-group>
-      <ng-template #suffixIconSearch>
+      <ng-template #prefixIconSearch>
         <img
           src="assets/imgs/search.svg"
           alt=""
@@ -169,9 +168,8 @@
         />
       </ng-template>
       <button
-        class="button-custom"
+        style="border: none; border-radius: 8px"
         nz-button
-        style="color: var(--Primary-1, #0066b3)"
         (click)="reloadGroupTable()"
         nzSize="large"
       >
@@ -299,19 +297,18 @@
       [nzXXl]="8"
     >
       <nz-input-group
-        style="margin-right: 8px; width: 80%; border-radius: 4px"
-        [nzSuffix]="suffixIconSearch"
+        style="margin-right: 8px; width: 80%; border-radius: 8px"
+        [nzPrefix]="prefixIconSearch"
         nzSize="large"
       >
         <input
           name="name"
           nz-input
           placeholder="Tìm kiếm tên, thời gian tạo ..."
-          [ngModel]="searchParam"
-          (ngModelChange)="changeSearch($event)"
+          [(ngModel)]="searchParam"
         />
       </nz-input-group>
-      <ng-template #suffixIconSearch>
+      <ng-template #prefixIconSearch>
         <img
           src="assets/imgs/search.svg"
           alt=""
@@ -321,9 +318,8 @@
         />
       </ng-template>
       <button
-        class="button-custom"
+        style="border: none; border-radius: 8px"
         nz-button
-        style="color: var(--Primary-1, #0066b3)"
         (click)="reloadUserTable()"
         nzSize="large"
       >
@@ -442,19 +438,18 @@
         [nzXXl]="12"
       >
         <nz-input-group
-          style="margin-right: 8px; width: 50%; border-radius: 4px"
-          [nzSuffix]="suffixIconSearch"
+          style="margin-right: 8px; width: 50%; border-radius: 8px"
+          [nzPrefix]="prefixIconSearch"
           nzSize="large"
         >
           <input
             name="name"
             nz-input
             placeholder="Tìm kiếm tên, thời gian tạo ..."
-            [ngModel]="searchParam"
-            (ngModelChange)="changeSearch($event)"
+            [(ngModel)]="searchParam"
           />
         </nz-input-group>
-        <ng-template #suffixIconSearch>
+        <ng-template #prefixIconSearch>
           <img
             src="assets/imgs/search.svg"
             alt=""
@@ -464,9 +459,8 @@
           />
         </ng-template>
         <button
-          class="button-custom"
+          style="border: none; border-radius: 8px"
           nz-button
-          style="color: var(--Primary-1, #0066b3)"
           (click)="reloadPolicyTable()"
           nzSize="large"
         >
