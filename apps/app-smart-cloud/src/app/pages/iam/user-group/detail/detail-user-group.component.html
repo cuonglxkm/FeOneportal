@@ -3,7 +3,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">IAM</a>
@@ -19,25 +19,47 @@
 </page-header>
 <nz-content>
   <nz-card nzTitle="Thông tin chính của Group" [nzLoading]="loading">
-    <nz-row nzJustify="space-between">
-      <nz-col nzSpan="12">
-        <nz-descriptions nzLayout="horizontal" [nzColumn]="1">
-          <nz-descriptions-item [nzTitle]="name">{{ groupModel?.name }}</nz-descriptions-item>
-          <ng-template #name>
-            <div>Tên của Group <span style="color: red">*</span></div>
-          </ng-template>
-          <nz-descriptions-item
-            [nzTitle]="createdAt">{{ groupModel?.createdDate | date: 'dd/MM/yyyy - HH:ss:mm'}}</nz-descriptions-item>
-          <ng-template #createdAt>
-            <div>Thời gian khởi tạo <span style="color: red">*</span></div>
-          </ng-template>
-          <nz-descriptions-item [nzTitle]="parent">{{ groupModel?.parent }}</nz-descriptions-item>
-          <ng-template #parent>
-            <div>Parent Group <span style="color: red">*</span></div>
-          </ng-template>
-        </nz-descriptions>
-      </nz-col>
-    </nz-row>
+    <form nz-form nzLayout="vertical">
+      <nz-row nzJustify="space-between">
+        <nz-col nzSpan="7">
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span>Tên của Group</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control>
+              <input style="border-radius: 4px;" nz-input [value]="groupModel?.name" disabled="true"/>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="7">
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span>Thời gian khởi tạo</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control>
+              <input style="border-radius: 4px;" nz-input
+                     value="{{groupModel?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}} " disabled="true"/>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="7">
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span>Parent Group</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control>
+              <input style="border-radius: 4px;" nz-input [value]="groupModel?.parent" disabled="true"/>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </form>
   </nz-card>
   <nz-card nzTitle="Thông tin bổ sung">
     <nz-tabset>
@@ -46,49 +68,34 @@
       </ng-template>
       <!---Thông tin User -->
       <nz-tab [nzTitle]="user">
-        <nz-row nzAlign="middle" style="margin: 16px 0" nzJustify="space-between">
-          <nz-space [nzSize]="24">
-            <div *nzSpaceItem>
-              <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-                <input [(ngModel)]="valueUser" (input)="onInputChangeUser($event.target['value'])" type="text"
-                       nz-input
-                       placeholder="Tìm kếm tên..."/>
-              </nz-input-group>
-              <ng-template #suffixButton>
-                <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getListBackupVM()">
-                  <span nz-icon nzType="search" nzTheme="outline"></span>
-                  Search
-                </button>
-              </ng-template>
-            </div>
-          </nz-space>
-          <nz-row nzAlign="middle">
-            <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default"
-                    style="cursor: pointer;" (click)="getUsersByGroupName()">
-              <span nz-icon nzType="reload" nzTheme="outline"></span>
+        <nz-row nzGutter="24" style="margin-bottom: 15px;">
+          <nz-col nzSpan="8">
+            <div><b>Users trong Group ({{filteredUsers?.length}})</b></div>
+          </nz-col>
+          <nz-col nzSpan="11" nzOffset="5">
+            <nz-input-group style="margin-right: 8px; width: 50%"
+                            [nzSuffix]="suffixIconSearch">
+              <input name="name" nz-input
+                     placeholder="Tìm kiếm" />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+              <span nz-icon nzType="search" style="color: #0066B3; cursor: pointer" nz-tooltip="Tìm kiếm"></span>
+            </ng-template>
+            <button class="button-custom"
+                    nz-button>
+              <span nz-icon nzType="reload"></span>
             </button>
-            <button nz-button
-                    class="button-del"
-                    nzSize="default"
-                    style="cursor: pointer;"
-                    nz-tooltip nzTooltipTitle="Xóa người dùng" nzTooltipPlacement="bottom"
-                    (click)="removeUser()">
-              <span nz-icon nzType="rest" nzTheme="outline"></span>
-              Xóa
+            <button class="button-custom" nz-button (click)="removeUser()">
+              <i nz-icon nzType="delete"></i>
+              <span>Xóa</span>
             </button>
-            <button nz-button class="button-create"
-                    nzSize="default"
-                    style="cursor: pointer;"
-                    nz-tooltip nzTooltipTitle="Thêm User vào Group" nzTooltipPlacement="bottom"
-                    [routerLink]="'/app-smart-cloud/iam/user-group/'+groupName+'/add-user'">
+            <button nz-button nzType="primary">
               <span nz-icon nzType="plus" nzTheme="outline"></span>
-              Thêm User
+              <span class="button-text-primary">Tạo mới</span>
             </button>
-          </nz-row>
+          </nz-col>
         </nz-row>
-        <div style="margin-bottom: 8px; margin-top: 8px">Users trong Group
-          <span>({{filteredUsers?.length}})</span>
-        </div>
+
         <nz-table
           #rowSelectionTable
           nzShowPagination
@@ -146,7 +153,8 @@
                        placeholder="Tìm kếm tên..."/>
               </nz-input-group>
               <ng-template #suffixButton>
-                <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getPoliciesByGroupName()">
+                <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary"
+                        nzSearch (click)="getPoliciesByGroupName()">
                   <span nz-icon nzType="search" nzTheme="outline"></span>
                   Search
                 </button>

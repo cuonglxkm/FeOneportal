@@ -9,44 +9,11 @@ import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angul
 import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
+import {BackupPackageRequestModel, FormCreateBackupPackage} from 'src/app/shared/models/package-backup.model';
 
 export class DateBackupPackage {
   createdDate: Date
   expiredDate: Date
-}
-
-export class FormCreateBackupPackage {
-  packageName: string
-  sizeInGB: number
-  vpcId:  string
-  oneSMEAddonId: null
-  serviceType: number
-  serviceInstanceId: number
-  customerId: number
-  createDate: Date
-  expireDate: Date
-  saleDept: null
-  saleDeptCode: null
-  contactPersonEmail: null
-  contactPersonPhone: null
-  contactPersonName: null
-  note: string
-  createDateInContract: null
-  am: null
-  amManager: null
-  isTrial: false
-  offerId: null
-  couponCode: null
-  dhsxkd_SubscriptionId: null
-  dSubscriptionNumber: null
-  dSubscriptionType: null
-  oneSME_SubscriptionId: null
-  actionType: number
-  regionId: number
-  serviceName: string
-  typeName: string
-  userEmail: string
-  actorEmail: string
 }
 
 @Component({
@@ -54,7 +21,7 @@ export class FormCreateBackupPackage {
   templateUrl: './create-package-backup.component.html',
   styleUrls: ['./create-package-backup.component.less'],
 })
-export class CreatePackageBackupComponent implements OnInit{
+export class CreatePackageBackupComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -100,12 +67,15 @@ export class CreatePackageBackupComponent implements OnInit{
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService) {
-      this.validateForm.get('time').valueChanges.subscribe(data => {
-        this.backupPackageDate.expiredDate = new Date(new Date()
-          .setDate(this.backupPackageDate.createdDate.getDate() + data*30))
-        this.getTotalAmount()
-      })
+    this.validateForm.get('time').valueChanges.subscribe(data => {
+      this.backupPackageDate.expiredDate = new Date(new Date()
+        .setDate(this.backupPackageDate.createdDate.getDate() + data * 30))
+      this.getTotalAmount()
+    })
 
+    this.validateForm.get('storage').valueChanges.subscribe(data => {
+      this.getTotalAmount()
+    })
 
   }
 
@@ -122,19 +92,62 @@ export class CreatePackageBackupComponent implements OnInit{
     this.getTotalAmount()
   }
 
-  submitForm(){
+  submitForm() {
     console.log(this.validateForm.getRawValue())
-
+    if(this.validateForm.valid){
+      this.doCreate()
+    }
   }
 
-  goBack(){
+  doCreate() {
+    this.isLoading = true
+    this.getTotalAmount()
+    let request: BackupPackageRequestModel = new BackupPackageRequestModel()
+    request.customerId = this.formCreateBackupPackage.customerId;
+    request.createdByUserId = this.formCreateBackupPackage.customerId;
+    request.note = 'tạo gói backup';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.formCreateBackupPackage),
+        specificationType: 'backuppackage_create',
+        price: this.orderItem?.totalPayment?.amount,
+        serviceDuration: this.validateForm.get('time').value
+      }
+    ]
+    console.log('request', request)
+    this.packageBackupService.createOrder(request).subscribe(data => {
+      if (data != undefined || data != null) {
+        //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
+        if (data.code == 200) {
+          this.isLoading = false;
+          this.notification.success('Thành công', 'Yêu cầu tạo gói backup thành công.')
+          this.router.navigate(['/app-smart-cloud/backup/packages']);
+        }
+        //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
+        else if (data.code == 310) {
+          this.isLoading = false;
+          // this.router.navigate([data.data]);
+          window.location.href = data.data;
+        }
+      } else {
+        this.isLoading = false;
+        this.notification.error('Thất bại', 'Yêu cầu tạo gói backup thất bại.' + data.message)
+      }
+    })
+  }
+
+  goBack() {
     this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 
+
   formCreateBackupPackage: FormCreateBackupPackage = new FormCreateBackupPackage()
+
   packageBackupInit() {
     this.formCreateBackupPackage.packageName = this.validateForm.get('namePackage').value
     this.formCreateBackupPackage.sizeInGB = this.validateForm.get('storage').value
+    this.formCreateBackupPackage.description = this.validateForm.get('description').value
     this.formCreateBackupPackage.vpcId = this.project.toString()
     this.formCreateBackupPackage.oneSMEAddonId = null
     this.formCreateBackupPackage.serviceType = 14
@@ -159,7 +172,7 @@ export class CreatePackageBackupComponent implements OnInit{
     this.formCreateBackupPackage.oneSME_SubscriptionId = null;
     this.formCreateBackupPackage.actionType = 0;
     this.formCreateBackupPackage.regionId = this.region;
-    this.formCreateBackupPackage.serviceName = this.validateForm.controls.namePackage.value ;
+    this.formCreateBackupPackage.serviceName = this.validateForm.controls.namePackage.value;
     this.formCreateBackupPackage.typeName =
       "SharedKernel.IntegrationEvents.Orders.Specifications.BackupPackageCreateSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null";
     this.formCreateBackupPackage.userEmail = this.tokenService.get()?.email;
@@ -193,8 +206,6 @@ export class CreatePackageBackupComponent implements OnInit{
   ngOnInit() {
     this.backupPackageDate.createdDate = new Date()
     this.backupPackageDate.expiredDate = new Date(new Date().setDate(this.backupPackageDate.createdDate.getDate() + 30))
-    console.log('created date', this.backupPackageDate.createdDate?.toISOString())
-    console.log('expired date', this.backupPackageDate.expiredDate?.toISOString())
     this.getTotalAmount()
   }
 }

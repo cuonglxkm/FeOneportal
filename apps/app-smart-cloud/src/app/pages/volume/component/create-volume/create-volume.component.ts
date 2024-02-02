@@ -125,7 +125,7 @@ export class CreateVolumeComponent implements OnInit {
     isSnapshot: [false, []],
     snapshot: [null as number , []],
     radio: [''],
-    instanceId: [null as number, Validators.required],
+    instanceId: [null as number],
     time: [1, Validators.required],
     description: ['', Validators.maxLength(700)],
     storage: [1, Validators.required],

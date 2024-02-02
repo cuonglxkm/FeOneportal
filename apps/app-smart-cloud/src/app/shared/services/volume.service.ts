@@ -91,9 +91,7 @@ export class VolumeService extends BaseService {
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions).pipe(
-      catchError(this.handleError<boolean>('delete volume error.'))
-    );
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions)
   }
 
   addVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {

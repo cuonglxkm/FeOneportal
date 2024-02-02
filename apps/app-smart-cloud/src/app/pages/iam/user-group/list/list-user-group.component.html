@@ -1,100 +1,148 @@
-<page-header [extra]="extra"
-             [content]="content"
-             [breadcrumb]="breadcrumb"
+<page-header [breadcrumb]="breadcrumb"
              [title]="'Danh sách User Groups'">
-    <ng-template #breadcrumb>
-        <nz-breadcrumb>
-            <nz-breadcrumb-item>
-                <a [routerLink]="['/']">Home</a>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item>
-                <a [routerLink]="['/']">IAM</a>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item> User Groups </nz-breadcrumb-item>
-        </nz-breadcrumb>
-    </ng-template>
-    <ng-template #content>
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
-                   nz-input
-                   placeholder="Tìm kếm tên..."/>
-        </nz-input-group>
-        <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch nz-tooltip nzTooltipTitle="Tìm kiếm tên Group" nzTooltipPlacement="bottom">
-                <span nz-icon nzType="search" nzTheme="outline" (click)="getData()"></span>Search
-            </button>
-        </ng-template>
-    </ng-template>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">IAM</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        User Groups
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <!--    <ng-template #content>-->
+  <!--        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">-->
+  <!--            <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"-->
+  <!--                   nz-input-->
+  <!--                   placeholder="Tìm kếm tên..."/>-->
+  <!--        </nz-input-group>-->
+  <!--        <ng-template #suffixButton>-->
+  <!--            <button nz-button nzType="primary" nzSearch nz-tooltip nzTooltipTitle="Tìm kiếm tên Group" nzTooltipPlacement="bottom">-->
+  <!--                <span nz-icon nzType="search" nzTheme="outline" (click)="getData()"></span>Search-->
+  <!--            </button>-->
+  <!--        </ng-template>-->
+  <!--    </ng-template>-->
 
-    <ng-template #extra>
-        <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default" style="cursor: pointer; margin-right: 5px;" (click)="refresh()">
-            <span nz-icon nzType="reload" nzTheme="outline"></span>
-        </button>
-        <button nz-button nz-tooltip nzTooltipTitle="Xóa" nzTooltipPlacement="bottom" class="button-del" nzSize="default" (click)="showModalDelete()">
-            <span nz-icon nzType="delete" nzTheme="outline"></span>
-            Xóa
-        </button>
-        <button nz-button nz-tooltip nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
-                (click)="navigateToCreate()">
-            <span nz-icon nzType="plus" nzTheme="outline"></span>
-            Tạo mới
-        </button>
-    </ng-template>
+  <!--    <ng-template #extra>-->
+  <!--        <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default" style="cursor: pointer; margin-right: 5px;" (click)="refresh()">-->
+  <!--            <span nz-icon nzType="reload" nzTheme="outline"></span>-->
+  <!--        </button>-->
+  <!--        <button nz-button nz-tooltip nzTooltipTitle="Xóa" nzTooltipPlacement="bottom" class="button-del" nzSize="default" (click)="showModalDelete()">-->
+  <!--            <span nz-icon nzType="delete" nzTheme="outline"></span>-->
+  <!--            Xóa-->
+  <!--        </button>-->
+  <!--        <button nz-button nz-tooltip nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"-->
+  <!--                (click)="navigateToCreate()">-->
+  <!--            <span nz-icon nzType="plus" nzTheme="outline"></span>-->
+  <!--            Tạo mới-->
+  <!--        </button>-->
+  <!--    </ng-template>-->
 </page-header>
 <nz-content>
-    <nz-card>
-        <nz-table
-            #rowSelectionTable
-            nzShowSizeChanger
-            [nzScroll]="{ x: '100%', y: '55vh' }"
-            [nzData]="collection?.records"
-            (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-            [nzLoading]="loading"
-            [nzFrontPagination]="false"
-            [nzTotal]="collection?.totalCount"
-            [nzPageSize]="collection?.pageSize"
-            [nzPageIndex]="collection?.currentPage"
-        >
-            <thead>
-            <tr>
-                <th [nzChecked]="checked"
-                    [nzIndeterminate]="indeterminate"
-                    nzLabel="Select all"
-                    [nzWidth]="'50px'"
-                    (nzCheckedChange)="onAllChecked($event)" nzLeft></th>
-                <th nzLeft>Name</th>
-                <th nzBreakWord>Số lượng users</th>
-                <th nzBreakWord>Group Parent</th>
-                <th nzBreakWord>Thời gian tạo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let data of rowSelectionTable.data">
-                <td
-                  [nzChecked]="setOfCheckedId.has(data.name)"
-                        (nzCheckedChange)="onItemChecked(data.name, $event)"
-                        nzLeft
-                ></td>
-                <td nzLeft>
-                    <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom" [routerLink]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
-                </td>
-                <td nzBreakWord>{{data.userOfGroup}}</td>
-                <td *ngIf="data.parent === null" nzBreakWord></td>
-                <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td>
-                <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
-            </tr>
-            </tbody>
-        </nz-table>
-    </nz-card>
+  <nz-card>
+    <nz-row nzGutter="24" style="margin-bottom: 25px;">
+      <nz-col nzSpan="8">
+        <span class="table-title">Thông tin User Group</span>
+      </nz-col>
+      <nz-col nzSpan="11" nzOffset="5">
+        <nz-input-group style="margin-right: 8px; width: 50%"
+                        [nzSuffix]="suffixIconSearch">
+          <input name="name" nz-input
+                 placeholder="Tìm kiếm"
+                 [(ngModel)]="value"
+                 (input)="onInputChange($event.target['value'])"/>
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"
+              style="color: #0066B3; cursor: pointer"
+              nz-tooltip="Tìm kiếm" (click)="getData()"></span>
+        </ng-template>
+        <button class="button-custom"
+                nz-button
+                (click)="refresh()">
+          <span nz-icon nzType="reload"></span>
+        </button>
+        <button class="button-custom" nz-button (click)="showModalDelete()">
+          <i nz-icon nzType="delete"></i>
+          <span>Xóa</span>
+        </button>
+        <button nz-button nzType="primary" (click)="navigateToCreate()">
+        <span
+          nz-icon
+          nzType="plus"
+          nzTheme="outline">
+        </span>
+          <span class="button-text-primary">Tạo mới</span>
+        </button>
+      </nz-col>
+    </nz-row>
+    <!--    <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">-->
+    <!--      <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">-->
+
+    <!--      </div>-->
+    <!--      <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">-->
+    <!--        -->
+    <!--        -->
+
+    <!--        -->
+    <!--      </div>-->
+    <!--    </div>-->
+    <nz-table
+      #rowSelectionTable
+      nzShowSizeChanger
+      [nzScroll]="{ x: '100%', y: '55vh' }"
+      [nzData]="collection?.records"
+      (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+      [nzLoading]="loading"
+      [nzFrontPagination]="false"
+      [nzTotal]="collection?.totalCount"
+      [nzPageSize]="collection?.pageSize"
+      [nzPageIndex]="collection?.currentPage"
+    >
+      <thead>
+      <tr>
+        <th [nzChecked]="checked"
+            [nzIndeterminate]="indeterminate"
+            nzLabel="Select all"
+            [nzWidth]="'50px'"
+            (nzCheckedChange)="onAllChecked($event)" nzLeft></th>
+        <th nzLeft>Name</th>
+        <th nzBreakWord>Số lượng users</th>
+        <th nzBreakWord>Group Parent</th>
+        <th nzBreakWord>Thời gian tạo</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td
+          [nzChecked]="setOfCheckedId.has(data.name)"
+          (nzCheckedChange)="onItemChecked(data.name, $event)"
+          nzLeft
+        ></td>
+        <td nzLeft>
+          <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+             [routerLink]="'/app-smart-cloud/iam/user-group/' + data.name">{{ data.name }}</a>
+        </td>
+        <td nzBreakWord>{{data.userOfGroup}}</td>
+        <td *ngIf="data.parent === null" nzBreakWord></td>
+        <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td>
+        <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
 </nz-content>
 <ng-container *ngIf="deleteList.length == 1; else elseBlock">
-    <one-portal-delete-one-user-group [isVisible]="!!deleteList.length" [nameGroup]="deleteList"
-                                      (onCancel)="handleCancelDelete()" (onOk)="handleOkDelete()"/>
+  <one-portal-delete-one-user-group [isVisible]="!!deleteList.length" [nameGroup]="deleteList"
+                                    (onCancel)="handleCancelDelete()" (onOk)="handleOkDelete()"/>
 </ng-container>
 <ng-template #elseBlock>
-    <one-portal-delete-user-group [isVisible]="!!deleteList.length" [items]="deleteList"
-                                  (onCancel)="handleCancelDelete()"
-                                  (onOk)="handleOkDelete()"/>
+  <one-portal-delete-user-group [isVisible]="!!deleteList.length" [items]="deleteList"
+                                (onCancel)="handleCancelDelete()"
+                                (onOk)="handleOkDelete()"/>
 </ng-template>
 
 
