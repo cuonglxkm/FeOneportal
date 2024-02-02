@@ -5,7 +5,9 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
@@ -37,28 +39,33 @@
   (listPolicyNames)="onChangePolicyNames($event)"
 ></one-portal-attach-permission-policy>
 
-<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+<div nz-row [nzGutter]="24">
   <div
     class="text-right p-0 m-b-0"
     nz-col
-    [nzLg]="24"
-    [nzMd]="24"
-    [nzSm]="24"
-    [nzXl]="24"
-    [nzXs]="24"
-    [nzXXl]="24"
+    nzSpan="24"
   >
     <button
-      class="m-r-8"
+      class="button-custom"
       nz-button
-      nzType="default"
-      style="background-color: #9c9c9c; color: white"
+      style="color: var(--Primary-1, #0066b3)"
       (click)="navigateToDetail()"
+      nzSize="large"
     >
-      Quay lại
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/arrow-left-2.svg"
+        alt=""
+      />
+      <span class="button-text-default">Quay lại</span>
     </button>
-    <button class="m-r-8" nz-button nzType="primary" (click)="addPolicies()">
-      Thêm policies
+    <button nz-button nzType="primary" (click)="addPolicies()" nzSize="large">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/add-circle.svg"
+        alt=""
+      />
+      <span class="button-text-primary">Thêm policies</span>
     </button>
   </div>
 </div>

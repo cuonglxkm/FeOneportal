@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel } from 'src/app/shared/models/region.model';
@@ -14,6 +15,8 @@ import {
 } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { concatMap, finalize, from } from 'rxjs';
+import { DatePipe } from '@angular/common';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -34,6 +37,7 @@ export class UserDetailComponent implements OnInit {
   groupParam: string = '';
   typePolicy: string = '';
   loading: boolean = true;
+  createdDate: string = '';
 
   filterStatus = [
     { text: 'Tất cả các loại', value: '' },
@@ -50,8 +54,12 @@ export class UserDetailComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private datePipe: DatePipe,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.optionJsonEditor = new JsonEditorOptions();
+    this.optionJsonEditor.mode = 'text';
+  }
 
   ngOnInit(): void {
     this.userName = this.activatedRoute.snapshot.paramMap.get('userName');
@@ -63,6 +71,7 @@ export class UserDetailComponent implements OnInit {
     this.listPolicyNames = [];
     this.service.getUserByUsername(this.userName).subscribe((data: any) => {
       this.user = data;
+      this.createdDate = this.datePipe.transform(this.user.createdDate, 'HH:mm:ss dd/MM/yyyy');
       console.log('user detail', this.user);
       this.listGroupNames = this.user.userGroups;
       this.listGroupNames = this.listGroupNames.filter((e) => e != '');
@@ -83,14 +92,6 @@ export class UserDetailComponent implements OnInit {
     // Handle the region change event
     this.projectId = project.id;
     this.cdr.detectChanges();
-  }
-
-  changePolicyParam(e: any): void {
-    this.policyParam = e;
-  }
-
-  changeGroupParam(e: any): void {
-    this.groupParam = e;
   }
 
   //Danh sách Policies
@@ -315,6 +316,18 @@ export class UserDetailComponent implements OnInit {
       this.getUserByUserName();
     });
   }
+
+   // View Json Object
+   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+   public optionJsonEditor: JsonEditorOptions;
+   expandSet = new Set<string>();
+   onExpandChange(name: string, checked: boolean): void {
+     if (checked) {
+       this.expandSet.add(name);
+     } else {
+       this.expandSet.delete(name);
+     }
+   }
 
   navigateToAddPolicies() {
     this.router.navigate([
