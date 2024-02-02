@@ -2,7 +2,7 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  padding: 14px 36px;
+  
 }
 
 .w-10 {
@@ -21,9 +21,7 @@ nz-table#access-logs th {
   letter-spacing: 0.1px;
 }
 
-.table{
-  padding: 14px 36px;
-}
+
 
 .search-icon {
   color: #989bb3;
@@ -69,4 +67,18 @@ nz-table#access-logs th {
 .show-scrollTop {
   opacity: 1;
   transition: all 0.2s ease-in-out;
+}
+
+.affix-bar{
+  background-color: #e2eefc;
+  padding: 16px;
+}
+
+.affix-header{
+  padding: 0px;
+}
+
+.affix-filter{
+  background-color: #fff;
+  padding: 16px 0;
 }
