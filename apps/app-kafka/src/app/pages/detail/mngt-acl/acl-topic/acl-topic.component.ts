@@ -116,7 +116,6 @@ export class AclTopicComponent implements OnInit {
         (res) => {
           if (res && res.code == 200) {
             this.total = res.data.totalElements
-            console.log('total: ', this.total);
             this.listAclTopic = res.data.content;
           }
         }

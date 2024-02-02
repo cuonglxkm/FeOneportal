@@ -20,6 +20,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ChartData } from '../../../core/models/chart-data.model';
 import { HealthCheckModel } from '../../../core/models/health-check.model';
 import { DashBoardService } from '../../../services/dashboard.service';
+import { DashboardGeneral } from '../../../core/models/dashboard-general.model';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -59,6 +60,7 @@ export class DashboardComponent implements OnInit {
   messageRateData: ChartData = new ChartData();
   storageData: ChartData = new ChartData();
 
+  statisticsNumber: DashboardGeneral = new DashboardGeneral();
   previousTimeMins = 5;
   numPoints = 15;
 
@@ -134,11 +136,87 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getStatisticNumber(this.serviceOrderCode);
+    this.checkClusterIsHealth(this.serviceOrderCode);
     this.getCheckHealthChart(this.serviceOrderCode, -1, -1);
     this.getByteInChart(this.serviceOrderCode, this.previousTimeMins, this.byteInQuery, this.numPoints);
     this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
     this.getMessageRateChart(this.serviceOrderCode, this.previousTimeMins, this.messageRateQuery, this.numPoints);
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
+  }
+
+  getStatisticNumber(serviceOrderCode: string) {
+    this.getTopicCount(serviceOrderCode);
+    this.getPartitionCount(serviceOrderCode);
+    this.getMessageCount(serviceOrderCode);
+    this.getOfflinePartitionCount(serviceOrderCode);
+  }
+
+  getTopicCount(serviceOrderCode: string) {
+    this.dashBoardService.getTopicCount(serviceOrderCode)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(
+        (res: any) => {
+          if (res.code && res.code == 200) {
+            this.statisticsNumber.topics = res.data;
+          } else {
+            this.unsubscribe$.next();
+          }
+        });
+  }
+
+  getPartitionCount(serviceOrderCode: string) {
+    this.dashBoardService.getPartitionCount(serviceOrderCode)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(
+        (res: any) => {
+          if (res.code && res.code == 200) {
+            this.statisticsNumber.partitions = res.data;
+          } else {
+            this.unsubscribe$.next();
+          }
+        });
+  }
+
+  getMessageCount(serviceOrderCode: string) {
+    this.dashBoardService.getMessageCount(serviceOrderCode)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res: any) => {
+        if (res.code && res.code == 200) {
+          this.statisticsNumber.messages = res.data;
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  getOfflinePartitionCount(serviceOrderCode: string) {
+    this.dashBoardService.getOfflinePartitionCount(serviceOrderCode)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res: any) => {
+        if (res.code && res.code == 200) {
+          this.statisticsNumber.offline_partitions = res.data;
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  checkClusterIsHealth(serviceOrderCode: string) {
+    this.dashBoardService.getCheckHealthCluster(serviceOrderCode)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res: any) => {
+        if (res.code && res.code == 200) {
+          this.isHealth = res.data.status;
+          this.isHealthMsg = res.data.message;
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  getOffParColor(): string {
+    return this.statisticsNumber.offline_partitions > 0 ? '#ff0000' : '#308ef3';
   }
 
   onChangeUnitStorage() {

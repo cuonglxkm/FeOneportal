@@ -11,7 +11,27 @@ import { HealthCheckModel } from '../core/models/health-check.model';
 export class DashBoardService {
   private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  getTopicCount(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}/stats/topicCount?serviceOrderCode=${serviceOrderCode}`);
+  }
+
+  getPartitionCount(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}/stats/partitionCount?serviceOrderCode=${serviceOrderCode}`);
+  }
+
+  getMessageCount(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}/stats/messageCount?serviceOrderCode=${serviceOrderCode}`);
+  }
+
+  getOfflinePartitionCount(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}/stats/offlinePartitionCount?serviceOrderCode=${serviceOrderCode}`);
+  }
+
+  getCheckHealthCluster(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}/stats/isHealth?serviceOrderCode=${serviceOrderCode}`);
+  }
 
   getCheckHealthChart(
     serviceOrderCode: string,
