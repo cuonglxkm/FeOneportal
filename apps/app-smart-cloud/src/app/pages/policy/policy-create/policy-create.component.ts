@@ -326,7 +326,7 @@ export class PolicyCreateComponent {
     const request = {
       name: this.form.controls['name'].value,
       description: this.form.controls['description'].value,
-      action: this.listOfPermissionSelectedViewStep2,
+      actions: this.listOfPermissionSelectedViewStep2,
       resource : "*",
       effect: "allow",
     }

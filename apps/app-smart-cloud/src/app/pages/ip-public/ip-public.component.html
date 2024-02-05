@@ -1,8 +1,8 @@
-<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách IP Public'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách IP Public'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Ip Public</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -11,44 +11,35 @@
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
-
-  <ng-template #content>
-    <div *ngIf="!isBegin" nz-row class="mb-md">
-      <div class="row">
-        <div class="col-md-6" style="display:flex;">
-          <h4 style="display: flex; align-items: center; margin-right:10px">Trạng thái Ip Public:</h4>
-          <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="default" style="width: 150px;">
-            <nz-option *ngFor="let p of statusData" [nzValue]="p.value" [nzLabel]="p.name" ></nz-option>
-          </nz-select>
-        </div>
-        <div class="col-md-6" style="margin-left: 30px">
-          <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-            <input #searchBox type="text" nz-input placeholder="Tìm kiến địa chỉ Ip" style="width: 350px"/>
-            <ng-template #suffixButton>
-              <button nz-button nzType="primary" nzSize="default" nzSearch (click)="search(searchBox.value)">
-                <span nz-icon nzType="search" nzTheme="outline"></span>
-                Tim kiếm
-              </button>
-            </ng-template>
-          </nz-input-group>
-        </div>
-      </div>
-    </div>
-  </ng-template>
-
-  <ng-template #extra>
-    <button *ngIf="!isBegin" nzSize="default" (click)="createIp()" nz-button nzType="primary" style="
-            border: 1px solid #52c41a;
-            border-radius: 2px;
-            background-color: #52c41a;
-          ">+ Tạo mới
-    </button>
-  </ng-template>
 </page-header>
 
 <nz-card>
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false>
+      <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+        <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+          <div style="display:flex;">
+            <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="large" style="width: 170px; margin-right: 20px;">
+              <nz-option *ngFor="let p of statusData" [nzValue]="p.value" [nzLabel]="p.name" ></nz-option>
+            </nz-select>
+            <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch" nzSize="large">
+              <input #searchBox name="name" nz-input placeholder="Tìm kiếm"/>
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search(searchBox.value)"/>
+            </ng-template>
+          </div>
+        </div>
+        <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
+          <div>
+
+            <button nz-button nzType="primary" (click)="createIp()" nzSize="large">
+              <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+              <span class="button-text-primary">Tạo mới IP Public</span>
+            </button>
+          </div>
+        </div>
+      </div>
       <!-- Bảng-->
       <nz-table #rowSelectionTable  nzShowPagination nzShowSizeChanger [nzData]="listOfIp"
                 [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
@@ -92,7 +83,7 @@
           <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
-          <button (click)="createIp()" nz-button nzSize="large" nzType="primary">Khởi tạo ngay</button>
+          <button (click)="createIp()" nz-button nzSize="large" nzType="primary">Khởi tạo IP Public</button>
         </div>
       </nz-result>
     </ng-container>
