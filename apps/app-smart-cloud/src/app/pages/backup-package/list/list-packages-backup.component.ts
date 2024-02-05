@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
-import {FormUpdate, PackageBackupModel} from "../../../shared/models/package-backup.model";
+import {FormUpdate, PackageBackupModel, ServiceInPackage} from "../../../shared/models/package-backup.model";
 import {BaseResponse} from "../../../../../../../libs/common-utils/src";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 
@@ -121,9 +121,18 @@ export class ListPackagesBackupComponent implements OnInit {
     this.idBackupPackage = data.id
     this.packageName = data.packageName
     console.log('data select', data)
+
+    this.packageBackupService.getServiceInPackage(data.id).subscribe(data1 => {
+      this.serviceInPackage = data1
+      console.log(data1)
+    })
+
   }
+
+  serviceInPackage: ServiceInPackage = new ServiceInPackage()
   handleDeletedOk() {
     this.isLoadingDelete = true
+
     if(this.valueDelete.includes(this.packageName)){
       this.packageBackupService.delete(this.idBackupPackage).subscribe(data => {
           this.isLoadingDelete = false

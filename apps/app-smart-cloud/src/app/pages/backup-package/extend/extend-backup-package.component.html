@@ -33,7 +33,7 @@
                 style="margin-right: 10px;"></span>
         </nz-col>
         <nz-col>
-          <div style="color: #035DED;">Gia hạn gói Backup</div>
+          <div>Gia hạn gói Backup</div>
         </nz-col>
       </nz-row>
     </div>
@@ -114,12 +114,12 @@
               </div>
             </nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="time"
-                         id="time"
-                         (ngModelChange)="onTimeSelected($event)"
-                         [nzShowSearch]="false">
-                <nz-option *ngFor="let i of time" [nzLabel]="i.label" [nzValue]="i.value"/>
-              </nz-select>
+              <nz-input-number formControlName="time"
+                               id="time"
+                               style="width: 100%;"
+                               [nzMin]="1"
+                               [nzMax]="100"
+                               [nzStep]="1"/>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>

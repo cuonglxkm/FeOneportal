@@ -21,36 +21,36 @@
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
-    <div>
-      <div nz-col nzSpan="4">
-        <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create"
-                nzSize="default" (click)="navigateToCreate()" style="cursor: pointer;">
-          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-          Tạo gói Backup
-        </button>
-      </div>
-    </div>
   </ng-template>
 </page-header>
 <nz-content>
   <nz-card>
     <h3>Danh sách gói Backup</h3>
-    <nz-row>
-      <nz-select [nzPlaceHolder]="'Trạng thái'"
-                 style="width: 150px;"
-                 [ngModel]="selected"
-                 (ngModelChange)="onChangeSelected($event)"
-                 nzShowSearch="false">
-        <nz-option nzValue="ALL" nzLabel="Tất cả trạng thái"></nz-option>
-        <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
-        <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
-      </nz-select>
-      <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px;">
-        <input nz-input
-               [(ngModel)]="value"
-               (input)="onInputChange($event.target['value'])"
-               [placeholder]="'Tìm kiếm'"/>
-      </nz-input-group>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-select [nzPlaceHolder]="'Trạng thái'"
+                   style="width: 150px; border-radius: 8px;"
+                   [ngModel]="selected"
+                   (ngModelChange)="onChangeSelected($event)"
+                   nzShowSearch="false">
+          <nz-option nzValue="ALL" nzLabel="Tất cả trạng thái"></nz-option>
+          <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
+          <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
+        </nz-select>
+        <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px; border-radius: 8px;">
+          <input nz-input
+                 [(ngModel)]="value"
+                 (input)="onInputChange($event.target['value'])"
+                 [placeholder]="'Tìm kiếm'"/>
+        </nz-input-group>
+      </nz-col>
+      <nz-col nzSpan="8" style="flex:none;">
+        <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create"
+                nzSize="default" (click)="navigateToCreate()" style="cursor: pointer;">
+          <span nz-icon nzType="plus" nzTheme="outline"></span>
+          Tạo gói Backup
+        </button>
+      </nz-col>
     </nz-row>
 
     <ng-template #suffixIconSearch>
@@ -59,6 +59,7 @@
     <nz-table #fixedTable
               style="margin-top: 15px;"
               nzShowPagination
+              [nzShowTotal]="rangeTemplate"
               [nzScroll]="{ x: '100%', y: '55vh' }"
               [nzData]="response?.records"
               [nzPageSize]="response?.pageSize"
@@ -66,7 +67,7 @@
               [nzPageIndex]="response?.currentPage"
               (nzPageIndexChange)="onPageIndexChange($event)"
               [nzTotal]="response?.totalCount"
-              nzShowSizeChanger="true"
+
               [nzFrontPagination]="false"
               [nzLoading]="isLoading">
       <thead>
@@ -193,25 +194,37 @@
                           [nzMessage]="'Các bản backup VM của gói backup này cũng sẽ bị xóa.'"
                           nzShowIcon
                 ></nz-alert>
-                <nz-table nzShowPagination="false" style="margin-top: 15px;">
+                <nz-table #dataTable nzShowPagination="false" style="margin-top: 15px;" [nzScroll]="{ y: '100px' }" [nzData]="serviceInPackage.instanceBackups">
                   <thead>
                   <tr>
                     <th>Tên bản Backup</th>
                     <th>Dung lượng</th>
                   </tr>
                   </thead>
+                  <tbody>
+                  <tr *ngFor="let data of dataTable.data">
+                    <td>{{data.name}}</td>
+                    <td>{{data.size}}</td>
+                  </tr>
+                  </tbody>
                 </nz-table>
                 <nz-alert nzBanner  style="margin-top: 15px;"
                           [nzMessage]="'Các bản backup Volume của gói backup này cũng sẽ bị xóa.'"
                           nzShowIcon
                 ></nz-alert>
-                <nz-table nzShowPagination="false" style="margin-top: 15px;">
+                <nz-table #volumeTable nzShowPagination="false" style="margin-top: 15px;" [nzScroll]="{ y: '100px' }" [nzData]="serviceInPackage.volumeBackups">
                   <thead>
                   <tr>
                     <th>Tên bản Backup</th>
                     <th>Dung lượng</th>
                   </tr>
                   </thead>
+                  <tbody>
+                  <tr *ngFor="let index of volumeTable.data">
+                    <td>{{index.name}}</td>
+                    <td>{{index.sizeInGB}}</td>
+                  </tr>
+                  </tbody>
                 </nz-table>
                 <nz-alert nzBanner style="margin-top: 15px;"
                           [nzMessage]="'Các lịch backup tự động được tạo từ Gói backup này cũng sẽ bị xóa.'"
@@ -234,5 +247,10 @@
       </tr>
       </tbody>
     </nz-table>
+    <ng-template #rangeTemplate let-range="range" let-total >
+      <div>
+        <p style="font-size: 16px; padding-top: 2px;">Số bản ghi mỗi trang {{ range[0] }}-{{ range[1] }}/{{ total }}</p>
+      </div>
+    </ng-template>
   </nz-card>
 </nz-content>

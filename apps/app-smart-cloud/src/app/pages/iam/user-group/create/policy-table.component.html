@@ -1,24 +1,24 @@
-<nz-card [nzTitle]="policyCardTitle">
-    <nz-row style="margin-bottom: 16px" nzJustify="space-between">
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
-                   nz-input
-                   placeholder="Tìm kếm tên."/>
+<nz-card>
+  <nz-row nzJustify="space-between" style="margin-bottom: 16px">
+    <nz-col>
+      <div style="font-size: 20px; font-weight: 600">Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
+    </nz-col>
+    <nz-col>
+      <nz-space>
+        <nz-input-group *nzSpaceItem nzSearch [nzPrefix]="prefixIconSearch">
+          <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+                 placeholder="Tìm kếm tên..."/>
         </nz-input-group>
-        <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch htmlType="button" (click)="searchPolicies()">
-                <span nz-icon nzTheme="outline"></span>Search
-            </button>
+        <ng-template #prefixIconSearch>
+          <span nz-icon nzType="search"></span>
         </ng-template>
-        <nz-row nzAlign="middle">
-            <button nz-button nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
-                <span nz-icon nzType="reload" nzTheme="outline"></span>
-            </button>
-        </nz-row>
-    </nz-row>
-    <nz-row>
-        <h3>Thông tin Policy</h3>
-    </nz-row>
+        <button *nzSpaceItem nz-button nzSize="default" style="cursor: pointer;" (click)="reload()">
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+      </nz-space>
+    </nz-col>
+  </nz-row>
+
     <nz-table
         #rowSelectionTable
         nzShowSizeChanger
@@ -84,6 +84,3 @@
         </tbody>
     </nz-table>
 </nz-card>
-<ng-template #policyCardTitle>
-    <div>Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
-</ng-template>
