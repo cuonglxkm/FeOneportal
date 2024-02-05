@@ -29,13 +29,15 @@ export class IpPublicComponent implements OnInit {
   ipAddress: any = '';
   isCheckState: any = true;
   actionIp: any;
-  selectedAction = 'Gắn Ip Pulbic';
+  // selectedAction = 'Gắn Ip Pulbic';
   selectedStatus = '';
   isVisibleMounted: boolean = false;
   isVisibleRemove: boolean = false;
   isVisibleDelete: boolean = false;
   listInstance: any[];
   instanceSelected;
+  loadingAtt = true;
+  disableAtt = true;
   id: any;
 
   statusData = [
@@ -54,7 +56,7 @@ export class IpPublicComponent implements OnInit {
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
-    'width': '1000px',
+    'width': '600px',
   };
   loading = false;
 
@@ -119,22 +121,24 @@ export class IpPublicComponent implements OnInit {
   }
 
   openIpMounted(event: any, id: any) {
-    if (event == false) {
       this.id = id;
-      if (this.selectedAction === 'Gắn Ip Pulbic') {
-        this.instancService.search(1, 999, this.regionId, this.projectId, '', '',true, this.tokenService.get()?.userId).subscribe(
+      if (event === 'Gắn Ip Pulbic') {
+        this.instancService.search(1, 999, this.regionId, this.projectId, '', '',true, this.tokenService.get()?.userId)
+          .pipe(finalize(() => {
+            this.loadingAtt = false;
+            this.disableAtt = false;
+          }))
+          .subscribe(
           (data) => {
             this.listInstance = data.records;
           }
         );
         this.isVisibleMounted = true;
-      } else if (this.selectedAction === 'Gỡ Ip Pulbic') {
+      } else if (event === 'Gỡ Ip Pulbic') {
         this.isVisibleRemove = true;
-      } else if (this.selectedAction === 'Xóa') {
+      } else if (event === 'Xóa') {
         this.isVisibleDelete = true;
       }
-    }
-
   }
 
   openIpRemove() {

@@ -18,14 +18,8 @@
     <nz-col nzSpan="16">
       <nz-card nzTitle="Thông tin IP Pulbic" style="border-radius: 8px;">
         <div nz-row class="mb-md">
-          <div class="mb-5 mt-5 pt-3 pb-3" style="
-              width: 95%;
-              border-style: solid;
-              border-width: 1px;
-              border-color: #FFBB63;
-              background-color: #FFF6E5;
-            ">
-                <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill" style="color: orangered"></span>
+          <div class="custom-styling">
+              <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill" style="color: orangered"></span>
               Host name không thay đổi khi điều chỉnh tên máy ảo
           </div>
           <div nz-col nzSpan="11">
@@ -63,9 +57,6 @@
             <p style="margin-top: 102px">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
           </div>
         </div>
-
-
-
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
@@ -76,18 +67,18 @@
         <nz-table>
           <tr>
             <td>Chi phí IP Public</td>
-            <td nzAlign="right">
-              <p *ngIf="total != undefined" style="margin-top: 10px">{{total.data.totalAmount.amount.toLocaleString()}} VNĐ</p>
+            <td  style="color: #0066B3;" nzAlign="right">
+              <b *ngIf="total != undefined">{{total.data.totalAmount.amount.toLocaleString()}} VNĐ</b>
             </td>
           </tr>
           <tr>
-            <td><i>( {{this.form.controls['numOfMonth'].value || 0}} tháng )</i></td>
+            <td><i>({{this.form.controls['numOfMonth'].value || 0}} tháng)</i></td>
             <td nzAlign="right">VNĐ/tháng</td>
           </tr>
           <tr>
             <td>Thành tiền</td>
             <td nzAlign="right" style="color: #EA3829;">
-              <p *ngIf="total != undefined" style="margin-top: 10px">{{total.data.totalPayment.amount.toLocaleString()}} VNĐ</p>
+              <b *ngIf="total != undefined">{{total.data.totalPayment.amount.toLocaleString()}} VNĐ</b>
             </td>
           </tr>
           <tr>
@@ -95,8 +86,11 @@
             <td nzAlign="right">VNĐ/tháng</td>
           </tr>
         </nz-table>
-        <button nz-button nzSize="large" nzType="default" (click)="backToList()" style="border-color:#0066B0 ;width: 44%; margin-top: 30px; margin-right: 5%;margin-left: 3%;border-radius: 8px;"><span class="button-text-default">Hủy</span></button>
-        <button nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid" style="width: 44%;"> <span nz-icon nzType="wallet" nzTheme="outline"></span><span class="button-text-primary" style="color: {{form.invalid ? 'gray' : 'white'}}">Tạo mới</span></button>
+<!--        <button nz-button nzSize="large" nzType="default" (click)="backToList()" style="border-color:#0066B0 ;width: 44%; margin-top: 30px; margin-right: 5%;margin-left: 3%;border-radius: 8px;"><span class="button-text-default">Hủy</span></button>-->
+        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">
+          <span nz-icon nzType="wallet" nzTheme="outline"></span>
+          <span class="button-text-primary" style="color: {{form.invalid ? 'gray' : 'white'}}">Tạo mới</span>
+        </button>
       </nz-card>
     </nz-col>
   </nz-row>

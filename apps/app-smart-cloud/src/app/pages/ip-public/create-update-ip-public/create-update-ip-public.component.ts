@@ -84,6 +84,8 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   }
 
   createIpPublic(){
+    const expiredDate = new Date();
+    expiredDate.setMonth(expiredDate.getMonth() + Number(this.form.controls['numOfMonth'].value));
     const requestBody = {
       customerId: this.tokenService.get()?.userId,
       vmToAttachId: this.form.controls['instanceSelected'].value,
@@ -100,8 +102,8 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       oneSMEAddonId: null,
       serviceType: 4,
       serviceInstanceId: 0,
-      createDate: "0001-01-01T00:00:00",
-      expireDate: "0001-01-01T00:00:00",
+      createDate: new Date(),
+      expireDate: expiredDate,
       saleDept: null,
       saleDeptCode: null,
       contactPersonEmail: null,
