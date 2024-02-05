@@ -319,7 +319,7 @@ export class DefaultInterceptor implements HttpInterceptor {
             return next.handle(this.reAttachToken(request, token.access_token));
           }),
           catchError((err) => {
-            this.notification.error('Thất bại', 'Tái tạo token thất bại');
+            // this.notification.error('Thất bại', 'Tái tạo token thất bại');
             this.isRefreshing = false;
             this.tokenSrv.clear()
             return throwError(err);
