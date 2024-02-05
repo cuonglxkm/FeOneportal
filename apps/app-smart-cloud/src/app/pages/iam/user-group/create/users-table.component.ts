@@ -36,6 +36,7 @@ export class UsersTableComponent implements OnInit {
 
   onInputChange(value: string) {
     this.value = value;
+    this.filteredUsers = this.filterUser(this.value)
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
@@ -76,12 +77,8 @@ export class UsersTableComponent implements OnInit {
     this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.userName)) && !this.checked;
   }
 
-  filterUser() {
-    return this.listUsers.filter(item => (!item || item.userName.includes(this.value)))
-  }
-
-  searchUsers() {
-    this.filteredUsers = this.filterUser()
+  filterUser(keyword: string) {
+    return this.listUsers.filter(item => (!item || item.userName.includes(keyword)))
   }
 
   // updateCheckedSet(userName: string, checked: boolean): void {
@@ -95,6 +92,10 @@ export class UsersTableComponent implements OnInit {
   //   this.listUsersSelected.emit(this.listOfSelected)
   // }
 
+  reload() {
+    this.value = '';
+    this.getUsers();
+  }
   getUsers() {
     this.loading = true
     this.userService.search('', 9999, 1).subscribe(data => {

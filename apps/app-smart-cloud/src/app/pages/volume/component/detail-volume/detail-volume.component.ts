@@ -54,7 +54,7 @@ export class DetailVolumeComponent implements OnInit {
 
   getVolumeById(idVolume: number) {
     this.isLoading = true;
-    this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
+    this.volumeSevice.getVolumeById(idVolume).subscribe(data => {
         this.isLoading = false;
         console.log('data get volume by id', data)
         this.volumeInfo = data;

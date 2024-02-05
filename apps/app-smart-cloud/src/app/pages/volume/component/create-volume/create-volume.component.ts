@@ -214,7 +214,7 @@ export class CreateVolumeComponent implements OnInit {
     this.project = project.id
     this.getListSnapshot()
     this.getListInstance()
-    // this.getListVolumes()
+    this.getListVolumes()
   }
 
   onSwitchSnapshot(){
@@ -240,10 +240,6 @@ export class CreateVolumeComponent implements OnInit {
         })
   }
 
-  getAmountIops() {
-
-    return 0
-  }
   instanceSelectedChange(value: any) {
     this.instanceSelected = value
   }
