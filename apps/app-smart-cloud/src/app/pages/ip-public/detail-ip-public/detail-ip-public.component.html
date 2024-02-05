@@ -1,5 +1,4 @@
-
-<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+<page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action"
              [title]="'Chi tiết IP Public'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -15,35 +14,29 @@
       <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
-  <ng-template #extra>
-    <button class="button-fee" style="width: 160px; height: 40px;" (click)="openPopupExtend()" nz-button
+  <ng-template #content>
+    <button class="button-fee" (click)="openPopupExtend()" nz-button nzSize="large"
             nzType="primary">
-      <span nz-icon nzType="rise" nzTheme="outline"></span>Gia hạn
+      <img style="padding-right: 10px; margin-bottom: 4px" src="assets/imgs/Vector.png" alt=""/>
+      <span class="button-text-primary">Gia hạn</span>
     </button>
   </ng-template>
-  <ng-template #content>
-    <h4 style="color: whitesmoke">.</h4>
-  </ng-template>
 </page-header>
-
 <nz-card>
-  <h3>Thông tin IP Public</h3>
-    <hr style="opacity: 0.1">
-    <hr>
-    <br>
-
+  <h2>Thông tin IP Public</h2>
+  <hr style="opacity: 0.1">
+  <br>
   <nz-table>
     <td style="width: 50%">
-      <p style="margin-bottom: 50px"><b>Địa chỉ IP: </b> {{ipInfo.ipAddress}} </p>
-      <label nz-checkbox [(ngModel)]="isIpV6" style="margin-bottom: 35px" [nzDisabled]="true">IPv6</label>
-      <p><b>Ngày khởi tạo: </b>{{ipInfo.createDate | date : "dd/MM/YYYY"}}</p>
+      <p>Địa chỉ: <b>{{ipInfo.ipAddress}}</b></p>
+      <label nz-checkbox [(ngModel)]="isIpV6" [nzDisabled]="true">IPv6</label>
     </td>
     <td style="width: 50%">
-      <p style="margin-bottom: 105px"><b>Gắn vào máy ảo: </b>{{ipInfo.attachedVm ? ipInfo.attachedVm : 'Không có máy ảo'}}</p>
-
+      <p>Gắn vào máy ảo: <b>{{ipInfo.attachedVm ? ipInfo.attachedVm : 'Không có máy ảo'}}</b></p>
+      <p>Thời gian bắt đầu sử dụng: <b>{{ipInfo.createDate | date : "dd/MM/YYYY"}}</b></p>
     </td>
   </nz-table>
-  <div style="float: right; padding-top: 1%">
-    <button nz-button nzType="default" (click)="backToList()">Quay lại</button>
-  </div>
+<!--  <div style="float: right; padding-top: 1%">-->
+<!--    <button nz-button nzType="default" (click)="backToList()">Quay lại</button>-->
+<!--  </div>-->
 </nz-card>
