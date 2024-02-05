@@ -136,9 +136,9 @@ export class EditVolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     if(this.volumeId != undefined || this.volumeId != null) {
+      console.log('id', this.volumeId)
       this.getVolumeById(this.volumeId)
       this.getTotalAmountFirst()
     }

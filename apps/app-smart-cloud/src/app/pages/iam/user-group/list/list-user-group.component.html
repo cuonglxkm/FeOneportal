@@ -45,8 +45,6 @@
   <nz-card>
     <nz-row nzGutter="24" nzJustify="space-between" style="margin-bottom: 25px;">
       <nz-col >
-
-
       </nz-col>
       <nz-col nzSpan="10" >
         <nz-input-group style="margin-right: 8px; width: 50%; border-radius: 8px;"
@@ -64,16 +62,15 @@
         <button class="button-custom"
                 nz-button
                 (click)="refresh()">
-          <span nz-icon nzType="reload"></span>
+          <span nz-icon nzType="reload" style="color: #0066B3; cursor: pointer"></span>
         </button>
         <button class="button-custom" nz-button (click)="showModalDelete()">
-          <span nz-icon nzType="delete"></span>
+          <span nz-icon nzType="delete" style="color: #0066B3; cursor: pointer"></span>
         </button>
         <button nz-button nzType="primary" (click)="navigateToCreate()">
-        <span
-          nz-icon
+        <span nz-icon
           nzType="plus"
-          nzTheme="outline">
+          nzTheme="outline" >
         </span>
           <span class="button-text-primary">Tạo mới</span>
         </button>
@@ -101,8 +98,7 @@
       [nzFrontPagination]="false"
       [nzTotal]="collection?.totalCount"
       [nzPageSize]="collection?.pageSize"
-      [nzPageIndex]="collection?.currentPage"
-    >
+      [nzPageIndex]="collection?.currentPage">
       <thead>
       <tr>
         <th [nzChecked]="checked"
