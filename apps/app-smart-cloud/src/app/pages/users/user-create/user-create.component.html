@@ -166,8 +166,6 @@
   nzTitle="Xác nhận tạo User"
   (nzOnCancel)="handleCancelCreate()"
   (nzOnOk)="handleOkCreate()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
 >
   <ng-container *nzModalContent>
     <nz-alert
@@ -188,4 +186,8 @@
       </nz-col>
     </nz-row>
   </ng-container>
+  <div *nzModalFooter>
+    <button class="button-custom" nz-button (click)="handleCancelCreate()">Hủy</button>
+    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isConfirmLoading">Xác nhận</button>
+  </div>
 </nz-modal>

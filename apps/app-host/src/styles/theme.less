@@ -32,18 +32,7 @@
   display: none;
 }
 
-.ant-btn-primary {
-  background-color: #0066b0;
-  border-radius: 8px;
-}
 
-.ant-btn-primary:hover,
-.ant-btn-primary:focus {
-  color: #fff;
-  border-color: #005999;
-  background: #005999;
-  border-radius: 8px;
-}
 
 .page-header__title {
   color: #2b2d3b;
@@ -157,3 +146,121 @@ a {
   background: #0074CC;
   pointer-events: none;
 }
+
+
+::ng-deep .page-header {
+  position: relative;
+}
+
+.alain-custom-action {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: @alain-default-header-hg + 10px;
+  margin-right: 24px;
+}
+
+.alain-default__aside-inner {
+  overflow: hidden scroll;
+}
+
+.table-title {
+  color: #333;
+  /* Heading/18px - Bold */
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 36px; /* 200% */
+  letter-spacing: 0.1px;
+}
+
+.button-text-primary {
+  color: var(--Button-bg_default, #fff);
+  /* Body/16px/Medium */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+}
+
+
+
+.text-lable {
+  color: var(--Neutral-1, #2b2d3b);
+  /* Body/16px - Regular */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.1px;
+}
+
+
+
+// INPUT
+
+
+.ant-input-affix-wrapper { // Input group
+  border-radius: 8px;
+}
+
+
+.ant-input {
+  border-radius: 8px;
+}
+
+.input-custom {
+  display: flex;
+  height: 40px;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+// END INPUT
+
+
+
+// BUTTON
+
+
+.button-text-default {
+  color: #0066B0;
+  /* Body/16px/Medium */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+}
+
+.ant-btn {
+  border-radius: 8px;
+  height: 40px;
+  border-color: #0066b0;
+  // color: #0066B0;
+  // border-color: #0066B0;
+  // background-color: #fff;
+  // &:hover {
+  //   color: #005999;
+  //   border-color: #005999;
+  // }
+}
+
+
+.ant-btn-primary {
+  border-color: #0066b0;
+  background-color: #0066b0;
+  border-radius: 8px;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:focus {
+  color: #fff;
+  border-color: #005999;
+  background: #005999;
+  border-radius: 8px;
+}
+
+
+
+// END BUTTON
