@@ -33,7 +33,7 @@
                 style="margin-right: 10px;"></span>
         </nz-col>
         <nz-col>
-          <div style="color: #035DED;">Tạo gói Backup</div>
+          <div>Tạo gói Backup</div>
         </nz-col>
       </nz-row>
     </div>
@@ -128,12 +128,12 @@
                   </div>
                 </nz-form-label>
                 <nz-form-control>
-                  <nz-select formControlName="time"
-                             id="time"
-                             (ngModelChange)="onTimeSelected($event)"
-                             [nzShowSearch]="false">
-                    <nz-option *ngFor="let i of time" [nzLabel]="i.label" [nzValue]="i.value"/>
-                  </nz-select>
+                  <nz-input-number formControlName="time"
+                                   id="time"
+                                   style="width: 100%;"
+                                   [nzMin]="1"
+                                   [nzMax]="100"
+                                   [nzStep]="1"/>
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
@@ -158,7 +158,8 @@
             <tr>
               <td>Chi phí gói Backup</td>
               <td nzAlign="right">
-                <b *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>
+                <b
+                  *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>
                 <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>
               </td>
             </tr>
@@ -169,7 +170,8 @@
             <tr>
               <td>Thành tiền</td>
               <td nzAlign="right" style="color: #EA3829;">
-                <b *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>
+                <b
+                  *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>
                 <b *ngIf="orderItem == undefined">0 VNĐ</b>
               </td>
             </tr>
@@ -179,7 +181,7 @@
             </tr>
           </nz-table>
           <button class="btn-create" [disabled]="!validateForm.valid" (click)="submitForm()">
-            <div style="color: white;line-height: 24px; word-wrap: break-word" >
+            <div style="color: white;line-height: 24px; word-wrap: break-word">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               Khởi tạo
             </div>

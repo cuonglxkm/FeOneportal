@@ -31,6 +31,7 @@ export class VolumeService extends BaseService {
   private  urlOrderGW = this.baseUrl + this.ENDPOINT.orders;
 
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
+
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number,
              pageSize: number, currentPage: number, status: string, volumeName: string) {
@@ -50,7 +51,7 @@ export class VolumeService extends BaseService {
     })
   }
 
-  getVolummeById(volumeId: number) {
+  getVolumeById(volumeId: number) {
     return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`, {
       headers: this.httpOptions.headers})
   }
@@ -94,11 +95,10 @@ export class VolumeService extends BaseService {
     return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions)
   }
 
-  addVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request,this.httpOptions).pipe(
-      catchError(this.handleError<boolean>('Add Volume to VM error.'))
-    );
+  addVolumeToVm(request: AddVolumetoVmModel) {
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request, {headers: this.httpOptions.headers})
   }
+
 
   detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
     return this.http.post<boolean>(this.urlVolumeGW + '/detach', request,this.httpOptions).pipe(

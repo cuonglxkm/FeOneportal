@@ -6,7 +6,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {
   BackupPackageRequestModel,
   BackupPackageResponseModel, FormUpdate,
-  PackageBackupModel
+  PackageBackupModel, ServiceInPackage
 } from "../models/package-backup.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {Observable} from "rxjs";
@@ -74,6 +74,12 @@ export class PackageBackupService extends BaseService {
   update(form: FormUpdate) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions
       + `/backups/packages/${form.packageId}`, Object.assign(form), {headers: this.getHeaders()})
+  }
+
+  getServiceInPackage(id: number) {
+    console.log('url', this.baseUrl + this.ENDPOINT.provisions + '/backups/packages/' +id +'/services')
+    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`,
+      {headers: this.getHeaders()})
   }
 
 }

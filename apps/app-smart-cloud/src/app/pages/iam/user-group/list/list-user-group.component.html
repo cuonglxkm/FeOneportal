@@ -43,12 +43,13 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <nz-row nzGutter="24" style="margin-bottom: 25px;">
-      <nz-col nzSpan="8">
-        <span class="table-title">Thông tin User Group</span>
+    <nz-row nzGutter="24" nzJustify="space-between" style="margin-bottom: 25px;">
+      <nz-col >
+
+
       </nz-col>
-      <nz-col nzSpan="11" nzOffset="5">
-        <nz-input-group style="margin-right: 8px; width: 50%"
+      <nz-col nzSpan="10" >
+        <nz-input-group style="margin-right: 8px; width: 50%; border-radius: 8px;"
                         [nzSuffix]="suffixIconSearch">
           <input name="name" nz-input
                  placeholder="Tìm kiếm"
@@ -66,8 +67,7 @@
           <span nz-icon nzType="reload"></span>
         </button>
         <button class="button-custom" nz-button (click)="showModalDelete()">
-          <i nz-icon nzType="delete"></i>
-          <span>Xóa</span>
+          <span nz-icon nzType="delete"></span>
         </button>
         <button nz-button nzType="primary" (click)="navigateToCreate()">
         <span
@@ -77,6 +77,7 @@
         </span>
           <span class="button-text-primary">Tạo mới</span>
         </button>
+
       </nz-col>
     </nz-row>
     <!--    <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">-->
@@ -109,7 +110,7 @@
             nzLabel="Select all"
             [nzWidth]="'50px'"
             (nzCheckedChange)="onAllChecked($event)" nzLeft></th>
-        <th nzLeft>Name</th>
+        <th nzLeft>Tên Group</th>
         <th nzBreakWord>Số lượng users</th>
         <th nzBreakWord>Group Parent</th>
         <th nzBreakWord>Thời gian tạo</th>

@@ -166,7 +166,7 @@ export class EditVolumeComponent implements OnInit {
   }
 
    getVolumeById(idVolume: number) {
-    this.volumeService.getVolummeById(idVolume).subscribe(data => {
+    this.volumeService.getVolumeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null) {
         this.volumeInfo = data;
         this.oldSize = data.sizeInGB;

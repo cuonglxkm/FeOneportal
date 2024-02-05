@@ -65,7 +65,6 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
 
   onInputChange(value: string) {
     this.value = value;
-    console.log('input text: ', this.value)
     this.getData()
   }
 

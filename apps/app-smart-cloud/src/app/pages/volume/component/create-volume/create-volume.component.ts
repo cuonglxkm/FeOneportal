@@ -129,8 +129,8 @@ export class CreateVolumeComponent implements OnInit {
     time: [1, Validators.required],
     description: ['', Validators.maxLength(700)],
     storage: [1, Validators.required],
-    isEncryption: [false, Validators.required],
-    isMultiAttach: [false, Validators.required],
+    isEncryption: [false],
+    isMultiAttach: [false],
   });
 
   snapshotSelected: number
@@ -214,7 +214,7 @@ export class CreateVolumeComponent implements OnInit {
     this.project = project.id
     this.getListSnapshot()
     this.getListInstance()
-    // this.getListVolumes()
+    this.getListVolumes()
   }
 
   onSwitchSnapshot(){
@@ -240,10 +240,6 @@ export class CreateVolumeComponent implements OnInit {
         })
   }
 
-  getAmountIops() {
-
-    return 0
-  }
   instanceSelectedChange(value: any) {
     this.instanceSelected = value
   }
@@ -352,18 +348,15 @@ export class CreateVolumeComponent implements OnInit {
 
   submitForm() {
     this.nameList = []
-    console.log(this.validateForm.value);
-    this.createNewVolume()
-  }
-
-  createNewVolume() {
-    if (this.validateForm.valid) {
-      this.doCreateVolume();
-      console.log(this.volumeCreate);
+    if(this.validateForm.valid) {
+      console.log(this.validateForm.value);
+      this.doCreateVolume()
     } else {
-
+      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
     }
+
   }
+
   //
   doCreateVolume() {
     this.isLoadingAction = true;
@@ -378,7 +371,7 @@ export class CreateVolumeComponent implements OnInit {
         specification: JSON.stringify(this.volumeCreate),
         specificationType: 'volume_create',
         price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: this.volumeExpiryTime
+        serviceDuration: this.validateForm.controls.time.value
       }
     ]
 
