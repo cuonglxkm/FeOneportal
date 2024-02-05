@@ -26,6 +26,10 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   instanceSelected: any;
   dateString = new Date();
   total: any;
+  loadingIp = true;
+  loadingInstanse = true;
+  disableInstanse = true;
+  disableIp = true;
 
   form = new FormGroup({
     ipSubnet: new FormControl('', {validators: [Validators.required]}),
@@ -49,7 +53,12 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       this.checkIpv6 = null;
     }
 
-    this.instancService.getAllIPSubnet(this.regionId).subscribe(
+    this.instancService.getAllIPSubnet(this.regionId)
+      .pipe(finalize(() => {
+        this.disableIp = false;
+        this.loadingIp = false;
+      }))
+      .subscribe(
       (data) => {
         this.listIpSubnet = data
       }
@@ -58,7 +67,12 @@ export class CreateUpdateIpPublicComponent implements OnInit{
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
-    this.instancService.search(1,999,this.regionId, this.projectId,'','', true, this.tokenService.get()?.userId).subscribe(
+    this.instancService.search(1,999,this.regionId, this.projectId,'','', true, this.tokenService.get()?.userId)
+      .pipe(finalize(() => {
+        this.disableInstanse = false;
+        this.loadingInstanse = false;
+      }))
+      .subscribe(
       (data) => {
         this.listInstance = data.records;
       }
@@ -70,6 +84,8 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   }
 
   createIpPublic(){
+    const expiredDate = new Date();
+    expiredDate.setMonth(expiredDate.getMonth() + Number(this.form.controls['numOfMonth'].value));
     const requestBody = {
       customerId: this.tokenService.get()?.userId,
       vmToAttachId: this.form.controls['instanceSelected'].value,
@@ -86,8 +102,8 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       oneSMEAddonId: null,
       serviceType: 4,
       serviceInstanceId: 0,
-      createDate: "0001-01-01T00:00:00",
-      expireDate: "0001-01-01T00:00:00",
+      createDate: new Date(),
+      expireDate: expiredDate,
       saleDept: null,
       saleDeptCode: null,
       contactPersonEmail: null,

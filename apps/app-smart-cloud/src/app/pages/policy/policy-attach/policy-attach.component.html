@@ -84,7 +84,9 @@
       <button (click)="goBack()" nzSize="large" nz-button nzType="primary" style="
             border-color: #0066B3;
             background-color: white;
-          "><span style="color:#0066B3">Quay lại</span>
+          ">
+        <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt=""/>
+        <span class="button-text-primary" style="color:#0066B3">Quay lại</span>
       </button>
       <button [disabled]="setOfCheckedId.size === 0" nzSize="large" (click)="attachPolicy()" nz-button nzType="primary"
               style="
