@@ -1,10 +1,21 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  Renderer2,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
 import { tr } from 'date-fns/locale';
-import {NzNotificationService} from "ng-zorro-antd/notification";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -16,9 +27,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
   @Output() valueChanged = new EventEmitter();
 
-
-  isLoadingDelete:boolean = false
-  isVisibleDelete: boolean = false
+  isLoadingDelete: boolean = false;
+  isVisibleDelete: boolean = false;
 
   constructor(
     private dataService: InstancesService,
@@ -28,16 +38,17 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     private notification: NzNotificationService
   ) {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 
   openConsole(): void {
-    this.route.navigateByUrl('/app-smart-cloud/instances/instances-console/' + this.instancesId, {
-      state: {
-        vmId: this.instancesId
+    this.route.navigateByUrl(
+      '/app-smart-cloud/instances/instances-console/' + this.instancesId,
+      {
+        state: {
+          vmId: this.instancesId,
+        },
       }
-    });
+    );
   }
 
   delete(tpl: TemplateRef<{}>): void {
@@ -53,12 +64,12 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           (data: any) => {
             console.log(data);
             this.isLoadingDelete = true;
-            this.route.navigate(['/app-smart-cloud/instances'])
+            this.route.navigate(['/app-smart-cloud/instances']);
             this.notification.success('Thành công', 'Xóa máy ảo thành công');
           },
           () => {
-            this.isLoadingDelete = false
-            this.notification.error('Thất bại','Xóa máy ảo thất bại');
+            this.isLoadingDelete = false;
+            this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
           }
         );
       },
@@ -66,31 +77,31 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   }
 
   showModalDelete() {
-    this.isVisibleDelete = true
+    this.isVisibleDelete = true;
   }
 
   handleOk() {
-    this.isLoadingDelete = true
-    this.dataService.delete(this.instancesId).subscribe((data: any) => {
+    this.isLoadingDelete = true;
+    this.dataService.delete(this.instancesId).subscribe(
+      (data: any) => {
         console.log(data);
-        this.isVisibleDelete = false
+        this.isVisibleDelete = false;
         this.isLoadingDelete = false;
-        this.route.navigate(['/app-smart-cloud/instances'])
+        this.route.navigate(['/app-smart-cloud/instances']);
         this.notification.success('Thành công', 'Xóa máy ảo thành công');
       },
       () => {
-        this.isVisibleDelete = false
-        this.isLoadingDelete = false
-        this.notification.error('Thất bại','Xóa máy ảo thất bại');
+        this.isVisibleDelete = false;
+        this.isLoadingDelete = false;
+        this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
       }
     );
   }
 
   handleCancel() {
-    this.isVisibleDelete = false
-    this.isLoadingDelete = false
+    this.isVisibleDelete = false;
+    this.isLoadingDelete = false;
   }
-
 
   continue(): void {
     //gia hạn
@@ -145,7 +156,10 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       this.check = false;
       this.isOk = false;
     }
-    if (this.resetPassword == this.resetPasswordRepeat && this.resetPasswordRepeat != '') {
+    if (
+      this.resetPassword == this.resetPasswordRepeat &&
+      this.resetPasswordRepeat != ''
+    ) {
       this.isOk = true;
     } else {
       this.isOk = false;
@@ -163,18 +177,14 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           command: 'shutdown',
           id: this.instancesId,
         };
-        this.dataService.postAction(this.instancesId, body).subscribe(
-          (data: any) => {
-            if (data == true) {
-              this.notification.success('', 'Tắt máy ảo thành công');
-            } else {
-              this.notification.error('', 'Tắt máy ảo không thành công');
-            }
+        this.dataService.postAction(body).subscribe({
+          next: (data) => {
+            this.notification.success('', 'Tắt máy ảo thành công');
           },
-          () => {
+          error: (e) => {
             this.notification.error('', 'Tắt máy ảo không thành công');
-          }
-        );
+          },
+        });
       },
     });
   }
@@ -189,23 +199,20 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           command: 'restart',
           id: this.instancesId,
         };
-        this.dataService.postAction(this.instancesId, body).subscribe(
-          (data: any) => {
-            console.log(data);
-            if (data == true) {
-              this.notification.success('', 'Khởi động lại máy ảo thành công');
-            } else {
-              this.notification.error('', 'Khởi động lại máy ảo không thành công');
-            }
+        this.dataService.postAction(body).subscribe({
+          next: (data) => {
+            this.notification.success('', 'Khởi động lại máy ảo thành công');
           },
-          () => {
-            this.notification.error('', 'Khởi động lại máy ảo không thành công');
-          }
-        );
+          error: (e) => {
+            this.notification.error(
+              '',
+              'Khởi động lại máy ảo không thành công'
+            );
+          },
+        });
       },
     });
   }
-
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
@@ -228,4 +235,3 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 }
-

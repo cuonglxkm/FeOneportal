@@ -13,22 +13,6 @@ import { environment } from '@env/environment';
 import { PaymentService } from 'src/app/shared/services/payment.service';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
 
-class UserPayment {
-  name: string;
-  phoneNumber: string;
-  email: string;
-  address: string;
-}
-
-class Payment {
-  orderCode: string;
-  billCode: string;
-  paymentCode: string;
-  createdDate: string;
-  paymentMethod: string;
-  status: string;
-}
-
 class ServiceInfo {
   name: string;
   price: number;
@@ -44,7 +28,6 @@ class ServiceInfo {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentDetailComponent implements OnInit {
-  userPayment: UserPayment = new UserPayment();
   payment: PaymentModel;
   serviceInfo: ServiceInfo = new ServiceInfo();
   listServiceInfo: ServiceInfo[] = [];
@@ -68,23 +51,18 @@ export class PaymentDetailComponent implements OnInit {
     this.http
       .get<UserModel>(`${baseUrl}/users/${email}`, {
         headers: new HttpHeaders({
-          'Authorization': "Bearer " + accessToken
+          Authorization: 'Bearer ' + accessToken,
         }),
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
       })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           this.userModel = res;
-          this.userPayment.name = this.userModel.name;
-          this.userPayment.phoneNumber = this.userModel.phoneNumber;
-          this.userPayment.email = this.userModel.email;
-          this.userPayment.address = this.userModel?.address;
-          this.cdr.detectChanges();
         },
-        (error) => {
+        error: (error) => {
           console.log(error);
-        }
-      );
+        },
+      });
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getPaymentDetail();
     this.serviceInfo.name = 'Volume';
@@ -108,9 +86,9 @@ export class PaymentDetailComponent implements OnInit {
       let downloadURL = window.URL.createObjectURL(data);
       let link = document.createElement('a');
       link.href = downloadURL;
-      link.download = 'invoice_' + id + '.docx'
+      link.download = 'invoice_' + id + '.docx';
       link.click();
-    })
+    });
   }
 
   payNow() {}
