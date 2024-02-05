@@ -383,7 +383,7 @@
                 and {{ item.policies.length - 2 }} policies
               </span>
             </td>
-            <td>{{ item.createdDate }}</td>
+            <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
           </tr>
         </tbody>
       </nz-table>
