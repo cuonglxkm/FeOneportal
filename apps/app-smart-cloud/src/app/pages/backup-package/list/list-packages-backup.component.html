@@ -29,26 +29,59 @@
     <nz-row nzJustify="space-between">
       <nz-col nzSpan="16">
         <nz-select [nzPlaceHolder]="'Trạng thái'"
-                   style="width: 150px; border-radius: 8px;"
                    [ngModel]="selected"
                    (ngModelChange)="onChangeSelected($event)"
-                   nzShowSearch="false">
+                   nzSize="large"
+                   style="margin-right: 15px;"
+                   nzPlaceHolder="Tất cả trạng thái"
+                   nzTooltipTitle="Tìm kiếm theo trạng thi"
+                   nzTooltipPlacement="bottom"
+                   nz-tooltip>
           <nz-option nzValue="ALL" nzLabel="Tất cả trạng thái"></nz-option>
           <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
           <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
         </nz-select>
-        <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px; border-radius: 8px;">
-          <input nz-input
-                 [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"
-                 [placeholder]="'Tìm kiếm'"/>
+<!--        <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px; border-radius: 8px;">-->
+<!--          <input nz-input-->
+<!--                 [(ngModel)]="value"-->
+<!--                 (input)="onInputChange($event.target['value'])"-->
+<!--                 [placeholder]="'Tìm kiếm'"/>-->
+<!--        </nz-input-group>-->
+        <nz-input-group
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          [(ngModel)]="value"
+          (input)="onInputChange($event.target['value'])">
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên ..."/>
         </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"/>
+        </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
-        <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create"
-                nzSize="default" (click)="navigateToCreate()" style="cursor: pointer;">
-          <span nz-icon nzType="plus" nzTheme="outline"></span>
-          Tạo gói Backup
+<!--        <button nz-button nzTooltipTitle="Tạo mới" nzTooltipPlacement="bottom" nz-tooltip class="button-create"-->
+<!--                nzSize="default" (click)="navigateToCreate()" style="cursor: pointer;">-->
+<!--          <span nz-icon nzType="plus" nzTheme="outline"></span>-->
+<!--          Tạo gói Backup-->
+<!--        </button>-->
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="navigateToCreate()">
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/add-circle.svg"
+            alt=""/>
+          <span class="button-text-primary">Tạo mới Volume</span>
         </button>
       </nz-col>
     </nz-row>

@@ -43,7 +43,7 @@ export class ListPackagesBackupComponent implements OnInit {
     description: FormControl<string>
   }> = this.fb.group({
     namePackage: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+      Validators.pattern(/^[a-zA-Z0-9]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]
   })
