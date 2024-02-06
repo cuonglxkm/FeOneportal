@@ -5,6 +5,7 @@ import { NzNotificationService } from "ng-zorro-antd/notification";
 import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
 import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { Color } from '@antv/g2/lib/dependents';
 
 @Component({
   selector: 'one-portal-create-topic',
@@ -19,6 +20,37 @@ export class CreateTopicComponent implements OnInit {
 
   @Output() cancelEvent = new EventEmitter<void>();
 
+  listMessVersion: string[] = ["0.8.0", "0.8.1", "0.8.2", "0.9.0", "0.10.0-IV0", "0.10.0-IV1", "0.10.1-IV0", "0.10.1-IV1", "0.10.1-IV2", "0.10.2-IV0", "0.11.0-IV0", "0.11.0-IV1", "0.11.0-IV2", "1.0-IV0", "1.1-IV0", "2.0-IV0", "2.0-IV1", "2.1-IV0", "2.1-IV1", "2.1-IV2", "2.2-IV0", "2.2-IV1", "2.3-IV0", "2.3-IV1", "2.4-IV0", "2.4-IV1", "2.5-IV0", "2.6-IV0", "2.7-IV0", "2.7-IV1", "2.7-IV2", "2.8-IV0", "2.8-IV1", "3.0-IV0", "3.0-IV1", "3.1-IV0", "3.2-IV0", "3.3-IV0", "3.3-IV1", "3.3-IV2", "3.3-IV3", "3.4-IV0", "3.5-IV0", "3.5-IV1", "3.5-IV2"]
+
+  listConfigLabel = [
+    { name: 'max_mess', value: '1048588', type: 'number', fullname: "max.message.bytes" },
+    { name: 'policy', value: 'delete', fullname: "cleanup.policy" },
+    { name: 'minSync', value: 2, type: 'number', fullname: "min.insync.replicas" },
+    { name: 'unClean', value: 'false', fullname: "unclean.leader.election.enable" },
+    { name: 'comp_type', value: 'producer', fullname: "compression.type" },
+    { name: 'mess_down_enable', value: 'true', fullname: "message.downconversion.enable" },
+    { name: 'segm_jitt', value: '0', type: 'number', fullname: "segment.jitter.ms" },
+    { name: 'flush_ms', value: '9007199254740991', type: 'number', fullname: "flush.ms" },
+    { name: 'segment', value: '14', type: 'number', fullname: "segment.bytes" },
+    { name: 'mess_format', value: '2.7-IV2', fullname: "message.format.version" },
+    { name: 'max_comp', value: '9007199254740991', type: 'number', fullname: "max.compaction.lag.ms" },
+    { name: 'foll_repl', value: 'none', fullname: "follower.replication.throttled.replicas" },
+    { name: 'flush_mess', value: "9007199254740991", type: 'number', fullname: "flush.messages" },
+    { name: 'retention_ms', value: 604800000, type: 'number', fullname: "retention.ms" },
+    { name: 'file_delete', value: 60000, type: 'number', fullname: "file.delete.delay.ms" },
+    { name: 'mess_time_type', value: 'CreateTime', fullname: "message.timestamp.type" },
+    { name: 'min_compac', value: 0, type: 'number', fullname: "min.compaction.lag.ms" },
+    { name: 'preallocate', value: 'false', fullname: "preallocate" },
+    { name: 'min_clean', value: 0.5, type: 'number', fullname: "min.cleanable.dirty.ratio" },
+    { name: 'index_inter', value: 4096, type: 'number', fullname: "index.interval.bytes" },
+    { name: 'reten_bytes', value: 1073741824, type: 'number', fullname: "retention.bytes" },
+    { name: 'segment_ms', value: 604800000, type: 'number', fullname: "segment.ms" },
+    { name: 'mess_time_diff', value: "9007199254740991", type: 'number', fullname: "message.timestamp.difference.max.ms" },
+    { name: 'deleteRet', value: 86400000, type: 'number', fullname: "delete.retention.ms" },
+    { name: 'segm_index', value: 10000000, type: 'number', fullname: "segment.index.bytes" },
+    { name: 'lead_rep', value: 'none', fullname: "leader.replication.throttled.replicas" }
+  ];
+
   createNumber = 1;
   updateNumber = 2;
   openSet: boolean = false;
@@ -30,9 +62,10 @@ export class CreateTopicComponent implements OnInit {
 
   constructor(
     private kafkaService: KafkaService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private notification: NzNotificationService
   ) { }
-  validateForm: FormGroup
+  validateForm: FormGroup;
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -292,41 +325,180 @@ export class CreateTopicComponent implements OnInit {
   }
 
   createTopic() {
+    this.checkRep();
+    this.changePartition();
+    for (const i in this.validateForm.controls) {
+      this.validateForm.controls[i].markAsDirty();
+      this.validateForm.controls[i].updateValueAndValidity();
+    }
+    if (!this.validateForm.invalid) {
+      let json = {};
+      const topicName = this.validateForm.get("name_tp").value;
+      const partitionNum = Number(this.validateForm.get("partition").value);
+      const replicationFactorNum = Number(this.validateForm.get("rep_fac").value);
+      if (!this.openSet) {
+        this.kafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
+          .subscribe(
+            (data: any) => {
+              if (data && data.code == 200) {
+                this.notification.success(
+                  'Thông báo',
+                  (this.mode == this.createNumber ? 'Tạo mới ' : 'Cập nhật ') + 'thành công',
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#dff6dd',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
+                this.cancelForm();
+              } else {
+                this.notification.error(
+                  data.error_msg,
+                  data.msg,
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#fed9cc',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
+              }
+            }
+          );
+      }
+      else {
+        this.listConfigLabel
+          .filter(element => element.name !== "typeTime" && element.name !== "re_hours")
+          .forEach(element => {
+            const { name, value, type, fullname } = element;
+            if (this.validateForm.get(name).value != "" && this.validateForm.get(name).value != null)
+              switch (name) {
+                case 'lead_rep':
+                case 'foll_repl':
+                  json[fullname] = (this.validateForm.get(name).value == "none") ? "" : "*"
+                  break;
+                default:
+                  if (type == 'number') {
+                    json[fullname] = Number(this.validateForm.get(name).value);
+                  }
+                  else
+                    json[fullname] = this.validateForm.get(name).value;
+                  break;
+              } else {
+              json[fullname] = value;
+            }
+          })
 
+        // console.log(json);
+        // Base.hideLoading()
+        // return;
+
+        this.kafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 1, JSON.stringify(json))
+          .subscribe(
+            (data: any) => {
+              if (data && data.code == 200) {
+                this.notification.success(
+                  'Thông báo',
+                  data.msg,
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#dff6dd',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
+                this.cancelForm();
+              } else {
+                this.notification.error(
+                  data.error_msg,
+                  data.msg,
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#fed9cc',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
+              }
+            }
+          );
+      }
+    }
+    else {
+
+    }
   }
 
   updateTopic() {
 
+    this.checkRep()
+    this.changePartition()
+    for (const i in this.validateForm.controls) {
+      this.validateForm.controls[i].markAsDirty();
+      this.validateForm.controls[i].updateValueAndValidity();
+    }
+    if (!this.validateForm.invalid) {
+      let i = 0;
+      let json = {};
+      const topicName = this.validateForm.get("name_tp").value;
+      this.listConfigLabel
+        .filter(element => element.name !== "typeTime" && element.name !== "re_hours")
+        .forEach(element => {
+          const { name, value, fullname } = element;
+          if (this.validateForm.get(name).value != "")
+            switch (name) {
+              case 'lead_rep':
+              case 'foll_repl':
+                json[fullname] = (this.validateForm.get(name).value == "none") ? "" : "*"
+                break;
+              default:
+                json[fullname] = this.validateForm.get(name).value;
+                break;
+            }
+          i++;
+        })
+      this.kafkaService.updateTopic(topicName, this.serviceOrderCode, json)
+        .subscribe(
+          (data: any) => {
+            if (data && data.code == 200) {
+              this.notification.success(
+                'Thông báo',
+                data.msg,
+                {
+                  nzPlacement: 'bottomRight',
+                  nzStyle: {
+                    backgroundColor: '#dff6dd',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  }
+                },
+              );
+              this.cancelForm();
+            } else {
+              this.notification.error(
+                data.error_msg,
+                data.msg,
+                {
+                  nzPlacement: 'bottomRight',
+                  nzStyle: {
+                    backgroundColor: '#fed9cc',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  }
+                },
+              );
+            }
+          }
+        );
+    }
   }
-
-  listMessVersion: string[] = ["0.8.0", "0.8.1", "0.8.2", "0.9.0", "0.10.0-IV0", "0.10.0-IV1", "0.10.1-IV0", "0.10.1-IV1", "0.10.1-IV2", "0.10.2-IV0", "0.11.0-IV0", "0.11.0-IV1", "0.11.0-IV2", "1.0-IV0", "1.1-IV0", "2.0-IV0", "2.0-IV1", "2.1-IV0", "2.1-IV1", "2.1-IV2", "2.2-IV0", "2.2-IV1", "2.3-IV0", "2.3-IV1", "2.4-IV0", "2.4-IV1", "2.5-IV0", "2.6-IV0", "2.7-IV0", "2.7-IV1", "2.7-IV2", "2.8-IV0", "2.8-IV1", "3.0-IV0", "3.0-IV1", "3.1-IV0", "3.2-IV0", "3.3-IV0", "3.3-IV1", "3.3-IV2", "3.3-IV3", "3.4-IV0", "3.5-IV0", "3.5-IV1", "3.5-IV2"]
-
-  listConfigLabel = [
-    { name: 'max_mess', value: '1048588', type: 'number', fullname: "max.message.bytes" },
-    { name: 'policy', value: 'delete', fullname: "cleanup.policy" },
-    { name: 'minSync', value: 2, type: 'number', fullname: "min.insync.replicas" },
-    { name: 'unClean', value: 'false', fullname: "unclean.leader.election.enable" },
-    { name: 'comp_type', value: 'producer', fullname: "compression.type" },
-    { name: 'mess_down_enable', value: 'true', fullname: "message.downconversion.enable" },
-    { name: 'segm_jitt', value: '0', type: 'number', fullname: "segment.jitter.ms" },
-    { name: 'flush_ms', value: '9007199254740991', type: 'number', fullname: "flush.ms" },
-    { name: 'segment', value: '14', type: 'number', fullname: "segment.bytes" },
-    { name: 'mess_format', value: '2.7-IV2', fullname: "message.format.version" },
-    { name: 'max_comp', value: '9007199254740991', type: 'number', fullname: "max.compaction.lag.ms" },
-    { name: 'foll_repl', value: 'none', fullname: "follower.replication.throttled.replicas" },
-    { name: 'flush_mess', value: "9007199254740991", type: 'number', fullname: "flush.messages" },
-    { name: 'retention_ms', value: 604800000, type: 'number', fullname: "retention.ms" },
-    { name: 'file_delete', value: 60000, type: 'number', fullname: "file.delete.delay.ms" },
-    { name: 'mess_time_type', value: 'CreateTime', fullname: "message.timestamp.type" },
-    { name: 'min_compac', value: 0, type: 'number', fullname: "min.compaction.lag.ms" },
-    { name: 'preallocate', value: 'false', fullname: "preallocate" },
-    { name: 'min_clean', value: 0.5, type: 'number', fullname: "min.cleanable.dirty.ratio" },
-    { name: 'index_inter', value: 4096, type: 'number', fullname: "index.interval.bytes" },
-    { name: 'reten_bytes', value: 1073741824, type: 'number', fullname: "retention.bytes" },
-    { name: 'segment_ms', value: 604800000, type: 'number', fullname: "segment.ms" },
-    { name: 'mess_time_diff', value: "9007199254740991", type: 'number', fullname: "message.timestamp.difference.max.ms" },
-    { name: 'deleteRet', value: 86400000, type: 'number', fullname: "delete.retention.ms" },
-    { name: 'segm_index', value: 10000000, type: 'number', fullname: "segment.index.bytes" },
-    { name: 'lead_rep', value: 'none', fullname: "leader.replication.throttled.replicas" }
-  ];
 }

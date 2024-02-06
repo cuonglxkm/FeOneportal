@@ -1,13 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
-import { ClipboardService } from 'ngx-clipboard';
-import { NzNotificationService } from "ng-zorro-antd/notification";
-import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
-import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { KafkaMessage } from 'apps/app-kafka/src/app/core/models/kafka-message.model';
-import { SyncInfoModel } from 'apps/app-kafka/src/app/core/models/sync-info.model';
 import { KafkaPartition } from 'apps/app-kafka/src/app/core/models/kafka-partition.model';
+import { SyncInfoModel } from 'apps/app-kafka/src/app/core/models/sync-info.model';
+import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
 
 @Component({
   selector: 'one-portal-message-topic',
@@ -20,7 +16,7 @@ export class MessageTopicComponent implements OnInit {
 
   @Output() cancelEvent = new EventEmitter<void>();
 
-  listMessage: KafkaMessage[];
+  listMessage: KafkaMessage[]=[];
   listOfSelectedValue: string[] = [];
   listOfOption: string[];
   listPartition: KafkaPartition[];
@@ -28,8 +24,8 @@ export class MessageTopicComponent implements OnInit {
   stringToSearch: string;
 
   total: number;
-  index: number;
-  size: number;
+  index: number = 1;
+  size: number = 10;
 
   fromDate: number = null
   toDate: number = null
@@ -47,7 +43,7 @@ export class MessageTopicComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.listOfOption = data?.data
+            this.listOfOption = data.data
             this.getListMessageTopic(this.topicName, this.serviceOrderCode, 1, 10, null, null, this.listOfOption.join(","));
           }
         }
@@ -64,6 +60,7 @@ export class MessageTopicComponent implements OnInit {
             
             this.listMessage = [];
             this.total = data?.data?.totals;
+            this.index = data?.data?.page;
             this.size = data?.data?.size;
             data?.data?.results?.forEach(element => {
               let item = new KafkaMessage(element);
@@ -87,17 +84,18 @@ export class MessageTopicComponent implements OnInit {
 
   changeMessPageSize($event: any) {
     this.size = $event;
-    // this.getListMessageTopic(this.selectTopic, this.serviceOrderCode, this.index, this.size, this.fromDate, this.toDate, this.listOfSelectedValue.length > 0 ? this.listOfSelectedValue.join(",") : this.listOfOption.join(","));
+    this.index = 1;
+    this.getListMessageTopic(this.topicName, this.serviceOrderCode, this.index, this.size, this.fromDate, this.toDate, this.listOfSelectedValue.length > 0 ? this.listOfSelectedValue.join(",") : this.listOfOption.join(","));
   }
 
   changeMessPage($event: any) {
     this.index = $event;
-    // this.getListMessageTopic(this.selectTopic, this.serviceOrderCode, this.messPageIndex, this.messPageSize, this.fromDate, this.toDate, this.listOfSelectedValue.length > 0 ? this.listOfSelectedValue.join(",") : this.listOfOption.join(","));
+    this.getListMessageTopic(this.topicName, this.serviceOrderCode, this.index, this.size, this.fromDate, this.toDate, this.listOfSelectedValue.length > 0 ? this.listOfSelectedValue.join(",") : this.listOfOption.join(","));
   }
 
   onChangePartitions(event: []) {
     this.listOfSelectedValue = event;
-    // this.getListMessageTopic(this.selectTopic, this.serviceOrderCode, this.pageIndex, this.pageSize, this.fromDate, this.toDate, event.length > 0 ? event.join(",") : this.listOfOption.join(","));
+    this.getListMessageTopic(this.topicName, this.serviceOrderCode, 1, this.size, this.fromDate, this.toDate, event.length > 0 ? event.join(",") : this.listOfOption.join(","));
   }
 
   onChangeDate(result: Date[]) {
@@ -106,7 +104,7 @@ export class MessageTopicComponent implements OnInit {
 
     this.fromDate = from?.getTime();
     this.toDate = to?.getTime();
-    // this.getListMessageTopic(this.selectTopic, this.serviceOrderCode, this.pageIndex, this.pageSize, this.fromDate, this.toDate, this.listOfSelectedValue.length > 0 ? this.listOfSelectedValue.join(",") : this.listOfOption.join(","));
+    this.getListMessageTopic(this.topicName, this.serviceOrderCode, 1, this.size, this.fromDate, this.toDate, this.listOfSelectedValue.length > 0 ? this.listOfSelectedValue.join(",") : this.listOfOption.join(","));
   }
 
 }

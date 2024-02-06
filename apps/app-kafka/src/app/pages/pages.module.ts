@@ -24,6 +24,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message-topic.component';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -50,7 +51,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NgApexchartsModule,
     NzIconModule,
     NzDescriptionsModule,
-    NzSelectModule
+    NzSelectModule,
+    NzNotificationModule
   ],
 })
 export class PagesModule {}

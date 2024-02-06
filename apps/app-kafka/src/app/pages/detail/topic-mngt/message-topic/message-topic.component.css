@@ -17,20 +17,12 @@
   justify-content: space-between;
 }
 
-.btn-search {
-  height: 40px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 16px;
-}
 
-.btn-accept {
+[nz-button]{
   height: 40px;
   border-radius: 8px;
   font-weight: 600;
   font-size: 16px;
-  background-color: #0066B0;
-  color: #ffffff;
 }
 
 .tbl-acl {
@@ -46,8 +38,8 @@ nz-table.tbl-acl th {
 }
 
 [nz-icon] {
-  font-size: 15px;
-  padding-left: 5px;
+  font-size: 20px;
+  color: #0074CC;
 }
 
 ::ng-deep .ant-pagination-item-active {
@@ -67,4 +59,10 @@ nz-table.tbl-acl th {
 .breadcrumb{
   justify-content: space-between;
   margin: 15px;
+}
+
+.search {
+  border-radius: 8px;
+  width: 300px;
+  height: 40px;
 }
