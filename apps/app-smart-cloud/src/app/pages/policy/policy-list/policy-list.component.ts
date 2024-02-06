@@ -36,8 +36,8 @@ export class PolicyListComponent {
 
   listPolicyType =[
     {label:"Tất cả loại policy",value :"0"},
-    {label:"Họat động",value :"1"},
-    {label:"Ngừng hoạt động",value :"2"}
+    {label:"Portal managed",value :"1"},
+    {label:"Customer managed",value :"2"}
   ];
 
   listAction =[
@@ -164,6 +164,8 @@ export class PolicyListComponent {
   }
 
   reload() {
+    this.searchValue = '';
+    this.radioValue = null;
     this.loadData();
   }
 
