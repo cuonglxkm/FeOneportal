@@ -5,12 +5,6 @@
   border-radius: 8px;
 }
 
-.search {
-  border-radius: 8px;
-  width: 300px;
-  height: 40px;
-}
-
 .filter {
   display: flex;
   align-items: center;
@@ -62,6 +56,11 @@ nz-table.tbl-acl th {
 }
 
 .search {
+  width: 300px;
+  height: 40px;
+}
+
+.ant-select-selector {
   border-radius: 8px;
   width: 300px;
   height: 40px;

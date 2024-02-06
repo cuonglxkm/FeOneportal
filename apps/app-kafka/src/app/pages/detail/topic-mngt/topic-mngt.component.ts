@@ -97,6 +97,7 @@ export class TopicMngtComponent implements OnInit {
 
   handleSearch() {
     this.index = 1;
+    this.search = this.search.trim()
     this.getList();
   }
 
