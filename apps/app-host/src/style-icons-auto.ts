@@ -61,7 +61,8 @@ import {
   ArrowsAltOutline,
   QuestionCircleOutline,
   MoreOutline,
-  ScheduleOutline
+  ScheduleOutline,
+  LeftOutline
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS_AUTO = [
@@ -122,5 +123,6 @@ export const ICONS_AUTO = [
   ArrowsAltOutline,
   QuestionCircleOutline,
   MoreOutline,
-  ScheduleOutline
+  ScheduleOutline,
+  LeftOutline
 ];

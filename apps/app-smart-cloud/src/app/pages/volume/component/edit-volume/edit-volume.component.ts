@@ -50,6 +50,9 @@ export class EditVolumeComponent implements OnInit {
 
   isVisibleConfirmEdit: boolean = false
 
+  volumeStatus: Map<String, string>;
+
+  listVMs: string = '';
 
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -59,6 +62,11 @@ export class EditVolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private instanceService: InstancesService) {
+    this.volumeStatus = new Map<String, string>();
+    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
+    this.volumeStatus.set('ERROR', 'Lỗi');
+    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if ([1, 2].includes(this.region)) {
         if (value < 20) return this.iops = 0
@@ -136,9 +144,9 @@ export class EditVolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     if(this.volumeId != undefined || this.volumeId != null) {
+      console.log('id', this.volumeId)
       this.getVolumeById(this.volumeId)
       this.getTotalAmountFirst()
     }
@@ -179,6 +187,13 @@ export class EditVolumeComponent implements OnInit {
         if(this.volumeInfo?.instanceId != null) {
           this.getInstanceById(this.volumeInfo?.instanceId)
         }
+
+        if(this.volumeInfo.attachedInstances != null) {
+          this.volumeInfo.attachedInstances.forEach(item => {
+            this.listVMs += Array.from(new Set(item.instanceName)).join(', ')
+          })
+        }
+
         //Thoi gian su dung
         const createDate = new Date(this.volumeInfo?.creationDate);
         const exdDate = new Date(this.volumeInfo?.expirationDate);

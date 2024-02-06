@@ -43,42 +43,63 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <nz-row nzGutter="24" nzJustify="space-between" style="margin-bottom: 25px;">
-      <nz-col >
-
-
-      </nz-col>
-      <nz-col nzSpan="10" >
-        <nz-input-group style="margin-right: 8px; width: 50%; border-radius: 8px;"
-                        [nzSuffix]="suffixIconSearch">
-          <input name="name" nz-input
-                 placeholder="Tìm kiếm"
-                 [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"/>
+    <nz-row style="margin-bottom: 25px;" nzJustify="end">
+      <nz-space>
+        <nz-input-group
+          *nzSpaceItem
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          [(ngModel)]="value"
+          (input)="onInputChange($event.target['value'])"
+        >
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên, thời gian tạo ..."
+          />
         </nz-input-group>
-        <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"
-              style="color: #0066B3; cursor: pointer"
-              nz-tooltip="Tìm kiếm" (click)="getData()"></span>
+        <ng-template #prefixIconSearch>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"
+          />
         </ng-template>
-        <button class="button-custom"
-                nz-button
-                (click)="refresh()">
-          <span nz-icon nzType="reload"></span>
+        <button
+          *nzSpaceItem
+          style="border: none;"
+          nz-button
+          nzSize="large"
+          (click)="refresh()"
+        >
+          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
         </button>
-        <button class="button-custom" nz-button (click)="showModalDelete()">
-          <span nz-icon nzType="delete"></span>
+        <button
+          *nzSpaceItem
+          style="border: none;"
+          nz-button
+          nzSize="large"
+          (click)="showModalDelete()"
+        >
+          <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
         </button>
-        <button nz-button nzType="primary" (click)="navigateToCreate()">
-        <span
-          nz-icon
-          nzType="plus"
-          nzTheme="outline">
-        </span>
-          <span>Tạo mới</span>
+        <button
+          *nzSpaceItem
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="navigateToCreate()"
+        >
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/add-circle.svg"
+            alt=""
+          />
+          <span class="button-text-primary">Tạo mới</span>
         </button>
-
-      </nz-col>
+      </nz-space>
     </nz-row>
     <!--    <div style="margin-bottom: 20px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">-->
     <!--      <div nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">-->
@@ -101,8 +122,7 @@
       [nzFrontPagination]="false"
       [nzTotal]="collection?.totalCount"
       [nzPageSize]="collection?.pageSize"
-      [nzPageIndex]="collection?.currentPage"
-    >
+      [nzPageIndex]="collection?.currentPage">
       <thead>
       <tr>
         <th [nzChecked]="checked"

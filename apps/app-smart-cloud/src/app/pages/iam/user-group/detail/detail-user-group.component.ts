@@ -228,9 +228,9 @@ export class DetailUserGroupComponent {
     console.log(event);
   }
 
-  filterUsers(condition: Partial<{ keyword: string; }>) {
-    const {keyword} = condition
-    return this.listUsers.filter(item => (!item || item.userName.includes(keyword)))
+  filterUsers(keyword: string) {
+    keyword
+    this.filteredUsers = this.listUsers.filter(item => (!item || item.userName.includes(keyword)))
   }
 
 
@@ -262,6 +262,9 @@ export class DetailUserGroupComponent {
   }
 
 
+  refreshUsers() {
+    this.getUsersByGroupName()
+  }
   getPoliciesByGroupName() {
     this.isLoadingPolicy = true
 
@@ -293,6 +296,7 @@ export class DetailUserGroupComponent {
       this.isLoadingUser = false
       this.responseUsers = data
       this.filteredUsers = data.records
+      this.listUsers = data.records
       this.listOfCurrentPageDataUser = data.records
     })
   }
@@ -300,6 +304,9 @@ export class DetailUserGroupComponent {
   removePolicy() {
     console.log('selected', Array.from(new Set(this.setOfCheckedIdPolicy)))
     let array = Array.from(new Set(this.setOfCheckedIdPolicy))
+    if (!array.length) {
+      return
+    }
     for (let i = 0; i < array?.length; i++) {
       this.itemName = array[i]
       if (this.removePolicyModel.items?.length > 0) {
@@ -321,6 +328,9 @@ export class DetailUserGroupComponent {
   }
 
   removeUser() {
+    if (!Array.from(this.setOfCheckedIdUser).length) {
+      return;
+    }
     this.userGroupService.removeUsers(this.groupName, Array.from(this.setOfCheckedIdUser)).subscribe(data => {
       this.notification.success('Thành công', 'Gỡ người dùng ra khỏi Group thành công')
       this.getData(this.groupName)
@@ -355,4 +365,7 @@ export class DetailUserGroupComponent {
     this.getUsersByGroupName()
   }
 
+  navigateToCreateUser() {
+    this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.groupName +'/add-user'])
+  }
 }
