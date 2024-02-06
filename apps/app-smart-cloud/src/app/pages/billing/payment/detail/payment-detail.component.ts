@@ -28,10 +28,10 @@ class ServiceInfo {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentDetailComponent implements OnInit {
-  payment: PaymentModel;
+  payment: PaymentModel = new PaymentModel();
   serviceInfo: ServiceInfo = new ServiceInfo();
   listServiceInfo: ServiceInfo[] = [];
-  userModel: UserModel;
+  userModel: UserModel = {};
   id: number;
 
   constructor(
@@ -77,6 +77,7 @@ export class PaymentDetailComponent implements OnInit {
   getPaymentDetail() {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
       this.payment = data;
+      this.cdr.detectChanges();
     });
   }
 
