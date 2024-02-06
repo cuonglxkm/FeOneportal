@@ -1,0 +1,134 @@
+.icon-region {
+  margin-top: 15px;
+}
+
+.infra-label {
+  text-align: center;
+  font-size: 14px;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.flex-style {
+  display: flex;
+}
+
+.selected-infra {
+  border: 1px solid #2f54eb;
+}
+
+.image-infra {
+  padding: 5px 5px 5px 5px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+input,
+textarea,
+.border-card,
+.border-button {
+  border-radius: 4px;
+}
+
+.price-style {
+  position: relative;
+  float: right;
+}
+
+.price-color {
+  color: #0066b3;
+  font-weight: 600;
+  width: 100%;
+  font-size: 16px;
+  text-align: right;
+}
+
+.unit-color {
+  color: #4c4f67;
+}
+
+.divider-style {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.price-panel {
+  background-color: #cce9ff;
+  border-radius: 5px;
+}
+
+.price-label {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.total-color {
+  color: #ea3829;
+  font-weight: 600;
+  width: 100%;
+  font-size: 16px;
+  text-align: right;
+}
+
+.icon-color {
+  color: #0066b3;
+}
+
+::ng-deep .ant-card-head {
+  min-height: 48px;
+  margin-bottom: -1px;
+  padding: 0 24px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 16px;
+  background: transparent;
+  border-radius: 2px 2px 0 0;
+  border: none;
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 4px;
+}
+
+.remove-btn {
+  position: relative;
+  float: right;
+  margin-top: 32px;
+}
+
+.scroll {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #eee;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #5a5;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #8d8;
+}
