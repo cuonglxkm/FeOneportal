@@ -1,19 +1,41 @@
 <nz-card>
-  <nz-row nzJustify="space-between" style="margin-bottom: 16px">
+  <nz-row nzJustify="space-between" nzAlign="middle" style="margin-bottom: 16px">
     <nz-col>
       <div style="font-size: 20px; font-weight: 600">Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
     </nz-col>
     <nz-col>
       <nz-space>
-        <nz-input-group *nzSpaceItem nzSearch [nzPrefix]="prefixIconSearch">
-          <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
-                 placeholder="Tìm kếm tên..."/>
+        <nz-input-group
+          *nzSpaceItem
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          [(ngModel)]="value"
+          (input)="onInputChange($event.target['value'])"
+        >
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên, thời gian tạo ..."
+          />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <span nz-icon nzType="search"></span>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"
+          />
         </ng-template>
-        <button *nzSpaceItem nz-button nzSize="default" style="cursor: pointer;" (click)="reload()">
-          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        <button
+          *nzSpaceItem
+          style="border: none;"
+          nz-button
+          nzSize="large"
+          nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
+          (click)="reload()"
+        >
+          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
         </button>
       </nz-space>
     </nz-col>

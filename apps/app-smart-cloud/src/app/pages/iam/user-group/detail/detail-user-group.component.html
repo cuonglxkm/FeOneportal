@@ -68,30 +68,59 @@
       </ng-template>
       <!---Thông tin User -->
       <nz-tab [nzTitle]="user">
-        <nz-row nzGutter="24" style="margin-bottom: 15px;">
-          <nz-col nzSpan="8">
+        <nz-row nzJustify="space-between" style="margin-bottom: 15px;">
+          <nz-col>
             <div><b>Users trong Group ({{filteredUsers?.length}})</b></div>
           </nz-col>
-          <nz-col nzSpan="11" nzOffset="5">
-            <nz-input-group style="margin-right: 8px; width: 50%"
-                            [nzSuffix]="suffixIconSearch">
-              <input name="name" nz-input
-                     placeholder="Tìm kiếm" />
+          <nz-col>
+            <nz-input-group
+              style="width: 300px;"
+              [nzPrefix]="prefixIconSearch"
+              nzSize="large"
+              (input)="filterUsers($event.target['value'])"
+            >
+              <input
+                name="name"
+                nz-input
+                placeholder="Tìm kiếm tên, thời gian tạo ..."
+              />
             </nz-input-group>
-            <ng-template #suffixIconSearch>
-              <span nz-icon nzType="search" style="color: #0066B3; cursor: pointer" nz-tooltip="Tìm kiếm"></span>
+            <ng-template #prefixIconSearch>
+              <img
+                src="assets/imgs/search.svg"
+                alt=""
+                style="cursor: pointer"
+                nz-tooltip="Tìm kiếm"
+              />
             </ng-template>
-            <button class="button-custom"
-                    nz-button>
-              <span nz-icon nzType="reload"></span>
+            <button
+              style="border: none; margin-left: 8px"
+              nz-button
+              nzSize="large"
+              (click)="refreshUsers()"
+            >
+              <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
             </button>
-            <button class="button-custom" nz-button (click)="removeUser()">
-              <i nz-icon nzType="delete"></i>
-              <span>Xóa</span>
+            <button
+              style="border: none;"
+              nz-button
+              nzSize="large"
+              (click)="removeUser()"
+            >
+              <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
             </button>
-            <button nz-button nzType="primary">
-              <span nz-icon nzType="plus" nzTheme="outline"></span>
-              <span class="button-text-primary">Tạo mới</span>
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="navigateToCreateUser()"
+            >
+              <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/add-circle.svg"
+                alt=""
+              />
+              <span class="button-text-primary">Thêm mới</span>
             </button>
           </nz-col>
         </nz-row>
@@ -101,7 +130,7 @@
           nzShowPagination
           nzShowSizeChanger
           [nzData]="filteredUsers"
-          [nzLoading]="loading"
+          [nzLoading]="isLoadingUser"
           (nzQueryParams)="onQueryParamsUserChange($event)"
           (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)">
           <thead>
@@ -138,6 +167,7 @@
           <nz-space [nzSize]="24">
             <div *nzSpaceItem>
               <nz-select [(ngModel)]="selectedValue"
+                         nzSize="large"
                          (ngModelChange)="onChange($event)"
                          nzPlaceHolder="Tất cả các loại"
                          nzTooltipTitle="Tìm kiếm theo loại"
@@ -146,44 +176,75 @@
                 <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
               </nz-select>
             </div>
-            <div *nzSpaceItem>
-              <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-                <input [(ngModel)]="value" (input)="onInputChangePolicy($event.target['value'])" type="text"
-                       nz-input
-                       placeholder="Tìm kếm tên..."/>
-              </nz-input-group>
-              <ng-template #suffixButton>
-                <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary"
-                        nzSearch (click)="getPoliciesByGroupName()">
-                  <span nz-icon nzType="search" nzTheme="outline"></span>
-                  Search
-                </button>
-              </ng-template>
-            </div>
+            <nz-input-group
+              *nzSpaceItem
+              style="width: 300px;"
+              [nzPrefix]="prefixIconSearch"
+              nzSize="large"
+              [(ngModel)]="value"
+              (input)="onInputChangePolicy($event.target['value'])"
+            >
+              <input
+                name="name"
+                nz-input
+                placeholder="Tìm kiếm tên, thời gian tạo ..."
+              />
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img
+                src="assets/imgs/search.svg"
+                alt=""
+                style="cursor: pointer"
+                nz-tooltip="Tìm kiếm"
+              />
+            </ng-template>
           </nz-space>
-          <nz-row nzAlign="middle">
-            <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default"
-                    style="cursor: pointer;" (click)="getPoliciesByGroupName()">
-              <span nz-icon nzType="reload" nzTheme="outline"></span>
+          <nz-col>
+            <button
+              style="border: none;"
+              nz-button
+              nzSize="large"
+              nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
+              (click)="getPoliciesByGroupName()"
+            >
+              <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
             </button>
-            <button nz-button
-                    class="button-del"
-                    nzSize="default"
-                    style="cursor: pointer;"
-                    nz-tooltip nzTooltipTitle="Xóa Policy" nzTooltipPlacement="bottom"
-                    (click)="removePolicy()">
-              <span nz-icon nzType="rest" nzTheme="outline"></span>
-              Xóa
+            <button
+              style="border: none;"
+              nz-button
+              nzSize="large"
+              nz-tooltip
+              nzTooltipTitle="Xóa Policy"
+              nzTooltipPlacement="bottom"
+              (click)="removePolicy()"
+            >
+              <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
             </button>
-            <button nz-button
-                    class="button-create"
-                    nzSize="default" style="cursor: pointer;"
-                    nz-tooltip nzTooltipTitle="Gán thêm Policy cho Group" nzTooltipPlacement="bottom"
-                    (click)="navigateToAttachPolicy()">
-              <span nz-icon nzType="plus" nzTheme="outline"></span>
-              Thêm policies
+            <!--            <button nz-button-->
+
+            <!--                    nzSize="default" style="cursor: pointer;"-->
+            <!--                    nz-tooltip nzTooltipTitle="Gán thêm Policy cho Group" nzTooltipPlacement="bottom"-->
+            <!--                    (click)="navigateToAttachPolicy()">-->
+            <!--              <span nz-icon nzType="plus" nzTheme="outline"></span>-->
+            <!--              Thêm mới-->
+            <!--            </button>-->
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              nz-tooltip
+              nzTooltipTitle="Gán thêm Policy cho Group"
+              nzTooltipPlacement="bottom"
+              (click)="navigateToAttachPolicy()"
+            >
+              <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/add-circle.svg"
+                alt=""
+              />
+              <span class="button-text-primary">Thêm mới</span>
             </button>
-          </nz-row>
+          </nz-col>
         </nz-row>
         <div style="margin-bottom: 8px; margin-top: 8px">Policies
           <span>({{responsePolicies?.totalCount}})</span>
@@ -248,7 +309,12 @@
     </nz-tabset>
     <nz-form-item nzAlign="bottom" nzJustify="end" style="margin-top: 48px">
       <nz-space nzSize="large">
-        <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-cancel">Quay lại
+        <button class="button-custom"
+                nz-button
+                style="color: #0066B3"
+                (click)="goBack()"
+                nzSize="default">
+          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline" style="margin-right: 10px;"></span>Quay lại</span>
         </button>
       </nz-space>
     </nz-form-item>
