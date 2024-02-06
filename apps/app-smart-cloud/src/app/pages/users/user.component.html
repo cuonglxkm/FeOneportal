@@ -13,7 +13,7 @@
   <div style="margin-bottom: 20px" nz-row [nzGutter]="24">
     <div class="text-right p-0 m-b-0" nz-col nzSpan="24">
       <nz-input-group
-        style="margin-right: 8px; width: 25%;"
+        style="margin-right: 8px; width: 25%"
         [nzPrefix]="prefixIconSearch"
         nzSize="large"
       >
@@ -34,34 +34,19 @@
           (click)="getData()"
         />
       </ng-template>
-      <button
-        style="border: none;"
-        nz-button
-        (click)="showModal()"
-        nzSize="large"
-      >
+      <button style="border: none" nz-button (click)="showModal()">
         <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
       </button>
-      <button
-        style="border: none;"
-        nz-button
-        (click)="reloadTable()"
-        nzSize="large"
-      >
+      <button style="border: none" nz-button (click)="reloadTable()">
         <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
       </button>
-      <button
-        nz-button
-        nzType="primary"
-        (click)="navigateToCreate()"
-        nzSize="large"
-      >
+      <button nz-button nzType="primary" (click)="navigateToCreate()">
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span class="button-text-primary">Tạo mới</span>
+        <span>Tạo mới</span>
       </button>
     </div>
   </div>
@@ -159,11 +144,7 @@
     </nz-row>
   </ng-container>
   <div *nzModalFooter>
-    <button
-      class="button-custom"
-      nz-button
-      (click)="handleCancelDelete()"
-    >
+    <button nz-button (click)="handleCancelDelete()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
@@ -176,6 +157,11 @@
       (click)="handleOkDelete()"
       [nzLoading]="isConfirmLoading"
     >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
       Xác nhận
     </button>
   </div>
@@ -223,12 +209,7 @@
     </nz-row>
   </ng-container>
   <div *nzModalFooter>
-    <button
-      class="button-custom"
-      nz-button
-      (click)="handleCancelDeleteUsers()"
-      nzSize="large"
-    >
+    <button nz-button (click)="handleCancelDeleteUsers()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
@@ -242,6 +223,11 @@
       (click)="handleOkDeleteUsers()"
       [nzLoading]="isConfirmLoading"
     >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
       Xác nhận
     </button>
   </div>

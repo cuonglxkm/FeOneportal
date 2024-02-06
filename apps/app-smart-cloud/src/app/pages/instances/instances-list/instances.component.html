@@ -94,7 +94,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span class="button-text-primary">Tạo mới</span>
+        <span>Tạo mới</span>
       </button>
     </div>
   </div>
@@ -141,7 +141,7 @@
           <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
         </td>
         <td nzBreakWord>
-          <div>
+          <div style="color: #0066b3">
             {{ getStatus(data.status) }}
           </div>
         </td>
@@ -169,13 +169,28 @@
               <li nz-menu-item (click)="showHandleGoKhoiVLAN()">
                 Gỡ khỏi VLAN
               </li>
-              <li nz-menu-item (click)="restartInstance(data.id)">
+              <li
+                *ngIf="data.taskState != 'SHUTOFF'"
+                nz-menu-item
+                (click)="restartInstance(data.id)"
+              >
                 Khởi động lại
               </li>
-              <li nz-menu-item (click)="shutdownInstance(data.id)">
+              <li
+                *ngIf="data.taskState != 'SHUTOFF'"
+                nz-menu-item
+                (click)="shutdownInstance(data.id)"
+              >
                 Tắt máy ảo
               </li>
-              <li nz-menu-item>RESCUE</li>
+              <li
+                *ngIf="data.taskState == 'SHUTOFF'"
+                nz-menu-item
+                (click)="startInstance(data.id)"
+              >
+                Bật máy ảo
+              </li>
+              <li nz-menu-item (click)="rescueInstance(data.id)">RESCUE</li>
             </ul>
           </nz-dropdown-menu>
         </td>
