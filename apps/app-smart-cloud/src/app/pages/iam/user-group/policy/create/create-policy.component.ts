@@ -47,6 +47,8 @@ export class CreatePolicyComponent implements OnInit {
     pageIndex: number = 1
     pageSize: number = 10
 
+  isLoading: boolean = false
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private policyService: PolicyService,
@@ -126,7 +128,9 @@ export class CreatePolicyComponent implements OnInit {
     return arrA.filter(itemA => !arrB.includes(itemA));
   }
 
+  total: number = 0
   getPolicies() {
+    this.isLoading = true
     let form = new FormSearchPolicy()
     if (this.value === undefined) {
       form.policyName = null
@@ -136,7 +140,9 @@ export class CreatePolicyComponent implements OnInit {
     form.currentPage = 1
     form.pageSize = 9999
     this.userGroupService.getPolicy(form).subscribe(data => {
+      this.isLoading = false
       console.log(data.records)
+      this.total = data.totalCount
       this.listPolicies = data.records
       // this.listOfCurrentPageData = data.records
     })

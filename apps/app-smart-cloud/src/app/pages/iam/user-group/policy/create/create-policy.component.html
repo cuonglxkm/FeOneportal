@@ -125,26 +125,46 @@
     </nz-table>
   </nz-card>
   <nz-card nzTitle="Danh sách Policy chưa có trong Group">
-    <nz-row nzAlign="middle" style="margin-bottom: 22px;" nzJustify="space-between">
-      <nz-space [nzSize]="24">
-        <div *nzSpaceItem>
-          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton2">
-            <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
-                   nz-input
-                   placeholder="Tìm kếm tên..."/>
+    <nz-row nzJustify="space-between" style="margin-bottom: 16px">
+      <nz-col>
+        <div style="font-size: 20px; font-weight: 600">Những Policies khác không có trong group ({{total - response?.totalCount}})</div>
+      </nz-col>
+      <nz-col>
+        <nz-space>
+          <nz-input-group
+            *nzSpaceItem
+            style="width: 300px;"
+            [nzPrefix]="prefixIconSearch"
+            nzSize="large"
+            [(ngModel)]="value"
+            (input)="onInputChange($event.target['value'])"
+          >
+            <input
+              name="name"
+              nz-input
+              placeholder="Tìm kiếm tên, thời gian tạo ..."
+            />
           </nz-input-group>
-          <ng-template #suffixButton2>
-            <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên Policy" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="getPolicies()">
-              <span nz-icon nzType="search" nzTheme="outline"></span>Search
-            </button>
+          <ng-template #prefixIconSearch>
+            <img
+              src="assets/imgs/search.svg"
+              alt=""
+              style="cursor: pointer"
+              nz-tooltip="Tìm kiếm"
+            />
           </ng-template>
-        </div>
-      </nz-space>
-      <nz-row nzAlign="middle">
-        <button nz-button nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom" nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
-          <span nz-icon nzType="reload" nzTheme="outline"></span>
-        </button>
-      </nz-row>
+          <button
+            *nzSpaceItem
+            style="border: none;"
+            nz-button
+            nzSize="large"
+            nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
+            (click)="getPolicies()"
+          >
+            <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
+          </button>
+        </nz-space>
+      </nz-col>
     </nz-row>
     <nz-table
       #rowSelectionTable2
