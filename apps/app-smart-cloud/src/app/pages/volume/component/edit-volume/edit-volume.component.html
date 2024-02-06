@@ -41,18 +41,18 @@
             <nz-descriptions-item [nzTitle]="titleIOPS">{{volumeInfo?.iops}}</nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleStatus">
               <span *ngIf="volumeInfo?.status === 'KHOITAO'"
-                    style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</span>
-              <span *ngIf="volumeInfo.status === 'ERROR'"
-                    style="color: #FF3333">{{ volumeStatus.get(volumeInfo.status)}}</span>
-              <span *ngIf="volumeInfo.status === 'SUSPENDED'"
-                    style="color: #FF7C33">{{ volumeStatus.get(volumeInfo.status)}}</span>
+                    style="color: #6abe39">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
+              <span *ngIf="volumeInfo?.status === 'ERROR'"
+                    style="color: #FF3333">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
+              <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
+                    style="color: #FF7C33">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleAttachInstance">
-              <span *ngIf="volumeInfo.attachedInstances?.length > 0">{{listVMs}}</span>
-              <span *ngIf="volumeInfo.attachedInstances?.length <= 0">Không có máy ảo</span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length > 0">{{listVMs}}</span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length <= 0">Không có máy ảo</span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleVolumeType">
-              <b>{{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
+              <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
           </nz-descriptions>
           <ng-template #titleName>
             <span><b>Tên Volume:</b></span>
@@ -105,7 +105,7 @@
               <nz-input-number formControlName="storage"
                                id="storage"
                                style="width: 100%;"
-                               [nzMin]="volumeInfo.sizeInGB"
+                               [nzMin]="volumeInfo?.sizeInGB"
                                (ngModelChange)="changeValueInput()"
                                [nzStep]="1"/>
               <ng-template #storageErrorTpl let-control>
@@ -163,7 +163,7 @@
               <td nzAlign="right">VNĐ/tháng</td>
             </tr>
           </nz-table>
-          <button class="btn-update" [disabled]="!validateForm.valid">
+          <button class="btn-update" [disabled]="!validateForm.valid" (click)="submitForm()">
             <div style="color: white;word-wrap: break-word">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               Cập nhật

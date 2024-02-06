@@ -218,7 +218,7 @@ export class VolumeComponent implements OnInit {
             console.log('eror', error)
             this.isVisibleAttachVm = false
             this.isLoadingAttachVm = false;
-            this.notification.error('Thất bại', 'Gắn Volume thất bại. Không tìm thấy volume ' + volume.name)
+            this.notification.error('Thất bại', 'Gắn Volume thất bại.')
           })
         }
       } else {
@@ -336,6 +336,7 @@ export class VolumeComponent implements OnInit {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false
         this.notification.success('Thành công', 'Cập nhật thông tin Volume thành công')
+        this.getListVolume()
       }
     }, error => {
       this.isLoadingUpdate = false

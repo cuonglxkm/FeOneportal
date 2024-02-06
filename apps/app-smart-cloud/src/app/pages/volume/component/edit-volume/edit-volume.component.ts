@@ -190,7 +190,7 @@ export class EditVolumeComponent implements OnInit {
 
         if(this.volumeInfo.attachedInstances != null) {
           this.volumeInfo.attachedInstances.forEach(item => {
-            this.listVMs += Array.from(new Set(item.instanceName)).join(', ')
+            this.listVMs += item.instanceName.toString() + ', '
           })
         }
 
@@ -214,7 +214,7 @@ export class EditVolumeComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id
     this.volumeEdit.newDescription = this.validateForm.controls.description.value
-    this.volumeEdit.regionId = this.volumeInfo.regionId;
+    this.volumeEdit.regionId = this.volumeInfo?.regionId;
     this.volumeEdit.newSize = this.validateForm.controls.storage.value
     this.volumeEdit.iops = this.iops
     // editVolumeDto.newOfferId = 0;
@@ -227,7 +227,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.actorEmail = user.email;
     this.volumeEdit.userEmail = user.email;
     this.volumeEdit.serviceType = 2;
-    this.volumeEdit.actionType = 4;
+    this.volumeEdit.actionType = 4; //resize
   }
 
   totalAmountVolume = 0;
@@ -244,12 +244,12 @@ export class EditVolumeComponent implements OnInit {
     const volumeResize = new EditSizeMemoryVolumeDTO();
     volumeResize.serviceInstanceId = this.volumeInfo?.id
     volumeResize.newDescription = this.volumeInfo?.description
-    volumeResize.regionId = this.volumeInfo.regionId;
+    volumeResize.regionId = this.volumeInfo?.regionId;
     volumeResize.newSize = this.volumeInfo?.sizeInGB
     volumeResize.iops = this.iops
     // editVolumeDto.newOfferId = 0;
     volumeResize.serviceName = this.volumeInfo?.name
-    volumeResize.vpcId = this.volumeInfo.vpcId;
+    volumeResize.vpcId = this.volumeInfo?.vpcId;
     volumeResize.customerId = this.tokenService.get()?.userId;
     volumeResize.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');
