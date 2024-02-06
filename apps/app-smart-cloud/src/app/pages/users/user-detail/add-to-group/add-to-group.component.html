@@ -118,8 +118,8 @@
     <thead>
       <tr>
         <th
-          [nzChecked]="checkedGroup"
-          [nzIndeterminate]="indeterminateGroup"
+          [(nzChecked)]="checkedGroup"
+          [(nzIndeterminate)]="indeterminateGroup"
           nzLabel="Select all group"
           [nzWidth]="'50px'"
           (nzCheckedChange)="onAllCheckedGroup($event)"

@@ -869,15 +869,15 @@ export class InstancesCreateComponent implements OnInit {
       this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
       return;
     }
-      this.instanceInit();
+    this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
     let orderItemInstance = new OrderItem();
     orderItemInstance.orderItemQuantity = 1;
     orderItemInstance.specification = specificationInstance;
     orderItemInstance.specificationType = 'instance_create';
-    orderItemInstance.price = 1;
-    orderItemInstance.serviceDuration = 1;
+    orderItemInstance.price = this.totalAmount/this.numberMonth;
+    orderItemInstance.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstance);
     console.log('order instance', orderItemInstance);
 
@@ -890,7 +890,7 @@ export class InstancesCreateComponent implements OnInit {
         orderItemVolume.specification = specificationVolume;
         orderItemVolume.specificationType = 'volume_create';
         orderItemVolume.price = e.price;
-        orderItemVolume.serviceDuration = 1;
+        orderItemVolume.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemVolume);
       }
     });
@@ -904,7 +904,7 @@ export class InstancesCreateComponent implements OnInit {
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
-        orderItemIP.serviceDuration = 1;
+        orderItemIP.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemIP);
       }
     });
@@ -929,25 +929,7 @@ export class InstancesCreateComponent implements OnInit {
     this.order.orderItems = this.orderItem;
 
     console.log('instance create', this.instanceCreate);
-
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-    this.dataService
-      .create(this.order)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
-      .subscribe(
-        (data: any) => {
-          window.location.href = data.data;
-        },
-        (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Tạo order máy ảo không thành công');
-        }
-      );
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: this.order } });
   }
 
   totalAmount: number = 0;
@@ -990,7 +972,7 @@ export class InstancesCreateComponent implements OnInit {
         dataPayment.projectId = this.projectId;
         this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
           console.log('thanh tien volume', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          e.price = Number.parseFloat(result.data.totalAmount.amount)/this.numberMonth;
           this.totalAmountVolume += e.price;
           e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmountVolumeVAT += e.priceAndVAT;
@@ -1018,7 +1000,7 @@ export class InstancesCreateComponent implements OnInit {
         dataPayment.projectId = this.projectId;
         this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
           console.log('thanh tien ipv4', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          e.price = Number.parseFloat(result.data.totalAmount.amount)/this.numberMonth;
           this.totalAmountIPv4 += e.price;
           e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmountIPv4VAT += e.priceAndVAT;

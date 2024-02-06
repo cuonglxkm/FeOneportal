@@ -57,7 +57,6 @@ export class AddToGroupComponent implements OnInit {
   // Danh sách Groups
   getGroup(): void {
     this.loading = true;
-    this.listGroupPicked = [];
     this.groupNames = [];
     this.policyNames.clear();
     this.checkedAllInPage = false;
@@ -97,12 +96,14 @@ export class AddToGroupComponent implements OnInit {
 
   reloadGroupTable(): void {
     this.listOfGroups = [];
+    this.groupNames = [];
+    this.mapOfCheckedGroup.clear();
+    this.policyNames.clear();
+    this.checkedGroup = false;
+    this.indeterminateGroup = false;
     this.getGroup();
   }
 
-  
-
-  listGroupPicked: UserGroup[] = [];
   groupNames = [];
   policyNames = new Set<string>();
   checkedGroup = false;
@@ -133,13 +134,13 @@ export class AddToGroupComponent implements OnInit {
   }
 
   handleDataPicked() {
-      this.groupNames = Array.from(this.mapOfCheckedGroup.keys());
-      this.policyNames.clear();
-      this.mapOfCheckedGroup.forEach((e) => {
-        e.forEach((item) => {
-          this.policyNames.add(item);
-        });
+    this.groupNames = Array.from(this.mapOfCheckedGroup.keys());
+    this.policyNames.clear();
+    this.mapOfCheckedGroup.forEach((e) => {
+      e.forEach((item) => {
+        this.policyNames.add(item);
       });
+    });
   }
 
   onItemCheckedGroup(item: UserGroup, checked: boolean): void {

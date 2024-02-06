@@ -316,6 +316,7 @@ export class VolumeCreate {
 export class Order {
   customerId: number;
   createdByUserId: number;
+  couponCode: string;
   note: string;
   orderItems: any[];
 }
