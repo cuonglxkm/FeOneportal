@@ -38,3 +38,7 @@
 input, .border-button {
   border-radius: 4px;
 }
+
+.borderless {
+  border: none;
+}

@@ -33,8 +33,8 @@ export class ClusterService extends BaseService {
   }
 
   getListWorkerTypes(cloudProfileName: string) {
-    // return this.http.get(``, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`, {headers: this.getHeaders()});
+    // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`, {headers: this.getHeaders()});
+    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`);
   }
 
   getListVolumeTypes(cloudProfilenName: string) {

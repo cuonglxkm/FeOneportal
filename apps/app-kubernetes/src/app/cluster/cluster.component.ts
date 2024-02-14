@@ -5,6 +5,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
 import { ClusterService } from '../services/cluster.service';
+import { WorkerTypeModel } from '../model/worker-type.model';
+import { VolumeTypeModel } from '../model/volume-type.model';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -21,8 +23,8 @@ export class ClusterComponent implements OnInit {
 
   listOfK8sVersion:  K8sVersionModel[];
   listOfVPCNetworks: VPCNetworkModel[];
-  listOfWorkerType: any[];
-  listOfVolumeType: any[];
+  listOfWorkerType: WorkerTypeModel[];
+  listOfVolumeType: VolumeTypeModel[];
   listOfSubnets: SubnetModel[];
 
   constructor(

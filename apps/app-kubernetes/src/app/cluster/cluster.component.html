@@ -92,7 +92,7 @@
           </ng-template>
         </nz-form-item>
 
-        <h3>Cấu hình nâng cao</h3>
+        <h3 class="mt-5">Cấu hình nâng cao</h3>
 
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
@@ -123,7 +123,7 @@
           </div>
         </div>
 
-        <h3>Cấu hình worker group</h3>
+        <h3 class="mt-5">Cấu hình worker group</h3>
 
         <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
           <ng-container [formGroupName]="i">
@@ -151,9 +151,8 @@
                   <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
                   <nz-form-control>
                     <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType">
-                      <nz-option nzLabel="3" [nzValue]="3"></nz-option>
-                      <nz-option nzLabel="4" [nzValue]="4"></nz-option>
-                      <nz-option nzLabel="5" [nzValue]="5"></nz-option>
+                      <nz-option *ngFor="let item of listOfWorkerType"
+                        [nzLabel]="item.machineName" [nzValue]="item.machineName"></nz-option>
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
@@ -186,8 +185,9 @@
                   </nz-form-control>
                   <nz-form-control>
                     <nz-radio-group formControlName="hardDriveType">
-                      <label nz-radio nzValue="ssd">Premium-SSD1</label>
-                      <label nz-radio nzValue="hdd">Premium-HDD1</label>
+                      <ng-container *ngFor="let item of listOfVolumeType">
+                        <label nz-radio [nzValue]="item.volumeTypeName">{{item.volumeTypeName}}</label>
+                      </ng-container>
                     </nz-radio-group>
                   </nz-form-control>
                 </nz-form-item>
@@ -232,7 +232,7 @@
                   <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
-                  nz-tooltip (click)="syncVPCNetwork()">
+                  nz-tooltip (click)="syncVPCNetwork()" class="borderless">
                   <span nz-icon class="icon-color">
                     <svg viewBox="64 64 896 896" focusable="false">
                       <path
@@ -265,7 +265,7 @@
                   <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
-                  nz-tooltip (click)="syncSubnet()">
+                  nz-tooltip (click)="syncSubnet()" class="borderless">
                   <span nz-icon class="icon-color">
                     <svg viewBox="64 64 896 896" focusable="false">
                       <path

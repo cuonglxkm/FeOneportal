@@ -107,6 +107,10 @@ textarea,
   margin-top: 32px;
 }
 
+.borderless {
+  border: none;
+}
+
 .scroll {
   max-height: 250px;
   overflow-y: auto;
