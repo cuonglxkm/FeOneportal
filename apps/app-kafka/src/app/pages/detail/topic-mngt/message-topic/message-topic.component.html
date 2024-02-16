@@ -12,7 +12,7 @@
 
     <div style="text-align: end;">Dữ liệu được đồng bộ lúc: <span class="time-async">{{syncInfo.message}}</span></div>
 
-    <nz-table class="tbl-acl" [nzData]="listMessage" #basicTable id="topics"  nzShowSizeChanger [nzFrontPagination]="false"
+    <nz-table class="tbl-acl" [nzLoading]="loading" [nzData]="listMessage" #basicTable id="topics"  nzShowSizeChanger [nzFrontPagination]="false"
         nzShowPagination [nzTotal]="total" [nzPageIndex]="index" [nzPageSize]="size"
         (nzPageSizeChange)="changeMessPageSize($event)" (nzPageIndexChange)="changeMessPage($event)">
         <thead class="table-info">

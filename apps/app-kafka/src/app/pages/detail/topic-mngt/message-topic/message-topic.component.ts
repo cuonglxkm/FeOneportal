@@ -16,12 +16,13 @@ export class MessageTopicComponent implements OnInit {
 
   @Output() cancelEvent = new EventEmitter<void>();
 
-  listMessage: KafkaMessage[]=[];
+  listMessage: KafkaMessage[] = [];
   listOfSelectedValue: string[] = [];
   listOfOption: string[];
   listPartition: KafkaPartition[];
   syncInfo: SyncInfoModel;
   stringToSearch: string;
+  loading: boolean = false;
 
   total: number;
   index: number = 1;
@@ -51,13 +52,12 @@ export class MessageTopicComponent implements OnInit {
   }
 
   getListMessageTopic(nameTopic: string, serviceOderCode: string, page: number, size: number, fromDate: number, toDate: number, listPar: string) {
-
+    this.loading = true;
     this.kafkaService.getMessageTopicKafka(nameTopic, serviceOderCode, page, size, fromDate, toDate, listPar)
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            console.log(data);
-            
+
             this.listMessage = [];
             this.total = data?.data?.totals;
             this.index = data?.data?.page;
@@ -66,9 +66,9 @@ export class MessageTopicComponent implements OnInit {
               let item = new KafkaMessage(element);
               this.listMessage.push(item);
             });
-            console.log("this.listMessage: ",this.listMessage);
-            
+
           }
+          this.loading = false
         }
       );
   }

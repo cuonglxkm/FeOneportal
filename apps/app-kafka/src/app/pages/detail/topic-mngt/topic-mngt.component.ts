@@ -83,14 +83,11 @@ export class TopicMngtComponent implements OnInit {
       .subscribe((data) => {
         this.total = data?.totals;
         this.size = data?.size;
-        console.log('total: ', this.total, 'size: ' + this.size);
-
         let temp: KafkaTopic[] = [];
         data.data.forEach(element => {
           temp.push(new KafkaTopic(element));
         });
         this.listTopic = temp;
-        console.log(this.listTopic);
         this.loading = false
       });
   }

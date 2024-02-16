@@ -263,7 +263,6 @@ export class CreateTopicComponent implements OnInit {
       const { name } = element;
       this.validateForm.get(name).clearAsyncValidators();
       this.validateForm.get(name).updateValueAndValidity();
-      this.validateForm.get(name).reset();
     })
   }
 
@@ -393,10 +392,6 @@ export class CreateTopicComponent implements OnInit {
               json[fullname] = value;
             }
           })
-
-        // console.log(json);
-        // Base.hideLoading()
-        // return;
 
         this.kafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 1, JSON.stringify(json))
           .subscribe(
