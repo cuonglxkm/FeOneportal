@@ -8,7 +8,7 @@ export class KubernetesCluster {
   totalNode: number;
   createdDate: Date;
 
-  constructor(obj: any) {
+  constructor(obj) {
     this.id = obj.id;
     this.clusterName = obj.cluster_name;
     this.serviceStatus = obj.service_status;

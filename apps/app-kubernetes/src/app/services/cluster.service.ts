@@ -23,8 +23,21 @@ export class ClusterService extends BaseService {
     })
   }
 
+  searchCluster(
+    clusterName: string,
+    serviceStatus: string,
+    pageIndex: number,
+    pageSize: number
+  ) {
+    return this.http.get(`${this.baseUrl}/k8s/search-cluster?clusterName=${clusterName}&status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`);
+  }
+
   createNewCluster(data) {
-    return this.http.post(`${this.baseUrl}`, data, {headers: this.getHeaders()});
+    return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
+  }
+
+  testCreateCluster(data) {
+    return this.http.post(`${this.baseUrl}/k8s/get-dto/create-cluster`, data);
   }
 
   getListK8sVersion(cloudProfileName: string) {
@@ -38,8 +51,13 @@ export class ClusterService extends BaseService {
   }
 
   getListVolumeTypes(cloudProfilenName: string) {
-    // return this.http.get(``, {headers: this.getHeaders()});
+    // return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`, {headers: this.getHeaders()});
     return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`);
+  }
+
+  getVPCNetwork(cloudProfileName: string) {
+    // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`, {headers: this.getHeaders()});
+    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`);
   }
 
 }

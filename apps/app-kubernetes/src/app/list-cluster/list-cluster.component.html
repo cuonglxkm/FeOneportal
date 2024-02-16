@@ -82,7 +82,7 @@
           <td>{{ item.clusterName }}</td>
           <td>
             <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
-
+              <span [ngStyle]="{color: status.color}">{{status.status}}</span>
             </ng-container>
           </td>
           <td>{{ item.actionStatus }}</td>

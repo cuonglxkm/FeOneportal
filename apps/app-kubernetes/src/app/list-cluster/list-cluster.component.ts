@@ -12,6 +12,7 @@ export class KubernetesDetailComponent implements OnInit {
 
   listOfClusters: KubernetesCluster[];
   keySearch: string;
+  serviceStatus: string;
   pageIndex: number;
   pageSize: number;
   total: number;
@@ -23,17 +24,20 @@ export class KubernetesDetailComponent implements OnInit {
     private modalService: NzModalService
   ) {
     this.keySearch = '';
+    this.serviceStatus = '';
     this.pageIndex = 1;
     this.pageSize = 10;
     this.total = 1;
+  }
 
+  ngOnInit(): void {
     // mock data
     const tmp: KubernetesCluster = {
       id: 1,
       clusterName: "abc",
       actionStatus: 1,
-      serviceStatus: 1,
-      apiEndpoint: "",
+      serviceStatus: 2,
+      apiEndpoint: "api.galaxy.vnpt",
       createdDate: new Date(),
       totalNode: 3
     };
@@ -41,12 +45,19 @@ export class KubernetesDetailComponent implements OnInit {
     this.listOfClusters.push(tmp);
   }
 
-  ngOnInit(): void {
-    this.searchCluster();
-  }
-
   searchCluster() {
-    console.log(123);
+    const k = this.keySearch.trim();
+    this.clusterService.searchCluster(
+      k,
+      this.serviceStatus,
+      this.pageIndex,
+      this.pageSize
+    ).subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfClusters = r.data.content;
+        this.total = r.total;
+      }
+    });
   }
 
   onQueryParamsChange(event) {

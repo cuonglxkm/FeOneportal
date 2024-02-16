@@ -1,4 +1,5 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo cluster'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Khởi tạo cluster'">
+  <!-- breadcrumb -->
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -11,6 +12,15 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Khởi tạo cluster</nz-breadcrumb-item>
     </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 
@@ -45,8 +55,6 @@
               <nz-form-control nzErrorTip="Khu vực không để trống">
                 <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn khu vực" formControlName="region" id="region">
                   <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                  <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                  <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item> -->
@@ -62,18 +70,6 @@
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
-
-            <!-- <nz-form-item>
-              <nz-form-label nzRequired nzFor="cniPlugin" nzLabelWrap>CNI Plugin</nz-form-label>
-              <nz-form-control nzErrorTip="CNI Plugin không để trống">
-                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn CNI plugin cho Kubernetes"
-                  formControlName="cniPlugin" id="cniPlugin">
-                  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                  <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                  <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item> -->
           </div>
         </div>
 
@@ -115,7 +111,7 @@
           <div nz-col [nzSpan]="12">
             <nz-form-item>
               <nz-form-control>
-                <nz-switch formControlName="autoHeadling" class="mr-3"></nz-switch>Bật Auto Headling
+                <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch>Bật Auto Healing
               </nz-form-control>
               <small>Sản sinh ra các Minion khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
                 tải).</small>
@@ -131,10 +127,21 @@
               <div nz-col [nzSpan]="12">
                 <nz-form-item>
                   <nz-form-label nzRequired nzFor="workerGroupName">Tên nhóm worker</nz-form-label>
-                  <nz-form-control>
+                  <nz-form-control [nzErrorTip]="workerGroupNameErrorTpl">
                     <input type="text" nz-input placeholder="Nhập tên nhóm worker" formControlName="workerGroupName"
-                      id="workerGroupName" />
+                      (ngModelChange)="checkDuplicate(i)" id="workerGroupName" />
                   </nz-form-control>
+                  <ng-template #workerGroupNameErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      Tên nhóm worker không để trống
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('duplicateName')">
+                      Tên nhóm worker đã tồn tại
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('maxlength')">
+                      Tên nhóm worker tối đa 16 ký tự
+                    </ng-container>
+                  </ng-template>
                 </nz-form-item>
 
                 <ng-container *ngIf="isAutoScaleEnable">
@@ -150,9 +157,10 @@
                 <nz-form-item>
                   <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
                   <nz-form-control>
-                    <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType">
+                    <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
+                      (ngModelChange)="onSelectWorkerType($event, i)">
                       <nz-option *ngFor="let item of listOfWorkerType"
-                        [nzLabel]="item.machineName" [nzValue]="item.machineName"></nz-option>
+                        nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName"></nz-option>
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
@@ -178,15 +186,29 @@
                 </ng-container>
 
                 <nz-form-item>
-                  <nz-form-label nzRequired nzFor="hardDrive">Ổ cứng (GB)</nz-form-label>
-                  <nz-form-control>
+                  <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
+                  <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
                     <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng"
-                      formControlName="hardDriveStorage" id="hardDrive" (keypress)="isNumber($event)" />
+                      formControlName="volumeStorage" id="volume" (keypress)="isNumber($event)" />
                   </nz-form-control>
+                  <ng-template #volumeStorageErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      Dung lượng ổ cứng không để trống
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                      Dung lượng trong khoảng từ 20-1000 (GB)
+                    </ng-container>
+                  </ng-template>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
                   <nz-form-control>
-                    <nz-radio-group formControlName="hardDriveType">
+                    <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)">
                       <ng-container *ngFor="let item of listOfVolumeType">
-                        <label nz-radio [nzValue]="item.volumeTypeName">{{item.volumeTypeName}}</label>
+                        <label nz-radio [nzValue]="item.volumeType" id="volumeType">
+                          {{item.volumeTypeName}}
+                        </label>
                       </ng-container>
                     </nz-radio-group>
                   </nz-form-control>
@@ -215,9 +237,8 @@
               <nz-form-control nzErrorTip="Loại network không để trống">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn loại network" formControlName="networkType"
                   id="networkType">
-                  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                  <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                  <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+                  <nz-option nzLabel="Calico" nzValue="calico"></nz-option>
+                  <nz-option nzLabel="Cilium" nzValue="cilium"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -248,11 +269,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="cidr">CIDR</nz-form-label>
               <nz-form-control nzErrorTip="CIDR không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn CIDR" formControlName="cidr" id="cidr">
-                  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                  <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                  <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
-                </nz-select>
+                <input type="text" nz-input formControlName="cidr" readonly />
               </nz-form-control>
             </nz-form-item>
 
@@ -370,7 +387,7 @@
               <div class="mt-3 ml-3">Ổ cứng (GB)</div>
             </div>
             <div nz-col [nzSpan]="12">
-              <div class="price-style mt-3 mr-3">{{control.get('hardDriveStorage').value}}</div>
+              <div class="price-style mt-3 mr-3">{{control.get('volumeStorage').value}}</div>
             </div>
           </div>
 
@@ -380,7 +397,7 @@
             </div>
             <div nz-col [nzSpan]="12">
               <div class="price-style mt-3 mr-3">
-                {{control.get('hardDriveType').value === 'hdd' ? 'Premium-HDD1' : 'Premium-SSD1'}}
+                {{control.get('volumeType').value === DEFAULT_VOLUME_TYPE ? 'Premium-HDD1' : 'Premium-SSD1'}}
               </div>
             </div>
           </div>
@@ -408,7 +425,7 @@
         </div>
 
         <div nz-col [nzSpan]="12">
-          <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitPayment()">
+          <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitPayment()" [disabled]="myform.invalid">
             <span nz-icon>
               <svg viewBox="64 64 896 896" focusable="false">
                 <path
