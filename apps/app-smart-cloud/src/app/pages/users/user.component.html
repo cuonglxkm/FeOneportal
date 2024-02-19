@@ -135,8 +135,7 @@
             <input
               name="name"
               nz-input
-              [ngModel]="codeVerify"
-              (ngModelChange)="changecodeVerify($event)"
+              [(ngModel)]="codeVerify"
             />
           </nz-form-control>
         </nz-form-item>
@@ -155,7 +154,6 @@
       nz-button
       nzType="primary"
       (click)="handleOkDelete()"
-      [nzLoading]="isConfirmLoading"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
@@ -221,7 +219,6 @@
       nz-button
       nzType="primary"
       (click)="handleOkDeleteUsers()"
-      [nzLoading]="isConfirmLoading"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
