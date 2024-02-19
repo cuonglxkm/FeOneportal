@@ -1,6 +1,4 @@
-<page-header [content]="content"
-             [breadcrumb]="breadcrumb"
-             [action]="action"
+<page-header [breadcrumb]="breadcrumb"
              [title]="'Danh sách Backup VM'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -16,46 +14,45 @@
         </a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
-    </div>
-  </ng-template>
-
-  <ng-template #content>
-    <nz-space [nzSize]="24">
-      <div *nzSpaceItem>
-        <nz-select [(ngModel)]="selectedValue"
-                   (ngModelChange)="onChange($event)"
-                   nzPlaceHolder="Tất cả trạng thái"
-                   nzTooltipTitle="Tìm kiếm theo trạng thái"
-                   nzTooltipPlacement="bottom"
-                   nz-tooltip>
-          <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-        </nz-select>
-      </div>
-      <div *nzSpaceItem>
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-          <input style="width: 400px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
-                 nz-input
-                 placeholder="Tìm kếm tên..."/>
-        </nz-input-group>
-        <ng-template #suffixButton>
-          <button nz-button nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nz-tooltip nzType="primary" nzSearch (click)="getListBackupVM()">
-            <span nz-icon nzType="search" nzTheme="outline"></span>
-            Search
-          </button>
-        </ng-template>
-      </div>
-    </nz-space>
-  </ng-template>
 </page-header>
 
 <nz-content>
   <nz-card>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-select [(ngModel)]="selectedValue"
+                   nzSize="large"
+                   style="margin-right: 15px; width: 170px;"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="Tất cả trạng thái"
+                   nzTooltipTitle="Tìm kiếm theo trạng thi"
+                   nzTooltipPlacement="bottom"
+                   nz-tooltip>
+          <nz-option *ngFor="let item of status" [nzValue]="item.value"
+                     [nzLabel]="item.label"></nz-option>
+        </nz-select>
+        <nz-input-group
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          [(ngModel)]="value"
+          (input)="onInputChange($event.target['value'])">
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên ..."/>
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"/>
+        </ng-template>
+      </nz-col>
+    </nz-row>
     <nz-table #fixedTable
+              style="margin-top: 20px;"
               [nzScroll]="{ x: '100%', y: '55vh' }"
               [nzData]="collection.records"
               nzShowSizeChanger

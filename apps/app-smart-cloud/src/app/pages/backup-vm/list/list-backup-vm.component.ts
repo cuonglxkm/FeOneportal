@@ -78,6 +78,7 @@ export class ListBackupVmComponent implements OnInit {
     onInputChange(value: string) {
         this.value = value;
         console.log('input text: ', this.value)
+        this.getListBackupVM()
     }
 
     showModalDelete(id: number): void {
