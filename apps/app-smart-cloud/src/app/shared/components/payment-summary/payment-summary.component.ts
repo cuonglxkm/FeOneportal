@@ -14,6 +14,9 @@ import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
 import { InstanceService } from '../../services/instance.service';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
 import { finalize } from 'rxjs';
+import { PaymentSummaryService } from '../../services/payment-summary.service';
+import { da } from 'date-fns/locale';
+import { LoadingService } from '@delon/abc/loading';
 
 class ServiceInfo {
   name: string;
@@ -21,6 +24,13 @@ class ServiceInfo {
   duration: number;
   amount: number;
   currency: number;
+}
+
+class Discount {
+  promotionCode: string;
+  value: number;
+  description: string;
+  endDate: string;
 }
 
 @Component({
@@ -36,15 +46,18 @@ export class PaymentSummaryComponent implements OnInit {
   acceptTerm: boolean = false;
   totalAmount: number = 0;
   promotion: number = 0;
-  loadingSrv: any;
   notification: any;
+  inputCode: string = '';
+  loading: boolean = true;
 
   constructor(
     private service: InstancesService,
+    private psService: PaymentSummaryService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
+    private loadingSrv: LoadingService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     const navigation = this.router.getCurrentNavigation();
@@ -123,7 +136,67 @@ export class PaymentSummaryComponent implements OnInit {
       });
   }
 
+  listDiscount: Discount[] = [];
+  discountPicked: string = '';
+  getListDiscount() {
+    this.loading = true;
+    this.psService
+      .getDiscounts('', 9999, 1)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listDiscount = data.records;
+        },
+        error: (e) => {
+          this.notification.error('', 'Lây danh sách Voucher không thất bại');
+        },
+      });
+  }
+
+  checkedExistDiscount: boolean = true;
+  applyInputDiscount() {
+    this.psService.getDiscountByCode(this.inputCode).subscribe({
+      next: (data) => {
+        this.checkedExistDiscount = true;
+        this.order.couponCode = this.inputCode;
+        this.isVisibleDiscount = false;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.checkedExistDiscount = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  chooseDiscount(code: string) {
+    this.discountPicked = code;
+  }
+
+  isVisibleDiscount: boolean = false;
+  showModal() {
+    this.isVisibleDiscount = true;
+    this.inputCode = '';
+    this.checkedExistDiscount = true;
+    this.getListDiscount();
+  }
+
+  handleCancelDiscount() {
+    this.isVisibleDiscount = false;
+  }
+
+  handleOkDiscount(): void {
+    this.order.couponCode = this.discountPicked;
+    this.isVisibleDiscount = false;
+  }
+
   payNow() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
       .create(this.order)
       .pipe(

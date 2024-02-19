@@ -69,7 +69,8 @@
       <span>VNPT Cloud Voucher</span>
     </nz-col>
     <nz-col class="text-right" nzSpan="12">
-      <a>Chọn hoặc nhập mã</a>
+      <span style="margin-right: 10px">{{ order.couponCode }}</span>
+      <a (click)="showModal()">Chọn hoặc nhập mã</a>
     </nz-col>
   </nz-row>
 </div>
@@ -117,3 +118,112 @@
     </div>
   </div>
 </nz-card>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDiscount"
+  nzTitle="Chọn Voucher"
+  nzWidth="700px"
+  (nzOnCancel)="handleCancelDiscount()"
+  (nzOnOk)="handleOkDiscount()"
+>
+  <ng-container *nzModalContent>
+    <nz-input-group
+      style="margin-right: 8px; margin-bottom: 8px; width: 100%"
+      [nzSuffix]="suffixApply"
+      [nzPrefix]="prefixLable"
+      nzSize="large"
+    >
+      <input
+        name="name"
+        nz-input
+        style="border: 1px solid #d9d9d9; padding-left: 8px"
+        placeholder="Nhập mã VNPT Cloud Voucher"
+        [(ngModel)]="inputCode"
+      />
+      <ng-template #prefixLable>
+        <label>Mã Voucher</label>
+      </ng-template>
+      <ng-template #suffixApply>
+        <button
+          nz-button
+          nzType="primary"
+          (click)="applyInputDiscount()"
+          [disabled]="inputCode == ''"
+        >
+          Áp dụng
+        </button>
+      </ng-template>
+    </nz-input-group>
+    <span *ngIf="!checkedExistDiscount" style="color: #ff4d4f"
+      >Rất tiếc! Không thể tìm thấy mã voucher này.</span
+    >
+    <nz-table
+      style="margin-top: 8px"
+      [nzLoading]="loading"
+      [nzData]="listDiscount"
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+      [nzScroll]="{ y: '320px' }"
+    >
+      <tbody>
+        <tr
+          class="test-1"
+          *ngFor="let item of listDiscount"
+          style="display: flex; padding-right: 10px"
+        >
+          <nz-card
+            class="ant-card-body-custom"
+            style="width: 100%; border-radius: 4px; cursor: pointer"
+            (click)="chooseDiscount(item.promotionCode)"
+          >
+            <nz-card-meta
+              [nzAvatar]="nzAvatarselected2"
+              [nzDescription]="nzDescriptionselected2"
+            >
+              <ng-template #nzAvatarselected2>
+                <img
+                  style="width: 150px; height: 100%"
+                  src="assets/imgs/image_discount.png"
+                  alt=""
+                />
+              </ng-template>
+              <ng-template #nzDescriptionselected2>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="20"
+                    ><span>{{ item.description }}</span
+                    ><br /><span
+                      >Thời gian áp dụng: {{ item.endDate }}</span
+                    ></nz-col
+                  >
+                  <nz-col style="display: flex; align-items: center" nzSpan="4">
+                    <input
+                      style="cursor: pointer"
+                      type="radio"
+                      [checked]="item.promotionCode == discountPicked"
+                    />
+                  </nz-col>
+                </nz-row>
+              </ng-template>
+            </nz-card-meta>
+          </nz-card>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDiscount()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDiscount()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

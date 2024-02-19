@@ -75,6 +75,7 @@ export class UserComponent implements OnInit {
   isVisibleDeleteUsers: boolean = false;
   codeVerify: string;
   showModal() {
+    this.codeVerify = '';
     if (this.setOfCheckedName.size == 1) {
       let arrayFromSet = Array.from(this.setOfCheckedName);
       this.userDelete = arrayFromSet[0];
@@ -85,10 +86,6 @@ export class UserComponent implements OnInit {
       this.isVisibleDeleteUsers = true;
     }
     console.log('user delete', this.userDelete);
-  }
-
-  changecodeVerify(e: string) {
-    this.codeVerify = e;
   }
 
   handleCancelDelete() {
