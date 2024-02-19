@@ -127,6 +127,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     } else {
       this.form.name = ''
     }
+    this.refreshCheckedStatus()
     this.userGroupService.search(this.form).subscribe(data => {
       this.collection = data
       console.log('data', this.collection)
@@ -173,6 +174,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
 
   refresh() {
     this.loading = true
+
     setTimeout(() => {
       this.getData();
     }, 2000);

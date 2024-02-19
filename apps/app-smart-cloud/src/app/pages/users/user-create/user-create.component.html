@@ -131,32 +131,29 @@
     [nzXXl]="24"
   >
     <button
-      class="button-custom"
       nz-button
       style="color: var(--Primary-1, #0066b3)"
       (click)="navigateToList()"
-      nzSize="large"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/arrow-left-2.svg"
         alt=""
       />
-      <span class="button-text-default">Quay lại</span>
+      <span>Quay lại</span>
     </button>
     <button
       nz-button
       nzType="primary"
       [disabled]="!form.valid"
       (click)="showModal()"
-      nzSize="large"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/add-circle.svg"
         alt=""
       />
-      <span class="button-text-primary">Thêm User</span>
+      <span>Thêm User</span>
     </button>
   </div>
 </div>
@@ -187,7 +184,23 @@
     </nz-row>
   </ng-container>
   <div *nzModalFooter>
-    <button class="button-custom" nz-button (click)="handleCancelCreate()">Hủy</button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isConfirmLoading">Xác nhận</button>
+    <button nz-button (click)="handleCancelCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkCreate()"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
   </div>
 </nz-modal>

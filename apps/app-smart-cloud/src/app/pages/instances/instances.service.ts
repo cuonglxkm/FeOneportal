@@ -23,15 +23,12 @@ export class InstancesService extends BaseService {
   ) {
     super();
   }
+
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
-  postAction(id: number, data: any): Observable<any> {
-    //let url_ = `/images?show=${show}&region=${region}&type=${type}&customerId=${customerId}`;
-    let url_ = `/instances/${id}/action`;
-    url_ = url_.replace(/[?&]$/, '');
-    // const _body = JSON.stringify(data)
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
+  postAction(data: any) {
+    return this.http.post(
+      this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
+      data, { responseType: 'text' }
     );
   }
 

@@ -50,6 +50,9 @@ export class EditVolumeComponent implements OnInit {
 
   isVisibleConfirmEdit: boolean = false
 
+  volumeStatus: Map<String, string>;
+
+  listVMs: string = '';
 
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -59,6 +62,11 @@ export class EditVolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private instanceService: InstancesService) {
+    this.volumeStatus = new Map<String, string>();
+    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
+    this.volumeStatus.set('ERROR', 'Lỗi');
+    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if ([1, 2].includes(this.region)) {
         if (value < 20) return this.iops = 0
@@ -136,9 +144,9 @@ export class EditVolumeComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     if(this.volumeId != undefined || this.volumeId != null) {
+      console.log('id', this.volumeId)
       this.getVolumeById(this.volumeId)
       this.getTotalAmountFirst()
     }
@@ -179,6 +187,13 @@ export class EditVolumeComponent implements OnInit {
         if(this.volumeInfo?.instanceId != null) {
           this.getInstanceById(this.volumeInfo?.instanceId)
         }
+
+        if(this.volumeInfo.attachedInstances != null) {
+          this.volumeInfo.attachedInstances.forEach(item => {
+            this.listVMs += item.instanceName.toString() + ', '
+          })
+        }
+
         //Thoi gian su dung
         const createDate = new Date(this.volumeInfo?.creationDate);
         const exdDate = new Date(this.volumeInfo?.expirationDate);
@@ -199,7 +214,7 @@ export class EditVolumeComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id
     this.volumeEdit.newDescription = this.validateForm.controls.description.value
-    this.volumeEdit.regionId = this.volumeInfo.regionId;
+    this.volumeEdit.regionId = this.volumeInfo?.regionId;
     this.volumeEdit.newSize = this.validateForm.controls.storage.value
     this.volumeEdit.iops = this.iops
     // editVolumeDto.newOfferId = 0;
@@ -212,7 +227,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.actorEmail = user.email;
     this.volumeEdit.userEmail = user.email;
     this.volumeEdit.serviceType = 2;
-    this.volumeEdit.actionType = 4;
+    this.volumeEdit.actionType = 4; //resize
   }
 
   totalAmountVolume = 0;
@@ -229,12 +244,12 @@ export class EditVolumeComponent implements OnInit {
     const volumeResize = new EditSizeMemoryVolumeDTO();
     volumeResize.serviceInstanceId = this.volumeInfo?.id
     volumeResize.newDescription = this.volumeInfo?.description
-    volumeResize.regionId = this.volumeInfo.regionId;
+    volumeResize.regionId = this.volumeInfo?.regionId;
     volumeResize.newSize = this.volumeInfo?.sizeInGB
     volumeResize.iops = this.iops
     // editVolumeDto.newOfferId = 0;
     volumeResize.serviceName = this.volumeInfo?.name
-    volumeResize.vpcId = this.volumeInfo.vpcId;
+    volumeResize.vpcId = this.volumeInfo?.vpcId;
     volumeResize.customerId = this.tokenService.get()?.userId;
     volumeResize.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');

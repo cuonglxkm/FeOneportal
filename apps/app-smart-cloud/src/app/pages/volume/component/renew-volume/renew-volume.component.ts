@@ -123,7 +123,7 @@ export class RenewVolumeComponent implements OnInit {
     this.extendsDto.actorEmail = user.email;
     this.extendsDto.userEmail = user.email;
     this.extendsDto.serviceType = 2;
-    this.extendsDto.actionType = 3;
+    this.extendsDto.actionType = 3; //gia hạn
   }
 
   totalAmountVolume = 0;

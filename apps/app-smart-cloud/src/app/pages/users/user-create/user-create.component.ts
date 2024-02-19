@@ -84,7 +84,7 @@ export class UserCreateComponent implements OnInit {
     this.userCreate.groupNames = this.groupNames;
     this.userCreate.policyNames = this.policyNames;
     this.isVisibleCreate = false;
-    console.log("user create", this.userCreate);
+    console.log('user create', this.userCreate);
     this.service
       .createOrUpdate(this.userCreate)
       .pipe(
@@ -92,17 +92,17 @@ export class UserCreateComponent implements OnInit {
           this.loadingSrv.close();
         })
       )
-      .subscribe(
-        (data: any) => {
+      .subscribe({
+        next: (data: any) => {
           console.log(data);
           this.notification.success('', 'Tạo mới User thành công');
           this.navigateToList();
         },
-        (error) => {
+        error: (error) => {
           console.log(error.error);
           this.notification.error('', 'Tạo mới User không thành công');
-        }
-      );
+        },
+      });
   }
 
   //Router

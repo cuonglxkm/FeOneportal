@@ -4,7 +4,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from "@angular/router";
 import {AttachedDto, VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
-import {AddVolumetoVmModel, GetAllVmModel} from "../../../../shared/models/volume.model";
+import {AddVolumetoVmModel, EditTextVolumeModel, GetAllVmModel} from "../../../../shared/models/volume.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
@@ -15,6 +15,7 @@ import {PopupCancelVolumeComponent} from '../popup-volume/popup-cancel-volume.co
 import {PopupDeleteVolumeComponent} from '../popup-volume/popup-delete-volume.component';
 import {finalize} from "rxjs/operators";
 import {InstancesModel} from "../../../instances/instances.model";
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-volume',
@@ -67,12 +68,24 @@ export class VolumeComponent implements OnInit {
   instanceSelected: any
 
   listInstanceInVolume: AttachedDto[] = []
+
+  validateForm: FormGroup<{
+    nameVolume: FormControl<string>
+    description: FormControl<string>
+  }> = this.fb.group({
+    nameVolume: [null as string, [Validators.required,
+      Validators.pattern(/^[a-zA-Z0-9]*$/),
+      Validators.maxLength(70)]],
+    description: [null as string, [Validators.maxLength(255)]]
+  })
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
               private notification: NzNotificationService,
               private modalService: NzModalService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private fb: NonNullableFormBuilder) {
   }
 
   regionChanged(region: RegionModel) {
@@ -205,7 +218,7 @@ export class VolumeComponent implements OnInit {
             console.log('eror', error)
             this.isVisibleAttachVm = false
             this.isLoadingAttachVm = false;
-            this.notification.error('Thất bại', 'Gắn Volume thất bại. Không tìm thấy volume ' + volume.name)
+            this.notification.error('Thất bại', 'Gắn Volume thất bại.')
           })
         }
       } else {
@@ -298,6 +311,51 @@ export class VolumeComponent implements OnInit {
     })
   }
 
+  //update
+
+  showModalUpdate(volumeDTO: VolumeDTO) {
+    this.isVisibleUpdate = true
+    this.validateForm.controls.nameVolume.setValue(volumeDTO.name)
+    this.validateForm.controls.description.setValue(volumeDTO.description)
+    this.volumeId = volumeDTO.id
+  }
+
+  handleCancelUpdate() {
+    this.isVisibleUpdate = false
+  }
+
+  handleOkUpdate() {
+    let request: EditTextVolumeModel = new EditTextVolumeModel()
+    request.customerId = this.tokenService.get()?.userId
+    request.volumeId = this.volumeId
+    request.newName = this.validateForm.controls.nameVolume.value
+    request.newDescription = this.validateForm.controls.description.value
+    this.isLoadingUpdate = true
+    this.volumeService.updateVolume(request).subscribe(data => {
+      if(data) {
+        this.isLoadingUpdate = false
+        this.isVisibleUpdate = false
+        this.notification.success('Thành công', 'Cập nhật thông tin Volume thành công')
+        this.getListVolume()
+      }
+    }, error => {
+      this.isLoadingUpdate = false
+      this.isVisibleUpdate = false
+      this.notification.error('Thất bại', 'Cập nhật thông tin Volume thất bại')
+    })
+    this.isVisibleUpdate = false
+  }
+
+  navigateToCreateScheduleSnapshot() {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create'])
+  }
+
+  navigateToCreateBackup(id, createdDate, endDate, name) {
+    this.router.navigate(['/app-smart-cloud/backup-volume/create'],{
+      queryParams:{idVolume:id, startDate: createdDate , endDate: endDate, nameVolume:name }
+    });
+
+  }
 
   ngOnInit() {
     this.getListVm()
