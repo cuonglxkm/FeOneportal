@@ -81,6 +81,7 @@ import {CreatePackageBackupComponent} from "./backup-package/create/create-packa
 import {DetailPackageBackupComponent} from "./backup-package/detail/detail-package-backup.component";
 import {EditBackupPackageComponent} from "./backup-package/edit/edit-backup-package.component";
 import {ExtendBackupPackageComponent} from "./backup-package/extend/extend-backup-package.component";
+import { PaymentSummaryComponent } from "../shared/components/payment-summary/payment-summary.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -309,7 +310,6 @@ const routes: Routes = [
     component: PaymentDetailComponent
   },
   {
-
     path: 'billing/payments/success',
     component: PaymentSuccessComponent
   },
@@ -352,6 +352,10 @@ const routes: Routes = [
   {
     path: 'backup/packages/extend/:id',
     component: ExtendBackupPackageComponent
+  },
+  {
+    path: 'order/cart',
+    component: PaymentSummaryComponent
   }
   ]
 @NgModule({

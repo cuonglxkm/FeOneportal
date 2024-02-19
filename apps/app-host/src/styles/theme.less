@@ -184,16 +184,6 @@ a {
 
 }
 
-.button-text-primary {
-  color: var(--Button-bg_default, #fff);
-  /* Body/16px/Medium */
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px; /* 150% */
-}
-
-
 .text-lable {
   color: var(--Neutral-1, #2b2d3b);
   /* Body/16px - Regular */
@@ -206,7 +196,10 @@ a {
 
 
 // INPUT
-
+.ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+}
 
 .ant-input-affix-wrapper { // Input group
   border-radius: 8px;
@@ -230,15 +223,6 @@ a {
 
 
 // BUTTON
-
-.button-text-default {
-  color: #0066B0;
-  /* Body/16px/Medium */
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px; /* 150% */
-}
 
 .ant-btn {
   border-radius: @button-border-medium-radius;

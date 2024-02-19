@@ -115,7 +115,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.mapOfCheckedUser.clear();
     this.setOfCheckedPolicy.clear();
     this.groupNames = [];
-    this.policyNames.clear;
+    this.policyNames.clear();
     this.emitData();
   }
 
@@ -219,6 +219,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   reloadGroupTable(): void {
     this.listOfGroups = [];
+    this.resetDataPicked();
     this.getGroup();
   }
 
@@ -288,6 +289,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   reloadUserTable(): void {
     this.listOfUsers = [];
+    this.resetDataPicked();
     this.getCopyUserPlicies();
   }
 
@@ -361,6 +363,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   reloadPolicyTable(): void {
     this.listOfPolicies = [];
+    this.resetDataPicked();
     this.getPermissionPolicies();
   }
 

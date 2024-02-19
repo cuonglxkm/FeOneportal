@@ -78,36 +78,6 @@ export class InstancesComponent implements OnInit {
     private notification: NzNotificationService
   ) {}
 
-  showModal(cs: string, data: any): void {
-    this.actionData = data;
-    this.selectedOptionAction = '';
-    switch (parseInt(cs, 10)) {
-      case 1:
-        this.navigateToCreateBackup(this.actionData.id);
-        break;
-      case 2:
-        break;
-      case 3:
-        break;
-      case 4:
-        this.navigateToEdit(this.actionData.id);
-        break;
-      case 5:
-        this.isVisibleGanVLAN = true;
-        break;
-      case 6:
-        this.isVisibleGoKhoiVLAN = true;
-        break;
-      case 7:
-        this.restartInstance(this.actionData.id);
-        break;
-      case 8:
-        this.shutdownInstance(this.actionData.id);
-        break;
-      default:
-    }
-  }
-
   selectedChecked(e: any): void {
     // @ts-ignore
     this.checkedCashArray = [...e];
@@ -154,7 +124,10 @@ export class InstancesComponent implements OnInit {
             this.total = next.totalCount;
           },
           error: (error) => {
-            this.notification.error('', 'Lấy danh sách máy ảo không thành công');
+            this.notification.error(
+              '',
+              'Lấy danh sách máy ảo không thành công'
+            );
           },
         });
     }
@@ -194,10 +167,18 @@ export class InstancesComponent implements OnInit {
           },
           error: (error) => {
             this.activeCreate = true;
-            this.notification.error('', 'Lấy danh sách máy ảo không thành công');
+            this.notification.error(
+              '',
+              'Lấy danh sách máy ảo không thành công'
+            );
           },
         });
     }
+  }
+
+  reloadTable() {
+    this.dataList = [];
+    this.getDataList();
   }
 
   ngOnInit() {
@@ -274,18 +255,46 @@ export class InstancesComponent implements OnInit {
           command: 'shutdown',
           id: id,
         };
-        this.dataService.postAction(id, body).subscribe(
-          (data: any) => {
-            if (data == true) {
+        this.dataService.postAction(body).subscribe({
+          next: (data: any) => {
+            if (data == 'Thao tác thành công') {
               this.notification.success('', 'Tắt máy ảo thành công');
+              this.reloadTable();
             } else {
               this.notification.error('', 'Tắt máy ảo không thành công');
             }
           },
-          () => {
+          error: (e) => {
             this.notification.error('', 'Tắt máy ảo không thành công');
-          }
-        );
+          },
+        });
+      },
+    });
+  }
+  startInstance(id: number): void {
+    this.modalSrv.create({
+      nzTitle: 'Bật máy ảo',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện bật máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        var body = {
+          command: 'start',
+          id: id,
+        };
+        this.dataService.postAction(body).subscribe({
+          next: (data: any) => {
+            if (data == 'Thao tác thành công') {
+              this.notification.success('', 'Bật máy ảo thành công');
+              this.reloadTable();
+            } else {
+              this.notification.error('', 'Bật máy ảo không thành công');
+            }
+          },
+          error: (e) => {
+            this.notification.error('', 'Bật máy ảo không thành công');
+          },
+        });
       },
     });
   }
@@ -300,28 +309,53 @@ export class InstancesComponent implements OnInit {
           command: 'restart',
           id: id,
         };
-        this.dataService.postAction(id, body).subscribe(
-          (data: any) => {
-            console.log(data);
-            if (data == true) {
+        this.dataService.postAction(body).subscribe({
+          next: (data) => {
+            if (data == 'Thao tác thành công') {
               this.notification.success('', 'Khởi động lại máy ảo thành công');
+              this.reloadTable();
             } else {
-              this.notification.error(
-                '',
-                'Khởi động lại máy ảo không thành công'
-              );
+              ('Khởi động lại máy ảo không thành công');
             }
           },
-          () => {
+          error: (e) => {
             this.notification.error(
               '',
               'Khởi động lại máy ảo không thành công'
             );
-          }
-        );
+          },
+        });
       },
     });
   }
+  rescueInstance(id: number): void {
+    this.modalSrv.create({
+      nzTitle: 'RESCUE máy ảo',
+      nzContent: 'Quý khách chắn chắn muốn thực hiện RESCUE máy ảo?',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        var body = {
+          command: 'rescue',
+          id: id,
+        };
+        this.dataService.postAction(body).subscribe({
+          next: (data) => {
+            if (data == 'Thao tác thành công') {
+              this.notification.success('', 'RESCUE máy ảo thành công');
+              this.reloadTable();
+            } else {
+              this.notification.error('', 'RESCUE máy ảo không thành công');
+            }
+          },
+          error: (e) => {
+            this.notification.error('', 'RESCUE máy ảo không thành công');
+          },
+        });
+      },
+    });
+  }
+
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
