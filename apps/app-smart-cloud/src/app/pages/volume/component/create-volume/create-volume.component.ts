@@ -318,6 +318,7 @@ export class CreateVolumeComponent implements OnInit {
   unitPrice = 0
 
   changeValueInput() {
+    this.iops = 0
     console.log('total amount')
     this.getTotalAmount()
   }
@@ -339,6 +340,7 @@ export class CreateVolumeComponent implements OnInit {
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
+
     });
   }
 

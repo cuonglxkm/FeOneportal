@@ -25,13 +25,13 @@
   <ng-template #title>
     <div nz-row nzJustify="space-between">
       <nz-row>
-        <nz-col>
-          <span nz-icon
-                nzType="arrow-left"
-                nzTheme="outline"
-                [routerLink]="'/app-smart-cloud/volumes'"
-                style="margin-right: 10px;"></span>
-        </nz-col>
+<!--        <nz-col>-->
+<!--          <span nz-icon-->
+<!--                nzType="arrow-left"-->
+<!--                nzTheme="outline"-->
+<!--                [routerLink]="'/app-smart-cloud/volumes'"-->
+<!--                style="margin-right: 10px;"></span>-->
+<!--        </nz-col>-->
         <nz-col>
           <div>Tạo Volume</div>
         </nz-col>
@@ -145,8 +145,6 @@
                 </td>
                 <td>{{iops}}</td>
                 <td>{{unitPrice}}</td>
-                <!--            <td nzAlign="right" *ngIf="orderItem == undefined">0 VND</td>-->
-                <!--            <td nzAlign="right" *ngIf="orderItem != undefined">{{orderItem?.orderItemPrices[0].unitPrice}}</td>-->
               </tr>
               </tbody>
             </nz-table>
@@ -195,28 +193,34 @@
                 <span style="color: rgba(252, 16, 16, 1); "> *</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-              <nz-input-number
-                style="width:100%;"
-                formControlName="time"
-                (ngModelChange)="timeSelectedChange($event)"
-                nzMin="1"
-                nzMax="100"
-                nzStep="1"/>
-              <ng-template #dateErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label nzFor="now">
-              <div class="label">
-                <span>Thời gian bắt đầu sử dụng: </span>
-                <span>{{ date | date: 'dd/MM/yyyy' }}</span>
-              </div>
-            </nz-form-label>
+            <nz-row>
+              <nz-col nzSpan="12">
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                  <nz-input-number
+                    style="width:100%; border-radius: 8px;"
+                    formControlName="time"
+                    (ngModelChange)="timeSelectedChange($event)"
+                    nzMin="1"
+                    nzMax="100"
+                    nzStep="1"/>
+                  <ng-template #dateErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-col>
+              <nz-col style="margin-left: 25px;">
+                <nz-form-item>
+                  <nz-form-label nzFor="now">
+                    <div class="label">
+                      <span>Thời gian bắt đầu sử dụng: </span>
+                      <span>{{ date | date: 'dd/MM/yyyy' }}</span>
+                    </div>
+                  </nz-form-label>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
           </nz-form-item>
         </nz-card>
       </nz-col>
