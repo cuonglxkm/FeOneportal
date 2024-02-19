@@ -49,6 +49,7 @@ export class PaymentSummaryComponent implements OnInit {
   notification: any;
   inputCode: string = '';
   loading: boolean = true;
+  returnPath: string;
 
   constructor(
     private service: InstancesService,
@@ -61,9 +62,10 @@ export class PaymentSummaryComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as { data: any };
+    const state = navigation?.extras.state as { data: any; path: string };
 
     if (state) {
+      this.returnPath = state.path;
       const myOrder = state.data;
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
@@ -210,12 +212,12 @@ export class PaymentSummaryComponent implements OnInit {
         },
         error: (error) => {
           console.log(error.error);
-          this.notification.error('', 'Tạo order máy ảo không thành công');
+          this.notification.error('', 'Tạo order không thành công');
         },
       });
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    this.router.navigate([this.returnPath]);
   }
 }
