@@ -416,6 +416,7 @@ export class InstancesEditComponent implements OnInit {
     if (this.isCustomconfig) {
       this.instanceResize.cpu = this.configCustom.vCPU;
       this.instanceResize.ram = this.configCustom.ram;
+      this.instanceResize.storage = this.configCustom.capacity;
       this.instanceResize.newOfferId = 0;
       this.instanceResize.newFlavorId = 0;
     } else {
@@ -528,7 +529,8 @@ export class InstancesEditComponent implements OnInit {
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceResize);
-    itemPayment.specificationType = 'instance_create';
+    itemPayment.specificationType = 'instance_resize';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];

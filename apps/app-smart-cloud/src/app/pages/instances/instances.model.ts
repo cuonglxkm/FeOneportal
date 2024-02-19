@@ -337,6 +337,7 @@ export class InstanceResize {
   addCpu: number;
   addBttn: number;
   addBtqt: number;
+  storage: number;
   ram: number;
   cpu: number;
   typeName: string;
@@ -519,7 +520,7 @@ export class ItemPayment {
   specificationString: string;
   specificationType: string;
   sortItem: number;
-  serviceDuration: number
+  serviceDuration: number;
 }
 
 export class InstanceExtend {

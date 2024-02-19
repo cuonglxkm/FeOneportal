@@ -137,6 +137,7 @@ export class InstancesExtendComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceExtend);
     itemPayment.specificationType = 'instance_extend';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
