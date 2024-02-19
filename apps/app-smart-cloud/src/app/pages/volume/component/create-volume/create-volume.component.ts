@@ -323,6 +323,27 @@ export class CreateVolumeComponent implements OnInit {
     this.getTotalAmount()
   }
 
+  navigateToPaymentSummary() {
+    // this.getTotalAmount()
+
+    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
+    request.customerId = this.volumeCreate.customerId;
+    request.createdByUserId = this.volumeCreate.customerId;
+    request.note = 'tạo volume';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.volumeCreate),
+        specificationType: 'volume_create',
+        price: this.unitPrice,
+        serviceDuration: this.validateForm.controls.time.value
+      }
+    ]
+    var returnPath: string = '/app-smart-cloud/volumes'
+    console.log('request', request)
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath  } });
+  }
+
   getTotalAmount() {
     this.volumeInit()
 
