@@ -144,16 +144,6 @@ export class InstancesDetailComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
-  add(tpl: TemplateRef<{}>): void {
-    this.modalSrv.create({
-      nzTitle: '',
-      nzContent: tpl,
-      nzOnOk: () => {
-        // this.http.post('/rule', { description: this.description }).subscribe(() => this.getData());
-      },
-    });
-  }
-
   //Giám sát
   activeGS: boolean = false;
   maxAxis = 1;
