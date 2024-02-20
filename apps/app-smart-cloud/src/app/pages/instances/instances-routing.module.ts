@@ -7,6 +7,7 @@ import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit
 import { InstancesEditComponent } from './instances-edit/instances-edit.component';
 import {InstancesConsoleComponent} from "./instances-console/instances-console.component";
 import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
+import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-create-vpc.component';
 
 const routes: Routes = [
   {

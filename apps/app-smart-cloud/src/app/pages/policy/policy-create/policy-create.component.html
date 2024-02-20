@@ -1,9 +1,12 @@
 <page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo Policy'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> IAM</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Polices</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">Polices</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Tạo Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>

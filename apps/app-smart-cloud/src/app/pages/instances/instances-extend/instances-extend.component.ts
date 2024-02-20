@@ -137,6 +137,7 @@ export class InstancesExtendComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceExtend);
     itemPayment.specificationType = 'instance_extend';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -152,19 +153,17 @@ export class InstancesExtendComponent implements OnInit {
     });
   }
 
-  save(tpl: TemplateRef<{}>): void {
-    this.modalSrv.create({
-      nzTitle: 'Gia hạn',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.readyEdit();
-      },
-    });
+  isVisibleExtend: boolean = false;
+  showModal() {
+    this.isVisibleExtend = true;
   }
 
-  readyEdit(): void {
+  handleCancelExtend() {
+    this.isVisibleExtend = false;
+  }
+
+  handleOkExtend(): void {
+    this.isVisibleExtend = false;
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();

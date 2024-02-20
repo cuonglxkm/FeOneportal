@@ -173,5 +173,12 @@ export class PolicyListComponent {
     this.searchValue = e;
   }
 
+  handleRadioClick(name: any) {
+    if (this.radioValue === name) {
+      this.radioValue = null;
+    } else {
+      this.radioValue = name;
+    }
+  }
 
 }

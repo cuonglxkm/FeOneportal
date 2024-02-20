@@ -943,6 +943,7 @@ export class InstancesCreateComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceCreate);
     itemPayment.specificationType = 'instance_create';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -969,6 +970,7 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.volumeCreate);
         itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
@@ -999,6 +1001,7 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
@@ -1029,6 +1032,7 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];

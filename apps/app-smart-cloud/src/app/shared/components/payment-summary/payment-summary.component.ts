@@ -11,12 +11,11 @@ import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
-import { InstanceService } from '../../services/instance.service';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
 import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
-import { da } from 'date-fns/locale';
 import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 class ServiceInfo {
   name: string;
@@ -46,7 +45,6 @@ export class PaymentSummaryComponent implements OnInit {
   acceptTerm: boolean = false;
   totalAmount: number = 0;
   promotion: number = 0;
-  notification: any;
   inputCode: string = '';
   loading: boolean = true;
   returnPath: string;
@@ -55,6 +53,7 @@ export class PaymentSummaryComponent implements OnInit {
     private service: InstancesService,
     private psService: PaymentSummaryService,
     private router: Router,
+    private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,

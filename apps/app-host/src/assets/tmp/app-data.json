@@ -239,7 +239,8 @@
           "children": [
             {
               "text": "Kubernetes",
-              "icon": "anticon-team"
+              "icon": "anticon-team",
+              "link": "/app-kubernetes"
             }
           ]
         },
