@@ -213,8 +213,6 @@
 <nz-modal
   [(nzVisible)]="isVisibleExtend"
   nzTitle="Xác nhận gia hạn máy ảo"
-  (nzOnCancel)="handleCancelExtend()"
-  (nzOnOk)="handleOkExtend()"
 >
   <ng-container *nzModalContent>
     <div> Quý khách chắc chắn muốn gia hạn dịch vụ này? </div>
@@ -227,7 +225,7 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()">
+    <button nz-button nzType="primary" (click)="handleOkExtend()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
