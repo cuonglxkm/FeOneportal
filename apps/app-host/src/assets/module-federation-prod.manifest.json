@@ -1,3 +1,4 @@
 {
-  "app-smart-cloud": "${APP_SMART_CLOUD_URL}"
+  "app-smart-cloud": "${APP_SMART_CLOUD_URL}",
+  "app-kubernetes": "${APP_KUBERNETES_URL}"
 }

@@ -12,14 +12,13 @@
 @alain-default-aside-nav-text-hover-color: #2f54eb;
 @alain-default-aside-nav-selected-text-color: #2f54eb;
 
-
 @button-primary-color: #0066b0;
 @button-primary-color-hover: #005999;
 
 @button-border-medium-radius: 8px;
 
 .ant-form-item-label
-> label.ant-form-item-required:not(
+  > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::after {
   display: inline-block;
@@ -32,12 +31,11 @@
 }
 
 .ant-form-item-label
-> label.ant-form-item-required:not(
+  > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::before {
   display: none;
 }
-
 
 .page-header__title {
   color: #2b2d3b;
@@ -58,7 +56,7 @@
   line-height: 24px; /* 150% */
   letter-spacing: 0.1px;
   text-align: left;
-  background: #cce9ff;
+  background: #e2eefc;
   border-bottom: 1px solid #f0f0f0;
   transition: background 0.3s ease;
 }
@@ -140,7 +138,7 @@ a {
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #0074CC;
+  color: #0074cc;
   text-shadow: 0 0 0.25px currentcolor;
 }
 
@@ -150,10 +148,9 @@ a {
 
 .ant-tabs-ink-bar {
   position: absolute;
-  background: #0074CC;
+  background: #0074cc;
   pointer-events: none;
 }
-
 
 ::ng-deep .page-header {
   position: relative;
@@ -191,17 +188,16 @@ a {
   letter-spacing: 0.1px;
 }
 
-
 // INPUT
 .ant-input[disabled] {
   color: rgba(0, 0, 0, 0.25);
   font-weight: 600;
 }
 
-.ant-input-affix-wrapper { // Input group
+.ant-input-affix-wrapper {
+  // Input group
   border-radius: 8px;
 }
-
 
 .ant-input {
   border-radius: 8px;
@@ -215,9 +211,7 @@ a {
   align-items: center;
 }
 
-
 // END INPUT
-
 
 // BUTTON
 
@@ -232,23 +226,47 @@ a {
   line-height: 24px; /* 150% */
 }
 
-.ant-btn:hover, .ant-btn:focus {
+.ant-btn:hover,
+.ant-btn:focus {
   border-color: @button-primary-color-hover;
   color: @button-primary-color-hover;
 }
 
 .ant-btn-primary {
-  color: #FFFFFF;
+  color: #ffffff;
   border-color: @button-primary-color;
   background-color: @button-primary-color;
   border-radius: @button-border-medium-radius;
 }
 
-.ant-btn-primary:hover, .ant-btn-primary:focus {
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
   border-color: @button-primary-color-hover;
   background: @button-primary-color-hover;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
-
 // END BUTTON
+
+// SLIDER
+
+.ant-slider:hover .ant-slider-track {
+  background-color: @button-primary-color-hover;
+}
+
+.ant-slider-track {
+  background-color: @button-primary-color;
+}
+
+.ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+  border-color: @button-primary-color-hover;
+}
+
+.ant-slider-handle {
+  border: solid 2px @button-primary-color;
+}
+
+.ant-input-number {
+  border-radius: 4px;
+}
+// END SLIDER

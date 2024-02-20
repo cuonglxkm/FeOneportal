@@ -876,7 +876,7 @@ export class InstancesCreateComponent implements OnInit {
     orderItemInstance.orderItemQuantity = 1;
     orderItemInstance.specification = specificationInstance;
     orderItemInstance.specificationType = 'instance_create';
-    orderItemInstance.price = this.totalAmount/this.numberMonth;
+    orderItemInstance.price = this.totalAmount / this.numberMonth;
     orderItemInstance.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstance);
     console.log('order instance', orderItemInstance);
@@ -918,7 +918,7 @@ export class InstancesCreateComponent implements OnInit {
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
-        orderItemIP.serviceDuration = 1;
+        orderItemIP.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemIP);
       }
     });
@@ -928,8 +928,11 @@ export class InstancesCreateComponent implements OnInit {
     this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
 
+    var returnPath: string = window.location.pathname;
     console.log('instance create', this.instanceCreate);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: this.order } });
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: this.order, path: returnPath },
+    });
   }
 
   totalAmount: number = 0;
@@ -940,6 +943,7 @@ export class InstancesCreateComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceCreate);
     itemPayment.specificationType = 'instance_create';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -966,13 +970,16 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.volumeCreate);
         itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
         dataPayment.projectId = this.projectId;
         this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
           console.log('thanh tien volume', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount)/this.numberMonth;
+          e.price =
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.numberMonth;
           this.totalAmountVolume += e.price;
           e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmountVolumeVAT += e.priceAndVAT;
@@ -994,13 +1001,16 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
         dataPayment.projectId = this.projectId;
         this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
           console.log('thanh tien ipv4', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount)/this.numberMonth;
+          e.price =
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.numberMonth;
           this.totalAmountIPv4 += e.price;
           e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmountIPv4VAT += e.priceAndVAT;
@@ -1022,6 +1032,7 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
