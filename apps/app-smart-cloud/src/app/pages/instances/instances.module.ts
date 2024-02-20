@@ -25,6 +25,7 @@ import {
 } from '@ngu/carousel';
 import { CommonModule } from '@angular/common';
 import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
+import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-create-vpc.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { InstancesExtendComponent } from './instances-extend/instances-extend.co
     InstancesBtnComponent,
     InstancesVlanGimComponent,
     InstancesExtendComponent,
+    InstancesCreateVpcComponent,
   ],
   imports: [
     InstancesRoutingModule,
