@@ -42,6 +42,13 @@ const routes: Routes = [
             (m) => m.RemoteEntryModule
           ),
       },
+      {
+        path: 'app-kubernetes',
+        loadChildren: () =>
+          loadRemoteModule('app-kubernetes', './Module').then(
+            (m) => m.RemoteEntryModule
+          ),
+      },
     ]
   },
   // Blak Layout 空白布局

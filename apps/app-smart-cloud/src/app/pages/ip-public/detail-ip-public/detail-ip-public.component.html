@@ -2,10 +2,9 @@
              [title]="'Chi tiết IP Public'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item>IP Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Ip Public</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi Tiết IP Public</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
