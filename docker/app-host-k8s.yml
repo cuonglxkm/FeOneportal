@@ -25,6 +25,8 @@ spec:
           env:
             - name: APP_SMART_CLOUD_URL
               value: https://appsmartcloud.onsmartcloud.com
+            - name: APP_KUBERNETES_URL
+              value: https://appkubernetes.onsmartcloud.com
             - name: BASE_URL
               value: https://api.onsmartcloud.com
             - name: ISSUER
