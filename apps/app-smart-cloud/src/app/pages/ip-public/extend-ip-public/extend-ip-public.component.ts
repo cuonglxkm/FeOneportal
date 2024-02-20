@@ -35,6 +35,7 @@ export class ExtendIpPublicComponent {
   regionId: any;
   total: any
   dateString = new Date();
+  dateStringExpired = new Date();
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
@@ -125,37 +126,26 @@ export class ExtendIpPublicComponent {
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Tạo Ip Public",
+      note: "Gia hạn Ip Public",
       orderItems: [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_extend",
-          price: 0,
+          price: this.total.data.totalPayment.amount / Number(this.form.controls['numOfMonth'].value),
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]
     }
-    this.service.extendIpPublic(request)
-      .subscribe({
-        next: data => {
-          if (data.code == '310') {
-            window.location.href = data.data
-          } else {
-            this.notification.success('Thành công', 'Gia hạn thành công Ip Public')
-            this.router.navigate(['/app-smart-cloud/ip-public']);
-          }
-        },
-        error: e => {
-          this.notification.error('Thất bại', 'Gia hạn thất bại Ip Public')
-        },
-      });
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
   }
   caculator()   {
-
     let num = this.form.controls['numOfMonth'].value;
-
     if (num != null && num != undefined && num != '') {
+      const dateNow = new Date();
+      dateNow.setMonth(dateNow.getMonth() + Number(num));
+      this.dateStringExpired = dateNow;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
         vmToAttachId: this.ipInfo.attachedVmId,
