@@ -74,7 +74,6 @@
     <nz-table #fixedTable
               style="margin-top: 20px;"
               nzShowPagination
-              [nzScroll]="{ x: '100%', y: '55vh' }"
               [nzData]="response?.records"
               [nzPageSize]="response?.pageSize"
               (nzPageSizeChange)="onPageSizeChange($event)"
