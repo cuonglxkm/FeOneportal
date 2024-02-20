@@ -98,6 +98,7 @@ export class ListScheduleBackupComponent implements OnInit{
     this.value = value;
     console.log('input text: ', this.value)
     this.formSearch.scheduleName = this.value
+    this.getListScheduleBackup()
   }
 
   navigateToCreate() {

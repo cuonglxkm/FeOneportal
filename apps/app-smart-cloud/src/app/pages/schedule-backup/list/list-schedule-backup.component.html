@@ -1,4 +1,4 @@
-<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+<page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'Danh sách lịch Backup'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -18,48 +18,56 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-
-  <ng-template #content>
-    <nz-space [nzSize]="24">
-      <div style="margin-right: 10px;">Trạng thái</div>
-      <div *nzSpaceItem>
-        <nz-select [(ngModel)]="selectedValue"
-                   nz-tooltip nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom"
-                   (ngModelChange)="onChange($event)"
-                   nzPlaceHolder="Tất cả trạng thái">
-          <nz-option *ngFor="let item of status" [nzValue]="item.value"
-                     [nzLabel]="item.label"></nz-option>
-        </nz-select>
-      </div>
-      <div *nzSpaceItem>
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-          <input style="width: 380px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
-                 type="text" nz-input
-                 placeholder="Tìm kếm tên..."/>
-        </nz-input-group>
-        <ng-template #suffixButton>
-          <button nz-button nz-tooltip nzTooltipTitle="Tìm kiếm tên" nzTooltipPlacement="bottom" nzType="primary" nzSearch (click)="getListScheduleBackup()">
-            <span nz-icon nzType="search" nzTheme="outline"></span>
-            Search
-          </button>
-        </ng-template>
-      </div>
-    </nz-space>
-  </ng-template>
-
-  <ng-template #extra>
-    <button nz-button nz-tooltip nzTooltipTitle="Tạo mới lịch backup" nzTooltipPlacement="bottom" class="button-create" nzSize="default" style="cursor: pointer; margin-left: 5px;"
-            (click)="navigateToCreate()">
-      <span nz-icon nzType="plus" nzTheme="outline"></span>
-      Tạo mới
-    </button>
-  </ng-template>
-
-
 </page-header>
 <nz-content>
   <nz-card>
-    <div>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-select [(ngModel)]="selectedValue"
+                   nzSize="large"
+                   style="margin-right: 15px; width: 170px;"
+                   (ngModelChange)="onChange($event)"
+                   nzPlaceHolder="Tất cả trạng thái"
+                   nzTooltipTitle="Tìm kiếm theo trạng thái"
+                   nzTooltipPlacement="bottom"
+                   nz-tooltip>
+          <nz-option *ngFor="let item of status" [nzValue]="item.value"
+                     [nzLabel]="item.label"></nz-option>
+        </nz-select>
+        <nz-input-group
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          [(ngModel)]="value"
+          (input)="onInputChange($event.target['value'])">
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên ..."/>
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"/>
+        </ng-template>
+      </nz-col>
+      <nz-col nzSpan="8" style="flex:none;">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="navigateToCreate()">
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/add-circle.svg"
+            alt=""/>
+          <span class="button-text-primary">Tạo mới</span>
+        </button>
+      </nz-col>
+    </nz-row>
+    <div style="margin-top: 20px;">
       <nz-table #tableScheduleBackup
                 [nzData]="response?.records"
                 nzShowSizeChanger
@@ -73,10 +81,11 @@
         <thead>
         <tr>
           <th nzLeft nzWidth="120px">Tên</th>
-          <th nzBreakWord>Đối tượng backup</th>
+          <th nzBreakWord>Đối tượng Backup</th>
+          <th nzBreakWord>Gói Backup</th>
           <th nzBreakWord>Số bản ghi tối đa</th>
           <th nzAlign="center" nzBreakWord >Trạng thái</th>
-          <th nzBreakWord >Lần backup tiếp theo</th>
+          <th nzBreakWord >Lần Backup tiếp theo</th>
           <th nzBreakWord>Ngày tạo</th>
           <th nzAlign="center" nzBreakWord>Thao tác</th>
         </tr>
@@ -88,6 +97,7 @@
             <span *ngIf="data.serviceType === 1">VM - {{ data.serviceName }}</span>
             <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
           </td>
+          <td nzBreakWord>{{data.backupPackageName}}</td>
           <td nzBreakWord>{{ data.maxBackup }}</td>
           <td nzAlign="center" nzBreakWord>
             <div class="status" [ngSwitch]="data.status">

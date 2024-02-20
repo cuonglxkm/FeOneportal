@@ -18,6 +18,8 @@ import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angul
 import {SecurityGroup} from "../../../shared/models/security-group";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {PackageBackupService} from "../../../shared/services/package-backup.service";
+import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 
 @Component({
   selector: 'one-portal-create-backup-vm',
@@ -41,7 +43,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
 
   volumeAttachments: VolumeAttachment[] = []
 
-  backupPackages: BackupPackage[] = []
+  backupPackages: PackageBackupModel[] = []
 
   customerId: number
 
@@ -82,6 +84,7 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
   constructor(
     private backupVmService: BackupVmService,
     private instanceService: InstancesService,
+    private backupPackageService: PackageBackupService,
     private route: ActivatedRoute,
     private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -249,8 +252,8 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
 
   getBackupPackage() {
     this.isLoading = true
-    this.backupVmService.getBackupPackages().subscribe(data => {
-      this.backupPackages = data
+    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+      this.backupPackages = data.records
       this.isLoading = true
       console.log('backup package', this.backupPackages)
     })

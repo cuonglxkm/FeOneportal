@@ -32,7 +32,7 @@
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
                         <nz-input-number formControlName="maxBackup" id="maxBackup" nzMin="1" nzStep="1"
-                               style="width: 100%"/>
+                               style="width: 100%; border-radius: 8px;"/>
                         <ng-template #nameErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0</ng-container>
                         </ng-template>
@@ -49,6 +49,7 @@
                         <nz-select
                                 formControlName="backupPackage" id="backupPackage"
                                 [nzPlaceHolder]="'Gói backup'"
+                                style="border-radius: 8px;"
                                 [nzShowSearch]="false">
                             <nz-option
                                     *ngFor="let i of backupPackages"
@@ -67,8 +68,10 @@
                         </div>
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-            <textarea nz-input formControlName="description" id="description"
-                      [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                        <textarea nz-input
+                                  formControlName="description"
+                                  id="description"
+                                  [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
                         <ng-template #descriptionErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
                             <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 500 kí tự
@@ -113,10 +116,9 @@
                                 [nzPlaceHolder]="'Chế độ Backup'"
                                 [nzShowSearch]="false"
                                 (ngModelChange)="modeChange($event)">
-                            <nz-option
-                                    *ngFor="let i of mode"
-                                    [nzLabel]="i.label"
-                                    [nzValue]="i.value"/>
+                            <nz-option *ngFor="let i of mode"
+                                       [nzLabel]="i.label"
+                                       [nzValue]="i.value"/>
                         </nz-select>
                         <ng-template #backupModeErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
@@ -134,7 +136,7 @@
                         <nz-time-picker formControlName=times
                                         id="times"
                                         [nzPlaceHolder]="'Chọn thời gian'"
-                                        style="width: 100%"></nz-time-picker>
+                                        style="width: 100%; border-radius: 8px;"></nz-time-picker>
                         <ng-template #timeErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
                         </ng-template>
@@ -150,7 +152,7 @@
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsErrorTpl">
                             <nz-input-number
-                                   style="width:100%;"
+                                   style="width:100%; border-radius: 8px;"
                                    formControlName="months"
                                    id="months"
                                    nzMin="1"
@@ -172,7 +174,7 @@
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                             <nz-input-number
-                                   style="width:100%;"
+                                   style="width:100%; border-radius: 8px;"
                                    formControlName="date"
                                    id="date"
                                    nzMin="1"

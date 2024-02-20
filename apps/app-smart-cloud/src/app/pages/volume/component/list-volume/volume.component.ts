@@ -79,6 +79,8 @@ export class VolumeComponent implements OnInit {
     description: [null as string, [Validators.maxLength(255)]]
   })
 
+  typeVPC: number
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
@@ -95,7 +97,18 @@ export class VolumeComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
-    this.getListVolume()
+    this.typeVPC = project.type
+    this.isLoading = true
+    this.customerId = this.tokenService.get()?.userId
+    this.volumeService.getVolumes(this.customerId, this.project,
+      this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
+      .subscribe(data => {
+        if(!data.totalCount){
+          this.router.navigate(['/app-smart-cloud/volume/blank'])
+        }
+          this.isLoading = false
+          this.response = data
+      })
   }
 
   onChange(value) {
@@ -150,6 +163,10 @@ export class VolumeComponent implements OnInit {
     });
   }
 
+  navigateToCreateVolumeVPC() {
+    this.router.navigate(['/app-smart-cloud/volume/vpc/create'])
+  }
+
   showAttachVm(volume: VolumeDTO) {
     this.isVisibleAttachVm = true
     this.volumeDTO = volume
@@ -186,6 +203,22 @@ export class VolumeComponent implements OnInit {
 
   onInstanceInVolumeChange(value) {
     this.instanceInVolumeSelected = value
+  }
+
+  isVisibleNotice: boolean = false
+  isLoadingNotice: boolean = false
+
+  showModalNotice() {
+    this.isVisibleNotice = true
+  }
+
+  handleCancelNotice() {
+    this.isVisibleNotice = false
+  }
+
+  handleOkNotice() {
+    this.isVisibleNotice = false
+    this.doDetachVolumeToVm(this.volumeDTO, this.vmId)
   }
 
   addVolumeToVm(volume: VolumeDTO) {
@@ -355,6 +388,10 @@ export class VolumeComponent implements OnInit {
       queryParams:{idVolume:id, startDate: createdDate , endDate: endDate, nameVolume:name }
     });
 
+  }
+
+  navigateToCreateScheduleBackup(){
+    this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
   ngOnInit() {

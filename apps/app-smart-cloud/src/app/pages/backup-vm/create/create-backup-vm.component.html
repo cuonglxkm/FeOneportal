@@ -116,10 +116,9 @@
                         [nzPlaceHolder]="'Gói backup'"
                         [nzShowSearch]="false"
                         [nzLoading]="isLoading">
-                  <nz-option
-                          *ngFor="let i of backupPackages"
-                          [nzLabel]="i.packageName"
-                          [nzValue]="i.id"/>
+                  <nz-option *ngFor="let i of backupPackages"
+                             [nzLabel]="i.packageName"
+                             [nzValue]="i.id"/>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
