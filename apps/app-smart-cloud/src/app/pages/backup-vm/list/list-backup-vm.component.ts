@@ -132,6 +132,8 @@ export class ListBackupVmComponent implements OnInit {
         this.getListBackupVM();
     }
 
+
+
     ngOnInit(): void {
       this.userId = this.tokenService.get()?.userId
       this.formSearch.currentPage = 1

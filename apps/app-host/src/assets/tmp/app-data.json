@@ -180,16 +180,12 @@
                   "link": "/app-smart-cloud/object"
                 },
                 {
-                  "text": "Dải IP Floating",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
                   "text": "Dải IP Kết nối WAN",
                   "link": "/app-smart-cloud/object"
                 },
                 {
                   "text": "Mạng LAN",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/vlan/list"
                 },
                 {
                   "text": "Router",

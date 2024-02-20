@@ -17,6 +17,7 @@ import {InstancesService} from "../../../instances/instances.service";
 import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../instances/instances.model";
 import { OrderItem } from 'src/app/shared/models/price';
 import {finalize} from "rxjs/operators";
+import {CatalogService} from "../../../../shared/services/catalog.service";
 
 @Component({
   selector: 'app-create-volume',
@@ -149,6 +150,11 @@ export class CreateVolumeComponent implements OnInit {
 
   nameList: string[] = []
 
+  typeVPC: number
+
+  typeMultiple: boolean
+  typeEncrypt: boolean
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
               private snapshotvlService: SnapshotVolumeService,
@@ -157,7 +163,8 @@ export class CreateVolumeComponent implements OnInit {
               private router: Router,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private catalogService: CatalogService) {
 
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value
@@ -189,6 +196,20 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
+  getCatalogOffer(productId) {
+    this.catalogService.getCatalogOffer(productId, this.region, null).subscribe(data => {
+      console.log('data catalog', data)
+      if(data) {
+        if(productId == 90) {
+          this.typeMultiple = true
+        }
+        if(productId == 92) {
+          this.typeEncrypt = true
+        }
+      }
+    })
+  }
+
   getListVolumes() {
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region,
         9999, 1, null, null)
@@ -208,10 +229,13 @@ export class CreateVolumeComponent implements OnInit {
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     this.validateForm.get('storage').reset()
+    this.getCatalogOffer(90)
+    this.getCatalogOffer(92)
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
+    this.typeVPC = project.type
     this.getListSnapshot()
     this.getListInstance()
     this.getListVolumes()
@@ -318,7 +342,6 @@ export class CreateVolumeComponent implements OnInit {
   unitPrice = 0
 
   changeValueInput() {
-    this.iops = 0
     console.log('total amount')
     this.getTotalAmount()
   }
@@ -339,7 +362,7 @@ export class CreateVolumeComponent implements OnInit {
         serviceDuration: this.validateForm.controls.time.value
       }
     ]
-    var returnPath: string = '/app-smart-cloud/volumes'
+    var returnPath: string = '/app-smart-cloud/volume/create'
     console.log('request', request)
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath  } });
   }
