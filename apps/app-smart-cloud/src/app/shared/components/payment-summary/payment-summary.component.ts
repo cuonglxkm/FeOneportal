@@ -11,12 +11,11 @@ import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
-import { InstanceService } from '../../services/instance.service';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
 import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
-import { da } from 'date-fns/locale';
 import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 class ServiceInfo {
   name: string;
@@ -46,14 +45,15 @@ export class PaymentSummaryComponent implements OnInit {
   acceptTerm: boolean = false;
   totalAmount: number = 0;
   promotion: number = 0;
-  notification: any;
   inputCode: string = '';
   loading: boolean = true;
+  returnPath: string;
 
   constructor(
     private service: InstancesService,
     private psService: PaymentSummaryService,
     private router: Router,
+    private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
@@ -61,9 +61,10 @@ export class PaymentSummaryComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as { data: any };
+    const state = navigation?.extras.state as { data: any; path: string };
 
     if (state) {
+      this.returnPath = state.path;
       const myOrder = state.data;
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
@@ -210,12 +211,12 @@ export class PaymentSummaryComponent implements OnInit {
         },
         error: (error) => {
           console.log(error.error);
-          this.notification.error('', 'Tạo order máy ảo không thành công');
+          this.notification.error('', 'Tạo order không thành công');
         },
       });
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    this.router.navigate([this.returnPath]);
   }
 }

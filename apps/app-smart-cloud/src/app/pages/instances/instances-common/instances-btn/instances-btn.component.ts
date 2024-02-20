@@ -27,7 +27,6 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
   @Output() valueChanged = new EventEmitter();
 
-  isLoadingDelete: boolean = false;
   isVisibleDelete: boolean = false;
 
   constructor(
@@ -51,48 +50,20 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     );
   }
 
-  delete(tpl: TemplateRef<{}>): void {
-    //xóa
-    this.modalSrv.create({
-      nzTitle: 'Xóa máy ảo',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOkLoading: this.isLoadingDelete,
-      nzOnOk: () => {
-        this.dataService.delete(this.instancesId).subscribe(
-          (data: any) => {
-            console.log(data);
-            this.isLoadingDelete = true;
-            this.route.navigate(['/app-smart-cloud/instances']);
-            this.notification.success('Thành công', 'Xóa máy ảo thành công');
-          },
-          () => {
-            this.isLoadingDelete = false;
-            this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
-          }
-        );
-      },
-    });
-  }
-
   showModalDelete() {
     this.isVisibleDelete = true;
   }
 
   handleOk() {
-    this.isLoadingDelete = true;
     this.dataService.delete(this.instancesId).subscribe(
       (data: any) => {
         console.log(data);
         this.isVisibleDelete = false;
-        this.isLoadingDelete = false;
         this.route.navigate(['/app-smart-cloud/instances']);
         this.notification.success('Thành công', 'Xóa máy ảo thành công');
       },
       () => {
         this.isVisibleDelete = false;
-        this.isLoadingDelete = false;
         this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
       }
     );
@@ -100,7 +71,6 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   handleCancel() {
     this.isVisibleDelete = false;
-    this.isLoadingDelete = false;
   }
 
   continue(): void {
@@ -117,36 +87,36 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   passwordVisible = false;
   passwordRepeatVisible = false;
 
-  resetPasswordFc(tpl: TemplateRef<{}>): void {
-    //Reset mật khẩu máy ảo
-    this.modalSrv.create({
-      nzTitle: 'Reset mật khẩu máy ảo',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
-          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-          // this.dataService
-          //   .resetpassword({ id: this.instancesId, newPassword: this.resetPassword })
-          //   .subscribe(
-          //     (data: any) => {
-          //       console.log("reset password", data);
-          //       if (data == true) {
-          //         this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-          //       } else {
-          //         this.notification.error('', 'Reset mật khẩu không thành công');
-          //       }
-          //     },
-          //     () => {
-          //       this.notification.error('', 'Reset mật khẩu không thành công');
-          //     }
-          //   );
-        } else {
-          this.notification.error('', 'Reset mật khẩu không thành công');
-        }
-      },
-    });
+  isVisibleResetPass = false;
+  modalResetPassword() {
+    this.isVisibleResetPass = true;
+  }
+
+  handleCancelResetPassword() {
+    this.isVisibleResetPass = false;
+  }
+
+  handleOkResetPassword() {
+    if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
+      this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+      // this.dataService
+      //   .resetpassword({ id: this.instancesId, newPassword: this.resetPassword })
+      //   .subscribe(
+      //     (data: any) => {
+      //       console.log("reset password", data);
+      //       if (data == true) {
+      //         this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+      //       } else {
+      //         this.notification.error('', 'Reset mật khẩu không thành công');
+      //       }
+      //     },
+      //     () => {
+      //       this.notification.error('', 'Reset mật khẩu không thành công');
+      //     }
+      //   );
+    } else {
+      this.notification.error('', 'Reset mật khẩu không thành công');
+    }
   }
 
   onInputChange(event: Event): void {
