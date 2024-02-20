@@ -19,6 +19,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 export class IpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
+  projectType = 0;
   listOfIp: IpPublicModel[] = [];
   checkEmpty: IpPublicModel[] = [];
   isBegin: Boolean = false;
@@ -94,6 +95,7 @@ export class IpPublicComponent implements OnInit {
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.projectType = project.type;
   }
 
   onPageSizeChange(event: any) {
@@ -106,9 +108,9 @@ export class IpPublicComponent implements OnInit {
     this.index = event;
     this.getData(false);
   }
-  navigatorToDetail(id: number){
-    this.router.navigate(['/app-smart-cloud/ip-public/detail/'+id]);
-  }
+  // navigatorToDetail(id: number){
+  //   this.router.navigate(['/app-smart-cloud/ip-public/detail/'+id]);
+  // }
 
   createIp() {
     this.router.navigate(['/app-smart-cloud/ip-public/create']);
@@ -138,6 +140,8 @@ export class IpPublicComponent implements OnInit {
         this.isVisibleRemove = true;
       } else if (event === 'Xóa') {
         this.isVisibleDelete = true;
+      } else if (event === 'Gia Hạn Ip Pulbic') {
+        this.router.navigate(['/app-smart-cloud/ip-public/extend/' + id]);
       }
   }
 

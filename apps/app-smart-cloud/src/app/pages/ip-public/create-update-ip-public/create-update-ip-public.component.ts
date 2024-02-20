@@ -134,25 +134,28 @@ export class CreateUpdateIpPublicComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_create",
-          price: 0,
+          price: this.total.data.totalPayment.amount / Number(this.form.controls['numOfMonth'].value),
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]
     }
-    this.service.createIpPublic(request)
-      .subscribe({
-        next: data => {
-          if (data.code == '310') {
-            window.location.href = data.data
-          } else {
-            this.notification.success('Thành công', 'Tạo mới thành công Ip Public');
-            this.router.navigate(['/app-smart-cloud/ip-public']);
-          }
-        },
-        error: e => {
-          this.notification.error('Thất bại', 'Tạo mới thất bại Ip Public')
-        },
-      });
+
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+    // this.service.createIpPublic(request)
+    //   .subscribe({
+    //     next: data => {
+    //       if (data.code == '310') {
+    //         window.location.href = data.data
+    //       } else {
+    //         this.notification.success('Thành công', 'Tạo mới thành công Ip Public');
+    //         this.router.navigate(['/app-smart-cloud/ip-public']);
+    //       }
+    //     },
+    //     error: e => {
+    //       this.notification.error('Thất bại', 'Tạo mới thất bại Ip Public')
+    //     },
+    //   });
     // this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 

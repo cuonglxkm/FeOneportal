@@ -44,7 +44,7 @@
         <p><b>Ngày cấp dịch vụ: </b> {{dateString | date:'dd/MM/yyyy'}} </p>
       </td>
       <td style="width: 50%">
-        <p><b>Ngày hết hạn: </b> {{dateString | date:'dd/MM/yyyy'}} </p>
+        <p><b>Ngày hết hạn: </b> {{dateStringExpired | date:'dd/MM/yyyy'}} </p>
       </td>
     </nz-table>
     <b>Số tháng cần gia hạn thêm</b>
@@ -59,7 +59,7 @@
         <nz-option nzValue="12" nzLabel="12"></nz-option>
       </nz-select>
       </nz-input-group>
-    <p style="color: red"><b style="color: red">Ngày hết hạn dự kiến: </b>{{dateString | date : "dd/MM/YYYY"}}</p>
+    <p style="color: red"><b style="color: red">Ngày hết hạn dự kiến: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
   </nz-card>
 
   <nz-card nzTitle="Thành tiền" nzBorderless='false'>

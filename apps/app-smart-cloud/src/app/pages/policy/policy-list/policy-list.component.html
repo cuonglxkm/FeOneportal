@@ -1,9 +1,12 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách Policies'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> IAM </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Polices </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">Polices</a>
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -13,54 +16,56 @@
     </div>
   </ng-template>
 </page-header>
-<nz-card>
+<nz-card class="custom-card">
   <span class="table-title">Thông tin Policy</span>
-  <div style="margin-bottom: 20px; margin-top: 30px" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-    <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
-      <div style="display:flex;">
-        <h3 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h3>
-        <nz-select [(ngModel)]="selectedStatus" nzSize="large" style="width: 170px">
-          <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
-        </nz-select>
-      </div>
+  <br>
+  <div class="root-filter">
+    <div class="filter-1">
+      <h3 style="display: flex; align-items: center; margin-right:10px">Loại policy:</h3>
+      <br>
+      <nz-select [(ngModel)]="selectedStatus" nzSize="large" style="width: 170px">
+        <nz-option *ngFor="let p of listPolicyType" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+      </nz-select>
     </div>
-    <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12">
-      <div>
-        <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch" nzSize="large">
-          <input name="name" nz-input placeholder="Tìm kiếm" [ngModel]="searchValue" (ngModelChange)="changeSearch($event)"/>
-        </nz-input-group>
-        <ng-template #suffixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"/>
-        </ng-template>
-        <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="large" style="border-radius: 10px;width: 90px; margin-right: 10px;margin-left: 10px;">
-          <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
-        </nz-select>
-        <button style="border: none; border-radius: 8px" nz-button (click)="reload()" nzSize="large">
-          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
-        </button>
-        <button
-          style="border: none; border-radius: 8px"
-          nz-button
-          (click)="deletePolicy()"
-          nzSize="large"
-        >
-          <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
-        </button>
-        <button nz-button nzType="primary" (click)="createPolicy()" nzSize="large">
-          <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
-          <span class="button-text-primary">Tạo mới</span>
-        </button>
-      </div>
+    <div class="filter-2">
+      <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
+                      nzSize="large">
+        <input name="name" nz-input placeholder="Tìm kiếm" [ngModel]="searchValue"
+               (ngModelChange)="changeSearch($event)"/>
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"/>
+      </ng-template>
+      <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="large"
+                 style="border-radius: 10px;width: 90px; margin-right: 10px;margin-left: 10px;">
+        <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+      </nz-select>
+      <button style="border: none; border-radius: 8px" nz-button (click)="reload()" nzSize="large">
+        <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
+      </button>
+      <button
+        style="border: none; border-radius: 8px"
+        nz-button
+        (click)="deletePolicy()"
+        nzSize="large"
+      >
+        <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
+      </button>
+      <button nz-button nzType="primary" (click)="createPolicy()" nzSize="large">
+        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <span class="button-text-primary">Tạo mới</span>
+      </button>
     </div>
   </div>
   <!-- Bảng-->
-  <nz-table #rowSelectionTable [nzLoading]="loading" [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger [nzData]="listOfData"
+  <nz-table #rowSelectionTable [nzLoading]="loading" [nzFrontPagination]="false" nzShowPagination nzShowSizeChanger
+            [nzData]="listOfData"
             [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
             (nzPageIndexChange)="onPageIndexChange($event)">
     <thead>
     <tr>
       <th nzWidth="40px"></th>
-      <th nzWidth="40px"></th>
+      <th nzWidth="20px"></th>
       <th>Tên</th>
       <th>Type</th>
       <th>Mô tả</th>
@@ -88,7 +93,6 @@
         </div>
 
 
-
       </tr>
     </ng-container>
     </tbody>
@@ -98,13 +102,15 @@
             (nzOnCancel)="handleCancel()"
             (nzOnOk)="deleteHandlePolicy()">
     <ng-container *nzModalContent>
-      <nz-alert nzType="warning" nzShowIcon nzMessage="Bạn đang thực hiện xóa [name] policy. Hành động này không thể được hoàn tác"></nz-alert>
+      <nz-alert nzType="warning" nzShowIcon
+                nzMessage="Bạn đang thực hiện xóa [name] policy. Hành động này không thể được hoàn tác"></nz-alert>
       <br>
       <p><b>Để thực hiện Xóa Policy, vui lòng nhập tên Policy để xác nhận</b></p>
 
-      <input nz-input placeholder="Nhập tên policy" [(ngModel)]="nameDelete" type="text" />
-      <br />
+      <input nz-input placeholder="Nhập tên policy" [(ngModel)]="nameDelete" type="text"/>
+      <br/>
     </ng-container>
   </nz-modal>
 </nz-card>
+
 

@@ -1,8 +1,8 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo IP Public'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/ip-public']">Ip Public</a></nz-breadcrumb-item>
       <nz-breadcrumb-item> Tạo Ip Public</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -13,15 +13,15 @@
     </div>
   </ng-template>
 </page-header>
-<form nz-form [formGroup]="form" >
+<form nz-form [formGroup]="form">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card nzTitle="Thông tin IP Pulbic" style="border-radius: 8px;">
         <div nz-row class="mb-md">
-          <div class="custom-styling">
-              <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill" style="color: orangered"></span>
-              Host name không thay đổi khi điều chỉnh tên máy ảo
-          </div>
+<!--          <div class="custom-styling">-->
+<!--              <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill" style="color: orangered"></span>-->
+<!--              Host name không thay đổi khi điều chỉnh tên máy ảo-->
+<!--          </div>-->
           <div nz-col nzSpan="11">
             <nz-form-label nzRequired>Dải IP</nz-form-label>
             <nz-input-group nzCompact>
@@ -86,7 +86,7 @@
             <td nzAlign="right">VNĐ/tháng</td>
           </tr>
         </nz-table>
-<!--        <button nz-button nzSize="large" nzType="default" (click)="backToList()" style="border-color:#0066B0 ;width: 44%; margin-top: 30px; margin-right: 5%;margin-left: 3%;border-radius: 8px;"><span class="button-text-default">Hủy</span></button>-->
+        <button class="button-cancel" nz-button nzSize="large" nzType="default" (click)="backToList()"><span class="button-text-default">Hủy</span></button>
         <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">
           <span nz-icon nzType="wallet" nzTheme="outline"></span>
           <span class="button-text-primary" style="color: {{form.invalid ? 'gray' : 'white'}}">Tạo mới</span>
