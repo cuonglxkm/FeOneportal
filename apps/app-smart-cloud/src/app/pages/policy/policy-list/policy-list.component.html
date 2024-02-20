@@ -28,7 +28,7 @@
       </nz-select>
     </div>
     <div class="filter-2">
-      <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
+      <nz-input-group style="margin-right: 8px; width: 40%;" [nzPrefix]="suffixIconSearch"
                       nzSize="large">
         <input name="name" nz-input placeholder="Tìm kiếm" [ngModel]="searchValue"
                (ngModelChange)="changeSearch($event)"/>
@@ -37,14 +37,14 @@
         <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search()"/>
       </ng-template>
       <nz-select [(ngModel)]="selectedAction" (nzOpenChange)="selectAction($event)" nzSize="large"
-                 style="border-radius: 10px;width: 90px; margin-right: 10px;margin-left: 10px;">
+                 style="width: 90px; margin-right: 10px;margin-left: 10px;">
         <nz-option *ngFor="let p of listAction" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
       </nz-select>
-      <button style="border: none; border-radius: 8px" nz-button (click)="reload()" nzSize="large">
+      <button style="border: none;" nz-button (click)="reload()" nzSize="large">
         <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
       </button>
       <button
-        style="border: none; border-radius: 8px"
+        style="border: none;"
         nz-button
         (click)="deletePolicy()"
         nzSize="large"
