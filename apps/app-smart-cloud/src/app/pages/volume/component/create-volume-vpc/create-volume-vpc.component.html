@@ -52,6 +52,7 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
+                 class="input-custom"
                  formControlName="name"
                  [placeholder]="'Nhập tên Volume'" [maxLength]="70"/>
           <ng-template #nameErrorTpl let-control>
@@ -134,6 +135,7 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <nz-input-number formControlName="storage"
                            id="storage"
+                           class="input-custom"
                            style="width: 100%;"
                            [nzMin]="1" [nzStep]="1"></nz-input-number>
           <ng-template #nameErrorTpl let-control>
