@@ -86,6 +86,7 @@ import {CreateVolumeVpcComponent} from "./volume/component/create-volume-vpc/cre
 import {ResizeVolumeVpcComponent} from "./volume/component/resize-volume-vpc/resize-volume-vpc.component";
 import {ListVlanComponent} from "./vlan/list/list-vlan.component";
 import {BlankVolumeComponent} from "./volume/component/blank/blank-volume.component";
+import {VlanDetailComponent} from "./vlan/detail/vlan-detail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -370,13 +371,18 @@ const routes: Routes = [
     component: ResizeVolumeVpcComponent
   },
   {
-    path: 'vlan/list',
+    path: 'volume/blank',
+    component: BlankVolumeComponent
+  },
+  {
+    path: 'vlan/network/list',
     component: ListVlanComponent
   },
   {
-    path: 'volume/blank',
-    component: BlankVolumeComponent
+    path: 'vlan/network/detail/:id',
+    component: VlanDetailComponent
   }
+
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],

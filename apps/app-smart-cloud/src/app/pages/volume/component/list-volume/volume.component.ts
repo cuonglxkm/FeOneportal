@@ -81,6 +81,8 @@ export class VolumeComponent implements OnInit {
 
   typeVPC: number
 
+  isBegin: boolean = false;
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
@@ -100,39 +102,31 @@ export class VolumeComponent implements OnInit {
     this.typeVPC = project.type
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
-    this.volumeService.getVolumes(this.customerId, this.project,
-      this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
-      .subscribe(data => {
-        if(!data.totalCount){
-          this.router.navigate(['/app-smart-cloud/volume/blank'])
-        }
-          this.isLoading = false
-          this.response = data
-      })
+    this.getListVolume(true)
   }
 
   onChange(value) {
     console.log('selected', value)
     this.selectedValue = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
   onInputChange(value) {
     this.value = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
-  getListVolume() {
+  getListVolume(isBegin) {
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
     this.volumeService.getVolumes(this.customerId, this.project,
@@ -144,6 +138,9 @@ export class VolumeComponent implements OnInit {
           } else {
             this.isLoading = false
             this.response = null
+          }
+          if (isBegin) {
+            this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
           }
     })
   }
@@ -240,7 +237,7 @@ export class VolumeComponent implements OnInit {
               this.isVisibleAttachVm = false
               this.isLoadingAttachVm = false;
               this.notification.success('Thành công', 'Gắn Volume thành công.')
-              this.getListVolume()
+              this.getListVolume(false)
             } else {
               console.log('data', data)
               this.isVisibleAttachVm = false
@@ -258,7 +255,7 @@ export class VolumeComponent implements OnInit {
         this.isVisibleAttachVm = false
         this.isLoadingAttachVm = false;
         this.notification.error('Thất bại', 'Gắn Volume thất bại.')
-        this.getListVolume()
+        this.getListVolume(false)
       }
     })
   }
@@ -276,18 +273,18 @@ export class VolumeComponent implements OnInit {
         this.isLoadingDetachVm = false;
         this.isVisibleDetachVm = false
         this.notification.success('Thành công', `Gỡ volume thành công`);
-        this.getListVolume()
+        this.getListVolume(false)
       } else {
         this.isLoadingDetachVm = false
         this.isVisibleDetachVm = false
         this.notification.error('Thất bại', `Gỡ volume thất bại`);
-        this.getListVolume()
+        this.getListVolume(false)
       }
     }, error => {
       this.isLoadingDetachVm = false
       this.isVisibleDetachVm = false
       this.notification.error('Thất bại', `Gỡ volume thất bại`);
-      this.getListVolume()
+      this.getListVolume(false)
     })
   }
 
@@ -327,20 +324,20 @@ export class VolumeComponent implements OnInit {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa Volume thành công')
-        this.getListVolume()
+        this.getListVolume(false)
       } else {
         console.log('data', data)
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.error('Thất bại', 'Xóa Volume thất bại')
-        this.getListVolume()
+        this.getListVolume(false)
       }
     }, error => {
       console.log('error', error)
       this.isLoadingDelete = false
       this.isVisibleDelete = false
       this.notification.error('Thất bại', 'Xóa Volume thất bại')
-      this.getListVolume()
+      this.getListVolume(false)
     })
   }
 
@@ -369,7 +366,7 @@ export class VolumeComponent implements OnInit {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false
         this.notification.success('Thành công', 'Cập nhật thông tin Volume thành công')
-        this.getListVolume()
+        this.getListVolume(false)
       }
     }, error => {
       this.isLoadingUpdate = false
