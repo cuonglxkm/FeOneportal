@@ -98,7 +98,8 @@
                     nz-tooltip
                     nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                     nz-icon nzType="delete" nzTheme="outline"
-                    (click)="openIpMounted('Xóa', item.id)"></span>
+                    (click)="openIpMounted('Xóa', item.id)"
+                    *ngIf="projectType != 1"></span>
             </div>
           </td>
         </tr>
@@ -112,7 +113,7 @@
           <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
-          <button (click)="createIp()" nz-button nzSize="large" nzType="primary">Khởi tạo IP Public</button>
+          <button (click)="createIp()" nz-button nzSize="large" nzType="primary" *ngIf="projectType != 1">Khởi tạo IP Public</button>
         </div>
       </nz-result>
     </ng-container>
