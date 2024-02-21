@@ -184,10 +184,6 @@
                   "link": "/app-smart-cloud/object"
                 },
                 {
-                  "text": "Mạng LAN",
-                  "link": "/app-smart-cloud/vlan/list"
-                },
-                {
                   "text": "Router",
                   "link": "/app-smart-cloud/object"
                 },
@@ -230,6 +226,12 @@
                   ]
                 }
               ]
+            },
+            {
+
+              "text": "Mạng LAN",
+              "icon": "anticon-edit",
+              "link": "/app-smart-cloud/vlan/network/list"
             }
           ]
         },

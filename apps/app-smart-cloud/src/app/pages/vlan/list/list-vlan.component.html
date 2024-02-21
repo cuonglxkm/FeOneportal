@@ -1,1 +1,99 @@
-<p>list-vlan works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Danh sách Network'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        VLAN
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/vlan/list">Danh sách Network</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-input-group [nzPrefix]="prefixIconSearch"
+                        nzSize="large"
+                        style="width: 300px;"
+                        [(ngModel)]="value"
+                        (input)="onInputChange($event.target['value'])">
+          <input name="name" nz-input placeholder="Tìm kiếm"/>
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+        </ng-template>
+      </nz-col>
+      <nz-col nzSpan="8" style="flex:none;">
+        <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateNetwork()">
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+          <span class="button-text-primary">Tạo mới Network</span>
+        </button>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixtable
+              style="margin-top: 15px;"
+              nzShowPagination
+              [nzData]="response?.records"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
+      <thead>
+      <tr>
+        <th>Tên Network</th>
+        <th>Địa chỉ Subnet</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixtable.data">
+        <td><a>{{data.name}}</a></td>
+        <td>{{data.subnetAddressRequired}}</td>
+        <td>{{data.status}}</td>
+        <td>
+          <div *ngIf="data.name.includes('pri_network')">
+            <span style="margin-right: 10px;" nz-icon nzType="edit"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Chỉnh sửa'"
+                  nzPopoverPlacement="bottom" disabled="true"></span>
+            <span style="margin-right: 20px;"
+                  nz-popover
+                  [nzPopoverContent]="'Xóa'"
+                  nzPopoverPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline" disabled="true"></span>
+          </div>
+          <div *ngIf="!data.name.includes('pri_network')">
+            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Chỉnh sửa'"
+                  nzPopoverPlacement="bottom"></span>
+            <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
+                  nz-popover
+                  [nzPopoverContent]="'Xóa'"
+                  nzPopoverPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline"></span>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

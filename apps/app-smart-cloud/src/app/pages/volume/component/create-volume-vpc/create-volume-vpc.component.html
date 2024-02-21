@@ -132,24 +132,20 @@
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
           </div>
         </nz-form-label>
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
           <nz-input-number formControlName="storage"
                            id="storage"
                            class="input-custom"
                            style="width: 100%;"
                            [nzMin]="1" [nzStep]="1"></nz-input-number>
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
-              Việt
-            </ng-container>
-            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+          <ng-template #storageErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>IOPS: </span>{{iops}}
+          <span>IOPS: {{iops}}</span>
         </nz-form-label>
       </nz-form-item>
       <label nz-checkbox formControlName="isEncryption">Mã hóa Volume</label>
