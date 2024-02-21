@@ -41,6 +41,8 @@ export class IpPublicComponent implements OnInit {
   disableAtt = true;
   id: any;
 
+
+
   statusData = [
     {name: 'Tất cả trạng thái', value: ''},
     {name: 'Khởi tạo', value: '0'},
