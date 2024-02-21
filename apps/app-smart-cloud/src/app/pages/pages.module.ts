@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
@@ -117,6 +117,10 @@ import { ExtendBackupPackageComponent } from './backup-package/extend/extend-bac
 import { EditBackupPackageComponent } from './backup-package/edit/edit-backup-package.component';
 import { DeleteBackupPackageComponent } from './backup-package/delete/delete-backup-package.component';
 import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-public.component';
+import { CreateVolumeVpcComponent } from './volume/component/create-volume-vpc/create-volume-vpc.component';
+import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/resize-volume-vpc.component';
+import { ListVlanComponent } from './vlan/list/list-vlan.component';
+import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -221,6 +225,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ExtendBackupPackageComponent,
     EditBackupPackageComponent,
     DeleteBackupPackageComponent,
+    CreateVolumeVpcComponent,
+    ResizeVolumeVpcComponent,
+    ListVlanComponent,
+    BlankVolumeComponent,
   ],
   imports: [
     CommonModule,

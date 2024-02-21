@@ -34,12 +34,14 @@ export class DetailVolumeComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  typeVPC: number
   regionChanged(region: RegionModel) {
     this.region = region.regionId
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
+    this.typeVPC = project.type
     // this.getListVolumes()
   }
 
@@ -156,6 +158,10 @@ export class DetailVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volumes/renew/' + idVolume])
   }
 
+  navigateToResizeVPC(idVolume: number) {
+    this.router.navigate(['/app-smart-cloud/volume/vpc/resize/' + idVolume])
+  }
+
   volumeStatus: Map<String, string>;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -165,9 +171,9 @@ export class DetailVolumeComponent implements OnInit {
               private nzMessage: NzMessageService,
               private modalService: NzModalService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
   }
 
 }
