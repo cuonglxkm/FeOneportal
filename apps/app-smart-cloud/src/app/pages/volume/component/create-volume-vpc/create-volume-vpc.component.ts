@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {CreateVolumeRequestModel, GetAllVmModel} from "../../../../shared/models/volume.model";
 import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
@@ -19,7 +19,7 @@ import {OrderItem} from "../../../../shared/models/price";
   templateUrl: './create-volume-vpc.component.html',
   styleUrls: ['./create-volume-vpc.component.less'],
 })
-export class CreateVolumeVpcComponent {
+export class CreateVolumeVpcComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -170,6 +170,15 @@ export class CreateVolumeVpcComponent {
     });
   }
 
+  ngOnInit() {
+    if([1,2].includes(this.region)) {
+      if(this.validateForm.controls.storage.value < 20) this.iops = 0
+    }
+    if([3, 4].includes(this.region)) {
+      if(this.validateForm.controls.storage.value < 20) this.iops = 400
+    }
+    this.getListInstance()
+  }
 
   duplicateNameValidator(control) {
     const value = control.value;
@@ -181,15 +190,15 @@ export class CreateVolumeVpcComponent {
     }
   }
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.validateForm.get('storage').reset()
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project.id
-    this.getListInstance()
-  }
+  // regionChanged(region: RegionModel) {
+  //   this.region = region.regionId
+  //   this.validateForm.get('storage').reset()
+  // }
+  //
+  // projectChanged(project: ProjectModel) {
+  //   this.project = project.id
+  //   this.getListInstance()
+  // }
 
   onSwitchSnapshot(){
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value

@@ -437,19 +437,6 @@ export class InstancesCreateComponent implements OnInit {
     console.log(this.offerFlavor);
   }
 
-  toggleClass(id: string) {
-    this.selectedElementFlavor = id;
-    if (this.selectedElementFlavor) {
-      this.isInitialClass = !this.isInitialClass;
-      this.isNewClass = !this.isNewClass;
-    } else {
-      this.isInitialClass = true;
-      this.isNewClass = false;
-    }
-
-    this.cdr.detectChanges();
-  }
-
   selectElementInputFlavors(id: string) {
     this.selectedElementFlavor = id;
   }

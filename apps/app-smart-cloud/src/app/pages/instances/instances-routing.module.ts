@@ -5,7 +5,7 @@ import { InstancesCreateComponent } from './instances-create/instances-create.co
 import { InstancesDetailComponent } from './instances-detail/instances-detail.component';
 import { InstancesEditInfoComponent } from './instances-edit-info/instances-edit-info.component';
 import { InstancesEditComponent } from './instances-edit/instances-edit.component';
-import {InstancesConsoleComponent} from "./instances-console/instances-console.component";
+import { InstancesConsoleComponent } from './instances-console/instances-console.component';
 import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
 import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-create-vpc.component';
 
@@ -45,7 +45,7 @@ const routes: Routes = [
     path: 'instances-extend/:id',
     component: InstancesExtendComponent,
     data: { title: 'Gia hạn máy ảo', key: 'instances-extend' },
-  }
+  },
 ];
 
 @NgModule({
