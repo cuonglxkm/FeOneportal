@@ -10,6 +10,7 @@ import {finalize} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-create-update-ip-public',
@@ -43,9 +44,13 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   onRegionChange(region: RegionModel) {
+
     this.regionId = region.regionId;
     if (this.regionId === 3 || this.regionId === 5) {
       this.checkIpv6 = false;
@@ -63,9 +68,13 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         this.listIpSubnet = data
       }
     )
+
+
   }
 
   projectChange(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+
     this.projectId = project.id;
     this.instancService.search(1,999,this.regionId, this.projectId,'','', true, this.tokenService.get()?.userId)
       .pipe(finalize(() => {
@@ -77,6 +86,8 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         this.listInstance = data.records;
       }
     )
+
+
   }
 
   backToList(){
@@ -98,7 +109,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       ipAddress: null,
       offerId: 0,
       useIPv6: null,
-      vpcId: null,
+      vpcId: this.projectId,
       oneSMEAddonId: null,
       serviceType: 4,
       serviceInstanceId: 0,
@@ -142,21 +153,6 @@ export class CreateUpdateIpPublicComponent implements OnInit{
 
     var returnPath: string = window.location.pathname;
     this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
-    // this.service.createIpPublic(request)
-    //   .subscribe({
-    //     next: data => {
-    //       if (data.code == '310') {
-    //         window.location.href = data.data
-    //       } else {
-    //         this.notification.success('Thành công', 'Tạo mới thành công Ip Public');
-    //         this.router.navigate(['/app-smart-cloud/ip-public']);
-    //       }
-    //     },
-    //     error: e => {
-    //       this.notification.error('Thất bại', 'Tạo mới thất bại Ip Public')
-    //     },
-    //   });
-    // this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 
   caculator(event)   {
@@ -179,7 +175,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         ipAddress: null,
         offerId: 0,
         useIPv6: null,
-        vpcId: null,
+        vpcId: this.projectId,
         oneSMEAddonId: null,
         serviceType: 4,
         serviceInstanceId: 0,

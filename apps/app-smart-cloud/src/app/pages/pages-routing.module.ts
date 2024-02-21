@@ -381,8 +381,11 @@ const routes: Routes = [
   {
     path: 'vlan/network/detail/:id',
     component: VlanDetailComponent
-  }
-
+  },
+  {
+    path: 'vpc',
+    loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule)
+  },
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
