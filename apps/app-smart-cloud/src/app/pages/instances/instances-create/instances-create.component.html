@@ -24,7 +24,10 @@
 </page-header>
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-  <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
+  <nz-card [nzBordered]="false">
+    <div style="margin-bottom: 20px">
+      <span class="title-card">Thông tin máy ảo</span>
+    </div>
     <nz-row nzGutter="16">
       <nz-col nzSpan="24">
         <nz-form-item>
@@ -552,6 +555,7 @@
             >
               <nz-input-group [nzSuffix]="suffixTemplate" style="width: 100%">
                 <input
+                  class="input-custom"
                   [type]="passwordVisible ? 'text' : 'password'"
                   nz-input
                   placeholder="input password"
@@ -646,8 +650,9 @@
                 [(ngModel)]="numberMonth"
                 (ngModelChange)="onChangeTime()"
                 [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
               ></nz-input-number>
-              <div style="margin-left: 20px">
+              <div style="display: flex; margin-left: 20px; align-items: center;">
                 Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}
               </div>
             </nz-row>
@@ -657,7 +662,10 @@
     </nz-row>
   </nz-card>
 
-  <nz-card nzTitle="Block Storage">
+  <nz-card>
+    <div style="margin-bottom: 20px">
+      <span class="title-card">Block Storage</span>
+    </div>
     <div *ngIf="!activeBlockStorage">
       <nz-alert
         (click)="initBlockStorage()"
@@ -771,6 +779,9 @@
   </nz-card>
 
   <nz-card nzTitle="Network">
+    <div style="margin-bottom: 20px">
+      <span class="title-card">Block Storage</span>
+    </div>
     <div *ngIf="!activeIPv4">
       <nz-alert
         (click)="initIPv4()"
