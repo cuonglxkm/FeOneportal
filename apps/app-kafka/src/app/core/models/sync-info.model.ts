@@ -6,6 +6,4 @@ export class SyncInfoModel {
     partition: string;
     message: string;
 
-    constructor() {
-    }
 }

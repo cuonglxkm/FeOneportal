@@ -25,6 +25,7 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message-topic.component';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import { ConsumerGroupComponent } from './detail/consumer-group/consumer-group.component';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -39,6 +40,7 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
     CreateTopicComponent,
     MessageTopicComponent,
     AccessLogComponent,
+    ConsumerGroupComponent,
   ],
   imports: [
     PagesRoutingModule,
@@ -52,7 +54,7 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
     NzIconModule,
     NzDescriptionsModule,
     NzSelectModule,
-    NzNotificationModule
+    NzNotificationModule,
   ],
 })
 export class PagesModule {}

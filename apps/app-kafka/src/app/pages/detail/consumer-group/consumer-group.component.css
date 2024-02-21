@@ -1,0 +1,154 @@
+.inner-content {
+    background: #fff;
+    padding: 24px;
+    min-height: 280px;
+}
+
+.sub-title {
+    display: inline-block;
+    margin-right: 2rem;
+}
+
+.warning {
+    margin-left: 7px;
+    background-color: rgb(244, 186, 62);
+    color: white;
+    border: 0;
+}
+
+.warning:hover {
+    background-color: rgb(0, 0, 0);
+}
+
+.search {
+    width: 350px;
+    padding: 5px;
+}
+
+.tip {
+    padding-left: 10px;
+}
+
+.cancel {
+    margin-right: 10px;
+}
+
+.cancel:hover {
+    background-color: rgb(94, 94, 94);
+    color: white;
+}
+
+.breadcrumb {
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.row-group td {
+    align-items: center;
+}
+
+#search-box:focus {
+    outline: none !important;
+    border: 1px solid #1363B9;
+    box-shadow: 0 0 10px #719ECE;
+}
+
+nz-table#groups th {
+    background-color: #1363B9;
+    color: #ffff;
+}
+
+.block-info {
+    border: 1px solid #1363B9;
+    text-align: center;
+    padding: 10px 0px;
+    margin-right: 30px;
+    box-shadow: 0 0 10px #719ECE;
+    border-radius: 10px;
+    margin-bottom: 5px;
+
+}
+
+.lbl-info {
+    color: #308ef3;
+    font-weight: 700;
+    width: 100%;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.value-info {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+#block-search {
+    margin: 20px 0;
+}
+
+.search-topic {
+    width: 350px;
+    padding: 0px 5px 5px 0px;
+}
+
+nz-table#expand-tbl {
+    margin: 15px 0px;
+}
+
+#general-info {
+    margin-top: 35px;
+}
+
+nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon {
+    color: #ffff;
+    background-color: #308ef3;
+}
+
+nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon.ant-table-row-expand-icon:hover {
+    color: #ffff;
+    background-color: #024fab !important;
+}
+
+nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
+    color: #ffff;
+    background-color: #024fab !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.async {
+    font-style: italic;
+    font-size: 13px;
+    float: right;
+}
+
+.time-async {
+    display: inline-block;
+    width: 130px;
+}
+
+[nz-icon] {
+    font-size: 20px;
+}
+
+.search {
+    border-radius: 8px;
+    width: 300px;
+    height: 40px;
+}
+
+::ng-deep .ant-pagination-item-active {
+    font-weight: 500;
+    background: #0066B0;
+    border-color: #0066B0;
+}
+
+::ng-deep .ant-pagination-item-active a {
+    color: #ffffff;
+}
+
+::ng-deep .ant-pagination-item {
+    border-radius: 8px;
+}
