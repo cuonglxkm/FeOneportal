@@ -13,7 +13,7 @@ export class ClusterService extends BaseService {
     super();
   }
 
-  baseUrl = 'http://10.1.127.93:16003/k8s-service';
+  baseUrl = 'http://127.0.0.1:16003/k8s-service';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -29,11 +29,12 @@ export class ClusterService extends BaseService {
     pageIndex: number,
     pageSize: number
   ) {
-    return this.http.get(`${this.baseUrl}/k8s/search-cluster?clusterName=${clusterName}&status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`);
+    return this.http.get(`${this.baseUrl}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`);
   }
 
   createNewCluster(data) {
-    return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
+    // return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
+    return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data);
   }
 
   testCreateCluster(data) {

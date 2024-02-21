@@ -85,6 +85,10 @@ textarea,
   color: #0066b3;
 }
 
+.delete-icon {
+  color: #ea3829;
+}
+
 ::ng-deep .ant-card-head {
   min-height: 48px;
   margin-bottom: -1px;
@@ -104,7 +108,7 @@ textarea,
 .remove-btn {
   position: relative;
   float: right;
-  margin-top: 32px;
+  height: fit-content;
 }
 
 .borderless {

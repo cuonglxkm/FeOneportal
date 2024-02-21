@@ -147,10 +147,18 @@
                 <ng-container *ngIf="isAutoScaleEnable">
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="nodes">Số node tối thiểu</nz-form-label>
-                    <nz-form-control nzErrorTip="Số node tối thiểu không để trống">
+                    <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
                       <input type="text" nz-input placeholder="Nhập số node tối thiểu" formControlName="minimumNode"
-                        (keypress)="isNumber($event)" />
+                        (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
                     </nz-form-control>
+                    <ng-template #minimumNodeErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Số node tối thiểu không để trống
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('invalid')">
+                        Số node tối thiểu không lớn hơn số node tối đa
+                      </ng-container>
+                    </ng-template>
                   </nz-form-item>
                 </ng-container>
 
@@ -180,7 +188,7 @@
                     <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
                     <nz-form-control nzErrorTip="Số node tối đa không để trống">
                       <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
-                        (keypress)="isNumber($event)" />
+                        (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
                     </nz-form-control>
                   </nz-form-item>
                 </ng-container>
@@ -211,6 +219,14 @@
                         </label>
                       </ng-container>
                     </nz-radio-group>
+
+                    <!-- remove btn -->
+                    <ng-container *ngIf="listFormWorkerGroup.length > 1">
+                      <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
+                        nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
+                        <span nz-icon nzType="delete"></span>
+                      </button>
+                    </ng-container>
                   </nz-form-control>
                 </nz-form-item>
               </div>
@@ -309,7 +325,7 @@
           <div class="ml-3">Tên cluster</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="price-style mt-3 mr-3">{{clusterName}}</div>
+          <div class="price-style mr-3">{{clusterName}}</div>
         </div>
       </div>
 
@@ -341,7 +357,7 @@
               <div class="ml-3">Tên nhóm worker</div>
             </div>
             <div nz-col [nzSpan]="12">
-              <div class="price-style mt-3 mr-3">{{control.get('workerGroupName').value}}</div>
+              <div class="price-style mr-3">{{control.get('workerGroupName').value}}</div>
             </div>
           </div>
 

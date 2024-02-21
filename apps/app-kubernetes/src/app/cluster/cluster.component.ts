@@ -9,6 +9,8 @@ import { WorkerTypeModel } from '../model/worker-type.model';
 import { VolumeTypeModel } from '../model/volume-type.model';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
 import { RegionModel } from '../shared/models/region.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NetworkingModel } from '../model/cluster.model';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -32,7 +34,7 @@ export class ClusterComponent implements OnInit {
 
   // infrastructure info
   region: number;
-  cloudProfileName: string;
+  cloudProfileId: string;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_VOLUME_TYPE = KubernetesConstant.DEFAULT_VOLUME_TYPE;
@@ -42,6 +44,7 @@ export class ClusterComponent implements OnInit {
     private fb: FormBuilder,
     private clusterService: ClusterService,
     private modalService: NzModalService,
+    private notificationService: NzNotificationService,
     private router: Router
   ) {
     this.listOfK8sVersion = [];
@@ -60,6 +63,7 @@ export class ClusterComponent implements OnInit {
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       kubernetesVersion: [null, [Validators.required]],
       region: [null, [Validators.required]],
+      cloudProfileId: [null, [Validators.required]],
 
       autoScalingWorker: [false],
       autoHealing: [false],
@@ -95,6 +99,19 @@ export class ClusterComponent implements OnInit {
       maximumNode: [null]
     });
     this.listFormWorkerGroup.push(wg);
+
+    // fill volumeTypeId by default value when add new worker group
+    const volumeType = this.listOfVolumeType?.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
+    if (volumeType) {
+      this.listFormWorkerGroup.at(index).get('volumeTypeId').setValue(volumeType.id);
+    }
+  }
+
+  removeWorkerGroup(index: number, e?: MouseEvent) {
+    if (e) {
+      e.preventDefault();
+    }
+    this.listFormWorkerGroup.removeAt(index);
   }
 
   getListK8sVersion(cloudProfileName: string) {
@@ -125,6 +142,11 @@ export class ClusterComponent implements OnInit {
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
+
+          // for the first time the form is initialized,
+          // if data is not already loaded, volumeTypeId will not fill value
+          const volumeType = this.listOfVolumeType.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
+          this.listFormWorkerGroup.at(0).get('volumeTypeId').setValue(volumeType.id);
         }
       });
   }
@@ -141,13 +163,14 @@ export class ClusterComponent implements OnInit {
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.cloudProfileName = region.cloudId;
+    this.cloudProfileId = region.cloudId;
 
-    this.getListK8sVersion(this.cloudProfileName);
-    this.getListWorkerType(this.cloudProfileName);
-    this.getListVolumeType(this.cloudProfileName);
+    this.getListK8sVersion(this.cloudProfileId);
+    this.getListWorkerType(this.cloudProfileId);
+    this.getListVolumeType(this.cloudProfileId);
 
-    this.myform.get('region').setValue(region.regionId);
+    this.myform.get('region').setValue(this.region);
+    this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
 
     // TODO: handle reset select box of previous region ...
 
@@ -161,7 +184,6 @@ export class ClusterComponent implements OnInit {
 
   onSelectWorkerType(machineName: string, index: number) {
     const selectedWorkerType = this.listOfWorkerType.find(item => item.machineName === machineName);
-    console.log(selectedWorkerType);
     this.listFormWorkerGroup.at(index).get('configTypeId').setValue(selectedWorkerType.id);
   }
 
@@ -175,6 +197,19 @@ export class ClusterComponent implements OnInit {
       this.isAutoScaleEnable = false;
       this.removeValidateMinimumNode();
       this.removeValidateMaximumNode();
+    }
+  }
+
+  onChangeNodeValue(index: number) {
+    const minNode = this.listFormWorkerGroup.at(index).get('minimumNode').value;
+    const maxNode = this.listFormWorkerGroup.at(index).get('maximumNode').value;
+    if (minNode && maxNode) {
+      if (minNode > maxNode) {
+        this.listFormWorkerGroup.at(index).get('minimumNode').setErrors({invalid: true});
+      } else {
+        delete this.listFormWorkerGroup.at(index).get('minimumNode').errors?.invalid;
+        this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
+      }
     }
   }
 
@@ -205,11 +240,6 @@ export class ClusterComponent implements OnInit {
       this.listFormWorkerGroup.at(i).get('minimumNode').clearValidators();
       this.listFormWorkerGroup.at(i).get('minimumNode').updateValueAndValidity();
     }
-  }
-
-  removeWorkerGroup(index: number, e: MouseEvent): void {
-    e.preventDefault();
-    this.listFormWorkerGroup.removeAt(index);
   }
 
   // validate duplicate worker group name
@@ -281,11 +311,24 @@ export class ClusterComponent implements OnInit {
 
   onSubmitPayment() {
     const cluster = this.myform.value;
-    console.log({data: cluster});
-    this.clusterService.testCreateCluster(cluster)
+    const networking: NetworkingModel = new NetworkingModel(null);
+    networking.networkType = cluster.networkType;
+    networking.vpcNetworkId = cluster.vpcNetwork;
+    networking.cidr = cluster.cidr;
+    networking.subnet = cluster.subnet;
+
+    cluster.networking = networking;
+
+    // console.log(this.myform);
+    // console.log({data: cluster});
+
+    this.clusterService.createNewCluster(cluster)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        console.log({r: r});
+        this.notificationService.success('Thành công', r.message);
+        this.back2list();
+      } else {
+        this.notificationService.error('Thất bại', r.message);
       }
     });
   }

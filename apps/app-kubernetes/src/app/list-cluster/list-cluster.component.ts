@@ -22,27 +22,14 @@ export class KubernetesDetailComponent implements OnInit {
   constructor(
     private clusterService: ClusterService,
     private modalService: NzModalService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.keySearch = '';
     this.serviceStatus = '';
     this.pageIndex = 1;
     this.pageSize = 10;
     this.total = 1;
-  }
-
-  ngOnInit(): void {
-    // mock data
-    const tmp: KubernetesCluster = {
-      id: 1,
-      clusterName: "abc",
-      actionStatus: 1,
-      serviceStatus: 2,
-      apiEndpoint: "api.galaxy.vnpt",
-      createdDate: new Date(),
-      totalNode: 3
-    };
-    this.listOfClusters = [];
-    this.listOfClusters.push(tmp);
   }
 
   searchCluster() {
@@ -54,7 +41,11 @@ export class KubernetesDetailComponent implements OnInit {
       this.pageSize
     ).subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.listOfClusters = r.data.content;
+        this.listOfClusters = [];
+        r.data?.content.forEach(item => {
+          const cluster: KubernetesCluster = new KubernetesCluster(item);
+          this.listOfClusters.push(cluster);
+        });
         this.total = r.total;
       }
     });
