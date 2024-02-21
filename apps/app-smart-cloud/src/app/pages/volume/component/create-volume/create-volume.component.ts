@@ -206,6 +206,9 @@ export class CreateVolumeComponent implements OnInit {
         if(productId == 92) {
           this.typeEncrypt = true
         }
+      } else {
+        this.typeMultiple = false
+        this.typeEncrypt = false
       }
     })
   }
@@ -229,8 +232,7 @@ export class CreateVolumeComponent implements OnInit {
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     this.validateForm.get('storage').reset()
-    this.getCatalogOffer(90)
-    this.getCatalogOffer(92)
+
   }
 
   projectChanged(project: ProjectModel) {
@@ -238,6 +240,9 @@ export class CreateVolumeComponent implements OnInit {
     this.typeVPC = project.type
     this.getListSnapshot()
     this.getListInstance()
+    this.getCatalogOffer(90)
+    this.getCatalogOffer(92)
+
     this.getListVolumes()
   }
 
