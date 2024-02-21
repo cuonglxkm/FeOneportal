@@ -31,7 +31,7 @@
 
                     <nz-table id="groups" nzBordered #basicTable [nzData]="listConsumerGroup" nzShowSizeChanger
                         [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize"
-                        [nzLoading]="loadingTbl" (nzQueryParams)="onQueryParamsChange($event)">
+                        [nzLoading]="loadingTbl" (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)">
                         <thead>
                             <tr>
                                 <th nzWidth="5%">STT</th>

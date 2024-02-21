@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NzTableQueryParams, NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
-import { KafkaConsumerGroup } from '../../../core/models/kafka-consumer-group.model';
-import { KafkaConsumerGroupTopic } from '../../../core/models/kafka-consumer-group-topic.model';
-import { KafkaConsumerGroupDetail } from '../../../core/models/kafka-consumer-group-detail.model';
-import { SyncInfoModel } from '../../../core/models/sync-info.model';
-import { ActivatedRoute } from '@angular/router';
-import { ConsumerGroupKafkaService } from '../../../services/consumer-group-kafka.service';
+import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
+import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic } from '../../../core/models/kafka-consumer-group.model';
+import { SyncInfoModel } from '../../../core/models/sync-info.model';
+import { ConsumerGroupKafkaService } from '../../../services/consumer-group-kafka.service';
 import { KafkaService } from '../../../services/kafka.service';
 
 interface DataItem {
@@ -35,7 +33,6 @@ interface ColumnItem {
 
 export class ConsumerGroupComponent implements OnInit { 
   serviceOrderCode: string;
-  maxSize = 9999;
 
   listConsumerGroup: KafkaConsumerGroup[];
 
@@ -119,7 +116,6 @@ export class ConsumerGroupComponent implements OnInit {
   syncInfo: SyncInfoModel = new SyncInfoModel();
 
   constructor(
-    private activeRouter: ActivatedRoute,
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
     private modal: NzModalService,
     private kafkaService: KafkaService,
@@ -127,29 +123,35 @@ export class ConsumerGroupComponent implements OnInit {
 
   ngOnInit(): void {
     this.serviceOrderCode = 'kafka-s1hnuicj7u7g';
-    this.getListConsumerGroup(1, this.maxSize, '', this.serviceOrderCode);
+    this.getListConsumerGroup(1, this.pageSize, '', this.serviceOrderCode);
     this.getSyncTime(this.serviceOrderCode);
   }
 
   getListConsumerGroup(pageIndex: number, pageSize: number, keySearch: string, serviceOrderCode: string) {
     this.loadingTbl = true;
-    this.consumerGroupKafkaService.getListConsumerGroup(pageIndex, pageSize, keySearch, serviceOrderCode)
-      .subscribe((res: any) => {
+    this.consumerGroupKafkaService.getListConsumerGroup(pageIndex, pageSize, keySearch.trim(), serviceOrderCode)
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.loadingTbl = false;
-          this.total = res.data.totalElements
-          this.listConsumerGroup = res.data.content;
+          this.total = res.data.totals;
+          this.listConsumerGroup = camelizeKeys(res.data.results) as KafkaConsumerGroup[];
         }
       });
   }
 
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const { pageSize, pageIndex } = params;
-    this.getListConsumerGroup(pageIndex, pageSize, '', this.serviceOrderCode);
-  }
 
   onSearch() {
-    this.getListConsumerGroup(this.pageIndex, this.pageSize, this.searchText.trim(), this.serviceOrderCode);
+    this.getListConsumerGroup(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode);
+  }
+
+  changePage(event: number) {
+    this.pageIndex = event;
+    this.getListConsumerGroup(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode);
+  }
+
+  changeSize(event: number) {
+    this.pageSize = event;
+    this.getListConsumerGroup(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode);
   }
 
   viewDetail(event: string) {
@@ -161,18 +163,18 @@ export class ConsumerGroupComponent implements OnInit {
 
   getDetailConsumerGroup(groupId: string, serviceOrderCode: string) {
     this.consumerGroupKafkaService.getDetailConsumerGroup(groupId, serviceOrderCode)
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
-          this.detailConsumerGroup = res.data;
+          this.detailConsumerGroup = camelizeKeys(res.data) as KafkaConsumerGroupDetail;
         }
       });
   }
 
   getListTopicInGroup(groupId: string, serviceOrderCode: string, keySearch: string) {
     this.consumerGroupKafkaService.getListTopicInGroup(groupId, serviceOrderCode, keySearch)
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
-          this.listTopicOfCG = res.data;
+          this.listTopicOfCG = camelizeKeys(res.data) as KafkaConsumerGroupTopic[];
         }
       });
   }

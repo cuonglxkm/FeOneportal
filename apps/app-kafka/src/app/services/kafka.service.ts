@@ -149,7 +149,7 @@ export class KafkaService {
     openSet: number,
     jsonConfig: string
   ) {
-    let json = {
+    const json = {
       "service_order_code": serviceOrderCode,
       "is_advanced": openSet,
       "partition_num": partitionNum,
@@ -166,7 +166,7 @@ export class KafkaService {
   }
 
   deleteMessages(topicName: string, serviceOrderCode: string): Observable<any> {
-    let json = {
+    const json = {
       service_order_code: serviceOrderCode,
       topic: topicName
     }
@@ -187,7 +187,7 @@ export class KafkaService {
     serviceOrderCode: string,
     jsonConfig: object
   ) {
-    let json = jsonConfig;
+    const json = jsonConfig;
     const local_url = `${this.baseUrl}/topic/updateTopicPortal?topicName=${topicName}&serviceOrderCode=${serviceOrderCode}`;
     return this.http.post(local_url, json);
   }
