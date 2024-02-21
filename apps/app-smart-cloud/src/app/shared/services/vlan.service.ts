@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {FormSearchNetwork, FormSearchPort, NetWorkModel} from "../models/vlan.model";
+import {FormSearchNetwork, FormSearchPort, FormSearchSubnet, NetWorkModel, Port, Subnet} from "../models/vlan.model";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
@@ -55,9 +55,33 @@ export class VlanService extends BaseService {
     if(region != undefined || region != null) {
       params = params.append('region', region)
     }
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/listallportbynetworkid', {
+    return this.http.get<Port[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/listallportbynetworkid', {
       headers: this.getHeaders(),
       params: params
     })
   }
+
+  getListSubnet(formSearchSubnet: FormSearchSubnet) {
+    let params = new HttpParams()
+    if(formSearchSubnet.pageSize != undefined || formSearchSubnet.pageSize != null) {
+      params = params.append('pageSize', formSearchSubnet.pageSize)
+    }
+    if(formSearchSubnet.pageNumber != undefined || formSearchSubnet.pageNumber != null){
+      params = params.append('pageNumber', formSearchSubnet.pageNumber)
+    }
+    if(formSearchSubnet.region != undefined || formSearchSubnet.region != null) {
+      params = params.append('region', formSearchSubnet.region)
+    }
+    if(formSearchSubnet.vlanName != undefined || formSearchSubnet.vlanName != null) {
+      params = params.append('vlanName', formSearchSubnet.vlanName)
+    }
+    if(formSearchSubnet.customerId != undefined || formSearchSubnet.customerId != null){
+      params = params.append('customerId', formSearchSubnet.customerId)
+    }
+    return this.http.get<Subnet[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
+      headers: this.getHeaders(),
+      params: params
+    })
+  }
+
 }

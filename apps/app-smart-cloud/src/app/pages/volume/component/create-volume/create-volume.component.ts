@@ -232,7 +232,6 @@ export class CreateVolumeComponent implements OnInit {
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     this.validateForm.get('storage').reset()
-
   }
 
   projectChanged(project: ProjectModel) {

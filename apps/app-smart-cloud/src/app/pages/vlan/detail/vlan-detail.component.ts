@@ -6,6 +6,7 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {VlanService} from "../../../shared/services/vlan.service";
+import {FormSearchSubnet, Port, Subnet} from "../../../shared/models/vlan.model";
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -19,6 +20,9 @@ export class VlanDetailComponent implements OnInit{
   idNetwork: number
 
   isLoading: boolean = false
+
+  listPort: Port[] = []
+  listSubnet: Subnet[] = []
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -39,6 +43,18 @@ export class VlanDetailComponent implements OnInit{
   getPortByNetwork(idNetwork) {
     this.vlanService.getPortByNetwork(idNetwork, this.region).subscribe(data => {
       console.log('data', data)
+      this.listPort = data
+    })
+  }
+
+  getSubnetByNetwork(idNetwork) {
+    let formSearchSubnet = new FormSearchSubnet()
+    formSearchSubnet.pageSize = 9999
+    formSearchSubnet.pageNumber = 1
+    formSearchSubnet.region = this.region
+    formSearchSubnet.customerId = this.tokenService.get()?.userid
+    this.vlanService.getListSubnet(formSearchSubnet).subscribe(data => {
+      this.listSubnet = data
     })
   }
 
