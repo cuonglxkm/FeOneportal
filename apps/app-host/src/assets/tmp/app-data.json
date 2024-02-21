@@ -177,7 +177,7 @@
               "children": [
                 {
                   "text": "Quản lý VPC",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/vpc"
                 },
                 {
                   "text": "Dải IP Kết nối WAN",
