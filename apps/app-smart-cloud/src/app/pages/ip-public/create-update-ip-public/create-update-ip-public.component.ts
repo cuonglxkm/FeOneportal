@@ -4,7 +4,14 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {InstancesService} from "../../instances/instances.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {AbstractControl, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidationErrors,
+  Validators
+} from "@angular/forms";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";
 import {finalize} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -17,7 +24,7 @@ import {getCurrentRegionAndProject} from "@shared";
   templateUrl: './create-update-ip-public.component.html',
   styleUrls: ['./create-update-ip-public.component.less'],
 })
-export class CreateUpdateIpPublicComponent implements OnInit{
+export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
   checkIpv6: boolean;
@@ -34,9 +41,10 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   loadingCalculate = false;
   form = new FormGroup({
     ipSubnet: new FormControl('', {validators: [Validators.required]}),
-    numOfMonth: new FormControl('', {validators: [Validators.required, this.validNumOfMonth.bind(this)]} ),
+    numOfMonth: new FormControl(1, {validators: [Validators.required, this.validNumOfMonth.bind(this)]}),
     instanceSelected: new FormControl('', {}),
- });
+  });
+
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -47,54 +55,48 @@ export class CreateUpdateIpPublicComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-  }
-
-  onRegionChange(region: RegionModel) {
-
-    this.regionId = region.regionId;
-    if (this.regionId === 3 || this.regionId === 5) {
-      this.checkIpv6 = false;
-    } else {
-      this.checkIpv6 = null;
-    }
-
     this.instancService.getAllIPSubnet(this.regionId)
       .pipe(finalize(() => {
         this.disableIp = false;
         this.loadingIp = false;
       }))
       .subscribe(
-      (data) => {
-        this.listIpSubnet = data
-      }
-    )
-
-
-  }
-
-  projectChange(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/ip-public']);
-
-    this.projectId = project.id;
-    this.instancService.search(1,999,this.regionId, this.projectId,'','', true, this.tokenService.get()?.userId)
+        (data) => {
+          this.listIpSubnet = data
+        }
+      )
+    this.instancService.search(1, 999, this.regionId, this.projectId, '', '', true, this.tokenService.get()?.userId)
       .pipe(finalize(() => {
         this.disableInstanse = false;
         this.loadingInstanse = false;
       }))
       .subscribe(
-      (data) => {
-        this.listInstance = data.records;
-      }
-    )
-
-
+        (data) => {
+          this.listInstance = data.records;
+        }
+      )
   }
 
-  backToList(){
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+    // if (this.regionId === 3 || this.regionId === 5) {
+    //   this.checkIpv6 = false;
+    // } else {
+    //   this.checkIpv6 = null;
+    // }
+  }
+
+  projectChange(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.projectId = project.id;
+  }
+
+  backToList() {
     this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 
-  createIpPublic(){
+  createIpPublic() {
     const expiredDate = new Date();
     expiredDate.setMonth(expiredDate.getMonth() + Number(this.form.controls['numOfMonth'].value));
     const requestBody = {
@@ -103,7 +105,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
       regionId: this.regionId,
       projectId: this.projectId,
       networkId: this.form.controls['ipSubnet'].value,
-      useIpv6:this.checkIpv6,
+      useIpv6: this.checkIpv6,
       id: 0,
       duration: 0,
       ipAddress: null,
@@ -152,16 +154,16 @@ export class CreateUpdateIpPublicComponent implements OnInit{
     }
 
     var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
 
-  caculator(event)   {
+  caculator(event) {
 
     let ip = this.form.controls['ipSubnet'].value;
     let num = this.form.controls['numOfMonth'].value;
 
     if (ip != null && ip != undefined && ip != '' &&
-      num != null && num != undefined && num != '') {
+      num != null && num != undefined) {
       this.loadingCalculate = true;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
@@ -169,7 +171,7 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         regionId: this.regionId,
         projectId: this.projectId,
         networkId: this.form.controls['ipSubnet'].value,
-        useIpv6:this.checkIpv6,
+        useIpv6: this.checkIpv6,
         id: 0,
         duration: 0,
         ipAddress: null,
@@ -214,12 +216,14 @@ export class CreateUpdateIpPublicComponent implements OnInit{
         ]
       }
       this.service.getTotalAmount(request)
-        .pipe(finalize(() => {this.loadingCalculate = false}))
+        .pipe(finalize(() => {
+          this.loadingCalculate = false
+        }))
         .subscribe(
-        data => {
-          this.total = data;
-        }
-      );
+          data => {
+            this.total = data;
+          }
+        );
     } else {
       this.total = undefined;
     }
