@@ -158,7 +158,6 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
           this.validateForm.get('username').value,
           this.validateForm.get('password').value,
           this.validateForm.get('checkPassword').value,
-          'fake@vnpt.vn'
         );
 
         this.kafkaCredentialService

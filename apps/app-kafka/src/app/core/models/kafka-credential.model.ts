@@ -1,7 +1,6 @@
 export interface KafkaCredential {
   serviceOrderCode: string;
   username: string;
-  email: string;
   createdDate: string;
   updatedDate: string;
   createdUser: string;
@@ -16,13 +15,11 @@ export class CreateKafkaCredentialData {
     private username: string,
     private password: string,
     private retypePassword: string,
-    private email: string
   ) {
     this.serviceOrderCode = serviceOrderCode;
     this.username = username;
     this.password = password;
     this.retypePassword = retypePassword;
-    this.email = email;
   }
 }
 
@@ -45,12 +42,12 @@ export class ChangePasswordKafkaCredential {
 export class NewPasswordKafkaCredential {
   constructor(
     private serviceOrderCode: string,
-    private userForgot: string,
+    private username: string,
     private newPassword: string,
     private retypePassword: string
   ) {
     this.serviceOrderCode = serviceOrderCode;
-    this.userForgot = userForgot;
+    this.username = username;
     this.newPassword = newPassword;
     this.retypePassword = retypePassword;
   }

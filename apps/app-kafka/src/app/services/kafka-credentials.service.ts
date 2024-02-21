@@ -14,7 +14,7 @@ import { Pagination } from '../core/models/pagination.model';
   providedIn: 'root',
 })
 export class KafkaCredentialsService {
-  private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
+  private baseUrl = 'http://localhost:16005/kafka-service';
   selectedCredential = new ReplaySubject<KafkaCredential>();
   activatedTab = new ReplaySubject<number>();
 
@@ -36,7 +36,7 @@ export class KafkaCredentialsService {
   ): Observable<BaseResponse<Pagination<KafkaCredential[]>>> {
     const params = new HttpParams()
       .set('username', stringSearch)
-      .set('serviceOrderCode', serviceOrderCode)
+      .set('service_order_code', serviceOrderCode)
       .set('page', page)
       .set('size', size);
 
@@ -52,7 +52,7 @@ export class KafkaCredentialsService {
     data: CreateKafkaCredentialData
   ): Observable<BaseResponse<null>> {
     return this.http.post<BaseResponse<null>>(
-      `${this.baseUrl}/users/createUser`,
+      `${this.baseUrl}/users`,
       decamelizeKeys(data)
     );
   }
@@ -61,27 +61,26 @@ export class KafkaCredentialsService {
     serviceOrderCode: string,
     username: string
   ): Observable<BaseResponse<null>> {
-    return this.http.post<BaseResponse<null>>(
-      `${this.baseUrl}/users/deleteUser`,
-      {
+    return this.http.delete<BaseResponse<null>>(`${this.baseUrl}/users`, {
+      body: {
         service_order_code: serviceOrderCode,
         username,
-      }
-    );
+      },
+    });
   }
 
   updatePassword(
     data: ChangePasswordKafkaCredential
   ): Observable<BaseResponse<null>> {
-    return this.http.post<BaseResponse<null>>(
-      `${this.baseUrl}/users/updateUser`,
+    return this.http.patch<BaseResponse<null>>(
+      `${this.baseUrl}/users`,
       decamelizeKeys(data)
     );
   }
 
   createNewPassword(data: NewPasswordKafkaCredential) {
     return this.http.post<BaseResponse<null>>(
-      `${this.baseUrl}/users/createNewPass`,
+      `${this.baseUrl}/users/reset-password`,
       decamelizeKeys(data)
     );
   }
