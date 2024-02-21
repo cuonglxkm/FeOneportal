@@ -16,6 +16,7 @@ import {PopupDeleteVolumeComponent} from '../popup-volume/popup-delete-volume.co
 import {finalize} from "rxjs/operators";
 import {InstancesModel} from "../../../instances/instances.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'app-volume',
@@ -392,7 +393,14 @@ export class VolumeComponent implements OnInit {
   }
 
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    this.customerId = this.tokenService.get()?.userId
     this.getListVm()
+    this.getListVolume(true)
+    this.cdr.detectChanges();
+
   }
 
 }
