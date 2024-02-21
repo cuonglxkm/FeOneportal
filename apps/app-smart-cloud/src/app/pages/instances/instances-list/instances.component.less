@@ -49,8 +49,8 @@ i {
 }
 
 .flavor-body {
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background-color: #e6f3fc;
 }
 
 .flavor-body-active {
@@ -60,30 +60,46 @@ i {
 
 /* app.component.css */
 .initialClassFlavor {
-  color: #1890ff;
-  border-radius: 10px;
-  border: 1px solid #1890ff;
+  color: #fff;
+  background-color: #0066b3 !important;
+  border-color: #0066b3 !important;
+  width: 100%;
 }
 
 .newClassFlavor {
-  color: rgba(0, 0, 0, 0.85);
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.flavorfooter {
-  color: #fff;
-  background: rgba(0, 0, 0, 0.35);
+  background-color: #e6f3fc;
+  border-color: #e6f3fc;
+  width: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px 4px 0 0;
 }
 
 .flavor-footer {
-  color: #fff;
-  background: rgba(0, 0, 0, 0.35);
+  color: #2b2d3b;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 4px 4px;
 }
 
 .flavor-footer-active {
-  background: #1890ff;
-  color: #fff;
+  color: #2b2d3b;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 4px 4px;
 }
 
 .bg-gray {
@@ -108,10 +124,12 @@ i {
 
 .images-body {
   border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
 
 .images-body-active {
-  border: 1px solid #1890ff;
+  border: 1px solid #0066b3;
+  border-radius: 4px;
 }
 
 .images-body-wh {
@@ -187,9 +205,37 @@ i {
 }
 
 h4 {
-  margin: 0;
-  padding: 10px 15px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.nameFlavor {
+  color: #0066b3;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0.10000000149011612px;
   text-align: center;
+}
+
+.initialNameFlavor {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.priceFlavor {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
 }
 
 p {
@@ -357,4 +403,12 @@ nav h1 {
 table.custom-table {
   border-collapse: collapse;
   cursor: pointer;
+}
+
+.text-custom {
+  color: #555;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 19.6px */
 }

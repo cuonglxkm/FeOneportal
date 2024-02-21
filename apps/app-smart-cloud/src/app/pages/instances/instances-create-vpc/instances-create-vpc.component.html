@@ -24,7 +24,10 @@
 </page-header>
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-  <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
+  <nz-card [nzBordered]="false">
+    <div style="margin-bottom: 20px">
+      <span class="table-title">Thông tin máy ảo</span>
+    </div>
     <nz-row nzGutter="16">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
         <nz-form-item>
@@ -174,9 +177,12 @@
       >
         <nz-col nzXs="24" nzMd="12">
           <nz-card
+            style="border-radius: 4px"
             [nzAlign]="'middle'"
             [ngStyle]="{
-              'background-color': activeBlockHDD ? '#e6f7ff' : '#fcfcfc'
+                border: activeBlockHDD
+              ? '1px solid #035DED'
+              : '1px solid #DADADA',
             }"
           >
             <nz-card-meta
@@ -186,6 +192,7 @@
             >
               <ng-template #nzAvatarselectedHDDorSSD1>
                 <input
+                  style="cursor: pointer"
                   type="radio"
                   [checked]="activeBlockHDD"
                   (click)="initHDD()"
@@ -195,7 +202,7 @@
                 <b>HDD</b>
               </ng-template>
               <ng-template #nzDescriptionselectedHDDorSSD1>
-                <ellipsis>
+                <ellipsis class="text-custom">
                   Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ
                   liệu,<br />
                   lưu trữ dữ liệu hoặc khối lượng công việc chuyên sâu thông
@@ -207,9 +214,12 @@
         </nz-col>
         <nz-col nzXs="24" nzMd="12">
           <nz-card
+            style="border-radius: 4px"
             [nzAlign]="'middle'"
             [ngStyle]="{
-              'background-color': activeBlockSSD ? '#e6f7ff' : '#fcfcfc'
+              border: activeBlockSSD
+              ? '1px solid #035DED'
+              : '1px solid #DADADA',
             }"
           >
             <nz-card-meta
@@ -220,6 +230,7 @@
               <ng-template #nzAvatarselectedHDDorSSD2>
                 <input
                   type="radio"
+                  style="cursor: pointer"
                   [checked]="activeBlockSSD"
                   (click)="initSSD()"
                 />
@@ -228,7 +239,7 @@
                 <b>SSD</b>
               </ng-template>
               <ng-template #nzDescriptionselectedHDDorSSD2>
-                <ellipsis
+                <ellipsis class="text-custom"
                   >Lựa chọn tốt hơn cho khối lượng công việc phân tích dữ liệu
                   hoặc <br />
                   chơi game
@@ -240,30 +251,62 @@
       </nz-radio-group>
     </nz-row>
     <nz-row nzGutter="24">
-      <nz-col nzLg="5" nzMd="5" nzSm="18">
-        <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+      <nz-col nzLg="8" nzMd="8" nzSm="24">
+        <nz-form-label style="margin-left: -12px"
+          >Dung lượng (<span class="text-red">*</span>) - GB</nz-form-label
+        >
+        <nz-row>
+          <nz-col nzSpan="18">
+            <nz-slider [nzMin]="1" [nzMax]="500"></nz-slider>
+          </nz-col>
+          <div nzSpan="6">
+            <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+          </div>
+        </nz-row>
       </nz-col>
-      <div nz-col nzLg="3" nzMd="3" nzSm="6">
-        <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-      </div>
-      <nz-col nzLg="5" nzMd="5" nzSm="18">
-        <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+      <nz-col nzLg="8" nzMd="8" nzSm="24">
+        <nz-form-label style="margin-left: -12px"
+          >RAM (<span class="text-red">*</span>) - GB</nz-form-label
+        >
+        <nz-row>
+          <nz-col nzSpan="18">
+            <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+          </nz-col>
+          <div nzSpan="6">
+            <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+          </div>
+        </nz-row>
       </nz-col>
-      <div nz-col nzLg="3" nzMd="3" nzSm="6">
-        <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-      </div>
-      <nz-col nzLg="5" nzMd="5" nzSm="18">
-        <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+      <nz-col nzLg="8" nzMd="8" nzSm="24">
+        <nz-form-label style="margin-left: -12px"
+          >CPU (<span class="text-red">*</span>) - vCPU</nz-form-label
+        >
+        <nz-row>
+          <nz-col nzSpan="18">
+            <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+          </nz-col>
+          <div nzSpan="6">
+            <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+          </div>
+        </nz-row>
       </nz-col>
-      <div nz-col nzLg="3" nzMd="3" nzSm="6">
-        <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
-      </div>
     </nz-row>
+    <nz-row style="margin-top: 20px; margin-bottom: 20px"
+      ><div style="margin-right: 20px">IOPS: 200</div>
+      <div>
+        <label
+          nz-checkbox
+          [(ngModel)]="isEncryptVolume"
+          [ngModelOptions]="{ standalone: true }"
+          >Mã hóa Volume</label
+        >
+      </div></nz-row
+    >
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >Chọn IP Public <span class="text-red">*</span></nz-form-label
+            >Chọn IP Public (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzErrorTip="Chọn IP Public *">
             <nz-select
@@ -282,13 +325,6 @@
           </nz-form-control>
         </nz-form-item>
         <div>
-          <label
-            nz-checkbox
-            [(ngModel)]="isUseIPv6"
-            [ngModelOptions]="{ standalone: true }"
-            >Sử dụng IPv6</label
-          >
-          <br />
           <label
             nz-checkbox
             [(ngModel)]="isUseLAN"
@@ -326,7 +362,7 @@
             <div>
               Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
               hình Security Group <br />
-              trong mục <u>Truy cập và Bảo mật</u>
+              trong mục <u><a>Truy cập và Bảo mật</a></u>
             </div>
           </ng-template>
         </div>
@@ -334,8 +370,8 @@
     </nz-row>
     <nz-col nzLg="24" nzMd="12" nzSm="24">
       <nz-form-label nzFor="name"
-        >Chọn phương thức truy cập máy ảo
-        <span class="text-red">*</span></nz-form-label
+        >Chọn phương thức truy cập máy ảo (<span class="text-red">*</span
+        >)</nz-form-label
       >
     </nz-col>
     <nz-row nzGutter="16">
@@ -402,8 +438,8 @@
         <nz-col nzLg="24" nzMd="12" nzSm="24">
           <nz-form-item>
             <nz-form-label nzFor="name"
-              >Mật khẩu truy cập máy ảo
-              <span class="text-red">*</span></nz-form-label
+              >Mật khẩu truy cập máy ảo (<span class="text-red">*</span
+              >)</nz-form-label
             >
             <nz-form-control
               nzErrorTip="Vui lòng nhập mật khẩu truy cập máy ảo"
@@ -447,7 +483,7 @@
         <nz-col nzLg="24" nzMd="12" nzSm="24">
           <nz-form-item>
             <nz-form-label
-              >Chọn SSH key <span class="text-red">*</span></nz-form-label
+              >Chọn SSH key (<span class="text-red">*</span>)</nz-form-label
             >
             <nz-form-control nzErrorTip="Chọn  *">
               <nz-select
@@ -464,6 +500,7 @@
                 />
               </nz-select>
             </nz-form-control>
+            <div>Lựa chọn keypair có sẵn hoặc <a>Tạo mới</a></div>
           </nz-form-item>
         </nz-col>
 
@@ -486,355 +523,23 @@
         </nz-col>
       </div>
     </nz-row>
-
-    <nz-row style="margin-top: 20px; margin-bottom: -25px" nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item style="margin-bottom: 5px">
-          <nz-form-label
-            >Thời hạn sử dụng (Tháng)
-            <span class="text-red">*</span></nz-form-label
-          >
-          <nz-form-control>
-            <nz-row>
-              <nz-input-number
-                style="width: 50%"
-                [nzMin]="1"
-                [nzMax]="100"
-                [nzStep]="1"
-                [(ngModel)]="numberMonth"
-                (ngModelChange)="onChangeTime()"
-                [ngModelOptions]="{ standalone: true }"
-              ></nz-input-number>
-              <div style="margin-left: 20px">
-                Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}
-              </div>
-            </nz-row>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
   </nz-card>
 
-  <nz-card nzTitle="Block Storage">
-    <div *ngIf="!activeBlockStorage">
-      <nz-alert
-        (click)="initBlockStorage()"
-        nzType="success"
-        [nzMessage]="customMgTemplateVolumn"
-        nzDescription="Với các ứng dụng cần lưu trữ lớn, quý khách nên sử dụng ổ cứng
-        gắn ngoài để đảm bảo về dữ liệu và khả năng mở rộng dễ
-        dàng"
-        [nzIcon]="customIconTemplateVolumn"
-        nzShowIcon
-      ></nz-alert>
-
-      <ng-template #customIconTemplateVolumn>
-        <div>+</div>
-      </ng-template>
-      <ng-template #customMgTemplateVolumn>
-        <b>Bổ sung Volume</b>
-      </ng-template>
-    </div>
-    <div *ngIf="activeBlockStorage">
-      <nz-card nzHoverable>
-        <div class="ant-table">
-          <table>
-            <thead class="ant-table-thead">
-              <tr>
-                <th>Loại Volumn</th>
-                <th>Tên Volume</th>
-                <th>Dung lượng (GB)</th>
-                <th>Mã hóa</th>
-                <th>Multi Attach</th>
-                <th>Giá theo tháng (VNĐ)</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="ant-table-tbody">
-              <tr *ngFor="let data of listOfDataBlockStorage">
-                <td>
-                  <nz-select
-                    nzPlaceHolder="Thêm ổ cứng"
-                    name="inputBlockStorage"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="data.type"
-                    [id]="'type_' + data.id"
-                    (ngModelChange)="onInputBlockStorage()"
-                  >
-                    <nz-option
-                      *ngFor="let p of typeBlockStorage"
-                      [nzValue]="p.value"
-                      [nzLabel]="p.label"
-                    ></nz-option>
-                  </nz-select>
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    [ngModelOptions]="{ standalone: true }"
-                    nz-input
-                    [(ngModel)]="data.name"
-                    [id]="'name_' + data.id"
-                  />
-                </td>
-                <td>
-                  <nz-input-number
-                    [(ngModel)]="data.capacity"
-                    (ngModelChange)="getTotalAmountBlockStorage()"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'capacity_' + data.id"
-                    [nzMin]="0"
-                    [nzMax]="100"
-                    [nzStep]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <label
-                    nz-checkbox
-                    [(ngModel)]="data.encrypt"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'encrypt_' + data.id"
-                  ></label>
-                </td>
-                <td>
-                  <label
-                    nz-checkbox
-                    [(ngModel)]="data.multiattach"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'multiattach_' + data.id"
-                  ></label>
-                </td>
-                <td>
-                  <label>
-                    {{ data.price }}
-                  </label>
-                </td>
-                <td>
-                  <button
-                    (click)="deleteRowBlockStorage(data.id)"
-                    nz-button
-                    nzType="primary"
-                    nzDanger
-                    *ngIf="data.type != ''"
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </nz-card>
-    </div>
-  </nz-card>
-
-  <nz-card nzTitle="Network">
-    <div *ngIf="!activeIPv4">
-      <nz-alert
-        (click)="initIPv4()"
-        nzType="success"
-        [nzMessage]="customMgTemplateNetwrok"
-        nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
-        gia đình hoặc doanh nghiệp để kết nối với internet"
-        [nzIcon]="customIconTemplateNetwrok"
-        nzShowIcon
-      ></nz-alert>
-
-      <ng-template #customIconTemplateNetwrok>
-        <div>+</div>
-      </ng-template>
-      <ng-template #customMgTemplateNetwrok>
-        <b>Bổ sung IPv4</b>
-      </ng-template>
-    </div>
-    <div *ngIf="activeIPv4">
-      <nz-card nzHoverable>
-        <div class="ant-table">
-          <table>
-            <thead class="ant-table-thead">
-              <tr>
-                <th>Dải IP</th>
-                <th>Số lượng</th>
-                <th>Giá theo tháng (VNĐ)</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="ant-table-tbody">
-              <tr *ngFor="let data of listOfDataIPv4">
-                <td>
-                  <nz-select
-                    style="width: 85%"
-                    nzPlaceHolder="Chọn"
-                    name="inputNetwork"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="data.ip"
-                    [id]="'ip_' + data.id"
-                    (ngModelChange)="onInputIPv4()"
-                  >
-                    <nz-option
-                      *ngFor="let p of listIPSubnetModel"
-                      [nzValue]="p.id"
-                      [nzLabel]="p.displayName"
-                    ></nz-option>
-                  </nz-select>
-                </td>
-                <td>
-                  <nz-input-number
-                    [(ngModel)]="data.amount"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'amount_' + data.id"
-                    [nzMin]="1"
-                    [nzMax]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <label>
-                    {{ data.price }}
-                  </label>
-                </td>
-                <td>
-                  <button
-                    (click)="deleteRowIPv4(data.id)"
-                    nz-button
-                    nzType="primary"
-                    nzDanger
-                    *ngIf="data.ip != ''"
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </nz-card>
-    </div>
-    <div style="margin-top: 5px" *ngIf="!activeIPv6">
-      <nz-alert
-        (click)="initIPv6()"
-        nzType="success"
-        [nzMessage]="customMgTemplateNetwrok"
-        nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
-        gia đình hoặc doanh nghiệp để kết nối với internet"
-        [nzIcon]="customIconTemplateNetwrok"
-        nzShowIcon
-      ></nz-alert>
-
-      <ng-template #customIconTemplateNetwrok>
-        <div>+</div>
-      </ng-template>
-      <ng-template #customMgTemplateNetwrok>
-        <b>Bổ sung IPv6</b>
-      </ng-template>
-    </div>
-    <div *ngIf="activeIPv6">
-      <nz-card nzHoverable>
-        <div class="ant-table">
-          <table>
-            <thead class="ant-table-thead">
-              <tr>
-                <th>Dải IP</th>
-                <th>Số lượng</th>
-                <th>Giá theo tháng (VNĐ)</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="ant-table-tbody">
-              <tr *ngFor="let data of listOfDataIPv6">
-                <td>
-                  <nz-select
-                    style="width: 85%"
-                    nzPlaceHolder="Chọn"
-                    name="inputNetwork"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="data.ip"
-                    [id]="'ip_' + data.id"
-                    (ngModelChange)="onInputIPv6()"
-                  >
-                    <nz-option
-                      *ngFor="let p of listIPSubnetModel"
-                      [nzValue]="p.id"
-                      [nzLabel]="p.displayName"
-                    ></nz-option>
-                  </nz-select>
-                </td>
-                <td>
-                  <nz-input-number
-                    [(ngModel)]="data.amount"
-                    [ngModelOptions]="{ standalone: true }"
-                    [id]="'amount_' + data.id"
-                    [nzMin]="1"
-                    [nzMax]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <label>
-                    {{ data.price }}
-                  </label>
-                </td>
-                <td>
-                  <button
-                    (click)="deleteRowIPv6(data.id)"
-                    nz-button
-                    nzType="primary"
-                    nzDanger
-                    *ngIf="data.ip != ''"
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </nz-card>
-    </div>
-  </nz-card>
-</form>
-<nz-card nzTitle="Thành tiền">
-  <div>
-    <nz-table>
-      <tr>
-        <td>
-          Chi phí máy ảo (<span>{{ numberMonth }}</span> tháng)
-        </td>
-        <td class="float-right">{{ totalAmount }} VNĐ</td>
-      </tr>
-      <tr>
-        <td>
-          Chi phí Volume bổ sung (<span>{{ numberMonth }}</span> tháng)
-        </td>
-        <td class="float-right">{{ totalAmountVolume }} VNĐ</td>
-      </tr>
-      <tr>
-        <td>
-          Chi phí Network bổ sung (<span>{{ numberMonth }}</span> tháng)
-        </td>
-        <td class="float-right">{{ totalAmountIPv4 + totalAmountIPv6 }} VNĐ</td>
-      </tr>
-      <tr>
-        <td>Thành tiền (Đã bao gồm 10% VAT)</td>
-        <td class="float-right">
-          {{
-            totalincludesVAT +
-              totalAmountVolumeVAT +
-              totalAmountIPv4VAT +
-              totalAmountIPv6VAT
-          }}
-          VNĐ
-        </td>
-      </tr>
-    </nz-table>
-    <div style="float: right; padding-top: 1%">
-      <button nz-button nzType="default" (click)="cancel()">Quay lại</button>
-      <button
-        nz-button
-        nzType="primary"
-        [disabled]="form.invalid"
-        (click)="save()"
-      >
-        Tạo máy ảo
-      </button>
-    </div>
+  <div style="float: right; padding-top: 1%">
+    <button nz-button nzType="default" (click)="cancel()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="form.invalid"
+      (click)="save()"
+    >
+      Tạo máy ảo
+    </button>
   </div>
-</nz-card>
+</form>
