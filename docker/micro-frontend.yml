@@ -40,19 +40,19 @@ services:
       - one-portal-network
 
   #  ----------------------------------------------------------------
-  app-kubernetes:
-    image: registry.onsmartcloud.com/cloudportal/oneportal-app-kubernetes:${BUILD_VERSION}
-    build:
-      context: ./..
-      dockerfile: apps/app-kubernetes/Dockerfile
-    container_name: oneportal-app-kubernetes
-    restart: on-failure
-    expose:
-      - '4205'
-    ports:
-      - "4205:80"
-    networks:
-      - one-portal-network
+#  app-kubernetes:
+#    image: registry.onsmartcloud.com/cloudportal/oneportal-app-kubernetes:${BUILD_VERSION}
+#    build:
+#      context: ./..
+#      dockerfile: apps/app-kubernetes/Dockerfile
+#    container_name: oneportal-app-kubernetes
+#    restart: on-failure
+#    expose:
+#      - '4205'
+#    ports:
+#      - "4205:80"
+#    networks:
+#      - one-portal-network
 #----------------------------------------------------------------
 networks:
   one-portal-network:

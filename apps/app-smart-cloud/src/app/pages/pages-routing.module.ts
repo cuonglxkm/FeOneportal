@@ -82,6 +82,10 @@ import {DetailPackageBackupComponent} from "./backup-package/detail/detail-packa
 import {EditBackupPackageComponent} from "./backup-package/edit/edit-backup-package.component";
 import {ExtendBackupPackageComponent} from "./backup-package/extend/extend-backup-package.component";
 import { PaymentSummaryComponent } from "../shared/components/payment-summary/payment-summary.component";
+import {CreateVolumeVpcComponent} from "./volume/component/create-volume-vpc/create-volume-vpc.component";
+import {ResizeVolumeVpcComponent} from "./volume/component/resize-volume-vpc/resize-volume-vpc.component";
+import {ListVlanComponent} from "./vlan/list/list-vlan.component";
+import {BlankVolumeComponent} from "./volume/component/blank/blank-volume.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -356,6 +360,22 @@ const routes: Routes = [
   {
     path: 'order/cart',
     component: PaymentSummaryComponent
+  },
+  {
+    path: 'volume/vpc/create',
+    component: CreateVolumeVpcComponent
+  },
+  {
+    path: 'volume/vpc/resize/:id',
+    component: ResizeVolumeVpcComponent
+  },
+  {
+    path: 'vlan/list',
+    component: ListVlanComponent
+  },
+  {
+    path: 'volume/blank',
+    component: BlankVolumeComponent
   }
   ]
 @NgModule({
