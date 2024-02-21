@@ -151,8 +151,8 @@
     <nz-col nzLg="24" nzMd="12" nzSm="24">
       <nz-form-item style="margin-bottom: 5px">
         <nz-form-label
-          >Chọn chu kỳ thanh toán (Tháng)
-          <span class="text-red">*</span></nz-form-label
+          >Chọn chu kỳ thanh toán (<span class="text-red">*</span>) -
+          Tháng</nz-form-label
         >
         <nz-form-control>
           <nz-row>
@@ -210,12 +210,9 @@
   </div>
 </nz-card>
 
-<nz-modal
-  [(nzVisible)]="isVisibleExtend"
-  nzTitle="Xác nhận gia hạn máy ảo"
->
+<nz-modal [(nzVisible)]="isVisibleExtend" nzTitle="Xác nhận gia hạn máy ảo">
   <ng-container *nzModalContent>
-    <div> Quý khách chắc chắn muốn gia hạn dịch vụ này? </div>
+    <div>Quý khách chắc chắn muốn gia hạn dịch vụ này?</div>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelExtend()">

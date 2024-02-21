@@ -21,7 +21,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label class="text-lable" nzFor="name"
-            >Tên của User<span class="text-red">*</span></nz-form-label
+            >Tên của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
@@ -53,7 +53,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="email"
-            >Email của User<span class="text-red">*</span></nz-form-label
+            >Email của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
             <input
@@ -191,11 +191,7 @@
         alt=""
       />Hủy
     </button>
-    <button
-      nz-button
-      nzType="primary"
-      (click)="handleOkCreate()"
-    >
+    <button nz-button nzType="primary" (click)="handleOkCreate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
