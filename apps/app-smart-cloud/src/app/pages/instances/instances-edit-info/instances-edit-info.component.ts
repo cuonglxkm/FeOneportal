@@ -2,16 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   HostListener,
   Inject,
   OnInit,
-  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   ImageTypesModel,
@@ -19,15 +16,15 @@ import {
   InstancesModel,
   RebuildInstances,
   OfferItem,
-  Network,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { concatMap, finalize, from } from 'rxjs';
+import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -129,6 +126,11 @@ export class InstancesEditInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.getAllOfferImage(this.imageTypeId);
+    this.cdr.detectChanges();
     this.email = this.tokenService.get()?.email;
     this.getAllImageType();
     this.router.paramMap.subscribe((param) => {
@@ -218,13 +220,11 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    console.log(this.tokenService.get()?.userId);
-    this.getAllOfferImage(this.imageTypeId);
-    this.cdr.detectChanges();
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
-  onProjectChange(project: any) {}
+  onProjectChange(project: any) {
+    this.route.navigate(['/app-smart-cloud/instances']);
+  }
 
   modify(): void {
     this.modalSrv.create({

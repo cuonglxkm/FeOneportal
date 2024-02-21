@@ -120,12 +120,14 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.regionId = region.regionId;
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   onProjectChange(project: ProjectModel) {
-    this.projectId = project.id;
+  }
+  
+  userChangeProject(){
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToEdit() {

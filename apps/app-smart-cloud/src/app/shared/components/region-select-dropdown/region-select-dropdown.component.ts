@@ -11,6 +11,7 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   @Input() isDetail = false;
   @Output() valueChanged = new EventEmitter();
+  @Output() userChanged = new EventEmitter();
   selectedRegion: RegionModel;
   listRegion: RegionModel[] = []
 
