@@ -35,6 +35,7 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import {getCurrentRegionAndProject} from "@shared";
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -195,6 +196,10 @@ export class InstancesCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+
     this.getAllImageType();
   }
 
@@ -642,7 +647,9 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllIPPublic();
     this.getAllOfferImage(this.imageTypeId);
     this.cdr.detectChanges();
+    // this.router.navigate(['/instances']);
   }
+
 
   onProjectChange(project: any) {
     // Handle the region change event
