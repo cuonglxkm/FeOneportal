@@ -61,6 +61,7 @@ export class UserComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfCurrentPageData = data.records;
+        this.total = data.totalCount;
         console.log('list users', this.listOfCurrentPageData);
       });
   }

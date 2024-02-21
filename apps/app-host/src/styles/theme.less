@@ -17,6 +17,16 @@
 
 @button-border-medium-radius: 8px;
 
+// HEADER
+.alain-default__header-logo-expanded {
+  max-width: 90%;
+}
+
+.alain-default__header {
+  background-color: #0066b3;
+}
+// END HEADER
+
 .ant-form-item-label
   > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
@@ -75,13 +85,13 @@
 
 a {
   color: #248fcc;
-  text-decoration: none;
-  background-color: transparent;
-  outline: none;
-  cursor: pointer;
-  transition: color 0.3s;
-  -webkit-text-decoration-skip: objects;
+  &:hover {
+    color: #005999;
+  }
+}
 
+u {
+  color: #248fcc;
   &:hover {
     color: #005999;
   }
@@ -271,5 +281,19 @@ a {
 
 .ant-input-number {
   border-radius: 4px;
+  margin-left: 8px;
 }
 // END SLIDER
+
+.tile {
+  box-shadow: none !important;
+}
+
+body {
+  background-color: #EBF0F9;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #0066B3;
+  border-color: #0066B3;
+}
