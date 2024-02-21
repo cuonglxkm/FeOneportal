@@ -4,7 +4,7 @@ import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {InstancesService} from "../../instances/instances.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {AppValidator} from "../../../../../../../libs/common-utils/src";
 import {finalize} from "rxjs/operators";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -30,10 +30,10 @@ export class CreateUpdateIpPublicComponent implements OnInit{
   loadingInstanse = true;
   disableInstanse = true;
   disableIp = true;
-
+  loadingCalculate = false;
   form = new FormGroup({
     ipSubnet: new FormControl('', {validators: [Validators.required]}),
-    numOfMonth: new FormControl('', {validators: [Validators.required]}),
+    numOfMonth: new FormControl('', {validators: [Validators.required, this.validNumOfMonth.bind(this)]} ),
     instanceSelected: new FormControl('', {}),
  });
   constructor(private service: IpPublicService, private instancService: InstancesService,
@@ -159,13 +159,14 @@ export class CreateUpdateIpPublicComponent implements OnInit{
     // this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 
-  caculator()   {
+  caculator(event)   {
 
     let ip = this.form.controls['ipSubnet'].value;
     let num = this.form.controls['numOfMonth'].value;
 
     if (ip != null && ip != undefined && ip != '' &&
       num != null && num != undefined && num != '') {
+      this.loadingCalculate = true;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
         vmToAttachId: this.form.controls['instanceSelected'].value,
@@ -216,7 +217,9 @@ export class CreateUpdateIpPublicComponent implements OnInit{
           }
         ]
       }
-      this.service.getTotalAmount(request).subscribe(
+      this.service.getTotalAmount(request)
+        .pipe(finalize(() => {this.loadingCalculate = false}))
+        .subscribe(
         data => {
           this.total = data;
         }
@@ -224,5 +227,15 @@ export class CreateUpdateIpPublicComponent implements OnInit{
     } else {
       this.total = undefined;
     }
+  }
+
+  validNumOfMonth(control: AbstractControl): ValidationErrors | null { //valid keypair
+    var regex = new RegExp("/^(100|[1-9][0-9]?|[1-9])$/")
+    if (control && control.value != null && control.value != undefined && control.value.length > 0) {
+      if (regex.test(control.value) == false) {
+        return {validKeypairName: true};
+      }
+    }
+    return null;
   }
 }

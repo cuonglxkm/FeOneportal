@@ -69,7 +69,7 @@ export class IpPublicComponent implements OnInit {
 
   getData(isCheckBegin: boolean): void {
     this.loading = true;
-    this.service.getData(this.ipAddress, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.isCheckState, this.size, this.index)
+    this.service.getData(this.ipAddress, this.selectedStatus, this.tokenService.get()?.userId, this.projectId, this.regionId, this.isCheckState, this.size, this.index)
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
         this.listOfIp = baseResponse.records;
@@ -90,12 +90,12 @@ export class IpPublicComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.refreshParams();
-    this.getData(true);
   }
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
     this.projectType = project.type;
+    this.getData(true);
   }
 
   onPageSizeChange(event: any) {
