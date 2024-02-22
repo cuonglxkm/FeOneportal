@@ -17,6 +17,7 @@ import {finalize} from "rxjs/operators";
 import {InstancesModel} from "../../../instances/instances.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from "../../../../shared/services/project.service";
 
 @Component({
   selector: 'app-volume',
@@ -87,6 +88,7 @@ export class VolumeComponent implements OnInit {
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
+              private projectService: ProjectService,
               private notification: NzNotificationService,
               private modalService: NzModalService,
               private cdr: ChangeDetectorRef,
@@ -95,14 +97,12 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-
+    this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
-    this.typeVPC = project.type
     this.isLoading = true
-    this.customerId = this.tokenService.get()?.userId
     this.getListVolume(true)
   }
 
@@ -130,6 +130,7 @@ export class VolumeComponent implements OnInit {
   getListVolume(isBegin) {
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
+    this.loadProjects()
     this.volumeService.getVolumes(this.customerId, this.project,
         this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
         .subscribe(data => {
@@ -392,11 +393,24 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
   ngOnInit() {
+
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    console.log('project', this.project)
     this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
     this.getListVm()
     this.getListVolume(true)
     this.cdr.detectChanges();

@@ -1,23 +1,21 @@
-import {ChangeDetectorRef, Component, Inject, OnInit, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {GetAllVmModel} from "../../../../shared/models/volume.model";
+import {CreateVolumeRequestModel, GetAllVmModel} from "../../../../shared/models/volume.model";
 import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
-import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {CreateVolumeRequestModel} from "../../../../shared/models/volume.model";
-import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {InstancesService} from "../../../instances/instances.service";
 import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../instances/instances.model";
-import { OrderItem } from 'src/app/shared/models/price';
-import {finalize} from "rxjs/operators";
+import {OrderItem} from 'src/app/shared/models/price';
 import {CatalogService} from "../../../../shared/services/catalog.service";
+import {ProjectService} from "../../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'app-create-volume',
@@ -122,9 +120,9 @@ export class CreateVolumeComponent implements OnInit {
     isEncryption: FormControl<boolean>
     isMultiAttach: FormControl<boolean>
   }> = this.fb.group({
-    name: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     isSnapshot: [false, []],
-    snapshot: [null as number , []],
+    snapshot: [null as number, []],
     radio: [''],
     instanceId: [null as number],
     time: [1, Validators.required],
@@ -164,7 +162,8 @@ export class CreateVolumeComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService,
               private cdr: ChangeDetectorRef,
-              private catalogService: CatalogService) {
+              private catalogService: CatalogService,
+              private projectService: ProjectService) {
 
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value
@@ -199,11 +198,11 @@ export class CreateVolumeComponent implements OnInit {
   getCatalogOffer(productId) {
     this.catalogService.getCatalogOffer(productId, this.region, null).subscribe(data => {
       console.log('data catalog', data)
-      if(data) {
-        if(productId == 90) {
+      if (data) {
+        if (productId == 90) {
           this.typeMultiple = true
         }
-        if(productId == 92) {
+        if (productId == 92) {
           this.typeEncrypt = true
         }
       } else {
@@ -215,28 +214,33 @@ export class CreateVolumeComponent implements OnInit {
 
   getListVolumes() {
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region,
-        9999, 1, null, null)
-        .subscribe(data => {
-          data.records.forEach(item => {
-            if(this.nameList.length > 0) {
-              this.nameList.push(item.name)
-            } else {
-              this.nameList = [item.name]
-            }
-          })
-        }, error => {
-          this.nameList = null
+      9999, 1, null, null)
+      .subscribe(data => {
+        data.records.forEach(item => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name)
+          } else {
+            this.nameList = [item.name]
+          }
         })
+      }, error => {
+        this.nameList = null
+      })
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.validateForm.get('storage').reset()
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length){
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/volumes'])
+      }
+    });
+
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
-    this.typeVPC = project.type
 
     this.getListSnapshot()
     this.getListInstance()
@@ -244,16 +248,16 @@ export class CreateVolumeComponent implements OnInit {
     this.getCatalogOffer(92)
 
     this.getListVolumes()
-
-
+    //
   }
 
-  onSwitchSnapshot(){
+
+  onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value
     console.log('snap shot', this.isInitSnapshot)
   }
 
-  snapshotSelectedChange(value: number){
+  snapshotSelectedChange(value: number) {
     this.snapshotSelected = value
   }
 
@@ -264,11 +268,11 @@ export class CreateVolumeComponent implements OnInit {
   //get danh sách máy ảo
   getListInstance() {
     this.instanceService.search(1, 9999, this.region, this.project,
-        '', '', false, this.tokenService.get()?.userId)
-        .subscribe(data => {
-          this.listInstances = data.records
-          this.cdr.detectChanges()
-        })
+      '', '', false, this.tokenService.get()?.userId)
+      .subscribe(data => {
+        this.listInstances = data.records
+        this.cdr.detectChanges()
+      })
   }
 
   instanceSelectedChange(value: any) {
@@ -291,7 +295,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.volumeType = this.selectedValueRadio;
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
     this.volumeCreate.description = this.validateForm.get('description').value;
-    if(this.validateForm.controls.isSnapshot.value == true) {
+    if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId = this.validateForm.controls.snapshot.value;
     } else {
       this.volumeCreate.createFromSnapshotId = null
@@ -309,7 +313,7 @@ export class CreateVolumeComponent implements OnInit {
 
     let currentDate = new Date();
     let lastDate = new Date();
-    if(this.timeSelected == undefined || this.timeSelected == null) {
+    if (this.timeSelected == undefined || this.timeSelected == null) {
       lastDate.setDate(currentDate.getDate() + 30);
     } else {
       lastDate.setDate(currentDate.getDate() + this.timeSelected * 30);
@@ -336,9 +340,9 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.controls.name.value ;
+    this.volumeCreate.serviceName = this.validateForm.controls.name.value;
     this.volumeCreate.typeName =
-        'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
     this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
@@ -371,7 +375,7 @@ export class CreateVolumeComponent implements OnInit {
     ]
     var returnPath: string = '/app-smart-cloud/volume/create'
     console.log('request', request)
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath  } });
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
 
   getTotalAmount() {
@@ -395,14 +399,45 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
+
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
+
+    if ([1, 2].includes(this.region)) {
+      if (this.validateForm.controls.storage.value < 20) this.iops = 0
+    }
+    if ([3, 4].includes(this.region)) {
+      if (this.validateForm.controls.storage.value < 20) this.iops = 400
+    }
+
+    this.getListSnapshot()
+    this.getListInstance()
+    this.getCatalogOffer(90)
+    this.getCatalogOffer(92)
+
+    this.getListVolumes()
+
     this.date = new Date()
     this.getTotalAmount()
   }
 
   submitForm() {
     this.nameList = []
-    if(this.validateForm.valid) {
+    if (this.validateForm.valid) {
       console.log(this.validateForm.value);
       this.doCreateVolume()
     } else {
@@ -430,27 +465,29 @@ export class CreateVolumeComponent implements OnInit {
 
     console.log(request);
     this.volumeService.createNewVolume(request).subscribe(data => {
-      if (data != null) {
-        //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
-        if(data.code == 200){
+        if (data != null) {
+          //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
+          if (data.code == 200) {
+            this.isLoadingAction = false;
+            this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.')
+            this.router.navigate(['/app-smart-cloud/volumes']);
+          }
+          //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
+          else if (data.code == 310) {
+            this.isLoadingAction = false;
+            // this.router.navigate([data.data]);
+            window.location.href = data.data;
+          }
+        } else {
           this.isLoadingAction = false;
-          this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.')
-          this.router.navigate(['/app-smart-cloud/volumes']);
         }
-        //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
-        else if(data.code == 310){
-          this.isLoadingAction = false;
-          // this.router.navigate([data.data]);
-          window.location.href = data.data;
-        }
-      }else{
-        this.isLoadingAction = false;
-      }
-    },
+      },
       error => {
         this.isLoadingAction = false;
       })
   }
+
+
   //
   //
   // validateData(): boolean {

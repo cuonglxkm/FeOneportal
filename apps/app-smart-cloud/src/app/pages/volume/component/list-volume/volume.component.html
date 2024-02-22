@@ -75,7 +75,7 @@
         <nz-table #fixedTable
                   style="margin-top: 20px;"
                   nzShowPagination
-                  [nzData]="response?.records"
+                  [nzData]="response?.records || []"
                   [nzPageSize]="response?.pageSize"
                   (nzPageSizeChange)="onPageSizeChange($event)"
                   [nzPageIndex]="response?.currentPage"
@@ -308,10 +308,9 @@
         <nz-row nzJustify="center">
           <img src="/assets/imgs/volume.png" width="450" height="450" alt="blank-security-group">
         </nz-row>
-        <nz-row nzJustify="center" style="margin-top: -12px">
+        <nz-row nzJustify="center">
           <div class="text-title">
-            <h1>Volume</h1>
-            <h1>Lưu trữ ổ đĩa máy chủ</h1>
+            <h1 style="text-align: center; margin-top: 12px;">Volume <br> Lưu trữ ổ đĩa máy chủ</h1>
           </div>
         </nz-row>
         <nz-row nzJustify="center">
@@ -637,10 +636,9 @@
           <nz-row nzJustify="center">
             <img src="/assets/imgs/volume.png" width="450" height="450" alt="blank-security-group">
           </nz-row>
-          <nz-row nzJustify="center" style="margin-top: -12px">
+          <nz-row nzJustify="center">
             <div class="text-title">
-              <h1>Volume</h1>
-              <h1>Lưu trữ ổ đĩa máy chủ</h1>
+              <h1 style="text-align: center; margin-top: 12px;">Volume <br> Lưu trữ ổ đĩa máy chủ</h1>
             </div>
           </nz-row>
           <nz-row nzJustify="center">
