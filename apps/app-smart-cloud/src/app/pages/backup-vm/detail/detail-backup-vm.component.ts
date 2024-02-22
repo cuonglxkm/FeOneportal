@@ -5,6 +5,8 @@ import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import {BackupVm, SystemInfoBackup, VolumeBackup} from "../../../shared/models/backup-vm";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {ProjectService} from "../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-detail-backup-vm',
@@ -31,11 +33,18 @@ export class DetailBackupVmComponent implements OnInit {
   constructor(private backupVmService: BackupVmService,
               private route: ActivatedRoute,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private router: Router) {
+              private router: Router,
+              private projectService: ProjectService) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/backup-vm'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
@@ -50,6 +59,9 @@ export class DetailBackupVmComponent implements OnInit {
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId
     const selectedDetailBackupId = this.route.snapshot.paramMap.get('id')
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
     console.log(selectedDetailBackupId);
     if (selectedDetailBackupId !== undefined) {
       this.backupVmService.detail(parseInt(selectedDetailBackupId)).subscribe(data => {

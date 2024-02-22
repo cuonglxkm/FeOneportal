@@ -31,3 +31,39 @@ export class FormSearchPort {
   networkId: string
   region: number
 }
+
+export class Port {
+  id: string
+  name: string
+  fixedIPs: string[]
+  macAddress: string
+  attachedDevice: string
+  status: string
+  adminStateUp: boolean
+  instanceName: string
+  subnetId: string[]
+  attachedDeviceId: string
+}
+
+export class FormSearchSubnet {
+  pageSize: number
+  pageNumber: number
+  region: number
+  vlanName: string
+  customerId: number
+}
+
+export class Subnet {
+  id: number
+  name: string
+  ipVersion: number
+  gatewayId: string
+  enableDHCP: boolean
+  hnsNameServer: string
+  cloudId: string
+  status: string
+  networkId: number
+  networkCloudId: string
+  allocationPools: string
+  hostRouters: string
+}

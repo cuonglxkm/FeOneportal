@@ -20,6 +20,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {PackageBackupModel} from "../../../shared/models/package-backup.model";
+import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from "../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-create-backup-vm',
@@ -89,7 +91,8 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
     private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService,
-    private router: Router
+    private router: Router,
+    private projectService: ProjectService
   ) {
   }
 
@@ -106,6 +109,12 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/backup-vm'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
@@ -209,11 +218,27 @@ export class CreateBackupVmComponent implements OnInit, OnChanges {
     }
   }
 
+
+  // loadProjects() {
+  //   this.projectService.getByRegion(this.region).subscribe(data => {
+  //     let project = data.find(project => project.id === +this.project);
+  //     if (project) {
+  //       this.typeVPC = project.type
+  //     }
+  //   });
+  // }
+
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId
     this.formSearch.customerId = this.tokenService.get()?.userId
     this.formSearch.pageSize = 1000
     this.formSearch.currentPage = 1
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // if (this.project && this.region) {
+    //   this.loadProjects()
+    // }
     this.loadData()
     this.search()
   }
