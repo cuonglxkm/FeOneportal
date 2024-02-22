@@ -10,7 +10,7 @@
   },
   "menu": [
     {
-      "text": "Smart Cloud",
+      "text": "",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
