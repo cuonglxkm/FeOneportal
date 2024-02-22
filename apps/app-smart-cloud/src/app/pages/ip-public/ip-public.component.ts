@@ -10,6 +10,7 @@ import {InstancesService} from "../instances/instances.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -64,9 +65,15 @@ export class IpPublicComponent implements OnInit {
   loading = false;
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.instancService.getAllIPSubnet(this.regionId)
     this.service.model.subscribe(data => {
       console.log(data)
     })
+
+    this.getData(true);
   }
 
   getData(isCheckBegin: boolean): void {

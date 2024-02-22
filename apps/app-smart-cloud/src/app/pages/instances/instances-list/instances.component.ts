@@ -16,6 +16,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 class SearchParam {
   status: string = '';
@@ -77,6 +78,14 @@ export class InstancesComponent implements OnInit {
     private router: Router,
     private notification: NzNotificationService
   ) {}
+
+  ngOnInit() {
+    this.searchParam.status = '';
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.getDataList();
+  }
 
   selectedChecked(e: any): void {
     // @ts-ignore
@@ -178,11 +187,6 @@ export class InstancesComponent implements OnInit {
 
   reloadTable() {
     this.dataList = [];
-    this.getDataList();
-  }
-
-  ngOnInit() {
-    this.searchParam.status = '';
     this.getDataList();
   }
 
