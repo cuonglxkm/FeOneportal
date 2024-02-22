@@ -30,6 +30,7 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -130,7 +131,16 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
     this.getAllImageType();
+    this.initSnapshot();
+    this.getAllIPPublic();
+    this.getAllOfferImage(this.imageTypeId);
+    this.getAllSecurityGroup();
+    this.getAllSSHKey();
+    this.cdr.detectChanges();
   }
 
   getUser() {}
@@ -326,26 +336,11 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    this.listSecurityGroup = [];
-    this.listIPPublic = [];
-    this.selectedSecurityGroup = [];
-    this.ipPublicValue = 0;
-    this.initSnapshot();
-    this.getAllIPPublic();
-    this.getAllOfferImage(this.imageTypeId);
-    this.cdr.detectChanges();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   onProjectChange(project: any) {
-    // Handle the region change event
-    this.projectId = project.id;
-    this.listSecurityGroup = [];
-    this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
-    this.getAllSSHKey();
-    this.cdr.detectChanges();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
