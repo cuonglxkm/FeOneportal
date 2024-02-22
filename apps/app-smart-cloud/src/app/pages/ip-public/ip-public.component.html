@@ -8,7 +8,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -85,7 +85,7 @@
               <span style="color: #0066B3; margin-right: 10px;"
                     nz-tooltip
                     nzTooltipTitle="Gỡ IP Pulbic" nzTooltipPlacement="bottom"
-                    nz-icon nzType="" nzTheme="outline" (click)="openIpMounted('Gỡ Ip Pulbic', item.id)"
+                    nz-icon nzType="close" nzTheme="outline" (click)="openIpMounted('Gỡ Ip Pulbic', item.id)"
                     *ngIf="item.status == 2"></span>
               <!---Gia Han------>
               <span style="color: #0066B3; margin-right: 10px;"

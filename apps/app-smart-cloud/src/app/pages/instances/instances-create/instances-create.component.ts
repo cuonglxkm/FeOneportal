@@ -26,7 +26,7 @@ import {
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, finalize, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -35,7 +35,7 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import {getCurrentRegionAndProject} from "@shared";
+import { getCurrentRegionAndProject } from '@shared';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -199,8 +199,15 @@ export class InstancesCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-
+    this.initIpSubnet();
+    this.initFlavors();
+    this.initSnapshot();
+    this.getAllIPPublic();
+    this.getAllOfferImage(this.imageTypeId);
     this.getAllImageType();
+    this.getAllSecurityGroup();
+    this.getAllSSHKey();
+    this.cdr.detectChanges();
   }
 
   getUser() {}
@@ -635,30 +642,11 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    this.listSecurityGroup = [];
-    this.listIPPublic = [];
-    this.selectedSecurityGroup = [];
-    this.ipPublicValue = 0;
-    this.initIpSubnet();
-    this.initFlavors();
-    this.initSnapshot();
-    this.getAllIPPublic();
-    this.getAllOfferImage(this.imageTypeId);
-    this.cdr.detectChanges();
-    // this.router.navigate(['/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-
   onProjectChange(project: any) {
-    // Handle the region change event
-    this.projectId = project.id;
-    this.listSecurityGroup = [];
-    this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
-    this.getAllSSHKey();
-    this.cdr.detectChanges();
+    // this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -1044,6 +1032,10 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   cancel(): void {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  userChangeProject(){
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 }
