@@ -16,11 +16,11 @@
                     </div>
                     <div style="display: flex; align-items: center; margin-bottom: 20px;">
                         <div style="margin-right: auto;">
-                            <nz-input-group [nzPrefix]="prefixTemplateUser" class="search">
+                            <nz-input-group [nzPrefix]="prefixIconButton" class="search">
                                 <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
                                     [(ngModel)]="searchText" />
                             </nz-input-group>
-                            <ng-template #prefixTemplateUser><span nz-icon nzType="search" nzTheme="outline"></span></ng-template>
+                            <ng-template #prefixIconButton><span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span></ng-template>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                                     </ng-template>
                                     <ng-template #contentRef>
                                         {{ contentOfState.rebalancing }} <a
-                                            href="https://docs.idg.nz.vn/services/kafka/concepts/basic_concepts_consumer_groups/#rebalance-trong-consumer-groups"
+                                            href="https://docs.idg.vnpt.vn/services/kafka/concepts/basic_concepts_consumer_groups/#rebalance-trong-consumer-groups"
                                             target="_blank">tại đây.</a>
                                     </ng-template>
                                     <ng-template #inActive>

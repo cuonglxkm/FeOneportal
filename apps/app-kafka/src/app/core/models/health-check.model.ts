@@ -8,3 +8,8 @@ export class HealthCheckModel {
     //
   }
 }
+
+export class HealthStatusModel {
+  status: number;
+  message: string;
+}

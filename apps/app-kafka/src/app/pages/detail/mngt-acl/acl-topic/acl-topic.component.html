@@ -3,11 +3,11 @@
         <!-- display list form -->
         <ng-container *ngIf="showForm===idListForm">
             <div class="filter">
-                <nz-input-group [nzPrefix]="prefixTemplateUser" class="search">
+                <nz-input-group [nzPrefix]="prefixIconButton" class="search">
                     <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
                         [(ngModel)]="searchText" />
                 </nz-input-group>
-                <ng-template #prefixTemplateUser><span nz-icon nzType="search" nzTheme="outline"></span></ng-template>
+                <ng-template #prefixIconButton><span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span></ng-template>
 
                 <button nz-button nzType="primary" class="btn-create" (click)="createForm()">
                     <span nz-icon nzType="plus" nzTheme="outline"></span>

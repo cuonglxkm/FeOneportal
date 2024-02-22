@@ -10,6 +10,7 @@ import { ConsumerGroupKafkaService } from 'apps/app-kafka/src/app/services/consu
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { LoadingService } from "@delon/abc/loading";
 
 @Component({
   selector: 'one-portal-acl-consumer-group',
@@ -58,6 +59,7 @@ export class AclConsumerGroupComponent implements OnInit {
     private modal: NzModalService,
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
     private notification: NzNotificationService,
+    private loadingSrv: LoadingService,
   ) {
     this.total = 0;
     this.pageSize = 10;
@@ -168,6 +170,7 @@ export class AclConsumerGroupComponent implements OnInit {
       this.aclRequest.allowDeny = 'ALLOW';
       this.aclRequest.host = this.aclConsumerGroupForm.controls['host'].value;
 
+      this.loadingSrv.open({type: "spin", text: "Loading..."});
       this.aclKafkaService.createAcl(this.aclRequest).pipe()
         .subscribe(
           (data) => {
@@ -175,6 +178,7 @@ export class AclConsumerGroupComponent implements OnInit {
               this.showForm = this.idListForm;
               this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeGroup);
             }
+            this.loadingSrv.close();
           }
         );
     }
@@ -190,6 +194,7 @@ export class AclConsumerGroupComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
+        this.loadingSrv.open({type: "spin", text: "Loading..."});
         this.aclKafkaService.deleteAcl(data).pipe()
           .subscribe(
             (data) => {
@@ -200,6 +205,7 @@ export class AclConsumerGroupComponent implements OnInit {
               } else {
                 this.notification.error('Thất bại', data.msg);
               }
+              this.loadingSrv.close();
             }
           );
       },

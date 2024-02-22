@@ -7,6 +7,7 @@ import { SyncInfoModel } from '../../../core/models/sync-info.model';
 import { ConsumerGroupKafkaService } from '../../../services/consumer-group-kafka.service';
 import { KafkaService } from '../../../services/kafka.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { LoadingService } from "@delon/abc/loading";
 
 interface DataItem {
   partitionName: number,
@@ -121,6 +122,7 @@ export class ConsumerGroupComponent implements OnInit {
     private modal: NzModalService,
     private kafkaService: KafkaService,
     private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) { }
 
   ngOnInit(): void {
@@ -204,6 +206,7 @@ export class ConsumerGroupComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
+        this.loadingSrv.open({type: "spin", text: "Loading..."});
         this.consumerGroupKafkaService.deleteConsumerGroup(data).pipe()
           .subscribe(
             (data) => {
@@ -213,6 +216,7 @@ export class ConsumerGroupComponent implements OnInit {
               } else {
                 this.notification.error('Thất bại', data.msg);
               }
+              this.loadingSrv.close();
             }
           );
       },

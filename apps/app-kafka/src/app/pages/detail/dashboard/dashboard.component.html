@@ -34,25 +34,25 @@
 
     <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">{{ statisticsNumber.topics }}</div>
+            <div class="sum-value">{{ statisticsNumber.topic }}</div>
             <label class="text-nowrap mb0 sum-lbl">Tổng số topic</label>
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">{{statisticsNumber.partitions}}</div>
+            <div class="sum-value">{{statisticsNumber.partition}}</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số partition</p>
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value">{{statisticsNumber.messages}}</div>
+            <div class="sum-value">{{statisticsNumber.message}}</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số message</p>
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
-            <div class="sum-value" [style.color]="getOffParColor()">{{statisticsNumber.offline_partitions}}</div>
+            <div class="sum-value" [style.color]="getOffParColor()">{{statisticsNumber.offline_partition}}</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số partition offline</p>
         </div>
     </div>

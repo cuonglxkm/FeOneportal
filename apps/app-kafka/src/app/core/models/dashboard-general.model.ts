@@ -1,13 +1,13 @@
 export class DashboardGeneral {
-    partitions: number;
-    offline_partitions: number;
-    topics: number;
-    messages: number;
+    partition: number;
+    offline_partition: number;
+    topic: number;
+    message: number;
 
     constructor() {
-        this.partitions = 0;
-        this.offline_partitions = 0;
-        this.topics = 0;
-        this.messages = 0;
+        this.partition = 0;
+        this.offline_partition = 0;
+        this.topic = 0;
+        this.message = 0;
     }
 }

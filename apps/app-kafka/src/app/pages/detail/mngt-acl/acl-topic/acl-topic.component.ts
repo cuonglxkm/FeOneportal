@@ -8,6 +8,7 @@ import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.servi
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { LoadingService } from "@delon/abc/loading";
 
 @Component({
   selector: 'one-portal-acl-topic',
@@ -70,6 +71,7 @@ export class AclTopicComponent implements OnInit {
     private aclKafkaService: AclKafkaService,
     private modal: NzModalService,
     private notification: NzNotificationService,
+    private loadingSrv: LoadingService,
   ) {
 
   }
@@ -160,6 +162,7 @@ export class AclTopicComponent implements OnInit {
       this.aclRequest.host = this.aclTopicForm.controls['host'].value;
       this.aclRequest.isEdit = this.isEdit;
 
+      this.loadingSrv.open({type: "spin", text: "Loading..."});
       this.aclKafkaService.createAcl(this.aclRequest).pipe()
         .subscribe(
           (data) => {
@@ -170,6 +173,7 @@ export class AclTopicComponent implements OnInit {
             } else {
               this.notification.error('Thất bại', data.msg);
             }
+            this.loadingSrv.close();
           }
         );
     }
@@ -221,6 +225,7 @@ export class AclTopicComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
+        this.loadingSrv.open({type: "spin", text: "Loading..."});
         this.aclKafkaService.deleteAcl(data).pipe()
           .subscribe(
             (data) => {
@@ -232,6 +237,7 @@ export class AclTopicComponent implements OnInit {
               else {
                 this.notification.error('Thất bại', data.msg);
               }
+              this.loadingSrv.close();
             }
           );
       },

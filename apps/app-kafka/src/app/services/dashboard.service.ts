@@ -3,34 +3,22 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseResponse } from '../core/models/base-response.model';
 import { ChartData } from '../core/models/chart-data.model';
-import { HealthCheckModel } from '../core/models/health-check.model';
+import { HealthCheckModel, HealthStatusModel } from '../core/models/health-check.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashBoardService {
-  private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
+  private baseUrl = 'http://localhost:16005/kafka-service';
 
   constructor(private http: HttpClient) { }
 
-  getTopicCount(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}/stats/topicCount?serviceOrderCode=${serviceOrderCode}`);
+  getDataInstant(resource: string, serviceOrderCode: string): Observable<BaseResponse<null>> {
+    return this.http.get<BaseResponse<null>>(`${this.baseUrl}/stats/instants?service_order_code=${serviceOrderCode}&resource=${resource}`);
   }
 
-  getPartitionCount(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}/stats/partitionCount?serviceOrderCode=${serviceOrderCode}`);
-  }
-
-  getMessageCount(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}/stats/messageCount?serviceOrderCode=${serviceOrderCode}`);
-  }
-
-  getOfflinePartitionCount(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}/stats/offlinePartitionCount?serviceOrderCode=${serviceOrderCode}`);
-  }
-
-  getCheckHealthCluster(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}/stats/isHealth?serviceOrderCode=${serviceOrderCode}`);
+  getCheckHealthCluster(serviceOrderCode: string): Observable<BaseResponse<HealthStatusModel>> {
+    return this.http.get<BaseResponse<HealthStatusModel>>(`${this.baseUrl}/stats/health?service_order_code=${serviceOrderCode}`);
   }
 
   getCheckHealthChart(
@@ -39,7 +27,7 @@ export class DashBoardService {
     toTime: number
   ): Observable<BaseResponse<HealthCheckModel>> {
     return this.http.get<BaseResponse<HealthCheckModel>>(
-      `${this.baseUrl}/stats/checkHealth?serviceOrderCode=${serviceOrderCode}&start=${fromTime}&end=${toTime}`
+      `${this.baseUrl}/stats/check-health?service_order_code=${serviceOrderCode}&start=${fromTime}&end=${toTime}`
     );
   }
 
@@ -51,7 +39,7 @@ export class DashBoardService {
     unit: string
   ): Observable<BaseResponse<ChartData>> {
     return this.http.get<BaseResponse<ChartData>>(
-      `${this.baseUrl}/stats/queryChart?serviceOrderCode=${serviceOrderCode}&previousTimeMins=${previousTimeMins}&metricType=${metricType}&numPoints=${numPoints}&unit=${unit}`
+      `${this.baseUrl}/stats/charts?service_order_code=${serviceOrderCode}&previous_time_mins=${previousTimeMins}&metric_type=${metricType}&num_points=${numPoints}&unit=${unit}`
     );
   }
 }

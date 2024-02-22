@@ -128,7 +128,9 @@ export class DashboardComponent implements OnInit {
       value: 1440,
       label: '24 giờ trước'
     }
-  ]
+  ];
+
+  resouceInstant = ['topic', 'offline_partition', 'message', 'partition']
 
   constructor(
     private dashBoardService: DashBoardService,
@@ -136,7 +138,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getStatisticNumber(this.serviceOrderCode);
+    this.getStatisticNumber();
     this.checkClusterIsHealth(this.serviceOrderCode);
     this.getCheckHealthChart(this.serviceOrderCode, -1, -1);
     this.getByteInChart(this.serviceOrderCode, this.previousTimeMins, this.byteInQuery, this.numPoints);
@@ -145,67 +147,29 @@ export class DashboardComponent implements OnInit {
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
   }
 
-  getStatisticNumber(serviceOrderCode: string) {
-    this.getTopicCount(serviceOrderCode);
-    this.getPartitionCount(serviceOrderCode);
-    this.getMessageCount(serviceOrderCode);
-    this.getOfflinePartitionCount(serviceOrderCode);
+  getStatisticNumber() {
+    for (let i = 0; i < this.resouceInstant.length; i++) {
+      this.getDataInstant(this.resouceInstant[i], this.serviceOrderCode);
+    }
   }
 
-  getTopicCount(serviceOrderCode: string) {
-    this.dashBoardService.getTopicCount(serviceOrderCode)
+  getDataInstant(resource: string, serviceOrderCode: string) {
+    this.dashBoardService.getDataInstant(resource, serviceOrderCode)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(
-        (res: any) => {
+        (res) => {
           if (res.code && res.code == 200) {
-            this.statisticsNumber.topics = res.data;
+            this.statisticsNumber[resource] = res.data;
           } else {
             this.unsubscribe$.next();
           }
         });
-  }
-
-  getPartitionCount(serviceOrderCode: string) {
-    this.dashBoardService.getPartitionCount(serviceOrderCode)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(
-        (res: any) => {
-          if (res.code && res.code == 200) {
-            this.statisticsNumber.partitions = res.data;
-          } else {
-            this.unsubscribe$.next();
-          }
-        });
-  }
-
-  getMessageCount(serviceOrderCode: string) {
-    this.dashBoardService.getMessageCount(serviceOrderCode)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
-        if (res.code && res.code == 200) {
-          this.statisticsNumber.messages = res.data;
-        } else {
-          this.unsubscribe$.next();
-        }
-      });
-  }
-
-  getOfflinePartitionCount(serviceOrderCode: string) {
-    this.dashBoardService.getOfflinePartitionCount(serviceOrderCode)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
-        if (res.code && res.code == 200) {
-          this.statisticsNumber.offline_partitions = res.data;
-        } else {
-          this.unsubscribe$.next();
-        }
-      });
   }
 
   checkClusterIsHealth(serviceOrderCode: string) {
     this.dashBoardService.getCheckHealthCluster(serviceOrderCode)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.isHealth = res.data.status;
           this.isHealthMsg = res.data.message;
@@ -216,7 +180,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getOffParColor(): string {
-    return this.statisticsNumber.offline_partitions > 0 ? '#ff0000' : '#308ef3';
+    return this.statisticsNumber.offline_partition > 0 ? '#ff0000' : '#308ef3';
   }
 
   onChangeUnitStorage() {
@@ -245,7 +209,7 @@ export class DashboardComponent implements OnInit {
   getCheckHealthChart(serviceOrderCode: string, fromTime: number, toTime: number) {
     this.dashBoardService.getCheckHealthChart(serviceOrderCode, fromTime, toTime)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.healthCheckData = res.data;
           if (this.healthCheckData) {
