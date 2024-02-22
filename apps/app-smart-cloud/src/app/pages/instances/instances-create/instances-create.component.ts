@@ -203,7 +203,6 @@ export class InstancesCreateComponent implements OnInit {
     this.initFlavors();
     this.initSnapshot();
     this.getAllIPPublic();
-    this.getAllOfferImage(this.imageTypeId);
     this.getAllImageType();
     this.getAllSecurityGroup();
     this.getAllSSHKey();
@@ -225,6 +224,7 @@ export class InstancesCreateComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -238,7 +238,7 @@ export class InstancesCreateComponent implements OnInit {
       .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
-          if (e.status == 'Active') {
+          if (e.status.toUpperCase() == 'ACTIVE') {
             let tempImage = new Image();
             e.characteristicValues.forEach((char) => {
               if (char.charOptionValues[0] == 'Id') {
@@ -406,7 +406,7 @@ export class InstancesCreateComponent implements OnInit {
       .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
         this.listOfferFlavors = data.filter(
-          (e: OfferItem) => e.status == 'Active'
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
@@ -1035,7 +1035,7 @@ export class InstancesCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  userChangeProject(){
+  userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 }

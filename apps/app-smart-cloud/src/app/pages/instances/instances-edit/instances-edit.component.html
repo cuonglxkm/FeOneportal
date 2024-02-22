@@ -14,7 +14,7 @@
     ></region-select-dropdown>
     <project-select-dropdown
       [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
+      (userChanged)="onProjectChange($event)"
     ></project-select-dropdown>
   </div>
   <div>
@@ -170,11 +170,7 @@
     </nz-row>
 
     <nz-tabset>
-      <nz-tab
-        *ngIf="isConfigPackage"
-        nzTitle="Gói cấu hình"
-        (nzClick)="onClickConfigPackage()"
-      >
+      <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
         <ngu-carousel
           #myCarouselFlavor
           [inputs]="carouselTileConfig"
@@ -184,34 +180,50 @@
             *nguCarouselDef="let item; index as i; let ani = animate"
             [@slider]="ani"
           >
-            <table
-              class="custom-table text-center"
-              style="width: 100%"
-              (click)="onInputFlavors(item.id)"
+            <div
+              (click)="
+                onInputFlavors(item.id);
+                selectElementInputFlavors('flavor_' + item.id)
+              "
+              [id]="'flavor_' + item.id"
             >
-              <tbody
-                class="flavor-body"
-                [id]="'flavor_' + item.id"
-                [class.initialClassFlavor]="
-                  selectedElementFlavor === 'flavor_' + item.id &&
-                  isInitialClass
-                "
-                [class.newClassFlavor]="
-                  selectedElementFlavor === 'flavor_' + item.id && isNewClass
-                "
-                (click)="selectElementInputFlavors('flavor_' + item.id)"
-              >
-                <tr>
+              <nz-row>
+                <nz-col
+                  style="padding-bottom: 5px"
+                  class="newClassFlavor text-center"
+                  [class.initialClassFlavor]="
+                    selectedElementFlavor === 'flavor_' + item.id
+                  "
+                >
                   <div>
-                    <b class="h4">{{ item.offerName | slice : 3 : -4 }}</b
-                    ><br />
-                    <b class="h4">{{ item.price.fixedPrice.amount }}</b
-                    ><span> đ/tháng</span><br />
-                    <span>đ/giờ</span>
+                    <span
+                      class="nameFlavor"
+                      [class.initialNameFlavor]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                      >{{ item.offerName | slice : 3 : -4 }}</span
+                    >
+                    <div style="margin-top: -16px">
+                      <img
+                        style="width: 100px"
+                        [src]="
+                          selectedElementFlavor === 'flavor_' + item.id
+                            ? 'assets/imgs/line2.svg'
+                            : 'assets/imgs/line.svg'
+                        "
+                        alt=""
+                      />
+                    </div>
+                    <span class="priceFlavor">{{
+                      item.price.fixedPrice.amount
+                    }}</span
+                    ><span> đ/tháng</span>
                   </div>
-                </tr>
-                <tr
-                  class="flavorfooter"
+                </nz-col>
+              </nz-row>
+              <nz-row>
+                <nz-col
+                  style="width: 100%; padding-top: 5px"
                   [class.flavor-footer-active]="
                     selectedElementFlavor === 'flavor_' + item.id
                   "
@@ -219,13 +231,12 @@
                     selectedElementFlavor != 'flavor_' + item.id
                   "
                 >
-                  <!-- [ngClass]="{'bgActive': isNewClass, 'bgGray': !isNewClass}" -->
                   <div>
                     <p>{{ item.description }}</p>
                   </div>
-                </tr>
-              </tbody>
-            </table>
+                </nz-col>
+              </nz-row>
+            </div>
           </ngu-tile>
 
           <ul class="myPoint" NguCarouselPoint>

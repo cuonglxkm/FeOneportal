@@ -129,10 +129,9 @@ export class InstancesEditInfoComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.getAllOfferImage(this.imageTypeId);
-    this.cdr.detectChanges();
     this.email = this.tokenService.get()?.email;
     this.getAllImageType();
+    this.cdr.detectChanges();
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
@@ -188,6 +187,7 @@ export class InstancesEditInfoComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -201,18 +201,20 @@ export class InstancesEditInfoComponent implements OnInit {
       .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
-          let tempImage = new Image();
-          e.characteristicValues.forEach((char) => {
-            if (char.charOptionValues[0] == 'Id') {
-              tempImage.id = Number.parseInt(char.charOptionValues[1]);
-              tempImage.name = e.offerName;
-            }
-            if (char.charOptionValues[0] == 'ImageTypeId') {
-              this.listOfImageByImageType
-                .get(Number.parseInt(char.charOptionValues[1]))
-                .push(tempImage);
-            }
-          });
+          if (e.status.toUpperCase() == 'ACTIVE') {
+            let tempImage = new Image();
+            e.characteristicValues.forEach((char) => {
+              if (char.charOptionValues[0] == 'Id') {
+                tempImage.id = Number.parseInt(char.charOptionValues[1]);
+                tempImage.name = e.offerName;
+              }
+              if (char.charOptionValues[0] == 'ImageTypeId') {
+                this.listOfImageByImageType
+                  .get(Number.parseInt(char.charOptionValues[1]))
+                  .push(tempImage);
+              }
+            });
+          }
         });
         this.cdr.detectChanges();
         console.log('list Images', this.listOfImageByImageType);

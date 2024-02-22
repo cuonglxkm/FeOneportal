@@ -20,7 +20,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label class="text-lable" nzFor="name"
+          <nz-form-label nzFor="name"
             >Tên của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -130,11 +130,7 @@
     [nzXs]="24"
     [nzXXl]="24"
   >
-    <button
-      nz-button
-      style="color: var(--Primary-1, #0066b3)"
-      (click)="navigateToList()"
-    >
+    <button nz-button (click)="navigateToList()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/arrow-left-2.svg"
