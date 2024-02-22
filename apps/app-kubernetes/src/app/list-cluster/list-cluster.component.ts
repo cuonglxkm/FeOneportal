@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { KubernetesCluster } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NotificationConstant } from '../constants/notification.constant';
+import { NotificationWsService } from '../services/ws.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { messageCallbackType } from '@stomp/stompjs';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -21,15 +25,20 @@ export class KubernetesDetailComponent implements OnInit {
 
   constructor(
     private clusterService: ClusterService,
-    private modalService: NzModalService
-  ) {}
-
-  ngOnInit(): void {
+    private modalService: NzModalService,
+    private websocketService: NotificationWsService,
+    private notificationService: NzNotificationService
+  ) {
     this.keySearch = '';
     this.serviceStatus = '';
     this.pageIndex = 1;
     this.pageSize = 10;
-    this.total = 1;
+    this.total = 0;
+  }
+
+  ngOnInit(): void {
+    // init ws
+    this.openWs();
   }
 
   searchCluster() {
@@ -106,6 +115,54 @@ export class KubernetesDetailComponent implements OnInit {
 
   handleDeleteCluster(id: number) {
     console.log(id);
+  }
+
+  // websocket
+  private openWs() {
+    // list topic subscribe
+    const topicSpecificUser = NotificationConstant.WS_SPECIFIC_TOPIC + "/" + '';
+    const topicBroadcast = NotificationConstant.WS_BROADCAST_TOPIC;
+
+    const notificationMessageCb = (noti) => {
+      if (noti.body) {
+        try {
+          const notificationMessage = JSON.parse(noti.body);
+          if (notificationMessage.content && notificationMessage.content?.length > 0) {
+            if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
+              this.notificationService.success(
+                NotificationConstant.NOTI_SUCCESS_LABEL,
+                notificationMessage.content);
+            } else {
+              this.notificationService.error(
+                NotificationConstant.NOTI_ERROR_LABEL,
+                notificationMessage.content);
+            }
+          }
+        } catch (ex) {
+          console.log("parse message error: ", ex);
+        }
+
+      }
+    }
+
+    this.initNotificationWebsocket([
+      { topics: [topicBroadcast, topicSpecificUser], cb: notificationMessageCb }
+    ]);
+  }
+
+  private initNotificationWebsocket(topicCBs: Array<{ topics: string[], cb: messageCallbackType }>) {
+
+    setTimeout(() => {
+      this.websocketService = NotificationWsService.getInstance();
+      this.websocketService.connect(
+        () => {
+          for (const topicCB of topicCBs) {
+            for (const topic of topicCB.topics) {
+              this.websocketService.subscribe(topic, topicCB.cb);
+            }
+          }
+        });
+    }, 1000);
   }
 
 }

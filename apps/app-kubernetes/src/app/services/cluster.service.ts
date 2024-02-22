@@ -61,4 +61,7 @@ export class ClusterService extends BaseService {
     return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`);
   }
 
+  // websocket
+
+
 }
