@@ -11,6 +11,8 @@ import {DataPayment, ItemPayment} from "../../../instances/instances.model";
 import {InstancesService} from "../../../instances/instances.service";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from "../../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-renew-volume',
@@ -51,7 +53,8 @@ export class RenewVolumeComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -66,11 +69,19 @@ export class RenewVolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length){
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/volumes'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     // this.getListVolumes()
+
+    this.router.navigate(['/app-smart-cloud/volumes'])
   }
 
   navigateEditVolume(idVolume: number) {
@@ -205,8 +216,11 @@ export class RenewVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume])
   }
 
+
+
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+
     this.getVolumeById(this.idVolume);
 
 

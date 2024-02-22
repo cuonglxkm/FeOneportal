@@ -9,6 +9,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
+import { ProjectService } from 'src/app/shared/services/project.service';
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'app-detail-volume',
@@ -37,16 +39,40 @@ export class DetailVolumeComponent implements OnInit {
   typeVPC: number
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length){
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/volumes'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.typeVPC = project.type
+
+    this.router.navigate(['/app-smart-cloud/volumes'])
     // this.getListVolumes()
+  }
+
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
   }
 
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
     this.getVolumeById(Number.parseInt(idVolume));
   }
 
@@ -169,7 +195,8 @@ export class DetailVolumeComponent implements OnInit {
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private nzMessage: NzMessageService,
-              private modalService: NzModalService) {
+              private modalService: NzModalService,
+              private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
     this.volumeStatus.set('ERROR', 'LỖI');
