@@ -18,6 +18,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
+import {CatalogService} from "../../../shared/services/catalog.service";
 
 @Component({
   selector: 'one-portal-create-update-ip-public',
@@ -48,6 +49,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              private catalogService: CatalogService,
               private router: Router) {
   }
 
@@ -74,12 +76,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         (data) => {
           this.listInstance = data.records;
         }
-      )
-    if (this.regionId === 3 || this.regionId === 5) {
-      this.checkIpv6 = false;
-    } else {
-      this.checkIpv6 = null;
-    }
+      );
+    this.getCatalogOffer(101);
   }
 
   onRegionChange(region: RegionModel) {
@@ -242,5 +240,16 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  getCatalogOffer(productId) {
+    this.catalogService.getCatalogOffer(productId, this.regionId, null).subscribe(data => {
+      console.log('data catalog', data)
+      if(data) {
+        this.checkIpv6 = false;
+      } else {
+        this.checkIpv6 = null;
+      }
+    })
   }
 }
