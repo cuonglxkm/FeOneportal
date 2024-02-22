@@ -2,7 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {VlanService} from "../../../shared/services/vlan.service";
@@ -13,7 +12,7 @@ import {FormSearchSubnet, Port, Subnet} from "../../../shared/models/vlan.model"
   templateUrl: './vlan-detail.component.html',
   styleUrls: ['./vlan-detail.component.less'],
 })
-export class VlanDetailComponent implements OnInit{
+export class VlanDetailComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 

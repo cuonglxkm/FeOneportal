@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {FormSearchNetwork, FormSearchPort, FormSearchSubnet, NetWorkModel, Port, Subnet} from "../models/vlan.model";
+import {FormSearchNetwork, FormSearchSubnet, NetWorkModel, Port, Subnet} from "../models/vlan.model";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
@@ -26,19 +26,19 @@ export class VlanService extends BaseService {
 
   getVlanNetworks(formSearch: FormSearchNetwork) {
     let params = new HttpParams()
-    if(formSearch.vlanName != undefined || formSearch.vlanName != null) {
+    if (formSearch.vlanName != undefined || formSearch.vlanName != null) {
       params = params.append('vlanName', formSearch.vlanName)
     }
-    if(formSearch.networktAddress != undefined || formSearch.networktAddress != null) {
+    if (formSearch.networktAddress != undefined || formSearch.networktAddress != null) {
       params = params.append('networktAddress', formSearch.networktAddress)
     }
-    if(formSearch.region != undefined || formSearch.region != null) {
+    if (formSearch.region != undefined || formSearch.region != null) {
       params = params.append('region', formSearch.region)
     }
-    if(formSearch.pageSize != undefined || formSearch.pageSize != null) {
+    if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
       params = params.append('pageSize', formSearch.pageSize)
     }
-    if(formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
+    if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
     return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlannetworks', {
@@ -52,7 +52,7 @@ export class VlanService extends BaseService {
     if (networkId != undefined || networkId != null) {
       params = params.append('networkId', networkId)
     }
-    if(region != undefined || region != null) {
+    if (region != undefined || region != null) {
       params = params.append('region', region)
     }
     return this.http.get<Port[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/listallportbynetworkid', {
@@ -63,19 +63,19 @@ export class VlanService extends BaseService {
 
   getListSubnet(formSearchSubnet: FormSearchSubnet) {
     let params = new HttpParams()
-    if(formSearchSubnet.pageSize != undefined || formSearchSubnet.pageSize != null) {
+    if (formSearchSubnet.pageSize != undefined || formSearchSubnet.pageSize != null) {
       params = params.append('pageSize', formSearchSubnet.pageSize)
     }
-    if(formSearchSubnet.pageNumber != undefined || formSearchSubnet.pageNumber != null){
+    if (formSearchSubnet.pageNumber != undefined || formSearchSubnet.pageNumber != null) {
       params = params.append('pageNumber', formSearchSubnet.pageNumber)
     }
-    if(formSearchSubnet.region != undefined || formSearchSubnet.region != null) {
+    if (formSearchSubnet.region != undefined || formSearchSubnet.region != null) {
       params = params.append('region', formSearchSubnet.region)
     }
-    if(formSearchSubnet.vlanName != undefined || formSearchSubnet.vlanName != null) {
+    if (formSearchSubnet.vlanName != undefined || formSearchSubnet.vlanName != null) {
       params = params.append('vlanName', formSearchSubnet.vlanName)
     }
-    if(formSearchSubnet.customerId != undefined || formSearchSubnet.customerId != null){
+    if (formSearchSubnet.customerId != undefined || formSearchSubnet.customerId != null) {
       params = params.append('customerId', formSearchSubnet.customerId)
     }
     return this.http.get<Subnet[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {

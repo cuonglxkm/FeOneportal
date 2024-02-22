@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {CreateVolumeRequestModel, GetAllVmModel} from "../../../../shared/models/volume.model";
 import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
@@ -231,7 +231,7 @@ export class CreateVolumeComponent implements OnInit {
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length){
+      if (data.length) {
         localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
       }
