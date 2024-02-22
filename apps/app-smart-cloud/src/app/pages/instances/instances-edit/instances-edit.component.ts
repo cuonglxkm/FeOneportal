@@ -146,6 +146,7 @@ export class InstancesEditComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getAllSecurityGroup();
     this.getListIpPublic();
     this.getCurrentInfoInstance(this.id);
   }
@@ -287,15 +288,11 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    this.region = region.regionId;
-    this.selectedSecurityGroup = []
-    this.initFlavors();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   onProjectChange(project: ProjectModel) {
-    this.projectId = project.id;
-    this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   getCurrentInfoInstance(instanceId: number): void {
@@ -337,6 +334,7 @@ export class InstancesEditComponent implements OnInit {
           this.selectedSecurityGroup = arraylistSecurityGroup;
           this.cdr.detectChanges();
         });
+      this.initFlavors();
     });
   }
 

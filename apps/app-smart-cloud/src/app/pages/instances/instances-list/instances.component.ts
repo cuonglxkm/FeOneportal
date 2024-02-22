@@ -174,6 +174,7 @@ export class InstancesComponent implements OnInit {
             this.cdr.detectChanges();
           },
           error: (error) => {
+            this.dataList = []
             this.activeCreate = true;
             this.notification.error(
               '',
