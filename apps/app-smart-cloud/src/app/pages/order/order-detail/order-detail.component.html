@@ -1,8 +1,9 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chi tiết đơn hàng'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/order/list']">Đơn hàng</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a>Chi tiết đơn hàng</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>

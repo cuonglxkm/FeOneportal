@@ -75,6 +75,11 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           this.listInstance = data.records;
         }
       )
+    if (this.regionId === 3 || this.regionId === 5) {
+      this.checkIpv6 = false;
+    } else {
+      this.checkIpv6 = null;
+    }
   }
 
   onRegionChange(region: RegionModel) {

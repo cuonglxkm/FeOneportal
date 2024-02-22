@@ -1,10 +1,17 @@
-<one-portal-header
-  title="Danh sách đơn hàng"
-  [path]="['Home', 'Billing', 'Đơn hàng']"
-  [regionId]="region"
-  (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
-<nz-content>
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách đơn hàng'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item> <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/order/list']">Đơn hàng</a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
   <nz-card>
     <div>
       <nz-row nzAlign="middle" style="margin-top: 20px; padding: 10px;">
@@ -71,4 +78,3 @@
     </nz-table>
 
   </nz-card>
-</nz-content>
