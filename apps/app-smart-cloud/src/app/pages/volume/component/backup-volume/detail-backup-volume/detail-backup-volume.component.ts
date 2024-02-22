@@ -1,13 +1,10 @@
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
 import {BackupVolume} from "../backup-volume.model";
-import {IpPublicService} from "../../../../../shared/services/ip-public.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ListBackupVolumeComponent} from "../list-backup-volume/list-backup-volume.component";
-import {log} from "@delon/util";
+import {Router} from "@angular/router";
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
-import {BehaviorSubject} from "rxjs";
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {RegionModel} from "../../../../../shared/models/region.model";
+import {ProjectService} from "../../../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-detail-backup-volume',
@@ -18,8 +15,11 @@ export class DetailBackupVolumeComponent {
   receivedData: BackupVolume;
   regionId: any;
   projectId: any;
+
   constructor(private router: Router,
-              private service: BackupVolumeService) {}
+              private service: BackupVolumeService,
+              private projectService: ProjectService,) {
+  }
 
   ngOnInit() {
     this.service.sharedData$.subscribe(data => {
@@ -33,6 +33,12 @@ export class DetailBackupVolumeComponent {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.projectService.getByRegion(this.regionId).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/backup-volume']);
+      }
+    });
   }
 
   backToList() {

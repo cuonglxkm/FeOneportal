@@ -10,6 +10,8 @@ import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
 import {BackupPackageRequestModel, FormCreateBackupPackage} from 'src/app/shared/models/package-backup.model';
+import {ProjectService} from 'src/app/shared/services/project.service';
+import {getCurrentRegionAndProject} from "@shared";
 
 export class DateBackupPackage {
   createdDate: Date
@@ -24,6 +26,8 @@ export class DateBackupPackage {
 export class CreatePackageBackupComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
+
+  typeVPC: number
 
   validateForm: FormGroup<{
     namePackage: FormControl<string>
@@ -49,6 +53,7 @@ export class CreatePackageBackupComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
+              private projectService: ProjectService,
               private instanceService: InstancesService) {
     this.validateForm.get('time').valueChanges.subscribe(data => {
       this.backupPackageDate.expiredDate = new Date(new Date()
@@ -64,6 +69,12 @@ export class CreatePackageBackupComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/backup/packages'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
@@ -73,8 +84,32 @@ export class CreatePackageBackupComponent implements OnInit {
 
   submitForm() {
     console.log(this.validateForm.getRawValue())
-    if(this.validateForm.valid){
+    if (this.validateForm.valid) {
       this.doCreate()
+    } else {
+      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
+    }
+  }
+
+  navigateToPaymentSummary() {
+    // this.getTotalAmount()
+    if (this.validateForm.valid) {
+      let request: BackupPackageRequestModel = new BackupPackageRequestModel()
+      request.customerId = this.formCreateBackupPackage.customerId;
+      request.createdByUserId = this.formCreateBackupPackage.customerId;
+      request.note = 'tạo gói backup';
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.formCreateBackupPackage),
+          specificationType: 'backuppackage_create',
+          price: this.orderItem?.totalPayment?.amount,
+          serviceDuration: this.validateForm.get('time').value
+        }
+      ]
+      var returnPath: string = '/app-smart-cloud/backup/packages/create'
+      console.log('request', request)
+      this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
     } else {
       this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
     }
@@ -183,7 +218,23 @@ export class CreatePackageBackupComponent implements OnInit {
     });
   }
 
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
+
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
     this.backupPackageDate.createdDate = new Date()
     this.backupPackageDate.expiredDate = new Date(new Date().setDate(this.backupPackageDate.createdDate.getDate() + 30))
     this.getTotalAmount()

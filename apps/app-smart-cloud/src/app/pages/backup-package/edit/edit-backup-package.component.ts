@@ -14,6 +14,8 @@ import {
 import {OrderItem} from "../../../shared/models/price";
 import {DataPayment, ItemPayment} from "../../instances/instances.model";
 import {InstancesService} from "../../instances/instances.service";
+import {ProjectService} from "../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-edit-backup-package',
@@ -48,7 +50,8 @@ export class EditBackupPackageComponent implements OnInit{
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private route: ActivatedRoute,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              private projectService: ProjectService) {
     this.validateForm.get('storage').valueChanges.subscribe(data => {
       this.getTotalAmount()
     })
@@ -56,6 +59,12 @@ export class EditBackupPackageComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/backup/packages'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
@@ -179,8 +188,26 @@ export class EditBackupPackageComponent implements OnInit{
     })
   }
 
+  typeVPC: number
+
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
+
   ngOnInit() {
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'))
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
     if(this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage)
 
