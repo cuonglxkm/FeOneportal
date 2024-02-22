@@ -39,13 +39,15 @@ export class ConsumerGroupKafkaService {
         return this.http.get<BaseResponse<KafkaConsumerGroupTopic[]>>(`${this.baseUrl}/consumer-groups/get-list-topic-in-group?&group_id=${groupId}&service_order_code=${serviceOrderCode}&key_search=${keySearch}`);
     }
 
-    deleteConsumerGroup(data: KafkaConsumerGroup): Observable<any> {
+    deleteConsumerGroup(data: KafkaConsumerGroup): Observable<BaseResponse<null>> {
         const json = {
-            service_order_code: data.serviceOrderCode,
-            group_id: data.cgName,
-            status: data.stateConsumer
+            body: {
+                service_order_code: data.serviceOrderCode,
+                group_id: data.cgName,
+                status: data.stateConsumer
+            }
         }
-        return this.http.post('${this.baseUrl}/consumer-groups/delete-group', JSON.stringify(json));
+        return this.http.delete<BaseResponse<null>>('${this.baseUrl}/consumer-groups', json);
     }
 
 }

@@ -1,4 +1,4 @@
-<div nz-row nzGutter="16" class="general">
+<div nz-row nzGutter="16" class="general" *ngIf="isHealth !== null">
     <ng-container *ngIf="isHealth === clusterHealth; else otherHealth">
         <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-check p-md">
@@ -7,6 +7,7 @@
             </div>
         </div>
     </ng-container>
+    
     <ng-template #otherHealth>
         <ng-container *ngIf="isHealth === clusterUnHealth; else warningHealth">
             <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
@@ -18,8 +19,8 @@
                 </div>
             </div>
         </ng-container>
-
     </ng-template>
+
     <ng-template #warningHealth>
         <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-warning p-md" nz-tooltip

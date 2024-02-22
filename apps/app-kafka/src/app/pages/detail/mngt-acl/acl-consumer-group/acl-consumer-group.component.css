@@ -77,3 +77,7 @@ nz-table.tbl-acl th {
     margin-right: 0px;
     border-color: #8A8886;
 }
+
+.text-center {
+    text-align: center;
+}

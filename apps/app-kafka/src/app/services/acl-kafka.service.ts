@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { AclDeleteModel } from '../core/models/acl-delete.model';
 import { AclReqModel } from '../core/models/acl-req.model';
 import { BaseResponse } from '../core/models/base-response.model';
+import { Pagination } from '../core/models/pagination.model';
+import { AclModel } from '../core/models/acl.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AclKafkaService {
-  private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
+  private baseUrl = 'http://localhost:16005/kafka-service';
 
   constructor(private http: HttpClient) { }
 
@@ -19,11 +21,11 @@ export class AclKafkaService {
     keySearch: string,
     serviceOrderCode: string,
     resourceType: string,
-  ): Observable<BaseResponse<any>> {
-    return this.http.get<BaseResponse<any>>(`${this.baseUrl}/acl/listAcl?page=${page}&limit=${limit}&key_search=${keySearch}&service_order_code=${serviceOrderCode}&resource_type=${resourceType}`);
+  ): Observable<BaseResponse<Pagination<AclModel[]>>> {
+    return this.http.get<BaseResponse<Pagination<AclModel[]>>>(`${this.baseUrl}/acls/search?page=${page}&limit=${limit}&key_search=${keySearch}&service_order_code=${serviceOrderCode}&resource_type=${resourceType}`);
   }
 
-  createAcl(data: AclReqModel): Observable<any> {
+  createAcl(data: AclReqModel): Observable<BaseResponse<null>> {
     const json = {
       service_order_code: data.serviceOrderCode,
       principal: data.principal,
@@ -36,20 +38,22 @@ export class AclKafkaService {
       host: data.host,
       is_edit: data.isEdit
     };
-    return this.http.post(`${this.baseUrl}/acl/createAcl`, json);
+    return this.http.post<BaseResponse<null>>(`${this.baseUrl}/acls`, json);
   }
 
-  deleteAcl(data: AclDeleteModel): Observable<any> {
+  deleteAcl(data: AclDeleteModel): Observable<BaseResponse<null>> {
     const json = {
-      service_order_code: data.serviceOrderCode,
-      principal: data.principal,
-      resource_type: data.resourceType,
-      resource_name: data.resourceName,
-      permission_group_code: data.permissionGroupCode,
-      allow_deny: data.allowDeny,
-      host: data.host
+      body: {
+        service_order_code: data.serviceOrderCode,
+        principal: data.principal,
+        resource_type: data.resourceType,
+        resource_name: data.resourceName,
+        permission_group_code: data.permissionGroupCode,
+        allow_deny: data.allowDeny,
+        host: data.host
+      }
     };
-    return this.http.post('/kafka-service/acl/deleteAcl', json);
+    return this.http.delete<BaseResponse<null>>(`${this.baseUrl}/acls`, json);
   }
 
 }

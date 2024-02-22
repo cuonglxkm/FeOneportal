@@ -1,9 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AclDeleteModel } from 'apps/app-kafka/src/app/core/models/acl-delete.model';
 import { AclReqModel } from 'apps/app-kafka/src/app/core/models/acl-req.model';
+import { AclModel } from 'apps/app-kafka/src/app/core/models/acl.model';
+import { KafkaConsumerGroup } from 'apps/app-kafka/src/app/core/models/kafka-consumer-group.model';
+import { KafkaCredential } from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
 import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
+import { ConsumerGroupKafkaService } from 'apps/app-kafka/src/app/services/consumer-group-kafka.service';
+import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-acl-consumer-group',
@@ -11,79 +17,16 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   styleUrls: ['./acl-consumer-group.component.css'],
 })
 export class AclConsumerGroupComponent implements OnInit {
-  // listAcl: AclModel[];
+  listAcl: AclModel[];
   aclRequest: AclReqModel = new AclReqModel();
-  listAcl = [
-    {
-      "id": 105,
-      "serviceOrderCode": "kafka-s1hnuicj7u7g",
-      "principal": "nhienn01",
-      "resourceType": "consumer_group",
-      "resourceName": "kafka-s1hnuicj7u7g-internal-sync-messages-topic",
-      "patternType": "Exact",
-      "permissionGroupCode": "group",
-      "permissionGroupName": "READ",
-      "host": "0.0.0.0",
-      "allowDeny": "ALLOW",
-      "createdUser": "jzxlwtviacd",
-      "createdName": "Nguyễn Đức Nhiên",
-      "updatedUser": null,
-      "createdDate": 1706775379000,
-      "updatedDate": 1706775379000
-    }
-  ]
   aclConsumerGroupForm: FormGroup;
 
   permissionGroupCode = 'group';
   permissionGroupName = 'READ';
 
-  listOfPrincipals = [
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "nhienn01",
-      "email": "fake@vnpt.vn",
-      "created_date": "18-01-2024 14:07:46",
-      "updated_date": "19-01-2024 14:50:06",
-      "created_user": "jzxlwtviacd",
-      "created_name": "Nguyễn Đức Nhiên",
-      "updated_user": "jzxlwtviacd",
-      "updated_name": "Nguyễn Đức Nhiên"
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "bbbbbb",
-      "email": "fake@vnpt.vn",
-      "created_date": "12-01-2024 09:26:26",
-      "updated_date": "12-01-2024 09:26:26",
-      "created_user": "jzxlwtviacd",
-      "created_name": "Nguyễn Đức Nhiên",
-      "updated_user": null,
-      "updated_name": null
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "aaaaa",
-      "email": "fake@vnpt.vn",
-      "created_date": "09-01-2024 14:59:41",
-      "updated_date": "12-01-2024 10:56:37",
-      "created_user": "jzxlwtviacd",
-      "created_name": "Nguyễn Đức Nhiên",
-      "updated_user": "jzxlwtviacd",
-      "updated_name": "Nguyễn Đức Nhiên"
-    }
-  ];
+  @Input() listOfPrincipals: KafkaCredential[];
 
-  listOfConsumerGroup = [
-    { 'cgName': 'group1' },
-    { 'cgName': 'group2' },
-    { 'cgName': 'group3' },
-    { 'cgName': 'group4' },
-    { 'cgName': 'group5' },
-    { 'cgName': 'group6' },
-    { 'cgName': 'group7' },
-    { 'cgName': 'group8' },
-    { 'cgName': 'group9' }
-  ];
+  listOfConsumerGroup: KafkaConsumerGroup[];
 
   listOfPermission = ['DENY', 'ALLOW'];
 
@@ -104,6 +47,7 @@ export class AclConsumerGroupComponent implements OnInit {
   total: number;
   pageSize: number;
   pageIndex: number;
+  maxSize = 9999;
   resourceTypeGroup = 'consumer_group';
   serviceOrderCode = 'kafka-s1hnuicj7u7g';
 
@@ -111,7 +55,9 @@ export class AclConsumerGroupComponent implements OnInit {
   constructor(
     private fb: NonNullableFormBuilder,
     private aclKafkaService: AclKafkaService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private consumerGroupKafkaService: ConsumerGroupKafkaService,
+    private notification: NzNotificationService,
   ) {
     this.total = 0;
     this.pageSize = 10;
@@ -120,6 +66,7 @@ export class AclConsumerGroupComponent implements OnInit {
 
   ngOnInit() {
     this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeGroup);
+    this.getListConsumerGroup();
     this.initForm();
   }
 
@@ -134,6 +81,16 @@ export class AclConsumerGroupComponent implements OnInit {
 
   onSearch() {
     this.getListAcl(this.pageIndex, this.pageSize, this.searchText, this.serviceOrderCode, this.resourceTypeGroup);
+  }
+
+  getListConsumerGroup() {
+    this.consumerGroupKafkaService.getListConsumerGroup(this.pageIndex, this.maxSize, '', this.serviceOrderCode)
+      .subscribe((res) => {
+        if (res.code && res.code == 200) {
+          this.total = res.data.totals;
+          this.listOfConsumerGroup = camelizeKeys(res.data.results) as KafkaConsumerGroup[];
+        }
+      });
   }
 
   changePage(event: number) {
@@ -151,8 +108,8 @@ export class AclConsumerGroupComponent implements OnInit {
       .subscribe(
         (res) => {
           if (res && res.code == 200) {
-            this.total = res.data.totalElements
-            this.listAcl = res.data.content;
+            this.total = res.data.totals
+            this.listAcl = camelizeKeys(res.data.results) as AclModel[];
           }
         }
       );
@@ -235,10 +192,13 @@ export class AclConsumerGroupComponent implements OnInit {
       nzOnOk: () => {
         this.aclKafkaService.deleteAcl(data).pipe()
           .subscribe(
-            (data: any) => {
+            (data) => {
               if (data && data.code == 200) {
                 this.showForm = this.idListForm;
+                this.notification.success('Thành công', data.msg);
                 this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeGroup);
+              } else {
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );

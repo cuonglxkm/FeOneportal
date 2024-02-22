@@ -18,9 +18,9 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { Subject, takeUntil } from 'rxjs';
 
 import { ChartData } from '../../../core/models/chart-data.model';
+import { DashboardGeneral } from '../../../core/models/dashboard-general.model';
 import { HealthCheckModel } from '../../../core/models/health-check.model';
 import { DashBoardService } from '../../../services/dashboard.service';
-import { DashboardGeneral } from '../../../core/models/dashboard-general.model';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
   byteOutQuery = 'byte_out';
   storageQuery = 'storage';
 
-  isHealth = 1;
+  isHealth: number = null;
   isHealthMsg = 'Test';
   clusterHealth = 1;
   clusterUnHealth = 0;

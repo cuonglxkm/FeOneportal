@@ -6,6 +6,7 @@ import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic }
 import { SyncInfoModel } from '../../../core/models/sync-info.model';
 import { ConsumerGroupKafkaService } from '../../../services/consumer-group-kafka.service';
 import { KafkaService } from '../../../services/kafka.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 interface DataItem {
   partitionName: number,
@@ -119,6 +120,7 @@ export class ConsumerGroupComponent implements OnInit {
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
     private modal: NzModalService,
     private kafkaService: KafkaService,
+    private notification: NzNotificationService,
   ) { }
 
   ngOnInit(): void {
@@ -206,7 +208,10 @@ export class ConsumerGroupComponent implements OnInit {
           .subscribe(
             (data) => {
               if (data && data.code == 200) {
+                this.notification.success('Thành công', data.msg);
                 this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
+              } else {
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );

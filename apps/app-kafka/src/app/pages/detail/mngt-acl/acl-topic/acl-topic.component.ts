@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AclDeleteModel } from 'apps/app-kafka/src/app/core/models/acl-delete.model';
 import { AclReqModel } from 'apps/app-kafka/src/app/core/models/acl-req.model';
 import { AclModel } from 'apps/app-kafka/src/app/core/models/acl.model';
+import { KafkaCredential } from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
 import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
+import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-acl-topic',
@@ -13,32 +16,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 })
 export class AclTopicComponent implements OnInit {
   listAclTopic: AclModel[];
-  listOfPrincipals = [
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "nhienn01",
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "bbbbbb",
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "aaaaa",
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "user2",
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "user3",
-    },
-    {
-      "service_order_code": "kafka-s1hnuicj7u7g",
-      "username": "user4",
-    }
-  ];
+  @Input() listOfPrincipals: KafkaCredential[];
   listOfTopic = [
     {'topicName': 'topic1'},
     {'topicName': 'topic2'},
@@ -81,6 +59,7 @@ export class AclTopicComponent implements OnInit {
   total = 1;
   pageSize = 10;
   pageIndex = 1;
+  maxSize = 9999;
 
   serviceOrderCode = 'kafka-s1hnuicj7u7g';
   resourceTypeTopic = 'topic';
@@ -89,7 +68,8 @@ export class AclTopicComponent implements OnInit {
   constructor(
     private fb: NonNullableFormBuilder,
     private aclKafkaService: AclKafkaService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private notification: NzNotificationService,
   ) {
 
   }
@@ -115,8 +95,8 @@ export class AclTopicComponent implements OnInit {
       .subscribe(
         (res) => {
           if (res && res.code == 200) {
-            this.total = res.data.totalElements
-            this.listAclTopic = res.data.content;
+            this.total = res.data.totals
+            this.listAclTopic = camelizeKeys(res.data.results) as AclModel[];
           }
         }
       );
@@ -184,8 +164,11 @@ export class AclTopicComponent implements OnInit {
         .subscribe(
           (data) => {
             if (data && data.code == 200) {
+              this.notification.success('Thành công', data.msg);
               this.showForm = this.idListForm;
               this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
+            } else {
+              this.notification.error('Thất bại', data.msg);
             }
           }
         );
@@ -240,10 +223,14 @@ export class AclTopicComponent implements OnInit {
       nzOnOk: () => {
         this.aclKafkaService.deleteAcl(data).pipe()
           .subscribe(
-            (data: any) => {
+            (data) => {
               if (data && data.code == 200) {
+                this.notification.success('Thành công', data.msg);
                 this.showForm = this.idListForm;
                 this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
+              }
+              else {
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );

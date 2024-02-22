@@ -27,7 +27,7 @@
                             <th nzWidth="15%">Máy chủ</th>
                             <th nzWidth="10%">Quyền</th>
                             <th nzWidth="10%">Ngày tạo</th>
-                            <th nzWidth="15%">Thao tác</th>
+                            <th nzWidth="15%" class="text-center">Thao tác</th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of aclData.data; let i = index">
@@ -39,13 +39,24 @@
                             </td>
                             <td>{{ data.permissionGroupName }}</td>
                             <td>{{ data.host }}</td>
-                            <td [style.color]="data.allowDeny === 'ALLOW' ? '#0066B3' : '#EA3829'">{{ data.allowDeny }}
+                            <td>
+                                <nz-tag [nzColor]="data.allowDeny === 'ALLOW' ? '#84e1a1' : '#f07575'">{{data.allowDeny}}</nz-tag>
                             </td>
                             <td>{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
-                            <td>
-                                <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
-                                    <span nz-icon nzType="delete" nzTheme="twotone" nzTwotoneColor="#0066B0"></span>
-                                </button>
+                            <td class="text-center">
+                                <a nz-dropdown [nzDropdownMenu]="menu">
+                                    <span nz-icon nzType="more" nzTheme="outline"></span>
+                                </a>
+                                <nz-dropdown-menu #menu="nzDropdownMenu">
+                                    <ul nz-menu nzSelectable>
+                                        <li nz-menu-item>
+                                            <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
+                                                <span nz-icon nzType="delete" nzTheme="twotone"
+                                                    nzTwotoneColor="#0066B0"></span> Xóa
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nz-dropdown-menu>
                             </td>
                         </tr>
                     </tbody>
