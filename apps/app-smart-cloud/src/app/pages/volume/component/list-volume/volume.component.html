@@ -133,8 +133,8 @@
                                       nz-popover
                                       [nzPopoverContent]="'Gắn Volume'"
                                       nzPopoverPlacement="bottom" (click)="showAttachVm(data)"></span>
-                <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo" nzTabScrollList="true"
-                          (nzOnCancel)="handleCancelAttachVm()" nzCentered>
+                <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo"
+                          (nzOnCancel)="handleCancelAttachVm()">
                   <div *nzModalTitle>
                     <p class="text-h5"><b>Gắn máy ảo</b></p>
                   </div>
@@ -165,8 +165,8 @@
                       nzTheme="outline" nz-popover
                       [nzPopoverContent]="'Gỡ Volume'"
                       nzPopoverPlacement="bottom" (click)="showDetachVm(data)"></span>
-                <nz-modal [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ máy ảo" nzTabScrollList="true"
-                          (nzOnCancel)="handleCancelDetachVm()" nzCentered>
+                <nz-modal [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ máy ảo"
+                          (nzOnCancel)="handleCancelDetachVm()">
                   <div *nzModalTitle>
                     <p class="text-h5"><b>Gỡ máy ảo</b></p>
                   </div>
@@ -202,8 +202,8 @@
                       nzTheme="outline" nz-popover
                       [nzPopoverContent]="'Xóa'"
                       nzPopoverPlacement="bottom" (click)="showConfirmDelete(data.id)"></span>
-                <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume" nzTabScrollList="true"
-                          (nzOnCancel)="handleCancelDelete()" nzCentered>
+                <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume"
+                          (nzOnCancel)="handleCancelDelete()">
                   <div *nzModalTitle>
                     <p class="text-h5"><b>Xóa Volume</b></p>
                   </div>
@@ -237,8 +237,8 @@
                   <ul nz-menu>
                     <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                     <li nz-menu-item (click)="showModalUpdate(data)">Chỉnh sửa</li>
-                    <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume" nzTabScrollList="true"
-                              (nzOnCancel)="handleCancelUpdate()" nzCentered>
+                    <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume"
+                              (nzOnCancel)="handleCancelUpdate()">
                       <div *nzModalTitle>
                         <p class="text-h5"><b>Chỉnh sửa thông tin Volume</b></p>
                       </div>
@@ -435,8 +435,8 @@
                     nz-popover
                     [nzPopoverContent]="'Gắn Volume'"
                     nzPopoverPlacement="bottom" (click)="showAttachVm(i)"></span>
-                  <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo" nzTabScrollList="true"
-                            (nzOnCancel)="handleCancelAttachVm()" nzCentered>
+                  <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo"
+                            (nzOnCancel)="handleCancelAttachVm()">
                     <div *nzModalTitle>
                       <p class="text-h5"><b>Gắn máy ảo</b></p>
                     </div>
@@ -467,8 +467,8 @@
                         nzTheme="outline" nz-popover
                         [nzPopoverContent]="'Gỡ Volume'"
                         nzPopoverPlacement="bottom" (click)="showDetachVm(i)"></span>
-                  <nz-modal *ngIf="i.isMultiAttach == true" [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ Volume" nzTabScrollList="true"
-                            (nzOnCancel)="handleCancelDetachVm()" nzCentered>
+                  <nz-modal *ngIf="i.isMultiAttach == true" [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ Volume"
+                            (nzOnCancel)="handleCancelDetachVm()">
                     <div *nzModalTitle>
                       <p class="text-h5"><b>Gỡ Volume</b></p>
                     </div>
@@ -496,8 +496,8 @@
                       </button>
                     </div>
                   </nz-modal>
-                  <nz-modal *ngIf="i.isMultiAttach == false" [(nzVisible)]="isVisibleNotice" nzTitle="Gỡ Volume" nzTabScrollList="true"
-                            (nzOnCancel)="handleCancelNotice()" nzCentered>
+                  <nz-modal *ngIf="i.isMultiAttach == false" [(nzVisible)]="isVisibleNotice" nzTitle="Gỡ Volume"
+                            (nzOnCancel)="handleCancelNotice()">
                     <div *nzModalTitle>
                       <p class="text-h5"><b>Gỡ Volume</b></p>
                     </div>
@@ -528,8 +528,8 @@
                         nzTheme="outline" nz-popover
                         [nzPopoverContent]="'Xóa'"
                         nzPopoverPlacement="bottom" (click)="showConfirmDelete(i.id)"></span>
-                  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume" nzTabScrollList="true"
-                            (nzOnCancel)="handleCancelDelete()" nzCentered>
+                  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume"
+                            (nzOnCancel)="handleCancelDelete()">
                     <div *nzModalTitle>
                       <p class="text-h5"><b>Xóa Volume</b></p>
                     </div>
@@ -564,8 +564,8 @@
                       <li nz-menu-item (click)="navigateToCreateScheduleBackup()">Tạo lịch backup</li>
                       <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                       <li nz-menu-item (click)="showModalUpdate(i)">Chỉnh sửa</li>
-                      <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume" nzTabScrollList="true"
-                                (nzOnCancel)="handleCancelUpdate()" nzCentered>
+                      <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume"
+                                (nzOnCancel)="handleCancelUpdate()">
                         <div *nzModalTitle>
                           <p class="text-h5"><b>Chỉnh sửa thông tin Volume</b></p>
                         </div>
