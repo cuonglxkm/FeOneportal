@@ -243,6 +243,11 @@
               "text": "Kubernetes",
               "icon": "anticon-team",
               "link": "/app-kubernetes"
+            },
+            {
+              "text": "Kafka",
+              "icon": "anticon-team",
+              "link": "/app-kafka"
             }
           ]
         },
