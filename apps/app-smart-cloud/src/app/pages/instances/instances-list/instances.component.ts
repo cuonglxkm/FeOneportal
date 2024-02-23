@@ -84,7 +84,6 @@ export class InstancesComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.getDataList();
   }
 
   selectedChecked(e: any): void {
@@ -175,6 +174,7 @@ export class InstancesComponent implements OnInit {
             this.cdr.detectChanges();
           },
           error: (error) => {
+            this.dataList = []
             this.activeCreate = true;
             this.notification.error(
               '',

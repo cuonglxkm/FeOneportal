@@ -35,6 +35,7 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -142,6 +143,12 @@ export class InstancesEditComponent implements OnInit {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activeRoute.snapshot.paramMap.get('id'));
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.getAllSecurityGroup();
+    this.getListIpPublic();
+    this.getCurrentInfoInstance(this.id);
   }
 
   //#region HDD hay SDD
@@ -209,7 +216,7 @@ export class InstancesEditComponent implements OnInit {
       .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
         this.listOfferFlavors = data.filter(
-          (e: OfferItem) => e.status == 'Active'
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
@@ -281,17 +288,11 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    this.id = Number.parseInt(this.activeRoute.snapshot.paramMap.get('id'));
-    this.getCurrentInfoInstance(this.id);
-    this.selectedSecurityGroup = [];
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   onProjectChange(project: ProjectModel) {
-    this.projectId = project.id;
-    this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   getCurrentInfoInstance(instanceId: number): void {
@@ -334,7 +335,6 @@ export class InstancesEditComponent implements OnInit {
           this.cdr.detectChanges();
         });
       this.initFlavors();
-      this.getListIpPublic();
     });
   }
 

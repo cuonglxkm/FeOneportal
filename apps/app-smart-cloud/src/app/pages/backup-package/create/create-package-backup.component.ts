@@ -92,7 +92,7 @@ export class CreatePackageBackupComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
-    // this.getTotalAmount()
+    this.getTotalAmount()
     if (this.validateForm.valid) {
       let request: BackupPackageRequestModel = new BackupPackageRequestModel()
       request.customerId = this.formCreateBackupPackage.customerId;
