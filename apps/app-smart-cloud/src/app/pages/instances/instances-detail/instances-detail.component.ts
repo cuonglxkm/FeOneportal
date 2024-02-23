@@ -123,9 +123,6 @@ export class InstancesDetailComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
-  onProjectChange(project: ProjectModel) {
-  }
-  
   userChangeProject(){
     this.route.navigate(['/app-smart-cloud/instances']);
   }

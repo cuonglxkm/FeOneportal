@@ -8,7 +8,7 @@
         VLAN
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/list">Danh sách Network</a>
+        <a routerLink="/app-smart-cloud/vlan/network/list">Danh sách Network</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -63,21 +63,17 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of fixtable.data">
-        <td><a>{{data.name}}</a></td>
+        <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{data.name}}</a></td>
         <td>{{data.subnetAddressRequired}}</td>
         <td>{{data.status}}</td>
         <td>
           <div *ngIf="data.name.includes('pri_network')">
-            <span style="margin-right: 10px;" nz-icon nzType="edit"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Chỉnh sửa'"
-                  nzPopoverPlacement="bottom" disabled="true"></span>
-            <span style="margin-right: 20px;"
-                  nz-popover
-                  [nzPopoverContent]="'Xóa'"
-                  nzPopoverPlacement="bottom"
-                  nz-icon nzType="delete" nzTheme="outline" disabled="true"></span>
+            <span style="margin-right: 10px; color: #E6E6E6; cursor: not-allowed;"
+                  nz-icon nzType="edit"
+                  nzTheme="outline"></span>
+            <span style="margin-right: 20px; color: #E6E6E6;cursor: not-allowed;"
+                  nz-icon nzType="delete"
+                  nzTheme="outline"></span>
           </div>
           <div *ngIf="!data.name.includes('pri_network')">
             <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"

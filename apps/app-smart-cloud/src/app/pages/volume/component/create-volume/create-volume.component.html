@@ -19,6 +19,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -261,7 +262,7 @@
           <button class="btn-create" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
             <div style="color: white;line-height: 24px; word-wrap: break-word">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              Đặt hàng
+              Khởi tạo
             </div>
           </button>
         </nz-card>

@@ -10,6 +10,7 @@ import {VolumeService} from "../../../../shared/services/volume.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {InstancesService} from "../../../instances/instances.service";
+import {ProjectService} from "../../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -60,7 +61,8 @@ export class ResizeVolumeVpcComponent implements OnInit {
               private router: Router,
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -79,14 +81,25 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length){
+    //     localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/volumes'])
+    //   }
+    // });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
     // this.getListVolumes()
+    // this.router.navigate(['/app-smart-cloud/volumes'])
   }
 
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
   submitForm() {
     console.log(this.validateForm.getRawValue())
     console.log(this.validateForm.valid)

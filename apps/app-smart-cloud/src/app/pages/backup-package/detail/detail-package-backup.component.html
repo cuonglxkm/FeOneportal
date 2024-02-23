@@ -21,24 +21,7 @@
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
-    <div style="margin-right: 15px;">
-      <div nz-col nzSpan="4">
-        <button nz-button nzTooltipTitle="Gia hạn" nzTooltipPlacement="bottom" nz-tooltip class="btn-extend"
-                nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
-          <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
-          Gia hạn
-        </button>
-      </div>
-    </div>
-    <div>
-      <div nz-col nzSpan="4">
-        <button nz-button nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" nz-tooltip class="btn-edit"
-                nzSize="default" style="cursor: pointer;" (click)="navigateToEdit()">
-          <span nz-icon nzType="edit" nzTheme="outline"></span>
-          Điều chỉnh
-        </button>
-      </div>
-    </div>
+
   </ng-template>
   <ng-template #title>
     <div nz-row nzJustify="space-between">
@@ -54,7 +37,27 @@
           <div>Chi tiết gói Backup</div>
         </nz-col>
       </nz-row>
-    </div>
+      </div>
+      <div style="display:flex;">
+        <div style="margin-right: 15px;">
+          <div nz-col nzSpan="4">
+            <button nz-button nzTooltipTitle="Gia hạn" nzTooltipPlacement="bottom" nz-tooltip class="btn-extend"
+                    nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
+              <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
+              Gia hạn
+            </button>
+          </div>
+        </div>
+        <div>
+          <div nz-col nzSpan="4">
+            <button nz-button nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" nz-tooltip class="btn-edit"
+                    nzSize="default" style="cursor: pointer;" (click)="navigateToEdit()">
+              <span nz-icon nzType="edit" nzTheme="outline"></span>
+              Điều chỉnh
+            </button>
+          </div>
+        </div>
+      </div>
   </ng-template>
 </page-header>
 <nz-content>
