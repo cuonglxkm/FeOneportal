@@ -5,6 +5,8 @@ import {FormSearchNetwork, NetWorkModel} from "../../../shared/models/vlan.model
 import {BaseResponse} from "../../../../../../../libs/common-utils/src";
 import {VlanService} from "../../../shared/services/vlan.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ProjectService} from "../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-vlan',
@@ -30,12 +32,13 @@ export class ListVlanComponent implements OnInit{
 
   constructor(private vlanService: VlanService,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private projectService: ProjectService) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-
+    this.getListVlanNetwork()
   }
 
   projectChanged(project: ProjectModel) {
@@ -81,6 +84,24 @@ export class ListVlanComponent implements OnInit{
     })
   }
 
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
+
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    console.log('project', this.project)
+    // this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
+    this.getListVlanNetwork()
   }
 }

@@ -78,7 +78,7 @@ export class VlanService extends BaseService {
     if (formSearchSubnet.customerId != undefined || formSearchSubnet.customerId != null) {
       params = params.append('customerId', formSearchSubnet.customerId)
     }
-    return this.http.get<Subnet[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
+    return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
       headers: this.getHeaders(),
       params: params
     })
