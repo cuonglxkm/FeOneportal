@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Inject,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -26,7 +28,6 @@ import {
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -36,6 +37,7 @@ import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.s
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -81,9 +83,8 @@ export class InstancesCreateComponent implements OnInit {
     'assets/logo.svg',
   ];
 
-  public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true,
@@ -129,6 +130,7 @@ export class InstancesCreateComponent implements OnInit {
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   selectedSSHKeyName: string;
   selectedSnapshot: number;
+  cardHeight: string = '160px';
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -137,37 +139,12 @@ export class InstancesCreateComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private loadingSrv: LoadingService
-  ) {
-    this.tempData = [
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-    ];
+    private loadingSrv: LoadingService,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
 
-    this.carouselTileItems$ = of(this.tempData);
-
-    // this.carouselTileItems$ = interval(500).pipe(
-    //   startWith(-1),
-    //   take(30),
-    //   map(() => {
-    //     const data = (this.tempData = [
-    //       ...this.tempData,
-    //       this.images[Math.floor(Math.random() * this.images.length)]
-    //     ]);
-    //
-    //     return data;
-    //   })
-    // );
-  }
+  ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -206,6 +183,34 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllImageType();
     this.getAllSecurityGroup();
     this.getAllSSHKey();
+
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large,
+      Breakpoints.XLarge
+    ]).subscribe(result => {
+      if (result.breakpoints[Breakpoints.XSmall]) {
+        // Màn hình cỡ nhỏ
+        this.cardHeight = '130px';
+      } else if (result.breakpoints[Breakpoints.Small]) {
+        // Màn hình cỡ nhỏ - trung bình
+        this.cardHeight = '180px';
+      } else if (result.breakpoints[Breakpoints.Medium]) {
+        // Màn hình trung bình
+        this.cardHeight = '210px';
+      } else if (result.breakpoints[Breakpoints.Large]) {
+        // Màn hình lớn
+        this.cardHeight = '165px';
+      } else if (result.breakpoints[Breakpoints.XLarge]) {
+        // Màn hình rất lớn
+        this.cardHeight = '150px';
+      }
+
+      // Cập nhật chiều cao của card bằng Renderer2
+      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
+    });
     this.cdr.detectChanges();
   }
 
