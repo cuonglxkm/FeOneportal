@@ -1,6 +1,6 @@
 import {Inject, Injectable, OnInit} from '@angular/core';
 import {catchError} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {VolumeDTO} from "../dto/volume.dto";
 import {BaseService} from "./base.service";
@@ -29,6 +29,9 @@ export class VolumeService extends BaseService {
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
   private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
   private  urlOrderGW = this.baseUrl + this.ENDPOINT.orders;
+
+  public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
+
   //search List Volumes
   getVolumes(customerId: number, projectId: number, regionId: number,
              pageSize: number, currentPage: number, status: string, volumeName: string) {
@@ -48,7 +51,7 @@ export class VolumeService extends BaseService {
     })
   }
 
-  getVolummeById(volumeId: number) {
+  getVolumeById(volumeId: number) {
     return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`, {
       headers: this.httpOptions.headers})
   }
@@ -85,22 +88,17 @@ export class VolumeService extends BaseService {
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
-      catchError(this.handleError<any>('Edit size volume error.'))
-    );
+    return this.http.post<any>(this.urlOrderGW, request, {headers: this.httpOptions.headers})
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions).pipe(
-      catchError(this.handleError<boolean>('delete volume error.'))
-    );
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions)
   }
 
-  addVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request,this.httpOptions).pipe(
-      catchError(this.handleError<boolean>('Add Volume to VM error.'))
-    );
+  addVolumeToVm(request: AddVolumetoVmModel) {
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request, {headers: this.httpOptions.headers})
   }
+
 
   detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
     return this.http.post<boolean>(this.urlVolumeGW + '/detach', request,this.httpOptions).pipe(
@@ -118,6 +116,11 @@ export class VolumeService extends BaseService {
     return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
       catchError(this.handleError<any>('Extends size volume error.'))
     );
+  }
+
+  updateVolume(request: EditTextVolumeModel) {
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request),
+      {headers: this.httpOptions.headers})
   }
 
   constructor(private http: HttpClient,

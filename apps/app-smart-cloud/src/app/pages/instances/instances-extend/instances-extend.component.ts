@@ -49,7 +49,7 @@ export class InstancesExtendComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: InstancesService,
     private cdr: ChangeDetectorRef,
-    private route: Router,
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private modalSrv: NzModalService,
     private loadingSrv: LoadingService,
@@ -137,11 +137,12 @@ export class InstancesExtendComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceExtend);
     itemPayment.specificationType = 'instance_extend';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.instancesModel.projectId;
-    console.log("dataPayment extend", dataPayment);
+    console.log('dataPayment extend', dataPayment);
     this.service.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
@@ -152,19 +153,17 @@ export class InstancesExtendComponent implements OnInit {
     });
   }
 
-  save(tpl: TemplateRef<{}>): void {
-    this.modalSrv.create({
-      nzTitle: 'Gia hạn',
-      nzContent: tpl,
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.readyEdit();
-      },
-    });
+  isVisibleExtend: boolean = false;
+  showModal() {
+    this.isVisibleExtend = true;
   }
 
-  readyEdit(): void {
+  handleCancelExtend() {
+    this.isVisibleExtend = false;
+  }
+
+  handleOkExtend(): void {
+    this.isVisibleExtend = false;
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();
@@ -179,40 +178,22 @@ export class InstancesExtendComponent implements OnInit {
     this.order.createdByUserId = this.customerId;
     this.order.note = 'instance extend';
     this.order.orderItems = this.orderItem;
+    console.log('order instance resize', this.order);
 
-    console.log('order instance extend', this.order);
-
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-    this.service
-      .create(this.order)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
-      .subscribe(
-        (data: any) => {
-          window.location.href = data.data;
-        },
-        (error) => {
-          console.log(error.error);
-          this.notification.error(
-            '',
-            'Tạo order gia hạn máy ảo không thành công'
-          );
-        }
-      );
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: this.order, path: returnPath },
+    });
   }
 
   navigateToEdit() {
-    this.route.navigate([
+    this.router.navigate([
       '/app-smart-cloud/instances/instances-edit/' + this.id,
     ]);
   }
 
   cancel() {
-    this.route.navigate([
+    this.router.navigate([
       '/app-smart-cloud/instances/instances-detail/' + this.id,
     ]);
   }

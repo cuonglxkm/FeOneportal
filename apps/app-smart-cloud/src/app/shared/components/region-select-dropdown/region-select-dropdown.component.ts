@@ -11,6 +11,7 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   @Input() isDetail = false;
   @Output() valueChanged = new EventEmitter();
+  @Output() userChanged = new EventEmitter();
   selectedRegion: RegionModel;
   listRegion: RegionModel[] = []
 
@@ -25,10 +26,10 @@ export class RegionSelectDropdownComponent implements OnInit {
         if (localStorage.getItem('region') != null) {
           this.selectedRegion = this.listRegion.find(item =>
             item.regionId == JSON.parse(localStorage.getItem('region')).regionId);
-          this.valueChanged.emit(this.selectedRegion)
+          // this.valueChanged.emit(this.selectedRegion)
         } else {
           this.selectedRegion = this.listRegion[0];
-          this.valueChanged.emit(this.listRegion[0])
+          // this.valueChanged.emit(this.listRegion[0])
           localStorage.setItem('region', JSON.stringify(this.listRegion[0]))
         }
 

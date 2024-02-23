@@ -26,7 +26,7 @@ import {
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, finalize, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -35,6 +35,7 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -195,7 +196,17 @@ export class InstancesCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.initIpSubnet();
+    this.initFlavors();
+    this.initSnapshot();
+    this.getAllIPPublic();
     this.getAllImageType();
+    this.getAllSecurityGroup();
+    this.getAllSSHKey();
+    this.cdr.detectChanges();
   }
 
   getUser() {}
@@ -213,6 +224,7 @@ export class InstancesCreateComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -226,7 +238,7 @@ export class InstancesCreateComponent implements OnInit {
       .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
-          if (e.status == 'Active') {
+          if (e.status.toUpperCase() == 'ACTIVE') {
             let tempImage = new Image();
             e.characteristicValues.forEach((char) => {
               if (char.charOptionValues[0] == 'Id') {
@@ -394,7 +406,7 @@ export class InstancesCreateComponent implements OnInit {
       .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
         this.listOfferFlavors = data.filter(
-          (e: OfferItem) => e.status == 'Active'
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
         if (this.activeBlockHDD) {
           this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
@@ -435,19 +447,6 @@ export class InstancesCreateComponent implements OnInit {
       this.getTotalAmount();
     }
     console.log(this.offerFlavor);
-  }
-
-  toggleClass(id: string) {
-    this.selectedElementFlavor = id;
-    if (this.selectedElementFlavor) {
-      this.isInitialClass = !this.isInitialClass;
-      this.isNewClass = !this.isNewClass;
-    } else {
-      this.isInitialClass = true;
-      this.isNewClass = false;
-    }
-
-    this.cdr.detectChanges();
   }
 
   selectElementInputFlavors(id: string) {
@@ -643,28 +642,11 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    this.listSecurityGroup = [];
-    this.listIPPublic = [];
-    this.selectedSecurityGroup = [];
-    this.ipPublicValue = 0;
-    this.initIpSubnet();
-    this.initFlavors();
-    this.initSnapshot();
-    this.getAllIPPublic();
-    this.getAllOfferImage(this.imageTypeId);
-    this.cdr.detectChanges();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   onProjectChange(project: any) {
-    // Handle the region change event
-    this.projectId = project.id;
-    this.listSecurityGroup = [];
-    this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
-    this.getAllSSHKey();
-    this.cdr.detectChanges();
+    // this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -869,15 +851,15 @@ export class InstancesCreateComponent implements OnInit {
       this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
       return;
     }
-      this.instanceInit();
+    this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
     let orderItemInstance = new OrderItem();
     orderItemInstance.orderItemQuantity = 1;
     orderItemInstance.specification = specificationInstance;
     orderItemInstance.specificationType = 'instance_create';
-    orderItemInstance.price = 1;
-    orderItemInstance.serviceDuration = 1;
+    orderItemInstance.price = this.totalAmount / this.numberMonth;
+    orderItemInstance.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstance);
     console.log('order instance', orderItemInstance);
 
@@ -890,7 +872,7 @@ export class InstancesCreateComponent implements OnInit {
         orderItemVolume.specification = specificationVolume;
         orderItemVolume.specificationType = 'volume_create';
         orderItemVolume.price = e.price;
-        orderItemVolume.serviceDuration = 1;
+        orderItemVolume.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemVolume);
       }
     });
@@ -904,7 +886,7 @@ export class InstancesCreateComponent implements OnInit {
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
-        orderItemIP.serviceDuration = 1;
+        orderItemIP.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemIP);
       }
     });
@@ -918,7 +900,7 @@ export class InstancesCreateComponent implements OnInit {
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
-        orderItemIP.serviceDuration = 1;
+        orderItemIP.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemIP);
       }
     });
@@ -928,26 +910,11 @@ export class InstancesCreateComponent implements OnInit {
     this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
 
+    var returnPath: string = window.location.pathname;
     console.log('instance create', this.instanceCreate);
-
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-    this.dataService
-      .create(this.order)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
-      .subscribe(
-        (data: any) => {
-          window.location.href = data.data;
-        },
-        (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Tạo order máy ảo không thành công');
-        }
-      );
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: this.order, path: returnPath },
+    });
   }
 
   totalAmount: number = 0;
@@ -958,6 +925,7 @@ export class InstancesCreateComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceCreate);
     itemPayment.specificationType = 'instance_create';
+    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -984,13 +952,16 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.volumeCreate);
         itemPayment.specificationType = 'volume_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
         dataPayment.projectId = this.projectId;
         this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
           console.log('thanh tien volume', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          e.price =
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.numberMonth;
           this.totalAmountVolume += e.price;
           e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmountVolumeVAT += e.priceAndVAT;
@@ -1012,13 +983,16 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
         dataPayment.projectId = this.projectId;
         this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
           console.log('thanh tien ipv4', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount);
+          e.price =
+            Number.parseFloat(result.data.totalAmount.amount) /
+            this.numberMonth;
           this.totalAmountIPv4 += e.price;
           e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmountIPv4VAT += e.priceAndVAT;
@@ -1040,6 +1014,7 @@ export class InstancesCreateComponent implements OnInit {
         itemPayment.orderItemQuantity = 1;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
+        itemPayment.serviceDuration = this.numberMonth;
         itemPayment.sortItem = 0;
         let dataPayment: DataPayment = new DataPayment();
         dataPayment.orderItems = [itemPayment];
@@ -1057,6 +1032,10 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   cancel(): void {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 }

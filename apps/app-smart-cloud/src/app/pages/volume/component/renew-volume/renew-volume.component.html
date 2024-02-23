@@ -1,4 +1,5 @@
 <page-header [breadcrumb]="breadcrumb"
+             [action]="action"
              [title]="title">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -13,98 +14,171 @@
           Volume
         </a></nz-breadcrumb-item>
     </nz-breadcrumb>
+
+  </ng-template>
+  <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
+<!--    <div>-->
+<!--      <div nz-col nzSpan="4">-->
+<!--        <button class="button-edit" style="background-color: #061178"-->
+<!--                (click)="navigateEditVolume(volumeInfo.id)"-->
+<!--                nz-button nzType="primary">-->
+<!--          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
   </ng-template>
   <ng-template #title>
     <nz-row>
       <nz-col nzSpan="8">
-          <span nz-icon
-                nzType="arrow-left"
-                nzTheme="outline"
-                [routerLink]="'/app-smart-cloud/volume/detail/' + idVolume"
-                style="margin-right: 10px;"></span>
+<!--          <span nz-icon-->
+<!--                nzType="arrow-left"-->
+<!--                nzTheme="outline"-->
+<!--                [routerLink]="'/app-smart-cloud/volume/detail/' + idVolume"-->
+<!--                style="margin-right: 10px;"></span>-->
         Gia hạn Volume
       </nz-col>
-      <nz-col nzSpan="8" nzOffset="8" style="padding-left: 267px;">
-        <button class="button-edit" style="width: 160px; height: 40px; background-color: #061178"
-                (click)="navigateEditVolume(idVolume)"
-                nz-button nzType="primary">
-          <i nz-icon [nzType]="'edit'"></i>Chỉnh sửa
-        </button>
-      </nz-col>
     </nz-row>
+    <div>
+      <button class="button-cancel"
+              (click)="navigateEditVolume(volumeInfo.id)"
+              nz-button nzType="default">
+        <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+      </button>
+    </div>
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-card nzTitle="Thông tin Volume">
-    <nz-row nzGutter="24">
-      <nz-col nzSpan="12">
-        <span><b>Tên Volume:</b> {{volumeInfo?.name}} </span>
-      </nz-col>
-      <nz-col nzSpan="12">
-        <span><b>Loại Volume: </b> {{volumeInfo?.volumeType}}</span>
-      </nz-col>
-    </nz-row>
-    <nz-table [nzTemplateMode]="true" style="margin-top: 15px;">
-      <thead>
-      <tr>
-        <th>Dung lượng (GB)</th>
-        <th>IOPS</th>
-        <th>Trạng thái Volume</th>
-        <th>Máy ảo</th>
-        <th>Kiểu Volume</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngIf="this.attachedDto.length > 1">
-        <td>{{ volumeInfo?.sizeInGB }}</td>
-        <td>{{ volumeInfo?.iops }}</td>
-        <td *ngIf="volumeInfo?.status === 'KHOITAO'"
-            style="color: #6abe39">{{ volumeStatus?.get(volumeInfo?.status)}}</td>
-        <td *ngIf="volumeInfo?.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
-        <td *ngIf="volumeInfo?.status === 'SUSPENDED'" style="color: red">{{ volumeStatus.get(volumeInfo.status)}}</td>
-        <td>
-          <pre>{{this.listVMs}}</pre>
-        </td>
-        <td>{{ volumeInfo?.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
-      </tr>
-
-      <tr *ngIf="this.attachedDto.length <= 1">
-        <td>{{ volumeInfo?.sizeInGB }}</td>
-        <td>{{ volumeInfo?.iops }}</td>
-        <td *ngIf="volumeInfo?.status === 'KHOITAO'"
-            style="color: #6abe39">{{ volumeStatus.get(volumeInfo?.status)}}</td>
-        <td *ngIf="volumeInfo.status === 'ERROR'" style="color: red">{{ volumeStatus.get(volumeInfo?.status)}}</td>
-        <td *ngIf="volumeInfo.status === 'SUSPENDED'" style="color red">{{ volumeStatus.get(volumeInfo?.status)}}</td>
-        <td>{{this.attachedDto.length == 1 ? this.attachedDto[0].instanceName : 'Không có máy ảo'}} </td>
-        <td>{{ volumeInfo.bootable ? 'VOLUME ROOT' : 'VOLUME GẮN THÊM' }}</td>
-      </tr>
-      </tbody>
-    </nz-table>
-    <div style="margin-top: 15px;">
-      <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >Mã hóa Volume</label>
-    </div>
-    <div style="margin-top: 15px;">
-      <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
-    </div>
-  </nz-card>
-  <form>
-    <nz-card nzTitle="Chu kỳ thanh toán">
-      <nz-row nzGutter="24">
-        <nz-col nzSpan="12">
-          <span><b>Ngày cấp dịch vụ:</b> {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <span><b>Ngày hết hạn: </b> {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
-        </nz-col>
-      </nz-row>
-      <nz-form-item>
-
-      </nz-form-item>
-    </nz-card>
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="showModalConfirmRenew()" nzLayout="vertical">
+  <nz-row [nzGutter]="24">
+    <nz-col nzSpan="16">
+      <nz-card nzTitle="Thông tin Volume" [nzLoading]="isLoading">
+        <nz-descriptions [nzColumn]="2">
+          <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}}</nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleIOPS">{{volumeInfo?.iops}}</nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleStatus">
+        <span *ngIf="volumeInfo.status === 'KHOITAO'"
+              style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</span>
+            <span *ngIf="volumeInfo.status === 'ERROR'"
+                  style="color: #FF3333">{{ volumeStatus.get(volumeInfo.status)}}</span>
+            <span *ngIf="volumeInfo.status === 'SUSPENDED'"
+                  style="color: #FF7C33">{{ volumeStatus.get(volumeInfo.status)}}</span>
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleAttachInstance">
+            <span *ngIf="listVMs.length > 0">{{listVMs}}</span>
+            <span *ngIf="listVMs.length <= 0">Không có máy ảo</span>
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleVolumeType">
+            <b>{{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
+        </nz-descriptions>
+        <ng-template #titleName>
+          <span><b>Tên Volume:</b></span>
+        </ng-template>
+        <ng-template #titleType>
+          <span><b>Loại Volume:</b></span>
+        </ng-template>
+        <ng-template #titleStorage>
+          <span><b>Dung lượng:</b></span>
+        </ng-template>
+        <ng-template #titleIOPS>
+          <span><b>IOPS:</b></span>
+        </ng-template>
+        <ng-template #titleStatus>
+          <span><b>Trạng thái Volume:</b></span>
+        </ng-template>
+        <ng-template #titleAttachInstance>
+          <span><b>Gán vào máy ảo:</b></span>
+        </ng-template>
+        <ng-template #titleVolumeType>
+          <span><b>Kiểu Volume:</b></span>
+        </ng-template>
+        <div>
+          <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
+        </div>
+        <div style="margin-top: 15px;">
+          <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
+        </div>
+      </nz-card>
+      <nz-card nzTitle="Thông tin gia hạn">
+        <nz-row nzGutter="24">
+          <nz-col nzSpan="12">
+            <span><b>Ngày cấp dịch vụ:</b> {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <span><b>Ngày hết hạn: </b> {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+          </nz-col>
+        </nz-row>
+        <nz-form-item >
+          <nz-form-label nzFor="time">
+            <div class="label" style="margin-top: 15px;">
+              <span><b>Số tháng cần gia hạn thêm</b></span>
+              <span style="color: rgba(252, 16, 16, 1); "> *</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+            <nz-input-number
+              style="width:100%;"
+              formControlName="time"
+              id="time"
+              nzMin="1"
+              nzMax="100"
+              nzStep="1"/>
+            <ng-template #dateErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+              <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+              <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-row nzGutter="24">
+          <nz-col nzSpan="12">
+            <span style="color: #F50000;"><b>Ngày hết hạn dự kiến:</b> {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card>
+        <h3>Thành tiền</h3>
+        <nz-table>
+          <tr>
+            <td>Chi phí gói Backup</td>
+            <td nzAlign="right">
+              <b *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>
+              <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td nzAlign="right">VNĐ/tháng</td>
+          </tr>
+          <tr>
+            <td>Thành tiền</td>
+            <td nzAlign="right" style="color: #EA3829;">
+              <b *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>
+              <b *ngIf="orderItem == undefined">0 VNĐ</b>
+            </td>
+          </tr>
+          <tr>
+            <td><i>(Đã bao gồm 10% VAT)</i></td>
+            <td nzAlign="right">VNĐ/tháng</td>
+          </tr>
+        </nz-table>
+        <button class="btn-extend" [disabled]="!validateForm.valid" (click)="submitForm()">
+          <div style="color: white;line-height: 24px; word-wrap: break-word">
+            <span nz-icon nzType="wallet" nzTheme="outline"></span>
+            Gia hạn
+          </div>
+        </button>
+      </nz-card>
+    </nz-col>
+  </nz-row>
   </form>
 </nz-content>

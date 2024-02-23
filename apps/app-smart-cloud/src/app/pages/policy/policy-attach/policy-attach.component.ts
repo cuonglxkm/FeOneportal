@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupAttachPolicyComponent} from "../popup-policy/popup-attach-policy.component";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -54,6 +54,10 @@ export class PolicyAttachComponent implements OnInit {
     this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
   }
 
+  reload() {
+    this.entitiesNameSearch = '';
+    this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
+  }
   onQueryParamsChange(params: NzTableQueryParams){
     const {pageSize, pageIndex} = params;
     this.pageSize = pageSize;
@@ -138,7 +142,7 @@ export class PolicyAttachComponent implements OnInit {
   }
 
   goBack(){
-
+    this.router.navigate(['/app-smart-cloud/policy']);
   }
 
   projectChanged(project: ProjectModel) {
@@ -207,7 +211,8 @@ export class PolicyAttachComponent implements OnInit {
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
-    private notification: NzNotificationService,) {
+    private notification: NzNotificationService,
+    private router: Router,) {
   }
 
 }

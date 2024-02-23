@@ -30,13 +30,14 @@ export class PolicyListComponent {
   size: any = 10;
   searchValue: any = "";
   loading: boolean = false;
+  searchParam: any;
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
 
   listPolicyType =[
-    {label:"Tất cả trạng thái",value :"0"},
-    {label:"Họat động",value :"1"},
-    {label:"Ngừng hoạt động",value :"2"}
+    {label:"Tất cả loại policy",value :"0"},
+    {label:"Portal managed",value :"1"},
+    {label:"Customer managed",value :"2"}
   ];
 
   listAction =[
@@ -93,8 +94,7 @@ export class PolicyListComponent {
     );
   }
 
-  search(search: any) {
-    this.searchValue = search;
+  search() {
     this.loadData();
   }
 
@@ -164,6 +164,21 @@ export class PolicyListComponent {
   }
 
   reload() {
+    this.searchValue = '';
+    this.radioValue = null;
     this.loadData();
   }
+
+  changeSearch(e: any): void {
+    this.searchValue = e;
+  }
+
+  handleRadioClick(name: any) {
+    if (this.radioValue === name) {
+      this.radioValue = null;
+    } else {
+      this.radioValue = name;
+    }
+  }
+
 }

@@ -120,12 +120,11 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.regionId = region.regionId;
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
-  onProjectChange(project: ProjectModel) {
-    this.projectId = project.id;
+  userChangeProject(){
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToEdit() {
@@ -142,16 +141,6 @@ export class InstancesDetailComponent implements OnInit {
 
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/instances']);
-  }
-
-  add(tpl: TemplateRef<{}>): void {
-    this.modalSrv.create({
-      nzTitle: '',
-      nzContent: tpl,
-      nzOnOk: () => {
-        // this.http.post('/rule', { description: this.description }).subscribe(() => this.getData());
-      },
-    });
   }
 
   //Giám sát

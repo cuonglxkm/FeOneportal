@@ -61,7 +61,7 @@ export class CreateUserGroupComponent implements OnInit {
       groupName: ['', [Validators.required,
         Validators.pattern(/^[\w+=,.@\-_]{1,128}$/),
         Validators.maxLength(128), Validators.minLength(3)]],
-      parentName: [null as string | null, [Validators.required]],
+      parentName: [null as string | null],
       policyNames: [null as string[] | null],
       userNames: [null as string[] | null]
     });

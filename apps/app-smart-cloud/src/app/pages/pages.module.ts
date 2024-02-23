@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
@@ -109,6 +109,19 @@ import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
+import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
+import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
+import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
+import { ExtendBackupPackageComponent } from './backup-package/extend/extend-backup-package.component';
+import { EditBackupPackageComponent } from './backup-package/edit/edit-backup-package.component';
+import { DeleteBackupPackageComponent } from './backup-package/delete/delete-backup-package.component';
+import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-public.component';
+import { CreateVolumeVpcComponent } from './volume/component/create-volume-vpc/create-volume-vpc.component';
+import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/resize-volume-vpc.component';
+import { ListVlanComponent } from './vlan/list/list-vlan.component';
+import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
+import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -205,6 +218,19 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListPaymentComponent,
     OrderDetailComponent,
     RenewVolumeComponent,
+    ExtendIpPublicComponent,
+    SnapshotScheduleEditComponent,
+    ListPackagesBackupComponent,
+    DetailPackageBackupComponent,
+    CreatePackageBackupComponent,
+    ExtendBackupPackageComponent,
+    EditBackupPackageComponent,
+    DeleteBackupPackageComponent,
+    CreateVolumeVpcComponent,
+    ResizeVolumeVpcComponent,
+    ListVlanComponent,
+    BlankVolumeComponent,
+    VlanDetailComponent,
   ],
   imports: [
     CommonModule,

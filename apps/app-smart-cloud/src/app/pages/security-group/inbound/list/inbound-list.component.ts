@@ -37,12 +37,15 @@ export class InboundListComponent implements OnInit, OnChanges {
         this.getRule();
     }
 
-    onQueryParamsChange(params: NzTableQueryParams) {
-        const {pageSize, pageIndex} = params
-        this.pageSize = pageSize;
-        this.pageNumber = pageIndex
-        this.getRule()
-    }
+  onPageSizeChange(event: any) {
+    this.pageSize = event
+    this.getRule();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageNumber = event;
+    this.getRule();
+  }
 
     getRule() {
         this.condition.direction = 'ingress'

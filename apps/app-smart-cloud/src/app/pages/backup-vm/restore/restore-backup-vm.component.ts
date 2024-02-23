@@ -3,7 +3,9 @@ import {FormControl, FormGroup, NonNullableFormBuilder} from "@angular/forms";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {Location} from '@angular/common';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {ProjectService} from "../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
     selector: 'one-portal-restore-backup-vm',
@@ -27,11 +29,19 @@ export class RestoreBackupVmComponent implements OnInit {
 
     constructor(private fb: NonNullableFormBuilder,
                 private location: Location,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private router: Router,
+                private projectService: ProjectService) {
     }
 
     regionChanged(region: RegionModel) {
         this.region = region.regionId
+      this.projectService.getByRegion(this.region).subscribe(data => {
+        if (data.length) {
+          localStorage.setItem("projectId", data[0].id.toString())
+          this.router.navigate(['/app-smart-cloud/backup-vm'])
+        }
+      });
 
     }
 
@@ -46,6 +56,9 @@ export class RestoreBackupVmComponent implements OnInit {
     ngOnInit() {
         console.log(this.region)
         console.log(this.project)
+      let regionAndProject = getCurrentRegionAndProject()
+      this.region = regionAndProject.regionId
+      this.project = regionAndProject.projectId
         const backupVmId = this.route.snapshot.paramMap.get('id')
         this.backupVmId = parseInt(backupVmId)
     }

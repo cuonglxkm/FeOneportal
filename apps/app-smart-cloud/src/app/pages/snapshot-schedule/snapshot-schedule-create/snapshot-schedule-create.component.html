@@ -29,14 +29,9 @@
   </ng-template>
 </page-header>
 
-<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-  <nz-spin [nzSpinning]="isLoading" nzSize="large">
-    <nz-card>
-      <div>
-        <h4>Thông tin lịch Snapshot</h4>
-      </div>
-    </nz-card>
-    <nz-card>
+<nz-card [nzBordered]="false" nzTitle="Thông tin lịch Snapshot">
+  <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+    <nz-spin [nzSpinning]="isLoading" nzSize="large">
       <nz-form-item>
         <nz-form-label nzFor="name" nzRequired>Tên lịch Snapshot</nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -113,6 +108,7 @@
       <input nz-input placeholder="1 tuần" disabled="true" type="text" />
       <br />
       <br />
+
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Chọn ngày</nz-form-label>
       <nz-select
         nzSize="default"
@@ -153,34 +149,34 @@
         [(ngModel)]="descSchedule"
         [ngModelOptions]="{ standalone: true }"
       ></textarea>
-    </nz-card>
+    </nz-spin>
+  </form>
+</nz-card>
 
-    <div
-      class="text-right"
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        height: 100%;
-      "
-    >
-      <button
-        (click)="goBack()"
-        nz-button
-        nzType="primary"
-        style="border: none; background-color: gray"
-      >
-        Quay lại
-      </button>
-      <button
-        [disabled]="!form.valid"
-        (click)="create()"
-        nz-button
-        nzType="primary"
-        style="border: none"
-      >
-        Tạo mới
-      </button>
-    </div>
-  </nz-spin>
-</form>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+>
+  <button
+    (click)="goBack()"
+    nz-button
+    nzType="primary"
+    style="border: none; background-color: gray"
+  >
+    Quay lại
+  </button>
+  <button
+    [disabled]="!form.valid"
+    (click)="create()"
+    nz-button
+    nzType="primary"
+    style="border: none"
+  >
+    Tạo mới
+  </button>
+</div>

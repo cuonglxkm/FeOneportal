@@ -1,0 +1,37 @@
+<page-header [breadcrumb]="breadcrumb" [title]="false">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item> Home </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Billing </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-card class="customCard">
+  <div class="text-center">
+    <img
+      style="margin-bottom: 10px"
+      src="assets/imgs/close-circle.png"
+      alt=""
+    />
+    <br />
+    <span style="font-weight: 600; font-size: 20px; color: #ff4d4f"
+      >THANH TOÁN THẤT BẠI</span
+    >
+    <br />
+    <span>Đơn hàng của quý khách đã không thể hoàn tất thanh toán</span> <br />
+    <span style="color: #ff4d4f"
+      >Nguyên nhân: Số thẻ hoặc tài khoản không hợp lệ</span
+    >
+    <br />
+    <button
+      nz-button
+      nzType="primary"
+      (click)="repayment()"
+      style="margin-top: 10px"
+    >
+      <span>Thử thanh toán lại</span>
+    </button>
+  </div>
+</nz-card>

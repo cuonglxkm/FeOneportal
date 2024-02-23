@@ -45,7 +45,7 @@ const CODEMESSAGE: { [key: number]: string } = {
 export class DefaultInterceptor implements HttpInterceptor {
   private refreshTokenEnabled = environment.api.refreshTokenEnabled;
   private refreshTokenType: 're-request' | 'auth-refresh' = environment.api.refreshTokenType;
-  private refreshToking = false;
+  private isRefreshing = false;
   private refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 // @ts-ignore
   url = environment.sso.issuer
@@ -83,7 +83,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   /**
    * 刷新 Token 请求
    */
-  private refreshTokenRequest(): Observable<any> {
+  private refreshTokenRequest() {
     const model = this.tokenSrv.get();
     const params = new HttpParams()
       .set('grant_type', 'refresh_token')
@@ -99,93 +99,73 @@ export class DefaultInterceptor implements HttpInterceptor {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true)
       });
     return result;
-    // return this.http.post(`/api/auth/refresh`, null, null, {headers: {refresh_token: model?.['refresh_token'] || ''}});
   }
 
-  // #region 刷新Token方式一：使用 401 重新刷新 Token
-
-  private tryRefreshToken(ev: any, req: HttpRequest<any>, next: HttpHandler): any {
-    // 1、若请求为刷新Token请求，表示来自刷新Token可以直接跳转登录页
-    if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
-      this.toLogin();
-      return throwError(() => ev);
-    }
-    // 2、如果 `refreshToking` 为 `true` 表示已经在请求刷新 Token 中，后续所有请求转入等待状态，直至结果返回后再重新发起请求
-    if (this.refreshToking) {
-      return this.refreshToken$.pipe(
-        filter(v => !!v),
-        take(1),
-        switchMap(() => next.handle(this.reAttachToken(req)))
-      );
-    }
-    // 3、尝试调用刷新 Token
-    this.refreshToking = true;
-    this.refreshToken$.next(null);
-    const helper = new JwtHelperService();
-    let result: any;
-    const rs = this.refreshTokenRequest()
-      .subscribe(
-        data => {
-        const accessToken = data.access_token || '';
-        const decodedToken = helper.decodeToken(accessToken);
-        this.refreshToking = false;
-        this.refreshToken$.next(data.refresh_token);
-        result = {
-          token: data.access_token,
-          email: decodedToken['email'],
-          time: data.expires_in,
-          id_token: decodedToken['oi_au_id'],
-          exp: decodedToken['exp'],
-          refresh_token: data.refresh_token,
-        };
-        this.tokenSrv.set(result);
-        this.settingsSrv.setUser({
-          ...this.settingsSrv.user,
-          ...result
-        });
-        return next.handle(this.reAttachToken(req));
-      },
-        error => {
-          this.tokenSrv.clear();
-          this.toLogin();
-        })
-    //   .pipe(
-    //   switchMap(res => {
-    //     const accessToken = res.access_token || '';
-    //     const decodedToken = helper.decodeToken(accessToken);
-    //     // 通知后续请求继续执行
-    //     this.refreshToking = false;
-    //     this.refreshToken$.next(res.refresh_token);
-    //     // 重新保存新 token
-    //     // this.tokenSrv.set(res);
-    //
-    //     const info = {
-    //
-    //     };
-    //     this.tokenSrv.set(info);
-    //     // 重新发起请求
-    //     return next.handle(this.reAttachToken(req));
-    //   }),
-    //   catchError(err => {
-    //     this.refreshToking = false;
-    //     this.toLogin();
-    //     return throwError(() => err);
-    //   })
-    // );
-    return rs;
-  }
+  //
+  // private tryRefreshToken(ev: any, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
+  //
+  //   // if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
+  //   //   this.toLogin();
+  //   //   return throwError(() => ev);
+  //   // }
+  //
+  //   if (this.refreshToking) {
+  //     return this.refreshToken$.pipe(
+  //       filter(v => !!v),
+  //       take(1),
+  //       switchMap((token) => next.handle(this.reAttachToken(req, token)))
+  //     );
+  //   }
+  //   // 3、尝试调用刷新 Token
+  //   this.refreshToking = true;
+  //   this.refreshToken$.next(null);
+  //   const helper = new JwtHelperService();
+  //   let result: any;
+  //   const rs = this.refreshTokenRequest()
+  //     .subscribe(
+  //       data => {
+  //       const accessToken = data.access_token || '';
+  //       const decodedToken = helper.decodeToken(accessToken);
+  //       this.refreshToking = false;
+  //       this.refreshToken$.next(data.access_token);
+  //       result = {
+  //         token: data.access_token,
+  //         email: decodedToken['email'],
+  //         time: data.expires_in,
+  //         id_token: decodedToken['oi_au_id'],
+  //         exp: decodedToken['exp'],
+  //         refresh_token: data.refresh_token,
+  //       };
+  //       this.tokenSrv.set(result);
+  //       this.settingsSrv.setUser({
+  //         ...this.settingsSrv.user,
+  //         ...result
+  //       });
+  //       return next.handle(this.reAttachToken(req, data.access_token));
+  //     },
+  //       error => {
+  //         this.refreshToking = false;
+  //         this.tokenSrv.clear();
+  //         this.toLogin();
+  //         return throwError(() => error);
+  //       })
+  //   return this.refreshToken$.pipe(
+  //     filter(v => !!v),
+  //     take(1),
+  //     switchMap((token) => next.handle(this.reAttachToken(req, token)))
+  //   );
+  // }
 
   /**
    * Đính kèm lại thông tin Token mới
    *
    * > Vì yêu cầu đã được bắt đầu nên nó sẽ không được thực hiện lại `@delon/auth` nên cần phải đính kèm lại Mã thông báo mới tùy theo tình hình kinh doanh.
    */
-  private reAttachToken(req: HttpRequest<any>): HttpRequest<any> {
-    // 以下示例是以 NG-ALAIN 默认使用 `SimpleInterceptor`
-    const token = this.tokenSrv.get()?.token;
+  private reAttachToken(req: HttpRequest<any>, token: any): HttpRequest<any> {
+
     return req.clone({
       setHeaders: {
-        token: `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       }
     });
   }
@@ -194,28 +174,28 @@ export class DefaultInterceptor implements HttpInterceptor {
 
   // #region  Phương thức làm mới mã thông báo thứ hai: sử dụng giao diện `refresh` của `@delon/auth`
 
-  private buildAuthRefresh(): void {
-    if (!this.refreshTokenEnabled) {
-      return;
-    }
-    this.tokenSrv.refresh
-      .pipe(
-        filter(() => !this.refreshToking),
-        switchMap(res => {
-          this.refreshToking = true;
-          return this.refreshTokenRequest();
-        })
-      )
-      .subscribe({
-        next: res => {
-          // TODO: Mock expired value
-          res.expired = +new Date() + 1000 * 60 * 5;
-          this.refreshToking = false;
-          this.tokenSrv.set(res);
-        },
-        error: () => this.toLogin()
-      });
-  }
+  // private buildAuthRefresh(): void {
+  //   if (!this.refreshTokenEnabled) {
+  //     return;
+  //   }
+  //   this.tokenSrv.refresh
+  //     .pipe(
+  //       filter(() => !this.isRefreshing),
+  //       switchMap(res => {
+  //         this.isRefreshing = true;
+  //         return this.refreshTokenRequest();
+  //       })
+  //     )
+  //     .subscribe({
+  //       next: res => {
+  //         // TODO: Mock expired value
+  //         res.expired = +new Date() + 1000 * 60 * 5;
+  //         this.isRefreshing = false;
+  //         this.tokenSrv.set(res);
+  //       },
+  //       error: () => this.toLogin()
+  //     });
+  // }
 
   // #endregion
 
@@ -223,62 +203,6 @@ export class DefaultInterceptor implements HttpInterceptor {
     // this.notification.error(`Hết phiên đăng nhập`, ``);
     this.goTo(this.tokenSrv.login_url!);
 
-  }
-
-  private handleData(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    this.checkStatus(ev);
-    // 业务处理：一些通用操作
-    switch (ev.status) {
-      case 200:
-        // 业务层级错误处理，以下是假定restful有一套统一输出格式（指不管成功与否都有相应的数据格式）情况下进行处理
-        // 例如响应内容：
-        //  错误内容：{ status: 1, msg: '非法参数' }
-        //  正确内容：{ status: 0, response: {  } }
-        // 则以下代码片断可直接适用
-        // if (ev instanceof HttpResponse) {
-        //   const body = ev.body;
-        //   if (body && body.status !== 0) {
-        //     const customError = req.context.get(CUSTOM_ERROR);
-        //     if (customError) this.injector.get(NzMessageService).error(body.msg);
-        //     // 注意：这里如果继续抛出错误会被行258的 catchError 二次拦截，导致外部实现的 Pipe、subscribe 操作被中断，例如：this.http.get('/').subscribe() 不会触发
-        //     // 如果你希望外部实现，需要手动移除行259
-        //     return if (customError) throwError({}) : of({});
-        //   } else {
-        //     // 返回原始返回体
-        //     if (req.context.get(RAW_BODY) || ev.body instanceof Blob) {
-        //        return of(ev);
-        //     }
-        //     // 重新修改 `body` 内容为 `response` 内容，对于绝大多数场景已经无须再关心业务状态码
-        //     return of(new HttpResponse(Object.assign(ev, { body: body.response })));
-        //     // 或者依然保持完整的格式
-        //     return of(ev);
-        //   }
-        // }
-        break;
-      case 401:
-        // if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
-        //   this.tryRefreshToken(ev, req, next);
-        // }
-        this.toLogin();
-        break;
-      case 403:
-      case 404:
-      case 500:
-        // this.goTo(`/exception/${ev.status}?url=${req.urlWithParams}`);
-        break;
-      default:
-        if (ev instanceof HttpErrorResponse) {
-          console.warn(
-            'Lỗi không xác định, chủ yếu là do phần phụ trợ không hỗ trợ CORS tên miền chéo hoặc cấu hình không hợp lệ, vui lòng tham khảo https://ng-alain.com/docs/server để giải quyết các vấn đề về tên miền chéo', ev
-          );
-        }
-        break;
-    }
-    if (ev instanceof HttpErrorResponse) {
-      return throwError(() => ev);
-    } else {
-      return of(ev);
-    }
   }
 
   private getAdditionalHeaders(headers?: HttpHeaders): { [name: string]: string } {
@@ -295,7 +219,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       case 200:
         break;
       case 401:
-        this.tryRefreshToken(null, req, next);
+        // this.tryRefreshToken(null, req, next);
         // this.tokenSrv.clear()
         // if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
         //   this.tryRefreshToken(req, next);
@@ -323,25 +247,24 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     let url = req.url;
     if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
       const {baseUrl} = environment.api;
       url = baseUrl + (baseUrl.endsWith('/') && url.startsWith('/') ? url.substring(1) : url);
     }
-    if (this.checkTokenExpired()) {
-      this.tryRefreshToken(null, req, next);
-    }
+
+    // if (this.checkTokenExpired()) {
+    //   this.tryRefreshToken(null, req, next);
+    // }
 
     const newReq = req.clone({url, setHeaders: this.getAdditionalHeaders(req.headers)});
     return next.handle(newReq).pipe(
-      mergeMap(ev => {
-        if (ev instanceof HttpResponseBase) {
-          return this.handleError(ev, newReq, next);
+      catchError(err => {
+        if (err instanceof HttpResponseBase && err.status === 401) {
+           return this.handle401Error(newReq, next);
         }
-        return of(ev);
+        return throwError(err);
       }),
-      // catchError((err: HttpErrorResponse) => this.handleError(err, newReq, next))
     );
 
   }
@@ -354,6 +277,61 @@ export class DefaultInterceptor implements HttpInterceptor {
     const expirationTime = exp * 1000;
     const currentTime = Date.now();
     return currentTime > expirationTime;
+  }
+
+
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshToken$.next(null);
+
+      const token = this.tokenSrv.get()?.['refresh_token'];
+
+      if (token)
+        return this.refreshTokenRequest().pipe(
+          switchMap((token: any) => {
+            this.isRefreshing = false;
+
+            const helper = new JwtHelperService();
+            // this.tokenService.saveToken(token.accessToken);
+            this.refreshToken$.next(token.access_token);
+
+            const accessToken = token.access_token || '';
+            const decodedToken = helper.decodeToken(accessToken);
+
+            let addition = {
+              token: token.access_token,
+              time: token.expires_in,
+              exp: decodedToken['exp'],
+              refresh_token: token.refresh_token,
+            };
+            let result =
+            this.tokenSrv.get();
+            this.tokenSrv.set({
+              ...result,
+              ...addition
+            });
+            this.settingsSrv.setUser({
+              ...this.settingsSrv.user,
+              ...result
+            });
+
+            return next.handle(this.reAttachToken(request, token.access_token));
+          }),
+          catchError((err) => {
+            // this.notification.error('Thất bại', 'Tái tạo token thất bại');
+            this.isRefreshing = false;
+            this.tokenSrv.clear()
+            return throwError(err);
+          })
+        );
+    }
+
+    return this.refreshToken$.pipe(
+      filter(token => token !== null),
+      take(1),
+      switchMap((token) => next.handle(this.reAttachToken(request, token)))
+    );
   }
 
 }

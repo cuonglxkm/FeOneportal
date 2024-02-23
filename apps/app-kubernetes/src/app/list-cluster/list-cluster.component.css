@@ -1,0 +1,44 @@
+.flex-style {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.mbot-24 {
+  margin-bottom: 24px;
+}
+
+.mleft-16 {
+  margin-left: 16px;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.header-table {
+  background-color: #E2EEFC;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.w-25 {
+  width: 25%;
+}
+
+.icon-color {
+  color: #0066b3;
+}
+
+.delete-icon {
+  color: #ea3829;
+}
+
+input, .border-button {
+  border-radius: 4px;
+}
+
+.borderless {
+  border: none;
+}

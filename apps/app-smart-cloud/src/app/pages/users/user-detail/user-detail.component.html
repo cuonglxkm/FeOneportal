@@ -5,7 +5,9 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
@@ -29,151 +31,160 @@
   </ng-template>
 </page-header>
 
-<nz-card [nzBordered]="false" nzTitle="Thông tin chính của User" *ngIf="user">
-  <div nz-row>
-    <div nz-col nzSpan="12">
-      <label style="font-weight: 500"
-        >Tên User<span class="text-red">*</span></label
-      >
-      <div class="nameField" style="margin-bottom: 10px">
-        {{ user.userName }}
-      </div>
-    </div>
+<nz-card [nzBordered]="false" *ngIf="user">
+  <div style="margin-bottom: 20px">
+    <span class="title-card">Thông tin chính của User</span>
   </div>
   <div nz-row>
-    <div nz-col nzSpan="12">
-      <label style="font-weight: 500"
-        >Email<span class="text-red">*</span></label
-      >
-      <div class="nameField" style="margin-bottom: 10px">{{ user.email }}</div>
+    <div nz-col nzSpan="8">
+      <label class="lable-custom">Tên của User</label>
+      <br />
+      <input
+        style="border-radius: 8px; width: 90%"
+        nz-input
+        [(ngModel)]="user.userName"
+        disabled="true"
+        type="text"
+      />
     </div>
-  </div>
-  <div nz-row>
-    <div nz-col nzSpan="12">
-      <label style="font-weight: 500"
-        >Thời gian khởi tạo<span class="text-red">*</span></label
-      >
-      <div class="nameField">
-        {{ user.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}
-      </div>
+    <div nz-col nzSpan="8">
+      <label class="lable-custom">Email</label>
+      <br />
+      <input
+        style="border-radius: 8px; width: 90%"
+        nz-input
+        [(ngModel)]="user.email"
+        disabled="true"
+        type="text"
+      />
+    </div>
+    <div nz-col nzSpan="8">
+      <label class="lable-custom">Thời gian khởi tạo</label>
+      <br />
+      <input
+        style="border-radius: 8px; width: 90%"
+        nz-input
+        [(ngModel)]="createdDate"
+        disabled="true"
+        type="text"
+      />
     </div>
   </div>
 </nz-card>
 
-<nz-card [nzBordered]="false" nzTitle="Thông tin bổ sung">
+<nz-card [nzBordered]="false">
+  <div>
+    <span class="title-card">Thông tin bổ sung</span>
+  </div>
   <nz-tabset>
     <nz-tab nzTitle="Policies">
-      <form nz-form style="margin-bottom: -2%">
-        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-          <div
-            nz-col
-            [nzLg]="6"
-            [nzMd]="6"
-            [nzSm]="24"
-            [nzXl]="6"
-            [nzXs]="24"
-            [nzXXl]="6"
-          >
-            <nz-form-item>
-              <nz-form-label [nzFor]="">Loại Policy</nz-form-label>
-              <nz-form-control>
-                <nz-select
-                  [ngModel]="typePolicy"
-                  [ngModelOptions]="{ standalone: true }"
-                  [nzPlaceHolder]="'Tất cả các loại'"
-                  [nzShowSearch]="false"
-                  (ngModelChange)="changeFilterStatus($event)"
-                >
-                  <nz-option
-                    *ngFor="let i of filterStatus"
-                    [nzLabel]="i.text"
-                    [nzValue]="i.value"
-                  />
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div
-            nz-col
-            [nzLg]="10"
-            [nzMd]="10"
-            [nzSm]="24"
-            [nzXl]="10"
-            [nzXs]="24"
-            [nzXXl]="10"
-          >
-            <nz-row style="margin-left: -14px">
-              <nz-input-group
-                style="width: 100%"
-                nzSearch
-                [nzAddOnAfter]="suffixButtonPolicy"
+      <div nz-row [nzGutter]="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <nz-form-item>
+            <nz-form-label
+              style="
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 20px;
+                letter-spacing: 0px;
+                text-align: left;
+              "
+              [nzFor]=""
+              >Loại Policy</nz-form-label
+            >
+            <nz-form-control>
+              <nz-select
+                style="width: 20%"
+                [ngModel]="typePolicy"
+                [ngModelOptions]="{ standalone: true }"
+                [nzPlaceHolder]="'Tất cả các loại'"
+                [nzShowSearch]="false"
+                (ngModelChange)="changeFilterStatus($event)"
+                nzSize="large"
               >
-                <input
-                  name="namePolicy"
-                  nz-input
-                  placeholder="Tìm kiếm tên, thời gian tạo ..."
-                  [ngModel]="policyParam"
-                  (ngModelChange)="changePolicyParam($event)"
+                <nz-option
+                  *ngFor="let i of filterStatus"
+                  [nzLabel]="i.text"
+                  [nzValue]="i.value"
                 />
-              </nz-input-group>
-              <ng-template #suffixButtonPolicy>
-                <button
-                  nz-button
-                  nzType="primary"
-                  nzSearch
-                  (click)="searchPolicy()"
-                >
-                  <i nz-icon nzType="search"></i>
-                  Search
-                </button>
-              </ng-template>
-            </nz-row>
-          </div>
-          <div
-            class="text-right p-0 m-b-0"
-            nz-col
-            [nzLg]="8"
-            [nzMd]="8"
-            [nzSm]="24"
-            [nzXl]="8"
-            [nzXs]="24"
-            [nzXXl]="8"
-          >
-            <button
-              class="m-r-8"
-              nz-button
-              style="cursor: pointer"
-              [disabled]="isReload"
-              (click)="reloadPolicies()"
-            >
-              <span nz-icon nzType="reload" nzTheme="outline"></span>
-            </button>
-            <button
-              class="m-r-8"
-              nz-button
-              nzType="default"
-              style="background-color: #9c9c9c; color: white"
-              (click)="deletePolicies()"
-            >
-              <i nz-icon nzType="delete"></i>
-              Xóa
-            </button>
-            <button
-              class="m-r-8"
-              class="bg-success border-success"
-              nz-button
-              nzType="primary"
-              (click)="navigateToAddPolicies()"
-            >
-              <i nz-icon nzType="plus"></i>
-              Thêm policies
-            </button>
-          </div>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
         </div>
-      </form>
-      <div stype="font-weight: 500">Policies</div>
-      <div class="nameField">có thể đính kèm tối đa 10 policies</div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <nz-input-group
+            style="margin-right: 8px; width: 50%; border-radius: 8px"
+            [nzPrefix]="prefixIconSearch"
+            nzSize="large"
+          >
+            <input
+              name="name"
+              nz-input
+              placeholder="Tìm kiếm tên, thời gian tạo ..."
+              [(ngModel)]="policyParam"
+            />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img
+              src="assets/imgs/search.svg"
+              alt=""
+              style="cursor: pointer"
+              nz-tooltip="Tìm kiếm"
+              (click)="searchPolicy()"
+            />
+          </ng-template>
+          <button
+            style="border: none; border-radius: 8px"
+            nz-button
+            (click)="deletePolicies()"
+          >
+            <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
+          </button>
+          <button
+            style="border: none; border-radius: 8px"
+            nz-button
+            (click)="reloadPolicies()"
+          >
+            <img
+              style="margin-top: -4px"
+              src="assets/imgs/refresh.svg"
+              alt=""
+            />
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            (click)="navigateToAddPolicies()"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span>Thêm policies</span>
+          </button>
+        </div>
+      </div>
+      <nz-row class="nameField">Có thể đính kèm tối đa 10 policies</nz-row>
       <nz-table
+        style="margin-top: 10px"
         #rowSelectionTable
         nzShowSizeChanger
         [nzScroll]="{ x: '100%', y: '250px' }"
@@ -198,105 +209,131 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of listOfPolicies; let i = index">
-            <td
-              [nzChecked]="setOfCheckedPolicy.has(item.name)"
-              (nzCheckedChange)="onItemCheckedPolicy(item.name, $event)"
-              nzLeft
-            ></td>
-            <td class="fieldColor">{{ item.name }}</td>
-            <td>{{ item.type }}</td>
-            <td>{{ item.attachedVia }}</td>
-          </tr>
+          <ng-container *ngFor="let item of listOfPolicies; let i = index">
+            <tr>
+              <td
+                [nzChecked]="setOfCheckedPolicy.has(item.name)"
+                (nzCheckedChange)="onItemCheckedPolicy(item.name, $event)"
+                nzLeft
+              ></td>
+              <td
+                [nzExpand]="expandSet.has(item.name)"
+                (nzExpandChange)="onExpandChange(item.name, $event)"
+              >
+                <a
+                  nz-tooltip
+                  nzTooltipTitle="Xem chi tiết"
+                  nzTooltipPlacement="bottom"
+                  [routerLink]="'/app-smart-cloud/policy/detail/' + item.name"
+                  >{{ item.name }}</a
+                >
+              </td>
+              <td>{{ item.type }}</td>
+              <td>{{ item.attachedVia }}</td>
+            </tr>
+            <tr [nzExpand]="expandSet.has(item.name)">
+              <div class="json-viewer-bg">
+                <button
+                  (click)="copyText(item)"
+                  style="z-index: 1; position: absolute; right: 20px; top: 21px"
+                >
+                  <span nz-icon nzType="copy" nzTheme="outline"></span> Copy
+                  JSON
+                </button>
+                <ngx-json-viewer
+                  [json]="item"
+                  style="position: relative"
+                ></ngx-json-viewer>
+              </div>
+            </tr>
+          </ng-container>
         </tbody>
       </nz-table>
     </nz-tab>
     <nz-tab nzTitle="Groups">
-      <form nz-form>
-        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-          <div
-            nz-col
-            [nzLg]="10"
-            [nzMd]="10"
-            [nzSm]="24"
-            [nzXl]="10"
-            [nzXs]="24"
-            [nzXXl]="10"
-          >
-            <nz-input-group
-              style="width: 100%"
-              nzSearch
-              [nzAddOnAfter]="suffixButtonGroup"
-            >
-              <input
-                name="nameGroup"
-                nz-input
-                placeholder="Tìm kiếm tên, thời gian tạo ..."
-                [ngModel]="groupParam"
-                (ngModelChange)="changeGroupParam($event)"
-              />
-            </nz-input-group>
-            <ng-template #suffixButtonGroup>
-              <button
-                nz-button
-                nzType="primary"
-                nzSearch
-                (click)="searchGroup()"
-              >
-                <i nz-icon nzType="search"></i>
-                Search
-              </button>
-            </ng-template>
-          </div>
-          <div
-            class="text-right p-0 m-b-0"
-            nz-col
-            [nzLg]="14"
-            [nzMd]="14"
-            [nzSm]="24"
-            [nzXl]="14"
-            [nzXs]="24"
-            [nzXXl]="14"
-          >
-            <button
-              class="m-r-8"
-              nz-button
-              style="cursor: pointer"
-              [disabled]="isReload"
-              (click)="reloadGroupOfUser()"
-            >
-              <span nz-icon nzType="reload" nzTheme="outline"></span>
-            </button>
-            <button
-              class="m-r-8"
-              nz-button
-              nzType="default"
-              style="background-color: #9c9c9c; color: white"
-              (click)="deleteGroups()"
-            >
-              <i nz-icon nzType="delete"></i>
-              Xóa
-            </button>
-            <button
-              class="m-r-8"
-              class="bg-success border-success"
-              nz-button
-              nzType="primary"
-              (click)="navigateToAddToGroups()"
-            >
-              <i nz-icon nzType="plus"></i>
-              Add to Groups
-            </button>
-          </div>
+      <div nz-row [nzGutter]="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <span class="custom-text">Các Groups mà User đang tham gia</span>
         </div>
-      </form>
-      <div stype="font-weight: 500">Các Groups mà User đang tham gia</div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <nz-input-group
+            style="margin-right: 8px; width: 50%; border-radius: 8px"
+            [nzPrefix]="prefixIconSearch"
+            nzSize="large"
+          >
+            <input
+              name="name"
+              nz-input
+              placeholder="Tìm kiếm tên, thời gian tạo ..."
+              [(ngModel)]="groupParam"
+            />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img
+              src="assets/imgs/search.svg"
+              alt=""
+              style="cursor: pointer"
+              nz-tooltip="Tìm kiếm"
+              (click)="searchGroup()"
+            />
+          </ng-template>
+          <button
+            style="border: none; border-radius: 8px"
+            nz-button
+            (click)="deleteGroups()"
+          >
+            <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
+          </button>
+          <button
+            style="border: none; border-radius: 8px"
+            nz-button
+            (click)="reloadGroupOfUser()"
+          >
+            <img
+              style="margin-top: -4px"
+              src="assets/imgs/refresh.svg"
+              alt=""
+            />
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            (click)="navigateToAddToGroups()"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span>Thêm vào Groups</span>
+          </button>
+        </div>
+      </div>
       <div class="nameField">
         Một người dùng có thể là thành viên của tối đa 10 nhóm cùng một lúc
       </div>
       <nz-table
+        style="margin-top: 10px"
         #rowSelectionTable
         nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
         [nzFrontPagination]="false"
         [nzData]="listOfGroups"
         (nzCurrentPageDataChange)="onCurrentPageDataChangeGroup($event)"
@@ -340,7 +377,7 @@
                 and {{ item.policies.length - 2 }} policies
               </span>
             </td>
-            <td>{{ item.createdDate }}</td>
+            <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -350,10 +387,13 @@
 <div class="text-right">
   <button
     nz-button
-    nzType="default"
-    style="background-color: #9c9c9c; color: white"
     (click)="navigateToList()"
   >
-    Quay lại
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/arrow-left-2.svg"
+      alt=""
+    />
+    <span>Quay lại</span>
   </button>
 </div>

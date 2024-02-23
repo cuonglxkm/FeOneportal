@@ -1,22 +1,27 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ProjectModel} from "../../../../../shared/models/project.model";
 import {RegionModel} from "../../../../../shared/models/region.model";
-import {CreateBackupVolumeOrderData, CreateBackupVolumeSpecification, VolumeDTO} from "../../../../../shared/dto/volume.dto";
+import {
+  CreateBackupVolumeOrderData,
+  CreateBackupVolumeSpecification,
+  VolumeDTO
+} from "../../../../../shared/dto/volume.dto";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BackupVmService} from "../../../../../shared/services/backup-vm.service";
-import {BackupPackage} from "../../../../../shared/models/backup-vm";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
-import {NzMessageService} from "ng-zorro-antd/message";
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import {NzNotificationService} from 'ng-zorro-antd/notification';
+import {PackageBackupService} from "../../../../../shared/services/package-backup.service";
+import {PackageBackupModel} from "../../../../../shared/models/package-backup.model";
+import {ProjectService} from "../../../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-create-backup-volume',
   templateUrl: './create-backup-volume.component.html',
   styleUrls: ['./create-backup-volume.component.less'],
 })
-export class CreateBackupVolumeComponent implements OnInit{
+export class CreateBackupVolumeComponent implements OnInit {
   receivedData: VolumeDTO;
   regionId: any;
   projectId: any;
@@ -24,7 +29,7 @@ export class CreateBackupVolumeComponent implements OnInit{
   startDate: any;
   endDate: any;
   nameVolume: any;
-  listOfPackage: BackupPackage[];
+  listOfPackage: PackageBackupModel[];
   selectedPackage: any;
 
   form = new FormGroup({
@@ -39,9 +44,16 @@ export class CreateBackupVolumeComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.projectService.getByRegion(this.regionId).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/backup-volume']);
+      }
+    });
   }
+
   backToList() {
-    this.router.navigate(['/app-smart-cloud/volume']);
+    this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
   createBackup() {
@@ -72,13 +84,13 @@ export class CreateBackupVolumeComponent implements OnInit{
     createBackupVolumeOrderData.createdByUserId = userId;
     createBackupVolumeOrderData.note = 'tạo backup volume';
     createBackupVolumeOrderData.orderItems = [
-        {
-            orderItemQuantity: 1,
-            specification: JSON.stringify(createBackupVolumeSpecification),
-            specificationType: 'volumebackup_create',
-            price: 0,
-            serviceDuration: 1
-        }
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(createBackupVolumeSpecification),
+        specificationType: 'volumebackup_create',
+        price: 0,
+        serviceDuration: 1
+      }
     ]
     console.log(createBackupVolumeOrderData);
 
@@ -91,16 +103,19 @@ export class CreateBackupVolumeComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe(data =>{
+    this.activatedRoute.queryParams.subscribe(data => {
       this.idVolume = data['idVolume'];
       this.nameVolume = data['nameVolume'];
       this.startDate = data['startDate'];
-      this.endDate = data['endDate'];this.tokenService.get()?.userId
+      this.endDate = data['endDate'];
+      this.tokenService.get()?.userId
     });
 
-    this.backupVmService.getBackupPackages(this.tokenService.get()?.userId).subscribe(data => {
-      this.listOfPackage = data;
+    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+      this.listOfPackage = data.records
+      console.log('backup package', this.listOfPackage)
     })
+
   }
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -108,6 +123,8 @@ export class CreateBackupVolumeComponent implements OnInit{
               private backupVmService: BackupVmService,
               private backupVolumeService: BackupVolumeService,
               private notification: NzNotificationService,
+              private backupPackageService: PackageBackupService,
+              private projectService: ProjectService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 

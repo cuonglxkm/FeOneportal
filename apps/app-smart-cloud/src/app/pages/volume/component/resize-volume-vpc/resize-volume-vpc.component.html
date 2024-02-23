@@ -1,0 +1,143 @@
+<page-header [breadcrumb]="breadcrumb"
+             [title]="title">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Dịch vụ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/volumes'">
+          Volume
+        </a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChangeProject($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <ng-template #title>
+    <!--          <span nz-icon-->
+    <!--                nzType="arrow-left"-->
+    <!--                nzTheme="outline"-->
+    <!--                [routerLink]="'/app-smart-cloud/volume/detail/' + this.volumeId"-->
+    <!--                style="margin-right: 10px;"></span>-->
+    Điều chỉnh dung lượng Volume
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <nz-card>
+      <h2><b>Thông tin Volume</b></h2>
+      <nz-descriptions [nzColumn]="2">
+        <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleType"><b>{{ volumeInfo?.volumeType }}</b></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }}</b></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleStatus">
+              <span *ngIf="volumeInfo?.status === 'KHOITAO'"
+                    style="color: #6abe39"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
+          <span *ngIf="volumeInfo?.status === 'ERROR'"
+                style="color: #FF3333"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
+          <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
+                style="color: #FF7C33"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
+        </nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleAttachInstance">
+          <span *ngIf="volumeInfo?.attachedInstances?.length > 0"><b>{{ listVMs }}</b></span>
+          <span *ngIf="volumeInfo?.attachedInstances?.length <= 0"><b>Không có máy ảo</b></span>
+        </nz-descriptions-item>
+<!--        <nz-descriptions-item [nzTitle]="titleVolumeType">-->
+<!--          <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>-->
+      </nz-descriptions>
+      <ng-template #titleName>
+        <span>Tên Volume</span>
+      </ng-template>
+      <ng-template #titleType>
+        <span>Loại Volume</span>
+      </ng-template>
+      <ng-template #titleStorage>
+        <span>Dung lượng</span>
+      </ng-template>
+      <ng-template #titleIOPS>
+        <span>IOPS</span>
+      </ng-template>
+      <ng-template #titleStatus>
+        <span>Trạng thái Volume</span>
+      </ng-template>
+      <ng-template #titleAttachInstance>
+        <span>Gán vào máy ảo</span>
+      </ng-template>
+      <ng-template #titleVolumeType>
+        <span>Kiểu Volume</span>
+      </ng-template>
+      <div style="margin-top: 15px;">
+        <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
+      </div>
+      <div style="margin-top: 15px;">
+        <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
+      </div>
+    </nz-card>
+    <nz-card>
+      <h3><b>Thông tin điều chỉnh</b></h3>
+
+      <nz-form-item>
+        <nz-form-label nzFor="storage">
+          <div class="label">
+            <span>Dung lượng tăng thêm</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+          <nz-input-number formControlName="storage"
+                           id="storage"
+                           style="width: 100%;"
+                           [nzMin]="volumeInfo?.sizeInGB"
+                           [nzStep]="1"/>
+          <ng-template #storageErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Backup
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="end">
+        <nz-space nzSize="large">
+          <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
+            <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+          <nz-form-control *nzSpaceItem>
+            <button nz-button nzType="primary" [disabled]="!validateForm.valid"
+                    class="button-ok" (click)="showConfirmResize()">
+              <span nz-icon nzType="check" nzTheme="outline" ></span>Điều chỉnh</button>
+            <nz-modal [(nzVisible)]="isVisibleConfirm" nzTitle="Xác nhận thay đổi Volume" nzTabScrollList="true"
+                      (nzOnCancel)="handleCancelResize()" nzCentered>
+              <div *nzModalTitle>
+                <p class="text-h5"><b>Xác nhận thay đổi Volume</b></p>
+              </div>
+              <div *nzModalContent>
+
+                <div>
+                  <b style="text-align: center">Quý khách chắn chắn muốn thực hiện điều chỉnh dung lượng Volume?</b>
+                </div>
+
+              </div>
+              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                <button nz-button nzType="default" (click)="handleCancelResize()" class="button-cancel">
+                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                </button>
+                <button nz-button nzType="primary"
+                        (click)="handleOkResize()"
+                        [nzLoading]="isLoadingConfirm"
+                        class="button-ok">
+                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                </button>
+              </div>
+            </nz-modal>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </nz-card>
+  </form>
+</nz-content>

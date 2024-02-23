@@ -10,13 +10,11 @@
   </nz-breadcrumb>
   <div class="text-right">
     <region-select-dropdown
-      [isDetail]="true"
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
     <project-select-dropdown
-      [isDetail]="true"
       [regionId]="regionId"
-      (valueChanged)="onProjectChange($event)"
+      (userChanged)="userChangeProject()"
     ></project-select-dropdown>
   </div>
   <div>

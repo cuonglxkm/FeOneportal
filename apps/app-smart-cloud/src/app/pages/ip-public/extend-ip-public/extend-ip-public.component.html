@@ -1,0 +1,86 @@
+
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Gia hạn IP Public'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>IP Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Extend</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<form nz-form [formGroup]="form" >
+  <nz-card >
+    <h3>Thông tin IP Public</h3>
+    <hr style="opacity: 0.1">
+    <hr>
+    <nz-table style="margin-top: 50px">
+      <td style="width: 33%">
+        <p><b>Địa chỉ IP: </b> {{ipInfo.ipAddress}} </p>
+      </td>
+      <td style="width: 33%">
+        <p><b>Gắn vào máy ảo: </b>{{ipInfo.attachedVm ? ipInfo.attachedVm : 'Không có máy ảo'}}</p>
+      </td>
+      <td style="width: 33%">
+        <label nz-checkbox [(ngModel)]="isIpV6" [nzDisabled]="true">IPv6</label>
+      </td>
+    </nz-table>
+  </nz-card>
+
+  <nz-card >
+    <h3>Thông tin gia hạn</h3>
+    <hr style="opacity: 0.1">
+    <hr>
+    <nz-table style="margin-top: 50px">
+      <td style="width: 50%">
+        <p><b>Ngày cấp dịch vụ: </b> {{dateString | date:'dd/MM/yyyy'}} </p>
+      </td>
+      <td style="width: 50%">
+        <p><b>Ngày hết hạn: </b> {{dateStringExpired | date:'dd/MM/yyyy'}} </p>
+      </td>
+    </nz-table>
+    <b>Số tháng cần gia hạn thêm</b>
+    <nz-input-group nzCompact  style="margin-top: 10px; margin-bottom: 18px">
+      <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn thời gian sử dụng--"
+                 style="width: 100%"
+                 formControlName="numOfMonth" (nzOpenChange)="caculator()">
+        <nz-option nzValue="1" nzLabel="1"></nz-option>
+        <nz-option nzValue="3" nzLabel="3"></nz-option>
+        <nz-option nzValue="6" nzLabel="6"></nz-option>
+        <nz-option nzValue="9" nzLabel="9"></nz-option>
+        <nz-option nzValue="12" nzLabel="12"></nz-option>
+      </nz-select>
+      </nz-input-group>
+    <p style="color: red"><b style="color: red">Ngày hết hạn dự kiến: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
+  </nz-card>
+
+  <nz-card nzTitle="Thành tiền" nzBorderless='false'>
+    <div nz-row class="mb-md">
+      <div nz-col nzSpan="12">
+        <p style="margin-top: 10px">Chi phí IP Public ( {{this.form.controls['numOfMonth'].value}} tháng )</p>
+        <p style="margin-top: 10px">Thành tiền ( Đã bao gồm VAT )</p>
+      </div>
+      <div nz-col nzSpan="12">
+        <div class="text-right">
+          <p *ngIf="total != undefined" style="margin-top: 10px">{{total.data.totalAmount.amount.toLocaleString()}} VNĐ</p>
+          <p *ngIf="total != undefined" style="margin-top: 10px">{{total.data.totalPayment.amount.toLocaleString()}} VNĐ</p>
+        </div>
+      </div>
+    </div>
+    <div style="float: right; padding-top: 1%">
+      <nz-form-item>
+        <button nz-button nzType="default" (click)="backToList()">Quay lại</button>
+        <button nz-button nzType="primary" (click)="extendIpPublic()" [disabled]="form.invalid">Gia hạn</button>
+      </nz-form-item>
+    </div>
+  </nz-card>
+</form>
+

@@ -16,6 +16,7 @@ services:
       - one-portal-network
     environment:
       - APP_SMART_CLOUD_URL=https://appsmartcloud.onsmartcloud.com
+      - APP_KUBERNETES_URL=https://appkubernetes.onsmartcloud.com
       - BASE_URL=https://api.onsmartcloud.com
       - ISSUER=https://identity.onsmartcloud.com
       - CLIENT_ID=frontend-client
@@ -37,6 +38,21 @@ services:
       - "4203:80"
     networks:
       - one-portal-network
+
+  #  ----------------------------------------------------------------
+#  app-kubernetes:
+#    image: registry.onsmartcloud.com/cloudportal/oneportal-app-kubernetes:${BUILD_VERSION}
+#    build:
+#      context: ./..
+#      dockerfile: apps/app-kubernetes/Dockerfile
+#    container_name: oneportal-app-kubernetes
+#    restart: on-failure
+#    expose:
+#      - '4205'
+#    ports:
+#      - "4205:80"
+#    networks:
+#      - one-portal-network
 #----------------------------------------------------------------
 networks:
   one-portal-network:

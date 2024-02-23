@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, NonNullableFormBuilder} from "@angular/forms";
 import {Location} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
+import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from "../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-create-schedule-backup',
@@ -26,13 +28,20 @@ export class CreateScheduleBackupComponent implements OnInit{
 
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router,
+              private projectService: ProjectService) {
   }
 
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['app-smart-cloud/schedule/backup/list'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
@@ -48,7 +57,9 @@ export class CreateScheduleBackupComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.project = JSON.parse(localStorage.getItem('projectId'));
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
   }
 
 

@@ -1,8 +1,9 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chi tiết đơn hàng'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/order/list']">Đơn hàng</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a>Chi tiết đơn hàng</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -50,12 +51,15 @@
     <nz-col nzSpan="9">
       <nz-form-item>
         <h3 style="font-weight: normal;">{{data.customerName}}</h3>
+        <h3 style="color:white">.</h3>
       </nz-form-item>
       <nz-form-item>
         <h3 style="font-weight: normal;">{{data.phoneNumber}}</h3>
+        <h3 style="color:white">.</h3>
       </nz-form-item>
       <nz-form-item>
         <h3 style="font-weight: normal;">{{data.email}}</h3>
+        <h3 style="color:white">.</h3>
       </nz-form-item>
       <nz-form-item>
         <h3 style="font-weight: normal;">{{data.address}}</h3>
@@ -72,6 +76,7 @@
     <nz-col nzSpan="9">
       <nz-form-item>
         <h3 style="font-weight: normal;">{{data.orderDate}}</h3>
+        <h3 style="color:white">.</h3>
       </nz-form-item>
       <nz-form-item>
         <h3 style="font-weight: normal;color: blue">{{data.invoiceCode}}</h3>
@@ -120,10 +125,10 @@
           </tr>
         </nz-table>
         <div class="float-right">
-          <button *ngIf="data.statusCode != 4 && titleStepFour != 'Gặp sự cố'" nz-button style="background-color: darkgray; color: white;">Quay lại</button>
+          <button *ngIf="data.statusCode != 4 && data.statusCode < 2 && titleStepFour != 'Gặp sự cố'" nz-button style="background-color: darkgray; color: white;">Quay lại</button>
           <button *ngIf="data.statusCode == 5 && data.invoiceCode == ''" nz-button style="border-color: blue; color: blue;">Mua lại</button>
-          <button *ngIf="data.statusCode < 4 && titleStepFour != 'Gặp sự cố'" nz-button style="border-color: blue; color: blue;">Hủy đơn hàng</button>
-          <button *ngIf="data.statusCode < 4" nz-button style="background-color: #52c41a; color: white;">Thanh toán</button>
+          <button *ngIf="data.statusCode < 2 && titleStepFour != 'Gặp sự cố'" nz-button style="border-color: blue; color: blue;">Hủy đơn hàng</button>
+          <button *ngIf="data.statusCode < 2" nz-button style="background-color: #52c41a; color: white;">Thanh toán</button>
         </div>
       </div>
     </nz-col>

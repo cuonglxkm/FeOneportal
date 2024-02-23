@@ -25,7 +25,8 @@
                       [nzFrontPagination]="false"
                       [nzTotal]="collection?.totalCount || 0"
                       [nzPageSize]="collection?.pageSize || 0"
-                      (nzQueryParams)="onQueryParamsChange($event)"
+                      (nzPageSizeChange)="onPageSizeChange($event)"
+                      (nzPageIndexChange)="onPageIndexChange($event)"
                       [nzLoading]="isLoading"
             >
                 <thead>

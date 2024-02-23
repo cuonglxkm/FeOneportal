@@ -44,6 +44,7 @@ export class PolicyTableComponent {
 
   onInputChange(value: string) {
     this.value = value;
+    this.filteredPolicies = this.filterPolicies()
   }
   onQueryParamsChange(params: NzTableQueryParams) {
     const {pageSize, pageIndex} = params
@@ -85,6 +86,10 @@ export class PolicyTableComponent {
     this.listPoliciesSelected.emit(this.listOfSelected)
   }
 
+  reload() {
+    this.value = '';
+    this.getPolicies();
+  }
   getPolicies() {
     this.loading = true
     this.userGroupService.getPolicy(this.form).subscribe(data => {
@@ -103,7 +108,6 @@ export class PolicyTableComponent {
   }
 
   filterPolicies() {
-    console.log(this.value);
     return this.listPolicies.filter(item => (!item || item.name.includes(this.value)))
   }
 
