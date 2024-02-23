@@ -1,0 +1,196 @@
+<nz-content>
+    <div class="inner-content">
+        <!-- display list form -->
+        <ng-container *ngIf="showForm===idListForm">
+            <div class="filter">
+                <nz-input-group [nzPrefix]="prefixIconButton" class="search">
+                    <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
+                        [(ngModel)]="searchText" />
+                </nz-input-group>
+                <ng-template #prefixIconButton><span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span></ng-template>
+
+                <button nz-button nzType="primary" class="btn-create" (click)="createForm()">
+                    <span nz-icon nzType="plus" nzTheme="outline"></span>
+                    Tạo mới ACL
+                </button>
+            </div>
+            <div>
+                <nz-table nzShowPagination [nzFrontPagination]="false" nzShowSizeChanger #aclTopic
+                    [nzData]="listAclTopic" class="tbl-acl" [nzTotal]="total" [nzPageIndex]="pageIndex"
+                    [nzPageSize]="pageSize" (nzPageSizeChange)="changeSize($event)"
+                    (nzPageIndexChange)="changePage($event)">
+                    <thead>
+                        <tr>
+                            <th nzWidth="5%">STT</th>
+                            <th nzWidth="10%">Tài khoản</th>
+                            <th nzWidth="25%">Topic/Prefixed Topic</th>
+                            <th nzWidth="15%">Nhóm quyền</th>
+                            <th nzWidth="15%">Máy chủ</th>
+                            <th nzWidth="10%">Quyền</th>
+                            <th nzWidth="10%">Ngày tạo</th>
+                            <th nzWidth="15%" class="text-center">Thao tác</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of aclTopic.data; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ data.principal }}</td>
+                            <td>{{ data.resourceName }}
+                                <nz-tag [nzColor]="data.patternType === 'Exact' ? '#68818f' : '#8e9ca4'">{{
+                                    data.patternType }}</nz-tag>
+                            </td>
+                            <td>{{ data.permissionGroupName }}</td>
+                            <td>{{ data.host }}</td>
+                            <td>
+                                <nz-tag [nzColor]="data.allowDeny === 'ALLOW' ? '#84e1a1' : '#f07575'">{{data.allowDeny}}</nz-tag>
+                            </td>
+                            <td>{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
+                            <td class="text-center">
+                                <a nz-dropdown [nzDropdownMenu]="menu">
+                                    <span nz-icon nzType="more" nzTheme="outline"></span>
+                                </a>
+                                <nz-dropdown-menu #menu="nzDropdownMenu">
+                                    <ul nz-menu nzSelectable>
+                                        <li nz-menu-item>
+                                            <button nz-button nzType="text" (click)="updateACLTopic(data)">
+                                                <span nz-icon nzType="edit" nzTheme="twotone"
+                                                    nzTwotoneColor="#0066B0"></span> Chỉnh sửa
+                                            </button>
+                                        </li>
+                                        <li nz-menu-item>
+                                            <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
+                                                <span nz-icon nzType="delete" nzTheme="twotone"
+                                                    nzTwotoneColor="#0066B0"></span> Xóa
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nz-dropdown-menu>
+                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </ng-container>
+
+        <!-- display create form -->
+        <ng-container *ngIf="showForm===idCreateForm || showForm===idUpdateForm">
+            <form nz-form [formGroup]="aclTopicForm" [nzLabelAlign]="'left'" (ngSubmit)="submitForm()">
+                <!-- Tài khoản -->
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
+                    <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
+                        <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder"
+                            id="principal" formControlName="principal" [nzDisabled]="isEdit">
+                            <nz-option *ngFor="let item of listOfPrincipals" [nzLabel]="item.username"
+                                [nzValue]="item.username"></nz-option>
+                        </nz-select>
+                        <ng-template #tagPlaceHolder let-selectedList> và {{ selectedList.length }} tài khoản
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <!-- Topic -->
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="topic" class="lbl-form">Topic</nz-form-label>
+                    <div nz-col [nzSpan]="8">
+                        <nz-radio-group [(ngModel)]="tabTopicValue" (ngModelChange)="onChangeRadioTopic()"
+                            [ngModelOptions]="{standalone: true}" class="topic-radio" nzButtonStyle="solid">
+                            <label class="exact-lbl" nz-radio-button [nzValue]="topicExtract"
+                                [nzDisabled]="isEdit && tabTopicValue!==topicExtract">Exact</label>
+                            <label class="prefixed-lbl" nz-radio-button [nzValue]="topicPrefixed"
+                                [nzDisabled]="isEdit && tabTopicValue!==topicPrefixed">Prefixed</label>
+                        </nz-radio-group>
+                        <ng-container *ngIf="tabTopicValue===topicExtract; else prefixedBlock">
+                            <nz-form-control nzErrorTip="Vui lòng chọn topic">
+                                <nz-select nzMode="multiple" nzPlaceHolder="Chọn Topic" [nzDisabled]="isEdit"
+                                    [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="topic">
+                                    <ng-container *ngFor="let item of listOfTopic">
+                                        <nz-option *ngIf="!isLoadingTopic" [nzLabel]="item.topicName"
+                                            [nzValue]="item.topicName"></nz-option>
+                                    </ng-container>
+                                    <nz-option *ngIf="isLoadingTopic" nzDisabled nzCustomContent>
+                                        <span nz-icon nzType="loading" nzTheme="outline"></span> Loading Data...
+                                    </nz-option>
+                                </nz-select>
+                                <ng-template #topicPlaceHolder let-selectedList> và {{ selectedList.length }}
+                                    topic</ng-template>
+                            </nz-form-control>
+                        </ng-container>
+                        <ng-template #prefixedBlock>
+                            <nz-form-control nzErrorTip="Vui lòng nhập prefixed">
+                                <input nz-input class="prefixed-input" type="text" formControlName="topicPrefixed"
+                                    placeholder="Nhập prefixed">
+                            </nz-form-control>
+                        </ng-template>
+                    </div>
+                </nz-form-item>
+                <!-- Nhóm quyền -->
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permissionGroup" class="lbl-form">Nhóm
+                        quyền</nz-form-label>
+                    <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn nhóm quyền">
+                        <nz-select nzPlaceHolder="Nhóm quyền" formControlName="permissionGroup">
+                            <nz-option *ngFor="let item of listOfPermissionGroup" [nzLabel]="item.value"
+                                [nzValue]="item.key">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <!-- Permission -->
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="permission"
+                        class="lbl-form">Permission</nz-form-label>
+                    <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn permission">
+                        <nz-select nzPlaceHolder="Permission" formControlName="permission">
+                            <nz-option *ngFor="let item of listOfPermission" [nzLabel]="item" [nzValue]="item">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <!-- Máy chủ -->
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="4" nzRequired nzFor="host" class="lbl-form">Máy chủ
+                        <span class="exclamation-icon" nz-icon nzType="exclamation-circle" nzTheme="twotone"
+                            nzTooltipTitle="Giá trị mặc định 0.0.0.0 nghĩa là cho phép kết nối từ bất cứ đâu."
+                            nzTooltipPlacement="bottom" nz-tooltip>
+                        </span>
+                    </nz-form-label>
+                    <nz-form-control [nzSpan]="8" [nzErrorTip]="errorTpl">
+                        <input nz-input type="text" formControlName="host"
+                            pattern='^(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$' placeholder="0.0.0.0" />
+                        <ng-template #errorTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">
+                                Vui lòng nhập địa chỉ máy chủ
+                            </ng-container>
+                            <ng-container *ngIf="control.hasError('pattern')">
+                                Địa chỉ máy chủ không hợp lệ
+                            </ng-container>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-control [nzSpan]="12">
+                        <div class="footer-btn">
+                            <button nz-button class="cancel-btn" (click)="cancelCreate()">
+                                <span nz-icon nzType="close" nzTheme="outline"></span>
+                                Hủy
+                            </button>
+                            <ng-container *ngIf="showForm===idCreateForm">
+                                <button nz-button nzType="primary" class="btn-create">
+                                    <span nz-icon nzType="check" nzTheme="outline"></span>
+                                    Xác nhận
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="showForm===idUpdateForm">
+                                <button nz-button nzType="primary" class="btn-create">
+                                    <span nz-icon nzType="check" nzTheme="outline"></span>
+                                    Cập nhật
+                                </button>
+                            </ng-container>
+                        </div>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+
+    </div>
+</nz-content>

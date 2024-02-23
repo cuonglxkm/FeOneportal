@@ -43,6 +43,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'app-kafka',
+        loadChildren: () =>
+          loadRemoteModule('app-kafka', './Module').then((m) => m.RemoteEntryModule),
+      },
+      {
         path: 'app-kubernetes',
         loadChildren: () =>
           loadRemoteModule('app-kubernetes', './Module').then(
