@@ -42,12 +42,12 @@
             <nz-input-group
               style="width: 300px;"
               [nzPrefix]="prefixIconSearch"
-              nzSize="large"
-              [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])">
+              nzSize="large">
               <input
                 name="name"
                 nz-input
+                [(ngModel)]="value"
+                (input)="onInputChange($event.target['value'])"
                 placeholder="Tìm kiếm tên ..."/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -342,12 +342,12 @@
               <nz-input-group
                 style="width: 300px;"
                 [nzPrefix]="prefixIconSearch"
-                nzSize="large"
-                [(ngModel)]="value"
-                (input)="onInputChange($event.target['value'])">
+                nzSize="large">
                 <input
                   name="name"
                   nz-input
+                  [(ngModel)]="value"
+                  (input)="onInputChange($event.target['value'])"
                   placeholder="Tìm kiếm tên ..."/>
               </nz-input-group>
               <ng-template #prefixIconSearch>
