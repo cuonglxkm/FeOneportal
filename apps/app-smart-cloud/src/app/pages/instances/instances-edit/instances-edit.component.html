@@ -1,7 +1,7 @@
 <page-header>
   <nz-breadcrumb style="float: left">
     <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Home</a>
+      <a [routerLink]="['/']">Trang chủ</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>
       <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
@@ -19,17 +19,18 @@
   </div>
   <div>
     <nz-row style="margin-bottom: -10px">
-      <h1 style="width: 50%; font-size: 20px">Chỉnh sửa máy ảo</h1>
-      <div class="text-right non-pointer" style="width: 50%">
-        <button
-          nz-button
-          [nzType]="'primary'"
-          (click)="navigateToCreate()"
-          class="bg-success border-success"
-        >
-          <i nz-icon nzType="plus"></i> <span>Thêm mới</span>
+      <div class="page-header-custom">Chỉnh sửa máy ảo</div>
+    </nz-row>
+    <nz-row style="margin-top: 20px">
+      <div style="width: 100%" class="non-pointer">
+        <button nz-button nzType="primary" (click)="navigateToCreate()">
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/add-circle.svg"
+            alt=""
+          />Tạo mới máy ảo
         </button>
-        <one-portal-instances-btn [instancesId]="id" style="margin-left: 2%">
+        <one-portal-instances-btn [instancesId]="id" style="margin-left: 10px">
         </one-portal-instances-btn>
       </div>
     </nz-row>
@@ -37,354 +38,429 @@
 </page-header>
 
 <form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
-  <nz-card [nzBordered]="false" nzTitle="Thông tin máy ảo">
-    <nz-row nzGutter="16">
-      <div style="width: 100%">
-        <nz-alert
-          nzType="warning"
-          [nzMessage]="nzDescriptionWarning01"
-          nzShowIcon
-        ></nz-alert>
-        <ng-template #nzDescriptionWarning01>
-          <div>Host name không thay đổi khi điều chỉnh tên máy ảo</div>
-        </ng-template>
-      </div></nz-row
-    >
-    <br />
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
-          >
-          <nz-form-control nzErrorTip="Vui lòng nhập tên máy ảo">
-            <input
-              nz-input
-              [(ngModel)]="instancesModel.name"
-              id="name"
-              placeholder="Nhập tên máy ảo"
-              [ngModelOptions]="{ standalone: true }"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <br />
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Hệ điều hành: {{ instancesModel.imageName }}
-            <a
-              class="text-blue"
-              (click)="navigateToChangeImage()"
-              style="margin-left: 15px"
-            >
-              <img src="assets/imgs/undo.png" alt="" /><span
-                style="margin-left: 15px"
-                >Thay đổi</span
-              ></a
-            >
-          </nz-form-label>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-form-label
-        >Chọn loại Volume (<span class="text-red">*</span>)</nz-form-label
-      >
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-radio-group
-        style="width: 100%; display: inline-flex"
-        name="selectedHDDorSSD"
-      >
-        <nz-col nzXs="24" nzMd="12">
-          <nz-card
-            [nzAlign]="'middle'"
-            [ngStyle]="{
-              'background-color': activeBlockHDD ? '#e6f7ff' : '#fcfcfc'
-            }"
-          >
-            <nz-card-meta
-              [nzAvatar]="nzAvatarselectedHDDorSSD1"
-              [nzTitle]="nzTitleselectedHDDorSSD1"
-              [nzDescription]="nzDescriptionselectedHDDorSSD1"
-            >
-              <ng-template #nzAvatarselectedHDDorSSD1>
-                <input
-                  type="radio"
-                  [disabled]="true"
-                  [checked]="activeBlockHDD"
-                  (click)="initHDD()"
-                />
-              </ng-template>
-              <ng-template #nzTitleselectedHDDorSSD1>
-                <b>HDD</b>
-              </ng-template>
-              <ng-template #nzDescriptionselectedHDDorSSD1>
-                <ellipsis>
-                  Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ
-                  liệu,<br />
-                  lưu trữ dữ liệu hoặc khối lượng công việc chuyên sâu thông
-                  lượng</ellipsis
-                >
-              </ng-template>
-            </nz-card-meta>
-          </nz-card></nz-col
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card [nzBordered]="false">
+        <div style="margin-bottom: 20px">
+          <span class="title-card">Thông tin máy ảo</span>
+        </div>
+        <nz-row nzGutter="16">
+          <div style="width: 100%">
+            <nz-alert
+              nzType="warning"
+              [nzDescription]="nzDescriptionWarning01"
+              nzShowIcon
+            ></nz-alert>
+            <ng-template #nzDescriptionWarning01>
+              <div>Host name không thay đổi khi điều chỉnh tên máy ảo</div>
+            </ng-template>
+          </div></nz-row
         >
-        <nz-col nzXs="24" nzMd="12">
-          <nz-card
-            [nzAlign]="'middle'"
-            [ngStyle]="{
-              'background-color': activeBlockSSD ? '#e6f7ff' : '#fcfcfc'
-            }"
-          >
-            <nz-card-meta
-              [nzAvatar]="nzAvatarselectedHDDorSSD2"
-              [nzTitle]="nzTitleselectedHDDorSSD2"
-              [nzDescription]="nzDescriptionselectedHDDorSSD2"
-            >
-              <ng-template #nzAvatarselectedHDDorSSD2>
+        <br />
+        <nz-row nzGutter="16">
+          <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label nzFor="name"
+                >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-form-control nzErrorTip="Vui lòng nhập tên máy ảo">
                 <input
-                  type="radio"
-                  [disabled]="true"
-                  [checked]="activeBlockSSD"
-                  (click)="initSSD()"
+                  class="input-custom"
+                  nz-input
+                  [(ngModel)]="instancesModel.name"
+                  id="name"
+                  placeholder="Nhập tên máy ảo"
+                  [ngModelOptions]="{ standalone: true }"
                 />
-              </ng-template>
-              <ng-template #nzTitleselectedHDDorSSD2>
-                <b>SSD</b>
-              </ng-template>
-              <ng-template #nzDescriptionselectedHDDorSSD2>
-                <ellipsis
-                  >Lựa chọn tốt hơn cho khối lượng công việc phân tích dữ liệu
-                  hoặc <br />
-                  chơi game
-                </ellipsis>
-              </ng-template>
-            </nz-card-meta>
-          </nz-card>
-        </nz-col>
-      </nz-radio-group>
-    </nz-row>
-
-    <nz-tabset>
-      <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
-        <ngu-carousel
-          #myCarouselFlavor
-          [inputs]="carouselTileConfig"
-          [dataSource]="listOfferFlavors"
-        >
-          <ngu-tile
-            *nguCarouselDef="let item; index as i; let ani = animate"
-            [@slider]="ani"
-          >
-            <div
-              (click)="
-                onInputFlavors(item.id);
-                selectElementInputFlavors('flavor_' + item.id)
-              "
-              [id]="'flavor_' + item.id"
-            >
-              <nz-row>
-                <nz-col
-                  style="padding-bottom: 5px"
-                  class="newClassFlavor text-center"
-                  [class.initialClassFlavor]="
-                    selectedElementFlavor === 'flavor_' + item.id
-                  "
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="16">
+          <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label nzFor="name"
+                >Hệ điều hành: {{ instancesModel.imageName }}
+                <a (click)="navigateToChangeImage()" style="margin-left: 15px">
+                  <img src="assets/imgs/refresh.svg" alt="" /><span
+                    style="margin-left: 15px"
+                    >Thay đổi</span
+                  ></a
                 >
-                  <div>
-                    <span
-                      class="nameFlavor"
-                      [class.initialNameFlavor]="
-                        selectedElementFlavor === 'flavor_' + item.id
-                      "
-                      >{{ item.offerName | slice : 3 : -4 }}</span
+              </nz-form-label>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="16">
+          <nz-form-label
+            >Chọn loại Volume (<span class="text-red">*</span>)</nz-form-label
+          >
+        </nz-row>
+        <nz-row nzGutter="16">
+          <nz-radio-group
+            style="width: 100%; display: inline-flex"
+            name="selectedHDDorSSD"
+          >
+            <nz-row
+              [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
+              style="margin-top: 10px"
+              ><nz-col
+                [nzLg]="12"
+                [nzMd]="24"
+                [nzSm]="24"
+                [nzXl]="12"
+                [nzXs]="24"
+              >
+                <nz-card
+                  style="border-radius: 4px"
+                  [nzAlign]="'middle'"
+                  [ngStyle]="{
+                    border: activeBlockHDD
+                  ? '1px solid #0066B3'
+                  : '1px solid #DADADA',
+                  height: cardHeight,
+                }"
+                >
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20">
+                      <nz-card-meta
+                        [nzAvatar]="nzAvatarselectedHDDorSSD1"
+                        [nzTitle]="nzTitleselectedHDDorSSD1"
+                        [nzDescription]="nzDescriptionselectedHDDorSSD1"
+                      >
+                        <ng-template #nzAvatarselectedHDDorSSD1>
+                          <input
+                            type="radio"
+                            [disabled]="true"
+                            [checked]="activeBlockHDD"
+                            (click)="initHDD()"
+                          />
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD1>
+                          <b>HDD</b>
+                        </ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD1>
+                          <ellipsis class="text-custom">
+                            Lựa chọn tốt hơn nếu bạn đang đối phó với các bản
+                            sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
+                            công việc chuyên sâu thông lượng
+                          </ellipsis>
+                        </ng-template>
+                      </nz-card-meta></nz-col
                     >
-                    <div style="margin-top: -16px">
+                    <nz-col
+                      style="
+                        display: flex;
+                        align-items: center;
+                        margin-top: -24px;
+                      "
+                      [ngStyle]="{
+                      height: cardHeight,
+                    }"
+                      nzSpan="4"
+                    >
                       <img
-                        style="width: 100px"
                         [src]="
-                          selectedElementFlavor === 'flavor_' + item.id
-                            ? 'assets/imgs/line2.svg'
-                            : 'assets/imgs/line.svg'
+                          activeBlockHDD
+                            ? 'assets/imgs/hdd-svgrepo-com-active.svg'
+                            : 'assets/imgs/hdd-svgrepo-com.svg'
                         "
                         alt=""
                       />
-                    </div>
-                    <span class="priceFlavor">{{
-                      item.price.fixedPrice.amount
-                    }}</span
-                    ><span> đ/tháng</span>
-                  </div>
-                </nz-col>
-              </nz-row>
-              <nz-row>
-                <nz-col
-                  style="width: 100%; padding-top: 5px"
-                  [class.flavor-footer-active]="
-                    selectedElementFlavor === 'flavor_' + item.id
-                  "
-                  [class.flavor-footer]="
-                    selectedElementFlavor != 'flavor_' + item.id
-                  "
+                    </nz-col>
+                  </nz-row>
+                </nz-card>
+              </nz-col>
+              <nz-col
+                [nzLg]="12"
+                [nzMd]="24"
+                [nzSm]="24"
+                [nzXl]="12"
+                [nzXs]="24"
+              >
+                <nz-card
+                  style="border-radius: 4px"
+                  [nzAlign]="'middle'"
+                  [ngStyle]="{
+                  border: activeBlockSSD
+                  ? '1px solid #0066B3'
+                  : '1px solid #DADADA',
+                  height: cardHeight,
+                }"
                 >
-                  <div>
-                    <p>{{ item.description }}</p>
-                  </div>
-                </nz-col>
-              </nz-row>
-            </div>
-          </ngu-tile>
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20"
+                      ><nz-card-meta
+                        [nzAvatar]="nzAvatarselectedHDDorSSD2"
+                        [nzTitle]="nzTitleselectedHDDorSSD2"
+                        [nzDescription]="nzDescriptionselectedHDDorSSD2"
+                      >
+                        <ng-template #nzAvatarselectedHDDorSSD2>
+                          <input
+                            type="radio"
+                            [disabled]="true"
+                            [checked]="activeBlockSSD"
+                            (click)="initSSD()"
+                          />
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD2>
+                          <b>SSD</b>
+                        </ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD2>
+                          <ellipsis class="text-custom"
+                            >Lựa chọn tốt hơn cho khối lượng công việc phân tích
+                            dữ liệu hoặc chơi game
+                          </ellipsis>
+                        </ng-template>
+                      </nz-card-meta>
+                    </nz-col>
+                    <nz-col
+                      style="
+                        display: flex;
+                        align-items: center;
+                        margin-top: -24px;
+                      "
+                      [ngStyle]="{
+                        height: cardHeight,
+                      }"
+                      nzSpan="4"
+                    >
+                      <img
+                        [src]="
+                          activeBlockSSD
+                            ? 'assets/imgs/ssd-svgrepo-com-active.svg'
+                            : 'assets/imgs/ssd-svgrepo-com.svg'
+                        "
+                        alt=""
+                      />
+                    </nz-col>
+                  </nz-row>
+                </nz-card> </nz-col
+            ></nz-row>
+          </nz-radio-group>
+        </nz-row>
 
-          <ul class="myPoint" NguCarouselPoint>
-            <li
-              *ngFor="let i of myCarouselFlavor.pointNumbers"
-              [class.active]="i === myCarouselFlavor.activePoint"
-              (click)="myCarouselFlavor.moveTo(i)"
-            ></li>
-          </ul>
-        </ngu-carousel>
-      </nz-tab>
-      <nz-tab nzTitle="Cấu hình tuỳ chỉnh" (nzClick)="onClickCustomConfig()">
-        <div class="ant-table">
-          <table>
-            <thead class="ant-table-thead">
-              <tr>
-                <th>VCPU</th>
-                <th>RAM (GB)</th>
-                <th>Dung lượng (GB)</th>
-                <th>IOPS</th>
-                <th>Giá theo tháng (VNĐ)</th>
-                <th>Giá theo giờ (VNĐ)</th>
-              </tr>
-            </thead>
-            <tbody class="ant-table-tbody">
-              <tr>
-                <td>
+        <nz-tabset>
+          <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
+            <ngu-carousel
+              #myCarouselFlavor
+              [inputs]="carouselTileConfig"
+              [dataSource]="listOfferFlavors"
+            >
+              <ngu-tile
+                *nguCarouselDef="let item; index as i; let ani = animate"
+                [@slider]="ani"
+              >
+                <div
+                  (click)="
+                    onInputFlavors(item.id);
+                    selectElementInputFlavors('flavor_' + item.id)
+                  "
+                  [id]="'flavor_' + item.id"
+                >
+                  <nz-row>
+                    <nz-col
+                      style="padding-bottom: 5px"
+                      class="newClassFlavor text-center"
+                      [class.initialClassFlavor]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                    >
+                      <div>
+                        <span
+                          class="nameFlavor"
+                          [class.initialNameFlavor]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                          >{{ item.offerName | slice : 3 : -4 }}</span
+                        >
+                        <div style="margin-top: -16px">
+                          <img
+                            style="width: 100px"
+                            [src]="
+                              selectedElementFlavor === 'flavor_' + item.id
+                                ? 'assets/imgs/line2.svg'
+                                : 'assets/imgs/line.svg'
+                            "
+                            alt=""
+                          />
+                        </div>
+                        <span class="priceFlavor">{{
+                          item.price.fixedPrice.amount
+                        }}</span
+                        ><span> đ/tháng</span>
+                      </div>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col
+                      style="width: 100%; padding-top: 5px"
+                      [class.flavor-footer-active]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                      [class.flavor-footer]="
+                        selectedElementFlavor != 'flavor_' + item.id
+                      "
+                    >
+                      <div>
+                        <p>{{ item.description }}</p>
+                      </div>
+                    </nz-col>
+                  </nz-row>
+                </div>
+              </ngu-tile>
+
+              <ul class="myPoint" NguCarouselPoint>
+                <li
+                  *ngFor="let i of myCarouselFlavor.pointNumbers"
+                  [class.active]="i === myCarouselFlavor.activePoint"
+                  (click)="myCarouselFlavor.moveTo(i)"
+                ></li>
+              </ul>
+            </ngu-carousel>
+          </nz-tab>
+          <nz-tab
+            nzTitle="Cấu hình tuỳ chỉnh"
+            (nzClick)="onClickCustomConfig()"
+          >
+            <div class="ant-table">
+              <table>
+                <thead class="ant-table-thead">
+                  <tr>
+                    <th>VCPU</th>
+                    <th>RAM (GB)</th>
+                    <th>Dung lượng (GB)</th>
+                    <th>IOPS</th>
+                    <th>Giá theo tháng (VNĐ)</th>
+                    <th>Giá theo giờ (VNĐ)</th>
+                  </tr>
+                </thead>
+                <tbody class="ant-table-tbody">
+                  <tr>
+                    <td>
+                      <nz-input-number
+                        [(ngModel)]="configCustom.vCPU"
+                        (ngModelChange)="onChangeConfigCustom()"
+                        [ngModelOptions]="{ standalone: true }"
+                        [nzMin]="instancesModel.cpu"
+                        [nzMax]="62"
+                        [nzStep]="1"
+                      ></nz-input-number>
+                    </td>
+                    <td>
+                      <nz-input-number
+                        [(ngModel)]="configCustom.ram"
+                        (ngModelChange)="onChangeConfigCustom()"
+                        [ngModelOptions]="{ standalone: true }"
+                        [nzMin]="instancesModel.ram"
+                        [nzMax]="62"
+                        [nzStep]="1"
+                      ></nz-input-number>
+                    </td>
+                    <td>
+                      <nz-input-number
+                        [(ngModel)]="configCustom.capacity"
+                        (ngModelChange)="onChangeConfigCustom()"
+                        [ngModelOptions]="{ standalone: true }"
+                        [nzMin]="instancesModel.storage"
+                        [nzMax]="100"
+                        [nzStep]="1"
+                      ></nz-input-number>
+                    </td>
+                    <td>
+                      <label>
+                        {{ configCustom.iops }}
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        {{ configCustom.priceMonth }}
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        {{ configCustom.priceHour }}
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </nz-tab>
+        </nz-tabset>
+        <br />
+        <nz-row nzGutter="16">
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label>IP Public: {{ listIPPublicStr }}</nz-form-label>
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label>IP LAN: {{ listIPLanStr }}</nz-form-label>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="16">
+          <nz-col style="width: 100%">
+            <nz-form-item>
+              <nz-form-label>Chọn Security Group</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                  nzMode="multiple"
+                  nzPlaceHolder="Chọn Security Group"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="selectedSecurityGroup"
+                >
+                  <nz-option
+                    *ngFor="let i of listSecurityGroup"
+                    [nzLabel]="i.name"
+                    [nzValue]="i.id"
+                  />
+                </nz-select>
+              </nz-form-control> </nz-form-item
+          ></nz-col>
+        </nz-row>
+
+        <nz-row style="margin-bottom: -40px" nzGutter="16">
+          <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label
+                >Thời hạn sử dụng (<span class="text-red">*</span>) -
+                Tháng</nz-form-label
+              >
+              <nz-form-control>
+                <nz-row>
                   <nz-input-number
-                    [(ngModel)]="configCustom.vCPU"
-                    (ngModelChange)="onChangeConfigCustom()"
-                    [ngModelOptions]="{ standalone: true }"
-                    [nzMin]="instancesModel.cpu"
-                    [nzMax]="62"
-                    [nzStep]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <nz-input-number
-                    [(ngModel)]="configCustom.ram"
-                    (ngModelChange)="onChangeConfigCustom()"
-                    [ngModelOptions]="{ standalone: true }"
-                    [nzMin]="instancesModel.ram"
-                    [nzMax]="62"
-                    [nzStep]="1"
-                  ></nz-input-number>
-                </td>
-                <td>
-                  <nz-input-number
-                    [(ngModel)]="configCustom.capacity"
-                    (ngModelChange)="onChangeConfigCustom()"
-                    [ngModelOptions]="{ standalone: true }"
-                    [nzMin]="instancesModel.storage"
+                    [nzReadOnly]="true"
+                    style="width: 50%"
+                    [nzMin]="1"
                     [nzMax]="100"
                     [nzStep]="1"
+                    [(ngModel)]="numberMonth"
+                    [ngModelOptions]="{ standalone: true }"
                   ></nz-input-number>
-                </td>
-                <td>
-                  <label>
-                    {{ configCustom.iops }}
-                  </label>
-                </td>
-                <td>
-                  <label>
-                    {{ configCustom.priceMonth }}
-                  </label>
-                </td>
-                <td>
-                  <label>
-                    {{ configCustom.priceHour }}
-                  </label>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </nz-tab>
-    </nz-tabset>
-    <br />
-    <nz-row nzGutter="16">
-      <nz-col nzLg="12" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label>IP Public: {{ listIPPublicStr }}</nz-form-label>
-        </nz-form-item>
-      </nz-col>
-      <nz-col nzLg="12" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label>IP LAN: {{ listIPLanStr }}</nz-form-label>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-col style="width: 100%">
-        <nz-form-item>
-          <nz-form-label>Chọn Security Group</nz-form-label>
-          <nz-form-control>
-            <nz-select
-              nzMode="multiple"
-              nzPlaceHolder="Chọn Security Group"
-              [ngModelOptions]="{ standalone: true }"
-              [(ngModel)]="selectedSecurityGroup"
-            >
-              <nz-option
-                *ngFor="let i of listSecurityGroup"
-                [nzLabel]="i.name"
-                [nzValue]="i.id"
-              />
-            </nz-select>
-          </nz-form-control> </nz-form-item
-      ></nz-col>
-    </nz-row>
+                  <div style="margin-left: 20px">
+                    Thời gian bắt đầu sử dụng:
+                    {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
+                  </div>
+                </nz-row>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+      <one-portal-blockstorage-detail
+        [instancesId]="id"
+        [isDetail]="false"
+      ></one-portal-blockstorage-detail>
 
-    <nz-row style="margin-bottom: -40px" nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label
-            >Thời hạn sử dụng (<span class="text-red">*</span>) -
-            Tháng</nz-form-label
-          >
-          <nz-form-control>
-            <nz-row>
-              <nz-input-number
-                [nzReadOnly]="true"
-                style="width: 50%"
-                [nzMin]="1"
-                [nzMax]="100"
-                [nzStep]="1"
-                [(ngModel)]="numberMonth"
-                [ngModelOptions]="{ standalone: true }"
-              ></nz-input-number>
-              <div style="margin-left: 20px">
-                Thời gian bắt đầu sử dụng:
-                {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
-              </div>
-            </nz-row>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-  </nz-card>
-  <one-portal-blockstorage-detail
-    [instancesId]="id"
-    [isDetail]="false"
-  ></one-portal-blockstorage-detail>
-
-  <one-portal-network-detail
-    [instancesId]="id"
-    [isDetail]="false"
-  ></one-portal-network-detail>
+      <one-portal-network-detail
+        [instancesId]="id"
+        [isDetail]="false"
+      ></one-portal-network-detail>
+    </nz-col>
+  </nz-row>
 </form>
 <nz-card nzTitle="Thành tiền">
   <div>

@@ -2,7 +2,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
@@ -184,79 +184,142 @@
             style="width: 100%; display: inline-flex"
             name="selectedHDDorSSD"
           >
-            <nz-col nzXs="24" nzMd="12">
-              <nz-card
-                style="border-radius: 4px"
-                [nzAlign]="'middle'"
-                [ngStyle]="{
+            <nz-row
+              [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
+              style="margin-top: 10px"
+              ><nz-col
+                [nzLg]="12"
+                [nzMd]="24"
+                [nzSm]="24"
+                [nzXl]="12"
+                [nzXs]="24"
+              >
+                <nz-card
+                  style="border-radius: 4px"
+                  [nzAlign]="'middle'"
+                  [ngStyle]="{
                     border: activeBlockHDD
-                  ? '1px solid #035DED'
+                  ? '1px solid #0066B3'
                   : '1px solid #DADADA',
+                  height: cardHeight,
                 }"
-              >
-                <nz-card-meta
-                  [nzAvatar]="nzAvatarselectedHDDorSSD1"
-                  [nzTitle]="nzTitleselectedHDDorSSD1"
-                  [nzDescription]="nzDescriptionselectedHDDorSSD1"
                 >
-                  <ng-template #nzAvatarselectedHDDorSSD1>
-                    <input
-                      style="cursor: pointer"
-                      type="radio"
-                      [checked]="activeBlockHDD"
-                      (click)="initHDD()"
-                    />
-                  </ng-template>
-                  <ng-template #nzTitleselectedHDDorSSD1>
-                    <b>HDD</b>
-                  </ng-template>
-                  <ng-template #nzDescriptionselectedHDDorSSD1>
-                    <ellipsis class="text-custom">
-                      Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu
-                      dữ liệu,<br />
-                      lưu trữ dữ liệu hoặc khối lượng công việc chuyên sâu thông
-                      lượng
-                    </ellipsis>
-                  </ng-template>
-                </nz-card-meta>
-              </nz-card>
-            </nz-col>
-            <nz-col nzXs="24" nzMd="12">
-              <nz-card
-                style="border-radius: 4px"
-                [nzAlign]="'middle'"
-                [ngStyle]="{
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20">
+                      <nz-card-meta
+                        [nzAvatar]="nzAvatarselectedHDDorSSD1"
+                        [nzTitle]="nzTitleselectedHDDorSSD1"
+                        [nzDescription]="nzDescriptionselectedHDDorSSD1"
+                      >
+                        <ng-template #nzAvatarselectedHDDorSSD1>
+                          <input
+                            style="cursor: pointer"
+                            type="radio"
+                            [checked]="activeBlockHDD"
+                            (click)="initHDD()"
+                          />
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD1>
+                          <b>HDD</b>
+                        </ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD1>
+                          <ellipsis class="text-custom">
+                            Lựa chọn tốt hơn nếu bạn đang đối phó với các bản
+                            sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
+                            công việc chuyên sâu thông lượng
+                          </ellipsis>
+                        </ng-template>
+                      </nz-card-meta></nz-col
+                    >
+                    <nz-col
+                      style="
+                        display: flex;
+                        align-items: center;
+                        margin-top: -24px;
+                      "
+                      [ngStyle]="{
+                      height: cardHeight,
+                    }"
+                      nzSpan="4"
+                    >
+                      <img
+                        [src]="
+                          activeBlockHDD
+                            ? 'assets/imgs/hdd-svgrepo-com-active.svg'
+                            : 'assets/imgs/hdd-svgrepo-com.svg'
+                        "
+                        alt=""
+                      />
+                    </nz-col>
+                  </nz-row>
+                </nz-card>
+              </nz-col>
+              <nz-col
+                [nzLg]="12"
+                [nzMd]="24"
+                [nzSm]="24"
+                [nzXl]="12"
+                [nzXs]="24"
+              >
+                <nz-card
+                  style="border-radius: 4px"
+                  [nzAlign]="'middle'"
+                  [ngStyle]="{
                   border: activeBlockSSD
-                  ? '1px solid #035DED'
+                  ? '1px solid #0066B3'
                   : '1px solid #DADADA',
+                  height: cardHeight,
                 }"
-              >
-                <nz-card-meta
-                  [nzAvatar]="nzAvatarselectedHDDorSSD2"
-                  [nzTitle]="nzTitleselectedHDDorSSD2"
-                  [nzDescription]="nzDescriptionselectedHDDorSSD2"
                 >
-                  <ng-template #nzAvatarselectedHDDorSSD2>
-                    <input
-                      type="radio"
-                      style="cursor: pointer"
-                      [checked]="activeBlockSSD"
-                      (click)="initSSD()"
-                    />
-                  </ng-template>
-                  <ng-template #nzTitleselectedHDDorSSD2>
-                    <b>SSD</b>
-                  </ng-template>
-                  <ng-template #nzDescriptionselectedHDDorSSD2>
-                    <ellipsis class="text-custom"
-                      >Lựa chọn tốt hơn cho khối lượng công việc phân tích dữ
-                      liệu hoặc <br />
-                      chơi game
-                    </ellipsis>
-                  </ng-template>
-                </nz-card-meta>
-              </nz-card>
-            </nz-col>
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20"
+                      ><nz-card-meta
+                        [nzAvatar]="nzAvatarselectedHDDorSSD2"
+                        [nzTitle]="nzTitleselectedHDDorSSD2"
+                        [nzDescription]="nzDescriptionselectedHDDorSSD2"
+                      >
+                        <ng-template #nzAvatarselectedHDDorSSD2>
+                          <input
+                            type="radio"
+                            style="cursor: pointer"
+                            [checked]="activeBlockSSD"
+                            (click)="initSSD()"
+                          />
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD2>
+                          <b>SSD</b>
+                        </ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD2>
+                          <ellipsis class="text-custom"
+                            >Lựa chọn tốt hơn cho khối lượng công việc phân tích
+                            dữ liệu hoặc chơi game
+                          </ellipsis>
+                        </ng-template>
+                      </nz-card-meta>
+                    </nz-col>
+                    <nz-col
+                      style="
+                        display: flex;
+                        align-items: center;
+                        margin-top: -24px;
+                      "
+                      [ngStyle]="{
+                        height: cardHeight,
+                      }"
+                      nzSpan="4"
+                    >
+                      <img
+                        [src]="
+                          activeBlockSSD
+                            ? 'assets/imgs/ssd-svgrepo-com-active.svg'
+                            : 'assets/imgs/ssd-svgrepo-com.svg'
+                        "
+                        alt=""
+                      />
+                    </nz-col>
+                  </nz-row>
+                </nz-card> </nz-col
+            ></nz-row>
           </nz-radio-group>
         </nz-row>
 
@@ -615,6 +678,7 @@
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="selectedSSHKeyName"
                     (ngModelChange)="onSSHKeyChange($event)"
+                    nzSize="large"
                   >
                     <nz-option
                       *ngFor="let i of listSSHKey"
@@ -987,9 +1051,7 @@
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
-            <span class="text-lable">
-              Chi phí Volume bổ sung (<span>{{ numberMonth }}</span> tháng):
-            </span>
+            <span class="text-lable"> Chi phí Volume bổ sung: </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
@@ -999,9 +1061,7 @@
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
-            <span class="text-lable">
-              Chi phí Network bổ sung (<span>{{ numberMonth }}</span> tháng):
-            </span>
+            <span class="text-lable"> Chi phí Network bổ sung: </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
