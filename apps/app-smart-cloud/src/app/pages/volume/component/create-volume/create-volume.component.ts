@@ -229,13 +229,13 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length) {
+    //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
-      }
-    });
+    //   }
+    // });
 
   }
 
