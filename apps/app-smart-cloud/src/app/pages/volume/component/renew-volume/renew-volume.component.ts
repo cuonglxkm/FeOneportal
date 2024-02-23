@@ -68,21 +68,27 @@ export class RenewVolumeComponent implements OnInit {
 
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length){
-        localStorage.setItem("projectId", data[0].id.toString())
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length){
+    //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
-      }
-    });
+    //   }
+    // });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     // this.getListVolumes()
 
-    this.router.navigate(['/app-smart-cloud/volumes'])
+    // this.router.navigate(['/app-smart-cloud/volumes'])
   }
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
+
+
 
   navigateEditVolume(idVolume: number) {
     this.router.navigate(['/app-smart-cloud/volume/edit/' + idVolume]);
