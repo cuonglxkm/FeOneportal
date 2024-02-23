@@ -228,18 +228,22 @@ export class CreateVolumeComponent implements OnInit {
       })
   }
 
+  isFirstMounting: boolean = false
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
+    // if(isFirstMounting == false) {
+    //   this.router.navigate(['/app-smart-cloud/volumes'])
+    // }
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length) {
+    //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
-      }
-    });
+    //   }
+    // });
 
   }
 
-  projectChanged(project: ProjectModel) {
+  projectChanged(project: ProjectModel)  {
     this.project = project.id
 
     this.getListSnapshot()
@@ -249,6 +253,15 @@ export class CreateVolumeComponent implements OnInit {
 
     this.getListVolumes()
     //
+  }
+
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
+
+  ngAfterViewInit(): void {
+    this.isFirstMounting = false;
   }
 
 

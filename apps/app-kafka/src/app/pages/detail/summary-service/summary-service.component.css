@@ -1,0 +1,50 @@
+.config-label {
+  width: 16%;
+}
+
+#brokers-config .config-label {
+  width: 20%;
+}
+
+.custom-legend {
+  border: 1px solid rgb(225, 220, 220);
+  border-radius: 3px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-top: 2em;
+  position: relative;
+  margin-bottom: 0;
+  /* margin-right: 25px; */
+}
+
+.custom-legend legend {
+  border: 0;
+  background: #fff;
+  width: auto;
+  transform: translateY(-50%);
+  position: absolute;
+  top: 0;
+  left: 1em;
+  padding: 0 0.5em;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.ant-table-tbody > tr > td {
+  border: none;
+}
+
+.table-info {
+  padding: 20px;
+}
+
+.copy-btn {
+  position: relative;
+  float: right;
+  margin-right: 25px;
+}
+
+#endpoint-config nz-table tr:nth-child(even),
+#brokers-config nz-table tr:nth-child(even) {
+  background-color: #e2e2e9;
+}

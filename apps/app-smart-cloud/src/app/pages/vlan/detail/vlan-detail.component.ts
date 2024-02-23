@@ -6,6 +6,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {VlanService} from "../../../shared/services/vlan.service";
 import {FormSearchSubnet, Port, Subnet} from "../../../shared/models/vlan.model";
+import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from "../../../shared/services/project.service";
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -22,17 +24,25 @@ export class VlanDetailComponent implements OnInit {
 
   listPort: Port[] = []
   listSubnet: Subnet[] = []
+  listSubnetByNetwork: Subnet[] = []
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private vlanService: VlanService,
+              private projectService: ProjectService,
               private route: ActivatedRoute) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
 
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+      }
+    });
   }
 
   projectChanged(project: ProjectModel) {
@@ -41,7 +51,7 @@ export class VlanDetailComponent implements OnInit {
 
   getPortByNetwork(idNetwork) {
     this.vlanService.getPortByNetwork(idNetwork, this.region).subscribe(data => {
-      console.log('data', data)
+      console.log('data-port', data)
       this.listPort = data
     })
   }
@@ -53,12 +63,30 @@ export class VlanDetailComponent implements OnInit {
     formSearchSubnet.region = this.region
     formSearchSubnet.customerId = this.tokenService.get()?.userid
     this.vlanService.getListSubnet(formSearchSubnet).subscribe(data => {
-      this.listSubnet = data
+      console.log('data-sub', data.records)
+      this.listSubnet = data.records
+      this.listSubnet?.forEach(item => {
+        if(item.networkId == idNetwork) {
+          if(this.listSubnetByNetwork?.length > 1){
+            this.listSubnetByNetwork?.push(item)
+          } else {
+            this.listSubnetByNetwork = [item]
+          }
+          console.log('lst subnet', this.listSubnetByNetwork)
+        }
+      })
     })
   }
 
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    console.log('project', this.project)
+
+    this.getSubnetByNetwork(this.idNetwork)
+    this.getPortByNetwork(this.idNetwork)
   }
 
 }

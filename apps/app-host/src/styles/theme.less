@@ -2,6 +2,7 @@
 // - `default` Default theme
 // - `dark` Import the official dark less style file
 // - `compact` Import the official compact less style file
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import '@delon/theme/theme-default.less';
 
 // ==========The following is the custom theme variable area==========
@@ -34,10 +35,11 @@
   border-bottom: none;
   background-color: #ebf0f9;
 }
+
 // END HEADER
 
 .ant-form-item-label
-  > label.ant-form-item-required:not(
+> label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::after {
   display: inline-block;
@@ -50,19 +52,10 @@
 }
 
 .ant-form-item-label
-  > label.ant-form-item-required:not(
+> label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::before {
   display: none;
-}
-
-.page-header__title {
-  color: #2b2d3b;
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 40px;
-  letter-spacing: 0.1px;
-  text-align: left;
 }
 
 .ant-table-thead > tr > th {
@@ -94,6 +87,7 @@
 
 a {
   color: #248fcc;
+
   &:hover {
     color: #005999;
   }
@@ -101,6 +95,7 @@ a {
 
 u {
   color: #248fcc;
+
   &:hover {
     color: #005999;
   }
@@ -191,32 +186,6 @@ u {
   overflow: hidden scroll;
 }
 
-.title-card {
-  color: #333;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 28px;
-  letter-spacing: 0.10000000149011612px;
-  text-align: left;
-}
-
-.text-lable {
-  color: #333333;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.10000000149011612px;
-  text-align: left;
-}
-
-.text-value {
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0.10000000149011612px;
-  text-align: left;
-}
-
 // INPUT
 .ant-input[disabled] {
   color: rgba(0, 0, 0, 0.25);
@@ -299,6 +268,7 @@ u {
   border-radius: 4px;
   margin-left: 8px;
 }
+
 // END SLIDER
 
 .tile {
@@ -314,22 +284,95 @@ body {
   border-color: #0066b3;
 }
 
-// MENU
-.sidebar-nav__selected {
-  border-left-color: #0066b3;
+
+// TEXT //
+* {
+  font-family: Inter;
 }
 
-.sidebar-nav__selected > .sidebar-nav__item-link {
+.text-page-header {
+  //styleName: Heading/28px - SemiBold;
+  font-size: 28px;
   font-weight: 600;
-  font-size: 16px;
-  color: #0074CC;
+  line-height: 40px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
 }
 
-.sidebar-nav__item-text {
-  font-size: 16px;
+.text-card-header {
+  //styleName: Heading/20px - SemiBold;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
 }
 
-.sidebar-nav__item-link:hover {
-  color: #005999;
+.text-button {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
 }
-// END MENU
+
+.text-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-intro-title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.text-intro-desc {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.page-header__title {
+  color: #2b2d3b;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0.1px;
+  text-align: left;
+  font-family: Inter;
+}
+
+
+.title-card {
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0.1px;
+  text-align: left;
+}
+
+.text-lable {
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  text-align: left;
+}
+
+.text-value {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}

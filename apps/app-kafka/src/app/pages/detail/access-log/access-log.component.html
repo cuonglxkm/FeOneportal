@@ -1,0 +1,98 @@
+<nz-card>
+    <nz-affix [nzOffsetTop]="60">
+        <div nz-row class="affix-filter">
+            <div nz-col [nzSpan]="4">
+                <h3><b>Lịch sử thao tác</b></h3>
+            </div>
+            <div class="filters" nz-col [nzSpan]="18" [nzOffset]="2">
+                <div class="filter-option">
+                    <nz-input-group [nzPrefix]="prefixTplUser">
+                        <input type="text" nz-input placeholder="Nhập tên người dùng" [(ngModel)]="userSearch"
+                            (ngModelChange)="getAccessLogs()" />
+                    </nz-input-group>
+                    <ng-template #prefixTplUser>
+                        <span class="search-icon" nz-icon nzType="search"></span>
+                    </ng-template>
+                </div>
+                <div class="filter-option">
+                    <nz-input-group [nzPrefix]="prefixTplResource">
+                        <input type="text" nz-input placeholder="Nhập resource" [(ngModel)]="resourceSearch"
+                            (ngModelChange)="getAccessLogs()" />
+                    </nz-input-group>
+                    <ng-template #prefixTplResource>
+                        <span class="search-icon" nz-icon nzType="search"></span>
+                    </ng-template>
+                </div>
+                <div class="filter-option w-10">
+                    <nz-select class="w-100" [(ngModel)]="resourceTypeSearch" (ngModelChange)="getAccessLogs()"
+                        nzPlaceHolder="Resource type" nzShowSearch nzAllowClear>
+                        <nz-option nzValue="TOPIC" nzLabel="Topic"></nz-option>
+                        <nz-option nzValue="CONSUMER_GROUP" nzLabel="Consumer Group"></nz-option>
+                        <nz-option nzValue="BROKER" nzLabel="Broker"></nz-option>
+                        <nz-option nzValue="USER" nzLabel="User"></nz-option>
+                        <nz-option nzValue="MESSAGE" nzLabel="Message"></nz-option>
+                    </nz-select>
+                </div>
+                <div class="filter-option w-10">
+                    <nz-select class="w-100" [(ngModel)]="operationSearch" (ngModelChange)="getAccessLogs()"
+                        nzPlaceHolder="Thao tác" nzShowSearch nzAllowClear>
+                        <nz-option nzValue="CREATE" nzLabel="Tạo bản ghi"></nz-option>
+                        <nz-option nzValue="UPDATE" nzLabel="Cập nhật bản ghi"></nz-option>
+                        <nz-option nzValue="DELETE" nzLabel="Xóa bản ghi"></nz-option>
+                        <nz-option nzValue="TEST_PRODUCER" nzLabel="Test producer"></nz-option>
+                    </nz-select>
+                </div>
+                <div class="filter-option">
+                    <nz-range-picker [(ngModel)]="dateSearch" (ngModelChange)="onDateChange($event); getAccessLogs()"
+                        nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"></nz-range-picker>
+                </div>
+            </div>
+        </div>
+    </nz-affix>
+    <div class="table">
+        <nz-table id="access-logs" #logTable [nzData]="accessLogs" [nzShowPagination]="false" [nzTotal]="total" [nzPageSize]="size" (nzQueryParams)="onQueryParamsChange($event)"
+        [nzPageIndex]="page" nzTableLayout="fixed">
+       
+        <thead>
+            <tr>
+                <th nzWidth="5%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">STT</div></nz-affix></th>
+                <th nzWidth="12%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Tên người dùng</div></nz-affix></th>
+                <th nzWidth="15%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Resource</div></nz-affix></th>
+                <th nzWidth="13%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Resource Type</div></nz-affix></th>
+                <th nzWidth="10%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thao tác</div></nz-affix></th>
+                <th nzWidth="35%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Ghi chú</div></nz-affix></th>
+                <th nzWidth="10%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thời gian</div></nz-affix></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr *ngFor="let item of logTable.data; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.userAction }}</td>
+                <td>{{item.resource}}</td>
+                <td>{{ item.resourceType }}</td>
+                <td>{{ operations[item.operation] }}</td>
+                <td>{{ item.note }}</td>
+                <td>{{ item.opTime | date: 'dd/MM/yyyy HH:mm' }}</td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <ng-container *ngIf="isEndOfPage">
+        <div class="spin-style">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isEndOfList">
+        <div class="mt-5 mb-5 description-end">
+            Đã tải hết các nội dung
+        </div>
+    </ng-container>
+    </div>
+    
+    <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
+        <button nzType="text" nz-button aria-pressed="true" (click)="scrollToTop()" class="btn2top">
+            <img width="32" height="32" src="https://img.icons8.com/color/48/circled-up-2--v1.png" alt="circled-up-2--v1"/>
+        </button>
+    </div>
+
+</nz-card>
