@@ -82,7 +82,7 @@ export class IpPublicComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
         this.listOfIp = baseResponse.records;
-
+        this.total = baseResponse.totalCount;
         if (isCheckBegin) {
           this.isBegin = this.listOfIp === null || this.listOfIp.length < 1 ? true : false;
         }
