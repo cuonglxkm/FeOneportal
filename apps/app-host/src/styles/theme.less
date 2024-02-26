@@ -2,6 +2,8 @@
 // - `default` Default theme
 // - `dark` Import the official dark less style file
 // - `compact` Import the official compact less style file
+//@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
+@import "@fontsource/inter";
 @import '@delon/theme/theme-default.less';
 
 // ==========The following is the custom theme variable area==========
@@ -12,11 +14,32 @@
 @alain-default-aside-nav-text-hover-color: #2f54eb;
 @alain-default-aside-nav-selected-text-color: #2f54eb;
 
-
 @button-primary-color: #0066b0;
 @button-primary-color-hover: #005999;
 
 @button-border-medium-radius: 8px;
+
+@text-card-header
+
+// HEADER
+.alain-default__header-logo-expanded {
+  max-width: 90%;
+}
+
+.alain-default__header {
+  background-color: #0066b3;
+}
+
+.alain-default .page-header {
+  margin-right: -24px;
+  margin-bottom: auto;
+  margin-left: -24px;
+  padding: 12px 24px 0 24px;
+  border-bottom: none;
+  background-color: #ebf0f9;
+}
+
+// END HEADER
 
 .ant-form-item-label
 > label.ant-form-item-required:not(
@@ -38,16 +61,6 @@
   display: none;
 }
 
-
-.page-header__title {
-  color: #2b2d3b;
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 40px;
-  letter-spacing: 0.1px;
-  text-align: left;
-}
-
 .ant-table-thead > tr > th {
   position: relative;
   color: var(--Dark, #2b2d3b);
@@ -58,7 +71,7 @@
   line-height: 24px; /* 150% */
   letter-spacing: 0.1px;
   text-align: left;
-  background: #cce9ff;
+  background: #e2eefc;
   border-bottom: 1px solid #f0f0f0;
   transition: background 0.3s ease;
 }
@@ -77,12 +90,14 @@
 
 a {
   color: #248fcc;
-  text-decoration: none;
-  background-color: transparent;
-  outline: none;
-  cursor: pointer;
-  transition: color 0.3s;
-  -webkit-text-decoration-skip: objects;
+
+  &:hover {
+    color: #005999;
+  }
+}
+
+u {
+  color: #248fcc;
 
   &:hover {
     color: #005999;
@@ -107,6 +122,10 @@ a {
   border-radius: 4px;
   background-color: #fffbe6;
   border: 1px solid #ffe58f;
+}
+
+.ant-alert-with-description {
+  align-items: center;
 }
 
 .ant-pagination-item-active {
@@ -140,7 +159,7 @@ a {
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #0074CC;
+  color: #0074cc;
   text-shadow: 0 0 0.25px currentcolor;
 }
 
@@ -150,10 +169,9 @@ a {
 
 .ant-tabs-ink-bar {
   position: absolute;
-  background: #0074CC;
+  background: #0074cc;
   pointer-events: none;
 }
-
 
 ::ng-deep .page-header {
   position: relative;
@@ -171,44 +189,16 @@ a {
   overflow: hidden scroll;
 }
 
-.table-title {
-  color: #333;
-  /* Heading/18px - Bold */
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 36px; /* 200% */
-  letter-spacing: 0.1px;
-}
-
-.button-text-primary {
-  color: var(--Button-bg_default, #fff);
-  /* Body/16px/Medium */
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px; /* 150% */
-}
-
-
-.text-lable {
-  color: var(--Neutral-1, #2b2d3b);
-  /* Body/16px - Regular */
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: 0.1px;
-}
-
-
 // INPUT
+.ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+}
 
-
-.ant-input-affix-wrapper { // Input group
+.ant-input-affix-wrapper {
+  // Input group
   border-radius: 8px;
 }
-
 
 .ant-input {
   border-radius: 8px;
@@ -222,20 +212,9 @@ a {
   align-items: center;
 }
 
-
 // END INPUT
 
-
 // BUTTON
-
-.button-text-default {
-  color: #0066B0;
-  /* Body/16px/Medium */
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px; /* 150% */
-}
 
 .ant-btn {
   border-radius: @button-border-medium-radius;
@@ -248,23 +227,145 @@ a {
   line-height: 24px; /* 150% */
 }
 
-.ant-btn:hover, .ant-btn:focus {
+.ant-btn:hover,
+.ant-btn:focus {
   border-color: @button-primary-color-hover;
   color: @button-primary-color-hover;
 }
 
 .ant-btn-primary {
-  color: #FFFFFF;
+  color: #ffffff;
   border-color: @button-primary-color;
   background-color: @button-primary-color;
   border-radius: @button-border-medium-radius;
 }
 
-.ant-btn-primary:hover, .ant-btn-primary:focus {
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
   border-color: @button-primary-color-hover;
   background: @button-primary-color-hover;
-  color: #FFFFFF;
+  color: #ffffff;
+}
+
+// END BUTTON
+
+// SLIDER
+
+.ant-slider:hover .ant-slider-track {
+  background-color: @button-primary-color-hover;
+}
+
+.ant-slider-track {
+  background-color: @button-primary-color;
+}
+
+.ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+  border-color: @button-primary-color-hover;
+}
+
+.ant-slider-handle {
+  border: solid 2px @button-primary-color;
+}
+
+.ant-input-number {
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+// END SLIDER
+
+.tile {
+  box-shadow: none !important;
+}
+
+body {
+  background-color: #ebf0f9;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #0066b3;
+  border-color: #0066b3;
 }
 
 
-// END BUTTON
+// TEXT //
+* {
+  font-family: Inter;
+}
+
+.text-page-header {
+  //styleName: Heading/28px - SemiBold;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-card-header {
+  color: #333333;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-button {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-intro-title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.text-intro-desc {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.page-header__title {
+  color: #2b2d3b;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0.1px;
+  text-align: left;
+  font-family: Inter;
+}
+
+.text-label {
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  text-align: left;
+}
+
+.text-value {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}

@@ -118,6 +118,11 @@ export class VolumeService extends BaseService {
     );
   }
 
+  updateVolume(request: EditTextVolumeModel) {
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request),
+      {headers: this.httpOptions.headers})
+  }
+
   constructor(private http: HttpClient,
               private message: NzMessageService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {

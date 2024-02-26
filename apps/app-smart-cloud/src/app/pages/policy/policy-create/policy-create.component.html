@@ -1,9 +1,12 @@
 <page-header [content]="content" [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo Policy'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> IAM</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Polices</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/policy']">Polices</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Tạo Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -39,7 +42,7 @@
             width: 140px;
             height: 40px;
           ">
-              <span class="button-text-primary" style="color: {{isVisual ? 'white' : '#0066B3'}};" >Visual</span>
+              <span  style="color: {{isVisual ? 'white' : '#0066B3'}};" >Visual</span>
             </button>
             <button (click)="visualOption(2)" nz-button nzType="primary" nzSize="large" style="
             border-color: #0066B3;
@@ -47,7 +50,7 @@
             width: 140px;
             height: 40px;
           ">
-              <span class="button-text-primary" style="color: {{isVisual ? '#0066B3' : 'white'}};" >Json</span>
+              <span style="color: {{isVisual ? '#0066B3' : 'white'}};" >Json</span>
             </button>
           </div>
         </div>
@@ -124,7 +127,7 @@
 
           ">
             <img style="padding-right: 10px;" src="assets/imgs/add-square.svg" alt=""/>
-            <span class="button-text-primary" style="color: #0066B3" >Thêm Permission policies</span>
+            <span style="color: #0066B3" >Thêm Permission policies</span>
           </button>
       </ng-container>
 
@@ -204,7 +207,7 @@
         <button *ngIf="currentStep==1" (click)="setStep(0)" nzSize="large" nz-button nzType="primary" style="
             border-color: #0066B3;
             background-color: white;
-          ">  <span class="button-text-primary" style="color:#0066B3" >Trở lại</span>
+          ">  <span style="color:#0066B3" >Trở lại</span>
         </button>
         <button *ngIf="currentStep==1" [disabled]="form.invalid" nzSize="large" (click)="createPolicy()" nz-button nzType="primary"
                 style="
@@ -223,11 +226,11 @@
             background-color: white;
           ">
     <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt=""/>
-    <span class="button-text-primary" style="color:#0066B3" >Quay lại</span>
+    <span style="color:#0066B3" >Quay lại</span>
   </button>
   <button *ngIf="currentStep!=1" (click)="setStep(1)" nzSize="large" nz-button nzType="primary" style="
             border: none;
-          "><span class="button-text-primary" style="color:white" >Tiếp tục</span>
+          "><span style="color:white" >Tiếp tục</span>
     <img style="padding-left: 10px;" src="assets/imgs/arrow-right-3.svg" alt=""/>
   </button>
 </div>

@@ -19,224 +19,641 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-content>
-  <!--    <div class="search-volume" *ngIf="!isBlankVolume; else elsePage">-->
+<nz-content *ngIf="typeVPC == 0">
   <nz-card>
-    <nz-row nzJustify="space-between">
-      <nz-col nzSpan="16">
-        <nz-select [nzPlaceHolder]="'Trạng thái'"
-                   style="width: 150px; border-radius: 8px;"
-                   [(ngModel)]="selectedValue"
-                   nz-tooltip
-                   (ngModelChange)="onChange($event)"
-                   nzTooltipTitle="Tìm kiếm theo trạng thái"
-                   nzTooltipPlacement="bottom"
-                   nzShowSearch="false">
-          <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-        </nz-select>
-        <nz-input-group [nzSuffix]="suffixIconSearch"
-                        style="margin-left: 15px; width: 250px; border-radius: 8px;">
-          <input nz-input
-                 [(ngModel)]="value"
-                 (input)="onInputChange($event.target['value'])"
-                 [placeholder]="'Tìm kiếm'"/>
-        </nz-input-group>
-        <ng-template #suffixIconSearch>
-          <span nz-icon nzType="search"></span>
-        </ng-template>
-      </nz-col>
-      <nz-col nzSpan="8" style="flex:none;">
-        <button class="btn-create"
-                nz-button
-                nzType="primary"
-                (click)="navigateToCreateVolume()">
-          <span nz-icon nzType="plus" nzTheme="outline"></span>
-          Tạo mới Volume
-        </button>
-      </nz-col>
-    </nz-row>
-    <nz-table #fixedTable
-              style="margin-top: 20px;"
-              nzShowPagination
-              [nzScroll]="{ x: '100%', y: '55vh' }"
-              [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzPageIndex]="response?.currentPage"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              [nzTotal]="response?.totalCount"
-              [nzFrontPagination]="false"
-              [nzLoading]="isLoading">
-      <thead>
-      <tr>
-        <th nzLeft>Tên Volume</th>
-        <th nzBreakWord>Dung lượng (GB)</th>
-        <th nzBreakWord>IOPS</th>
-        <th nzBreakWord>Trạng thái</th>
-        <th nzBreakWord>Trạng thái tác vụ</th>
-        <th nzBreakWord>Máy ảo</th>
-        <th nzBreakWord>Thao tác</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of fixedTable.data">
-        <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{data.name}}</a></td>
-        <td nzBreakWord>{{data.sizeInGB}}</td>
-        <td nzBreakWord>
-          <div *ngIf="data.iops == null">200</div>
-          <div *ngIf="data.iops != null">{{data.iops}}</div>
-        </td>
-        <td nzBreakWord>
-          <div class="status" [ngSwitch]="data.status">
+    <ng-container [ngSwitch]="isBegin">
+      <ng-container *ngSwitchCase="false">
+        <nz-row nzJustify="space-between">
+          <nz-col nzSpan="16">
+            <nz-select [(ngModel)]="selectedValue"
+                       nzSize="large"
+                       style="margin-right: 15px;"
+                       (ngModelChange)="onChange($event)"
+                       nzPlaceHolder="Tất cả trạng thái"
+                       nzTooltipTitle="Tìm kiếm theo trạng thi"
+                       nzTooltipPlacement="bottom"
+                       nz-tooltip>
+              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+            </nz-select>
+            <nz-input-group
+              style="width: 300px;"
+              [nzPrefix]="prefixIconSearch"
+              nzSize="large">
+              <input
+                name="name"
+                nz-input
+                [(ngModel)]="value"
+                (input)="onInputChange($event.target['value'])"
+                placeholder="Tìm kiếm tên ..."/>
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img
+                src="assets/imgs/search.svg"
+                alt=""
+                style="cursor: pointer"
+                nz-tooltip="Tìm kiếm"/>
+            </ng-template>
+          </nz-col>
+          <nz-col nzSpan="8" style="flex:none;">
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="navigateToCreateVolume()">
+              <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/add-circle.svg"
+                alt=""/>
+              <span class="button-text-primary">Tạo mới Volume</span>
+            </button>
+          </nz-col>
+        </nz-row>
+        <nz-table #fixedTable
+                  style="margin-top: 20px;"
+                  nzShowPagination
+                  [nzData]="response?.records || []"
+                  [nzPageSize]="response?.pageSize"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  [nzPageIndex]="response?.currentPage"
+                  (nzPageIndexChange)="onPageIndexChange($event)"
+                  [nzTotal]="response?.totalCount"
+                  [nzFrontPagination]="false"
+                  [nzLoading]="isLoading">
+          <thead>
+          <tr>
+            <th nzLeft>Tên Volume</th>
+            <th nzBreakWord>Dung lượng (GB)</th>
+            <th nzBreakWord>IOPS</th>
+            <th nzBreakWord>Trạng thái</th>
+            <th nzBreakWord>Trạng thái tác vụ</th>
+            <th nzBreakWord>Máy ảo</th>
+            <th nzBreakWord>Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of fixedTable.data">
+            <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{data.name}}</a></td>
+            <td nzBreakWord>{{data.sizeInGB}}</td>
+            <td nzBreakWord>
+              <div *ngIf="data.iops == null">200</div>
+              <div *ngIf="data.iops != null">{{data.iops}}</div>
+            </td>
+            <td nzBreakWord>
+              <div class="status" [ngSwitch]="data.status">
                                 <span class="available" *ngSwitchCase="'KHOITAO'">
                                             Đang hoạt động
                                           </span>
-            <span class="available" *ngSwitchCase="'CREATING'">
+                <span class="available" *ngSwitchCase="'CREATING'">
                                             Đang khởi tạo
                                           </span>
-            <span class="suspended" *ngSwitchCase="'SUSPENDED'">
+                <span class="suspended" *ngSwitchCase="'SUSPENDED'">
                                             Tạm dừng
                                           </span>
-            <span class="suspended" *ngSwitchCase="'ERROR'">
+                <span class="suspended" *ngSwitchCase="'ERROR'">
                                             Lỗi
                                           </span>
-            <span class="suspended" *ngSwitchCase="'DELETING'">
+                <span class="suspended" *ngSwitchCase="'DELETING'">
                                             Đang xóa
                                           </span>
-          </div>
-        </td>
-        <td nzBreakWord>{{ data.serviceStatus }}</td>
-        <td nzBreakWord>
-          <div *ngIf="data.instanceName == null">-</div>
-          <div *ngIf="data.instanceName != null">{{data.instanceName}}</div>
-        </td>
-        <td nzBreakWord>
-          <div>
-                                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-                                      nzTheme="outline"
-                                      nz-popover
-                                      [nzPopoverContent]="'Gắn Volume'"
-                                      nzPopoverPlacement="bottom" (click)="showAttachVm(data)"></span>
-            <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo" nzTabScrollList="true"
-                      (nzOnCancel)="handleCancelAttachVm()" nzCentered>
-              <div *nzModalTitle>
-                <p class="text-h5"><b>Gắn máy ảo</b></p>
               </div>
-              <div *nzModalContent>
-                <nz-form-label>Chọn máy ảo</nz-form-label>
-                <nz-select nzSize="default"
-                           [nzLoading]="isLoading"
-                           [nzPlaceHolder]="'-Chọn máy ảo-'"
-                           [(ngModel)]="instanceSelected"
-                           nzShowSearch
-                           style="width: 300px;">
-                  <nz-option *ngFor="let item of listVm.records" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
-                </nz-select>
-              </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleCancelAttachVm()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                </button>
-                <button nz-button nzType="primary"
-                        (click)="handleOkAttachVm()"
-                        [nzLoading]="isLoadingAttachVm"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                </button>
-              </div>
-            </nz-modal>
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-                  nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Gỡ Volume'"
-                  nzPopoverPlacement="bottom" (click)="showDetachVm(data)"></span>
-            <nz-modal [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ máy ảo" nzTabScrollList="true"
-                      (nzOnCancel)="handleCancelDetachVm()" nzCentered>
-              <div *nzModalTitle>
-                <p class="text-h5"><b>Gỡ máy ảo</b></p>
-              </div>
-              <div *nzModalContent>
-                <nz-form-label>Chọn máy ảo</nz-form-label>
-                <nz-select nzSize="default"
-                           [nzLoading]="isLoadingDetachVm"
-                           [nzPlaceHolder]="'-Chọn máy ảo-'"
-                           [(ngModel)]="instanceInVolumeSelected"
-                           nzShowSearch
-                           style="width: 300px;">
-                  <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
-                             [nzValue]="item.instanceId"></nz-option>
-                </nz-select>
-              </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleCancelDetachVm()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                </button>
-                <button nz-button nzType="primary"
-                        (click)="handleOkDetachVm()"
-                        [nzLoading]="isLoadingDetachVm"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                </button>
-              </div>
-            </nz-modal>
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
-                  nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Tạo lịch Snapshot'"
-                  nzPopoverPlacement="bottom"></span>
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-                  nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Xóa'"
-                  nzPopoverPlacement="bottom" (click)="showConfirmDelete(data.id)"></span>
-            <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume" nzTabScrollList="true"
-                      (nzOnCancel)="handleCancelDelete()" nzCentered>
-              <div *nzModalTitle>
-                <p class="text-h5"><b>Xóa Volume</b></p>
-              </div>
-              <div *nzModalContent>
-                <nz-alert nzBanner
-                          nzShowIcon
-                          [nzMessage]="'Nếu volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.'">
-                </nz-alert>
-                <div>
-                  <b style="text-align: center">Quý khách chắc chắn muốn xóa dịch vụ này?</b>
-                  <br>
-                  <i style="text-align: center">Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý.</i>
-                </div>
+            </td>
+            <td nzBreakWord>{{ data.serviceStatus }}</td>
+            <td nzBreakWord>
+              <div *ngIf="data.instanceName == null">-</div>
+              <div *ngIf="data.instanceName != null">{{data.instanceName}}</div>
+            </td>
+            <td nzBreakWord>
+              <div>
+                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Gắn Volume'"
+                      nzPopoverPlacement="bottom" (click)="showAttachVm(data)"></span>
+                <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo"
+                          (nzOnCancel)="handleCancelAttachVm()" nzMask="false">
+                  <div *nzModalTitle>
+                    <span class="text-modal-title">Gắn máy ảo</span>
+                  </div>
+                  <div *nzModalContent>
+                    <nz-form-label>Chọn máy ảo</nz-form-label>
+                    <nz-select nzSize="default"
+                               [nzLoading]="isLoading"
+                               [nzPlaceHolder]="'-Chọn máy ảo-'"
+                               [(ngModel)]="instanceSelected"
+                               nzShowSearch
+                               style="width: 300px;">
+                      <nz-option *ngFor="let item of listVm.records" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                    </nz-select>
+                  </div>
+                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                    <button nz-button nzType="default" (click)="handleCancelAttachVm()" class="button-cancel">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                    </button>
+                    <button nz-button nzType="primary"
+                            (click)="handleOkAttachVm()"
+                            [nzLoading]="isLoadingAttachVm"
+                            class="button-ok">
+                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                    </button>
+                  </div>
+                </nz-modal>
+                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+                      nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'Gỡ Volume'"
+                      nzPopoverPlacement="bottom" (click)="showDetachVm(data)"></span>
+                <nz-modal [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ máy ảo"
+                          (nzOnCancel)="handleCancelDetachVm()" nzMask="false">
+                  <div *nzModalTitle>
+                    <span class="text-modal-title">Gỡ máy ảo</span>
+                  </div>
+                  <div *nzModalContent>
+                    <nz-form-label>Chọn máy ảo</nz-form-label>
+                    <nz-select nzSize="default"
+                               [nzLoading]="isLoadingDetachVm"
+                               [nzPlaceHolder]="'-Chọn máy ảo-'"
+                               [(ngModel)]="instanceInVolumeSelected"
+                               nzShowSearch
+                               style="width: 300px;">
+                      <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
+                                 [nzValue]="item.instanceId"></nz-option>
+                    </nz-select>
+                  </div>
+                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                    <button nz-button nzType="default" (click)="handleCancelDetachVm()" class="button-cancel">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                    </button>
+                    <button nz-button nzType="primary"
+                            (click)="handleOkDetachVm()"
+                            [nzLoading]="isLoadingDetachVm"
+                            class="button-ok">
+                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                    </button>
+                  </div>
+                </nz-modal>
+                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
+                      nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'Tạo Backup'"
+                      nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(data.id, data.creationDate, data.expirationDate, data.name)"></span>
+                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
+                      nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'Xóa'"
+                      nzPopoverPlacement="bottom" (click)="showConfirmDelete(data.id)"></span>
+                <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume"
+                          (nzOnCancel)="handleCancelDelete()" nzMask="false">
+                  <div *nzModalTitle>
+                    <span class="text-modal-title">Xóa Volume</span>
+                  </div>
+                  <div *nzModalContent>
+                    <nz-alert nzBanner
+                              nzShowIcon
+                              [nzMessage]="'Nếu volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.'">
+                    </nz-alert>
+                    <div>
+                      <b style="text-align: center">Quý khách chắc chắn muốn xóa dịch vụ này?</b>
+                      <br>
+                      <i style="text-align: center">Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý.</i>
+                    </div>
 
+                  </div>
+                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                    <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                    </button>
+                    <button nz-button nzType="primary"
+                            (click)="handleOkDelete()"
+                            [nzLoading]="isLoadingDelete"
+                            class="button-ok">
+                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                    </button>
+                  </div>
+                </nz-modal>
+                <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                      [nzDropdownMenu]="opMenu"></span>
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
+                    <li nz-menu-item (click)="showModalUpdate(data)">Chỉnh sửa</li>
+                    <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume"
+                              (nzOnCancel)="handleCancelUpdate()" nzMask="false">
+                      <div *nzModalTitle>
+                        <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
+                      </div>
+                      <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
+                        <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+                          <nz-form-item>
+                            <nz-form-label nzFor="nameVolume">
+                              <div style="margin-top: 15px;">
+                                <span>Tên Volume</span>
+                                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                                <span nz-icon nzType="question-circle" nzTheme="outline"></span>
+                              </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                              <input nz-input
+                                     formControlName="nameVolume"
+                                     [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
+                              <ng-template #nameErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
+                                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
+                                  dấu tiếng Việt
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+                              </ng-template>
+                            </nz-form-control>
+                          </nz-form-item>
+                          <nz-form-item>
+                            <nz-form-label nzFor="description">
+                              <div class="label">
+                                <span>Mô tả</span>
+                              </div>
+                            </nz-form-label>
+                            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                            <textarea nz-input
+                                      formControlName="description"
+                                      [placeholder]="'Nhập mô tả'"
+                                      [maxLength]="255"
+                                      [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                              <ng-template #descriptionErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
+                                </ng-container>
+                              </ng-template>
+                            </nz-form-control>
+                          </nz-form-item>
+                        </form>
+                      </div>
+                      <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                        <button nz-button nzType="default" (click)="handleCancelUpdate()" class="button-cancel">
+                          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                        </button>
+                        <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOkUpdate()"
+                                [nzLoading]="isLoadingUpdate"
+                                class="button-ok">
+                          <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                        </button>
+                      </div>
+                    </nz-modal>
+                  </ul>
+                </nz-dropdown-menu>
               </div>
-              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">
-                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                </button>
-                <button nz-button nzType="primary"
-                        (click)="handleOkDelete()"
-                        [nzLoading]="isLoadingDelete"
-                        class="button-ok">
-                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                </button>
-              </div>
-            </nz-modal>
-            <span class="more" nz-icon nzType="more" nzTheme="outline"></span>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <nz-row nzJustify="center">
+          <img src="/assets/imgs/volume.png" width="450" height="450" alt="blank-security-group">
+        </nz-row>
+        <nz-row nzJustify="center">
+          <div class="text-title">
+            <h1 style="text-align: center; margin-top: 12px;">Volume <br> Lưu trữ ổ đĩa máy chủ</h1>
           </div>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
-
+        </nz-row>
+        <nz-row nzJustify="center">
+          <div class="text-subtitle" style="max-width: 885px; text-wrap: normal; text-align: center;">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</div>
+        </nz-row>
+        <nz-row nzJustify="center">
+          <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" [routerLink]="'/app-smart-cloud/volume/create'">Khởi tạo ngay</button>
+        </nz-row>
+      </ng-container>
+    </ng-container>
   </nz-card>
-  <!--    </div>-->
 </nz-content>
-<!--<ng-template #elsePage>-->
-<!--    <nz-card>-->
-<!--        <result>-->
-<!--            <img nz-image style="height: 100%; width: 100%;" nzSrc="assets/imgs/blank_volume.png" alt=""/>-->
-<!--            <button nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()">-->
-<!--                Khởi tạo ngay-->
-<!--            </button>-->
-<!--        </result>-->
-<!--    </nz-card>-->
-<!--</ng-template>-->
+<nz-content *ngIf="typeVPC == 1">
+    <nz-card>
+      <ng-container [ngSwitch]="isBegin">
+        <ng-container *ngSwitchCase="false">
+          <nz-row nzJustify="space-between">
+            <nz-col nzSpan="16">
+              <nz-select [(ngModel)]="selectedValue"
+                         nzSize="large"
+                         style="margin-right: 15px;"
+                         (ngModelChange)="onChange($event)"
+                         nzPlaceHolder="Tất cả trạng thái"
+                         nzTooltipTitle="Tìm kiếm theo trạng thi"
+                         nzTooltipPlacement="bottom"
+                         nz-tooltip>
+                <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+              </nz-select>
+              <nz-input-group
+                style="width: 300px;"
+                [nzPrefix]="prefixIconSearch"
+                nzSize="large">
+                <input
+                  name="name"
+                  nz-input
+                  [(ngModel)]="value"
+                  (input)="onInputChange($event.target['value'])"
+                  placeholder="Tìm kiếm tên ..."/>
+              </nz-input-group>
+              <ng-template #prefixIconSearch>
+                <img
+                  src="assets/imgs/search.svg"
+                  alt=""
+                  style="cursor: pointer"
+                  nz-tooltip="Tìm kiếm"/>
+              </ng-template>
+            </nz-col>
+            <nz-col nzSpan="8" style="flex:none;">
+              <button
+                nz-button
+                nzType="primary"
+                nzSize="large"
+                (click)="navigateToCreateVolume()">
+                <img
+                  style="padding-right: 10px; margin-top: -4px"
+                  src="assets/imgs/add-circle.svg"
+                  alt=""/>
+                <span class="button-text-primary">Tạo mới Volume</span>
+              </button>
+            </nz-col>
+          </nz-row>
+          <nz-table #fixedTable2
+                    style="margin-top: 20px;"
+                    nzShowPagination
+                    [nzData]="response?.records"
+                    [nzPageSize]="response?.pageSize"
+                    (nzPageSizeChange)="onPageSizeChange($event)"
+                    [nzPageIndex]="response?.currentPage"
+                    (nzPageIndexChange)="onPageIndexChange($event)"
+                    [nzTotal]="response?.totalCount"
+                    [nzFrontPagination]="false"
+                    [nzLoading]="isLoading">
+            <thead>
+            <tr>
+              <th nzLeft>Tên Volume</th>
+              <th nzBreakWord>Loại Volume</th>
+              <th nzBreakWord>Dung lượng (GB)</th>
+              <th nzBreakWord>IOPS</th>
+              <th nzBreakWord>Trạng thái</th>
+              <th nzBreakWord>Trạng thái tác vụ</th>
+              <th nzBreakWord>Máy ảo</th>
+              <th nzBreakWord>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let i of fixedTable2.data">
+              <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + i.id">{{i.name}}</a></td>
+              <td nzBreakWord>{{i.volumeType}}</td>
+              <td nzBreakWord>{{i.sizeInGB}}</td>
+              <td nzBreakWord>
+                <div *ngIf="i.iops == null">200</div>
+                <div *ngIf="i.iops != null">{{i.iops}}</div>
+              </td>
+              <td nzBreakWord>
+                <div class="status" [ngSwitch]="i.status">
+                                <span class="available" *ngSwitchCase="'KHOITAO'">
+                                            Đang hoạt động
+                                          </span>
+                  <span class="available" *ngSwitchCase="'CREATING'">
+                                            Đang khởi tạo
+                                          </span>
+                  <span class="suspended" *ngSwitchCase="'SUSPENDED'">
+                                            Tạm dừng
+                                          </span>
+                  <span class="suspended" *ngSwitchCase="'ERROR'">
+                                            Lỗi
+                                          </span>
+                  <span class="suspended" *ngSwitchCase="'DELETING'">
+                                            Đang xóa
+                                          </span>
+                </div>
+              </td>
+              <td nzBreakWord>{{ i.serviceStatus }}</td>
+              <td nzBreakWord>
+                <div *ngIf="i.instanceName == null">-</div>
+                <div *ngIf="i.instanceName != null">{{i.instanceName}}</div>
+              </td>
+              <td>
+                <div>
+                  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
+                        nzTheme="outline"
+                        nz-popover
+                        [nzPopoverContent]="'Gắn Volume'"
+                        nzPopoverPlacement="bottom" (click)="showAttachVm(i)"></span>
+                  <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo"
+                            (nzOnCancel)="handleCancelAttachVm()" nzMask="false">
+                    <div *nzModalTitle>
+                      <span class="text-modal-title">Gắn máy ảo</span>
+                    </div>
+                    <div *nzModalContent>
+                      <nz-form-label>Chọn máy ảo</nz-form-label>
+                      <nz-select nzSize="default"
+                                 [nzLoading]="isLoading"
+                                 [nzPlaceHolder]="'-Chọn máy ảo-'"
+                                 [(ngModel)]="instanceSelected"
+                                 nzShowSearch
+                                 style="width: 300px;">
+                        <nz-option *ngFor="let item of listVm.records" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                      </nz-select>
+                    </div>
+                    <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                      <button nz-button nzType="default" (click)="handleCancelAttachVm()" class="button-cancel">
+                        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                      </button>
+                      <button nz-button nzType="primary"
+                              (click)="handleOkAttachVm()"
+                              [nzLoading]="isLoadingAttachVm"
+                              class="button-ok">
+                        <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                      </button>
+                    </div>
+                  </nz-modal>
+                  <span *ngIf="i.isMultiAttach == true" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+                        nzTheme="outline" nz-popover
+                        [nzPopoverContent]="'Gỡ Volume'"
+                        nzPopoverPlacement="bottom" (click)="showDetachVm(i)"></span>
+                  <nz-modal  [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ Volume"
+                            (nzOnCancel)="handleCancelDetachVm()" nzMark="false">
+                    <div *nzModalTitle>
+                      <span class="text-modal-title">Gỡ Volume</span>
+                    </div>
+                    <div *nzModalContent>
+                      <nz-form-label>Chọn máy ảo</nz-form-label>
+                      <nz-select nzSize="default"
+                                 [nzLoading]="isLoadingDetachVm"
+                                 [nzPlaceHolder]="'-Chọn máy ảo-'"
+                                 [(ngModel)]="instanceInVolumeSelected"
+                                 nzShowSearch
+                                 style="width: 300px;">
+                        <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
+                                   [nzValue]="item.instanceId"></nz-option>
+                      </nz-select>
+                    </div>
+                    <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                      <button nz-button nzType="default" (click)="handleCancelDetachVm()" class="button-cancel">
+                        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                      </button>
+                      <button nz-button nzType="primary"
+                              (click)="handleOkDetachVm()"
+                              [nzLoading]="isLoadingDetachVm"
+                              class="button-ok">
+                        <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                      </button>
+                    </div>
+                  </nz-modal>
+                  <span *ngIf="i.isMultiAttach == false" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+                        nzTheme="outline" nz-popover
+                        [nzPopoverContent]="'Gỡ Volume'"
+                        nzPopoverPlacement="bottom" (click)="showModalNotice(i)"></span>
+                  <nz-modal [(nzVisible)]="isVisibleNotice" nzTitle="Gỡ Volume"
+                            (nzOnCancel)="handleCancelNotice()" nzMark="false">
+                    <div *nzModalTitle>
+                      <span class="text-modal-title">Gỡ Volume</span>
+                    </div>
+                    <div *nzModalContent>
+
+                      <div>
+                        <span style="text-align: center"><b>Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?</b></span>
+                      </div>
+
+                    </div>
+                    <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                      <button nz-button nzType="default" (click)="handleCancelNotice()" class="button-cancel">
+                        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                      </button>
+                      <button nz-button nzType="primary"
+                              (click)="handleOkNotice()"
+                              [nzLoading]="isLoadingNotice"
+                              class="button-ok">
+                        <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                      </button>
+                    </div>
+                  </nz-modal>
+                  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
+                        nzTheme="outline" nz-popover
+                        [nzPopoverContent]="'Tạo Backup'"
+                        nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(i.id, i.creationDate, i.expirationDate, i.name)"></span>
+                  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
+                        nzTheme="outline" nz-popover
+                        [nzPopoverContent]="'Xóa'"
+                        nzPopoverPlacement="bottom" (click)="showConfirmDelete(i.id)"></span>
+                  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume"
+                            (nzOnCancel)="handleCancelDelete()" nzMark="false">
+                    <div *nzModalTitle>
+                      <span class="text-modal-title">Xóa Volume</span>
+                    </div>
+                    <div *nzModalContent>
+                      <nz-alert nzBanner
+                                nzShowIcon
+                                [nzMessage]="'Nếu volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.'">
+                      </nz-alert>
+                      <div>
+                        <b style="text-align: center">Quý khách chắc chắn muốn xóa dịch vụ này?</b>
+                        <br>
+                        <i style="text-align: center">Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý.</i>
+                      </div>
+
+                    </div>
+                    <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                      <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">
+                        <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                      </button>
+                      <button nz-button nzType="primary"
+                              (click)="handleOkDelete()"
+                              [nzLoading]="isLoadingDelete"
+                              class="button-ok">
+                        <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                      </button>
+                    </div>
+                  </nz-modal>
+                  <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                        [nzDropdownMenu]="opMenu"></span>
+                  <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="navigateToCreateScheduleBackup()">Tạo lịch backup</li>
+                      <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
+                      <li nz-menu-item (click)="showModalUpdate(i)">Chỉnh sửa</li>
+                      <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume"
+                                (nzOnCancel)="handleCancelUpdate()" nzMark="false">
+                        <div *nzModalTitle>
+                          <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
+                        </div>
+                        <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
+                          <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+                            <nz-form-item>
+                              <nz-form-label nzFor="nameVolume">
+                                <div style="margin-top: 15px;">
+                                  <span>Tên Volume</span>
+                                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                                  <span nz-icon nzType="question-circle" nzTheme="outline"></span>
+                                </div>
+                              </nz-form-label>
+                              <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                                <input nz-input
+                                       formControlName="nameVolume"
+                                       [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
+                                <ng-template #nameErrorTpl let-control>
+                                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
+                                  <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
+                                    dấu tiếng Việt
+                                  </ng-container>
+                                  <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+                                </ng-template>
+                              </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                              <nz-form-label nzFor="description">
+                                <div class="label">
+                                  <span>Mô tả</span>
+                                </div>
+                              </nz-form-label>
+                              <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                    <textarea nz-input
+                              formControlName="description"
+                              [placeholder]="'Nhập mô tả'"
+                              [maxLength]="255"
+                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                                <ng-template #descriptionErrorTpl let-control>
+                                  <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
+                                  </ng-container>
+                                </ng-template>
+                              </nz-form-control>
+                            </nz-form-item>
+                          </form>
+                        </div>
+                        <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                          <button nz-button nzType="default" (click)="handleCancelUpdate()" class="button-cancel">
+                            <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                          </button>
+                          <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOkUpdate()"
+                                  [nzLoading]="isLoadingUpdate"
+                                  class="button-ok">
+                            <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                          </button>
+                        </div>
+                      </nz-modal>
+                      <li nz-menu-item>Xóa</li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <nz-row nzJustify="center">
+            <img src="/assets/imgs/volume.png" width="450" height="450" alt="blank-security-group">
+          </nz-row>
+          <nz-row nzJustify="center">
+            <div class="text-title">
+              <h1 style="text-align: center; margin-top: 12px;">Volume <br> Lưu trữ ổ đĩa máy chủ</h1>
+            </div>
+          </nz-row>
+          <nz-row nzJustify="center">
+            <div class="text-subtitle" style="max-width: 885px; text-wrap: normal; text-align: center;">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</div>
+          </nz-row>
+          <nz-row nzJustify="center">
+            <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" [routerLink]="'/app-smart-cloud/volume/create'">Khởi tạo ngay</button>
+          </nz-row>
+        </ng-container>
+      </ng-container>
+    </nz-card>
+</nz-content>
 

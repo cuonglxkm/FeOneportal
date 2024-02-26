@@ -8,6 +8,8 @@ import {PackageBackupService} from "../../../shared/services/package-backup.serv
 import {FormUpdate, PackageBackupModel, ServiceInPackage} from "../../../shared/models/package-backup.model";
 import {BaseResponse} from "../../../../../../../libs/common-utils/src";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from 'src/app/shared/services/project.service';
 
 @Component({
   selector: 'one-portal-list-packages-backup',
@@ -43,18 +45,21 @@ export class ListPackagesBackupComponent implements OnInit {
     description: FormControl<string>
   }> = this.fb.group({
     namePackage: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+      Validators.pattern(/^[a-zA-Z0-9]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]
   })
 
   valueDelete: string
 
+  typeVPC: number
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              private projectService: ProjectService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -89,7 +94,7 @@ export class ListPackagesBackupComponent implements OnInit {
 
   onChangeSelected(value) {
     this.selected = value
-    if(this.selected === 'ALL'){
+    if (this.selected === 'ALL') {
       this.selected = ''
     }
     this.getListPackageBackups()
@@ -105,7 +110,6 @@ export class ListPackagesBackupComponent implements OnInit {
   }
 
 
-
   navigateToEdit(id) {
     this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + id])
   }
@@ -116,6 +120,7 @@ export class ListPackagesBackupComponent implements OnInit {
   }
 
   packageName: string
+
   showDelete(data: PackageBackupModel) {
     this.isVisibleDelete = true
     this.idBackupPackage = data.id
@@ -130,25 +135,27 @@ export class ListPackagesBackupComponent implements OnInit {
   }
 
   serviceInPackage: ServiceInPackage = new ServiceInPackage()
+
   handleDeletedOk() {
     this.isLoadingDelete = true
 
-    if(this.valueDelete.includes(this.packageName)){
+    if (this.valueDelete.includes(this.packageName)) {
       this.packageBackupService.delete(this.idBackupPackage).subscribe(data => {
-          this.isLoadingDelete = false
-          this.isVisibleDelete = false
-          this.notification.success('Thành công', 'Xóa gói backup thành công')
-          this.getListPackageBackups()
+        this.isLoadingDelete = false
+        this.isVisibleDelete = false
+        this.notification.success('Thành công', 'Xóa gói backup thành công')
+        this.getListPackageBackups()
       }, error => {
-          this.isLoadingDelete = false
-          this.isVisibleDelete = false
-          console.log('error', error)
-          this.notification.error('Thất bại', 'Xóa gói backup thất bại')
+        this.isLoadingDelete = false
+        this.isVisibleDelete = false
+        console.log('error', error)
+        this.notification.error('Thất bại', 'Xóa gói backup thất bại')
       })
     } else {
       this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
     }
   }
+
   handleDeleteCancel() {
     this.isVisibleDelete = false
   }
@@ -162,6 +169,7 @@ export class ListPackagesBackupComponent implements OnInit {
 
   formUpdate: FormUpdate = new FormUpdate()
   idBackupPackage: number
+
   handleUpdateOk() {
 
     this.formUpdate.customerId = this.tokenService.get()?.userId
@@ -171,16 +179,16 @@ export class ListPackagesBackupComponent implements OnInit {
 
     this.isLoadingUpdate = true
     this.packageBackupService.update(this.formUpdate).subscribe(data => {
-      if(data == true) {
+      if (data == true) {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false
-        this.notification.success('Thành công','Cập nhật gói Backup thành công')
+        this.notification.success('Thành công', 'Cập nhật gói Backup thành công')
         this.getListPackageBackups()
       } else {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false
         console.log('dâata update', data)
-        this.notification.error('Thất bại','Cập nhật gói Backup thất bại ')
+        this.notification.error('Thất bại', 'Cập nhật gói Backup thất bại ')
         this.getListPackageBackups()
       }
     })
@@ -189,7 +197,25 @@ export class ListPackagesBackupComponent implements OnInit {
   handleUpdateCancel() {
     this.isVisibleUpdate = false
   }
+
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
+
   ngOnInit() {
     this.customerId = this.tokenService.get()?.userId
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
+
+    this.getListPackageBackups()
   }
 }

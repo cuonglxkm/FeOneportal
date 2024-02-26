@@ -316,6 +316,7 @@ export class VolumeCreate {
 export class Order {
   customerId: number;
   createdByUserId: number;
+  couponCode: string;
   note: string;
   orderItems: any[];
 }
@@ -336,6 +337,7 @@ export class InstanceResize {
   addCpu: number;
   addBttn: number;
   addBtqt: number;
+  storage: number;
   ram: number;
   cpu: number;
   typeName: string;
@@ -518,7 +520,7 @@ export class ItemPayment {
   specificationString: string;
   specificationType: string;
   sortItem: number;
-  serviceDuration: number
+  serviceDuration: number;
 }
 
 export class InstanceExtend {

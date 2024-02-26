@@ -19,6 +19,8 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   @Input() isDetail = false;
   @Input() regionId: number;
   @Output() valueChanged = new EventEmitter();
+  @Output() userChanged = new EventEmitter();
+
 
   listProject: ProjectModel[] = []
 
@@ -28,16 +30,20 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   projectChange(project: ProjectModel) {
     localStorage.setItem('projectId', project.id + "")
-    this.valueChanged.emit(project);
+    this.userChanged.emit(project);
   }
 
   ngOnInit(): void {
-
+    if (localStorage.getItem('region') != null) {
+        this.regionId = JSON.parse(localStorage.getItem('region')).regionId;
+      // this.valueChanged.emit(this.selectedRegion)
+    }
     this.loadProjects();
   }
 
   loadProjects() {
-    if (this.regionId == null) return;
+    if (this.regionId == null)
+      return;
     this.projectService.getByRegion(this.regionId).subscribe(data => {
       // console.log(data);
       this.listProject = data;

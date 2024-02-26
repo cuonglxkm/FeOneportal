@@ -81,6 +81,12 @@ import {CreatePackageBackupComponent} from "./backup-package/create/create-packa
 import {DetailPackageBackupComponent} from "./backup-package/detail/detail-package-backup.component";
 import {EditBackupPackageComponent} from "./backup-package/edit/edit-backup-package.component";
 import {ExtendBackupPackageComponent} from "./backup-package/extend/extend-backup-package.component";
+import { PaymentSummaryComponent } from "../shared/components/payment-summary/payment-summary.component";
+import {CreateVolumeVpcComponent} from "./volume/component/create-volume-vpc/create-volume-vpc.component";
+import {ResizeVolumeVpcComponent} from "./volume/component/resize-volume-vpc/resize-volume-vpc.component";
+import {ListVlanComponent} from "./vlan/list/list-vlan.component";
+import {BlankVolumeComponent} from "./volume/component/blank/blank-volume.component";
+import {VlanDetailComponent} from "./vlan/detail/vlan-detail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -309,7 +315,6 @@ const routes: Routes = [
     component: PaymentDetailComponent
   },
   {
-
     path: 'billing/payments/success',
     component: PaymentSuccessComponent
   },
@@ -352,7 +357,35 @@ const routes: Routes = [
   {
     path: 'backup/packages/extend/:id',
     component: ExtendBackupPackageComponent
-  }
+  },
+  {
+    path: 'order/cart',
+    component: PaymentSummaryComponent
+  },
+  {
+    path: 'volume/vpc/create',
+    component: CreateVolumeVpcComponent
+  },
+  {
+    path: 'volume/vpc/resize/:id',
+    component: ResizeVolumeVpcComponent
+  },
+  {
+    path: 'volume/blank',
+    component: BlankVolumeComponent
+  },
+  {
+    path: 'vlan/network/list',
+    component: ListVlanComponent
+  },
+  {
+    path: 'vlan/network/detail/:id',
+    component: VlanDetailComponent
+  },
+  {
+    path: 'vpc',
+    loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule)
+  },
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],

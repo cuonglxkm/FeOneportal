@@ -7,8 +7,8 @@
       <nz-breadcrumb-item>
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        Backup
+      <nz-breadcrumb-item >
+        <a routerLink="/app-smart-cloud/backup/packages">Backup</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/backup/packages">Tạo gói Backup</a>
@@ -25,13 +25,13 @@
   <ng-template #title>
     <div nz-row nzJustify="space-between">
       <nz-row>
-        <nz-col>
-          <span nz-icon
-                nzType="arrow-left"
-                nzTheme="outline"
-                [routerLink]="'/app-smart-cloud/backup/packages'"
-                style="margin-right: 10px;"></span>
-        </nz-col>
+<!--        <nz-col>-->
+<!--          <span nz-icon-->
+<!--                nzType="arrow-left"-->
+<!--                nzTheme="outline"-->
+<!--                [routerLink]="'/app-smart-cloud/backup/packages'"-->
+<!--                style="margin-right: 10px;"></span>-->
+<!--        </nz-col>-->
         <nz-col>
           <div>Tạo gói Backup</div>
         </nz-col>
@@ -180,7 +180,7 @@
               <td nzAlign="right">VNĐ/tháng</td>
             </tr>
           </nz-table>
-          <button class="btn-create" [disabled]="!validateForm.valid" (click)="submitForm()">
+          <button class="btn-create" [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()">
             <div style="color: white;line-height: 24px; word-wrap: break-word">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               Khởi tạo

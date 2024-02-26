@@ -10,6 +10,7 @@ import {InstancesService} from "../instances/instances.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -19,6 +20,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 export class IpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
+  projectType = 0;
   listOfIp: IpPublicModel[] = [];
   checkEmpty: IpPublicModel[] = [];
   isBegin: Boolean = false;
@@ -39,6 +41,8 @@ export class IpPublicComponent implements OnInit {
   loadingAtt = true;
   disableAtt = true;
   id: any;
+
+
 
   statusData = [
     {name: 'Tất cả trạng thái', value: ''},
@@ -61,14 +65,20 @@ export class IpPublicComponent implements OnInit {
   loading = false;
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.instancService.getAllIPSubnet(this.regionId)
     this.service.model.subscribe(data => {
       console.log(data)
     })
+
+    this.getData(true);
   }
 
   getData(isCheckBegin: boolean): void {
     this.loading = true;
-    this.service.getData(this.ipAddress, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.isCheckState, this.size, this.index)
+    this.service.getData(this.ipAddress, this.selectedStatus, this.tokenService.get()?.userId, this.projectId, this.regionId, this.isCheckState, this.size, this.index)
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
         this.listOfIp = baseResponse.records;
@@ -89,11 +99,12 @@ export class IpPublicComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.refreshParams();
-    this.getData(true);
   }
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.projectType = project.type;
+    this.getData(true);
   }
 
   onPageSizeChange(event: any) {
@@ -106,9 +117,9 @@ export class IpPublicComponent implements OnInit {
     this.index = event;
     this.getData(false);
   }
-  navigatorToDetail(id: number){
-    this.router.navigate(['/app-smart-cloud/ip-public/detail/'+id]);
-  }
+  // navigatorToDetail(id: number){
+  //   this.router.navigate(['/app-smart-cloud/ip-public/detail/'+id]);
+  // }
 
   createIp() {
     this.router.navigate(['/app-smart-cloud/ip-public/create']);
@@ -138,6 +149,8 @@ export class IpPublicComponent implements OnInit {
         this.isVisibleRemove = true;
       } else if (event === 'Xóa') {
         this.isVisibleDelete = true;
+      } else if (event === 'Gia Hạn Ip Pulbic') {
+        this.router.navigate(['/app-smart-cloud/ip-public/extend/' + id]);
       }
   }
 

@@ -14,6 +14,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../instances/instances.model";
 import {InstancesService} from "../../../instances/instances.service";
 import {OrderItem} from "../../../../shared/models/price";
+import {ProjectService} from "../../../../shared/services/project.service";
 
 @Component({
   selector: 'app-edit-volume',
@@ -61,7 +62,8 @@ export class EditVolumeComponent implements OnInit {
               private router: Router,
               private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -93,14 +95,25 @@ export class EditVolumeComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length){
+    //     localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/volumes'])
+    //   }
+    // });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
+    // this.router.navigate(['/app-smart-cloud/volumes'])
     // this.getListVolumes()
   }
 
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
   getListVolumes() {
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region,
         9999, 1, null, null)
@@ -136,6 +149,29 @@ export class EditVolumeComponent implements OnInit {
     if(this.validateForm.valid){
       this.nameList = []
       this.doEditSizeVolume()
+    }
+  }
+
+  navigateToPaymentSummary(){
+    if(this.validateForm.valid){
+      this.nameList = []
+      this.getTotalAmount()
+      let request = new EditSizeVolumeModel();
+      request.customerId = this.volumeEdit.customerId;
+      request.createdByUserId = this.volumeEdit.customerId;
+      request.note = 'update volume';
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.volumeEdit),
+          specificationType: 'volume_resize',
+          price: this.orderItem?.totalPayment?.amount,
+          serviceDuration: this.expiryTime
+        }
+      ]
+      var returnPath: string = '/app-smart-cloud/volume/edit/'+this.volumeId
+      console.log('request', request)
+      this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
     }
   }
 
@@ -190,7 +226,7 @@ export class EditVolumeComponent implements OnInit {
 
         if(this.volumeInfo.attachedInstances != null) {
           this.volumeInfo.attachedInstances.forEach(item => {
-            this.listVMs += Array.from(new Set(item.instanceName)).join(', ')
+            this.listVMs += item.instanceName.toString() + ', '
           })
         }
 
@@ -214,7 +250,7 @@ export class EditVolumeComponent implements OnInit {
   volumeInit() {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id
     this.volumeEdit.newDescription = this.validateForm.controls.description.value
-    this.volumeEdit.regionId = this.volumeInfo.regionId;
+    this.volumeEdit.regionId = this.volumeInfo?.regionId;
     this.volumeEdit.newSize = this.validateForm.controls.storage.value
     this.volumeEdit.iops = this.iops
     // editVolumeDto.newOfferId = 0;
@@ -227,7 +263,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.actorEmail = user.email;
     this.volumeEdit.userEmail = user.email;
     this.volumeEdit.serviceType = 2;
-    this.volumeEdit.actionType = 4;
+    this.volumeEdit.actionType = 4; //resize
   }
 
   totalAmountVolume = 0;
@@ -244,12 +280,12 @@ export class EditVolumeComponent implements OnInit {
     const volumeResize = new EditSizeMemoryVolumeDTO();
     volumeResize.serviceInstanceId = this.volumeInfo?.id
     volumeResize.newDescription = this.volumeInfo?.description
-    volumeResize.regionId = this.volumeInfo.regionId;
-    volumeResize.newSize = this.volumeInfo?.sizeInGB
+    volumeResize.regionId = this.volumeInfo?.regionId;
+    volumeResize.newSize = 0
     volumeResize.iops = this.iops
     // editVolumeDto.newOfferId = 0;
     volumeResize.serviceName = this.volumeInfo?.name
-    volumeResize.vpcId = this.volumeInfo.vpcId;
+    volumeResize.vpcId = this.volumeInfo?.vpcId;
     volumeResize.customerId = this.tokenService.get()?.userId;
     volumeResize.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');

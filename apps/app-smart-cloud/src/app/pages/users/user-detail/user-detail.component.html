@@ -33,7 +33,7 @@
 
 <nz-card [nzBordered]="false" *ngIf="user">
   <div style="margin-bottom: 20px">
-    <span class="table-title">Thông tin chính của User</span>
+    <span class="text-card-header">Thông tin chính của User</span>
   </div>
   <div nz-row>
     <div nz-col nzSpan="8">
@@ -74,7 +74,7 @@
 
 <nz-card [nzBordered]="false">
   <div>
-    <span class="table-title">Thông tin bổ sung</span>
+    <span class="text-card-header">Thông tin bổ sung</span>
   </div>
   <nz-tabset>
     <nz-tab nzTitle="Policies">
@@ -154,7 +154,6 @@
             style="border: none; border-radius: 8px"
             nz-button
             (click)="deletePolicies()"
-            nzSize="large"
           >
             <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
           </button>
@@ -162,7 +161,6 @@
             style="border: none; border-radius: 8px"
             nz-button
             (click)="reloadPolicies()"
-            nzSize="large"
           >
             <img
               style="margin-top: -4px"
@@ -174,14 +172,13 @@
             nz-button
             nzType="primary"
             (click)="navigateToAddPolicies()"
-            nzSize="large"
           >
             <img
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add-circle.svg"
               alt=""
             />
-            <span class="button-text-primary">Thêm policies</span>
+            <span>Thêm policies</span>
           </button>
         </div>
       </div>
@@ -301,7 +298,6 @@
             style="border: none; border-radius: 8px"
             nz-button
             (click)="deleteGroups()"
-            nzSize="large"
           >
             <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
           </button>
@@ -309,7 +305,6 @@
             style="border: none; border-radius: 8px"
             nz-button
             (click)="reloadGroupOfUser()"
-            nzSize="large"
           >
             <img
               style="margin-top: -4px"
@@ -321,14 +316,13 @@
             nz-button
             nzType="primary"
             (click)="navigateToAddToGroups()"
-            nzSize="large"
           >
             <img
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add-circle.svg"
               alt=""
             />
-            <span class="button-text-primary">Thêm vào Groups</span>
+            <span>Thêm vào Groups</span>
           </button>
         </div>
       </div>
@@ -392,17 +386,14 @@
 </nz-card>
 <div class="text-right">
   <button
-    class="button-custom"
     nz-button
-    style="color: var(--Primary-1, #0066b3)"
     (click)="navigateToList()"
-    nzSize="large"
   >
     <img
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/arrow-left-2.svg"
       alt=""
     />
-    <span class="button-text-default">Quay lại</span>
+    <span>Quay lại</span>
   </button>
 </div>

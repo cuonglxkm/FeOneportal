@@ -23,7 +23,7 @@ export class UserComponent implements OnInit {
   listOfCurrentPageData: User[] = [];
   pageIndex = 1;
   pageSize = 10;
-  total: number = 3;
+  total: number;
   searchParam: string;
   loading = true;
   checked = false;
@@ -61,14 +61,22 @@ export class UserComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfCurrentPageData = data.records;
+        this.total = data.totalCount;
         console.log('list users', this.listOfCurrentPageData);
       });
+  }
+
+  reloadTable(): void {
+    this.listOfCurrentPageData = [];
+    this.setOfCheckedName.clear();
+    this.getData();
   }
 
   isVisibleDelete: boolean = false;
   isVisibleDeleteUsers: boolean = false;
   codeVerify: string;
   showModal() {
+    this.codeVerify = '';
     if (this.setOfCheckedName.size == 1) {
       let arrayFromSet = Array.from(this.setOfCheckedName);
       this.userDelete = arrayFromSet[0];
@@ -79,10 +87,6 @@ export class UserComponent implements OnInit {
       this.isVisibleDeleteUsers = true;
     }
     console.log('user delete', this.userDelete);
-  }
-
-  changecodeVerify(e: string) {
-    this.codeVerify = e;
   }
 
   handleCancelDelete() {
@@ -96,17 +100,17 @@ export class UserComponent implements OnInit {
   handleOkDelete() {
     this.isVisibleDelete = false;
     if (this.codeVerify == this.userDelete) {
-      this.service.deleteUsers(this.setOfCheckedName).subscribe(
-        (data) => {
+      this.service.deleteUsers(this.setOfCheckedName).subscribe({
+        next: (data) => {
           console.log(data);
           this.notification.success('', 'Xóa User thành công');
           this.reloadTable();
         },
-        (error) => {
+        error: (error) => {
           console.log(error.error);
           this.notification.error('', 'Xóa User không thành công');
-        }
-      );
+        },
+      });
     } else {
       this.notification.error('', 'Xóa User không thành công');
     }
@@ -115,8 +119,8 @@ export class UserComponent implements OnInit {
   handleOkDeleteUsers() {
     this.isVisibleDeleteUsers = false;
     if (this.codeVerify == 'delete') {
-      this.service.deleteUsers(this.setOfCheckedName).subscribe(
-        (data) => {
+      this.service.deleteUsers(this.setOfCheckedName).subscribe({
+        next: (data) => {
           console.log(data);
           this.notification.success(
             '',
@@ -125,11 +129,11 @@ export class UserComponent implements OnInit {
           this.setOfCheckedName.clear();
           this.reloadTable();
         },
-        (error) => {
+        error: (error) => {
           console.log(error.error);
           this.notification.error('', 'Xóa Users không thành công');
-        }
-      );
+        },
+      });
     } else {
       this.notification.error('', 'Xóa Users không thành công');
     }
@@ -173,11 +177,6 @@ export class UserComponent implements OnInit {
       this.updateCheckedSet(userName, checked)
     );
     this.refreshCheckedStatus();
-  }
-
-  reloadTable(): void {
-    this.listOfCurrentPageData = [];
-    this.getData();
   }
 
   getUserDetail(userName: any) {

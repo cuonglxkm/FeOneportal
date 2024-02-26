@@ -2,16 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   HostListener,
   Inject,
   OnInit,
-  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   ImageTypesModel,
@@ -19,15 +16,15 @@ import {
   InstancesModel,
   RebuildInstances,
   OfferItem,
-  Network,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { concatMap, finalize, from } from 'rxjs';
+import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -129,8 +126,12 @@ export class InstancesEditInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
     this.email = this.tokenService.get()?.email;
     this.getAllImageType();
+    this.cdr.detectChanges();
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
@@ -186,6 +187,7 @@ export class InstancesEditInfoComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -199,18 +201,20 @@ export class InstancesEditInfoComponent implements OnInit {
       .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
-          let tempImage = new Image();
-          e.characteristicValues.forEach((char) => {
-            if (char.charOptionValues[0] == 'Id') {
-              tempImage.id = Number.parseInt(char.charOptionValues[1]);
-              tempImage.name = e.offerName;
-            }
-            if (char.charOptionValues[0] == 'ImageTypeId') {
-              this.listOfImageByImageType
-                .get(Number.parseInt(char.charOptionValues[1]))
-                .push(tempImage);
-            }
-          });
+          if (e.status.toUpperCase() == 'ACTIVE') {
+            let tempImage = new Image();
+            e.characteristicValues.forEach((char) => {
+              if (char.charOptionValues[0] == 'Id') {
+                tempImage.id = Number.parseInt(char.charOptionValues[1]);
+                tempImage.name = e.offerName;
+              }
+              if (char.charOptionValues[0] == 'ImageTypeId') {
+                this.listOfImageByImageType
+                  .get(Number.parseInt(char.charOptionValues[1]))
+                  .push(tempImage);
+              }
+            });
+          }
         });
         this.cdr.detectChanges();
         console.log('list Images', this.listOfImageByImageType);
@@ -218,13 +222,11 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    console.log(this.tokenService.get()?.userId);
-    this.getAllOfferImage(this.imageTypeId);
-    this.cdr.detectChanges();
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
-  onProjectChange(project: any) {}
+  onProjectChange(project: any) {
+    this.route.navigate(['/app-smart-cloud/instances']);
+  }
 
   modify(): void {
     this.modalSrv.create({

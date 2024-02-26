@@ -15,13 +15,13 @@
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false" style="border-radius: 4px">
     <div style="margin-bottom: 20px">
-      <span class="table-title">Thông tin của User</span>
+      <span class="text-card-header">Thông tin của User</span>
     </div>
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label class="text-lable" nzFor="name"
-            >Tên của User<span class="text-red">*</span></nz-form-label
+          <nz-form-label nzFor="name"
+            >Tên của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
@@ -53,7 +53,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="email"
-            >Email của User<span class="text-red">*</span></nz-form-label
+            >Email của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
             <input
@@ -130,33 +130,26 @@
     [nzXs]="24"
     [nzXXl]="24"
   >
-    <button
-      class="button-custom"
-      nz-button
-      style="color: var(--Primary-1, #0066b3)"
-      (click)="navigateToList()"
-      nzSize="large"
-    >
+    <button nz-button (click)="navigateToList()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/arrow-left-2.svg"
         alt=""
       />
-      <span class="button-text-default">Quay lại</span>
+      <span>Quay lại</span>
     </button>
     <button
       nz-button
       nzType="primary"
       [disabled]="!form.valid"
       (click)="showModal()"
-      nzSize="large"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/add-circle.svg"
         alt=""
       />
-      <span class="button-text-primary">Thêm User</span>
+      <span>Thêm User</span>
     </button>
   </div>
 </div>
@@ -187,7 +180,19 @@
     </nz-row>
   </ng-container>
   <div *nzModalFooter>
-    <button class="button-custom" nz-button (click)="handleCancelCreate()">Hủy</button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isConfirmLoading">Xác nhận</button>
+    <button nz-button (click)="handleCancelCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
   </div>
 </nz-modal>

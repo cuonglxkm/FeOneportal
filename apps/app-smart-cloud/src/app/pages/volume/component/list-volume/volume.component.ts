@@ -4,7 +4,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from "@angular/router";
 import {AttachedDto, VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
-import {AddVolumetoVmModel, GetAllVmModel} from "../../../../shared/models/volume.model";
+import {AddVolumetoVmModel, EditTextVolumeModel, GetAllVmModel} from "../../../../shared/models/volume.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
@@ -15,6 +15,9 @@ import {PopupCancelVolumeComponent} from '../popup-volume/popup-cancel-volume.co
 import {PopupDeleteVolumeComponent} from '../popup-volume/popup-delete-volume.component';
 import {finalize} from "rxjs/operators";
 import {InstancesModel} from "../../../instances/instances.model";
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {getCurrentRegionAndProject} from "@shared";
+import {ProjectService} from "../../../../shared/services/project.service";
 
 @Component({
   selector: 'app-volume',
@@ -58,6 +61,9 @@ export class VolumeComponent implements OnInit {
   isVisibleDetachVm: boolean = false
   isLoadingDetachVm: boolean = false
 
+  isVisibleDetachVmNotMultiple: boolean = false
+  isLoaadingDetaachVmNotMultiple: boolean = false
+
   isVisibleDelete: boolean = false
   isLoadingDelete: boolean = false
 
@@ -67,48 +73,69 @@ export class VolumeComponent implements OnInit {
   instanceSelected: any
 
   listInstanceInVolume: AttachedDto[] = []
+
+  validateForm: FormGroup<{
+    nameVolume: FormControl<string>
+    description: FormControl<string>
+  }> = this.fb.group({
+    nameVolume: [null as string, [Validators.required,
+      Validators.pattern(/^[a-zA-Z0-9]*$/),
+      Validators.maxLength(70)]],
+    description: [null as string, [Validators.maxLength(255)]]
+  })
+
+  typeVPC: number
+
+  isBegin: boolean = false;
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
+              private projectService: ProjectService,
               private notification: NzNotificationService,
               private modalService: NzModalService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private fb: NonNullableFormBuilder) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-
+    this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
-    this.getListVolume()
+    this.typeVPC = project.type
+    this.isLoading = true
+    this.getListVolume(true)
   }
+
 
   onChange(value) {
     console.log('selected', value)
     this.selectedValue = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
   onInputChange(value) {
     this.value = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value
-    this.getListVolume()
+    this.getListVolume(false)
   }
 
-  getListVolume() {
+  getListVolume(isBegin) {
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
+
     this.volumeService.getVolumes(this.customerId, this.project,
         this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
         .subscribe(data => {
@@ -118,6 +145,9 @@ export class VolumeComponent implements OnInit {
           } else {
             this.isLoading = false
             this.response = null
+          }
+          if (isBegin) {
+            this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
           }
     })
   }
@@ -135,6 +165,10 @@ export class VolumeComponent implements OnInit {
         nameVolume: nameVolume
       }
     });
+  }
+
+  navigateToCreateVolumeVPC() {
+    this.router.navigate(['/app-smart-cloud/volume/vpc/create'])
   }
 
   showAttachVm(volume: VolumeDTO) {
@@ -175,6 +209,25 @@ export class VolumeComponent implements OnInit {
     this.instanceInVolumeSelected = value
   }
 
+  isVisibleNotice: boolean = false
+  isLoadingNotice: boolean = false
+
+  showModalNotice(volume: VolumeDTO) {
+    this.isVisibleNotice = true
+    this.volumeDTO = volume
+    this.volumeId = volume.id
+    this.getListVmInVolume(this.volumeId)
+  }
+
+  handleCancelNotice() {
+    this.isVisibleNotice = false
+  }
+
+  handleOkNotice() {
+    this.isVisibleNotice = false
+    this.doDetachVolumeToVm(this.volumeDTO, this.vmId)
+  }
+
   addVolumeToVm(volume: VolumeDTO) {
     this.isLoadingAttachVm = true
     this.volumeService.getVolumeById(volume.id).subscribe(data => {
@@ -194,7 +247,7 @@ export class VolumeComponent implements OnInit {
               this.isVisibleAttachVm = false
               this.isLoadingAttachVm = false;
               this.notification.success('Thành công', 'Gắn Volume thành công.')
-              this.getListVolume()
+              this.getListVolume(false)
             } else {
               console.log('data', data)
               this.isVisibleAttachVm = false
@@ -205,14 +258,14 @@ export class VolumeComponent implements OnInit {
             console.log('eror', error)
             this.isVisibleAttachVm = false
             this.isLoadingAttachVm = false;
-            this.notification.error('Thất bại', 'Gắn Volume thất bại. Không tìm thấy volume ' + volume.name)
+            this.notification.error('Thất bại', 'Gắn Volume thất bại.')
           })
         }
       } else {
         this.isVisibleAttachVm = false
         this.isLoadingAttachVm = false;
         this.notification.error('Thất bại', 'Gắn Volume thất bại.')
-        this.getListVolume()
+        this.getListVolume(false)
       }
     })
   }
@@ -230,18 +283,18 @@ export class VolumeComponent implements OnInit {
         this.isLoadingDetachVm = false;
         this.isVisibleDetachVm = false
         this.notification.success('Thành công', `Gỡ volume thành công`);
-        this.getListVolume()
+        this.getListVolume(false)
       } else {
         this.isLoadingDetachVm = false
         this.isVisibleDetachVm = false
         this.notification.error('Thất bại', `Gỡ volume thất bại`);
-        this.getListVolume()
+        this.getListVolume(false)
       }
     }, error => {
       this.isLoadingDetachVm = false
       this.isVisibleDetachVm = false
       this.notification.error('Thất bại', `Gỡ volume thất bại`);
-      this.getListVolume()
+      this.getListVolume(false)
     })
   }
 
@@ -281,26 +334,86 @@ export class VolumeComponent implements OnInit {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa Volume thành công')
-        this.getListVolume()
+        this.getListVolume(false)
       } else {
         console.log('data', data)
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.error('Thất bại', 'Xóa Volume thất bại')
-        this.getListVolume()
+        this.getListVolume(false)
       }
     }, error => {
       console.log('error', error)
       this.isLoadingDelete = false
       this.isVisibleDelete = false
       this.notification.error('Thất bại', 'Xóa Volume thất bại')
-      this.getListVolume()
+      this.getListVolume(false)
     })
+  }
+
+  //update
+
+  showModalUpdate(volumeDTO: VolumeDTO) {
+    this.isVisibleUpdate = true
+    this.validateForm.controls.nameVolume.setValue(volumeDTO.name)
+    this.validateForm.controls.description.setValue(volumeDTO.description)
+    this.volumeId = volumeDTO.id
+  }
+
+  handleCancelUpdate() {
+    this.isVisibleUpdate = false
+  }
+
+  handleOkUpdate() {
+    let request: EditTextVolumeModel = new EditTextVolumeModel()
+    request.customerId = this.tokenService.get()?.userId
+    request.volumeId = this.volumeId
+    request.newName = this.validateForm.controls.nameVolume.value
+    request.newDescription = this.validateForm.controls.description.value
+    this.isLoadingUpdate = true
+    this.volumeService.updateVolume(request).subscribe(data => {
+      if(data) {
+        this.isLoadingUpdate = false
+        this.isVisibleUpdate = false
+        this.notification.success('Thành công', 'Cập nhật thông tin Volume thành công')
+        this.getListVolume(false)
+      }
+    }, error => {
+      this.isLoadingUpdate = false
+      this.isVisibleUpdate = false
+      this.notification.error('Thất bại', 'Cập nhật thông tin Volume thất bại')
+    })
+    this.isVisibleUpdate = false
+  }
+
+  navigateToCreateScheduleSnapshot() {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create'])
+  }
+
+  navigateToCreateBackup(id, createdDate, endDate, name) {
+    this.router.navigate(['/app-smart-cloud/backup-volume/create'],{
+      queryParams:{idVolume:id, startDate: createdDate , endDate: endDate, nameVolume:name }
+    });
+
+  }
+
+  navigateToCreateScheduleBackup(){
+    this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
 
   ngOnInit() {
+
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    console.log('project', this.project)
+    this.customerId = this.tokenService.get()?.userId
+
     this.getListVm()
+    this.getListVolume(true)
+    this.cdr.detectChanges();
+
   }
 
 }

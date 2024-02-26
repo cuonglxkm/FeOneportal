@@ -19,6 +19,7 @@
       <project-select-dropdown
         [regionId]="region"
         (valueChanged)="onProjectChange($event)"
+        (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
     </div>
   </ng-template>
@@ -94,7 +95,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span class="button-text-primary">Tạo mới</span>
+        <span>Tạo mới máy ảo</span>
       </button>
     </div>
   </div>
@@ -141,7 +142,7 @@
           <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
         </td>
         <td nzBreakWord>
-          <div>
+          <div style="color: #0066b3">
             {{ getStatus(data.status) }}
           </div>
         </td>
@@ -149,33 +150,61 @@
         <td nzBreakWord>{{ data.ipPrivate }}</td>
         <td nzBreakWord>{{ data.ipPublic }}</td>
         <td nzRight>
-          <button
-            nz-button
-            [nzType]="'primary'"
+          <img
+            src="assets/imgs/create-backup.svg"
+            alt=""
+            (click)="navigateToCreateBackup(data.id)"
+            style="cursor: pointer; margin-right: 16px"
+            nz-tooltip="Tạo Backup"
+          />
+          <img
+            src="assets/imgs/edit-2.svg"
+            alt=""
+            (click)="navigateToEdit(data.id)"
+            style="cursor: pointer; margin-right: 16px"
+            nz-tooltip="Chỉnh sửa"
+          />
+          <img
+            src="assets/imgs/calendar-tick.svg"
+            alt=""
+            style="cursor: pointer; margin-right: 16px"
+            nz-tooltip="Tạo lịch Backup"
+          />
+          <img
             nz-dropdown
             [nzDropdownMenu]="opMenu"
-          >
-            <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
-          </button>
+            src="assets/imgs/more1.svg"
+            alt=""
+          />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="navigateToCreateBackup(data.id)">
-                Tạo Backup
-              </li>
-              <li nz-menu-item>Tạo lịch Backup</li>
               <li nz-menu-item>Chỉnh sửa Security Group</li>
-              <li nz-menu-item (click)="navigateToEdit(data.id)">Chỉnh sửa</li>
               <li nz-menu-item (click)="showHandleGanVLAN()">Gắn vào VLAN</li>
               <li nz-menu-item (click)="showHandleGoKhoiVLAN()">
                 Gỡ khỏi VLAN
               </li>
-              <li nz-menu-item (click)="restartInstance(data.id)">
+              <li
+                *ngIf="data.taskState != 'SHUTOFF'"
+                nz-menu-item
+                (click)="restartInstance(data.id)"
+              >
                 Khởi động lại
               </li>
-              <li nz-menu-item (click)="shutdownInstance(data.id)">
+              <li
+                *ngIf="data.taskState != 'SHUTOFF'"
+                nz-menu-item
+                (click)="shutdownInstance(data.id)"
+              >
                 Tắt máy ảo
               </li>
-              <li nz-menu-item>RESCUE</li>
+              <li
+                *ngIf="data.taskState == 'SHUTOFF'"
+                nz-menu-item
+                (click)="startInstance(data.id)"
+              >
+                Bật máy ảo
+              </li>
+              <li nz-menu-item (click)="rescueInstance(data.id)">RESCUE</li>
             </ul>
           </nz-dropdown-menu>
         </td>
@@ -188,9 +217,8 @@
   <nz-card>
     <result>
       <img
-        nz-image
         style="height: 100%; width: 100%"
-        nzSrc="assets/imgs/blank_vm.png"
+        src="assets/imgs/blank_vm.png"
         alt=""
       />
 

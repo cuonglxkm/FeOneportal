@@ -17,13 +17,11 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
-        [isDetail]="true"
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
       <project-select-dropdown
-        [isDetail]="true"
         [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
+        (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
     </div>
   </ng-template>

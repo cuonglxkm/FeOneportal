@@ -71,7 +71,10 @@ export class UserDetailComponent implements OnInit {
     this.listPolicyNames = [];
     this.service.getUserByUsername(this.userName).subscribe((data: any) => {
       this.user = data;
-      this.createdDate = this.datePipe.transform(this.user.createdDate, 'HH:mm:ss dd/MM/yyyy');
+      this.createdDate = this.datePipe.transform(
+        this.user.createdDate,
+        'HH:mm:ss dd/MM/yyyy'
+      );
       console.log('user detail', this.user);
       this.listGroupNames = this.user.userGroups;
       this.listGroupNames = this.listGroupNames.filter((e) => e != '');
@@ -118,6 +121,8 @@ export class UserDetailComponent implements OnInit {
 
   reloadPolicies() {
     this.isReload = true;
+    this.setOfCheckedPolicy.clear();
+    this.listItemDetachPolicy = [];
     this.getPolicies();
     setTimeout(() => {
       this.isReload = false;
@@ -196,9 +201,11 @@ export class UserDetailComponent implements OnInit {
     var detachPolicy: DetachPoliciesOrGroups = new DetachPoliciesOrGroups();
     detachPolicy.userName = this.userName;
     detachPolicy.items = this.listItemDetachPolicy;
-    this.service.detachPoliciesOrGroups(detachPolicy).subscribe(() => {
-      this.getUserByUserName();
-    });
+    if (this.listItemDetachPolicy.length != 0) {
+      this.service.detachPoliciesOrGroups(detachPolicy).subscribe(() => {
+        this.getUserByUserName();
+      });
+    }
   }
 
   // Danh sách Groups
@@ -231,6 +238,8 @@ export class UserDetailComponent implements OnInit {
   isReload = false;
   reloadGroupOfUser() {
     this.isReload = true;
+    this.setOfCheckedGroup.clear();
+    this.listItemDetachGroup = [];
     this.getGroup();
     setTimeout(() => {
       this.isReload = false;
@@ -312,22 +321,24 @@ export class UserDetailComponent implements OnInit {
     var detachGroup: DetachPoliciesOrGroups = new DetachPoliciesOrGroups();
     detachGroup.userName = this.userName;
     detachGroup.items = this.listItemDetachGroup;
-    this.service.detachPoliciesOrGroups(detachGroup).subscribe(() => {
-      this.getUserByUserName();
-    });
+    if (this.listItemDetachGroup.length != 0) {
+      this.service.detachPoliciesOrGroups(detachGroup).subscribe(() => {
+        this.getUserByUserName();
+      });
+    }
   }
 
-   // View Json Object
-   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
-   public optionJsonEditor: JsonEditorOptions;
-   expandSet = new Set<string>();
-   onExpandChange(name: string, checked: boolean): void {
-     if (checked) {
-       this.expandSet.add(name);
-     } else {
-       this.expandSet.delete(name);
-     }
-   }
+  // View Json Object
+  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+  public optionJsonEditor: JsonEditorOptions;
+  expandSet = new Set<string>();
+  onExpandChange(name: string, checked: boolean): void {
+    if (checked) {
+      this.expandSet.add(name);
+    } else {
+      this.expandSet.delete(name);
+    }
+  }
 
   navigateToAddPolicies() {
     this.router.navigate([
