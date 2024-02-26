@@ -105,7 +105,7 @@
             </nz-form-item>
           </nz-col>
         </div>
-        <div style="margin-left: -10px;" *ngIf="!isSnapshot">
+        <div style="margin-left: -10px" *ngIf="!isSnapshot">
           <nz-form-label
             >Hệ điều hành (<span class="text-red">*</span>)</nz-form-label
           >
@@ -328,6 +328,7 @@
                 [@slider]="ani"
               >
                 <div
+                  style="cursor: pointer"
                   (click)="
                     onInputFlavors(item.id);
                     selectElementInputFlavors('flavor_' + item.id)
@@ -421,6 +422,7 @@
                         [nzMin]="0"
                         [nzMax]="62"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
@@ -431,6 +433,7 @@
                         [nzMin]="0"
                         [nzMax]="62"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
@@ -441,20 +444,21 @@
                         [nzMin]="0"
                         [nzMax]="100"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ configCustom.iops }}
                       </label>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ configCustom.priceMonth }}
                       </label>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ configCustom.priceHour }}
                       </label>
                     </td>
@@ -790,6 +794,7 @@
                         [(ngModel)]="data.type"
                         [id]="'type_' + data.id"
                         (ngModelChange)="onInputBlockStorage()"
+                        nzSize="large"
                       >
                         <nz-option
                           *ngFor="let p of typeBlockStorage"
@@ -800,6 +805,7 @@
                     </td>
                     <td>
                       <input
+                        class="input-custom"
                         type="text"
                         [ngModelOptions]="{ standalone: true }"
                         nz-input
@@ -816,6 +822,7 @@
                         [nzMin]="0"
                         [nzMax]="100"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
@@ -835,19 +842,21 @@
                       ></label>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ data.price }}
                       </label>
                     </td>
                     <td>
                       <button
-                        (click)="deleteRowBlockStorage(data.id)"
-                        nz-button
-                        nzType="primary"
-                        nzDanger
                         *ngIf="data.type != ''"
+                        style="border: none"
+                        nz-button
+                        (click)="deleteRowBlockStorage(data.id)"
                       >
-                        Xóa
+                        <img
+                          style="margin-top: -4px"
+                          src="assets/imgs/trash1.svg"
+                        />
                       </button>
                     </td>
                   </tr>
@@ -909,6 +918,7 @@
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
                         (ngModelChange)="onInputIPv4()"
+                        nzSize="large"
                       >
                         <nz-option
                           *ngFor="let p of listIPSubnetModel"
@@ -924,22 +934,25 @@
                         [id]="'amount_' + data.id"
                         [nzMin]="1"
                         [nzMax]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ data.price }}
                       </label>
                     </td>
                     <td>
                       <button
-                        (click)="deleteRowIPv4(data.id)"
-                        nz-button
-                        nzType="primary"
-                        nzDanger
                         *ngIf="data.ip != ''"
+                        style="border: none"
+                        nz-button
+                        (click)="deleteRowIPv4(data.id)"
                       >
-                        Xóa
+                        <img
+                          style="margin-top: -4px"
+                          src="assets/imgs/trash1.svg"
+                        />
                       </button>
                     </td>
                   </tr>
@@ -985,6 +998,7 @@
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
                         (ngModelChange)="onInputIPv6()"
+                        nzSize="large"
                       >
                         <nz-option
                           *ngFor="let p of listIPSubnetModel"
@@ -1000,22 +1014,25 @@
                         [id]="'amount_' + data.id"
                         [nzMin]="1"
                         [nzMax]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ data.price }}
                       </label>
                     </td>
                     <td>
                       <button
-                        (click)="deleteRowIPv6(data.id)"
-                        nz-button
-                        nzType="primary"
-                        nzDanger
                         *ngIf="data.ip != ''"
+                        style="border: none"
+                        nz-button
+                        (click)="deleteRowIPv6(data.id)"
                       >
-                        Xóa
+                        <img
+                          style="margin-top: -4px"
+                          src="assets/imgs/trash1.svg"
+                        />
                       </button>
                     </td>
                   </tr>
@@ -1113,7 +1130,6 @@
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span
-                class="button-text-primary"
                 [style.color]="form.invalid ? 'gray' : 'white'"
                 >Thanh toán</span
               >

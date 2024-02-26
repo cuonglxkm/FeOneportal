@@ -19,25 +19,17 @@
       </thead>
       <tbody class="ant-table-tbody">
         <tr *ngFor="let data of listOfDataNetwork">
-          <td>
-            <label>
-              {{ data.name }}
-            </label>
+          <td nzBreakWord>
+            {{ data.name }}
           </td>
           <td>
-            <label>
-              {{ data.macAddress }}
-            </label>
+            {{ data.macAddress }}
           </td>
-          <td>
-            <label>
-              {{ data.fixedIPs }}
-            </label>
+          <td nzBreakWord>
+            {{ data.fixedIPs }}
           </td>
-          <td>
-            <label style="color: #52c41a">
-              {{ data.status }}
-            </label>
+          <td style="color: #52c41a">
+            {{ data.status }}
           </td>
           <td *ngIf="isDetail">
             <button

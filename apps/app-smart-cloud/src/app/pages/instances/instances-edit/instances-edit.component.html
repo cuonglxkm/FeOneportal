@@ -44,18 +44,14 @@
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin máy ảo</span>
         </div>
-        <nz-row nzGutter="16">
-          <div style="width: 100%">
-            <nz-alert
-              nzType="warning"
-              [nzDescription]="nzDescriptionWarning01"
-              nzShowIcon
-            ></nz-alert>
-            <ng-template #nzDescriptionWarning01>
-              <div>Host name không thay đổi khi điều chỉnh tên máy ảo</div>
-            </ng-template>
-          </div></nz-row
-        >
+        <nz-alert
+          nzType="warning"
+          [nzDescription]="nzDescriptionWarning01"
+          nzShowIcon
+        ></nz-alert>
+        <ng-template #nzDescriptionWarning01>
+          <div>Host name không thay đổi khi điều chỉnh tên máy ảo</div>
+        </ng-template>
         <br />
         <nz-row nzGutter="16">
           <nz-col nzLg="24" nzMd="12" nzSm="24">
@@ -244,6 +240,7 @@
                 [@slider]="ani"
               >
                 <div
+                  style="cursor: pointer"
                   (click)="
                     onInputFlavors(item.id);
                     selectElementInputFlavors('flavor_' + item.id)
@@ -337,6 +334,7 @@
                         [nzMin]="instancesModel.cpu"
                         [nzMax]="62"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
@@ -347,6 +345,7 @@
                         [nzMin]="instancesModel.ram"
                         [nzMax]="62"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
@@ -357,20 +356,21 @@
                         [nzMin]="instancesModel.storage"
                         [nzMax]="100"
                         [nzStep]="1"
+                        nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ configCustom.iops }}
                       </label>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ configCustom.priceMonth }}
                       </label>
                     </td>
                     <td>
-                      <label>
+                      <label class="text-custom-price">
                         {{ configCustom.priceHour }}
                       </label>
                     </td>
@@ -513,7 +513,6 @@
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span
-                class="button-text-primary"
                 [style.color]="form.invalid ? 'gray' : 'white'"
                 >Chỉnh sửa</span
               >
