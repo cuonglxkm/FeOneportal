@@ -1,9 +1,8 @@
-<nz-card
-  [nzBordered]="false"
-  nzTitle="
-Block Storage"
->
-  <div *ngIf="isDetail" style="width: 100%; margin-bottom: 10px;">
+<nz-card style="border-radius: 8px" [nzBordered]="false">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Block Storage</span>
+  </div>
+  <div *ngIf="isDetail" style="width: 100%; margin-bottom: 10px">
     <nz-alert
       nzType="warning"
       [nzMessage]="nzDescriptionWarning06"
@@ -44,35 +43,29 @@ Block Storage"
               nz-tooltip
               nzTooltipTitle="Xem chi tiết"
               nzTooltipPlacement="bottom"
-              [routerLink]="
-                '/app-smart-cloud/volume/detail/' + data.id
-              "
+              [routerLink]="'/app-smart-cloud/volume/detail/' + data.id"
               >{{ data.name }}</a
             >
           </td>
           <td>
-            <label>
-              {{ data.sizeInGB }}
-            </label>
+            {{ data.sizeInGB }}
+          </td>
+          <td *ngIf="data.status == 'KHOITAO'" style="color: #52c41a">
+            KHỞI TẠO
           </td>
           <td>
-            <label *ngIf="data.status == 'KHOITAO'" style="color: #52c41a">
-              KHỞI TẠO
-            </label>
-          </td>
-          <td>
-            <label *ngIf="data.bootable">
+            <div *ngIf="data.bootable">
               <i nz-icon nzType="hdd"></i>
               VOLUME ROOT
-            </label>
-            <label *ngIf="!data.bootable">
+            </div>
+            <div *ngIf="!data.bootable">
               <img
                 style="width: 8%; height: 8%"
                 src="assets/imgs/attach_volume.png"
                 alt=""
               />
               VOLUME GẮN THÊM
-            </label>
+            </div>
           </td>
         </tr>
       </tbody>
