@@ -1,8 +1,8 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách IP Public'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Ip Public</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>

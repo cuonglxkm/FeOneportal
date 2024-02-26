@@ -1,1 +1,95 @@
-<p>vpc-create works!</p>
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo VPC'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Quản lý VPC</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo VPC</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<form nz-form [formGroup]="form">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+        <span class="text-card-header">Thông tin VPC</span>
+        <br>
+        <nz-form-label nzRequired>Tên VPC</nz-form-label>
+        <nz-form-item>
+          <nz-form-control>
+            <input nz-input placeholder="Nhập tên VPC" style="width: 100%"
+                   formControlName="name">
+<!--            <p style="color: #888;">Tối đa 128 ký tự. Có thể sử dụng các ký tự chữ và số và '+-=.@-_'.</p>-->
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-label>Mô tả</nz-form-label>
+        <nz-form-item>
+          <nz-form-control>
+          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+                    formControlName="description"></textarea>
+<!--            <p style="color: #888;">Tối đa 1.000 ký tự. Có thể sử dụng các ký tự chữ và số và '+-=.@-_'.</p>-->
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-tabset nzCentered nzSize="large">
+          <nz-tab nzTitle="Gói cấu hình sẵn">
+            Content of Tab Pane 1
+            <h1>xin chao</h1>
+          </nz-tab>
+          <nz-tab nzTitle="Cấu hình tùy chọn">
+            Content of Tab Pane 2
+            <h1>xin chao</h1>
+          </nz-tab>
+        </nz-tabset>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate">
+        <h2 class="text-card-header">Thành tiền</h2>
+        <nz-table>
+          <tr class="text-label">
+            <td>Chi phí IP Public</td>
+<!--            <td style="color: #0066B3;" nzAlign="right">-->
+<!--              <b>{{totalAmount || 0}} VNĐ</b>-->
+<!--            </td>-->
+          </tr>
+          <tr class="text-label">
+            <td><i>({{this.form.controls['numOfMonth'].value || 0}} tháng)</i></td>
+            <td nzAlign="right">VNĐ/tháng</td>
+          </tr>
+          <tr class="text-label">
+            <td>Thành tiền</td>
+<!--            <td nzAlign="right" style="color: #EA3829;">-->
+<!--              <b>{{totalPayment || 0}} VNĐ</b>-->
+<!--            </td>-->
+          </tr>
+          <tr class="text-label">
+            <td><i>(Đã bao gồm 10% VAT)</i></td>
+            <td nzAlign="right">VNĐ/tháng</td>
+          </tr>
+        </nz-table>
+<!--        <button class="button-cancel" nz-button nzSize="large" nzType="default" (click)="backToList()">-->
+<!--          <span nz-icon nzType="close" nzTheme="outline"></span>-->
+<!--          <span>Hủy</span>-->
+<!--        </button>-->
+<!--        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">-->
+<!--          <span nz-icon nzType="wallet" nzTheme="outline"></span>-->
+<!--          <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>-->
+<!--        </button>-->
+        <!--        <button nz-button nzType="default" (click)="backToList()">Quay lại</button>-->
+        <!--        <button nz-button nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid"> <span nz-icon nzType="wallet" nzTheme="outline"></span>Tạo IP Public</button>-->
+      </nz-card>
+    </nz-col>
+  </nz-row>
+
+
+</form>
+
+
+
+
+
