@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AclDeleteModel } from '../core/models/acl-delete.model';
 import { AclReqModel } from '../core/models/acl-req.model';
-import { BaseResponse } from '../core/models/base-response.model';
-import { Pagination } from '../core/models/pagination.model';
 import { AclModel } from '../core/models/acl.model';
+import { BaseResponse } from '../core/models/base-response.model';
+import { KafkaTopic } from '../core/models/kafka-topic.model';
+import { Pagination } from '../core/models/pagination.model';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +55,15 @@ export class AclKafkaService {
       }
     };
     return this.http.delete<BaseResponse<null>>(`${this.baseUrl}/acls`, json);
+  }
+
+  getListTopic(
+    page:number,
+    size:number,
+    keySearch:string,
+    serviceOrderCode: string
+  ): Observable<BaseResponse<Pagination<KafkaTopic[]>>> {
+    return this.http.get<BaseResponse<Pagination<KafkaTopic[]>>>(`${this.baseUrl}/topics?page=${page}&size=${size}&keySearch=${keySearch}&serviceOrderCode=${serviceOrderCode}`);
   }
 
 }

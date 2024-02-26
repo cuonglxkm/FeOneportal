@@ -26,6 +26,9 @@ import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { ConsumerGroupComponent } from './detail/consumer-group/consumer-group.component';
+import { MonitoringServiceComponent } from './detail/monitoring-service/monitoring-service.component';
+import { MonitoringFilterComponent } from './detail/monitoring-service/monitoring-filter/monitoring-filter.component';
+import { TruncateLabelPipe } from '../pipes/truncate-label.pipe';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -41,6 +44,9 @@ import { ConsumerGroupComponent } from './detail/consumer-group/consumer-group.c
     MessageTopicComponent,
     AccessLogComponent,
     ConsumerGroupComponent,
+    MonitoringServiceComponent,
+    MonitoringFilterComponent,
+    TruncateLabelPipe,
   ],
   imports: [
     PagesRoutingModule,

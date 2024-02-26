@@ -53,11 +53,6 @@
     box-shadow: 0 0 10px #719ECE;
 }
 
-nz-table#groups th {
-    background-color: #1363B9;
-    color: #ffff;
-}
-
 .block-info {
     border: 1px solid #1363B9;
     text-align: center;
