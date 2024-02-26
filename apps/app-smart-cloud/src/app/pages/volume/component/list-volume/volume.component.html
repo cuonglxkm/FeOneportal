@@ -19,6 +19,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -168,7 +169,7 @@
                 <nz-modal [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ máy ảo"
                           (nzOnCancel)="handleCancelDetachVm()" nzMask="false">
                   <div *nzModalTitle>
-                    <p class="text-h5"><b>Gỡ máy ảo</b></p>
+                    <span class="text-modal-title">Gỡ máy ảo</span>
                   </div>
                   <div *nzModalContent>
                     <nz-form-label>Chọn máy ảo</nz-form-label>
@@ -205,7 +206,7 @@
                 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume"
                           (nzOnCancel)="handleCancelDelete()" nzMask="false">
                   <div *nzModalTitle>
-                    <p class="text-h5"><b>Xóa Volume</b></p>
+                    <span class="text-modal-title">Xóa Volume</span>
                   </div>
                   <div *nzModalContent>
                     <nz-alert nzBanner
@@ -240,7 +241,7 @@
                     <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume"
                               (nzOnCancel)="handleCancelUpdate()" nzMask="false">
                       <div *nzModalTitle>
-                        <p class="text-h5"><b>Chỉnh sửa thông tin Volume</b></p>
+                        <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
                       </div>
                       <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
                         <form nz-form [formGroup]="validateForm" nzLayout="vertical">
@@ -272,11 +273,11 @@
                               </div>
                             </nz-form-label>
                             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                    <textarea nz-input
-                              formControlName="description"
-                              [placeholder]="'Nhập mô tả'"
-                              [maxLength]="255"
-                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                            <textarea nz-input
+                                      formControlName="description"
+                                      [placeholder]="'Nhập mô tả'"
+                                      [maxLength]="255"
+                                      [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
                               <ng-template #descriptionErrorTpl let-control>
                                 <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
                                 </ng-container>
@@ -430,15 +431,15 @@
               </td>
               <td>
                 <div>
-              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-                    nzTheme="outline"
-                    nz-popover
-                    [nzPopoverContent]="'Gắn Volume'"
-                    nzPopoverPlacement="bottom" (click)="showAttachVm(i)"></span>
+                  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
+                        nzTheme="outline"
+                        nz-popover
+                        [nzPopoverContent]="'Gắn Volume'"
+                        nzPopoverPlacement="bottom" (click)="showAttachVm(i)"></span>
                   <nz-modal [(nzVisible)]="isVisibleAttachVm" nzTitle="Gắn máy ảo"
-                            (nzOnCancel)="handleCancelAttachVm()">
+                            (nzOnCancel)="handleCancelAttachVm()" nzMask="false">
                     <div *nzModalTitle>
-                      <p class="text-h5"><b>Gắn máy ảo</b></p>
+                      <span class="text-modal-title">Gắn máy ảo</span>
                     </div>
                     <div *nzModalContent>
                       <nz-form-label>Chọn máy ảo</nz-form-label>
@@ -463,14 +464,14 @@
                       </button>
                     </div>
                   </nz-modal>
-                  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+                  <span *ngIf="i.isMultiAttach == true" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
                         nzTheme="outline" nz-popover
                         [nzPopoverContent]="'Gỡ Volume'"
                         nzPopoverPlacement="bottom" (click)="showDetachVm(i)"></span>
-                  <nz-modal *ngIf="i.isMultiAttach == true" [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ Volume"
-                            (nzOnCancel)="handleCancelDetachVm()">
+                  <nz-modal  [(nzVisible)]="isVisibleDetachVm" nzTitle="Gỡ Volume"
+                            (nzOnCancel)="handleCancelDetachVm()" nzMark="false">
                     <div *nzModalTitle>
-                      <p class="text-h5"><b>Gỡ Volume</b></p>
+                      <span class="text-modal-title">Gỡ Volume</span>
                     </div>
                     <div *nzModalContent>
                       <nz-form-label>Chọn máy ảo</nz-form-label>
@@ -496,15 +497,19 @@
                       </button>
                     </div>
                   </nz-modal>
-                  <nz-modal *ngIf="i.isMultiAttach == false" [(nzVisible)]="isVisibleNotice" nzTitle="Gỡ Volume"
-                            (nzOnCancel)="handleCancelNotice()">
+                  <span *ngIf="i.isMultiAttach == false" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+                        nzTheme="outline" nz-popover
+                        [nzPopoverContent]="'Gỡ Volume'"
+                        nzPopoverPlacement="bottom" (click)="showModalNotice(i)"></span>
+                  <nz-modal [(nzVisible)]="isVisibleNotice" nzTitle="Gỡ Volume"
+                            (nzOnCancel)="handleCancelNotice()" nzMark="false">
                     <div *nzModalTitle>
-                      <p class="text-h5"><b>Gỡ Volume</b></p>
+                      <span class="text-modal-title">Gỡ Volume</span>
                     </div>
                     <div *nzModalContent>
 
                       <div>
-                        <b style="text-align: center">Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?</b>
+                        <span style="text-align: center"><b>Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?</b></span>
                       </div>
 
                     </div>
@@ -529,9 +534,9 @@
                         [nzPopoverContent]="'Xóa'"
                         nzPopoverPlacement="bottom" (click)="showConfirmDelete(i.id)"></span>
                   <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Volume"
-                            (nzOnCancel)="handleCancelDelete()">
+                            (nzOnCancel)="handleCancelDelete()" nzMark="false">
                     <div *nzModalTitle>
-                      <p class="text-h5"><b>Xóa Volume</b></p>
+                      <span class="text-modal-title">Xóa Volume</span>
                     </div>
                     <div *nzModalContent>
                       <nz-alert nzBanner
@@ -565,9 +570,9 @@
                       <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                       <li nz-menu-item (click)="showModalUpdate(i)">Chỉnh sửa</li>
                       <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin Volume"
-                                (nzOnCancel)="handleCancelUpdate()">
+                                (nzOnCancel)="handleCancelUpdate()" nzMark="false">
                         <div *nzModalTitle>
-                          <p class="text-h5"><b>Chỉnh sửa thông tin Volume</b></p>
+                          <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
                         </div>
                         <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
                           <form nz-form [formGroup]="validateForm" nzLayout="vertical">
