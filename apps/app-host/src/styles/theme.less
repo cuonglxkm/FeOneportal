@@ -8,7 +8,7 @@
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
 // @primary-color: #f50;
-@primary-color: #2f54eb;
+@primary-color: #0066b3;
 @alain-default-header-bg: #2f54eb;
 @alain-default-aside-nav-text-hover-color: #2f54eb;
 @alain-default-aside-nav-selected-text-color: #2f54eb;
@@ -18,15 +18,13 @@
 
 @button-border-medium-radius: 8px;
 
-@text-card-header
-
 // HEADER
 .alain-default__header-logo-expanded {
   max-width: 90%;
 }
 
 .alain-default__header {
-  background-color: #0066b3;
+  background-color: @primary-color;
 }
 
 .alain-default .page-header {
@@ -41,7 +39,7 @@
 // END HEADER
 
 .ant-form-item-label
-> label.ant-form-item-required:not(
+  > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::after {
   display: inline-block;
@@ -54,7 +52,7 @@
 }
 
 .ant-form-item-label
-> label.ant-form-item-required:not(
+  > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::before {
   display: none;
@@ -282,10 +280,9 @@ body {
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #0066b3;
-  border-color: #0066b3;
+  background-color: @primary-color;
+  border-color: @primary-color;
 }
-
 
 // TEXT //
 * {
@@ -368,3 +365,30 @@ body {
   letter-spacing: 0.10000000149011612px;
   text-align: left;
 }
+
+// MENU
+.sidebar-nav__selected > .sidebar-nav__item-link {
+  color: #0074cc;
+  font-weight: 600;
+  
+}
+
+.sidebar-nav__selected {
+  border-left-color: @primary-color;
+}
+
+.sidebar-nav__item-text {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.sidebar-nav__item-link:hover {
+  color: @button-primary-color-hover;
+}
+
+body {
+  scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
+}
+// END MENU

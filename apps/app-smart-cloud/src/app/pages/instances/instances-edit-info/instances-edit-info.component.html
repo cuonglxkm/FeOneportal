@@ -26,11 +26,10 @@
     </div>
   </ng-template>
 </page-header>
-<nz-card
-  [nzBordered]="false"
-  nzTitle="Thay đổi hệ điều hành"
-  *ngIf="currentImage"
->
+<nz-card [nzBordered]="false" *ngIf="currentImage">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thay đổi hệ điều hành</span>
+  </div>
   <nz-row>
     <p>Hệ điều hành hiện tại: {{ currentImage.name }}</p>
   </nz-row>
@@ -47,16 +46,16 @@
       *nguCarouselDef="let data; index as i; let ani = animate"
       [@slider]="ani"
     >
-      <table class="text-center" style="width: 100%">
-        <tbody
-          class="images-body"
-          [id]="'images_' + data.id"
-          [ngClass]="{
-            'images-body-active': data.id === selectedImageTypeId,
-            bgGray: !data.id === selectedImageTypeId
-          }"
-        >
-          <tr>
+      <div
+        class="images-body"
+        [id]="'images_' + data.id"
+        [ngClass]="{
+          'images-body-active': data.id === selectedImageTypeId,
+          bgGray: !data.id === selectedImageTypeId
+        }"
+      >
+        <nz-row>
+          <nz-col class="text-center" style="width: 100%">
             <img
               *ngIf="data.name == 'Linux'"
               src="assets/imgs/ubuntu.png"
@@ -67,8 +66,10 @@
               src="assets/imgs/window.png"
               alt=""
             />
-          </tr>
-          <tr>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col class="text-center" style="width: 100%">
             <div style="margin-top: 15px; margin-bottom: 15px">
               <nz-select
                 nzShowSearch
@@ -86,9 +87,9 @@
                 ></nz-option>
               </nz-select>
             </div>
-          </tr>
-        </tbody>
-      </table>
+          </nz-col>
+        </nz-row>
+      </div>
     </ngu-tile>
 
     <ul class="myPoint" NguCarouselPoint>
@@ -105,7 +106,7 @@
     <div style="width: 100%">
       <nz-alert
         nzType="warning"
-        [nzMessage]="nzDescriptionWarning06"
+        [nzDescription]="nzDescriptionWarning06"
         nzShowIcon
       ></nz-alert>
       <ng-template #nzDescriptionWarning06>
@@ -119,13 +120,13 @@
     <div style="width: 100%; margin-top: 2%; margin-bottom: 2%">
       <nz-alert
         nzType="warning"
-        [nzMessage]="nzDescriptionWarning02"
+        [nzDescription]="nzDescriptionWarning02"
         nzShowIcon
       ></nz-alert>
       <ng-template #nzDescriptionWarning02>
         <div>
           <b> Quý khách lưu ý:</b><br />
-          <b style="color: red">
+          <b style="color: #ea3829">
             - Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng
             <span>{{ instancesModel.storage }}</span> GB) sẽ bị xóa và không thể
             khôi phục lại.</b
@@ -148,20 +149,21 @@
   >
   <nz-row nzGutter="16" style="display: inline">
     <div style="float: right">
-      <button
-        nz-button
-        style="background-color: #9c9c9c; color: white"
-        (click)="returnPage()"
-      >
-        Hủy
+      <button nz-button (click)="returnPage()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />Hủy
       </button>
       <button
         nz-button
-        [nzType]="'primary'"
+        nzSize="large"
+        nzType="primary"
         (click)="modify()"
         [disabled]="!isSelected"
       >
-        Chỉnh sửa
+        <span class="button-text-primary">Cập nhật</span>
       </button>
     </div>
   </nz-row>
