@@ -1,48 +1,7 @@
-<!--<page-header [breadcrumb]="breadcrumb"-->
-<!--             [action]="action"-->
-<!--             [title]="title">-->
-<!--  <ng-template #breadcrumb>-->
-<!--    <nz-breadcrumb>-->
-<!--      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>-->
-<!--      <nz-breadcrumb-item>-->
-<!--        Dịch vụ hạ tầng-->
-<!--      </nz-breadcrumb-item>-->
-<!--      <nz-breadcrumb-item>-->
-<!--        Block storage-->
-<!--      </nz-breadcrumb-item>-->
-<!--      <nz-breadcrumb-item>-->
-<!--        <a routerLink="/app-smart-cloud/volume/create">Tạo Volume</a>-->
-<!--      </nz-breadcrumb-item>-->
-<!--    </nz-breadcrumb>-->
-<!--  </ng-template>-->
-<!--  <ng-template #action>-->
-<!--    <div class="alain-custom-action text-right">-->
-<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                               [regionId]="region"></project-select-dropdown>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-<!--  <ng-template #title>-->
-<!--    <div nz-row nzJustify="space-between">-->
-<!--      <nz-row>-->
-<!--        &lt;!&ndash;        <nz-col>&ndash;&gt;-->
-<!--        &lt;!&ndash;          <span nz-icon&ndash;&gt;-->
-<!--        &lt;!&ndash;                nzType="arrow-left"&ndash;&gt;-->
-<!--        &lt;!&ndash;                nzTheme="outline"&ndash;&gt;-->
-<!--        &lt;!&ndash;                [routerLink]="'/app-smart-cloud/volumes'"&ndash;&gt;-->
-<!--        &lt;!&ndash;                style="margin-right: 10px;"></span>&ndash;&gt;-->
-<!--        &lt;!&ndash;        </nz-col>&ndash;&gt;-->
-<!--        <nz-col>-->
-<!--          <div>Tạo Volume</div>-->
-<!--        </nz-col>-->
-<!--      </nz-row>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-<!--</page-header>-->
 <nz-content>
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
-    <nz-card>
-      <h3>Thông tin Volume</h3>
+    <nz-card style="border-radius: 8px;">
+      <span class="text-card-header">Thông tin Volume</span>
       <nz-form-item>
         <nz-form-label nzFor="name">
           <div style="margin-top: 15px;">

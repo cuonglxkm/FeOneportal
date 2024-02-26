@@ -64,8 +64,9 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-card nzTitle="Thông tin Volume" [nzLoading]="isLoading">
-    <nz-descriptions [nzColumn]="2" nzBordered>
+  <nz-card [nzLoading]="isLoading">
+    <span class="text-card-header">Thông tin Volume</span>
+    <nz-descriptions [nzColumn]="2" nzBordered style="margin-top: 20px;">
       <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleType"><b>{{ volumeInfo?.volumeType }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }}</b></nz-descriptions-item>
