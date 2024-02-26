@@ -13,7 +13,7 @@
   </ng-template>
 </page-header>
 
-<nz-card>
+<nz-card class="text-label">
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false>
       <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
@@ -26,7 +26,7 @@
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
-              <input #searchBox name="name" nz-input placeholder="Tìm kiếm"/>
+              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm"/>
             </nz-input-group>
             <ng-template #suffixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"

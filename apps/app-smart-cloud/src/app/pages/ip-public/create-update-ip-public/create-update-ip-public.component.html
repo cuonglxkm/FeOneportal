@@ -16,7 +16,7 @@
 <form nz-form [formGroup]="form">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
-      <nz-card class="text-card-header" nzTitle="" style="border-radius: 8px;">
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <span class="text-card-header">Thông tin IP Pulbic</span>
         <div nz-row class="mb-md pt-5">
 <!--          <div class="custom-styling">-->
@@ -63,7 +63,7 @@
                 <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
               </nz-select>
             </nz-input-group>
-            <p style="margin-top: 102px">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
+            <p  style="margin-top: 102px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
           </div>
         </div>
       </nz-card>
@@ -72,23 +72,23 @@
       <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate">
         <h2 class="text-card-header">Thành tiền</h2>
         <nz-table>
-          <tr>
+          <tr class="text-label">
             <td>Chi phí IP Public</td>
-            <td  style="color: #0066B3;" nzAlign="right">
-              <b *ngIf="total != undefined">{{total.data.totalAmount.amount.toLocaleString()}} VNĐ</b>
+            <td style="color: #0066B3;" nzAlign="right">
+              <b>{{totalAmount || 0}} VNĐ</b>
             </td>
           </tr>
-          <tr>
+          <tr class="text-label">
             <td><i>({{this.form.controls['numOfMonth'].value || 0}} tháng)</i></td>
             <td nzAlign="right">VNĐ/tháng</td>
           </tr>
-          <tr>
+          <tr class="text-label">
             <td>Thành tiền</td>
             <td nzAlign="right" style="color: #EA3829;">
-              <b *ngIf="total != undefined">{{total.data.totalPayment.amount.toLocaleString()}} VNĐ</b>
+              <b>{{totalPayment || 0}} VNĐ</b>
             </td>
           </tr>
-          <tr>
+          <tr class="text-label">
             <td><i>(Đã bao gồm 10% VAT)</i></td>
             <td nzAlign="right">VNĐ/tháng</td>
           </tr>
@@ -109,6 +109,8 @@
 
 
 </form>
+
+
 
 
 
