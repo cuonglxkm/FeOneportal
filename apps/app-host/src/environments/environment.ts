@@ -23,6 +23,9 @@ export const environment = {
     logout_callback: 'http://localhost:4200',
     scope: 'openid email roles offline_access',
   },
+  recaptcha: {
+    siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',
+  },
   modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 
