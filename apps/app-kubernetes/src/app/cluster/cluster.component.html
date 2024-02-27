@@ -20,6 +20,10 @@
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -49,15 +53,6 @@
                 </ng-container>
               </ng-template>
             </nz-form-item>
-
-            <!-- <nz-form-item>
-              <nz-form-label nzRequired nzFor="region" nzLabelWrap>Khu vực:</nz-form-label>
-              <nz-form-control nzErrorTip="Khu vực không để trống">
-                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn khu vực" formControlName="region" id="region">
-                  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item> -->
           </div>
 
           <div nz-col [nzSpan]="12">
@@ -263,10 +258,8 @@
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
               <nz-form-control nzErrorTip="Mạng VPC không để trống">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
-                  class="w-90">
-                  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                  <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                  <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+                  class="w-90" (ngModelChange)="onSelectedVlan($event)">
+                  <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
                   nz-tooltip (click)="syncVPCNetwork()" class="borderless">
@@ -293,9 +286,7 @@
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
               <nz-form-control nzErrorTip="Subnet không để trống">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90">
-                  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                  <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                  <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+                  <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.name" [nzValue]="item.subnetAddressRequired"></nz-option>
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
                   nz-tooltip (click)="syncSubnet()" class="borderless">

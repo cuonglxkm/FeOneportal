@@ -11,6 +11,9 @@ import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
 import { WorkerTypeModel } from '../model/worker-type.model';
 import { ClusterService } from '../services/cluster.service';
 import { RegionModel } from '../shared/models/region.model';
+import { ProjectModel } from '../shared/models/project.model';
+import { VlanService } from '../services/vlan.service';
+import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -29,12 +32,13 @@ export class ClusterComponent implements OnInit {
   listOfVPCNetworks: VPCNetworkModel[];
   listOfWorkerType: WorkerTypeModel[];
   listOfVolumeType: VolumeTypeModel[];
-  listOfCIDR: any[];
   listOfSubnets: SubnetModel[];
 
   // infrastructure info
-  region: number;
+  regionId: number;
+  projectInfraId: number;
   cloudProfileId: string;
+  vlanId: number;
 
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_VOLUME_TYPE = KubernetesConstant.DEFAULT_VOLUME_TYPE;
@@ -45,12 +49,12 @@ export class ClusterComponent implements OnInit {
     private clusterService: ClusterService,
     private modalService: NzModalService,
     private notificationService: NzNotificationService,
+    private vlanService: VlanService,
     private router: Router
   ) {
     this.listOfK8sVersion = [];
     this.listOfSubnets = [];
     this.listOfVPCNetworks = [];
-    this.listOfCIDR = [];
     this.listOfVolumeType = [];
     this.listOfWorkerType = [];
   }
@@ -62,7 +66,8 @@ export class ClusterComponent implements OnInit {
       clusterName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       kubernetesVersion: [null, [Validators.required]],
-      region: [null, [Validators.required]],
+      regionId: [null, [Validators.required]],
+      projectInfraId: [null, [Validators.required]],
       cloudProfileId: [null, [Validators.required]],
 
       autoScalingWorker: [false],
@@ -160,25 +165,68 @@ export class ClusterComponent implements OnInit {
     });
   }
 
+  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+  getVlanNetwork(projectId: number) {
+    console.log(123);
+    this.formSearchNetwork.projectId = projectId;
+    this.formSearchNetwork.pageSize = 1000;
+    this.formSearchNetwork.pageNumber = 0;
+    this.formSearchNetwork.region = this.regionId;
+
+    this.vlanService.getVlanNetworks(this.formSearchNetwork)
+    .subscribe((r: any) => {
+      if (r && r.records) {
+        this.listOfVPCNetworks = r.records;
+      }
+    });
+  }
+
+  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
+  getSubnetByVlanNetwork() {
+    this.formSearchSubnet.pageSize = 1000;
+    this.formSearchSubnet.pageNumber = 0;
+    this.formSearchSubnet.networkId = this.vlanId;
+    this.formSearchSubnet.region = this.regionId;
+
+    this.vlanService.getListSubnet(this.formSearchSubnet)
+    .subscribe((r: any) => {
+      if (r && r.records) {
+        this.listOfSubnets = r.records;
+      }
+    })
+  }
+
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
-    this.region = region.regionId;
+    this.regionId = region.regionId;
     this.cloudProfileId = region.cloudId;
 
     this.getListK8sVersion(this.cloudProfileId);
     this.getListWorkerType(this.cloudProfileId);
     this.getListVolumeType(this.cloudProfileId);
 
-    this.myform.get('region').setValue(this.region);
+    this.myform.get('regionId').setValue(this.regionId);
     this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
 
     // TODO: handle reset select box of previous region ...
 
   }
 
+  onProjectChange(project: ProjectModel) {
+    this.projectInfraId = project.id;
+
+    this.getVlanNetwork(this.projectInfraId);
+    this.myform.get('projectInfraId').setValue(this.projectInfraId);
+  }
+
+  onSelectedVlan(vlanId: number) {
+    this.vlanId = vlanId;
+    this.getSubnetByVlanNetwork();
+  }
+
   onSelectVolumeType(volumeType: string, index: number) {
     const selectedVolumeType = this.listOfVolumeType.find(item => item.volumeType === volumeType);
-    console.log(selectedVolumeType);
+    // console.log(selectedVolumeType);
     this.listFormWorkerGroup.at(index).get('volumeTypeId').setValue(selectedVolumeType.id);
   }
 
@@ -276,7 +324,7 @@ export class ClusterComponent implements OnInit {
   }
 
   get regionName() {
-    return this.myform.get('reigon').value;
+    return this.myform.get('reigonId').value;
   }
 
   syncVPCNetwork() {
