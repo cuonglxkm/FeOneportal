@@ -922,7 +922,7 @@
                       >
                         <nz-option
                           *ngFor="let p of listIPSubnetModel"
-                          [nzValue]="p.id"
+                          [nzValue]="p.networkId"
                           [nzLabel]="p.displayName"
                         ></nz-option>
                       </nz-select>
@@ -930,10 +930,11 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.amount"
+                        (ngModelChange)="onInputIPv4()"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
                         [nzMin]="1"
-                        [nzMax]="1"
+                        [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
@@ -1002,7 +1003,7 @@
                       >
                         <nz-option
                           *ngFor="let p of listIPSubnetModel"
-                          [nzValue]="p.id"
+                          [nzValue]="p.networkId"
                           [nzLabel]="p.displayName"
                         ></nz-option>
                       </nz-select>
@@ -1010,10 +1011,11 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.amount"
+                        (ngModelChange)="onInputIPv6()"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
                         [nzMin]="1"
-                        [nzMax]="1"
+                        [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
                     </td>

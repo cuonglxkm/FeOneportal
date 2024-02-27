@@ -143,7 +143,6 @@ export class InstancesCreateComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver
-
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -184,33 +183,39 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllSecurityGroup();
     this.getAllSSHKey();
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.breakpoints[Breakpoints.XSmall]) {
-        // Màn hình cỡ nhỏ
-        this.cardHeight = '130px';
-      } else if (result.breakpoints[Breakpoints.Small]) {
-        // Màn hình cỡ nhỏ - trung bình
-        this.cardHeight = '180px';
-      } else if (result.breakpoints[Breakpoints.Medium]) {
-        // Màn hình trung bình
-        this.cardHeight = '210px';
-      } else if (result.breakpoints[Breakpoints.Large]) {
-        // Màn hình lớn
-        this.cardHeight = '165px';
-      } else if (result.breakpoints[Breakpoints.XLarge]) {
-        // Màn hình rất lớn
-        this.cardHeight = '150px';
-      }
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '130px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '180px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '210px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '165px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '150px';
+        }
 
-      // Cập nhật chiều cao của card bằng Renderer2
-      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
-    });
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
     this.cdr.detectChanges();
   }
 
@@ -777,14 +782,13 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.am = null;
     this.volumeCreate.amManager = null;
     this.volumeCreate.isTrial = false;
-    this.volumeCreate.offerId =
-      this.volumeCreate.volumeType == 'hdd' ? 145 : 156;
+    this.volumeCreate.offerId = 2;
     this.volumeCreate.couponCode = null;
     this.volumeCreate.dhsxkd_SubscriptionId = null;
     this.volumeCreate.dSubscriptionNumber = null;
     this.volumeCreate.dSubscriptionType = null;
     this.volumeCreate.oneSME_SubscriptionId = null;
-    this.volumeCreate.actionType = 1;
+    this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
     this.volumeCreate.serviceName = blockStorage.name;
     this.volumeCreate.typeName =
@@ -802,9 +806,9 @@ export class InstancesCreateComponent implements OnInit {
     this.ipCreate.offerId = 50;
     this.ipCreate.networkId = ip.ip;
     this.ipCreate.useIPv6 = null;
-    this.ipCreate.vpcId = this.projectId;
+    this.ipCreate.vpcId = this.projectId.toString();
     this.ipCreate.oneSMEAddonId = null;
-    this.ipCreate.serviceType = 0;
+    this.ipCreate.serviceType = 4;
     this.ipCreate.serviceInstanceId = 0;
     this.ipCreate.customerId = this.tokenService.get()?.userId;
 
@@ -887,7 +891,7 @@ export class InstancesCreateComponent implements OnInit {
         this.ipInit(e);
         let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
-        orderItemIP.orderItemQuantity = 1;
+        orderItemIP.orderItemQuantity = e.amount;
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
@@ -899,9 +903,10 @@ export class InstancesCreateComponent implements OnInit {
     this.listOfDataIPv6.forEach((e: Network) => {
       if (e.ip != '') {
         this.ipInit(e);
+        this.ipCreate.useIPv6 = true;
         let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
-        orderItemIP.orderItemQuantity = 1;
+        orderItemIP.orderItemQuantity = e.amount;
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
@@ -985,7 +990,7 @@ export class InstancesCreateComponent implements OnInit {
       if (e.ip != '') {
         this.ipInit(e);
         let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
+        itemPayment.orderItemQuantity = e.amount;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
         itemPayment.serviceDuration = this.numberMonth;
@@ -1015,8 +1020,9 @@ export class InstancesCreateComponent implements OnInit {
     this.listOfDataIPv6.forEach((e: Network) => {
       if (e.ip != '') {
         this.ipInit(e);
+        this.ipCreate.useIPv6 = true;
         let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
+        itemPayment.orderItemQuantity = e.amount;
         itemPayment.specificationString = JSON.stringify(this.ipCreate);
         itemPayment.specificationType = 'ip_create';
         itemPayment.serviceDuration = this.numberMonth;

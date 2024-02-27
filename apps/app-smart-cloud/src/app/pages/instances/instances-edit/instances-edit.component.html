@@ -229,7 +229,7 @@
         </nz-radio-group>
 
         <nz-tabset>
-          <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
+          <nz-tab *ngIf="isConfigPackage" nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
             <ngu-carousel
               #myCarouselFlavor
               [inputs]="carouselTileConfig"
