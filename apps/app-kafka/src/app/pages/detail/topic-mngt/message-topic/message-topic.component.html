@@ -1,0 +1,42 @@
+<div>
+    <div style="margin-right: auto;">
+        <div nz-flex>
+            <nz-select style="margin-right: 10px;" nzSize="large" class="search" nzMode="multiple" (ngModelChange)="onChangePartitions($event)" nzPlaceHolder="Chọn partitions"
+                [(ngModel)]="listOfSelectedValue">
+                <nz-option  *ngFor="let item of listOfOption" [nzLabel]="item" [nzValue]="item"></nz-option>
+            </nz-select>
+            <nz-range-picker class="search" [nzShowTime]="true" [(ngModel)]="date"
+                (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+        </div>
+    </div>
+
+    <div style="text-align: end;">Dữ liệu được đồng bộ lúc: <span class="time-async">{{syncInfo.message}}</span></div>
+
+    <nz-table class="tbl-acl" [nzLoading]="loading" [nzData]="listMessage" #basicTable id="topics"  nzShowSizeChanger [nzFrontPagination]="false"
+        nzShowPagination [nzTotal]="total" [nzPageIndex]="index" [nzPageSize]="size"
+        (nzPageSizeChange)="changeMessPageSize($event)" (nzPageIndexChange)="changeMessPage($event)">
+        <thead class="table-info">
+            <tr>
+                <th>STT</th>
+                <th>Offset</th>
+                <th>Partition</th>
+                <th>Timestamp</th>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data, let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ data.offset }}</td>
+                <td>{{ data.partition }}</td>
+                <td>{{ data.timestamp }}</td>
+                <td>{{ data.key }}</td>
+                <td vEllipsis nz-tooltip vTooltipPlacement="bottom" [nzTooltipTitle]="data.value"
+                    vTooltipColor="#108ee9">
+                    {{ data.value }}
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</div>

@@ -16,6 +16,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -32,9 +33,9 @@
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
-        <nz-card>
-          <h3><b>Thông tin Volume</b></h3>
-          <nz-descriptions [nzColumn]="2">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin Volume</span>
+          <nz-descriptions [nzColumn]="2" style="margin-top: 20px;">
             <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}}</nz-descriptions-item>
@@ -82,9 +83,10 @@
             <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
           </div>
         </nz-card>
-        <nz-card>
-          <h3><b>Thông tin điều chỉnh</b></h3>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-heaader">Thông tin điều chỉnh</span>
           <nz-alert nzBanner
+                    style="margin-top: 20px;"
                     [nzMessage]="'Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
                     nzShowIcon>
           </nz-alert>
@@ -118,7 +120,7 @@
             <nz-form-label>
               <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
+                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
                 </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
                   <b>Đơn giá: </b> 0 VNĐ/GB/ngày
@@ -126,49 +128,70 @@
               </div>
             </nz-form-label>
           </nz-form-item>
-<!--          <nz-form-item>-->
-<!--            <nz-form-label>-->
-<!--              <div>-->
-<!--                <span><b>Ngày điều chỉnh: {{expiryTime | date: 'dd/MM/yyyy'}}</b></span>-->
-<!--              </div>-->
-<!--            </nz-form-label>-->
-<!--          </nz-form-item>-->
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card>
-          <h3>Thành tiền</h3>
-          <nz-table>
-            <tr>
-              <td>Chi phí tăng dung lượng</td>
-              <td nzAlign="right">
-                <b *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>
-                <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td nzAlign="right">VNĐ/tháng</td>
-            </tr>
-            <tr>
-              <td>Thành tiền</td>
-              <td nzAlign="right" style="color: #EA3829;">
-                <b
-                  *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>
-                <b *ngIf="orderItem == undefined">0 VNĐ</b>
-              </td>
-            </tr>
-            <tr>
-              <td><i>(Đã bao gồm 10% VAT)</i></td>
-              <td nzAlign="right">VNĐ/tháng</td>
-            </tr>
-          </nz-table>
-          <button class="btn-update" [disabled]="!validateForm.valid" (click)="submitForm()">
-            <div style="color: white;word-wrap: break-word">
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              Cập nhật
-            </div>
-          </button>
+        <nz-card style="border-radius: 8px;">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">Thành tiền</span>
+          </div>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+            <span class="text-label">
+              Chi phí tăng dung lượng
+            </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+                    nzAlign="right">
+              0 VNĐ
+            </span>
+              <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                    nzAlign="right">
+              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+            </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          "
+                  nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label"> Thành tiền (Đã bao gồm 10% VAT): </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+            <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              {{ orderItem?.totalPayment?.amount | number }} {{ orderItem?.totalPayment?.currency }}
+            </span>
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+              0 VNĐ
+            </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%" class="text-right">
+              <button nz-button (click)="goBack()">
+                <img
+                  style="padding-right: 10px; margin-top: -4px"
+                  src="assets/imgs/cancel.svg"
+                  alt=""
+                />Hủy
+              </button>
+              <button
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                (click)="navigateToPaymentSummary()"
+                [disabled]="validateForm.invalid">
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span class="button-text-primary"
+                      [style.color]="validateForm.invalid ? 'gray' : 'white'">Cập nhật</span>
+              </button>
+            </nz-col>
+          </nz-row>
         </nz-card>
       </nz-col>
     </nz-row>

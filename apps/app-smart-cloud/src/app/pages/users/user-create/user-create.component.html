@@ -15,7 +15,7 @@
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false" style="border-radius: 4px">
     <div style="margin-bottom: 20px">
-      <span class="title-card">Thông tin của User</span>
+      <span class="text-card-header">Thông tin của User</span>
     </div>
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
@@ -158,7 +158,6 @@
   [(nzVisible)]="isVisibleCreate"
   nzTitle="Xác nhận tạo User"
   (nzOnCancel)="handleCancelCreate()"
-  (nzOnOk)="handleOkCreate()"
 >
   <ng-container *nzModalContent>
     <nz-alert

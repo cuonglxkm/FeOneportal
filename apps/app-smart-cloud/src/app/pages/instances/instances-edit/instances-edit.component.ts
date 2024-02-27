@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Inject,
   OnInit,
@@ -36,6 +37,7 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -91,9 +93,10 @@ export class InstancesEditComponent implements OnInit {
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   isConfigPackage: boolean = true;
+  cardHeight: string = '160px';
 
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true,
@@ -112,7 +115,10 @@ export class InstancesEditComponent implements OnInit {
     private notification: NzNotificationService,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService, 
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -149,6 +155,34 @@ export class InstancesEditComponent implements OnInit {
     this.getAllSecurityGroup();
     this.getListIpPublic();
     this.getCurrentInfoInstance(this.id);
+
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large,
+      Breakpoints.XLarge
+    ]).subscribe(result => {
+      if (result.breakpoints[Breakpoints.XSmall]) {
+        // Màn hình cỡ nhỏ
+        this.cardHeight = '130px';
+      } else if (result.breakpoints[Breakpoints.Small]) {
+        // Màn hình cỡ nhỏ - trung bình
+        this.cardHeight = '180px';
+      } else if (result.breakpoints[Breakpoints.Medium]) {
+        // Màn hình trung bình
+        this.cardHeight = '210px';
+      } else if (result.breakpoints[Breakpoints.Large]) {
+        // Màn hình lớn
+        this.cardHeight = '165px';
+      } else if (result.breakpoints[Breakpoints.XLarge]) {
+        // Màn hình rất lớn
+        this.cardHeight = '150px';
+      }
+
+      // Cập nhật chiều cao của card bằng Renderer2
+      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
+    });
   }
 
   //#region HDD hay SDD

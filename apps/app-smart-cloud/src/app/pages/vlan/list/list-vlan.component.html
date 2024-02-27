@@ -63,7 +63,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of fixtable.data">
-        <td><a>{{data.name}}</a></td>
+        <td><a [routerLink]="'/app-smart-cloud/vlan/network/detail/' + data.id">{{data.name}}</a></td>
         <td>{{data.subnetAddressRequired}}</td>
         <td>{{data.status}}</td>
         <td>

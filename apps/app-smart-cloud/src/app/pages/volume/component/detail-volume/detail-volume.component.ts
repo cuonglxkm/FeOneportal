@@ -38,23 +38,26 @@ export class DetailVolumeComponent implements OnInit {
 
   typeVPC: number
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length){
-        localStorage.setItem("projectId", data[0].id.toString())
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length){
+    //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
-      }
-    });
+    //   }
+    // });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.typeVPC = project.type
 
-    this.router.navigate(['/app-smart-cloud/volumes'])
+    // this.router.navigate(['/app-smart-cloud/volumes'])
     // this.getListVolumes()
   }
-
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe(data => {
       let project = data.find(project => project.id === +this.project);

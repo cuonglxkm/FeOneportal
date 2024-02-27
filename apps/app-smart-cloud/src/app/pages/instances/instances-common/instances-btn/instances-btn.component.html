@@ -1,84 +1,119 @@
-<button nz-button [nzType]="'primary'" nz-dropdown [nzDropdownMenu]="opMenu">
-  <span></span
-  ><i nz-icon style="margin-left: -2px" nzType="ellipsis" nzTheme="outline"></i>
+<button nz-button nz-dropdown [nzDropdownMenu]="opMenu">
+  <span style="margin-right: 4px">Thêm</span
+  ><img src="assets/imgs/arrow-down.svg" alt="" />
 </button>
 <nz-dropdown-menu #opMenu="nzDropdownMenu">
   <ul nz-menu>
     <li nz-menu-item (click)="continue()">Gia hạn</li>
     <li nz-menu-item (click)="openConsole()">Truy cập</li>
-    <li nz-menu-item (click)="restartInstance()">Khởi động lại</li>
-    <li nz-menu-item (click)="shutdownInstance()">Tắt</li>
+    <li nz-menu-item (click)="showModalRestart()">Khởi động lại</li>
+    <li nz-menu-item (click)="showModalShutdown()">Tắt</li>
     <li nz-menu-item (click)="modalResetPassword()">Reset Password</li>
     <li nz-menu-item style="color: red" (click)="showModalDelete()">Xóa</li>
-    <nz-modal
-      [(nzVisible)]="isVisibleDelete"
-      nzTitle="Xóa máy ảo"
-      (nzOnCancel)="handleCancel()"
-      nzCentered
-    >
-      <!--      <div *nzModalTitle>-->
-      <!--        <p class="text-h5"><b>Xóa máy ảo</b></p>-->
-      <!--      </div>-->
-      <div *nzModalContent>
-        <nz-alert
-          nzType="warning"
-          [nzMessage]="customTemplateMessageDelete"
-          nzShowIcon
-        ></nz-alert>
-        <div style="margin-top: 15px">
-          Vui lòng cân nhắc thật kỹ trước khi click nút <b> Đồng ý.</b> Quý
-          khách chắc chắn muốn thực hiện xóa máy ảo?
-        </div>
-      </div>
-      <div *nzModalFooter>
-        <button nz-button (click)="handleCancel()">
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/cancel.svg"
-            alt=""
-          />Hủy
-        </button>
-        <button nz-button nzType="primary" (click)="handleOk()">
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/confirm.svg"
-            alt=""
-          />Xác nhận
-        </button>
-      </div>
-    </nz-modal>
   </ul>
 </nz-dropdown-menu>
+<nz-modal
+  [(nzVisible)]="isVisibleDelete"
+  nzTitle="Xóa máy ảo"
+  (nzOnCancel)="handleCancel()"
+>
+  <div *nzModalContent>
+    <nz-alert
+      style="margin-bottom: 20px"
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <span class="text-label">
+      Để thực hiện xoá máy ảo, vui lòng nhập tên máy ảo để xác nhận.
+    </span>
+    <nz-form-control>
+      <input class="input-custom" nz-input [(ngModel)]="inputConfirm" />
+    </nz-form-control>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancel()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOk()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
 <ng-template #customTemplateMessageDelete>
   <div>
     Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
     <b>KHÔNG THỂ KHÔI PHỤC LẠI.</b>
   </div>
 </ng-template>
-<!--<ng-template #modalContentDelete>-->
-<!--  <nz-alert-->
-<!--    nzType="warning"-->
-<!--    [nzMessage]="customTemplateMessageDelete"-->
-<!--    nzShowIcon-->
-<!--  ></nz-alert>-->
-<!--  <ng-template #customTemplateMessageDelete>-->
-<!--    <div>-->
-<!--      Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và <b>KHÔNG THỂ KHÔI PHỤC LẠI.</b>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-<!--  <br />-->
-<!--  <nz-form-item>-->
-<!--    <div style="margin-left: 15px;">-->
-<!--      Vui lòng cân nhắc thật kỹ trước khi click nút <b> Đồng ý.</b> Quý khách chắc chắn muốn thực hiện xóa máy ảo?-->
-<!--    </div>-->
-<!--  </nz-form-item>-->
-<!--</ng-template>-->
 
-<nz-modal [(nzVisible)]="isVisibleResetPass" nzTitle="Reset mật khẩu máy ảo">
+<nz-modal
+  [(nzVisible)]="isVisibleRestart"
+  nzTitle="Khởi động lại máy ảo"
+  (nzOnCancel)="handleCancelRestart()"
+>
+  <div *nzModalContent>
+    Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelRestart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkRestart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleShutdown"
+  nzTitle="Tắt máy ảo"
+  (nzOnCancel)="handleCancelShutdown()"
+>
+  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện tắt máy ảo?</div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelShutdown()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkShutdown()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleResetPass"
+  nzTitle="Reset mật khẩu máy ảo"
+  (nzOnCancel)="handleCancelResetPassword()"
+>
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageResetPassword"
+      [nzDescription]="customTemplateMessageResetPassword"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageResetPassword>
@@ -92,54 +127,52 @@
       <input nz-input type="checkbox" checked style="width: 15px" />
       <div style="width: 82%; margin-left: 1%">Tự sinh</div>
     </nz-form-item>
-    <nz-form-item>
-      <nz-form-label>Mật khẩu mới</nz-form-label>
-      <nz-form-control class="text-right">
-        <nz-input-group [nzSuffix]="suffixTemplate" style="width: 340px">
-          <input
-            [type]="passwordVisible ? 'text' : 'password'"
-            nz-input
-            name="resetPassword"
-            placeholder=""
-            [(ngModel)]="resetPassword"
-            [ngModelOptions]="{ standalone: true }"
-          />
-        </nz-input-group>
-        <ng-template #suffixTemplate>
-          <i
-            nz-icon
-            [nzType]="'eye'"
-            (click)="passwordVisible = !passwordVisible"
-          ></i>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label>Xác nhận mật khẩu</nz-form-label>
-      <nz-form-control class="text-right">
-        <nz-input-group [nzSuffix]="suffixTemplateRepeat" style="width: 340px">
-          <input
-            [type]="passwordRepeatVisible ? 'text' : 'password'"
-            nz-input
-            name="resetPasswordRepeat"
-            placeholder=""
-            [(ngModel)]="resetPasswordRepeat"
-            [ngModelOptions]="{ standalone: true }"
-            (input)="onInputChange($event)"
-          />
-        </nz-input-group>
-        <ng-template #suffixTemplateRepeat>
-          <i
-            nz-icon
-            [nzType]="'eye'"
-            (click)="passwordRepeatVisible = !passwordRepeatVisible"
-          ></i>
-        </ng-template>
-        <div *ngIf="check == false">
-          <span style="color: rgba(252, 16, 16, 1)">Mật khẩu không khớp!</span>
-        </div>
-      </nz-form-control>
-    </nz-form-item>
+    <span class="text-label">Mật khẩu mới</span>
+    <nz-form-control style="margin-bottom: 20px" class="text-right">
+      <nz-input-group [nzSuffix]="suffixTemplate">
+        <input
+          class="input-custom"
+          [type]="passwordVisible ? 'text' : 'password'"
+          nz-input
+          name="resetPassword"
+          placeholder=""
+          [(ngModel)]="resetPassword"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </nz-input-group>
+      <ng-template #suffixTemplate>
+        <i
+          nz-icon
+          [nzType]="'eye'"
+          (click)="passwordVisible = !passwordVisible"
+        ></i>
+      </ng-template>
+    </nz-form-control>
+    <span class="text-label">Xác nhận mật khẩu</span>
+    <nz-form-control class="text-right">
+      <nz-input-group [nzSuffix]="suffixTemplateRepeat">
+        <input
+          class="input-custom"
+          [type]="passwordRepeatVisible ? 'text' : 'password'"
+          nz-input
+          name="resetPasswordRepeat"
+          placeholder=""
+          [(ngModel)]="resetPasswordRepeat"
+          [ngModelOptions]="{ standalone: true }"
+          (input)="onInputChange($event)"
+        />
+      </nz-input-group>
+      <ng-template #suffixTemplateRepeat>
+        <i
+          nz-icon
+          [nzType]="'eye'"
+          (click)="passwordRepeatVisible = !passwordRepeatVisible"
+        ></i>
+      </ng-template>
+      <div *ngIf="check == false">
+        <span style="color: rgba(252, 16, 16, 1)">Mật khẩu không khớp!</span>
+      </div>
+    </nz-form-control>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelResetPassword()">
