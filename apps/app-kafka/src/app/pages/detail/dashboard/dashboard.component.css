@@ -2,7 +2,7 @@
     border: 1px solid #35d135;
     text-align: center;
     box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
+    border-radius: 16px;
     background-image: linear-gradient(to right, #2eb82e, #5cd65c);
 }
 
@@ -10,7 +10,7 @@
     border: 1px solid #f27573;
     text-align: center;
     box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
+    border-radius: 16px;
     background-image: linear-gradient(to right, #ef5350, #f27573);
 }
 
@@ -18,7 +18,7 @@
     border: 1px solid #ffb84d;
     text-align: center;
     box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
+    border-radius: 16px;
     background-image: linear-gradient(to right, #ff9800, #ffb84d);
 }
 
@@ -40,7 +40,7 @@
     border: 1px solid #1363B9;
     text-align: center;
     box-shadow: 3px 4px #8eb2d9;
-    border-radius: 2px;
+    border-radius: 16px;
 }
 
 .sum-value {
@@ -65,6 +65,7 @@
 .general {
     background: #ffffff;
     margin-bottom: 16px;
+    padding: 16px 16px 0px;
 }
 
 .tooltip-health {
@@ -73,4 +74,57 @@
 
 ::ng-deep .ant-card-head-title {
     min-height: 64px;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.stats-chart {
+    float: right;
+}
+
+::ng-deep .stats-chart .ant-btn {
+    height: 32px;
+    font-size: 14px;
+    border-color: #0066b3;
+    background-color: #0066b3;
+    color: #ffffff;
+}
+
+
+::ng-deep .stats-chart .ant-btn:hover {
+    color: #fff;
+    background: #092C4C;
+    border-color: #092C4C;
+}
+
+nz-select#range-time ::ng-deep .ant-select-selector,
+nz-select#cbx-unit ::ng-deep .ant-select-selector {
+    border-radius: 8px;
+    border-color: #0066b3;
+    background-color: #0066b3;
+    color: #ffffff;
+}
+
+nz-select#range-time ::ng-deep .ant-select-selector:hover,
+nz-select#cbx-unit ::ng-deep .ant-select-selector:hover {
+    color: #fff;
+    background: #092C4C;
+    border-color: #092C4C;
+}
+
+nz-select#range-time ::ng-deep .ant-select-arrow,
+nz-select#cbx-unit ::ng-deep .ant-select-arrow {
+    color: #ffff;
+}
+
+#cbx-unit {
+    vertical-align: bottom;
+}
+
+.lbl-unit {
+    margin-right: 5px;
+    font-style: italic;
+    font-weight: 600;
 }
