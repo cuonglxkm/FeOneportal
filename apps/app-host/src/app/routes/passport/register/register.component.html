@@ -78,23 +78,23 @@
   <!--      </ng-template>-->
   <!--    </nz-form-control>-->
   <!--  </nz-form-item>-->
-  <!--  <nz-form-item>-->
-  <!--    <nz-form-control [nzErrorTip]="'validation.verification-code.required' | i18n">-->
-  <!--      <nz-row [nzGutter]="8">-->
-  <!--        <nz-col [nzSpan]="16">-->
-  <!--          <nz-input-group nzSize="large" nzAddonBeforeIcon="mail">-->
-  <!--            <input nz-input formControlName="captcha" placeholder="Captcha"/>-->
-  <!--          </nz-input-group>-->
-  <!--        </nz-col>-->
-  <!--        <nz-col [nzSpan]="8">-->
-  <!--          <button type="button" nz-button nzSize="large" (click)="getCaptcha()" [disabled]="count > 0" nzBlock-->
-  <!--                  [nzLoading]="loading">-->
-  <!--            {{ count ? count + 's' : ('app.register.get-verification-code' | i18n) }}-->
-  <!--          </button>-->
-  <!--        </nz-col>-->
-  <!--      </nz-row>-->
-  <!--    </nz-form-control>-->
-  <!--  </nz-form-item>-->
+<!--    <nz-form-item>-->
+<!--      <nz-form-control [nzErrorTip]="'validation.verification-code.required' | i18n">-->
+<!--        <nz-row [nzGutter]="8">-->
+<!--          <nz-col [nzSpan]="16">-->
+<!--            <nz-input-group nzSize="large" nzAddonBeforeIcon="mail">-->
+<!--              <input nz-input formControlName="captcha" placeholder="Captcha"/>-->
+<!--            </nz-input-group>-->
+<!--          </nz-col>-->
+<!--          <nz-col [nzSpan]="8">-->
+<!--            <button type="button" nz-button nzSize="large" (click)="getCaptcha()" [disabled]="count > 0" nzBlock-->
+<!--                    [nzLoading]="loading">-->
+<!--              {{ count ? count + 's' : ('app.register.get-verification-code' | i18n) }}-->
+<!--            </button>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+<!--      </nz-form-control>-->
+<!--    </nz-form-item>-->
 
   <div nz-row [nzGutter]="16">
     <div nz-col nzSpan="12">
@@ -171,30 +171,33 @@
 <!--        [nzHeader]="panel.name"-->
 <!--        [nzActive]="panel.active"-->
 <!--        [nzDisabled]="panel.disabled">-->
-
-
-
-
-
 <!--      </nz-collapse-panel>-->
 <!--    </nz-collapse>-->
 <!--  </nz-form-item>-->
 
   <nz-form-item>
+    <re-captcha
+      formControlName="recaptchaReactive"
+      (resolved)="addTokenLog('Reactive form mode resolved', $event)">
+    </re-captcha>
+  </nz-form-item>
+
+  <nz-form-item>
     <nz-form-control>
       <label nz-checkbox formControlName="agreement">
-        <span>{{ 'app.register.agreement' | i18n }}</span>
+<!--        <span>{{ 'app.register.agreement' | i18n }}</span>-->
+        <span class="text-agreement"> Tôi đồng ý với <a href="https://vnpt.vn" target="_blank">các điều khoản</a></span>
       </label>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <button nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
+    <button [disabled]="form.invalid" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
       {{ 'app.register.register' | i18n }}
     </button>
 
   </nz-form-item>
 
-  <nz-form-item>
+  <nz-form-item style="margin-top: 30px; justify-content: center">
     <a class="login" routerLink="/passport/login"> <span
       style="color: #555555">Bạn đã có tài khoản,</span> {{ 'app.register.sign-in' | i18n }}</a>
   </nz-form-item>
