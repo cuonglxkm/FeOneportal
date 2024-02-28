@@ -24,4 +24,6 @@ export class AppConstants {
 
   public static EQUAL_SIGN = "=";
 
+  public static BASE_URL = 'http://192.168.30.71:30008';
+
 }

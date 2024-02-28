@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { BaseResponse } from '../core/models/base-response.model';
 import { ChartData } from '../core/models/chart-data.model';
 import { HealthCheckModel, HealthStatusModel } from '../core/models/health-check.model';
+import { AppConstants } from '../core/constants/app-constant';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashBoardService {
-  private baseUrl = 'http://localhost:16005/kafka-service';
+  private baseUrl = AppConstants.BASE_URL + '/kafka-service';
 
   constructor(private http: HttpClient) { }
 

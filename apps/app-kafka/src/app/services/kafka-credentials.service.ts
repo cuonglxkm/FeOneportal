@@ -10,11 +10,12 @@ import {
   NewPasswordKafkaCredential,
 } from '../core/models/kafka-credential.model';
 import { Pagination } from '../core/models/pagination.model';
+import { AppConstants } from '../core/constants/app-constant';
 @Injectable({
   providedIn: 'root',
 })
 export class KafkaCredentialsService {
-  private baseUrl = 'http://localhost:16005/kafka-service';
+  private baseUrl = AppConstants.BASE_URL + '/kafka-service';
   selectedCredential = new ReplaySubject<KafkaCredential>();
   activatedTab = new ReplaySubject<number>();
 

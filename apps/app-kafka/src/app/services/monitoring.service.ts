@@ -3,13 +3,14 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { MonitoringData } from "../core/models/monitoring-data.model";
 import { BaseResponse } from "../core/models/base-response.model";
+import { AppConstants } from "../core/constants/app-constant";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MonitoringService {
 
-    baseUrl = 'http://localhost:16005/kafka-service';
+    baseUrl = AppConstants.BASE_URL + '/kafka-service';
 
     constructor(private http: HttpClient) { }
 

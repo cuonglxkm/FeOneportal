@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic } from '../core/models/kafka-consumer-group.model';
 import { Pagination } from '../core/models/pagination.model';
 import { BaseResponse } from '../core/models/base-response.model';
+import { AppConstants } from '../core/constants/app-constant';
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,7 @@ import { BaseResponse } from '../core/models/base-response.model';
 
 export class ConsumerGroupKafkaService {
     public refresh$ = new Subject();
-    private baseUrl = 'http://localhost:16005/kafka-service';
+    private baseUrl = AppConstants.BASE_URL + '/kafka-service';
 
     constructor(private http: HttpClient) { }
 

@@ -7,12 +7,13 @@ import { AclModel } from '../core/models/acl.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { KafkaTopic } from '../core/models/kafka-topic.model';
 import { Pagination } from '../core/models/pagination.model';
+import { AppConstants } from '../core/constants/app-constant';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AclKafkaService {
-  private baseUrl = 'http://localhost:16005/kafka-service';
+  private baseUrl = AppConstants.BASE_URL + '/kafka-service';
 
   constructor(private http: HttpClient) { }
 
