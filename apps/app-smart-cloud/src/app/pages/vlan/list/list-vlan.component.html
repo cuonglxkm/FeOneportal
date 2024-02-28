@@ -16,6 +16,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -26,10 +27,12 @@
       <nz-col nzSpan="16">
         <nz-input-group [nzPrefix]="prefixIconSearch"
                         nzSize="large"
-                        style="width: 300px;"
-                        [(ngModel)]="value"
-                        (input)="onInputChange($event.target['value'])">
-          <input name="name" nz-input placeholder="Tìm kiếm"/>
+                        style="width: 300px;">
+          <input name="name"
+                 nz-input
+                 placeholder="Tìm kiếm"
+                 [(ngModel)]="value"
+                 (input)="onInputChange($event.target['value'])"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
@@ -80,12 +83,82 @@
                   nzTheme="outline"
                   nz-popover
                   [nzPopoverContent]="'Chỉnh sửa'"
+                  (click)="showModalEditNetwork(data.id, data.name)"
                   nzPopoverPlacement="bottom"></span>
+            <nz-modal [(nzVisible)]="isVisibleEditNetwork" nzTitle="Chỉnh sửa"
+                      (nzOnCancel)="handleCancelEdit()" [nzMask]="false">
+              <div *nzModalTitle>
+                <span class="text-modal-title">Chỉnh sửa</span>
+              </div>
+              <div *nzModalContent>
+                <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <div>
+                        <span>Tên Network</span>
+                        (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+                      </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
+                      <input nz-input class="input-custom" formControlName="nameNetwork" />
+                    </nz-form-control>
+                    <ng-template #nameNetworkErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">Tên network không được bỏ trống</ng-container>
+                      <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'</ng-container>
+                      <ng-container *ngIf="control.hasError('maxlength')">Tên network tối đa 50 ký tự</ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">Tên network không được chứa ký tự đặc biệt</ng-container>
+                    </ng-template>
+                  </nz-form-item>
+                </form>
+
+              </div>
+              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                <button nz-button nzType="default" (click)="handleCancelEdit()" class="button-cancel">
+                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                </button>
+                <button nz-button nzType="primary"
+                        (click)="handleOkEdit()"
+                        [nzLoading]="isLoadingEditNetwork"
+                        class="button-ok">
+                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                </button>
+              </div>
+            </nz-modal>
             <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
                   nz-popover
-                  [nzPopoverContent]="'Xóa'"
+                  [nzPopoverContent]="'Xoá'"
                   nzPopoverPlacement="bottom"
+                  (click)="showModalDeleteNetwork(data.id, data.name)"
                   nz-icon nzType="delete" nzTheme="outline"></span>
+            <nz-modal [(nzVisible)]="isVisibleDeleteNetwork" nzTitle="Xoá Network"
+                      (nzOnCancel)="handleCancelDelete()" nzMask="false">
+              <div *nzModalTitle>
+                <span class="text-modal-title">Xoá Network</span>
+              </div>
+              <div *nzModalContent>
+                <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+                  <nz-form-item>
+                    <span>Đế thực hiện xoá Network + tên Network, vui lòng nhập tên Network để xác nhận.</span>
+                    <nz-form-control>
+                      <input nz-input class="input-custom" formControlName="nameNetwork" />
+                    </nz-form-control>
+                  </nz-form-item>
+
+                </form>
+
+              </div>
+              <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">
+                  <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+                </button>
+                <button nz-button nzType="primary"
+                        (click)="handleOkDelete()"
+                        [nzLoading]="isLoadingDeleteNetwork"
+                        class="button-ok">
+                  <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+                </button>
+              </div>
+            </nz-modal>
           </div>
         </td>
       </tr>
