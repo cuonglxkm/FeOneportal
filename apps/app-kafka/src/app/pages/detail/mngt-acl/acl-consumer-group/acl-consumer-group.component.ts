@@ -1,16 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AclDeleteModel } from 'apps/app-kafka/src/app/core/models/acl-delete.model';
-import { AclReqModel } from 'apps/app-kafka/src/app/core/models/acl-req.model';
-import { AclModel } from 'apps/app-kafka/src/app/core/models/acl.model';
-import { KafkaConsumerGroup } from 'apps/app-kafka/src/app/core/models/kafka-consumer-group.model';
-import { KafkaCredential } from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
-import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
-import { ConsumerGroupKafkaService } from 'apps/app-kafka/src/app/services/consumer-group-kafka.service';
+import { AclDeleteModel } from 'src/app/core/models/acl-delete.model';
+import { AclModel } from 'src/app/core/models/acl.model';
+import { KafkaConsumerGroup } from 'src/app/core/models/kafka-consumer-group.model';
+import { KafkaCredential } from 'src/app/core/models/kafka-credential.model';
+import { AclKafkaService } from 'src/app/services/acl-kafka.service';
+import { ConsumerGroupKafkaService } from 'src/app/services/consumer-group-kafka.service';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
+import { AclReqModel } from 'src/app/core/models/acl-req.model';
 
 @Component({
   selector: 'one-portal-acl-consumer-group',

@@ -19,8 +19,8 @@ import {
   CreateKafkaCredentialData,
   KafkaCredential,
   NewPasswordKafkaCredential,
-} from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
-import { KafkaCredentialsService } from 'apps/app-kafka/src/app/services/kafka-credentials.service';
+} from 'src/app/core/models/kafka-credential.model';
+import { KafkaCredentialsService } from 'src/app/services/kafka-credentials.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';

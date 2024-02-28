@@ -1,35 +1,49 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { BaseResponse } from '../core/models/base-response.model';
 import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic } from '../core/models/kafka-consumer-group.model';
 import { Pagination } from '../core/models/pagination.model';
-import { BaseResponse } from '../core/models/base-response.model';
-import { AppConstants } from '../core/constants/app-constant';
+import { BaseService } from './base.service';
+import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 
 @Injectable({
     providedIn: 'root'
 })
 
-export class ConsumerGroupKafkaService {
+export class ConsumerGroupKafkaService extends BaseService {
     public refresh$ = new Subject();
-    private baseUrl = AppConstants.BASE_URL + '/kafka-service';
+    private kafkaUrl = this.baseUrl + '/kafka-service';
+    private consumerGroupUrl = this.kafkaUrl + this.ENDPOINT.consumerGroups;
 
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+        
+        super()
+    }
+    private getHeaders() {
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            'user_root_id': this.tokenService.get()?.userId,
+            'Authorization': 'Bearer ' + this.tokenService.get()?.token
+        })
+    }
 
     getListConsumerGroup(
         page: number,
         limit: number,
         keySearch: string,
         serviceOrderCode: string,
-    ): Observable<BaseResponse<Pagination<KafkaConsumerGroup[]>>>  {
-        return this.http.get<BaseResponse<Pagination<KafkaConsumerGroup[]>>>(`${this.baseUrl}/consumer-groups/get-all?page=${page}&limit=${limit}&key_search=${keySearch}&service_order_code=${serviceOrderCode}`);
+    ): Observable<BaseResponse<Pagination<KafkaConsumerGroup[]>>> {
+        return this.http.get<BaseResponse<Pagination<KafkaConsumerGroup[]>>>(`${this.consumerGroupUrl}/get-all?page=${page}&limit=${limit}&key_search=${keySearch}&service_order_code=${serviceOrderCode}`);
     }
 
     getDetailConsumerGroup(
         groupId: string,
         serviceOrderCode: string
     ): Observable<BaseResponse<KafkaConsumerGroupDetail>> {
-        return this.http.get<BaseResponse<KafkaConsumerGroupDetail>>(`${this.baseUrl}/consumer-groups/get-detail-group?&group_id=${groupId}&service_order_code=${serviceOrderCode}`);
+        return this.http.get<BaseResponse<KafkaConsumerGroupDetail>>(`${this.consumerGroupUrl}/get-detail-group?&group_id=${groupId}&service_order_code=${serviceOrderCode}`);
     }
 
     getListTopicInGroup(
@@ -37,7 +51,7 @@ export class ConsumerGroupKafkaService {
         serviceOrderCode: string,
         keySearch: string
     ): Observable<BaseResponse<KafkaConsumerGroupTopic[]>> {
-        return this.http.get<BaseResponse<KafkaConsumerGroupTopic[]>>(`${this.baseUrl}/consumer-groups/get-list-topic-in-group?&group_id=${groupId}&service_order_code=${serviceOrderCode}&key_search=${keySearch}`);
+        return this.http.get<BaseResponse<KafkaConsumerGroupTopic[]>>(`${this.consumerGroupUrl}/get-list-topic-in-group?&group_id=${groupId}&service_order_code=${serviceOrderCode}&key_search=${keySearch}`);
     }
 
     deleteConsumerGroup(data: KafkaConsumerGroup): Observable<BaseResponse<null>> {
@@ -48,7 +62,7 @@ export class ConsumerGroupKafkaService {
                 status: data.stateConsumer
             }
         }
-        return this.http.delete<BaseResponse<null>>('${this.baseUrl}/consumer-groups', json);
+        return this.http.delete<BaseResponse<null>>(this.consumerGroupUrl, json);
     }
 
 }

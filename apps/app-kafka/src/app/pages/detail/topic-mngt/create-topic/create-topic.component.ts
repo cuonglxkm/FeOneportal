@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { filter, map } from 'rxjs/operators';
 import { ClipboardService } from 'ngx-clipboard';
 import { NzNotificationService } from "ng-zorro-antd/notification";
-import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
-import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
+import { KafkaService } from 'src/app/services/kafka.service';
+import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Color } from '@antv/g2/lib/dependents';
 

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder } from '@angular/forms';
-import { KafkaMessage } from 'apps/app-kafka/src/app/core/models/kafka-message.model';
-import { KafkaPartition } from 'apps/app-kafka/src/app/core/models/kafka-partition.model';
-import { SyncInfoModel } from 'apps/app-kafka/src/app/core/models/sync-info.model';
-import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
+import { KafkaMessage } from 'src/app/core/models/kafka-message.model';
+import { KafkaPartition } from 'src/app/core/models/kafka-partition.model';
+import { SyncInfoModel } from 'src/app/core/models/sync-info.model';
+import { KafkaService } from 'src/app/services/kafka.service';
 
 @Component({
   selector: 'one-portal-message-topic',
