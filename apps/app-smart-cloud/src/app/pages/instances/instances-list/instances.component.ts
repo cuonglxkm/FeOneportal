@@ -17,6 +17,7 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 class SearchParam {
   status: string = '';
@@ -66,6 +67,7 @@ export class InstancesComponent implements OnInit {
 
   region: number;
   projectId: number;
+  project: ProjectModel;
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
@@ -76,7 +78,8 @@ export class InstancesComponent implements OnInit {
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private projectService: ProjectService
   ) {}
 
   ngOnInit() {
@@ -385,6 +388,14 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreate() {
+    // this.projectService.getByProjectId(this.projectId).subscribe((data) => {
+    //   this.project = data;
+    //   if (this.project.type == 0) {
+    //     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    //   } else {
+    //     this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+    //   }
+    // });
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToEdit(id: number) {

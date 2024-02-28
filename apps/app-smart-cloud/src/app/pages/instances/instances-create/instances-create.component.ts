@@ -689,8 +689,8 @@ export class InstancesCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  onProjectChange(project: any) {
-    // this.router.navigate(['/app-smart-cloud/instances']);
+  userChangeProject() {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -1159,10 +1159,6 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/app-smart-cloud/instances']);
-  }
-
-  userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 }
