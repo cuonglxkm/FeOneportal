@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
-import { FilterOptionModel } from 'apps/app-kafka/src/app/core/models/monitoring-data.model';
-import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
-import { ConsumerGroupKafkaService } from 'apps/app-kafka/src/app/services/consumer-group-kafka.service';
-import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
-import { SharedService } from 'apps/app-kafka/src/app/services/shared.service';
+import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
+import { FilterOptionModel } from 'src/app/core/models/monitoring-data.model';
+import { AclKafkaService } from 'src/app/services/acl-kafka.service';
+import { ConsumerGroupKafkaService } from 'src/app/services/consumer-group-kafka.service';
+import { KafkaService } from 'src/app/services/kafka.service';
+import { SharedService } from 'src/app/services/shared.service';
 import { camelizeKeys } from 'humps';
 
 @Component({

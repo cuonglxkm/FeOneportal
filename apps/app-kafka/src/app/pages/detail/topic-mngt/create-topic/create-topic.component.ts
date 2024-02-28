@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
-import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
-import { TopicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
 import { NzNotificationService } from "ng-zorro-antd/notification";
+import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
+import { TopicService } from 'src/app/services/kafka-topic.service';
 
 @Component({
   selector: 'one-portal-create-topic',
@@ -51,7 +51,7 @@ export class CreateTopicComponent implements OnInit {
 
   createNumber = 1;
   updateNumber = 2;
-  openSet: boolean = false;
+  openSet = false;
 
 
   errMessPartition: string;

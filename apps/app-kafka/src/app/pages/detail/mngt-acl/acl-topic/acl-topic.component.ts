@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AclDeleteModel } from 'apps/app-kafka/src/app/core/models/acl-delete.model';
-import { AclReqModel } from 'apps/app-kafka/src/app/core/models/acl-req.model';
-import { AclModel } from 'apps/app-kafka/src/app/core/models/acl.model';
-import { KafkaCredential } from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
-import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
+import { AclDeleteModel } from 'src/app/core/models/acl-delete.model';
+import { AclReqModel } from 'src/app/core/models/acl-req.model';
+import { AclModel } from 'src/app/core/models/acl.model';
+import { KafkaCredential } from 'src/app/core/models/kafka-credential.model';
+import { AclKafkaService } from 'src/app/services/acl-kafka.service';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';

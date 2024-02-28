@@ -7,16 +7,20 @@ import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { Pagination } from '../core/models/pagination.model';
+import { Pagination2 } from '../core/models/pagination2.model';
 import { ListTopicResponse } from '../core/models/topic-response.model';
+import { BaseService } from './base.service';
+import { Pagination } from '../core/models/pagination.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class KafkaService {
-  private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
+export class KafkaService extends BaseService {
+  private kafkaUrl = this.baseUrl + '/kafka-service';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    super()
+  }
 
   getInfoConnection(
     serviceOrderCode: string
@@ -24,7 +28,7 @@ export class KafkaService {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<InfoConnection>>(
-      `${AppConstants.BASE_URL}/kafka-service/kafka/connection-info`,
+      `${this.kafkaUrl}/kafka/connection-info`,
       {
         params,
       }
@@ -37,7 +41,7 @@ export class KafkaService {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<BrokerConfig[]>>(
-      `${AppConstants.BASE_URL}/kafka-service/configs/broker`,
+      `${this.kafkaUrl}/configs/broker`,
       {
         params,
       }
@@ -49,7 +53,7 @@ export class KafkaService {
     username: string
   ): Observable<BaseResponse<string>> {
     return this.http.post<BaseResponse<string>>(
-      `${this.baseUrl}/otp/sendOtpForgotPass?service_order_code=${serviceOrderCode}&user_forgot=${username}`,
+      `${this.kafkaUrl}/otp/sendOtpForgotPass?service_order_code=${serviceOrderCode}&user_forgot=${username}`,
       null
     );
   }
@@ -79,7 +83,7 @@ export class KafkaService {
 
   getSyncTime(serviceOrderCode: string) {
     return this.http.get(
-      `${this.baseUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
+      `${this.kafkaUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
     );
   }
   getAccessLogs(
@@ -92,7 +96,7 @@ export class KafkaService {
     console.log(params);
 
     return this.http.get<BaseResponse<Pagination<AccessLog[]>>>(
-      `${AppConstants.BASE_URL}/kafka-service/kafka/search-logs`,
+      `${this.kafkaUrl}/kafka/search-logs`,
       {
         params,
       }

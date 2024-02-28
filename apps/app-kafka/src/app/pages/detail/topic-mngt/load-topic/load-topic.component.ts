@@ -3,12 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
 import { JsonEditorOptions } from 'ang-jsoneditor';
-import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
-import { TopicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzNotificationService } from "ng-zorro-antd/notification";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subject, throwError } from 'rxjs';
 import { catchError, filter, finalize, map } from 'rxjs/operators';
+import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
+import { TopicService } from 'src/app/services/kafka-topic.service';
 @Component({
   selector: 'one-portal-load-topic',
   templateUrl: './load-topic.component.html',
