@@ -1,15 +1,25 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {FormSearchNetwork, FormSearchSubnet, NetWorkModel, Port, Subnet} from "../models/vlan.model";
+import {
+  FormCreateNetwork, FormCreateSubnet,
+  FormSearchNetwork,
+  FormSearchSubnet, FormUpdateSubnet,
+  NetWorkModel,
+  Port,
+  Subnet
+} from '../models/vlan.model';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 
 export class VlanService extends BaseService {
+
+  public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
@@ -47,7 +57,7 @@ export class VlanService extends BaseService {
     })
   }
 
-  getPortByNetwork(networkId: string, region: number) {
+  getPortByNetwork(networkId: string, region: number, pageSize: number, pageNumber: number, name: string) {
     let params = new HttpParams()
     if (networkId != undefined || networkId != null) {
       params = params.append('networkId', networkId)
@@ -55,13 +65,22 @@ export class VlanService extends BaseService {
     if (region != undefined || region != null) {
       params = params.append('region', region)
     }
-    return this.http.get<Port[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/listallportbynetworkid', {
+    if (pageSize != undefined || pageSize != null) {
+      params = params.append('pageSize', pageSize)
+    }
+    if(pageNumber != undefined || pageNumber != null) {
+      params = params.append('pageNumber', pageNumber)
+    }
+    if(name != undefined || name != null) {
+      params = params.append('name', name)
+    }
+    return this.http.get<BaseResponse<Port[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/findportbynetworkid', {
       headers: this.getHeaders(),
       params: params
     })
   }
 
-  getListSubnet(formSearchSubnet: FormSearchSubnet) {
+  getSubnetByNetwork(formSearchSubnet: FormSearchSubnet) {
     let params = new HttpParams()
     if (formSearchSubnet.pageSize != undefined || formSearchSubnet.pageSize != null) {
       params = params.append('pageSize', formSearchSubnet.pageSize)
@@ -72,11 +91,14 @@ export class VlanService extends BaseService {
     if (formSearchSubnet.region != undefined || formSearchSubnet.region != null) {
       params = params.append('region', formSearchSubnet.region)
     }
-    if (formSearchSubnet.vlanName != undefined || formSearchSubnet.vlanName != null) {
-      params = params.append('vlanName', formSearchSubnet.vlanName)
+    if (formSearchSubnet.name != undefined || formSearchSubnet.name != null) {
+      params = params.append('name', formSearchSubnet.name)
     }
     if (formSearchSubnet.customerId != undefined || formSearchSubnet.customerId != null) {
       params = params.append('customerId', formSearchSubnet.customerId)
+    }
+    if (formSearchSubnet.networkId != undefined || formSearchSubnet.networkId != null) {
+      params = params.append('networkId', formSearchSubnet.networkId)
     }
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
       headers: this.getHeaders(),
@@ -84,4 +106,51 @@ export class VlanService extends BaseService {
     })
   }
 
+  getVlanByNetworkId(idNetwork) {
+    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}`, {
+      headers: this.getHeaders()
+    })
+  }
+
+  createNetwork(formCreate: FormCreateNetwork) {
+    return this.http.post<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + '/vlans', Object.assign(formCreate), {
+      headers: this.getHeaders()
+    })
+  }
+
+  updateNetwork(idNetwork: number, networkName: string) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?networkName=${networkName}`, null,{
+      headers: this.getHeaders()
+    })
+  }
+
+  deleteNetwork(idNetwork: number){
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlannetworks/${idNetwork}`, {
+      headers: this.getHeaders()
+    })
+  }
+
+  getSubnetById(idSubnet) {
+    return this.http.get<Subnet>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
+      headers: this.getHeaders()
+    })
+  }
+
+  createSubnet(formCreateSubnet: FormCreateSubnet) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', Object.assign(formCreateSubnet), {
+      headers: this.getHeaders()
+    })
+  }
+
+  updateSubnet(idSubnet: number, formUpdateSubnet: FormUpdateSubnet) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, Object.assign(formUpdateSubnet), {
+      headers: this.getHeaders()
+    })
+  }
+
+  deleteSubnet(idSubnet){
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
+      headers: this.getHeaders()
+    })
+  }
 }
