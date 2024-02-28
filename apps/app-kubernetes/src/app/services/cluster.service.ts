@@ -13,8 +13,6 @@ export class ClusterService extends BaseService {
     super();
   }
 
-  baseUrl = 'http://127.0.0.1:16003/k8s-service';
-
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -29,36 +27,36 @@ export class ClusterService extends BaseService {
     pageIndex: number,
     pageSize: number
   ) {
-    return this.http.get(`${this.baseUrl}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`);
   }
 
   createNewCluster(data) {
     // return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
-    return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data);
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data);
   }
 
   testCreateCluster(data) {
-    return this.http.post(`${this.baseUrl}/k8s/get-dto/create-cluster`, data);
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-dto/create-cluster`, data);
   }
 
   getListK8sVersion(cloudProfileName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/k8s-versions`, { headers: this.getHeaders() });
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/k8s-versions`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfileName}/k8s-versions`);
   }
 
   getListWorkerTypes(cloudProfileName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfileName}/worker-types`);
   }
 
   getListVolumeTypes(cloudProfilenName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfilenName}/volume-types`);
   }
 
   getVPCNetwork(cloudProfileName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfileName}/vpc-network`);
   }
 
 }

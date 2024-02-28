@@ -217,6 +217,9 @@ export class ClusterComponent implements OnInit {
 
     this.getVlanNetwork(this.projectInfraId);
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
+
+    // TODO: handle reset select box of previous project ...
+
   }
 
   onSelectedVlan(vlanId: number) {
