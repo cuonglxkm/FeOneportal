@@ -79,9 +79,21 @@
                                         </div>
                                     </ng-template>
                                 </nz-form-label>
-                                <nz-form-control nzErrorTip="Danh sách topic không để trống">
-                                    <textarea rows="4" nz-input placeholder="Topic_1,Topic_2,..."
+                                <nz-form-control [nzErrorTip]='nameErrorTpl'>
+
+                                    <textarea rows="4" nz-input placeholder="Topic-1,Topic-2,..."
                                         formControlName="topicList"></textarea>
+
+                                    <ng-template #nameErrorTpl let-control>
+                                        <ng-container *ngIf="control.hasError('required')">
+                                            Tên topic không được để trống
+                                        </ng-container>
+                                        <ng-container
+                                            *ngIf="control.hasError('pattern') || control.hasError('maxlength')">
+                                            Tên Topic dài 1-255 ký tự bao gồm các ký tự chữ, số và ký tự đặc biệt -
+                                        </ng-container>
+                                    </ng-template>
+                                    
                                 </nz-form-control>
                             </nz-form-item>
 

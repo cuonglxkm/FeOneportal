@@ -1,13 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
-import { ClipboardService } from 'ngx-clipboard';
-import { NzNotificationService } from "ng-zorro-antd/notification";
-import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
-import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Color } from '@antv/g2/lib/dependents';
-import { topicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
 import { LoadingService } from '@delon/abc/loading';
+import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
+import { TopicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
+import { NzNotificationService } from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'one-portal-create-topic',
@@ -33,7 +29,7 @@ export class CreateTopicComponent implements OnInit {
     { name: 'mess_down_enable', value: 'true', fullname: "message.downconversion.enable" },
     { name: 'segm_jitt', value: '0', type: 'number', fullname: "segment.jitter.ms" },
     { name: 'flush_ms', value: '9007199254740991', type: 'number', fullname: "flush.ms" },
-    { name: 'segment', value: '14', type: 'number', fullname: "segment.bytes" },
+    { name: 'segment', value: '1073741824', type: 'number', fullname: "segment.bytes" },
     { name: 'mess_format', value: '2.7-IV2', fullname: "message.format.version" },
     { name: 'max_comp', value: '9007199254740991', type: 'number', fullname: "max.compaction.lag.ms" },
     { name: 'foll_repl', value: 'none', fullname: "follower.replication.throttled.replicas" },
@@ -63,7 +59,7 @@ export class CreateTopicComponent implements OnInit {
 
 
   constructor(
-    private kafkaService: topicService,
+    private topicKafkaService: TopicService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
@@ -107,7 +103,7 @@ export class CreateTopicComponent implements OnInit {
       lead_rep: [null]
     });
     if (this.mode == this.updateNumber) {
-      this.openSet = true
+      this.openSet = true;
       this.validateForm.get('name_tp').disable();
       this.validateForm.get('partition').disable();
       this.validateForm.get('rep_fac').disable();
@@ -115,9 +111,9 @@ export class CreateTopicComponent implements OnInit {
       this.validateForm.get('partition').setValue(this.data.partitions);
       this.validateForm.get('rep_fac').setValue(this.data.replicas);
       if (this.data.isConfig == 0)
-        this.addValidateConfig()
+        this.addValidateConfig();
       else {
-        this.addValidateCustomConfig(this.data.configs)
+        this.addValidateCustomConfig(this.data.configs);
       }
     }
   }
@@ -135,16 +131,16 @@ export class CreateTopicComponent implements OnInit {
             valueDB = 'none';
           break;
         case 'min_clean':
-          validators.push(Validators.min(0), Validators.max(1), Validators.pattern(/^\d*(\.\d+)?$/), this.dotValidator)
+          validators.push(Validators.min(0), Validators.max(1), Validators.pattern(/^\d*(\.\d+)?$/), this.dotValidator);
           break;
         case 'minSync':
-          validators.push(Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/))
+          validators.push(Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/));
           break;
         case 'reten_bytes':
-          validators.push(Validators.min(-1), Validators.max(100000000000), Validators.pattern(/^-?\d+$/))
+          validators.push(Validators.min(-1), Validators.max(100000000000), Validators.pattern(/^-?\d+$/));
           break;
         case 'index_inter':
-          validators.push(Validators.min(0), Validators.max(2147483647), Validators.pattern(/^\d+$/))
+          validators.push(Validators.min(0), Validators.max(2147483647), Validators.pattern(/^\d+$/));
           break;
         case 'file_delete':
           validators.push(Validators.min(0), Validators.max(6000000), Validators.pattern(/^\d+$/))
@@ -327,7 +323,7 @@ export class CreateTopicComponent implements OnInit {
   }
 
   createTopic() {
-    
+
     this.checkRep();
     this.changePartition();
     for (const i in this.validateForm.controls) {
@@ -335,13 +331,13 @@ export class CreateTopicComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     if (!this.validateForm.invalid) {
-      this.loadingSrv.open({type: "spin", text: "Loading..."});
+      this.loadingSrv.open({ type: "spin", text: "Loading..." });
       let json = {};
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
       const replicationFactorNum = Number(this.validateForm.get("rep_fac").value);
       if (!this.openSet) {
-        this.kafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
+        this.topicKafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
           .subscribe(
             (data: any) => {
               this.loadingSrv.close();
@@ -399,11 +395,11 @@ export class CreateTopicComponent implements OnInit {
             }
           })
 
-        this.kafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 1, JSON.stringify(json))
+        this.topicKafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 1, JSON.stringify(json))
           .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
-              this.loadingSrv.close();
+                this.loadingSrv.close();
                 this.notification.success(
                   'Thông báo',
                   data.msg,
@@ -441,7 +437,7 @@ export class CreateTopicComponent implements OnInit {
   }
 
   updateTopic() {
-    this.loadingSrv.open({type: "spin", text: "Loading..."});
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.checkRep()
     this.changePartition()
     for (const i in this.validateForm.controls) {
@@ -468,7 +464,7 @@ export class CreateTopicComponent implements OnInit {
             }
           i++;
         })
-      this.kafkaService.updateTopic(topicName, this.serviceOrderCode, json)
+      this.topicKafkaService.updateTopic(topicName, this.serviceOrderCode, json)
         .subscribe(
           (data: any) => {
             if (data && data.code == 200) {

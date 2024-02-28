@@ -1,13 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingService } from '@delon/abc/loading';
+import { JsonEditorOptions } from 'ang-jsoneditor';
 import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
-import { topicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
+import { TopicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from "ng-zorro-antd/notification";
-import { Subject } from 'rxjs';
-import { filter, finalize, map } from 'rxjs/operators';
-import { JsonEditorOptions } from 'ang-jsoneditor';
-import { LoadingService } from '@delon/abc/loading';
+import { Subject, throwError } from 'rxjs';
+import { catchError, filter, finalize, map } from 'rxjs/operators';
 @Component({
   selector: 'one-portal-load-topic',
   templateUrl: './load-topic.component.html',
@@ -63,9 +64,10 @@ export class LoadTopicComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private kafkaService: topicService,
+    private topicKafkaService: TopicService,
     private modal: NzModalService,
     private loadingSrv: LoadingService,
+    private notification: NzNotificationService,
   ) {
     this.jsonOption = new JsonEditorOptions();
     this.jsonOption.search = false;
@@ -87,7 +89,7 @@ export class LoadTopicComponent implements OnInit {
 
   setDefaultForm() {
     this.myform = this.fb.group({
-      topicList: [null, Validators.required],
+      topicList: [null, [Validators.required, Validators.maxLength(255), Validators.pattern(/^[\-,a-zA-Z0-9]+$/)]],
       configMap: [null],
       partitionNum: [3, [Validators.required, Validators.min(1)]],
       replicaNum: [2, [Validators.required, Validators.min(1)]],
@@ -97,7 +99,7 @@ export class LoadTopicComponent implements OnInit {
   }
 
   getListKafkaSystem() {
-    this.kafkaService.getListKafkaSystem()
+    this.topicKafkaService.getListKafkaSystem()
       .subscribe(r => {
         this.listOfKafkaSys = r;
       });
@@ -107,7 +109,7 @@ export class LoadTopicComponent implements OnInit {
     if (!this.kafkaSystem)
       return
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
-    this.kafkaService.getListTopic(this.index, this.size, this.search, this.kafkaSystem)
+    this.topicKafkaService.getListTopic(this.index, this.size, this.search, this.kafkaSystem)
       .pipe(
         filter((r) => r && r.code == 200),
         map((r) => r.data)
@@ -194,19 +196,60 @@ export class LoadTopicComponent implements OnInit {
       service_order_code: obj.serviceOrderCode
     };
     console.log({ datasend: data });
-    this.kafkaService.createTopicInitual(data).pipe(
+    this.topicKafkaService.createTopicInitual(data).pipe(
       finalize(() => {
         this.isSubmitAdvancedTopic = false;
         this.isSubmitBasicTopic = false;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.log(error);
+        this.notification.error(
+          error.error.error_msg,
+          error.error.msg,
+          {
+            nzPlacement: 'bottomRight',
+            nzStyle: {
+              backgroundColor: '#fed9cc',
+              borderRadius: '4px',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            }
+          },
+        );
+        this.loadingSrv.close();
+        return throwError('Something bad happened; please try again later.');
       })
     ).subscribe((r: any) => {
       if (r && r.code == 200) {
-        console.log(this.kafkaSystem);
         let kafkaSys = this.kafkaSystem;
         this.setDefaultForm();
         this.myform.get('serviceOrderCode').setValue(kafkaSys);
         this.keySearch = '';
         this.getList();
+        this.notification.success(
+          'Thông báo',
+          r.msg,
+          {
+            nzPlacement: 'bottomRight',
+            nzStyle: {
+              backgroundColor: '#dff6dd',
+              borderRadius: '4px',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            }
+          },
+        );
+      } else {
+        this.notification.error(
+          'Thông báo',
+          r.msg,
+          {
+            nzPlacement: 'bottomRight',
+            nzStyle: {
+              backgroundColor: '#fed9cc',
+              borderRadius: '4px',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            }
+          },
+        );
       }
       this.loadingSrv.close();
     });

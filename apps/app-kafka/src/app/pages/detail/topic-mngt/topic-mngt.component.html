@@ -38,8 +38,8 @@
                                 <nz-form-item>
                                     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
                                     <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
-                                        <nz-select [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
-                                            <nz-option *ngFor="let item of listTopic" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
+                                        <nz-select nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
+                                            <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
                                         </nz-select>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -106,29 +106,29 @@
                             <nz-dropdown-menu #menu="nzDropdownMenu">
                                 <ul nz-menu vSelectable>
                                     <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="showTopicInfo(data)">
+                                        <span nz-button nzType="text" (click)="showTopicInfo(data)">
                                             <span nz-icon nzType="info-circle" nzTheme="outline"></span> Thông tin cấu hình
-                                        </button>
+                                        </span>
                                     </li>
                                     <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="detailTopic(data.topicName)">
+                                        <span nz-button nzType="text" (click)="detailTopic(data.topicName)">
                                             <span nz-icon nzType="eye" nzTheme="outline"></span> Chi tiết
-                                        </button>
+                                        </span>
                                     </li>
                                     <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="deleteMessages(data)">
+                                        <span nz-button nzType="text" (click)="deleteMessages(data)">
                                             <span nz-icon nzType="delete-row" nzTheme="outline"></span> Xóa message
-                                        </button>
+                                        </span>
                                     </li>
                                     <li nz-menu-item>
-                                        <button nz-button nzType="text"  (click)="updateTopicForm(data)">
+                                        <span nz-button nzType="text"  (click)="updateTopicForm(data)">
                                             <span nz-icon nzType="edit" nzTheme="outline"></span> Cập nhật
-                                        </button>
+                                        </span>
                                     </li>
                                     <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
+                                        <span nz-button nzType="text" (click)="showDeleteConfirm(data)">
                                             <span nz-icon nzType="delete" nzTheme="outline"></span> Xoá
-                                        </button>
+                                        </span>
                                     </li>
                                 </ul>
                             </nz-dropdown-menu>
@@ -149,7 +149,7 @@
     <ng-container *nzDrawerContent>
         <nz-descriptions nzTitle="Thông tin cấu hình" nzBordered>
             <nz-descriptions-item [nzSpan]="3" *ngFor="let item of configInfo | keyvalue"
-                [nzTitle]="item.key">{{item.value}}</nz-descriptions-item>
+                [nzTitle]="item.key">{{item.value==""?"None":item.value}}</nz-descriptions-item>
         </nz-descriptions>
     </ng-container>
 </nz-drawer>

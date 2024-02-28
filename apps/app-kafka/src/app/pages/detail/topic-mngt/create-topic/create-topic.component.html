@@ -237,7 +237,7 @@
                     nzTooltipPlacement="rightTop" [nzTheme]="'twotone'" nz-tooltip></i>
             </nz-form-label>
             <nz-form-control nz-form-label [nzSpan]="10">
-                <nz-select formControlName="mess_format" nzShowSearch (nzOnSearch)="onSearch($event)">
+                <nz-select formControlName="mess_format" nzShowSearch>
                     <ng-container *ngFor="let data of listMessVersion">
                         <nz-option [nzValue]="data" [nzLabel]="data"></nz-option>
                     </ng-container>

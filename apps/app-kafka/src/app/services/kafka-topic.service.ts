@@ -13,7 +13,7 @@ import { decamelize } from 'humps';
 @Injectable({
   providedIn: 'root',
 })
-export class topicService {
+export class TopicService {
   private baseUrl = 'http://api.galaxy.vnpt.vn:30383/kafka-service';
   private localUrl = 'http://localhost:16004/kafka-service';
 

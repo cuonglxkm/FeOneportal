@@ -3,7 +3,7 @@ import { FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { KafkaMessage } from 'apps/app-kafka/src/app/core/models/kafka-message.model';
 import { KafkaPartition } from 'apps/app-kafka/src/app/core/models/kafka-partition.model';
 import { SyncInfoModel } from 'apps/app-kafka/src/app/core/models/sync-info.model';
-import { topicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
+import { TopicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
 
 @Component({
   selector: 'one-portal-message-topic',
@@ -33,14 +33,14 @@ export class MessageTopicComponent implements OnInit {
   date = null;
 
   constructor(
-    private kafkaService: topicService,
+    private topicKafkaService: TopicService,
     private fb: NonNullableFormBuilder
   ) { }
   validateForm: FormGroup
 
   ngOnInit(): void {
     this.getSyncTime(this.serviceOrderCode)
-    this.kafkaService.getListPartitions(this.topicName, this.serviceOrderCode)
+    this.topicKafkaService.getListPartitions(this.topicName, this.serviceOrderCode)
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
@@ -53,7 +53,7 @@ export class MessageTopicComponent implements OnInit {
 
   getListMessageTopic(nameTopic: string, serviceOderCode: string, page: number, size: number, fromDate: number, toDate: number, listPar: string) {
     this.loading = true;
-    this.kafkaService.getMessageTopicKafka(nameTopic, serviceOderCode, page, size, fromDate, toDate, listPar)
+    this.topicKafkaService.getMessageTopicKafka(nameTopic, serviceOderCode, page, size, fromDate, toDate, listPar)
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
@@ -73,7 +73,7 @@ export class MessageTopicComponent implements OnInit {
   }
 
   getSyncTime(serviceOrderCode: string) {
-    this.kafkaService.getSyncTime(serviceOrderCode)
+    this.topicKafkaService.getSyncTime(serviceOrderCode)
       .subscribe((res: any) => {
         if (res.code && res.code == 200) {
           this.syncInfo = res.data;

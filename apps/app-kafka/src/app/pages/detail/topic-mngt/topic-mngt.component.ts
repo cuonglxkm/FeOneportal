@@ -1,22 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { KafkaService } from '../../../services/kafka.service';
-import { catchError, filter, finalize, map } from 'rxjs/operators';
-import { ClipboardService } from 'ngx-clipboard';
-import { InfoConnection } from '../../../core/models/info-connection.model';
-import { BrokerConfig } from '../../../core/models/broker-config.model';
-import { AppConstants } from '../../../core/constants/app-constant';
-import { NzNotificationService } from "ng-zorro-antd/notification";
-import { STColumn } from '@delon/abc/st';
-import { KafkaTopic } from '../../../core/models/kafka-topic.model';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzDescriptionsSize } from 'ng-zorro-antd/descriptions';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { topicService } from '../../../services/kafka-topic.service';
-import { da } from 'date-fns/locale';
-import { LoadingService } from '@delon/abc/loading';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingService } from '@delon/abc/loading';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from "ng-zorro-antd/notification";
 import { throwError } from 'rxjs';
+import { catchError, filter, finalize, map } from 'rxjs/operators';
+import { KafkaTopic } from '../../../core/models/kafka-topic.model';
+import { TopicService } from '../../../services/kafka-topic.service';
 @Component({
   selector: 'one-portal-topic-mngt',
   templateUrl: './topic-mngt.component.html',
@@ -27,6 +18,7 @@ export class TopicMngtComponent implements OnInit {
   @Input() serviceOrderCode: string;
 
   listTopic: KafkaTopic[] = [];
+  listTopicTestProducer: KafkaTopic[] = [];
   index: number = 1;
   size: number = 10;
   total: number;
@@ -52,7 +44,7 @@ export class TopicMngtComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private kafkaService: topicService,
+    private topicKafkaService: TopicService,
     private modal: NzModalService,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
@@ -78,9 +70,24 @@ export class TopicMngtComponent implements OnInit {
     this.control = this.listNum;
   }
 
+  getListTopic() {
+    this.topicKafkaService.getListTopic( 1, 10000, "", this.serviceOrderCode)
+      .pipe(
+        filter((r) => r && r.code == 200),
+        map((r) => r.data)
+      )
+      .subscribe((data) => {
+        let temp: KafkaTopic[] = [];
+        data?.results.forEach(element => {
+          temp.push(new KafkaTopic(element));
+        });
+        this.listTopicTestProducer = temp;
+      });
+  }
+
   getList() {
     this.loading = true
-    this.kafkaService.getListTopic(this.index, this.size, this.search, this.serviceOrderCode)
+    this.topicKafkaService.getListTopic(this.index, this.size, this.search, this.serviceOrderCode)
       .pipe(
         filter((r) => r && r.code == 200),
         map((r) => r.data)
@@ -139,6 +146,7 @@ export class TopicMngtComponent implements OnInit {
 
   testProduce() {
     this.isVisible = true
+    this.getListTopic();
   }
 
   submitModalForm(): void {
@@ -165,7 +173,7 @@ export class TopicMngtComponent implements OnInit {
       this.loadingSrv.open({type: "spin", text: "Loading..."});
 
       let data = this.produceForm.value;
-      this.kafkaService.testProduce(data)
+      this.topicKafkaService.testProduce(data)
         .pipe(finalize(() => {
           this.loadingSrv.close();
         }))
@@ -231,7 +239,7 @@ export class TopicMngtComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.kafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
+        this.topicKafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
           .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
@@ -267,7 +275,7 @@ export class TopicMngtComponent implements OnInit {
       nzOnOk: () => {
 
         this.loading = true
-        this.kafkaService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
+        this.topicKafkaService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
           .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
