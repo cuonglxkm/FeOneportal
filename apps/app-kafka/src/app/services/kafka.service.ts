@@ -1,14 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { decamelize } from 'humps';
 import { Observable } from 'rxjs';
 import { AppConstants } from '../core/constants/app-constant';
+import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
+import { Pagination } from '../core/models/pagination.model';
 import { ListTopicResponse } from '../core/models/topic-response.model';
-import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
-import { Pagination2 } from '../core/models/pagination2.model';
-import { decamelize } from 'humps';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,7 @@ export class KafkaService {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<InfoConnection>>(
-      `${this.baseUrl}/topic/get-info-connection`,
+      `${AppConstants.BASE_URL}/kafka-service/kafka/connection-info`,
       {
         params,
       }
@@ -37,7 +37,7 @@ export class KafkaService {
     const params = new HttpParams().set('service_order_code', serviceOrderCode);
 
     return this.http.get<BaseResponse<BrokerConfig[]>>(
-      `${this.baseUrl}/config/broker-config`,
+      `${AppConstants.BASE_URL}/kafka-service/configs/broker`,
       {
         params,
       }
@@ -84,15 +84,15 @@ export class KafkaService {
   }
   getAccessLogs(
     filters: FetchAccessLogs
-  ): Observable<BaseResponse<Pagination2<AccessLog[]>>> {
+  ): Observable<BaseResponse<Pagination<AccessLog[]>>> {
     let params = new HttpParams();
     Object.entries(filters).forEach(([key, value]) => {
       params = params.set(decamelize(key), value || '');
     });
     console.log(params);
 
-    return this.http.get<BaseResponse<Pagination2<AccessLog[]>>>(
-      `${this.baseUrl}/kafka/search-logs`,
+    return this.http.get<BaseResponse<Pagination<AccessLog[]>>>(
+      `${AppConstants.BASE_URL}/kafka-service/kafka/search-logs`,
       {
         params,
       }
