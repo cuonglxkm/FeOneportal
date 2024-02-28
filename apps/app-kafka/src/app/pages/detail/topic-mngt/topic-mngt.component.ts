@@ -1,17 +1,13 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { KafkaService } from '../../../services/kafka.service';
-import { filter, finalize, map } from 'rxjs/operators';
-import { ClipboardService } from 'ngx-clipboard';
-import { InfoConnection } from '../../../core/models/info-connection.model';
-import { BrokerConfig } from '../../../core/models/broker-config.model';
-import { AppConstants } from '../../../core/constants/app-constant';
-import { NzNotificationService } from "ng-zorro-antd/notification";
-import { STColumn } from '@delon/abc/st';
-import { KafkaTopic } from '../../../core/models/kafka-topic.model';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzDescriptionsSize } from 'ng-zorro-antd/descriptions';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingService } from '@delon/abc/loading';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from "ng-zorro-antd/notification";
+import { throwError } from 'rxjs';
+import { catchError, filter, finalize, map } from 'rxjs/operators';
+import { KafkaTopic } from '../../../core/models/kafka-topic.model';
+import { TopicService } from '../../../services/kafka-topic.service';
 @Component({
   selector: 'one-portal-topic-mngt',
   templateUrl: './topic-mngt.component.html',
@@ -31,7 +27,6 @@ export class TopicMngtComponent implements OnInit {
   topicDetail: string;
 
   visibleConfigInfo: boolean;
-  isSubmitProduce: boolean = false;
   isVisible: boolean = false;
   loading = false;
 
@@ -48,9 +43,10 @@ export class TopicMngtComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private kafkaService: KafkaService,
+    private kafkaService: TopicService,
     private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService,
   ) { }
 
   ngOnInit(): void {
@@ -82,9 +78,9 @@ export class TopicMngtComponent implements OnInit {
       )
       .subscribe((data) => {
         this.total = data?.totals;
-        this.size = data?.size;
+        this.size = data?.size; 
         let temp: KafkaTopic[] = [];
-        data.data.forEach(element => {
+        data?.results.forEach(element => {
           temp.push(new KafkaTopic(element));
         });
         this.listTopic = temp;
@@ -156,11 +152,32 @@ export class TopicMngtComponent implements OnInit {
     validateFormBeforeSubmit(this.produceForm);
 
     if (this.produceForm.valid) {
-      let data = this.produceForm.value;
-      this.isSubmitProduce = true;
 
+      this.loadingSrv.open({type: "spin", text: "Loading..."});
+
+      let data = this.produceForm.value;
       this.kafkaService.testProduce(data)
-        .pipe(finalize(() => this.isSubmitProduce = false))
+        .pipe(finalize(() => {
+          this.loadingSrv.close();
+        }))
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.log(error);
+            this.notification.error(
+              error.error.error_msg,
+              error.error.msg,
+              {
+                nzPlacement: 'bottomRight',
+                nzStyle: {
+                  backgroundColor: '#fed9cc',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                }
+              },
+            );
+            return throwError('Something bad happened; please try again later.');
+          })
+        )
         .subscribe((r: any) => {
           if (r && r.code == 200) {
             this.notification.success(
@@ -197,6 +214,8 @@ export class TopicMngtComponent implements OnInit {
   }
 
   deleteMessages(data: KafkaTopic) {
+
+    this.loading = true
     this.modal.confirm({
       nzTitle: 'Bạn chắc chắn muốn xoá tất cả message của topic ' + data.topicName + ' không?',
       nzOkText: 'Đồng ý',
@@ -221,6 +240,7 @@ export class TopicMngtComponent implements OnInit {
                 );
                 this.getList();
               }
+              this.loading = false;
             }
           );
       },
@@ -236,6 +256,8 @@ export class TopicMngtComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
+
+        this.loading = true
         this.kafkaService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
           .subscribe(
             (data: any) => {
@@ -254,6 +276,7 @@ export class TopicMngtComponent implements OnInit {
                 );
                 this.getList();
               }
+              this.loading = false;
             }
           );
       },

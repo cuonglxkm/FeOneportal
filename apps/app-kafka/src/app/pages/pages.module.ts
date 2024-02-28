@@ -11,7 +11,7 @@ import { DashboardComponent } from './detail/dashboard/dashboard.component';
 import { DetailComponent } from './detail/detail.component';
 import { SummaryServiceComponent } from './detail/summary-service/summary-service.component';
 import { PagesRoutingModule } from './pages-routing.module';
-
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { CreateCredentialComponent } from './detail/credentials/credential-action/credential-action.component';
 import { AclConsumerGroupComponent } from './detail/mngt-acl/acl-consumer-group/acl-consumer-group.component';
 import { AclTopicComponent } from './detail/mngt-acl/acl-topic/acl-topic.component';
@@ -29,6 +29,7 @@ import { ConsumerGroupComponent } from './detail/consumer-group/consumer-group.c
 import { MonitoringServiceComponent } from './detail/monitoring-service/monitoring-service.component';
 import { MonitoringFilterComponent } from './detail/monitoring-service/monitoring-filter/monitoring-filter.component';
 import { TruncateLabelPipe } from '../pipes/truncate-label.pipe';
+import { LoadTopicComponent } from './detail/topic-mngt/load-topic/load-topic.component';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -47,6 +48,7 @@ import { TruncateLabelPipe } from '../pipes/truncate-label.pipe';
     MonitoringServiceComponent,
     MonitoringFilterComponent,
     TruncateLabelPipe,
+    LoadTopicComponent
   ],
   imports: [
     PagesRoutingModule,
@@ -61,6 +63,7 @@ import { TruncateLabelPipe } from '../pipes/truncate-label.pipe';
     NzDescriptionsModule,
     NzSelectModule,
     NzNotificationModule,
+    NgJsonEditorModule
   ],
 })
 export class PagesModule {}
