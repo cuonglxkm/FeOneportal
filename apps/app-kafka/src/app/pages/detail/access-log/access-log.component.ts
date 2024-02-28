@@ -123,8 +123,8 @@ export class AccessLogComponent implements OnInit {
       map(r => r.data),
       finalize(() => this.isEndOfPage = false)
     ).subscribe(data => {
-      this.accessLogs = camelizeKeys(data.content) as AccessLog[];
-      this.total = data.total;
+      this.accessLogs = camelizeKeys(data.results) as AccessLog[];
+      this.total = data.totals;
     });
   }
 }
