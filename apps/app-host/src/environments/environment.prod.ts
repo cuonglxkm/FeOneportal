@@ -39,6 +39,9 @@ export const environment = {
     logout_callback: env['sso']['logout_callback'] || 'https://oneportal.onsmartcloud.com',
     scope: env['sso']['scope'] || 'openid email roles offline_access',
   },
+  recaptcha: {
+    siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',
+  },
   modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 

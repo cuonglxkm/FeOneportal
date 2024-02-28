@@ -79,11 +79,7 @@ export class InstancesEditInfoComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
-    if (this.currentImage.id != event) {
-      this.isSelected = true;
-    } else {
-      this.isSelected = false;
-    }
+    this.isSelected = true;
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -148,7 +144,7 @@ export class InstancesEditInfoComponent implements OnInit {
             }
             this.region = this.instancesModel.regionId;
             this.getListIpPublic();
-            this.getAllOfferImage(this.imageTypeId);
+            this.getAllOfferImage(this.imageTypeId, this.instancesModel.imageId);
             this.dataService
               .getImageById(this.instancesModel.imageId)
               .pipe(finalize(() => this.loadingSrv.close()))
@@ -187,12 +183,11 @@ export class InstancesEditInfoComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
-      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllOfferImage(imageTypeId: any[]) {
+  getAllOfferImage(imageTypeId: any[], currentImageId: number) {
     imageTypeId.forEach((id) => {
       let listImage: Image[] = [];
       this.listOfImageByImageType.set(id, listImage);
@@ -209,9 +204,11 @@ export class InstancesEditInfoComponent implements OnInit {
                 tempImage.name = e.offerName;
               }
               if (char.charOptionValues[0] == 'ImageTypeId') {
-                this.listOfImageByImageType
-                  .get(Number.parseInt(char.charOptionValues[1]))
-                  .push(tempImage);
+                if (tempImage.id != currentImageId) {
+                  this.listOfImageByImageType
+                    .get(Number.parseInt(char.charOptionValues[1]))
+                    .push(tempImage);
+                }
               }
             });
           }

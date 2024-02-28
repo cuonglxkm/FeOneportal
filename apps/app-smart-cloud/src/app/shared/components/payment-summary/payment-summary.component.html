@@ -10,7 +10,10 @@
   </ng-template>
 </page-header>
 
-<nz-card nzTitle="Thông tin khách hàng">
+<nz-card style="border-radius: 8px">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin khách hàng</span>
+  </div>
   <nz-row>
     <div nz-col nzSpan="12">
       <nz-row style="height: 50px">
@@ -32,7 +35,10 @@
     </div>
   </nz-row>
 </nz-card>
-<nz-card nzTitle="Đơn hàng">
+<nz-card style="border-radius: 8px">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Đơn hàng</span>
+  </div>
   <nz-table
     #rowSelectionTable
     nzShowSizeChanger
@@ -63,7 +69,7 @@
     </tbody>
   </nz-table>
 </nz-card>
-<div class="custom-div">
+<div style="border-radius: 8px" class="custom-div">
   <nz-row>
     <nz-col nzSpan="12">
       <span>VNPT Cloud Voucher</span>
@@ -74,7 +80,7 @@
     </nz-col>
   </nz-row>
 </div>
-<div class="custom-div">
+<div style="border-radius: 8px" class="custom-div">
   <label
     nz-checkbox
     [(ngModel)]="acceptTerm"
@@ -82,7 +88,10 @@
     >Đồng ý với <a>Điều khoản đăng ký dịch vụ</a></label
   >
 </div>
-<nz-card nzTitle="Thông tin thanh toán" style="margin-top: 20px">
+<nz-card style="margin-top: 20px; border-radius: 8px">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin thanh toán</span>
+  </div>
   <div>
     <nz-table>
       <tr>
@@ -114,7 +123,14 @@
         />
         <span>Quay lại</span>
       </button>
-      <button nz-button nzType="primary" (click)="payNow()">Thanh toán</button>
+      <button
+        [disabled]="!acceptTerm"
+        nz-button
+        nzType="primary"
+        (click)="payNow()"
+      >
+        Thanh toán
+      </button>
     </div>
   </div>
 </nz-card>
@@ -124,7 +140,6 @@
   nzTitle="Chọn Voucher"
   nzWidth="700px"
   (nzOnCancel)="handleCancelDiscount()"
-  (nzOnOk)="handleOkDiscount()"
 >
   <ng-container *nzModalContent>
     <nz-input-group
