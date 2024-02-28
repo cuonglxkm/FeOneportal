@@ -77,48 +77,6 @@ export class KafkaService {
     );
   }
 
-  getListTopic(
-    page:number,
-    size:number,
-    search:string,
-    serviceOrderCode: string
-  ): Observable<BaseResponse<ListTopicResponse>> {
-    const params = new HttpParams().set('service_order_code', serviceOrderCode);
-    return this.http.get<BaseResponse<ListTopicResponse>>(
-      `${this.baseUrl}/topic/listTopicPortal?page=${page}&size=${size}&stringToSearch=${search}&serviceOrderCode=${serviceOrderCode}`
-    );
-  }
-
-  getListPartitions(
-    topicName: string,
-    serviceOrderCode: string
-  ): Observable<BaseResponse<any>> {
-    const params = new HttpParams().set('service_order_code', serviceOrderCode);
-    return this.http.get<BaseResponse<any>>(
-      `${this.baseUrl}/topic/listPartitions?topic=${
-        topicName || ''
-      }&serviceOrderCode=${serviceOrderCode || ''}`
-    );
-  }
-
-  getMessageTopicKafka(
-    nameTopic: string,
-    serviceOderCode: string,
-    page: number,
-    size: number,
-    from: number,
-    to: number,
-    listPar: string
-  ) {
-    nameTopic = nameTopic ? nameTopic : '';
-    const local_url = `${this.baseUrl}/topic/listMessages?page=${page}&from=${
-      from || ''
-    }&to=${
-      to || ''
-    }&size=${size}&topic=${nameTopic}&partitions=${listPar}&serviceOrderCode=${serviceOderCode}`;
-    return this.http.get(local_url);
-  }
-
   getSyncTime(serviceOrderCode: string) {
     return this.http.get(
       `${this.baseUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
@@ -139,56 +97,5 @@ export class KafkaService {
         params,
       }
     );
-  }
-
-  createTopic(
-    topicName: string,
-    partitionNum: number,
-    replicationFactorNum: number,
-    serviceOrderCode: string,
-    openSet: number,
-    jsonConfig: string
-  ) {
-    const json = {
-      "service_order_code": serviceOrderCode,
-      "is_advanced": openSet,
-      "partition_num": partitionNum,
-      "replica_num": replicationFactorNum,
-      "topic_list": topicName,
-      "config_map": jsonConfig
-    }
-    const local_url = `${this.baseUrl}/topic/createTopicPortal`;
-    return this.http.post(local_url, json);
-  }
-
-  testProduce(obj: any) {
-    return this.http.post(`${this.baseUrl}/topic/testProducer`, obj);
-  }
-
-  deleteMessages(topicName: string, serviceOrderCode: string): Observable<any> {
-    const json = {
-      service_order_code: serviceOrderCode,
-      topic: topicName
-    }
-
-    return this.http.post(`${this.baseUrl}/topic/deleteMessages`, json);
-  }
-
-  deleteTopicKafka(
-    nameTopic: string,
-    serviceOderCode: string
-  ) {
-    const local_url = `${this.baseUrl}/topic/deleteTopicPortal?topicName=${nameTopic}&serviceOrderCode=${serviceOderCode}`;
-    return this.http.get(local_url);
-  }
-
-  updateTopic(
-    topicName: string,
-    serviceOrderCode: string,
-    jsonConfig: object
-  ) {
-    const json = jsonConfig;
-    const local_url = `${this.baseUrl}/topic/updateTopicPortal?topicName=${topicName}&serviceOrderCode=${serviceOrderCode}`;
-    return this.http.post(local_url, json);
   }
 }

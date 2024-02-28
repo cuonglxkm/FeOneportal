@@ -6,6 +6,8 @@ import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
 import { KafkaTopic } from 'apps/app-kafka/src/app/core/models/kafka-topic.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Color } from '@antv/g2/lib/dependents';
+import { topicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-create-topic',
@@ -61,9 +63,10 @@ export class CreateTopicComponent implements OnInit {
 
 
   constructor(
-    private kafkaService: KafkaService,
+    private kafkaService: topicService,
     private fb: NonNullableFormBuilder,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService,
   ) { }
   validateForm: FormGroup;
 
@@ -324,6 +327,7 @@ export class CreateTopicComponent implements OnInit {
   }
 
   createTopic() {
+    
     this.checkRep();
     this.changePartition();
     for (const i in this.validateForm.controls) {
@@ -331,6 +335,7 @@ export class CreateTopicComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     if (!this.validateForm.invalid) {
+      this.loadingSrv.open({type: "spin", text: "Loading..."});
       let json = {};
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
@@ -339,6 +344,7 @@ export class CreateTopicComponent implements OnInit {
         this.kafkaService.createTopic(topicName, partitionNum, replicationFactorNum, this.serviceOrderCode, 0, JSON.stringify(json))
           .subscribe(
             (data: any) => {
+              this.loadingSrv.close();
               if (data && data.code == 200) {
                 this.notification.success(
                   'Thông báo',
@@ -397,6 +403,7 @@ export class CreateTopicComponent implements OnInit {
           .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
+              this.loadingSrv.close();
                 this.notification.success(
                   'Thông báo',
                   data.msg,
@@ -434,7 +441,7 @@ export class CreateTopicComponent implements OnInit {
   }
 
   updateTopic() {
-
+    this.loadingSrv.open({type: "spin", text: "Loading..."});
     this.checkRep()
     this.changePartition()
     for (const i in this.validateForm.controls) {
@@ -492,6 +499,7 @@ export class CreateTopicComponent implements OnInit {
                 },
               );
             }
+            this.loadingSrv.close();
           }
         );
     }

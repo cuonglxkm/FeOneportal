@@ -3,7 +3,7 @@ import { FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { KafkaMessage } from 'apps/app-kafka/src/app/core/models/kafka-message.model';
 import { KafkaPartition } from 'apps/app-kafka/src/app/core/models/kafka-partition.model';
 import { SyncInfoModel } from 'apps/app-kafka/src/app/core/models/sync-info.model';
-import { KafkaService } from 'apps/app-kafka/src/app/services/kafka.service';
+import { topicService } from 'apps/app-kafka/src/app/services/kafka-topic.service';
 
 @Component({
   selector: 'one-portal-message-topic',
@@ -18,10 +18,10 @@ export class MessageTopicComponent implements OnInit {
 
   listMessage: KafkaMessage[] = [];
   listOfSelectedValue: string[] = [];
-  listOfOption: string[];
+  listOfOption: string[] = [];
   listPartition: KafkaPartition[];
-  syncInfo: SyncInfoModel;
-  stringToSearch: string;
+  syncInfo: SyncInfoModel = new SyncInfoModel();
+  stringToSearch: string = '';
   loading: boolean = false;
 
   total: number;
@@ -33,7 +33,7 @@ export class MessageTopicComponent implements OnInit {
   date = null;
 
   constructor(
-    private kafkaService: KafkaService,
+    private kafkaService: topicService,
     private fb: NonNullableFormBuilder
   ) { }
   validateForm: FormGroup
@@ -57,7 +57,6 @@ export class MessageTopicComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-
             this.listMessage = [];
             this.total = data?.data?.totals;
             this.index = data?.data?.page;

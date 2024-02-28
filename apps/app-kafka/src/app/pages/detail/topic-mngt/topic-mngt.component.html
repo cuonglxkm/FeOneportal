@@ -71,7 +71,7 @@
                         <div *nzModalFooter>
                             <button nz-button nzType="primary" nzDanger (click)="handleCloseProduceModal()">Hủy bỏ</button>
                             <button nz-button nzType="primary" (click)="handleSubmitTestProduce()"
-                                [disabled]="produceForm.invalid" [nzLoading]="isSubmitProduce">Test Producer</button>
+                                [disabled]="produceForm.invalid" >Test Producer</button>
                         </div>
                     </nz-modal>
                 </div>
@@ -107,7 +107,7 @@
                                 <ul nz-menu vSelectable>
                                     <li nz-menu-item>
                                         <button nz-button nzType="text" (click)="showTopicInfo(data)">
-                                            <span nz-icon nzType="info-circle" nzTheme="outline"></span> Thông tin
+                                            <span nz-icon nzType="info-circle" nzTheme="outline"></span> Thông tin cấu hình
                                         </button>
                                     </li>
                                     <li nz-menu-item>
