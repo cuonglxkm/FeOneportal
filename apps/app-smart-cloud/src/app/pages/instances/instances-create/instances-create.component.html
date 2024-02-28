@@ -55,7 +55,10 @@
                       "
                     />
                   </nz-col>
-                  <nz-col nzSpan="12">
+                  <nz-col
+                    style="display: flex; align-items: center"
+                    nzSpan="12"
+                  >
                     <nz-switch
                       style="margin-left: 20px"
                       nzSize="small"
@@ -94,6 +97,7 @@
                   [(ngModel)]="selectedSnapshot"
                   [ngModelOptions]="{ standalone: true }"
                   (ngModelChange)="onChangeSnapshot($event)"
+                  nzSize="large"
                 >
                   <nz-option
                     *ngFor="let i of listSnapshot"
@@ -316,7 +320,7 @@
           ></nz-row>
         </nz-radio-group>
 
-        <nz-tabset>
+        <nz-tabset nzCentered nzSize="large">
           <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
             <ngu-carousel
               #myCarouselFlavor
@@ -363,7 +367,7 @@
                           />
                         </div>
                         <span class="priceFlavor">{{
-                          item.price.fixedPrice.amount
+                          item.price.fixedPrice.amount | number
                         }}</span
                         ><span> đ/tháng</span>
                       </div>
@@ -409,7 +413,6 @@
                     <th>Dung lượng (GB)</th>
                     <th>IOPS</th>
                     <th>Giá theo tháng (VNĐ)</th>
-                    <th>Giá theo giờ (VNĐ)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -454,12 +457,7 @@
                     </td>
                     <td>
                       <label class="text-custom-price">
-                        {{ configCustom.priceMonth }}
-                      </label>
-                    </td>
-                    <td>
-                      <label class="text-custom-price">
-                        {{ configCustom.priceHour }}
+                        {{ totalAmount / numberMonth | number }}
                       </label>
                     </td>
                   </tr>
@@ -730,7 +728,7 @@
                     [nzMax]="100"
                     [nzStep]="1"
                     [(ngModel)]="numberMonth"
-                    (ngModelChange)="onChangeTime()"
+                    (ngModelChange)="onChangeTime($event)"
                     [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   ></nz-input-number>
@@ -793,7 +791,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.type"
                         [id]="'type_' + data.id"
-                        (ngModelChange)="onInputBlockStorage()"
+                        (ngModelChange)="onInputBlockStorage(data.id, $event)"
                         nzSize="large"
                       >
                         <nz-option
@@ -816,11 +814,13 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.capacity"
-                        (ngModelChange)="getTotalAmountBlockStorage()"
+                        (ngModelChange)="
+                          changeTotalAmountBlockStorage(data.id, $event)
+                        "
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'capacity_' + data.id"
                         [nzMin]="0"
-                        [nzMax]="100"
+                        [nzMax]="1000"
                         [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
@@ -843,7 +843,7 @@
                     </td>
                     <td>
                       <label class="text-custom-price">
-                        {{ data.price }}
+                        {{ data.price | number }}
                       </label>
                     </td>
                     <td>
@@ -917,12 +917,12 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv4()"
+                        (ngModelChange)="onInputIPv4($event)"
                         nzSize="large"
                       >
                         <nz-option
                           *ngFor="let p of listIPSubnetModel"
-                          [nzValue]="p.id"
+                          [nzValue]="p.networkId"
                           [nzLabel]="p.displayName"
                         ></nz-option>
                       </nz-select>
@@ -930,16 +930,17 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.amount"
+                        (ngModelChange)="onInputIPv4($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
                         [nzMin]="1"
-                        [nzMax]="1"
+                        [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
                       <label class="text-custom-price">
-                        {{ data.price }}
+                        {{ data.price | number }}
                       </label>
                     </td>
                     <td>
@@ -997,12 +998,12 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv6()"
+                        (ngModelChange)="onInputIPv6($event)"
                         nzSize="large"
                       >
                         <nz-option
                           *ngFor="let p of listIPSubnetModel"
-                          [nzValue]="p.id"
+                          [nzValue]="p.networkId"
                           [nzLabel]="p.displayName"
                         ></nz-option>
                       </nz-select>
@@ -1010,16 +1011,17 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.amount"
+                        (ngModelChange)="onInputIPv6($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
                         [nzMin]="1"
-                        [nzMax]="1"
+                        [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td>
                       <label class="text-custom-price">
-                        {{ data.price }}
+                        {{ data.price | number }}
                       </label>
                     </td>
                     <td>
@@ -1064,7 +1066,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount }} VNĐ
+              {{ totalAmount | number }} VNĐ
             </span>
           </nz-col>
         </nz-row>
@@ -1074,7 +1076,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmountVolume }} VNĐ
+              {{ totalAmountVolume | number }} VNĐ
             </span>
           </nz-col>
         </nz-row>
@@ -1084,7 +1086,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmountIPv4 + totalAmountIPv6 }} VNĐ
+              {{ totalAmountIPv4 + totalAmountIPv6 | number }} VNĐ
             </span>
           </nz-col>
         </nz-row>
@@ -1106,7 +1108,7 @@
                 totalincludesVAT +
                   totalAmountVolumeVAT +
                   totalAmountIPv4VAT +
-                  totalAmountIPv6VAT
+                  totalAmountIPv6VAT | number
               }}
               VNĐ
             </span>
@@ -1129,9 +1131,8 @@
               [disabled]="form.invalid"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span
-                [style.color]="form.invalid ? 'gray' : 'white'"
-                >Thanh toán</span
+              <span [style.color]="form.invalid ? 'gray' : 'white'"
+                >Khởi tạo</span
               >
             </button>
           </nz-col>
