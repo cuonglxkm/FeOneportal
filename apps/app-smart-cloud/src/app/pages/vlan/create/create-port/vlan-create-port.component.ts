@@ -4,8 +4,9 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
+import { FormCreatePort, FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
+import { AppValidator, ipAddressValidator } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vlan-create-port',
@@ -22,17 +23,16 @@ export class VlanCreatePortComponent implements OnInit{
   isLoading: boolean = false
   isVisible: boolean = false
 
+
   validateForm: FormGroup<{
-    idSubnet: FormControl<string>
+    idSubnet: FormControl<number>
     namePort: FormControl<string>
     ipAddress: FormControl<string>
-  }> = this.fb.group({
-    idSubnet: ['', [Validators.required]],
-    namePort: ['', [Validators.required]],
-    ipAddress: ['', [Validators.required]]
-  })
+  }>
 
   listSubnet: Subnet[] = []
+  subnetAddress: string
+  idSubnet: number
   isLoadingSubnet: boolean = false
 
   constructor(private router: Router,
@@ -41,6 +41,7 @@ export class VlanCreatePortComponent implements OnInit{
               private vlanService: VlanService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,) {
+
   }
 
   getSubnetByNetworkId() {
@@ -56,6 +57,7 @@ export class VlanCreatePortComponent implements OnInit{
     this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
       console.log('data-subnet', data)
       this.listSubnet = data.records
+
       this.isLoadingSubnet = false
     })
   }
@@ -64,8 +66,11 @@ export class VlanCreatePortComponent implements OnInit{
     this.isVisible = true;
   }
 
+
+
   handleCancel(): void {
     this.isVisible = false;
+    this.isLoading = false
     this.validateForm.reset();
     this.onCancel.emit();
   }
@@ -73,28 +78,49 @@ export class VlanCreatePortComponent implements OnInit{
   submitForm(): void {
     if (this.validateForm.valid) {
       console.log('form', this.validateForm.getRawValue())
-      // this.isLoading = true;
-      // this.vlanService.create(this.validateForm.value, this.conditionSearch)
-      //   .subscribe(data => {
-      //     this.notification.success('Thành công', 'Tạo Security Group thành công');
-      //     this.validateForm.reset();
-      //     this.isVisible = false;
-      //     this.isLoading = false;
-      //     this.onOk.emit(data);
-      //   }, error => {
-      //     this.isLoading = false;
-      //     this.notification.error('Thất bại', 'Tạo Security Group thất bại');
-      //   })
+      let formCreatePort = new FormCreatePort()
+      formCreatePort.portName = this.validateForm.controls.namePort.value
+      formCreatePort.customerId = this.tokenService.get()?.userId
+      formCreatePort.regionId = this.region
+      formCreatePort.subnetId = this.validateForm.controls.idSubnet.value
+      formCreatePort.ipAddress = this.validateForm.controls.ipAddress.value
+      this.isLoading = true
+      this.vlanService.createPort(formCreatePort).subscribe(data => {
+        if(data) {
+          this.isLoading = false
+          this.isVisible = false
+          this.notification.success('Thành công', 'Tạo Port thành công')
+          this.onOk.emit(data)
+          this.validateForm.reset()
+        } else {
+          console.log('data',data)
+        }
+      }, error => {
+        this.isLoading = false
+        this.isVisible = false
+        this.notification.error('Thất bại', 'Tạo Port thất bại')
+        this.validateForm.reset()
+      })
     }
 
   }
+
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
 
+    this.validateForm = this.fb.group({
+      idSubnet: [0, [Validators.required]],
+      namePort: ['', [Validators.required,  Validators.maxLength(50)]],
+      ipAddress: ['', [Validators.required, ipAddressValidator(this.subnetAddress)]]
+    });
+
     this.getSubnetByNetworkId()
   }
+
+
 
 }

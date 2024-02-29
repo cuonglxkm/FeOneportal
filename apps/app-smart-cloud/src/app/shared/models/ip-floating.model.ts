@@ -30,3 +30,8 @@ export class FormSearchIpFloating {
   pageSize: number
   currentPage: number
 }
+
+export class FormCreateIp {
+  networkId: number
+  regionId: number
+}
