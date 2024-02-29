@@ -19,7 +19,7 @@
       <div class="w-25">
         <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus"
           (ngModelChange)="searchCluster()" [nzPlaceHolder]="'Trạng thái'" class="w-100" nzSize="large">
-          <nz-option *ngFor="let option of listOfStatusCluster" [nzLabel]="option.value" [nzValue]="option.label"></nz-option>
+          <nz-option *ngFor="let option of listOfStatusCluster" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
         </nz-select>
       </div>
 
