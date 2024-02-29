@@ -8,6 +8,7 @@ import { InstancesEditComponent } from './instances-edit/instances-edit.componen
 import { InstancesConsoleComponent } from './instances-console/instances-console.component';
 import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
 import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-create-vpc.component';
+import { InstancesEditVpcComponent } from './instances-edit-vpc/instances-edit-vpc.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,11 @@ const routes: Routes = [
     path: 'instances-create',
     component: InstancesCreateComponent,
     data: { title: 'Tạo máy ảo', key: 'instances-create' },
+  },
+  {
+    path: 'instances-create-vpc',
+    component: InstancesCreateVpcComponent,
+    data: { title: 'Tạo máy ảo', key: 'instances-create-vpc' },
   },
   {
     path: 'instances-detail/:id',

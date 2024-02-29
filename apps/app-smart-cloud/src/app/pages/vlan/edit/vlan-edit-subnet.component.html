@@ -1,0 +1,26 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Chỉnh sửa Subnet'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/vlan/network/list">VLAN</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Chỉnh sửa Subnet
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <one-portal-subnet-form *ngIf="!!subnet" [value]="subnet" (onSubmit)="handleEdit($event)"/>
+</nz-content>

@@ -18,6 +18,7 @@ import {InstancesModel} from "../../../instances/instances.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
 import {ProjectService} from "../../../../shared/services/project.service";
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-volume',
@@ -299,7 +300,9 @@ export class VolumeComponent implements OnInit {
   }
 
   getListVmInVolume(volumeId) {
-    this.volumeService.getVolumeById(volumeId).subscribe( response => {
+    this.volumeService.getVolumeById(volumeId)
+      .pipe(debounceTime(300))
+      .subscribe( response => {
       if(response != null){
         if(response?.attachedInstances?.length > 0){
           this.listInstanceInVolume = response.attachedInstances
