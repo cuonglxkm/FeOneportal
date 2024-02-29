@@ -149,7 +149,7 @@
     <ng-container *nzDrawerContent>
         <nz-descriptions nzTitle="Thông tin cấu hình" nzBordered>
             <nz-descriptions-item [nzSpan]="3" *ngFor="let item of configInfo | keyvalue"
-                [nzTitle]="item.key">{{item.value==""?"None":item.value}}</nz-descriptions-item>
+                [nzTitle]="item.key">{{item.value==""||item.value==null?"None":item.value}}</nz-descriptions-item>
         </nz-descriptions>
     </ng-container>
 </nz-drawer>

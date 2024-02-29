@@ -60,3 +60,7 @@ nz-table.tbl-acl th {
   justify-content: space-between;
   margin: 15px;
 }
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}

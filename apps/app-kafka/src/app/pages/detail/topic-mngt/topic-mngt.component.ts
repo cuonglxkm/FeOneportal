@@ -8,6 +8,7 @@ import { throwError } from 'rxjs';
 import { catchError, filter, finalize, map } from 'rxjs/operators';
 import { KafkaTopic } from '../../../core/models/kafka-topic.model';
 import { TopicService } from '../../../services/kafka-topic.service';
+import { camelizeKeys } from 'humps';
 @Component({
   selector: 'one-portal-topic-mngt',
   templateUrl: './topic-mngt.component.html',
@@ -77,11 +78,7 @@ export class TopicMngtComponent implements OnInit {
         map((r) => r.data)
       )
       .subscribe((data) => {
-        let temp: KafkaTopic[] = [];
-        data?.results.forEach(element => {
-          temp.push(new KafkaTopic(element));
-        });
-        this.listTopicTestProducer = temp;
+        this.listTopicTestProducer = camelizeKeys(data?.results) as KafkaTopic[];
       });
   }
 
@@ -95,11 +92,7 @@ export class TopicMngtComponent implements OnInit {
       .subscribe((data) => {
         this.total = data?.totals;
         this.size = data?.size; 
-        let temp: KafkaTopic[] = [];
-        data?.results.forEach(element => {
-          temp.push(new KafkaTopic(element));
-        });
-        this.listTopic = temp;
+        this.listTopic = camelizeKeys(data?.results) as KafkaTopic[];
         this.loading = false
       });
   }
@@ -240,7 +233,26 @@ export class TopicMngtComponent implements OnInit {
       nzOkDanger: true,
       nzOnOk: () => {
         this.topicKafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
-          .subscribe(
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.log(error);
+            this.notification.error(
+              error.error.error_msg,
+              error.error.msg,
+              {
+                nzPlacement: 'bottomRight',
+                nzStyle: {
+                  backgroundColor: '#fed9cc',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                }
+              },
+            );
+            this.loading = false;
+            return throwError('Something bad happened; please try again later.');
+          })
+        )  
+        .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
                 this.notification.success(
