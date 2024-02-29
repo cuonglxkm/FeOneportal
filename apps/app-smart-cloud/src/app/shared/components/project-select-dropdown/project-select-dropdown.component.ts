@@ -38,7 +38,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
         this.regionId = JSON.parse(localStorage.getItem('region')).regionId;
       // this.valueChanged.emit(this.selectedRegion)
     }
-    this.loadProjects();
+    // this.loadProjects();
   }
 
   loadProjects() {

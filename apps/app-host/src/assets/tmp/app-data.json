@@ -185,7 +185,7 @@
                 },
                 {
                   "text": "Router",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/vpc/router"
                 },
                 {
                   "text": "Load balancer SDN",
@@ -197,7 +197,7 @@
                 },
                 {
                   "text": "Floating IP",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/networks/ip-floating/list"
                 },
                 {
                   "text": "Direct Connect",

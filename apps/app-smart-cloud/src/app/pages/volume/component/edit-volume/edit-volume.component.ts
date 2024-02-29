@@ -152,6 +152,29 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  navigateToPaymentSummary(){
+    if(this.validateForm.valid){
+      this.nameList = []
+      this.getTotalAmount()
+      let request = new EditSizeVolumeModel();
+      request.customerId = this.volumeEdit.customerId;
+      request.createdByUserId = this.volumeEdit.customerId;
+      request.note = 'update volume';
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.volumeEdit),
+          specificationType: 'volume_resize',
+          price: this.orderItem?.totalPayment?.amount,
+          serviceDuration: this.expiryTime
+        }
+      ]
+      var returnPath: string = '/app-smart-cloud/volume/edit/'+this.volumeId
+      console.log('request', request)
+      this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+    }
+  }
+
   goBack(): void {
     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId])
   }
@@ -258,7 +281,7 @@ export class EditVolumeComponent implements OnInit {
     volumeResize.serviceInstanceId = this.volumeInfo?.id
     volumeResize.newDescription = this.volumeInfo?.description
     volumeResize.regionId = this.volumeInfo?.regionId;
-    volumeResize.newSize = this.volumeInfo?.sizeInGB
+    volumeResize.newSize = 0
     volumeResize.iops = this.iops
     // editVolumeDto.newOfferId = 0;
     volumeResize.serviceName = this.volumeInfo?.name

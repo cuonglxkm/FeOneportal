@@ -26,6 +26,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
 import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-create-vpc.component';
+import { InstancesEditVpcComponent } from './instances-edit-vpc/instances-edit-vpc.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-cr
     InstancesVlanGimComponent,
     InstancesExtendComponent,
     InstancesCreateVpcComponent,
+    InstancesEditVpcComponent,
   ],
   imports: [
     InstancesRoutingModule,

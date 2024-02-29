@@ -26,4 +26,11 @@ export class ProjectService extends BaseService {
       headers: this.getHeaders()
     });
   }
+
+  getByProjectId(id: number) {
+    return this.http.get<ProjectModel>
+    (this.baseUrl + this.ENDPOINT.provisions  + `/projects/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
 }

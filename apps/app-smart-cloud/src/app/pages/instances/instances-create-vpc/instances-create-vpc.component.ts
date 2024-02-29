@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Inject,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -31,12 +33,13 @@ import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.s
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 interface InstancesForm {
   name: FormControl<string>;
 }
 @Component({
-  selector: 'one-portal-instances-create',
+  selector: 'one-portal-instances-create-vpc',
   templateUrl: './instances-create-vpc.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,6 +96,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   selectedSSHKeyName: string;
   selectedSnapshot: number;
   isEncryptVolume: boolean = false;
+  cardHeight: string = '140px';
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -101,7 +105,10 @@ export class InstancesCreateVpcComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -137,9 +144,41 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.getAllImageType();
     this.initSnapshot();
     this.getAllIPPublic();
-    this.getAllOfferImage(this.imageTypeId);
     this.getAllSecurityGroup();
     this.getAllSSHKey();
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '110px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '160px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '190px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '145px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '130px';
+        }
+
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
     this.cdr.detectChanges();
   }
 
@@ -158,6 +197,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -243,7 +283,14 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#region HDD hay SDD
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
-
+  initHDD(): void {
+    this.activeBlockHDD = true;
+    this.activeBlockSSD = false;
+  }
+  initSSD(): void {
+    this.activeBlockHDD = false;
+    this.activeBlockSSD = true;
+  }
   //#endregion
 
   //#region Chọn IP Public Chọn Security Group

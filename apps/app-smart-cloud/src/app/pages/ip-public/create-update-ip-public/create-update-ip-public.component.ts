@@ -35,6 +35,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   instanceSelected: any;
   dateString = new Date();
   total: any;
+  totalAmount: any;
+  totalPayment: any;
   loadingIp = true;
   loadingInstanse = true;
   disableInstanse = true;
@@ -161,7 +163,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   }
 
   caculator(event) {
-
     let ip = this.form.controls['ipSubnet'].value;
     let num = this.form.controls['numOfMonth'].value;
 
@@ -225,6 +226,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         .subscribe(
           data => {
             this.total = data;
+            this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
+            this.totalPayment = this.total.data.totalPayment.amount.toLocaleString()
           }
         );
     } else {

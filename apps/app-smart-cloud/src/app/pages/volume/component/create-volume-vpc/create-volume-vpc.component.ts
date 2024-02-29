@@ -171,12 +171,19 @@ export class CreateVolumeVpcComponent implements OnInit{
   }
 
   ngOnInit() {
-    if([1,2].includes(this.region)) {
-      if(this.validateForm.controls.storage.value < 20) this.iops = 0
+
+    if ([1, 2].includes(this.region)) {
+      if (this.validateForm.controls.storage.value < 20) return this.iops = 0
+      if (this.validateForm.controls.storage.value <= 200) return this.iops = 600
+      if (this.validateForm.controls.storage.value <= 500) return this.iops = 1200
+      if (this.validateForm.controls.storage.value <= 1000) return this.iops = 3000
+      if (this.validateForm.controls.storage.value <= 2000) return this.iops = 6000
     }
-    if([3, 4].includes(this.region)) {
-      if(this.validateForm.controls.storage.value < 20) this.iops = 400
+    if ([3, 4].includes(this.region)) {
+      if (this.validateForm.controls.storage.value < 40) return this.iops = 400
+      this.iops = this.validateForm.controls.storage.value * 10
     }
+
     this.getListInstance()
   }
 
@@ -258,7 +265,6 @@ export class CreateVolumeVpcComponent implements OnInit{
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-    this.volumeCreate.iops = this.iops
 
     // let currentDate = new Date();
     // let lastDate = new Date();

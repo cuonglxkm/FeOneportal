@@ -18,6 +18,7 @@ import {InstancesModel} from "../../../instances/instances.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
 import {ProjectService} from "../../../../shared/services/project.service";
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-volume',
@@ -61,6 +62,9 @@ export class VolumeComponent implements OnInit {
   isVisibleDetachVm: boolean = false
   isLoadingDetachVm: boolean = false
 
+  isVisibleDetachVmNotMultiple: boolean = false
+  isLoaadingDetaachVmNotMultiple: boolean = false
+
   isVisibleDelete: boolean = false
   isLoadingDelete: boolean = false
 
@@ -102,9 +106,11 @@ export class VolumeComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
+    this.typeVPC = project.type
     this.isLoading = true
     this.getListVolume(true)
   }
+
 
   onChange(value) {
     console.log('selected', value)
@@ -130,7 +136,7 @@ export class VolumeComponent implements OnInit {
   getListVolume(isBegin) {
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
-    this.loadProjects()
+
     this.volumeService.getVolumes(this.customerId, this.project,
         this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
         .subscribe(data => {
@@ -207,8 +213,11 @@ export class VolumeComponent implements OnInit {
   isVisibleNotice: boolean = false
   isLoadingNotice: boolean = false
 
-  showModalNotice() {
+  showModalNotice(volume: VolumeDTO) {
     this.isVisibleNotice = true
+    this.volumeDTO = volume
+    this.volumeId = volume.id
+    this.getListVmInVolume(this.volumeId)
   }
 
   handleCancelNotice() {
@@ -291,7 +300,9 @@ export class VolumeComponent implements OnInit {
   }
 
   getListVmInVolume(volumeId) {
-    this.volumeService.getVolumeById(volumeId).subscribe( response => {
+    this.volumeService.getVolumeById(volumeId)
+      .pipe(debounceTime(300))
+      .subscribe( response => {
       if(response != null){
         if(response?.attachedInstances?.length > 0){
           this.listInstanceInVolume = response.attachedInstances
@@ -393,14 +404,7 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
-  }
+
   ngOnInit() {
 
     let regionAndProject = getCurrentRegionAndProject()
@@ -408,9 +412,7 @@ export class VolumeComponent implements OnInit {
     this.project = regionAndProject.projectId
     console.log('project', this.project)
     this.customerId = this.tokenService.get()?.userId
-    if (this.project && this.region) {
-      this.loadProjects()
-    }
+
     this.getListVm()
     this.getListVolume(true)
     this.cdr.detectChanges();

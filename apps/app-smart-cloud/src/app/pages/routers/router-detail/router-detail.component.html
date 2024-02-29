@@ -1,0 +1,334 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Thông tin Router'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/vpc/router']">Quản lý Router</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Chi tiết Router </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+        (userChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<nz-card style="border-radius: 4px">
+  <nz-tabset nzSize="large">
+    <nz-tab nzTitle="Router Interface">
+      <div class="text-right">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="modalCreateRouterInterface()"
+        >
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/add-circle.svg"
+            alt=""
+          />
+          Tạo mới
+        </button>
+      </div>
+      <nz-table
+        style="margin-top: 10px"
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
+        [nzFrontPagination]="false"
+        [nzData]="listOfRouterInteface"
+        (nzPageIndexChange)="getRouterInterfaces()"
+        (nzPageSizeChange)="getRouterInterfaces()"
+        [nzLoading]="loading"
+      >
+        <thead>
+          <tr>
+            <th>Tên Subnet</th>
+            <th>Địa chỉ IP</th>
+            <th nzRight>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of listOfRouterInteface">
+            <tr>
+              <td>
+                <a>{{ item.name }}</a>
+              </td>
+              <td>{{ item.networkAddress }}</td>
+              <td>
+                <img
+                  src="assets/imgs/trash.svg"
+                  alt=""
+                  (click)="modalDeleteInterface(item.id)"
+                  style="cursor: pointer; margin-right: 16px"
+                  nz-tooltip="Xóa"
+                />
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="Static Router">
+      <div class="text-right">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="modalCreateRouterStatic()"
+        >
+          <img
+            style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/add-circle.svg"
+            alt=""
+          />
+          Tạo mới
+        </button>
+      </div>
+      <nz-table
+        style="margin-top: 10px"
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
+        [nzFrontPagination]="false"
+        [nzData]="listOfRouterStatic"
+        (nzPageIndexChange)="getRouterStatic()"
+        (nzPageSizeChange)="getRouterStatic()"
+        [nzLoading]="loading"
+      >
+        <thead>
+          <tr>
+            <th>Destination CIDR</th>
+            <th>Next Hop</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfRouterStatic">
+            <td>{{ item.destinationCIDR }}</td>
+            <td>{{ item.nextHop }}</td>
+            <td>
+              <img
+                src="assets/imgs/trash.svg"
+                alt=""
+                (click)="modalDeleteStatic(item.id)"
+                style="cursor: pointer; margin-right: 16px"
+                nz-tooltip="Xóa"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+<div class="text-right">
+  <button nz-button (click)="navigateToList()">
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/arrow-left-2.svg"
+      alt=""
+    />
+    <span>Quay lại</span>
+  </button>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleCreateInterface"
+  nzTitle="Tạo mới Router Interface"
+  (nzOnCancel)="handleCancelCreateInterface()"
+>
+  <ng-container *nzModalContent>
+    <div class="text-label">
+      Dải Subnet đích (CIDR) (<span class="text-red">*</span>)
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="message-question"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <input
+      style="margin-bottom: 20px"
+      class="input-custom"
+      nz-input
+      placeholder=""
+      [(ngModel)]="destinationSubnet"
+      [ngModelOptions]="{ standalone: true }"
+    />
+    <div class="text-label">
+      IP của Router Interdace (<span class="text-red">*</span>)
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="message-question"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <input
+      class="input-custom"
+      nz-input
+      placeholder=""
+      [(ngModel)]="ipRouterInterface"
+      [ngModelOptions]="{ standalone: true }"
+    />
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelCreateInterface()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkCreateInterface()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleCreateStatic"
+  nzTitle="Tạo mới Static Router"
+  (nzOnCancel)="handleCancelCreateStatic()"
+>
+  <ng-container *nzModalContent>
+    <div class="text-label">
+      Dải Subnet đích (CIDR) (<span class="text-red">*</span>)
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="message-question"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <input
+      style="margin-bottom: 20px"
+      class="input-custom"
+      nz-input
+      placeholder=""
+      [(ngModel)]="destinationSubnet"
+      [ngModelOptions]="{ standalone: true }"
+    />
+    <div class="text-label">
+      Next Hop (<span class="text-red">*</span>)
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="message-question"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <input
+      class="input-custom"
+      nz-input
+      placeholder=""
+      [(ngModel)]="nextHop"
+      [ngModelOptions]="{ standalone: true }"
+    />
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelCreateStatic()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkCreateStatic()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDeleteInterface"
+  nzTitle="Xóa Router Interface"
+  (nzOnCancel)="handleCancelDeleteInterface()"
+>
+  <div *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageDelete>
+      <div>Bạn đang thực hiện xoá Router Interface</div>
+      <div>Bạn có chắc chăn muốn xóa không ?</div>
+    </ng-template>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDeleteInterface()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDeleteInterface()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDeleteStatic"
+  nzTitle="Xóa Static Router"
+  (nzOnCancel)="handleCancelDeleteStatic()"
+>
+  <div *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #customTemplateMessageDelete>
+      <div>Bạn đang thực hiện xoá Static Router</div>
+      <div>Bạn có chắc chăn muốn xóa không ?</div>
+    </ng-template>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDeleteStatic()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDeleteStatic()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

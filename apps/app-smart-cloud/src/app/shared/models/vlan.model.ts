@@ -16,7 +16,7 @@ export class NetWorkModel {
   vpcId: number
   region: number
   regionText: string
-  subnets: string
+  subnets: Subnet[]
 }
 
 export class FormSearchNetwork {
@@ -30,6 +30,9 @@ export class FormSearchNetwork {
 export class FormSearchPort {
   networkId: string
   region: number
+  pageSize: number
+  pageNumber: number
+  name: string
 }
 
 export class Port {
@@ -49,21 +52,85 @@ export class FormSearchSubnet {
   pageSize: number
   pageNumber: number
   region: number
-  vlanName: string
+  name: string
   customerId: number
+  networkId: number
 }
+
+
 
 export class Subnet {
   id: number
   name: string
-  ipVersion: number
-  gatewayId: string
-  enableDHCP: boolean
-  hnsNameServer: string
-  cloudId: string
-  status: string
-  networkId: number
+  subnetCloudId: string
+  ipVerison: number
   networkCloudId: string
-  allocationPools: string
+  customerId: number
+  mayAoGan: string
+  networkId: number
+  allocationPools: allocationPool[]
   hostRouters: string
+  enableDhcp: boolean
+  networkName: string
+  gatewayIP: string
+  cloudId: string
+  vlanId: string
+  adminState: boolean
+  shared: boolean
+  type: string
+  subnetAddressRequired: string
+  status: string
+  vpcId: number
+  region: number
+  regionText: string
+  subnets: Subnet[]
+}
+
+export class allocationPool {
+  start: string
+  end: string
+}
+
+export class FormCreateNetwork {
+  name: string
+  vpcId: number
+  regionId: number
+  customerId: number
+  subnetName: string
+  networktAddress: string
+  gatewayIP: string
+  dnsNameServer: string
+  allocationPool: string
+  enableDHCP: boolean
+  hostRoutes: string
+}
+
+export class FormCreateSubnet {
+  name: string
+  networktAddress: string
+  vlanId: number
+  region: number
+  gatewayIP: string
+  allocationPool: string
+  dnsNameServer: string
+  enableDHCP: boolean
+  hostRoutes: string
+  customerId: number
+}
+
+export class FormUpdateSubnet {
+  id: number
+  name: string
+  getwayIP: string
+  enableDHCP: boolean
+  hostRoutes: string
+}
+
+export class FormCreatePort {
+  subnetId: number
+  portName: string
+  regionId: number
+  customerId: number
+  ipAddress: string
+
 }

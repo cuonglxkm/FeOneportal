@@ -230,17 +230,7 @@ export class CreateVolumeComponent implements OnInit {
 
   isFirstMounting: boolean = false
   regionChanged(region: RegionModel) {
-    // if(isFirstMounting == false) {
-    //   this.router.navigate(['/app-smart-cloud/volumes'])
-    // }
-    // this.region = region.regionId
-    // this.projectService.getByRegion(this.region).subscribe(data => {
-    //   if (data.length) {
-    //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
-    //   }
-    // });
-
   }
 
   projectChanged(project: ProjectModel)  {
@@ -259,11 +249,6 @@ export class CreateVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volumes'])
     //
   }
-
-  ngAfterViewInit(): void {
-    this.isFirstMounting = false;
-  }
-
 
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value
@@ -322,7 +307,6 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-    this.volumeCreate.iops = this.iops
 
     let currentDate = new Date();
     let lastDate = new Date();

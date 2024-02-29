@@ -310,7 +310,6 @@ export class VolumeCreate {
   typeName: string;
   userEmail: any;
   actorEmail: any;
-  iops: number;
 }
 
 export class Order {
@@ -333,8 +332,6 @@ export class InstanceResize {
   description: any;
   currentFlavorId: number;
   newFlavorId: number;
-  addRam: number;
-  addCpu: number;
   addBttn: number;
   addBtqt: number;
   storage: number;
@@ -478,6 +475,7 @@ export class OfferItem {
   discounts: any[];
   characteristicValues: CharacteristicValue[];
   description: string;
+  ipNumber: string;
 }
 
 export class Price {
