@@ -72,7 +72,7 @@ export class TopicMngtComponent implements OnInit {
   }
 
   getListTopic() {
-    this.topicKafkaService.getListTopic( 1, 10000, "", this.serviceOrderCode)
+    this.topicKafkaService.getListTopic(1, 10000, "", this.serviceOrderCode)
       .pipe(
         filter((r) => r && r.code == 200),
         map((r) => r.data)
@@ -91,7 +91,7 @@ export class TopicMngtComponent implements OnInit {
       )
       .subscribe((data) => {
         this.total = data?.totals;
-        this.size = data?.size; 
+        this.size = data?.size;
         this.listTopic = camelizeKeys(data?.results) as KafkaTopic[];
         this.loading = false
       });
@@ -163,7 +163,7 @@ export class TopicMngtComponent implements OnInit {
 
     if (this.produceForm.valid) {
 
-      this.loadingSrv.open({type: "spin", text: "Loading..."});
+      this.loadingSrv.open({ type: "spin", text: "Loading..." });
 
       let data = this.produceForm.value;
       this.topicKafkaService.testProduce(data)
@@ -224,35 +224,34 @@ export class TopicMngtComponent implements OnInit {
   }
 
   deleteMessages(data: KafkaTopic) {
-
-    this.loading = true
     this.modal.confirm({
       nzTitle: 'Bạn chắc chắn muốn xoá tất cả message của topic ' + data.topicName + ' không?',
       nzOkText: 'Đồng ý',
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
+        this.loading = true
         this.topicKafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            console.log(error);
-            this.notification.error(
-              error.error.error_msg,
-              error.error.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
-            this.loading = false;
-            return throwError('Something bad happened; please try again later.');
-          })
-        )  
-        .subscribe(
+          .pipe(
+            catchError((error: HttpErrorResponse) => {
+              console.log(error);
+              this.notification.error(
+                error.error.error_msg,
+                error.error.msg,
+                {
+                  nzPlacement: 'bottomRight',
+                  nzStyle: {
+                    backgroundColor: '#fed9cc',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  }
+                },
+              );
+              this.loading = false;
+              return throwError('Something bad happened; please try again later.');
+            })
+          )
+          .subscribe(
             (data: any) => {
               if (data && data.code == 200) {
                 this.notification.success(
