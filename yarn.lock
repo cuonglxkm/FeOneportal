@@ -4274,9 +4274,9 @@
     "@types/node" "*"
 
 "@types/grecaptcha@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@types/grecaptcha/-/grecaptcha-3.0.7.tgz#a74e987d4c550765fd805f091f62104c6c52a19a"
-  integrity sha512-ah5GDQfsiK3dnkaCbYcDFZXkZCG3o90VRu9hzXHnSe4kACrRB1KUI/ZyWHvYmqm1W5Tl8B5YxxT98uGTlkbf2Q==
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@types/grecaptcha/-/grecaptcha-3.0.8.tgz#a9ac1532c2d9ce0d5f287307f8184c9028cd4c7d"
+  integrity sha512-Yc1cIiHXRPHtbrfiTdpmBB1rakc5OntAUQkpaPtQb8UQ641j2DcQiGsn5GkgR8ztCGdTJeK3ibT5GnwdKGzvAA==
 
 "@types/http-errors@*":
   version "2.0.3"

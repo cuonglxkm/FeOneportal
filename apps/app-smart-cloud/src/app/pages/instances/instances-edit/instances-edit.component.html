@@ -228,8 +228,12 @@
           ></nz-row>
         </nz-radio-group>
 
-        <nz-tabset>
-          <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
+        <nz-tabset nzCentered nzSize="large">
+          <nz-tab
+            *ngIf="isConfigPackage"
+            nzTitle="Gói cấu hình"
+            (nzClick)="onClickConfigPackage()"
+          >
             <ngu-carousel
               #myCarouselFlavor
               [inputs]="carouselTileConfig"
@@ -275,7 +279,7 @@
                           />
                         </div>
                         <span class="priceFlavor">{{
-                          item.price.fixedPrice.amount
+                          item.price.fixedPrice.amount | number
                         }}</span
                         ><span> đ/tháng</span>
                       </div>
@@ -415,38 +419,25 @@
           ></nz-col>
         </nz-row>
 
-        <nz-row style="margin-bottom: -25px" nzGutter="16">
-          <nz-col nzLg="24" nzMd="12" nzSm="24">
-            <nz-form-item style="margin-bottom: 5px">
+        <nz-row style="margin-bottom: -26px" nzGutter="16">
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item
+              ><nz-form-label
+                >Thời gian bắt đầu sử dụng:
+                {{
+                  instancesModel.createdDate | date : 'dd/MM/yyyy'
+                }}</nz-form-label
+              ></nz-form-item
+            >
+          </nz-col>
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item>
               <nz-form-label
-                >Thời hạn sử dụng (<span class="text-red">*</span>) -
-                Tháng</nz-form-label
+                ><span style="color: #ea3829"
+                  >Thời gian hết hạn sử dụng:
+                  {{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}</span
+                ></nz-form-label
               >
-              <nz-form-control>
-                <nz-row>
-                  <nz-input-number
-                    style="width: 50%; margin-left: -1px"
-                    [nzMin]="1"
-                    [nzMax]="100"
-                    [nzStep]="1"
-                    [(ngModel)]="numberMonth"
-                    (ngModelChange)="onChangeTime()"
-                    [ngModelOptions]="{ standalone: true }"
-                    nzSize="large"
-                  ></nz-input-number>
-                  <div
-                    class="text-custom-time"
-                    style="
-                      display: flex;
-                      margin-left: 20px;
-                      align-items: center;
-                    "
-                  >
-                    Thời gian bắt đầu sử dụng:
-                    {{ instancesModel.createdDate | date : 'dd/MM/yyyy' }}
-                  </div>
-                </nz-row>
-              </nz-form-control>
             </nz-form-item>
           </nz-col>
         </nz-row>
@@ -472,7 +463,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount }} VNĐ
+              {{ totalAmount | number }} VNĐ
             </span>
           </nz-col>
         </nz-row>
@@ -490,7 +481,7 @@
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
-              {{ totalincludesVAT }}
+              {{ totalincludesVAT | number }}
               VNĐ
             </span>
           </nz-col>
@@ -512,8 +503,7 @@
               [disabled]="form.invalid"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span
-                [style.color]="form.invalid ? 'gray' : 'white'"
+              <span [style.color]="form.invalid ? 'gray' : 'white'"
                 >Chỉnh sửa</span
               >
             </button>

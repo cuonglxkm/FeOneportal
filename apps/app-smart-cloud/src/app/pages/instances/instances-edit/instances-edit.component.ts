@@ -469,8 +469,6 @@ export class InstancesEditComponent implements OnInit {
         }
       });
     }
-    this.instanceResize.addRam = 0;
-    this.instanceResize.addCpu = 0;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     this.instanceResize.typeName =

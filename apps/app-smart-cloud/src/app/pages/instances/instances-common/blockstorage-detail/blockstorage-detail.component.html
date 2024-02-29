@@ -2,21 +2,6 @@
   <div style="margin-bottom: 20px">
     <span class="text-card-header">Block Storage</span>
   </div>
-  <div *ngIf="isDetail" style="width: 100%; margin-bottom: 10px">
-    <nz-alert
-      nzType="warning"
-      [nzDescription]="nzDescriptionWarning06"
-      nzShowIcon
-    ></nz-alert>
-    <ng-template #nzDescriptionWarning06>
-      <div>
-        Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển thị
-        loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy ảo đã
-        được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và tốc độ
-        truy xuất.
-      </div>
-    </ng-template>
-  </div>
   <div class="ant-table">
     <nz-table
       [nzData]="listOfDataBlockStorage"
@@ -70,5 +55,20 @@
         </tr>
       </tbody>
     </nz-table>
+  </div>
+  <div *ngIf="isDetail" style="width: 100%; margin-top: 20px">
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="nzDescriptionWarning06"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #nzDescriptionWarning06>
+      <div>
+        Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển thị
+        loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy ảo đã
+        được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và tốc độ
+        truy xuất.
+      </div>
+    </ng-template>
   </div>
 </nz-card>
