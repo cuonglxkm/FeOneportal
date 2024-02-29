@@ -57,11 +57,11 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfData">
-          <td style="color: #0D67B0">{{item.displayName}}</td>
-          <td>{{item.createDate | date : "dd/MM/YYYY"}}</td>
-          <td>{{item.expireDate | date : "dd/MM/YYYY"}}</td>
-          <td>{{item.resourceStatus}}</td>
-          <td>{{item.serviceStatus}}</td>
+          <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{item.displayName}}</td>
+          <td (click)="viewDetail(item.id)">{{item.createDate | date : "dd/MM/YYYY"}}</td>
+          <td (click)="viewDetail(item.id)">{{item.expireDate | date : "dd/MM/YYYY"}}</td>
+          <td (click)="viewDetail(item.id)">{{item.resourceStatus}}</td>
+          <td (click)="viewDetail(item.id)">{{item.serviceStatus}}</td>
 <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
 <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
 <!--          <td *ngIf="item.status === 0">-</td>-->

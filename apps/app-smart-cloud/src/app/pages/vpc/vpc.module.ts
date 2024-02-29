@@ -8,6 +8,7 @@ import { VpcCreateComponent } from './vpc-create/vpc-create.component';
 import { VpcUpdateComponent } from './vpc-update/vpc-update.component';
 import { VpcRoutingModule } from './vpc-routing.module';
 import { VpcExtendComponent } from './vpc-extend/vpc-extend.component';
+import {NguCarousel, NguCarouselDefDirective, NguTileComponent} from "@ngu/carousel";
 
 @NgModule({
   declarations: [
@@ -18,12 +19,15 @@ import { VpcExtendComponent } from './vpc-extend/vpc-extend.component';
     VpcUpdateComponent,
     VpcExtendComponent,
   ],
-  imports: [
-    VpcRoutingModule,
-    SharedModule,
-    NgJsonEditorModule,
-    NgxJsonViewerModule,
-  ],
+    imports: [
+        VpcRoutingModule,
+        SharedModule,
+        NgJsonEditorModule,
+        NgxJsonViewerModule,
+        NguCarousel,
+        NguCarouselDefDirective,
+        NguTileComponent,
+    ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class VpcModule {}

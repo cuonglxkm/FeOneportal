@@ -5,9 +5,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {VlanService} from "../../../shared/services/vlan.service";
-import {FormSearchSubnet, Port, Subnet} from "../../../shared/models/vlan.model";
+import { FormSearchPort, FormSearchSubnet, Port, Subnet } from '../../../shared/models/vlan.model';
 import {getCurrentRegionAndProject} from "@shared";
 import {ProjectService} from "../../../shared/services/project.service";
+import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -19,74 +21,176 @@ export class VlanDetailComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   idNetwork: number
+  networkCloudId: string
 
   isLoading: boolean = false
 
-  listPort: Port[] = []
-  listSubnet: Subnet[] = []
-  listSubnetByNetwork: Subnet[] = []
+  isLoadingSubnet: boolean = false
+  isLoadingPort: boolean = false
 
+  responsePort: BaseResponse<Port[]>
+  responseSubnet: BaseResponse<Subnet[]>
+
+  networkName: string
+
+  valueSubnet: string
+  valuePort: string
+
+  pageSize: number = 10
+  pageNumber: number = 1
+
+  isVisibleDelete: boolean = false
+  isLoadingDelete: boolean = false
+
+  value: string
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private vlanService: VlanService,
-              private projectService: ProjectService,
               private route: ActivatedRoute) {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    // this.region = region.regionId
 
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/vlan/network/list'])
-      }
-    });
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id
+    this.project = project?.id
   }
 
-  getPortByNetwork(idNetwork) {
-    this.vlanService.getPortByNetwork(idNetwork, this.region).subscribe(data => {
-      console.log('data-port', data)
-      this.listPort = data
-    })
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+  }
+
+  getPortByNetwork(networkCloudId) {
+    this.isLoadingPort = true
+    this.vlanService.getPortByNetwork(networkCloudId, this.region, this.pageSize, this.pageNumber, this.valuePort)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        console.log('port', data)
+        this.responsePort = data
+        this.isLoadingPort = false
+      })
   }
 
   getSubnetByNetwork(idNetwork) {
+    this.isLoadingSubnet = true
     let formSearchSubnet = new FormSearchSubnet()
-    formSearchSubnet.pageSize = 9999
-    formSearchSubnet.pageNumber = 1
+    formSearchSubnet.networkId = idNetwork
+    formSearchSubnet.customerId = this.tokenService.get()?.userId
     formSearchSubnet.region = this.region
-    formSearchSubnet.customerId = this.tokenService.get()?.userid
-    this.vlanService.getListSubnet(formSearchSubnet).subscribe(data => {
-      console.log('data-sub', data.records)
-      this.listSubnet = data.records
-      this.listSubnet?.forEach(item => {
-        if(item.networkId == idNetwork) {
-          if(this.listSubnetByNetwork?.length > 1){
-            this.listSubnetByNetwork?.push(item)
-          } else {
-            this.listSubnetByNetwork = [item]
-          }
-          console.log('lst subnet', this.listSubnetByNetwork)
-        }
-      })
+    formSearchSubnet.pageSize = this.pageSize
+    formSearchSubnet.pageNumber = this.pageNumber
+    formSearchSubnet.name = this.valueSubnet
+
+    this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
+      console.log('data-subnet', data)
+      this.responseSubnet = data
+      this.isLoadingSubnet = false
     })
   }
 
+  onPageSizeChangeSubnet(value) {
+    this.pageSize = value
+    this.getSubnetByNetwork(this.idNetwork)
+  }
+
+  onPageIndexChangeSubnet(value) {
+    this.pageNumber = value
+    this.getSubnetByNetwork(this.idNetwork)
+  }
+
+  onInputChangeSubnet(value) {
+    this.valueSubnet = value
+    this.getSubnetByNetwork(this.idNetwork)
+  }
+
+  onPageSizeChangePort(value) {
+    this.pageSize = value
+    this.getPortByNetwork(this.networkCloudId)
+  }
+
+  onPageIndexChangePort(value) {
+    this.pageNumber = value
+    this.getPortByNetwork(this.networkCloudId)
+  }
+  onInputChangePort(value) {
+    this.valuePort = value
+  }
+
+  navigateToCreateSubnet() {
+    this.router.navigate(['/app-smart-cloud/vlan/' + this.idNetwork + '/create/subnet'])
+  }
+
+  navigateToCreatePort() {
+
+  }
+
+  navigateToEditSubnet(idSubnet) {
+    this.router.navigate(['/app-smart-cloud/vlan/'+ this.idNetwork +'/network/edit/subnet/' + idSubnet])
+  }
+
+  idSubnet: number
+
+  showModalDeleteConfirm(idSubnet) {
+    this.isVisibleDelete = true
+    this.idSubnet = idSubnet
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false
+  }
+
+  nameSubnet: string
+  handleOkDelete() {
+    this.vlanService.getSubnetById(this.idSubnet).subscribe(data => {
+      this.nameSubnet = data.name
+      if(this.value.includes(this.nameSubnet)) {
+        this.isLoadingDelete = true
+        this.vlanService.deleteSubnet(this.idSubnet).subscribe(item => {
+          this.isVisibleDelete = false
+          this.isLoadingDelete = false
+          this.getSubnetByNetwork(this.idNetwork)
+          this.notification.success('Thành công', 'Xoá subnet thành công')
+        }, error => {
+          this.isVisibleDelete = false
+          this.isLoadingDelete = false
+          this.getSubnetByNetwork(this.idNetwork)
+          this.notification.error('Thất bại', 'Xoá subnet thất bại')
+        })
+      }
+    })
+
+  }
+
+  onInputChange(value) {
+    this.value = value
+  }
+
+  handleOk() {
+    this.getVlanByNetworkId(this.idNetwork)
+  }
+
+  getVlanByNetworkId(idNetwork) {
+    this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
+      this.networkName = data.name
+      this.networkCloudId = data.cloudId
+      this.getPortByNetwork(data.cloudId)
+    })
+  }
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+
     console.log('project', this.project)
 
     this.getSubnetByNetwork(this.idNetwork)
-    this.getPortByNetwork(this.idNetwork)
+    this.getVlanByNetworkId(this.idNetwork)
+
   }
 
 }

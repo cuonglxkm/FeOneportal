@@ -4,6 +4,7 @@ import {VpcCreateComponent} from "./vpc-create/vpc-create.component";
 import {VpcListComponent} from "./vpc-list/vpc-list.component";
 import {VpcDetailComponent} from "./vpc-detail/vpc-detail.component";
 import {VpcUpdateComponent} from "./vpc-update/vpc-update.component";
+import {VpcExtendComponent} from "./vpc-extend/vpc-extend.component";
 
 const routes: Routes = [
   {
@@ -25,6 +26,11 @@ const routes: Routes = [
     path: 'update/:id',
     component: VpcUpdateComponent,
     data: { title: 'Vpc Update', key: 'policy-update' },
+  },
+  {
+    path: 'extend/:id',
+    component: VpcExtendComponent,
+    data: { title: 'Vpc Extend', key: 'policy-update' },
   }
 
 ];
