@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
 import { JsonEditorOptions } from 'ang-jsoneditor';
+import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subject, throwError } from 'rxjs';
@@ -117,11 +118,7 @@ export class LoadTopicComponent implements OnInit {
       .subscribe((data) => {
         this.total = data?.totals;
         this.size = data?.size;
-        let temp: KafkaTopic[] = [];
-        data.results.forEach(element => {
-          temp.push(new KafkaTopic(element));
-        });
-        this.listTopic = temp;
+        this.listTopic = camelizeKeys(data.results) as KafkaTopic[];
         this.loadingSrv.close();
       });
   }

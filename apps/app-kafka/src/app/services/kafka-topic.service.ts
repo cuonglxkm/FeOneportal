@@ -5,6 +5,9 @@ import { EMPTY, Observable, catchError, filter, map } from 'rxjs';
 import { BaseResponse } from '../core/models/base-response.model';
 import { ListTopicResponse } from '../core/models/topic-response.model';
 import { BaseService } from './base.service';
+import { Pagination } from '../core/models/pagination.model';
+import { KafkaTopic } from '../core/models/kafka-topic.model';
+import { KafkaMessage } from '../core/models/kafka-message.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,14 +28,14 @@ export class TopicService extends BaseService {
     size: number,
     search: string,
     serviceOrderCode: string
-  ): Observable<BaseResponse<ListTopicResponse>> {
-    return this.http.get<BaseResponse<ListTopicResponse>>(
+  ): Observable<BaseResponse<Pagination<KafkaTopic>>> {
+    return this.http.get<BaseResponse<Pagination<KafkaTopic>>>(
       `${this.topicUrl}?page=${page}&size=${size}&keySearch=${search}&serviceOrderCode=${serviceOrderCode}`
     );
   }
 
   getListPartitions(
-    topicName: string,
+    topicName: string, 
     serviceOrderCode: string
   ): Observable<BaseResponse<any>> {
     return this.http.get<BaseResponse<any>>(
@@ -54,7 +57,7 @@ export class TopicService extends BaseService {
     const url = `${this.topicUrl}/listMessages?page=${page}&from=${from || ''
       }&to=${to || ''
       }&size=${size}&topic=${nameTopic}&partitions=${listPar}&serviceOrderCode=${serviceOderCode}`;
-    return this.http.get(url);
+    return this.http.get<BaseResponse<Pagination<KafkaMessage>>>(url);
   }
 
   createTopic(

@@ -7,10 +7,8 @@ import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { Pagination2 } from '../core/models/pagination2.model';
-import { ListTopicResponse } from '../core/models/topic-response.model';
-import { BaseService } from './base.service';
 import { Pagination } from '../core/models/pagination.model';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root',

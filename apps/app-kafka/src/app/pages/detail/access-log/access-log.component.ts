@@ -6,6 +6,7 @@ import {
 import { KafkaService } from '../../../services/kafka.service';
 import { filter, finalize, map } from 'rxjs/operators';
 import { camelizeKeys } from 'humps';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-access-log',
@@ -38,7 +39,7 @@ export class AccessLogComponent implements OnInit {
   page: number;
   accessLogs: AccessLog[];
 
-  constructor(private kafkaService: KafkaService) {
+  constructor(private kafkaService: KafkaService, private loadingSrv: LoadingService) {
     this.accessLogs = [];
     this.userSearch = '';
     this.resourceTypeSearch = '';
@@ -51,29 +52,33 @@ export class AccessLogComponent implements OnInit {
   }
 
   @HostListener('window:scroll', ['$event'])
-    onWindowScroll() {
-        // auto load when user scroll to end of page
-        const pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
-        const max = document.documentElement.scrollHeight;
-        if (pos === max) {
-            if (this.size < this.total) {
-                this.isEndOfList = false;
-                this.isEndOfPage = true;
-                this.size += 20;
-                this.getAccessLogs();
-            } else {
-                this.isEndOfList = true;
-            }
-        }
-
-        // check user scroll
-        if (document.documentElement.scrollTop || document.body.scrollTop > 100) {
-            this.windowScrolled = true;
-        }
-        else if (document.documentElement.scrollTop || document.body.scrollTop < 10) {
-            this.windowScrolled = false;
-        }
+  onWindowScroll() {
+    // auto load when user scroll to end of page
+    const pos =
+      (document.documentElement.scrollTop || document.body.scrollTop) +
+      document.documentElement.offsetHeight;
+    const max = document.documentElement.scrollHeight;
+    if (pos === max) {
+      if (this.size < this.total) {
+        this.isEndOfList = false;
+        this.isEndOfPage = true;
+        this.size += 20;
+        this.getAccessLogs();
+      } else {
+        this.isEndOfList = true;
+      }
     }
+
+    // check user scroll
+    if (document.documentElement.scrollTop || document.body.scrollTop > 100) {
+      this.windowScrolled = true;
+    } else if (
+      document.documentElement.scrollTop ||
+      document.body.scrollTop < 10
+    ) {
+      this.windowScrolled = false;
+    }
+  }
 
   ngOnInit(): void {
     return;
@@ -97,14 +102,15 @@ export class AccessLogComponent implements OnInit {
 
   scrollToTop() {
     (function smoothscroll() {
-        const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-        if (currentScroll > 0) {
-            window.requestAnimationFrame(smoothscroll);
-            window.scrollTo(0, currentScroll - (currentScroll / 8));
-        }
+      const currentScroll =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(smoothscroll);
+        window.scrollTo(0, currentScroll - currentScroll / 8);
+      }
     })();
   }
-  
+
   getAccessLogs() {
     const filters: FetchAccessLogs = {
       userAction: this.userSearch.trim(),
@@ -117,14 +123,20 @@ export class AccessLogComponent implements OnInit {
       page: this.page,
       size: this.size,
     };
-
-    this.kafkaService.getAccessLogs(filters).pipe(
-      filter(r => r && r.code == 200),
-      map(r => r.data),
-      finalize(() => this.isEndOfPage = false)
-    ).subscribe(data => {
-      this.accessLogs = camelizeKeys(data.results) as AccessLog[];
-      this.total = data.totals;
-    });
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.kafkaService
+      .getAccessLogs(filters)
+      .pipe(
+        filter((r) => r && r.code == 200),
+        map((r) => r.data),
+        finalize(() => {
+          this.isEndOfPage = false;
+          this.loadingSrv.close()
+        })
+      )
+      .subscribe((data) => {
+        this.accessLogs = camelizeKeys(data.results) as AccessLog[];
+        this.total = data.totals;
+      });
   }
 }
