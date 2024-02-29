@@ -55,7 +55,7 @@ export class KubernetesDetailComponent implements OnInit {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
         });
-        this.total = r.total;
+        this.total = r.data.total;
       }
     });
   }
@@ -132,6 +132,10 @@ export class KubernetesDetailComponent implements OnInit {
               this.notificationService.success(
                 NotificationConstant.NOTI_SUCCESS_LABEL,
                 notificationMessage.content);
+
+                // refresh page
+                this.searchCluster();
+
             } else {
               this.notificationService.error(
                 NotificationConstant.NOTI_ERROR_LABEL,

@@ -13,6 +13,8 @@ export class ClusterService extends BaseService {
     super();
   }
 
+  baseUrl = "http://127.0.0.1:16003";
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -39,24 +41,24 @@ export class ClusterService extends BaseService {
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-dto/create-cluster`, data);
   }
 
-  getListK8sVersion(cloudProfileName: string) {
+  getListK8sVersion(regionId: number, cloudProfileName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/k8s-versions`, { headers: this.getHeaders() });
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfileName}/k8s-versions`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${regionId}/${cloudProfileName}/k8s-versions`);
   }
 
-  getListWorkerTypes(cloudProfileName: string) {
+  getListWorkerTypes(regionId: number, cloudProfileName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfileName}/worker-types`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${regionId}/${cloudProfileName}/worker-types`);
   }
 
-  getListVolumeTypes(cloudProfilenName: string) {
+  getListVolumeTypes(regionId: number, cloudProfilenName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfilenName}/volume-types`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${regionId}/${cloudProfilenName}/volume-types`);
   }
 
-  getVPCNetwork(cloudProfileName: string) {
+  getVPCNetwork(regionId: number, cloudProfileName: string) {
     // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${cloudProfileName}/vpc-network`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/${regionId}/${cloudProfileName}/vpc-network`);
   }
 
 }
