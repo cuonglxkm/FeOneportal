@@ -33,3 +33,24 @@ export class VpcModel {
   suspendType: string;
   contractCode: string;
 }
+
+export class TotalVpcResource {
+  cloudProject :VpcModel;
+  cloudProjectResourceUsed: {
+    serviceType: number;
+    cpu: number;
+    ram: number;
+    hdd: number;
+    ssd: number;
+    backup: number;
+    securityGroupCount: number;
+    keypairCount: number;
+    volumeSnapshotCount: number;
+    ipPublicCount: number;
+    networkCount: number;
+    routerCount: number;
+    loadBalancerSdnCount: number;
+    ipv6Count: number;
+    quotaShareSnapshotInGb: number;
+  }
+}
