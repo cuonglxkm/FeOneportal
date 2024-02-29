@@ -163,7 +163,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   }
 
   caculator(event) {
-
     let ip = this.form.controls['ipSubnet'].value;
     let num = this.form.controls['numOfMonth'].value;
 

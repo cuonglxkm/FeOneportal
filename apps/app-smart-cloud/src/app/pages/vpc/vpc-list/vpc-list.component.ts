@@ -82,7 +82,7 @@ export class VpcListComponent {
   }
 
   edit(id: number) {
-
+    this.router.navigate(['/app-smart-cloud/vpc/update/' + id]);
   }
 
   delete(id: number) {
@@ -106,5 +106,9 @@ export class VpcListComponent {
 
   createVpc() {
     this.router.navigate(['/app-smart-cloud/vpc/create']);
+  }
+
+  viewDetail(id: number) {
+    this.router.navigate(['/app-smart-cloud/vpc/detail/' + id]);
   }
 }
