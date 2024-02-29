@@ -21,11 +21,13 @@ export class KubernetesDetailComponent implements OnInit {
   pageSize: number;
   total: number;
   setOfCheckedId = new Set<number>();
-  listOfStatusCluster : Array<{ label: number; value: string }> = [
-    {label : 0, value: "Chưa gia hạn"}, 
-    {label : 1, value: "Đang khởi tạo"}, 
-    {label : 2, value: "Đang hoạt động"}, 
-    {label : 7, value: "Đang xóa"},
+
+  // temp
+  listOfStatusCluster : Array<{ label: string; value: number }> = [
+    {label : "Chưa gia hạn" , value: 0},
+    {label : "Đang khởi tạo" , value: 1},
+    {label : "Đang hoạt động" , value: 2},
+    {label : "Đang xóa", value: 7},
   ]
 
   constructor(
@@ -44,49 +46,6 @@ export class KubernetesDetailComponent implements OnInit {
   ngOnInit(): void {
     // init ws
     this.openWs();
-  }
-
-  inputCluster : string
-  onChangeInputCluster(event) {
-    this.clusterService.searchCluster(
-      event,
-      this.serviceStatus,
-      this.pageIndex,
-      this.pageSize
-    ).subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.listOfClusters = [];
-        r.data?.content.forEach(item => {
-          const cluster: KubernetesCluster = new KubernetesCluster(item);
-          this.listOfClusters.push(cluster);
-        });
-        // this.total = r.data.total;
-        this.total = this.listOfClusters.length
-      }
-    });
-  }
-
-  statusCluster : string
-  changeStatusCluster(event) {
-    const k = this.keySearch.trim();
-    this.clusterService.searchCluster(
-      k,
-      this.serviceStatus,
-      this.pageIndex,
-      this.pageSize
-    ).subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.listOfClusters = [];
-        r.data?.content.forEach(item => {
-          const cluster: KubernetesCluster = new KubernetesCluster(item);
-          if(cluster.serviceStatus == event) {
-            this.listOfClusters.push(cluster);
-          }
-        });
-        // this.total = r.data.total;
-        this.total = this.listOfClusters.length
-      }
-    });
   }
 
   searchCluster() {
@@ -161,8 +120,16 @@ export class KubernetesDetailComponent implements OnInit {
     console.log(selectedCluster);
   }
 
-  handleDeleteCluster(id: number) {
-    console.log(id);
+  handleDeleteCluster(clusterId: number) {
+    this.clusterService.deleteCluster(clusterId)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.notificationService.success("Thành công", r.message);
+        this.searchCluster();
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
   }
 
   // websocket

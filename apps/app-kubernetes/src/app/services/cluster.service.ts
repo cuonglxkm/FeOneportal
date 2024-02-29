@@ -13,8 +13,6 @@ export class ClusterService extends BaseService {
     super();
   }
 
-  // baseUrl = "http://127.0.0.1:16003";s
-
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -35,6 +33,10 @@ export class ClusterService extends BaseService {
   createNewCluster(data) {
     // return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data);
+  }
+
+  deleteCluster(clusterId: number) {
+    return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`);
   }
 
   testCreateCluster(data) {
