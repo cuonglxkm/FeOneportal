@@ -11,6 +11,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
 import { AclReqModel } from 'src/app/core/models/acl-req.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-acl-consumer-group',
@@ -169,15 +170,20 @@ export class AclConsumerGroupComponent implements OnInit {
       this.aclRequest.allowDeny = 'ALLOW';
       this.aclRequest.host = this.aclConsumerGroupForm.controls['host'].value;
 
-      this.loadingSrv.open({type: "spin", text: "Loading..."});
-      this.aclKafkaService.createAcl(this.aclRequest).pipe()
+      this.loadingSrv.open({ type: "spin", text: "Loading..." });
+      this.aclKafkaService.createAcl(this.aclRequest)
+        .pipe(
+          finalize(() => this.loadingSrv.close())
+        )
         .subscribe(
           (data) => {
             if (data && data.code == 200) {
+              this.notification.success('Thành công', data.msg);
               this.showForm = this.idListForm;
               this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeGroup);
+            } else {
+              this.notification.error('Thất bại', data.msg);
             }
-            this.loadingSrv.close();
           }
         );
     }
@@ -193,8 +199,11 @@ export class AclConsumerGroupComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
-        this.loadingSrv.open({type: "spin", text: "Loading..."});
-        this.aclKafkaService.deleteAcl(data).pipe()
+        this.loadingSrv.open({ type: "spin", text: "Loading..." });
+        this.aclKafkaService.deleteAcl(data)
+          .pipe(
+            finalize(() => this.loadingSrv.close())
+          )
           .subscribe(
             (data) => {
               if (data && data.code == 200) {
@@ -204,7 +213,6 @@ export class AclConsumerGroupComponent implements OnInit {
               } else {
                 this.notification.error('Thất bại', data.msg);
               }
-              this.loadingSrv.close();
             }
           );
       },

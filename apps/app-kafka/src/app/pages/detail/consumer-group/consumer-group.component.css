@@ -121,7 +121,7 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 
 .time-async {
     display: inline-block;
-    width: 130px;
+    width: 160px;
 }
 
 [nz-icon] {

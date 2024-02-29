@@ -9,6 +9,8 @@ import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
+import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-acl-topic',
@@ -19,11 +21,7 @@ export class AclTopicComponent implements OnInit {
   listAclTopic: AclModel[];
   @Input() listOfPrincipals: KafkaCredential[];
   @Input() serviceOrderCode: string;
-  listOfTopic = [
-    {'topicName': 'topic1'},
-    {'topicName': 'topic2'},
-    {'topicName': 'topic3'}
-  ];
+  listOfTopic: KafkaTopic[];
 
   listOfPermissionGroup = [
     {
@@ -78,6 +76,7 @@ export class AclTopicComponent implements OnInit {
 
   ngOnInit() {
     this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
+    this.getListTopic();
     this.initForm();
   }
 
@@ -90,6 +89,15 @@ export class AclTopicComponent implements OnInit {
       permission: [null, [Validators.required]],
       host: [this.defaultHost, [Validators.required]]
     });
+  }
+
+  getListTopic() {
+    this.aclKafkaService.getListTopic(this.pageIndex, this.maxSize, "", this.serviceOrderCode)
+      .subscribe((r) => {
+        if (r && r.code == 200) {
+          this.listOfTopic = camelizeKeys(r.data.results) as KafkaTopic[];
+        }
+      });
   }
 
   getListAcl(page: number, limit: number, keySearch: string, serviceOrderCode: string, resourceType: string) {
@@ -162,8 +170,11 @@ export class AclTopicComponent implements OnInit {
       this.aclRequest.host = this.aclTopicForm.controls['host'].value;
       this.aclRequest.isEdit = this.isEdit;
 
-      this.loadingSrv.open({type: "spin", text: "Loading..."});
-      this.aclKafkaService.createAcl(this.aclRequest).pipe()
+      this.loadingSrv.open({ type: "spin", text: "Loading..." });
+      this.aclKafkaService.createAcl(this.aclRequest)
+        .pipe(
+          finalize(() => this.loadingSrv.close())
+        )
         .subscribe(
           (data) => {
             if (data && data.code == 200) {
@@ -173,7 +184,6 @@ export class AclTopicComponent implements OnInit {
             } else {
               this.notification.error('Thất bại', data.msg);
             }
-            this.loadingSrv.close();
           }
         );
     }
@@ -219,13 +229,13 @@ export class AclTopicComponent implements OnInit {
     this.modal.create({
       nzTitle: 'Xóa ACL',
       nzContent: '<h3>Quý khách chắc chắn muốn thực hiện xóa ACL của ' + data.resourceName + '? </h3>'
-      + '<br> <i>Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý</i>',
-      nzBodyStyle: {textAlign: 'center'},
+        + '<br> <i>Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý</i>',
+      nzBodyStyle: { textAlign: 'center' },
       nzOkText: 'Đồng ý',
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
-        this.loadingSrv.open({type: "spin", text: "Loading..."});
+        this.loadingSrv.open({ type: "spin", text: "Loading..." });
         this.aclKafkaService.deleteAcl(data).pipe()
           .subscribe(
             (data) => {
