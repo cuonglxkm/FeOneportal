@@ -10,6 +10,10 @@ import {getCurrentRegionAndProject} from "@shared";
 import {ProjectService} from "../../../shared/services/project.service";
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
+import { VolumeService } from '../../../shared/services/volume.service';
+import { GetAllVmModel } from '../../../shared/models/volume.model';
+import { InstancesModel } from '../../instances/instances.model';
+import { InstancesService } from '../../instances/instances.service';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -42,12 +46,22 @@ export class VlanDetailComponent implements OnInit {
   isVisibleDelete: boolean = false
   isLoadingDelete: boolean = false
 
+  isVisibleAttach: boolean = false
+  isLoadingAttach: boolean = false
+
+  isVisibleDetach: boolean = false
+  isLoadingDetach: boolean = false
+
+  isVisbileDeletePort: boolean = false
+  isLoadingDeletePort: boolean = false
+
   value: string
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private vlanService: VlanService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private instancesService: InstancesService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -73,6 +87,10 @@ export class VlanDetailComponent implements OnInit {
         this.responsePort = data
         this.isLoadingPort = false
       })
+  }
+
+  instanceChange(value) {
+    this.instanceSelected = value
   }
 
   getSubnetByNetwork(idNetwork) {
@@ -124,10 +142,6 @@ export class VlanDetailComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/vlan/' + this.idNetwork + '/create/subnet'])
   }
 
-  navigateToCreatePort() {
-
-  }
-
   navigateToEditSubnet(idSubnet) {
     this.router.navigate(['/app-smart-cloud/vlan/'+ this.idNetwork +'/network/edit/subnet/' + idSubnet])
   }
@@ -141,6 +155,96 @@ export class VlanDetailComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false
+  }
+
+  idPort: number
+  showModalAttach(idPort) {
+    this.idPort = idPort
+    this.isVisibleAttach = true
+    this.getListVm()
+  }
+
+  handleCancelAttach() {
+    this.isVisibleAttach = false
+    this.isLoadingAttach = false
+  }
+
+  handleOkAttach() {
+    console.log('instance', this.instanceSelected)
+    console.log('region', this.region)
+    this.isLoadingAttach = true
+    this.vlanService.attachPort(this.idPort.toString(), this.instanceSelected, this.region, this.project).subscribe(data => {
+      console.log('attach', data)
+      this.isVisibleAttach = false
+      this.isLoadingAttach = false
+      this.notification.success('Thành công', 'Gắn port vào máy ảo thành công')
+      this.getVlanByNetworkId(this.idNetwork)
+    }, error => {
+      this.isVisibleAttach = false
+      this.isLoadingAttach = false
+      this.notification.error('Thất bại', 'Gắn port vào máy ảo thất bại')
+    })
+  }
+
+  showModalDetach(idPort) {
+    this.idPort = idPort
+    this.isVisibleDetach = true
+    this.getVlanByNetworkId(this.idNetwork)
+  }
+
+  handleCancelDetach() {
+    this.isVisibleDetach = false
+    this.isLoadingDetach = false
+  }
+
+  handleOkDetach() {
+    this.vlanService.detachPort(this.idPort.toString(), this.region, this.project).subscribe(data => {
+      console.log('detach', data)
+      this.isVisibleDetach = false
+      this.isLoadingDetach = false
+      this.notification.success('Thành công', 'Gỡ port vào máy ảo thành công')
+      this.getVlanByNetworkId(this.idNetwork)
+    }, error => {
+      this.isVisibleDetach = false
+      this.isLoadingDetach = false
+      this.notification.error('Thất bại', 'Gỡ port vào máy ảo thất bại')
+    })
+  }
+
+  showModalDeletePort(idPort){
+    this.idPort = idPort
+    this.isVisbileDeletePort = true
+  }
+
+  handleCancelDeletePort() {
+    this.isVisbileDeletePort = false
+    this.isLoadingDeletePort = false
+  }
+
+  handleOkDeletePort() {
+    this.vlanService.deletePort(this.idPort.toString(), this.region, this.project).subscribe(data => {
+      console.log('delete', data)
+      this.isVisbileDeletePort = false
+      this.isLoadingDeletePort = false
+      this.notification.success('Thành công', 'Xoá Port thành công')
+      this.getVlanByNetworkId(this.idNetwork)
+    }, error => {
+      this.isVisbileDeletePort = false
+      this.isLoadingDeletePort = false
+      this.notification.error('Thất bại', 'Xoá Port thất bại')
+    })
+  }
+
+  listVm: InstancesModel[]
+  instanceSelected: string = ''
+  getListVm() {
+    this.isLoading = true
+    this.instancesService.search(1, 9999, this.region, this.project, '', '',
+      true, this.tokenService.get()?.userId).subscribe(data => {
+      this.isLoading = false
+      this.listVm = data.records
+      console.log('listvm', this.listVm)
+    })
   }
 
   nameSubnet: string
@@ -170,7 +274,7 @@ export class VlanDetailComponent implements OnInit {
   }
 
   handleOk() {
-    this.getVlanByNetworkId(this.idNetwork)
+    this.getSubnetByNetwork(this.idNetwork)
   }
 
   getVlanByNetworkId(idNetwork) {
@@ -180,6 +284,7 @@ export class VlanDetailComponent implements OnInit {
       this.getPortByNetwork(data.cloudId)
     })
   }
+
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     let regionAndProject = getCurrentRegionAndProject()

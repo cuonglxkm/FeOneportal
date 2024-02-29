@@ -72,7 +72,7 @@ export class Subnet {
   hostRouters: string
   enableDhcp: boolean
   networkName: string
-  getwayIP: string
+  gatewayIP: string
   cloudId: string
   vlanId: string
   adminState: boolean
@@ -93,10 +93,16 @@ export class allocationPool {
 
 export class FormCreateNetwork {
   name: string
-  networktAddress: string
   vpcId: number
   regionId: number
   customerId: number
+  subnetName: string
+  networktAddress: string
+  gatewayIP: string
+  dnsNameServer: string
+  allocationPool: string
+  enableDHCP: boolean
+  hostRoutes: string
 }
 
 export class FormCreateSubnet {
@@ -118,4 +124,13 @@ export class FormUpdateSubnet {
   getwayIP: string
   enableDHCP: boolean
   hostRoutes: string
+}
+
+export class FormCreatePort {
+  subnetId: number
+  portName: string
+  regionId: number
+  customerId: number
+  ipAddress: string
+
 }

@@ -1,7 +1,7 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {
-  FormCreateNetwork, FormCreateSubnet,
+  FormCreateNetwork, FormCreatePort, FormCreateSubnet,
   FormSearchNetwork,
   FormSearchSubnet, FormUpdateSubnet,
   NetWorkModel,
@@ -151,6 +151,68 @@ export class VlanService extends BaseService {
   deleteSubnet(idSubnet){
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
       headers: this.getHeaders()
+    })
+  }
+
+  createPort(formCreatePort: FormCreatePort) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/createport', Object.assign(formCreatePort), {
+      headers: this.getHeaders()
+    })
+  }
+
+  attachPort(portId: string, instanceId: string, region: number, vpcId: number) {
+    let params = new HttpParams()
+    if(portId) {
+      params = params.append('portCloudId', portId)
+    }
+    if(instanceId) {
+      params = params.append('instaceCloudId', instanceId)
+    }
+    if(region) {
+      params = params.append('region', region)
+    }
+    if(vpcId) {
+      params = params.append('vpcId', vpcId)
+    }
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/attachport', null, {
+      headers: this.getHeaders(),
+      params: params
+    })
+  }
+
+  detachPort(portId: string, region: number, vpcId: number) {
+    let params = new HttpParams()
+    if(portId) {
+      params = params.append('portCloudId', portId)
+    }
+    if(region) {
+      params = params.append('region', region)
+    }
+    if(vpcId) {
+      params = params.append('vpcId', vpcId)
+    }
+
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/detachport', null, {
+      headers: this.getHeaders(),
+      params: params
+    })
+  }
+
+  deletePort(portId: string, region: number, vpcId: number) {
+    let params = new HttpParams()
+    if(portId) {
+      params = params.append('portCloudId', portId)
+    }
+    if(region) {
+      params = params.append('region', region)
+    }
+    if(vpcId) {
+      params = params.append('vpcId', vpcId)
+    }
+
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/deleteport', null, {
+      headers: this.getHeaders(),
+      params: params
     })
   }
 }
