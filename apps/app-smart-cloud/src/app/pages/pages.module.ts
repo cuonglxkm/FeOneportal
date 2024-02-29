@@ -122,6 +122,8 @@ import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/r
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
 import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
+import { RouterListComponent } from './routers/router-list.component';
+import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -231,6 +233,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListVlanComponent,
     BlankVolumeComponent,
     VlanDetailComponent,
+    RouterListComponent,
+    RouterDetailComponent,
   ],
   imports: [
     CommonModule,

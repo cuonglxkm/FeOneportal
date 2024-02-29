@@ -43,6 +43,11 @@ const routes: Routes = [
     data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit' },
   },
   {
+    path: 'instances-edit-vpc/:id',
+    component: InstancesEditVpcComponent,
+    data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit-vpc' },
+  },
+  {
     path: 'instances-console/:id',
     component: InstancesConsoleComponent,
     data: { title: 'Console máy ảo', key: 'instances-console' },

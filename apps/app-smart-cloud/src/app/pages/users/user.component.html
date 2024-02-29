@@ -111,7 +111,7 @@
     <nz-alert
       style="margin-bottom: 20px"
       nzType="warning"
-      [nzMessage]="customTemplateMessageDelete"
+      [nzDescription]="customTemplateMessageDelete"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
@@ -129,7 +129,12 @@
       >Để thực hiện xóa User, vui lòng nhập tên User để xác nhận</span
     >
     <nz-form-control>
-      <input name="name" nz-input [(ngModel)]="codeVerify" />
+      <input
+        class="input-custom"
+        name="name"
+        nz-input
+        [(ngModel)]="codeVerify"
+      />
     </nz-form-control>
   </ng-container>
   <div *nzModalFooter>
@@ -159,7 +164,7 @@
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageDeleteUsers"
+      [nzDescription]="customTemplateMessageDeleteUsers"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDeleteUsers>
@@ -181,6 +186,7 @@
           >
           <nz-form-control>
             <input
+              class="input-custom"
               name="name"
               nz-input
               [ngModel]="codeVerify"
