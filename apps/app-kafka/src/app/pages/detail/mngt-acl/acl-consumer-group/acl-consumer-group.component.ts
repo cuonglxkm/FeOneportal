@@ -26,6 +26,7 @@ export class AclConsumerGroupComponent implements OnInit {
   permissionGroupName = 'READ';
 
   @Input() listOfPrincipals: KafkaCredential[];
+  @Input() serviceOrderCode: string;
 
   listOfConsumerGroup: KafkaConsumerGroup[];
 
@@ -50,8 +51,6 @@ export class AclConsumerGroupComponent implements OnInit {
   pageIndex: number;
   maxSize = 9999;
   resourceTypeGroup = 'consumer_group';
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
-
 
   constructor(
     private fb: NonNullableFormBuilder,

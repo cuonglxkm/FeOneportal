@@ -4,9 +4,9 @@ import { NgModule } from "@angular/core";
 import { LoadTopicComponent } from "./detail/topic-mngt/load-topic/load-topic.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'detail', pathMatch: 'full'},
+  {path: '', redirectTo: 'kafka-test-oneportal', pathMatch: 'full'},
   {
-    path: 'detail',
+    path: '',
     component: DetailComponent
   },
   {path: '', redirectTo: 'load-topic', pathMatch: 'full'},

@@ -18,6 +18,7 @@ import { LoadingService } from "@delon/abc/loading";
 export class AclTopicComponent implements OnInit {
   listAclTopic: AclModel[];
   @Input() listOfPrincipals: KafkaCredential[];
+  @Input() serviceOrderCode: string;
   listOfTopic = [
     {'topicName': 'topic1'},
     {'topicName': 'topic2'},
@@ -62,7 +63,6 @@ export class AclTopicComponent implements OnInit {
   pageIndex = 1;
   maxSize = 9999;
 
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
   resourceTypeTopic = 'topic';
   aclRequest: AclReqModel = new AclReqModel();
 

@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -53,7 +53,7 @@ export class DashboardComponent implements OnInit {
   // Tạo Subject để đánh dấu khi có lỗi
   private unsubscribe$ = new Subject<void>();
 
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
+  @Input() serviceOrderCode: string;
   healthCheckData: HealthCheckModel = new HealthCheckModel();
   byteInData: ChartData = new ChartData();
   byteOutData: ChartData = new ChartData();
@@ -142,6 +142,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('serviceOrderCode: ', this.serviceOrderCode);
     this.getStatisticNumber();
     this.checkClusterIsHealth(this.serviceOrderCode);
     this.getCheckHealthChart(this.serviceOrderCode, -1, -1);

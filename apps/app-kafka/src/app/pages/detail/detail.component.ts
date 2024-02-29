@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DetailComponent implements OnInit {
   selectedIndex = 0;
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
+  serviceOrderCode: string;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -23,7 +23,11 @@ export class DetailComponent implements OnInit {
           }
         }
       );
-    this.selectedIndex = +localStorage.getItem('selectedTabIndex') || 0
+    this.selectedIndex = +localStorage.getItem('selectedTabIndex') || 0;
+
+    this._activatedRoute.params.subscribe((params) => {
+      this.serviceOrderCode = params.id;
+    });
   }
 
   setTransactionTabIndex(e: number) {

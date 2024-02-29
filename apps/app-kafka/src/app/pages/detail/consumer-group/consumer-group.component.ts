@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
@@ -34,7 +34,7 @@ interface ColumnItem {
 
 
 export class ConsumerGroupComponent implements OnInit { 
-  serviceOrderCode: string;
+  @Input() serviceOrderCode: string;
 
   listConsumerGroup: KafkaConsumerGroup[];
 
@@ -126,7 +126,6 @@ export class ConsumerGroupComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.serviceOrderCode = 'kafka-s1hnuicj7u7g';
     this.getListConsumerGroup(1, this.pageSize, '', this.serviceOrderCode);
     this.getSyncTime(this.serviceOrderCode);
   }

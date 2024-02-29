@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AppConstants } from "../core/constants/app-constant";
 import { BaseResponse } from "../core/models/base-response.model";
 import { MonitoringData } from "../core/models/monitoring-data.model";
 import { BaseService } from "./base.service";
@@ -11,7 +10,7 @@ import { BaseService } from "./base.service";
 })
 export class MonitoringService extends BaseService {
 
-    kafkaUrl = AppConstants.BASE_URL + '/kafka-service';
+    kafkaUrl = this.baseUrl + '/kafka-service';
 
     constructor(private http: HttpClient) {
         super()
