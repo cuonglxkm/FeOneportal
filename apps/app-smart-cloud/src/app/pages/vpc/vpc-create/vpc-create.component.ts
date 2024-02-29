@@ -156,8 +156,8 @@ export class VpcCreateComponent {
               orderItemQuantity: 1,
               specificationString: JSON.stringify(requestBody),
               specificationType: "vpc_resize",
-              sortItem: 0
-              // serviceDuration: this.form.controls['numOfMonth'].value
+              sortItem: 0,
+              serviceDuration: numOfMonth
             }
           ]
         }
