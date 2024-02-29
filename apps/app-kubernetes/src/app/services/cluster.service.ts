@@ -13,7 +13,7 @@ export class ClusterService extends BaseService {
     super();
   }
 
-  baseUrl = "http://127.0.0.1:16003";
+  // baseUrl = "http://127.0.0.1:16003";s
 
   private getHeaders() {
     return new HttpHeaders({

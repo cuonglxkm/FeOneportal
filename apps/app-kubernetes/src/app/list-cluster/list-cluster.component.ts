@@ -20,8 +20,13 @@ export class KubernetesDetailComponent implements OnInit {
   pageIndex: number;
   pageSize: number;
   total: number;
-
   setOfCheckedId = new Set<number>();
+  listOfStatusCluster : Array<{ label: number; value: string }> = [
+    {label : 0, value: "Chưa gia hạn"}, 
+    {label : 1, value: "Đang khởi tạo"}, 
+    {label : 2, value: "Đang hoạt động"}, 
+    {label : 7, value: "Đang xóa"},
+  ]
 
   constructor(
     private clusterService: ClusterService,
@@ -39,6 +44,49 @@ export class KubernetesDetailComponent implements OnInit {
   ngOnInit(): void {
     // init ws
     this.openWs();
+  }
+
+  inputCluster : string
+  onChangeInputCluster(event) {
+    this.clusterService.searchCluster(
+      event,
+      this.serviceStatus,
+      this.pageIndex,
+      this.pageSize
+    ).subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfClusters = [];
+        r.data?.content.forEach(item => {
+          const cluster: KubernetesCluster = new KubernetesCluster(item);
+          this.listOfClusters.push(cluster);
+        });
+        // this.total = r.data.total;
+        this.total = this.listOfClusters.length
+      }
+    });
+  }
+
+  statusCluster : string
+  changeStatusCluster(event) {
+    const k = this.keySearch.trim();
+    this.clusterService.searchCluster(
+      k,
+      this.serviceStatus,
+      this.pageIndex,
+      this.pageSize
+    ).subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfClusters = [];
+        r.data?.content.forEach(item => {
+          const cluster: KubernetesCluster = new KubernetesCluster(item);
+          if(cluster.serviceStatus == event) {
+            this.listOfClusters.push(cluster);
+          }
+        });
+        // this.total = r.data.total;
+        this.total = this.listOfClusters.length
+      }
+    });
   }
 
   searchCluster() {
