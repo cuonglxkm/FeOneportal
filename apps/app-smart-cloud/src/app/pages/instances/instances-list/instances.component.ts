@@ -32,24 +32,12 @@ class SearchParam {
 export class InstancesComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
   searchParam: Partial<SearchParam> = {};
-  pageHeaderInfo: Partial<PageHeaderType> = {
-    title: 'Danh sách máy ảo',
-    breadcrumb: ['Home', 'Dịch vụ', 'VM'],
-  };
   dataList: InstancesModel[] = [];
-  emptyList: InstancesModel[] = [];
 
   pageIndex = 1;
   pageSize = 10;
   total = 1;
   loading = true;
-  sortValue: string | null = null;
-  sortKey: string | null = null;
-  filterGender = [
-    { text: 'male', value: 'male' },
-    { text: 'female', value: 'female' },
-  ];
-  searchGenderList: string[] = [];
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
     { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
@@ -103,6 +91,7 @@ export class InstancesComponent implements OnInit {
   }
 
   onProjectChange(project: ProjectModel) {
+    this.project = project;
     this.activeCreate = false;
     this.loading = true;
     this.projectId = project.id;
@@ -131,7 +120,7 @@ export class InstancesComponent implements OnInit {
         )
         .subscribe({
           next: (next) => {
-            this.dataList = next.records; // Assuming 'records' property contains your data
+            this.dataList = next.records;
             this.total = next.totalCount;
           },
           error: (error) => {
@@ -166,10 +155,9 @@ export class InstancesComponent implements OnInit {
         )
         .subscribe({
           next: (data) => {
-            // Update your component properties with the received data
             if (data != null && data.records && data.records.length > 0) {
               this.activeCreate = false;
-              this.dataList = data.records; // Assuming 'records' property contains your data
+              this.dataList = data.records;
               this.total = data.totalCount;
             } else {
               this.activeCreate = true;
@@ -388,18 +376,18 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreate() {
-    // this.projectService.getByProjectId(this.projectId).subscribe((data) => {
-    //   this.project = data;
-    //   if (this.project.type == 0) {
-    //     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
-    //   } else {
-    //     this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
-    //   }
-    // });
-    this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    if (this.project.type == 0) {
+      this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+    }
   }
   navigateToEdit(id: number) {
-    this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
+    if (this.project.type == 0) {
+      this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/instances/instances-edit-vpc/' + id]);
+    }
   }
 
   navigateToCreateBackup(id: number) {

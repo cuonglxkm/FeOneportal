@@ -122,6 +122,8 @@ import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/r
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
 import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
+import { RouterListComponent } from './routers/router-list.component';
+import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
 import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
 import { VlanCreatePortComponent } from './vlan/create/create-port/vlan-create-port.component';
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
@@ -238,6 +240,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListVlanComponent,
     BlankVolumeComponent,
     VlanDetailComponent,
+    RouterListComponent,
+    RouterDetailComponent,
     CreateNetworkComponent,
     VlanCreatePortComponent,
     VlanCreateSubnetComponent,
