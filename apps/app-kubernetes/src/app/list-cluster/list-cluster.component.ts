@@ -20,8 +20,15 @@ export class KubernetesDetailComponent implements OnInit {
   pageIndex: number;
   pageSize: number;
   total: number;
-
   setOfCheckedId = new Set<number>();
+
+  // temp
+  listOfStatusCluster : Array<{ label: string; value: number }> = [
+    {label : "Chưa gia hạn" , value: 0},
+    {label : "Đang khởi tạo" , value: 1},
+    {label : "Đang hoạt động" , value: 2},
+    {label : "Đang xóa", value: 7},
+  ]
 
   constructor(
     private clusterService: ClusterService,
@@ -55,7 +62,7 @@ export class KubernetesDetailComponent implements OnInit {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
         });
-        this.total = r.total;
+        this.total = r.data.total;
       }
     });
   }
@@ -113,8 +120,16 @@ export class KubernetesDetailComponent implements OnInit {
     console.log(selectedCluster);
   }
 
-  handleDeleteCluster(id: number) {
-    console.log(id);
+  handleDeleteCluster(clusterId: number) {
+    this.clusterService.deleteCluster(clusterId)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.notificationService.success("Thành công", r.message);
+        this.searchCluster();
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
   }
 
   // websocket
@@ -132,6 +147,10 @@ export class KubernetesDetailComponent implements OnInit {
               this.notificationService.success(
                 NotificationConstant.NOTI_SUCCESS_LABEL,
                 notificationMessage.content);
+
+                // refresh page
+                this.searchCluster();
+
             } else {
               this.notificationService.error(
                 NotificationConstant.NOTI_ERROR_LABEL,

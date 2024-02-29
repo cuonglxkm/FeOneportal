@@ -14,6 +14,7 @@ import { RegionModel } from '../shared/models/region.model';
 import { ProjectModel } from '../shared/models/project.model';
 import { VlanService } from '../services/vlan.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -27,6 +28,7 @@ export class ClusterComponent implements OnInit {
   selectedInfra: string;
 
   isAutoScaleEnable: boolean;
+  isSubmitting: boolean;
 
   listOfK8sVersion: K8sVersionModel[];
   listOfVPCNetworks: VPCNetworkModel[];
@@ -57,6 +59,7 @@ export class ClusterComponent implements OnInit {
     this.listOfVPCNetworks = [];
     this.listOfVolumeType = [];
     this.listOfWorkerType = [];
+    this.isSubmitting = false;
   }
 
   ngOnInit(): void {
@@ -119,8 +122,8 @@ export class ClusterComponent implements OnInit {
     this.listFormWorkerGroup.removeAt(index);
   }
 
-  getListK8sVersion(cloudProfileName: string) {
-    this.clusterService.getListK8sVersion(cloudProfileName)
+  getListK8sVersion(regionId: number, cloudProfileName: string) {
+    this.clusterService.getListK8sVersion(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfK8sVersion = r.data;
@@ -133,8 +136,8 @@ export class ClusterComponent implements OnInit {
       });
   }
 
-  getListWorkerType(cloudProfileName: string) {
-    this.clusterService.getListWorkerTypes(cloudProfileName)
+  getListWorkerType(regionId: number,cloudProfileName: string) {
+    this.clusterService.getListWorkerTypes(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
@@ -142,8 +145,8 @@ export class ClusterComponent implements OnInit {
       })
   }
 
-  getListVolumeType(cloudProfileName: string) {
-    this.clusterService.getListVolumeTypes(cloudProfileName)
+  getListVolumeType(regionId: number,cloudProfileName: string) {
+    this.clusterService.getListVolumeTypes(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfVolumeType = r.data;
@@ -156,8 +159,8 @@ export class ClusterComponent implements OnInit {
       });
   }
 
-  getVPCNetwork(cloudProfileName: string) {
-    this.clusterService.getVPCNetwork(cloudProfileName)
+  getVPCNetwork(regionId: number,cloudProfileName: string) {
+    this.clusterService.getVPCNetwork(regionId, cloudProfileName)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfVPCNetworks = r.data;
@@ -201,9 +204,9 @@ export class ClusterComponent implements OnInit {
     this.regionId = region.regionId;
     this.cloudProfileId = region.cloudId;
 
-    this.getListK8sVersion(this.cloudProfileId);
-    this.getListWorkerType(this.cloudProfileId);
-    this.getListVolumeType(this.cloudProfileId);
+    this.getListK8sVersion(this.regionId, this.cloudProfileId);
+    this.getListWorkerType(this.regionId, this.cloudProfileId);
+    this.getListVolumeType(this.regionId, this.cloudProfileId);
 
     this.myform.get('regionId').setValue(this.regionId);
     this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
@@ -372,8 +375,9 @@ export class ClusterComponent implements OnInit {
 
     // console.log(this.myform);
     // console.log({data: cluster});
-
+    this.isSubmitting = true;
     this.clusterService.createNewCluster(cluster)
+    .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.notificationService.success('Thành công', r.message);

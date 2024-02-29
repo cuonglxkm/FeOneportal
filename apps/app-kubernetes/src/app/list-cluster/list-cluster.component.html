@@ -17,13 +17,16 @@
     <!-- filter -->
     <div class="flex-style mbot-24">
       <div class="w-25">
-        <nz-select nzSize="default" [nzPlaceHolder]="'Trạng thái'" class="w-100" nzSize="large">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus"
+          (ngModelChange)="searchCluster()" [nzPlaceHolder]="'Trạng thái'" class="w-100" nzSize="large">
+          <nz-option *ngFor="let option of listOfStatusCluster" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
         </nz-select>
       </div>
 
       <div class="mleft-16 w-25">
         <nz-input-group nzSearch nzSize="default" [nzSuffix]="suffixButton" class="w-100" nzSize="large">
-          <input type="text" nz-input placeholder="Tìm kiếm Kubernetes Cluster" />
+          <input type="text" nz-input placeholder="Tìm kiếm Kubernetes Cluster" [(ngModel)]="keySearch"
+            (ngModelChange)="searchCluster()" />
         </nz-input-group>
         <ng-template #suffixButton>
           <span nz-icon nzType="search" nzTheme="outline"></span>
@@ -84,8 +87,8 @@
               <span [ngStyle]="{color: status.color}">{{status.status}}</span>
             </ng-container>
           </td>
-          <td>{{ item.apiEnpoint }}</td>
-          <td class="center-align">{{ item.totalNode }}</td>
+          <td>{{ item.apiEndpoint }}</td>
+          <td class="center-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
           <td class="center-align">{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
           <td class="center-align">
             <button nz-button nzType="text" nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip

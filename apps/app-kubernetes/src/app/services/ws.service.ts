@@ -7,7 +7,7 @@ import { Client, StompConfig, messageCallbackType } from '@stomp/stompjs';
 })
 export class NotificationWsService {
 
-  private readonly wsUrl: string = 'ws://127.0.0.1:16003/k8s-service/ws-endpoint';
+  private readonly wsUrl: string = `wss://api.onsmartcloud.com/k8s-service/ws-endpoint`;
 
   private client: Client;
 
