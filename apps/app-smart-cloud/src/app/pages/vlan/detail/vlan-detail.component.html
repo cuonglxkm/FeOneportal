@@ -67,7 +67,7 @@
           <tr *ngFor="let data of fixTableSubnet.data">
             <td>{{ data.name }}</td>
             <td>{{ data.subnetAddressRequired }}</td>
-            <td>{{ data.getwayIP }}</td>
+            <td>{{ data.gatewayIP }}</td>
             <td *ngIf="!networkName?.includes('pri_network')">
               <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
                     nzTheme="outline"
