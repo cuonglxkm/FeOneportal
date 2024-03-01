@@ -126,11 +126,13 @@ export class ListVlanComponent implements OnInit{
     if(this.validateForm.valid){
       this.isLoadingEditNetwork = true
       this.vlanService.updateNetwork(this.idNetwork, this.validateForm.controls.nameNetwork.value).subscribe(data => {
-        this.isLoadingEditNetwork = false
-        this.isVisibleEditNetwork = false
-        this.validateForm.controls.nameNetwork.setValue("")
-        this.getListVlanNetwork(false)
-        this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+        if(data) {
+          this.isLoadingEditNetwork = false
+          this.isVisibleEditNetwork = false
+          this.validateForm.controls.nameNetwork.setValue("")
+          this.getListVlanNetwork(false)
+          this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+        }
       }, error => {
         this.isLoadingEditNetwork = false
         this.isVisibleEditNetwork = false
@@ -155,10 +157,12 @@ export class ListVlanComponent implements OnInit{
     if(this.validateForm.controls.nameNetwork.value.includes(this.nameNetwork)) {
       this.isLoadingDeleteNetwork = true
       this.vlanService.deleteNetwork(this.idNetwork).subscribe(data => {
-        this.isLoadingDeleteNetwork = false
-        this.isVisibleDeleteNetwork = false
-        this.getListVlanNetwork(false)
-        this.notification.success('Thành công', 'Xoá Network thành công')
+        if(data) {
+            this.isLoadingDeleteNetwork = false
+            this.isVisibleDeleteNetwork = false
+            this.getListVlanNetwork(false)
+            this.notification.success('Thành công', 'Xoá Network thành công')
+          }
       }, error => {
         this.isLoadingDeleteNetwork = false
         this.isVisibleDeleteNetwork = false
