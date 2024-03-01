@@ -120,22 +120,28 @@ export class ListVlanComponent implements OnInit{
 
   handleCancelEdit() {
     this.isVisibleEditNetwork = false
+    this.isLoadingEditNetwork = false
+    this.validateForm.reset()
   }
 
   handleOkEdit() {
     if(this.validateForm.valid){
       this.isLoadingEditNetwork = true
       this.vlanService.updateNetwork(this.idNetwork, this.validateForm.controls.nameNetwork.value).subscribe(data => {
-        this.isLoadingEditNetwork = false
-        this.isVisibleEditNetwork = false
-        this.validateForm.controls.nameNetwork.setValue("")
-        this.getListVlanNetwork(false)
-        this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+        if(data) {
+          this.isLoadingEditNetwork = false
+          this.isVisibleEditNetwork = false
+          this.validateForm.controls.nameNetwork.setValue("")
+          this.getListVlanNetwork(false)
+          this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+          this.validateForm.reset()
+        }
       }, error => {
         this.isLoadingEditNetwork = false
         this.isVisibleEditNetwork = false
         this.getListVlanNetwork(false)
         this.notification.error('Thất bại', 'Chỉnh sửa Network thất bại')
+        this.validateForm.reset()
       })
     }
   }
@@ -149,21 +155,27 @@ export class ListVlanComponent implements OnInit{
 
   handleCancelDelete() {
     this.isVisibleDeleteNetwork = false
+    this.isLoadingDeleteNetwork = false
+    this.validateForm.reset()
   }
 
   handleOkDelete(){
     if(this.validateForm.controls.nameNetwork.value.includes(this.nameNetwork)) {
       this.isLoadingDeleteNetwork = true
       this.vlanService.deleteNetwork(this.idNetwork).subscribe(data => {
-        this.isLoadingDeleteNetwork = false
-        this.isVisibleDeleteNetwork = false
-        this.getListVlanNetwork(false)
-        this.notification.success('Thành công', 'Xoá Network thành công')
+        if(data) {
+            this.isLoadingDeleteNetwork = false
+            this.isVisibleDeleteNetwork = false
+            this.getListVlanNetwork(false)
+            this.notification.success('Thành công', 'Xoá Network thành công')
+          this.validateForm.reset()
+          }
       }, error => {
         this.isLoadingDeleteNetwork = false
         this.isVisibleDeleteNetwork = false
         this.getListVlanNetwork(false)
         this.notification.error('Thất bại', 'Xoá Network thất bại')
+        this.validateForm.reset()
       })
     }
   }

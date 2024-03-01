@@ -84,6 +84,27 @@
     <nz-card>
       <span class="text-card-header">Thông tin điều chỉnh</span>
       <nz-form-item style="margin-top: 20px;">
+        <nz-form-label>
+          <div>
+            <span>Tổng dung lượng Volume của VPC: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb }}GB</span>
+          </div>
+        </nz-form-label>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Đã dùng: {{ sizeInCloudProject?.cloudProjectResourceUsed?.hdd }}GB</span>
+          </div>
+        </nz-form-label>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Còn lại: {{ sizeInCloudProject?.cloudProject?.quotaHddInGb - sizeInCloudProject?.cloudProject?.quotaHddInGb }}GB</span>
+          </div>
+        </nz-form-label>
+      </nz-form-item>
+      <nz-form-item>
         <nz-form-label nzFor="storage">
           <div class="label">
             <span>Dung lượng tăng thêm</span>

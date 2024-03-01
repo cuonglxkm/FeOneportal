@@ -19,6 +19,7 @@ import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angul
 import {getCurrentRegionAndProject} from "@shared";
 import {ProjectService} from "../../../../shared/services/project.service";
 import { debounceTime } from 'rxjs';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-volume',
@@ -101,7 +102,7 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.getListVolume(true)
+    // this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
@@ -133,6 +134,7 @@ export class VolumeComponent implements OnInit {
     this.getListVolume(false)
   }
 
+  volumeInstance: string = ''
   getListVolume(isBegin) {
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
@@ -143,6 +145,16 @@ export class VolumeComponent implements OnInit {
           if(data) {
             this.isLoading = false
             this.response = data
+
+            this.response.records.forEach(item => {
+              if(item.attachedInstances.length > 0 || item.attachedInstances != null) {
+                item.attachedInstances.forEach(item2 => {
+                  this.volumeInstance += Array.from(item2.instanceName).join('')
+                })
+              } else {
+                this.volumeInstance = ''
+              }
+            })
           } else {
             this.isLoading = false
             this.response = null
@@ -175,6 +187,8 @@ export class VolumeComponent implements OnInit {
   showAttachVm(volume: VolumeDTO) {
     this.isVisibleAttachVm = true
     this.volumeDTO = volume
+
+    this.getListVm()
   }
 
   handleCancelAttachVm() {
@@ -406,16 +420,16 @@ export class VolumeComponent implements OnInit {
 
 
   ngOnInit() {
-
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     console.log('project', this.project)
     this.customerId = this.tokenService.get()?.userId
-
-    this.getListVm()
-    this.getListVolume(true)
-    this.cdr.detectChanges();
+    this.volumeService.model.subscribe(data => {
+      console.log(data)
+    })
+    // this.getListVm()
+    // this.getListVolume(true)
 
   }
 
