@@ -13,6 +13,9 @@
             <nz-breadcrumb-item *ngIf="control==detailNum">
                 Danh sách message Topic: {{topicDetail}}
             </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="control==editNum">
+                Cập nhật Topic: {{selectedTopic.topicName}}
+            </nz-breadcrumb-item>
         </nz-breadcrumb>
     </div>
     <div class="inner-content">

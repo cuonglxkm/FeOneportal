@@ -95,7 +95,7 @@ export class LoadTopicComponent implements OnInit {
       partitionNum: [3, [Validators.required, Validators.min(1)]],
       replicaNum: [2, [Validators.required, Validators.min(1)]],
       isAdvanced: [1, Validators.required],   // fix
-      serviceOrderCode: ['kafka-dev', [Validators.required]]
+      serviceOrderCode: [null, [Validators.required]]
     });
   }
 
@@ -192,29 +192,11 @@ export class LoadTopicComponent implements OnInit {
       is_advanced: obj.isAdvanced,
       service_order_code: obj.serviceOrderCode
     };
-    console.log({ datasend: data });
     this.topicKafkaService.createTopicInitual(data).pipe(
       finalize(() => {
         this.isSubmitAdvancedTopic = false;
         this.isSubmitBasicTopic = false;
       }),
-      catchError((error: HttpErrorResponse) => {
-        console.log(error);
-        this.notification.error(
-          error.error.error_msg,
-          error.error.msg,
-          {
-            nzPlacement: 'bottomRight',
-            nzStyle: {
-              backgroundColor: '#fed9cc',
-              borderRadius: '4px',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-            }
-          },
-        );
-        this.loadingSrv.close();
-        return throwError('Something bad happened; please try again later.');
-      })
     ).subscribe((r: any) => {
       if (r && r.code == 200) {
         let kafkaSys = this.kafkaSystem;

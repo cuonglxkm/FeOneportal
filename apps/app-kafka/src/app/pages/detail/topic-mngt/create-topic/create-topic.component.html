@@ -1,4 +1,5 @@
-<h2>Tạo mới Topic</h2>
+<h2  *ngIf="mode == createNumber"><b>Tạo mới Topic</b></h2>
+<h2 *ngIf="mode == updateNumber"><b>Cập nhật Topic</b></h2>
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
     <nz-form-item>
         <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="8" nzRequired nzFor="name_tp">Tên Topic

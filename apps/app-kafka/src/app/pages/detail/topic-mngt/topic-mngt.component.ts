@@ -156,6 +156,7 @@ export class TopicMngtComponent implements OnInit {
     this.produceForm.get('configs').setValue('');
     this.produceForm.get('groupId').setValue('');
     this.produceForm.get('serviceOrderCode').setValue(this.serviceOrderCode);
+    this.getList();
   }
 
   handleSubmitTestProduce() {
@@ -170,24 +171,6 @@ export class TopicMngtComponent implements OnInit {
         .pipe(finalize(() => {
           this.loadingSrv.close();
         }))
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            console.log(error);
-            this.notification.error(
-              error.error.error_msg,
-              error.error.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
-            return throwError('Something bad happened; please try again later.');
-          })
-        )
         .subscribe((r: any) => {
           if (r && r.code == 200) {
             this.notification.success(
@@ -207,8 +190,8 @@ export class TopicMngtComponent implements OnInit {
             this.handleCloseProduceModal();
           } else {
             this.notification.error(
-              data.error_msg,
-              data.msg,
+              "Test producer thất bại",
+              r.msg,
               {
                 nzPlacement: 'bottomRight',
                 nzStyle: {
@@ -234,7 +217,6 @@ export class TopicMngtComponent implements OnInit {
         this.topicKafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
           .pipe(
             catchError((error: HttpErrorResponse) => {
-              console.log(error);
               this.notification.error(
                 error.error.error_msg,
                 error.error.msg,
@@ -266,8 +248,21 @@ export class TopicMngtComponent implements OnInit {
                     }
                   },
                 );
-                this.getList();
+              } else {
+                this.notification.error(
+                  'Thông báo',
+                  data.msg,
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#fed9cc',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
               }
+              this.getList();
               this.loading = false;
             }
           );
@@ -302,8 +297,21 @@ export class TopicMngtComponent implements OnInit {
                     }
                   },
                 );
-                this.getList();
+              } else {
+                this.notification.error(
+                  "Xoá Topic thất bại",
+                  data.msg,
+                  {
+                    nzPlacement: 'bottomRight',
+                    nzStyle: {
+                      backgroundColor: '#fed9cc',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }
+                  },
+                );
               }
+              this.getList();
               this.loading = false;
             }
           );

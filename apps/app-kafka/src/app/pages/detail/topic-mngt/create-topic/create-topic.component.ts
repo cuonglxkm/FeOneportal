@@ -357,7 +357,7 @@ export class CreateTopicComponent implements OnInit {
                 this.cancelForm();
               } else {
                 this.notification.error(
-                  data.error_msg,
+                  (this.mode == this.createNumber ? 'Tạo mới ' : 'Cập nhật ') + 'thất bại',
                   data.msg,
                   {
                     nzPlacement: 'bottomRight',
