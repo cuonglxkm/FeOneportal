@@ -145,10 +145,15 @@ export class VolumeComponent implements OnInit {
           if(data) {
             this.isLoading = false
             this.response = data
+
             this.response.records.forEach(item => {
-              item.attachedInstances.forEach(item2 => {
-                this.volumeInstance = Array.from(item2.instanceName).join(",")
-              })
+              if(item.attachedInstances.length > 0 || item.attachedInstances != null) {
+                item.attachedInstances.forEach(item2 => {
+                  this.volumeInstance += Array.from(item2.instanceName).join('')
+                })
+              } else {
+                this.volumeInstance = ''
+              }
             })
           } else {
             this.isLoading = false

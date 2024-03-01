@@ -120,6 +120,8 @@ export class ListVlanComponent implements OnInit{
 
   handleCancelEdit() {
     this.isVisibleEditNetwork = false
+    this.isLoadingEditNetwork = false
+    this.validateForm.reset()
   }
 
   handleOkEdit() {
@@ -132,12 +134,14 @@ export class ListVlanComponent implements OnInit{
           this.validateForm.controls.nameNetwork.setValue("")
           this.getListVlanNetwork(false)
           this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+          this.validateForm.reset()
         }
       }, error => {
         this.isLoadingEditNetwork = false
         this.isVisibleEditNetwork = false
         this.getListVlanNetwork(false)
         this.notification.error('Thất bại', 'Chỉnh sửa Network thất bại')
+        this.validateForm.reset()
       })
     }
   }
@@ -151,6 +155,8 @@ export class ListVlanComponent implements OnInit{
 
   handleCancelDelete() {
     this.isVisibleDeleteNetwork = false
+    this.isLoadingDeleteNetwork = false
+    this.validateForm.reset()
   }
 
   handleOkDelete(){
@@ -162,12 +168,14 @@ export class ListVlanComponent implements OnInit{
             this.isVisibleDeleteNetwork = false
             this.getListVlanNetwork(false)
             this.notification.success('Thành công', 'Xoá Network thành công')
+          this.validateForm.reset()
           }
       }, error => {
         this.isLoadingDeleteNetwork = false
         this.isVisibleDeleteNetwork = false
         this.getListVlanNetwork(false)
         this.notification.error('Thất bại', 'Xoá Network thất bại')
+        this.validateForm.reset()
       })
     }
   }
