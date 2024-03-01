@@ -163,6 +163,7 @@
 >
   <ng-container *nzModalContent>
     <nz-alert
+      style="margin-bottom: 20px"
       nzType="warning"
       [nzDescription]="customTemplateMessageDeleteUsers"
       nzShowIcon
@@ -177,25 +178,17 @@
       </div>
       <div>Hành động này không thể được hoàn tác</div>
     </ng-template>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Để thực hiện xóa các Users, vui lòng nhập "delete" để xác
-            nhận</nz-form-label
-          >
-          <nz-form-control>
-            <input
-              class="input-custom"
-              name="name"
-              nz-input
-              [ngModel]="codeVerify"
-              (ngModelChange)="changecodeVerify($event)"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
+    <span class="text-label"
+      >Để thực hiện xóa các Users, vui lòng nhập "delete" để xác nhận</span
+    >
+    <nz-form-control>
+      <input
+        class="input-custom"
+        name="name"
+        nz-input
+        [(ngModel)]="codeVerify"
+      />
+    </nz-form-control>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDeleteUsers()">
