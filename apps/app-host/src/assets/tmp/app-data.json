@@ -16,7 +16,7 @@
       "children": [
         {
           "text": "Dashboard",
-          "icon": "anticon-team",
+          "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/dashboard"
         },
         {
