@@ -44,6 +44,7 @@ export class CreateCredentialComponent implements OnDestroy {
   passwordError: string;
   checkPasswordError: string;
 
+  oldPasswordVisible: boolean
   passwordVisible: boolean;
   repasswordVisible: boolean;
   credential: KafkaCredential;
@@ -67,6 +68,7 @@ export class CreateCredentialComponent implements OnDestroy {
     private notification: NzNotificationService,
     private loadingSrv: LoadingService
   ) {
+    this.oldPasswordVisible = false;
     this.passwordVisible = false;
     this.repasswordVisible = false;
 

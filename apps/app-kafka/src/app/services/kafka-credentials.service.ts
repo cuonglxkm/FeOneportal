@@ -80,8 +80,8 @@ export class KafkaCredentialsService extends BaseService {
   updatePassword(
     data: ChangePasswordKafkaCredential
   ): Observable<BaseResponse<null>> {
-    return this.http.patch<BaseResponse<null>>(
-      `${this.userUrl}`,
+    return this.http.post<BaseResponse<null>>(
+      `${this.userUrl}/update`,
       decamelizeKeys(data)
     );
   }
