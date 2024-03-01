@@ -86,7 +86,7 @@
                   (click)="showModalEditNetwork(data.id, data.name)"
                   nzPopoverPlacement="bottom"></span>
             <nz-modal [(nzVisible)]="isVisibleEditNetwork" nzTitle="Chỉnh sửa"
-                      (nzOnCancel)="handleCancelEdit()" [nzMask]="false">
+                      (nzOnCancel)="handleCancelEdit()" nzMask="false">
               <div *nzModalTitle>
                 <span class="text-modal-title">Chỉnh sửa</span>
               </div>
@@ -143,9 +143,7 @@
                       <input nz-input class="input-custom" formControlName="nameNetwork" />
                     </nz-form-control>
                   </nz-form-item>
-
                 </form>
-
               </div>
               <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
                 <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">

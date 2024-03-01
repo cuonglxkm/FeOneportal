@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {EditSizeMemoryVolumeDTO, VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import { ProjectModel, SizeInCLoudProject } from '../../../../shared/models/project.model';
 import {InstancesModel} from "../../../instances/instances.model";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -20,6 +20,7 @@ import {ProjectService} from "../../../../shared/services/project.service";
 export class ResizeVolumeVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
+
   volumeInfo: VolumeDTO;
   oldSize: number
   expiryTime: any
@@ -54,6 +55,8 @@ export class ResizeVolumeVpcComponent implements OnInit {
   isVisibleConfirm: boolean = false
   isLoadingConfirm: boolean = false
 
+  sizeInCloudProject: SizeInCLoudProject = new SizeInCLoudProject()
+
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -81,19 +84,11 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    // this.region = region.regionId
-    // this.projectService.getByRegion(this.region).subscribe(data => {
-    //   if (data.length){
-    //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/volumes'])
-    //   }
-    // });
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id
-    // this.getListVolumes()
-    // this.router.navigate(['/app-smart-cloud/volumes'])
   }
 
   userChangeProject(project: ProjectModel) {
@@ -228,6 +223,10 @@ export class ResizeVolumeVpcComponent implements OnInit {
     if (this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId)
       this.getVolumeById(this.volumeId)
+      this.projectService.getByProjectId(this.project).subscribe(data => {
+        this.sizeInCloudProject = data
+      })
     }
+
   }
 }

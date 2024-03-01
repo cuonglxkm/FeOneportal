@@ -35,10 +35,7 @@
         </ng-template>
       </nz-col>
       <nz-col nzSpan="8" style="flex:none;">
-        <button nz-button nzType="primary" nzSize="large" (click)="showModalCreateIpFloating()">
-          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-          <span class="button-text-primary">Cấp phát IP Floating</span>
-        </button>
+        <one-portal-create-ip-floating [region]="region" [project]="project" (onOk)="handleOkCreateIpFloating()" />
       </nz-col>
     </nz-row>
     <nz-table #fixedTable
@@ -76,6 +73,7 @@
                   nz-popover
                   [nzPopoverContent]="'Gắn IP Floating'"
                   nzPopoverPlacement="bottom"></span>
+
             <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
                   nzTheme="outline" nz-popover
                   [nzPopoverContent]="'Gỡ IP Floating'"

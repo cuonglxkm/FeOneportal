@@ -8,7 +8,7 @@ import {PopupExtendVolumeComponent} from "../popup-volume/popup-extend-volume.co
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
 import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
+import { ProjectModel, SizeInCLoudProject } from '../../../../shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import {getCurrentRegionAndProject} from "@shared";
 
@@ -37,6 +37,9 @@ export class DetailVolumeComponent implements OnInit {
   isLoading: boolean = false;
 
   typeVPC: number
+
+  sizeInCloudProject: SizeInCLoudProject = new SizeInCLoudProject()
+
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
     // this.projectService.getByRegion(this.region).subscribe(data => {
@@ -58,14 +61,6 @@ export class DetailVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volumes'])
     //
   }
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
-  }
 
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
@@ -73,9 +68,6 @@ export class DetailVolumeComponent implements OnInit {
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     // this.customerId = this.tokenService.get()?.userId
-    if (this.project && this.region) {
-      this.loadProjects()
-    }
     this.getVolumeById(Number.parseInt(idVolume));
   }
 

@@ -47,6 +47,8 @@ export class ListVlanComponent implements OnInit{
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]]
   });
+
+  isBegin: boolean = false
   constructor(private vlanService: VlanService,
               private router: Router,
               private route: ActivatedRoute,
@@ -63,13 +65,13 @@ export class ListVlanComponent implements OnInit{
     this.project = project?.id
     this.typeVPC = project?.type
 
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(true)
   }
 
   onInputChange(value) {
     this.value = value
 
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
   navigateToCreateNetwork() {
@@ -85,15 +87,15 @@ export class ListVlanComponent implements OnInit{
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
   onPageIndexChange(value) {
     this.pageNumber = value
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
-  getListVlanNetwork() {
+  getListVlanNetwork(isCheckBegin) {
     this.isLoading = true
     this.networkInit()
     this.vlanService.getVlanNetworks(this.formSearchNetwork)
@@ -101,6 +103,9 @@ export class ListVlanComponent implements OnInit{
       .subscribe(data => {
       this.response = data
       this.isLoading = false
+      if (isCheckBegin) {
+        this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
+      }
     })
   }
 
@@ -115,22 +120,28 @@ export class ListVlanComponent implements OnInit{
 
   handleCancelEdit() {
     this.isVisibleEditNetwork = false
+    this.isLoadingEditNetwork = false
+    this.validateForm.reset()
   }
 
   handleOkEdit() {
     if(this.validateForm.valid){
       this.isLoadingEditNetwork = true
       this.vlanService.updateNetwork(this.idNetwork, this.validateForm.controls.nameNetwork.value).subscribe(data => {
-        this.isLoadingEditNetwork = false
-        this.isVisibleEditNetwork = false
-        this.validateForm.controls.nameNetwork.setValue("")
-        this.getListVlanNetwork()
-        this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+        if(data) {
+          this.isLoadingEditNetwork = false
+          this.isVisibleEditNetwork = false
+          this.validateForm.controls.nameNetwork.setValue("")
+          this.getListVlanNetwork(false)
+          this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
+          this.validateForm.reset()
+        }
       }, error => {
         this.isLoadingEditNetwork = false
         this.isVisibleEditNetwork = false
-        this.getListVlanNetwork()
+        this.getListVlanNetwork(false)
         this.notification.error('Thất bại', 'Chỉnh sửa Network thất bại')
+        this.validateForm.reset()
       })
     }
   }
@@ -144,21 +155,27 @@ export class ListVlanComponent implements OnInit{
 
   handleCancelDelete() {
     this.isVisibleDeleteNetwork = false
+    this.isLoadingDeleteNetwork = false
+    this.validateForm.reset()
   }
 
   handleOkDelete(){
     if(this.validateForm.controls.nameNetwork.value.includes(this.nameNetwork)) {
       this.isLoadingDeleteNetwork = true
       this.vlanService.deleteNetwork(this.idNetwork).subscribe(data => {
-        this.isLoadingDeleteNetwork = false
-        this.isVisibleDeleteNetwork = false
-        this.getListVlanNetwork()
-        this.notification.success('Thành công', 'Xoá Network thành công')
+        if(data) {
+            this.isLoadingDeleteNetwork = false
+            this.isVisibleDeleteNetwork = false
+            this.getListVlanNetwork(false)
+            this.notification.success('Thành công', 'Xoá Network thành công')
+          this.validateForm.reset()
+          }
       }, error => {
         this.isLoadingDeleteNetwork = false
         this.isVisibleDeleteNetwork = false
-        this.getListVlanNetwork()
+        this.getListVlanNetwork(false)
         this.notification.error('Thất bại', 'Xoá Network thất bại')
+        this.validateForm.reset()
       })
     }
   }

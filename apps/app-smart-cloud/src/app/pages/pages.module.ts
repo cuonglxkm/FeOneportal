@@ -130,6 +130,8 @@ import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-crea
 import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
 import { SubnetFormComponent } from './vlan/form/subnet-form.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { CreateIpFloatingComponent } from './ip-floating/create-ip-floating/create-ip-floating.component';
+import { AttachIpFloatingComponent } from './ip-floating/attach/attach-ip-floating.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -247,6 +249,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     VlanEditSubnetComponent,
     SubnetFormComponent,
     ListIpFloatingComponent,
+    CreateIpFloatingComponent,
+    CreateIpFloatingComponent,
+    AttachIpFloatingComponent,
   ],
   imports: [
     CommonModule,

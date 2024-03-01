@@ -124,8 +124,10 @@
             </td>
             <td nzBreakWord>{{ data.serviceStatus }}</td>
             <td nzBreakWord>
-              <div *ngIf="data.instanceName == null">-</div>
-              <div *ngIf="data.instanceName != null">{{data.instanceName}}</div>
+              <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>
+              <div *ngIf="data.attachedInstances != null || data.attachedInstances.length > 0">
+                <div *ngFor="let index of data.attachedInstances">{{index.instanceName}}</div>
+              </div>
             </td>
             <td nzBreakWord>
               <div>

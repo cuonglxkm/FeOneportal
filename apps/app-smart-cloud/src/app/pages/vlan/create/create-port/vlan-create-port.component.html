@@ -26,8 +26,9 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="idSubnetErrorTpl" style="margin-top:10px;">
-          <nz-select formControlName="idSubnet" nzPlaceHolder="Chọn dải">
-            <nz-option *ngFor="let item of listSubnet" [nzValue]="item.id" nzLabel="{{ item.name }}"></nz-option>
+          <nz-select formControlName="idSubnet"
+                     nzPlaceHolder="Chọn dải">
+            <nz-option *ngFor="let item of listSubnet" [nzValue]="item.id" nzLabel="{{ item.subnetAddressRequired }}"></nz-option>
           </nz-select>
           <ng-template #idSubnetErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
@@ -47,9 +48,11 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input class="input-custom" formControlName="namePort" />
+          <input nz-input class="input-custom" formControlName="namePort" [maxLength]="50"/>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">Tên Port không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">Tên Port tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('invalidCharacters')">Tên Port không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng việt</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -68,7 +71,10 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
           <input nz-input class="input-custom" formControlName="ipAddress" />
           <ng-template #ipAddressErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+            <ng-container *ngIf="control.hasError('required')">IP Address không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIp')">IP Address không hợp lệ</ng-container>
+            <ng-container *ngIf="control.hasError('invalidSubnet')"> IP Address không nằm trong dải subnet {{ subnetAddress }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidLastBit')">Bit cuối không hợp lệ</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
