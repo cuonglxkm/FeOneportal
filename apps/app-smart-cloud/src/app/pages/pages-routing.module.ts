@@ -87,6 +87,8 @@ import {ResizeVolumeVpcComponent} from "./volume/component/resize-volume-vpc/res
 import {ListVlanComponent} from "./vlan/list/list-vlan.component";
 import {BlankVolumeComponent} from "./volume/component/blank/blank-volume.component";
 import {VlanDetailComponent} from "./vlan/detail/vlan-detail.component";
+import { RouterListComponent } from "./routers/router-list.component";
+import { RouterDetailComponent } from "./routers/router-detail/router-detail.component";
 import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
@@ -389,6 +391,14 @@ const routes: Routes = [
   {
     path: 'vpc',
     loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule)
+  },
+  {
+    path: 'vpc/router',
+    component: RouterListComponent
+  },
+  {
+    path: 'vpc/router/detail',
+    component: RouterDetailComponent
   },
   {
     path: 'vlan/create/network',

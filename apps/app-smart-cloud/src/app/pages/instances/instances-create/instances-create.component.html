@@ -87,27 +87,25 @@
           </nz-col>
         </nz-row>
         <div *ngIf="isSnapshot">
-          <nz-col nzLg="24" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label nzFor="name">Chọn Snapshot</nz-form-label>
-              <nz-form-control nzErrorTip="Vui lòng Chọn Snapshot">
-                <nz-select
-                  [nzPlaceHolder]="'--Chọn Snapshot--'"
-                  [nzShowSearch]="true"
-                  [(ngModel)]="selectedSnapshot"
-                  [ngModelOptions]="{ standalone: true }"
-                  (ngModelChange)="onChangeSnapshot($event)"
-                  nzSize="large"
-                >
-                  <nz-option
-                    *ngFor="let i of listSnapshot"
-                    [nzLabel]="i.name"
-                    [nzValue]="i.id"
-                  />
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-col>
+          <nz-form-item>
+            <nz-form-label nzFor="name">Chọn Snapshot</nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng Chọn Snapshot">
+              <nz-select
+                [nzPlaceHolder]="'--Chọn Snapshot--'"
+                [nzShowSearch]="true"
+                [(ngModel)]="selectedSnapshot"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onChangeSnapshot($event)"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let i of listSnapshot"
+                  [nzLabel]="i.name"
+                  [nzValue]="i.id"
+                />
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
         </div>
         <div style="margin-left: -10px" *ngIf="!isSnapshot">
           <nz-form-label
