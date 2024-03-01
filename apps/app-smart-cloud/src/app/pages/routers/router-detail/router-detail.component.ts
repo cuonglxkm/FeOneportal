@@ -5,6 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { STIcon } from '@delon/abc/st';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import {
@@ -20,7 +21,7 @@ import { RouterService } from 'src/app/shared/services/router.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouterDetailComponent implements OnInit {
-  routerId: number;
+  routerId: string;
   regionId: number;
   vpcId: number;
   listOfRouterInteface: RouterInteface[] = [];
@@ -36,6 +37,7 @@ export class RouterDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.routerId = this.activatedRoute.snapshot.paramMap.get('routerId');
     this.getRouterInterfaces();
     this.getRouterStatic();
   }

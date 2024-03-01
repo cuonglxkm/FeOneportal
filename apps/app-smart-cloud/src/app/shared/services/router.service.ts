@@ -74,7 +74,7 @@ export class RouterService extends BaseService {
   }
 
   getRouterInterfaces(
-    routerId: number,
+    routerId: string,
     regionId: number,
     vpcId: number
   ): Observable<any> {
@@ -87,7 +87,7 @@ export class RouterService extends BaseService {
   }
 
   getRouterStatics(
-    routerId: number,
+    routerId: string,
     regionId: number,
     vpcId: number
   ): Observable<any> {
