@@ -14,6 +14,26 @@ export class RouterModel {
   projectId: string;
 }
 
+export class RouterCreate {
+  customerId: number;
+  vpcId: number;
+  regionId: number;
+  adminState: boolean;
+  routerName: string;
+  networkId: string;
+  projectId: string;
+}
+
+export class RouterUpdate {
+  id: string;
+  customerId: number;
+  vpcId: number;
+  regionId: number;
+  adminState: boolean;
+  routerName: string;
+  networkId: string;
+}
+
 export class RouterInteface {
   id: number;
   cloudId: string;
