@@ -123,10 +123,7 @@
               </div>
             </td>
             <td nzBreakWord>{{ data.serviceStatus }}</td>
-            <td nzBreakWord>
-              <div *ngIf="data.instanceName == null">-</div>
-              <div *ngIf="data.instanceName != null">{{data.instanceName}}</div>
-            </td>
+            <td nzBreakWord>{{ volumeInstance }}</td>
             <td nzBreakWord>
               <div>
                 <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
