@@ -42,3 +42,19 @@ input, .border-button {
 .borderless {
   border: none;
 }
+
+img {
+  border-radius: 4px;
+}
+
+.description-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.description-content {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+

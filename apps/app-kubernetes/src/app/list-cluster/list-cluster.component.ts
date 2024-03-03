@@ -22,6 +22,8 @@ export class KubernetesDetailComponent implements OnInit {
   total: number;
   setOfCheckedId = new Set<number>();
 
+  isShowIntroductionPage: boolean;
+
   // temp
   listOfStatusCluster : Array<{ label: string; value: number }> = [
     {label : "Chưa gia hạn" , value: 0},
@@ -36,6 +38,9 @@ export class KubernetesDetailComponent implements OnInit {
     private websocketService: NotificationWsService,
     private notificationService: NzNotificationService
   ) {
+    // display this page if user haven't any cluster
+    this.isShowIntroductionPage = false;
+
     this.keySearch = '';
     this.serviceStatus = '';
     this.pageIndex = 1;
@@ -45,7 +50,8 @@ export class KubernetesDetailComponent implements OnInit {
 
   ngOnInit(): void {
     // init ws
-    this.openWs();
+    // this.openWs();
+    this.searchCluster();
   }
 
   searchCluster() {
@@ -63,6 +69,9 @@ export class KubernetesDetailComponent implements OnInit {
           this.listOfClusters.push(cluster);
         });
         this.total = r.data.total;
+
+        // check list cluster is empty?
+        this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
       }
     });
   }
@@ -182,6 +191,10 @@ export class KubernetesDetailComponent implements OnInit {
           }
         });
     }, 1000);
+  }
+
+  navigateToDocs() {
+    console.log("navigate");
   }
 
 }
