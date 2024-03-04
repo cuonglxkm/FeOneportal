@@ -75,32 +75,10 @@
                     nz-popover
                     [nzPopoverContent]="'Chỉnh sửa'"
                     nzPopoverPlacement="bottom"></span>
-              <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-                    (click)="showModalDeleteConfirm(data.id)"
-                    nz-popover
-                    [nzPopoverContent]="'Xóa'"
-                    nzPopoverPlacement="bottom"
-                    nz-icon nzType="delete" nzTheme="outline"></span>
-              <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Subnet"
-                        (nzOnCancel)="handleCancelDelete()" nzCentered>
-                <div *nzModalTitle>
-                  <span class="text-modal-title">Xóa</span>
-                </div>
-                <div *nzModalContent>
-
-                  <span>Đế thực hiện xoá Subnet + tên subnet, vui lòng nhập tên Subnet
-để xác nhận.</span>
-                  <input nz-input [(ngModel)]="value" (ngModelChange)="onInputChange($event)" type="text"/>
-                </div>
-                <div *nzModalFooter>
-                  <button nz-button nzType="default" (click)="handleCancelDelete()" class="button-cancel">Hủy
-                  </button>
-                  <button nz-button nzType="primary" (click)="handleOkDelete()"
-                          [nzLoading]="isLoadingDelete"
-                          class="button-ok">Đồng ý
-                  </button>
-                </div>
-              </nz-modal>
+              <one-portal-delete-subnet [region]="region"
+                                        [project]="project"
+                                        [id]="data.id"
+                                        (onOk)="handleOkDeleteSubnet()" />
             </td>
           </tr>
           </tbody>
@@ -129,7 +107,7 @@
             <one-portal-vlan-create-port [region]="region"
                                          [project]="project"
                                          [networkId]="idNetwork"
-                                         (onOk)="handleOk()" />
+                                         (onOk)="handleOkCreatePort()" />
           </nz-col>
         </nz-row>
         <nz-table #fixTablePort
@@ -169,118 +147,21 @@
             </td>
             <td *ngIf="!index.attachedDevice.includes('network:dhcp')">
               <div *ngIf="!(index.instanceName)">
-                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Gắn máy ảo'"
-                      nzPopoverPlacement="bottom" (click)="showModalAttach(index.id)"></span>
-                <nz-modal [(nzVisible)]="isVisibleAttach" nzTitle="Gán Port"
-                          (nzOnCancel)="handleCancelAttach()" nzMask="false">
-                  <div *nzModalTitle>
-                    <span class="text-modal-title">Gán Port</span>
-                  </div>
-                  <div *nzModalContent>
-                    <nz-form-label>Chọn máy ảo</nz-form-label>
-                    <nz-select nzSize="default"
-                               [nzLoading]="isLoadingAttach"
-                               [nzPlaceHolder]="'-Chọn máy ảo-'"
-                               [(ngModel)]="instanceSelected"
-                               (ngModelChange)="instanceChange($event)"
-                               nzShowSearch
-                               style="width: 300px;">
-                      <nz-option *ngFor="let item of listVm" [nzLabel]="item.name"
-                                 [nzValue]="item.cloudId"></nz-option>
-                    </nz-select>
-                  </div>
-                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                    <button nz-button nzType="default" (click)="handleCancelAttach()" class="button-cancel">
-                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                    </button>
-                    <button nz-button nzType="primary"
-                            (click)="handleOkAttach()"
-                            [nzLoading]="isLoadingAttach"
-                            class="button-ok">
-                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                    </button>
-                  </div>
-                </nz-modal>
-                <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-                      nz-popover
-                      [nzPopoverContent]="'Xoá'"
-                      nzPopoverPlacement="bottom"
-                      nz-icon nzType="delete" nzTheme="outline" (click)="showModalDeletePort(index.id)"></span>
-                <nz-modal [(nzVisible)]="isVisbileDeletePort" nzTitle="Xoá Port"
-                          (nzOnCancel)="handleCancelDeletePort()">
-                  <div *nzModalTitle>
-                    <span class="text-modal-title">Xoá Port</span>
-                  </div>
-                  <div *nzModalContent>
-                    <span>Bạn có chắc chắn muốn xóa Port không?</span>
-                  </div>
-                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                    <button nz-button nzType="default" (click)="handleCancelDeletePort()" class="button-cancel">
-                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                    </button>
-                    <button nz-button nzType="primary"
-                            (click)="handleOkDeletePort()"
-                            [nzLoading]="isLoadingDeletePort"
-                            class="button-ok">
-                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                    </button>
-                  </div>
-                </nz-modal>
+                <one-portal-attach-port [region]="region"
+                                        [project]="project"
+                                        [id]="index.id"
+                                        (onOk)="handleOkAttach()"/>
               </div>
               <div *ngIf="(index.instanceName)">
-                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-                      nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'Gỡ máy ảo'"
-                      nzPopoverPlacement="bottom" (click)="showModalDetach(index.id)"></span>
-                <nz-modal [(nzVisible)]="isVisibleDetach" nzTitle="Gỡ Port"
-                          (nzOnCancel)="handleCancelDetach()" nzMask="false">
-                  <div *nzModalTitle>
-                    <span class="text-modal-title">Gỡ Port</span>
-                  </div>
-                  <div *nzModalContent>
-                    <span>Quý khách có chắc chắn muốn gỡ Port khỏi máy ảo?</span>
-                  </div>
-                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                    <button nz-button nzType="default" (click)="handleCancelDetach()" class="button-cancel">
-                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                    </button>
-                    <button nz-button nzType="primary"
-                            (click)="handleOkDetach()"
-                            [nzLoading]="isLoadingDetach"
-                            class="button-ok">
-                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                    </button>
-                  </div>
-                </nz-modal>
-                <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-                      nz-popover
-                      [nzPopoverContent]="'Xoá'"
-                      nzPopoverPlacement="bottom"
-                      nz-icon nzType="delete" nzTheme="outline" (click)="showModalDeletePort(index.id)"></span>
-                <nz-modal [(nzVisible)]="isVisbileDeletePort" nzTitle="Xoá Port"
-                          (nzOnCancel)="handleCancelDeletePort()" nzMask="false">
-                  <div *nzModalTitle>
-                    <span class="text-modal-title">Xoá Port</span>
-                  </div>
-                  <div *nzModalContent>
-                    <span>Bạn có chắc chắn muốn xóa Port không?</span>
-                  </div>
-                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                    <button nz-button nzType="default" (click)="handleCancelDeletePort()" class="button-cancel">
-                      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
-                    </button>
-                    <button nz-button nzType="primary"
-                            (click)="handleOkDeletePort()"
-                            [nzLoading]="isLoadingDeletePort"
-                            class="button-ok">
-                      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
-                    </button>
-                  </div>
-                </nz-modal>
+                <one-portal-detach-port [region]="region"
+                                        [project]="project"
+                                        [id]="index.id"
+                                        (onOk)="handleOkDetach()"/>
               </div>
+              <one-portal-delete-port [region]="region"
+                                      [project]="project"
+                                      [id]="index.id"
+                                      (onOk)="handleOkDeletePort()"/>
             </td>
             <td *ngIf="index.attachedDevice.includes('network:dhcp')">
               <div *ngIf="!(index.instanceName)" >

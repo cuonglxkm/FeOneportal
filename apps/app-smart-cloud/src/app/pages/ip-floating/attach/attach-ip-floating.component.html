@@ -2,7 +2,7 @@
       nzTheme="outline"
       nz-popover
       [nzPopoverContent]="'Gắn IP Floating'"
-      nzPopoverPlacement="bottom"></span>
+      nzPopoverPlacement="bottom" (click)="showModal()"></span>
 <nz-modal [(nzVisible)]="isVisible"
           nzCentered
           [nzTitle]="modalTitle"

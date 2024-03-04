@@ -132,7 +132,7 @@
                         nzTheme="outline"
                         nz-popover
                         class="text-value"
-                        [nzPopoverContent]="'Subnet được add Routerinterface thì sẽ không Disable Gateway IP và ' +
+                        [nzPopoverContent]="'Subnet được add Router interface thì sẽ không Disable Gateway IP và ' +
                    'ngươc lại Subnet không có gateway thì không không add Routerinterface'"
                         nzPopoverPlacement="bottom"></span>
                 </nz-space>
@@ -184,10 +184,13 @@
                     nzPopoverPlacement="bottom"></span>
             </nz-space>
         </nz-form-label>
-        <nz-form-control>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">
           <nz-textarea-count [nzMaxCharacterCount]="100">
             <textarea rows="4" formControlName="allocationPool" nz-input></textarea>
           </nz-textarea-count>
+          <ng-template #allocationPoolErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('pattern')">Địa chỉ IP không hợp lệ</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
     </nz-card>

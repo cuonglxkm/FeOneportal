@@ -98,6 +98,18 @@ export class ListIpFloatingComponent implements OnInit {
     this.getData(false)
   }
 
+  handleOkAttachIpFloating() {
+    this.getData(false)
+  }
+
+  handleOkDetachIpFloating() {
+    this.getData(false)
+  }
+
+  handleOkDeleteIpFloating() {
+    this.getData(false)
+  }
+
   ngOnInit() {
 
     let regionAndProject = getCurrentRegionAndProject();

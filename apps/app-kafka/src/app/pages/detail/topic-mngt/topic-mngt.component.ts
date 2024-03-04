@@ -35,7 +35,7 @@ export class TopicMngtComponent implements OnInit {
   isVisible: boolean = false;
   loading = false;
 
-  configInfo: object = new Object();
+  configInfo: object = {};
   config: any[];
 
   singleValue = null;
@@ -193,7 +193,7 @@ export class TopicMngtComponent implements OnInit {
             );
           }
         })
-    };
+    }
   }
 
   deleteMessages(data: KafkaTopic) {

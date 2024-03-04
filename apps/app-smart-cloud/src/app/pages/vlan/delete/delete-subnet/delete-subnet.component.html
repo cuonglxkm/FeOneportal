@@ -1,0 +1,22 @@
+<span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
+      (click)="showModalDeleteSubnet()"
+      nz-popover
+      [nzPopoverContent]="'Xóa'"
+      nzPopoverPlacement="bottom"
+      nz-icon nzType="delete" nzTheme="outline"></span>
+<nz-modal [(nzVisible)]="isVisibleDeleteSubnet" nzTitle="Xóa Subnet"
+          (nzOnCancel)="handleCancelDeleteSubnet()" nzCentered>
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xóa</span>
+  </div>
+  <div *nzModalContent>
+    <span>Đế thực hiện xoá Subnet + tên subnet, vui lòng nhập tên Subnetđể xác nhận.</span>
+    <input nz-input [(ngModel)]="value" (ngModelChange)="onInputChange($event)" type="text"/>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancelDeleteSubnet()" class="button-cancel">Hủy</button>
+    <button nz-button nzType="primary" (click)="handleOkDeleteSubnet()"
+            [nzLoading]="isLoadingDeleteSubnet"
+            class="button-ok">Xác nhận</button>
+  </div>
+</nz-modal>

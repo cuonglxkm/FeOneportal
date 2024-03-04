@@ -127,11 +127,19 @@ import { RouterDetailComponent } from './routers/router-detail/router-detail.com
 import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
 import { VlanCreatePortComponent } from './vlan/create/create-port/vlan-create-port.component';
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
-import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { SubnetFormComponent } from './vlan/form/subnet-form.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
 import { CreateIpFloatingComponent } from './ip-floating/create-ip-floating/create-ip-floating.component';
 import { AttachIpFloatingComponent } from './ip-floating/attach/attach-ip-floating.component';
+import { DetachIpFloatingComponent } from './ip-floating/detach/detach-ip-floating.component';
+import { DeleteIpFloatingComponent } from './ip-floating/delete/delete-ip-floating.component';
+import { DeleteVlanComponent } from './vlan/delete/delete-vlan/delete-vlan.component';
+import { VlanEditComponent } from './vlan/edit/edit-vlan/vlan-edit.component';
+import { DeleteSubnetComponent } from './vlan/delete/delete-subnet/delete-subnet.component';
+import { AttachPortComponent } from './vlan/attach/attach-port.component';
+import { DetachPortComponent } from './vlan/detach/detach-port.component';
+import { DeletePortComponent } from './vlan/delete/delete-port/delete-port.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -252,6 +260,14 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateIpFloatingComponent,
     CreateIpFloatingComponent,
     AttachIpFloatingComponent,
+    DetachIpFloatingComponent,
+    DeleteIpFloatingComponent,
+    DeleteVlanComponent,
+    VlanEditComponent,
+    DeleteSubnetComponent,
+    AttachPortComponent,
+    DetachPortComponent,
+    DeletePortComponent,
   ],
   imports: [
     CommonModule,
