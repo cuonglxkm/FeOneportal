@@ -35,7 +35,7 @@ export class TopicMngtComponent implements OnInit {
   isVisible: boolean = false;
   loading = false;
 
-  configInfo: object = {};
+  configInfo: object = new Object();
   config: any[];
 
   singleValue = null;
