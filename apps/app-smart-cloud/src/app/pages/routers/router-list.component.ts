@@ -23,6 +23,8 @@ import {
 import { RouterService } from 'src/app/shared/services/router.service';
 import { IPSubnetModel } from '../instances/instances.model';
 import { InstancesService } from '../instances/instances.service';
+import { FormSearchNetwork, NetWorkModel } from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -33,7 +35,6 @@ import { InstancesService } from '../instances/instances.service';
 export class RouterListComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
   dataList: RouterModel[] = [];
-  listNetwork: any[] = [];
   isTrigger: boolean = false;
   currentPage = 1;
   pageSize = 10;
@@ -71,14 +72,15 @@ export class RouterListComponent implements OnInit {
     private router: Router,
     private notification: NzNotificationService,
     private projectService: ProjectService,
-    private instancesService: InstancesService
+    private instancesService: InstancesService,
+    private vlanService: VlanService
   ) {}
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.initIpSubnet();
+    this.getListNetwork();
   }
 
   selectedChecked(e: any): void {
@@ -176,11 +178,16 @@ export class RouterListComponent implements OnInit {
     }
   }
 
-  listIPSubnetModel: IPSubnetModel[] = [];
+  listNetwork: NetWorkModel[] = [];
 
-  initIpSubnet(): void {
-    this.instancesService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService.getVlanNetworks(formSearchNetwork).subscribe((data: any) => {
+      this.listNetwork = data;
       this.cdr.detectChanges();
     });
   }

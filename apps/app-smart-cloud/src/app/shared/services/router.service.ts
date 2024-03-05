@@ -49,7 +49,7 @@ export class RouterService extends BaseService {
   deleteRouter(id: string, regionId: number, vpcId: number): Observable<any> {
     let url_ = `routers/${id}?regionId=${regionId}&vpcId=${vpcId}`;
 
-    return this.http.get<any>(
+    return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       this.httpOptions
     );
@@ -86,6 +86,28 @@ export class RouterService extends BaseService {
     );
   }
 
+  createRouterInterface(data: any): Observable<any> {
+    let url_ = `/router-interfaces`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteRouterInterface(
+    id: string,
+    regionId: number,
+    subnetId: number,
+    vpcId: number
+  ): Observable<any> {
+    let url_ = `/router-interfaces/${id}?regionId=${regionId}&subnetId=${subnetId}&vpcId=${vpcId}`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
   getRouterStatics(
     routerId: string,
     regionId: number,
@@ -94,6 +116,29 @@ export class RouterService extends BaseService {
     let url_ = `route-static?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
 
     return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  createStaticRouter(data: any): Observable<any> {
+    let url_ = `/route-static`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteStaticRouter(
+    id: string,
+    destinationCIDR: string,
+    nextHop: string,
+    regionId: number,
+    vpcId: number
+  ): Observable<any> {
+    let url_ = `/route-static/${id}?destinationCIDR=${destinationCIDR}&nextHop=${nextHop}&regionId=${regionId}&vpcId=${vpcId}`;
+    return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       this.httpOptions
     );

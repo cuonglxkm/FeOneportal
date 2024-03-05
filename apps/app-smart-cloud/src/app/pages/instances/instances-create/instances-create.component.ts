@@ -305,7 +305,7 @@ export class InstancesCreateComponent implements OnInit {
           this.projectId,
           this.region,
           this.size,
-          99999,
+          9999,
           1,
           this.status,
           '',

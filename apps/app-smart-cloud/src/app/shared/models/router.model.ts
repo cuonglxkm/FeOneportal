@@ -49,7 +49,15 @@ export class RouterInteface {
   subnetId: number;
 }
 
-export class RouterStatic {
+export class RouterIntefaceCreate {
+  regionId: number;
+  routerId: string;
+  ipAddress: string;
+  networkCustomer: string;
+  subnetId: number;
+}
+
+export class StaticRouter {
   routerId: string;
   destinationCIDR: string;
   nextHop: string;

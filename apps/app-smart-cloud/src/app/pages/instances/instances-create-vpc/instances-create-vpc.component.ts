@@ -88,14 +88,13 @@ export class InstancesCreateVpcComponent implements OnInit {
   projectId: number;
   userId: number;
   user: any;
-  ipPublicValue: number;
+  ipPublicValue: number = 0;
   isUseLAN: boolean = false;
   passwordVisible = false;
   password?: string;
   hdh: any = null;
   selectedSSHKeyName: string;
   selectedSnapshot: number;
-  isEncryptVolume: boolean = false;
   cardHeight: string = '140px';
 
   constructor(
@@ -231,6 +230,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
+  nameImage: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
@@ -239,6 +239,10 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
+    const filteredImages = this.listOfImageByImageType
+      .get(imageTypeId)
+      .filter((e) => e.id == event);
+    this.nameImage = filteredImages.length > 0 ? filteredImages[0].name : '';
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -412,7 +416,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
     this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
-    this.instanceCreate.encryption = false;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;
@@ -456,11 +459,17 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
-  save(): void {
+  isVisibleCreate: boolean = false;
+  showModalCreate() {
     if (!this.isSnapshot && this.hdh == null) {
       this.notification.error('', 'Vui lòng chọn hệ điều hành');
       return;
     }
+    this.isVisibleCreate = true;
+  }
+
+  handleOkCreate(): void {
+    this.isVisibleCreate = false;
     this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
@@ -476,11 +485,26 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
 
-    var returnPath: string = window.location.pathname;
-    console.log('instance create', this.instanceCreate);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    // var returnPath: string = window.location.pathname;
+    // console.log('instance create', this.instanceCreate);
+    // this.router.navigate(['/app-smart-cloud/order/cart'], {
+    //   state: { data: this.order, path: returnPath },
+    // });
+
+    this.dataService.create(this.order).subscribe({
+      next: (data: any) => {
+        this.notification.success('', 'Tạo máy ảo hành công');
+        this.router.navigate(['/app-smart-cloud/instances']);
+      },
+      error: (error) => {
+        console.log(error.error);
+        this.notification.error('', 'Tạo máy ảo không thành công');
+      },
     });
+  }
+
+  handleCancelCreate() {
+    this.isVisibleCreate = false;
   }
 
   cancel(): void {
