@@ -140,6 +140,12 @@ import { DeleteSubnetComponent } from './vlan/delete/delete-subnet/delete-subnet
 import { AttachPortComponent } from './vlan/attach/attach-port.component';
 import { DetachPortComponent } from './vlan/detach/detach-port.component';
 import { DeletePortComponent } from './vlan/delete/delete-port/delete-port.component';
+import { DetailPortComponent } from './vlan/detail/detail-port/detail-port.component';
+import { DetailSubnetComponent } from './vlan/detail/detail-subnet/detail-subnet.component';
+import { AttachVolumeComponent } from './volume/component/action/attach-volume/attach-volume.component';
+import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
+import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
+import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -268,6 +274,13 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachPortComponent,
     DetachPortComponent,
     DeletePortComponent,
+    DetailPortComponent,
+    DetailSubnetComponent,
+    AttachVolumeComponent,
+    AttachVolumeComponent,
+    DetachVolumeComponent,
+    DeleteVolumeComponent,
+    UpdateVolumeComponent,
   ],
   imports: [
     CommonModule,
