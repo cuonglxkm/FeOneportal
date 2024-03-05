@@ -36,6 +36,13 @@ export class ClusterComponent implements OnInit {
   listOfVolumeType: VolumeTypeModel[];
   listOfSubnets: SubnetModel[];
 
+  listOfUsageTime = [
+    { label: '3 tháng', value: 3 },
+    { label: '6 tháng', value: 6 },
+    { label: '9 tháng', value: 9 },
+    { label: '12 tháng', value: 12 }
+  ];
+
   // infrastructure info
   regionId: number;
   projectInfraId: number;
@@ -60,6 +67,8 @@ export class ClusterComponent implements OnInit {
     this.listOfVolumeType = [];
     this.listOfWorkerType = [];
     this.isSubmitting = false;
+
+    this.getCurrentDate();
   }
 
   ngOnInit(): void {
@@ -76,6 +85,7 @@ export class ClusterComponent implements OnInit {
       autoScalingWorker: [false],
       autoHealing: [false],
 
+      // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
       cidr: [this.DEFAULT_CIDR, Validators.required],
@@ -83,6 +93,11 @@ export class ClusterComponent implements OnInit {
       subnet: [null, [Validators.required]],
 
       workerGroup: this.listFormWorkerGroup,
+
+      // volume
+      volumeCloud: [null, [Validators.required]],
+      usageTime: [3, [Validators.required]],
+      volumeCloudType: [this.DEFAULT_VOLUME_TYPE, [Validators.required]],
     });
 
     // init worker group
@@ -331,6 +346,19 @@ export class ClusterComponent implements OnInit {
 
   get regionName() {
     return this.myform.get('reigonId').value;
+  }
+
+  currentDate: string;
+  getCurrentDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = (today.getMonth() + 1).toString(); // Months start at 0
+    let dd = today.getDate().toString();
+
+    if (+dd < 10) dd = '0' + dd;
+    if (+mm < 10) mm = '0' + mm;
+
+    this.currentDate = dd + '/' + mm + '/' + yyyy;
   }
 
   syncVPCNetwork() {

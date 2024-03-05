@@ -6,6 +6,7 @@ import { NotificationConstant } from '../constants/notification.constant';
 import { NotificationWsService } from '../services/ws.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { messageCallbackType } from '@stomp/stompjs';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -21,8 +22,15 @@ export class KubernetesDetailComponent implements OnInit {
   pageSize: number;
   total: number;
   setOfCheckedId = new Set<number>();
+  selectedCluster: KubernetesCluster;
 
   isShowIntroductionPage: boolean;
+  isShowModalDeleteCluster: boolean;
+  isWrongName: boolean;
+  isSubmitDelete: boolean;
+
+  // input confirm delete modal
+  deleteClusterName: string;
 
   // temp
   listOfStatusCluster : Array<{ label: string; value: number }> = [
@@ -34,13 +42,15 @@ export class KubernetesDetailComponent implements OnInit {
 
   constructor(
     private clusterService: ClusterService,
-    private modalService: NzModalService,
     private websocketService: NotificationWsService,
     private notificationService: NzNotificationService
   ) {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
 
+    this.isShowModalDeleteCluster = false;
+    this.isSubmitDelete = false;
+    this.isWrongName = true;
     this.keySearch = '';
     this.serviceStatus = '';
     this.pageIndex = 1;
@@ -95,6 +105,12 @@ export class KubernetesDetailComponent implements OnInit {
     }
   }
 
+  onInputDeleteCluster(clusterName: string) {
+    const name = clusterName.trim();
+    if (name !== this.selectedCluster.clusterName) this.isWrongName = true;
+    else this.isWrongName = false;
+  }
+
   updateClusterChecked(id: number, checked: boolean) {
     if (checked) {
       this.setOfCheckedId.add(id);
@@ -111,17 +127,9 @@ export class KubernetesDetailComponent implements OnInit {
     console.log(123);
   }
 
-  showModalConfirmDeleteCluster(item: KubernetesCluster) {
-    this.modalService.confirm({
-      nzTitle: `Bạn có chắc muốn xóa cluster ${item.clusterName} không?`,
-      nzContent: '<b style="color: red;">Cluster sẽ bị xóa vĩnh viễn và không thể khôi phục</b>',
-      nzOkText: 'Xóa',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzOnOk: () => this.handleDeleteCluster(item.id),
-      nzCancelText: 'Đóng',
-      nzOnCancel: () => console.log('Cancel')
-    });
+  showModalConfirmDeleteCluster(cluster: KubernetesCluster) {
+    this.isShowModalDeleteCluster = true;
+    this.selectedCluster = cluster;
   }
 
   handleDeleteMultipleCluster(){
@@ -129,8 +137,10 @@ export class KubernetesDetailComponent implements OnInit {
     console.log(selectedCluster);
   }
 
-  handleDeleteCluster(clusterId: number) {
-    this.clusterService.deleteCluster(clusterId)
+  handleDeleteCluster() {
+    this.isSubmitDelete = true;
+    this.clusterService.deleteCluster(this.selectedCluster.id)
+    .pipe(finalize(() => this.isSubmitDelete = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.notificationService.success("Thành công", r.message);
@@ -195,6 +205,12 @@ export class KubernetesDetailComponent implements OnInit {
 
   navigateToDocs() {
     console.log("navigate");
+  }
+
+  handleCloseModalDelete() {
+    this.isShowModalDeleteCluster = false;
+    this.deleteClusterName = null;
+    this.onInputDeleteCluster(null);
   }
 
 }
