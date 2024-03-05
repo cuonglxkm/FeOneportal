@@ -55,27 +55,15 @@ import { ActionHistoryComponent } from './action-history/action-history.componen
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
-import {
-  CurrentVirtualMachineComponent
-} from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
+import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import {
-  PopupDeleteSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
-import {
-  PopupEditSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
+import { PopupDeleteSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
+import { PopupEditSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import {
-  CreateBackupVolumeComponent
-} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
-import {
-  DetailBackupVolumeComponent
-} from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
-import {
-  ListBackupVolumeComponent
-} from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { UserComponent } from './users/user.component';
 import { UserCreateComponent } from './users/user-create/user-create.component';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
@@ -109,31 +97,19 @@ import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedul
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
 import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/schedule-backup-vm.component';
 import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
-import {
-  EditScheduleBackupVolumeComponent
-} from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
-import {
-  EditScheduleBackupVmComponent
-} from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
+import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
 import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
-import {
-  SnapshotScheduleListComponent
-} from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
-import {
-  SnapshotScheduleCreateComponent
-} from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
-import {
-  SnapshotScheduleDetailComponent
-} from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
+import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
+import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
+import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
 import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
-import {
-  SnapshotScheduleEditComponent
-} from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
@@ -170,6 +146,7 @@ import { AttachVolumeComponent } from './volume/component/action/attach-volume/a
 import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
 import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
 import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -305,6 +282,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetachVolumeComponent,
     DeleteVolumeComponent,
     UpdateVolumeComponent,
+    ListFileSystemComponent,
   ],
   imports: [
     CommonModule,
