@@ -93,6 +93,7 @@ import { CreateNetworkComponent } from './vlan/create/create-network/create-netw
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -415,6 +416,10 @@ const routes: Routes = [
   {
     path:'networks/ip-floating/list',
     component: ListIpFloatingComponent
+  },
+  {
+    path: 'networks/ip-wan/list',
+    component: ListWanComponent
   }
   ]
 @NgModule({

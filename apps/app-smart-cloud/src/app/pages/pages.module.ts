@@ -146,6 +146,11 @@ import { AttachVolumeComponent } from './volume/component/action/attach-volume/a
 import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
 import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
 import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { CreateIpWanComponent } from './wan/create/create-ip-wan.component';
+import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
+import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
+import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -281,6 +286,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetachVolumeComponent,
     DeleteVolumeComponent,
     UpdateVolumeComponent,
+    ListWanComponent,
+    CreateIpWanComponent,
+    AttachWanComponent,
+    DetachWanComponent,
+    DeleteWanComponent,
   ],
   imports: [
     CommonModule,
