@@ -415,6 +415,10 @@ const routes: Routes = [
   {
     path:'networks/ip-floating/list',
     component: ListIpFloatingComponent
+  },
+  {
+    path:'networks/ip-wan/list',
+    component: ListIpFloatingComponent
   }
   ]
 @NgModule({
