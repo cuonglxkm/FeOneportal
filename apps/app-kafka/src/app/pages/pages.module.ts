@@ -30,6 +30,9 @@ import { MonitoringServiceComponent } from './detail/monitoring-service/monitori
 import { MonitoringFilterComponent } from './detail/monitoring-service/monitoring-filter/monitoring-filter.component';
 import { TruncateLabelPipe } from '../pipes/truncate-label.pipe';
 import { LoadTopicComponent } from './detail/topic-mngt/load-topic/load-topic.component';
+import { KafkaDetailComponent } from './list-kafka/list-kafka.component';
+import { Status2ColorPipe } from '../pipes/status2color.pipe';
+
 @NgModule({
   declarations: [
     DetailComponent,
@@ -48,7 +51,9 @@ import { LoadTopicComponent } from './detail/topic-mngt/load-topic/load-topic.co
     MonitoringServiceComponent,
     MonitoringFilterComponent,
     TruncateLabelPipe,
-    LoadTopicComponent
+    LoadTopicComponent,
+    KafkaDetailComponent,
+    Status2ColorPipe,
   ],
   imports: [
     PagesRoutingModule,

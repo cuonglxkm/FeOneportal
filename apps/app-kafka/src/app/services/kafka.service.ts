@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { decamelize } from 'humps';
 import { Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
 import { Pagination } from '../core/models/pagination.model';
 import { BaseService } from './base.service';
+import { KafkaInfor } from '../core/models/kafka-infor.model';
 
 @Injectable({
   providedIn: 'root',
@@ -99,5 +100,17 @@ export class KafkaService extends BaseService {
         params,
       }
     );
+  }
+
+  getListService(
+    page: number,
+    size: number,
+    keySearch: string,
+    status:number
+  ): Observable<BaseResponse<Pagination<KafkaInfor[]>>> {
+    const headers = new HttpHeaders()
+      .set('userCode', 'bbvk0bs1th0');
+    
+    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch}&status=${status==null?"":status}`,{headers});
   }
 }
