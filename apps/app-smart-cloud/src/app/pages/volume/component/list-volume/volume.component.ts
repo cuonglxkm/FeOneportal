@@ -1,73 +1,46 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AttachedDto, VolumeDTO } from '../../../../shared/dto/volume.dto';
+import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
-import { AddVolumetoVmModel, EditTextVolumeModel, GetAllVmModel } from '../../../../shared/models/volume.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectService } from '../../../../shared/services/project.service';
-import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-volume',
   templateUrl: './volume.component.html',
-  styleUrls: ['./volume.component.less'],
+  styleUrls: ['./volume.component.less']
 })
 
 export class VolumeComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  listVolumes: VolumeDTO[] = []
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  selectedValue: string = ''
-  customerId: number
+  selectedValue: string = '';
+  customerId: number;
 
-  instanceInVolumeSelected: string = ''
 
-  value: string
+  value: string;
 
   options = [
-    {label: 'Tất cả trạng thái', value: null},
-    {label: 'Đang hoạt động', value: 'KHOITAO'},
-    {label: 'Lỗi', value: 'ERROR'},
-    {label: 'Tạm ngừng', value: 'SUSPENDED'},
+    { label: 'Tất cả trạng thái', value: null },
+    { label: 'Đang hoạt động', value: 'KHOITAO' },
+    { label: 'Lỗi', value: 'ERROR' },
+    { label: 'Tạm ngừng', value: 'SUSPENDED' }
   ];
 
-  pageSize: number = 10
-  pageIndex: number = 1
+  pageSize: number = 10;
+  pageIndex: number = 1;
 
-  response: BaseResponse<VolumeDTO[]>
-  volumeDTO: VolumeDTO = new VolumeDTO()
+  response: BaseResponse<VolumeDTO[]>;
 
-  vmId: number
-  listVm: GetAllVmModel
+  instanceSelected: any;
 
-  isVisibleAttachVm: boolean = false
-  isLoadingAttachVm: boolean = false
-
-  isVisibleDetachVm: boolean = false
-  isLoadingDetachVm: boolean = false
-
-  isVisibleDetachVmNotMultiple: boolean = false
-  isLoaadingDetaachVmNotMultiple: boolean = false
-
-  isVisibleDelete: boolean = false
-  isLoadingDelete: boolean = false
-
-  isVisibleUpdate: boolean = false
-  isLoadingUpdate: boolean = false
-
-  instanceSelected: any
-
-  listInstanceInVolume: AttachedDto[] = []
 
   validateForm: FormGroup<{
     nameVolume: FormControl<string>
@@ -77,9 +50,9 @@ export class VolumeComponent implements OnInit {
       Validators.pattern(/^[a-zA-Z0-9]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]
-  })
+  });
 
-  typeVPC: number
+  typeVPC: number;
 
   isBegin: boolean = false;
 
@@ -90,72 +63,73 @@ export class VolumeComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
     // this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id
-    this.typeVPC = project.type
-    this.isLoading = true
-    this.getListVolume(true)
+    this.project = project.id;
+    this.typeVPC = project.type;
+    this.isLoading = true;
+    this.getListVolume(true);
   }
 
 
   onChange(value) {
-    console.log('selected', value)
-    this.selectedValue = value
-    this.getListVolume(false)
+    console.log('selected', value);
+    this.selectedValue = value;
+    this.getListVolume(false);
   }
 
   onInputChange(value) {
-    this.value = value
-    this.getListVolume(false)
+    this.value = value;
+    this.getListVolume(false);
   }
 
   onPageSizeChange(value) {
-    this.pageSize = value
-    this.getListVolume(false)
+    this.pageSize = value;
+    this.getListVolume(false);
   }
 
   onPageIndexChange(value) {
-    this.pageIndex = value
-    this.getListVolume(false)
+    this.pageIndex = value;
+    this.getListVolume(false);
   }
 
-  volumeInstance: string = ''
+  volumeInstance: string = '';
+
   getListVolume(isBegin) {
-    this.isLoading = true
-    this.customerId = this.tokenService.get()?.userId
+    this.isLoading = true;
+    this.customerId = this.tokenService.get()?.userId;
 
     this.volumeService.getVolumes(this.customerId, this.project,
-        this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
-        .subscribe(data => {
-          if(data) {
-            this.isLoading = false
-            this.response = data
+      this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
+      .subscribe(data => {
+        if (data) {
+          this.isLoading = false;
+          this.response = data;
 
-            this.response.records.forEach(item => {
-              if(item.attachedInstances.length > 0 || item.attachedInstances != null) {
-                item.attachedInstances.forEach(item2 => {
-                  this.volumeInstance += Array.from(item2.instanceName).join('')
-                })
-              } else {
-                this.volumeInstance = ''
-              }
-            })
-          } else {
-            this.isLoading = false
-            this.response = null
-          }
-          if (isBegin) {
-            this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
-          }
-    })
+          this.response.records.forEach(item => {
+            if (item.attachedInstances.length > 0 || item.attachedInstances != null) {
+              item.attachedInstances.forEach(item2 => {
+                this.volumeInstance += Array.from(item2.instanceName).join('');
+              });
+            } else {
+              this.volumeInstance = '';
+            }
+          });
+        } else {
+          this.isLoading = false;
+          this.response = null;
+        }
+        if (isBegin) {
+          this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
+        }
+      });
   }
 
   navigateToCreateVolume() {
-    this.router.navigate(['/app-smart-cloud/volume/create'])
+    this.router.navigate(['/app-smart-cloud/volume/create']);
   }
 
   // navigateToCreateBackupVolume(id: number, startDate: Date, endDate: Date, nameVolume: string) {
@@ -170,54 +144,54 @@ export class VolumeComponent implements OnInit {
   // }
 
   navigateToCreateVolumeVPC() {
-    this.router.navigate(['/app-smart-cloud/volume/vpc/create'])
+    this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
   }
 
   //attach
   handleOkAttachVm() {
     // console.log('volume', this.volumeDTO)
-    this.getListVolume(false)
+    this.getListVolume(false);
   }
 
   //detach
   handleOkDetachVm() {
-    this.getListVolume(false)
+    this.getListVolume(false);
   }
 
   handleOkDelete() {
-    this.getListVolume(false)
+    this.getListVolume(false);
   }
 
   //update
   handleOkUpdate() {
-    this.getListVolume(false)
+    this.getListVolume(false);
   }
 
   navigateToCreateScheduleSnapshot() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create'])
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
   navigateToCreateBackup(id, createdDate, endDate, name) {
-    this.router.navigate(['/app-smart-cloud/backup-volume/create'],{
-      queryParams:{idVolume:id, startDate: createdDate , endDate: endDate, nameVolume:name }
+    this.router.navigate(['/app-smart-cloud/backup-volume/create'], {
+      queryParams: { idVolume: id, startDate: createdDate, endDate: endDate, nameVolume: name }
     });
 
   }
 
-  navigateToCreateScheduleBackup(){
+  navigateToCreateScheduleBackup() {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
 
   ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
-    console.log('project', this.project)
-    this.customerId = this.tokenService.get()?.userId
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+    console.log('project', this.project);
+    this.customerId = this.tokenService.get()?.userId;
     this.volumeService.model.subscribe(data => {
-      console.log(data)
-    })
+      console.log(data);
+    });
     // this.getListVm()
     // this.getListVolume(true)
 

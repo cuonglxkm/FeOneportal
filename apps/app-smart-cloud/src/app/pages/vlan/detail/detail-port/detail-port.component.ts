@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { Port } from '../../../../shared/models/vlan.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { debounceTime } from 'rxjs';
@@ -30,8 +30,7 @@ export class DetailPortComponent implements OnInit{
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private vlanService: VlanService,
-              private route: ActivatedRoute) {
+              private vlanService: VlanService) {
   }
 
   onPageSizeChangePort(value) {

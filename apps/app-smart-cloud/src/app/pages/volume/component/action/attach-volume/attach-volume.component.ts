@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
-import { VolumeDTO } from '../../../../../shared/dto/volume.dto';
 import { InstancesService } from '../../../../instances/instances.service';
 import { InstancesModel } from '../../../../instances/instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';

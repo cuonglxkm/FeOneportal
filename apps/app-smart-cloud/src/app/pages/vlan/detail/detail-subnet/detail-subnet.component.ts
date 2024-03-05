@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
@@ -29,8 +29,7 @@ export class DetailSubnetComponent implements OnInit{
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private vlanService: VlanService,
-              private route: ActivatedRoute) {
+              private vlanService: VlanService) {
   }
 
   onInputChangeSubnet(value) {
