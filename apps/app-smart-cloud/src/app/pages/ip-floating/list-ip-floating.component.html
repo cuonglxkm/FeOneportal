@@ -59,30 +59,41 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
-        <td>{{data.ipAddress}}</td>
+<!--        <td>{{data.ipAddress}}</td>-->
         <td>
           <span *ngIf="data.ipAddress != null || data.ipAddress != ''">{{data.ipAddress}}</span>
           <span *ngIf="data.ipAddress == null || data.ipAddress == ''">{{data.iPv6Address}}</span>
         </td>
-        <td>{{data.networkId}}</td>
+        <td>{{data.fixedIpAddress}}</td>
+        <td>{{data.network}}</td>
         <td>{{data.typeIP}}</td>
         <td>
           <div>
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Gắn IP Floating'"
-                  nzPopoverPlacement="bottom"></span>
+            <one-portal-attach-ip-floating [region]="region"
+                                           [project]="project"
+                                           [idIpFloating]="data.id"
+                                           (onOk)="handleOkAttachIpFloating()"/>
 
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-                  nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Gỡ IP Floating'"
-                  nzPopoverPlacement="bottom" ></span>
-            <span *ngIf="data.typeIP?.includes('IP WAN')"
-                  style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-                  nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Xóa'"
-                  nzPopoverPlacement="bottom"></span>
+            <one-portal-detach-ip-floating [region]="region"
+                                           [project]="project"
+                                           [idIpFloating]="data.id"
+                                           (onOk)="handleOkDetachIpFloating()" />
+            <div *ngIf="data.typeIP.includes('IP WAN')">
+              <div *ngIf="data.ipAddress != null || data.ipAddress != ''">
+                <one-portal-delete-ip-floating [region]="region"
+                                               [project]="project"
+                                               [idIpFloating]="data.id"
+                                               [ip]="data.ipAddress"
+                                               (onOk)="handleOkDeleteIpFloating()" />
+              </div>
+              <div *ngIf="data.ipAddress == null || data.ipAddress == ''">
+                <one-portal-delete-ip-floating [region]="region"
+                                               [project]="project"
+                                               [idIpFloating]="data.id"
+                                               [ip]="data.iPv6Address"
+                                               (onOk)="handleOkDeleteIpFloating()" />
+              </div>
+            </div>
           </div>
         </td>
       </tr>

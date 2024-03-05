@@ -19,6 +19,8 @@ export class IpFloating {
   resourceStatus: string
   suspendType: string
   typeIP: string
+  network: string
+  fixedIpAddress: string
 }
 
 export class FormSearchIpFloating {
@@ -34,4 +36,11 @@ export class FormSearchIpFloating {
 export class FormCreateIp {
   networkId: number
   regionId: number
+  isFloating: boolean
+}
+
+export class FormAction {
+  id: number
+  action: string
+  portId: string
 }

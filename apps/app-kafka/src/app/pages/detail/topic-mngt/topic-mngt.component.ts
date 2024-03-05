@@ -193,7 +193,7 @@ export class TopicMngtComponent implements OnInit {
             );
           }
         })
-    };
+    }
   }
 
   deleteMessages(data: KafkaTopic) {

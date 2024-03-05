@@ -1,0 +1,58 @@
+<nz-row nzJustify="space-between" style="margin-bottom: 15px;" *ngIf="!networkName?.includes('pri_network')">
+  <nz-col nzSpan="16">
+    <nz-input-group [nzPrefix]="prefixIconSearch"
+                    nzSize="large"
+                    style="width: 300px;">
+      <input name="name"
+             nz-input placeholder="Tìm kiếm"
+             [(ngModel)]="valueSubnet"
+             (input)="onInputChangeSubnet($event.target['value'])" />
+    </nz-input-group>
+    <ng-template #prefixIconSearch>
+      <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+    </ng-template>
+  </nz-col>
+  <nz-col nzSpan="8" style="flex:none;">
+    <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubnet()">
+      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+      <span class="button-text-primary">Tạo mới Subnet</span>
+    </button>
+  </nz-col>
+</nz-row>
+<nz-table #fixTableSubnet
+          nzShowPagination
+          [nzData]="responseSubnet?.records"
+          [nzTotal]="responseSubnet?.totalCount"
+          (nzPageSizeChange)="onPageSizeChangeSubnet($event)"
+          [nzPageIndex]="responseSubnet?.currentPage"
+          (nzPageIndexChange)="onPageIndexChangeSubnet($event)"
+          [nzFrontPagination]="false"
+          [nzLoading]="isLoading">
+  <thead>
+  <tr>
+    <th>Tên Subnet</th>
+    <th>Subnet</th>
+    <th>Gateway</th>
+    <th *ngIf="!networkName?.includes('pri_network')">Thao tác</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of fixTableSubnet.data">
+    <td>{{ data.name }}</td>
+    <td>{{ data.subnetAddressRequired }}</td>
+    <td>{{ data.gatewayIP }}</td>
+    <td *ngIf="!networkName?.includes('pri_network')">
+              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
+                    nzTheme="outline"
+                    (click)="navigateToEditSubnet(data.id)"
+                    nz-popover
+                    [nzPopoverContent]="'Chỉnh sửa'"
+                    nzPopoverPlacement="bottom"></span>
+      <one-portal-delete-subnet [region]="region"
+                                [project]="project"
+                                [id]="data.id"
+                                (onOk)="handleOkDeleteSubnet()" />
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
