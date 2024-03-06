@@ -30,7 +30,7 @@ export class ListFileSystemComponent implements OnInit{
   }
 
   navigateToCreateFileSystem() {
-    this.router.navigate(['/app-smart-cloud/networks/ip-wan/create'])
+    this.router.navigate(['/app-smart-cloud/networks/file-storage/file-system/create'])
   }
   ngOnInit() {
   }

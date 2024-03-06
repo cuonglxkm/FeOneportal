@@ -160,6 +160,9 @@ import { EditFileSystemComponent } from './file-storage/file-system/action/edit/
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
 import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
+import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -309,6 +312,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListAccessRuleComponent,
     CreateAccessRuleComponent,
     DeleteAccessRuleComponent,
+    ListSubUserComponent,
+    CreateSubUserComponent,
+    DeleteSubUserComponent,
   ],
   imports: [
     CommonModule,

@@ -97,6 +97,9 @@ import { CreateFileSystemComponent } from './file-storage/file-system/action/cre
 import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
 import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -422,23 +425,31 @@ const routes: Routes = [
   },
   {
     path:'networks/ip-wan/list',
-    component: ListIpFloatingComponent
+    component: ListWanComponent
   },
   {
-    path: 'networks/ip-wan/create',
+    path: 'networks/file-storage/file-system/create',
     component: CreateFileSystemComponent
   },
   {
-    path: 'networks/ip-wan/detail/:id',
+    path: 'networks/file-storage/file-system/list',
+    component: ListFileSystemComponent
+  },
+  {
+    path: 'networks/file-storage/file-system/detail/:id',
     component: DetailFileSystemComponent
   },
   {
-    path: 'networks/ip-wan/extend/:id',
+    path: 'networks/file-storage/file-system/extend/:id',
     component: ExtendFileSystemComponent
   },
   {
-    path: 'networks/ip-wan/access-rule/list',
+    path: 'networks/file-storage/file-system/access-rule/list',
     component: ListAccessRuleComponent
+  },
+  {
+    path: 'networks/object-storage/sub-user/list',
+    component: ListSubUserComponent
   }
   ]
 @NgModule({
