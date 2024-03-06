@@ -78,13 +78,6 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
-  images = [
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-  ];
-
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -97,7 +90,6 @@ export class InstancesCreateComponent implements OnInit {
     animation: 'lazy',
   };
 
-  tempData: any[];
 
   form = new FormGroup({
     name: new FormControl('', {

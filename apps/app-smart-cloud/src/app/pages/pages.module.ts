@@ -132,6 +132,13 @@ import { SubnetFormComponent } from './vlan/form/subnet-form.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
 import { CreateIpFloatingComponent } from './ip-floating/create-ip-floating/create-ip-floating.component';
 import { AttachIpFloatingComponent } from './ip-floating/attach/attach-ip-floating.component';
+import { BucketListComponent } from './bucket/bucket-list.component';
+import { BucketCreateComponent } from './bucket/bucket-create/bucket-create.component';
+import { BucketConfigureComponent } from './bucket/bucket-configure/bucket-configure.component';
+import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-hosting/static-web-hosting.component';
+import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
+import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
+import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -252,6 +259,13 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateIpFloatingComponent,
     CreateIpFloatingComponent,
     AttachIpFloatingComponent,
+    BucketListComponent,
+    BucketCreateComponent,
+    BucketConfigureComponent,
+    StaticWebHostingComponent,
+    LifecycleConfigComponent,
+    BucketPolicyComponent,
+    BucketCorsComponent,
   ],
   imports: [
     CommonModule,
