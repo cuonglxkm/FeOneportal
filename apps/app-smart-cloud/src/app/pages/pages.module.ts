@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule, DecimalPipe, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
@@ -55,15 +55,27 @@ import { ActionHistoryComponent } from './action-history/action-history.componen
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
-import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
+import {
+  CurrentVirtualMachineComponent
+} from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import { PopupDeleteSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
-import { PopupEditSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
+import {
+  PopupDeleteSnapshotVolumeComponent
+} from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
+import {
+  PopupEditSnapshotVolumeComponent
+} from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
-import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
-import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import {
+  CreateBackupVolumeComponent
+} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import {
+  DetailBackupVolumeComponent
+} from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import {
+  ListBackupVolumeComponent
+} from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { UserComponent } from './users/user.component';
 import { UserCreateComponent } from './users/user-create/user-create.component';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
@@ -97,19 +109,31 @@ import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedul
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
 import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/schedule-backup-vm.component';
 import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
-import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
-import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import {
+  EditScheduleBackupVolumeComponent
+} from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
+import {
+  EditScheduleBackupVmComponent
+} from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
 import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
-import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
-import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
-import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
+import {
+  SnapshotScheduleListComponent
+} from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
+import {
+  SnapshotScheduleCreateComponent
+} from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
+import {
+  SnapshotScheduleDetailComponent
+} from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
 import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
-import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import {
+  SnapshotScheduleEditComponent
+} from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
@@ -122,12 +146,37 @@ import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/r
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
 import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
+import { RouterListComponent } from './routers/router-list.component';
+import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
 import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
 import { VlanCreatePortComponent } from './vlan/create/create-port/vlan-create-port.component';
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
-import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { SubnetFormComponent } from './vlan/form/subnet-form.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { CreateIpFloatingComponent } from './ip-floating/create-ip-floating/create-ip-floating.component';
+import { AttachIpFloatingComponent } from './ip-floating/attach/attach-ip-floating.component';
+import { DetachIpFloatingComponent } from './ip-floating/detach/detach-ip-floating.component';
+import { DeleteIpFloatingComponent } from './ip-floating/delete/delete-ip-floating.component';
+import { DeleteVlanComponent } from './vlan/delete/delete-vlan/delete-vlan.component';
+import { VlanEditComponent } from './vlan/edit/edit-vlan/vlan-edit.component';
+import { DeleteSubnetComponent } from './vlan/delete/delete-subnet/delete-subnet.component';
+import { AttachPortComponent } from './vlan/attach/attach-port.component';
+import { DetachPortComponent } from './vlan/detach/detach-port.component';
+import { DeletePortComponent } from './vlan/delete/delete-port/delete-port.component';
+import { DetailPortComponent } from './vlan/detail/detail-port/detail-port.component';
+import { DetailSubnetComponent } from './vlan/detail/detail-subnet/detail-subnet.component';
+import { AttachVolumeComponent } from './volume/component/action/attach-volume/attach-volume.component';
+import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
+import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
+import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
+import { BucketListComponent } from './bucket/bucket-list.component';
+import { BucketCreateComponent } from './bucket/bucket-create/bucket-create.component';
+import { BucketConfigureComponent } from './bucket/bucket-configure/bucket-configure.component';
+import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-hosting/static-web-hosting.component';
+import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
+import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
+import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -237,12 +286,39 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListVlanComponent,
     BlankVolumeComponent,
     VlanDetailComponent,
+    RouterListComponent,
+    RouterDetailComponent,
     CreateNetworkComponent,
     VlanCreatePortComponent,
     VlanCreateSubnetComponent,
     VlanEditSubnetComponent,
     SubnetFormComponent,
     ListIpFloatingComponent,
+    CreateIpFloatingComponent,
+    CreateIpFloatingComponent,
+    AttachIpFloatingComponent,
+    DetachIpFloatingComponent,
+    DeleteIpFloatingComponent,
+    DeleteVlanComponent,
+    VlanEditComponent,
+    DeleteSubnetComponent,
+    AttachPortComponent,
+    DetachPortComponent,
+    DeletePortComponent,
+    DetailPortComponent,
+    DetailSubnetComponent,
+    AttachVolumeComponent,
+    AttachVolumeComponent,
+    DetachVolumeComponent,
+    DeleteVolumeComponent,
+    UpdateVolumeComponent,
+    BucketListComponent,
+    BucketCreateComponent,
+    BucketConfigureComponent,
+    StaticWebHostingComponent,
+    LifecycleConfigComponent,
+    BucketPolicyComponent,
+    BucketCorsComponent,
   ],
   imports: [
     CommonModule,

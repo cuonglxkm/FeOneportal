@@ -6,8 +6,11 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  InstanceResize,
   InstancesModel,
   Network,
+  Order,
+  OrderItem,
   SecurityGroupModel,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,6 +20,9 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-instances-create-vpc',
@@ -30,6 +36,8 @@ export class InstancesEditVpcComponent implements OnInit {
 
   instancesModel: InstancesModel;
   id: number;
+  userId: number;
+  userEmail: string;
   cloudId: string;
   regionId: number;
   projectId: number;
@@ -40,9 +48,11 @@ export class InstancesEditVpcComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
-    private router: ActivatedRoute,
-    private route: Router,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
     public message: NzMessageService,
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -59,7 +69,9 @@ export class InstancesEditVpcComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.router.paramMap.subscribe((param) => {
+    this.userId = this.tokenService.get()?.userId;
+    this.userEmail = this.tokenService.get()?.email;
+    this.activatedRoute.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService.getById(this.id, true).subscribe((data: any) => {
@@ -68,7 +80,7 @@ export class InstancesEditVpcComponent implements OnInit {
           this.cloudId = this.instancesModel.cloudId;
           this.regionId = this.instancesModel.regionId;
           this.getListIpPublic();
-          this.getAllSecurityGroup()
+          this.getAllSecurityGroup();
           this.dataService
             .getAllSecurityGroupByInstance(
               this.cloudId,
@@ -115,30 +127,81 @@ export class InstancesEditVpcComponent implements OnInit {
       });
   }
 
+  vCPU: number;
+  ram: number;
+  storage: number;
+  instanceResize: InstanceResize = new InstanceResize();
+  instanceResizeInit() {
+    this.instanceResize.description = null;
+    this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
+    this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
+    this.instanceResize.ram = this.ram + this.instancesModel.ram;
+    this.instanceResize.storage = this.storage + this.instancesModel.storage;
+    this.instanceResize.addBtqt = 0;
+    this.instanceResize.addBttn = 0;
+    this.instanceResize.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.instanceResize.serviceType = 1;
+    this.instanceResize.actionType = 4;
+    this.instanceResize.serviceInstanceId = this.instancesModel.id;
+    this.instanceResize.regionId = this.regionId;
+    this.instanceResize.serviceName = null;
+    this.instanceResize.customerId = this.userId;
+    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.userEmail = this.userEmail;
+    this.instanceResize.actorEmail = this.userEmail;
+  }
+
+  order: Order = new Order();
+  orderItem: OrderItem[] = [];
+  update() {
+    this.instanceResizeInit();
+    let specificationInstance = JSON.stringify(this.instanceResize);
+    let orderItemInstanceResize = new OrderItem();
+    orderItemInstanceResize.orderItemQuantity = 1;
+    orderItemInstanceResize.specification = specificationInstance;
+    orderItemInstanceResize.specificationType = 'instance_resize';
+    this.orderItem.push(orderItemInstanceResize);
+
+    this.order.customerId = this.userId;
+    this.order.createdByUserId = this.userId;
+    this.order.note = 'instance resize';
+    this.order.orderItems = this.orderItem;
+    console.log('order instance resize', this.order);
+
+    this.dataService.create(this.order).subscribe({
+      next: (data: any) => {
+        this.notification.success('', 'Cập nhật máy ảo hành công');
+        this.router.navigate(['/app-smart-cloud/instances']);
+      },
+      error: (error) => {
+        console.log(error.error);
+        this.notification.error('', 'Cập nhật máy ảo không thành công');
+      },
+    });
+  }
+
   onRegionChange(region: RegionModel) {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   userChangeProject() {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.id,
-    ]);
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToChangeImage() {
-    this.route.navigate([
+    this.router.navigate([
       '/app-smart-cloud/instances/instances-edit-info/' + this.id,
     ]);
   }
 
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
-
 
   getAllSecurityGroup() {
     this.dataService

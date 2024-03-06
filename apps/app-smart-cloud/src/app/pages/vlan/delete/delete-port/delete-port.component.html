@@ -1,0 +1,25 @@
+<span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
+      nz-popover
+      [nzPopoverContent]="'Xoá'"
+      nzPopoverPlacement="bottom"
+      nz-icon nzType="delete" nzTheme="outline" (click)="showModalDeletePort()"></span>
+<nz-modal [(nzVisible)]="isVisibleDeletePort" nzTitle="Xoá Port"
+          (nzOnCancel)="handleCancelDeletePort()">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xoá Port</span>
+  </div>
+  <div *nzModalContent>
+    <span>Bạn có chắc chắn muốn xóa Port không?</span>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancelDeletePort()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOkDeletePort()"
+            [nzLoading]="isLoadingDeletePort"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

@@ -56,7 +56,7 @@ export class CreateNetworkComponent implements OnInit{
     disableGatewayIp: [false],
     dhcp: [false],
     gateway: [''],
-    allocationPool: ['']
+    allocationPool: ['', [Validators.pattern('^([0-9]{1,3}\.){3}[0-9]{1,3}$')]]
   });
 
   constructor(private router: Router,
@@ -87,7 +87,7 @@ export class CreateNetworkComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/vlan/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   projectChanged(project: ProjectModel) {
@@ -95,7 +95,7 @@ export class CreateNetworkComponent implements OnInit{
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/vlan/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
   }
 
   disableGatewayIp(value) {
@@ -115,6 +115,13 @@ export class CreateNetworkComponent implements OnInit{
       this.formCreateNetwork.vpcId = this.project
       this.formCreateNetwork.regionId = this.region
       this.formCreateNetwork.customerId = this.tokenService.get()?.userId
+      this.formCreateNetwork.subnetName = this.validateForm.controls.nameSubnet.value
+      this.formCreateNetwork.gatewayIP = this.validateForm.controls.gateway.value
+      this.formCreateNetwork.dnsNameServer = null
+      // if(this.isInPurchasedSubnet())
+      this.formCreateNetwork.allocationPool = this.validateForm.controls.allocationPool.value
+      this.formCreateNetwork.enableDHCP = this.validateForm.controls.dhcp.value
+      this.formCreateNetwork.hostRoutes = null
 
       this.vlanService.createNetwork(this.formCreateNetwork).subscribe(data => {
         this.isLoading = false
@@ -128,6 +135,10 @@ export class CreateNetworkComponent implements OnInit{
     } else {
       console.log('value form invalid', this.validateForm.getRawValue())
     }
+  }
+
+  isInPurchasedSubnet(ipAddress: string): boolean {
+    return false;
   }
 
   ngOnInit() {
