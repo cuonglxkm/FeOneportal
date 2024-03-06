@@ -163,6 +163,7 @@ import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/del
 import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
+import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -315,6 +316,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListSubUserComponent,
     CreateSubUserComponent,
     DeleteSubUserComponent,
+    EditSubUserComponent,
   ],
   imports: [
     CommonModule,

@@ -1,1 +1,58 @@
-<p>list-sub-user works!</p>
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Quản lý Sub-User'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card style="border-radius: 8px;">
+    <nz-row>
+      <nz-col [nzSpan]="8">
+        <span class="text-card-header">Danh sách Sub-user</span>
+      </nz-col>
+      <nz-col [nzSpan]="16">
+        <div>
+          <nz-input-group [nzPrefix]="prefixIconSearch"
+                          nzSize="large"
+                          style="width: 300px;">
+            <input name="name"
+                   nz-input
+                   placeholder="Tìm kiếm"
+                   [(ngModel)]="value"
+                   (input)="onInputChange($event.target['value'])"/>
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+          </ng-template>
+          <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubUser()">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+            <span class="button-text-primary">Tạo mới Subuser</span>
+          </button>
+        </div>
+      </nz-col>
+    </nz-row>
+    <nz-table>
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Tên Sub-User</th>
+        <th>Access Key</th>
+        <th>Quyền truy cập</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+    </nz-table>
+  </nz-card>
+</nz-content>

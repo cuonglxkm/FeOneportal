@@ -100,6 +100,7 @@ import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-ac
 import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -450,6 +451,10 @@ const routes: Routes = [
   {
     path: 'networks/object-storage/sub-user/list',
     component: ListSubUserComponent
+  },
+  {
+    path: 'networks/object-storage/sub-user/create',
+    component: CreateSubUserComponent
   }
   ]
 @NgModule({
