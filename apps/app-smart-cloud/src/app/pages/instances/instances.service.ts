@@ -255,4 +255,12 @@ export class InstancesService extends BaseService {
       data
     );
   }
+
+  getListOffersByProductId(productId: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}`
+    );
+  }
 }

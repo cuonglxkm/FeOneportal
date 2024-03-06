@@ -145,7 +145,7 @@ export class VpcCreateComponent {
             serviceType: 12,
             serviceInstanceId: 0,
             customerId: this.tokenService.get()?.userId,
-            offerId: this.offerFlavor.id,
+            offerId: this.offerFlavor == null ? "" : this.offerFlavor.id,
             actionType: 4,
             regionId: this.regionId,
             serviceName: this.form.controls['name'].value
@@ -194,7 +194,7 @@ export class VpcCreateComponent {
 
   initFlavors(): void {
     this.instancesService
-      .getListOffers(this.regionId, 'vpc')
+      .getListOffersByProductId('150')
       .subscribe((data: any) => {
         this.listOfferFlavors = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
@@ -203,18 +203,18 @@ export class VpcCreateComponent {
         this.listOfferFlavors.forEach((e: OfferItem) => {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
-            if (ch.charName == 'cpu') {
-              e.description += ch.charOptionValues[2] + ' VCPU / ';
+            if (ch.charName == 'vcpu') {
+              e.description += ch.charOptionValues[0] + ' VCPU / ';
             }
             if (ch.charName == 'ram') {
-              e.description += ch.charOptionValues[2] + ' GB RAM / ';
+              e.description += ch.charOptionValues[0] + ' GB RAM / ';
             }
             if (ch.charName == 'hdd') {
-              e.description += ch.charOptionValues[2] + ' GB RAM / ';
+              e.description += ch.charOptionValues[0] + ' GB HHD / ';
             }
             if (ch.charName == 'ip') {
-              e.description += ch.charOptionValues[2] + ' IP ';
-              e.ipNumber = ch.charOptionValues[2];
+              e.description += ch.charOptionValues[0] + ' IP ';
+              e.ipNumber = ch.charOptionValues[0];
             }
           });
         });

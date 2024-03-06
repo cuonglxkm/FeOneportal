@@ -58,7 +58,7 @@
                         selectedElementFlavor === 'flavor_' + item.id
                       "
                     >
-                      <div>
+                      <div style="position: relative;">
                         <span
                           class="nameFlavor"
                           [class.initialNameFlavor]="
@@ -81,6 +81,9 @@
                           item.price.fixedPrice.amount
                           }}</span
                         ><span> đ/tháng</span>
+                      </div>
+                      <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                        <img src="assets/imgs/mostpop.svg">
                       </div>
                     </nz-col>
                   </nz-row>
