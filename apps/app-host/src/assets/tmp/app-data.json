@@ -149,7 +149,7 @@
                 },
                 {
                   "text": "Dải IP Kết nối WAN",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/networks/ip-wan/list"
                 },
                 {
                   "text": "Mạng LAN (VLAN)",
@@ -198,7 +198,7 @@
                 },
                 {
                   "text": "Sub User",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/networks/object-storage/sub-user/list"
                 },
                 {
                   "text": "S3 Key",
@@ -212,11 +212,11 @@
             },
             {
               "text": "File Storage",
-              "link": "/app-smart-cloud/object",
+              "link": "/app-smart-cloud/networks/file-storage/file-system/list",
               "children": [
                 {
                   "text": "File System",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/networks/file-storage/file-system/list"
                 },
                 {
                   "text": "File System Snapshot",
