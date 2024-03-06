@@ -1,0 +1,118 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Quản lý File System'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/list'">File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/extend/{{idWan}}'">Điều chỉnh File System</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form nzLayout="vertical" >
+    <nz-row>
+      <nz-col nzSpan="16">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin File System</span>
+          <nz-row>
+            <nz-col nzSpan="8">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>Tên File System</span>
+                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                </nz-form-label>
+                <nz-form-control>
+                  <input class="input-custom"  [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <span>Giao thức</span>
+                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                </nz-form-label>
+                <nz-form-control>
+                  <input class="input-custom"  [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="8">
+              <nz-form-item>
+                <nz-form-label>
+                  <span>Loại File System</span>
+                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                </nz-form-label>
+                <nz-form-control>
+                  <input class="input-custom"  [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label nzFor="storage">
+                  <div style="margin-top: 15px;">
+                    <span>Dung lượng (GB) </span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                  </div>
+                </nz-form-label>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+                  <nz-input-number formControlName="storage"
+                                   id="storage"
+                                   class="input-custom"
+                                   [nzMin]="1" [nzStep]="1"></nz-input-number>
+                  <ng-template #storageErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>
+                  <div>
+                    <span>Dung lượng File System của quý khách</span>
+                    <span style="color: rgba(252, 16, 16, 1); "> *</span>
+                  </div>
+                  <span></span>
+                </nz-form-label>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông số cấu hình</span>
+          <div>
+            <span class="text-value">Tên File System</span>
+            <span class="text-label"></span>
+          </div>
+          <div>
+            <span class="text-value">Loại File System</span>
+            <span class="text-label"></span>
+          </div>
+          <div>
+            <span class="text-value">Giao thức</span>
+            <span class="text-label"></span>
+          </div>
+          <div>
+            <span class="text-value">Dung lượng</span>
+            <span class="text-label"></span>
+          </div>
+          <nz-form-item nzAlign="bottom" nzJustify="end">
+            <nz-form-control>
+              <button nz-button nzType="primary"
+                      class="button-ok">
+                <span nz-icon nzType="edit" nzTheme="outline"></span>Chỉnh sửa</button>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </form>
+
+</nz-content>
