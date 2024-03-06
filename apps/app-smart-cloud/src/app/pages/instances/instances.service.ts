@@ -160,10 +160,8 @@ export class InstancesService extends BaseService {
   }
 
   create(data: any): Observable<any> {
-    let url_ = ``;
-    url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.orders + url_,
+      this.baseUrl + this.ENDPOINT.orders,
       data,
       this.httpOptions
     );

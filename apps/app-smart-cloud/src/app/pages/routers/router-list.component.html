@@ -139,7 +139,7 @@
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
-            (click)="modalEdit(data.cloudId)"
+            (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Chỉnh sửa"
           />
@@ -220,7 +220,7 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="nameRouter"
+      [(ngModel)]="routerCreate.routerName"
       [ngModelOptions]="{ standalone: true }"
     />
     <span class="text-label"
@@ -236,12 +236,13 @@
         <nz-select
           [nzPlaceHolder]="'-- Chọn Network --'"
           [nzShowSearch]="true"
+          [(ngModel)]="routerCreate.networkId"
           nzSize="large"
         >
           <nz-option
-            *ngFor="let i of listNetwork"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
+            *ngFor="let p of listNetwork"
+            [nzValue]="p.cloudId"
+            [nzLabel]="p.name"
           />
         </nz-select>
       </nz-input-group>
@@ -292,7 +293,7 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="resetPassword"
+      [(ngModel)]="routerUpdate.routerName"
       [ngModelOptions]="{ standalone: true }"
     />
     <span class="text-label"
@@ -308,12 +309,13 @@
         <nz-select
           [nzPlaceHolder]="'-- Chọn Network --'"
           [nzShowSearch]="true"
+          [(ngModel)]="routerUpdate.networkId"
           nzSize="large"
         >
           <nz-option
-            *ngFor="let i of listNetwork"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
+            *ngFor="let p of listNetwork"
+            [nzValue]="p.cloudId"
+            [nzLabel]="p.name"
           />
         </nz-select>
       </nz-input-group>

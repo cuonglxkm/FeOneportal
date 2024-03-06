@@ -21,7 +21,6 @@
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
     </div>
@@ -75,7 +74,7 @@
                 <img
                   src="assets/imgs/trash.svg"
                   alt=""
-                  (click)="modalDeleteInterface(item.id)"
+                  (click)="modalDeleteInterface(item.subnetId)"
                   style="cursor: pointer; margin-right: 16px"
                   nz-tooltip="Xóa"
                 />
@@ -127,7 +126,7 @@
               <img
                 src="assets/imgs/trash.svg"
                 alt=""
-                (click)="modalDeleteStatic(item.id)"
+                (click)="modalDeleteStatic(item)"
                 style="cursor: pointer; margin-right: 16px"
                 nz-tooltip="Xóa"
               />
@@ -156,7 +155,7 @@
 >
   <ng-container *nzModalContent>
     <div class="text-label">
-      Dải Subnet đích (CIDR) (<span class="text-red">*</span>)
+      Chọn Subnet (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="message-question"
@@ -164,14 +163,18 @@
         alt=""
       />
     </div>
-    <input
-      style="margin-bottom: 20px"
-      class="input-custom"
-      nz-input
-      placeholder=""
-      [(ngModel)]="destinationSubnet"
-      [ngModelOptions]="{ standalone: true }"
-    />
+    <nz-select
+      [nzPlaceHolder]="'-- Chọn Subnet --'"
+      [nzShowSearch]="true"
+      [(ngModel)]="routerCreate.networkId"
+      nzSize="large"
+    >
+      <nz-option
+        *ngFor="let p of listSubnet"
+        [nzValue]="p.cloudId"
+        [nzLabel]="p.name"
+      />
+    </nz-select>
     <div class="text-label">
       IP của Router Interdace (<span class="text-red">*</span>)
       <img
@@ -185,7 +188,7 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="ipRouterInterface"
+      [(ngModel)]="routerInterfaceCreate.ipAddress"
       [ngModelOptions]="{ standalone: true }"
     />
   </ng-container>
@@ -227,7 +230,7 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="destinationSubnet"
+      [(ngModel)]="staticRouterCreate.destinationCIDR"
       [ngModelOptions]="{ standalone: true }"
     />
     <div class="text-label">
@@ -243,7 +246,7 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="nextHop"
+      [(ngModel)]="staticRouterCreate.nextHop"
       [ngModelOptions]="{ standalone: true }"
     />
   </ng-container>

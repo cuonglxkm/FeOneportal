@@ -146,6 +146,13 @@ import { AttachVolumeComponent } from './volume/component/action/attach-volume/a
 import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
 import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
 import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
+import { BucketListComponent } from './bucket/bucket-list.component';
+import { BucketCreateComponent } from './bucket/bucket-create/bucket-create.component';
+import { BucketConfigureComponent } from './bucket/bucket-configure/bucket-configure.component';
+import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-hosting/static-web-hosting.component';
+import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
+import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
+import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
 import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
@@ -299,6 +306,13 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetachVolumeComponent,
     DeleteVolumeComponent,
     UpdateVolumeComponent,
+    BucketListComponent,
+    BucketCreateComponent,
+    BucketConfigureComponent,
+    StaticWebHostingComponent,
+    LifecycleConfigComponent,
+    BucketPolicyComponent,
+    BucketCorsComponent,
     ListFileSystemComponent,
     ListWanComponent,
     DeleteWanComponent,
