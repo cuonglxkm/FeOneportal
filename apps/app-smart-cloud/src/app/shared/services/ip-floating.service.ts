@@ -3,8 +3,9 @@ import { BaseService } from './base.service';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FormCreateIp, FormSearchIpFloating, IpFloating } from '../models/ip-floating.model';
+import { FormAction, FormCreateIp, FormSearchIpFloating, IpFloating } from '../models/ip-floating.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { head } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,24 @@ export class IpFloatingService extends BaseService {
 
   createIp(formCreate: FormCreateIp) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate), {
+      headers: this.getHeaders()
+    })
+  }
+
+  deleteIp(id) {
+    let params = new HttpParams()
+    if(id != undefined || id != null) {
+      params = params.append('id', id)
+    }
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/ip-internet-vpc', {
+      headers: this.getHeaders(),
+      params: params
+    })
+  }
+
+
+  action(formAction: FormAction) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions+'/ip-internet-vpc', Object.assign(formAction), {
       headers: this.getHeaders()
     })
   }

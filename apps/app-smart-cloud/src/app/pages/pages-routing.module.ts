@@ -91,7 +91,7 @@ import { RouterListComponent } from "./routers/router-list.component";
 import { RouterDetailComponent } from "./routers/router-detail/router-detail.component";
 import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
-import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
 
 const routes: Routes = [

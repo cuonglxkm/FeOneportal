@@ -3,10 +3,10 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { VlanService } from '../../../shared/services/vlan.service';
-import { FormUpdateSubnet, Subnet } from '../../../shared/models/vlan.model';
-import { RegionModel } from '../../../shared/models/region.model';
-import { ProjectModel } from '../../../shared/models/project.model';
+import { VlanService } from '../../../../shared/services/vlan.service';
+import { FormUpdateSubnet, Subnet } from '../../../../shared/models/vlan.model';
+import { RegionModel } from '../../../../shared/models/region.model';
+import { ProjectModel } from '../../../../shared/models/project.model';
 
 @Component({
   selector: 'one-portal-vlan-edit-subnet',

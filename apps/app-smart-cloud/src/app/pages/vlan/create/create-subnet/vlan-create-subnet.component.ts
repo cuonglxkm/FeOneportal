@@ -48,7 +48,7 @@ export class VlanCreateSubnetComponent implements OnInit{
     disableGatewayIp: [false],
     dhcp: [false],
     gateway: [''],
-    comment: [''],
+    comment: ['', [Validators.pattern('^([0-9]{1,3}\.){3}[0-9]{1,3}$')]],
     hostRoute: [null as string[]]
   })
 
@@ -95,7 +95,7 @@ export class VlanCreateSubnetComponent implements OnInit{
     this.formCreateSubnet.name = value.name
     this.formCreateSubnet.vlanId = this.idNetwork
     this.formCreateSubnet.region = this.region
-    this.formCreateSubnet.networktAddress = value.networkAddress
+    this.formCreateSubnet.networktAddress = value.subnetAddressRequired
     this.formCreateSubnet.gatewayIP = value.gateway
     this.formCreateSubnet.allocationPool = value.allocationPool
     this.formCreateSubnet.dnsNameServer = null
