@@ -1,0 +1,70 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Xem chi tiết File System Snapshot'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+          >Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+        >Quản lý File System Snapshot</a
+      ></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Xem chi tiết File System Snapshot</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+
+
+    <nz-card>
+      <h2 class="custom-title">Thông tin lịch Snapshot</h2>
+      <div nz-row [nzGutter]="16">
+          <div nz-col class="gutter-row" [nzSpan]="12">
+            <p style="margin: 8px" nzRequired>Tên Snapshot <span style="color: red;">(*)</span></p>
+          <input readonly nz-input type="text" required placeholder="Chọn File System" style="padding: 10px;" />
+          </div>
+          <div nz-col class="gutter-row" [nzSpan]="12">
+            <nz-form-label nzFor="name" nzRequired>Dung lượng - GB (*)</nz-form-label>
+            <input
+            readonly 
+              style="padding: 10px;"
+              nz-input
+              type="text"
+              required
+              placeholder="Nhập tên Snapshot"
+            />
+          </div>
+        <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+        <textarea placeholder="Nhập mô tả" rows="4" nz-input></textarea>
+      </div>
+    </nz-card>
+
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+>
+</div>

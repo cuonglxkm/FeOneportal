@@ -1,0 +1,51 @@
+<button nz-button nzType="primary" nzSize="large" (click)="showModalCreateFileSystem()">
+  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+  <span class="button-text-primary">Tạo File S</span>
+</button>
+<nz-modal [(nzVisible)]="isVisible"
+          nzCentered
+          [nzTitle]="modalTitle"
+          [nzContent]="modalContent"
+          [nzFooter]="null"
+          (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    <span class="text-modal-title">Cấp phát IP Floating</span>
+  </ng-template>
+  <ng-template #modalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <nz-alert nzType="warning"
+                nzDescription="Bạn đang thực hiện cấp phát IP Floating"
+                nzShowIcon
+                style="margin-bottom: 24px;">
+      </nz-alert>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Network</span>
+            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'network'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="networkId"
+                     nzPlaceHolder="Chọn Network">
+            <nz-option *ngFor="let item of listNetwork" [nzValue]="item.id"
+                       nzLabel="{{item.name}} - ({{ item.subnetAddressRequired }})"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="middle">
+          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">Quay lại</button>
+          <nz-form-control *nzSpaceItem>
+            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" [disabled]="!validateForm.valid">Tạo mới</button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>

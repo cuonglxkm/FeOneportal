@@ -1,0 +1,11 @@
+<button nz-button nzType="primary" nzSize="large" (click)="showModalCreateFileSystem()">
+  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+  <span class="button-text-primary">Tạo File System</span>
+</button>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <ng-container *nzModalContent>
+    <p>Content one</p>
+    <p>Content two</p>
+    <p>Content three</p>
+  </ng-container>
+</nz-modal>
