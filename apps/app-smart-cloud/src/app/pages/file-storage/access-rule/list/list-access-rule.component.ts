@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'one-portal-list-file-system',
-  templateUrl: './list-file-system.component.html',
-  styleUrls: ['./list-file-system.component.less'],
+  selector: 'one-portal-list-access-rule',
+  templateUrl: './list-access-rule.component.html',
+  styleUrls: ['./list-access-rule.component.less'],
 })
-export class ListFileSystemComponent implements OnInit{
+export class ListAccessRuleComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -29,9 +29,6 @@ export class ListFileSystemComponent implements OnInit{
     this.project = project?.id
   }
 
-  navigateToCreateFileSystem() {
-    this.router.navigate(['/app-smart-cloud/networks/ip-wan/create'])
-  }
   ngOnInit() {
   }
 }

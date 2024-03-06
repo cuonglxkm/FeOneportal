@@ -93,6 +93,10 @@ import { CreateNetworkComponent } from './vlan/create/create-network/create-netw
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -419,6 +423,22 @@ const routes: Routes = [
   {
     path:'networks/ip-wan/list',
     component: ListIpFloatingComponent
+  },
+  {
+    path: 'networks/ip-wan/create',
+    component: CreateFileSystemComponent
+  },
+  {
+    path: 'networks/ip-wan/detail/:id',
+    component: DetailFileSystemComponent
+  },
+  {
+    path: 'networks/ip-wan/extend/:id',
+    component: ExtendFileSystemComponent
+  },
+  {
+    path: 'networks/ip-wan/access-rule/list',
+    component: ListAccessRuleComponent
   }
   ]
 @NgModule({

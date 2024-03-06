@@ -152,6 +152,14 @@ import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component
 import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
 import { CreateWanComponent } from './wan/create/create-wan.component';
 import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
+import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
+import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -292,7 +300,15 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteWanComponent,
     DetachWanComponent,
     CreateWanComponent,
-    AttachWanComponent
+    AttachWanComponent,
+    CreateFileSystemComponent,
+    DetailFileSystemComponent,
+    ExtendFileSystemComponent,
+    DeleteFileSystemComponent,
+    EditFileSystemComponent,
+    ListAccessRuleComponent,
+    CreateAccessRuleComponent,
+    DeleteAccessRuleComponent,
   ],
   imports: [
     CommonModule,

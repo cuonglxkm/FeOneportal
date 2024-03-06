@@ -1,0 +1,94 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Quản lý File System'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/ip-wan/list'">File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/ip-wan/detail/{{idWan}}'">{{ wanName }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <span class="text-card-header">Thông tin File System</span>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>
+            <span>ID</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>Loại File System</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>Trạng thái</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>Dung lượng</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Tên File System</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>Giao thức</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            <span>Mount target address</span>
+          </nz-form-label>
+          <nz-form-control>
+            <input class="input-custom"  [disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-form-item>
+      <nz-form-label>
+        <span>Mount target address</span>
+      </nz-form-label>
+      <nz-form-control>
+        <textarea nz-input rows="4" [value]="" [disabled]="true" ></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+</nz-content>

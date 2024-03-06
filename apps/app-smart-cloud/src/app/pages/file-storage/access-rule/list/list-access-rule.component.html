@@ -1,5 +1,5 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý File System'">
+             [title]="'Quản lý Access Rule'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
@@ -19,24 +19,27 @@
 <nz-content>
   <nz-card style="border-radius: 8px;">
     <nz-row>
-      <nz-col [nzSpan]="8">
-        <span class="text-card-header">Danh sách địa chỉ IP kết nối WAN</span>
+      <nz-col nzSpan="8">
+        <span>Danh sách Access Rule</span>
       </nz-col>
-      <nz-col [nzSpan]="16">
+      <nz-col nzSpan="16">
         <div>
+          <span>Access Level</span>
+          <nz-select>
+            <nz-option [nzValue]="1" [nzLabel]="'Read-Only'"></nz-option>
+            <nz-option [nzValue]="2" [nzLabel]="'Read-Write'"></nz-option>
+          </nz-select>
           <nz-input-group [nzPrefix]="prefixIconSearch"
-                          nzSize="large"
-                          style="width: 300px;">
-            <input name="name"
-                   nz-input
-                   placeholder="Tìm kiếm"
-                   [(ngModel)]="value"
-                   (input)="onInputChange($event.target['value'])"/>
+                          nzSize="large">
+            <input nz-input
+                   class="input-custom"
+                   [ngModel]="value"
+                   (ngModelChange)="onInputChange($event)" />
           </nz-input-group>
           <ng-template #prefixIconSearch>
             <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
           </ng-template>
-          <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
+          <button nz-button nzType="primary" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
             <span class="button-text-primary">Tạo File System</span>
           </button>
@@ -46,13 +49,11 @@
     <nz-table>
       <thead>
       <tr>
-        <th>STT</th>
-        <th>Tên</th>
-        <th>Trạng thái</th>
-        <th>Trạng thái tác vụ</th>
-        <th>Loại File System</th>
-        <th>Giao thức</th>
-        <th>Dung lượng</th>
+        <th>Access Type</th>
+        <th>Access To</th>
+        <th>Access Level</th>
+        <th>Status</th>
+        <th>Ngày tạo</th>
         <th>Thao tác</th>
       </tr>
       </thead>
