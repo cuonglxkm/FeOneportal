@@ -8,7 +8,7 @@ import { RouterUpdate } from '../models/router.model';
 @Injectable({
   providedIn: 'root',
 })
-export class RouterService extends BaseService {
+export class BucketService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
