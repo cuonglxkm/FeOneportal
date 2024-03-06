@@ -59,6 +59,7 @@ export class CreateIpFloatingComponent implements OnInit{
       let formCreate: FormCreateIp = new FormCreateIp()
       formCreate.networkId = this.validateForm.controls.networkId.value
       formCreate.regionId = this.region
+      formCreate.isFloating = true
       this.ipFloatingService.createIp(formCreate).subscribe(data => {
         this.isVisible = false
         this.isLoading = false
