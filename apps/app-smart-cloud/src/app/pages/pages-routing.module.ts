@@ -93,6 +93,9 @@ import { CreateNetworkComponent } from './vlan/create/create-network/create-netw
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { BucketListComponent } from "./bucket/bucket-list.component";
+import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.component";
+import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
 import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
 import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
@@ -401,11 +404,11 @@ const routes: Routes = [
     loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule)
   },
   {
-    path: 'vpc/router',
+    path: 'network/router',
     component: RouterListComponent
   },
   {
-    path: 'vpc/router/detail',
+    path: 'network/router/detail',
     component: RouterDetailComponent
   },
   {
@@ -455,7 +458,15 @@ const routes: Routes = [
   {
     path: 'networks/object-storage/sub-user/create',
     component: CreateSubUserComponent
-  }
+  },
+  {
+    path: 'object-storage/bucket',
+    component: BucketConfigureComponent
+  },
+  {
+    path: 'object-storage/bucket/create',
+    component: BucketCreateComponent
+  },
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
