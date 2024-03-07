@@ -85,7 +85,22 @@ export class ListWanComponent implements OnInit{
       if (isBegin) {
         this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
+    }, error => {
+      this.isLoading = false
+      this.response = null
     })
+  }
+
+  handleOkAttach() {
+    this.getListWanIps(false)
+  }
+
+  handleOkDetach() {
+    this.getListWanIps(false)
+  }
+
+  handleOkDelete() {
+    this.getListWanIps(false)
   }
 
   ngOnInit() {
@@ -94,6 +109,7 @@ export class ListWanComponent implements OnInit{
     this.project = regionAndProject.projectId;
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
+
     this.wanService.model.subscribe(data => {
       console.log(data);
     });

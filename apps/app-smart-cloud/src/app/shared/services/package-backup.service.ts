@@ -25,14 +25,6 @@ export class PackageBackupService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   search(packageName: string, status: string, pageSize: number, currentPage: number) {
     if (packageName == undefined) {
       packageName = ''
@@ -47,9 +39,8 @@ export class PackageBackupService extends BaseService {
       currentPage = 1
     }
     return this.http.get<BaseResponse<PackageBackupModel[]>>(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages?packageName=${packageName}&status=${status}&pageSize=${pageSize}&currentPage=${currentPage}`,
-      {headers: this.getHeaders()}).pipe(
-      catchError((error: HttpErrorResponse) => {
+      + `/backups/packages?packageName=${packageName}&status=${status}&pageSize=${pageSize}&currentPage=${currentPage}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -69,8 +60,7 @@ export class PackageBackupService extends BaseService {
 
   detail(id: number) {
     return this.http.get<PackageBackupModel>(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}`,
-      {headers: this.getHeaders()}).pipe(
+      + `/backups/packages/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -84,7 +74,7 @@ export class PackageBackupService extends BaseService {
 
   delete(id: number) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}`, {headers: this.getHeaders()}).pipe(
+      + `/backups/packages/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -98,7 +88,7 @@ export class PackageBackupService extends BaseService {
 
   createOrder(request: BackupPackageRequestModel) {
     return this.http.post<BackupPackageResponseModel>(this.baseUrl + this.ENDPOINT.orders,
-      Object.assign(request), {headers: this.getHeaders()}).pipe(
+      Object.assign(request)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -112,8 +102,7 @@ export class PackageBackupService extends BaseService {
 
   update(form: FormUpdate) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${form.packageId}`, Object.assign(form),
-      {headers: this.getHeaders()}).pipe(
+      + `/backups/packages/${form.packageId}`, Object.assign(form)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -127,9 +116,8 @@ export class PackageBackupService extends BaseService {
 
   getServiceInPackage(id: number) {
     console.log('url', this.baseUrl + this.ENDPOINT.provisions + '/backups/packages/' +id +'/services')
-    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`,
-      {headers: this.getHeaders()}).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

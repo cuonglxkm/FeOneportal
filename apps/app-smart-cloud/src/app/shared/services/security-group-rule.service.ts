@@ -17,18 +17,9 @@ export class SecurityGroupRuleService extends BaseService {
         super();
     }
 
-    private getHeaders() {
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'user_root_id': this.tokenService.get()?.userId,
-            'Authorization': 'Bearer ' + this.tokenService.get()?.token
-        })
-    }
-
     create(form: SecurityGroupRuleCreateForm) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form), {
-            headers: this.getHeaders()
-        }).pipe(
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form))
+          .pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
@@ -42,7 +33,6 @@ export class SecurityGroupRuleService extends BaseService {
 
     delete(id: string, condition: SecurityGroupSearchCondition) {
         return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', {
-            headers: this.getHeaders(),
             body: JSON.stringify({id, ...condition})
         }).pipe(
           catchError((error: HttpErrorResponse) => {
@@ -68,7 +58,6 @@ export class SecurityGroupRuleService extends BaseService {
         params = params.append('direction', condition.direction);
 
         return this.http.get<Pagination<SecurityGroupRule>>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', {
-            headers: this.getHeaders(),
             params: params
         }).pipe(
           catchError((error: HttpErrorResponse) => {

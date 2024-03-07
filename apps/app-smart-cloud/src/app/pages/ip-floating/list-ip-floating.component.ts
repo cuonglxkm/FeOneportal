@@ -91,7 +91,10 @@ export class ListIpFloatingComponent implements OnInit {
         if (isCheckBegin) {
           this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
         }
-    })
+    }, error => {
+        this.isLoading = false
+        this.response = null
+      })
   }
 
   handleOkCreateIpFloating() {

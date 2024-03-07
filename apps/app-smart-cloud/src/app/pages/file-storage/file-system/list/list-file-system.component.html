@@ -70,19 +70,40 @@
       <tr *ngFor="let data of fixTable.data; i as index">
         <td>{{ index }}</td>
         <td>{{ data.name }}</td>
-        <td>{{ data.status }}</td>
+        <td>
+          <div class="status" [ngSwitch]="data.status">
+                                <span class="available" *ngSwitchCase="'AVAILABLE'">
+                                            Đang hoạt động
+                                          </span>
+<!--            <span class="available" *ngSwitchCase="'CREATING'">-->
+<!--                                            Đang khởi tạo-->
+<!--                                          </span>-->
+<!--            <span class="suspended" *ngSwitchCase="'SUSPENDED'">-->
+<!--                                            Tạm dừng-->
+<!--                                          </span>-->
+            <span class="suspended" *ngSwitchCase="'ERROR'">
+                                            Lỗi
+                                          </span>
+          </div>
+        </td>
         <td>{{ data.taskState }}</td>
         <td>{{ data.type }}</td>
         <td>{{ data.protocol }}</td>
         <td>{{ data.size }}</td>
         <td>
           <div>
-            <span style="color: #0066B3;" class="more" nz-icon nzType="edit" nzTheme="outline"></span>
+            <one-portal-edit-file-system [region]="region"
+                                         [project]="project"
+                                         [fileSystemId]="data.id"
+                                         (onOk)="handleOkEdit()"/>
             <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
                   [nzDropdownMenu]="opMenu"></span>
             <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li></li>
+                <li nz-menu-item>Tạo Snapshot</li>
+                <li nz-menu-item>Điều chỉnh dung lượng</li>
+                <li nz-menu-item>Quản lý Access Rule</li>
+                <li nz-menu-item>Xoá</li>
               </ul>
             </nz-dropdown-menu>
           </div>

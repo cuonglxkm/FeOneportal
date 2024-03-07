@@ -21,14 +21,6 @@ export class SecurityGroupService extends BaseService {
         super();
     }
 
-    private getHeaders() {
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'user_root_id': this.tokenService.get()?.userId,
-            'Authorization': 'Bearer ' + this.tokenService.get()?.token
-        })
-    }
-
     search(condition: SecurityGroupSearchCondition): Observable<SecurityGroup[]> {
         let params = new HttpParams();
         params = params.append('userId', condition.userId);
@@ -36,7 +28,6 @@ export class SecurityGroupService extends BaseService {
         params = params.append('regionId', condition.regionId);
 
         return this.http.get<SecurityGroup[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getall', {
-            headers: this.getHeaders(),
             params: params
         }).pipe(
           catchError((error: HttpErrorResponse) => {
@@ -52,8 +43,7 @@ export class SecurityGroupService extends BaseService {
 
     create(form: SecurityGroupCreateForm, condition: SecurityGroupSearchCondition) {
         return this.http
-            .post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form, condition),
-                {headers: this.getHeaders()})
+            .post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form, condition))
           .pipe(
             catchError((error: HttpErrorResponse) => {
               if (error.status === 401) {
@@ -68,7 +58,6 @@ export class SecurityGroupService extends BaseService {
 
     delete(id: string, condition: SecurityGroupSearchCondition) {
         return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group', {
-            headers: this.getHeaders(),
             body: JSON.stringify({id, ...condition})
         }).pipe(
           catchError((error: HttpErrorResponse) => {
@@ -83,9 +72,9 @@ export class SecurityGroupService extends BaseService {
     }
 
     attachOrDetach(form: ExecuteAttachOrDetach){
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/action', Object.assign(form), {
-            headers: this.getHeaders()
-        }).pipe(
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/action',
+          Object.assign(form))
+          .pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');

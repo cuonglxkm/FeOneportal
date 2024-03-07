@@ -150,11 +150,8 @@ export class BackupVmService extends BaseService {
     }
 
     create(data: CreateBackupVmOrderData) {
-        return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data),
-          {
-            headers: this.getHeaders()
-        }).pipe(
-          catchError((error: HttpErrorResponse) => {
+        return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
+          .pipe(catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
             } else if (error.status === 404) {

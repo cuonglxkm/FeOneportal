@@ -19,14 +19,6 @@ export class FileSystemService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   search(formSearch: FormSearchFileSystem) {
     let params = new HttpParams()
     if(formSearch.regionId != undefined || formSearch.regionId != null) {
@@ -47,8 +39,9 @@ export class FileSystemService extends BaseService {
     if(formSearch.currentPage != undefined || formSearch.currentPage != null) {
       params = params.append('currentPage', formSearch.currentPage)
     }
-    return this.http.get<BaseResponse<FileSystemModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/sharepaging', {
-      headers: this.getHeaders()
+    return this.http.get<BaseResponse<FileSystemModel[]>>(this.baseUrl +
+      this.ENDPOINT.provisions + '/file-storage/sharepaging', {
+      params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

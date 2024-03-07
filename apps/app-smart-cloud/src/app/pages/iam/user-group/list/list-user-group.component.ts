@@ -136,6 +136,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
       this.loading = false
     }, error => {
       this.collection = null
+      this.loading = false
     })
   }
 

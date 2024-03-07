@@ -125,6 +125,9 @@ export class VolumeComponent implements OnInit {
         if (isBegin) {
           this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
         }
+      }, error => {
+        this.isLoading = false;
+        this.response = null;
       });
   }
 

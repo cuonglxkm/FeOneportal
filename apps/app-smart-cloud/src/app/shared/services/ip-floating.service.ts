@@ -21,14 +21,6 @@ export class IpFloatingService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   getListIpFloating(formSearch: FormSearchIpFloating) {
     let params = new HttpParams()
     if(formSearch.projectId != undefined || formSearch.projectId != null) {
@@ -53,10 +45,8 @@ export class IpFloatingService extends BaseService {
       params = params.append('currentPage', formSearch.currentPage)
     }
     return this.http.get<BaseResponse<IpFloating[]>>(this.baseUrl + this.ENDPOINT.provisions + '/ip-internet-vpc',{
-      headers: this.getHeaders(),
       params: params
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    }).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -68,10 +58,8 @@ export class IpFloatingService extends BaseService {
   }
 
   createIp(formCreate: FormCreateIp) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -88,7 +76,6 @@ export class IpFloatingService extends BaseService {
       params = params.append('id', id)
     }
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/ip-internet-vpc', {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -104,10 +91,8 @@ export class IpFloatingService extends BaseService {
 
 
   action(formAction: FormAction) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions+'/ip-internet-vpc', Object.assign(formAction), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions+'/ip-internet-vpc', Object.assign(formAction))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

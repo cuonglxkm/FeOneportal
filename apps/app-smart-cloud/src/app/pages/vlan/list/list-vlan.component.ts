@@ -106,7 +106,10 @@ export class ListVlanComponent implements OnInit{
       if (isCheckBegin) {
         this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
       }
-    })
+    }, error => {
+        this.response = null
+        this.isLoading = false
+      })
   }
 
   handleOkEdit() {

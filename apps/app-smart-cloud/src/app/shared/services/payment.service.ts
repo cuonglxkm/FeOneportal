@@ -17,14 +17,6 @@ export class PaymentService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   search(paymentSearch: PaymentSearch) {
     let params = new HttpParams()
     if (paymentSearch.code != undefined || paymentSearch.code != null) {
@@ -50,10 +42,7 @@ export class PaymentService extends BaseService {
     }
 
     return this.http.get<BaseResponse<PaymentModel[]>>(this.baseUrl + this.ENDPOINT.payments + '/Paging', {
-      headers: this.getHeaders(),
-      params: params
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+      params: params }).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -66,7 +55,7 @@ export class PaymentService extends BaseService {
 
   export(id: number) {
     return this.http.get(this.baseUrl + `/invoices/export/${id}`,
-      {headers: this.getHeaders(), responseType: 'blob' as 'json'}).pipe(
+      {responseType: 'blob' as 'json'}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

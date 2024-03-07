@@ -10,7 +10,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 export class EditFileSystemComponent {
   @Input() region: number
   @Input() project: number
-  @Input() wanId: number
+  @Input() fileSystemId: number
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 

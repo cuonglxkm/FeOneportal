@@ -19,14 +19,6 @@ export class WanService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   search(formSearch: FormSearch) {
     let params = new HttpParams()
     if(formSearch.customerId != undefined || formSearch.customerId != null) {
@@ -58,7 +50,6 @@ export class WanService extends BaseService {
     }
 
     return this.http.get<BaseResponse<WanIP[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan/ips', {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -73,10 +64,8 @@ export class WanService extends BaseService {
   }
 
   create(formCreate: FormCreate) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -88,10 +77,8 @@ export class WanService extends BaseService {
   }
 
   action(formAction: FormAction) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formAction), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formAction))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -103,10 +90,8 @@ export class WanService extends BaseService {
   }
 
   delete(id) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpc-wan?id=${id}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpc-wan?id=${id}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

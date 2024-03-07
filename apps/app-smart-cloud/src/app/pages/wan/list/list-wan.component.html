@@ -66,23 +66,23 @@
         <td>{{ data.attachedVmName }}</td>
         <td>
           <div *ngIf="data.attachedVmName != undefined || data.attachedVmName != null">
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-                  nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'Gỡ máy ảo'"
-                  nzPopoverPlacement="bottom"></span>
+            <one-portal-detach-wan [region]="region"
+                                   [project]="project"
+                                   [idWan]="data.id"
+                                   [addressWan]="data.ipAddress"
+                                   [instance]="data.attachedVmName"
+                                   (onOk)="handleOkDetach()"/>
           </div>
           <div *ngIf="data.attachedVmName != undefined || data.attachedVmName != null">
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Gắn máy ảo'"
-                  nzPopoverPlacement="bottom"></span>
+            <one-portal-attach-wan [region]="region"
+                                   [project]="project"
+                                   [idWan]="data.id"  (onOk)="handleOkAttach()"/>
           </div>
-          <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-                nz-popover
-                [nzPopoverContent]="'Xoá'"
-                nzPopoverPlacement="bottom"
-                nz-icon nzType="delete" nzTheme="outline"></span>
+          <one-portal-delete-wan [region]="region"
+                                 [project]="project"
+                                 [idWan]="data.id"
+                                 [addressWan]="data.ipAddress"
+                                 (onOk)="handleOkDelete()" />
         </td>
       </tr>
       </tbody>

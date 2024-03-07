@@ -88,6 +88,10 @@ export class ListFileSystemComponent implements OnInit {
       });
   }
 
+  handleOkEdit() {
+    this.getListFileSystem(false)
+  }
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();

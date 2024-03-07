@@ -24,14 +24,6 @@ export class ScheduleService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   search(formSearch: FormSearchScheduleBackup) {
     let params = new HttpParams()
     if(formSearch.scheduleName !== undefined) {
@@ -57,7 +49,6 @@ export class ScheduleService extends BaseService {
       params = params.append('scheduleStatus', formSearch.scheduleStatus)
     }
     return this.http.get<BaseResponse<BackupSchedule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules', {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -73,9 +64,8 @@ export class ScheduleService extends BaseService {
 
   detail(customerId: number, id: number) {
     return this.http.get<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customerId=${customerId}`,
-      {headers: this.getHeaders()}).pipe(
-      catchError((error: HttpErrorResponse) => {
+        `/backups/schedules/${id}?customerId=${customerId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -88,8 +78,7 @@ export class ScheduleService extends BaseService {
 
   action(formAction: FormAction) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules/action',
-        Object.assign(formAction),
-      {headers: this.getHeaders()}).pipe(
+        Object.assign(formAction)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -103,8 +92,8 @@ export class ScheduleService extends BaseService {
 
   delete(customerId: number, id: number) {
     return this.http.delete<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customer=${customerId}`,
-      {headers: this.getHeaders()}).pipe(
+        `/backups/schedules/${id}?customer=${customerId}`)
+      .pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -118,8 +107,7 @@ export class ScheduleService extends BaseService {
 
   create(formCreate: FormCreateSchedule) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
-        Object.assign(formCreate),
-      {headers: this.getHeaders()}).pipe(
+        Object.assign(formCreate)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -133,8 +121,7 @@ export class ScheduleService extends BaseService {
 
   edit(formEdit: FormEditSchedule) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
-         Object.assign(formEdit),
-      {headers: this.getHeaders()}).pipe(
+         Object.assign(formEdit)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -149,9 +136,8 @@ export class ScheduleService extends BaseService {
   getCapacityBackup(regionId: number, projectId: number) {
     return this.http.get<CapacityBackupSchedule[]>(this.baseUrl +
         this.ENDPOINT.provisions +
-        `/backups/capacity?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}&projectId=${projectId}`,
-        {headers: this.getHeaders()}).pipe(
-      catchError((error: HttpErrorResponse) => {
+        `/backups/capacity?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}&projectId=${projectId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

@@ -27,14 +27,6 @@ export class VlanService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   getVlanNetworks(formSearch: FormSearchNetwork) {
     let params = new HttpParams()
     if (formSearch.vlanName != undefined || formSearch.vlanName != null) {
@@ -53,7 +45,6 @@ export class VlanService extends BaseService {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
     return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlannetworks', {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -85,7 +76,6 @@ export class VlanService extends BaseService {
       params = params.append('name', name)
     }
     return this.http.get<BaseResponse<Port[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/findportbynetworkid', {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -120,7 +110,6 @@ export class VlanService extends BaseService {
       params = params.append('networkId', formSearchSubnet.networkId)
     }
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -135,9 +124,7 @@ export class VlanService extends BaseService {
   }
 
   getVlanByNetworkId(idNetwork) {
-    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}`, {
-      headers: this.getHeaders()
-    }).pipe(
+    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -150,9 +137,7 @@ export class VlanService extends BaseService {
   }
 
   createNetwork(formCreate: FormCreateNetwork) {
-    return this.http.post<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + '/vlans', Object.assign(formCreate), {
-      headers: this.getHeaders()
-    }).pipe(
+    return this.http.post<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + '/vlans', Object.assign(formCreate)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -165,10 +150,9 @@ export class VlanService extends BaseService {
   }
 
   updateNetwork(idNetwork: number, networkName: string) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?networkName=${networkName}`, null,{
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?networkName=${networkName}`, {
+      body: null
+    }).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -180,10 +164,8 @@ export class VlanService extends BaseService {
   }
 
   deleteNetwork(idNetwork: number){
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlannetworks/${idNetwork}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlannetworks/${idNetwork}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -195,10 +177,8 @@ export class VlanService extends BaseService {
   }
 
   getSubnetById(idSubnet) {
-    return this.http.get<Subnet>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.get<Subnet>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -210,10 +190,9 @@ export class VlanService extends BaseService {
   }
 
   createSubnet(formCreateSubnet: FormCreateSubnet) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', Object.assign(formCreateSubnet), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets',
+      Object.assign(formCreateSubnet))
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -225,10 +204,8 @@ export class VlanService extends BaseService {
   }
 
   updateSubnet(idSubnet: number, formUpdateSubnet: FormUpdateSubnet) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, Object.assign(formUpdateSubnet), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`,
+      Object.assign(formUpdateSubnet)).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -240,10 +217,8 @@ export class VlanService extends BaseService {
   }
 
   deleteSubnet(idSubnet){
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -255,10 +230,8 @@ export class VlanService extends BaseService {
   }
 
   createPort(formCreatePort: FormCreatePort) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/createport', Object.assign(formCreatePort), {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/createport',
+      Object.assign(formCreatePort)).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {
@@ -284,7 +257,6 @@ export class VlanService extends BaseService {
       params = params.append('vpcId', vpcId)
     }
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/attachport', null, {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -311,7 +283,6 @@ export class VlanService extends BaseService {
     }
 
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/detachport', null, {
-      headers: this.getHeaders(),
       params: params
     })
   }
@@ -329,7 +300,6 @@ export class VlanService extends BaseService {
     }
 
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/deleteport', null, {
-      headers: this.getHeaders(),
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
