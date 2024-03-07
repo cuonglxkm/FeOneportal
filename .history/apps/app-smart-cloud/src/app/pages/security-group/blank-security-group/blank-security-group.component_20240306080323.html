@@ -1,0 +1,24 @@
+<one-portal-header
+        title="Security Group"
+        [path]="['Home', 'Dịch vụ', 'Security Group']"
+        [regionId]="region"
+        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
+/>
+<nz-content>
+    <nz-card>
+        <nz-row nzJustify="center">
+            <img src="/assets/tmp/blank-security-group.png" width="450" height="450" alt="blank-security-group">
+        </nz-row>
+        <nz-row nzJustify="center" style="margin-top: -12px">
+            <div class="text-title">
+              <h1><b>SECURITY GROUP - Truy cập, bảo mật</b></h1>
+            </div>
+        </nz-row>
+        <nz-row nzJustify="center">
+            <div class="text-subtitle" style="margin-top: 5px; max-width: 885px; text-wrap: normal">Dịch vụ  bảo vệ instance khỏi các cuộc tấn công mạng, SG hoạt động bằng cách cấp quyền cho các traffic ra và vào instance</div>
+        </nz-row>
+        <nz-row nzJustify="center" style="margin: 15px 0">
+            <button style="text-align: center" nz-button nzType="primary" >Khởi tạo ngay</button>
+        </nz-row>
+    </nz-card>
+</nz-content>

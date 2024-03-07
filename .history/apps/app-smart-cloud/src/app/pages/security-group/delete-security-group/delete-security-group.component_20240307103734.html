@@ -1,0 +1,25 @@
+<button nz-button
+        class="button-delete" (click)="showModal()" ><img
+        src="assets/imgs/bin.svg"
+        alt=""
+      />
+</button>
+<nz-modal
+        [(nzVisible)]="isVisible"
+        (nzOnCancel)="handleCancel()"
+        nzCentered
+>
+    <div *nzModalTitle>
+        <p class="text-confirm-title">Xác nhận xóa Security Group</p>
+    </div>
+    <div *nzModalContent>
+        <p class="text-confirm-content">Bạn có chắc chăn muốn xóa Security Group </p>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy bỏ</button>
+        <button nz-button nzType="primary" (click)="handleOk()"
+                [nzLoading]="isLoading"
+                class="button-ok">Xác nhận
+        </button>
+    </div>
+</nz-modal>
