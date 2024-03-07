@@ -1,0 +1,234 @@
+<page-header>
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Trang chủ</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Chỉnh sửa máy ảo </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right">
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="regionId"
+      (userChanged)="userChangeProject()"
+    ></project-select-dropdown>
+  </div>
+  <nz-row style="margin-bottom: -10px">
+    <span class="text-page-header" style="width: 50%">Chỉnh sửa máy ảo</span>
+  </nz-row>
+  <nz-row style="margin-top: 20px">
+    <div class="non-pointer" style="width: 100%">
+      <one-portal-instances-btn [instancesId]="id"> </one-portal-instances-btn>
+    </div>
+  </nz-row>
+</page-header>
+
+<nz-card
+  style="border-radius: 8px"
+  [nzBordered]="false"
+  [nzLoading]="loading"
+  *ngIf="instancesModel"
+>
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin máy ảo</span>
+  </div>
+  <nz-row class="customRow">
+    <div nz-col nzSpan="12">
+      <nz-row style="height: 50px">
+        <span class="text-label customSpan" style="width: 40%"
+          >Tên máy ảo:</span
+        >
+        <span class="text-value-detail customSpan">{{
+          instancesModel.name || ''
+        }}</span>
+      </nz-row>
+      <nz-row style="height: 50px; background-color: #e2e2e9">
+        <span class="text-label customSpan" style="width: 40%"
+          >Gói cấu hình:</span
+        >
+        <span class="text-value-detail customSpan">{{
+          instancesModel.flavorName | slice : 3
+        }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="text-label customSpan" style="width: 40%"
+          >Trạng thái:</span
+        >
+        <span
+          *ngIf="instancesModel.status == 'KHOITAO'"
+          class="text-value-detail customSpan"
+          style="color: #008d47"
+          >KHỞI TẠO</span
+        >
+        <span
+          *ngIf="instancesModel.status == 'ACTIVE'"
+          class="text-value-detail customSpan"
+          style="color: #008d47"
+          >ACTIVE</span
+        >
+      </nz-row>
+      <nz-row style="height: 50px; background-color: #e2e2e9">
+        <span class="text-label customSpan" style="width: 40%"
+          >Thời gian khởi tạo:</span
+        >
+        <span class="text-value-detail customSpan">{{
+          instancesModel.createdDate | date : 'dd/MM/yyyy'
+        }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="text-label customSpan" style="width: 40%"
+          >Băng thông trong nước:</span
+        >
+        <span class="text-value-detail customSpan"
+          >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+        >
+      </nz-row>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-row style="height: 50px">
+        <span class="text-label customSpan1" style="width: 40%"
+          >Hệ điều hành:</span
+        >
+        <span class="text-value-detail customSpan1"
+          >{{ instancesModel.imageName }}
+          <a
+            class="text-blue"
+            (click)="navigateToChangeImage()"
+            style="margin-left: 15px"
+          >
+            <img src="assets/imgs/undo.png" alt="" /><span
+              style="margin-left: 15px"
+              >Thay đổi</span
+            ></a
+          ></span
+        >
+      </nz-row>
+      <nz-row style="height: 50px; background-color: #e2e2e9">
+        <span class="text-label customSpan1" style="width: 40%"
+          >Truy cập và bảo mật:</span
+        >
+        <span
+          class="text-value-detail customSpan1"
+          *ngFor="let item of listSecurityGroupModel; let first = first"
+          >{{ !first ? ', ' : '' }}{{ item.name }}
+        </span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="text-label customSpan1" style="width: 40%"
+          >IP Public:</span
+        >
+        <span class="text-value-detail customSpan1">{{ listIPPublicStr }}</span>
+      </nz-row>
+      <nz-row style="height: 50px; background-color: #e2e2e9">
+        <span class="text-label customSpan1" style="width: 40%">IP LAN:</span>
+        <span class="text-value-detail customSpan1">{{ listIPLanStr }}</span>
+      </nz-row>
+      <nz-row style="height: 50px">
+        <span class="text-label customSpan1" style="width: 40%"
+          >Băng thông quốc tế:</span
+        >
+        <span class="text-value-detail customSpan1"
+          >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+        >
+      </nz-row>
+    </div>
+  </nz-row>
+</nz-card>
+<one-portal-blockstorage-detail
+  [instancesId]="id"
+  [isDetail]="true"
+></one-portal-blockstorage-detail>
+<one-portal-network-detail
+  [instancesId]="id"
+  [isDetail]="true"
+></one-portal-network-detail>
+<nz-card
+  style="border-radius: 8px"
+  [nzBordered]="false"
+  [nzLoading]="loading"
+  *ngIf="instancesModel"
+>
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin điều chỉnh</span>
+  </div>
+  <nz-row style="margin-bottom: 20px" nzGutter="24">
+    <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <span class="text-label">Dung lượng Volume Root đã dùng:</span>
+    </nz-col>
+    <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <span class="text-label">RAM đã dùng:</span>
+    </nz-col>
+    <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <span class="text-label">VCPU đã dùng:</span>
+    </nz-col>
+  </nz-row>
+  <nz-row style="margin-bottom: 20px" nzGutter="24">
+    <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <span class="text-label"
+        >Dung lượng Volume Root tăng thêm (<span class="text-red">*</span>) -
+        GB</span
+      >
+      <nz-row style="margin-top: 10px">
+        <nz-col nzSpan="18">
+          <nz-slider [nzMin]="1" [nzMax]="500"></nz-slider>
+        </nz-col>
+        <div nzSpan="6">
+          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+        </div>
+      </nz-row>
+    </nz-col>
+    <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <span class="text-label"
+        >RAM tăng thêm (<span class="text-red">*</span>) - GB</span
+      >
+      <nz-row style="margin-top: 10px">
+        <nz-col nzSpan="18">
+          <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+        </nz-col>
+        <div nzSpan="6">
+          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+        </div>
+      </nz-row>
+    </nz-col>
+    <nz-col nzLg="8" nzMd="8" nzSm="24">
+      <span class="text-label"
+        >CPU tăng thêm (<span class="text-red">*</span>) - vCPU</span
+      >
+      <nz-row style="margin-top: 10px">
+        <nz-col nzSpan="18">
+          <nz-slider [nzMin]="1" [nzMax]="20"></nz-slider>
+        </nz-col>
+        <div nzSpan="6">
+          <nz-input-number [nzMin]="1" [nzMax]="20"></nz-input-number>
+        </div>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <span class="text-label">Chọn Security Group gắn thêm</span>
+  <nz-row>
+    <nz-col nzSpan="24">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Chọn Security Group"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="selectedSecurityGroup"
+            [nzServerSearch]="true"
+            nzSize="large"
+          >
+            <nz-option
+              *ngFor="let i of listSecurityGroup"
+              [nzLabel]="i.name"
+              [nzValue]="i.name"
+            />
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+</nz-card>

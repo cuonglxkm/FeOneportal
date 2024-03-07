@@ -87,6 +87,10 @@ import {ResizeVolumeVpcComponent} from "./volume/component/resize-volume-vpc/res
 import {ListVlanComponent} from "./vlan/list/list-vlan.component";
 import {BlankVolumeComponent} from "./volume/component/blank/blank-volume.component";
 import {VlanDetailComponent} from "./vlan/detail/vlan-detail.component";
+import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
+import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
+import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -386,6 +390,22 @@ const routes: Routes = [
     path: 'vpc',
     loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule)
   },
+  {
+    path: 'vlan/create/network',
+    component: CreateNetworkComponent
+  },
+  {
+    path: 'vlan/:id/create/subnet',
+    component: VlanCreateSubnetComponent
+  },
+  {
+    path: 'vlan/:id/network/edit/subnet/:subnetId',
+    component: VlanEditSubnetComponent
+  },
+  {
+    path:'networks/ip-floating/list',
+    component: ListIpFloatingComponent
+  }
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],

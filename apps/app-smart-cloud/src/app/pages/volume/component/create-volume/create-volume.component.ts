@@ -307,7 +307,6 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-    this.volumeCreate.iops = this.iops
 
     let currentDate = new Date();
     let lastDate = new Date();

@@ -17,6 +17,7 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { ProjectService } from 'src/app/shared/services/project.service';
 
 class SearchParam {
   status: string = '';
@@ -66,6 +67,7 @@ export class InstancesComponent implements OnInit {
 
   region: number;
   projectId: number;
+  project: ProjectModel;
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
@@ -76,7 +78,8 @@ export class InstancesComponent implements OnInit {
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private projectService: ProjectService
   ) {}
 
   ngOnInit() {
@@ -174,7 +177,7 @@ export class InstancesComponent implements OnInit {
             this.cdr.detectChanges();
           },
           error: (error) => {
-            this.dataList = []
+            this.dataList = [];
             this.activeCreate = true;
             this.notification.error(
               '',
@@ -248,119 +251,151 @@ export class InstancesComponent implements OnInit {
     this.isExpand = !this.isExpand;
   }
 
-  shutdownInstance(id: number): void {
-    this.modalSrv.create({
-      nzTitle: 'Tắt máy ảo',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện tắt máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        var body = {
-          command: 'shutdown',
-          id: id,
-        };
-        this.dataService.postAction(body).subscribe({
-          next: (data: any) => {
-            if (data == 'Thao tác thành công') {
-              this.notification.success('', 'Tắt máy ảo thành công');
-              this.reloadTable();
-            } else {
-              this.notification.error('', 'Tắt máy ảo không thành công');
-            }
-          },
-          error: (e) => {
-            this.notification.error('', 'Tắt máy ảo không thành công');
-          },
-        });
+  isVisibleShutdown: boolean = false;
+  instanceControlId: number = 0;
+  showModalShutdown(id: number) {
+    this.isVisibleShutdown = true;
+    this.instanceControlId = id;
+  }
+  handleOkShutdown() {
+    this.isVisibleShutdown = false;
+    var body = {
+      command: 'shutdown',
+      id: this.instanceControlId,
+    };
+    this.dataService.postAction(body).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Tắt máy ảo thành công');
+          setTimeout(() => {
+            this.reloadTable();
+          }, 1500);
+        } else {
+          this.notification.error('', 'Tắt máy ảo không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error('', 'Tắt máy ảo không thành công');
       },
     });
   }
-  startInstance(id: number): void {
-    this.modalSrv.create({
-      nzTitle: 'Bật máy ảo',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện bật máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        var body = {
-          command: 'start',
-          id: id,
-        };
-        this.dataService.postAction(body).subscribe({
-          next: (data: any) => {
-            if (data == 'Thao tác thành công') {
-              this.notification.success('', 'Bật máy ảo thành công');
-              this.reloadTable();
-            } else {
-              this.notification.error('', 'Bật máy ảo không thành công');
-            }
-          },
-          error: (e) => {
-            this.notification.error('', 'Bật máy ảo không thành công');
-          },
-        });
+  handleCancelShutdown() {
+    this.isVisibleShutdown = false;
+  }
+
+  isVisibleStart: boolean = false;
+  showModalStart(id: number) {
+    this.isVisibleStart = true;
+    this.instanceControlId = id;
+  }
+  handleOkStart() {
+    this.isVisibleStart = false;
+    var body = {
+      command: 'start',
+      id: this.instanceControlId,
+    };
+    this.dataService.postAction(body).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Bật máy ảo thành công');
+          setTimeout(() => {
+            this.reloadTable();
+          }, 1500);
+        } else {
+          this.notification.error('', 'Bật máy ảo không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error('', 'Bật máy ảo không thành công');
       },
     });
   }
-  restartInstance(id: number): void {
-    this.modalSrv.create({
-      nzTitle: 'Khởi động lại máy ảo',
-      nzContent: 'Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        var body = {
-          command: 'restart',
-          id: id,
-        };
-        this.dataService.postAction(body).subscribe({
-          next: (data) => {
-            if (data == 'Thao tác thành công') {
-              this.notification.success('', 'Khởi động lại máy ảo thành công');
-              this.reloadTable();
-            } else {
-              ('Khởi động lại máy ảo không thành công');
-            }
-          },
-          error: (e) => {
-            this.notification.error(
-              '',
-              'Khởi động lại máy ảo không thành công'
-            );
-          },
-        });
+  handleCancelStart() {
+    this.isVisibleStart = false;
+  }
+
+  isVisibleRestart: boolean = false;
+  showModalRestart(id: number) {
+    this.isVisibleRestart = true;
+    this.instanceControlId = id;
+  }
+  handleOkRestart() {
+    this.isVisibleRestart = false;
+    var body = {
+      command: 'restart',
+      id: this.instanceControlId,
+    };
+    this.dataService.postAction(body).subscribe({
+      next: (data) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Khởi động lại máy ảo thành công');
+          setTimeout(() => {
+            this.reloadTable();
+          }, 1500);
+        } else {
+          ('Khởi động lại máy ảo không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error('', 'Khởi động lại máy ảo không thành công');
       },
     });
   }
-  rescueInstance(id: number): void {
-    this.modalSrv.create({
-      nzTitle: 'RESCUE máy ảo',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện RESCUE máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        var body = {
-          command: 'rescue',
-          id: id,
-        };
-        this.dataService.postAction(body).subscribe({
-          next: (data) => {
-            if (data == 'Thao tác thành công') {
-              this.notification.success('', 'RESCUE máy ảo thành công');
-              this.reloadTable();
-            } else {
-              this.notification.error('', 'RESCUE máy ảo không thành công');
-            }
-          },
-          error: (e) => {
-            this.notification.error('', 'RESCUE máy ảo không thành công');
-          },
-        });
+  handleCancelRestart() {
+    this.isVisibleRestart = false;
+  }
+
+  isVisibleRescue: boolean = false;
+  showModalRescue(id: number) {
+    this.isVisibleRescue = true;
+    this.instanceControlId = id;
+  }
+  handleOkRescue() {
+    this.isVisibleRescue = false;
+    var body = {
+      command: 'rescue',
+      id: this.instanceControlId,
+    };
+    this.dataService.postAction(body).subscribe({
+      next: (data) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'RESCUE máy ảo thành công');
+          setTimeout(() => {
+            this.reloadTable();
+          }, 1500);
+        } else {
+          this.notification.error('', 'RESCUE máy ảo không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error('', 'RESCUE máy ảo không thành công');
       },
     });
+  }
+  handleCancelRescue() {
+    this.isVisibleRescue = false;
+  }
+
+  openConsole(id: number): void {
+    this.router.navigateByUrl(
+      '/app-smart-cloud/instances/instances-console/' + id,
+      {
+        state: {
+          vmId: id,
+        },
+      }
+    );
   }
 
   navigateToCreate() {
+    // this.projectService.getByProjectId(this.projectId).subscribe((data) => {
+    //   this.project = data;
+    //   if (this.project.type == 0) {
+    //     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    //   } else {
+    //     this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+    //   }
+    // });
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToEdit(id: number) {
