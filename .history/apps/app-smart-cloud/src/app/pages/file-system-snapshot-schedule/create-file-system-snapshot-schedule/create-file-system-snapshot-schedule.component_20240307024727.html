@@ -1,0 +1,362 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Đặt lịch File System Snapshot'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+          >Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+          >File System Snapshot</a
+        ></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>Tạo mới lịch File System Snapshot</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<form
+  nz-form
+  [formGroup]="FileSystemSnapshotForm"
+  [nzLayout]="'vertical'"
+  (ngSubmit)="submitForm()"
+>
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="18" class="gutter-row">
+      <nz-card>
+        <h2 class="custom-title">Thông tin đặt lịch File System Snapshot</h2>
+        <nz-form-item>
+          <nz-form-label nzFor="name" nzRequired
+            >Tên lịch Snapshot</nz-form-label
+          >
+          <input
+            nz-input
+            type="text"
+            required
+            placeholder="Nhập tên lịch Snapshot"
+            [(ngModel)]="nameSnapshot"
+            (ngModelChange)="nameSnapshot = $event"
+            formControlName="nameSnapshot"
+          />
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="name" nzRequired
+            >Áp dụng cho File System</nz-form-label
+          >
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Chọn File System"
+            [(ngModel)]="listOfSelectedValue"
+            formControlName="listOfFileSystem"
+          >
+            <nz-option
+              *ngFor="let option of FileSystem"
+              [nzLabel]="option"
+              [nzValue]="option"
+              [nzHide]="!isNotSelected(option)"
+            ></nz-option>
+          </nz-select>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired
+            >Chọn thời điểm thực hiện Snapshot</nz-form-label
+          >
+          <nz-time-picker
+            style="width: 100%"
+            [(ngModel)]="time"
+            [ngModelOptions]="{ standalone: true }"
+            [nzDefaultOpenValue]="defaultOpenValue"
+            formControlName="dateSnapshot"
+          ></nz-time-picker>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="name" nzRequired>Chế độ Snapshot</nz-form-label>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            [(ngModel)]="snapshotMode"
+            name="snapshotMode"
+            formControlName="snapshotMode"
+          >
+            <nz-option
+              *ngFor="let item of dateOptions"
+              [nzLabel]="item.label"
+              [nzValue]="item.value"
+            ></nz-option>
+          </nz-select>
+        </nz-form-item>
+        <ng-container *ngIf="snapshotMode === '0'">
+          <nz-form-item>
+            <nz-form-label nzFor="name" nzRequired
+              >Số bản Snapshot lưu trữ</nz-form-label
+            >
+            <input
+              formControlName="snapshotRecord"
+              nz-input
+              type="number"
+              [(ngModel)]="snapshotRecord"
+            />
+          </nz-form-item>
+        </ng-container>
+        <ng-container *ngIf="snapshotMode === '2'">
+          <div style="display: flex; flex-wrap: wrap">
+            <nz-form-item
+              style="flex-basis: calc(50% - 8px); margin-right: 16px"
+            >
+              <nz-form-label nzFor="name" nzRequired
+                >Chọn số tuần</nz-form-label
+              >
+              <nz-select
+                formControlName="numberOfWeek"
+                id="numberOfWeek"
+                [nzPlaceHolder]="'Số tuần thực hiện'"
+                [nzShowSearch]="false"
+                [(ngModel)]="numberOfWeekSelected"
+                (ngModelChange)="numberOfWeekChange($event)"
+              >
+                <nz-option
+                  *ngFor="let i of numberOfWeek"
+                  [nzLabel]="i.label"
+                  [nzValue]="i.value"
+                />
+              </nz-select>
+            </nz-form-item>
+            <nz-form-item style="flex-basis: calc(50% - 8px)">
+              <nz-form-label nzFor="name" nzRequired>Chọn ngày</nz-form-label>
+              <nz-select
+                formControlName="daysOfWeek"
+                id="daysOfWeek"
+                [nzPlaceHolder]="'Chọn ngày'"
+                [(ngModel)]="daysOfWeekSelected"
+                [nzShowSearch]="false"
+              >
+                <nz-option
+                  *ngFor="let i of daysOfWeek"
+                  [nzLabel]="i.label"
+                  [nzValue]="i.value"
+                />
+              </nz-select>
+            </nz-form-item>
+          </div>
+          <nz-form-item>
+            <nz-form-label nzFor="name" nzRequired
+              >Số bản Snapshot lưu trữ</nz-form-label
+            >
+            <input
+              formControlName="snapshotRecord"
+              nz-input
+              type="number"
+              [(ngModel)]="snapshotRecord"
+            />
+          </nz-form-item>
+        </ng-container>
+        <ng-container *ngIf="snapshotMode === '1'">
+          <div style="display: flex; flex-wrap: wrap">
+            <nz-form-item
+              style="flex-basis: calc(50% - 8px); margin-right: 16px"
+            >
+              <nz-form-label nzFor="name" nzRequired
+                >Chọn ngày trong tuần</nz-form-label
+              >
+              <nz-select
+                formControlName="daysOfWeekMultiple"
+                id="daysOfWeekMultiple"
+                nzMode="multiple"
+                [nzPlaceHolder]="'Chọn thứ'"
+                [nzShowSearch]="false"
+                [(ngModel)]="listOfSelectedDate"
+              >
+                <nz-option
+                  *ngFor="let i of daysOfWeek"
+                  [nzLabel]="i.label"
+                  [nzValue]="i.value"
+                />
+              </nz-select>
+            </nz-form-item>
+            <nz-form-item style="flex-basis: calc(50% - 8px)">
+              <nz-form-label nzFor="name" nzRequired
+                >Số bản Snapshot lưu trữ</nz-form-label
+              >
+              <input
+                formControlName="snapshotRecord"
+                nz-input
+                type="number"
+                [(ngModel)]="snapshotRecord"
+
+              />
+            </nz-form-item>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="snapshotMode === '3'">
+          <div style="display: flex; flex-wrap: wrap">
+            <nz-form-item
+              style="flex-basis: calc(50% - 8px); margin-right: 16px"
+            >
+              <nz-form-label nzFor="name" nzRequired
+                >Chọn số tháng</nz-form-label
+              >
+              <nz-input-number
+                style="width: 100%; border-radius: 8px; margin-left: 0"
+                formControlName="months"
+                id="months"
+                nzMin="1"
+                nzMax="24"
+                nzStep="1"
+                [(ngModel)]="months"
+              />
+            </nz-form-item>
+            <nz-form-item style="flex-basis: calc(50% - 8px)">
+              <nz-form-label nzFor="name" nzRequired
+                >Chọn ngày thực hiện Snapshot</nz-form-label
+              >
+              <nz-input-number
+                style="width: 100%; border-radius: 8px; margin-left: 0"
+                formControlName="date"
+                id="date"
+                nzMin="1"
+                nzMax="31"
+                nzStep="1"
+                [(ngModel)]="dateDone"
+              />
+            </nz-form-item>
+          </div>
+          <nz-form-item>
+            <nz-form-label nzFor="name" nzRequired
+              >Số bản Snapshot lưu trữ</nz-form-label
+            >
+            <input
+              formControlName="snapshotRecord"
+              nz-input
+              type="number"
+              [(ngModel)]="snapshotRecord"
+            />
+          </nz-form-item>
+        </ng-container>
+        <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
+        <textarea formControlName="description" placeholder="Nhập mô tả" rows="4" nz-input></textarea>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="6" class="gutter-row">
+      <nz-card>
+        <h2 class="custom-title">Thông số cấu hình</h2>
+        <div style="margin-bottom: 12px">
+          <h3 class="custom-subtitle">Tên lịch Snapshot</h3>
+          <span [innerText]="nameSnapshot"></span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Tên File System</h3>
+          <span>{{ listOfSelectedValue }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Thời điểm thực hiện Snapshot</h3>
+          <span>{{ time | date : 'mediumTime' }}</span>
+        </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Chế độ Snapshot</h3>
+          <span>{{
+            snapshotMode === '0'
+              ? 'Hằng ngày'
+              : snapshotMode === '1'
+              ? 'Theo thứ'
+              : snapshotMode === '2'
+              ? 'Theo tuần'
+              : snapshotMode === '3' && 'Theo tháng'
+          }}</span>
+        </div>
+        <ng-container *ngIf="snapshotMode === '2'">
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Số tuần thực hiện</h3>
+            <span>{{numberOfWeekSelected === '1' ? '1 Tuần' : numberOfWeekSelected === '2' ? '2 Tuần' : numberOfWeekSelected === '3' ? '3 Tuần' : ''}}</span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Ngày thực hiện</h3>
+            <span>{{ getDayLabel(daysOfWeekSelected) }}</span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <span>{{snapshotRecord}}</span>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="snapshotMode === '3'">
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Số tháng thực hiện</h3>
+            <span>{{months}}</span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Ngày thực hiện</h3>
+            <span>{{dateDone}}</span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <span>{{snapshotRecord}}</span>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="snapshotMode === '0'">
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <span>{{snapshotRecord}}</span>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="snapshotMode === '1'">
+          
+          
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Ngày trong tuần</h3>
+            <span *ngFor="let selectedValue of listOfSelectedDate">
+              {{ getDayLabelMulti(selectedValue) }}
+          </span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
+            <span>{{snapshotRecord}}</span>
+          </div>
+        </ng-container>
+        <button
+          nz-button
+          nzType="primary"
+          style="
+            border: none;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+          "
+          nzSize="large"
+        >
+          <img src="assets/imgs/wallet.svg" alt="" />
+          <span class="button-text-primary">Khởi tạo</span>
+        </button>
+      </nz-card>
+    </div>
+  </div>
+</form>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+></div>

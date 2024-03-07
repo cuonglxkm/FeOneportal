@@ -1,0 +1,41 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Quản lý Sub-User'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/object-storage/sub-user/create'">Tạo mới SubUser</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form nzLayout="vertical">
+    <nz-row>
+      <nz-col nzSpan="16">
+        <span class="text-card-title">Thông tin SubUser</span>
+        <nz-form-item>
+          <nz-form-label>
+            <div>
+              <span>Tên SubUser</span>
+
+            </div>
+          </nz-form-label>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <span class="text-card-title">Thông số cấu hình</span>
+      </nz-col>
+    </nz-row>
+  </form>
+
+</nz-content>
+

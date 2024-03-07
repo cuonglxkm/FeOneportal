@@ -15,7 +15,7 @@
                  formControlName="name"
                  [placeholder]="'Nhập tên Volume'" [maxLength]="70"/>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Volume</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
               Việt
             </ng-container>
