@@ -254,6 +254,6 @@ export class RouterDetailComponent implements OnInit {
   }
 
   navigateToList() {
-    this.router.navigate(['/app-smart-cloud/vpc/router']);
+    this.router.navigate(['/app-smart-cloud/network/router']);
   }
 }
