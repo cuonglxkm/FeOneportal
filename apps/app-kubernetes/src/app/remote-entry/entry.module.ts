@@ -25,6 +25,8 @@ import { ClusterComponent } from '../cluster/cluster.component';
 import { SharedModule } from '../shared';
 import { SHARED_ZORRO_MODULES } from '../shared/shared-zorro.module';
 import { Status2ColorPipe } from '../pipes/status2color.pipe';
+import { DetailClusterComponent } from '../detail-cluster/detail-cluster.component';
+import { Network2Label } from '../pipes/network-type.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -34,7 +36,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NxWelcomeComponent,
     KubernetesDetailComponent,
     ClusterComponent,
+    DetailClusterComponent,
     Status2ColorPipe,
+    Network2Label,
 
   ],
   imports: [

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { KubernetesCluster } from '../model/cluster.model';
+import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NotificationConstant } from '../constants/notification.constant';
 import { NotificationWsService } from '../services/ws.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { messageCallbackType } from '@stomp/stompjs';
 import { finalize } from 'rxjs';
+import { ShareService } from '../services/share.service';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -43,7 +43,8 @@ export class KubernetesDetailComponent implements OnInit {
   constructor(
     private clusterService: ClusterService,
     private websocketService: NotificationWsService,
-    private notificationService: NzNotificationService
+    private notificationService: NzNotificationService,
+    private shareService: ShareService
   ) {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
@@ -61,7 +62,16 @@ export class KubernetesDetailComponent implements OnInit {
   ngOnInit(): void {
     // init ws
     // this.openWs();
-    this.searchCluster();
+
+    this.shareService.$progressData.subscribe((data: ProgressData) => {
+      const namespace = data.namespace;
+      const clusterName = data.clusterName;
+
+      console.log({data: data});
+      if (namespace && clusterName) {
+        this.viewProgressCluster(namespace, clusterName);
+      }
+    });
   }
 
   searchCluster() {
@@ -83,6 +93,13 @@ export class KubernetesDetailComponent implements OnInit {
         // check list cluster is empty?
         this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
       }
+    });
+  }
+
+  viewProgressCluster(namespace: string, clusterName: string) {
+    this.clusterService.viewProgressCluster(namespace, clusterName)
+    .subscribe((r: any) => {
+      console.log({response: r});
     });
   }
 

@@ -1,0 +1,214 @@
+<page-header [breadcrumb]="breadcrumb" [content]="content" [action]="action" [title]="'Chi tiết cluster'">
+  <!-- breadcrumb -->
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cluster
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết cluster</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template #content>
+    <div>
+      <button nz-button nzType="primary" (click)="handleExtension()">
+        <span nz-icon nzType="calendar" nzTheme="outline"></span>
+        Gia hạn
+      </button>
+
+      <button nz-button nzType="default" (click)="handleEditCluster()">
+        <span nz-icon nzType="edit" nzTheme="outline"></span>
+        Điều chỉnh
+      </button>
+    </div>
+  </ng-template>
+</page-header>
+
+<ng-container *ngIf="detailCluster; else loadingTpl">
+  <!-- Thông tin chung -->
+  <nz-card class="border-card">
+    <h3>Thông tin chung</h3>
+    <div nz-row>
+      <div nz-col [nzSpan]="12" class="detailtable">
+        <nz-table [nzTemplateMode]="true" nzBordered>
+          <tbody>
+            <tr>
+              <td class="label-col border-right-none">Tên Cluster</td>
+              <td class="description-info">{{detailCluster.clusterName}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">API Address</td>
+              <td class="description-info">{{detailCluster.apiEndpoint}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">Auto scale</td>
+              <td>
+                <nz-switch [(ngModel)]="autoScaleValue"></nz-switch>
+              </td>
+            </tr>
+            <tr>
+              <td class="label-col">Ngày khởi tạo</td>
+              <td class="description-info">{{detailCluster.createdDate | date: 'dd/MM/yyyy'}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">Trạng thái</td>
+              <td>
+                <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
+                  <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+
+      <div nz-col [nzSpan]="12" class="detailtable">
+        <nz-table [nzTemplateMode]="true" nzBordered>
+          <tbody>
+            <tr>
+              <td class="label-col">Phiên bản Kubernetes</td>
+              <td class="description-info">
+                {{detailCluster.currentVersion}}
+                <button nz-button nzType="text" (click)="handleShowModalUpgradeVersion()" class="upgrade-icon">
+                  <span nz-icon nzType="setting" nzTheme="outline"></span>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td class="label-col">Order Code</td>
+              <td class="description-info">{{detailCluster.serviceOrderCode}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">Auto healing</td>
+              <td>
+                <nz-switch [(ngModel)]="autoHealingValue"></nz-switch>
+              </td>
+            </tr>
+            <tr>
+              <td class="label-col">Ngày hết hạn</td>
+              <td class="description-info danger-color">{{detailCluster.createdDate | date: 'dd/MM/yyyy'}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">Mô tả</td>
+              <td>{{detailCluster.description}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-card>
+
+  <!-- Thông tin worker group -->
+  <nz-card class="border-card">
+    <h3>Thông tin worker group</h3>
+    <ng-container *ngIf="detailCluster.workerGroups.length > 0; else workerlessTpl">
+      <ng-container *ngFor="let item of detailCluster.workerGroups">
+        <div nz-row>
+          <div nz-col [nzSpan]="12" class="detailtable">
+            <nz-table [nzTemplateMode]="true" nzBordered>
+              <tbody>
+                <tr>
+                  <td class="label-col border-right-none">Tên worker group</td>
+                  <td class="description-info">{{item.workerGroupName}}</td>
+                </tr>
+                <tr>
+                  <td class="label-col">Cấu hình</td>
+                  <td class="description-info">{{item.cpu}} vCPU/{{item.ram}} GiB</td>
+                </tr>
+                <tr>
+                  <td class="label-col">API Address</td>
+                  <td class="description-info">{{item.apiEndpoint}}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+
+          <div nz-col [nzSpan]="12" class="detailtable">
+            <nz-table [nzTemplateMode]="true" nzBordered>
+              <tbody>
+                <tr>
+                  <td class="label-col">Tổng số worker node</td>
+                  <td class="description-info">{{item.minimumNode}}</td>
+                </tr>
+                <tr>
+                  <td class="label-col">Ổ cứng (GiB)</td>
+                  <td class="description-info">{{item.volumeSize}}</td>
+                </tr>
+                <tr>
+                  <td class="label-col">Auto scale</td>
+                  <td class="description-info">Min Node: {{item.minimumNode}} - Max Node: {{item.maximumNode}}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #workerlessTpl>
+      <nz-empty [nzNotFoundContent]="contentTpl">
+        <ng-template #contentTpl>
+          Không có thông tin nhóm worker
+        </ng-template>
+      </nz-empty>
+    </ng-template>
+  </nz-card>
+
+  <!-- Thông tin network -->
+  <nz-card class="border-card">
+    <h3>Thông tin network</h3>
+    <div nz-row>
+      <div nz-col [nzSpan]="12" class="detailtable">
+        <nz-table [nzTemplateMode]="true" nzBordered>
+          <tbody>
+            <tr>
+              <td class="label-col border-right-none">Loại network</td>
+              <td class="description-info">{{detailCluster.networkType | network2label}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">Mạng VPC</td>
+              <td class="description-info"></td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+
+      <div nz-col [nzSpan]="12" class="detailtable">
+        <nz-table [nzTemplateMode]="true" nzBordered>
+          <tbody>
+            <tr>
+              <td class="label-col">CIDR</td>
+              <td class="description-info">{{detailCluster.cidr}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">Subnet</td>
+              <td class="description-info">{{detailCluster.subnet}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-card>
+
+</ng-container>
+
+<ng-template #loadingTpl>
+  loading ...
+</ng-template>

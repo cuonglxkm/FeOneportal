@@ -7,6 +7,7 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { STWidgetModule } from './shared/st-widget/st-widget.module';
+import { ShareService } from './services/share.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,9 +29,9 @@ import { STWidgetModule } from './shared/st-widget/st-widget.module';
         },
       ],
       { initialNavigation: 'enabledBlocking' }
-    )
+    ),
   ],
-  providers: [],
+  providers: [ShareService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

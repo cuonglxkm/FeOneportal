@@ -35,6 +35,14 @@ export class ClusterService extends BaseService {
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data);
   }
 
+  getDetailCluster(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/detail-cluster/${serviceOrderCode}`);
+  }
+
+  viewProgressCluster(namespace: string, clusterName: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
+  }
+
   deleteCluster(clusterId: number) {
     return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`);
   }

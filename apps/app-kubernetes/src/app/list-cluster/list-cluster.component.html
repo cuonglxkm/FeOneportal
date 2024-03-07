@@ -81,7 +81,9 @@
           <tr *ngFor="let item of clusterTable.data">
             <td [nzChecked]="setOfCheckedId.has(item.id)" (nzCheckedChange)="updateClusterChecked(item.id, $event)">
             </td>
-            <td>{{ item.clusterName }}</td>
+            <td>
+              <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
+            </td>
             <td>
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
                 <span [ngStyle]="{color: status.color}">{{status.status}}</span>

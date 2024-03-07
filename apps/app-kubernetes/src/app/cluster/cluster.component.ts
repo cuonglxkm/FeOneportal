@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
-import { NetworkingModel } from '../model/cluster.model';
+import { NetworkingModel, ProgressData } from '../model/cluster.model';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { VolumeTypeModel } from '../model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
@@ -15,6 +15,7 @@ import { ProjectModel } from '../shared/models/project.model';
 import { VlanService } from '../services/vlan.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
 import { finalize } from 'rxjs';
+import { ShareService } from '../services/share.service';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -59,7 +60,8 @@ export class ClusterComponent implements OnInit {
     private modalService: NzModalService,
     private notificationService: NzNotificationService,
     private vlanService: VlanService,
-    private router: Router
+    private router: Router,
+    private shareService: ShareService
   ) {
     this.listOfK8sVersion = [];
     this.listOfSubnets = [];
@@ -409,6 +411,13 @@ export class ClusterComponent implements OnInit {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.notificationService.success('Thành công', r.message);
+
+        const clusterName = this.myform.get('clusterName').value;
+        this.shareService.emitData({
+          namespace: r.data,
+          clusterName: clusterName
+        });
+
         this.back2list();
       } else {
         this.notificationService.error('Thất bại', r.message);
