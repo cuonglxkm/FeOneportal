@@ -55,27 +55,15 @@ import { ActionHistoryComponent } from './action-history/action-history.componen
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
-import {
-  CurrentVirtualMachineComponent
-} from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
+import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import {
-  PopupDeleteSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
-import {
-  PopupEditSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
+import { PopupDeleteSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
+import { PopupEditSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import {
-  CreateBackupVolumeComponent
-} from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
-import {
-  DetailBackupVolumeComponent
-} from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
-import {
-  ListBackupVolumeComponent
-} from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
+import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
+import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
+import { ListBackupVolumeComponent } from './volume/component/backup-volume/list-backup-volume/list-backup-volume.component';
 import { UserComponent } from './users/user.component';
 import { UserCreateComponent } from './users/user-create/user-create.component';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
@@ -109,31 +97,19 @@ import { ListScheduleBackupComponent } from './schedule-backup/list/list-schedul
 import { CreateScheduleBackupComponent } from './schedule-backup/create/create-schedule-backup.component';
 import { ScheduleBackupVmComponent } from './schedule-backup/create/backup-vm/schedule-backup-vm.component';
 import { ScheduleBackupVolumeComponent } from './schedule-backup/create/backup-volume/schedule-backup-volume.component';
-import {
-  EditScheduleBackupVolumeComponent
-} from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
-import {
-  EditScheduleBackupVmComponent
-} from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
+import { EditScheduleBackupVolumeComponent } from './schedule-backup/edit/schedule-backup-volume/edit-schedule-backup-volume.component';
+import { EditScheduleBackupVmComponent } from './schedule-backup/edit/schedule-backup-vm/edit-schedule-backup-vm.component';
 import { DeleteScheduleComponent } from './schedule-backup/delete/delete-schedule.component';
-import {
-  SnapshotScheduleListComponent
-} from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
-import {
-  SnapshotScheduleCreateComponent
-} from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
-import {
-  SnapshotScheduleDetailComponent
-} from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
+import { SnapshotScheduleListComponent } from './snapshot-schedule/snapshot-schedule-list/snapshot-schedule-list.component';
+import { SnapshotScheduleCreateComponent } from './snapshot-schedule/snapshot-schedule-create/snapshot-schedule-create.component';
+import { SnapshotScheduleDetailComponent } from './snapshot-schedule/snapshot-schedule-detai/snapshotp-schedule-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
 import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
 import { OrderDetailComponent } from './order/order-detail/order-detail.component';
 import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
-import {
-  SnapshotScheduleEditComponent
-} from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
 import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
 import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
 import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
@@ -177,6 +153,24 @@ import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-
 import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
 import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
+import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
+import { CreateWanComponent } from './wan/create/create-wan.component';
+import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
+import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
+import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
+import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
+import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -319,6 +313,24 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     LifecycleConfigComponent,
     BucketPolicyComponent,
     BucketCorsComponent,
+    ListFileSystemComponent,
+    ListWanComponent,
+    DeleteWanComponent,
+    DetachWanComponent,
+    CreateWanComponent,
+    AttachWanComponent,
+    CreateFileSystemComponent,
+    DetailFileSystemComponent,
+    ExtendFileSystemComponent,
+    DeleteFileSystemComponent,
+    EditFileSystemComponent,
+    ListAccessRuleComponent,
+    CreateAccessRuleComponent,
+    DeleteAccessRuleComponent,
+    ListSubUserComponent,
+    CreateSubUserComponent,
+    DeleteSubUserComponent,
+    EditSubUserComponent,
   ],
   imports: [
     CommonModule,

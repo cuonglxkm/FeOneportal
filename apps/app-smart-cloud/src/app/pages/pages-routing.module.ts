@@ -96,6 +96,14 @@ import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.componen
 import { BucketListComponent } from "./bucket/bucket-list.component";
 import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.component";
 import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -418,6 +426,38 @@ const routes: Routes = [
   {
     path:'networks/ip-floating/list',
     component: ListIpFloatingComponent
+  },
+  {
+    path:'networks/ip-wan/list',
+    component: ListWanComponent
+  },
+  {
+    path: 'networks/file-storage/file-system/create',
+    component: CreateFileSystemComponent
+  },
+  {
+    path: 'networks/file-storage/file-system/list',
+    component: ListFileSystemComponent
+  },
+  {
+    path: 'networks/file-storage/file-system/detail/:id',
+    component: DetailFileSystemComponent
+  },
+  {
+    path: 'networks/file-storage/file-system/extend/:id',
+    component: ExtendFileSystemComponent
+  },
+  {
+    path: 'networks/file-storage/file-system/access-rule/list',
+    component: ListAccessRuleComponent
+  },
+  {
+    path: 'networks/object-storage/sub-user/list',
+    component: ListSubUserComponent
+  },
+  {
+    path: 'networks/object-storage/sub-user/create',
+    component: CreateSubUserComponent
   },
   {
     path: 'object-storage/bucket',
