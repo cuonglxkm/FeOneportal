@@ -157,7 +157,7 @@
                 },
                 {
                   "text": "Router",
-                  "link": "/app-smart-cloud/vpc/router"
+                  "link": "/app-smart-cloud/network/router"
                 },
                 {
                   "text": "Direct Connect",
@@ -194,7 +194,7 @@
               "children": [
                 {
                   "text": "Bucket",
-                  "link": "/app-smart-cloud/bucket"
+                  "link": "/app-smart-cloud/object-storage/bucket"
                 },
                 {
                   "text": "Sub User",
