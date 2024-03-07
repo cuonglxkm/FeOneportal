@@ -1,0 +1,62 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Quản lý Access Rule'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/list'">File System</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card style="border-radius: 8px;">
+    <nz-row>
+      <nz-col nzSpan="8">
+        <span>Danh sách Access Rule</span>
+      </nz-col>
+      <nz-col nzSpan="16">
+        <div>
+          <span>Access Level</span>
+          <nz-select>
+            <nz-option [nzValue]="1" [nzLabel]="'Read-Only'"></nz-option>
+            <nz-option [nzValue]="2" [nzLabel]="'Read-Write'"></nz-option>
+          </nz-select>
+          <nz-input-group [nzPrefix]="prefixIconSearch"
+                          nzSize="large">
+            <input nz-input
+                   class="input-custom"
+                   [ngModel]="value"
+                   (ngModelChange)="onInputChange($event)" />
+          </nz-input-group>
+          <ng-template #prefixIconSearch>
+            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+          </ng-template>
+          <button nz-button nzType="primary" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+            <span class="button-text-primary">Tạo File System</span>
+          </button>
+        </div>
+      </nz-col>
+    </nz-row>
+    <nz-table>
+      <thead>
+      <tr>
+        <th>Access Type</th>
+        <th>Access To</th>
+        <th>Access Level</th>
+        <th>Status</th>
+        <th>Ngày tạo</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+    </nz-table>
+  </nz-card>
+</nz-content>

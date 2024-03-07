@@ -45,8 +45,8 @@ const LANG_PROVIDES = [
 const I18NSERVICE_PROVIDES = [{ provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false }];
 
 const INTERCEPTOR_PROVIDES = [
-  { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true },
-  { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true }
+  // { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true },
+  // { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true }
 ];
 // #endregion
 const FORM_MODULES = [JsonSchemaModule];
@@ -90,7 +90,7 @@ const APPINIT_PROVIDES = [
     // ...GLOBAL_THIRD_MODULES,
     ...FORM_MODULES
   ],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
+  providers: [...LANG_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

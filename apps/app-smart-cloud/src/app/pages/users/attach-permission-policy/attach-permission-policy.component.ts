@@ -85,16 +85,16 @@ export class AttachPermissionPolicyComponent implements OnInit {
         this.cardHeight = '110px';
       } else if (result.breakpoints[Breakpoints.Small]) {
         // Màn hình cỡ nhỏ - trung bình
-        this.cardHeight = '110px';
+        this.cardHeight = '190px';
       } else if (result.breakpoints[Breakpoints.Medium]) {
         // Màn hình trung bình
-        this.cardHeight = '170px';
+        this.cardHeight = '190px';
       } else if (result.breakpoints[Breakpoints.Large]) {
         // Màn hình lớn
-        this.cardHeight = '160px';
+        this.cardHeight = '170px';
       } else if (result.breakpoints[Breakpoints.XLarge]) {
         // Màn hình rất lớn
-        this.cardHeight = '120px';
+        this.cardHeight = '130px';
       }
 
       // Cập nhật chiều cao của card bằng Renderer2

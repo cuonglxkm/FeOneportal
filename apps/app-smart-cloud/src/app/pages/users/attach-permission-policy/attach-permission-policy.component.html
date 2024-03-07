@@ -1,12 +1,8 @@
-<nz-card [nzBordered]="false">
+<nz-card style="border-radius: 4px" [nzBordered]="false">
   <span class="titlecard-custom">Chọn kiểu gán Permissions cho User</span>
-
   <nz-radio-group style="width: 100%; display: inline-flex">
-    <nz-row
-      [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
-      style="margin-top: 10px;  "
-    >
-      <div nz-col [nzLg]="8" [nzMd]="24" [nzSm]="24" [nzXl]="8" [nzXs]="24">
+    <nz-row [nzGutter]="24" style="margin-top: 10px">
+      <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
         <nz-card
           style="border-radius: 4px"
           [ngStyle]="{
@@ -23,6 +19,7 @@
           >
             <ng-template #nzAvatarselected1>
               <input
+                style="cursor: pointer"
                 type="radio"
                 [checked]="activeBlockAddUsertoGroup"
                 (click)="initAddUsertoGroup()"
@@ -40,8 +37,8 @@
             </ng-template>
           </nz-card-meta>
         </nz-card>
-      </div>
-      <div nz-col [nzLg]="8" [nzMd]="24" [nzSm]="24" [nzXl]="8" [nzXs]="24">
+      </nz-col>
+      <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
         <nz-card
           style="border-radius: 4px"
           [ngStyle]="{
@@ -58,6 +55,7 @@
           >
             <ng-template #nzAvatarselected2>
               <input
+                style="cursor: pointer"
                 type="radio"
                 [checked]="activeBlockCopyPolicies"
                 (click)="initCopyPolicies()"
@@ -74,8 +72,8 @@
             </ng-template>
           </nz-card-meta>
         </nz-card>
-      </div>
-      <div nz-col [nzLg]="8" [nzMd]="24" [nzSm]="24" [nzXl]="8" [nzXs]="24">
+      </nz-col>
+      <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
         <nz-card
           style="border-radius: 4px"
           [ngStyle]="{
@@ -92,6 +90,7 @@
           >
             <ng-template #nzAvatarselected3>
               <input
+                style="cursor: pointer"
                 type="radio"
                 [checked]="activeBlockAttachPolicies"
                 (click)="initAttachPolicies()"
@@ -108,7 +107,7 @@
             </ng-template>
           </nz-card-meta>
         </nz-card>
-      </div>
+      </nz-col>
     </nz-row>
   </nz-radio-group>
 </nz-card>

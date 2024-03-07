@@ -15,8 +15,16 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
-import { RouterModel } from 'src/app/shared/models/router.model';
+import {
+  RouterCreate,
+  RouterModel,
+  RouterUpdate,
+} from 'src/app/shared/models/router.model';
 import { RouterService } from 'src/app/shared/services/router.service';
+import { IPSubnetModel } from '../instances/instances.model';
+import { InstancesService } from '../instances/instances.service';
+import { FormSearchNetwork, NetWorkModel } from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -27,7 +35,6 @@ import { RouterService } from 'src/app/shared/services/router.service';
 export class RouterListComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
   dataList: RouterModel[] = [];
-  listNetwork: any[] = [];
   isTrigger: boolean = false;
   currentPage = 1;
   pageSize = 10;
@@ -64,13 +71,16 @@ export class RouterListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private instancesService: InstancesService,
+    private vlanService: VlanService
   ) {}
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getListNetwork();
   }
 
   selectedChecked(e: any): void {
@@ -168,6 +178,21 @@ export class RouterListComponent implements OnInit {
     }
   }
 
+  listNetwork: NetWorkModel[] = [];
+
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService.getVlanNetworks(formSearchNetwork).subscribe((data: any) => {
+      this.listNetwork = data;
+      this.cdr.detectChanges();
+    });
+  }
+
+  routerCreate: RouterCreate = new RouterCreate();
   isVisibleCreate = false;
   modalCreate() {
     this.isVisibleCreate = true;
@@ -179,13 +204,33 @@ export class RouterListComponent implements OnInit {
 
   handleOkCreate() {
     this.isVisibleCreate = false;
-    this.notification.success('', 'Tạo mới Router thành công');
+    this.routerCreate.adminState = this.isTrigger;
+    this.routerCreate.customerId = this.tokenService.get()?.userId;
+    this.routerCreate.regionId = this.region;
+    this.routerCreate.projectId = this.projectId.toString();
+    this.routerCreate.vpcId = this.projectId;
+    this.dataService.createRouter(this.routerCreate).subscribe({
+      next: (data) => {
+        this.notification.success('', 'Tạo mới Router thành công');
+      },
+      error: (e) => {
+        this.notification.error('', 'Tạo mới Router không thành công');
+      },
+    });
   }
 
+  routerUpdate: RouterUpdate = new RouterUpdate();
   isVisibleEdit = false;
-  modalEdit(cloudId: string) {
+  modalEdit(dataRouter: RouterModel) {
     this.isVisibleEdit = true;
-    this.cloudId = cloudId;
+    this.cloudId = dataRouter.cloudId;
+    this.routerUpdate.id = dataRouter.cloudId;
+    this.routerUpdate.adminState = dataRouter.adminState;
+    this.routerUpdate.customerId = this.tokenService.get()?.userId;
+    this.routerUpdate.regionId = dataRouter.regionId;
+    this.routerUpdate.routerName = dataRouter.routerName;
+    this.routerUpdate.vpcId = dataRouter.vpcId;
+    this.routerUpdate.networkId = dataRouter.networkId;
   }
 
   handleCancelEdit() {
@@ -194,7 +239,14 @@ export class RouterListComponent implements OnInit {
 
   handleOkEdit() {
     this.isVisibleEdit = false;
-    this.notification.success('', 'Chỉnh sửa Router thành công');
+    this.dataService.updateRouter(this.routerUpdate).subscribe({
+      next: (data) => {
+        this.notification.success('', 'Chỉnh sửa Router thành công');
+      },
+      error: (e) => {
+        this.notification.error('', 'Chỉnh sửa Router không thành công');
+      },
+    });
   }
 
   isVisibleDelete: boolean = false;
@@ -210,24 +262,25 @@ export class RouterListComponent implements OnInit {
     this.isVisibleDelete = false;
   }
 
-
   handleOkDelete() {
     this.isVisibleDelete = false;
     this.notification.success('', 'Xóa Router thành công');
-    // if (this.nameVerify == this.nameRouterDelete) {
-    //   this.dataService.deleteRouter(this.cloudId).subscribe({
-    //     next: (data) => {
-    //       console.log(data);
-    //       this.notification.success('', 'Xóa Router thành công');
-    //       this.reloadTable();
-    //     },
-    //     error: (error) => {
-    //       console.log(error.error);
-    //       this.notification.error('', 'Xóa Router không thành công');
-    //     },
-    //   });
-    // } else {
-    //   this.notification.error('', 'Xóa Router không thành công');
-    // }
+    if (this.nameVerify == this.nameRouterDelete) {
+      this.dataService
+        .deleteRouter(this.cloudId, this.region, this.projectId)
+        .subscribe({
+          next: (data) => {
+            console.log(data);
+            this.notification.success('', 'Xóa Router thành công');
+            this.reloadTable();
+          },
+          error: (error) => {
+            console.log(error.error);
+            this.notification.error('', 'Xóa Router không thành công');
+          },
+        });
+    } else {
+      this.notification.error('', 'Xóa Router không thành công');
+    }
   }
 }
