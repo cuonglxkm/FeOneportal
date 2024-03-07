@@ -17,15 +17,11 @@ export class BucketCreateComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.max(63),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
+        Validators.pattern(/^[a-z0-9-.]{3,63}$/),
       ],
     }),
-    // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
   
-  activePrivate: boolean = true;
-  activePublic: boolean = false;
   cardHeight: string = '160px';
 
   constructor(
@@ -73,4 +69,18 @@ export class BucketCreateComponent implements OnInit {
       });
     this.cdr.detectChanges();
   }
+
+  activePrivate: boolean = true;
+  activePublic: boolean = false;
+  initPrivate(): void {
+    this.activePrivate = true;
+    this.activePublic = false;
+    
+  }
+  initPublic(): void {
+    this.activePrivate = false;
+    this.activePublic = true;
+  }
+
+  save() {}
 }
