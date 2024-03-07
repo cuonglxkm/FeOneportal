@@ -1,10 +1,11 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {PaymentModel, PaymentSearch} from "../models/payment.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import { Observable } from "rxjs";
+import { Observable, throwError } from 'rxjs';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import { catchError } from 'rxjs/internal/operators/catchError';
 
 @Injectable({
   providedIn: 'root'
@@ -51,20 +52,57 @@ export class PaymentService extends BaseService {
     return this.http.get<BaseResponse<PaymentModel[]>>(this.baseUrl + this.ENDPOINT.payments + '/Paging', {
       headers: this.getHeaders(),
       params: params
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   export(id: number) {
     return this.http.get(this.baseUrl + `/invoices/export/${id}`,
-      {headers: this.getHeaders(), responseType: 'blob' as 'json'})
+      {headers: this.getHeaders(), responseType: 'blob' as 'json'}).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
 
   getPaymentById(id: number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/${id}`);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
   }
 
   getPaymentByPaymentNumber(paymentNumber: string): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments + `/PaymentByPaymentNumber/${paymentNumber}`);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.payments
+      + `/PaymentByPaymentNumber/${paymentNumber}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
   }
 }

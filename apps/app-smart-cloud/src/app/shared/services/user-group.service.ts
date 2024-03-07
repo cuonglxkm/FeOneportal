@@ -49,13 +49,31 @@ export class UserGroupService extends BaseService {
         return this.http.get<Pagination<UserGroupModel>>(this.baseUrl + this.ENDPOINT.iam + '/groups', {
             headers: this.getHeaders(),
             params: params
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     detail(name: string) {
         return this.http.get<UserGroupModel>(this.baseUrl + this.ENDPOINT.iam + `/groups/${name}`, {
             headers: this.getHeaders()
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     delete(nameGroup: string[]) {
@@ -65,7 +83,16 @@ export class UserGroupService extends BaseService {
         })
         url_ = url_.replace(/[?&]$/, '');
         return this.http.delete<any>(this.baseUrl + this.ENDPOINT.iam + url_,
-            {headers: this.getHeaders()});
+            {headers: this.getHeaders()}).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }));
     }
 
     getUserByGroup(userName: string, groupName: string, pageSize: number, currentPage: number) {
@@ -75,13 +102,31 @@ export class UserGroupService extends BaseService {
       let url_ = `/users/group?userName=${userName}&groupName=${groupName}&pageSize=${pageSize}&currentPage=${currentPage}`;
       return this.http.get<BaseResponse<User[]>>(this.baseUrl + this.ENDPOINT.iam + url_, {
             headers: this.getHeaders()
-      })
+      }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
     }
 
     createOrEdit(formCreate: FormUserGroup) {
         return this.http.post<UserGroupModel>(this.baseUrl + this.ENDPOINT.iam + '/groups', Object.assign(formCreate), {
             headers: this.getHeaders()
-        }).pipe(catchError(this.handleError))
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     removeUsers(groupName: string, usersList: string[]) {
@@ -89,7 +134,16 @@ export class UserGroupService extends BaseService {
             Object.assign(usersList),
             {
                 headers: this.getHeaders(),
-            })
+            }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     removePolicy(removePolicy: RemovePolicy) {
@@ -97,7 +151,16 @@ export class UserGroupService extends BaseService {
             Object.assign(removePolicy),
             {
                 headers: this.getHeaders(),
-            })
+            }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     getPolicy(formSearch: FormSearchPolicy) {
@@ -115,12 +178,30 @@ export class UserGroupService extends BaseService {
             + '/policies', {
             headers: this.getHeaders(),
             params: params
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     getName() {
         return this.http.get<string[]>(this.baseUrl + this.ENDPOINT.iam + '/groups/names',
-            {headers: this.getHeaders()})
+            {headers: this.getHeaders()}).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     getPoliciesByGroupName(form: FormSearchPolicy) {
@@ -134,26 +215,16 @@ export class UserGroupService extends BaseService {
             `/groups/Policies/${form.groupName}`, {
             headers: this.getHeaders(),
             params: params
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
-    private handleError(error: HttpErrorResponse): Observable<never> {
-      let errorMessage = 'An error occurred';
-
-      if (error.error instanceof ErrorEvent) {
-        // Client-side errors
-        errorMessage = `Error: ${error.error.message}`;
-      } else {
-        // Server-side errors
-        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-        if (error.error && error.error.details) {
-          // Lấy thông tin chi tiết lỗi từ response
-          errorMessage += `\nDetails: ${error.error.details}`;
-        }
-      }
-
-      console.error(errorMessage);
-
-      return throwError(errorMessage);
-    }
 }

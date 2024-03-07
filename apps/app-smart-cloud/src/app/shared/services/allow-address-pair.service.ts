@@ -49,7 +49,7 @@ export class AllowAddressPairService extends BaseService {
   createOrDelete(form: AllowAddressPairCreateOrDeleteForm) {
     return this.http.post(this.baseUrl +
       this.ENDPOINT.provisions + '/instances/allowadresspair', Object.assign(form),
-      {headers: this.getHeaders()});
+      {headers: this.getHeaders()}).pipe(catchError(this.errorCode));
   }
 
 

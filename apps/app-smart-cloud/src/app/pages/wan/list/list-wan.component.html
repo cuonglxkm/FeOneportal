@@ -39,7 +39,16 @@
       </nz-col>
     </nz-row>
     <nz-table #fixTable
-              style="margin-top: 20px;">
+              style="margin-top: 24px;"
+              nzShowPagination
+              [nzData]="response?.records"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
       <thead>
       <tr>
         <th>Tên WAN</th>
@@ -49,6 +58,34 @@
         <th>Thao tác</th>
       </tr>
       </thead>
+      <tbody>
+      <tr *ngFor="let data of fixTable.data">
+        <td>{{ data.wanName }}</td>
+        <td>{{ data.ipAddress }}</td>
+        <td></td>
+        <td>{{ data.attachedVmName }}</td>
+        <td>
+          <div *ngIf="data.attachedVmName != undefined || data.attachedVmName != null">
+            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+                  nzTheme="outline" nz-popover
+                  [nzPopoverContent]="'Gỡ máy ảo'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+          <div *ngIf="data.attachedVmName != undefined || data.attachedVmName != null">
+            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Gắn máy ảo'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+          <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
+                nz-popover
+                [nzPopoverContent]="'Xoá'"
+                nzPopoverPlacement="bottom"
+                nz-icon nzType="delete" nzTheme="outline"></span>
+        </td>
+      </tr>
+      </tbody>
     </nz-table>
   </nz-card>
 </nz-content>

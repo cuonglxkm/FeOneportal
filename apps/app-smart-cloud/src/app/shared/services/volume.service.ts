@@ -1,7 +1,7 @@
 import {Inject, Injectable, OnInit} from '@angular/core';
 import {catchError} from 'rxjs/operators';
-import {BehaviorSubject, Observable, of} from 'rxjs';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {VolumeDTO} from "../dto/volume.dto";
 import {BaseService} from "./base.service";
 import {AddVolumetoVmModel, EditSizeVolumeModel, EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
@@ -48,7 +48,16 @@ export class VolumeService extends BaseService {
     return this.http.get<BaseResponse<VolumeDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
       headers: this.httpOptions.headers,
       params: param
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getVolumeById(volumeId: number) {
@@ -56,13 +65,6 @@ export class VolumeService extends BaseService {
       headers: this.httpOptions.headers})
   }
 
-  //tinh phi Volume : FAKE
-  getPremium(volumeType: string, size: number, duration: number): Observable<PriceVolumeDto> {
-    let urlResult = this.getConditionGetPremiumVolume(volumeType, size, duration);
-    return this.http.get<PriceVolumeDto>(urlResult,this.httpOptions).pipe(
-      catchError(this.handleError<PriceVolumeDto>('get premium-volume error'))
-    );
-  }
   getListVM(userId: number, regionId: number): Observable<GetAllVmModel> {
     let url = this.urlVMGW + '/getpaging' + '?pageSize=' + 10000 + '&currentPage=' + 1;
     if (regionId != null) {
@@ -135,7 +137,7 @@ export class VolumeService extends BaseService {
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
 
-      this.message.create('error', `Xảy ra lỗi: ${error}`);
+      // this.message.create('error', `Xảy ra lỗi: ${error}`);
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };

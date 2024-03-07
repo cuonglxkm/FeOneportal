@@ -12,7 +12,7 @@ export class WanIP {
 
 export class FormSearch {
   regionId: number
-  childChannels: number[]
+  childChannels: number
   customerId: number
   ipAddress: string
   instanceName: string
@@ -27,4 +27,10 @@ export class FormCreate {
   regionId: number
   isFloating: boolean //false
   ipAddress: string
+}
+
+export class FormAction {
+  id: number
+  instanceId: number
+  action: string
 }
