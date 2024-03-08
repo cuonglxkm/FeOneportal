@@ -13,7 +13,7 @@ import { CreateSecurityGroupComponent } from './security-group/create-security-g
 import { CreateInboundComponent } from './security-group/inbound/create/create-inbound.component';
 import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { SearchOutline, SettingOutline } from '@ant-design/icons-angular/icons';
+import { SearchOutline, SettingOutline} from '@ant-design/icons-angular/icons';
 import { DeleteSecurityGroupComponent } from './security-group/delete-security-group/delete-security-group.component';
 import { DeleteRuleComponent } from './security-group/delete-rule/delete-rule.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -176,8 +176,13 @@ import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
 import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
+import { DeleteFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/delete-file-system-snapshot-schedule-file-system-snapshot-schedule/delete-file-system-snapshot-schedule.component';
+import { EditFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
+import { PauseFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/pause-file-system-snapshot-schedule-file-system-snapshot-schedule/pause-file-system-snapshot-schedule.component';
+import { DeleteFileSystemSnapshotComponent } from './file-system-snapshot/delete-create-file-system-snapshot/delete-file-system-snapshot.component';
+import { EditFileSystemSnapshotComponent } from './file-system-snapshot/edit-file-system-snapshot/edit-file-system-snapshot.component';
 
-const icons: IconDefinition[] = [SettingOutline, SearchOutline];
+const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -341,6 +346,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateSubUserComponent,
     DeleteSubUserComponent,
     EditSubUserComponent,
+    DeleteFileSystemSnapshotScheduleComponent,
+    EditFileSystemSnapshotScheduleComponent,
+    PauseFileSystemSnapshotScheduleComponent,
+    DeleteFileSystemSnapshotComponent,
+    EditFileSystemSnapshotComponent
   ],
   imports: [
     CommonModule,

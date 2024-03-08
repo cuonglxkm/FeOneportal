@@ -109,6 +109,7 @@ import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create
 import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
 import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
+import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -487,6 +488,10 @@ const routes: Routes = [
   {
     path: 'file-system-snapshot-schedule/create',
     component: CreateFileSystemSnapshotScheduleComponent,
+  },
+  {
+    path: 'file-system-snapshot-schedule/edit/:id',
+    component: EditFileSystemSnapshotScheduleComponent,
   },
   {
     path: 'object-storage/bucket',

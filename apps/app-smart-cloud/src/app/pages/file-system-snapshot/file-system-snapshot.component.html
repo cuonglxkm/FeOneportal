@@ -57,6 +57,7 @@
         <tr>
           <th>STT</th>
           <th>Tên Snapshot</th>
+          <th>Dung lượng (GB)</th>
           <th>Trạng thái tác vụ</th>
           <th>Tên File System</th>
           <th>Ngày cấp dịch vụ</th>
@@ -64,31 +65,21 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of fixedTable.data">
-          <td>{{data.ipAddress}}</td>
+        <tr>
+          <td>1</td>
           <td>
-            <span *ngIf="data.ipAddress != null || data.ipAddress != ''">{{data.ipAddress}}</span>
-            <span *ngIf="data.ipAddress == null || data.ipAddress == ''">{{data.iPv6Address}}</span>
+            snapshot01
           </td>
-          <td>{{data.networkId}}</td>
-          <td>{{data.typeIP}}</td>
+          <td>5</td>
+          <td>AVAILABLE</td>
+          <td>file-system-01</td>
+          <td>20/03/2024</td>
           <td>
             <div>
-              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-                    nzTheme="outline"
-                    nz-popover
-                    [nzPopoverContent]="'Gắn IP Floating'"
-                    nzPopoverPlacement="bottom"></span>
-  
-              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-                    nzTheme="outline" nz-popover
-                    [nzPopoverContent]="'Gỡ IP Floating'"
-                    nzPopoverPlacement="bottom" ></span>
-              <span *ngIf="data.typeIP?.includes('IP WAN')"
-                    style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-                    nzTheme="outline" nz-popover
-                    [nzPopoverContent]="'Xóa'"
-                    nzPopoverPlacement="bottom"></span>
+              <one-portal-edit-file-system-snapshot [region]="region"
+              [project]="project" />
+              <one-portal-delete-file-system-snapshot [region]="region"
+              [project]="project" />
             </div>
           </td>
         </tr>

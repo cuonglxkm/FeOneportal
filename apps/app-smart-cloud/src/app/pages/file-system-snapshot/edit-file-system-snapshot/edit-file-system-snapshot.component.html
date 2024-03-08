@@ -1,0 +1,139 @@
+<span
+  style="color: #0066b3; margin-right: 10px; cursor: pointer"
+  nz-icon
+  nzType="edit"
+  nzTheme="outline"
+  nz-popover
+  [nzPopoverContent]="'Sửa'"
+  nzPopoverPlacement="bottom"
+  (click)="showModal()"
+></span>
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzCentered
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <h4><b>Chỉnh sửa File System Snapshot</b></h4>
+  </ng-template>
+  <ng-template #modalContent>
+    <form
+      nz-form
+      nzLayout="vertical"
+      [formGroup]="validateForm"
+      (ngSubmit)="submitForm()"
+    >
+      <nz-form-item>
+        <div>
+          <span>Tên Snapshot</span>
+          <span style="color: rgba(252, 16, 16, 1)"> *</span>
+        </div>
+        <nz-form-control
+          nzDisableAutoTips
+          [nzErrorTip]="nameErrorTpl"
+          style="margin-top: 10px"
+        >
+          <input
+            nz-input
+            formControlName="name"
+            id="name"
+            placeholder="Vui lòng nhập thông tin"
+            [maxlength]="50"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Vui lòng nhập thông tin</ng-container
+            >
+            <ng-container *ngIf="control.hasError('startsWith')"
+              >Tên phải bắt đầu bằng SG_</ng-container
+            >
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <div>
+          <span>Tên File System</span>
+          <span style="color: rgba(252, 16, 16, 1)"> *</span>
+        </div>
+        <nz-form-control
+          style="margin-top: 10px"
+        >
+          <input
+            nz-input
+            value="asdsad"
+            disabled="true"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <div>
+          <span>Dung lượng - GB</span>
+          <span style="color: rgba(252, 16, 16, 1)"> *</span>
+        </div>
+        <nz-form-control
+          style="margin-top: 10px"
+        >
+          <input
+            nz-input
+            [value]="5"
+            disabled="true"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <div>
+          <span>Ngày cấp dịch vụ</span>
+          <span style="color: rgba(252, 16, 16, 1)"> *</span>
+        </div>
+        <nz-form-control
+          style="margin-top: 10px"
+        >
+          <input
+            nz-input
+            [value]="5"
+            disabled="true"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <span class="name-security-group">Mô tả</span>
+        <nz-form-control style="margin-top: 10px">
+          <textarea
+            rows="5"
+            nz-input
+            formControlName="description"
+            id="description"
+            placeholder="Cập nhật thông tin mô tả"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="middle">
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="default"
+            (click)="handleCancel()"
+            class="button-back"
+          >
+            Quay lại
+          </button>
+          <nz-form-control *nzSpaceItem>
+            <button
+              nz-button
+              nzType="primary"
+              [nzLoading]="isLoading"
+              class="button-new"
+              [disabled]="!validateForm.valid"
+            >
+              Tạo mới
+            </button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>

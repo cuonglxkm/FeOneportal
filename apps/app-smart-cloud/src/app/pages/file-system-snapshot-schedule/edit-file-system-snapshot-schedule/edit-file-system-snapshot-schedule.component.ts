@@ -16,11 +16,11 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
 
 
 @Component({
-  selector: 'one-portal-create-file-system-snapshot',
-  templateUrl: './create-file-system-snapshot-schedule.component.html',
-  styleUrls: ['./create-file-system-snapshot-schedule.component.less'],
+  selector: 'one-portal-edit-file-system-snapshot-schedule',
+  templateUrl: './edit-file-system-snapshot-schedule.component.html',
+  styleUrls: ['./edit-file-system-snapshot-schedule.component.less'],
 })
-export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
+export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
@@ -38,7 +38,6 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
   modeType: string = '0'
   listOfSelectedDate: string[] = [];
   dateDone: number = 1
-  isVisibleCreate: boolean = false;
   dateOptions: NzSelectOptionInterface[] = [
     { label: 'Hằng ngày', value: '0' },
     { label: 'Theo thứ', value: '1' },
@@ -125,7 +124,7 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/create'])
+        this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/edit/1'])
       }
     });
   }
@@ -133,12 +132,7 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
   projectChange(project: ProjectModel) {
     this.project = project?.id
   }
-  handleSubmit(): void {
-    this.isVisibleCreate = true;    
-  }
-
-  handleCreate(){
-    this.isVisibleCreate = false;
+  submitForm(): void {
     this.isLoading = true
     if (this.FileSystemSnapshotForm.valid) {
       this.formCreateFileSystemSsSchedule = this.getData()
@@ -149,12 +143,10 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
       }, error => {
         this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại')
         console.log(error);
-      })  
+        
+      })
+      
     }
-  }
-
-  handleCancel() {
-    this.isVisibleCreate = false;
   }
 
   getData(): any {

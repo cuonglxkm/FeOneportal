@@ -138,7 +138,7 @@ export class SecurityGroupComponent implements OnInit {
         if (isCheckBegin) {
           this.isBegin = this.checkNullObject(this.listInstance) || this.listInstance.length < 1 ? true : false;
         }
-        // console.log('data', this.listInstance)
+        console.log('data', this.listInstance)
       }, error => {
         this.isLoading = false
         this.collection = null
