@@ -99,7 +99,7 @@ export class ClusterComponent implements OnInit {
       // volume
       volumeCloud: [null, [Validators.required]],
       usageTime: [3, [Validators.required]],
-      volumeCloudType: [this.DEFAULT_VOLUME_TYPE, [Validators.required]],
+      volumeCloudType: ['hdd', [Validators.required]],
     });
 
     // init worker group

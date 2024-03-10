@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { KubernetesCluster } from '../model/cluster.model';
+import { KubernetesCluster, WorkerGroupModel } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
@@ -17,12 +17,19 @@ export class DetailClusterComponent implements OnInit {
   autoScaleValue: boolean;
   autoHealingValue: boolean;
 
+  // for switch
+  isLoadingAutoHealing: boolean;
+  isLoadingAutoScale: boolean;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cluserService: ClusterService,
     private notificationService: NzNotificationService
-  ) {}
+  ) {
+    this.isLoadingAutoHealing = false;
+    this.isLoadingAutoScale = false;
+  }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
@@ -37,7 +44,7 @@ export class DetailClusterComponent implements OnInit {
       if (r && r.code == 200) {
         this.detailCluster = new KubernetesCluster(r.data);
 
-        this.autoScaleValue = this.detailCluster.autoScale;
+        this.autoScaleValue = this.detailCluster.autoScaling;
         this.autoHealingValue = this.detailCluster.autoHealing;
 
       } else {
@@ -58,4 +65,52 @@ export class DetailClusterComponent implements OnInit {
     console.log(this.detailCluster.upgradeVersion);
   }
 
+  handleChangeScaleNode(item: WorkerGroupModel) {
+    console.log(item);
+  }
+
 }
+
+@Component({
+  selector: 'row-data',
+  template: `
+  <style>
+    .danger-color {color: #ea3829;}
+  </style>
+  <div nz-row>
+    <div nz-col nzSpan="8">
+      {{label}}
+    </div>
+    <div nz-col nzSpan="16" style="font-weight: 600;"
+      [ngClass]="type === 'danger' ? 'danger-color' : ''">
+      <ng-container *ngIf="(value + '').length <= 30; else truncateValueTpl">
+        {{value}}
+      </ng-container>
+      <ng-template #truncateValueTpl>
+        <div nz-popover
+          [nzPopoverTitle]="label"
+          [nzPopoverContent]="contentTpl"
+          nzPopoverPlacement="bottom">
+          {{value | truncateLabel}}
+        </div>
+
+        <ng-template #contentTpl>
+          <div style="width: fit-content">{{value}}</div>
+        </ng-template>
+      </ng-template>
+    </div>
+  </div>
+  `
+})
+export class RowDetailData implements OnInit {
+  @Input('label') label: string;
+  @Input('value') value: any;
+  @Input('type') type: string;
+
+  constructor() {}
+
+  ngOnInit(): void {
+      console.log({label: this.label, value: this.value, type: this.type});
+  }
+}
+

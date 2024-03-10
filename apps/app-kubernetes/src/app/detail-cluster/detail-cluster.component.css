@@ -6,8 +6,12 @@ h3 {
   font-size: 20px;
 }
 
+.w-50 {
+  width: 50%;
+}
+
 .label-col {
-  width: 30%;
+  width: 40%;
 }
 
 .border-right-none {
@@ -26,7 +30,7 @@ h3 {
   color: #ea3829;
 }
 
-.upgrade-icon {
+.action-icon {
   position: relative;
   float: right;
   height: fit-content;
@@ -53,4 +57,8 @@ textarea,
 .border-card,
 .border-button {
   border-radius: 4px;
+}
+
+.borderless {
+  border: none;
 }

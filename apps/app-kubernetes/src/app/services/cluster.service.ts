@@ -13,6 +13,8 @@ export class ClusterService extends BaseService {
     super();
   }
 
+  baseUrl = 'http://127.0.0.1:16003';
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -41,6 +43,10 @@ export class ClusterService extends BaseService {
 
   viewProgressCluster(namespace: string, clusterName: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
+  }
+
+  getListStatus() {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-status`);
   }
 
   deleteCluster(clusterId: number) {

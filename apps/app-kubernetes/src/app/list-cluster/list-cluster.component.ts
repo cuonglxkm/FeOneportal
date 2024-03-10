@@ -7,6 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { messageCallbackType } from '@stomp/stompjs';
 import { finalize } from 'rxjs';
 import { ShareService } from '../services/share.service';
+import { ClusterStatus } from '../model/status.model';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -32,13 +33,12 @@ export class KubernetesDetailComponent implements OnInit {
   // input confirm delete modal
   deleteClusterName: string;
 
-  // temp
-  listOfStatusCluster : Array<{ label: string; value: number }> = [
-    {label : "Chưa gia hạn" , value: 0},
-    {label : "Đang khởi tạo" , value: 1},
-    {label : "Đang hoạt động" , value: 2},
-    {label : "Đang xóa", value: 7},
-  ]
+  // for progress
+  listOfProgress: Array<{cluster: string, progress: number}>;
+  percent = 50;
+
+  // for status
+  listOfStatusCluster: ClusterStatus[];
 
   constructor(
     private clusterService: ClusterService,
@@ -49,6 +49,7 @@ export class KubernetesDetailComponent implements OnInit {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
 
+    this.listOfProgress = [];
     this.isShowModalDeleteCluster = false;
     this.isSubmitDelete = false;
     this.isWrongName = true;
@@ -62,6 +63,8 @@ export class KubernetesDetailComponent implements OnInit {
   ngOnInit(): void {
     // init ws
     // this.openWs();
+
+    this.getListStatus();
 
     this.shareService.$progressData.subscribe((data: ProgressData) => {
       const namespace = data.namespace;
@@ -84,14 +87,23 @@ export class KubernetesDetailComponent implements OnInit {
     ).subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfClusters = [];
+        let listOfClusterInProgress = [];
         r.data?.content.forEach(item => {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
+
+          // get cluster is in-progress
+          if (cluster.serviceStatus == 1 || cluster.serviceStatus == 7) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
 
-        // check list cluster is empty?
-        this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
+        // check list cluster is empty with all status?
+        if (this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) {
+          this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
+        }
+
+        // case user refresh page and have mulitple cluster and is in-progress
+        
       }
     });
   }
@@ -101,6 +113,20 @@ export class KubernetesDetailComponent implements OnInit {
     .subscribe((r: any) => {
       console.log({response: r});
     });
+  }
+
+  getListStatus() {
+    this.clusterService.getListStatus()
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfStatusCluster = r.data;
+      }
+    });
+  }
+
+  getIndexOfCluster(id: number) {
+    const item = this.listOfClusters.find(obj => obj.id == id);
+    return this.listOfClusters.indexOf(item) + 1;
   }
 
   onQueryParamsChange(event) {

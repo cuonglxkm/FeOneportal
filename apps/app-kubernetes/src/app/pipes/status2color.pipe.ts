@@ -16,6 +16,8 @@ export class Status2ColorPipe implements PipeTransform {
         return new StatusModel("#008d47", "Đang hoạt động");
       case 7:
         return new StatusModel("#FAAD14", "Đang xóa");
+      case 11:
+        return new StatusModel("#4c4f67", "Khởi tạo thất bại");
 
       default:
         return new StatusModel("#4c4f67", "Không xác định");

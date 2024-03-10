@@ -25,8 +25,9 @@ import { ClusterComponent } from '../cluster/cluster.component';
 import { SharedModule } from '../shared';
 import { SHARED_ZORRO_MODULES } from '../shared/shared-zorro.module';
 import { Status2ColorPipe } from '../pipes/status2color.pipe';
-import { DetailClusterComponent } from '../detail-cluster/detail-cluster.component';
+import { DetailClusterComponent, RowDetailData } from '../detail-cluster/detail-cluster.component';
 import { Network2Label } from '../pipes/network-type.pipe';
+import { TruncateLabel } from '../pipes/truncate-label.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -37,8 +38,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     KubernetesDetailComponent,
     ClusterComponent,
     DetailClusterComponent,
+    RowDetailData,
     Status2ColorPipe,
     Network2Label,
+    TruncateLabel,
 
   ],
   imports: [

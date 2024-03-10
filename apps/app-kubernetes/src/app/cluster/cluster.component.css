@@ -119,6 +119,10 @@ textarea,
   border: none;
 }
 
+.small-description {
+  position: relative;
+}
+
 .scroll {
   max-height: 250px;
   overflow-y: auto;

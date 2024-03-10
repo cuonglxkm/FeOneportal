@@ -255,7 +255,7 @@
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
-              <nz-form-control nzErrorTip="Mạng VPC không để trống">
+              <nz-form-control id="vpc-form">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
                   class="w-90" (ngModelChange)="onSelectedVlan($event)">
                   <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
@@ -269,6 +269,11 @@
                     </svg>
                   </span>
                 </button>
+                <div class="small-description">
+                  <small>Chọn một VPC cho kubernetes cluster của bạn.
+                    <a routerLink="" target="_balnk">Nhấp vào đây để quản lý các VPC của bạn</a>
+                  </small>
+                </div>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -283,7 +288,7 @@
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
-              <nz-form-control nzErrorTip="Subnet không để trống">
+              <nz-form-control nzErrorTip="Subnet không để trống" id="subnet-form">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90">
                   <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.name" [nzValue]="item.subnetAddressRequired"></nz-option>
                 </nz-select>
@@ -296,6 +301,9 @@
                     </svg>
                   </span>
                 </button>
+                <div class="small-description">
+                  <small>Lựa chọn subnet cho cluster này</small>
+                </div>
               </nz-form-control>
             </nz-form-item>
           </div>

@@ -245,7 +245,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@*", "@angular/core@^14", "@angular/core@^15.0.0", "@angular/core@^16.0.0", "@angular/core@^16.0.0 || ^17.0.0", "@angular/core@^16.0.0-rc.0 || ^16.0.0", "@angular/core@>=13.0.0", "@angular/core@>=13.0.0 <17.0.0", "@angular/core@>=14.0.0", "@angular/core@>=16.0.0", "@angular/core@>=9.0.0", "@angular/core@~16.2.0", "@angular/core@16.2.12":
+"@angular/core@*", "@angular/core@^14", "@angular/core@^15.0.0", "@angular/core@^16.0.0", "@angular/core@^16.0.0 || ^17.0.0", "@angular/core@^16.0.0-rc.0 || ^16.0.0", "@angular/core@^17.0.0", "@angular/core@>=13.0.0", "@angular/core@>=13.0.0 <17.0.0", "@angular/core@>=14.0.0", "@angular/core@>=16.0.0", "@angular/core@>=9.0.0", "@angular/core@~16.2.0", "@angular/core@16.2.12":
   version "16.2.12"
   resolved "https://registry.npmjs.org/@angular/core/-/core-16.2.12.tgz"
   integrity sha512-GLLlDeke/NjroaLYOks0uyzFVo6HyLl7VOm0K1QpLXnYvW63W9Ql/T3yguRZa7tRkOAeFZ3jw+1wnBD4O8MoUA==
@@ -4097,6 +4097,11 @@
   integrity sha512-NhRH7YzWq8WiNKVavKPBmtLYZHxNY19Hh+az28O/phfp68CF45pMFud+ZzJ8ewnxnC5smIdF3dqFeiSUQ5I+pw==
   dependencies:
     "@types/node" "*"
+
+"@types/grecaptcha@^3.0.7":
+  version "3.0.8"
+  resolved "https://registry.npmjs.org/@types/grecaptcha/-/grecaptcha-3.0.8.tgz"
+  integrity sha512-Yc1cIiHXRPHtbrfiTdpmBB1rakc5OntAUQkpaPtQb8UQ641j2DcQiGsn5GkgR8ztCGdTJeK3ibT5GnwdKGzvAA==
 
 "@types/http-errors@*":
   version "2.0.3"
@@ -10492,6 +10497,14 @@ ng-apexcharts@^1.8.0:
   dependencies:
     tslib "^2.0.0"
 
+ng-recaptcha@^13.2.1:
+  version "13.2.1"
+  resolved "https://registry.npmjs.org/ng-recaptcha/-/ng-recaptcha-13.2.1.tgz"
+  integrity sha512-aBOoFla9t6AfT9t5paykoXomCDKreBKouB16VUFxSZwn1RCfDsdcaTmSNJKYLFz5j0Cq/V+szY9f3mHLgzRw5Q==
+  dependencies:
+    "@types/grecaptcha" "^3.0.7"
+    tslib "^2.2.0"
+
 ng-zorro-antd@^16.2.2, ng-zorro-antd@16.2.2:
   version "16.2.2"
   resolved "https://registry.npmjs.org/ng-zorro-antd/-/ng-zorro-antd-16.2.2.tgz"
@@ -13520,7 +13533,7 @@ tslib@^1.9.0:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.5.0:
+tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.5.0:
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==

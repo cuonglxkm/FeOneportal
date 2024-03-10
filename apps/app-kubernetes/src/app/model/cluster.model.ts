@@ -12,7 +12,7 @@ export class KubernetesCluster {
   description: string;
   networkType: string;
   autoHealing: boolean;
-  autoScale: boolean;
+  autoScaling: boolean;
   apiEndpoint: string;
   cidr: string;
   subnet: string;
@@ -33,7 +33,7 @@ export class KubernetesCluster {
     this.upgradeVersion = obj.upgrade_version;
     this.networkType = obj.network_type;
     this.autoHealing = obj.auto_healing;
-    this.autoScale = obj.auto_scale;
+    this.autoScaling = obj.auto_scaling;
     this.cidr = obj.cidr;
     this.subnet = obj.subnet;
     this.description = obj.description;
@@ -43,9 +43,11 @@ export class KubernetesCluster {
     // get worker groups
     this.workerGroups = [];
     const wgs: [] = obj.worker_groups;
-    for (let i = 0; i < wgs.length; i++) {
-      const wg = new WorkerGroupModel(wgs[i]);
-      this.workerGroups.push(wg);
+    if (wgs) {
+      for (let i = 0; i < wgs.length; i++) {
+        const wg = new WorkerGroupModel(wgs[i]);
+        this.workerGroups.push(wg);
+      }
     }
   }
 }
@@ -80,7 +82,7 @@ export class WorkerGroupModel {
 
   constructor(obj) {
     if (obj) {
-      this.workerGroupName = obj.worker_group_name;
+      this.workerGroupName = obj.worker_name;
       this.minimumNode = obj.minimum_node;
       this.maximumNode = obj.maximum_node;
       this.volumeType = obj.volume_type;
