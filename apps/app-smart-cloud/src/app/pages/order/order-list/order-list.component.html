@@ -14,14 +14,13 @@
 </page-header>
   <nz-card>
     <div>
-      <nz-row nzAlign="middle" style="margin-top: 20px; padding: 10px;">
+      <nz-row nzAlign="middle">
         <nz-space [nzSize]="24">
-          <div style="margin-right: 10px;">Trạng thái</div>
           <div *nzSpaceItem>
             <nz-select [(ngModel)]="searchStatus"
                        style="width: 160px;"
                        (ngModelChange)="onChange($event)"
-                       nzPlaceHolder="Tất cả trạng thái">
+                       nzPlaceHolder="Trạng thái">
               <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
             </nz-select>
           </div>
@@ -29,13 +28,13 @@
         <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']" style="margin-left: 10px;" [(ngModel)]="date"
                          (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
         <div style="width: 300px; margin-left: 10px;">
-          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input style="width: 380px;" [(ngModel)]="searchName" (input)="onInputChange($event.target['value'])"
+          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton" >
+            <input style="width: 300px" [(ngModel)]="searchName" (input)="onInputChange($event.target['value'])"
                    type="text" nz-input
-                   placeholder="Tìm kếm mã đơn hàng, tên dịch vụ..." />
+                   placeholder="Tìm kiếm" />
           </nz-input-group>
           <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch (click)="searchSnapshotScheduleList()">
+            <button style="height: 32px;" nz-button nzType="primary" nzSearch (click)="searchSnapshotScheduleList()">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               Search
             </button>
@@ -68,7 +67,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of rowSelectionTable.data; let i  = index">
-        <td><a (click)="navigateToDetail(data.id)">{{ i + 1 }}</a></td>
+        <td>{{ i + 1 }}</td>
         <td><a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a></td>
         <td>{{ data.note }}</td>
         <td>{{ data.orderDate | date: 'dd/MM/YYYY' }}</td>

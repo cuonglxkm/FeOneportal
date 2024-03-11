@@ -1,137 +1,255 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chi tiết đơn hàng'">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Chi tiết đơn hàng'"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item> <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/order/list']">Đơn hàng</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/order/list']"
+          >Đơn hàng</a
+        ></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item> <a>Chi tiết đơn hàng</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="projectChange($event)"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-
-<nz-card>
-  <div class="h3-container" style="display: flex;">
-    <h3>Đơn hàng {{data.orderCode}} </h3>
-    <h3 *ngIf="data.statusCode == 4 || (data.statusCode == 5 && data.invoiceCode != '')" style="font-weight: normal;opacity: 0.5;"> | {{titleStepFour}}</h3>
-  </div>
-  <div *ngIf="data.statusCode == 5 && data.invoiceCode == ''">
-    <h3 style="color: red">Đã hủy</h3>
-    <h3 style="font-weight: normal">vào {{data.updatedDate}}</h3>
-  </div>
-  <hr style="opacity: 0.5; margin-bottom: 40px;">
-  <div *ngIf="!(data.statusCode == 5 && data.invoiceCode == '')">
-    <nz-steps [nzCurrent]="data.statusCode-1" style="width: 100%; margin: 0 auto;">
-      <nz-step nzTitle="Đã đặt đơn"></nz-step>
-      <nz-step nzTitle="Đã thanh toán"></nz-step>
-      <nz-step nzTitle="Đang cài đặt"></nz-step>
-      <nz-step nzTitle="{{titleStepFour}}"></nz-step>
-    </nz-steps>
-  </div>
-<!--  information-->
-  <nz-row nzGutter="24" style="margin-top: 50px;">
-    <nz-col nzSpan="3">
-      <nz-form-item>
-        <h3>Tên khách hàng </h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3>Số điện thoại</h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3>Email </h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3>Địa chỉ </h3>
-      </nz-form-item>
-    </nz-col>
-    <nz-col nzSpan="9">
-      <nz-form-item>
-        <h3 style="font-weight: normal;">{{data.customerName}}</h3>
-        <h3 style="color:white">.</h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3 style="font-weight: normal;">{{data.phoneNumber}}</h3>
-        <h3 style="color:white">.</h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3 style="font-weight: normal;">{{data.email}}</h3>
-        <h3 style="color:white">.</h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3 style="font-weight: normal;">{{data.address}}</h3>
-      </nz-form-item>
-    </nz-col>
-    <nz-col nzSpan="3">
-      <nz-form-item>
-        <h3>Thời gian tạo đơn </h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3>Mã hóa đơn </h3>
-      </nz-form-item>
-    </nz-col>
-    <nz-col nzSpan="9">
-      <nz-form-item>
-        <h3 style="font-weight: normal;">{{data.orderDate}}</h3>
-        <h3 style="color:white">.</h3>
-      </nz-form-item>
-      <nz-form-item>
-        <h3 style="font-weight: normal;color: blue">{{data.invoiceCode}}</h3>
-      </nz-form-item>
-    </nz-col>
-  </nz-row>
-<!--  table-->
-  <nz-table [nzData]="data.orderItems" nzHideOnSinglePage="true">
-    <thead>
-    <tr>
-      <th>STT</th>
-      <th>Dịch vụ</th>
-      <th>Đơn giá (VNĐ)</th>
-      <th>Thời hạn (Tháng)</th>
-      <th>Số lượng</th>
-      <th>Số tiền (VNĐ)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let item of data.orderItems">
-      <td>1</td>
-      <td>{{item.serviceName}}</td>
-      <td>{{item.unitPrice.amount| number:'1.0-0'}}</td>
-      <td>{{item.duration}}</td>
-      <td>{{item.quantity}}</td>
-      <td>{{item.totalAmount.amount| number:'1.0-0'}}</td>
-    </tr>
-    </tbody>
-  </nz-table>
-
-  <nz-row style="padding-right: 2%; margin-top: 30px;">
-    <nz-col [nzSpan]="24">
-      <div style="float: right">
-        <nz-table style="width: 400px; margin-bottom: 30px;">
-          <tr>
-            <td class="cell-content fw-600">Tổng tiền</td>
-            <td class="float-right cell-content">{{data.amount.amount| number:'1.0-0'}} VNĐ</td>
-          </tr>
-          <tr>
-            <td class="cell-content fw-600">VAT({{data.vat.amount * 100 / data.amount.amount}}%)</td>
-            <td class="float-right cell-content">{{data.vat.amount| number:'1.0-0'}} VNĐ</td>
-          </tr>
-          <tr>
-            <td class="cell-content fw-600">Tổng tiền thanh toán</td>
-            <td class="float-right cell-content">{{data.totalAmount.amount| number:'1.0-0'}} VNĐ</td>
-          </tr>
-        </nz-table>
-        <div class="float-right">
-          <button *ngIf="data.statusCode != 4 && data.statusCode < 2 && titleStepFour != 'Gặp sự cố'" nz-button style="background-color: darkgray; color: white;">Quay lại</button>
-          <button *ngIf="data.statusCode == 5 && data.invoiceCode == ''" nz-button style="border-color: blue; color: blue;">Mua lại</button>
-          <button *ngIf="data.statusCode < 2 && titleStepFour != 'Gặp sự cố'" nz-button style="border-color: blue; color: blue;">Hủy đơn hàng</button>
-          <button *ngIf="data.statusCode < 2" nz-button style="background-color: #52c41a; color: white;">Thanh toán</button>
+<div nz-row nzGutter="16">
+  <div nz-col nzSpan="16">
+    <nz-card style="border-radius: 8px;">
+      <div class="d-flex align-items-center gap-2">
+        <div class="h3-container">
+          <h3 class="order-title">Đơn hàng: {{ data.orderCode }} |</h3>
+          <h3
+            *ngIf="
+              data.statusCode == 4 ||
+              (data.statusCode == 5 && data.invoiceCode != '')
+            "
+            style="font-weight: normal; opacity: 0.5"
+          >
+            | {{ titleStepFour }}
+          </h3>
+        </div>
+        <div
+          class="d-flex gap-3"
+          *ngIf="data.statusCode == 5 && data.invoiceCode == ''"
+        >
+          <h3 class="order-failed">Đã hủy</h3>
+          <h3 class="date-failed">
+            vào {{ data.updatedDate | date : 'HH:mm dd/MM/yyyy' }}
+          </h3>
         </div>
       </div>
-    </nz-col>
-  </nz-row>
-</nz-card>
-
+      <hr style="opacity: 0.5; margin-bottom: 30px" />
+      <div *ngIf="!(data.statusCode == 5 && data.invoiceCode == '')">
+        <nz-steps
+          [nzCurrent]="data.statusCode - 1"
+          style="width: 100%; margin: 0 auto"
+        >
+          <nz-step nzTitle="Đã đặt đơn"></nz-step>
+          <nz-step nzTitle="Đã thanh toán"></nz-step>
+          <nz-step nzTitle="Đang cài đặt"></nz-step>
+          <nz-step nzTitle="{{ titleStepFour }}"></nz-step>
+        </nz-steps>
+      </div>
+      <!--  information-->
+      <nz-row nzGutter="24" style="margin-top: 30px">
+        <nz-col nzSpan="5">
+          <nz-form-item>
+            <h3 class="form-title">Tên khách hàng:</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 class="form-title">Số điện thoại:</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 class="form-title">Email:</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 class="form-title">Địa chỉ:</h3>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="7">
+          <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px">
+              {{ data.customerName }}
+            </h3>
+            <h3 style="color: white">.</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px">
+              {{ data.phoneNumber }}
+            </h3>
+            <h3 style="color: white">.</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px">{{ data.email }}</h3>
+            <h3 style="color: white">.</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px">
+              {{ data.address }}
+            </h3>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="5">
+          <nz-form-item>
+            <h3 class="form-title">Thời gian tạo đơn:</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 class="form-title">Mã hóa đơn:</h3>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="7">
+          <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px">
+              {{ data.orderDate | date : 'dd/MM/yyyy' }}
+            </h3>
+            <h3 style="color: white">.</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px; color: #248fcc">
+              {{ data.invoiceCode }}
+            </h3>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+      <!--  table-->
+      <nz-table [nzData]="data.orderItems" nzHideOnSinglePage="true">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Dịch vụ</th>
+            <th>Đơn giá (VNĐ)</th>
+            <th>Thời hạn (Tháng)</th>
+            <th>Số lượng</th>
+            <th>Số tiền (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of data.orderItems">
+            <td>1</td>
+            <td>{{ item.serviceName }}</td>
+            <td>{{ item.unitPrice.amount | number : '1.0-0' }}</td>
+            <td>{{ item.duration }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.totalAmount.amount | number : '1.0-0' }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+  <div nz-col nzSpan="8">
+    <nz-card style="border-radius: 8px">
+      <div style="margin-bottom: 20px">
+        <span class="text-card-header">Thông tin thanh toán</span>
+      </div>
+      <div>
+        <nz-table>
+          <tr style="margin-bottom: 5px">
+            <td>Tổng tiền</td>
+            <td style="text-align: right">
+              <span class="price"
+                >{{ data.amount.amount | number : '1.0-0' }} VNĐ</span
+              >
+              <span>VND/tháng</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+          </tr>
+          <tr style="height: 10px">
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="margin-bottom: 5px">
+            <td>VAT({{ (data.vat.amount * 100) / data.amount.amount }}%)</td>
+            <td style="text-align: right">
+              <span class="price"
+                >{{ data.vat.amount | number : '1.0-0' }} VNĐ</span
+              >
+              <span>VND/tháng</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+          </tr>
+          <tr style="height: 20px">
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="background-color: #cce9ff; border-radius: 8px">
+            <td style="padding: 10px">
+              <span style="display: block; font-size: 16px; font-weight: 600"
+                >Tổng tiền thanh toán</span
+              >
+              <span>( Đã bao gồm 10% VAT)</span>
+            </td>
+            <td
+              style="
+                text-align: right;
+                color: #ea3829;
+                font-weight: 600;
+                padding: 10px;
+              "
+            >
+              {{ data.totalAmount.amount | number : '1.0-0' }} VNĐ
+            </td>
+          </tr>
+        </nz-table>
+        <div class="mt-3">
+          <button
+            *ngIf="
+              data.statusCode != 4 &&
+              data.statusCode < 2 &&
+              titleStepFour != 'Gặp sự cố'
+            "
+            nz-button
+            style="background-color: darkgray; color: white"
+          >
+            Quay lại
+          </button>
+          <button
+            style="width: 100%"
+            *ngIf="data.statusCode == 5 && data.invoiceCode == ''"
+            nz-button
+          >
+            <span nz-icon nzType="shop" nzTheme="outline"></span> Mua lại
+          </button>
+          <button
+            *ngIf="data.statusCode < 2 && titleStepFour != 'Gặp sự cố'"
+            nz-button
+            style="border-color: blue; color: blue"
+          >
+            Hủy đơn hàng
+          </button>
+          <button
+            *ngIf="data.statusCode < 2"
+            nz-button
+            style="background-color: #52c41a; color: white"
+          >
+            Thanh toán
+          </button>
+          <button class="mt-3" nz-button style="width: 100%; border: none"  [routerLink]="'/app-smart-cloud/order/list'">
+            <span nz-icon nzType="left" nzTheme="outline"></span> Quay lại
+          </button>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>
