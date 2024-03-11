@@ -5,7 +5,7 @@ import { NotificationConstant } from '../constants/notification.constant';
 import { NotificationWsService } from '../services/ws.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { messageCallbackType } from '@stomp/stompjs';
-import { finalize } from 'rxjs';
+import { EMPTY, catchError, finalize, from, mergeMap } from 'rxjs';
 import { ShareService } from '../services/share.service';
 import { ClusterStatus } from '../model/status.model';
 
@@ -103,7 +103,13 @@ export class KubernetesDetailComponent implements OnInit {
         }
 
         // case user refresh page and have mulitple cluster and is in-progress
-        
+        // from(listOfClusterInProgress).pipe(
+        //   mergeMap(cluster => this.clusterService.viewProgressCluster('', cluster.clusterName)
+        //   .pipe(catchError(response => {
+        //     console.error('fail to get progress: ', response);
+        //     return EMPTY;
+        //   })))
+        // );
       }
     });
   }

@@ -21,6 +21,10 @@ export class DetailClusterComponent implements OnInit {
   isLoadingAutoHealing: boolean;
   isLoadingAutoScale: boolean;
 
+  // for uprgade
+  showModalUpgradeVersion: boolean;
+  isUpgradingVersion: boolean;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -29,6 +33,8 @@ export class DetailClusterComponent implements OnInit {
   ) {
     this.isLoadingAutoHealing = false;
     this.isLoadingAutoScale = false;
+    this.showModalUpgradeVersion = false;
+    this.isUpgradingVersion = false;
   }
 
   ngOnInit(): void {
@@ -61,12 +67,25 @@ export class DetailClusterComponent implements OnInit {
     console.log(this.serviceOrderCode);
   }
 
-  handleShowModalUpgradeVersion() {
-    console.log(this.detailCluster.upgradeVersion);
-  }
-
   handleChangeScaleNode(item: WorkerGroupModel) {
     console.log(item);
+  }
+
+  handleShowModalUpgradeVersion() {
+    this.showModalUpgradeVersion = true;
+  }
+
+  handleCancelShowModalUpgrade() {
+    this.showModalUpgradeVersion = false;
+  }
+
+  handleUpgadeVersionCluster() {
+    this.isUpgradingVersion = true;
+
+    setTimeout(() => {
+      this.isUpgradingVersion = false;
+      this.showModalUpgradeVersion = false;
+    }, 2000);
   }
 
 }
@@ -109,8 +128,6 @@ export class RowDetailData implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-      console.log({label: this.label, value: this.value, type: this.type});
-  }
+  ngOnInit(): void { }
 }
 
