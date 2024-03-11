@@ -1,0 +1,29 @@
+<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+      nzTheme="outline" nz-popover
+      [nzPopoverContent]="'Gỡ IP WAN'"
+      nzPopoverPlacement="bottom" (click)="showModalDetach()"></span>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Gỡ IP WAN"
+          (nzOnCancel)="handleCancelDetach()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Gỡ IP WAN</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert
+      nzType="warning"
+      nzMessage="Bạn đang thực hiện gỡ IP WAN {{addressWan}} ra khỏi máy ảo {{instance}}."
+      nzShowIcon
+    ></nz-alert>
+    <span style="margin-top: 24px;">Quý khách có chắc chắn muốn gỡ IP WAN không?</span>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancelDetach()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOkDetach()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>
