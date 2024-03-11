@@ -42,7 +42,7 @@
                  placeholder="Tìm kiếm mã thanh toán, mã đơn hàng"/>
         </nz-input-group>
         <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="getListInvoices()">
+          <button style="height: 32px;" nz-button nzType="primary" nzSearch (click)="getListInvoices()">
             <span nz-icon nzType="search" nzTheme="outline"></span>
             Search
           </button>
@@ -81,7 +81,7 @@
         <th>Tổng tiền (VNĐ)</th>
         <th>Ngày tạo</th>
         <th>Trạng thái</th>
-        <th>Download Hóa dơn/ Hóa đơn nháp</th>
+        <th>Download Hóa dơn</th>
       </tr>
       </thead>
       <tbody>
@@ -89,9 +89,9 @@
         <td [nzChecked]="setOfCheckedId.has(data.id)"
             (nzCheckedChange)="onItemChecked(data.id, $event)" nzLeft></td>
         <td nzLeft><a (click)="getPaymentDetail(data.id)" >{{data.paymentNumber}}</a></td>
-        <td nzBreakWord>{{data.orderNumber}}</td>
+        <td nzBreakWord><a (click)="getPaymentDetail(data.id)" >{{data.orderNumber}}</a></td>
         <td nzBreakWord>{{data.amount}}</td>
-        <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
+        <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
         <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
           Đã thanh toán
         </td>
@@ -103,7 +103,7 @@
           <span nz-icon nzType="download" nzTheme="outline"></span>
         </td>
         <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid" nzBreakWord>
-          <span nz-icon nzType="download" nzTheme="outline"></span>
+          <img alt="" src="assets/imgs/download.svg" />
         </td>
       </tr>
       </tbody>

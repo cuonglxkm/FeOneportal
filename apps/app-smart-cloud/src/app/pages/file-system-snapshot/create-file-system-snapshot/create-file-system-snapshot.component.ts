@@ -6,6 +6,8 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
+import { RegionModel } from 'src/app/shared/models/region.model';
+import { ProjectModel } from 'src/app/shared/models/project.model';
 
 
 @Component({
@@ -14,8 +16,8 @@ import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.mod
   styleUrls: ['./create-file-system-snapshot.component.less'],
 })
 export class CreateFileSystemSnapshotComponent implements OnInit{
-  // region: number;
-  // project: number;
+  region: number;
+  project: number;
 
   // isLoading: boolean;
   // showWarningName: boolean;
@@ -61,6 +63,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     //   ':' +
     //   now.getSeconds().toString();
     // this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
   }
 
   // doGetListVolume() {
@@ -164,12 +169,11 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   //   return specialCharacters.test(str);
   // }
 
-  // onRegionChange(region: RegionModel) {
-  //   this.region = region.regionId;
-  // }
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
 
-  // onProjectChange(project: ProjectModel) {
-  //   this.project = project?.id;
-  //   this.doGetListVolume();
-  // }
+  onProjectChange(project: ProjectModel) {
+    this.project = project?.id;
+  }
 }

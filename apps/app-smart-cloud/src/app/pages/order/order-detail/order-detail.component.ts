@@ -32,7 +32,7 @@ export class OrderDetailComponent {
     this.service.getDetail(this.id)
       .pipe(finalize(() => {
         if (this.data.statusCode == 4) {
-          this.titleStepFour = 'Đã cài đặt thành công';
+          this.titleStepFour = 'Thành công';
         } else if (this.data.statusCode == 5) {
           if (this.data.invoiceCode != '') {
             this.titleStepFour = 'Gặp sự cố';

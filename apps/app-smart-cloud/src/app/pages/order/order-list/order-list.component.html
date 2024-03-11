@@ -71,7 +71,7 @@
         <td><a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a></td>
         <td>{{ data.note }}</td>
         <td>{{ data.orderDate | date: 'dd/MM/YYYY' }}</td>
-        <td>{{ data.statusCode }}</td>
+        <td [ngStyle]="{'color': data.statusCode === 'Cancelled' ? 'red' : (data.statusCode === 'Completed' ? 'green' : '')}">{{ data.statusCode === 'Cancelled' ? 'Thất bại' : (data.statusCode === 'Completed' ? 'Thành công' : 'Mới tạo') }}</td>
       </tr>
       </tbody>
     </nz-table>

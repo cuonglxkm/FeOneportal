@@ -7,6 +7,8 @@ import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floatin
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
+import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 
 @Component({
   selector: 'one-portal-file-system',
@@ -14,7 +16,7 @@ import { debounceTime } from 'rxjs';
   styleUrls: ['./file-system-snapshot.component.less'],
 })
 export class FileSystemSnapshotComponent {
-  region = null;
+  region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
@@ -30,7 +32,9 @@ export class FileSystemSnapshotComponent {
 
   isBegin: boolean = false
 
-  constructor(private ipFloatingService: IpFloatingService,
+  formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot()
+
+  constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
@@ -75,14 +79,13 @@ export class FileSystemSnapshotComponent {
 
   getData(isCheckBegin) {
     this.isLoading = true
-    let formSearchIpFloating: FormSearchIpFloating = new FormSearchIpFloating()
-    formSearchIpFloating.projectId = this.project
-    formSearchIpFloating.regionId = this.region
-    formSearchIpFloating.ipAddress = this.value
-    formSearchIpFloating.pageSize = this.pageSize
-    formSearchIpFloating.currentPage = this.pageIndex
-    formSearchIpFloating.customerId = this.customerId
-    this.ipFloatingService.getListIpFloating(formSearchIpFloating)
+    this.formSearchFileSystemSnapshot.vpcId = this.project
+    this.formSearchFileSystemSnapshot.regionId = this.region
+    this.formSearchFileSystemSnapshot.isCheckState = true
+    this.formSearchFileSystemSnapshot.pageSize = this.pageSize
+    this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
+    this.formSearchFileSystemSnapshot.customerId = this.customerId
+    this.fileSystemSnapshotService.getFileSystemSnapshot(this.formSearchFileSystemSnapshot)
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
@@ -104,9 +107,6 @@ export class FileSystemSnapshotComponent {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.customerId = this.tokenService.get()?.userId
-    this.ipFloatingService.model.subscribe(data => {
-      console.log(data)
-    })
     // this.getData(true)
   }
 }

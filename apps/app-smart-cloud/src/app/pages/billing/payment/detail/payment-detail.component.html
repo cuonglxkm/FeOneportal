@@ -12,7 +12,7 @@
   <div nz-col nzSpan="16">
     <nz-card style="border-radius: 8px">
     <nz-row class="customRow">
-      <nz-col style="width: 50%">
+      <nz-col style="width: 65%">
         <span style="font-weight: 600; font-size: 20px;"
           >MÃ THANH TOÁN {{ payment.paymentNumber }}</span
         >
@@ -22,43 +22,46 @@
         <span class="initField" *ngIf="payment.paymentLatestStatus == 'INIT'"
           >Chờ thanh toán</span
         >
+        <span class="failedField" *ngIf="payment.paymentLatestStatus == 'FAILED'"
+          >Đã hủy</span
+        >
       </nz-col>
     </nz-row>
-    <nz-row style="padding: 2%">
+    <nz-row style="padding-top: 50px">
       <div nz-col nzSpan="12">
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Tên khách hàng:</span>
-          <span>{{ userModel.name || '' }}</span>
+          <span class="fw-600">{{ userModel.name || '' }}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Số điện thoại:</span>
-          <span>{{ userModel.phoneNumber }}</span>
+          <span class="fw-600">{{ userModel.phoneNumber }}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Email:</span>
-          <span> {{ userModel.email }}</span>
+          <span class="fw-600"> {{ userModel.email }}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Địa chỉ:</span>
-          <span>{{ userModel.address }}</span>
+          <span class="fw-600">{{ userModel.address }}</span>
         </nz-row>
       </div>
       <div nz-col nzSpan="12">
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Ngày tạo:</span>
-          <span>{{ payment.createdDate | date : 'dd/MM/yyyy' }} </span>
+          <span class="fw-600">{{ payment.createdDate | date : 'dd/MM/yyyy' }} </span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Hình thức thanh toán:</span>
-          <span> {{ payment.paymentLatestStatus }} </span>
+          <span class="fw-600"> {{ payment.paymentLatestStatus }} </span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Mã đơn hàng:</span>
-          <span>{{ payment.orderNumber }}</span>
+          <span class="fw-600" style="color: #248FCC;">{{ payment.orderNumber }}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Mã hóa đơn:</span>
-          <span>{{ payment.invoiceIssuedId }}</span>
+          <span class="fw-600" style="color: #248FCC;">{{ payment.invoiceIssuedId }}</span>
         </nz-row>
       </div>
     </nz-row>
@@ -168,6 +171,9 @@
         </nz-table>
         <div *ngIf="payment.paymentLatestStatus == 'PAID'" style="margin-top: 20px;">
           <button style="width: 100%; border: none" nz-button (click)="download(payment.invoiceIssuedId)"><span nz-icon nzType="file-pdf" nzTheme="outline"></span> DOWNLOAD PDF</button>
+        </div>
+        <div *ngIf="payment.paymentLatestStatus == 'FAILED'" style="margin-top: 20px;">
+          <button style="width: 100%" nz-button><span nz-icon nzType="shop" nzTheme="outline"></span>Mua lại</button>
         </div>
         </div>
   </nz-card>
