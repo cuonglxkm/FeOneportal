@@ -1,0 +1,138 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'Quản lý Object'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Object Storage</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Bucket</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Chi tiết Bucket</a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<!--THÔNG TIN BUCKET-->
+<nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin Bucket</span>
+  </div>
+  <nz-row>
+    <div>Bucket:</div>
+    <div style="font-weight: bold;">value</div>
+  </nz-row>
+  <nz-row>
+    <div>URL:</div>
+    <div style="font-weight: bold;">value</div>
+  </nz-row>
+  <nz-row>
+    <div>Dung lượng đã sử dụng:</div>
+    <div style="font-weight: bold;">value</div>
+  </nz-row>
+  <nz-row>
+    <div>Versioning:</div>
+    <div style="font-weight: bold;">value</div>
+  </nz-row>
+  <nz-row>
+    <div>Quyền truy cập:</div>
+    <div style="font-weight: bold;">value</div>
+  </nz-row>
+</nz-card>
+
+<!--DANH SACH OBJECT -->
+<nz-card class="text-label">
+  <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+    <div class="text-right p-0 m-b-0" nz-col [nzLg]="9" [nzMd]="9" [nzSm]="18" [nzXl]="9" [nzXs]="18" [nzXXl]="9">
+      <div style="display:flex;">
+        <nz-input-group style="margin-right: 8px; width: 60%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
+                        nzSize="large">
+          <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm"/>
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm theo tên"
+               (click)="search(searchBox.value)"/>
+        </ng-template>
+        <button nz-button nzType="default" (click)="openFilter()" nzSize="large">
+          <span class="button-text-primary">Lọc</span>
+        </button>
+      </div>
+
+    </div>
+    <div class="text-right p-0 m-b-0" nz-col [nzLg]="15" [nzMd]="15" [nzSm]="30" [nzXl]="15" [nzXs]="30" [nzXXl]="15">
+      <p style="display: inline-block; margin-right: 20px;">Đã chọn 1 Objects.</p>
+      <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
+        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <span class="button-text-primary">Tải zip</span>
+      </button>
+      <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
+        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <span class="button-text-primary">Tạo thư mục</span>
+      </button>
+      <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
+        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <span class="button-text-primary">Tải file lên</span>
+      </button>
+    </div>
+  </div>
+  <!--  <div style="border: 5px; border-color: black">-->
+  <!--    <h1>xin chao cac em</h1>-->
+  <!--  </div>-->
+  <!-- Bảng-->
+  <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
+            [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
+            (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
+    <thead>
+    <tr>
+      <th>Tên VPC</th>
+      <th>Ngày khởi tạo</th>
+      <th>Ngày hết hạn</th>
+      <th>Trạng thái</th>
+      <th>Trạng thái tác vụ</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>a</tbody>
+  </nz-table>
+</nz-card>
+
+<!--Filter-->
+<nz-modal [(nzVisible)]="isVisibleFilter" nzTitle="Lọc danh sách Object" (nzOnCancel)="handleCancel()"
+          (nzOnOk)="openFilter()" nzOkText="Xác nhận" nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <nz-table [nzData]="dataFilter">
+      <thead>
+      <tr>
+        <th>Cột</th>
+        <th>Điều kiện</th>
+        <th>Giá trị</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of dataFilter">
+        <td>
+          <nz-select [(ngModel)]="item.name" (ngModelChange)="search(null)" nzSize="large" style="width: 230px;">
+            <nz-option *ngFor="let p of colReal" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+        </td>
+        <td>{{item.condition}}</td>
+        <td>{{item.value}}</td>
+        <td>TT</td>
+      </tr>
+      </tbody>
+    </nz-table>
+    <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large" style="margin-top: 8px;">
+      <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+      <span class="button-text-primary">Tạo thư mục</span>
+    </button>
+  </ng-container>
+</nz-modal>
+
+<!--Xóa-->
+<!--<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"-->
+<!--          (nzOnOk)="openIpDelete()" nzOkText="Đồng ý"-->
+<!--          nzCancelText="Hủy" [nzStyle]="modalStyle">-->
+<!--  <ng-container *nzModalContent>-->
+<!--    <b style="display: flex; justify-content: center;">Quý khách chắc chắn muốn thực hiện xóa Ip Public?</b>-->
+<!--    <br>-->
+<!--    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>-->
+<!--  </ng-container>-->
+<!--</nz-modal>-->
+

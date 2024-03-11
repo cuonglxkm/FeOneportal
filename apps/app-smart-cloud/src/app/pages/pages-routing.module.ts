@@ -93,6 +93,7 @@ import { CreateNetworkComponent } from './vlan/create/create-network/create-netw
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import {BucketDetailComponent} from "./bucket/bucket-detail/bucket-detail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -415,6 +416,10 @@ const routes: Routes = [
   {
     path:'networks/ip-floating/list',
     component: ListIpFloatingComponent
+  },
+  {
+    path:'object-storage/bucket/:id',
+    component: BucketDetailComponent
   }
   ]
 @NgModule({
