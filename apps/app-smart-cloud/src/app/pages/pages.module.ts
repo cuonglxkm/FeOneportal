@@ -153,6 +153,11 @@ import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-
 import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
 import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
+import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
+import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
+import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
 import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
@@ -314,6 +319,11 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     LifecycleConfigComponent,
     BucketPolicyComponent,
     BucketCorsComponent,
+    FileSystemSnapshotComponent,
+    FileSystemSnapshotDetailComponent,
+    CreateFileSystemSnapshotComponent,
+    CreateFileSystemSnapshotScheduleComponent,
+    FileSystemSnapshotScheduleComponent,
     ListFileSystemComponent,
     ListWanComponent,
     DeleteWanComponent,

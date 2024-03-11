@@ -17,7 +17,7 @@ export class InboundListComponent implements OnInit, OnChanges {
     @Input() projectId: number
 
     title: string = 'Xác nhận xóa Inbound';
-    content: string = 'Bạn có chắc chăn muốn xóa Inbound';
+    content: string = 'Quý khách chắc chắn muốn xóa dịch vụ này?';
 
     collection: Pagination<SecurityGroupRule>;
     condition = new RuleSearchCondition()
