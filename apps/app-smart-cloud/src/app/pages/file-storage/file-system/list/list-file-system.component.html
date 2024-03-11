@@ -70,22 +70,7 @@
       <tr *ngFor="let data of fixTable.data; i as index">
         <td>{{ index }}</td>
         <td>{{ data.name }}</td>
-        <td>
-          <div class="status" [ngSwitch]="data.status">
-                                <span class="available" *ngSwitchCase="'AVAILABLE'">
-                                            Đang hoạt động
-                                          </span>
-<!--            <span class="available" *ngSwitchCase="'CREATING'">-->
-<!--                                            Đang khởi tạo-->
-<!--                                          </span>-->
-<!--            <span class="suspended" *ngSwitchCase="'SUSPENDED'">-->
-<!--                                            Tạm dừng-->
-<!--                                          </span>-->
-            <span class="suspended" *ngSwitchCase="'ERROR'">
-                                            Lỗi
-                                          </span>
-          </div>
-        </td>
+        <td>{{ data.status }}</td>
         <td>{{ data.taskState }}</td>
         <td>{{ data.type }}</td>
         <td>{{ data.protocol }}</td>
@@ -103,7 +88,10 @@
                 <li nz-menu-item>Tạo Snapshot</li>
                 <li nz-menu-item>Điều chỉnh dung lượng</li>
                 <li nz-menu-item>Quản lý Access Rule</li>
-                <li nz-menu-item>Xoá</li>
+                <one-portal-delete-file-system [region]="region"
+                                               [project]="project"
+                                               [fileSystemId]="data.id"
+                                               (onOk)="handleOkDelete()" />
               </ul>
             </nz-dropdown-menu>
           </div>

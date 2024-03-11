@@ -19,20 +19,63 @@
 </page-header>
 <nz-content>
   <form nz-form nzLayout="vertical">
-    <nz-row>
+    <nz-row nzGutter="24">
       <nz-col nzSpan="16">
-        <span class="text-card-title">Thông tin SubUser</span>
-        <nz-form-item>
-          <nz-form-label>
-            <div>
-              <span>Tên SubUser</span>
-
-            </div>
-          </nz-form-label>
-        </nz-form-item>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin SubUser</span>
+          <nz-form-item style="margin-top: 24px;">
+            <nz-form-label>
+              <div>
+                <div>
+                  <span>Tên SubUser</span>
+                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                </div>
+                <div>
+                  <span>Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang.</span>
+                </div>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameSubUserErrorTpl">
+              <nz-input-group style="width: 100%;">
+                <input nz-input
+                       class="input-custom"
+                       [placeholder]="'Nhập tên sub-user'"
+                       formControlName="name"/>
+              </nz-input-group>
+              <ng-template #nameSubUserErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Sub-User</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <div>
+                  <span>Quyền truy cập</span>
+                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                </div>
+                <div>
+                  <span>Người dùng lựa chọn quyền truy cập toàn bộ các Bucket của Quý khách cho SubUser muốn tạo<br>
+Lưu ý: Truy cập vào Bucket có thể bị giới hạn bởi cấu hình Bucket policy.</span>
+                </div>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="accessErrorTpl">
+              <nz-select formControlName="access">
+                <nz-option nzValue="full" nzLabel="Tất cả quyền truy cập"></nz-option>
+                <nz-option nzValue="none" nzLabel="Không có quyền truy cập"></nz-option>
+              </nz-select>
+              <ng-template #accessErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Sub-User</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <span class="text-card-title">Thông số cấu hình</span>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông số cấu hình</span>
+        </nz-card>
       </nz-col>
     </nz-row>
   </form>

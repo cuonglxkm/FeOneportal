@@ -92,6 +92,10 @@ export class ListFileSystemComponent implements OnInit {
     this.getListFileSystem(false)
   }
 
+  handleOkDelete() {
+    this.getListFileSystem(false)
+  }
+
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();

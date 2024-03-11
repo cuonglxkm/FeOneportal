@@ -29,3 +29,29 @@ export class FormSearchFileSystem {
   pageSize: number
   currentPage: number
 }
+
+export class FormEditFileSystem {
+  id: number
+  name: string
+  description: string
+  regionId: number
+  customerId: number
+}
+
+export class FileSystemDetail {
+  id: number
+  shareCloudId: string
+  name: string
+  type: string
+  shareProto: string
+  vpc: string
+  vpcId: number
+  mountTargetAddress: string
+  status: string
+  createdDate: Date
+  size: number
+  description: string
+  instanceId: string
+  customerId: number
+  customerEmail: string
+}

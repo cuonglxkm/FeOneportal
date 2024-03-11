@@ -212,7 +212,7 @@
             },
             {
               "text": "File Storage",
-              "link": "/app-smart-cloud/networks/file-storage/file-system/list",
+              "icon": "file",
               "children": [
                 {
                   "text": "File System",

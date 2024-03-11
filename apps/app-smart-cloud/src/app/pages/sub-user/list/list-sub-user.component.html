@@ -18,11 +18,11 @@
 </page-header>
 <nz-content>
   <nz-card style="border-radius: 8px;">
-    <nz-row>
+    <nz-row nzJustify="space-between">
       <nz-col [nzSpan]="8">
-        <span class="text-card-header">Danh sách Sub-user</span>
+        <span class="text-card-header">Danh sách Sub-User</span>
       </nz-col>
-      <nz-col [nzSpan]="16">
+      <nz-col [nzSpan]="16" style="flex:none;">
         <div>
           <nz-input-group [nzPrefix]="prefixIconSearch"
                           nzSize="large"
@@ -36,14 +36,24 @@
           <ng-template #prefixIconSearch>
             <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
           </ng-template>
-          <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubUser()">
+          <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubUser()">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
             <span class="button-text-primary">Tạo mới Subuser</span>
           </button>
         </div>
       </nz-col>
     </nz-row>
-    <nz-table>
+    <nz-table  #fixTable
+               style="margin-top: 24px;"
+               nzShowPagination
+               [nzData]="response?.records"
+               [nzPageSize]="response?.pageSize"
+               (nzPageSizeChange)="onPageSizeChange($event)"
+               [nzPageIndex]="response?.currentPage"
+               (nzPageIndexChange)="onPageIndexChange($event)"
+               [nzTotal]="response?.totalCount"
+               [nzFrontPagination]="false"
+               [nzLoading]="isLoading">
       <thead>
       <tr>
         <th>STT</th>
@@ -53,6 +63,20 @@
         <th>Thao tác</th>
       </tr>
       </thead>
+      <tbody>
+      <tr *ngFor="let data of fixTable.data; i as index">
+        <td>{{ index }}</td>
+        <td></td>
+        <td>{{ data.permissions }}</td>
+        <td>
+          <one-portal-edit-sub-user [region]="region"
+                                    [project]="project"
+                                    [idSubUser]="data.subUserId"
+                                    [uid]="data.userId"
+                                    (onOk)="handleOkEdit()" />
+        </td>
+      </tr>
+      </tbody>
     </nz-table>
   </nz-card>
 </nz-content>
