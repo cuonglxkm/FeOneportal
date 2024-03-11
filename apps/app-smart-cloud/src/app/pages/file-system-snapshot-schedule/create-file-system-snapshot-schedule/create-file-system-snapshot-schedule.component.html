@@ -48,7 +48,7 @@
           <nz-form-label nzFor="name" nzRequired
             >Tên lịch Snapshot</nz-form-label
           >
-          <nz-form-control nzErrorTip="Tên lịch Snapshot không đuợc để trống và chứa kí tự đặc biệt!">
+          <nz-form-control [nzErrorTip]="nameErrorTpl">
           <input
             nz-input
             type="text"
@@ -59,6 +59,10 @@
             (ngModelChange)="nameSnapshot = $event"
             formControlName="name"
           />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chứa chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+          </ng-template>
         </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -380,6 +384,7 @@
           "
           nzSize="large"
           (click)="handleSubmit()"
+          [disabled]="FileSystemSnapshotForm.invalid"
         >
           <img src="assets/imgs/wallet.svg" alt="" />
           <span class="button-text-primary">Khởi tạo</span>

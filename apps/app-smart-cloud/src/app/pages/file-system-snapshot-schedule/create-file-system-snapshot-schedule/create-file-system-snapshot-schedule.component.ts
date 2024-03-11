@@ -74,20 +74,18 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
     maxSnapshot: FormControl<number>,
     description: FormControl<string>,
     dates: FormControl<string>,
-
-
   }> = this.fb.group({
-    name: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
     listOfFileSystem: [[] as string[], Validators.required],
     runtime: [new Date(), Validators.required],
     mode: [this.dateOptions[0].value as string, Validators.required],
     dayOfWeek: '',
     daysOfWeek: [[] as string[]],
     intervalWeek: [null as number],
-    intervalMonth: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
-    maxSnapshot: [1, [Validators.required, Validators.min(1)]],
+    intervalMonth: [null as number, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
+    maxSnapshot: [null as number, [Validators.required, Validators.min(1)]],
     description: ['', [Validators.maxLength(700)]],
-    dates: ['1', [Validators.required]],
+    dates: [null as string, [Validators.required]],
 
   });
 
@@ -145,9 +143,9 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
       console.log(this.formCreateFileSystemSsSchedule);
       this.formCreateFileSystemSsSchedule.runtime = this.datepipe.transform(this.FileSystemSnapshotForm.controls.runtime.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
       this.fileSystemSnapshotScheduleService.create(this.formCreateFileSystemSsSchedule).subscribe(data => {
-        this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
+        this.notification.success('Thành công', 'Tạo mới lịch file system thành công')
       }, error => {
-        this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại')
+        this.notification.error('Thất bại', 'Tạo mới lịch file system thất bại')
         console.log(error);
       })  
     }
