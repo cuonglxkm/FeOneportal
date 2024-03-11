@@ -3,7 +3,7 @@ export class KubernetesCluster {
   id: number;
   serviceOrderCode: string;
   clusterName: string;
-  regionId: string;
+  regionId: number;
   cloudProfileId: string;
   serviceStatus: number;
   actionStatus: number;

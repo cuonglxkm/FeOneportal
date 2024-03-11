@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { KubernetesCluster, WorkerGroupModel } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { K8sVersionModel } from '../model/k8s-version.model';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -24,6 +25,9 @@ export class DetailClusterComponent implements OnInit {
   // for uprgade
   showModalUpgradeVersion: boolean;
   isUpgradingVersion: boolean;
+  upgradeVersionCluster: string;
+
+  listOfK8sVersion: K8sVersionModel[];
 
   constructor(
     private router: Router,
@@ -31,6 +35,8 @@ export class DetailClusterComponent implements OnInit {
     private cluserService: ClusterService,
     private notificationService: NzNotificationService
   ) {
+    this.listOfK8sVersion = [];
+
     this.isLoadingAutoHealing = false;
     this.isLoadingAutoScale = false;
     this.showModalUpgradeVersion = false;
@@ -53,6 +59,21 @@ export class DetailClusterComponent implements OnInit {
         this.autoScaleValue = this.detailCluster.autoScaling;
         this.autoHealingValue = this.detailCluster.autoHealing;
 
+        // test
+        // this.detailCluster.upgradeVersion = '1.29.0';
+        // this.detailCluster.currentVersion = '1.28.2';
+
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  getListVersion(regionId: number) {
+    this.cluserService.getListK8sVersion(regionId, null)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfK8sVersion = r.data;
       } else {
         this.notificationService.error("Thất bại", r.message);
       }
@@ -72,6 +93,8 @@ export class DetailClusterComponent implements OnInit {
   }
 
   handleShowModalUpgradeVersion() {
+    // this.getListVersion(this.detailCluster.regionId);
+    this.getListVersion(3);   // fix to test
     this.showModalUpgradeVersion = true;
   }
 

@@ -189,10 +189,27 @@
 <!-- modal upgrade -->
 <nz-modal [(nzVisible)]="showModalUpgradeVersion" nzTitle="Nâng cấp phiên bản" (nzOnCancel)="handleCancelShowModalUpgrade()">
   <div *nzModalContent>
-    Bạn có muốn nâng cấp cluster lên phiên bản <b>{{detailCluster.upgradeVersion}}</b> không?
+    <ng-container *ngIf="detailCluster.upgradeVersion; else noAvailableVersionTpl">
+      <p>Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
+      <p>Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
+      <div>
+        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" [(ngModel)]="selecetedVersion" style="width: 100%;">
+          <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
+          [nzDisabled]="item.k8sVersion != detailCluster.upgradeVersion"></nz-option>
+        </nz-select>
+      </div>
+    </ng-container>
+    <ng-template #noAvailableVersionTpl>
+      Bạn đang sử dụng phiên bản <b>{{detailCluster.currentVersion}}</b> mới nhất
+    </ng-template>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Hủy bỏ</button>
-    <button nz-button nzType="primary" (click)="handleUpgadeVersionCluster()" [nzLoading]="isUpgradingVersion">Xác nhận</button>
+    <ng-container *ngIf="detailCluster.upgradeVersion; else noAvailableVersionFooterTpl">
+      <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Hủy bỏ</button>
+      <button nz-button nzType="primary" (click)="handleUpgadeVersionCluster()" [nzLoading]="isUpgradingVersion">Xác nhận</button>
+    </ng-container>
+    <ng-template #noAvailableVersionFooterTpl>
+      <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Đóng</button>
+    </ng-template>
   </div>
 </nz-modal>

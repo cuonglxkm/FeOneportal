@@ -255,7 +255,7 @@
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
-              <nz-form-control id="vpc-form">
+              <nz-form-control nzErrorTip="Mạng VPC không để trống" >
                 <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
                   class="w-90" (ngModelChange)="onSelectedVlan($event)">
                   <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
@@ -290,7 +290,8 @@
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
               <nz-form-control nzErrorTip="Subnet không để trống" id="subnet-form">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90">
-                  <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.name" [nzValue]="item.subnetAddressRequired"></nz-option>
+                  <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
+                    [nzValue]="item.subnetAddressRequired"></nz-option>
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
                   nz-tooltip (click)="syncSubnet()" class="borderless">

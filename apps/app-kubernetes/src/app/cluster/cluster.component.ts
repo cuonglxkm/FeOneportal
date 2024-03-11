@@ -187,7 +187,6 @@ export class ClusterComponent implements OnInit {
 
   formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
   getVlanNetwork(projectId: number) {
-    console.log(123);
     this.formSearchNetwork.projectId = projectId;
     this.formSearchNetwork.pageSize = 1000;
     this.formSearchNetwork.pageNumber = 0;
@@ -207,6 +206,9 @@ export class ClusterComponent implements OnInit {
     this.formSearchSubnet.pageNumber = 0;
     this.formSearchSubnet.networkId = this.vlanId;
     this.formSearchSubnet.region = this.regionId;
+
+    // clear subnet
+    this.myform.get('subnet').setValue(null);
 
     this.vlanService.getListSubnet(this.formSearchSubnet)
     .subscribe((r: any) => {
@@ -239,6 +241,8 @@ export class ClusterComponent implements OnInit {
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
 
     // TODO: handle reset select box of previous project ...
+    this.myform.get('vpcNetwork').setValue(null);
+    this.myform.get('subnet').setValue(null);
 
   }
 
