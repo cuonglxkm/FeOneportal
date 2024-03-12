@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 import {VolumeService} from "../../../../../shared/services/volume.service";
 import {VolumeDTO} from "../../../../../shared/dto/volume.dto";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -67,6 +68,9 @@ export class ListBackupVolumeComponent {
   });
   ngOnInit() {
     this.selectedStatus = this.listStatus[0].value;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   loadBackupVolume(isCheckBegin: boolean) {

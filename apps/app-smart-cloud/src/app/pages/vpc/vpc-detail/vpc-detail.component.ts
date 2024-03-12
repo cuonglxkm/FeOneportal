@@ -66,6 +66,7 @@ export class VpcDetailComponent {
   private pushTable() {
     let total = this.dataTotal.cloudProject;
     let used = this.dataTotal.cloudProjectResourceUsed;
+    this.listOfData.splice(0,1)
     this.listOfData.push({name : "CPU (vCPU)",total: total.quotavCpu + " vCPU",used:used.cpu + " vCPU",remain: (total.quotavCpu - used.cpu) + " vCPU"});
     this.listOfData.push({name : "RAM (GB)",total: total.quotaRamInGb + " GB",used:used.ram + " GB",remain:(total.quotaRamInGb - used.ram) + " GB"});
     this.listOfData.push({name : "HHD (GB)",total: total.quotaHddInGb + " GB",used:used.hdd + " GB",remain:(total.quotaHddInGb - used.hdd) + " GB"});
