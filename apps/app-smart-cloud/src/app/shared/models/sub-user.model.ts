@@ -1,4 +1,5 @@
 export class SubUser {
+  rowNumber: number
   userId: string
   subUserId: string
   permissions: string

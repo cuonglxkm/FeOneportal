@@ -67,7 +67,8 @@
         <tbody>
         <ng-container *ngFor="let data of fixTable.data; index as i">
           <tr *ngFor="let key of data.keys; index as k">
-            <td>{{ rowCounter + 1 }}</td>
+            <td *ngIf="k === 0">{{ i + 1 }}</td>
+            <td *ngIf="k !== 0">{{ '' }}</td>
             <td>{{ key.userId }}</td>
             <td>
               <nz-row nzJustify="space-between">

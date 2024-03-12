@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RegionModel } from '../../../shared/models/region.model';
 import { ProjectModel } from '../../../shared/models/project.model';
 import { SubUserService } from '../../../shared/services/sub-user.service';
-import { SubUser } from '../../../shared/models/sub-user.model';
+import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { ClipboardService } from 'ngx-clipboard';
@@ -27,19 +27,22 @@ export class ListSubUserComponent implements OnInit {
   isLoading: boolean = false
 
   isCheckBegin: boolean = false
-  rowCounter: number = 0
 
   constructor(private router: Router,
               private subUserService: SubUserService,
               private clipboardService: ClipboardService) {
-    this.response?.records.forEach(data => {
-      this.rowCounter++;
-      data['rowNumber'] = this.rowCounter;
-    })
+    this.rowCount = this.response?.records.reduce((count, data) => count + data.keys.length, 0);
   }
 
   onInputChange(value) {
     this.value = value
+  }
+
+  rowCount: number = 0;
+
+  // Hàm tính số hàng
+  calculateRowCount() {
+
   }
 
   regionChanged(region: RegionModel) {
@@ -73,6 +76,8 @@ export class ListSubUserComponent implements OnInit {
     this.subUserService.getListSubUser(this.pageSize, this.pageIndex).subscribe(data => {
       this.response = data
       this.isLoading = false
+
+
 
       if (isBegin) {
         this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
