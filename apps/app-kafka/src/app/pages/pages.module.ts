@@ -32,7 +32,17 @@ import { TruncateLabelPipe } from '../pipes/truncate-label.pipe';
 import { LoadTopicComponent } from './detail/topic-mngt/load-topic/load-topic.component';
 import { KafkaDetailComponent } from './list-kafka/list-kafka.component';
 import { Status2ColorPipe } from '../pipes/status2color.pipe';
-
+import { CreateKafkaComponent } from './create-kafka/create-kafka.component';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import {
+  NguCarousel,
+  NguCarouselDefDirective,
+  NguCarouselNextDirective,
+  NguCarouselPrevDirective,
+  NguItemComponent,
+  NguTileComponent
+} from '@ngu/carousel';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -54,6 +64,7 @@ import { Status2ColorPipe } from '../pipes/status2color.pipe';
     LoadTopicComponent,
     KafkaDetailComponent,
     Status2ColorPipe,
+    CreateKafkaComponent
   ],
   imports: [
     PagesRoutingModule,
@@ -68,7 +79,15 @@ import { Status2ColorPipe } from '../pipes/status2color.pipe';
     NzDescriptionsModule,
     NzSelectModule,
     NzNotificationModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    NzCardModule,
+    NzCarouselModule,
+    NguCarousel, 
+    NguCarouselDefDirective,
+    NguCarouselNextDirective,
+    NguCarouselPrevDirective,
+    NguItemComponent,
+    NguTileComponent
   ],
 })
 export class PagesModule {}

@@ -2,10 +2,13 @@
     <ng-template #breadcrumb>
         <nz-breadcrumb>
             <nz-breadcrumb-item>
-                <a [routerLink]="['/']">Home</a>
+                <a [routerLink]="['/']">Trang chủ</a>
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
-                <a [routerLink]="['/app-kafka']">Quản lý dịch vụ Kafka</a>
+                <a [routerLink]="['/app-kafka']">Dánh sách Kafka</a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a [routerLink]="['/app-kafka']">Quản lý Kafka: <b>{{serviceOrderCode}}</b></a>
             </nz-breadcrumb-item>
         </nz-breadcrumb>
     </ng-template>
