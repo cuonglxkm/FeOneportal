@@ -28,6 +28,7 @@ import { Status2ColorPipe } from '../pipes/status2color.pipe';
 import { DetailClusterComponent, RowDetailData } from '../detail-cluster/detail-cluster.component';
 import { Network2Label } from '../pipes/network-type.pipe';
 import { TruncateLabel } from '../pipes/truncate-label.pipe';
+import { CalculateDate } from '../pipes/calculate-date.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -42,6 +43,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     Status2ColorPipe,
     Network2Label,
     TruncateLabel,
+    CalculateDate,
 
   ],
   imports: [

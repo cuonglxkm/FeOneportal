@@ -10,6 +10,10 @@ h3 {
   width: 50%;
 }
 
+.w-100 {
+  width: 100%;
+}
+
 .label-col {
   width: 40%;
 }

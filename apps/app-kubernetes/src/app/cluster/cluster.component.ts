@@ -229,9 +229,6 @@ export class ClusterComponent implements OnInit {
 
     this.myform.get('regionId').setValue(this.regionId);
     this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
-
-    // TODO: handle reset select box of previous region ...
-
   }
 
   onProjectChange(project: ProjectModel) {
@@ -240,7 +237,7 @@ export class ClusterComponent implements OnInit {
     this.getVlanNetwork(this.projectInfraId);
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
 
-    // TODO: handle reset select box of previous project ...
+    // handle reset select box of previous project
     this.myform.get('vpcNetwork').setValue(null);
     this.myform.get('subnet').setValue(null);
 

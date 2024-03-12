@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { BaseService } from "../shared/services/base.service";
+import { UpgradeVersionClusterDto } from "../model/cluster.model";
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,10 @@ export class ClusterService extends BaseService {
 
   viewProgressCluster(namespace: string, clusterName: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`, {headers: this.getHeaders()});
+  }
+
+  upgradeVersionCluster(data: UpgradeVersionClusterDto) {
+    return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/upgrade-version`, data, {headers: this.getHeaders()});
   }
 
   getListStatus() {

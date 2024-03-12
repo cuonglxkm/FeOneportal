@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { KubernetesCluster, WorkerGroupModel } from '../model/cluster.model';
+import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { K8sVersionModel } from '../model/k8s-version.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -32,7 +33,7 @@ export class DetailClusterComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private cluserService: ClusterService,
+    private clusterService: ClusterService,
     private notificationService: NzNotificationService
   ) {
     this.listOfK8sVersion = [];
@@ -51,7 +52,7 @@ export class DetailClusterComponent implements OnInit {
   }
 
   getDetailCluster(serviceOrderCode: string) {
-    this.cluserService.getDetailCluster(serviceOrderCode)
+    this.clusterService.getDetailCluster(serviceOrderCode)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.detailCluster = new KubernetesCluster(r.data);
@@ -60,8 +61,8 @@ export class DetailClusterComponent implements OnInit {
         this.autoHealingValue = this.detailCluster.autoHealing;
 
         // test
-        // this.detailCluster.upgradeVersion = '1.29.0';
-        // this.detailCluster.currentVersion = '1.28.2';
+        this.detailCluster.upgradeVersion = '1.29.0';
+        this.detailCluster.currentVersion = '1.28.2';
 
       } else {
         this.notificationService.error("Thất bại", r.message);
@@ -70,7 +71,7 @@ export class DetailClusterComponent implements OnInit {
   }
 
   getListVersion(regionId: number) {
-    this.cluserService.getListK8sVersion(regionId, null)
+    this.clusterService.getListK8sVersion(regionId, null)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfK8sVersion = r.data;
@@ -100,15 +101,34 @@ export class DetailClusterComponent implements OnInit {
 
   handleCancelShowModalUpgrade() {
     this.showModalUpgradeVersion = false;
+    this.upgradeVersionCluster = null;
   }
 
   handleUpgadeVersionCluster() {
     this.isUpgradingVersion = true;
 
-    setTimeout(() => {
+    let upgradeDto: UpgradeVersionClusterDto = new UpgradeVersionClusterDto();
+    upgradeDto.clusterName = this.detailCluster.clusterName;
+    upgradeDto.namespace = this.detailCluster.namespace;
+    upgradeDto.regionId = this.detailCluster.regionId;
+    upgradeDto.version = this.upgradeVersionCluster;
+
+    this.clusterService.upgradeVersionCluster(upgradeDto)
+    .pipe(finalize(() => {
       this.isUpgradingVersion = false;
       this.showModalUpgradeVersion = false;
-    }, 2000);
+    })).subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.notificationService.success("Thành công", r.message);
+        this.back2list();
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  back2list() {
+    this.router.navigate(['/app-kubernetes']);
   }
 
 }

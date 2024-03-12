@@ -16,7 +16,7 @@
 
   <!-- action -->
   <ng-template #action>
-    <div class="alain-custom-action text-right">
+    <!-- <div class="alain-custom-action text-right">
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
@@ -24,7 +24,7 @@
         [regionId]="regionId"
         (valueChanged)="onProjectChange($event)"
       ></project-select-dropdown>
-    </div>
+    </div> -->
   </ng-template>
 
   <ng-template #content>
@@ -83,7 +83,9 @@
 
             <tr>
               <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'" [label]="'Ngày khởi tạo'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'" [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
+              <td class="w-50"><row-data
+                [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
             </tr>
 
             <tr>
@@ -180,6 +182,23 @@
     </div>
   </nz-card>
 
+  <!-- Thông tin volume -->
+  <nz-card class="border-card">
+    <h3>Thông tin volume</h3>
+    <div nz-row>
+      <div nz-col [nzSpan]="24" class="detailtable">
+        <nz-table [nzTemplateMode]="true" nzBordered>
+          <tbody>
+            <tr>
+              <td class="w-50"><row-data [value]="detailCluster.volumeCloudType == 'hdd' ? 'HDD' : 'SSD'" [label]="'Loại'"></row-data></td>
+              <td class="w-50"><row-data [value]="detailCluster.volumeCloudSize" [label]="'Kích thước (GiB)'"></row-data></td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-card>
+
 </ng-container>
 
 <ng-template #loadingTpl>
@@ -193,7 +212,7 @@
       <p>Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
       <p>Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
       <div>
-        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" [(ngModel)]="selecetedVersion" style="width: 100%;">
+        <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100">
           <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
           [nzDisabled]="item.k8sVersion != detailCluster.upgradeVersion"></nz-option>
         </nz-select>
@@ -206,7 +225,8 @@
   <div *nzModalFooter>
     <ng-container *ngIf="detailCluster.upgradeVersion; else noAvailableVersionFooterTpl">
       <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Hủy bỏ</button>
-      <button nz-button nzType="primary" (click)="handleUpgadeVersionCluster()" [nzLoading]="isUpgradingVersion">Xác nhận</button>
+      <button nz-button nzType="primary" (click)="handleUpgadeVersionCluster()"
+      [nzLoading]="isUpgradingVersion" [disabled]="upgradeVersionCluster == null || upgradeVersionCluster == undefined">Xác nhận</button>
     </ng-container>
     <ng-template #noAvailableVersionFooterTpl>
       <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Đóng</button>

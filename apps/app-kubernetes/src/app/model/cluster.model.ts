@@ -4,6 +4,7 @@ export class KubernetesCluster {
   serviceOrderCode: string;
   clusterName: string;
   regionId: number;
+  namespace: string;
   cloudProfileId: string;
   serviceStatus: number;
   actionStatus: number;
@@ -16,6 +17,10 @@ export class KubernetesCluster {
   apiEndpoint: string;
   cidr: string;
   subnet: string;
+  vpcNetworkId: number;
+  volumeCloudType: string;
+  volumeCloudSize: number;
+  usageTime: number;
   totalNode: number;
   createdDate: Date;
   workerGroups: WorkerGroupModel[];
@@ -25,6 +30,7 @@ export class KubernetesCluster {
     this.serviceOrderCode = obj.service_order_code;
     this.clusterName = obj.service_name;
     this.regionId = obj.region_id;
+    this.namespace = obj.namespace;
     this.cloudProfileId = obj.cloud_profile_id;
     this.serviceStatus = obj.service_status;
     this.actionStatus = obj.action_status;
@@ -36,6 +42,10 @@ export class KubernetesCluster {
     this.autoScaling = obj.auto_scaling;
     this.cidr = obj.cidr;
     this.subnet = obj.subnet;
+    this.vpcNetworkId = obj.vpc_network_id;
+    this.volumeCloudSize = obj.volume_cloud_size;
+    this.volumeCloudType = obj.volume_cloud_type;
+    this.usageTime = obj.usage_time;
     this.description = obj.description;
     this.totalNode = obj.total_node;
     this.createdDate = obj.created_date;
@@ -67,6 +77,15 @@ export class NetworkingModel {
       this.subnet = obj.subnet;
     }
   }
+
+}
+
+export class UpgradeVersionClusterDto {
+
+  regionId: number;
+  clusterName: string;
+  namespace: string;
+  version: string;
 
 }
 
