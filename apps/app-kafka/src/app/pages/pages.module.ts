@@ -43,6 +43,7 @@ import {
   NguItemComponent,
   NguTileComponent
 } from '@ngu/carousel';
+
 @NgModule({
   declarations: [
     DetailComponent,
@@ -64,7 +65,7 @@ import {
     LoadTopicComponent,
     KafkaDetailComponent,
     Status2ColorPipe,
-    CreateKafkaComponent
+    CreateKafkaComponent,
   ],
   imports: [
     PagesRoutingModule,
