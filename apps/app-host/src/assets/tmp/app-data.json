@@ -276,6 +276,11 @@
               "text": "Kafka",
               "icon": "anticon-team",
               "link": "/app-kafka"
+            },
+            {
+              "text": "MongoDB Replicaset",
+              "icon": "anticon-team",
+              "link": "/app-mongodb-replicaset"
             }
           ]
         },

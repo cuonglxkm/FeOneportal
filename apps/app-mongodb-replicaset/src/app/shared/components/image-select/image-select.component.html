@@ -1,0 +1,10 @@
+<nz-select
+  name="image"
+  style="width: 100%"
+  (ngModelChange)="onSelect($event)"
+  [(ngModel)]="value"
+  [nzPlaceHolder]="'Lựa chọn hệ điều hành'"
+>
+  <nz-option *ngFor="let image of imageList; let idx = index" [nzLabel]="image.name" [nzValue]="image"/>
+</nz-select>
+

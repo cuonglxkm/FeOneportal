@@ -1,0 +1,9 @@
+<nz-select
+  name="flavor"
+  style="width: 100%"
+  (ngModelChange)="onSelect($event)"
+  [(ngModel)]="value"
+  [nzPlaceHolder]="'Lựa chọn gói cấu hình'"
+>
+  <nz-option *ngFor="let flavor of flavorList; let idx = index" [nzLabel]="flavor.flavorName" [nzValue]="flavor"/>
+</nz-select>

@@ -15,7 +15,7 @@
   "app.register.agreement": "Tôi đồng ý với các điều khoản",
   "app.register.sign-in": "ĐĂNG NHẬP",
   "validation.phone-number.wrong-format": "Số điện thoại sai định dạng",
-  "app.register-result.msg": "Tài khoản đã đăng ký thành công!",
+  "app.register-result.msg": "Tài khoản đã đăng ký thành công, vui lòng truy cập email để kích hoạt tài khoản.",
   "app.register-result.back-home": "Trở về trang chủ",
   "validation.firstName.required": "Vui lòng nhập tên",
   "validation.lastName.required": "Vui lòng nhập họ",
