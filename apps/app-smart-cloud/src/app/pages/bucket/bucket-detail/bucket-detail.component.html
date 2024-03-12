@@ -96,7 +96,7 @@
 <nz-modal [(nzVisible)]="isVisibleFilter" nzTitle="Lọc danh sách Object" (nzOnCancel)="handleCancel()"
           (nzOnOk)="openFilter()" nzOkText="Xác nhận" nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <nz-table [nzData]="dataFilter">
+    <nz-table [nzData]="dataFilter" nzHideOnSinglePage="true">
       <thead>
       <tr>
         <th>Cột</th>
@@ -107,20 +107,43 @@
       </thead>
       <tbody>
       <tr *ngFor="let item of dataFilter">
-        <td>
-          <nz-select [(ngModel)]="item.name" (ngModelChange)="search(null)" nzSize="large" style="width: 230px;">
+        <td style="width: 28%">
+          <nz-select [(ngModel)]="item.name" (ngModelChange)="selectCol(item, $event)" nzSize="large" style="width: 100%;">
             <nz-option *ngFor="let p of colReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
         </td>
-        <td>{{item.condition}}</td>
-        <td>{{item.value}}</td>
-        <td>TT</td>
+        <td style="width: 20%">
+          <nz-select *ngIf="item.name == 'Tên'" [(ngModel)]="item.condition" (ngModelChange)="selectCondition(item.orderNum, 1,$event)" nzSize="large" style="width: 100%;">
+            <nz-option *ngFor="let p of conditionNameReal" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+          <nz-select *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.condition" (ngModelChange)="selectCondition(item.orderNum, 2,$event)" nzSize="large" style="width: 100%;">
+            <nz-option *ngFor="let p of conditionTimeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+          <nz-select *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.condition" (ngModelChange)="selectCondition(item.orderNum, 3,$event)" nzSize="large" style="width: 100%;">
+            <nz-option *ngFor="let p of conditionCapacityReal" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+        </td>
+        <td style="width: 47%">
+          <input nzSize="large" *ngIf="item.name == 'Tên'" nz-input placeholder="Basic usage" [(ngModel)]="item.value" type="text" style="width: 100%;"/>
+          <nz-date-picker *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.value" nzSize="large" style="width: 100%;"></nz-date-picker>
+          <nz-input-number *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.value"
+                           [nzMin]="0" [nzMax]="62" [nzStep]="1" nzSize="large" style="width: 60%;"></nz-input-number>
+          <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'" [(ngModel)]="item.type" (ngModelChange)="selectType(item.condition, $event)" nzSize="large" style="width: 30%;margin-left: 5%;">
+            <nz-option *ngFor="let p of capMoreTypeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+          <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'" [(ngModel)]="item.type" (ngModelChange)="selectType(item.condition, $event)" nzSize="large" style="width: 30%;margin-left: 5%;">
+            <nz-option *ngFor="let p of capLessTypeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+        </td>
+        <td style="width: 5%">
+          <button style="border: none;" nz-button (click)="deleteFilter(item.orderNum)" nzSize="large"><img style="margin-top: -4px" src="assets/imgs/trash.svg"/></button>
+        </td>
       </tr>
       </tbody>
     </nz-table>
-    <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large" style="margin-top: 8px;">
+    <button nz-button *ngIf="isVisibleAddFilte" nzType="primary" (click)="addFilter()" nzSize="large" style="margin-top: 8px;">
       <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
-      <span class="button-text-primary">Tạo thư mục</span>
+      <span class="button-text-primary">Thêm một dòng</span>
     </button>
   </ng-container>
 </nz-modal>

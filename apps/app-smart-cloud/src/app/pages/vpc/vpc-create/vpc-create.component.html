@@ -489,7 +489,7 @@
           <span>Hủy</span>
         </button>
         <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
-                [disabled]="form.invalid">
+                [disabled]="form.invalid || (selectIndexTab == 0 && selectedElementFlavor == null)">
           <span nz-icon nzType="wallet" nzTheme="outline"></span>
           <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
         </button>
