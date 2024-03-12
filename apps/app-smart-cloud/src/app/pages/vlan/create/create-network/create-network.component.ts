@@ -56,7 +56,7 @@ export class CreateNetworkComponent implements OnInit{
     disableGatewayIp: [false],
     dhcp: [false],
     gateway: [''],
-    allocationPool: ['', [Validators.pattern('^([0-9]{1,3}\.){3}[0-9]{1,3}$')]]
+    allocationPool: [null as string, []]
   });
 
   constructor(private router: Router,

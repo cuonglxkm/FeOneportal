@@ -121,6 +121,9 @@ export class ListBackupVmComponent implements OnInit {
       if (isBegin) {
         this.isBegin = this.collection.records.length < 1 || this.collection.records === null ? true : false;
       }
+    }, error => {
+      this.isLoading = true
+      this.collection = null
     })
 
   }

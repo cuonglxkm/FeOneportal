@@ -176,6 +176,7 @@ import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
 import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -341,6 +342,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateSubUserComponent,
     DeleteSubUserComponent,
     EditSubUserComponent,
+    DashboardObjectStorageComponent,
   ],
   imports: [
     CommonModule,

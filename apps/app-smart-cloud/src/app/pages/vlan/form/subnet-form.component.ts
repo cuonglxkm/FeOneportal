@@ -34,7 +34,7 @@ export class SubnetFormComponent {
     disableGatewayIp: [false],
     enableDhcp: [false],
     gateway: [''],
-    allocationPool: ['', [Validators.pattern('^([0-9]{1,3}\.){3}[0-9]{1,3}$')]],
+    allocationPool: [null as string],
   });
 
   constructor(private router: Router,

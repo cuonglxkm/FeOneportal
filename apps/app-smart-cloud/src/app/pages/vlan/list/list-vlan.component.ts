@@ -1,12 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {FormSearchNetwork, NetWorkModel} from "../../../shared/models/vlan.model";
+import { Component, OnInit } from '@angular/core';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { AppValidator, BaseResponse } from '../../../../../../../libs/common-utils/src';
-import {VlanService} from "../../../shared/services/vlan.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ProjectService} from "../../../shared/services/project.service";
-import {getCurrentRegionAndProject} from "@shared";
+import { VlanService } from '../../../shared/services/vlan.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime } from 'rxjs';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -106,7 +105,10 @@ export class ListVlanComponent implements OnInit{
       if (isCheckBegin) {
         this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
       }
-    })
+    }, error => {
+        this.response = null
+        this.isLoading = false
+      })
   }
 
   handleOkEdit() {

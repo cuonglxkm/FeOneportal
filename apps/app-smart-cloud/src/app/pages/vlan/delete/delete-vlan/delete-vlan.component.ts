@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../../shared/services/vlan.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
@@ -49,18 +48,19 @@ export class DeleteVlanComponent {
     if(this.validateForm.controls.nameNetwork.value.includes(this.nameNetwork)) {
       this.isLoadingDelete = true
       this.vlanService.deleteNetwork(this.id).subscribe(data => {
-        if(data) {
+        // if(data) {
           this.isLoadingDelete = false
           this.isVisibleDelete = false
           this.notification.success('Thành công', 'Xoá Network thành công')
           this.validateForm.reset()
           this.onOk.emit(data)
-        }
+        // }
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.error('Thất bại', 'Xoá Network thất bại')
         this.validateForm.reset()
+        this.onOk.emit()
       })
     }
   }
