@@ -31,8 +31,9 @@ export class VpcListComponent {
   selectedStatus = '';
   statusData = [
     {name: 'Tất cả trạng thái', value: ''},
-    {name: 'Khởi tạo', value: '0'},
-    {name: 'Đang sử dụng', value: '2'}];
+    {name: 'ENABLE', value: 'ENABLE'},
+    {name: 'DISABLE', value: 'DISABLE'},
+    {name: 'DELETED', value: 'DELETED'}];
 
   modalStyle = {
     'padding': '20px',
