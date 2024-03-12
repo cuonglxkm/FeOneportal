@@ -112,6 +112,7 @@ export class DetailClusterComponent implements OnInit {
     upgradeDto.namespace = this.detailCluster.namespace;
     upgradeDto.regionId = this.detailCluster.regionId;
     upgradeDto.version = this.upgradeVersionCluster;
+    upgradeDto.serviceOrderCode = this.detailCluster.serviceOrderCode;
 
     this.clusterService.upgradeVersionCluster(upgradeDto)
     .pipe(finalize(() => {

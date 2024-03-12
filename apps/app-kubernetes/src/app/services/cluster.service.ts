@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, NgZone } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { BaseService } from "../shared/services/base.service";
 import { UpgradeVersionClusterDto } from "../model/cluster.model";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +11,12 @@ import { UpgradeVersionClusterDto } from "../model/cluster.model";
 
 export class ClusterService extends BaseService {
   constructor(private http: HttpClient,
+    private zone: NgZone,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
-  baseUrl = 'http://127.0.0.1:16003';
+  baseUrl = 'http://10.1.127.93:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -34,7 +36,7 @@ export class ClusterService extends BaseService {
   }
 
   createNewCluster(data) {
-    return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data, {headers: this.getHeaders()});
   }
 
   getDetailCluster(serviceOrderCode: string) {
@@ -42,7 +44,24 @@ export class ClusterService extends BaseService {
   }
 
   viewProgressCluster(namespace: string, clusterName: string) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`, {headers: this.getHeaders()});
+    return Observable.create(observable => {
+      let source = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
+      source.onmessage = event => {
+        this.zone.run(() => {
+          console.log({data: event.data});
+          observable.next(event.data);
+        });
+      }
+
+      source.onerror = event => {
+        this.zone.run(() => {
+          console.log({error: event});
+          observable.error(event);
+        })
+      }
+    });
+
+    // return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`, {headers: this.getHeaders()});
   }
 
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {

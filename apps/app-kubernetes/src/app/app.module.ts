@@ -31,7 +31,7 @@ import { ShareService } from './services/share.service';
       { initialNavigation: 'enabledBlocking' }
     ),
   ],
-  providers: [ShareService],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

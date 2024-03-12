@@ -86,6 +86,7 @@ export class UpgradeVersionClusterDto {
   clusterName: string;
   namespace: string;
   version: string;
+  serviceOrderCode: string;
 
 }
 

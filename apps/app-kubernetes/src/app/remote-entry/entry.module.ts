@@ -29,6 +29,8 @@ import { DetailClusterComponent, RowDetailData } from '../detail-cluster/detail-
 import { Network2Label } from '../pipes/network-type.pipe';
 import { TruncateLabel } from '../pipes/truncate-label.pipe';
 import { CalculateDate } from '../pipes/calculate-date.pipe';
+import { ShareService } from '../services/share.service';
+import { ProgressPipe } from '../pipes/progress.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -44,6 +46,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     Network2Label,
     TruncateLabel,
     CalculateDate,
+    ProgressPipe,
 
   ],
   imports: [
@@ -69,6 +72,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SharedModule,
 
   ],
-  providers: [],
+  providers: [ShareService],
 })
 export class RemoteEntryModule {}

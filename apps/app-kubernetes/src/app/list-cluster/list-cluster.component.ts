@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
 import { NotificationConstant } from '../constants/notification.constant';
@@ -34,7 +34,7 @@ export class KubernetesDetailComponent implements OnInit {
   deleteClusterName: string;
 
   // for progress
-  listOfProgress: Array<{cluster: string, progress: number}>;
+  listOfProgress: Array<{cluster: string, progress: any}>;
   percent = 50;
 
   // for status
@@ -44,7 +44,8 @@ export class KubernetesDetailComponent implements OnInit {
     private clusterService: ClusterService,
     private websocketService: NotificationWsService,
     private notificationService: NzNotificationService,
-    private shareService: ShareService
+    private shareService: ShareService,
+    private ref: ChangeDetectorRef
   ) {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
@@ -70,8 +71,7 @@ export class KubernetesDetailComponent implements OnInit {
       const namespace = data.namespace;
       const clusterName = data.clusterName;
 
-      console.log({data: data});
-      if (namespace && clusterName) {
+      if (namespace != null && clusterName != null) {
         this.viewProgressCluster(namespace, clusterName);
       }
     });
@@ -116,9 +116,23 @@ export class KubernetesDetailComponent implements OnInit {
 
   viewProgressCluster(namespace: string, clusterName: string) {
     this.clusterService.viewProgressCluster(namespace, clusterName)
-    .subscribe((r: any) => {
-      console.log({response: r});
-    });
+    .subscribe({next: data => {
+      let cluster = this.listOfProgress.find(item => item.cluster == clusterName);
+      if (cluster) {
+        cluster.progress = data;
+      } else {
+        this.listOfProgress.push({
+          cluster: clusterName,
+          progress: data
+        });
+      }
+      this.ref.detectChanges();
+    }});
+  }
+
+  getPercent(clusterName: string) {
+    let cluster = this.listOfProgress.find(item => item.cluster == clusterName);
+    if (cluster) return cluster.progress;
   }
 
   getListStatus() {
@@ -126,6 +140,8 @@ export class KubernetesDetailComponent implements OnInit {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfStatusCluster = r.data;
+      } else {
+        this.notificationService.error("Thất bại", r.message);
       }
     });
   }
@@ -189,7 +205,11 @@ export class KubernetesDetailComponent implements OnInit {
   handleDeleteCluster() {
     this.isSubmitDelete = true;
     this.clusterService.deleteCluster(this.selectedCluster.id)
-    .pipe(finalize(() => this.isSubmitDelete = false))
+    .pipe(finalize(() => {
+      this.isShowModalDeleteCluster = false;
+      this.isSubmitDelete = false;
+      this.deleteClusterName = null;
+    }))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.notificationService.success("Thành công", r.message);

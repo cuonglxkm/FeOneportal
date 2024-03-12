@@ -97,7 +97,7 @@ export class ClusterComponent implements OnInit {
       workerGroup: this.listFormWorkerGroup,
 
       // volume
-      volumeCloud: [null, [Validators.required]],
+      volumeCloud: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       usageTime: [3, [Validators.required]],
       volumeCloudType: ['hdd', [Validators.required]],
     });
@@ -140,6 +140,7 @@ export class ClusterComponent implements OnInit {
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {
+    this.listOfK8sVersion = [];
     this.clusterService.getListK8sVersion(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
@@ -149,20 +150,26 @@ export class ClusterComponent implements OnInit {
           const len = this.listOfK8sVersion?.length;
           const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[len - 1];
           this.myform.get('kubernetesVersion').setValue(latestVersion.k8sVersion);
+        } else {
+          this.notificationService.error("Thất bại", r.message);
         }
       });
   }
 
   getListWorkerType(regionId: number,cloudProfileName: string) {
+    this.listOfWorkerType = [];
     this.clusterService.getListWorkerTypes(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
         }
       })
   }
 
   getListVolumeType(regionId: number,cloudProfileName: string) {
+    this.listOfVolumeType = [];
     this.clusterService.getListVolumeTypes(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
@@ -172,6 +179,8 @@ export class ClusterComponent implements OnInit {
           // if data is not already loaded, volumeTypeId will not fill value
           const volumeType = this.listOfVolumeType.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
           this.listFormWorkerGroup.at(0).get('volumeTypeId').setValue(volumeType.id);
+        } else {
+          this.notificationService.error("Thất bại", r.message);
         }
       });
   }
