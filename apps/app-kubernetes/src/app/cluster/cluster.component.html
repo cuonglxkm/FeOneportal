@@ -493,7 +493,7 @@
 
           <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
             <div nz-col [nzSpan]="12">
-              <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()">
+              <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()" [disabled]="isSubmitting">
                 <span nz-icon nzType="close" nzTheme="outline"></span>
                 Hủy
               </button>

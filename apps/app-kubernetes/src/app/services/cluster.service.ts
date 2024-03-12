@@ -16,7 +16,7 @@ export class ClusterService extends BaseService {
     super();
   }
 
-  baseUrl = 'http://10.1.127.93:16003';
+  baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -48,7 +48,6 @@ export class ClusterService extends BaseService {
       let source = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
       source.onmessage = event => {
         this.zone.run(() => {
-          console.log({data: event.data});
           observable.next(event.data);
         });
       }

@@ -62,6 +62,9 @@
         </button>
       </div>
 
+      <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress>
+      <pre>percent: {{percent}}</pre>
+
       <!-- table -->
       <nz-table #clusterTable [nzData]="listOfClusters" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
         [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
@@ -87,7 +90,9 @@
               <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
             </td>
             <td>
-              <nz-progress [nzPercent]="getPercent(item.clusterName)" nzSize="small"></nz-progress>
+              <!-- <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress>
+              <pre>percent: {{percent}}</pre> -->
+
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
                 <span [ngStyle]="{color: status.color}">{{status.status}}</span>
               </ng-container>
@@ -168,7 +173,7 @@
   </ng-template>
 
   <ng-template #modalFooter>
-    <button nz-button nzType="default" (click)="handleCloseModalDelete()">
+    <button nz-button nzType="default" (click)="handleCloseModalDelete()" [disabled]="isSubmitDelete">
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy
     </button>

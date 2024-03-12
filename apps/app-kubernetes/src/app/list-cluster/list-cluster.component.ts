@@ -35,7 +35,8 @@ export class KubernetesDetailComponent implements OnInit {
 
   // for progress
   listOfProgress: Array<{cluster: string, progress: any}>;
-  percent = 50;
+  mapProgress = new Map<string, number>();
+  percent: number = 0;
 
   // for status
   listOfStatusCluster: ClusterStatus[];
@@ -71,6 +72,7 @@ export class KubernetesDetailComponent implements OnInit {
       const namespace = data.namespace;
       const clusterName = data.clusterName;
 
+      console.log(data);
       if (namespace != null && clusterName != null) {
         this.viewProgressCluster(namespace, clusterName);
       }
@@ -117,22 +119,9 @@ export class KubernetesDetailComponent implements OnInit {
   viewProgressCluster(namespace: string, clusterName: string) {
     this.clusterService.viewProgressCluster(namespace, clusterName)
     .subscribe({next: data => {
-      let cluster = this.listOfProgress.find(item => item.cluster == clusterName);
-      if (cluster) {
-        cluster.progress = data;
-      } else {
-        this.listOfProgress.push({
-          cluster: clusterName,
-          progress: data
-        });
-      }
-      this.ref.detectChanges();
+      this.mapProgress.set(clusterName, +data);
+      this.percent += 5;
     }});
-  }
-
-  getPercent(clusterName: string) {
-    let cluster = this.listOfProgress.find(item => item.cluster == clusterName);
-    if (cluster) return cluster.progress;
   }
 
   getListStatus() {
@@ -171,9 +160,11 @@ export class KubernetesDetailComponent implements OnInit {
   }
 
   onInputDeleteCluster(clusterName: string) {
-    const name = clusterName.trim();
-    if (name !== this.selectedCluster.clusterName) this.isWrongName = true;
-    else this.isWrongName = false;
+    if (clusterName) {
+      const name = clusterName.trim();
+      if (name !== this.selectedCluster.clusterName) this.isWrongName = true;
+      else this.isWrongName = false;
+    }
   }
 
   updateClusterChecked(id: number, checked: boolean) {
