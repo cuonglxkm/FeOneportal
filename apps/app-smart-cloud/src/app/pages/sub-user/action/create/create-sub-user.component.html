@@ -5,8 +5,8 @@
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/object-storage/sub-user/create'">Tạo mới SubUser</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'">Tạo mới SubUser</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -18,7 +18,7 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <form nz-form nzLayout="vertical">
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
@@ -36,14 +36,16 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameSubUserErrorTpl">
-              <nz-input-group style="width: 100%;">
                 <input nz-input
+                       style="width: 100%;"
                        class="input-custom"
+                       [(ngModel)]="name"
+                       (input)="updateData($event.target.value)"
                        [placeholder]="'Nhập tên sub-user'"
                        formControlName="name"/>
-              </nz-input-group>
               <ng-template #nameSubUserErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Sub-User</ng-container>
+                <ng-container *ngIf="control.hasError('required')">Ttên Sub-User không được để trống</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang.</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -61,7 +63,7 @@ Lưu ý: Truy cập vào Bucket có thể bị giới hạn bởi cấu hình Bu
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="accessErrorTpl">
-              <nz-select formControlName="access">
+              <nz-select formControlName="access" [(ngModel)]="access" >
                 <nz-option nzValue="full" nzLabel="Tất cả quyền truy cập"></nz-option>
                 <nz-option nzValue="none" nzLabel="Không có quyền truy cập"></nz-option>
               </nz-select>
@@ -75,7 +77,40 @@ Lưu ý: Truy cập vào Bucket có thể bị giới hạn bởi cấu hình Bu
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông số cấu hình</span>
+          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+            <span class="text-value">
+              Tên Sub-User
+            </span>
+          </nz-row>
+          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+            <span class="text-label" [innerText]="name"></span>
+          </nz-row>
+          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+            <span class="text-value">
+              <b>Quyền truy cập</b>
+            </span>
+          </nz-row>
+          <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
+            <span class="text-label" [ngSwitch]="access">
+              <div *ngSwitchCase="'full'">Tất cả quyền truy cập</div>
+              <div *ngSwitchCase="'none'">Không có quyền truy cập</div>
+            </span>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%" class="text-right">
+              <button nz-button (click)="cancel()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+              </button>
+              <button nz-button nzSize="large" nzType="primary"
+                      [disabled]="validateForm.invalid" (click)="submitForm()">
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span class="button-text-primary"
+                      [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+              </button>
+            </nz-col>
+          </nz-row>
         </nz-card>
+
       </nz-col>
     </nz-row>
   </form>

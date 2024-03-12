@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { FormCreateSubUser, FormDeleteSubUser, FormUpdateSubUser, SubUser } from '../models/sub-user.model';
 import { catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
@@ -16,8 +16,12 @@ export class SubUserService extends BaseService {
   }
 
   getListSubUser(pageSize: number, currentPage: number) {
-    return this.http.get<BaseResponse<SubUser[]>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/subuser')
-      .pipe(catchError((error: HttpErrorResponse) => {
+    let params = new HttpParams()
+    params = params.append('pageSize', pageSize)
+    params = params.append('currentPage', currentPage)
+    return this.http.get<BaseResponse<SubUser[]>>(this.baseUrl + this.ENDPOINT.provisions + `/object-storage/subuser`, {
+      params: params
+    }).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
           // Redirect to login page or show unauthorized message

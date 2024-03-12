@@ -15,24 +15,36 @@
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
 
       <nz-form-item>
-        <!--        <nz-form-label>-->
-        <!--          <div>-->
-        <!--            <span>Network</span>-->
-        <!--            (<span style="color: rgba(252, 16, 16, 1);">*</span>)-->
-        <!--            <span nz-icon nzType="question-circle"-->
-        <!--                  nzTheme="outline"-->
-        <!--                  nz-popover-->
-        <!--                  [nzPopoverContent]="'network'"-->
-        <!--                  nzPopoverPlacement="bottom"></span>-->
-        <!--          </div>-->
-        <!--        </nz-form-label>-->
-        <!--        <nz-form-control>-->
-        <!--          <nz-select formControlName="networkId"-->
-        <!--                     nzPlaceHolder="Chọn Network">-->
-        <!--            <nz-option *ngFor="let item of listNetwork" [nzValue]="item.id"-->
-        <!--                       nzLabel="{{item.name}} - ({{ item.subnetAddressRequired }})"></nz-option>-->
-        <!--          </nz-select>-->
-        <!--        </nz-form-control>-->
+        <nz-form-label>
+          <div>
+            <span>Chọn dải IP WAN</span>
+            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'dải Ip Wan'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="wanId"
+                     nzPlaceHolder="Chọn dải IP WAN">
+            <nz-option *ngFor="let item of response?.records" [nzValue]="item.id"
+                       nzLabel="{{item.name}} - ({{ item.subnetAddressRequired }})"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Địa chỉ IP</span>
+          </div>
+        </nz-form-label>
+        <nz-form-control>
+          <input nz-input
+                 class="input-class"
+                 formControlName="ip"/>
+        </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
         <nz-space nzSize="middle">

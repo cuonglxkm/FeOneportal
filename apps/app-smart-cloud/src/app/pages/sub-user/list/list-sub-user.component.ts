@@ -5,6 +5,8 @@ import { ProjectModel } from '../../../shared/models/project.model';
 import { SubUserService } from '../../../shared/services/sub-user.service';
 import { SubUser } from '../../../shared/models/sub-user.model';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { getCurrentRegionAndProject } from '@shared';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -25,9 +27,15 @@ export class ListSubUserComponent implements OnInit {
   isLoading: boolean = false
 
   isCheckBegin: boolean = false
+  rowCounter: number = 0
 
   constructor(private router: Router,
-              private subUserService: SubUserService) {
+              private subUserService: SubUserService,
+              private clipboardService: ClipboardService) {
+    this.response?.records.forEach(data => {
+      this.rowCounter++;
+      data['rowNumber'] = this.rowCounter;
+    })
   }
 
   onInputChange(value) {
@@ -57,7 +65,7 @@ export class ListSubUserComponent implements OnInit {
   }
 
   navigateToCreateSubUser() {
-    this.router.navigate(['/app-smart-cloud/networks/object-storage/sub-user/create'])
+    this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create'])
   }
 
   getListSubUsers(isBegin) {
@@ -78,6 +86,17 @@ export class ListSubUserComponent implements OnInit {
   handleOkEdit() {
     this.getListSubUsers(false)
   }
+
+  handleOkDelete() {
+    this.getListSubUsers(false)
+  }
+
+  copyText(data) {
+    this.clipboardService.copyFromContent(JSON.stringify(data));
+  }
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
   }
 }
