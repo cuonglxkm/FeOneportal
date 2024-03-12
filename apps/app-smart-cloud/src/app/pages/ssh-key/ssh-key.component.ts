@@ -11,6 +11,7 @@ import {ProjectModel} from "../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -65,6 +66,9 @@ export class SshKeyComponent implements OnInit {
     // this.loadSshKeys();
     this.form.get('keypair_name_2').disable();
     this.form.get('public_key').disable();
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   loadSshKeys(isCheckBegin: boolean): void {
