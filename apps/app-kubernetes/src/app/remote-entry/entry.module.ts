@@ -3,14 +3,14 @@ import { IconDefinition } from '@ant-design/icons-angular';
 import { SEModule } from '@delon/abc/se';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { RemoteEntryComponent } from './entry.component';
 import { NxWelcomeComponent } from './nx-welcome.component';
 import { remoteRoutes } from './entry.routes';
-import { KubernetesDetailComponent } from '../list-cluster/list-cluster.component';
+import { KubernetesDetailComponent, ProgressCluster } from '../list-cluster/list-cluster.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -35,6 +35,7 @@ import { ProgressPipe } from '../pipes/progress.pipe';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     RemoteEntryComponent,
     NxWelcomeComponent,
@@ -47,6 +48,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     TruncateLabel,
     CalculateDate,
     ProgressPipe,
+    ProgressCluster,
 
   ],
   imports: [

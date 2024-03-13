@@ -101,7 +101,7 @@ export class ClusterComponent implements OnInit {
       workerGroup: this.listFormWorkerGroup,
 
       // volume
-      volumeCloud: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       usageTime: [3, [Validators.required]],
       volumeCloudType: ['hdd', [Validators.required]],
     });
@@ -381,7 +381,7 @@ export class ClusterComponent implements OnInit {
   }
 
   get volumeCloudSize() {
-    return this.myform.get('volumeCloud').value;
+    return this.myform.get('volumeCloudSize').value;
   }
 
   get volumeCloudType() {

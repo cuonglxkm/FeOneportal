@@ -62,7 +62,8 @@
         </button>
       </div>
 
-      <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress>
+      <!-- <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress> -->
+      <progress-cluster [percent]="percent"></progress-cluster>
       <pre>percent: {{percent}}</pre>
 
       <!-- table -->

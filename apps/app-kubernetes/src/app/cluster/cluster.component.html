@@ -318,9 +318,10 @@
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="volumeCloud">Kích thước (GiB)</nz-form-label>
+              <nz-form-label nzRequired nzFor="volumeCloudSize">Kích thước (GiB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
-                <input type="text" nz-input formControlName="volumeCloud" placeholder="Nhập kích thước volume" id="volumeCloud" />
+                <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập kích thước volume"
+                (keypress)="isNumber($event)" id="volumeCloudSize" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">

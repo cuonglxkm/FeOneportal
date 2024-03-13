@@ -1,13 +1,13 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
-import { KubernetesCluster, ProgressData } from '../model/cluster.model';
-import { ClusterService } from '../services/cluster.service';
-import { NotificationConstant } from '../constants/notification.constant';
-import { NotificationWsService } from '../services/ws.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ChangeDetectorRef, Component, Input, NgZone, OnInit } from '@angular/core';
 import { messageCallbackType } from '@stomp/stompjs';
-import { EMPTY, catchError, finalize, from, mergeMap } from 'rxjs';
-import { ShareService } from '../services/share.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Subscription, finalize } from 'rxjs';
+import { NotificationConstant } from '../constants/notification.constant';
+import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { ClusterStatus } from '../model/status.model';
+import { ClusterService } from '../services/cluster.service';
+import { ShareService } from '../services/share.service';
+import { NotificationWsService } from '../services/ws.service';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -107,7 +107,7 @@ export class KubernetesDetailComponent implements OnInit {
 
         // case user refresh page and have mulitple cluster and is in-progress
         // from(listOfClusterInProgress).pipe(
-        //   mergeMap(cluster => this.clusterService.viewProgressCluster('', cluster.clusterName)
+        //   mergeMap(cluster => this.viewProgressCluster('', cluster.clusterName)
         //   .pipe(catchError(response => {
         //     console.error('fail to get progress: ', response);
         //     return EMPTY;
@@ -125,14 +125,35 @@ export class KubernetesDetailComponent implements OnInit {
   //   }});
   // }
 
+  baseUrl = "http://127.0.0.1:16003";
+  // baseUrl = environment['baseUrl'];
+  subcripstion: Subscription;
+  arrs: any[] = [];
+
   viewProgressCluster(namespace: string, clusterName: string) {
-    this.clusterService.viewProgressCluster(namespace, clusterName)
-    .subscribe({next: (data: number) => {
-      this.mapProgress.set(clusterName, +data);
-      this.zone.run(() => {
-        this.percent += 5;
-      });
-    }});
+    // console.log("i'm running");
+    // return new Observable(observable => {
+    //   let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}`);
+    //   source.onmessage = event => {
+    //     this.zone.run(() => {
+    //       observable.next(event.data);
+    //     });
+    //   }
+
+    //   source.onerror = event => {
+    //     this.zone.run(() => {
+    //       console.log({error: event});
+    //       observable.error(event);
+    //       observable.unsubscribe();
+    //       source.close();
+    //     })
+    //   }
+    // }).subscribe(data => this.percent = +data);
+
+    this.subcripstion = this.clusterService.observableProgress(clusterName, namespace).subscribe(message => {
+      this.arrs.push(message);
+      this.percent = +message;
+    });
   }
 
   getListStatus() {
@@ -283,5 +304,21 @@ export class KubernetesDetailComponent implements OnInit {
     this.deleteClusterName = null;
     this.onInputDeleteCluster(null);
   }
+
+}
+
+@Component({
+  selector: 'progress-cluster',
+  template: `
+    <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress>
+  `
+})
+export class ProgressCluster implements OnInit {
+
+  @Input() percent: number;
+
+  constructor() {}
+
+  ngOnInit(): void {}
 
 }

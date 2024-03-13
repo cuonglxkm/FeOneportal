@@ -5,6 +5,9 @@ import { ClusterService } from '../services/cluster.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { finalize } from 'rxjs';
+import { FormSearchNetwork } from '../model/vlan.model';
+import { VlanService } from '../services/vlan.service';
+import { VPCNetworkModel } from '../model/vpc-network.model';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -29,11 +32,13 @@ export class DetailClusterComponent implements OnInit {
   upgradeVersionCluster: string;
 
   listOfK8sVersion: K8sVersionModel[];
+  listOfVPCNetworks: VPCNetworkModel[];
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private clusterService: ClusterService,
+    private vlanService: VlanService,
     private notificationService: NzNotificationService
   ) {
     this.listOfK8sVersion = [];
@@ -61,8 +66,8 @@ export class DetailClusterComponent implements OnInit {
         this.autoHealingValue = this.detailCluster.autoHealing;
 
         // test
-        this.detailCluster.upgradeVersion = '1.29.0';
-        this.detailCluster.currentVersion = '1.28.2';
+        // this.detailCluster.upgradeVersion = '1.29.0';
+        // this.detailCluster.currentVersion = '1.28.2';
 
       } else {
         this.notificationService.error("Thất bại", r.message);
@@ -77,6 +82,28 @@ export class DetailClusterComponent implements OnInit {
         this.listOfK8sVersion = r.data;
       } else {
         this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  // get projectId ???
+  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+  vpcNetwork: string;
+  getVlanNetwork(projectId: number) {
+    this.formSearchNetwork.projectId = projectId;
+    this.formSearchNetwork.pageSize = 1000;
+    this.formSearchNetwork.pageNumber = 0;
+    this.formSearchNetwork.region = this.detailCluster.regionId;
+
+    this.vlanService.getVlanNetworks(this.formSearchNetwork)
+    .subscribe((r: any) => {
+      if (r && r.records) {
+        this.listOfVPCNetworks = r.records;
+
+        // find vpc network
+        let network = this.listOfVPCNetworks.find(item => item.id == this.detailCluster.vpcNetworkId);
+        console.log({network: network});
+        this.vpcNetwork = network.network;
       }
     });
   }
@@ -103,6 +130,10 @@ export class DetailClusterComponent implements OnInit {
     this.showModalUpgradeVersion = false;
     this.upgradeVersionCluster = null;
   }
+
+  handleSyncClusterInfo() {}
+
+  handleDownloadConfig() {}
 
   handleUpgadeVersionCluster() {
     this.isUpgradingVersion = true;
