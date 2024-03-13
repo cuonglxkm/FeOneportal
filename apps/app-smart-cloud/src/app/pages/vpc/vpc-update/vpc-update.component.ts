@@ -4,12 +4,14 @@ import {OfferItem} from "../../instances/instances.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {InstancesService} from "../../instances/instances.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {getCurrentRegionAndProject} from "@shared";
 import {finalize} from "rxjs/operators";
 import {RegionModel} from "../../../shared/models/region.model";
 import {slider} from "../../../../../../../libs/common-utils/src";
+import {VpcModel} from "../../../shared/models/vpc.model";
+import {VpcService} from "../../../shared/services/vpc.service";
 
 @Component({
   selector: 'one-portal-vpc-update',
@@ -30,8 +32,9 @@ export class VpcUpdateComponent {
     animation: 'lazy',
   };
   listIpType = [
-    {label: "Chọn đi" , value: "0"},
-    {label: "Chọn đi nhé" , value: "1"},
+    {label: "IP Public" , value: "0"},
+    {label: "Ip Floating" , value: "1"},
+    {label: "IpV6" , value: "2"},
   ];
 
 
@@ -41,8 +44,7 @@ export class VpcUpdateComponent {
 
   regionId: any;
   loadingCalculate = false;
-  today = new Date();
-  expiredDate = new Date();
+  data: VpcModel;
   selectedIpConnectInternet: any;
   selectedIpType: any;
   numberNetwork: any = 0;
@@ -69,14 +71,16 @@ export class VpcUpdateComponent {
   loadingIpConnectInternet = false;
   selectIndexTab: any = 0;
 
+  name: any = 'aaaa';
+  description = 'xin chao em';
+  numOfMonth: any;
+  ipConnectInternet: any;
+  ipType: any;
+  createDate: any;
+  expiredDate: any;
+  loadBalencer: any;
   form = new FormGroup({
-    name: new FormControl('', {validators: [Validators.required]}),
-    description: new FormControl(''),
-
-    ipConnectInternet: new FormControl('', {validators: [Validators.required]}),
-    numOfMonth: new FormControl(1, {validators: [Validators.required]}),
     //tab 1
-    ipType: new FormControl('', {validators: this.selectIndexTab === 0 ? [Validators.required] : []}),
     //tab 2
     vCPU: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
     ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
@@ -85,11 +89,14 @@ export class VpcUpdateComponent {
 
   });
 
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancesService: InstancesService,
               private cdr: ChangeDetectorRef,
               private router: Router,
-              private ipService: IpPublicService,) {
+              private ipService: IpPublicService,
+              private activatedRoute: ActivatedRoute,
+              private vpcService: VpcService,) {
   }
 
   ngOnInit() {
@@ -97,54 +104,71 @@ export class VpcUpdateComponent {
     this.regionId = regionAndProject.regionId;
     this.initFlavors();
     this.loadListIpConnectInternet();
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.loadData(id);
   }
 
   calculate() {
-    let ip = this.form.controls['ipConnectInternet'].value;
+    let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
+    let ip = '';
+    let ipName = '';
+    if (lstIp != null && lstIp != undefined){
+      ip = lstIp[0];
+      let listString = lstIp[1].split(" ");
+      if (listString.length == 3) {
+        ipName = listString[2].trim();
+      }
+    }
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let ipType = this.form.controls['ipType'].value;
     let vCPU = this.form.controls['vCPU'].value;
     let ram = this.form.controls['ram'].value;
 
+    let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
     if (ip != '') {
-      if ((this.selectIndexTab == 0 && ipType != '') || (this.selectIndexTab == 1 && vCPU != 0 && ram != 0)) {
+      if ((this.selectIndexTab == 0 && ipType != '' && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && vCPU != 0 && ram != 0)) {
         this.loadingCalculate = true;
         const requestBody =
           {
-            newQuotavCpu: vCPU,
-            newQuotaRamInGb: ram,
-            newQuotaHddInGb: this.form.controls['hhd'].value,
-            newQuotaSsdInGb: this.form.controls['ssd'].value,
-            newQuotaBackupVolumeInGb: this.numberBackup,
-            newQuotaSecurityGroupCount: this.numberSecurityGroup,
-            newQuotaKeypairCount: 1,// file system
-            newQuotaVolumeSnapshotCount: 2,// file system snapshot .... IPSubnet,IpType
-            newQuotaIpPublicCount: this.numberIpPublic,
-            newQuotaIpFloatingCount: this.numberIpFloating,
-            newQuotaNetworkCount: this.numberNetwork,
-            newQuotaRouterCount: this.numberRouter,
-            newQuotaLoadBalancerSdnCount: this.numberLoadBalancer,
-            newLoadBalancerOfferId: 149, //X
-            newQuotaShareInGb: 10,//X
-            newQuotaShareSnapshotInGb: 3,//X
-            newQuotaIpv6Count: this.numberIpv6,
-            typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            serviceType: 12,//X
-            serviceInstanceId: 4439,//X
-            customerId: this.tokenService.get()?.userId, //X
-            newOfferId: 123,//X
-            actionType: 4,//X
-            regionId: this.regionId,  //V
-            serviceName: "vpc669-tung19023"
+            quotavCpu: vCPU,
+            quotaRamInGb: ram,
+            quotaHddInGb: this.form.controls['hhd'].value,
+            quotaSSDInGb: this.form.controls['ssd'].value,
+            quotaBackupVolumeInGb: this.numberBackup,
+            quotaSecurityGroupCount: this.numberSecurityGroup,
+            // quotaKeypairCount: 0,// NON
+            // quotaVolumeSnapshotCount: 0,//NON
+            quotaIpPublicCount: IPPublicNum,
+            quotaIpFloatingCount: IPFloating,
+            quotaNetworkCount: this.numberNetwork,
+            quotaRouterCount: this.numberRouter,
+            quotaLoadBalancerSDNCount: this.numberLoadBalancer,
+            // loadBalancerOfferId: 0, //NON
+            quotaShareInGb: this.numberFileSystem,
+            QuotaShareSnapshotInGb: this.numberFileScnapsshot,
+            publicNetworkId: ip,
+            publicNetworkAddress: ipName,
+            quotaIPv6Count: IPV6,
+            typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            serviceType: 12,
+            serviceInstanceId: 0,
+            customerId: this.tokenService.get()?.userId,
+            offerId: this.offerFlavor == null ? "" : this.offerFlavor.id,
+            // offerId: 0,
+            actionType: 0,
+            regionId: this.regionId,
+            serviceName: this.form.controls['name'].value
           }
         const request = {
           orderItems: [
             {
               orderItemQuantity: 1,
               specificationString: JSON.stringify(requestBody),
-              specificationType: "vpc_resize",
-              sortItem: 0
-              // serviceDuration: this.form.controls['numOfMonth'].value
+              specificationType: "vpc_create",
+              sortItem: 0,
+              serviceDuration: numOfMonth
             }
           ]
         }
@@ -176,11 +200,12 @@ export class VpcUpdateComponent {
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
+    this.calculate();
   }
 
   initFlavors(): void {
     this.instancesService
-      .getListOffers(this.regionId, 'vpc')
+      .getListOffersByProductId('150')
       .subscribe((data: any) => {
         this.listOfferFlavors = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
@@ -189,17 +214,18 @@ export class VpcUpdateComponent {
         this.listOfferFlavors.forEach((e: OfferItem) => {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
-            if (ch.charName == 'cpu') {
-              e.description += ch.charOptionValues[2] + ' VCPU / ';
+            if (ch.charName == 'vcpu') {
+              e.description += ch.charOptionValues[0] + ' VCPU / ';
             }
             if (ch.charName == 'ram') {
-              e.description += ch.charOptionValues[2] + ' GB RAM / ';
+              e.description += ch.charOptionValues[0] + ' GB RAM / ';
             }
             if (ch.charName == 'hdd') {
-              e.description += ch.charOptionValues[2] + ' GB RAM / ';
+              e.description += ch.charOptionValues[0] + ' GB HHD / ';
             }
             if (ch.charName == 'ip') {
-              e.description += ch.charOptionValues[2] + ' IP ';
+              e.description += ch.charOptionValues[0] + ' IP ';
+              e.ipNumber = ch.charOptionValues[0];
             }
           });
         });
@@ -212,19 +238,80 @@ export class VpcUpdateComponent {
     this.router.navigate(['/app-smart-cloud/vpc'])
   }
 
-  onChangeTime() {
-    const dateNow = new Date();
-    dateNow.setMonth(dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value));
-    this.expiredDate = dateNow;
-    this.calculate();
-  }
-
   backToList() {
     this.router.navigate(['/app-smart-cloud/vpc'])
   }
 
   createIpPublic() {
+    let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
+    let ip = '';
+    let ipName = '';
+    if (lstIp != null && lstIp != undefined){
+      ip = lstIp[0];
+      let listString = lstIp[1].split(" ");
+      if (listString.length == 3) {
+        ipName = listString[2].trim();
+      }
+    }
+    let numOfMonth = this.form.controls['numOfMonth'].value;
+    let ipType = this.form.controls['ipType'].value;
+    let vCPU = this.form.controls['vCPU'].value;
+    let ram = this.form.controls['ram'].value;
 
+    let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
+    const expiredDate = new Date();
+    expiredDate.setMonth(expiredDate.getMonth() + Number(numOfMonth));
+    const requestBody = {
+      quotavCpu: vCPU,
+      quotaRamInGb: ram,
+      quotaHddInGb: this.form.controls['hhd'].value,
+      quotaSSDInGb: this.form.controls['ssd'].value,
+      quotaBackupVolumeInGb: this.numberBackup,
+      quotaSecurityGroupCount: this.numberSecurityGroup,
+      // quotaKeypairCount: null,// NON
+      // quotaVolumeSnapshotCount: null,//NON
+      quotaIpPublicCount: IPPublicNum,
+      quotaIpFloatingCount: IPFloating,
+      quotaIpv6Count: IPV6,
+      quotaNetworkCount: this.numberNetwork,
+      quotaRouterCount: this.numberRouter,
+      quotaLoadBalancerSDNCount: this.numberLoadBalancer,
+      // loadBalancerOfferId: null, //NON
+      quotaShareInGb: this.numberFileSystem,
+      quotaShareSnapshotInGb: this.numberFileScnapsshot,
+      publicNetworkId: ip,
+      publicNetworkAddress: ipName,
+      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      serviceType: 12,
+      serviceInstanceId: 0,
+      customerId: this.tokenService.get()?.userId,
+      offerId: this.offerFlavor == null ? "" : this.offerFlavor.id,
+      actionType: 0,
+      regionId: this.regionId,
+      serviceName: 'vpc'+this.tokenService.get()?.userId+'-'+this.form.controls['name'].value,
+      description: null,
+      createDate: new Date(),
+      expireDate: expiredDate,
+    }
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Tạo VPC",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: "vpc_create",
+          price: 0,
+          serviceDuration: numOfMonth
+        }
+      ]
+    }
+
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
 
   initBackup() {
@@ -239,7 +326,7 @@ export class VpcUpdateComponent {
     this.activeFileStorage = true;
   }
 
-  openIpSubnet(param) {
+  openIpSubnet() {
     let num = this.form.controls['ipConnectInternet'].value;
     if (num != undefined && num != null && num != '') {
       this.openIPType = true;
@@ -263,5 +350,14 @@ export class VpcUpdateComponent {
           this.listIpConnectInternet = data;
         }
       )
+  }
+
+  private loadData(id: string) {
+    this.vpcService.getDetail(id).subscribe(
+      data => {
+        this.data = data;
+        this.name = data.cloudProjectName;
+      }
+    )
   }
 }

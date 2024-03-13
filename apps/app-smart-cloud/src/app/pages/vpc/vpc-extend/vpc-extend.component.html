@@ -72,6 +72,32 @@
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin gia hạn</span>
         </div>
+        <nz-row style="margin-bottom: 15px">
+          <div nz-col nzSpan="5">Ngày cấp dịch vụ:</div>
+          <div nz-col nzSpan="19" style="font-weight: bold;">{{ today | date : 'dd/MM/yyyy' }}</div>
+        </nz-row>
+        <nz-row style="margin-bottom: 15px">
+          <div nz-col nzSpan="5">Ngày hết hạn:</div>
+          <div nz-col nzSpan="19" style="font-weight: bold;">{{ expiredDate | date : 'dd/MM/yyyy' }}</div>
+        </nz-row>
+        <nz-form-item style="margin-bottom: 5px">
+          <nz-form-label
+          >Thời hạn sử dụng (<span class="text-red">*</span>) -
+            Tháng
+          </nz-form-label
+          >
+          <nz-form-control>
+            <nz-row>
+              <nz-input-number style="width: 100%; margin-left: -1px; margin-bottom: 5px;" [nzMin]="1" [nzMax]="100" [nzStep]="1"
+                               formControlName="numOfMonth" (ngModelChange)="onChangeTime()"
+                               nzSize="large"></nz-input-number>
+            </nz-row>
+          </nz-form-control>
+
+          <div class="text-custom-time" style="color: red;">
+            Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+          </div>
+        </nz-form-item>
       </nz-card>
     </nz-col>
 
