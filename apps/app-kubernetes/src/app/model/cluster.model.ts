@@ -114,6 +114,23 @@ export class WorkerGroupModel {
 
 }
 
+
+export class Order {
+  customerId: number;
+  createdByUserId: number;
+  couponCode: string;
+  note: string;
+  orderItems: any[];
+}
+
+export class OrderItem {
+  orderItemQuantity: number;
+  specification: string;
+  specificationType: string;
+  price: number;
+  serviceDuration: number;
+}
+
 export class ProgressData {
 
   namespace: string;

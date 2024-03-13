@@ -44,7 +44,7 @@ export class ClusterService extends BaseService {
   }
 
   viewProgressCluster(namespace: string, clusterName: string) {
-    return Observable.create(observable => {
+    return new Observable(observable => {
       let source = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
       source.onmessage = event => {
         this.zone.run(() => {

@@ -98,6 +98,9 @@ export class PaymentSummaryComponent implements OnInit {
           case 'ip_extend':
             serviceItem.name = 'Gia hạn IP';
             break;
+          case 'create_cluster':
+            serviceItem.name = 'Tạo cluster';
+            break;
           default:
             serviceItem.name = '';
             break;

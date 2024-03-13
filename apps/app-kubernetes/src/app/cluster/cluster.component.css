@@ -48,6 +48,8 @@ textarea,
 .price-style {
   position: relative;
   float: right;
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .price-color {
@@ -70,11 +72,6 @@ textarea,
 .price-panel {
   background-color: #cce9ff;
   border-radius: 5px;
-}
-
-.price-label {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .total-color {
@@ -127,6 +124,18 @@ textarea,
   max-height: 250px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+label, span {
+  font-size: 16px;
+}
+
+.weight-600 {
+  font-weight: 600;
 }
 
 /* width */

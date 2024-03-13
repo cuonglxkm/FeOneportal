@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { ClusterService } from '../services/cluster.service';
 import { NotificationConstant } from '../constants/notification.constant';
@@ -46,7 +46,8 @@ export class KubernetesDetailComponent implements OnInit {
     private websocketService: NotificationWsService,
     private notificationService: NzNotificationService,
     private shareService: ShareService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private zone: NgZone
   ) {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
@@ -116,11 +117,21 @@ export class KubernetesDetailComponent implements OnInit {
     });
   }
 
+  // viewProgressCluster(namespace: string, clusterName: string) {
+  //   this.clusterService.viewProgressCluster(namespace, clusterName)
+  //   .subscribe({next: data => {
+  //     this.mapProgress.set(clusterName, +data);
+  //     this.percent += 5;
+  //   }});
+  // }
+
   viewProgressCluster(namespace: string, clusterName: string) {
     this.clusterService.viewProgressCluster(namespace, clusterName)
-    .subscribe({next: data => {
+    .subscribe({next: (data: number) => {
       this.mapProgress.set(clusterName, +data);
-      this.percent += 5;
+      this.zone.run(() => {
+        this.percent += 5;
+      });
     }});
   }
 

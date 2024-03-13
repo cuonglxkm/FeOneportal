@@ -8,9 +8,10 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { STWidgetModule } from './shared/st-widget/st-widget.module';
 import { ShareService } from './services/share.service';
+import { OrderedPaymentComponent } from './ordered-payment/ordered-payment.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, OrderedPaymentComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
-import { NetworkingModel, ProgressData } from '../model/cluster.model';
+import { KubernetesCluster, NetworkingModel, Order, OrderItem } from '../model/cluster.model';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { VolumeTypeModel } from '../model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
@@ -16,6 +16,7 @@ import { VlanService } from '../services/vlan.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
 import { finalize } from 'rxjs';
 import { ShareService } from '../services/share.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -26,7 +27,6 @@ export class ClusterComponent implements OnInit {
 
   myform: FormGroup;
   listFormWorkerGroup: FormArray;
-  selectedInfra: string;
 
   isAutoScaleEnable: boolean;
   isSubmitting: boolean;
@@ -43,6 +43,9 @@ export class ClusterComponent implements OnInit {
     { label: '9 tháng', value: 9 },
     { label: '12 tháng', value: 12 }
   ];
+
+  // order data
+  orderData: KubernetesCluster;
 
   // infrastructure info
   regionId: number;
@@ -61,7 +64,8 @@ export class ClusterComponent implements OnInit {
     private notificationService: NzNotificationService,
     private vlanService: VlanService,
     private router: Router,
-    private shareService: ShareService
+    private shareService: ShareService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     this.listOfK8sVersion = [];
     this.listOfSubnets = [];
@@ -360,6 +364,34 @@ export class ClusterComponent implements OnInit {
     return this.myform.get('reigonId').value;
   }
 
+  get networkType() {
+    return this.myform.get('networkType').value;
+  }
+
+  get vpcNetwork() {
+    return this.myform.get('vpcNetwork').value;
+  }
+
+  get cidr() {
+    return this.myform.get('cidr').value;
+  }
+
+  get subnet() {
+    return this.myform.get('subnet').value;
+  }
+
+  get volumeCloudSize() {
+    return this.myform.get('volumeCloud').value;
+  }
+
+  get volumeCloudType() {
+    return this.myform.get('volumeCloudType').value;
+  }
+
+  get usageTime() {
+    return this.myform.get('usageTime').value;
+  }
+
   currentDate: string;
   getCurrentDate() {
     const today = new Date();
@@ -401,6 +433,34 @@ export class ClusterComponent implements OnInit {
     if (!reg.test(input)) {
       event.preventDefault();
     }
+  }
+
+  onSubmitOrder = () => {
+    const cluster = this.myform.value;
+    const networking: NetworkingModel = new NetworkingModel(null);
+    networking.networkType = cluster.networkType;
+    networking.vpcNetworkId = cluster.vpcNetwork;
+    networking.cidr = cluster.cidr;
+    networking.subnet = cluster.subnet;
+
+    cluster.networking = networking;
+
+    const data: Order = new Order();
+    const userId = this.tokenService.get()?.userId;
+    data.customerId = userId;
+    data.createdByUserId = userId;    // fix test
+    data.orderItems = [];
+
+    const orderItem: OrderItem = new OrderItem();
+    orderItem.price = 25000000;       // fix test
+    orderItem.orderItemQuantity = 1;  // fix test
+    orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
+    orderItem.specification = JSON.stringify(cluster);
+    orderItem.serviceDuration = this.usageTime;
+
+    data.orderItems = [...data.orderItems, orderItem];
+
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: '/app-kubernetes'}});
   }
 
   onSubmitPayment() {
