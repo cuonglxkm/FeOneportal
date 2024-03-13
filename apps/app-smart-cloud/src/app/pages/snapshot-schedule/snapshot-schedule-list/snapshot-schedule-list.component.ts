@@ -7,6 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ScheduleSnapshotVL } from 'src/app/shared/models/snapshotvl.model';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -93,6 +94,9 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
   }
 
   navigateToUpdate(id: number) {

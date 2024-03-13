@@ -21,4 +21,15 @@ export class BucketConfigureComponent implements OnInit {
     this.activePrivate = false;
     this.activePublic = true;
   }
+
+  versionOn: boolean = true;
+  versionOff: boolean = false;
+  initVersionOn(): void {
+    this.versionOn = true;
+    this.versionOff = false;
+  }
+  initVersionOff(): void {
+    this.versionOn = false;
+    this.versionOff = true;
+  }
 }

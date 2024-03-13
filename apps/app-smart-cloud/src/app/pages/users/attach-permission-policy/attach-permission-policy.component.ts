@@ -22,6 +22,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -66,40 +67,47 @@ export class AttachPermissionPolicyComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private clipboardService: ClipboardService
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
   }
 
   ngOnInit(): void {
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.breakpoints[Breakpoints.XSmall]) {
-        // Màn hình cỡ nhỏ
-        this.cardHeight = '110px';
-      } else if (result.breakpoints[Breakpoints.Small]) {
-        // Màn hình cỡ nhỏ - trung bình
-        this.cardHeight = '190px';
-      } else if (result.breakpoints[Breakpoints.Medium]) {
-        // Màn hình trung bình
-        this.cardHeight = '190px';
-      } else if (result.breakpoints[Breakpoints.Large]) {
-        // Màn hình lớn
-        this.cardHeight = '170px';
-      } else if (result.breakpoints[Breakpoints.XLarge]) {
-        // Màn hình rất lớn
-        this.cardHeight = '130px';
-      }
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '110px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '190px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '190px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '170px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '130px';
+        }
 
-      // Cập nhật chiều cao của card bằng Renderer2
-      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
-    });
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
 
     this.getGroup();
   }
@@ -420,6 +428,10 @@ export class AttachPermissionPolicyComponent implements OnInit {
     } else {
       this.expandSet.delete(name);
     }
+  }
+
+  copyText(data: any) {
+    this.clipboardService.copyFromContent(JSON.stringify(data));
   }
 
   navigateToCreateGroup() {
