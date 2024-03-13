@@ -82,6 +82,7 @@ export class ListVlanComponent implements OnInit{
     this.formSearchNetwork.region = this.region
     this.formSearchNetwork.pageSize = this.pageSize
     this.formSearchNetwork.pageNumber = this.pageNumber
+    this.formSearchNetwork.project = this.project
   }
 
   onPageSizeChange(value) {

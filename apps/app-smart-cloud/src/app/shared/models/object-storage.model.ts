@@ -54,5 +54,53 @@ export class Subusers {
   permissions: string
 }
 
+export class SummaryObjectStorage {
+  entries: Entry[]
+  summary: Summary[]
+}
+
+export class Entry {
+  user: string
+  buckets: Bucket[]
+}
+
+export class Bucket {
+  bucket: string
+  time: Date
+  epoch: number
+  owner: string
+  categories: Category[]
+}
+
+export class Summary {
+  user: string
+  categories: Category[]
+  total: Total
+}
+
+export class Category {
+  category: string
+  bytes_sent: number
+  bytes_received: number
+  ops: number
+  successful_ops: number
+}
+
+export class Total {
+  bytes_sent: number
+  bytes_received: number
+  ops: number
+  successful_ops: number
+}
+
+export class FormSearchSummary {
+  regionId: number
+  uid: string
+  start: string
+  end: string
+  show_entries: boolean
+  show_summary: boolean
+}
+
 
 

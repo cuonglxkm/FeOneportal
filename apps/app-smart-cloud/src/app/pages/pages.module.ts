@@ -177,6 +177,7 @@ import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user
 import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
 import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
+import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -343,6 +344,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteSubUserComponent,
     EditSubUserComponent,
     DashboardObjectStorageComponent,
+    ChartComponent,
   ],
   imports: [
     CommonModule,

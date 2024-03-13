@@ -29,10 +29,18 @@ export class CreateFileSystemComponent implements OnInit {
     description: ['']
   });
 
+  name: string
+  type: string
+  protocol: string
+  storage: number
+
   optionProtocols = [
     {value: 1, label: 'NFS'},
     {value: 2, label: 'CIFS'}
   ]
+
+  isVisibleConfirm: boolean = false
+  isLoading: boolean = false
 
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService) {
@@ -58,6 +66,24 @@ export class CreateFileSystemComponent implements OnInit {
     if(this.validateForm.valid){
       console.log('data', this.validateForm.getRawValue())
     }
+  }
+
+  cancel() {
+    this.validateForm.reset()
+  }
+
+  showModalConfirm() {
+    this.isVisibleConfirm = true
+  }
+
+  handleCancel() {
+    this.isVisibleConfirm = false
+    this.isLoading = false
+    this.validateForm.reset()
+  }
+
+  handleOk() {
+    this.submitForm()
   }
 
   ngOnInit() {
