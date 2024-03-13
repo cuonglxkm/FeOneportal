@@ -34,7 +34,9 @@ export class BucketListComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/object-storage/bucket/create']);
   }
 
-  extendObjectStorage() {}
+  extendObjectStorage() {
+    this.router.navigate(['/app-smart-cloud/object-storage/extend']);
+  }
 
   updateObjectStorage() {}
 

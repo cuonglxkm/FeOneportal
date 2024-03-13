@@ -182,6 +182,10 @@ import { EditFileSystemSnapshotScheduleComponent } from './file-system-snapshot-
 import { PauseFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/pause-file-system-snapshot-schedule-file-system-snapshot-schedule/pause-file-system-snapshot-schedule.component';
 import { DeleteFileSystemSnapshotComponent } from './file-system-snapshot/delete-create-file-system-snapshot/delete-file-system-snapshot.component';
 import { EditFileSystemSnapshotComponent } from './file-system-snapshot/edit-file-system-snapshot/edit-file-system-snapshot.component';
+import { ObjectStorageComponent } from './object-storage/object-storage.component';
+import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
+import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
@@ -355,6 +359,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
     DeleteFileSystemSnapshotComponent,
     EditFileSystemSnapshotComponent,
     DashboardObjectStorageComponent,
+    ObjectStorageComponent,
+    ObjectStorageCreateComponent,
+    ObjectStorageExtendComponent,
+    ObjectStorageEditComponent,
   ],
   imports: [
     CommonModule,

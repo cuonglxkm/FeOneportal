@@ -40,6 +40,9 @@ export class VpcListComponent {
     'border-radius': '10px',
     'width': '600px',
   };
+  nameDelete: any = '';
+  itemDelete: any;
+  disableDelete = true;
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -86,7 +89,8 @@ export class VpcListComponent {
     this.router.navigate(['/app-smart-cloud/vpc/update/' + id]);
   }
 
-  delete(id: number) {
+  delete(itemDelete: any) {
+    this.itemDelete = itemDelete;
     this.isVisibleDelete = true;
   }
 
@@ -95,7 +99,21 @@ export class VpcListComponent {
   }
 
   openIpDelete() {
-
+    this.vpcService.delete(this.itemDelete.cloudIdentityId)
+      .pipe(finalize(() => {
+        this.getData(true);
+        this.isVisibleDelete = false;
+      }))
+      .subscribe(
+        {
+          next: post => {
+            this.notification.success('Thành công', 'Xóa thành công VPC')
+          },
+          error: e => {
+            this.notification.error('Thất bại', 'Xóa thất bại VPC')
+          },
+        }
+      )
   }
 
   search(inputSearch: any) {
@@ -111,5 +129,13 @@ export class VpcListComponent {
 
   viewDetail(id: number) {
     this.router.navigate(['/app-smart-cloud/vpc/detail/' + id]);
+  }
+
+  confirmNameDelete(event: any) {
+    if (event == this.itemDelete.cloudProjectName) {
+      this.disableDelete = false;
+    } else {
+      this.disableDelete = true;
+    }
   }
 }
