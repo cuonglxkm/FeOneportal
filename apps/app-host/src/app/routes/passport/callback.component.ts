@@ -134,7 +134,7 @@ export class CallbackComponent implements OnInit {
                     },
                     {
                       text: 'Sub User',
-                      link: '/app-smart-cloud/networks/object-storage/sub-user/list',
+                      link: '/app-smart-cloud/object-storage/sub-user/list',
                     },
                     {
                       text: 'S3 Key',
@@ -142,7 +142,7 @@ export class CallbackComponent implements OnInit {
                     },
                     {
                       text: 'Thống kê',
-                      link: '/app-smart-cloud/object',
+                      link: '/app-smart-cloud/object-storage/dashboard',
                     },
                   ],
                 };

@@ -70,7 +70,7 @@ export class StartupService {
 
           this.aclService.setFull(true);
 
-          this.menuService.add(appData.menu)
+          this.menuService.add(appData.menu);
           if (checkData) {
             let json = {
               key: 'Object Storage',
@@ -83,7 +83,7 @@ export class StartupService {
                 },
                 {
                   text: 'Sub User',
-                  link: '/app-smart-cloud/networks/object-storage/sub-user/list',
+                  link: '/app-smart-cloud/object-storage/sub-user/list',
                 },
                 {
                   text: 'S3 Key',
@@ -91,7 +91,7 @@ export class StartupService {
                 },
                 {
                   text: 'Thống kê',
-                  link: '/app-smart-cloud/object',
+                  link: '/app-smart-cloud/object-storage/dashboard',
                 },
               ],
             };
