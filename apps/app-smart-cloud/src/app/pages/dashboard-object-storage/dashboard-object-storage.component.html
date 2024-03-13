@@ -1,0 +1,33 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Thống kê dịch vụ Object Storage'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">Bucket</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/dashboard'">Thống kê dịch vụ Object Storage</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <nz-row nzJustify="end">
+      <nz-col nzSpan="8" style="flex:none;">
+        <nz-select [nzPlaceHolder]="'Chọn Bucket'">
+          <nz-option></nz-option>
+        </nz-select>
+        <nz-select style="margin-left: 10px;" [nzPlaceHolder]="'15 phút'">
+          <nz-option></nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-card>
+</nz-content>

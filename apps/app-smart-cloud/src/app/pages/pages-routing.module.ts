@@ -110,6 +110,7 @@ import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create
 import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
 import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -458,12 +459,16 @@ const routes: Routes = [
     component: ListAccessRuleComponent
   },
   {
-    path: 'networks/object-storage/sub-user/list',
+    path: 'object-storage/sub-user/list',
     component: ListSubUserComponent
   },
   {
-    path: 'networks/object-storage/sub-user/create',
+    path: 'object-storage/sub-user/create',
     component: CreateSubUserComponent
+  },
+  {
+    path: 'object-storage/dashboard',
+    component: DashboardObjectStorageComponent
   },
   {
     path: 'networks/ip-floating/list',

@@ -139,7 +139,9 @@ export class ListScheduleBackupComponent implements OnInit{
       if (isBegin) {
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
-
+    }, error => {
+      this.response = null
+      this.isLoading = false
     })
   }
 

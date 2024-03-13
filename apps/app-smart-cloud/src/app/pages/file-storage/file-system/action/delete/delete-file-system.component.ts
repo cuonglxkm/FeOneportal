@@ -2,6 +2,7 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
+import { FileSystemService } from '../../../../../shared/services/file-system.service';
 
 @Component({
   selector: 'one-portal-delete-file-system',
@@ -11,7 +12,7 @@ import { VolumeService } from '../../../../../shared/services/volume.service';
 export class DeleteFileSystemComponent {
   @Input() region: number
   @Input() project: number
-  @Input() wanId: number
+  @Input() fileSystemId: number
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -19,7 +20,8 @@ export class DeleteFileSystemComponent {
   isVisible: boolean = false
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private fileSystemService: FileSystemService) {
   }
 
   showModal() {

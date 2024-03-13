@@ -1,16 +1,13 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-      nzTheme="outline" nz-popover
-      [nzPopoverContent]="'Xóa'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa IP WAN"
+<li nz-menu-item (click)="showModal()">Xoá</li>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa File System ?"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xóa IP WAN</span>
+    <span class="text-modal-title">Xác nhận xóa File System ?</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzMessage]="'Bạn đang thực hiện xóa File System\n'+
+              [nzMessage]="'Bạn đang thực hiện xóa File System\n' +
 'Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó'">
     </nz-alert>
     <div>

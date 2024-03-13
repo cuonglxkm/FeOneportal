@@ -19,14 +19,6 @@ export class AllowAddressPairService extends BaseService {
     super();
   }
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-
   search(form: AllowAddressPairSearchForm): Observable<Pagination<PairInfo>> {
     let params = new HttpParams();
     params = params.append('customerId', form.customerId);
@@ -40,7 +32,6 @@ export class AllowAddressPairService extends BaseService {
     params = params.append('currentPage', form.currentPage);
 
     return this.http.get<Pagination<PairInfo>>(this.baseUrl + this.ENDPOINT.provisions + '/instances/allow_adress_pair', {
-      headers: this.getHeaders(),
       params: params
     })
       .pipe(catchError(this.errorCode));
@@ -48,8 +39,7 @@ export class AllowAddressPairService extends BaseService {
 
   createOrDelete(form: AllowAddressPairCreateOrDeleteForm) {
     return this.http.post(this.baseUrl +
-      this.ENDPOINT.provisions + '/instances/allowadresspair', Object.assign(form),
-      {headers: this.getHeaders()});
+      this.ENDPOINT.provisions + '/instances/allowadresspair', Object.assign(form)).pipe(catchError(this.errorCode));
   }
 
 
