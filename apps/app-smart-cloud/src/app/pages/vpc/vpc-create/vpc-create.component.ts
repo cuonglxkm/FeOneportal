@@ -72,7 +72,7 @@ export class VpcCreateComponent {
   selectIndexTab: any = 0;
 
   form = new FormGroup({
-    name: new FormControl('', {validators: [Validators.required]}),
+    name: new FormControl('', {validators: [Validators.required,Validators.pattern(/^[A-Za-z0-9]+$/),]}),
     description: new FormControl(''),
 
     ipConnectInternet: new FormControl('', {validators: [Validators.required]}),
@@ -107,7 +107,10 @@ export class VpcCreateComponent {
     let ipName = '';
     if (lstIp != null && lstIp != undefined){
       ip = lstIp[0];
-      ipName = lstIp[1];
+      let listString = lstIp[1].split(" ");
+      if (listString.length == 3) {
+        ipName = listString[2].trim();
+      }
     }
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let ipType = this.form.controls['ipType'].value;
@@ -141,12 +144,13 @@ export class VpcCreateComponent {
             publicNetworkId: ip,
             publicNetworkAddress: ipName,
             quotaIPv6Count: IPV6,
-            typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
             serviceType: 12,
             serviceInstanceId: 0,
             customerId: this.tokenService.get()?.userId,
             offerId: this.offerFlavor == null ? "" : this.offerFlavor.id,
-            actionType: 4,
+            // offerId: 0,
+            actionType: 0,
             regionId: this.regionId,
             serviceName: this.form.controls['name'].value
           }
@@ -244,7 +248,10 @@ export class VpcCreateComponent {
     let ipName = '';
     if (lstIp != null && lstIp != undefined){
       ip = lstIp[0];
-      ipName = lstIp[1];
+      let listString = lstIp[1].split(" ");
+      if (listString.length == 3) {
+        ipName = listString[2].trim();
+      }
     }
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let ipType = this.form.controls['ipType'].value;
@@ -276,14 +283,14 @@ export class VpcCreateComponent {
       quotaShareSnapshotInGb: this.numberFileScnapsshot,
       publicNetworkId: ip,
       publicNetworkAddress: ipName,
-      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       serviceType: 12,
       serviceInstanceId: 0,
       customerId: this.tokenService.get()?.userId,
       offerId: this.offerFlavor == null ? "" : this.offerFlavor.id,
-      actionType: 4,
+      actionType: 0,
       regionId: this.regionId,
-      serviceName: this.form.controls['name'].value,
+      serviceName: 'vpc'+this.tokenService.get()?.userId+'-'+this.form.controls['name'].value,
       description: null,
       createDate: new Date(),
       expireDate: expiredDate,
