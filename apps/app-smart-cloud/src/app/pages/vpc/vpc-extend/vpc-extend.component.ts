@@ -37,6 +37,8 @@ export class VpcExtendComponent {
     ssd: new FormControl(0),
 
   });
+  today = new Date();
+  expiredDate = new Date();
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
@@ -102,5 +104,11 @@ export class VpcExtendComponent {
 
   createIpPublic() {
 
+  }
+
+  onChangeTime() {
+    const dateNow = new Date();
+    dateNow.setMonth(dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value));
+    this.expiredDate = dateNow;
   }
 }

@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AddVolumetoVmModel, EditSizeVolumeModel, EditTextVolumeModel} from "../models/volume.model";
@@ -64,4 +64,7 @@ export class VpcService extends BaseService {
     return this.http.get<TotalVpcResource>(this.baseUrl + this.ENDPOINT.provisions + '/projects/' + id);
   }
 
+  delete(id: any):Observable<HttpResponse<any>> {
+    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/"+ id);
+  }
 }

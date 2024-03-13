@@ -105,3 +105,27 @@
   letter-spacing: 0.10000000149011612px;
   text-align: center;
 }
+
+.myPoint {
+  list-style-type: none;
+  text-align: center;
+  padding: 12px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: auto;
+  box-sizing: border-box;
+  li {
+    display: inline-block;
+    border-radius: 50%;
+    border: 2px solid rgb(12, 116, 219);
+    padding: 4px;
+    margin: 0 3px;
+    transition-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    transition: 0.4s;
+    cursor: pointer;
+    &.active {
+      background: #0c41db;
+      transform: scale(1.2);
+    }
+  }
+}

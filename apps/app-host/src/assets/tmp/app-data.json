@@ -195,7 +195,7 @@
             },
             {
               "text": "File Storage",
-              "link": "/app-smart-cloud/networks/file-storage/file-system/list",
+              "icon": "file",
               "children": [
                 {
                   "text": "File System",
@@ -208,6 +208,35 @@
                 {
                   "text": "Lịch Snapshot File System ",
                   "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "Floating IP",
+                  "link": "/app-smart-cloud/networks/ip-floating/list"
+                },
+                {
+                  "text": "Direct Connect",
+                  "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "Network Topology",
+                  "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "File Storage",
+                  "children": [
+                    {
+                      "text": "File System",
+                      "link": "/app-smart-cloud/file-system/list"
+                    },
+                    {
+                      "text": "File System Snapshot",
+                      "link": "/app-smart-cloud/file-system-snapshot/list"
+                    },
+                    {
+                      "text": "Lịch Snapshot File System ",
+                      "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
+                    }
+                  ]
                 }
               ]
             },
@@ -230,6 +259,11 @@
               "text": "Kafka",
               "icon": "anticon-team",
               "link": "/app-kafka"
+            },
+            {
+              "text": "MongoDB Replicaset",
+              "icon": "anticon-team",
+              "link": "/app-mongodb-replicaset"
             }
           ]
         },

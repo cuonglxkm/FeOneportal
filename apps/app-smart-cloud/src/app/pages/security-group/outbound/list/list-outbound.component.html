@@ -1,11 +1,11 @@
 <nz-row style="margin-bottom: 16px">
     <section class="code-box-meta markdown">
-        <div class="code-box-title">
-            Outbound
-        </div>
-        <div class="code-box-description">
-            <nz-row nzJustify="end" style="padding-bottom: 16px; padding-right: 32px">
-                <one-portal-outbound
+            <div class="code-box-description">
+                <div style="padding:16px 32px; display: flex; justify-content: space-between; align-items: center; background-color: #E1EDF8;">
+                    <div class="code-box-title">
+                        Outbound
+                    </div>
+                    <one-portal-outbound
                   nz-tooltip nzTooltipTitle="Thêm mới Outbound" nzTooltipPlacement="bottom"
                     [disabled]="!securityGroupId"
                     [condition]="{
@@ -16,7 +16,8 @@
                     }"
                     (onOk)="getRule()"
                 />
-            </nz-row>
+                </div>
+                <div style="margin: 10px 15px">
             <nz-table #tableOutbound
                       [nzData]="collection?.records || []"
                       nzShowSizeChanger
@@ -44,7 +45,23 @@
                     <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
                     <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
                     <td nzAlign="center" nzBreakWord>
-                        <button nz-button nzType="primary" nzDanger class="button-delete" (click)="showModal()">Xoá</button>
+                        <button
+                        style="
+                          border: none;
+                          background-color: transparent;
+                          margin-left: -30px;
+                          cursor: pointer;
+                        "
+                        class="button-delete"
+                        (click)="showModal()"
+                      >
+                        <img
+                          src="assets/imgs/bin.svg"
+                          alt=""
+                          class="icon-image"
+                          style="cursor: pointer"
+                        />
+                      </button>
                         <one-portal-delete-security-group-rule
                           nz-tooltip nzTooltipTitle="Xóa Outbound" nzTooltipPlacement="bottom"
                                 [isVisible]="isVisible"
@@ -63,6 +80,7 @@
                 </tr>
                 </tbody>
             </nz-table>
+        </div>
         </div>
     </section>
 </nz-row>

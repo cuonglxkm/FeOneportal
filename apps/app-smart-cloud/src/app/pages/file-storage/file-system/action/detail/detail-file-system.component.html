@@ -6,13 +6,14 @@
       <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/list'">File System</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/detail/{{idWan}}'">{{ wanName }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/detail/{{ fileSystemId }}'">{{ fileSystemName }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -27,7 +28,7 @@
             <span>ID</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.shareCloudId }}"  [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -35,7 +36,7 @@
             <span>Loại File System</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.type }}" [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -43,7 +44,7 @@
             <span>Trạng thái</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.status }}"  [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -51,7 +52,7 @@
             <span>Dung lượng</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.size }}"  [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -61,7 +62,7 @@
             <span>Tên File System</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.name}}"  [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -69,7 +70,7 @@
             <span>Giao thức</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.shareProto }}" [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -77,17 +78,17 @@
             <span>Mount target address</span>
           </nz-form-label>
           <nz-form-control>
-            <input class="input-custom"  [disabled]="true" />
+            <input class="input-custom" value="{{ fileSystem.mountTargetAddress}}" [disabled]="true" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
     </nz-row>
     <nz-form-item>
       <nz-form-label>
-        <span>Mount target address</span>
+        <span>Mô tả</span>
       </nz-form-label>
       <nz-form-control>
-        <textarea nz-input rows="4" [value]="" [disabled]="true" ></textarea>
+        <textarea nz-input rows="4" value="{{ fileSystem.description }}" [disabled]="true" ></textarea>
       </nz-form-control>
     </nz-form-item>
   </nz-card>

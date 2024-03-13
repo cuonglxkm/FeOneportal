@@ -58,7 +58,7 @@
                         selectedElementFlavor === 'flavor_' + item.id
                       "
                     >
-                      <div>
+                      <div style="position: relative;">
                         <span
                           class="nameFlavor"
                           [class.initialNameFlavor]="
@@ -81,6 +81,9 @@
                           item.price.fixedPrice.amount
                           }}</span
                         ><span> đ/tháng</span>
+                      </div>
+                      <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                        <img src="assets/imgs/mostpop.svg">
                       </div>
                     </nz-col>
                   </nz-row>
@@ -486,7 +489,7 @@
           <span>Hủy</span>
         </button>
         <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
-                [disabled]="form.invalid">
+                [disabled]="form.invalid || (selectIndexTab == 0 && selectedElementFlavor == null)">
           <span nz-icon nzType="wallet" nzTheme="outline"></span>
           <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
         </button>

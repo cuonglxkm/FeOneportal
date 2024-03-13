@@ -13,6 +13,7 @@ import {ProjectModel} from "../../../shared/models/project.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {InstancesService} from "../../instances/instances.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-extend-ip-public',
@@ -39,7 +40,9 @@ export class ExtendIpPublicComponent {
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
-
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   form = new FormGroup({
@@ -102,7 +105,8 @@ export class ExtendIpPublicComponent {
   }
 
   projectChange(project: ProjectModel) {
-    this.projectId =  project.id;
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.projectId = project.id;
   }
 
   backToList() {

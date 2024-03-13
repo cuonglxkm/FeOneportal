@@ -93,6 +93,7 @@ import { CreateNetworkComponent } from './vlan/create/create-network/create-netw
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import {BucketDetailComponent} from "./bucket/bucket-detail/bucket-detail.component";
 import { BucketListComponent } from "./bucket/bucket-list.component";
 import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.component";
 import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
@@ -104,6 +105,12 @@ import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
+import { FileSystemSnapshotComponent } from "./file-system-snapshot/file-system-snapshot.component";
+import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component";
+import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
+import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
+import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ObjectStorageComponent } from "./object-storage/object-storage.component";
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
 import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
@@ -168,6 +175,10 @@ const routes: Routes = [
     component: SecurityGroupComponent
   },
   {
+    path: 'blank-security-group',
+    component: BlankSecurityGroupComponent
+  },
+  {
     path: 'create-security-group',
     component: CreateSecurityGroupComponent
   },
@@ -182,10 +193,6 @@ const routes: Routes = [
   {
     path: 'instance/:instanceId/allow-address-pair/:portId',
     component: ListAllowAddressPairComponent
-  },
-  {
-    path: 'blank-security-group',
-    component: BlankSecurityGroupComponent
   },
   {
     path: 'action-history',
@@ -456,12 +463,40 @@ const routes: Routes = [
     component: ListAccessRuleComponent
   },
   {
-    path: 'networks/object-storage/sub-user/list',
+    path: 'object-storage/sub-user/list',
     component: ListSubUserComponent
   },
   {
-    path: 'networks/object-storage/sub-user/create',
+    path: 'object-storage/sub-user/create',
     component: CreateSubUserComponent
+  },
+  {
+    path: 'object-storage/dashboard',
+    component: DashboardObjectStorageComponent
+  },
+  {
+    path: 'networks/ip-floating/list',
+    component: ListIpFloatingComponent,
+  },
+  {
+    path: 'file-system-snapshot/list',
+    component: FileSystemSnapshotComponent,
+  },
+  {
+    path: 'file-system-snapshot/create',
+    component: CreateFileSystemSnapshotComponent,
+  },
+  {
+    path: 'file-system-snapshot/detail/:id',
+    component: FileSystemSnapshotDetailComponent,
+  },
+  {
+    path: 'file-system-snapshot-schedule/list',
+    component: FileSystemSnapshotScheduleComponent,
+  },
+  {
+    path: 'file-system-snapshot-schedule/create',
+    component: CreateFileSystemSnapshotScheduleComponent,
   },
   {
     path: 'object-storage/bucket',
@@ -486,6 +521,10 @@ const routes: Routes = [
   {
     path: 'object-storage/edit/:id',
     component: ObjectStorageEditComponent
+  },
+  {
+    path:'object-storage/bucket/:id',
+    component: BucketDetailComponent
   },
   ]
 @NgModule({
