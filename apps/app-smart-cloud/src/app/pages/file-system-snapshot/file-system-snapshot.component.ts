@@ -51,18 +51,18 @@ export class FileSystemSnapshotComponent {
   projectChange(project: ProjectModel) {
     this.project = project.id;
     // this.projectType = project.type;
-    this.getData(true);
+    this.getData();
   }
 
   onPageSizeChange(event) {
     this.pageSize = event
     this.refreshParams();
-    this.getData(false);
+    this.getData();
   }
 
   onPageIndexChange(event) {
     this.pageIndex = event;
-    this.getData(false);
+    this.getData();
   }
 
   onInputChange(value){
@@ -70,14 +70,14 @@ export class FileSystemSnapshotComponent {
       this.value = null
     }
     this.value = value
-    this.getData(false)
+    this.getData()
   }
 
   showModalCreateIpFloating() {
 
   }
 
-  getData(isCheckBegin) {
+  getData() {
     this.isLoading = true
     this.formSearchFileSystemSnapshot.vpcId = this.project
     this.formSearchFileSystemSnapshot.regionId = this.region
@@ -91,14 +91,11 @@ export class FileSystemSnapshotComponent {
       this.isLoading = false
         console.log('data', data)
       this.response = data
-        if (isCheckBegin) {
-          this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
-        }
     })
   }
 
   handleOkCreateFileSystemSnapShot() {
-    this.getData(false)
+    this.getData()
   }
 
   ngOnInit() {

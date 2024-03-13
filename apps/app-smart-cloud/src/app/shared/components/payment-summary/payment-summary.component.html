@@ -154,12 +154,19 @@
         </nz-table>
         <div style="margin-top: 30px;">
           <button
-            [disabled]="!acceptTerm"
-            nz-button
-            nzType="primary"
-            (click)="payNow()"
-            style="width: 100%;"
+          [disabled]="!acceptTerm"
+          nz-button
+          nzType="primary"
+          (click)="payNow()"
+            style="
+              width: 100%;
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              justify-content: center;
+            "
           >
+            <img src="assets/imgs/wallet.svg" />
             Thanh toán
           </button>
           <button style="width: 100%; ; margin: 15px 0px 0px 0px; border: none" nz-button (click)="navigateToCreate()">

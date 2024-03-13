@@ -15,3 +15,10 @@ export class FormCreateFileSystemSsSchedule {
   maxSnapshot: number
   shareIds: number[]
   }
+
+  export class FormSearchFileSystemSsSchedule {
+    searchValue: string
+    regionId: number
+    pageSize: number
+    pageNumber: number
+    }

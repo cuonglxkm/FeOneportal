@@ -61,6 +61,9 @@ export class DetailSubnetComponent implements OnInit{
       console.log('data-subnet', data)
       this.responseSubnet = data
       this.isLoading = false
+    }, error => {
+      this.responseSubnet = null
+      this.isLoading = false
     })
   }
 

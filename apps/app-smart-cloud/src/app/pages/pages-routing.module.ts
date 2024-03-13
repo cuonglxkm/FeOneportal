@@ -93,6 +93,7 @@ import { CreateNetworkComponent } from './vlan/create/create-network/create-netw
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
 import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import {BucketDetailComponent} from "./bucket/bucket-detail/bucket-detail.component";
 import { BucketListComponent } from "./bucket/bucket-list.component";
 import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.component";
 import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
@@ -110,6 +111,7 @@ import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-s
 import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
 import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -458,12 +460,16 @@ const routes: Routes = [
     component: ListAccessRuleComponent
   },
   {
-    path: 'networks/object-storage/sub-user/list',
+    path: 'object-storage/sub-user/list',
     component: ListSubUserComponent
   },
   {
-    path: 'networks/object-storage/sub-user/create',
+    path: 'object-storage/sub-user/create',
     component: CreateSubUserComponent
+  },
+  {
+    path: 'object-storage/dashboard',
+    component: DashboardObjectStorageComponent
   },
   {
     path: 'networks/ip-floating/list',
@@ -500,6 +506,10 @@ const routes: Routes = [
   {
     path: 'object-storage/bucket/create',
     component: BucketCreateComponent
+  },
+  {
+    path:'object-storage/bucket/:id',
+    component: BucketDetailComponent
   },
   ]
 @NgModule({

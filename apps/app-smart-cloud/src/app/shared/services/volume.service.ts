@@ -1,30 +1,25 @@
-import {Inject, Injectable, OnInit} from '@angular/core';
-import {catchError} from 'rxjs/operators';
-import {BehaviorSubject, Observable, of} from 'rxjs';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {VolumeDTO} from "../dto/volume.dto";
-import {BaseService} from "./base.service";
-import {AddVolumetoVmModel, EditSizeVolumeModel, EditTextVolumeModel, GetListVolumeModel} from "../models/volume.model";
-import {GetAllVmModel} from "../models/volume.model";
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {PriceVolumeDto} from "../dto/volume.dto";
-import {CreateVolumeRequestModel} from "../models/volume.model";
-import {CreateVolumeResponseModel} from "../models/volume.model";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
+import { Inject, Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { VolumeDTO } from '../dto/volume.dto';
+import { BaseService } from './base.service';
+import {
+  AddVolumetoVmModel,
+  CreateVolumeRequestModel,
+  CreateVolumeResponseModel,
+  EditSizeVolumeModel,
+  EditTextVolumeModel,
+  GetAllVmModel
+} from '../models/volume.model';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VolumeService extends BaseService {
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json' ,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': this.tokenService.get()?.userId,
-    })
-  };
   //API GW
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
   private urlVMGW = this.baseUrl + this.ENDPOINT.provisions + '/instances';
@@ -46,23 +41,23 @@ export class VolumeService extends BaseService {
     if(currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage)
 
     return this.http.get<BaseResponse<VolumeDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
-      headers: this.httpOptions.headers,
       params: param
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getVolumeById(volumeId: number) {
-    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`, {
-      headers: this.httpOptions.headers})
+    return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}`)
   }
 
-  //tinh phi Volume : FAKE
-  getPremium(volumeType: string, size: number, duration: number): Observable<PriceVolumeDto> {
-    let urlResult = this.getConditionGetPremiumVolume(volumeType, size, duration);
-    return this.http.get<PriceVolumeDto>(urlResult,this.httpOptions).pipe(
-      catchError(this.handleError<PriceVolumeDto>('get premium-volume error'))
-    );
-  }
   getListVM(userId: number, regionId: number): Observable<GetAllVmModel> {
     let url = this.urlVMGW + '/getpaging' + '?pageSize=' + 10000 + '&currentPage=' + 1;
     if (regionId != null) {
@@ -71,7 +66,7 @@ export class VolumeService extends BaseService {
     if (userId != null){
       url += '&userId='+userId;
     }
-    return this.http.get<GetAllVmModel>(url,this.httpOptions).pipe(
+    return this.http.get<GetAllVmModel>(url).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
     );
   }
@@ -88,43 +83,41 @@ export class VolumeService extends BaseService {
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOrderGW, request, {headers: this.httpOptions.headers})
+    return this.http.post<any>(this.urlOrderGW, request)
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume,this.httpOptions)
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume)
   }
 
   addVolumeToVm(request: AddVolumetoVmModel) {
-    return this.http.post<boolean>(this.urlVolumeGW + '/attach', request, {headers: this.httpOptions.headers})
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', Object.assign(request))
   }
 
 
   detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/detach', request,this.httpOptions).pipe(
+    return this.http.post<boolean>(this.urlVolumeGW + '/detach', Object.assign(request)).pipe(
       catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
 
-  editTextVolume(request: EditTextVolumeModel): Observable<any> {
-    return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request,this.httpOptions).pipe(
-      catchError(this.handleError<any>('Edit Volume to VM error.'))
-    );
-  }
+  // editTextVolume(request: EditTextVolumeModel): Observable<any> {
+  //   return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request).pipe(
+  //     catchError(this.handleError<any>('Edit Volume to VM error.'))
+  //   );
+  // }
 
   extendsVolume(request: EditSizeVolumeModel): Observable<any>{
-    return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
+    return this.http.post<any>(this.urlOrderGW, Object.assign(request)).pipe(
       catchError(this.handleError<any>('Extends size volume error.'))
     );
   }
 
   updateVolume(request: EditTextVolumeModel) {
-    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request),
-      {headers: this.httpOptions.headers})
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request))
   }
 
   constructor(private http: HttpClient,
-              private message: NzMessageService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     super();
   }
@@ -135,7 +128,7 @@ export class VolumeService extends BaseService {
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
 
-      this.message.create('error', `Xảy ra lỗi: ${error}`);
+      // this.message.create('error', `Xảy ra lỗi: ${error}`);
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };

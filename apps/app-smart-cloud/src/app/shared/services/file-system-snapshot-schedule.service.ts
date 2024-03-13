@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {
   BackupSchedule, CapacityBackupSchedule,
   FormAction,
@@ -10,7 +10,8 @@ import {
 } from "../models/schedule.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { FormCreateFileSystemSsSchedule } from "../models/filesystem-snapshot-schedule";
+import { FormCreateFileSystemSsSchedule, FormSearchFileSystemSsSchedule } from "../models/filesystem-snapshot-schedule";
+import { catchError, throwError } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -31,34 +32,31 @@ export class FileSystemSnapshotScheduleService extends BaseService {
     })
   }
 
-  search(formSearch: FormSearchScheduleBackup) {
+  getFileSystemSsSchedule(formSearch: FormSearchFileSystemSsSchedule) {
     let params = new HttpParams()
-    if(formSearch.scheduleName !== undefined) {
-      params = params.append('scheduleName', formSearch.scheduleName)
-    }
-    if(formSearch.regionId !== undefined) {
+    if(formSearch.regionId != undefined || formSearch.regionId != null) {
       params = params.append('regionId', formSearch.regionId)
     }
-    if(formSearch.projectId !== undefined) {
-      params = params.append('projectId', formSearch.projectId)
+    if(formSearch.searchValue != undefined || formSearch.searchValue != null){
+      params = params.append('searchValue', formSearch.searchValue)
     }
-    if(formSearch.pageSize !== null) {
+    if(formSearch.pageSize != undefined || formSearch.pageSize != null) {
       params = params.append('pageSize', formSearch.pageSize)
-    } else {
-      params = params.append('pageSize', 10)
     }
-    if(formSearch.pageIndex !== null) {
-      params = params.append('currentPage', formSearch.pageIndex)
-    } else {
-      params = params.append('currentPage', 1)
+    if(formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
+      params = params.append('pageNumber', formSearch.pageNumber)
     }
-    if(formSearch.scheduleStatus !== undefined) {
-      params = params.append('scheduleStatus', formSearch.scheduleStatus)
-    }
-    return this.http.get<BaseResponse<BackupSchedule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules', {
-      headers: this.getHeaders(),
+    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/schedulesharesnapshot',{
       params: params
-    })
+    }).pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   detail(customerId: number, id: number) {

@@ -9,7 +9,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 
@@ -74,7 +74,7 @@
     <ng-container *ngSwitchDefault>
       <nz-card>
         <nz-row nzJustify="center" style="margin-top: 30px;">
-            <img src="assets/imgs/ssh-key.png" width="300" height="300" alt="blank-security-group">
+            <img src="assets/imgs/ssh-key.png" width="400" height="300" alt="blank-security-group">
         </nz-row>
         <nz-row nzJustify="center" style="margin-top: 40px">
             <div class="text-title">

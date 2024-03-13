@@ -54,6 +54,9 @@ export class DetailPortComponent implements OnInit{
         console.log('port', data)
         this.responsePort = data
         this.isLoading = false
+      }, error => {
+        this.responsePort = null
+        this.isLoading = false
       })
   }
 

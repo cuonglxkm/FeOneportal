@@ -1,1 +1,38 @@
-<p>delete-sub-user works!</p>
+<span style="color: #0066B3; margin-left: 15px;"
+      class="more"
+      nz-icon nzType="delete"
+      nzTheme="outline"
+      nz-popover
+      [nzPopoverContent]="'Xoá'"
+      nzPopoverPlacement="bottom"
+      (click)="showModal()"></span>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa SubUser {{ idSubUser }}"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xóa SubUser {{ idSubUser }}</span>
+  </div>
+  <div *nzModalContent>
+    <div>
+      <span class="text-label">Đế thực hiện xoá SubUser {{ idSubUser }}, vui lòng nhập tên
+        SubUser để xác nhận.</span>
+    </div>
+    <nz-input-group nzSize="large">
+      <input name="name"
+             nz-input
+             placeholder="Nhập tên sub-user"
+             [(ngModel)]="value"
+             (ngModelChange)="onInput($event)" />
+    </nz-input-group>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

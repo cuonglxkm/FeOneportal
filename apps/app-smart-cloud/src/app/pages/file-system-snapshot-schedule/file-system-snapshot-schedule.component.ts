@@ -7,6 +7,8 @@ import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floatin
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
+import { FormSearchFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
+import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 
 @Component({
   selector: 'one-portal-file-system',
@@ -24,13 +26,13 @@ export class FileSystemSnapshotScheduleComponent {
 
   value: string
 
-  response: BaseResponse<IpFloating[]>
+  response: BaseResponse<any>
 
   isLoading: boolean = false
 
   isBegin: boolean = false
 
-  constructor(private ipFloatingService: IpFloatingService,
+  constructor(private fileSystemSnapshotScheduleService: FileSystemSnapshotScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
@@ -47,18 +49,18 @@ export class FileSystemSnapshotScheduleComponent {
   projectChange(project: ProjectModel) {
     this.project = project.id;
     // this.projectType = project.type;
-    this.getData(true);
+    this.getData();
   }
 
   onPageSizeChange(event) {
     this.pageSize = event
     this.refreshParams();
-    this.getData(false);
+    this.getData();
   }
 
   onPageIndexChange(event) {
     this.pageIndex = event;
-    this.getData(false);
+    this.getData();
   }
 
   onInputChange(value){
@@ -66,36 +68,28 @@ export class FileSystemSnapshotScheduleComponent {
       this.value = null
     }
     this.value = value
-    this.getData(false)
+    this.getData()
   }
 
-  showModalCreateIpFloating() {
 
-  }
-
-  getData(isCheckBegin) {
+  getData() {
     this.isLoading = true
-    let formSearchIpFloating: FormSearchIpFloating = new FormSearchIpFloating()
-    formSearchIpFloating.projectId = this.project
-    formSearchIpFloating.regionId = this.region
-    formSearchIpFloating.ipAddress = this.value
-    formSearchIpFloating.pageSize = this.pageSize
-    formSearchIpFloating.currentPage = this.pageIndex
-    formSearchIpFloating.customerId = this.customerId
-    this.ipFloatingService.getListIpFloating(formSearchIpFloating)
+    let formSearchFileSystemSsSchedule: FormSearchFileSystemSsSchedule = new FormSearchFileSystemSsSchedule()
+    formSearchFileSystemSsSchedule.searchValue = this.value
+    formSearchFileSystemSsSchedule.regionId = this.region
+    formSearchFileSystemSsSchedule.pageSize = this.pageSize
+    formSearchFileSystemSsSchedule.pageNumber = this.pageIndex
+    this.fileSystemSnapshotScheduleService.getFileSystemSsSchedule(formSearchFileSystemSsSchedule)
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
         console.log('data', data)
       this.response = data
-        if (isCheckBegin) {
-          this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
-        }
     })
   }
 
   handleOkCreateFileSystemSnapShot() {
-    this.getData(false)
+    this.getData()
   }
 
   ngOnInit() {
@@ -104,9 +98,6 @@ export class FileSystemSnapshotScheduleComponent {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.customerId = this.tokenService.get()?.userId
-    this.ipFloatingService.model.subscribe(data => {
-      console.log(data)
-    })
-    // this.getData(true)
+    this.getData()
   }
 }

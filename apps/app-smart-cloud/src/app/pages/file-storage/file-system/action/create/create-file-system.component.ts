@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RegionModel } from '../../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../../shared/models/project.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { SnapshotVolumeService } from '../../../../../shared/services/snapshot-volume.service';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -33,7 +34,8 @@ export class CreateFileSystemComponent implements OnInit {
     {value: 2, label: 'CIFS'}
   ]
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor(private fb: NonNullableFormBuilder,
+              private snapshotvlService: SnapshotVolumeService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -44,8 +46,18 @@ export class CreateFileSystemComponent implements OnInit {
     this.project = project?.id
   }
 
+  getListSnapshot() {
+    // this.snapshotvlService.getSnapshotVolumes(userId, this.createVolumeInfo.vpcId, this.createVolumeInfo.regionId,
+    //   null, 10000, 1, null, null, null).subscribe(data => {
+    //   data.records.forEach(snapshot => {
+    //     this.snapshotList.push({label: snapshot.name, value: snapshot.id});
+    //   })
+    // });
+  }
   submitForm() {
-
+    if(this.validateForm.valid){
+      console.log('data', this.validateForm.getRawValue())
+    }
   }
 
   ngOnInit() {
