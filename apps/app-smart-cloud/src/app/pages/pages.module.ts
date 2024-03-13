@@ -153,6 +153,7 @@ import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-
 import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
 import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
+import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
 import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
 import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
@@ -320,6 +321,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     LifecycleConfigComponent,
     BucketPolicyComponent,
     BucketCorsComponent,
+    BucketDetailComponent,
     FileSystemSnapshotComponent,
     FileSystemSnapshotDetailComponent,
     CreateFileSystemSnapshotComponent,
