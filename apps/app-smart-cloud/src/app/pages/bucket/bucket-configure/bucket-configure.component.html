@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Tạo mới Bucket'">
+<page-header [breadcrumb]="breadcrumb" [title]="'Cấu hình Bucket'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
@@ -10,9 +10,12 @@
   </ng-template>
 </page-header>
 <nz-card style="border-radius: 4px" [nzBordered]="false">
-  <div>
-    <span class="text-card-header">Thông tin Bucket</span>
+  <div style="margin-bottom: 20px" class="text-card-header">
+    Thông tin Bucket
   </div>
+  <div style="margin-bottom: 10px" class="text-label">Bucket:</div>
+  <div style="margin-bottom: 10px" class="text-label">URL:</div>
+  <div style="margin-bottom: 10px" class="text-label">Dung lượng đã dùng:</div>
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Access Control List">
       <span class="titlecard-custom">Thiết lập Access Control List</span>
@@ -50,6 +53,51 @@
           SecretKey.</nz-row
         >
       </div>
+    </nz-tab>
+    <nz-tab nzTitle="Versioning">
+      <span class="titlecard-custom">Thiết lập Versioning</span>
+      <nz-row nzGutter="24" style="margin-top: 10px"
+        ><nz-col nzSpan="12">
+          <input
+            style="cursor: pointer"
+            type="radio"
+            [checked]="versionOn"
+            (click)="initVersionOn()"
+          />
+          <span class="text-value" style="margin-left: 5px">Bật</span>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <input
+            type="radio"
+            style="cursor: pointer"
+            [checked]="versionOff"
+            (click)="initVersionOff()"
+          />
+          <span class="text-value" style="margin-left: 5px">Tắt</span></nz-col
+        ></nz-row
+      >
+      <div style="margin-top: 20px" class="text-label">
+        <span
+          >Cấu hình Versioning: Cấu hình cho phép lưu trữ toàn bộ dữ liệu trong
+          Bucket với các phiên bản khác nhau</span
+        ><br /><br />
+        <span style="color: #eb1414"
+          >Lưu ý: Lưu trữ nhiều phiên bản khác nhau sẽ có thể gây ra tăng dung
+          lượng lưu trữ dữ liệu trên Bucket</span
+        >
+      </div>
+    </nz-tab>
+    <nz-tab nzTitle="Bucket Policy">
+      <one-portal-bucket-policy></one-portal-bucket-policy>
+    </nz-tab>
+    <nz-tab nzTitle="Bucket CORS">
+      <one-portal-bucket-cors></one-portal-bucket-cors>
+    </nz-tab>
+    <nz-tab nzTitle="Static Web Hosting">
+      <one-portal-static-web-hosting></one-portal-static-web-hosting>
+    </nz-tab>
+    <nz-tab nzTitle="LifeCycle Config">
+      <one-portal-lifecycle-config></one-portal-lifecycle-config>
     </nz-tab>
   </nz-tabset>
 </nz-card>

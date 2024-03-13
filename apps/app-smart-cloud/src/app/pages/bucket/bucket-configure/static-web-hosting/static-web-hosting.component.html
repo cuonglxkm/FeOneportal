@@ -1,1 +1,96 @@
-<p>static-web-hosting works!</p>
+<span class="titlecard-custom">Thiết lập Versioning</span>
+<div style="margin-top: 10px" class="text-label">
+  <span>Cấu hình Bucket hoạt động như một WebServer dành cho Website tĩnh</span
+  ><br /><br />
+  <span
+    >Trên bucket chỉ chứa các dữ liệu tĩnh của website: HTML, CSS, JS,
+    ảnh...</span
+  >
+</div>
+<nz-row nzGutter="24" style="margin-top: 10px"
+  ><nz-col nzSpan="12">
+    <input
+      style="cursor: pointer"
+      type="radio"
+      [checked]="staticOn"
+      (click)="initStaticOn()"
+    />
+    <span class="text-value" style="margin-left: 5px">Bật</span>
+  </nz-col>
+  <nz-col nzSpan="12">
+    <input
+      type="radio"
+      style="cursor: pointer"
+      [checked]="staticOff"
+      (click)="initStaticOff()"
+    />
+    <span class="text-value" style="margin-left: 5px">Tắt</span>
+  </nz-col>
+</nz-row>
+<nz-row *ngIf="staticOn" nzGutter="24"
+  ><nz-col nzSpan="12">
+    <div style="margin-top: 16px">
+      File chứa nội dung hiển thị trang chủ của website có link là Endpoint bên
+      dưới
+    </div>
+    <div style="margin-top: 16px">Ví dụ: index.html</div>
+  </nz-col>
+  <nz-col nzSpan="12">
+    <div style="margin-top: 16px">
+      File chứa nội dung hiển thị lỗi của website
+    </div>
+    <div style="margin-top: 16px">Ví dụ: error.html</div>
+  </nz-col>
+</nz-row>
+<div *ngIf="staticOn" style="margin-top: 16px; color: #eb1414">
+  Lưu ý: Để website hoạt động hãy đảm bảo file đã được public
+</div>
+<nz-row *ngIf="staticOn" nzGutter="24"
+  ><nz-col nzSpan="12">
+    <input
+      style="margin-top: 16px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="inputFile"
+      placeholder="index.html"
+      (change)="inputFile = inputFile.trim()"
+    />
+    <label
+      class="text-label"
+      style="margin-top: 16px"
+      nz-checkbox
+      [(ngModel)]="isNavigate"
+      [ngModelOptions]="{ standalone: true }"
+      >Chuyển hướng đến một địa chỉ web khác</label
+    >
+    <input
+      style="margin-top: 16px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="inputURL"
+      placeholder="http://www.example.com"
+      (change)="inputURL = inputURL.trim()"
+      [disabled]="!isNavigate"
+    />
+    <div style="margin-top: 16px" class="text-label">
+      Endpoint
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="message-question"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <input class="input-custom" nz-input placeholder="" [disabled]="true" />
+  </nz-col>
+  <nz-col nzSpan="12">
+    <input
+      style="margin-top: 16px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="inputErrorFile"
+      placeholder="error.html"
+      (change)="inputErrorFile = inputErrorFile.trim()"
+    />
+  </nz-col>
+</nz-row>
