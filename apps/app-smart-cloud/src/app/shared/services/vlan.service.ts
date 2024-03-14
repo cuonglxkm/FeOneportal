@@ -45,7 +45,7 @@ export class VlanService extends BaseService {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
     if (formSearch.project != undefined || formSearch.project != null) {
-      params = params.append('project', formSearch.project)
+      params = params.append('projectId', formSearch.project)
     }
     return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlannetworks', {
       params: params

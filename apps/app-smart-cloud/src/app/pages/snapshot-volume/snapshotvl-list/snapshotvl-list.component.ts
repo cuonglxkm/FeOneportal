@@ -11,6 +11,7 @@ import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
 import {NzMessageService} from "ng-zorro-antd/message";
+import { getCurrentRegionAndProject } from '@shared';
 @Component({
   selector: 'app-snapshot-volume-list',
   templateUrl: './snapshotvl-list.component.html',
@@ -72,6 +73,9 @@ export class SnapshotVolumeListComponent implements OnInit {
 
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId
   }
 
   searchSnapshot() {
