@@ -4,7 +4,7 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Danh sách kafka</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Danh sách Kafka</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -14,14 +14,17 @@
     <!-- filter -->
     <div class="flex-style mbot-24">
       <div class="w-25">
-        <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()" [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
-          <nz-option *ngFor="let option of listOfStatusKafka" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
+          [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
+          <nz-option *ngFor="let option of listOfStatusKafka" [nzValue]="option.value"
+            [nzLabel]="option.label"></nz-option>
         </nz-select>
       </div>
 
       <div class="mleft-16 w-25">
         <nz-input-group nzSearch nzSize="default" [nzSuffix]="suffixButton" class="w-100" nzSize="large">
-          <input [(ngModel)]="keySearch" (keyup.enter)="handleChange()" type="text" nz-input placeholder="Tìm kiếm tên dịch vụ" />
+          <input [(ngModel)]="keySearch" (keyup.enter)="handleChange()" type="text" nz-input
+            placeholder="Tìm kiếm tên dịch vụ" />
         </nz-input-group>
         <ng-template #suffixButton>
           <span nz-icon nzType="search" nzTheme="outline"></span>
@@ -53,18 +56,12 @@
     </div> -->
 
     <!-- table -->
-    <nz-table #kafkaTable
-      [nzData]="listOfKafka"
-      nzShowSizeChanger
-      [nzFrontPagination]="false"
-      [nzTotal]="total"
-      [nzPageSize]="pageSize"
-      [nzPageIndex]="pageIndex"
-      (nzQueryParams)="onQueryParamsChange($event)">
+    <nz-table #kafkaTable [nzData]="listOfKafka" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
       <thead>
         <tr>
           <th class="header-table" [nzChecked]="setOfCheckedId.size > 0"
-              (nzCheckedChange)="onAllClusterChecked($event)"></th>
+            (nzCheckedChange)="onAllClusterChecked($event)"></th>
           <th class="header-table">Tên dịch vụ</th>
           <th class="header-table">Trạng thái</th>
           <th class="header-table">Endpoint</th>
@@ -87,11 +84,11 @@
           <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
           <td class="center-align">
             <button nz-button nzType="text" nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip
-               class="borderless">
+              class="borderless">
               <span nz-icon [nzType]="'download'" class="icon-color"></span>
             </button>
             <button nz-button nzType="text" nzTooltipTitle="Xóa kafka" nzTooltipPlacement="top" nz-tooltip
-               class="borderless">
+              class="borderless">
               <span nz-icon [nzType]="'delete'" class="delete-icon"></span>
             </button>
           </td>

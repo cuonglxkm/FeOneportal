@@ -10,6 +10,7 @@ import { InfoConnection } from '../core/models/info-connection.model';
 import { Pagination } from '../core/models/pagination.model';
 import { BaseService } from './base.service';
 import { KafkaInfor } from '../core/models/kafka-infor.model';
+import { KafkaCreateReq } from '../core/models/kafka-create-req.model';
 
 @Injectable({
   providedIn: 'root',
@@ -85,6 +86,15 @@ export class KafkaService extends BaseService {
       `${this.kafkaUrl}/kafka/get-sync-time?service_order_code=${serviceOrderCode}`
     );
   }
+
+  getFlux() {
+    const eventSource = new EventSource(
+      `${this.kafkaUrl}/kafka/ws`
+    );
+
+    return eventSource;
+  }
+
   getAccessLogs(
     filters: FetchAccessLogs
   ): Observable<BaseResponse<Pagination<AccessLog[]>>> {
@@ -112,5 +122,28 @@ export class KafkaService extends BaseService {
       .set('userCode', 'bbvk0bs1th0');
     
     return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch}&status=${status==null?"":status}`,{headers});
+  }
+
+  createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>>{
+    const json = {
+      'service_name': req.serviceName,
+      'version': req.version,
+      'description': req.description,
+      'region_id': "1",
+      'config_type': req.configType ,
+      'service_pack_code': req.servicePackCode, 
+      'ram': req.ram,
+      'cpu': req.cpu,
+      'storage': req.storage,
+      'brokers': req.brokers, 
+      'num_partitions': req.numPartitions, 
+      'default_replication_factor': req.defaultReplicationFactor,
+      'min_insync_replicas': req.minInsyncReplicas,
+      'offset_topic_replication_factor': req.offsetTopicReplicationFactor,
+      'log_retention_hours': req.logRetentionHours,
+      'log_segment_bytes': req.logSegmentBytes
+    };
+
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/create', json);
   }
 }

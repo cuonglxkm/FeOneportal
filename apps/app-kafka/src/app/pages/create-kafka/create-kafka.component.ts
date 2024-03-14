@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoadingService } from '@delon/abc/loading';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
+import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
+import { ServicePack } from 'src/app/core/models/service-pack.model';
+import { KafkaService } from 'src/app/services/kafka.service';
 
 @Component({
   selector: 'one-portal-create-kafka',
@@ -12,19 +19,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 export class CreateKafkaComponent implements OnInit {
 
   myform: FormGroup;
-  listFormWorkerGroup: FormArray;
-  selectedInfra: string;
-
-  isAutoScaleEnable: boolean;
-
-  listOfCIDR: any[];
-
-  // infrastructure info
-  region: number;
-  cloudProfileName: string;
 
   carouselItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  chooseitem:any;
+  chooseitem: ServicePack;
   effect = 'scrollx';
 
   carouselConfig: NguCarouselConfig = {
@@ -39,55 +36,146 @@ export class CreateKafkaComponent implements OnInit {
     touch: true,
   }
 
+  listOfServicePack: ServicePack[] = [
+    {
+      servicePackCode: 'small',
+      servicePackName: 'Small',
+      price: 360172,
+      unit: 'đ/tháng',
+      broker: 3,
+      vCpu: 2,
+      ram: 2,
+      storage: 2
+    },
+    {
+      servicePackCode: 'medium',
+      servicePackName: 'Medium',
+      price: 360172,
+      unit: 'đ/tháng',
+      broker: 3,
+      vCpu: 6,
+      ram: 6,
+      storage: 15
+    },
+    {
+      servicePackCode: 'large',
+      servicePackName: 'Large',
+      price: 360172,
+      unit: 'đ/tháng',
+      broker: 3,
+      vCpu: 6,
+      ram: 6,
+      storage: 15
+    },
+    {
+      servicePackCode: 'xLarge',
+      servicePackName: 'XLarge',
+      price: 360172,
+      unit: 'đ/tháng',
+      broker: 3,
+      vCpu: 6,
+      ram: 6,
+      storage: 15
+    }
+  ];
+
+  listOfKafkaVersion: KafkaVersion[] = [
+    {
+      apacheKafkaVersion: '3.7.0',
+      helmChartVersion: '2.0.0'
+    }
+  ]
+
+  showCustomConfig = false;
+
+  kafkaCreateReq: KafkaCreateReq = new KafkaCreateReq();
+  servicePackCode: string;
+
   constructor(
     private fb: FormBuilder,
     private modalService: NzModalService,
-    private router: Router
+    private router: Router,
+    private loadingSrv: LoadingService,
+    private kafkaService: KafkaService,
+    private notification: NzNotificationService,
   ) {
   }
 
   ngOnInit(): void {
-    this.listFormWorkerGroup = this.fb.array([]);
     this.myform = this.fb.group({
       kafkaName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
-      kubernetesVersion: [null, [Validators.required]],
-      region: [null, [Validators.required]],
-      autoScalingWorker: [false],
-      autoHealing: [false],
       version: [null],
-      vpcNetwork: [null, Validators.required],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
-      subnet: [null, [Validators.required]],
-      workerGroup: this.listFormWorkerGroup,
+      vCpu: [null, [Validators.required]],
+      ram: [null, [Validators.required]],
+      storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
+      broker: [3, [Validators.required]],
+      configType: [0, [Validators.required]],
+      numPartitions: [3],
+      defaultReplicationFactor: [3],
+      minInsyncReplicas: [2],
+      offsetTopicReplicationFactor: [3],
+      logRetentionHours: [168],
+      logSegmentBytes: [1073741824]
     });
 
-    // init worker group
-    this.addWorkerGroup();
   }
 
-  addWorkerGroup(e?: MouseEvent): void {
-    if (e) {
-      e.preventDefault();
-    }
-
-    const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
-    const wg = this.fb.group({
-      workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index)]],
-      nodeNumber: [3, [Validators.required]],
-      volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
-      volumeTypeId: [null, [Validators.required]],
-      configType: [null, [Validators.required]],
-      configTypeId: [null, [Validators.required]],
-      minimumNode: [null],
-      maximumNode: [null],
-    });
-    this.listFormWorkerGroup.push(wg);
+  onSubmitPayment() {
+    this.createKafkaService();
   }
 
-  handlechoose(item:any) {
-    console.log("xu ly chon");
-     this.chooseitem = item;
+  createKafkaService() {
+    const dto = this.myform;
+    this.kafkaCreateReq.serviceName = dto.get('kafkaName').value;
+    this.kafkaCreateReq.version = dto.get('version').value;
+    this.kafkaCreateReq.description = dto.get('description').value;
+    this.kafkaCreateReq.servicePackCode = this.servicePackCode;
+    this.kafkaCreateReq.cpu = dto.get('vCpu').value;
+    this.kafkaCreateReq.ram = dto.get('ram').value;
+    this.kafkaCreateReq.storage = dto.get('storage').value;
+    this.kafkaCreateReq.brokers = dto.get('broker').value;
+    this.kafkaCreateReq.configType = dto.get('configType').value;
+    this.kafkaCreateReq.numPartitions = dto.get('numPartitions').value;
+    this.kafkaCreateReq.defaultReplicationFactor = dto.get('defaultReplicationFactor').value;
+    this.kafkaCreateReq.minInsyncReplicas = dto.get('minInsyncReplicas').value;
+    this.kafkaCreateReq.offsetTopicReplicationFactor = dto.get('offsetTopicReplicationFactor').value;
+    this.kafkaCreateReq.logRetentionHours = dto.get('logRetentionHours').value;
+    this.kafkaCreateReq.logSegmentBytes = dto.get('logSegmentBytes').value;
+
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.kafkaService.createKafkaService(this.kafkaCreateReq)
+        .pipe(
+          finalize(() => this.loadingSrv.close())
+        )
+        .subscribe(
+          (data) => {
+            if (data && data.code == 200) {
+              this.notification.success('Thành công', data.msg);
+              // navigate
+              this.navigateToList();
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
+          }
+        );
+
+  }
+
+  onChangeReplicationFactorAndMinInsync() {
+    console.log("");
+  }
+  
+  handleChoosePack(item: ServicePack) {
+    this.chooseitem = item;
+    this.servicePackCode = item.servicePackCode;
+    this.myform.get('vCpu').setValue(item.vCpu);
+    this.myform.get('ram').setValue(item.ram);
+    this.myform.get('storage').setValue(item.storage);
+    this.myform.get('broker').setValue(item.broker);
+
+    console.log("xu ly chon: ", this.myform.value);
   }
 
   clicktab(){
@@ -96,111 +184,18 @@ export class CreateKafkaComponent implements OnInit {
     this.chooseitem = null;
   }
 
-  get kafkaName() {
-    return this.myform.get('kafkaName')?.value;
-  }
-
-  get kafkaVersion() {
-    return this.myform.get('version')?.value;
-  }
-
-  getListK8sVersion(cloudProfileName: string) {
-    // this.clusterService.getListK8sVersion(cloudProfileName)
-    //   .subscribe((r: any) => {
-    //     if (r && r.code == 200) {
-    //       this.listOfK8sVersion = r.data;
-
-    //       // select latest version of kubernetes
-    //       const len = this.listOfK8sVersion?.length;
-    //       const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[len - 1];
-    //       this.myform.get('kubernetesVersion').setValue(latestVersion.k8sVersion);
-    //     }
-    //   });
-  }
-
-  getListWorkerType(cloudProfileName: string) {
-    // this.clusterService.getListWorkerTypes(cloudProfileName)
-    //   .subscribe((r: any) => {
-    //     if (r && r.code == 200) {
-    //       this.listOfWorkerType = r.data;
-    //     }
-    //   })
-  }
-
-  getListVolumeType(cloudProfileName: string) {
-    // this.clusterService.getListVolumeTypes(cloudProfileName)
-    //   .subscribe((r: any) => {
-    //     if (r && r.code == 200) {
-    //       this.listOfVolumeType = r.data;
-    //     }
-    //   });
-  }
-
-  getVPCNetwork(cloudProfileName: string) {
-    // this.clusterService.getVPCNetwork(cloudProfileName)
-    // .subscribe((r: any) => {
-    //   if (r && r.code == 200) {
-    //     this.listOfVPCNetworks = r.data;
-    //   }
-    // });
-  }
-
-
-  onSelectVolumeType(volumeType: string, index: number) {
-    // const selectedVolumeType = this.listOfVolumeType.find(item => item.volumeType === volumeType);
-    // console.log(selectedVolumeType);
-    // this.listFormWorkerGroup.at(index).get('volumeTypeId').setValue(selectedVolumeType.id);
-  }
-
-  onSelectWorkerType(machineName: string, index: number) {
-    // const selectedWorkerType = this.listOfWorkerType.find(item => item.machineName === machineName);
-    // console.log(selectedWorkerType);
-    // this.listFormWorkerGroup.at(index).get('configTypeId').setValue(selectedWorkerType.id);
-  }
-
-  removeWorkerGroup(index: number, e: MouseEvent): void {
-    e.preventDefault();
-    this.listFormWorkerGroup.removeAt(index);
-  }
-
-  // validate duplicate worker group name
-  validateUnique(index: number) {
-    return (control: AbstractControl) => {
-      if (control.value) {
-        const formArray = control.parent
-          ? (control.parent.parent as FormArray)
-          : null;
-        if (formArray) {
-          const attributes = formArray.value.map((x) => x.workerGroupName);
-          return attributes.indexOf(control.value) >= 0 && attributes.indexOf(control.value) < index
-            ? { duplicateName: true }
-            : null;
-        }
-      }
-    };
-  }
-
- 
-  syncVPCNetwork() {
-    console.log(123);
-  }
-
-  syncSubnet() {
-    console.log(123);
-  }
-
   onCancelCreate() {
     this.modalService.confirm({
-      nzTitle: 'Hủy tạo mới cluster',
-      nzContent: 'Cluster của bạn chưa được tạo. <br>Bạn có muốn hủy tạo mới và xóa bản nháp?',
+      nzTitle: 'Hủy tạo mới Kafka',
+      nzContent: 'Kafka của bạn chưa được tạo. <br>Bạn có muốn hủy tạo mới và xóa bản nháp?',
       nzOkText: "Xác nhận",
       nzCancelText: "Hủy",
-      nzOnOk: () => this.back2list()
+      nzOnOk: () => this.navigateToList()
     });
   }
 
-  back2list() {
-    this.router.navigate(['/app-kubernetes']);
+  navigateToList() {
+    this.router.navigate(['/app-kafka']);
   }
 
   isNumber(event) {
@@ -211,15 +206,46 @@ export class CreateKafkaComponent implements OnInit {
     }
   }
 
-  onSubmitPayment() {
-    const cluster = this.myform.value;
-    console.log({ data: cluster });
-    // this.clusterService.testCreateCluster(cluster)
-    // .subscribe((r: any) => {
-    //   if (r && r.code == 200) {
-    //     console.log({r: r});
-    //   }
-    // });
+  onChangeConfig(event: number) {
+    if (event == 1) {
+      this.showCustomConfig = true;
+      this.addValidateForAdvancedConfig();
+    } else {
+      this.showCustomConfig = false;
+      this.removeValidateOfAdvancedConfig();
+    }
+  }
+
+  addValidateForAdvancedConfig() {
+    this.myform.controls['num.partitions'].setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
+    this.myform.controls['default.replication.factor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['min.insync.replicas'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['offset.topic.replication.factor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['log.retention.hours'].setValidators([Validators.required, Validators.min(-1), Validators.max(2147483647)]);
+    this.myform.controls['log.segment.bytes'].setValidators([Validators.required, Validators.min(1), Validators.max(10737418240)]);
+
+    this.myform.controls['num.partitions'].updateValueAndValidity();
+    this.myform.controls['default.replication.factor'].updateValueAndValidity();
+    this.myform.controls['min.insync.replicas'].updateValueAndValidity();
+    this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
+    this.myform.controls['log.retention.hours'].updateValueAndValidity();
+    this.myform.controls['log.segment.bytes'].updateValueAndValidity();
+  }
+
+  removeValidateOfAdvancedConfig() {
+    this.myform.controls['num.partitions'].clearValidators();
+    this.myform.controls['default.replication.factor'].clearValidators();
+    this.myform.controls['min.insync.replicas'].clearValidators();
+    this.myform.controls['offset.topic.replication.factor'].clearValidators();
+    this.myform.controls['log.retention.hours'].clearValidators();
+    this.myform.controls['log.segment.bytes'].clearValidators();
+
+    this.myform.controls['num.partitions'].updateValueAndValidity();
+    this.myform.controls['default.replication.factor'].updateValueAndValidity();
+    this.myform.controls['min.insync.replicas'].updateValueAndValidity();
+    this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
+    this.myform.controls['log.retention.hours'].updateValueAndValidity();
+    this.myform.controls['log.segment.bytes'].updateValueAndValidity();
   }
 
 }

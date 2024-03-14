@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Subscription } from 'rxjs';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaInfor } from 'src/app/core/models/kafka-infor.model';
 import { KafkaService } from 'src/app/services/kafka.service';
+import { UtilService } from 'src/app/services/utils.service';
+import { ServiceActiveWebsocketService } from 'src/app/services/websocket-service.service';
 
 @Component({
   selector: 'one-portal-list-kafka',
   templateUrl: './list-kafka.component.html',
   styleUrls: ['./list-kafka.component.css'],
 })
-export class KafkaDetailComponent implements OnInit {
+export class ListKafkaComponent implements OnInit, OnDestroy {
   listOfKafka: KafkaInfor[] = [];
   keySearch: string;
   serviceStatus: number;
@@ -17,10 +20,23 @@ export class KafkaDetailComponent implements OnInit {
   pageSize: number;
   total: number;
 
+  
+
   setOfCheckedId = new Set<number>();
+
+  // flag check view detail panel open
+  viewDetail = false;
+
+  sub: Subscription;
+  eventSource: EventSource;
+  
+  // websocket service
+  private websocketService: ServiceActiveWebsocketService;
 
   constructor(
     private kafkaService: KafkaService,
+    private cdr: ChangeDetectorRef,
+    // private utilService: UtilService,
     // private modalService: NzModalService
   ) {
     this.keySearch = '';
@@ -41,15 +57,61 @@ export class KafkaDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus);
+
+    // open websocket
+    // this.openWS();
+
+    this.getFlux();
   }
+
+  getFlux(): void {
+    
+    this.eventSource = this.kafkaService.getFlux() // khởi tạo kết nối flux
+    this.eventSource.onopen = (event) => {
+      console.log('open flux');
+    }
+
+    this.eventSource.onerror = err => {
+        console.error('error', err);
+        this.eventSource.close();
+    }
+  
+    this.eventSource.onmessage = (event) => {
+      console.log('conneted');
+      const res = JSON.parse(event.data);
+        if (res.status == AppConstants.NOTI_SUCCESS) {
+          this.getListService(1000, 1, '', -1);
+        }
+    };
+  }
+
+  ngOnDestroy() {
+    console.log("");
+    this.eventSource.close();
+    // close websocket
+    // this.websocketService.disconnect();
+  }
+
+  /**
+   * Notification task
+   */
+  // openWS() {
+    // // const ws_endpoint = this.utilService.parseWsEndpoint();
+    // console.log('ws_endpoint: ', ws_endpoint);
+    // this.websocketService = new ServiceActiveWebsocketService(
+    //   this,
+    //   ws_endpoint
+    // );
+  //   this.websocketService.connect();
+  // }
 
   getListService(size: number, index: number, keySearch: string, status: number) {
     this.kafkaService.getListService(index, size, keySearch, status)
       .subscribe((data) => {
-        console.log(data);
         this.total = data?.data?.totals;
         this.pageSize = data?.data?.size;
         this.listOfKafka = camelizeKeys(data?.data?.results) as KafkaInfor[];
+        this.cdr.detectChanges();
       });
 
   }
@@ -58,7 +120,10 @@ export class KafkaDetailComponent implements OnInit {
     this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus)
   }
 
-  handleSyncKafka() { }
-  onQueryParamsChange(event) { }
-  onAllClusterChecked(event) { }
+  onQueryParamsChange(event) { 
+    console.log();
+  }
+  onAllClusterChecked(event) {
+    console.log();
+   }
 }
