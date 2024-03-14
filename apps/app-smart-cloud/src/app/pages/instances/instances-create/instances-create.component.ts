@@ -39,7 +39,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
-import { Subject, debounceTime, pipe } from 'rxjs';
+import { Observable, Subject, debounceTime, of, pipe } from 'rxjs';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -89,7 +89,6 @@ export class InstancesCreateComponent implements OnInit {
     // interval: { timing: 1500 },
     animation: 'lazy',
   };
-
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -404,7 +403,6 @@ export class InstancesCreateComponent implements OnInit {
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   listOfferFlavors: OfferItem[] = [];
-
   selectedElementFlavor: string = null;
   isInitialClass = true;
   isNewClass = false;
@@ -429,20 +427,24 @@ export class InstancesCreateComponent implements OnInit {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU / ';
+              e.description += ch.charOptionValues[1] + ' VCPU';
             }
             if (ch.charOptionValues[0] == 'RAM') {
               e.description += ch.charOptionValues[1] + ' GB RAM / ';
             }
             if (ch.charOptionValues[0] == 'HDD') {
               if (this.activeBlockHDD) {
-                e.description += ch.charOptionValues[1] + ' GB HDD';
+                e.description += ch.charOptionValues[1] + ' GB HDD / ';
               } else {
-                e.description += ch.charOptionValues[1] + ' GB SSD';
+                e.description += ch.charOptionValues[1] + ' GB SSD / ';
               }
             }
           });
         });
+        this.myCarouselFlavor.dataSource = this.listOfferFlavors;
+        this.myCarouselFlavor.load = this.listOfferFlavors.length;
+        this.myCarouselFlavor.reset()
+        console.log('list flavor check', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
   }

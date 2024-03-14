@@ -14,7 +14,7 @@
 </nz-dropdown-menu>
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="Xóa máy ảo"
+  [nzTitle]="titleDeleteInstance"
   (nzOnCancel)="handleCancel()"
 >
   <div *nzModalContent>
@@ -25,7 +25,8 @@
       nzShowIcon
     ></nz-alert>
     <span class="text-label">
-      Để thực hiện xoá máy ảo, vui lòng nhập tên máy ảo để xác nhận.
+      Để thực hiện xoá máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
+      ảo để xác nhận.
     </span>
     <nz-form-control>
       <input class="input-custom" nz-input [(ngModel)]="inputConfirm" />
@@ -51,7 +52,7 @@
 <ng-template #customTemplateMessageDelete>
   <div>
     Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
-    <b>KHÔNG THỂ KHÔI PHỤC LẠI.</b>
+    <span class="text-value">KHÔNG THỂ KHÔI PHỤC LẠI</span>.
   </div>
 </ng-template>
 
