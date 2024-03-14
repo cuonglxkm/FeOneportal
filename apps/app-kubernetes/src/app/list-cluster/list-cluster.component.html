@@ -87,10 +87,18 @@
               <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
             </td>
             <td>
-              <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
-
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
-                <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+
+                <ng-container *ngIf="item.serviceStatus == 2; else ortherStatusTpl">
+                  <nz-progress [nzPercent]="100" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
+                  <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+                </ng-container>
+
+                <ng-template #ortherStatusTpl>
+                  <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
+                  <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+                </ng-template>
+
               </ng-container>
             </td>
             <td>{{ item.apiEndpoint }}</td>

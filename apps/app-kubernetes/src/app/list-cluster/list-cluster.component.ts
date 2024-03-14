@@ -127,9 +127,10 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
         }
 
         combineLatest(progress).subscribe(data => {
-          console.log({combine: data});
+          // console.log({combine: data});
           this.listOfProgress = data;
         });
+        // map position of listOfProgress with listOfClusters
       }
     });
   }
