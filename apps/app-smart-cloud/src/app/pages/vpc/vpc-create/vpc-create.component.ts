@@ -31,9 +31,9 @@ export class VpcCreateComponent {
     animation: 'lazy',
   };
   listIpType = [
-    {label: "IP Public" , value: "0"},
-    {label: "Ip Floating" , value: "1"},
-    {label: "IpV6" , value: "2"},
+    {label: "IP Public", value: "0"},
+    {label: "Ip Floating", value: "1"},
+    {label: "IpV6", value: "2"},
   ];
 
 
@@ -72,7 +72,7 @@ export class VpcCreateComponent {
   selectIndexTab: any = 0;
 
   form = new FormGroup({
-    name: new FormControl('', {validators: [Validators.required,Validators.pattern(/^[A-Za-z0-9]+$/),]}),
+    name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
     description: new FormControl(''),
     ipConnectInternet: new FormControl('', {validators: [Validators.required]}),
     numOfMonth: new FormControl(1, {validators: [Validators.required]}),
@@ -104,7 +104,7 @@ export class VpcCreateComponent {
     let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
     let ip = '';
     let ipName = '';
-    if (lstIp != null && lstIp != undefined){
+    if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
     }
     let numOfMonth = this.form.controls['numOfMonth'].value;
@@ -174,7 +174,7 @@ export class VpcCreateComponent {
               this.totalPayment = this.total.data.totalPayment.amount.toLocaleString()
             }
           );
-      }else {
+      } else {
         this.total = undefined;
       }
     } else {
@@ -195,33 +195,38 @@ export class VpcCreateComponent {
   }
 
   initFlavors(): void {
-    this.instancesService
-      .getListOffersByProductId('155')
-      .subscribe((data: any) => {
-        this.listOfferFlavors = data.filter(
-          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
-        );
+    this.instancesService.getDetailProductByUniqueName('vpcOnePortal')
+      .subscribe(
+        data => {
+          this.instancesService
+            .getListOffersByProductId(data[0].id)
+            .subscribe((data: any) => {
+              this.listOfferFlavors = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
 
-        this.listOfferFlavors.forEach((e: OfferItem) => {
-          e.description = '0 CPU / 0 GB RAM / 0 GB HHD / 0 IP';
-          e.characteristicValues.forEach((ch) => {
-            if (ch.charName.toUpperCase() == 'CPU') {
-              e.description.replace(ch.charOptionValues[0] + " CPU","0 CPU");
-            }
-            if (ch.charName == 'RAM') {
-              e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
-            }
-            if (ch.charName == 'HHD') {
-              e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
-            }
-            if (ch.charName == 'IP') {
-              e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + " IP");
-              e.ipNumber = ch.charOptionValues[0];
-            }
-          });
-        });
-        this.cdr.detectChanges();
-      });
+              this.listOfferFlavors.forEach((e: OfferItem) => {
+                e.description = '0 CPU / 0 GB RAM / 0 GB HHD / 0 IP';
+                e.characteristicValues.forEach((ch) => {
+                  if (ch.charName.toUpperCase() == 'CPU') {
+                    e.description.replace(ch.charOptionValues[0] + " CPU", "0 CPU");
+                  }
+                  if (ch.charName == 'RAM') {
+                    e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
+                  }
+                  if (ch.charName == 'HHD') {
+                    e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
+                  }
+                  if (ch.charName == 'IP') {
+                    e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + " IP");
+                    e.ipNumber = ch.charOptionValues[0];
+                  }
+                });
+              });
+              this.cdr.detectChanges();
+            });
+        }
+      )
   }
 
   onRegionChange(region: RegionModel) {
@@ -244,7 +249,7 @@ export class VpcCreateComponent {
     let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
     let ip = '';
     let ipName = '';
-    if (lstIp != null && lstIp != undefined){
+    if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
       let listString = lstIp[1].split(" ");
       if (listString.length == 3) {
@@ -288,7 +293,7 @@ export class VpcCreateComponent {
       offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
       actionType: 0,
       regionId: this.regionId,
-      serviceName: 'vpc'+this.tokenService.get()?.userId+'-'+this.form.controls['name'].value,
+      serviceName: 'vpc' + this.tokenService.get()?.userId + '-' + this.form.controls['name'].value,
       description: null,
       createDate: new Date(),
       expireDate: expiredDate,
