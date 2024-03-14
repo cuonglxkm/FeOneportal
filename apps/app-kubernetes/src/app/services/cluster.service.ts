@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Inject, Injectable, NgZone } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { UpgradeVersionClusterDto } from "../model/cluster.model";
 import { BaseService } from "../shared/services/base.service";
 
@@ -15,6 +15,9 @@ export class ClusterService extends BaseService {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
+
+  private progressSource = new Subject<any>();
+  progressData = this.progressSource.asObservable();
 
   baseUrl = 'http://127.0.0.1:16003';
 

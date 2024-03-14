@@ -50,6 +50,12 @@ export class VlanService extends BaseService {
     })
   }
 
+  getVlanById(vlanId: number) {
+    return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/' + vlanId, {
+      headers: this.getHeaders()
+    });
+  }
+
   getPortByNetwork(networkId: string, region: number) {
     let params = new HttpParams()
     if (networkId != undefined || networkId != null) {

@@ -65,6 +65,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
+      console.log({path: this.returnPath});
       const myOrder = state.data;
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
@@ -98,7 +99,7 @@ export class PaymentSummaryComponent implements OnInit {
           case 'ip_extend':
             serviceItem.name = 'Gia hạn IP';
             break;
-          case 'create_cluster':
+          case 'k8s_create':
             serviceItem.name = 'Tạo cluster';
             break;
           case 'objectstorage_create':

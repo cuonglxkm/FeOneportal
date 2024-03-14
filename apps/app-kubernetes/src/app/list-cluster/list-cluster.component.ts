@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription, finalize } from 'rxjs';
@@ -14,7 +14,7 @@ import { NotificationWsService } from '../services/ws.service';
   templateUrl: './list-cluster.component.html',
   styleUrls: ['./list-cluster.component.css'],
 })
-export class KubernetesDetailComponent implements OnInit {
+export class KubernetesDetailComponent implements OnInit, OnDestroy {
 
   listOfClusters: KubernetesCluster[];
   keySearch: string;
@@ -63,6 +63,7 @@ export class KubernetesDetailComponent implements OnInit {
     this.total = 0;
   }
 
+  private sseStream: Subscription;
   ngOnInit(): void {
     // init ws
     // this.openWs();
@@ -73,7 +74,7 @@ export class KubernetesDetailComponent implements OnInit {
       const namespace = data.namespace;
       const clusterName = data.clusterName;
 
-      console.log(data);
+      console.log("start get progress with ", data);
       if (namespace != null && clusterName != null) {
         this.viewProgressCluster(namespace, clusterName);
       }
@@ -117,26 +118,22 @@ export class KubernetesDetailComponent implements OnInit {
     });
   }
 
-  // viewProgressCluster(namespace: string, clusterName: string) {
-  //   this.clusterService.viewProgressCluster(namespace, clusterName)
-  //   .subscribe({next: data => {
-  //     this.mapProgress.set(clusterName, +data);
-  //     this.percent += 5;
-  //   }});
-  // }
-
   baseUrl = "http://127.0.0.1:16003";
   // baseUrl = environment['baseUrl'];
-  subcripstion: Subscription;
-  arrs: any[] = [];
+  arrs = [];
 
   viewProgressCluster(namespace: string, clusterName: string) {
-    // console.log("i'm running");
     // return new Observable(observable => {
     //   let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}`);
     //   source.onmessage = event => {
     //     this.zone.run(() => {
+    //       let data = +event.data;
     //       observable.next(event.data);
+
+    //       if (data == 100) {  // complete
+    //         observable.unsubscribe();
+    //         source.close();
+    //       }
     //     });
     //   }
 
@@ -144,16 +141,21 @@ export class KubernetesDetailComponent implements OnInit {
     //     this.zone.run(() => {
     //       console.log({error: event});
     //       observable.error(event);
-    //       observable.unsubscribe();
-    //       source.close();
     //     })
     //   }
     // }).subscribe(data => this.percent = +data);
 
-    this.subcripstion = this.clusterService.observableProgress(clusterName, namespace).subscribe(message => {
-      this.arrs.push(message);
-      this.percent = +message;
+    this.sseStream = this.clusterService.observableProgress(clusterName, namespace).subscribe(data => {
+      this.arrs = [...this.arrs, data];
+      console.log(this.arrs);
+      this.ref.detectChanges();
     });
+  }
+
+  ngOnDestroy(): void {
+      if (this.sseStream) {
+        this.sseStream.unsubscribe();
+      }
   }
 
   getListStatus() {

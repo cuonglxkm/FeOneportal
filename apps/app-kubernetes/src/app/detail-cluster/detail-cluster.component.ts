@@ -65,6 +65,8 @@ export class DetailClusterComponent implements OnInit {
         this.autoScaleValue = this.detailCluster.autoScaling;
         this.autoHealingValue = this.detailCluster.autoHealing;
 
+        this.getVlanbyId(this.detailCluster.vpcNetworkId);
+
         // test
         // this.detailCluster.upgradeVersion = '1.29.0';
         // this.detailCluster.currentVersion = '1.28.2';
@@ -86,28 +88,17 @@ export class DetailClusterComponent implements OnInit {
     });
   }
 
-  // get projectId ???
-  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
   vpcNetwork: string;
-  getVlanNetwork(projectId: number) {
-    this.formSearchNetwork.projectId = projectId;
-    this.formSearchNetwork.pageSize = 1000;
-    this.formSearchNetwork.pageNumber = 0;
-    this.formSearchNetwork.region = this.detailCluster.regionId;
-
-    this.vlanService.getVlanNetworks(this.formSearchNetwork)
+  getVlanbyId(vlanId: number) {
+    this.vlanService.getVlanById(vlanId)
     .subscribe((r: any) => {
-      if (r && r.records) {
-        this.listOfVPCNetworks = r.records;
-
-        // find vpc network
-        let network = this.listOfVPCNetworks.find(item => item.id == this.detailCluster.vpcNetworkId);
-        console.log({network: network});
-        this.vpcNetwork = network.network;
+      if (r) {
+        this.vpcNetwork = r.name;
       }
     });
   }
 
+  // gia hạn
   handleExtension() {
     console.log(this.serviceOrderCode);
   }
@@ -121,8 +112,7 @@ export class DetailClusterComponent implements OnInit {
   }
 
   handleShowModalUpgradeVersion() {
-    // this.getListVersion(this.detailCluster.regionId);
-    this.getListVersion(3);   // fix to test
+    this.getListVersion(this.detailCluster.regionId);
     this.showModalUpgradeVersion = true;
   }
 

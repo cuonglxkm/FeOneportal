@@ -460,10 +460,12 @@ export class ClusterComponent implements OnInit {
 
     data.orderItems = [...data.orderItems, orderItem];
 
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: '/app-kubernetes'}});
+    let returnPath = window.location.pathname;
+
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
   }
 
-  onSubmitPayment() {
+  onCreateCluster() {
     const cluster = this.myform.value;
     const networking: NetworkingModel = new NetworkingModel(null);
     networking.networkType = cluster.networkType;
