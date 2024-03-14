@@ -485,12 +485,13 @@ export class ClusterComponent implements OnInit {
         this.notificationService.success('Thành công', r.message);
 
         const clusterName = this.myform.get('clusterName').value;
-        this.shareService.emitData({
+
+        let obj = {
           namespace: r.data,
           clusterName: clusterName
-        });
+        };
+        this.router.navigate(['/app-kubernetes'], {state: {data: obj}});
 
-        this.back2list();
       } else {
         this.notificationService.error('Thất bại', r.message);
       }

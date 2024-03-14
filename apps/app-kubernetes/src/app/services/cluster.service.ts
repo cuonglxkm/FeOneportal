@@ -46,11 +46,25 @@ export class ClusterService extends BaseService {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/detail-cluster/${serviceOrderCode}`, { headers: this.getHeaders() });
   }
 
-  observableProgress(clusterName: string, namespace: string) {
+  getProgressOfCluster(clusterName: string, namespace: string) {
     return new Observable<string>(obs => {
       const es = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
       es.addEventListener('message', (evt) => {
-        console.log(evt.data);
+        let data = evt.data;
+        obs.next(data);
+        if (+data == 100) { // complete
+          obs.unsubscribe();
+        }
+
+      });
+      return () => es.close();
+    });
+  }
+
+  observableTest() {
+    return new Observable<string>(obs => {
+      const es = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/test`);
+      es.addEventListener('message', (evt) => {
         obs.next(evt.data);
       });
       return () => es.close();

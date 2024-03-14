@@ -79,7 +79,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of clusterTable.data">
+          <tr *ngFor="let item of clusterTable.data; let i = index;">
             <td [nzChecked]="setOfCheckedId.has(item.id)" (nzCheckedChange)="updateClusterChecked(item.id, $event)">
             </td>
             <td>{{ getIndexOfCluster(item.id) }}</td>
@@ -87,7 +87,7 @@
               <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
             </td>
             <td>
-              <!-- <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress> -->
+              <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
 
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
                 <span [ngStyle]="{color: status.color}">{{status.status}}</span>

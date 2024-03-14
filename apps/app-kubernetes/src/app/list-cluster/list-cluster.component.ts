@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Subscription, finalize } from 'rxjs';
+import { EMPTY, Observable, Subscription, catchError, combineLatest, finalize, from, mergeMap, pipe } from 'rxjs';
 import { NotificationConstant } from '../constants/notification.constant';
 import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { ClusterStatus } from '../model/status.model';
 import { ClusterService } from '../services/cluster.service';
 import { ShareService } from '../services/share.service';
 import { NotificationWsService } from '../services/ws.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -34,9 +35,9 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
   deleteClusterName: string;
 
   // for progress
-  listOfProgress: Array<{cluster: string, progress: any}>;
+  listOfProgress: number[];
   mapProgress = new Map<string, number>();
-  percent: number = 0;
+  percent: number;
 
   // for status
   listOfStatusCluster: ClusterStatus[];
@@ -47,8 +48,31 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     private notificationService: NzNotificationService,
     private shareService: ShareService,
     private ref: ChangeDetectorRef,
-    private zone: NgZone
+    private zone: NgZone,
+    private router: Router
   ) {
+    const nav = this.router.getCurrentNavigation();
+    const state = nav?.extras.state;
+    console.log(state);
+    if (state) {
+      const data = state.data;
+      console.log({data: data});
+
+      const namespace = data.namespace;
+      const clusterName = data.clusterName;
+      this.percent = 0;
+
+      if (namespace != null && clusterName != null) {
+        this.sseStream = this.clusterService.getProgressOfCluster(clusterName, namespace).subscribe(data => {
+          this.percent = +data;
+          this.ref.detectChanges();
+        });
+      }
+    }
+  }
+
+  private sseStream: Subscription;
+  ngOnInit(): void {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
 
@@ -61,24 +85,11 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     this.pageIndex = 1;
     this.pageSize = 10;
     this.total = 0;
-  }
 
-  private sseStream: Subscription;
-  ngOnInit(): void {
     // init ws
     // this.openWs();
 
     this.getListStatus();
-
-    this.shareService.$progressData.subscribe((data: ProgressData) => {
-      const namespace = data.namespace;
-      const clusterName = data.clusterName;
-
-      console.log("start get progress with ", data);
-      if (namespace != null && clusterName != null) {
-        this.viewProgressCluster(namespace, clusterName);
-      }
-    });
   }
 
   searchCluster() {
@@ -96,7 +107,7 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
 
-          // get cluster is in-progress
+          // get cluster is in-progress (initing or deleting)
           if (cluster.serviceStatus == 1 || cluster.serviceStatus == 7) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
@@ -107,48 +118,46 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
         }
 
         // case user refresh page and have mulitple cluster and is in-progress
-        // from(listOfClusterInProgress).pipe(
-        //   mergeMap(cluster => this.viewProgressCluster('', cluster.clusterName)
-        //   .pipe(catchError(response => {
-        //     console.error('fail to get progress: ', response);
-        //     return EMPTY;
-        //   })))
-        // );
+        console.log({inprogress: listOfClusterInProgress});
+        let progress: Array<Observable<any>> = [];
+        for (let i = 0; i < listOfClusterInProgress.length; i++) {
+          let cluster: KubernetesCluster = listOfClusterInProgress[i];
+          let progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName);
+          progress.push(progressObs);
+        }
+
+        combineLatest(progress).subscribe(data => {
+          console.log({combine: data});
+          this.listOfProgress = data;
+        });
       }
     });
   }
 
   baseUrl = "http://127.0.0.1:16003";
   // baseUrl = environment['baseUrl'];
-  arrs = [];
 
   viewProgressCluster(namespace: string, clusterName: string) {
-    // return new Observable(observable => {
-    //   let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}`);
-    //   source.onmessage = event => {
-    //     this.zone.run(() => {
-    //       let data = +event.data;
-    //       observable.next(event.data);
+    return new Observable(observable => {
+      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}`);
+      source.onmessage = event => {
+        this.zone.run(() => {
+          let data = +event.data;
+          observable.next(event.data);
 
-    //       if (data == 100) {  // complete
-    //         observable.unsubscribe();
-    //         source.close();
-    //       }
-    //     });
-    //   }
+          if (data == 100) {  // complete
+            observable.unsubscribe();
+            source.close();
+          }
+        });
+      }
 
-    //   source.onerror = event => {
-    //     this.zone.run(() => {
-    //       console.log({error: event});
-    //       observable.error(event);
-    //     })
-    //   }
-    // }).subscribe(data => this.percent = +data);
-
-    this.sseStream = this.clusterService.observableProgress(clusterName, namespace).subscribe(data => {
-      this.arrs = [...this.arrs, data];
-      console.log(this.arrs);
-      this.ref.detectChanges();
+      source.onerror = event => {
+        this.zone.run(() => {
+          console.log({error: event});
+          observable.error(event);
+        })
+      }
     });
   }
 
