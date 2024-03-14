@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { BucketService } from 'src/app/shared/services/bucket.service';
 
 @Component({
   selector: 'one-portal-bucket-create',
@@ -11,6 +19,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketCreateComponent implements OnInit {
+  bucketName: string;
+  type: string;
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -21,10 +31,11 @@ export class BucketCreateComponent implements OnInit {
       ],
     }),
   });
-  
+
   cardHeight: string = '160px';
 
   constructor(
+    private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -75,12 +86,22 @@ export class BucketCreateComponent implements OnInit {
   initPrivate(): void {
     this.activePrivate = true;
     this.activePublic = false;
-    
   }
   initPublic(): void {
     this.activePrivate = false;
     this.activePublic = true;
   }
 
-  save() {}
+  save() {
+    this.type = this.activePrivate ? 'Private' : 'Public';
+    this.bucketService.createBucket(this.bucketName, this.type).subscribe({
+      next: (data) => {
+        this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+      },
+      error: (e) => {
+        this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        this.notification.error('', 'Tạo mới Bucket không thành công');
+      },
+    });
+  }
 }

@@ -177,6 +177,10 @@ import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
 import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
+import { ObjectStorageComponent } from './object-storage/object-storage.component';
+import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
+import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
@@ -345,6 +349,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteSubUserComponent,
     EditSubUserComponent,
     DashboardObjectStorageComponent,
+    ObjectStorageComponent,
+    ObjectStorageCreateComponent,
+    ObjectStorageExtendComponent,
+    ObjectStorageEditComponent,
   ],
   imports: [
     CommonModule,

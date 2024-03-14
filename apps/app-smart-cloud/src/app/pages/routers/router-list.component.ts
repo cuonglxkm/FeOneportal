@@ -256,6 +256,7 @@ export class RouterListComponent implements OnInit {
     this.nameVerify = '';
     this.cloudId = cloudId;
     this.nameRouterDelete = nameRouter;
+    this.isVisibleDelete = true;
   }
 
   handleCancelDelete() {
