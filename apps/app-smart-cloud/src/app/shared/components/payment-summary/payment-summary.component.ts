@@ -84,13 +84,13 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = 'Gia hạn máy ảo';
             break;
           case 'volume_create':
-            serviceItem.name = 'Tạo volume';
+            serviceItem.name = 'Tạo Volume';
             break;
           case 'volume_resize':
-            serviceItem.name = 'Chỉnh sửa volume';
+            serviceItem.name = 'Chỉnh sửa Volume';
             break;
           case 'volume_extend':
-            serviceItem.name = 'Gia hạn volume';
+            serviceItem.name = 'Gia hạn Volume';
             break;
           case 'ip_create':
             serviceItem.name = 'Tạo IP';
@@ -100,6 +100,15 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'create_cluster':
             serviceItem.name = 'Tạo cluster';
+            break;
+          case 'objectstorage_create':
+            serviceItem.name = 'Tạo Object Storage';
+            break;
+          case 'objectstorage_resize':
+            serviceItem.name = 'Chỉnh sửa Object Storage';
+            break;
+          case 'objectstorage_extend':
+            serviceItem.name = 'Gia hạn Object Storage';
             break;
           default:
             serviceItem.name = '';

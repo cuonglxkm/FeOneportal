@@ -54,6 +54,8 @@ export class ListPackagesBackupComponent implements OnInit {
 
   typeVPC: number
 
+  isCheckBegin: boolean = false
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -64,18 +66,17 @@ export class ListPackagesBackupComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.getListPackageBackups()
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
-
+    this.getListPackageBackups(true)
   }
 
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
-    this.getListPackageBackups()
+    this.getListPackageBackups(false)
   }
 
   navigateToCreate() {
@@ -84,12 +85,12 @@ export class ListPackagesBackupComponent implements OnInit {
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListPackageBackups()
+    this.getListPackageBackups(false)
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value
-    this.getListPackageBackups()
+    this.getListPackageBackups(false)
   }
 
   onChangeSelected(value) {
@@ -97,15 +98,22 @@ export class ListPackagesBackupComponent implements OnInit {
     if (this.selected === 'ALL') {
       this.selected = ''
     }
-    this.getListPackageBackups()
+    this.getListPackageBackups(false)
   }
 
-  getListPackageBackups() {
+  getListPackageBackups(isBegin) {
     this.isLoading = true
 
     this.packageBackupService.search(this.value, this.selected, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false
       this.response = data
+
+      if (isBegin) {
+        this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
+      }
+    }, error => {
+      this.isLoading = false
+      this.response = null
     })
   }
 
@@ -144,7 +152,7 @@ export class ListPackagesBackupComponent implements OnInit {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa gói backup thành công')
-        this.getListPackageBackups()
+        this.getListPackageBackups(false)
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
@@ -183,13 +191,13 @@ export class ListPackagesBackupComponent implements OnInit {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false
         this.notification.success('Thành công', 'Cập nhật gói Backup thành công')
-        this.getListPackageBackups()
+        this.getListPackageBackups(false)
       } else {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false
         console.log('dâata update', data)
         this.notification.error('Thất bại', 'Cập nhật gói Backup thất bại ')
-        this.getListPackageBackups()
+        this.getListPackageBackups(false)
       }
     })
   }
@@ -198,24 +206,11 @@ export class ListPackagesBackupComponent implements OnInit {
     this.isVisibleUpdate = false
   }
 
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
-  }
 
   ngOnInit() {
     this.customerId = this.tokenService.get()?.userId
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    if (this.project && this.region) {
-      this.loadProjects()
-    }
-
-    this.getListPackageBackups()
   }
 }

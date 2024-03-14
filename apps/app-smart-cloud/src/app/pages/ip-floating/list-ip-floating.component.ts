@@ -28,6 +28,8 @@ export class ListIpFloatingComponent implements OnInit {
 
   isLoading: boolean = false
 
+  isBegin: boolean = false
+
   constructor(private ipFloatingService: IpFloatingService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
@@ -45,18 +47,18 @@ export class ListIpFloatingComponent implements OnInit {
   projectChange(project: ProjectModel) {
     this.project = project.id;
     // this.projectType = project.type;
-    this.getData();
+    this.getData(true);
   }
 
   onPageSizeChange(event) {
     this.pageSize = event
     this.refreshParams();
-    this.getData();
+    this.getData(false);
   }
 
   onPageIndexChange(event) {
     this.pageIndex = event;
-    this.getData();
+    this.getData(false);
   }
 
   onInputChange(value){
@@ -64,14 +66,14 @@ export class ListIpFloatingComponent implements OnInit {
       this.value = null
     }
     this.value = value
-    this.getData()
+    this.getData(false)
   }
 
   showModalCreateIpFloating() {
 
   }
 
-  getData() {
+  getData(isCheckBegin) {
     this.isLoading = true
     let formSearchIpFloating: FormSearchIpFloating = new FormSearchIpFloating()
     formSearchIpFloating.projectId = this.project
@@ -86,8 +88,29 @@ export class ListIpFloatingComponent implements OnInit {
       this.isLoading = false
         console.log('data', data)
       this.response = data
+        if (isCheckBegin) {
+          this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
+        }
+    }, error => {
+        this.isLoading = false
+        this.response = null
+      })
+  }
 
-    })
+  handleOkCreateIpFloating() {
+    this.getData(false)
+  }
+
+  handleOkAttachIpFloating() {
+    this.getData(false)
+  }
+
+  handleOkDetachIpFloating() {
+    this.getData(false)
+  }
+
+  handleOkDeleteIpFloating() {
+    this.getData(false)
   }
 
   ngOnInit() {
@@ -99,6 +122,6 @@ export class ListIpFloatingComponent implements OnInit {
     this.ipFloatingService.model.subscribe(data => {
       console.log(data)
     })
-    this.getData()
+    // this.getData(true)
   }
 }

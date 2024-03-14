@@ -6,19 +6,20 @@
 />
 <nz-content>
     <nz-card>
-        <nz-row nzJustify="center">
-            <img src="/assets/tmp/blank-security-group.png" width="450" height="450" alt="blank-security-group">
+        <nz-row nzJustify="center" style="margin-top: 30px;">
+            <img src="/assets/tmp/blank-security-group.png" width="300" height="300" alt="blank-security-group">
         </nz-row>
-        <nz-row nzJustify="center" style="margin-top: -12px">
+        <nz-row nzJustify="center" style="margin-top: 40px">
             <div class="text-title">
-              <h1><b>SECURITY GROUP - Truy cập, bảo mật</b></h1>
+                <h1 style="font-size: 32px; color: #0066B3; margin-bottom: 20px;"><b>SECURITY GROUP</b></h1>
+                <h1 style="font-size: 32px; color: #0066B3;"><b>Truy cập, bảo mật</b></h1>
             </div>
         </nz-row>
         <nz-row nzJustify="center">
-            <div class="text-subtitle" style="margin-top: 5px; max-width: 885px; text-wrap: normal">Dịch vụ  bảo vệ instance khỏi các cuộc tấn công mạng, SG hoạt động bằng cách cấp quyền cho các traffic ra và vào instance</div>
+            <div class="text-subtitle" style="margin-top: 5px; max-width: 710px; text-wrap: normal; color: #6C757D">Dịch vụ  bảo vệ instance khỏi các cuộc tấn công mạng, SG hoạt động bằng cách cấp quyền cho các traffic ra và vào instance</div>
         </nz-row>
         <nz-row nzJustify="center" style="margin: 15px 0">
-            <button style="text-align: center" nz-button nzType="primary" >Khởi tạo ngay</button>
+            <button style="text-align: center" nz-button nzType="primary" [routerLink]="'/app-smart-cloud/security-group'" >Khởi tạo Security group</button>
         </nz-row>
     </nz-card>
 </nz-content>

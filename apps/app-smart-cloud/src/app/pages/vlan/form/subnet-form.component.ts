@@ -34,7 +34,7 @@ export class SubnetFormComponent {
     disableGatewayIp: [false],
     enableDhcp: [false],
     gateway: [''],
-    allocationPool: [''],
+    allocationPool: [null as string],
   });
 
   constructor(private router: Router,
@@ -76,6 +76,17 @@ export class SubnetFormComponent {
         }
       });
     }
+  }
+
+  formatIPAddresses() {
+    // Chia các địa chỉ IP thành mảng bằng dấu phẩy
+    const ipArray = this.validateForm.controls.allocationPool.value.split(',');
+
+    // Loại bỏ khoảng trắng thừa ở đầu và cuối mỗi địa chỉ IP
+    const trimmedIPArray = ipArray.map(ip => ip.trim());
+
+    // Ghép các địa chỉ IP lại với nhau, mỗi địa chỉ trên một dòng
+    this.validateForm.controls.allocationPool.setValue(trimmedIPArray.join('\n'))
   }
 
   ngOnInit() {

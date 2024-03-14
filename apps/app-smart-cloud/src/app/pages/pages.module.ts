@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule, DecimalPipe, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
@@ -122,12 +122,66 @@ import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/r
 import { ListVlanComponent } from './vlan/list/list-vlan.component';
 import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
+import { RouterListComponent } from './routers/router-list.component';
+import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
 import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
 import { VlanCreatePortComponent } from './vlan/create/create-port/vlan-create-port.component';
 import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
-import { VlanEditSubnetComponent } from './vlan/edit/vlan-edit-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
 import { SubnetFormComponent } from './vlan/form/subnet-form.component';
 import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { CreateIpFloatingComponent } from './ip-floating/create-ip-floating/create-ip-floating.component';
+import { AttachIpFloatingComponent } from './ip-floating/attach/attach-ip-floating.component';
+import { DetachIpFloatingComponent } from './ip-floating/detach/detach-ip-floating.component';
+import { DeleteIpFloatingComponent } from './ip-floating/delete/delete-ip-floating.component';
+import { DeleteVlanComponent } from './vlan/delete/delete-vlan/delete-vlan.component';
+import { VlanEditComponent } from './vlan/edit/edit-vlan/vlan-edit.component';
+import { DeleteSubnetComponent } from './vlan/delete/delete-subnet/delete-subnet.component';
+import { AttachPortComponent } from './vlan/attach/attach-port.component';
+import { DetachPortComponent } from './vlan/detach/detach-port.component';
+import { DeletePortComponent } from './vlan/delete/delete-port/delete-port.component';
+import { DetailPortComponent } from './vlan/detail/detail-port/detail-port.component';
+import { DetailSubnetComponent } from './vlan/detail/detail-subnet/detail-subnet.component';
+import { AttachVolumeComponent } from './volume/component/action/attach-volume/attach-volume.component';
+import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
+import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
+import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
+import { BucketListComponent } from './bucket/bucket-list.component';
+import { BucketCreateComponent } from './bucket/bucket-create/bucket-create.component';
+import { BucketConfigureComponent } from './bucket/bucket-configure/bucket-configure.component';
+import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-hosting/static-web-hosting.component';
+import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
+import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
+import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
+import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
+import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
+import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
+import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
+import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
+import { CreateWanComponent } from './wan/create/create-wan.component';
+import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
+import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
+import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
+import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
+import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
+import { ObjectStorageComponent } from './object-storage/object-storage.component';
+import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
+import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -237,12 +291,68 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListVlanComponent,
     BlankVolumeComponent,
     VlanDetailComponent,
+    RouterListComponent,
+    RouterDetailComponent,
     CreateNetworkComponent,
     VlanCreatePortComponent,
     VlanCreateSubnetComponent,
     VlanEditSubnetComponent,
     SubnetFormComponent,
     ListIpFloatingComponent,
+    CreateIpFloatingComponent,
+    CreateIpFloatingComponent,
+    AttachIpFloatingComponent,
+    DetachIpFloatingComponent,
+    DeleteIpFloatingComponent,
+    DeleteVlanComponent,
+    VlanEditComponent,
+    DeleteSubnetComponent,
+    AttachPortComponent,
+    DetachPortComponent,
+    DeletePortComponent,
+    DetailPortComponent,
+    DetailSubnetComponent,
+    AttachVolumeComponent,
+    AttachVolumeComponent,
+    DetachVolumeComponent,
+    DeleteVolumeComponent,
+    UpdateVolumeComponent,
+    BucketListComponent,
+    BucketCreateComponent,
+    BucketConfigureComponent,
+    StaticWebHostingComponent,
+    LifecycleConfigComponent,
+    BucketPolicyComponent,
+    BucketCorsComponent,
+    BucketDetailComponent,
+    FileSystemSnapshotComponent,
+    FileSystemSnapshotDetailComponent,
+    CreateFileSystemSnapshotComponent,
+    CreateFileSystemSnapshotScheduleComponent,
+    FileSystemSnapshotScheduleComponent,
+    ListFileSystemComponent,
+    ListWanComponent,
+    DeleteWanComponent,
+    DetachWanComponent,
+    CreateWanComponent,
+    AttachWanComponent,
+    CreateFileSystemComponent,
+    DetailFileSystemComponent,
+    ExtendFileSystemComponent,
+    DeleteFileSystemComponent,
+    EditFileSystemComponent,
+    ListAccessRuleComponent,
+    CreateAccessRuleComponent,
+    DeleteAccessRuleComponent,
+    ListSubUserComponent,
+    CreateSubUserComponent,
+    DeleteSubUserComponent,
+    EditSubUserComponent,
+    DashboardObjectStorageComponent,
+    ObjectStorageComponent,
+    ObjectStorageCreateComponent,
+    ObjectStorageExtendComponent,
+    ObjectStorageEditComponent,
   ],
   imports: [
     CommonModule,

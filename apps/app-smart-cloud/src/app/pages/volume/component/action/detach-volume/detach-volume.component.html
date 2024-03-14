@@ -1,0 +1,41 @@
+<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
+      nzTheme="outline" nz-popover
+      [nzPopoverContent]="'Gỡ Volume'"
+      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Gỡ máy ảo"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Gỡ máy ảo</span>
+  </div>
+  <div *nzModalContent>
+    <div *ngIf="isMultiple == true">
+      <nz-form-label>Chọn máy ảo</nz-form-label>
+      <nz-select nzSize="default"
+                 [nzLoading]="isLoading"
+                 [nzPlaceHolder]="'-Chọn máy ảo-'"
+                 [(ngModel)]="instanceInVolumeSelected"
+                 (ngModelChange)="onChange($event)"
+                 nzShowSearch
+                 style="width: 300px;">
+        <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
+                   [nzValue]="item.instanceId"></nz-option>
+      </nz-select>
+    </div>
+    <div *ngIf="isMultiple == false">
+      <div>
+        <span style="text-align: center"><b>Quý khách có chắc chắn muốn gỡ Volume khỏi máy ảo không?</b></span>
+      </div>
+    </div>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoadingDetach"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

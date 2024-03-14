@@ -31,7 +31,7 @@
   </ng-template>
 </page-header>
 
-<nz-card [nzBordered]="false" *ngIf="user">
+<nz-card style="border-radius: 4px" [nzBordered]="false" *ngIf="user">
   <div style="margin-bottom: 20px">
     <span class="text-card-header">Thông tin chính của User</span>
   </div>
@@ -45,6 +45,7 @@
         [(ngModel)]="user.userName"
         disabled="true"
         type="text"
+        nzSize="large"
       />
     </div>
     <div nz-col nzSpan="8">
@@ -56,6 +57,7 @@
         [(ngModel)]="user.email"
         disabled="true"
         type="text"
+        nzSize="large"
       />
     </div>
     <div nz-col nzSpan="8">
@@ -67,16 +69,17 @@
         [(ngModel)]="createdDate"
         disabled="true"
         type="text"
+        nzSize="large"
       />
     </div>
   </div>
 </nz-card>
 
-<nz-card [nzBordered]="false">
+<nz-card style="border-radius: 4px" [nzBordered]="false">
   <div>
     <span class="text-card-header">Thông tin bổ sung</span>
   </div>
-  <nz-tabset>
+  <nz-tabset nzSize="large">
     <nz-tab nzTitle="Policies">
       <div nz-row [nzGutter]="24">
         <div
@@ -168,11 +171,7 @@
               alt=""
             />
           </button>
-          <button
-            nz-button
-            nzType="primary"
-            (click)="navigateToAddPolicies()"
-          >
+          <button nz-button nzType="primary" (click)="navigateToAddPolicies()">
             <img
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add-circle.svg"
@@ -312,11 +311,7 @@
               alt=""
             />
           </button>
-          <button
-            nz-button
-            nzType="primary"
-            (click)="navigateToAddToGroups()"
-          >
+          <button nz-button nzType="primary" (click)="navigateToAddToGroups()">
             <img
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add-circle.svg"
@@ -385,10 +380,7 @@
   </nz-tabset>
 </nz-card>
 <div class="text-right">
-  <button
-    nz-button
-    (click)="navigateToList()"
-  >
+  <button nz-button (click)="navigateToList()">
     <img
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/arrow-left-2.svg"

@@ -1,12 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {FormSearchNetwork, NetWorkModel} from "../../../shared/models/vlan.model";
+import { Component, OnInit } from '@angular/core';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { AppValidator, BaseResponse } from '../../../../../../../libs/common-utils/src';
-import {VlanService} from "../../../shared/services/vlan.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ProjectService} from "../../../shared/services/project.service";
-import {getCurrentRegionAndProject} from "@shared";
+import { VlanService } from '../../../shared/services/vlan.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime } from 'rxjs';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -47,6 +46,8 @@ export class ListVlanComponent implements OnInit{
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]]
   });
+
+  isBegin: boolean = false
   constructor(private vlanService: VlanService,
               private router: Router,
               private route: ActivatedRoute,
@@ -63,13 +64,13 @@ export class ListVlanComponent implements OnInit{
     this.project = project?.id
     this.typeVPC = project?.type
 
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(true)
   }
 
   onInputChange(value) {
     this.value = value
 
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
   navigateToCreateNetwork() {
@@ -85,15 +86,15 @@ export class ListVlanComponent implements OnInit{
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
   onPageIndexChange(value) {
     this.pageNumber = value
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
-  getListVlanNetwork() {
+  getListVlanNetwork(isCheckBegin) {
     this.isLoading = true
     this.networkInit()
     this.vlanService.getVlanNetworks(this.formSearchNetwork)
@@ -101,66 +102,21 @@ export class ListVlanComponent implements OnInit{
       .subscribe(data => {
       this.response = data
       this.isLoading = false
-    })
-  }
-
-  idNetwork: number
-  nameNetwork: string
-
-  showModalEditNetwork(id: number, name: string) {
-    this.isVisibleEditNetwork = true
-    this.idNetwork = id
-    this.validateForm.controls.nameNetwork.setValue(name)
-  }
-
-  handleCancelEdit() {
-    this.isVisibleEditNetwork = false
+      if (isCheckBegin) {
+        this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
+      }
+    }, error => {
+        this.response = null
+        this.isLoading = false
+      })
   }
 
   handleOkEdit() {
-    if(this.validateForm.valid){
-      this.isLoadingEditNetwork = true
-      this.vlanService.updateNetwork(this.idNetwork, this.validateForm.controls.nameNetwork.value).subscribe(data => {
-        this.isLoadingEditNetwork = false
-        this.isVisibleEditNetwork = false
-        this.validateForm.controls.nameNetwork.setValue("")
-        this.getListVlanNetwork()
-        this.notification.success('Thành công', 'Chỉnh sửa Network thành công')
-      }, error => {
-        this.isLoadingEditNetwork = false
-        this.isVisibleEditNetwork = false
-        this.getListVlanNetwork()
-        this.notification.error('Thất bại', 'Chỉnh sửa Network thất bại')
-      })
-    }
-  }
-
-  showModalDeleteNetwork(id: number, name: string) {
-    this.validateForm.controls.nameNetwork.setValue("")
-    this.isVisibleDeleteNetwork = true
-    this.idNetwork = id
-    this.nameNetwork = name
-  }
-
-  handleCancelDelete() {
-    this.isVisibleDeleteNetwork = false
+    this.getListVlanNetwork(false)
   }
 
   handleOkDelete(){
-    if(this.validateForm.controls.nameNetwork.value.includes(this.nameNetwork)) {
-      this.isLoadingDeleteNetwork = true
-      this.vlanService.deleteNetwork(this.idNetwork).subscribe(data => {
-        this.isLoadingDeleteNetwork = false
-        this.isVisibleDeleteNetwork = false
-        this.getListVlanNetwork()
-        this.notification.success('Thành công', 'Xoá Network thành công')
-      }, error => {
-        this.isLoadingDeleteNetwork = false
-        this.isVisibleDeleteNetwork = false
-        this.getListVlanNetwork()
-        this.notification.error('Thất bại', 'Xoá Network thất bại')
-      })
-    }
+    this.getListVlanNetwork(false)
   }
 
   ngOnInit() {

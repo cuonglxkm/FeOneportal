@@ -475,6 +475,7 @@ export class OfferItem {
   discounts: any[];
   characteristicValues: CharacteristicValue[];
   description: string;
+  ipNumber: string;
 }
 
 export class Price {

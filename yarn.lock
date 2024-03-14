@@ -2244,9 +2244,15 @@
   integrity sha512-+ZplYUN3HOpgCfgInqgdDAbkGGVzES1cs32JJpeqoh87SkRobGXElJx+1GZSaDqzFL+bYiX18qEcBK76mYs8uA==
 
 "@fontsource/inter@^5.0.16":
+<<<<<<< HEAD
   version "5.0.16"
   resolved "https://registry.npmjs.org/@fontsource/inter/-/inter-5.0.16.tgz"
   integrity sha512-qF0aH5UiZvCmneX5orJbVRoc2VTyLTV3X/7laMp03Qt28L+B9tFlZODOGUL64wDWc69YVdi1LeJB0cIgd51lvw==
+=======
+  version "5.0.17"
+  resolved "https://registry.npmjs.org/@fontsource/inter/-/inter-5.0.17.tgz"
+  integrity sha512-2meBGx1kt7u5LwzGc5Sz5rka6ZDrydg6nT3x6Wkt310vHXUchIywrO8pooWMzZdHYcyFY/cv4lEpJZgMD94bCg==
+>>>>>>> origin/master
 
 "@fontsource/open-sans@^5.0.18":
   version "5.0.18"
@@ -3834,6 +3840,7 @@
   version "2.2.2"
   resolved "https://registry.npmjs.org/@sphinxxxx/color-conversion/-/color-conversion-2.2.2.tgz"
   integrity sha512-XExJS3cLqgrmNBIP3bBw6+1oQ1ksGjFh0+oClDKFYpCCqx/hlqwWO5KO/S63fzUo67SxI9dMrF0y5T/Ey7h8Zw==
+<<<<<<< HEAD
 
 "@stomp/rx-stomp@^2.0.0":
   version "2.0.0"
@@ -3844,6 +3851,8 @@
   version "7.0.0"
   resolved "https://registry.npmjs.org/@stomp/stompjs/-/stompjs-7.0.0.tgz"
   integrity sha512-fGdq4wPDnSV/KyOsjq4P+zLc8MFWC3lMmP5FBgLWKPJTYcuCbAIrnRGjB7q2jHZdYCOD5vxLuFoKIYLy5/u8Pw==
+=======
+>>>>>>> origin/master
 
 "@swc-node/core@^1.10.6":
   version "1.10.6"
@@ -12255,7 +12264,11 @@ rxfire@^6.0.5:
   resolved "https://registry.npmjs.org/rxfire/-/rxfire-6.0.5.tgz"
   integrity sha512-ycBsANGbya3GNtOBKzZVATLEV+0S9gUrlTfwnN15TCXtgG8OgIMAuv2k9+kMeVaevp/DRp1KT+vYf6Wkop6gvw==
 
+<<<<<<< HEAD
 "rxjs@^6.0.0 || ^7.0.0", "rxjs@^6.0.1 || ^7.0.0", "rxjs@^6.4.0 || ^7.4.0", "rxjs@^6.5.3 || ^7.4.0", "rxjs@^6.5.3 || ^7.5.0", "rxjs@^6.5.5 || ^7.4.0", rxjs@^7.0.0, rxjs@^7.2.0, rxjs@^7.5.5, rxjs@^7.8.0, rxjs@~7.8.0, rxjs@7.8.1:
+=======
+"rxjs@^6.0.0 || ^7.0.0", "rxjs@^6.0.1 || ^7.0.0", "rxjs@^6.4.0 || ^7.4.0", "rxjs@^6.5.3 || ^7.4.0", "rxjs@^6.5.3 || ^7.5.0", "rxjs@^6.5.5 || ^7.4.0", rxjs@^7.0.0, rxjs@^7.5.5, rxjs@^7.8.0, rxjs@~7.8.0, rxjs@7.8.1:
+>>>>>>> origin/master
   version "7.8.1"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-7.8.1.tgz"
   integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
@@ -13819,7 +13832,11 @@ uuid@^8.3.2:
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
+<<<<<<< HEAD
 uuid@^9.0.0, uuid@^9.0.1:
+=======
+uuid@^9.0.1:
+>>>>>>> origin/master
   version "9.0.1"
   resolved "https://registry.npmjs.org/uuid/-/uuid-9.0.1.tgz"
   integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
