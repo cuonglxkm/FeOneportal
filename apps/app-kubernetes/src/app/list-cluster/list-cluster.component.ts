@@ -41,6 +41,11 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
 
   // for status
   listOfStatusCluster: ClusterStatus[];
+  listOfInProgressStatus = [
+    1, // Đang khởi tạo
+    7, // Đang xóa
+    6, // Đang nâng cấp
+  ];
 
   constructor(
     private clusterService: ClusterService,
@@ -103,12 +108,14 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
       if (r && r.code == 200) {
         this.listOfClusters = [];
         let listOfClusterInProgress = [];
+        let progress: Array<Observable<any>> = [];
+
         r.data?.content.forEach(item => {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
 
           // get cluster is in-progress (initing or deleting)
-          if (cluster.serviceStatus == 1 || cluster.serviceStatus == 7) listOfClusterInProgress.push(cluster);
+          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
 
@@ -119,10 +126,16 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
 
         // case user refresh page and have mulitple cluster and is in-progress
         console.log({inprogress: listOfClusterInProgress});
-        let progress: Array<Observable<any>> = [];
         for (let i = 0; i < listOfClusterInProgress.length; i++) {
           let cluster: KubernetesCluster = listOfClusterInProgress[i];
-          let progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName);
+
+          let progressObs: Observable<any>;
+          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
+            cluster.isProcessing = true;
+            progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName);
+          } else {
+            progressObs = EMPTY;
+          }
           progress.push(progressObs);
         }
 
@@ -130,7 +143,6 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
           // console.log({combine: data});
           this.listOfProgress = data;
         });
-        // map position of listOfProgress with listOfClusters
       }
     });
   }
