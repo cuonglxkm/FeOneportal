@@ -523,7 +523,7 @@ const routes: Routes = [
     component: ObjectStorageEditComponent
   },
   {
-    path:'object-storage/bucket/:id',
+    path:'object-storage/bucket/:name',
     component: BucketDetailComponent
   },
   ]

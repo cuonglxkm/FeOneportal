@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import * as _ from 'lodash';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {NzUploadChangeParam} from "ng-zorro-antd/upload";
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -7,14 +9,32 @@ import * as _ from 'lodash';
   styleUrls: ['./bucket-detail.component.less'],
 })
 export class BucketDetailComponent {
-  listOfData: any;
+  listOfData: any = [
+    {name: "son",size: "1",type: "XLSX",time: "2023",role: "Private",},
+    {name: "khai",size: "1",type: "XLSX",time: "2023",role: "Private",},
+    {name: "son",size: "1",type: "folder",time: "2023",role: "Private",},
+  ];
+  listOfFolder: any = [
+    {name: "folder1",id: "1"},
+    {name: "folder2",id: "2"},
+    {name: "folder3",id: "3"},
+    {name: "folder4",id: "4"},
+    {name: "folder5",id: "5"},
+  ];
+  listOfMetadata: any = [
+    {key: "xin chao",value: "a"},
+    {key: "",value: ""},
+  ]
   size = 10;
   index: number = 1;
   total: number = 0;
   loading = false;
   orderNum = 1;
   isVisibleFilter = false;
+  isVisibleCreateFolder = false;
+  isVisibleUploadFile = false;
   isVisibleAddFilte = true;
+  emptyFileUpload = true;
   listOfFilter: any;
   modalStyle = {
     'padding': '20px',
@@ -31,6 +51,13 @@ export class BucketDetailComponent {
   defaultDataFilter = {orderNum: 1, name: '', condition: '', value: '', type: '',};
   dataFilter = [{orderNum: 0, name: '', condition: '', value: '', type: '',}]
   dataFilterLog = [{orderNum: 0, name: '', condition: '', value: '', type: '',}];
+
+  form = new FormGroup({
+    name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
+  });
+
+  version = 1;
+  radioValue: any = 'Public';
 
   search(value: string) {
 
@@ -188,5 +215,27 @@ export class BucketDetailComponent {
 
   private async delay(number: number) {
     return new Promise(resolve => setTimeout(resolve, number));
+  }
+
+  toFolder(item: any) {
+    let index = this.listOfFolder.findIndex(folder => folder.name == item.name);
+    if (index > 0) {
+      this.listOfFolder.splice(index + 1);
+    }
+  }
+
+  createFolder() {
+
+  }
+
+  handleChange({ file, fileList }: NzUploadChangeParam) {
+    this.emptyFileUpload = false;
+    const status = file.status;
+    if (status !== 'uploading') {
+      console.log(file, fileList);
+    }
+    if (status === 'done') {
+    } else if (status === 'error') {
+    }
   }
 }
