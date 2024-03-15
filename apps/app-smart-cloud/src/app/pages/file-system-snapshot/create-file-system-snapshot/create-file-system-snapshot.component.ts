@@ -6,6 +6,11 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
+import { RegionModel } from 'src/app/shared/models/region.model';
+import { ProjectModel } from 'src/app/shared/models/project.model';
+import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
+import { FileSystemService } from 'src/app/shared/services/file-system.service';
 
 
 @Component({
@@ -14,83 +19,65 @@ import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.mod
   styleUrls: ['./create-file-system-snapshot.component.less'],
 })
 export class CreateFileSystemSnapshotComponent implements OnInit{
-  // region: number;
-  // project: number;
+  region = JSON.parse(localStorage.getItem('region')).regionId;
+  project = JSON.parse(localStorage.getItem('projectId'));
+  value: string;
 
-  // isLoading: boolean;
-  // showWarningName: boolean;
-  // contentShowWarningName: string;
-  // volumeId: number;
-  // volumeList: NzSelectOptionInterface[] = [];
-  // userId: number;
-  // scheduleStartTime: string;
-  // dateStart: string;
-  // descSchedule: string = '';
-  // snapshotMode: string = 'Theo tuần';
-  // numberArchivedCopies = 1;
+  pageSize: number = 10;
+  pageIndex: number = 1;
 
-  // time: Date = new Date();
-  // defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  response: BaseResponse<FileSystemModel[]>;
 
-  // form: FormGroup<{
-  //   name: FormControl<string>;
-  //   volume: FormControl<number>;
-  //   selectedDate: FormControl<string>;
-  // }> = this.fb.group({
-  //   name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
-  //   volume: [0, [Validators.required]],
-  //   selectedDate: ['', [Validators.required]],
-  // });
+  isLoading: boolean = false;
 
-  // dateList: NzSelectOptionInterface[] = [
-  //   { label: 'Chủ nhật', value: '0' },
-  //   { label: 'Thứ hai', value: '1' },
-  //   { label: 'Thứ ba', value: '2' },
-  //   { label: 'Thứ tư', value: '3' },
-  //   { label: 'Thứ năm', value: '4' },
-  //   { label: 'Thứ sáu', value: '5' },
-  //   { label: 'Thứ bảy', value: '6' },
-  // ];
+  isCheckBegin: boolean = false;
+
+  customerId: number;
+
+  form: FormGroup<{
+    nameFileSystem: FormControl<string>;
+    nameSnapshot: FormControl<string>
+  }> = this.fb.group({
+    nameFileSystem: ['', [Validators.required]],
+    nameSnapshot: ['', [Validators.required]],
+  });
+
+
+  getListFileSystem() {
+    this.isLoading = true;
+    let formSearch = new FormSearchFileSystem();
+    formSearch.vpcId = this.project;
+    formSearch.regionId = this.region;
+    formSearch.name = this.value;
+    formSearch.isCheckState = false;
+    formSearch.pageSize = this.pageSize;
+    formSearch.currentPage = this.pageIndex;
+
+    this.fileSystemService.search(formSearch)
+
+      .subscribe(data => {
+        this.isLoading = false;
+        console.log('data file system', data);
+        this.response = data;
+      }, error => {
+        this.isLoading = false;
+        this.response = null;
+      });
+  }  
 
   ngOnInit(): void {
-    // const now = new Date();
-    // this.scheduleStartTime =
-    //   now.getHours().toString() +
-    //   ':' +
-    //   now.getUTCMinutes().toString() +
-    //   ':' +
-    //   now.getSeconds().toString();
-    // this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    this.getListFileSystem()
   }
 
-  // doGetListVolume() {
-  //   this.isLoading = true;
-  //   this.volumeList = [];
-  //   this.volumeService
-  //     .getVolumes(this.userId, this.project, this.region, 1000, 1, null, null)
-  //     .subscribe({
-  //       next: (next) => {
-  //         next.records.forEach((volume) => {
-  //           this.volumeList.push({ value: volume.id, label: volume.name });
-  //         });
-  //         this.isLoading = false;
-  //         console.log('list volumes', this.volumeList);
-  //       },
-  //       error: (e) => {
-  //         this.notification.error(
-  //           'Có lỗi xảy ra',
-  //           'Lấy danh sách Volume thất bại'
-  //         );
-  //         this.isLoading = false;
-  //       },
-  //     });
-  // }
 
   constructor(
     private router: Router,
-    // @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    // private fb: NonNullableFormBuilder,
-    // private snapshotService: SnapshotVolumeService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private fb: NonNullableFormBuilder,
+     private fileSystemService: FileSystemService
     // private volumeService: VolumeService,
     // private modalService: NzModalService,
     // private notification: NzNotificationService
@@ -158,18 +145,11 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   //   });
   // }
 
-  // checkSpecialSnapshotName(str: string): boolean {
-  //   //check ký tự đặc biệt
-  //   const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-  //   return specialCharacters.test(str);
-  // }
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
 
-  // onRegionChange(region: RegionModel) {
-  //   this.region = region.regionId;
-  // }
-
-  // onProjectChange(project: ProjectModel) {
-  //   this.project = project?.id;
-  //   this.doGetListVolume();
-  // }
+  onProjectChange(project: ProjectModel) {
+    this.project = project?.id;
+  }
 }
