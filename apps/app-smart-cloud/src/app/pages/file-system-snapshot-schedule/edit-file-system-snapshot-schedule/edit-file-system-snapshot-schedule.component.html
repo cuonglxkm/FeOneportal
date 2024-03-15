@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Đặt lịch File System Snapshot'"
+  [title]="'Chỉnh sửa đặt lịch File System Snapshot'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -19,7 +19,7 @@
           >File System Snapshot Schedule</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Tạo mới lịch File System Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chỉnh sửa đặt lịch File System Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -39,6 +39,7 @@
   nz-form
   [formGroup]="FileSystemSnapshotForm"
   [nzLayout]="'vertical'"
+  (ngSubmit)="submitForm()"
 >
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="18" class="gutter-row">
@@ -48,7 +49,7 @@
           <nz-form-label nzFor="name" nzRequired
             >Tên lịch Snapshot</nz-form-label
           >
-          <nz-form-control [nzErrorTip]="nameErrorTpl">
+          <nz-form-control nzErrorTip="Tên lịch Snapshot không đuợc để trống và chứa kí tự đặc biệt!">
           <input
             nz-input
             type="text"
@@ -59,10 +60,6 @@
             (ngModelChange)="nameSnapshot = $event"
             formControlName="name"
           />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chứa chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
-          </ng-template>
         </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -383,8 +380,6 @@
             justify-content: center;
           "
           nzSize="large"
-          (click)="handleSubmit()"
-          [disabled]="FileSystemSnapshotForm.invalid"
         >
           <img src="assets/imgs/wallet.svg" alt="" />
           <span class="button-text-primary">Khởi tạo</span>
@@ -402,11 +397,3 @@
     height: 100%;
   "
 ></div>
-<nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Xác nhận tạo mới Lịch Snapshot File System"
-          (nzOnCancel)="handleCancel()"
-          (nzOnOk)="handleCreate()"
-          nzOkText="Xác nhận" nzCancelText="Hủy bỏ">
-  <ng-container *nzModalContent>
-    <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn tạo mới Lịch Snapshot File System?</h3>
-  </ng-container>
-</nz-modal>

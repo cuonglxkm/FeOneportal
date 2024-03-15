@@ -16,11 +16,11 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
 
 
 @Component({
-  selector: 'one-portal-create-file-system-snapshot',
-  templateUrl: './create-file-system-snapshot-schedule.component.html',
-  styleUrls: ['./create-file-system-snapshot-schedule.component.less'],
+  selector: 'one-portal-edit-file-system-snapshot-schedule',
+  templateUrl: './edit-file-system-snapshot-schedule.component.html',
+  styleUrls: ['./edit-file-system-snapshot-schedule.component.less'],
 })
-export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
+export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
@@ -38,7 +38,6 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
   modeType: string = '0'
   listOfSelectedDate: string[] = [];
   dateDone: number = 1
-  isVisibleCreate: boolean = false;
   dateOptions: NzSelectOptionInterface[] = [
     { label: 'Hằng ngày', value: '0' },
     { label: 'Theo thứ', value: '1' },
@@ -74,18 +73,20 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
     maxSnapshot: FormControl<number>,
     description: FormControl<string>,
     dates: FormControl<string>,
+
+
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    name: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
     listOfFileSystem: [[] as string[], Validators.required],
     runtime: [new Date(), Validators.required],
     mode: [this.dateOptions[0].value as string, Validators.required],
     dayOfWeek: '',
     daysOfWeek: [[] as string[]],
     intervalWeek: [null as number],
-    intervalMonth: [null as number, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
-    maxSnapshot: [null as number, [Validators.required, Validators.min(1)]],
+    intervalMonth: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
+    maxSnapshot: [1, [Validators.required, Validators.min(1)]],
     description: ['', [Validators.maxLength(700)]],
-    dates: [null as string, [Validators.required]],
+    dates: ['1', [Validators.required]],
 
   });
 
@@ -123,7 +124,7 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/create'])
+        this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/edit/1'])
       }
     });
   }
@@ -131,28 +132,21 @@ formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateF
   projectChange(project: ProjectModel) {
     this.project = project?.id
   }
-  handleSubmit(): void {
-    this.isVisibleCreate = true;    
-  }
-
-  handleCreate(){
-    this.isVisibleCreate = false;
+  submitForm(): void {
     this.isLoading = true
     if (this.FileSystemSnapshotForm.valid) {
       this.formCreateFileSystemSsSchedule = this.getData()
       console.log(this.formCreateFileSystemSsSchedule);
       this.formCreateFileSystemSsSchedule.runtime = this.datepipe.transform(this.FileSystemSnapshotForm.controls.runtime.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
       this.fileSystemSnapshotScheduleService.create(this.formCreateFileSystemSsSchedule).subscribe(data => {
-        this.notification.success('Thành công', 'Tạo mới lịch file system thành công')
+        this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
       }, error => {
-        this.notification.error('Thất bại', 'Tạo mới lịch file system thất bại')
+        this.notification.error('Thất bại', 'Tạo mới lịch backup vm thất bại')
         console.log(error);
-      })  
+        
+      })
+      
     }
-  }
-
-  handleCancel() {
-    this.isVisibleCreate = false;
   }
 
   getData(): any {
