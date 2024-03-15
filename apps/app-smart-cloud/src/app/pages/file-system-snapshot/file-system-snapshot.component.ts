@@ -16,7 +16,7 @@ import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-sn
   styleUrls: ['./file-system-snapshot.component.less'],
 })
 export class FileSystemSnapshotComponent {
-  region = JSON.parse(localStorage.getItem('regionId'));
+  region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
@@ -26,7 +26,7 @@ export class FileSystemSnapshotComponent {
 
   value: string
 
-  response: BaseResponse<IpFloating[]>
+  response: BaseResponse<any>
 
   isLoading: boolean = false
 
@@ -81,7 +81,7 @@ export class FileSystemSnapshotComponent {
     this.isLoading = true
     this.formSearchFileSystemSnapshot.vpcId = this.project
     this.formSearchFileSystemSnapshot.regionId = this.region
-    this.formSearchFileSystemSnapshot.isCheckState = true
+    this.formSearchFileSystemSnapshot.isCheckState = false
     this.formSearchFileSystemSnapshot.pageSize = this.pageSize
     this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
     this.formSearchFileSystemSnapshot.customerId = this.customerId

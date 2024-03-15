@@ -7,7 +7,7 @@ import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floatin
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
-import { FormSearchFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
+import { FileSystemSnapshotScheduleModel, FormSearchFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
   styleUrls: ['./file-system-snapshot-schedule.component.less'],
 })
 export class FileSystemSnapshotScheduleComponent {
-  region = null;
+  region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
@@ -26,7 +26,7 @@ export class FileSystemSnapshotScheduleComponent {
 
   value: string
 
-  response: BaseResponse<any>
+  response: BaseResponse<FileSystemSnapshotScheduleModel[]>
 
   isLoading: boolean = false
 

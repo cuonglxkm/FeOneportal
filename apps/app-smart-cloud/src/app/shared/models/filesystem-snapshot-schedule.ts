@@ -22,3 +22,34 @@ export class FormCreateFileSystemSsSchedule {
     pageSize: number
     pageNumber: number
     }
+
+    export class FileSystemSnapshotScheduleModel {
+      id: number
+      name: string
+      serviceId: number
+      description: string
+      mode: number
+      runtime: Date
+      maxSnapshot: number
+      interval: number
+      duration: number
+      dates: number
+      daysOfWeek: string
+      createdAt: Date
+      updatedAt: Date
+      status: string
+      nextRuntime: Date
+      currentSnapshot: number
+      proccessId: string
+      serviceType: number
+      warningMessage: string
+      customerId: number
+      regionId: number
+      projectId: number
+      items: [
+        {
+          itemId: number
+          itemType: number
+        }
+      ]
+    }
