@@ -32,7 +32,7 @@ export class BucketListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.search();
   }
 
   search() {
@@ -59,6 +59,12 @@ export class BucketListComponent implements OnInit {
 
   createBucket() {
     this.router.navigate(['/app-smart-cloud/object-storage/bucket/create']);
+  }
+
+  configure(bucketName: string) {
+    this.router.navigate([
+      `/app-smart-cloud/object-storage/bucket/configure/${bucketName}`,
+    ]);
   }
 
   extendObjectStorage() {

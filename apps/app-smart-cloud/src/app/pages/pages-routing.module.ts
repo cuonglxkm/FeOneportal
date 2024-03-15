@@ -110,6 +110,7 @@ import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create
 import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
 import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
+import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ObjectStorageComponent } from "./object-storage/object-storage.component";
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
@@ -499,12 +500,20 @@ const routes: Routes = [
     component: CreateFileSystemSnapshotScheduleComponent,
   },
   {
+    path: 'file-system-snapshot-schedule/edit/:id',
+    component: EditFileSystemSnapshotScheduleComponent,
+  },
+  {
     path: 'object-storage/bucket',
     component: BucketListComponent
   },
   {
     path: 'object-storage/bucket/create',
     component: BucketCreateComponent
+  },
+  {
+    path: 'object-storage/bucket/configure/:bucketName',
+    component: BucketConfigureComponent
   },
   {
     path: 'object-storage',

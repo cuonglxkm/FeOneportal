@@ -364,6 +364,37 @@ export class InstancesComponent implements OnInit {
     this.isVisibleRescue = false;
   }
 
+  isVisibleUnRescue: boolean = false;
+  showModalUnRescue(id: number) {
+    this.isVisibleUnRescue = true;
+    this.instanceControlId = id;
+  }
+  handleOkUnRescue() {
+    this.isVisibleUnRescue = false;
+    var body = {
+      command: 'unrescue',
+      id: this.instanceControlId,
+    };
+    this.dataService.postAction(body).subscribe({
+      next: (data) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'UNRESCUE máy ảo thành công');
+          setTimeout(() => {
+            this.reloadTable();
+          }, 1500);
+        } else {
+          this.notification.error('', 'UNRESCUE máy ảo không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error('', 'UNRESCUE máy ảo không thành công');
+      },
+    });
+  }
+  handleCancelUnRescue() {
+    this.isVisibleUnRescue = false;
+  }
+
   openConsole(id: number): void {
     this.router.navigateByUrl(
       '/app-smart-cloud/instances/instances-console/' + id,
