@@ -64,7 +64,7 @@
                   class="input-custom"
                   nz-input
                   formControlName="name"
-                  [(ngModel)]="instancesModel.name"
+                  [(ngModel)]="instanceNameEdit"
                   id="name"
                   placeholder="Nhập tên máy ảo"
                   maxlength="50"
@@ -515,10 +515,19 @@
               nzSize="large"
               nzType="primary"
               (click)="save()"
-              [disabled]="form.invalid"
+              [disabled]="
+                form.invalid ||
+                (totalincludesVAT == 0 && instanceNameEdit == instancesModel.name)
+              "
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'"
+              <span
+                [style.color]="
+                  form.invalid ||
+                  (totalincludesVAT == 0 && instanceNameEdit == instancesModel.name)
+                    ? 'gray'
+                    : 'white'
+                "
                 >Chỉnh sửa</span
               >
             </button>

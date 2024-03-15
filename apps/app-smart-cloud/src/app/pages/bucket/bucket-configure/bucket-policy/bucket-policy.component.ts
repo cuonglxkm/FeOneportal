@@ -2,11 +2,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { BucketPolicy } from 'src/app/shared/models/bucket.model';
+import { BucketService } from 'src/app/shared/services/bucket.service';
 
 @Component({
   selector: 'one-portal-bucket-policy',
@@ -15,25 +20,57 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketPolicyComponent implements OnInit {
-  inputSearch: string = '';
-  listBucketPolicy: any[] = [];
-  loading: boolean = false;
+  @Input() bucketName: string;
+  searchValue: string = '';
+  listBucketPolicy: BucketPolicy[] = [];
+  pageSize: number = 10;
+  pageNumber: number = 1;
+  total: number;
+  loading: boolean = true;
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
 
   constructor(
+    private bucketService: BucketService,
     private notification: NzNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private activatedRoute: ActivatedRoute
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
   }
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.searchBucketPolicy();
   }
   searchBucketPolicy() {
-    
+    this.loading = true
+    this.bucketService
+      .getListBucketPolicy(
+        this.bucketName,
+        this.pageNumber,
+        this.pageSize,
+        this.searchValue
+      )
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listBucketPolicy = data.records;
+          this.total = data.totalCount;
+        },
+        error: (e) => {
+          this.listBucketPolicy = [];
+          this.notification.error(
+            '',
+            'Lấy danh sách Bucket Policy không thành công'
+          );
+        },
+      });
   }
 
   isVisibleCreate = false;
@@ -102,8 +139,10 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   isVisibleDelete: boolean = false;
-  modalDelete(id: any) {
+  bucketPolicyId: string;
+  modalDelete(id: string) {
     this.isVisibleDelete = true;
+    this.bucketPolicyId = id;
   }
 
   handleCancelDelete() {
@@ -112,21 +151,19 @@ export class BucketPolicyComponent implements OnInit {
 
   handleOkDelete() {
     this.isVisibleDelete = false;
-    this.notification.success('', 'Xóa Router thành công');
-
-    // this.dataService
-    //   .deleteRouter(this.cloudId, this.region, this.projectId)
-    //   .subscribe({
-    //     next: (data) => {
-    //       console.log(data);
-    //       this.notification.success('', 'Xóa Router thành công');
-    //       this.reloadTable();
-    //     },
-    //     error: (error) => {
-    //       console.log(error.error);
-    //       this.notification.error('', 'Xóa Router không thành công');
-    //     },
-    //   });
+    this.bucketService
+      .deleteBucketPolicy(this.bucketName, this.bucketPolicyId)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.notification.success('', 'Xóa Bucket Policy thành công');
+          this.searchBucketPolicy();
+        },
+        error: (error) => {
+          console.log(error.error);
+          this.notification.error('', 'Xóa Bucket Policy không thành công');
+        },
+      });
   }
 
   isVisibleJson: boolean = false;

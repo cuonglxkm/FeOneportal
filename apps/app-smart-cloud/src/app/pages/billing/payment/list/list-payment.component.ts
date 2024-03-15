@@ -64,9 +64,9 @@ export class ListPaymentComponent implements OnInit{
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project?.id 
   }
-
+  
   onChange(value: string) {
     console.log('abc', this.selectedValue)
     if (value === 'all') {
@@ -90,6 +90,8 @@ export class ListPaymentComponent implements OnInit{
       this.getListInvoices()
     }
   }
+
+  
 
   onInputChange(value: string) {
     this.value = value;
