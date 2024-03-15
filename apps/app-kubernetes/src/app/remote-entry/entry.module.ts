@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { RemoteEntryComponent } from './entry.component';
 import { NxWelcomeComponent } from './nx-welcome.component';
 import { remoteRoutes } from './entry.routes';
-import { KubernetesDetailComponent, ProgressCluster } from '../list-cluster/list-cluster.component';
+import { KubernetesDetailComponent } from '../list-cluster/list-cluster.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -48,7 +48,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     TruncateLabel,
     CalculateDate,
     ProgressPipe,
-    ProgressCluster,
 
   ],
   imports: [

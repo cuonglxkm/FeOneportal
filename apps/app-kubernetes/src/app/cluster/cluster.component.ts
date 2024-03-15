@@ -232,8 +232,10 @@ export class ClusterComponent implements OnInit {
   }
 
   // catch event region change and reload data
+  regionName: string;
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.regionName = region.regionDisplayName;
     this.cloudProfileId = region.cloudId;
 
     this.getListK8sVersion(this.regionId, this.cloudProfileId);
@@ -360,16 +362,14 @@ export class ClusterComponent implements OnInit {
     return this.myform.get('kubernetesVersion').value;
   }
 
-  get regionName() {
-    return this.myform.get('reigonId').value;
-  }
-
   get networkType() {
     return this.myform.get('networkType').value;
   }
 
   get vpcNetwork() {
-    return this.myform.get('vpcNetwork').value;
+    let vpcId = this.myform.get('vpcNetwork').value;
+    let vpc = this.listOfVPCNetworks.find(item => item.id == vpcId);
+    if (vpc) return vpc.name;
   }
 
   get cidr() {
@@ -486,11 +486,12 @@ export class ClusterComponent implements OnInit {
 
         const clusterName = this.myform.get('clusterName').value;
 
-        let obj = {
-          namespace: r.data,
-          clusterName: clusterName
-        };
-        this.router.navigate(['/app-kubernetes'], {state: {data: obj}});
+        // let obj = {
+        //   namespace: r.data,
+        //   clusterName: clusterName
+        // };
+        // this.router.navigate(['/app-kubernetes'], {state: {data: obj}});
+        this.router.navigate(['/app-kubernetes']);
 
       } else {
         this.notificationService.error('Thất bại', r.message);

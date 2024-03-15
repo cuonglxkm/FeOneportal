@@ -16,7 +16,7 @@
   <nz-content>
     <nz-card>
       <!-- filter -->
-      <div class="flex-style mbot-24">
+      <div class="flex-style marbot-5 mbot-24">
         <div class="w-25">
           <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="searchCluster()"
             [nzPlaceHolder]="'Trạng thái'" class="w-100" nzSize="large">
@@ -90,13 +90,17 @@
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
 
                 <ng-container *ngIf="item.serviceStatus == 2; else ortherStatusTpl">
-                  <nz-progress [nzPercent]="100" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
-                  <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+                  <div class="flex-style">
+                    <nz-progress [nzPercent]="100" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
+                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{status.status}}</span>
+                  </div>
                 </ng-container>
 
                 <ng-template #ortherStatusTpl>
-                  <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
-                  <span [ngStyle]="{color: status.color}">{{status.status}}</span>
+                  <div class="flex-style">
+                    <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
+                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{status.status}}</span>
+                  </div>
                 </ng-template>
 
               </ng-container>

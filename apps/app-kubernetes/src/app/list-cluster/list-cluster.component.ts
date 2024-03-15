@@ -56,24 +56,24 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private router: Router
   ) {
-    const nav = this.router.getCurrentNavigation();
-    const state = nav?.extras.state;
-    console.log(state);
-    if (state) {
-      const data = state.data;
-      console.log({data: data});
+    // const nav = this.router.getCurrentNavigation();
+    // const state = nav?.extras.state;
+    // console.log(state);
+    // if (state) {
+    //   const data = state.data;
+    //   console.log({data: data});
 
-      const namespace = data.namespace;
-      const clusterName = data.clusterName;
-      this.percent = 0;
+    //   const namespace = data.namespace;
+    //   const clusterName = data.clusterName;
+    //   this.percent = 0;
 
-      if (namespace != null && clusterName != null) {
-        this.sseStream = this.clusterService.getProgressOfCluster(clusterName, namespace).subscribe(data => {
-          this.percent = +data;
-          this.ref.detectChanges();
-        });
-      }
-    }
+    //   if (namespace != null && clusterName != null) {
+    //     this.sseStream = this.clusterService.getProgressOfCluster(clusterName, namespace).subscribe(data => {
+    //       this.percent = +data;
+    //       this.ref.detectChanges();
+    //     });
+    //   }
+    // }
   }
 
   private sseStream: Subscription;
@@ -142,6 +142,7 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
         combineLatest(progress).subscribe(data => {
           // console.log({combine: data});
           this.listOfProgress = data;
+          console.log({progress: this.listOfProgress});
         });
       }
     });
@@ -328,21 +329,5 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     this.deleteClusterName = null;
     this.onInputDeleteCluster(null);
   }
-
-}
-
-@Component({
-  selector: 'progress-cluster',
-  template: `
-    <nz-progress [nzPercent]="percent" nzSize="small" nzType="circle" [nzWidth]="28"></nz-progress>
-  `
-})
-export class ProgressCluster implements OnInit {
-
-  @Input() percent: number;
-
-  constructor() {}
-
-  ngOnInit(): void {}
 
 }

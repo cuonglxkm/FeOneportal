@@ -472,7 +472,7 @@
                 <div class="mt-3 ml-3"><label>Khu vực</label></div>
               </div>
               <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3"></div>
+                <div class="price-style mt-3 mr-3">{{regionName}}</div>
               </div>
             </div>
 
@@ -546,6 +546,10 @@
                     </div>
                   </div>
                 </div>
+
+                <ng-container *ngIf="i != (listFormWorkerGroup.controls.length - 1)">
+                  <nz-divider nzDashed class="divider-style"></nz-divider>
+                </ng-container>
               </ng-container>
             </div>
 
