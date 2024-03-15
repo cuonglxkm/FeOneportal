@@ -28,7 +28,7 @@ export class DetailFileSystemComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/networks/file-storage/file-system/list'])
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/list'])
   }
 
   projectChanged(project: ProjectModel) {
@@ -36,7 +36,7 @@ export class DetailFileSystemComponent implements OnInit{
   }
 
   userChanged(project: ProjectModel){
-    this.router.navigate(['/app-smart-cloud/networks/file-storage/file-system/list'])
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/list'])
   }
 
   getFileSystemById(id) {

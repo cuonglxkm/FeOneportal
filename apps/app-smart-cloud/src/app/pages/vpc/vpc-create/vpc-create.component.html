@@ -64,7 +64,7 @@
                           [class.initialNameFlavor]="
                             selectedElementFlavor === 'flavor_' + item.id
                           "
-                        >{{ item.offerName | slice : 3 : -4 }}</span
+                        >{{item.offerName}}</span
                         >
                         <div style="margin-top: -16px">
                           <img
@@ -78,7 +78,7 @@
                           />
                         </div>
                         <span class="priceFlavor">{{
-                          item.price.fixedPrice.amount
+                          item.price.fixedPrice.amount | number:'1.0-0':'en-US'
                           }}</span
                         ><span> đ/tháng</span>
                       </div>
@@ -489,7 +489,7 @@
           <span>Hủy</span>
         </button>
         <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
-                [disabled]="form.invalid || (selectIndexTab == 0 && selectedElementFlavor == null)">
+                [disabled]="form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null || form.controls['ipType'].value == ''))">
           <span nz-icon nzType="wallet" nzTheme="outline"></span>
           <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
         </button>

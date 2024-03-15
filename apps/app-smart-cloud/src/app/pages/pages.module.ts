@@ -187,6 +187,7 @@ import { ObjectStorageCreateComponent } from './object-storage/object-storage-cr
 import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
+import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
 
@@ -363,6 +364,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
     ObjectStorageCreateComponent,
     ObjectStorageExtendComponent,
     ObjectStorageEditComponent,
+    ChartComponent,
   ],
   imports: [
     CommonModule,

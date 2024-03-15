@@ -4,6 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileSystemDetail, FormEditFileSystem } from '../../../../../shared/models/file-system.model';
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-edit-file-system',
@@ -26,7 +27,7 @@ export class EditFileSystemComponent {
     description: FormControl<string>
   }> = this.fb.group({
     nameFileSystem: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9-_ ]$/),
+      Validators.pattern(/^[a-zA-Z0-9_]+$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]
   })
@@ -36,7 +37,8 @@ export class EditFileSystemComponent {
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private fb: NonNullableFormBuilder,
               private fileSystemService: FileSystemService,
-              private notification: NzNotificationService){
+              private notification: NzNotificationService,
+              private router: Router){
   }
 
   showModal() {
@@ -76,6 +78,7 @@ export class EditFileSystemComponent {
       if(data) {
         this.isLoadingUpdate = false
         this.notification.success('Thành công', 'Cập nhật File System thành công')
+        this.router.navigate(['/app-smart-cloud/file-storage/file-system/list'])
       } else {
         this.isLoadingUpdate = false
         this.notification.error('Thất bại', 'Cập nhật File System thất bại')

@@ -444,23 +444,23 @@ const routes: Routes = [
     component: ListWanComponent
   },
   {
-    path: 'networks/file-storage/file-system/create',
+    path: 'file-storage/file-system/create',
     component: CreateFileSystemComponent
   },
   {
-    path: 'networks/file-storage/file-system/list',
+    path: 'file-storage/file-system/list',
     component: ListFileSystemComponent
   },
   {
-    path: 'networks/file-storage/file-system/detail/:id',
+    path: 'file-storage/file-system/detail/:id',
     component: DetailFileSystemComponent
   },
   {
-    path: 'networks/file-storage/file-system/extend/:id',
+    path: 'file-storage/file-system/extend/:id',
     component: ExtendFileSystemComponent
   },
   {
-    path: 'networks/file-storage/file-system/access-rule/list',
+    path: 'file-storage/file-system/:idFileSystem/access-rule/list',
     component: ListAccessRuleComponent
   },
   {
@@ -528,7 +528,7 @@ const routes: Routes = [
     component: ObjectStorageEditComponent
   },
   {
-    path:'object-storage/bucket/:id',
+    path:'object-storage/bucket/:name',
     component: BucketDetailComponent
   },
   ]

@@ -1,11 +1,16 @@
 export class BucketModel {
   bucketName: string;
-  isVersioning: boolean;
+  endPoints: string;
+  size: string;
+  createdDate: string;
   aclType: string;
-  isWebsite: boolean;
-  indexDocumentSuffix: string;
-  errorDocument: string;
-  redirectAllRequestsTo: string;
-  checkRedirectAllRequests: boolean;
-  linkS3Website: string;
+  isVersioning: string;
+  status: string;
+}
+
+export class BucketPolicy {
+  sid: string;
+  user: string;
+  permission: string;
+  action: string[];
 }

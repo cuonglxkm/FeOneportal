@@ -23,7 +23,6 @@ export class ListVlanComponent implements OnInit{
 
   value: string
 
-  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork()
 
   response: BaseResponse<NetWorkModel[]>
 
@@ -31,12 +30,6 @@ export class ListVlanComponent implements OnInit{
   pageNumber: number = 1
 
   isLoading: boolean = false
-
-  isVisibleEditNetwork: boolean = false
-  isLoadingEditNetwork: boolean = false
-
-  isVisibleDeleteNetwork: boolean = false
-  isLoadingDeleteNetwork: boolean = false
 
   validateForm: FormGroup<{
     nameNetwork: FormControl<string>
@@ -77,12 +70,6 @@ export class ListVlanComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/vlan/create/network'])
   }
 
-  networkInit(){
-    this.formSearchNetwork.vlanName = this.value
-    this.formSearchNetwork.region = this.region
-    this.formSearchNetwork.pageSize = this.pageSize
-    this.formSearchNetwork.pageNumber = this.pageNumber
-  }
 
   onPageSizeChange(value) {
     this.pageSize = value
@@ -96,8 +83,15 @@ export class ListVlanComponent implements OnInit{
 
   getListVlanNetwork(isCheckBegin) {
     this.isLoading = true
-    this.networkInit()
-    this.vlanService.getVlanNetworks(this.formSearchNetwork)
+
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork()
+    formSearchNetwork.vlanName = this.value
+    formSearchNetwork.region = this.region
+    formSearchNetwork.pageSize = this.pageSize
+    formSearchNetwork.pageNumber = this.pageNumber
+    formSearchNetwork.project = this.project
+
+    this.vlanService.getVlanNetworks(formSearchNetwork)
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.response = data
