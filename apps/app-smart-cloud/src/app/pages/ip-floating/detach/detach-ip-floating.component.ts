@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-detach-ip-floating',
@@ -33,5 +34,8 @@ export class DetachIpFloatingComponent implements OnInit {
   }
 
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
   }
 }

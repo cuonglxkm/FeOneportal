@@ -199,7 +199,7 @@
               "children": [
                 {
                   "text": "File System",
-                  "link": "/app-smart-cloud/networks/file-storage/file-system/list"
+                  "link": "/app-smart-cloud/file-storage/file-system/list"
                 },
                 {
                   "text": "File System Snapshot",
@@ -226,7 +226,7 @@
                   "children": [
                     {
                       "text": "File System",
-                      "link": "/app-smart-cloud/file-system/list"
+                      "link": "/app-smart-cloud/file-storage/file-system/list"
                     },
                     {
                       "text": "File System Snapshot",
