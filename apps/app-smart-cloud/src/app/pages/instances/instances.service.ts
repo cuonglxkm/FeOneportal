@@ -261,4 +261,12 @@ export class InstancesService extends BaseService {
       }/offers?productId=${productId}`
     );
   }
+
+  getDetailProductByUniqueName(name: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/products?uniqueName=${name}`
+    );
+  }
 }

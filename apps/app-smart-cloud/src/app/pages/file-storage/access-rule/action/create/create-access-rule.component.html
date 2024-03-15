@@ -1,4 +1,4 @@
-<button nz-button nzType="primary" nzSize="large" (click)="showModalCreate()">
+<button nz-button nzType="primary" nzSize="large" (click)="showModalCreate()" style="margin-left: 10px;">
   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
   <span class="button-text-primary">Thêm Access Rule</span>
 </button>
@@ -29,9 +29,10 @@
         </nz-form-label>
         <nz-form-control>
           <nz-select formControlName="accessLevel"
-                     nzPlaceHolder="Chọn Access Level">
-            <nz-option [nzValue]="1" [nzLabel]="'Read-Only'"></nz-option>
-            <nz-option [nzValue]="2" [nzLabel]="'Read-Write'"></nz-option>
+                     nzPlaceHolder="Chọn Access Level"
+                     nzSize="large">
+            <nz-option [nzValue]="'ro'" [nzLabel]="'Read-Only'"></nz-option>
+            <nz-option [nzValue]="'rw'" [nzLabel]="'Read-Write'"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -48,11 +49,15 @@
                   nzPopoverPlacement="bottom"></span>
           </div>
         </nz-form-label>
-        <nz-form-control>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="accessToErrorTpl">
           <nz-input-group>
             <input nz-input class="input-custom" formControlName="accessTo" />
           </nz-input-group>
         </nz-form-control>
+        <ng-template #accessToErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Access To không được để trống</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">Access To có dạng x.x.x.x</ng-container>
+        </ng-template>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
         <nz-space nzSize="middle">

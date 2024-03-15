@@ -57,6 +57,7 @@
               <input nz-input
                      class="input-custom"
                      formControlName="name"
+                     id="name"
                      [placeholder]="'Nhập tên Volume'" [maxLength]="70" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>

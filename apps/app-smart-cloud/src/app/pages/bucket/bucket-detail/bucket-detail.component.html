@@ -61,34 +61,84 @@
         <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
         <span class="button-text-primary">Tải zip</span>
       </button>
-      <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
+      <button nz-button nzType="primary" (click)="isVisibleCreateFolder = true" nzSize="large">
         <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
         <span class="button-text-primary">Tạo thư mục</span>
       </button>
-      <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
+      <button nz-button nzType="primary" (click)="isVisibleUploadFile = true" nzSize="large"
+              style="background-color: #43B000;border-color: #43B000">
         <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
         <span class="button-text-primary">Tải file lên</span>
       </button>
     </div>
   </div>
-  <!--  <div style="border: 5px; border-color: black">-->
-  <!--    <h1>xin chao cac em</h1>-->
-  <!--  </div>-->
+
+
+  <div style="border: 1px solid #E2E2E9;margin-bottom: 10px; height: 40px ; display: flex; align-items: center;">
+    <img style="padding-right: 10px;padding-left: 10px;" src="assets/imgs/box.svg" alt=""/>
+    <ng-container *ngFor="let item of listOfFolder">
+      <div style="font-weight: bold;padding-right: 10px;" (click)="toFolder(item)">> {{item.name}} </div>
+    </ng-container>
+  </div>
   <!-- Bảng-->
   <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
             [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
             (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
     <thead>
     <tr>
-      <th>Tên VPC</th>
-      <th>Ngày khởi tạo</th>
-      <th>Ngày hết hạn</th>
-      <th>Trạng thái</th>
-      <th>Trạng thái tác vụ</th>
+      <th>Tên</th>
+      <th>Kích thước</th>
+      <th>Loại</th>
+      <th>Thời gian chỉnh sửa</th>
+      <th>Quyền truy cập</th>
       <th>Thao tác</th>
     </tr>
     </thead>
-    <tbody>a</tbody>
+    <tbody>
+    <ng-container *ngFor="let item of listOfData">
+      <tr>
+        <td *ngIf="item.type != 'folder'">{{item.name}}</td>
+        <td *ngIf="item.type == 'folder'" style="color: #0074CC">
+          <img style="padding-right: 5px;" src="assets/imgs/folder.svg" alt=""/>
+          {{item.name}}
+        </td>
+        <td>{{item.size}}</td>
+        <td>{{item.type}}</td>
+        <td>{{item.time}}</td>
+        <td>{{item.role}}</td>
+        <td>
+          <div>
+            <!--            <img  style="padding-right: 5px;" src="assets/imgs/document-download.svg" alt=""/>-->
+            <span style="color: #0066B3; margin-right: 10px;" *ngIf="item.type != 'folder'"
+                  nz-tooltip
+                  nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+                  nz-icon nzType="download" nzTheme="outline"></span>
+            <a *ngIf="item.type != 'folder'" nz-dropdown [nzDropdownMenu]="menu">
+              <span nz-icon nzType="more"></span>
+            </a>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item>Phiên bản ({{version}})</li>
+                <li nz-menu-item>Sao chép</li>
+                <li nz-menu-item>Chia sẻ</li>
+                <li nz-menu-item>Quản lý phân quyền</li>
+                <li nz-menu-item>Chi tiết</li>
+                <li nz-menu-item style="color: red">Xóa</li>
+              </ul>
+            </nz-dropdown-menu>
+            <span style="color: #0066B3; margin-right: 10px;" *ngIf="item.type == 'folder'"
+                  nz-tooltip
+                  nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+                  nz-icon nzType="eye" nzTheme="outline"></span>
+            <span style="color: #0066B3" *ngIf="item.type == 'folder'"
+                  nz-tooltip
+                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline"></span>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
   </nz-table>
 </nz-card>
 
@@ -108,45 +158,118 @@
       <tbody>
       <tr *ngFor="let item of dataFilter">
         <td style="width: 28%">
-          <nz-select [(ngModel)]="item.name" (ngModelChange)="selectCol(item, $event)" nzSize="large" style="width: 100%;">
+          <nz-select [(ngModel)]="item.name" (ngModelChange)="selectCol(item, $event)" nzSize="large"
+                     style="width: 100%;">
             <nz-option *ngFor="let p of colReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
         </td>
         <td style="width: 20%">
-          <nz-select *ngIf="item.name == 'Tên'" [(ngModel)]="item.condition" (ngModelChange)="selectCondition(item.orderNum, 1,$event)" nzSize="large" style="width: 100%;">
+          <nz-select *ngIf="item.name == 'Tên'" [(ngModel)]="item.condition"
+                     (ngModelChange)="selectCondition(item.orderNum, 1,$event)" nzSize="large" style="width: 100%;">
             <nz-option *ngFor="let p of conditionNameReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
-          <nz-select *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.condition" (ngModelChange)="selectCondition(item.orderNum, 2,$event)" nzSize="large" style="width: 100%;">
+          <nz-select *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.condition"
+                     (ngModelChange)="selectCondition(item.orderNum, 2,$event)" nzSize="large" style="width: 100%;">
             <nz-option *ngFor="let p of conditionTimeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
-          <nz-select *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.condition" (ngModelChange)="selectCondition(item.orderNum, 3,$event)" nzSize="large" style="width: 100%;">
+          <nz-select *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.condition"
+                     (ngModelChange)="selectCondition(item.orderNum, 3,$event)" nzSize="large" style="width: 100%;">
             <nz-option *ngFor="let p of conditionCapacityReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
         </td>
         <td style="width: 47%">
-          <input nzSize="large" *ngIf="item.name == 'Tên'" nz-input placeholder="Basic usage" [(ngModel)]="item.value" type="text" style="width: 100%;"/>
-          <nz-date-picker *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.value" nzSize="large" style="width: 100%;"></nz-date-picker>
+          <input nzSize="large" *ngIf="item.name == 'Tên'" nz-input placeholder="Basic usage" [(ngModel)]="item.value"
+                 type="text" style="width: 100%;"/>
+          <nz-date-picker *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.value" nzSize="large"
+                          style="width: 100%;"></nz-date-picker>
           <nz-input-number *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.value"
                            [nzMin]="0" [nzMax]="62" [nzStep]="1" nzSize="large" style="width: 60%;"></nz-input-number>
-          <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'" [(ngModel)]="item.type" (ngModelChange)="selectType(item.condition, $event)" nzSize="large" style="width: 30%;margin-left: 5%;">
+          <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'" [(ngModel)]="item.type"
+                     (ngModelChange)="selectType(item.condition, $event)" nzSize="large"
+                     style="width: 30%;margin-left: 5%;">
             <nz-option *ngFor="let p of capMoreTypeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
-          <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'" [(ngModel)]="item.type" (ngModelChange)="selectType(item.condition, $event)" nzSize="large" style="width: 30%;margin-left: 5%;">
+          <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'" [(ngModel)]="item.type"
+                     (ngModelChange)="selectType(item.condition, $event)" nzSize="large"
+                     style="width: 30%;margin-left: 5%;">
             <nz-option *ngFor="let p of capLessTypeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
         </td>
         <td style="width: 5%">
-          <button style="border: none;" nz-button (click)="deleteFilter(item.orderNum)" nzSize="large"><img style="margin-top: -4px" src="assets/imgs/trash.svg"/></button>
+          <button style="border: none;" nz-button (click)="deleteFilter(item.orderNum)" nzSize="large"><img
+            style="margin-top: -4px" src="assets/imgs/trash.svg"/></button>
         </td>
       </tr>
       </tbody>
     </nz-table>
-    <button nz-button *ngIf="isVisibleAddFilte" nzType="primary" (click)="addFilter()" nzSize="large" style="margin-top: 8px;">
+    <button nz-button *ngIf="isVisibleAddFilte" nzType="primary" (click)="addFilter()" nzSize="large"
+            style="margin-top: 8px;">
       <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
       <span class="button-text-primary">Thêm một dòng</span>
     </button>
   </ng-container>
 </nz-modal>
+  <!--Tạo thư mục-->
+  <nz-modal [(nzVisible)]="isVisibleCreateFolder" nzTitle="Tạo thư mục" (nzOnCancel)="isVisibleCreateFolder = false"
+            (nzOnOk)="createFolder()" nzOkText="Xác nhận"
+            nzCancelText="Hủy" [nzStyle]="modalStyle">
+    <ng-container *nzModalContent>
+      <div class="text-label">
+        <div>Đường dẫn</div>
+        <div
+          style="border: 1px solid #E2E2E9;margin-bottom: 10px; height: 40px ; display: flex; align-items: center;">
+          <img style="padding-right: 10px;padding-left: 10px;" src="assets/imgs/box.svg" alt=""/>
+          <ng-container *ngFor="let item of listOfFolder">
+            <div style="font-weight: bold;">>{{item.name}}</div>
+          </ng-container>
+        </div>
+        <div>Tên thư mục (<span class="red-star">*</span>)</div>
+        <input nzSize="large" nz-input placeholder="Nhập tên thư mục" style="width: 100%"
+               formControlName="name">
+      </div>
+    </ng-container>
+  </nz-modal>
+  <!--Tải file lên-->
+  <nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="isVisibleUploadFile = false"
+            (nzOnOk)="uploadFile()" nzOkText="Tải lên tất cả"
+            nzCancelText="Hủy" [nzStyle]="modalStyle">
+    <ng-container *nzModalContent>
+<!--      2 case trống file-->
+      <div *ngIf="emptyFileUpload">
+        <nz-upload nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76" (nzChange)="handleChange($event)">
+          <img style="padding-right: 10px;" src="assets/imgs/document.svg" alt=""/>
+          <img style="padding-right: 10px;" src="assets/imgs/document1.svg" alt=""/>
+          <img style="padding-right: 10px;" src="assets/imgs/task-square.svg" alt=""/>
+          <p style="margin-top: 12px;">Kéo thả vào đây hoặc: <strong> Chọn tải file lên</strong></p>
+        </nz-upload>
+      </div>
+      <div *ngIf="!emptyFileUpload">
+        <p>Lựa chọn phân quyền đọc</p>
+        <nz-radio-group [(ngModel)]="radioValue">
+          <label nz-radio nzValue="Public">Public</label>
+          <label nz-radio nzValue="Private">Private</label>
+        </nz-radio-group>
+
+        <h3>METADATA</h3>
+        <ng-container *ngFor="let item of listOfMetadata">
+          <table>
+            <td>
+              <input nzSize="large" nz-input placeholder="Nhập Key" style="width: 100%" [(ngModel)]="item.key">
+            </td>
+            <td>
+              <input nzSize="large" nz-input placeholder="Nhập Value" style="width: 100%" [(ngModel)]="item.value">
+            </td>
+            <td>
+              <span style="color: #0066B3" *ngIf="item.type == 'folder'"
+                    nz-tooltip
+                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                    nz-icon nzType="delete" nzTheme="outline"></span>
+            </td>
+          </table>
+        </ng-container>
+      </div>
+    </ng-container>
+  </nz-modal>
 
 <!--Xóa-->
 <!--<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"-->

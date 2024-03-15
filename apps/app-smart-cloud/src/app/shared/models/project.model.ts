@@ -17,6 +17,7 @@ export class ProjectModel {
   quotaNetworkCount: number | null;
   quotaRouterCount: number | null;
   quotaLoadBalancerSDNCount: number | null;
+  quotaShareInGb: number | null;
   status: any; // You may want to replace 'any' with a more specific type if you know the possible values.
   description: string | null;
   publicNetworkId: number | null;

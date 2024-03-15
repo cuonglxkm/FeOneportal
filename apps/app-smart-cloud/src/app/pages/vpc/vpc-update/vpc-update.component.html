@@ -3,7 +3,7 @@
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpc']">Quản lý VPC</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo VPC</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chỉnh sửa VPC</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -23,14 +23,16 @@
         </div>
         <nz-form-item>
           <nz-form-label nzRequired>Tên VPC</nz-form-label>
-            <input nz-input placeholder="Nhập tên VPC" style="width: 100%"
-                   [ngModel]="name">
+          <nz-form-control>
+            <input nz-input placeholder="Nội dung trống" style="width: 100%"
+                   formControlName="name">
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Mô tả</nz-form-label>
           <nz-form-control>
-          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
-                    [ngModel]="description"></textarea>
+          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nội dung trống" style="width: 100%"
+                    formControlName="description"></textarea>
           </nz-form-control>
         </nz-form-item>
         <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
@@ -62,7 +64,7 @@
                           [class.initialNameFlavor]="
                             selectedElementFlavor === 'flavor_' + item.id
                           "
-                        >{{ item.offerName | slice : 3 : -4 }}</span
+                        >{{ item.offerName }}</span
                         >
                         <div style="margin-top: -16px">
                           <img
@@ -76,7 +78,7 @@
                           />
                         </div>
                         <span class="priceFlavor">{{
-                          item.price.fixedPrice.amount
+                          item.price.fixedPrice.amount | number:'1.0-0':'en-US'
                           }}</span
                         ><span> đ/tháng</span>
                       </div>
@@ -164,10 +166,10 @@
               <nz-form-control>
                 <nz-row>
                   <nz-input-number style="width: 50%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
-                                   [ngModel]="numOfMonth"
+                                   formControlName="numOfMonth" (ngModelChange)="onChangeTime()"
                                    nzSize="large"></nz-input-number>
                   <div class="text-custom-time" style="display: flex; margin-left: 20px;align-items: center;">
-                    Ngày khởi tạo: {{ createDate | date : 'dd/MM/yyyy' }}
+                    Ngày khởi tạo: {{ today | date : 'dd/MM/yyyy' }}
                   </div>
                 </nz-row>
               </nz-form-control>
@@ -197,15 +199,8 @@
               <nz-form-item>
                 <nz-form-label>Chọn dải IP kết nối Internet (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control>
-                  <nz-input-group nzCompact>
-                    <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet" [nzDisabled]="disableIpConnectInternet"
-                               style="width: 90%; margin-left: -1px;border-radius: 10px;"
-                               nzPlaceHolder="--Chọn IP kết nôi--"
-                               [ngModel]="ipConnectInternet" (nzOpenChange)="openIpSubnet()">
-                      <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
-                                 [nzValue]="i.networkId +'--'+ i.displayName"/>
-                    </nz-select>
-                  </nz-input-group>
+                  <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   formControlName="ipConnectInternet" nzSize="large"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
             </td>
@@ -230,14 +225,14 @@
           </table>
         </div>
         <div *ngIf="selectIndexTab == 0">
-          <nz-form-item *ngIf="openIPType == true">
+          <nz-form-item>
             <nz-form-label>Chọn loại IP (<span class="text-red">*</span>)</nz-form-label>
             <nz-form-control>
               <nz-input-group nzCompact>
                 <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                            style="width: 95%; margin-left: -1px;border-radius: 10px;"
-                           nzPlaceHolder="--Chọn loại IP--"
-                           [ngModel]="ipType" (nzOpenChange)="calculate()">
+                           nzPlaceHolder="--Nội dung trống--"
+                           formControlName="ipType" (nzOpenChange)="calculate()">
                   <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"
                              [nzValue]="i.value"/>
                 </nz-select>
@@ -374,7 +369,7 @@
                       <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                                  style="width: 90%; margin-left: -1px;border-radius: 10px;"
                                  nzPlaceHolder="--Chọn gói Load Balancer-"
-                                 [ngModel]="loadBalencer" formControlName="" (nzOpenChange)="calculate()">
+                                 formControlName="ipSubnet" (nzOpenChange)="calculate()">
                         <nz-option *ngFor="let i of listLoadBalancer" [nzLabel]="i.displayName"
                                    [nzValue]="i.networkId"/>
                       </nz-select>
@@ -468,7 +463,7 @@
             </td>
           </tr>
           <tr class="text-label">
-            <td><i>({{numOfMonth || 0}} tháng)</i></td>
+            <td><i>({{this.form.controls['numOfMonth'].value || 0}} tháng)</i></td>
             <td nzAlign="right">VNĐ/tháng</td>
           </tr>
           <tr class="text-label">
@@ -486,7 +481,7 @@
           <span nz-icon nzType="close" nzTheme="outline"></span>
           <span>Hủy</span>
         </button>
-        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
+        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="updateVpc()"
                 [disabled]="form.invalid || (selectIndexTab == 0 && selectedElementFlavor == null)">
           <span nz-icon nzType="wallet" nzTheme="outline"></span>
           <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
