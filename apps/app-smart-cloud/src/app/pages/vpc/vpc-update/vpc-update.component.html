@@ -1,9 +1,9 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chi tiết VPC'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chỉnh sửa VPC'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpc']">Chi tiết VPC</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chi tiết VPC</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpc']">Quản lý VPC</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chỉnh sửa VPC</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -64,7 +64,7 @@
                           [class.initialNameFlavor]="
                             selectedElementFlavor === 'flavor_' + item.id
                           "
-                        >{{ item.offerName | slice : 3 : -4 }}</span
+                        >{{ item.offerName }}</span
                         >
                         <div style="margin-top: -16px">
                           <img

@@ -37,10 +37,21 @@
   <div nz-col [nzSpan]="18" class="gutter-row">
     <nz-card>
       <h2 class="custom-title">Thông tin lịch Snapshot</h2>
-      <form nz-form [nzLayout]="'vertical'">
+      <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
           <nz-form-label nzFor="name" nzRequired>Tên File System</nz-form-label>
-          <input nz-input type="text" required placeholder="Chọn File System" />
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Chọn File System"
+            formControlName="nameFileSystem"
+          >
+            <nz-option
+              *ngFor="let data of response?.records"
+              [nzLabel]="data.name"
+              [nzValue]="data.name"
+            ></nz-option>
+          </nz-select>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzFor="name" nzRequired>Tên Snapshot</nz-form-label>
@@ -49,6 +60,7 @@
             type="text"
             required
             placeholder="Nhập tên Snapshot"
+            formControlName="nameSnapshot"
           />
         </nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
@@ -61,11 +73,11 @@
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div style="margin-bottom: 12px">
         <h3 class="custom-subtitle">Tên File System</h3>
-        <span>Filesystem_01</span>
+        <span>{{ form.value.nameFileSystem }}</span>
       </div>
       <div style="margin-bottom: 20px">
         <h3 class="custom-subtitle">Tên Snapshot</h3>
-        <span>Snapshot_01</span>
+        <span>{{ form.value.nameSnapshot }}</span>
       </div>
       <button
         nz-button

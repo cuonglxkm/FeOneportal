@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-bucket-configure',
@@ -7,8 +8,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketConfigureComponent implements OnInit {
+  bucketName: string;
+
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.bucketName = this.activatedRoute.snapshot.paramMap.get('bucketName');
   }
 
   activePrivate: boolean = true;

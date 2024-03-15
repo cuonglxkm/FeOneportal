@@ -183,39 +183,43 @@ export class VpcUpdateComponent {
   }
 
   initFlavors(): void {
-    this.instancesService
-      .getListOffersByProductId('155')
-      .pipe(finalize(() => {
-        this.offerFlavor = this.listOfferFlavors.find(
-          (flavor) => flavor.id === this.data.offerId
-        );
-        this.selectedElementFlavor = 'flavor_' + this.data.offerId;
-      }))
-      .subscribe((data: any) => {
-        this.listOfferFlavors = data.filter(
-          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
-        );
+    this.instancesService.getDetailProductByUniqueName('vpcOnePortal')
+      .subscribe(
+        data => {
+          this.instancesService
+            .getListOffersByProductId('155')
+            .pipe(finalize(() => {
+              this.offerFlavor = this.listOfferFlavors.find(
+                (flavor) => flavor.id === this.data.offerId
+              );
+              this.selectedElementFlavor = 'flavor_' + this.data.offerId;
+            }))
+            .subscribe((data: any) => {
+              this.listOfferFlavors = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
 
-        this.listOfferFlavors.forEach((e: OfferItem) => {
-          e.description = '0 CPU / 0 GB RAM / 0 GB HHD / 0 IP';
-          e.characteristicValues.forEach((ch) => {
-            if (ch.charName.toUpperCase() == 'CPU') {
-              e.description.replace(ch.charOptionValues[0] + " CPU", "0 CPU");
-            }
-            if (ch.charName == 'RAM') {
-              e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
-            }
-            if (ch.charName == 'HHD') {
-              e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
-            }
-            if (ch.charName == 'IP') {
-              e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + " IP");
-              e.ipNumber = ch.charOptionValues[0];
-            }
-          });
-        });
-        this.cdr.detectChanges();
-      });
+              this.listOfferFlavors.forEach((e: OfferItem) => {
+                e.description = '0 CPU / 0 GB RAM / 0 GB HHD / 0 IP';
+                e.characteristicValues.forEach((ch) => {
+                  if (ch.charName.toUpperCase() == 'CPU') {
+                    e.description.replace(ch.charOptionValues[0] + " CPU", "0 CPU");
+                  }
+                  if (ch.charName == 'RAM') {
+                    e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
+                  }
+                  if (ch.charName == 'HHD') {
+                    e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
+                  }
+                  if (ch.charName == 'IP') {
+                    e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + " IP");
+                    e.ipNumber = ch.charOptionValues[0];
+                  }
+                });
+              });
+              this.cdr.detectChanges();
+            });
+        })
   }
 
   onRegionChange(region: RegionModel) {
@@ -331,17 +335,19 @@ export class VpcUpdateComponent {
           this.form.controls['ssd'].setValue(data.quotaSSDInGb);
           if (data.offerId != undefined && data.offerId != null) {
             this.selectIndexTab = 0;
+            if (data.quotaIpv6Count != 0) {
+              this.form.controls['ipType'].setValue('2');
+            } else if (data.quotaIpPublicCount != 0) {
+              this.form.controls['ipType'].setValue('0');
+            } else if (data.quotaIpFloatingCount != 0) {
+              this.form.controls['ipType'].setValue('1');
+            }
           } else {
-            this.selectIndexTab = 0;
+            console.log(this.selectIndexTab)
+            this.selectIndexTab = 1;
+            console.log(this.selectIndexTab)
           }
 
-          if (data.quotaIpv6Count != 0) {
-            this.form.controls['ipType'].setValue('2');
-          } else if (data.quotaIpPublicCount != 0) {
-            this.form.controls['ipType'].setValue('0');
-          } else if (data.quotaIpFloatingCount != 0) {
-            this.form.controls['ipType'].setValue('1');
-          }
           this.numberNetwork = data.quotaNetworkCount
           this.numberRouter = data.quotaRouterCount
           this.numberSecurityGroup = data.quotaSecurityGroupCount
