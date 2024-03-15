@@ -1,0 +1,87 @@
+.borderless {
+  border: none;
+}
+
+::ng-deep .ant-card-head {
+  min-height: 48px;
+  margin-bottom: -1px;
+  padding: 0 24px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 16px;
+  background: transparent;
+  border-radius: 2px 2px 0 0;
+  border: none;
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 4px;
+}
+
+input,
+textarea,
+.border-card,
+.border-button {
+  border-radius: 4px;
+}
+
+p, span {
+  font-size: 16px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.weigth-600 {
+  font-weight: 600;
+}
+
+.price-panel {
+  background-color: #cce9ff;
+  border-radius: 5px;
+}
+
+.price-color {
+  color: #0066b3;
+  font-weight: 600;
+  width: 100%;
+  font-size: 16px;
+  text-align: right;
+}
+
+.price-style {
+  position: relative;
+  float: right;
+}
+
+.unit-color {
+  color: #4c4f67;
+}
+
+.total-color {
+  color: #ea3829;
+  font-weight: 600;
+  width: 100%;
+  font-size: 16px;
+  text-align: right;
+}
+
+.divider-style {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: none;
+  color: var(--Dark, #2b2d3b);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}

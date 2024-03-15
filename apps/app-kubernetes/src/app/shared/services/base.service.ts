@@ -15,7 +15,8 @@ export abstract class BaseService {
     catalogs: '/catalogs',
     actionlogs: '/actionlogs',
     iam: '/iam',
-    payments: '/payments'
+    payments: '/payments',
+    k8s: '/k8s-service'
   }
   protected baseUrl: string;
 
