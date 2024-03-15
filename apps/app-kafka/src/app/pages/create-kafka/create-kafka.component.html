@@ -12,7 +12,7 @@
 </page-header>
 
 <div nz-row [nzGutter]="16">
-  <div nz-col [nzSpan]="16" class="gutter-row">
+  <div nz-col [nzSpan]="16" class="form-new">
     <form nz-form [formGroup]="myform" nzLayout="horizontal" nzLabelAlign="left">
       
       <nz-card class="border-card">
@@ -48,7 +48,7 @@
             <nz-form-item class="mt-4">
               <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Phiên bản Kafka</nz-form-label>
               <nz-form-control nzErrorTip="Vui lòng chọn phiên bản Kafka">
-                <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion">
+                <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" nzPlaceHolder="Chọn phiên bản Kafka">
                   <nz-option [nzValue]="data.helmChartVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
                 </nz-select>
               </nz-form-control>
@@ -58,7 +58,7 @@
 
         <nz-form-item>
           <nz-form-label [nzSm]="24" [nzXs]="24">Mô tả</nz-form-label>
-          <nz-form-control>
+          <nz-form-control nzErrorTip="">
             <textarea formControlName="description" nz-input placeholder="Mô tả dịch vụ" [nzAutosize]="{ minRows: 5, maxRows: 12 }"></textarea>
           </nz-form-control>
         </nz-form-item>
@@ -288,7 +288,7 @@
 
   <!-- payment -->
   <div nz-col [nzSpan]="8" class="gutter-row">
-    <nz-card>
+    <nz-card class="price-card">
       <h3><b>Thành tiền</b></h3>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
@@ -303,7 +303,7 @@
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí vRAM</div>
+          <div class="mt-3 ml-3">Chi phí RAM</div>
           <div class="mt-1 ml-3 mb-3 unit-color"><i>2.500 đồng x 3 cái</i></div>
         </div>
         <div nz-col [nzSpan]="12">
@@ -314,7 +314,7 @@
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí vStorage</div>
+          <div class="mt-3 ml-3">Chi phí Storage</div>
           <div class="mt-1 ml-3 mb-3 unit-color"><i>2.500 đồng x 3 cái</i></div>
         </div>
         <div nz-col [nzSpan]="12">

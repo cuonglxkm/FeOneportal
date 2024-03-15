@@ -77,7 +77,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     }
   
     this.eventSource.onmessage = (event) => {
-      console.log('conneted');
+      console.log('connected');
       const res = JSON.parse(event.data);
         if (res.status == AppConstants.NOTI_SUCCESS) {
           this.getListService(1000, 1, '', -1);

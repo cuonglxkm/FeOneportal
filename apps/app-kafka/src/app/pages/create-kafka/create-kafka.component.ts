@@ -50,31 +50,31 @@ export class CreateKafkaComponent implements OnInit {
     {
       servicePackCode: 'medium',
       servicePackName: 'Medium',
-      price: 360172,
+      price: 720344,
       unit: 'đ/tháng',
       broker: 3,
-      vCpu: 6,
-      ram: 6,
+      vCpu: 2,
+      ram: 8,
       storage: 15
     },
     {
       servicePackCode: 'large',
       servicePackName: 'Large',
-      price: 360172,
+      price: 1440688,
       unit: 'đ/tháng',
       broker: 3,
-      vCpu: 6,
-      ram: 6,
+      vCpu: 4,
+      ram: 16,
       storage: 15
     },
     {
       servicePackCode: 'xLarge',
       servicePackName: 'XLarge',
-      price: 360172,
+      price: 2881376,
       unit: 'đ/tháng',
       broker: 3,
-      vCpu: 6,
-      ram: 6,
+      vCpu: 8,
+      ram: 32,
       storage: 15
     }
   ];
@@ -174,8 +174,6 @@ export class CreateKafkaComponent implements OnInit {
     this.myform.get('ram').setValue(item.ram);
     this.myform.get('storage').setValue(item.storage);
     this.myform.get('broker').setValue(item.broker);
-
-    console.log("xu ly chon: ", this.myform.value);
   }
 
   clicktab(){
@@ -185,15 +183,19 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   onCancelCreate() {
-    this.modalService.confirm({
-      nzTitle: 'Hủy tạo mới Kafka',
-      nzContent: 'Kafka của bạn chưa được tạo. <br>Bạn có muốn hủy tạo mới và xóa bản nháp?',
-      nzOkText: "Xác nhận",
-      nzCancelText: "Hủy",
-      nzOnOk: () => this.navigateToList()
+    this.modalService.create({
+      nzTitle: 'Xác nhận hủy tạo mới Kafka',
+      nzContent: '<h3>Bạn có chắc chắn muốn ngừng tạo mới dịch vụ Kafka?'
+        + '<br> <i>Lưu ý: Các thông tin đã nhập sẽ không được lưu lại.</i></h3>',
+      nzBodyStyle: { textAlign: 'center' },
+      nzOkText: 'Xác nhận',
+      nzOkType: 'primary',
+      nzOkDanger: false,
+      nzOnOk: () => this.navigateToList(),
+      nzCancelText: 'Hủy'
     });
   }
-
+  
   navigateToList() {
     this.router.navigate(['/app-kafka']);
   }
