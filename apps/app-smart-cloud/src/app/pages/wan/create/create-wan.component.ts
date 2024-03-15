@@ -38,6 +38,7 @@ export class CreateWanComponent {
 
   showModalCreate() {
     this.isVisible = true
+    this.isLoading = false
     this.getListWans()
   }
 

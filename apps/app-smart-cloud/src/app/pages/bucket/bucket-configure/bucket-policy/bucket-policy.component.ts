@@ -32,7 +32,9 @@ export class BucketPolicyComponent implements OnInit {
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }
-  searchBucketPolicy() {}
+  searchBucketPolicy() {
+    
+  }
 
   isVisibleCreate = false;
   modalCreate() {

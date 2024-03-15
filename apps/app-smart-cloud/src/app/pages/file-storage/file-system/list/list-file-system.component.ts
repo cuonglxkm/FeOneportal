@@ -49,7 +49,7 @@ export class ListFileSystemComponent implements OnInit {
   }
 
   navigateToCreateFileSystem() {
-    this.router.navigate(['/app-smart-cloud/networks/file-storage/file-system/create']);
+    this.router.navigate(['/app-smart-cloud/file-storage/file-system/create']);
   }
 
   onPageSizeChange(value) {
@@ -101,6 +101,7 @@ export class ListFileSystemComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe(data => {

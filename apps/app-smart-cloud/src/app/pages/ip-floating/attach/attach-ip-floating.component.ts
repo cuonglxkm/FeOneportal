@@ -7,6 +7,7 @@ import { VlanService } from '../../../shared/services/vlan.service';
 import { IpFloatingService } from '../../../shared/services/ip-floating.service';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormSearchNetwork, NetWorkModel, Port } from '../../../shared/models/vlan.model';
+import { FormAction } from '../../../shared/models/ip-floating.model';
 
 @Component({
   selector: 'one-portal-attach-ip-floating',
@@ -23,15 +24,20 @@ export class AttachIpFloatingComponent implements OnInit {
   isVisible: boolean = false
   isLoading: boolean = false
 
+  isLoadingVlan: boolean = false
+  isLoadingPort: boolean = false
+
   listNetwork: NetWorkModel[] = []
   listPort: Port[] = []
 
+  networkId: string
+
   validateForm: FormGroup<{
     networkId: FormControl<number>
-    portId: FormControl<number>
+    portId: FormControl<string>
   }> = this.fb.group({
     networkId: [0, [Validators.required]],
-    portId: [0, [Validators.required]]
+    portId: [null as string, [Validators.required]]
   });
 
   constructor(private router: Router,
@@ -45,6 +51,7 @@ export class AttachIpFloatingComponent implements OnInit {
 
   showModal() {
     this.isVisible = true
+    this.getListNetwork()
   }
 
   handleCancel() {
@@ -55,31 +62,65 @@ export class AttachIpFloatingComponent implements OnInit {
   }
 
   submitForm() {
+    if(this.validateForm.valid) {
+      console.log('form attach', this.validateForm.getRawValue())
+      let formAction = new FormAction()
+      formAction.id = this.idIpFloating
+      formAction.portId = this.validateForm.controls.portId.value
+      formAction.action = 'attach'
+      this.ipFloatingService.action(formAction).subscribe(data => {
+        this.notification.success('Thành công', 'Gắn IP Floating thành công')
+      }, error => {
+        this.notification.error('Thất bại', 'Gắn IP Floating thất bại')
+      })
+    }
 
   }
 
   onSelectedChange(value) {
-    this.validateForm.controls.networkId.setValue(value)
+    this.networkId = value
 
-    this.getPortByNetwork(value)
-
+    if(this.networkId != null || this.networkId != undefined || this.networkId != '') {
+      this.getPortByNetwork(this.networkId)
+    }
   }
+
   getListNetwork() {
+    this.isLoadingVlan = true
+
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork()
     formSearchNetwork.region = this.region
     formSearchNetwork.pageSize = 9999
     formSearchNetwork.pageNumber = 1
     formSearchNetwork.networktAddress = null
     formSearchNetwork.vlanName = null
+    formSearchNetwork.project = this.project
+
     this.vlanService.getVlanNetworks(formSearchNetwork).subscribe(data => {
       this.listNetwork = data.records
+      this.isLoadingVlan = false
+    }, error => {
+      this.isLoadingVlan = false
+      this.listNetwork = null
     })
+
   }
 
   getPortByNetwork(idNetwork) {
-    this.vlanService.getPortByNetwork(idNetwork, this.region, 9999, 1, null).subscribe(data => {
-      this.listPort = data.records
+    this.isLoadingPort = true
+    this.vlanService.getVlanByNetworkId(idNetwork).subscribe(data => {
+      this.vlanService.getPortByNetwork(data.cloudId, this.region, 9999, 1, null).subscribe(item => {
+        this.listPort = item.records
+        this.isLoadingPort = false
+      }, error => {
+        this.listPort = null
+        this.isLoadingPort = false
+      })
+    }, error => {
+      this.listPort = null
+      this.isLoadingPort = false
     })
+
   }
 
   ngOnInit() {

@@ -59,22 +59,25 @@
       </div>
     </td>
     <td *ngIf="!index.attachedDevice.includes('network:dhcp')">
-      <div *ngIf="!(index.instanceName)">
-        <one-portal-attach-port [region]="region"
+      <div style="display: flex;">
+        <div *ngIf="!(index.instanceName)">
+          <one-portal-attach-port [region]="region"
+                                  [project]="project"
+                                  [id]="index.id"
+                                  (onOk)="handleOkAttach()"/>
+        </div>
+        <div *ngIf="(index.instanceName)">
+          <one-portal-detach-port [region]="region"
+                                  [project]="project"
+                                  [id]="index.id"
+                                  (onOk)="handleOkDetach()"/>
+        </div>
+        <one-portal-delete-port [region]="region"
                                 [project]="project"
                                 [id]="index.id"
-                                (onOk)="handleOkAttach()"/>
+                                (onOk)="handleOkDeletePort()"/>
       </div>
-      <div *ngIf="(index.instanceName)">
-        <one-portal-detach-port [region]="region"
-                                [project]="project"
-                                [id]="index.id"
-                                (onOk)="handleOkDetach()"/>
-      </div>
-      <one-portal-delete-port [region]="region"
-                              [project]="project"
-                              [id]="index.id"
-                              (onOk)="handleOkDeletePort()"/>
+
     </td>
     <td *ngIf="index.attachedDevice.includes('network:dhcp')">
       <div *ngIf="!(index.instanceName)" >

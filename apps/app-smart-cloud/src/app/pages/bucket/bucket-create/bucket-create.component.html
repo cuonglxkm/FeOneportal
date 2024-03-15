@@ -35,6 +35,7 @@
                       class="input-custom"
                       nz-input
                       formControlName="name"
+                      [(ngModel)]="bucketName"
                       id="name"
                       placeholder="Nhập tên Bucket"
                       maxlength="50"
@@ -155,7 +156,7 @@
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-value"> bucket 01 </span>
+            <span class="text-value"> {{ bucketName }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -165,7 +166,8 @@
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-value"> private </span>
+            <span *ngIf="activePrivate" class="text-value"> Private </span>
+            <span *ngIf="activePublic" class="text-value"> Public </span>
           </nz-col>
         </nz-row>
         <nz-row>
