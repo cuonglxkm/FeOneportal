@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { WanService } from '../../../shared/services/wan.service';
-import { FormSearchWan, Wan } from '../../../shared/models/wan.model';
+import { FormCreate, FormSearchWan, Wan } from '../../../shared/models/wan.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-create-wan',
@@ -22,10 +23,10 @@ export class CreateWanComponent {
   isLoadingSelect: boolean = false
 
   validateForm: FormGroup<{
-    wanId: FormControl<string>
+    wanId: FormControl<number>
     ip: FormControl<string>
   }> = this.fb.group({
-    wanId: [null as string, [Validators.required]],
+    wanId: [null as number, [Validators.required]],
     ip: [null as string]
   });
 
@@ -33,7 +34,8 @@ export class CreateWanComponent {
 
   constructor(private fb: NonNullableFormBuilder,
               private wanService: WanService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notification: NzNotificationService) {
   }
 
   showModalCreate() {
@@ -65,7 +67,28 @@ export class CreateWanComponent {
   }
 
   submitForm() {
-
+    this.isLoading = true
+    let formCreate = new FormCreate()
+    formCreate.networkId = this.validateForm.controls.wanId.value
+    formCreate.regionId = this.region
+    formCreate.isFloating = false
+    formCreate.ipAddress = this.validateForm.controls.ip.value
+    this.wanService.create(formCreate).subscribe(data => {
+      if(data) {
+        this.isVisible = false
+        this.isLoading = false
+        this.notification.success('Thành công', 'Cấp phát IP WAN thành công')
+        this.onOk.emit(data)
+      } else {
+        this.isVisible = false
+        this.isLoading = false
+        this.notification.error('Thất bại', 'Cấp phát IP WAN thất bại')
+      }
+    }, error => {
+      this.isVisible = false
+      this.isLoading = false
+      this.notification.error('Thất bại', 'Cấp phát IP WAN thất bại')
+    })
   }
 
 }

@@ -19,7 +19,7 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <form nz-form nzLayout="vertical">
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="doResizeFileSystem()" nzLayout="vertical">
     <nz-row nzGutter="24" nzJustify="space-between">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
@@ -72,7 +72,8 @@
                                    formControlName="storage"
                                    class="input-custom"
                                    [ngModel]="storage"
-                                   [nzMin]="1" [nzStep]="1"></nz-input-number>
+                                   (ngModelChange)="storage = $event"
+                                   [nzMin]="storage" [nzStep]="1"></nz-input-number>
                   <ng-template #storageErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
                   </ng-template>
@@ -83,8 +84,8 @@
                   <div>
                     <span>Dung lượng File System của quý khách</span>
                     <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                  </div>
-                  <span></span>
+                  </div><br>
+                  <span>{{ quotaShareInGb }}</span>
                 </nz-form-label>
               </nz-form-item>
             </nz-col>

@@ -99,7 +99,7 @@ import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.comp
 import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
 import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
-import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { ResizeFileSystemComponent } from './file-storage/file-system/action/extend/resize-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
@@ -456,7 +456,7 @@ const routes: Routes = [
   },
   {
     path: 'file-storage/file-system/extend/:id',
-    component: ExtendFileSystemComponent
+    component: ResizeFileSystemComponent
   },
   {
     path: 'file-storage/file-system/:idFileSystem/access-rule/list',

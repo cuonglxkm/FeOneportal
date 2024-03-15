@@ -62,9 +62,14 @@
       <tr *ngFor="let data of fixTable.data">
         <td>{{ data.wanName }}</td>
         <td>{{ data.ipAddress }}</td>
-        <td></td>
-        <td>{{ data.attachedVmName }}</td>
+        <td>{{ data.subnetAddress }}</td>
         <td>
+          <div *ngIf="data.attachedVmName == null">
+            -
+          </div>
+          <div *ngIf="data.attachedVmName !- null">{{ data.attachedVmName }}</div>
+        </td>
+        <td style="display: flex;">
           <div *ngIf="data.attachedVmName != undefined || data.attachedVmName != null">
             <one-portal-detach-wan [region]="region"
                                    [project]="project"
@@ -73,7 +78,7 @@
                                    [instance]="data.attachedVmName"
                                    (onOk)="handleOkDetach()"/>
           </div>
-          <div *ngIf="data.attachedVmName != undefined || data.attachedVmName != null">
+          <div *ngIf="data.attachedVmName == undefined || data.attachedVmName == null">
             <one-portal-attach-wan [region]="region"
                                    [project]="project"
                                    [idWan]="data.id"  (onOk)="handleOkAttach()"/>

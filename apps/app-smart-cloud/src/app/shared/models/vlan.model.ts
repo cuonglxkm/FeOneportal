@@ -73,7 +73,7 @@ export class Subnet {
   hostRouters: string
   enableDhcp: boolean
   networkName: string
-  gatewayIP: string
+  gatewayIp: string
   cloudId: string
   vlanId: string
   adminState: boolean

@@ -8,6 +8,7 @@ export class WanIP {
   customerId: number
   regionId: number
   attachedVmId: number
+  subnetAddress: string
 }
 
 export class FormSearch {
