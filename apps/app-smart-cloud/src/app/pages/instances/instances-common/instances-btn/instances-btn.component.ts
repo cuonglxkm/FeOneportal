@@ -98,6 +98,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   isOk = false;
   passwordVisible = false;
   passwordRepeatVisible = false;
+  autoCreate: boolean = false;
 
   isVisibleResetPass = false;
   modalResetPassword() {

@@ -2,9 +2,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnInit,
 } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { BucketService } from 'src/app/shared/services/bucket.service';
 
 class Tag {
   id: number = 0;
@@ -19,11 +22,13 @@ class Tag {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LifecycleConfigComponent implements OnInit {
+  @Input() bucketName: string;
   inputSearch: string = '';
   listLifecycle: any[] = [];
-  loading: boolean = false;
+  loading: boolean = true;
 
   constructor(
+    private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -31,7 +36,29 @@ export class LifecycleConfigComponent implements OnInit {
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }
-  searchLifeCycle() {}
+  searchLifeCycle() {
+    this.loading = true;
+    this.bucketService
+      .getListBucketLifecycle(this.bucketName)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listLifecycle = data;
+        },
+        error: (e) => {
+          this.listLifecycle = [];
+          this.notification.error(
+            '',
+            'Lấy danh sách Bucket Lifecycle không thành công'
+          );
+        },
+      });
+  }
   createLifeCycle() {}
 
   isVisibleCreate = false;

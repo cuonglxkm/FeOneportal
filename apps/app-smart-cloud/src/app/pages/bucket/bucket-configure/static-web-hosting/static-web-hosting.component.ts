@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import { BucketService } from 'src/app/shared/services/bucket.service';
 
 @Component({
   selector: 'one-portal-static-web-hosting',
@@ -7,13 +13,15 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StaticWebHostingComponent implements OnInit {
+  @Input() bucketName: string;
   inputFile: string;
   inputErrorFile: string;
   inputURL: string;
   isNavigate: boolean = false;
 
+  constructor(private bucketService: BucketService) {}
+
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   staticOn: boolean = true;

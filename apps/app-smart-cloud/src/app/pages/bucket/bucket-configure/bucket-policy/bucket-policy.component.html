@@ -20,7 +20,7 @@
       name="name"
       nz-input
       placeholder="Tìm kiếm tên"
-      [(ngModel)]="inputSearch"
+      [(ngModel)]="searchValue"
     />
   </nz-input-group>
   <ng-template #prefixIconSearch>
@@ -65,10 +65,10 @@
     <ng-container *ngFor="let item of listBucketPolicy">
       <tr>
         <td>
-          {{ item.name }}
+          {{ item.user }}
         </td>
-        <td>{{ item.type }}</td>
-        <td>{{ item.attachedVia }}</td>
+        <td>{{ item.permission }}</td>
+        <td>{{ item.action }}</td>
         <td><a (click)="modalJson(item)">Xem chi tiết JSON</a></td>
         <td nzRight>
           <img
