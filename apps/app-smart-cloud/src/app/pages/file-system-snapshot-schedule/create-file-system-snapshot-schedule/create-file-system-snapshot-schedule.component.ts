@@ -1,15 +1,18 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import { getCurrentRegionAndProject } from '@shared';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { VlanService } from '../../../shared/services/vlan.service';
-import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import { DatePipe } from '@angular/common';
-import { AppValidator } from '../../../../../../../libs/common-utils/src';
+import { RegionModel } from 'src/app/shared/models/region.model';
 import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
+import { AppValidator } from '../../../../../../../libs/common-utils/src';
+import { ProjectModel } from 'src/app/shared/models/project.model';
+import { getCurrentRegionAndProject } from '@shared';
+import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
+import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 
 
 @Component({
@@ -18,23 +21,24 @@ import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.mode
   styleUrls: ['./create-file-system-snapshot-schedule.component.less'],
 })
 export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
-  // region: number;
-  // project: number;
-
-  // isLoading: boolean;
-  // showWarningName: boolean;
-  // contentShowWarningName: string;
-  // volumeId: number;
-  // volumeList: NzSelectOptionInterface[] = [];
-  // userId: number;
-  // scheduleStartTime: string;
-  // dateStart: string;
-  // descSchedule: string = '';
-  // snapshotMode: string = 'Theo tuần';
-  // numberArchivedCopies = 1;
-
-  // time: Date = new Date();
+  
+  region = JSON.parse(localStorage.getItem('region')).regionId;
+  project = JSON.parse(localStorage.getItem('projectId'));
+  isLoading: boolean = false;
+  customerId: number
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  FileSystem: string[] = ['Apples', 'Nails', 'Bananas', 'Helicopters'];
+  listOfSelectedValue: string[] = [];
+  time: Date = new Date();
+  nameSnapshot: string = ''
+  snapshotRecord = 1;
+  numberOfWeekSelected: string = ''
+  daysOfWeekSelected: string = ''
+  months: number = 1
+  modeType: string = '0'
+  listOfSelectedDate: string[] = [];
+  dateDone: number = 1
+  isVisibleCreate: boolean = false;
   dateOptions: NzSelectOptionInterface[] = [
     { label: 'Hằng ngày', value: '0' },
     { label: 'Theo thứ', value: '1' },
@@ -57,46 +61,39 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit{
     {label: '3 Tuần', value: '3'}
   ]
 
+
   FileSystemSnapshotForm: FormGroup<{
-    nameSnapshot: FormControl<string>;
+    name: FormControl<string>;
     listOfFileSystem: FormControl<string[]>,
-    dateSnapshot: FormControl<Date>,
-    snapshotMode: FormControl<string>,
-    daysOfWeek: FormControl<string>,
-    daysOfWeekMultiple: FormControl<string[]>,
-    numberOfWeek: FormControl<number>,
-    months: FormControl<number>,
-    snapshotRecord: FormControl<number>,
+    runtime: FormControl<Date>,
+    mode: FormControl<string>,
+    dayOfWeek: FormControl<string>,
+    daysOfWeek: FormControl<string[]>,
+    intervalWeek: FormControl<number>,
+    intervalMonth: FormControl<number>,
+    maxSnapshot: FormControl<number>,
     description: FormControl<string>,
-    date: FormControl<number>
+    dates: FormControl<string>,
   }> = this.fb.group({
-    nameSnapshot: ['', [Validators.required, AppValidator.cannotContainSpecialCharactor]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
     listOfFileSystem: [[] as string[], Validators.required],
-    dateSnapshot: [new Date(), Validators.required],
-    snapshotMode: [this.dateOptions[0].value, Validators.required],
-    daysOfWeek: [''],
-    daysOfWeekMultiple: [[] as string[]],
-    numberOfWeek: [null as number],
-    months: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
-    snapshotRecord: [1, [Validators.required, Validators.min(1)]],
+    runtime: [new Date(), Validators.required],
+    mode: [this.dateOptions[0].value as string, Validators.required],
+    dayOfWeek: '',
+    daysOfWeek: [[] as string[]],
+    intervalWeek: [null as number],
+    intervalMonth: [null as number, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
+    maxSnapshot: [null as number, [Validators.required, Validators.min(1)]],
     description: ['', [Validators.maxLength(700)]],
-    date: [1, [Validators.required]],
+    dates: [null as string, [Validators.required]],
+
   });
 
-  FileSystem: string[] = ['Apples', 'Nails', 'Bananas', 'Helicopters'];
-  listOfSelectedValue: string[] = [];
-  time: Date = new Date();
-  nameSnapshot: string = ''
-  snapshotRecord = 1;
-  numberOfWeekSelected: string = ''
-  daysOfWeekSelected: string = ''
-  months: number = 1
-  modeType: string = '0'
+
   isNotSelected(value: string): boolean {
     return this.listOfSelectedValue.indexOf(value) === -1;
   }
-  listOfSelectedDate: string[] = [];
-  dateDone: number = 1
+  
   
   snapshotMode = this.dateOptions[0].value;
   isNotSelectedDate(value: string): boolean {
@@ -111,70 +108,120 @@ getDayLabel(selectedValue: string): string {
   const selectedDay = this.daysOfWeek.find(day => day.value === selectedValue);
   return selectedDay ? selectedDay.label : '';
 }
+
+formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule = new FormCreateFileSystemSsSchedule() 
   ngOnInit(): void {
-    // const now = new Date();
-    // this.scheduleStartTime =
-    //   now.getHours().toString() +
-    //   ':' +
-    //   now.getUTCMinutes().toString() +
-    //   ':' +
-    //   now.getSeconds().toString();
-    // this.userId = this.tokenService.get()?.userId;
-    console.log(this.FileSystemSnapshotForm.value);
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    console.log(this.region);
+    
   }
 
-  submitForm(): void{
-    console.log(this.FileSystemSnapshotForm.value);
-    console.log(this.datepipe.transform(this.FileSystemSnapshotForm.controls.dateSnapshot.value, 'HH:mm:ss', 'vi-VI'));
-    this.notification.success('Thành công', 'Tạo mới lịch backup vm thành công')
+  regionChange(region: RegionModel) {
+    this.region = region.regionId
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      if (data.length) {
+        localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/create'])
+      }
+    });
+  }
+
+  projectChange(project: ProjectModel) {
+    this.project = project?.id
+  }
+  handleSubmit(): void {
+    this.isVisibleCreate = true;    
+  }
+
+  handleCreate(){
+    this.isVisibleCreate = false;
+    this.isLoading = true
+    if (this.FileSystemSnapshotForm.valid) {
+      this.formCreateFileSystemSsSchedule = this.getData()
+      console.log(this.formCreateFileSystemSsSchedule);
+      this.formCreateFileSystemSsSchedule.runtime = this.datepipe.transform(this.FileSystemSnapshotForm.controls.runtime.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
+      this.fileSystemSnapshotScheduleService.create(this.formCreateFileSystemSsSchedule).subscribe(data => {
+        this.notification.success('Thành công', 'Tạo mới lịch file system thành công')
+      }, error => {
+        this.notification.error('Thất bại', 'Tạo mới lịch file system thất bại')
+        console.log(error);
+      })  
+    }
+  }
+
+  handleCancel() {
+    this.isVisibleCreate = false;
+  }
+
+  getData(): any {
+    this.formCreateFileSystemSsSchedule.customerId = this.tokenService.get()?.userId
+    this.formCreateFileSystemSsSchedule.regionId = this.region
+    this.formCreateFileSystemSsSchedule.projectId = this.project
+    this.formCreateFileSystemSsSchedule.name = this.FileSystemSnapshotForm.controls.name.value
+    this.formCreateFileSystemSsSchedule.description = this.FileSystemSnapshotForm.controls.description.value
+    this.formCreateFileSystemSsSchedule.mode = parseInt(this.FileSystemSnapshotForm.controls.mode.value)
+    this.formCreateFileSystemSsSchedule.dayOfWeek = this.FileSystemSnapshotForm.controls.dayOfWeek.value
+    this.formCreateFileSystemSsSchedule.daysOfWeek = this.FileSystemSnapshotForm.controls.daysOfWeek.value
+    this.formCreateFileSystemSsSchedule.description = this.FileSystemSnapshotForm.controls.description.value
+    this.formCreateFileSystemSsSchedule.intervalWeek = this.FileSystemSnapshotForm.controls.intervalWeek.value
+    this.formCreateFileSystemSsSchedule.dates = this.FileSystemSnapshotForm.controls.dates.value
+    this.formCreateFileSystemSsSchedule.duration = 1
+    this.formCreateFileSystemSsSchedule.runtime = this.FileSystemSnapshotForm.controls.runtime.value
+    this.formCreateFileSystemSsSchedule.intervalMonth = this.FileSystemSnapshotForm.controls.intervalMonth.value
+    this.formCreateFileSystemSsSchedule.maxSnapshot = this.FileSystemSnapshotForm.controls.maxSnapshot.value
+    this.formCreateFileSystemSsSchedule.shareIds = [0]
+
+    return this.formCreateFileSystemSsSchedule
   }
 
   modeChange(value: string) {
+    this.FileSystemSnapshotForm.controls.dayOfWeek.clearValidators();
+    this.FileSystemSnapshotForm.controls.dayOfWeek.markAsPristine();
+    this.FileSystemSnapshotForm.controls.dayOfWeek.reset();
+
     this.FileSystemSnapshotForm.controls.daysOfWeek.clearValidators();
     this.FileSystemSnapshotForm.controls.daysOfWeek.markAsPristine();
     this.FileSystemSnapshotForm.controls.daysOfWeek.reset();
 
-    this.FileSystemSnapshotForm.controls.daysOfWeekMultiple.clearValidators();
-    this.FileSystemSnapshotForm.controls.daysOfWeekMultiple.markAsPristine();
-    this.FileSystemSnapshotForm.controls.daysOfWeekMultiple.reset();
+    this.FileSystemSnapshotForm.controls.intervalWeek.clearValidators();
+    this.FileSystemSnapshotForm.controls.intervalWeek.markAsPristine();
+    this.FileSystemSnapshotForm.controls.intervalWeek.reset();
 
-    this.FileSystemSnapshotForm.controls.numberOfWeek.clearValidators();
-    this.FileSystemSnapshotForm.controls.numberOfWeek.markAsPristine();
-    this.FileSystemSnapshotForm.controls.numberOfWeek.reset();
+    this.FileSystemSnapshotForm.controls.intervalMonth.clearValidators();
+    this.FileSystemSnapshotForm.controls.intervalMonth.markAsPristine();
+    this.FileSystemSnapshotForm.controls.intervalMonth.reset();
 
-    this.FileSystemSnapshotForm.controls.months.clearValidators();
-    this.FileSystemSnapshotForm.controls.months.markAsPristine();
-    this.FileSystemSnapshotForm.controls.months.reset();
-
-    this.FileSystemSnapshotForm.controls.date.clearValidators();
-    this.FileSystemSnapshotForm.controls.date.markAsPristine();
-    this.FileSystemSnapshotForm.controls.date.reset();
+    this.FileSystemSnapshotForm.controls.dates.clearValidators();
+    this.FileSystemSnapshotForm.controls.dates.markAsPristine();
+    this.FileSystemSnapshotForm.controls.dates.reset();
     if (value === '0') {
       this.modeType = '0'
     } else if (value === '1') {
       this.modeType = '1'
-      this.FileSystemSnapshotForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
-      this.FileSystemSnapshotForm.controls.daysOfWeekMultiple.markAsDirty();
-      this.FileSystemSnapshotForm.controls.daysOfWeekMultiple.reset();
-    } else if (value === '2') {
-      this.modeType = '2'
-
       this.FileSystemSnapshotForm.controls.daysOfWeek.setValidators([Validators.required]);
       this.FileSystemSnapshotForm.controls.daysOfWeek.markAsDirty();
       this.FileSystemSnapshotForm.controls.daysOfWeek.reset();
+    } else if (value === '2') {
+      this.modeType = '2'
 
-      this.FileSystemSnapshotForm.controls.numberOfWeek.setValidators([Validators.required]);
-      this.FileSystemSnapshotForm.controls.numberOfWeek.markAsDirty();
-      this.FileSystemSnapshotForm.controls.numberOfWeek.reset();
+      this.FileSystemSnapshotForm.controls.dayOfWeek.setValidators([Validators.required]);
+      this.FileSystemSnapshotForm.controls.dayOfWeek.markAsDirty();
+      this.FileSystemSnapshotForm.controls.dayOfWeek.reset();
+
+      this.FileSystemSnapshotForm.controls.intervalWeek.setValidators([Validators.required]);
+      this.FileSystemSnapshotForm.controls.intervalWeek.markAsDirty();
+      this.FileSystemSnapshotForm.controls.intervalWeek.reset();
     } else if (value === '3') {
       this.modeType = '3'
-      this.FileSystemSnapshotForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
-      this.FileSystemSnapshotForm.controls.months.markAsDirty();
-      this.FileSystemSnapshotForm.controls.months.reset();
+      this.FileSystemSnapshotForm.controls.intervalMonth.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
+      this.FileSystemSnapshotForm.controls.intervalMonth.markAsDirty();
+      this.FileSystemSnapshotForm.controls.intervalMonth.reset();
 
-      this.FileSystemSnapshotForm.controls.date.setValidators([Validators.required]);
-      this.FileSystemSnapshotForm.controls.date.markAsDirty();
-      this.FileSystemSnapshotForm.controls.date.reset();
+      this.FileSystemSnapshotForm.controls.dates.setValidators([Validators.required]);
+      this.FileSystemSnapshotForm.controls.dates.markAsDirty();
+      this.FileSystemSnapshotForm.controls.dates.reset();
     }
   }
 
@@ -204,14 +251,13 @@ getDayLabel(selectedValue: string): string {
 
   constructor(
     private router: Router,
-    // @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
-    // private snapshotService: SnapshotVolumeService,
-    // private volumeService: VolumeService,
     // private modalService: NzModalService,
+    private fileSystemSnapshotScheduleService: FileSystemSnapshotScheduleService,
     private notification: NzNotificationService,
     private datepipe: DatePipe,
-    
+    private projectService: ProjectService
   ) {}
 
   goBack() {
