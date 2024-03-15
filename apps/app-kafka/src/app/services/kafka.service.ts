@@ -7,10 +7,11 @@ import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { Pagination } from '../core/models/pagination.model';
-import { BaseService } from './base.service';
-import { KafkaInfor } from '../core/models/kafka-infor.model';
 import { KafkaCreateReq } from '../core/models/kafka-create-req.model';
+import { KafkaInfor } from '../core/models/kafka-infor.model';
+import { Pagination } from '../core/models/pagination.model';
+import { ServicePack } from '../core/models/service-pack.model';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root',
@@ -124,7 +125,7 @@ export class KafkaService extends BaseService {
     return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch}&status=${status==null?"":status}`,{headers});
   }
 
-  createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>>{
+  createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>> {
     const json = {
       'service_name': req.serviceName,
       'version': req.version,
@@ -145,5 +146,9 @@ export class KafkaService extends BaseService {
     };
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/create', json);
+  }
+
+  getListPackageAvailable(): Observable<BaseResponse<ServicePack[]>> {
+    return this.http.get<BaseResponse<ServicePack[]>>(this.kafkaUrl + '/kafka/get-packages');
   }
 }

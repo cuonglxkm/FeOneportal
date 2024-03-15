@@ -124,10 +124,9 @@ textarea,
   -webkit-mask: linear-gradient(90deg,#0000,#000 6% 94%,#0000)
 }
 
-.pack-availabel {
+.item {
+  padding: 10px;
   box-sizing: border-box;
-  width: 25%;
-  margin-right: 15px;
 }
 
 .pack-item {
@@ -190,8 +189,6 @@ textarea,
   text-align: center;
   padding: 20px;
 }
-
-.choose {}
 
 .choose .item-price,
 .choose .item-name,

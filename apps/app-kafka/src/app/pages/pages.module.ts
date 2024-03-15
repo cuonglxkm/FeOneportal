@@ -44,6 +44,7 @@ import { LoadTopicComponent } from './detail/topic-mngt/load-topic/load-topic.co
 import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message-topic.component';
 import { TopicMngtComponent } from './detail/topic-mngt/topic-mngt.component';
 import { ListKafkaComponent } from './list-kafka/list-kafka.component';
+import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -66,6 +67,7 @@ import { ListKafkaComponent } from './list-kafka/list-kafka.component';
     ListKafkaComponent,
     Status2ColorPipe,
     CreateKafkaComponent,
+    CustomCurrencyPipe,
   ],
   imports: [
     PagesRoutingModule,
