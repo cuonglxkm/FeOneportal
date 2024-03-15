@@ -52,4 +52,138 @@ export class BucketService extends BaseService {
       this.httpOptions
     );
   }
+
+  getBucketDetail(bucketName: string): Observable<any> {
+    let url_ = `/object-storage/Bucket/Detail?bucketName=${bucketName}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  setBucketVersioning(
+    bucketName: string,
+    isVersioning: boolean
+  ): Observable<any> {
+    let url_ = `/object-storage/SetBucketVersioning?bucketName=${bucketName}&isVersioning=${isVersioning}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  setBucketACL(bucketName: string, type: string): Observable<any> {
+    let url_ = `/object-storage/SetBucketACL?bucketName=${bucketName}&type=${type}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  getListBucketPolicy(
+    bucketName: string,
+    pageNumber: number,
+    pageSize: number,
+    searchValue: string
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy/GetPagging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  deleteBucketPolicy(bucketName: string, id: string): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  getListBucketCORS(bucketName: string): Observable<any> {
+    let url_ = `/object-storage/ListBucketCORS?bucketName=${bucketName}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  createBucketCORS(data: any): Observable<any> {
+    let url_ = `/object-storage/PutBucketCORS`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  updateBucketCORS(data: any): Observable<any> {
+    let url_ = `/object-storage/UpdateBucketCORS`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteBucketCORS(data: any): Observable<any> {
+    let url_ = `/object-storage/DeleteBucketCORS`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      { headers: this.httpOptions.headers, body: data }
+    );
+  }
+
+  createBucketWebsite(data: any): Observable<any> {
+    let url_ = `/object-storage/PutBucketWebsite`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteBucketWebsite(data: any): Observable<any> {
+    let url_ = `/object-storage/DeleteBucketWebsite`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      { headers: this.httpOptions.headers, body: data }
+    );
+  }
+
+  getListBucketLifecycle(bucketName: string): Observable<any> {
+    let url_ = `/object-storage/ListBucketLifecycle?bucketName=${bucketName}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  createBucketLifecycle(data: any): Observable<any> {
+    let url_ = `/object-storage/PutBucketLifecycle`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  updateBucketLifecycle(data: any): Observable<any> {
+    let url_ = `/object-storage/UpdateBucketLifecycle`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteBucketLifecycle(data: any): Observable<any> {
+    let url_ = `/object-storage/DeleteBucketLifecycle`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      { headers: this.httpOptions.headers, body: data }
+    );
+  }
 }

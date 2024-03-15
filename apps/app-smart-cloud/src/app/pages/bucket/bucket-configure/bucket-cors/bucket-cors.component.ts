@@ -2,9 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnInit,
 } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { BucketCors } from 'src/app/shared/models/bucket.model';
+import { BucketService } from 'src/app/shared/services/bucket.service';
 
 class HeaderName {
   id: number = 0;
@@ -18,20 +22,44 @@ class HeaderName {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketCorsComponent implements OnInit {
+  @Input() bucketName: string;
   inputSearch: string = '';
-  listBucketCors: any[] = [];
+  listBucketCors: BucketCors[] = [];
   listHeaderName: HeaderName[] = [];
-  loading: boolean = false;
+  loading: boolean = true;
 
   constructor(
+    private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.searchBucketCors();
   }
-  searchBucketCors() {}
+  searchBucketCors() {
+    this.loading = true;
+    this.bucketService
+      .getListBucketCORS(this.bucketName)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listBucketCors = data;
+        },
+        error: (e) => {
+          this.listBucketCors = [];
+          this.notification.error(
+            '',
+            'Lấy danh sách Bucket CORS không thành công'
+          );
+        },
+      });
+  }
   createBucketCors() {}
 
   isVisibleCreate = false;
