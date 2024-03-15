@@ -5,7 +5,7 @@
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/list'">File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -67,11 +67,11 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let data of fixTable.data; i as index">
-        <td>{{ index }}</td>
-        <td>{{ data.name }}</td>
+      <tr *ngFor="let data of fixTable.data; index as i">
+        <td>{{ i + 1 }}</td>
+        <td><a [href]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
+        <td>{{ data.statusDisplay }}</td>
         <td>{{ data.status }}</td>
-        <td>{{ data.taskState }}</td>
         <td>{{ data.type }}</td>
         <td>{{ data.protocol }}</td>
         <td>{{ data.size }}</td>
@@ -81,13 +81,13 @@
                                          [project]="project"
                                          [fileSystemId]="data.id"
                                          (onOk)="handleOkEdit()"/>
-            <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+            <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
                   [nzDropdownMenu]="opMenu"></span>
-            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+            <nz-dropdown-menu #opMenu="nzDropdownMenu" >
               <ul nz-menu>
                 <li nz-menu-item>Tạo Snapshot</li>
-                <li nz-menu-item>Điều chỉnh dung lượng</li>
-                <li nz-menu-item>Quản lý Access Rule</li>
+                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/extend/' + data.id">Điều chỉnh dung lượng</li>
+                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">Quản lý Access Rule</li>
                 <one-portal-delete-file-system [region]="region"
                                                [project]="project"
                                                [fileSystemId]="data.id"

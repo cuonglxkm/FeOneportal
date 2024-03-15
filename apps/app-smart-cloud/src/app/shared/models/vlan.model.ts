@@ -25,6 +25,7 @@ export class FormSearchNetwork {
   region: number
   pageSize: number
   pageNumber: number
+  project: number
 }
 
 export class FormSearchPort {

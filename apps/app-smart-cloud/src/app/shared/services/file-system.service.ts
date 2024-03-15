@@ -4,8 +4,9 @@ import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
+  CreateFileSystemRequestModel, CreateFileSystemResponseModel,
   FileSystemDetail,
-  FileSystemModel,
+  FileSystemModel, FormDeleteFileSystem,
   FormEditFileSystem,
   FormSearchFileSystem
 } from '../models/file-system.model';
@@ -45,7 +46,7 @@ export class FileSystemService extends BaseService {
       params = params.append('currentPage', formSearch.currentPage)
     }
     return this.http.get<BaseResponse<FileSystemModel[]>>(this.baseUrl +
-      this.ENDPOINT.provisions + '/file-storage/sharepaging', {
+      this.ENDPOINT.provisions + '/file-storage/shares/paging', {
       params: params
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -62,7 +63,7 @@ export class FileSystemService extends BaseService {
   }
 
   edit(formEdit: FormEditFileSystem) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/shares',
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formEdit.id}`,
       Object.assign(formEdit)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -79,7 +80,7 @@ export class FileSystemService extends BaseService {
 
   getFileSystemById(id: number, region: number){
     return this.http.get<FileSystemDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/shares?id=${id}&regionId=${region}`).pipe(
+      `/file-storage/shares/${id}?regionId=${region}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -92,5 +93,39 @@ export class FileSystemService extends BaseService {
         return throwError(error);
       }))
   }
+
+  create(request: CreateFileSystemRequestModel) {
+    return this.http.post<CreateFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request)).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+  deleteFileSystem(formDelete: FormDeleteFileSystem) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}`, {
+      body: formDelete
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+
 
 }
