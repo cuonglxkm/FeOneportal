@@ -8,4 +8,11 @@ export class KubernetesConstant {
 
   public static DEFAULT_NETWORK_TYPE = "calico";
 
+  // action type
+  public static CREATE_ACTION = "create";
+
+  public static DELETE_ACTION = "delete";
+
+  public static UPGRADE_ACTION = "upgrade";
+
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, Observable, Subscription, catchError, combineLatest, finalize, from, mergeMap, pipe } from 'rxjs';
+import { EMPTY, Observable, Subject, Subscription, catchError, combineLatest, finalize, from, mergeMap, pipe, takeUntil } from 'rxjs';
 import { NotificationConstant } from '../constants/notification.constant';
 import { KubernetesCluster, ProgressData } from '../model/cluster.model';
 import { ClusterStatus } from '../model/status.model';
@@ -9,6 +9,8 @@ import { ClusterService } from '../services/cluster.service';
 import { ShareService } from '../services/share.service';
 import { NotificationWsService } from '../services/ws.service';
 import { Router } from '@angular/router';
+import { environment } from '@env/environment';
+import { KubernetesConstant } from '../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -36,8 +38,8 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
 
   // for progress
   listOfProgress: number[];
-  mapProgress = new Map<string, number>();
   percent: number;
+  eventSources: EventSource[] = [];
 
   // for status
   listOfStatusCluster: ClusterStatus[];
@@ -47,11 +49,13 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     6, // Đang nâng cấp
   ];
 
+  baseUrl = "http://127.0.0.1:16003";
+  // baseUrl = environment['baseUrl'];
+
   constructor(
     private clusterService: ClusterService,
     private websocketService: NotificationWsService,
     private notificationService: NzNotificationService,
-    private shareService: ShareService,
     private ref: ChangeDetectorRef,
     private zone: NgZone,
     private router: Router
@@ -76,7 +80,7 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     // }
   }
 
-  private sseStream: Subscription;
+  private subscription: Subscription;
   ngOnInit(): void {
     // display this page if user haven't any cluster
     this.isShowIntroductionPage = false;
@@ -114,7 +118,7 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
 
-          // get cluster is in-progress (initing or deleting)
+          // get cluster is in-progress (initialing, deleting, upgrading,...)
           if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
@@ -125,50 +129,64 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
         }
 
         // case user refresh page and have mulitple cluster and is in-progress
-        console.log({inprogress: listOfClusterInProgress});
+        console.log({ inprogress: listOfClusterInProgress });
         for (let i = 0; i < listOfClusterInProgress.length; i++) {
           let cluster: KubernetesCluster = listOfClusterInProgress[i];
 
           let progressObs: Observable<any>;
           if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
-            cluster.isProcessing = true;
-            progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName);
+
+            switch (cluster.serviceStatus) {
+              case 1: // initialing
+              case 6: // upgrading
+                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
+                break;
+              case 7: // deleting
+                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
+                break;
+              default:
+                progressObs = EMPTY;
+            }
+
           } else {
             progressObs = EMPTY;
           }
           progress.push(progressObs);
         }
 
-        combineLatest(progress).subscribe(data => {
+        this.unsubscribeObs(this.eventSources);
+        // risk: combineLastet can't emits value if each observable emits at least once value
+        this.subscription = combineLatest(progress).subscribe(data => {
           // console.log({combine: data});
           this.listOfProgress = data;
-          console.log({progress: this.listOfProgress});
+          this.ref.detectChanges();
+          // console.log({ progress: this.listOfProgress });
         });
       }
     });
   }
 
-  baseUrl = "http://127.0.0.1:16003";
-  // baseUrl = environment['baseUrl'];
-
-  viewProgressCluster(namespace: string, clusterName: string) {
+  viewProgressCluster(namespace: string, clusterName: string, action: string) {
     return new Observable(observable => {
-      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}`);
+      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}/${action}`);
+      this.eventSources.push(source);
       source.onmessage = event => {
         this.zone.run(() => {
-          let data = +event.data;
-          observable.next(event.data);
+          let data: number = +event.data;
+          observable.next(data);
 
-          if (data == 100) {  // complete
-            observable.unsubscribe();
+          if (data == 100) {          // complete
+            observable.complete();
             source.close();
+
+            this.searchCluster();     // refresh page
           }
         });
       }
 
       source.onerror = event => {
         this.zone.run(() => {
-          console.log({error: event});
+          console.log({ error: event });
           observable.error(event);
         })
       }
@@ -176,20 +194,29 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      if (this.sseStream) {
-        this.sseStream.unsubscribe();
-      }
+    this.unsubscribeObs(null);
+  }
+
+  unsubscribeObs(eventSources: EventSource[]) {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    if (eventSources) {
+      eventSources.forEach(source => source.close());
+      this.eventSources = [];
+    }
   }
 
   getListStatus() {
     this.clusterService.getListStatus()
-    .subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.listOfStatusCluster = r.data;
-      } else {
-        this.notificationService.error("Thất bại", r.message);
-      }
-    });
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.listOfStatusCluster = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   getIndexOfCluster(id: number) {
@@ -245,7 +272,7 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     this.selectedCluster = cluster;
   }
 
-  handleDeleteMultipleCluster(){
+  handleDeleteMultipleCluster() {
     const selectedCluster = Array.from(this.setOfCheckedId);
     console.log(selectedCluster);
   }
@@ -253,19 +280,19 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
   handleDeleteCluster() {
     this.isSubmitDelete = true;
     this.clusterService.deleteCluster(this.selectedCluster.id)
-    .pipe(finalize(() => {
-      this.isShowModalDeleteCluster = false;
-      this.isSubmitDelete = false;
-      this.deleteClusterName = null;
-    }))
-    .subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.notificationService.success("Thành công", r.message);
-        this.searchCluster();
-      } else {
-        this.notificationService.error("Thất bại", r.message);
-      }
-    });
+      .pipe(finalize(() => {
+        this.isShowModalDeleteCluster = false;
+        this.isSubmitDelete = false;
+        this.deleteClusterName = null;
+      }))
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.notificationService.success("Thành công", r.message);
+          this.searchCluster();
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   // websocket
@@ -284,8 +311,8 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
                 NotificationConstant.NOTI_SUCCESS_LABEL,
                 notificationMessage.content);
 
-                // refresh page
-                this.searchCluster();
+              // refresh page
+              this.searchCluster();
 
             } else {
               this.notificationService.error(
