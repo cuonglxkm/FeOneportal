@@ -517,14 +517,18 @@
               (click)="save()"
               [disabled]="
                 form.invalid ||
-                (totalincludesVAT == 0 && instanceNameEdit == instancesModel.name)
+                (totalincludesVAT == 0 &&
+                  instanceNameEdit == instancesModel.name &&
+                  selectedSecurityGroup == currentListSecurityGroup)
               "
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span
                 [style.color]="
                   form.invalid ||
-                  (totalincludesVAT == 0 && instanceNameEdit == instancesModel.name)
+                  (totalincludesVAT == 0 &&
+                    instanceNameEdit == instancesModel.name &&
+                    selectedSecurityGroup == currentListSecurityGroup)
                     ? 'gray'
                     : 'white'
                 "

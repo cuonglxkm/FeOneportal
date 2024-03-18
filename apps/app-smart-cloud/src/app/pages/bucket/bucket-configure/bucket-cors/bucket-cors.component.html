@@ -73,7 +73,7 @@
           <img
             src="assets/imgs/trash.svg"
             alt=""
-            (click)="modalDelete(data.id)"
+            (click)="modalDelete(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Xóa"
           />
@@ -103,7 +103,7 @@
         <label
           class="text-label"
           nz-checkbox
-          [(ngModel)]="get"
+          [ngModel]="allowedMethods.get('get')"
           [ngModelOptions]="{ standalone: true }"
           >GET</label
         >

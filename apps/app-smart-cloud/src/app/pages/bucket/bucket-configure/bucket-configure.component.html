@@ -4,7 +4,9 @@
       <nz-breadcrumb-item
         ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item> Bucket </nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/object-storage/bucket']">Bucket</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Cấu hình Bucket </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -19,28 +21,19 @@
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Access Control List">
       <span class="titlecard-custom">Thiết lập Access Control List</span>
-      <nz-row nzGutter="24" style="margin-top: 10px"
-        ><nz-col nzSpan="12">
-          <input
-            style="cursor: pointer"
-            type="radio"
-            [checked]="activePrivate"
-            (click)="initPrivate()"
-          />
-          <span class="text-value" style="margin-left: 5px">Private</span>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <input
-            type="radio"
-            style="cursor: pointer"
-            [checked]="activePublic"
-            (click)="initPublic()"
-          />
-          <span class="text-value" style="margin-left: 5px"
-            >Public</span
-          ></nz-col
-        ></nz-row
+      <nz-radio-group
+        style="width: 100%; margin-top: 10px"
+        [(ngModel)]="bucketdaitail.aclType"
       >
+        <nz-row>
+          <nz-col nzSpan="12">
+            <label class="text-value" nz-radio nzValue="Private">Private</label>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <label class="text-value" nz-radio nzValue="Public">Public</label>
+          </nz-col>
+        </nz-row>
+      </nz-radio-group>
       <div style="margin-top: 20px" class="text-label">
         <span>Cấu hình quyền truy cập cho Bucket:</span><br />
         <nz-row style="padding-left: 10px"
@@ -56,26 +49,19 @@
     </nz-tab>
     <nz-tab nzTitle="Versioning">
       <span class="titlecard-custom">Thiết lập Versioning</span>
-      <nz-row nzGutter="24" style="margin-top: 10px"
-        ><nz-col nzSpan="12">
-          <input
-            style="cursor: pointer"
-            type="radio"
-            [checked]="versionOn"
-            (click)="initVersionOn()"
-          />
-          <span class="text-value" style="margin-left: 5px">Bật</span>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <input
-            type="radio"
-            style="cursor: pointer"
-            [checked]="versionOff"
-            (click)="initVersionOff()"
-          />
-          <span class="text-value" style="margin-left: 5px">Tắt</span></nz-col
-        ></nz-row
+      <nz-radio-group
+        style="width: 100%; margin-top: 10px"
+        [(ngModel)]="bucketdaitail.isVersioning"
       >
+        <nz-row>
+          <nz-col nzSpan="12">
+            <label class="text-value" nz-radio [nzValue]="true">Bật</label>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <label class="text-value" nz-radio [nzValue]="false">Tắt</label>
+          </nz-col>
+        </nz-row>
+      </nz-radio-group>
       <div style="margin-top: 20px" class="text-label">
         <span
           >Cấu hình Versioning: Cấu hình cho phép lưu trữ toàn bộ dữ liệu trong
@@ -88,16 +74,24 @@
       </div>
     </nz-tab>
     <nz-tab nzTitle="Bucket Policy">
-      <one-portal-bucket-policy [bucketName]="bucketName"></one-portal-bucket-policy>
+      <one-portal-bucket-policy
+        [bucketName]="bucketName"
+      ></one-portal-bucket-policy>
     </nz-tab>
     <nz-tab nzTitle="Bucket CORS">
-      <one-portal-bucket-cors></one-portal-bucket-cors>
+      <one-portal-bucket-cors
+        [bucketName]="bucketName"
+      ></one-portal-bucket-cors>
     </nz-tab>
     <nz-tab nzTitle="Static Web Hosting">
-      <one-portal-static-web-hosting></one-portal-static-web-hosting>
+      <one-portal-static-web-hosting
+        [bucketName]="bucketName"
+      ></one-portal-static-web-hosting>
     </nz-tab>
     <nz-tab nzTitle="LifeCycle Config">
-      <one-portal-lifecycle-config></one-portal-lifecycle-config>
+      <one-portal-lifecycle-config
+        [bucketName]="bucketName"
+      ></one-portal-lifecycle-config>
     </nz-tab>
   </nz-tabset>
 </nz-card>

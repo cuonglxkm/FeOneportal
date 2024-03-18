@@ -142,8 +142,15 @@
             >{{ data.bucketName }}</a
           >
         </td>
-        <td nzBreakWord>
-          {{ data.endPoints }}
+        <td>
+          <span>{{ data.endPoints }}</span>
+          <img
+            src="assets/imgs/icon_copy1.svg"
+            alt=""
+            (click)="copyText(data.endPoints)"
+            style="cursor: pointer; margin-left: 16px"
+            nz-tooltip="Copy"
+          />
         </td>
         <td nzBreakWord>
           {{ aclType }}

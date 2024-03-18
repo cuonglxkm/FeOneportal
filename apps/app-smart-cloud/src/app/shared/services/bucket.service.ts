@@ -94,6 +94,45 @@ export class BucketService extends BaseService {
     );
   }
 
+  getBucketPolicyDetail(id: string, bucketName: string): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy/Detail?id=${id}&bucketName=${bucketName}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  createBucketPolicy(
+    bucketName: string,
+    effect: string,
+    childrenUser: string,
+    isUserOther: boolean,
+    listAction: string[]
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&effect=${effect}&childrenUser=${childrenUser}&isUserOther=${isUserOther}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      listAction,
+      this.httpOptions
+    );
+  }
+
+  updateBucketPolicy(
+    bucketName: string,
+    id: string,
+    effect: string,
+    childrenUser: string,
+    isUserOther: boolean,
+    listAction: string[]
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}&effect=${effect}&childrenUser=${childrenUser}&isUserOther=${isUserOther}`;
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      listAction,
+      this.httpOptions
+    );
+  }
+
   deleteBucketPolicy(bucketName: string, id: string): Observable<any> {
     let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}`;
     return this.http.delete<any>(
@@ -184,6 +223,15 @@ export class BucketService extends BaseService {
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       { headers: this.httpOptions.headers, body: data }
+    );
+  }
+
+  getListSubuser(pageSize: number, currentPage: number): Observable<any> {
+    let url_ = `/object-storage/subuser?pageSize=${pageSize}&currentPage=${currentPage}`;
+
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
     );
   }
 }

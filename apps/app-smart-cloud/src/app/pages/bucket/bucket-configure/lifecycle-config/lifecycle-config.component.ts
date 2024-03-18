@@ -34,8 +34,9 @@ export class LifecycleConfigComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.searchLifeCycle();
   }
+
   searchLifeCycle() {
     this.loading = true;
     this.bucketService
@@ -53,7 +54,7 @@ export class LifecycleConfigComponent implements OnInit {
         error: (e) => {
           this.listLifecycle = [];
           this.notification.error(
-            '',
+            e.statusText,
             'Lấy danh sách Bucket Lifecycle không thành công'
           );
         },

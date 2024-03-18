@@ -39,8 +39,6 @@ export class BucketCors {
 }
 
 export class BucketCorsCreate {
-  regionId: number;
-  customerId: number;
   bucketName: string;
   allowedOrigins: string[];
   allowedMethods: string[];

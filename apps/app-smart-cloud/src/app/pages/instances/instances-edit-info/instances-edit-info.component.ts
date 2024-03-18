@@ -250,9 +250,11 @@ export class InstancesEditInfoComponent implements OnInit {
         this.notification.success('', 'Thay đổi hệ điều hành thành công');
         this.returnPage();
       },
-      error: (error) => {
-        console.log(error.error);
-        this.notification.error('', 'Thay đổi hệ điều hành không thành công');
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Thay đổi hệ điều hành không thành công'
+        );
       },
     });
   }

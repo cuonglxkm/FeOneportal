@@ -70,7 +70,7 @@ export class RouterDetailComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            '',
+            e.statusText,
             'Lấy danh sách Router Interface không thành công'
           );
         },
@@ -93,7 +93,7 @@ export class RouterDetailComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            '',
+            e.statusText,
             'Lấy danh sách Router Static không thành công'
           );
         },
@@ -136,7 +136,7 @@ export class RouterDetailComponent implements OnInit {
       },
       error: (e) => {
         this.notification.error(
-          '',
+          e.statusText,
           'Tạo mới Router Interface không thành công'
         );
       },
@@ -156,7 +156,10 @@ export class RouterDetailComponent implements OnInit {
         this.notification.success('', 'Tạo mới Static Router thành công');
       },
       error: (e) => {
-        this.notification.error('', 'Tạo mới Static Router không thành công');
+        this.notification.error(
+          e.statusText,
+          'Tạo mới Static Router không thành công'
+        );
       },
     });
   }
@@ -200,7 +203,10 @@ export class RouterDetailComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.notification.error('', 'Xóa Router Interface không thành công');
+          this.notification.error(
+            e.statusText,
+            'Xóa Router Interface không thành công'
+          );
         },
       });
   }
@@ -238,7 +244,10 @@ export class RouterDetailComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.notification.error('', 'Xóa Static Router không thành công');
+          this.notification.error(
+            e.statusText,
+            'Xóa Static Router không thành công'
+          );
         },
       });
   }

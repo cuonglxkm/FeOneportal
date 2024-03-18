@@ -166,7 +166,10 @@ export class PaymentSummaryComponent implements OnInit {
           this.listDiscount = data.records;
         },
         error: (e) => {
-          this.notification.error('', 'Lây danh sách Voucher không thất bại');
+          this.notification.error(
+            e.statusText,
+            'Lây danh sách Voucher không thất bại'
+          );
         },
       });
   }
@@ -221,9 +224,8 @@ export class PaymentSummaryComponent implements OnInit {
         next: (data: any) => {
           window.location.href = data.data;
         },
-        error: (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Tạo order không thành công');
+        error: (e) => {
+          this.notification.error(e.statusText, 'Tạo order không thành công');
         },
       });
   }
