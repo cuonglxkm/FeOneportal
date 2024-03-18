@@ -512,6 +512,10 @@ const routes: Routes = [
     component: BucketCreateComponent
   },
   {
+    path: 'object-storage/bucket/configure/:bucketName',
+    component: BucketConfigureComponent
+  },
+  {
     path: 'object-storage',
     component: ObjectStorageComponent
   },

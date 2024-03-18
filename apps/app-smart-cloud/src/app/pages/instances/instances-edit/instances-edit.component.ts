@@ -12,9 +12,7 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DataPayment,
-  Flavors,
   IPPublicModel,
-  IPSubnetModel,
   InstanceResize,
   InstancesModel,
   ItemPayment,
@@ -39,9 +37,6 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
-interface InstancesForm {
-  name: FormControl<string>;
-}
 class ConfigCustom {
   //cấu hình tùy chỉnh
   vCPU?: number = 0;
@@ -75,6 +70,7 @@ export class InstancesEditComponent implements OnInit {
   //danh sách các biến của form model
   id: number;
   instancesModel: InstancesModel;
+  instanceNameEdit: string = '';
 
   updateInstances: UpdateInstances = new UpdateInstances();
   instanceResize: InstanceResize = new InstanceResize();
@@ -334,6 +330,7 @@ export class InstancesEditComponent implements OnInit {
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe((data: any) => {
       this.instancesModel = data;
+      this.instanceNameEdit = this.instancesModel.name;
       if (this.instancesModel.volumeType == 0) {
         this.activeBlockHDD = true;
         this.activeBlockSSD = false;
@@ -469,6 +466,9 @@ export class InstancesEditComponent implements OnInit {
         if (e.charOptionValues[0] == 'CPU') {
           this.instanceResize.cpu = Number.parseInt(e.charOptionValues[1]);
         }
+        if (e.charOptionValues[0] == 'HDD' || e.charOptionValues[0] == 'SSD') {
+          this.instanceResize.storage = Number.parseInt(e.charOptionValues[1]);
+        }
       });
     }
     this.instanceResize.addBtqt = 0;
@@ -488,7 +488,7 @@ export class InstancesEditComponent implements OnInit {
 
   readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
-    this.updateInstances.name = this.instancesModel.name;
+    this.updateInstances.name = this.instanceNameEdit;
     this.updateInstances.regionId = this.region;
     this.updateInstances.projectId = this.projectId;
     this.updateInstances.customerId = this.userId;
