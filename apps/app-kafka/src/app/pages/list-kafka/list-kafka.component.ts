@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
-import { Subscription } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaInfor } from 'src/app/core/models/kafka-infor.model';
 import { KafkaService } from 'src/app/services/kafka.service';
@@ -19,8 +19,8 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   pageIndex: number;
   pageSize: number;
   total: number;
+  isShowIntroductionPage: boolean = false;
 
-  
 
   setOfCheckedId = new Set<number>();
 
@@ -29,7 +29,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
   eventSource: EventSource;
-  
+
   // websocket service
   private websocketService: ServiceActiveWebsocketService;
 
@@ -56,7 +56,20 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus);
+    this.kafkaService.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
+      .pipe(
+        finalize(() => {
+          this.isShowIntroductionPage = this.listOfKafka.length > 0 ? false : true;
+        })
+      )
+      .subscribe((data) => {
+        this.total = data?.data?.totals;
+        this.pageSize = data?.data?.size;
+        this.listOfKafka = camelizeKeys(data?.data?.results) as KafkaInfor[];
+        this.cdr.detectChanges();
+      });
+
+
 
     // open websocket
     // this.openWS();

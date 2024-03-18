@@ -44,6 +44,7 @@ import { LoadTopicComponent } from './detail/topic-mngt/load-topic/load-topic.co
 import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message-topic.component';
 import { TopicMngtComponent } from './detail/topic-mngt/topic-mngt.component';
 import { ListKafkaComponent } from './list-kafka/list-kafka.component';
+import { NzImageModule } from 'ng-zorro-antd/image';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -88,7 +89,8 @@ import { ListKafkaComponent } from './list-kafka/list-kafka.component';
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
     NguItemComponent,
-    NguTileComponent
+    NguTileComponent,
+    NzImageModule
   ],
 })
 export class PagesModule {}
