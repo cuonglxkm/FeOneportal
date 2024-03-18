@@ -23,6 +23,10 @@
   display: flex;
 }
 
+.padtop-35 {
+  padding-top: 35px;
+}
+
 .selected-infra {
   border: 1px solid #2f54eb;
 }
@@ -44,6 +48,8 @@ textarea,
 .price-style {
   position: relative;
   float: right;
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .price-color {
@@ -68,11 +74,6 @@ textarea,
   border-radius: 5px;
 }
 
-.price-label {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
 .total-color {
   color: #ea3829;
   font-weight: 600;
@@ -83,6 +84,10 @@ textarea,
 
 .icon-color {
   color: #0066b3;
+}
+
+.delete-icon {
+  color: #ea3829;
 }
 
 ::ng-deep .ant-card-head {
@@ -104,17 +109,33 @@ textarea,
 .remove-btn {
   position: relative;
   float: right;
-  margin-top: 32px;
+  height: fit-content;
 }
 
 .borderless {
   border: none;
 }
 
+.small-description {
+  position: relative;
+}
+
 .scroll {
   max-height: 250px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+label, span {
+  font-size: 16px;
+}
+
+.weight-600 {
+  font-weight: 600;
 }
 
 /* width */

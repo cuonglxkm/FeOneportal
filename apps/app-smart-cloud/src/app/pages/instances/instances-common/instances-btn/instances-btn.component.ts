@@ -56,9 +56,11 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     );
   }
 
+  titleDeleteInstance: string = '';
   showModalDelete() {
     this.isVisibleDelete = true;
     this.inputConfirm = '';
+    this.titleDeleteInstance = 'Xoá máy ảo ' + this.instancesModel.name;
   }
 
   handleOk() {
@@ -96,6 +98,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   isOk = false;
   passwordVisible = false;
   passwordRepeatVisible = false;
+  autoCreate: boolean = false;
 
   isVisibleResetPass = false;
   modalResetPassword() {

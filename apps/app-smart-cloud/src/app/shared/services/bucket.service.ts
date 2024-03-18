@@ -24,12 +24,12 @@ export class BucketService extends BaseService {
     super();
   }
 
-  getListRouter(
-    regionId: number,
+  getListBucket(
+    pageNumber: number,
     pageSize: number,
-    currentPage: number
+    searchValue: string
   ): Observable<any> {
-    let url_ = `routers/list-router?regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}`;
+    let url_ = `/object-storage/Bucket/GetPagging?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -37,8 +37,56 @@ export class BucketService extends BaseService {
     );
   }
 
-  getRouterById(id: string, vpcId: number, regionId: number): Observable<any> {
-    let url_ = `routers/${id}?vpcId=${vpcId}&regionId=${regionId}`;
+  deleteBucket(bucketName: string) {
+    let url_ = `/object-storage/CleanBucket?bucketName=${bucketName}`;
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
+  }
+
+  createBucket(bucketName: string, type: string): Observable<any> {
+    let url_ = `/object-storage/Bucket/Create?bucketName=${bucketName}&type=${type}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  getBucketDetail(bucketName: string): Observable<any> {
+    let url_ = `/object-storage/Bucket/Detail?bucketName=${bucketName}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  setBucketVersioning(
+    bucketName: string,
+    isVersioning: boolean
+  ): Observable<any> {
+    let url_ = `/object-storage/SetBucketVersioning?bucketName=${bucketName}&isVersioning=${isVersioning}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  setBucketACL(bucketName: string, type: string): Observable<any> {
+    let url_ = `/object-storage/SetBucketACL?bucketName=${bucketName}&type=${type}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  getListBucketPolicy(
+    bucketName: string,
+    pageNumber: number,
+    pageSize: number,
+    searchValue: string
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy/GetPagging?bucketName=${bucketName}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -46,48 +94,24 @@ export class BucketService extends BaseService {
     );
   }
 
-  deleteRouter(id: string, regionId: number, vpcId: number): Observable<any> {
-    let url_ = `routers/${id}?regionId=${regionId}&vpcId=${vpcId}`;
-
+  deleteBucketPolicy(bucketName: string, id: string): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}`;
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       this.httpOptions
     );
   }
 
-  createRouter(data: any): Observable<any> {
-    let url_ = `/routers`;
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data,
-      this.httpOptions
-    );
-  }
-
-  updateRouter(data: RouterUpdate): Observable<any> {
-    let url_ = `/routers/${data.id}`;
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data,
-      this.httpOptions
-    );
-  }
-
-  getRouterInterfaces(
-    routerId: string,
-    regionId: number,
-    vpcId: number
-  ): Observable<any> {
-    let url_ = `router-interfaces?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
-
+  getListBucketCORS(bucketName: string): Observable<any> {
+    let url_ = `/object-storage/ListBucketCORS?bucketName=${bucketName}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       this.httpOptions
     );
   }
 
-  createRouterInterface(data: any): Observable<any> {
-    let url_ = `/router-interfaces`;
+  createBucketCORS(data: any): Observable<any> {
+    let url_ = `/object-storage/PutBucketCORS`;
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
@@ -95,34 +119,50 @@ export class BucketService extends BaseService {
     );
   }
 
-  deleteRouterInterface(
-    id: string,
-    regionId: number,
-    subnetId: number,
-    vpcId: number
-  ): Observable<any> {
-    let url_ = `/router-interfaces/${id}?regionId=${regionId}&subnetId=${subnetId}&vpcId=${vpcId}`;
-    return this.http.delete<any>(
+  updateBucketCORS(data: any): Observable<any> {
+    let url_ = `/object-storage/UpdateBucketCORS`;
+    return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
       this.httpOptions
     );
   }
 
-  getRouterStatics(
-    routerId: string,
-    regionId: number,
-    vpcId: number
-  ): Observable<any> {
-    let url_ = `route-static?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
+  deleteBucketCORS(data: any): Observable<any> {
+    let url_ = `/object-storage/DeleteBucketCORS`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      { headers: this.httpOptions.headers, body: data }
+    );
+  }
 
+  createBucketWebsite(data: any): Observable<any> {
+    let url_ = `/object-storage/PutBucketWebsite`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteBucketWebsite(data: any): Observable<any> {
+    let url_ = `/object-storage/DeleteBucketWebsite`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      { headers: this.httpOptions.headers, body: data }
+    );
+  }
+
+  getListBucketLifecycle(bucketName: string): Observable<any> {
+    let url_ = `/object-storage/ListBucketLifecycle?bucketName=${bucketName}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       this.httpOptions
     );
   }
 
-  createStaticRouter(data: any): Observable<any> {
-    let url_ = `/route-static`;
+  createBucketLifecycle(data: any): Observable<any> {
+    let url_ = `/object-storage/PutBucketLifecycle`;
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
@@ -130,17 +170,20 @@ export class BucketService extends BaseService {
     );
   }
 
-  deleteStaticRouter(
-    id: string,
-    destinationCIDR: string,
-    nextHop: string,
-    regionId: number,
-    vpcId: number
-  ): Observable<any> {
-    let url_ = `/route-static/${id}?destinationCIDR=${destinationCIDR}&nextHop=${nextHop}&regionId=${regionId}&vpcId=${vpcId}`;
+  updateBucketLifecycle(data: any): Observable<any> {
+    let url_ = `/object-storage/UpdateBucketLifecycle`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data,
+      this.httpOptions
+    );
+  }
+
+  deleteBucketLifecycle(data: any): Observable<any> {
+    let url_ = `/object-storage/DeleteBucketLifecycle`;
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      { headers: this.httpOptions.headers, body: data }
     );
   }
 }

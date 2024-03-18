@@ -51,7 +51,7 @@ export class InstancesEditInfoComponent implements OnInit {
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
   isSelected: boolean = false;
-  hdh: Image;
+  hdh: number;
   currentImage: Image;
   listSelectedImage = [];
   selectedImageTypeId: number;
@@ -144,15 +144,16 @@ export class InstancesEditInfoComponent implements OnInit {
             }
             this.region = this.instancesModel.regionId;
             this.getListIpPublic();
-            this.getAllOfferImage(this.imageTypeId, this.instancesModel.imageId);
+            this.getAllOfferImage(
+              this.imageTypeId,
+              this.instancesModel.imageId
+            );
             this.dataService
               .getImageById(this.instancesModel.imageId)
               .pipe(finalize(() => this.loadingSrv.close()))
 
               .subscribe((dataimage: any) => {
-                //this.hdh = dataimge;
                 this.currentImage = dataimage;
-                //  this.selectedTypeImageId = this.hdh.imageTypeId;
                 this.loading = false;
                 this.cdr.detectChanges();
               });
@@ -241,20 +242,19 @@ export class InstancesEditInfoComponent implements OnInit {
   save(): void {
     this.rebuildInstances.regionId = this.instancesModel.regionId;
     this.rebuildInstances.customerId = this.instancesModel.customerId;
-    this.rebuildInstances.imageId = this.hdh.id;
-    this.rebuildInstances.flavorId = this.instancesModel.flavorId;
+    this.rebuildInstances.imageId = this.hdh;
     this.rebuildInstances.id = this.instancesModel.id;
-    this.dataService.rebuild(this.rebuildInstances).subscribe(
-      (data: any) => {
+    this.dataService.rebuild(this.rebuildInstances).subscribe({
+      next: (data: any) => {
         console.log(data);
         this.notification.success('', 'Thay đổi hệ điều hành thành công');
         this.returnPage();
       },
-      (error) => {
+      error: (error) => {
         console.log(error.error);
         this.notification.error('', 'Thay đổi hệ điều hành không thành công');
-      }
-    );
+      },
+    });
   }
 
   navigateToEdit() {

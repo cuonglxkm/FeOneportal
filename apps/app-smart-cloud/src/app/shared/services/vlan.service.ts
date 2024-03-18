@@ -8,10 +8,11 @@ import {
   Port,
   Subnet
 } from '../models/vlan.model';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/internal/operators/catchError';
 
 @Injectable({
   providedIn: 'root',
@@ -24,14 +25,6 @@ export class VlanService extends BaseService {
   constructor(private http: HttpClient,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'user_root_id': this.tokenService.get()?.userId,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
   }
 
   getVlanNetworks(formSearch: FormSearchNetwork) {
@@ -51,10 +44,21 @@ export class VlanService extends BaseService {
     if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
+    if (formSearch.project != undefined || formSearch.project != null) {
+      params = params.append('projectId', formSearch.project)
+    }
     return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlannetworks', {
-      headers: this.getHeaders(),
       params: params
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getPortByNetwork(networkId: string, region: number, pageSize: number, pageNumber: number, name: string) {
@@ -75,9 +79,17 @@ export class VlanService extends BaseService {
       params = params.append('name', name)
     }
     return this.http.get<BaseResponse<Port[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/findportbynetworkid', {
-      headers: this.getHeaders(),
       params: params
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getSubnetByNetwork(formSearchSubnet: FormSearchSubnet) {
@@ -101,63 +113,136 @@ export class VlanService extends BaseService {
       params = params.append('networkId', formSearchSubnet.networkId)
     }
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
-      headers: this.getHeaders(),
       params: params
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getVlanByNetworkId(idNetwork) {
-    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}`, {
-      headers: this.getHeaders()
-    })
+    return this.http.get<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   createNetwork(formCreate: FormCreateNetwork) {
-    return this.http.post<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + '/vlans', Object.assign(formCreate), {
-      headers: this.getHeaders()
-    })
+    return this.http.post<NetWorkModel>(this.baseUrl + this.ENDPOINT.provisions + '/vlans', Object.assign(formCreate)).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   updateNetwork(idNetwork: number, networkName: string) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?networkName=${networkName}`, null,{
-      headers: this.getHeaders()
-    })
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/${idNetwork}?networkName=${networkName}`, {
+      body: null
+    }).pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   deleteNetwork(idNetwork: number){
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlannetworks/${idNetwork}`, {
-      headers: this.getHeaders()
-    })
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlannetworks/${idNetwork}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getSubnetById(idSubnet) {
-    return this.http.get<Subnet>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
-      headers: this.getHeaders()
-    })
+    return this.http.get<Subnet>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   createSubnet(formCreateSubnet: FormCreateSubnet) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', Object.assign(formCreateSubnet), {
-      headers: this.getHeaders()
-    })
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets',
+      Object.assign(formCreateSubnet))
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   updateSubnet(idSubnet: number, formUpdateSubnet: FormUpdateSubnet) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, Object.assign(formUpdateSubnet), {
-      headers: this.getHeaders()
-    })
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`,
+      Object.assign(formUpdateSubnet)).pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   deleteSubnet(idSubnet){
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`, {
-      headers: this.getHeaders()
-    })
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vlans/vlansubnets/${idSubnet}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   createPort(formCreatePort: FormCreatePort) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/createport', Object.assign(formCreatePort), {
-      headers: this.getHeaders()
-    })
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/createport',
+      Object.assign(formCreatePort)).pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   attachPort(portId: string, instanceId: string, region: number, vpcId: number) {
@@ -175,9 +260,17 @@ export class VlanService extends BaseService {
       params = params.append('vpcId', vpcId)
     }
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/attachport', null, {
-      headers: this.getHeaders(),
       params: params
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   detachPort(portId: string, region: number, vpcId: number) {
@@ -193,7 +286,6 @@ export class VlanService extends BaseService {
     }
 
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/detachport', null, {
-      headers: this.getHeaders(),
       params: params
     })
   }
@@ -211,8 +303,16 @@ export class VlanService extends BaseService {
     }
 
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vlans/deleteport', null, {
-      headers: this.getHeaders(),
       params: params
-    })
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 }

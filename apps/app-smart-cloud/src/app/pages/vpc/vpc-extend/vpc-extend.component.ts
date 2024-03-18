@@ -28,15 +28,10 @@ export class VpcExtendComponent {
   totalPayment = 0;
   loadingCalculate= false;
   form = new FormGroup({
-    name: new FormControl('', {validators: [Validators.required]}),
-    description: new FormControl(''),
-
-    ipConnectInternet: new FormControl('', {validators: [Validators.required]}),
     numOfMonth: new FormControl(1, {validators: [Validators.required]}),
-    hhd: new FormControl(0),
-    ssd: new FormControl(0),
-
   });
+  today = new Date();
+  expiredDate = new Date();
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
@@ -100,7 +95,40 @@ export class VpcExtendComponent {
     this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
   }
 
-  createIpPublic() {
+  extendVpc() {
+    const requestBody = {
+      regionId: this.regionId,
+      serviceName: null,
+      customerId: this.tokenService.get()?.userId,
+      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      serviceType: 12,
+      actionType: 3,
+      serviceInstanceId: this.activatedRoute.snapshot.paramMap.get('id'),
+      newExpireDate: this.expiredDate,
+      userEmail: null,
+      actorEmail: null
+    }
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Gia hạn Ip Public",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: "vpc_extend",
+          price: 0,
+          serviceDuration: this.form.controls['numOfMonth'].value
+        }
+      ]
+    }
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+  }
 
+  onChangeTime() {
+    const dateNow = new Date();
+    dateNow.setMonth(dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value));
+    this.expiredDate = dateNow;
   }
 }

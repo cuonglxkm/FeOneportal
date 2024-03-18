@@ -31,9 +31,9 @@ export class VpcCreateComponent {
     animation: 'lazy',
   };
   listIpType = [
-    {label: "IP Public" , value: "0"},
-    {label: "Ip Floating" , value: "1"},
-    {label: "IpV6" , value: "2"},
+    {label: "IP Public", value: "0"},
+    {label: "Ip Floating", value: "1"},
+    {label: "IpV6", value: "2"},
   ];
 
 
@@ -72,16 +72,15 @@ export class VpcCreateComponent {
   selectIndexTab: any = 0;
 
   form = new FormGroup({
-    name: new FormControl('', {validators: [Validators.required]}),
+    name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
     description: new FormControl(''),
-
     ipConnectInternet: new FormControl('', {validators: [Validators.required]}),
     numOfMonth: new FormControl(1, {validators: [Validators.required]}),
     //tab 1
-    ipType: new FormControl('', {validators: this.selectIndexTab === 0 ? [Validators.required] : []}),
+    ipType: new FormControl('', {validators: []}),
     //tab 2
-    vCPU: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
-    ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
+    vCPU: new FormControl(1, {validators: [Validators.required]}),
+    ram: new FormControl(1, {validators: [Validators.required]}),
     hhd: new FormControl(0),
     ssd: new FormControl(0),
 
@@ -105,20 +104,23 @@ export class VpcCreateComponent {
     let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
     let ip = '';
     let ipName = '';
-    if (lstIp != null && lstIp != undefined){
+    if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
-      ipName = lstIp[1];
     }
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let ipType = this.form.controls['ipType'].value;
     let vCPU = this.form.controls['vCPU'].value;
     let ram = this.form.controls['ram'].value;
 
-    let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' ? this.offerFlavor.ipNumber : 0);
-    let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' ? this.offerFlavor.ipNumber : 0);
+    let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
     let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
     if (ip != '') {
       if ((this.selectIndexTab == 0 && ipType != '' && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && vCPU != 0 && ram != 0)) {
+        let listString = lstIp[1].split(" ");
+        if (listString.length == 3) {
+          ipName = listString[2].trim();
+        }
         this.loadingCalculate = true;
         const requestBody =
           {
@@ -128,25 +130,25 @@ export class VpcCreateComponent {
             quotaSSDInGb: this.form.controls['ssd'].value,
             quotaBackupVolumeInGb: this.numberBackup,
             quotaSecurityGroupCount: this.numberSecurityGroup,
-            quotaKeypairCount: '',// NON
-            quotaVolumeSnapshotCount: '',//NON
+            // quotaKeypairCount: 0,// NON
+            // quotaVolumeSnapshotCount: 0,//NON
             quotaIpPublicCount: IPPublicNum,
             quotaIpFloatingCount: IPFloating,
             quotaNetworkCount: this.numberNetwork,
             quotaRouterCount: this.numberRouter,
             quotaLoadBalancerSDNCount: this.numberLoadBalancer,
-            loadBalancerOfferId: '', //NON
+            // loadBalancerOfferId: 0, //NON
             quotaShareInGb: this.numberFileSystem,
             QuotaShareSnapshotInGb: this.numberFileScnapsshot,
             publicNetworkId: ip,
             publicNetworkAddress: ipName,
             quotaIPv6Count: IPV6,
-            typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
             serviceType: 12,
             serviceInstanceId: 0,
             customerId: this.tokenService.get()?.userId,
-            offerId: this.offerFlavor.id,
-            actionType: 4,
+            offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+            actionType: 0,
             regionId: this.regionId,
             serviceName: this.form.controls['name'].value
           }
@@ -155,7 +157,7 @@ export class VpcCreateComponent {
             {
               orderItemQuantity: 1,
               specificationString: JSON.stringify(requestBody),
-              specificationType: "vpc_resize",
+              specificationType: "vpc_create",
               sortItem: 0,
               serviceDuration: numOfMonth
             }
@@ -172,7 +174,7 @@ export class VpcCreateComponent {
               this.totalPayment = this.total.data.totalPayment.amount.toLocaleString()
             }
           );
-      }else {
+      } else {
         this.total = undefined;
       }
     } else {
@@ -193,33 +195,38 @@ export class VpcCreateComponent {
   }
 
   initFlavors(): void {
-    this.instancesService
-      .getListOffers(this.regionId, 'vpc')
-      .subscribe((data: any) => {
-        this.listOfferFlavors = data.filter(
-          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
-        );
+    this.instancesService.getDetailProductByUniqueName('vpcOnePortal')
+      .subscribe(
+        data => {
+          this.instancesService
+            .getListOffersByProductId(data[0].id)
+            .subscribe((data: any) => {
+              this.listOfferFlavors = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
 
-        this.listOfferFlavors.forEach((e: OfferItem) => {
-          e.description = '';
-          e.characteristicValues.forEach((ch) => {
-            if (ch.charName == 'cpu') {
-              e.description += ch.charOptionValues[2] + ' VCPU / ';
-            }
-            if (ch.charName == 'ram') {
-              e.description += ch.charOptionValues[2] + ' GB RAM / ';
-            }
-            if (ch.charName == 'hdd') {
-              e.description += ch.charOptionValues[2] + ' GB RAM / ';
-            }
-            if (ch.charName == 'ip') {
-              e.description += ch.charOptionValues[2] + ' IP ';
-              e.ipNumber = ch.charOptionValues[2];
-            }
-          });
-        });
-        this.cdr.detectChanges();
-      });
+              this.listOfferFlavors.forEach((e: OfferItem) => {
+                e.description = '0 CPU / 0 GB RAM / 0 GB HHD / 0 IP';
+                e.characteristicValues.forEach((ch) => {
+                  if (ch.charName.toUpperCase() == 'CPU') {
+                    e.description.replace(ch.charOptionValues[0] + " CPU", "0 CPU");
+                  }
+                  if (ch.charName == 'RAM') {
+                    e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
+                  }
+                  if (ch.charName == 'HHD') {
+                    e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
+                  }
+                  if (ch.charName == 'IP') {
+                    e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + " IP");
+                    e.ipNumber = ch.charOptionValues[0];
+                  }
+                });
+              });
+              this.cdr.detectChanges();
+            });
+        }
+      )
   }
 
   onRegionChange(region: RegionModel) {
@@ -239,7 +246,75 @@ export class VpcCreateComponent {
   }
 
   createIpPublic() {
+    let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
+    let ip = '';
+    let ipName = '';
+    if (lstIp != null && lstIp != undefined) {
+      ip = lstIp[0];
+      let listString = lstIp[1].split(" ");
+      if (listString.length == 3) {
+        ipName = listString[2].trim();
+      }
+    }
+    let numOfMonth = this.form.controls['numOfMonth'].value;
+    let ipType = this.form.controls['ipType'].value;
+    let vCPU = this.form.controls['vCPU'].value;
+    let ram = this.form.controls['ram'].value;
 
+    let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
+    let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
+    const expiredDate = new Date();
+    expiredDate.setMonth(expiredDate.getMonth() + Number(numOfMonth));
+    const requestBody = {
+      quotavCpu: vCPU,
+      quotaRamInGb: ram,
+      quotaHddInGb: this.form.controls['hhd'].value,
+      quotaSSDInGb: this.form.controls['ssd'].value,
+      quotaBackupVolumeInGb: this.numberBackup,
+      quotaSecurityGroupCount: this.numberSecurityGroup,
+      // quotaKeypairCount: null,// NON
+      // quotaVolumeSnapshotCount: null,//NON
+      quotaIpPublicCount: IPPublicNum,
+      quotaIpFloatingCount: IPFloating,
+      quotaIpv6Count: IPV6,
+      quotaNetworkCount: this.numberNetwork,
+      quotaRouterCount: this.numberRouter,
+      quotaLoadBalancerSDNCount: this.numberLoadBalancer,
+      // loadBalancerOfferId: null, //NON
+      quotaShareInGb: this.numberFileSystem,
+      quotaShareSnapshotInGb: this.numberFileScnapsshot,
+      publicNetworkId: ip,
+      publicNetworkAddress: ipName,
+      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      serviceType: 12,
+      serviceInstanceId: 0,
+      customerId: this.tokenService.get()?.userId,
+      offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
+      actionType: 0,
+      regionId: this.regionId,
+      serviceName: 'vpc' + this.tokenService.get()?.userId + '-' + this.form.controls['name'].value,
+      description: null,
+      createDate: new Date(),
+      expireDate: expiredDate,
+    }
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: "Tạo VPC",
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: "vpc_create",
+          price: 0,
+          serviceDuration: numOfMonth
+        }
+      ]
+    }
+
+    var returnPath: string = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
 
   initBackup() {
@@ -259,6 +334,8 @@ export class VpcCreateComponent {
     if (num != undefined && num != null && num != '') {
       this.openIPType = true;
     }
+
+    this.calculate();
   }
 
   changeTab(event: any) {

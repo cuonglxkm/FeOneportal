@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
@@ -8,6 +8,8 @@ import { ProjectModel } from '../../../../shared/models/project.model';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-volume',
@@ -59,7 +61,10 @@ export class VolumeComponent implements OnInit {
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private volumeService: VolumeService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              private cdr: ChangeDetectorRef,
+              private notificationService: NotificationService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -125,6 +130,9 @@ export class VolumeComponent implements OnInit {
         if (isBegin) {
           this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
         }
+      }, error => {
+        this.isLoading = false;
+        this.response = null;
       });
   }
 
@@ -194,7 +202,27 @@ export class VolumeComponent implements OnInit {
     });
     // this.getListVm()
     // this.getListVolume(true)
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+      this.notificationService.connection.on('UpdateVolume', (data) => {
+        if (data) {
+          console.log(data);
 
+          let volumeId = data.serviceId;
+  
+          var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+          if (foundIndex > -1) {
+            var record = this.response.records[foundIndex];
+  
+            record.status = data.status;
+            record.serviceStatus = data.serviceStatus;
+            
+            this.response.records[foundIndex] = record;
+            this.cdr.detectChanges();
+          }
+        }
+      });
+    }
   }
 
 }

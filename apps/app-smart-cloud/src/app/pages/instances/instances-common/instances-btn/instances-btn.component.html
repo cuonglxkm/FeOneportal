@@ -14,7 +14,7 @@
 </nz-dropdown-menu>
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="Xóa máy ảo"
+  [nzTitle]="titleDeleteInstance"
   (nzOnCancel)="handleCancel()"
 >
   <div *nzModalContent>
@@ -25,7 +25,8 @@
       nzShowIcon
     ></nz-alert>
     <span class="text-label">
-      Để thực hiện xoá máy ảo, vui lòng nhập tên máy ảo để xác nhận.
+      Để thực hiện xoá máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
+      ảo để xác nhận.
     </span>
     <nz-form-control>
       <input class="input-custom" nz-input [(ngModel)]="inputConfirm" />
@@ -51,7 +52,7 @@
 <ng-template #customTemplateMessageDelete>
   <div>
     Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
-    <b>KHÔNG THỂ KHÔI PHỤC LẠI.</b>
+    <b>KHÔNG THỂ KHÔI PHỤC LẠI</b>.
   </div>
 </ng-template>
 
@@ -122,13 +123,21 @@
         HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator
       </div>
     </ng-template>
-    <br />
     <nz-form-item>
-      <input nz-input type="checkbox" checked style="width: 15px" />
-      <div style="width: 82%; margin-left: 1%">Tự sinh</div>
+      <label
+        class="text-label"
+        style="margin-top: 16px"
+        nz-checkbox
+        [(ngModel)]="autoCreate"
+        [ngModelOptions]="{ standalone: true }"
+        >Tự sinh</label
+      >
     </nz-form-item>
     <span class="text-label">Mật khẩu mới</span>
-    <nz-form-control style="margin-bottom: 20px" class="text-right">
+    <nz-form-control
+      style="margin-top: 5px; margin-bottom: 16px"
+      class="text-right"
+    >
       <nz-input-group [nzSuffix]="suffixTemplate">
         <input
           class="input-custom"
@@ -138,6 +147,7 @@
           placeholder=""
           [(ngModel)]="resetPassword"
           [ngModelOptions]="{ standalone: true }"
+          [disabled]="autoCreate"
         />
       </nz-input-group>
       <ng-template #suffixTemplate>
@@ -149,7 +159,7 @@
       </ng-template>
     </nz-form-control>
     <span class="text-label">Xác nhận mật khẩu</span>
-    <nz-form-control class="text-right">
+    <nz-form-control style="margin-top: 5px" class="text-right">
       <nz-input-group [nzSuffix]="suffixTemplateRepeat">
         <input
           class="input-custom"
@@ -160,6 +170,7 @@
           [(ngModel)]="resetPasswordRepeat"
           [ngModelOptions]="{ standalone: true }"
           (input)="onInputChange($event)"
+          [disabled]="autoCreate"
         />
       </nz-input-group>
       <ng-template #suffixTemplateRepeat>

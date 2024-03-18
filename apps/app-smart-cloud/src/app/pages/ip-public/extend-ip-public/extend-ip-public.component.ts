@@ -13,6 +13,7 @@ import {ProjectModel} from "../../../shared/models/project.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {InstancesService} from "../../instances/instances.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-extend-ip-public',
@@ -34,12 +35,15 @@ export class ExtendIpPublicComponent {
 
   regionId: any;
   total: any
-  dateString = new Date();
-  dateStringExpired = new Date();
+  dateString;
+  dateStringExpired;
+
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
-
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   form = new FormGroup({
@@ -53,6 +57,8 @@ export class ExtendIpPublicComponent {
         this.ipInfo = data;
         this.isIpV6 = this.ipInfo.iPv6Address != null && this.ipInfo.iPv6Address != '';
         this.isLoading = false;
+        this.dateString = data.createDate;
+        this.dateStringExpired = data.expiredDate;
       }, error => {
         this.isLoading = false;
       }
@@ -102,7 +108,8 @@ export class ExtendIpPublicComponent {
   }
 
   projectChange(project: ProjectModel) {
-    this.projectId =  project.id;
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.projectId = project.id;
   }
 
   backToList() {
@@ -119,7 +126,7 @@ export class ExtendIpPublicComponent {
       serviceType: 4,
       actionType: 3,
       serviceInstanceId: this.ipInfo.id,
-      newExpireDate: new Date(),
+      newExpireDate: this.dateStringExpired,
       userEmail: null,
       actorEmail: null
     }
@@ -138,9 +145,10 @@ export class ExtendIpPublicComponent {
       ]
     }
     var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
-  caculator()   {
+
+  caculator() {
     let num = this.form.controls['numOfMonth'].value;
     if (num != null && num != undefined && num != '') {
       const dateNow = new Date();

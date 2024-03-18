@@ -1,0 +1,63 @@
+<span
+  [nzPopoverContent]="'Tạm ngưng'"
+  nz-popover
+  nzPopoverPlacement="bottom"
+  (click)="showModal()"
+  style="color: #0066b3; margin-right: 10px; cursor: pointer"
+  nz-icon
+  nzType="play-circle"
+  nzTheme="outline"
+></span>
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzCentered
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <span class="text-modal-title">Xác nhận Tạm ngưng lịch Snapshot</span>
+  </ng-template>
+  <ng-template #modalContent>
+    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+      <nz-alert nzType="warning"
+                nzDescription="Tạm ngưng lịch snapshot file system là quá trình tạm thời ngừng việc tạo ra các bản sao (snapshot) của hệ thống tệp (file system) trong một khoảng thời gian cụ thể."
+                nzShowIcon
+                style="margin-bottom: 24px;">
+      </nz-alert>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span
+              >Quý khách muốn thực hiện Tạm ngưng lịch snapshot.</span
+            >
+          </div>
+        </nz-form-label>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="middle">
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="default"
+            (click)="handleCancel()"
+            class="button-back"
+          >
+            Huỷ
+          </button>
+          <nz-form-control *nzSpaceItem>
+            <button
+              nz-button
+              nzType="primary"
+              [nzLoading]="isLoading"
+              class="button-new"
+            >
+              Xác nhận
+            </button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>

@@ -72,11 +72,14 @@ export class PaymentDetailComponent implements OnInit {
     this.serviceInfo.currency = 6000000;
     this.listServiceInfo.push(this.serviceInfo);
     this.listServiceInfo.push(this.serviceInfo);
+
+    
   }
 
   getPaymentDetail() {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
       this.payment = data;
+      console.log(data);
       this.cdr.detectChanges();
     });
   }

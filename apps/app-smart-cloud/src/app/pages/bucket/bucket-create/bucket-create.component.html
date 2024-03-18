@@ -16,6 +16,11 @@
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin Bucket</span>
         </div>
+        <div style="margin-bottom: 20px" class="text-label">
+          Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0
+          -9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63
+          ký tự
+        </div>
         <nz-row nzGutter="16">
           <nz-col nzSpan="24">
             <nz-form-item>
@@ -27,9 +32,10 @@
                 <nz-row>
                   <nz-col nzSpan="24">
                     <input
-                      class="input-custom"   
+                      class="input-custom"
                       nz-input
                       formControlName="name"
+                      [(ngModel)]="bucketName"
                       id="name"
                       placeholder="Nhập tên Bucket"
                       maxlength="50"
@@ -42,27 +48,19 @@
                     >Vui lòng nhập thông tin</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên gồm 50 ký tự viết liền không dấu cách và không chứa ký
-                    tự đặc biệt</ng-container
+                    >Tên Bucket không hợp lệ</ng-container
                   >
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
         </nz-row>
-        <br />
-        <nz-row nzGutter="16">
-          <nz-form-label
-            >Chọn loại Volume (<span class="text-red">*</span>)</nz-form-label
-          >
-        </nz-row>
+        <span class="titlecard-custom">Thiết lập Access Control List</span>
         <nz-radio-group
           style="width: 100%; display: inline-flex"
           name="selectedHDDorSSD"
         >
-          <nz-row
-            [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
-            style="margin-top: 10px"
+          <nz-row nzGutter="24" style="margin-top: 10px"
             ><nz-col
               [nzLg]="12"
               [nzMd]="12"
@@ -80,54 +78,28 @@
                     height: cardHeight,
                   }"
               >
-                <nz-row nzGutter="16">
-                  <nz-col nzSpan="20">
-                    <nz-card-meta
-                      [nzAvatar]="nzAvatarselectedHDDorSSD1"
-                      [nzTitle]="nzTitleselectedHDDorSSD1"
-                      [nzDescription]="nzDescriptionselectedHDDorSSD1"
-                    >
-                      <ng-template #nzAvatarselectedHDDorSSD1>
-                        <input
-                          style="cursor: pointer"
-                          type="radio"
-                          [checked]="activeBlockHDD"
-                          (click)="initHDD()"
-                        />
-                      </ng-template>
-                      <ng-template #nzTitleselectedHDDorSSD1>
-                        <b>HDD</b>
-                      </ng-template>
-                      <ng-template #nzDescriptionselectedHDDorSSD1>
-                        <ellipsis class="text-custom">
-                          Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
-                          lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
-                          chuyên sâu thông lượng
-                        </ellipsis>
-                      </ng-template>
-                    </nz-card-meta></nz-col
-                  >
-                  <nz-col
-                    style="
-                      display: flex;
-                      align-items: center;
-                      margin-top: -24px;
-                    "
-                    [ngStyle]="{
-                        height: cardHeight,
-                      }"
-                    nzSpan="4"
-                  >
-                    <img
-                      [src]="
-                        activePrivate
-                          ? 'assets/imgs/hdd-svgrepo-com-active.svg'
-                          : 'assets/imgs/hdd-svgrepo-com.svg'
-                      "
-                      alt=""
+                <nz-card-meta
+                  [nzAvatar]="nzAvatarselected"
+                  [nzTitle]="nzTitleselected"
+                  [nzDescription]="nzDescriptionselected"
+                >
+                  <ng-template #nzAvatarselected>
+                    <input
+                      style="cursor: pointer"
+                      type="radio"
+                      [checked]="activePrivate"
+                      (click)="initPrivate()"
                     />
-                  </nz-col>
-                </nz-row>
+                  </ng-template>
+                  <ng-template #nzTitleselected>
+                    <b>Private</b>
+                  </ng-template>
+                  <ng-template #nzDescriptionselected>
+                    <ellipsis class="text-custom">
+                      Chỉ những người dùng có quyền mới được truy cập
+                    </ellipsis>
+                  </ng-template>
+                </nz-card-meta>
               </nz-card>
             </nz-col>
             <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
@@ -141,55 +113,34 @@
                     height: cardHeight,
                   }"
               >
-                <nz-row nzGutter="16">
-                  <nz-col nzSpan="20"
-                    ><nz-card-meta
-                      [nzAvatar]="nzAvatarselectedHDDorSSD2"
-                      [nzTitle]="nzTitleselectedHDDorSSD2"
-                      [nzDescription]="nzDescriptionselectedHDDorSSD2"
-                    >
-                      <ng-template #nzAvatarselectedHDDorSSD2>
-                        <input
-                          type="radio"
-                          style="cursor: pointer"
-                          [checked]="activeBlockSSD"
-                          (click)="initSSD()"
-                        />
-                      </ng-template>
-                      <ng-template #nzTitleselectedHDDorSSD2>
-                        <b>SSD</b>
-                      </ng-template>
-                      <ng-template #nzDescriptionselectedHDDorSSD2>
-                        <ellipsis class="text-custom"
-                          >Lựa chọn tốt hơn cho khối lượng công việc phân tích
-                          dữ liệu hoặc chơi game
-                        </ellipsis>
-                      </ng-template>
-                    </nz-card-meta>
-                  </nz-col>
-                  <nz-col
-                    style="
-                      display: flex;
-                      align-items: center;
-                      margin-top: -24px;
-                    "
-                    [ngStyle]="{
-                          height: cardHeight,
-                        }"
-                    nzSpan="4"
-                  >
-                    <img
-                      [src]="
-                        activePublic
-                          ? 'assets/imgs/ssd-svgrepo-com-active.svg'
-                          : 'assets/imgs/ssd-svgrepo-com.svg'
-                      "
-                      alt=""
+                <nz-card-meta
+                  [nzAvatar]="nzAvatarselected2"
+                  [nzTitle]="nzTitleselected2"
+                  [nzDescription]="nzDescriptionselected2"
+                >
+                  <ng-template #nzAvatarselected2>
+                    <input
+                      type="radio"
+                      style="cursor: pointer"
+                      [checked]="activePublic"
+                      (click)="initPublic()"
                     />
-                  </nz-col>
-                </nz-row>
-              </nz-card> </nz-col
-          ></nz-row>
+                  </ng-template>
+                  <ng-template #nzTitleselected2>
+                    <b>Public</b>
+                  </ng-template>
+                  <ng-template #nzDescriptionselected2>
+                    <ellipsis class="text-custom"
+                      >Tất cả mọi người đều có thể truy cập thông tin của
+                      Bucket, không ảnh hưởng đến quyền của object. Bucket
+                      public nhưng nếu object private thì cũng không truy cập
+                      được từ bên ngoài
+                    </ellipsis>
+                  </ng-template>
+                </nz-card-meta>
+              </nz-card>
+            </nz-col></nz-row
+          >
         </nz-radio-group>
       </nz-card>
     </nz-col>
@@ -199,16 +150,42 @@
           <span class="text-card-header">Thông số cấu hình</span>
         </div>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <span class="text-label"> Tên Bucket </span>
+          <nz-col>
+            <span class="text-label"> Tên Bucket </span>
+          </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <span class="text-value"> bucket 01 </span>
+          <nz-col>
+            <span class="text-value"> {{ bucketName }} </span>
+          </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <span class="text-label"> Thiết lập ACL </span>
+          <nz-col>
+            <span class="text-label"> Thiết lập ACL </span>
+          </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <span class="text-value"> private </span>
+          <nz-col>
+            <span *ngIf="activePrivate" class="text-value"> Private </span>
+            <span *ngIf="activePublic" class="text-value"> Public </span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%" class="text-right">
+            <button
+              style="width: 100%"
+              nz-button
+              nzSize="large"
+              nzType="primary"
+              (click)="save()"
+              [disabled]="form.invalid"
+            >
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              <span [style.color]="form.invalid ? 'gray' : 'white'"
+                >Khởi tạo</span
+              >
+            </button>
+          </nz-col>
         </nz-row>
       </nz-card>
     </nz-col>

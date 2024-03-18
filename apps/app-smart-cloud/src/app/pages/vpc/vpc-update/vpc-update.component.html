@@ -22,16 +22,16 @@
           <span class="text-card-header">Thông tin VPC</span>
         </div>
         <nz-form-item>
-          <nz-form-label>Tên VPC</nz-form-label>
+          <nz-form-label nzRequired>Tên VPC</nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="Nhập tên VPC" style="width: 100%"
+            <input nz-input placeholder="Nội dung trống" style="width: 100%"
                    formControlName="name">
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Mô tả</nz-form-label>
           <nz-form-control>
-          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nội dung trống" style="width: 100%"
                     formControlName="description"></textarea>
           </nz-form-control>
         </nz-form-item>
@@ -58,13 +58,13 @@
                         selectedElementFlavor === 'flavor_' + item.id
                       "
                     >
-                      <div>
+                      <div style="position: relative;">
                         <span
                           class="nameFlavor"
                           [class.initialNameFlavor]="
                             selectedElementFlavor === 'flavor_' + item.id
                           "
-                        >{{ item.offerName | slice : 3 : -4 }}</span
+                        >{{ item.offerName }}</span
                         >
                         <div style="margin-top: -16px">
                           <img
@@ -78,9 +78,12 @@
                           />
                         </div>
                         <span class="priceFlavor">{{
-                          item.price.fixedPrice.amount
+                          item.price.fixedPrice.amount | number:'1.0-0':'en-US'
                           }}</span
                         ><span> đ/tháng</span>
+                      </div>
+                      <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                        <img src="assets/imgs/mostpop.svg">
                       </div>
                     </nz-col>
                   </nz-row>
@@ -194,17 +197,10 @@
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
-                <nz-form-label>Chọn dải IP kết nối Internet</nz-form-label>
+                <nz-form-label>Chọn dải IP kết nối Internet (<span class="text-red">*</span>)</nz-form-label>
                 <nz-form-control>
-                  <nz-input-group nzCompact>
-                    <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet" [nzDisabled]="disableIpConnectInternet"
-                               style="width: 90%; margin-left: -1px;border-radius: 10px;"
-                               nzPlaceHolder="--Chọn IP kết nôi--"
-                               formControlName="ipConnectInternet" (nzOpenChange)="calculate()">
-                      <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
-                                 [nzValue]="i.networkId"/>
-                    </nz-select>
-                  </nz-input-group>
+                  <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   formControlName="ipConnectInternet" nzSize="large"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
             </td>
@@ -229,14 +225,14 @@
           </table>
         </div>
         <div *ngIf="selectIndexTab == 0">
-          <nz-form-item *ngIf="openIPType == true">
-            <nz-form-label>Chọn loại IP</nz-form-label>
+          <nz-form-item>
+            <nz-form-label>Chọn loại IP (<span class="text-red">*</span>)</nz-form-label>
             <nz-form-control>
               <nz-input-group nzCompact>
                 <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                            style="width: 95%; margin-left: -1px;border-radius: 10px;"
-                           nzPlaceHolder="--Chọn loại IP--"
-                           formControlName="ipType" (nzOpenChange)="calculate(null)">
+                           nzPlaceHolder="--Nội dung trống--"
+                           formControlName="ipType" (nzOpenChange)="calculate()">
                   <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"
                              [nzValue]="i.value"/>
                 </nz-select>
@@ -461,7 +457,7 @@
         </div>
         <nz-table>
           <tr class="text-label">
-            <td>Chi phí IP Public</td>
+            <td>Chi phí VPC</td>
             <td style="color: #0066B3;" nzAlign="right">
               <b>{{totalAmount || 0}} VNĐ</b>
             </td>
@@ -485,8 +481,8 @@
           <span nz-icon nzType="close" nzTheme="outline"></span>
           <span>Hủy</span>
         </button>
-        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
-                [disabled]="form.invalid">
+        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="updateVpc()"
+                [disabled]="form.invalid || (selectIndexTab == 0 && selectedElementFlavor == null)">
           <span nz-icon nzType="wallet" nzTheme="outline"></span>
           <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
         </button>

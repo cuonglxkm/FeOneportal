@@ -54,6 +54,13 @@ const routes: Routes = [
             (m) => m.RemoteEntryModule
           ),
       },
+      {
+        path: 'app-mongodb-replicaset',
+        loadChildren: () =>
+          loadRemoteModule('app-mongodb-replicaset', './Module').then(
+            (m) => m.RemoteEntryModule
+          ),
+      },
     ]
   },
   // Blak Layout 空白布局
