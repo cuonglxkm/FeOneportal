@@ -67,32 +67,31 @@
       <nz-card class="border-card">
         <h3><b>Các gói dịch vụ</b></h3>
         <nz-tabset nzCentered nzSize="large">
-          <nz-tab nzTitle="Gói cấu hình sẵn"  (nzClick)="clicktab()">
+          <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
             <ng-template nz-tab>
               <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
-                <div *nguCarouselDef="let item;" class="pack-availabel">
+                <div *nguCarouselDef="let item;" class="item">
                   <div class="pack-item" [ngClass]="{ 'choose': item===chooseitem}" (click)="handleChoosePack(item)">
                     <div class="item-header">
                       <div class="item-name">
                         <span>{{item.servicePackName}}</span>
                         <div class="item-price">
                           <div class="price">
-                            <span>{{item.price | currency:'VND':true}}</span><br>
+                            <span>{{ item.price | CustomCurrency }}</span><br>
                             <span class="unit-price">đ/tháng</span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="item-body">
-                      {{item.broker}} Broker - {{item.vCpu}} VCPU / <br>
+                      {{item.broker}} Broker - {{item.cpu}} VCPU / <br>
                       {{item.ram}}GB RAM / <br>
                       {{item.storage}}GB SDD
                     </div>
                   </div>
                 </div>
                 <ul class="myPoint" NguCarouselPoint>
-                  <li *ngFor="let j of myCarousel.pointNumbers; let i = index"
-                    [class.active]="j===myCarousel.activePoint" (click)="myCarousel.moveTo(j)"></li>
+                  <li *ngFor="let j of myCarousel.pointNumbers" [class.active]="j === myCarousel.activePoint" (click)="myCarousel.moveTo(j)"></li>
                 </ul>
               </ngu-carousel>
             </ng-template>

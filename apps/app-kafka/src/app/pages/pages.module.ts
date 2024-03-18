@@ -45,6 +45,7 @@ import { MessageTopicComponent } from './detail/topic-mngt/message-topic/message
 import { TopicMngtComponent } from './detail/topic-mngt/topic-mngt.component';
 import { ListKafkaComponent } from './list-kafka/list-kafka.component';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -67,6 +68,7 @@ import { NzImageModule } from 'ng-zorro-antd/image';
     ListKafkaComponent,
     Status2ColorPipe,
     CreateKafkaComponent,
+    CustomCurrencyPipe,
   ],
   imports: [
     PagesRoutingModule,

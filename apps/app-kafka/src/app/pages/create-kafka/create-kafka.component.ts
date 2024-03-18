@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
+import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
@@ -12,6 +13,7 @@ import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'one-portal-create-kafka',
   templateUrl: './create-kafka.component.html',
   styleUrls: ['./create-kafka.component.css'],
@@ -20,64 +22,22 @@ export class CreateKafkaComponent implements OnInit {
 
   myform: FormGroup;
 
-  carouselItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   chooseitem: ServicePack;
-  effect = 'scrollx';
 
   carouselConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 3, lg: 3, all: 0 },
-    slide: 3,
+    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
+    load: 1,
     speed: 250,
+    interval: {timing: 4000, initialDelay: 4000},
+    loop: true,
+    touch: true,
+    velocity: 0.2,
     point: {
       visible: true
-    },
-    load: 2,
-    velocity: 0,
-    touch: true,
+    }
   }
 
-  listOfServicePack: ServicePack[] = [
-    {
-      servicePackCode: 'small',
-      servicePackName: 'Small',
-      price: 360172,
-      unit: 'đ/tháng',
-      broker: 3,
-      vCpu: 2,
-      ram: 2,
-      storage: 2
-    },
-    {
-      servicePackCode: 'medium',
-      servicePackName: 'Medium',
-      price: 720344,
-      unit: 'đ/tháng',
-      broker: 3,
-      vCpu: 2,
-      ram: 8,
-      storage: 15
-    },
-    {
-      servicePackCode: 'large',
-      servicePackName: 'Large',
-      price: 1440688,
-      unit: 'đ/tháng',
-      broker: 3,
-      vCpu: 4,
-      ram: 16,
-      storage: 15
-    },
-    {
-      servicePackCode: 'xLarge',
-      servicePackName: 'XLarge',
-      price: 2881376,
-      unit: 'đ/tháng',
-      broker: 3,
-      vCpu: 8,
-      ram: 32,
-      storage: 15
-    }
-  ];
+  listOfServicePack: ServicePack[] = [];
 
   listOfKafkaVersion: KafkaVersion[] = [
     {
@@ -90,6 +50,7 @@ export class CreateKafkaComponent implements OnInit {
 
   kafkaCreateReq: KafkaCreateReq = new KafkaCreateReq();
   servicePackCode: string;
+  @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
 
   constructor(
     private fb: FormBuilder,
@@ -97,11 +58,16 @@ export class CreateKafkaComponent implements OnInit {
     private router: Router,
     private loadingSrv: LoadingService,
     private kafkaService: KafkaService,
-    private notification: NzNotificationService,
+    private notification: NzNotificationService
   ) {
   }
 
   ngOnInit(): void {
+    this.getListPackage();
+    this.initForm();
+  }
+
+  initForm() {
     this.myform = this.fb.group({
       kafkaName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
@@ -119,7 +85,17 @@ export class CreateKafkaComponent implements OnInit {
       logRetentionHours: [168],
       logSegmentBytes: [1073741824]
     });
+  }
 
+  getListPackage() {
+    this.kafkaService.getListPackageAvailable()
+    .subscribe(
+      res => {
+        if (res && res.code == 200) {
+          this.listOfServicePack = camelizeKeys(res.data) as ServicePack[];
+        }
+      }
+    )
   }
 
   onSubmitPayment() {
@@ -170,15 +146,13 @@ export class CreateKafkaComponent implements OnInit {
   handleChoosePack(item: ServicePack) {
     this.chooseitem = item;
     this.servicePackCode = item.servicePackCode;
-    this.myform.get('vCpu').setValue(item.vCpu);
+    this.myform.get('vCpu').setValue(item.cpu);
     this.myform.get('ram').setValue(item.ram);
     this.myform.get('storage').setValue(item.storage);
     this.myform.get('broker').setValue(item.broker);
   }
 
-  clicktab(){
-    console.log("click tabs");
-    
+  clicktab(){    
     this.chooseitem = null;
   }
 
