@@ -66,6 +66,8 @@ export class PaymentSummaryComponent implements OnInit {
     if (state) {
       this.returnPath = state.path;
       const myOrder = state.data;
+      console.log(state.data);
+      
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
@@ -189,6 +191,8 @@ export class PaymentSummaryComponent implements OnInit {
 
   chooseDiscount(code: string) {
     this.discountPicked = code;
+    console.log(this.discountPicked);
+    
   }
 
   isVisibleDiscount: boolean = false;
@@ -219,7 +223,9 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          window.location.href = data.data;
+          // window.location.href = data.data;
+          console.log(data);
+          
         },
         error: (error) => {
           console.log(error.error);

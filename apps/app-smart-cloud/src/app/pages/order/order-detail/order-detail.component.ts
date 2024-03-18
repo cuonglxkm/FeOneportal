@@ -35,7 +35,7 @@ export class OrderDetailComponent {
           this.titleStepFour = 'Thành công';
         } else if (this.data.statusCode == 5) {
           if (this.data.invoiceCode != '') {
-            this.titleStepFour = 'Gặp sự cố';
+            this.titleStepFour = 'Sự cố';
           } else {
             this.titleStepFour = '';
           }

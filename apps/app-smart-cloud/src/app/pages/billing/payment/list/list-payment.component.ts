@@ -94,7 +94,7 @@ export class ListPaymentComponent implements OnInit{
   
 
   onInputChange(value: string) {
-    this.value = value;
+    this.value = value.toUpperCase();
     console.log('input text: ', this.value)
     this.getListInvoices()
   }
