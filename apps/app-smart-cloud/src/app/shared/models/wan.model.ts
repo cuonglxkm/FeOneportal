@@ -39,7 +39,7 @@ export class FormAction {
  export class Wan {
    id: number
    cloudId: string
-   name: string
+   wanName: string
    vlanId: number
    adminState: true
    shared: true

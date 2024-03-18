@@ -36,6 +36,7 @@ export class ListSubUserComponent implements OnInit {
 
   onInputChange(value) {
     this.value = value
+    this.getListSubUsers(false)
   }
 
   rowCount: number = 0;
@@ -77,8 +78,6 @@ export class ListSubUserComponent implements OnInit {
       this.response = data
       this.isLoading = false
 
-
-
       if (isBegin) {
         this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
@@ -97,7 +96,7 @@ export class ListSubUserComponent implements OnInit {
   }
 
   copyText(data) {
-    this.clipboardService.copyFromContent(JSON.stringify(data));
+    this.clipboardService.copyFromContent(data);
   }
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject()

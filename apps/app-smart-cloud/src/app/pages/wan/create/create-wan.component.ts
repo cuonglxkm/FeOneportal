@@ -47,6 +47,7 @@ export class CreateWanComponent {
   handleCancelCreate() {
     this.isVisible = false
     this.isLoading = false
+    this.validateForm.reset()
     this.onCancel.emit()
   }
 
@@ -79,6 +80,7 @@ export class CreateWanComponent {
         this.isLoading = false
         this.notification.success('Thành công', 'Cấp phát IP WAN thành công')
         this.onOk.emit(data)
+        this.validateForm.reset()
       } else {
         this.isVisible = false
         this.isLoading = false
