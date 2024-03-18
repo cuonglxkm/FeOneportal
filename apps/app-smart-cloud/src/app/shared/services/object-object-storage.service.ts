@@ -15,8 +15,6 @@ export class ObjectObjectStorageService extends BaseService{
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json' ,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'user_root_id': this.tokenService.get()?.userId,
     })
   };
 
@@ -32,33 +30,17 @@ export class ObjectObjectStorageService extends BaseService{
       '&regionId=' + regionId+ '&filterQuery=' + filterQuery+
       '&pageSize=' + pageSize+ '&currentPage=' + currentPage);
   }
-
-  getTest() : Observable<BaseResponse<IpPublicModel[]>> {
-    return this.http.get<BaseResponse<IpPublicModel[]>>("/ip");
-  }
-  createIpPublic(IP: any): Observable<any>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+  getDataS3Key(search: any, pageSize: any, currentPage: any): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize +'&currentPage=' + currentPage);
   }
 
-  extendIpPublic(IP: any): Observable<any>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
-  }
-  remove(id: any) :Observable<HttpResponse<any>>  {
-    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip?id="+ id);
-  }
-
-  attachIpPublic(IP: any): Observable<HttpResponse<any>>  {
-    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip", IP, this.httpOptions);
-  }
-
-  getDetailIpPublic(id: number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id);
-  }
-
-  getTotalAmount(data: any): Observable<any> {
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
-    );
+  deleteS3key(data: any) {
+    let httpOptionOk = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json' ,
+      }),
+      body: JSON.stringify(data)
+    };
+    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/deleteS3Key', httpOptionOk);
   }
 }

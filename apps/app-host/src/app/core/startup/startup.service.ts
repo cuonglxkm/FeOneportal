@@ -87,7 +87,7 @@ export class StartupService {
                 },
                 {
                   text: 'S3 Key',
-                  link: '/app-smart-cloud/object',
+                  link: '/app-smart-cloud/object-storage/s3-key',
                 },
                 {
                   text: 'Thống kê',
