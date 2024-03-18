@@ -116,6 +116,7 @@ import { ObjectStorageComponent } from "./object-storage/object-storage.componen
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
 import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
 import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
+import {S3KeyComponent} from "./object-storage/s3-key/s3-key.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -534,6 +535,10 @@ const routes: Routes = [
   {
     path:'object-storage/bucket/:name',
     component: BucketDetailComponent
+  },
+  {
+    path:'object-storage/s3-key',
+    component: S3KeyComponent
   },
   ]
 @NgModule({
