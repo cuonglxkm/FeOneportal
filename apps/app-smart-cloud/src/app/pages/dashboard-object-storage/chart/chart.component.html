@@ -7,7 +7,8 @@
     <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="opMenuStorageUse" style="cursor: pointer;"></span>
     <nz-dropdown-menu #opMenuStorageUse="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="toggleFullScreen(1)">View in fullscreen</li>
+        <li nz-menu-item (click)="onClickFullScreen()">View in fullscreen</li>
+
         <li nz-menu-item>Print chart</li>
         <li nz-menu-item (click)="downloadImagePng('storage-use')">Dowload PNG image</li>
         <li nz-menu-item (click)="downloadImageJpg('storage-use')">Dowload JPG image</li>
@@ -16,6 +17,7 @@
       </ul>
     </nz-dropdown-menu>
     <div id="storage-use"></div>
+    <iframe #iframe (load)="loadingComplete($event)"  frameborder="0" scrolling="no"></iframe>
   </div>
   <div class="item">
     <div class="title">
@@ -61,7 +63,7 @@
     <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="opMenuStorageDownload" style="cursor: pointer;"></span>
     <nz-dropdown-menu #opMenuStorageDownload="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="toggleFullScreen(4)">View in fullscreen</li>
+        <li nz-menu-item (click)="onClickFullScreen()">View in fullscreen</li>
         <li nz-menu-item>Print chart</li>
         <li nz-menu-item (click)="downloadImagePng('storage-download')">Dowload PNG image</li>
         <li nz-menu-item (click)="downloadImageJpg('storage-download')">Dowload JPG image</li>
@@ -72,3 +74,5 @@
     <div id="storage-download"></div>
   </div>
 </div>
+
+

@@ -1,19 +1,20 @@
-import { AfterViewInit, Component, ElementRef, Input } from '@angular/core';
-import { Line } from '@antv/g2plot';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Summary } from '../../../shared/models/object-storage.model';
-import { MatDialog } from '@angular/material/dialog';
+import { Line } from '@antv/g2plot';
+import { Chart } from '@antv/g2';
 
 @Component({
   selector: 'one-portal-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.less']
 })
-export class ChartComponent implements AfterViewInit {
+export class ChartComponent implements AfterViewInit{
   @Input() summary: Summary[];
   newDate: Date = new Date();
 
-  constructor(private elementRef: ElementRef,) {
-  }
+  isLoaded: boolean = false;
+
+  @ViewChild('iframe') iframeEle: ElementRef;
 
   createChartStorageUse() {
     const data = [
@@ -100,6 +101,7 @@ export class ChartComponent implements AfterViewInit {
     line.render();
   }
 
+
   downloadImagePng(type): void {
     const imgUrl = 'assets/imgs/' + type + '.png'; // Thay đổi đường dẫn tới hình ảnh của bạn
     const link = document.createElement('a');
@@ -140,22 +142,78 @@ export class ChartComponent implements AfterViewInit {
     document.body.removeChild(link);
   }
 
-  toggleFullScreen(cellNumber: number): void {
-      // Implement code to open full screen view for the selected cell
-      console.log(`Open full screen for cell ${cellNumber}`);
-    const elem = this.elementRef.nativeElement;
-
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) { /* Firefox */
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE/Edge */
-      elem.msRequestFullscreen();
-    }
-
+  onClickFullScreen() {
+    // this.fullContentService.toggle();
+    this.iframeEle.nativeElement.requestFullscreen();
+    this.iframeEle.nativeElement.focus();
   }
+
+  loadingComplete(event: any) {
+    this.isLoaded = true;
+    event.target.contentWindow.focus();
+  }
+
+
+  // downloadImage(chart: Chart, name: string = 'G2Chart') {
+  //   const link = document.createElement('a');
+  //   const renderer = chart.renderer;
+  //   const filename = `${name}${renderer === 'svg' ? '.svg' : '.png'}`;
+  //   const canvas = chart.getCanvas();
+  //   canvas.get('timeline').stopAllAnimations();
+  //
+  //   setTimeout(() => {
+  //     const dataURL = this.toDataURL(chart);
+  //     if (window.Blob && window.URL && renderer !== 'svg') {
+  //       const arr = dataURL.split(',');
+  //       const mime = arr[0].match(/:(.*?);/)[1];
+  //       const bstr = atob ( arr [ 1 ] ) ;
+  //       let n = bstr.length;
+  //       const u8arr = new Uint8Array(n);
+  //       while (n--) {
+  //         u8arr[n] = bstr.charCodeAt(n);
+  //       }
+  //       const blobObj = new Blob([u8arr], { type: mime });
+  //       if (window.navigator.msSaveBlob) {
+  //         window.navigator.msSaveBlob(blobObj, filename);
+  //       } else {
+  //         link.addEventListener('click', () => {
+  //           link.download = filename;
+  //           link.href = window.URL.createObjectURL(blobObj);
+  //         } ) ;
+  //       }
+  //     }else{
+  //       link.addEventListener('click', () => {
+  //         link.download = filename;
+  //         link.href = dataURL;
+  //       } ) ;
+  //     }
+  //     const e = document.createEvent('MouseEvents');
+  //     e.initEvent('click', false, false);
+  //     link.dispatchEvent(e);
+  //   } , 16 ) ;
+  // }
+
+  // toDataURL(chart: Chart) {
+  //   const canvas = chart.getCanvas();
+  //   const renderer = chart.renderer;
+  //   const canvasDom = canvas . get ( 'the' ) ;
+  //   let dataURL = '';
+  //   if (renderer === 'svg') {
+  //     const clone = canvasDom.cloneNode(true);
+  //     const svgDocType = document.implementation.createDocumentType(
+  //       'svg',
+  //       '-//W3C//DTD SVG 1.1//EN' ,
+  //       'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'
+  //     ) ;
+  //     const svgDoc = document.implementation.createDocument('http://www.w3.org/2000/svg', 'svg', svgDocType);
+  //     svgDoc.replaceChild(clone, svgDoc.documentElement);
+  //     const svgData = new XMLSerializer().serializeToString(svgDoc);
+  //     dataURL = 'data:image/svg+xml;charset=utf8,' + encodeURIComponent(svgData);
+  //   } else if (renderer === 'canvas') {
+  //     dataURL = canvasDom.toDataURL('image/png');
+  //   }
+  //   return dataURL;
+  // }
 
   ngAfterViewInit(): void {
     this.createChartStorageUse();

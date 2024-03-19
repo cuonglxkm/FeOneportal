@@ -189,6 +189,7 @@ import { ObjectStorageEditComponent } from './object-storage/object-storage-edit
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
+import { SafePipe } from '../../../../../libs/common-utils/src';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
 
@@ -395,7 +396,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
     NgxJsonViewerModule,
     // Starting Angular 13
     AngJsoneditorModule,
-    ClipboardModule
+    ClipboardModule,
+    SafePipe
   ]
 })
 export class PagesModule {}
