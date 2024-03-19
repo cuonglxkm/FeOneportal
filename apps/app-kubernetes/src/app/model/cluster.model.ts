@@ -12,8 +12,6 @@ export class KubernetesCluster {
   upgradeVersion: string;
   description: string;
   networkType: string;
-  autoHealing: boolean;
-  autoScaling: boolean;
   apiEndpoint: string;
   cidr: string;
   subnet: string;
@@ -39,8 +37,6 @@ export class KubernetesCluster {
     this.currentVersion = obj.current_version;
     this.upgradeVersion = obj.upgrade_version;
     this.networkType = obj.network_type;
-    this.autoHealing = obj.auto_healing;
-    this.autoScaling = obj.auto_scaling;
     this.cidr = obj.cidr;
     this.subnet = obj.subnet;
     this.vpcNetworkId = obj.vpc_network_id;
@@ -95,6 +91,8 @@ export class UpgradeVersionClusterDto {
 export class WorkerGroupModel {
 
   workerGroupName: string;
+  autoHealing: boolean;
+  autoScaling: boolean;
   minimumNode: number;
   maximumNode: number;
   volumeType: string;
@@ -105,6 +103,8 @@ export class WorkerGroupModel {
   constructor(obj) {
     if (obj) {
       this.workerGroupName = obj.worker_name;
+      this.autoHealing = obj.auto_healing;
+      this.autoScaling = obj.auto_scaling;
       this.minimumNode = obj.minimum_node;
       this.maximumNode = obj.maximum_node;
       this.volumeType = obj.volume_type;

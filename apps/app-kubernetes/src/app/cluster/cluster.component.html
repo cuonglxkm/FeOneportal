@@ -83,36 +83,6 @@
           </ng-template>
         </nz-form-item>
 
-        <h3 class="mt-5">Cấu hình nâng cao</h3>
-
-        <div nz-row [nzGutter]="16">
-          <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig()"
-                  class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
-              </nz-form-control>
-              <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối đa</small>
-            </nz-form-item>
-
-            <!-- <nz-form-item>
-              <nz-form-control>
-                <nz-switch formControlName="ingressController" class="mr-3"></nz-switch>Bật Ingress Controller
-              </nz-form-control>
-              <small>Tích hợp NGINX ingress controller</small>
-            </nz-form-item> -->
-          </div>
-
-          <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch><label>Bật Auto Healing</label>
-              </nz-form-control>
-              <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá tải).</small>
-            </nz-form-item>
-          </div>
-        </div>
-
         <h3 class="mt-5">Cấu hình worker group</h3>
 
         <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
@@ -149,7 +119,15 @@
                   </nz-form-control>
                 </nz-form-item>
 
-                <ng-container *ngIf="isAutoScaleEnable">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
+                      class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
+                  </nz-form-control>
+                  <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối đa</small>
+                </nz-form-item>
+
+                <ng-container *ngIf="isAutoScaleAtIndex(i)">
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="nodes">Số node tối thiểu</nz-form-label>
                     <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
@@ -214,7 +192,14 @@
                   </ng-template>
                 </nz-form-item>
 
-                <ng-container *ngIf="isAutoScaleEnable">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch><label>Bật Auto Healing</label>
+                  </nz-form-control>
+                  <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá tải).</small>
+                </nz-form-item>
+
+                <ng-container *ngIf="isAutoScaleAtIndex(i)">
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
                     <nz-form-control nzErrorTip="Số node tối đa không để trống">
@@ -386,7 +371,7 @@
 
               <div nz-row [nzGutter]="8">
                 <div nz-col [nzSpan]="12">
-                  <div class="mt-3 ml-3"><label>Chi phí network</label></div>
+                  <div class="mt-3 ml-3"><label>Chi phí volume</label></div>
                 </div>
 
                 <div nz-col [nzSpan]="12">

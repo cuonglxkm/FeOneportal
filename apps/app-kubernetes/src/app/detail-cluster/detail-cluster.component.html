@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [content]="content" [action]="action" [title]="'Chi tiết cluster'">
+<page-header [breadcrumb]="breadcrumb" [content]="content" [title]="'Chi tiết cluster'">
   <!-- breadcrumb -->
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -12,19 +12,6 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Chi tiết cluster</nz-breadcrumb-item>
     </nz-breadcrumb>
-  </ng-template>
-
-  <!-- action -->
-  <ng-template #action>
-    <!-- <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
-    </div> -->
   </ng-template>
 
   <ng-template #content>
@@ -74,14 +61,6 @@
             </tr>
 
             <tr>
-              <td class="w-50"><row-data [value]="detailCluster.autoScaling == true ? 'Kích hoạt' : 'Không kích hoạt'"
-                [label]="'Auto scale'"></row-data></td>
-
-              <td class="w-50"><row-data [value]="detailCluster.autoHealing == true ? 'Kích hoạt' : 'Không kích hoạt'"
-                [label]="'Auto healing'"></row-data></td>
-            </tr>
-
-            <tr>
               <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'" [label]="'Ngày khởi tạo'"></row-data></td>
               <td class="w-50"><row-data
                 [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
@@ -107,19 +86,16 @@
                 <div nz-row>
                   <div nz-col [nzSpan]="8">Cấu hình</div>
                   <div nz-col [nzSpan]="16">
-                    <span class="description-info">KubeConfig</span>
-                    <button nz-button nzType="text" (click)="handleDownloadConfig()" class="action-icon borderless"
+                    <span class="description-info">
+                      <a (click)="handleViewKubeConfig()">Kubeconfig</a>
+                    </span>
+                    <button nz-button nzType="text" (click)="handleDownloadKubeConfig()" class="action-icon borderless"
                       nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip>
                       <span nz-icon nzType="download" nzTheme="outline"></span>
                     </button>
                     <button nz-button nzType="text" (click)="handleSyncClusterInfo()" class="action-icon borderless"
-                      nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top" nz-tooltip>
-                      <span nz-icon>
-                        <svg viewBox="64 64 896 896" focusable="false">
-                          <path
-                            d="M168 504.2c1-43.7 10-86.1 26.9-126 17.3-41 42.1-77.7 73.7-109.4S337 212.3 378 195c42.4-17.9 87.4-27 133.9-27s91.5 9.1 133.8 27A341.5 341.5 0 01755 268.8c9.9 9.9 19.2 20.4 27.8 31.4l-60.2 47a8 8 0 003 14.1l175.7 43c5 1.2 9.9-2.6 9.9-7.7l.8-180.9c0-6.7-7.7-10.5-12.9-6.3l-56.4 44.1C765.8 155.1 646.2 92 511.8 92 282.7 92 96.3 275.6 92 503.8a8 8 0 008 8.2h60c4.4 0 7.9-3.5 8-7.8zm756 7.8h-60c-4.4 0-7.9 3.5-8 7.8-1 43.7-10 86.1-26.9 126-17.3 41-42.1 77.8-73.7 109.4A342.45 342.45 0 01512.1 856a342.24 342.24 0 01-243.2-100.8c-9.9-9.9-19.2-20.4-27.8-31.4l60.2-47a8 8 0 00-3-14.1l-175.7-43c-5-1.2-9.9 2.6-9.9 7.7l-.7 181c0 6.7 7.7 10.5 12.9 6.3l56.4-44.1C258.2 868.9 377.8 932 512.2 932c229.2 0 415.5-183.7 419.8-411.8a8 8 0 00-8-8.2z" />
-                        </svg>
-                      </span>
+                      nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip (click)="handleCopyKubeConfig()">
+                      <span nz-icon nzType="copy" nzTheme="outline"></span>
                     </button>
                   </div>
                 </div>
@@ -150,7 +126,15 @@
                   <td class="w-50"><row-data [value]="item.volumeSize" [label]="'Ổ cứng (GiB)'"></row-data></td>
                 </tr>
 
-                <ng-container *ngIf="detailCluster.autoScale">
+                <tr>
+                  <td class="w-50"><row-data [value]="item.autoScaling == true ? 'Kích hoạt' : 'Không kích hoạt'"
+                    [label]="'Auto scale'"></row-data></td>
+
+                  <td class="w-50"><row-data [value]="item.autoHealing == true ? 'Kích hoạt' : 'Không kích hoạt'"
+                    [label]="'Auto healing'"></row-data></td>
+                </tr>
+
+                <ng-container *ngIf="item.autoScaling">
                   <tr>
                     <td class="w-50">
                       <div nz-row>
@@ -256,4 +240,37 @@
       <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Đóng</button>
     </ng-template>
   </div>
+</nz-modal>
+
+<!-- modal view kubeconfig -->
+<nz-modal [(nzVisible)]="showModalKubeConfig" [nzTitle]="viewKubeConfigTitle"
+  [nzContent]="viewKubeConfigBodyTpl" [nzFooter]="viewKubeConfigFooterTpl" (nzOnCancel)="handleCancelModalViewKubeConfig()">
+  <ng-template #viewKubeConfigTitle>
+    <div>
+      <label>Cluster {{detailCluster.clusterName}} Kubenetes Config</label>
+      <div class="modal-btn">
+        <button nz-button nzType="text" class="borderless" (click)="handleCopyKubeConfig()" style="height: fit-content;"
+          nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
+          <span nz-icon nzType="copy" nzTheme="outline"></span>
+        </button>
+        <button nz-button nzType="text" class="borderless" (click)="handleDownloadKubeConfig()" style="height: fit-content;"
+          nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip>
+          <span nz-icon nzType="download" nzTheme="outline"></span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #viewKubeConfigBodyTpl>
+    <div class="modal-view">
+      <pre>{{yamlString}}</pre>
+    </div>
+  </ng-template>
+
+  <ng-template #viewKubeConfigFooterTpl>
+    <button nz-button nzType="primary" (click)="handleCancelModalViewKubeConfig()">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Đóng
+    </button>
+  </ng-template>
 </nz-modal>

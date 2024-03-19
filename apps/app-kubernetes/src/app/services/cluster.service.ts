@@ -61,14 +61,9 @@ export class ClusterService extends BaseService {
     });
   }
 
-  observableTest() {
-    return new Observable<string>(obs => {
-      const es = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/test`);
-      es.addEventListener('message', (evt) => {
-        obs.next(evt.data);
-      });
-      return () => es.close();
-    });
+  getKubeConfig(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-kubeconfig/${serviceOrderCode}`,
+    {headers: this.getHeaders()});
   }
 
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {

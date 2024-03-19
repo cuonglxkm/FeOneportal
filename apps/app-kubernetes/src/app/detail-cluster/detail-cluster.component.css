@@ -66,3 +66,16 @@ textarea,
 .borderless {
   border: none;
 }
+
+.modal-view {
+  height: 360px;
+  overflow-y: scroll;
+  border: 1px solid #d8d6de;
+  border-radius: 4px;
+  padding: 5px 5px 5px 5px;
+}
+
+.modal-btn {
+  position: relative;
+  text-align: right;
+}

@@ -88,9 +88,6 @@ export class ClusterComponent implements OnInit {
       projectInfraId: [null, [Validators.required]],
       cloudProfileId: [null, [Validators.required]],
 
-      autoScalingWorker: [false],
-      autoHealing: [false],
-
       // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
@@ -124,6 +121,8 @@ export class ClusterComponent implements OnInit {
       volumeTypeId: [null, [Validators.required]],
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
+      autoScalingWorker: [false, Validators.required],
+      autoHealing: [false, Validators.required],
       minimumNode: [null],
       maximumNode: [null]
     });
@@ -274,17 +273,21 @@ export class ClusterComponent implements OnInit {
     this.listFormWorkerGroup.at(index).get('configTypeId').setValue(selectedWorkerType.id);
   }
 
-  onChangeAdvancedConfig() {
-    const isAutoScaleWorker = this.myform.get('autoScalingWorker').value;
+  onChangeAdvancedConfig(index: number) {
+    const isAutoScaleWorker = this.isAutoScaleAtIndex(index);
     if (isAutoScaleWorker) {
       this.isAutoScaleEnable = true;
-      this.addValidateMinimumNode();
-      this.addValidateMaximumNode();
+      this.addValidateMinimumNode(index);
+      this.addValidateMaximumNode(index);
     } else {
       this.isAutoScaleEnable = false;
-      this.removeValidateMinimumNode();
-      this.removeValidateMaximumNode();
+      this.removeValidateMinimumNode(index);
+      this.removeValidateMaximumNode(index);
     }
+  }
+
+  isAutoScaleAtIndex(index: number) {
+    return this.listFormWorkerGroup.at(index).get('autoScalingWorker').value;
   }
 
   onChangeNodeValue(index: number) {
@@ -301,32 +304,24 @@ export class ClusterComponent implements OnInit {
   }
 
   // validator
-  addValidateMaximumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('maximumNode').setValidators([Validators.required]);
-      this.listFormWorkerGroup.at(i).get('maximumNode').updateValueAndValidity();
-    }
+  addValidateMaximumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('maximumNode').setValidators([Validators.required]);
+    this.listFormWorkerGroup.at(index).get('maximumNode').updateValueAndValidity();
   }
 
-  removeValidateMaximumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('maximumNode').clearValidators();
-      this.listFormWorkerGroup.at(i).get('maximumNode').updateValueAndValidity();
-    }
+  removeValidateMaximumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('maximumNode').clearValidators();
+    this.listFormWorkerGroup.at(index).get('maximumNode').updateValueAndValidity();
   }
 
-  addValidateMinimumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('minimumNode').setValidators([Validators.required]);
-      this.listFormWorkerGroup.at(i).get('minimumNode').updateValueAndValidity();
-    }
+  addValidateMinimumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('minimumNode').setValidators([Validators.required]);
+    this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
   }
 
-  removeValidateMinimumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('minimumNode').clearValidators();
-      this.listFormWorkerGroup.at(i).get('minimumNode').updateValueAndValidity();
-    }
+  removeValidateMinimumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('minimumNode').clearValidators();
+    this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
   }
 
   // validate duplicate worker group name

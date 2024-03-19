@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../model/cluster.model';
-import { ClusterService } from '../services/cluster.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { K8sVersionModel } from '../model/k8s-version.model';
 import { finalize } from 'rxjs';
-import { FormSearchNetwork } from '../model/vlan.model';
-import { VlanService } from '../services/vlan.service';
+import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../model/cluster.model';
+import { K8sVersionModel } from '../model/k8s-version.model';
 import { VPCNetworkModel } from '../model/vpc-network.model';
+import { ClusterService } from '../services/cluster.service';
+import { VlanService } from '../services/vlan.service';
+import * as yaml from 'js-yaml';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -19,13 +20,6 @@ export class DetailClusterComponent implements OnInit {
   serviceOrderCode: string;
   detailCluster: KubernetesCluster;
 
-  autoScaleValue: boolean;
-  autoHealingValue: boolean;
-
-  // for switch
-  isLoadingAutoHealing: boolean;
-  isLoadingAutoScale: boolean;
-
   // for uprgade
   showModalUpgradeVersion: boolean;
   isUpgradingVersion: boolean;
@@ -34,17 +28,19 @@ export class DetailClusterComponent implements OnInit {
   listOfK8sVersion: K8sVersionModel[];
   listOfVPCNetworks: VPCNetworkModel[];
 
+  // kubeconfig
+  showModalKubeConfig: boolean;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private clusterService: ClusterService,
     private vlanService: VlanService,
-    private notificationService: NzNotificationService
+    private notificationService: NzNotificationService,
+    private clipboardService: ClipboardService
   ) {
     this.listOfK8sVersion = [];
-
-    this.isLoadingAutoHealing = false;
-    this.isLoadingAutoScale = false;
+    this.showModalKubeConfig = false;
     this.showModalUpgradeVersion = false;
     this.isUpgradingVersion = false;
   }
@@ -58,44 +54,55 @@ export class DetailClusterComponent implements OnInit {
 
   getDetailCluster(serviceOrderCode: string) {
     this.clusterService.getDetailCluster(serviceOrderCode)
-    .subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.detailCluster = new KubernetesCluster(r.data);
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.detailCluster = new KubernetesCluster(r.data);
 
-        this.autoScaleValue = this.detailCluster.autoScaling;
-        this.autoHealingValue = this.detailCluster.autoHealing;
+          this.getVlanbyId(this.detailCluster.vpcNetworkId);
+          this.getKubeConfig(this.detailCluster.serviceOrderCode);
 
-        this.getVlanbyId(this.detailCluster.vpcNetworkId);
+          // test
+          // this.detailCluster.upgradeVersion = '1.29.0';
+          // this.detailCluster.currentVersion = '1.28.2';
 
-        // test
-        // this.detailCluster.upgradeVersion = '1.29.0';
-        // this.detailCluster.currentVersion = '1.28.2';
-
-      } else {
-        this.notificationService.error("Thất bại", r.message);
-      }
-    });
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   getListVersion(regionId: number) {
     this.clusterService.getListK8sVersion(regionId, null)
-    .subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.listOfK8sVersion = r.data;
-      } else {
-        this.notificationService.error("Thất bại", r.message);
-      }
-    });
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.listOfK8sVersion = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
+  }
+
+  yamlString: string;
+  getKubeConfig(serviceOrderCode: string) {
+    this.clusterService.getKubeConfig(serviceOrderCode)
+      .subscribe((r: any) => {
+        console.log({response: r});
+        if (r && r.code == 200) {
+          this.yamlString = r.data;
+        } else {
+          this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+        }
+      });
   }
 
   vpcNetwork: string;
   getVlanbyId(vlanId: number) {
     this.vlanService.getVlanById(vlanId)
-    .subscribe((r: any) => {
-      if (r) {
-        this.vpcNetwork = r.name;
-      }
-    });
+      .subscribe((r: any) => {
+        if (r) {
+          this.vpcNetwork = r.name;
+        }
+      });
   }
 
   // gia hạn
@@ -121,9 +128,38 @@ export class DetailClusterComponent implements OnInit {
     this.upgradeVersionCluster = null;
   }
 
-  handleSyncClusterInfo() {}
+  handleSyncClusterInfo() { }
 
-  handleDownloadConfig() {}
+  // for kubeconfig
+  handleViewKubeConfig() {
+    this.showModalKubeConfig = true;
+  }
+
+  handleCancelModalViewKubeConfig() {
+    this.showModalKubeConfig = false;
+  }
+
+  handleCopyKubeConfig() {
+    this.clipboardService.copy(this.yamlString);
+    this.notificationService.success("Đã sao chép", null);
+  }
+
+  handleDownloadKubeConfig() {
+    const blob = new Blob([this.yamlString], { type: 'text/yaml' })
+    const url = window.URL.createObjectURL(blob);
+
+    // create a ele to download
+    var dlink = document.createElement("a");
+    dlink.download = this.detailCluster.clusterName + '_kubeconfig.yaml';
+    dlink.href = url;
+    dlink.onclick = function (e) {
+      // revokeObjectURL needs a delay to work properly
+      setTimeout(function () {
+        window.URL.revokeObjectURL(url);
+      }, 1500);
+    };
+    dlink.click(); dlink.remove();
+  }
 
   handleUpgadeVersionCluster() {
     this.isUpgradingVersion = true;
@@ -136,17 +172,17 @@ export class DetailClusterComponent implements OnInit {
     upgradeDto.serviceOrderCode = this.detailCluster.serviceOrderCode;
 
     this.clusterService.upgradeVersionCluster(upgradeDto)
-    .pipe(finalize(() => {
-      this.isUpgradingVersion = false;
-      this.showModalUpgradeVersion = false;
-    })).subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.notificationService.success("Thành công", r.message);
-        this.back2list();
-      } else {
-        this.notificationService.error("Thất bại", r.message);
-      }
-    });
+      .pipe(finalize(() => {
+        this.isUpgradingVersion = false;
+        this.showModalUpgradeVersion = false;
+      })).subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.notificationService.success("Thành công", r.message);
+          this.back2list();
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   back2list() {
@@ -191,7 +227,7 @@ export class RowDetailData implements OnInit {
   @Input('value') value: any;
   @Input('type') type: string;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void { }
 }

@@ -58,7 +58,7 @@
         <nz-divider nzType="vertical"></nz-divider>
         <button nz-button nzType="text" nzTooltipTitle="Xóa" nzTooltipPlacement="top" nz-tooltip
           [disabled]="setOfCheckedId.size === 0" (click)="handleDeleteMultipleCluster()" class="borderless">
-          <span nz-icon [nzType]="'delete'" [ngClass]="setOfCheckedId.size === 0 ? '' : 'delete-icon'"></span>
+          <span nz-icon [nzType]="'delete'" [ngClass]="setOfCheckedId.size === 0 ? '' : 'delete-color'"></span>
         </button>
       </div>
 
@@ -115,7 +115,7 @@
               </button>
               <button nz-button nzType="text" nzTooltipTitle="Xóa cluster" nzTooltipPlacement="top" nz-tooltip
                 (click)="showModalConfirmDeleteCluster(item)" class="borderless">
-                <span nz-icon [nzType]="'delete'" class="delete-icon"></span>
+                <span nz-icon [nzType]="'delete'" class="delete-color"></span>
               </button>
             </td>
           </tr>
@@ -175,8 +175,8 @@
 
   <ng-template #modalContent>
     <p>Điều này là không thể hoàn tác. Chúng tôi sẽ xóa hoàn toàn cụm Cluster của bạn và tất cả các tài nguyên liên quan.</p>
-    <p class="delete-icon"><b>Tất cả các node sẽ bị xoá và không thể khôi phục</b></p>
-    <p>Nhập `<b>{{selectedCluster.clusterName}}</b>` trong hộp văn bản dưới đây để xác nhận xóa cụm cluster này</p>
+    <p class="delete-color"><b>Tất cả các node sẽ bị xoá và không thể khôi phục</b></p>
+    <p>Nhập `<b class="delete-color">{{selectedCluster.clusterName}}</b>` trong hộp văn bản dưới đây để xác nhận xóa cụm cluster này</p>
     <input type="text" nz-input [(ngModel)]="deleteClusterName" placeholder="Nhập tên cluster để xác nhận xóa" (ngModelChange)="onInputDeleteCluster($event)" autofocus />
   </ng-template>
 
