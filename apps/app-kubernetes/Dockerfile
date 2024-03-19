@@ -1,4 +1,4 @@
-FROM registry.onsmartcloud.com/idg/node_v18:latest
+FROM registry.onsmartcloud.com/idg/node_v18:latest as node
 WORKDIR /app
 COPY . .
 
