@@ -149,5 +149,22 @@ export class FormSearchSummary {
   show_summary: boolean
 }
 
+export class ObjectObjectStorageModel {
+  key: string;
+  lastModified: string;
+  size: number;
+  bucketName: string;
+  objectType: string;
+  isPublic: boolean;
+  url: string;
+  contentType: string | null;
+  eTag: string | null;
+  versionsCount: number;
+  versionsSize: number;
+  isLatest: boolean;
+  isDeleteMarker: boolean;
+  checked: boolean = false;
+  indeterminate: boolean = false;
+}
 
 

@@ -15,8 +15,8 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
-          >File System Snapshot</a
+        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot-schedule/list']"
+          >File System Snapshot Schedule</a
         ></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>Tạo mới lịch File System Snapshot</nz-breadcrumb-item>
@@ -25,11 +25,11 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
+        (valueChanged)="regionChange($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
+        (valueChanged)="projectChange($event)"
       ></project-select-dropdown>
     </div>
   </ng-template>
@@ -39,7 +39,6 @@
   nz-form
   [formGroup]="FileSystemSnapshotForm"
   [nzLayout]="'vertical'"
-  (ngSubmit)="submitForm()"
 >
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="18" class="gutter-row">
@@ -49,7 +48,7 @@
           <nz-form-label nzFor="name" nzRequired
             >Tên lịch Snapshot</nz-form-label
           >
-          <nz-form-control nzErrorTip="Tên lịch Snapshot không đuợc để trống và chứa kí tự đặc biệt!">
+          <nz-form-control [nzErrorTip]="nameErrorTpl">
           <input
             nz-input
             type="text"
@@ -58,8 +57,12 @@
             placeholder="Nhập tên lịch Snapshot"
             [(ngModel)]="nameSnapshot"
             (ngModelChange)="nameSnapshot = $event"
-            formControlName="nameSnapshot"
+            formControlName="name"
           />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chứa chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+          </ng-template>
         </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -92,7 +95,7 @@
             [(ngModel)]="time"
             [ngModelOptions]="{ standalone: true }"
             [nzDefaultOpenValue]="defaultOpenValue"
-            formControlName="dateSnapshot"
+            formControlName="runtime"
           ></nz-time-picker>
         </nz-form-control>
         </nz-form-item>
@@ -104,7 +107,7 @@
             nzAllowClear
             [(ngModel)]="snapshotMode"
             name="snapshotMode"
-            formControlName="snapshotMode"
+            formControlName="mode"
             (ngModelChange)="modeChange($event)"
           >
             <nz-option
@@ -122,7 +125,7 @@
               >Số bản Snapshot lưu trữ</nz-form-label
             >
             <input
-              formControlName="snapshotRecord"
+              formControlName="maxSnapshot"
               nz-input
               type="number"
               [(ngModel)]="snapshotRecord"
@@ -140,7 +143,7 @@
               >
               <nz-form-control nzErrorTip="Số tuần không đuợc để trống!">
               <nz-select
-                formControlName="numberOfWeek"
+                formControlName="intervalWeek"
                 id="numberOfWeek"
                 [nzPlaceHolder]="'Số tuần thực hiện'"
                 [nzShowSearch]="false"
@@ -158,7 +161,7 @@
               <nz-form-label nzFor="name" nzRequired>Chọn ngày</nz-form-label>
               <nz-form-control nzErrorTip="Số ngày không đuợc để trống!">
               <nz-select
-                formControlName="daysOfWeek"
+                formControlName="dayOfWeek"
                 id="daysOfWeek"
                 [nzPlaceHolder]="'Chọn ngày'"
                 [(ngModel)]="daysOfWeekSelected"
@@ -179,7 +182,7 @@
             >
             <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
             <input
-              formControlName="snapshotRecord"
+              formControlName="maxSnapshot"
               nz-input
               type="number"
               [(ngModel)]="snapshotRecord"
@@ -197,7 +200,7 @@
               >
               <nz-form-control nzErrorTip="Số ngày không đuợc để trống!">
               <nz-select
-                formControlName="daysOfWeekMultiple"
+                formControlName="daysOfWeek"
                 id="daysOfWeekMultiple"
                 nzMode="multiple"
                 [nzPlaceHolder]="'Chọn thứ'"
@@ -218,7 +221,7 @@
               >
               <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
               <input
-                formControlName="snapshotRecord"
+                formControlName="maxSnapshot"
                 nz-input
                 type="number"
                 [(ngModel)]="snapshotRecord"
@@ -238,7 +241,7 @@
               <nz-form-control nzErrorTip="Số tháng không đuợc để trống!">
               <nz-input-number
                 style="width: 100%; border-radius: 8px; margin-left: 0"
-                formControlName="months"
+                formControlName="intervalMonth"
                 id="months"
                 nzMin="1"
                 nzMax="24"
@@ -254,7 +257,7 @@
               <nz-form-control nzErrorTip="Số ngày không đuợc để trống!">
               <nz-input-number
                 style="width: 100%; border-radius: 8px; margin-left: 0"
-                formControlName="date"
+                formControlName="dates"
                 id="date"
                 nzMin="1"
                 nzMax="31"
@@ -270,7 +273,7 @@
             >
             <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
             <input
-              formControlName="snapshotRecord"
+              formControlName="maxSnapshot"
               nz-input
               type="number"
               [(ngModel)]="snapshotRecord"
@@ -380,6 +383,8 @@
             justify-content: center;
           "
           nzSize="large"
+          (click)="handleSubmit()"
+          [disabled]="FileSystemSnapshotForm.invalid"
         >
           <img src="assets/imgs/wallet.svg" alt="" />
           <span class="button-text-primary">Khởi tạo</span>
@@ -397,3 +402,11 @@
     height: 100%;
   "
 ></div>
+<nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Xác nhận tạo mới Lịch Snapshot File System"
+          (nzOnCancel)="handleCancel()"
+          (nzOnOk)="handleCreate()"
+          nzOkText="Xác nhận" nzCancelText="Hủy bỏ">
+  <ng-container *nzModalContent>
+    <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn tạo mới Lịch Snapshot File System?</h3>
+  </ng-container>
+</nz-modal>

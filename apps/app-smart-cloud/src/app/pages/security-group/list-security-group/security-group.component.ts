@@ -68,7 +68,7 @@ export class SecurityGroupComponent implements OnInit {
     // this.getListInbound();
     this.listInbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'ingress')
     this.listOutbound = this.selectedValue.rulesInfo.filter(value => value.direction === 'egress')
-    this.getInstances(true)
+    this.getInstances()
   }
 
   handleOk(): void {
@@ -97,7 +97,7 @@ export class SecurityGroupComponent implements OnInit {
     this.listOutbound = []
     this.listInstance = []
     this.getSecurityGroup();
-    this.getInstances(true)
+    this.getInstances()
   }
 
   checkNullObject(object: any): Boolean {
@@ -127,7 +127,7 @@ export class SecurityGroupComponent implements OnInit {
     }
   }
 
-  getInstances(isCheckBegin: boolean) {
+  getInstances() {
     this.isLoading = true
     this.instanceService.search(this.pageNumber, this.pageSize, this.region,
       this.project, '', '', true, this.tokenService.get()?.userId)
@@ -135,9 +135,6 @@ export class SecurityGroupComponent implements OnInit {
         this.isLoading = false
         this.collection = data
         this.listInstance = data.records
-        if (isCheckBegin) {
-          this.isBegin = this.checkNullObject(this.listInstance) || this.listInstance.length < 1 ? true : false;
-        }
         // console.log('data', this.listInstance)
       }, error => {
         this.isLoading = false
@@ -155,12 +152,12 @@ export class SecurityGroupComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.pageSize = event
-    this.getInstances(false);
+    this.getInstances();
   }
 
   onPageIndexChange(event: any) {
     this.pageNumber = event;
-    this.getInstances(false);
+    this.getInstances();
   }
 
 
@@ -189,7 +186,7 @@ export class SecurityGroupComponent implements OnInit {
 
       }
 
-      this.getInstances(true)
+      this.getInstances()
 
     });
   }
@@ -214,7 +211,7 @@ export class SecurityGroupComponent implements OnInit {
     this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
       this.isLoadingAttach = false
       this.notification.success('Thành công', 'Gán Security Group vào máy ảo thành công')
-      this.getInstances(true)
+      this.getInstances()
     }, error => {
       this.notification.error('Thất bại', 'Gán Security Group vào máy ảo thất bại')
     })
@@ -240,7 +237,7 @@ export class SecurityGroupComponent implements OnInit {
     this.attachOrDetachForm.projectId = this.project
     this.securityGroupService.attachOrDetach(this.attachOrDetachForm).subscribe(data => {
       this.notification.success('Thành công', 'Gỡ Security Group ra khỏi máy ảo thành công')
-      this.getInstances(true)
+      this.getInstances()
     }, error => {
       this.notification.error('Thất bại', 'Gỡ Security Group ra khỏi máy ảo thất bại')
     })
