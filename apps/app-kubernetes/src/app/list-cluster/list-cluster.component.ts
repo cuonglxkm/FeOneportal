@@ -219,6 +219,35 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  handleDownloadKubeConfig(item: KubernetesCluster) {
+    this.clusterService.getKubeConfig(item.serviceOrderCode)
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          const yamlString = r.data;
+          this.downloadKubeConfig(item.clusterName, yamlString);
+        } else {
+          this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+        }
+      });
+  }
+
+  downloadKubeConfig(clusterName: string, yamlString: string) {
+    const blob = new Blob([yamlString], { type: 'text/yaml' })
+    const url = window.URL.createObjectURL(blob);
+
+    // create a ele to download
+    var dlink = document.createElement("a");
+    dlink.download = clusterName + '_kubeconfig.yaml';
+    dlink.href = url;
+    dlink.onclick = function (e) {
+      // revokeObjectURL needs a delay to work properly
+      setTimeout(function () {
+        window.URL.revokeObjectURL(url);
+      }, 1500);
+    };
+    dlink.click(); dlink.remove();
+  }
+
   getIndexOfCluster(id: number) {
     const item = this.listOfClusters.find(obj => obj.id == id);
     return this.listOfClusters.indexOf(item) + 1;
@@ -257,10 +286,6 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     } else {
       this.setOfCheckedId.delete(id);
     }
-  }
-
-  handleDownloadKubeConfig(item: KubernetesCluster) {
-    console.log(item);
   }
 
   handleSyncCluster() {
