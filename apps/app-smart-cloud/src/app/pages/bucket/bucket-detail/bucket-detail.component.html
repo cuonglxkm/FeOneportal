@@ -14,19 +14,19 @@
     <span class="text-card-header">Thông tin Bucket</span>
   </div>
   <nz-row>
-    <div style="margin-bottom: 10px;margin-right: 8px">Bucket: </div>
+    <div style="margin-bottom: 10px;margin-right: 8px">Bucket:</div>
     <div style="font-weight: bold;">{{bucket.bucketName}}</div>
   </nz-row>
   <nz-row>
-    <div style="margin-bottom: 10px;margin-right: 8px">URL: </div>
+    <div style="margin-bottom: 10px;margin-right: 8px">URL:</div>
     <div style="font-weight: bold;">{{bucket.linkS3Website}}</div>
   </nz-row>
   <nz-row>
-    <div style="margin-bottom: 10px;margin-right: 8px">Dung lượng đã sử dụng: </div>
+    <div style="margin-bottom: 10px;margin-right: 8px">Dung lượng đã sử dụng:</div>
     <div style="font-weight: bold;">{{bucket.bucketSize}} Bytes / {{bucket.bucketItemCount}} objects</div>
   </nz-row>
   <nz-row>
-    <div style="margin-bottom: 10px;margin-right: 8px">Versioning: </div>
+    <div style="margin-bottom: 10px;margin-right: 8px">Versioning:</div>
     <div style="font-weight: bold;">{{bucket.isVersioning == true ? 'Bật' : 'Tắt'}}</div>
   </nz-row>
   <nz-row>
@@ -57,16 +57,16 @@
     <div class="text-right p-0 m-b-0" nz-col [nzLg]="15" [nzMd]="15" [nzSm]="30" [nzXl]="15" [nzXs]="30" [nzXXl]="15">
       <p style="display: inline-block; margin-right: 20px;">Đã chọn {{countObjectSelected}} Objects.</p>
       <button nz-button nzType="primary" (click)="uploadFile()" nzSize="large">
-        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <img style="padding-right: 10px;" src="assets/imgs/download-vector.png" alt=""/>
         <span class="button-text-primary">Tải zip</span>
       </button>
       <button nz-button nzType="primary" (click)="isVisibleCreateFolder = true" nzSize="large">
-        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <img style="padding-right: 10px;" src="assets/imgs/folder.png" alt=""/>
         <span class="button-text-primary">Tạo thư mục</span>
       </button>
       <button nz-button nzType="primary" (click)="isVisibleUploadFile = true" nzSize="large"
               style="background-color: #43B000;border-color: #43B000">
-        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <img style="padding-right: 10px;" src="assets/imgs/document-upload.png" alt=""/>
         <span class="button-text-primary">Tải file lên</span>
       </button>
     </div>
@@ -105,10 +105,10 @@
             (nzCheckedChange)="onItemChecked(item.key , $event)"></td>
         <td *ngIf="item.objectType != 'folder'">{{item.key}}</td>
         <td *ngIf="item.objectType == 'folder'" style="color: #0074CC" (click)="loadData(item.key)">
-          <img style="padding-right: 5px;" src="assets/imgs/folder.svg" alt="" />
+          <img style="padding-right: 5px;" src="assets/imgs/folder.svg" alt=""/>
           {{item.key}}
         </td>
-        <td>{{item.size}} KB</td>
+        <td>{{(item.size / 1024).toFixed(2)}} KB</td>
         <td>{{item.objectType}}</td>
         <td>{{item.lastModified | date:'dd/MM/yyyy HH:mm:ss'}}</td>
         <td>{{item.isPublic == true ? 'Public' : 'Private'}}</td>
@@ -125,7 +125,7 @@
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item>Phiên bản ({{version}})</li>
-                <li nz-menu-item>Sao chép</li>
+                <li nz-menu-item (click)="doAction('2',item)">Sao chép</li>
                 <li nz-menu-item>Chia sẻ</li>
                 <li nz-menu-item>Quản lý phân quyền</li>
                 <li nz-menu-item>Chi tiết</li>
@@ -215,79 +215,117 @@
     </button>
   </ng-container>
 </nz-modal>
-  <!--Tạo thư mục-->
-  <nz-modal [(nzVisible)]="isVisibleCreateFolder" nzTitle="Tạo thư mục" (nzOnCancel)="isVisibleCreateFolder = false"
-            (nzOnOk)="createFolder()" nzOkText="Xác nhận"
-            nzCancelText="Hủy" [nzStyle]="modalStyle">
-    <ng-container *nzModalContent>
-      <div class="text-label">
-        <div>Đường dẫn</div>
-        <div
-          style="border: 1px solid #E2E2E9;margin-bottom: 10px; height: 40px ; display: flex; align-items: center;">
-          <img style="padding-right: 10px;padding-left: 10px;" src="assets/imgs/box.svg" alt=""/>
-          <ng-container *ngFor="let item of listOfFolder">
-            <div style="font-weight: bold;">>{{item.name}}</div>
-          </ng-container>
-        </div>
-        <div>Tên thư mục (<span class="red-star">*</span>)</div>
-        <input nzSize="large" nz-input placeholder="Nhập tên thư mục" style="width: 100%"
-               formControlName="name">
-      </div>
-    </ng-container>
-  </nz-modal>
-  <!--Tải file lên-->
-  <nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="isVisibleUploadFile = false"
-            (nzOnOk)="uploadFile()" nzOkText="Tải lên tất cả"
-            nzCancelText="Hủy" [nzStyle]="modalStyle">
-    <ng-container *nzModalContent>
-<!--      2 case trống file-->
-      <div *ngIf="emptyFileUpload">
-        <nz-upload nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76" (nzChange)="handleChange($event)">
-          <img style="padding-right: 10px;" src="assets/imgs/document.svg" alt=""/>
-          <img style="padding-right: 10px;" src="assets/imgs/document1.svg" alt=""/>
-          <img style="padding-right: 10px;" src="assets/imgs/task-square.svg" alt=""/>
-          <p style="margin-top: 12px;">Kéo thả vào đây hoặc: <strong> Chọn tải file lên</strong></p>
-        </nz-upload>
-      </div>
-      <div *ngIf="!emptyFileUpload">
-        <p>Lựa chọn phân quyền đọc</p>
-        <nz-radio-group [(ngModel)]="radioValue">
-          <label nz-radio nzValue="Public">Public</label>
-          <label nz-radio nzValue="Private">Private</label>
-        </nz-radio-group>
-
-        <nz-table>
-
-        </nz-table>
-        <h3>METADATA</h3>
-        <ng-container *ngFor="let item of listOfMetadata">
-          <table>
-            <td>
-              <input nzSize="large" nz-input placeholder="Nhập Key" style="width: 100%" [(ngModel)]="item.key">
-            </td>
-            <td>
-              <input nzSize="large" nz-input placeholder="Nhập Value" style="width: 100%" [(ngModel)]="item.value">
-            </td>
-            <td>
-              <span style="color: #0066B3" *ngIf="item.type == 'folder'"
-                    nz-tooltip
-                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                    nz-icon nzType="delete" nzTheme="outline"></span>
-            </td>
-          </table>
+<!--Tạo thư mục-->
+<nz-modal [(nzVisible)]="isVisibleCreateFolder" nzTitle="Tạo thư mục" (nzOnCancel)="isVisibleCreateFolder = false"
+          (nzOnOk)="createFolder()" nzOkText="Xác nhận"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <div class="text-label">
+      <div>Đường dẫn</div>
+      <div
+        style="border: 1px solid #E2E2E9;margin-bottom: 10px; height: 40px ; display: flex; align-items: center;">
+        <img style="padding-right: 10px;padding-left: 10px;" src="assets/imgs/box.svg" alt=""/>
+        <ng-container *ngFor="let item of listOfFolder">
+          <div style="font-weight: bold;">>{{item.name}}</div>
         </ng-container>
       </div>
-    </ng-container>
-  </nz-modal>
+      <div>Tên thư mục (<span class="red-star">*</span>)</div>
+      <input nzSize="large" nz-input placeholder="Nhập tên thư mục" style="width: 100%"
+             [(ngModel)]="nameFolder">
+    </div>
+  </ng-container>
+</nz-modal>
+<!--Tải file lên-->
+<nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="isVisibleUploadFile = false"
+          (nzOnOk)="uploadFile()" nzOkText="Tải lên tất cả"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <!--      2 case trống file-->
+    <div *ngIf="emptyFileUpload">
+      <nz-upload nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                 (nzChange)="handleChange($event)">
+        <img style="padding-right: 10px;" src="assets/imgs/document.svg" alt=""/>
+        <img style="padding-right: 10px;" src="assets/imgs/document1.svg" alt=""/>
+        <img style="padding-right: 10px;" src="assets/imgs/task-square.svg" alt=""/>
+        <p style="margin-top: 12px;">Kéo thả vào đây hoặc: <strong> Chọn tải file lên</strong></p>
+      </nz-upload>
+    </div>
+    <div *ngIf="!emptyFileUpload">
+      <p>Lựa chọn phân quyền đọc</p>
+      <nz-radio-group [(ngModel)]="radioValue">
+        <label nz-radio nzValue="Public">Public</label>
+        <label nz-radio nzValue="Private">Private</label>
+      </nz-radio-group>
+      <nz-table [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
+        <thead>
+        <tr>
+          <th>Tên</th>
+          <th>Kiểu File</th>
+          <th>Kích thước</th>
+          <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of lstFileUpdate">
+          <th>{{item.name}}</th>
+          <th>{{item.type}}</th>
+          <th>{{(item.size / 1024).toFixed(2)}} KB</th>
+          <th>
+              <span style="color: #0066B3; margin-right: 10px;"
+                    nz-tooltip
+                    nzTooltipTitle="tải lên" nzTooltipPlacement="bottom"
+                    nz-icon nzType="upload" nzTheme="outline"></span>
+            <span style="color: #0066B3"
+                  nz-tooltip
+                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline" (click)="removeFile(item)"></span>
+          </th>
+        </tr>
+      </nz-table>
+      <h3 style="font-weight: bold">METADATA</h3>
+      <nz-row *ngFor="let item of listOfMetadata" style="margin-top:10px">
+        <input style="width: 40%; margin-right: 5%;" nzSize="large" nz-input placeholder="Nhập Key"
+               [(ngModel)]="item.key">
+        <input style="width: 40%; margin-right: 5%" nzSize="large" nz-input placeholder="Nhập Value"
+               [(ngModel)]="item.value">
+        <button style="border: none;" nz-button (click)="removeMetadata(item.order)" nzSize="large">
+          <img style="margin-top: -4px" src="assets/imgs/trash.svg"/>
+        </button>
+      </nz-row>
+      <nz-row style="margin-top: 25px">
+        <button nz-button nzType="primary" (click)="addMoreMetadata()" nzSize="large" style="margin-right: 10px">
+          <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+          <span class="button-text-primary">Tạo metadata</span>
+        </button>
+        <nz-upload (nzChange)="handleChange($event)" [nzShowUploadList]="false">
+          <button nz-button nzType="primary" nzSize="large">
+            <img style="padding-right: 10px;" src="assets/imgs/folder.png" alt=""/>
+            <span class="button-text-primary">Thêm File</span>
+          </button>
+        </nz-upload>
+      </nz-row>
+    </div>
+  </ng-container>
+</nz-modal>
 
 <!--Xóa-->
-<!--<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"-->
-<!--          (nzOnOk)="openIpDelete()" nzOkText="Đồng ý"-->
-<!--          nzCancelText="Hủy" [nzStyle]="modalStyle">-->
-<!--  <ng-container *nzModalContent>-->
-<!--    <b style="display: flex; justify-content: center;">Quý khách chắc chắn muốn thực hiện xóa Ip Public?</b>-->
-<!--    <br>-->
-<!--    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>-->
-<!--  </ng-container>-->
-<!--</nz-modal>-->
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"
+          (nzOnOk)="deleteFolder()" nzOkText="Đồng ý"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <b style="display: flex; justify-content: center;">Quý khách chắc chắn muốn thực hiện xóa Ip Public?</b>
+    <br>
+    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>
+  </ng-container>
+</nz-modal>
+
+<!--Sao chép-->
+<nz-modal [(nzVisible)]="isVisibleCopy" nzTitle="Sao chép" (nzOnCancel)="handleCancel()"
+          (nzOnOk)="deleteFolder()" nzOkText="Đồng ý"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <one-portal-tree-folder [data]="treeFolder"></one-portal-tree-folder>
+  </ng-container>
+</nz-modal>
+
 

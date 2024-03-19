@@ -189,6 +189,7 @@ import { ObjectStorageEditComponent } from './object-storage/object-storage-edit
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
+import { TreeFolderComponent } from './bucket/bucket-detail/share/tree-folder.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -367,6 +368,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ObjectStorageEditComponent,
     ChartComponent,
     S3KeyComponent,
+    TreeFolderComponent,
   ],
   imports: [
     CommonModule,

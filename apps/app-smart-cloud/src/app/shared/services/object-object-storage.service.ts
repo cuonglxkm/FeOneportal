@@ -43,4 +43,8 @@ export class ObjectObjectStorageService extends BaseService{
     };
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/deleteS3Key', httpOptionOk);
   }
+
+  createFolder(data: any) {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createFolder', data, this.httpOptions);
+  }
 }

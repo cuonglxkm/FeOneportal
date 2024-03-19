@@ -7,6 +7,9 @@ import {ObjectObjectStorageModel} from "../../../shared/models/object-storage.mo
 import {ActivatedRoute} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BucketService} from "../../../shared/services/bucket.service";
+import {NzUploadFile} from "ng-zorro-antd/upload/interface";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -16,38 +19,7 @@ import {BucketService} from "../../../shared/services/bucket.service";
 export class BucketDetailComponent implements OnInit {
 
   listOfData: ObjectObjectStorageModel[];
-  // listOfData: any = [
-  //   {
-  //     id: "1",
-  //     name: "son",
-  //     size: "1",
-  //     type: "XLSX",
-  //     time: "2023",
-  //     role: "Private",
-  //     checked: false,
-  //     indeterminate: false,
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "khai",
-  //     size: "1",
-  //     type: "XLSX",
-  //     time: "2023",
-  //     role: "Private",
-  //     checked: false,
-  //     indeterminate: false,
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "son",
-  //     size: "1",
-  //     type: "folder",
-  //     time: "2023",
-  //     role: "Private",
-  //     checked: false,
-  //     indeterminate: false,
-  //   },
-  // ];
+  dataAction: ObjectObjectStorageModel;
   listOfFolder: any = [
     {name: "folder1", id: "1"},
     {name: "folder2", id: "2"},
@@ -55,10 +27,10 @@ export class BucketDetailComponent implements OnInit {
     {name: "folder4", id: "4"},
     {name: "folder5", id: "5"},
   ];
-  listOfMetadata: any = [
-    {key: "xin chao", value: "a"},
-    {key: "", value: ""},
-  ]
+
+  orderMetadata = 0;
+  defaultMetadata = {order:1,key: "", value: ""};
+  listOfMetadata: any = []
   bucket: any;
   size = 10;
   index: number = 1;
@@ -70,13 +42,21 @@ export class BucketDetailComponent implements OnInit {
   isVisibleUploadFile = false;
   isVisibleAddFilte = true;
   emptyFileUpload = true;
-  listOfFilter: any;
+  isVisibleCopy = false;
+  isVisibleShare = false;
+  isVisiblePermission = false;
+  isVisibleDetail = false;
+  isVisibleDelete = false;
+
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
-    'width': '60%',
+    'width': '80%',
   };
 
+  lstFileUpdate : NzUploadFile[];
+
+  listOfFilter: any;
   colReal = ['Tên', 'Thời gian chỉnh sửa', 'Dung lượng',]
   conditionNameReal = ['Bằng', 'Bao gồm', 'Bắt đầu', 'Kêt thức',]
   conditionTimeReal = ['Lớn hơn', 'Nhỏ hơn',]
@@ -97,12 +77,48 @@ export class BucketDetailComponent implements OnInit {
   checked = false;
   indeterminate = false;
   countObjectSelected = 0;
+  nameFolder = '';
+
+  treeFolder = [
+    {
+      name: "bucket1",
+      child: [
+        {
+          name: "folder2",
+          child: [
+            {
+              name: "folder4",
+              child: []
+            },
+            {
+              name: "folder5",
+              child: []
+            },
+          ]
+        },
+        {
+          name: "folder3",
+          child: []
+        }
+      ]
+    },
+    {
+      name: "bucketSon",
+      child: [
+        {
+          name: "folderSon",
+          child: []
+        }
+      ]
+    }
+  ]
 
   constructor(
     private service: ObjectObjectStorageService,
     private bucketservice: BucketService,
     private activatedRoute: ActivatedRoute,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
   ) {
   }
 
@@ -273,10 +289,27 @@ export class BucketDetailComponent implements OnInit {
   }
 
   createFolder() {
-
+    this.isVisibleCreateFolder = false;
+    let data = {
+      bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+      folderName: this.nameFolder
+    }
+    this.service.createFolder(data)
+      .pipe(finalize(() => {
+        this.loadData('');
+      }))
+      .subscribe(
+        () =>{
+          this.notification.success('Thành công', '`Thêm folder thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Thêm folder thất bại')
+        }
+      );
   }
 
   handleChange({file, fileList}: NzUploadChangeParam) {
+    this.lstFileUpdate = [...fileList];
     this.emptyFileUpload = false;
     const status = file.status;
     if (status !== 'uploading') {
@@ -335,5 +368,50 @@ export class BucketDetailComponent implements OnInit {
 
   search(searck : any) {
 
+  }
+
+  removeFile(item: NzUploadFile) {
+    let index = this.lstFileUpdate.findIndex(file => file.name == item.name && file.size == item.size);
+    if (index >= 0) {
+      this.lstFileUpdate.splice(index, 1);
+    }
+  }
+
+  addMoreMetadata() {
+    let defaultValue = {...this.defaultMetadata};
+    defaultValue.order = this.orderMetadata++;
+    this.listOfMetadata.push(defaultValue);
+  }
+
+  handleChange2({file, fileList}: NzUploadChangeParam) {
+    this.lstFileUpdate.push(file);
+  }
+
+  removeMetadata(order: any) {
+    const index = this.listOfMetadata.findIndex(item => item.order == order);
+    if (index >= 0) {
+      this.listOfMetadata.splice(index, 1);
+    }
+  }
+
+  deleteFolder() {
+
+  }
+
+  doAction(action: any, item: ObjectObjectStorageModel) {
+    this.dataAction = item;
+    if (action == 1) {
+
+    } else if (action == 2) {
+      this.isVisibleCopy = true;
+    } else if (action == 3) {
+
+    } else if (action == 4) {
+
+    } else if (action == 5) {
+
+    } else if (action == 6) {
+
+    }
   }
 }
