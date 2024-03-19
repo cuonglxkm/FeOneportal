@@ -6,16 +6,15 @@ import {
   OnChanges,
   OnInit,
   Output,
-  Renderer2,
   SimpleChanges,
-  TemplateRef,
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
-import { tr } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { InstancesModel } from '../../instances.model';
+import { LoadingService } from '@delon/abc/loading';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -23,21 +22,28 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./instances-btn.component.less'],
 })
 export class InstancesBtnComponent implements OnInit, OnChanges {
-  selectedProject: any;
   @Input() instancesId: any;
   @Output() valueChanged = new EventEmitter();
 
+  instancesModel: InstancesModel = new InstancesModel();
   isVisibleDelete: boolean = false;
+  inputConfirm: string = '';
 
   constructor(
     private dataService: InstancesService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataService.getById(this.instancesId, true).subscribe((data: any) => {
+      this.instancesModel = data;
+      this.cdr.detectChanges();
+    });
+  }
 
   openConsole(): void {
     this.route.navigateByUrl(
@@ -50,23 +56,29 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     );
   }
 
+  titleDeleteInstance: string = '';
   showModalDelete() {
     this.isVisibleDelete = true;
+    this.inputConfirm = '';
+    this.titleDeleteInstance = 'Xoá máy ảo ' + this.instancesModel.name;
   }
 
   handleOk() {
-    this.dataService.delete(this.instancesId).subscribe(
-      (data: any) => {
-        console.log(data);
-        this.isVisibleDelete = false;
-        this.route.navigate(['/app-smart-cloud/instances']);
-        this.notification.success('Thành công', 'Xóa máy ảo thành công');
-      },
-      () => {
-        this.isVisibleDelete = false;
-        this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
-      }
-    );
+    this.isVisibleDelete = false;
+    if (this.inputConfirm == this.instancesModel.name) {
+      this.dataService.delete(this.instancesId).subscribe({
+        next: (data: any) => {
+          console.log(data);
+          this.route.navigate(['/app-smart-cloud/instances']);
+          this.notification.success('Thành công', 'Xóa máy ảo thành công');
+        },
+        error: (e) => {
+          this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
+        },
+      });
+    } else {
+      this.notification.error('Tên máy ảo không khớp', 'Xóa máy ảo thất bại');
+    }
   }
 
   handleCancel() {
@@ -86,6 +98,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   isOk = false;
   passwordVisible = false;
   passwordRepeatVisible = false;
+  autoCreate: boolean = false;
 
   isVisibleResetPass = false;
   modalResetPassword() {
@@ -136,52 +149,66 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     }
   }
 
-  shutdownInstance(): void {
-    this.modalSrv.create({
-      nzTitle: 'Tắt máy ảo',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện tắt máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        var body = {
-          command: 'shutdown',
-          id: this.instancesId,
-        };
-        this.dataService.postAction(body).subscribe({
-          next: (data) => {
-            this.notification.success('', 'Tắt máy ảo thành công');
-          },
-          error: (e) => {
-            this.notification.error('', 'Tắt máy ảo không thành công');
-          },
-        });
-      },
-    });
+  isVisibleShutdown: boolean = false;
+  showModalShutdown() {
+    this.isVisibleShutdown = true;
   }
-  restartInstance(): void {
-    this.modalSrv.create({
-      nzTitle: 'Khởi động lại máy ảo',
-      nzContent: 'Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        var body = {
-          command: 'restart',
-          id: this.instancesId,
-        };
-        this.dataService.postAction(body).subscribe({
-          next: (data) => {
-            this.notification.success('', 'Khởi động lại máy ảo thành công');
-          },
-          error: (e) => {
-            this.notification.error(
-              '',
-              'Khởi động lại máy ảo không thành công'
-            );
-          },
-        });
-      },
-    });
+  handleOkShutdown() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.isVisibleShutdown = false;
+    var body = {
+      command: 'shutdown',
+      id: this.instancesId,
+    };
+    this.dataService
+      .postAction(body)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.notification.success('', 'Tắt máy ảo thành công');
+        },
+        error: (e) => {
+          this.notification.error('', 'Tắt máy ảo không thành công');
+        },
+      });
+  }
+  handleCancelShutdown() {
+    this.isVisibleShutdown = false;
+  }
+
+  isVisibleRestart: boolean = false;
+  showModalRestart() {
+    this.isVisibleRestart = true;
+  }
+  handleOkRestart() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.isVisibleRestart = false;
+    var body = {
+      command: 'restart',
+      id: this.instancesId,
+    };
+    this.dataService
+      .postAction(body)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.notification.success('', 'Khởi động lại máy ảo thành công');
+        },
+        error: (e) => {
+          this.notification.error('', 'Khởi động lại máy ảo không thành công');
+        },
+      });
+  }
+  handleCancelRestart() {
+    this.isVisibleRestart = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

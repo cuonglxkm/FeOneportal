@@ -1,0 +1,209 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Tạo mới Network'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/vlan/network/list">VLAN</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Tạo mới Network
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
+    <nz-card style="border-radius: 8px;">
+      <nz-form-item>
+        <nz-form-label nzFor="name">
+          <div>
+            <span>Tên Network</span>
+            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Nhập tên Network'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
+          <input nz-input
+                 class="input-custom"
+                 formControlName="nameNetwork"
+                 [placeholder]="'vlan_'"
+                 [maxlength]="50" />
+          <ng-template #nameNetworkErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên network không được bỏ trống</ng-container>
+            <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'</ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">Tên network tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên network không được chứa ký tự đặc biệt</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Tên Subnet</span>
+            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Nhập tên Subnet'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameSubnetErrorTpl">
+          <input nz-input
+                 class="input-custom"
+                 formControlName="nameSubnet"
+                 [placeholder]="'Nhập tên Subnet'"
+                 [maxlength]="50" />
+          <ng-template #nameSubnetErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên subnet không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">Tên subnet tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên subnet không được chứa ký tự đặc biệt</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>IP Version</span>
+            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Hiện tại chỉ cùng cấp IPv4'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips>
+<!--          <nz-select class="input-custom" ngModel="IPv4" nzDisabled>-->
+<!--            <nz-option nzValue="IPv4" nzLabel="IPv4"></nz-option>-->
+<!--          </nz-select>-->
+          <input nz-input class="input-custom" value="IPv4" [disabled]="'true'"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Địa chỉ</span>
+            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Subnet phải là dải con của network x.x.0.0/16 (CRID của network được chọn)'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="networkAddressErrorTpl">
+          <input nz-input
+                 class="input-custom"
+                 formControlName="networkAddress"
+                 [placeholder]="'x.x.0.0/16'" />
+          <ng-template #networkAddressErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Địa chỉ không được phép để trống</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIp')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-alert nzType="warning"
+                nzMessage="Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24"
+                nzShowIcon>
+      </nz-alert>
+      <nz-form-item>
+        <nz-form-control style="margin-top: 24px;">
+          <div nz-row>
+            <div nz-col nzSpan="12">
+              <label nz-checkbox formControlName="disableGatewayIp">
+                <nz-space [nzSize]="4">
+                  <span *nzSpaceItem class="text-value">Disable GatewayIP</span>
+                  <span *nzSpaceItem nz-icon nzType="question-circle"
+                        nzTheme="outline"
+                        nz-popover
+                        class="text-value"
+                        [nzPopoverContent]="'Subnet được add Router interface thì sẽ không Disable Gateway IP và ' +
+                   'ngươc lại Subnet không có gateway thì không không add Routerinterface'"
+                        nzPopoverPlacement="bottom"></span>
+                </nz-space>
+              </label>
+            </div>
+            <div nz-col nzSpan="12">
+              <label nz-checkbox formControlName="dhcp">
+                <nz-space [nzSize]="4">
+                  <span *nzSpaceItem class="text-value">DHCP</span>
+                  <span *nzSpaceItem nz-icon nzType="question-circle"
+                        nzTheme="outline"
+                        nz-popover
+                        class="text-value"
+                        [nzPopoverContent]="'DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo ' +
+                                        'Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP ' +
+                                        'Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP ' +
+                                        'Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP'"
+                        nzPopoverPlacement="bottom"></span>
+                </nz-space>
+              </label>
+            </div>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="!validateForm.controls.disableGatewayIp.value">
+        <nz-form-label>
+          <nz-space [nzSize]="4" >
+            <span *nzSpaceItem>Gateway</span>
+            <span *nzSpaceItem nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Nếu không nhập thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway, ví dụ: 10.21.0.1\n'+
+'- Nếu để trống thì hệ thống sẽ tự động lấy địa chỉ IP đầu tiên trong dải mạng để làm gateway'"
+                  nzPopoverPlacement="bottom"></span>
+          </nz-space>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips>
+          <input nz-input class="input-custom" formControlName="gateway" placeholder="Nhập Gateway"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+            <nz-space [nzSize]="4">
+              <span *nzSpaceItem>Allocation Pool</span>
+              <span *nzSpaceItem nz-icon nzType="question-circle"
+                    nzTheme="outline"
+                    nz-popover
+                    [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ','"
+                    nzPopoverPlacement="bottom"></span>
+            </nz-space>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">
+          <nz-textarea-count [nzMaxCharacterCount]="100">
+            <textarea rows="4" formControlName="allocationPool" nz-input></textarea>
+          </nz-textarea-count>
+          <ng-template #allocationPoolErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('pattern')">Địa chỉ IP không hợp lệ</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-card>
+    <nz-form-item nzAlign="bottom" nzJustify="end">
+      <nz-space nzSize="large">
+        <button *nzSpaceItem nz-button nzType="default" class="button-cancel">
+          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+        <nz-form-control *nzSpaceItem>
+          <button nz-button nzType="primary" [disabled]="!validateForm.valid"
+                  class="button-ok">
+            <span nz-icon nzType="check" nzTheme="outline" ></span>Tạo mới</button>
+        </nz-form-control>
+      </nz-space>
+    </nz-form-item>
+  </form>
+</nz-content>

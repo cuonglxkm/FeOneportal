@@ -19,9 +19,13 @@
       "@one-portal/common-utils": ["libs/common-utils/src/index.ts"],
       "app-base/Module": ["apps/app-base/src/app/remote-entry/entry.module.ts"],
       "app-kafka/Routes": [
-        "apps/app-kafka/src/app/remote-entry/entry.routes.ts"],
+        "apps/app-kafka/src/app/remote-entry/entry.routes.ts"
+      ],
       "app-kubernetes/Module": [
         "./apps/app-kubernetes/src/app/remote-entry/entry.module.ts"
+      ],
+      "app-mongodb-replicaset/Module": [
+        "apps/app-mongodb-replicaset/src/app/remote-entry/entry.module.ts"
       ],
       "app-smart-cloud/Module": [
         "./apps/app-smart-cloud/src/app/remote-entry/entry.module.ts"

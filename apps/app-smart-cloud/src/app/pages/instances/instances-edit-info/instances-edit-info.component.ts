@@ -51,7 +51,7 @@ export class InstancesEditInfoComponent implements OnInit {
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
   isSelected: boolean = false;
-  hdh: Image;
+  hdh: number;
   currentImage: Image;
   listSelectedImage = [];
   selectedImageTypeId: number;
@@ -79,11 +79,7 @@ export class InstancesEditInfoComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
-    if (this.currentImage.id != event) {
-      this.isSelected = true;
-    } else {
-      this.isSelected = false;
-    }
+    this.isSelected = true;
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -148,15 +144,16 @@ export class InstancesEditInfoComponent implements OnInit {
             }
             this.region = this.instancesModel.regionId;
             this.getListIpPublic();
-            this.getAllOfferImage(this.imageTypeId);
+            this.getAllOfferImage(
+              this.imageTypeId,
+              this.instancesModel.imageId
+            );
             this.dataService
               .getImageById(this.instancesModel.imageId)
               .pipe(finalize(() => this.loadingSrv.close()))
 
               .subscribe((dataimage: any) => {
-                //this.hdh = dataimge;
                 this.currentImage = dataimage;
-                //  this.selectedTypeImageId = this.hdh.imageTypeId;
                 this.loading = false;
                 this.cdr.detectChanges();
               });
@@ -187,12 +184,11 @@ export class InstancesEditInfoComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
-      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllOfferImage(imageTypeId: any[]) {
+  getAllOfferImage(imageTypeId: any[], currentImageId: number) {
     imageTypeId.forEach((id) => {
       let listImage: Image[] = [];
       this.listOfImageByImageType.set(id, listImage);
@@ -209,9 +205,11 @@ export class InstancesEditInfoComponent implements OnInit {
                 tempImage.name = e.offerName;
               }
               if (char.charOptionValues[0] == 'ImageTypeId') {
-                this.listOfImageByImageType
-                  .get(Number.parseInt(char.charOptionValues[1]))
-                  .push(tempImage);
+                if (tempImage.id != currentImageId) {
+                  this.listOfImageByImageType
+                    .get(Number.parseInt(char.charOptionValues[1]))
+                    .push(tempImage);
+                }
               }
             });
           }
@@ -244,20 +242,19 @@ export class InstancesEditInfoComponent implements OnInit {
   save(): void {
     this.rebuildInstances.regionId = this.instancesModel.regionId;
     this.rebuildInstances.customerId = this.instancesModel.customerId;
-    this.rebuildInstances.imageId = this.hdh.id;
-    this.rebuildInstances.flavorId = this.instancesModel.flavorId;
+    this.rebuildInstances.imageId = this.hdh;
     this.rebuildInstances.id = this.instancesModel.id;
-    this.dataService.rebuild(this.rebuildInstances).subscribe(
-      (data: any) => {
+    this.dataService.rebuild(this.rebuildInstances).subscribe({
+      next: (data: any) => {
         console.log(data);
         this.notification.success('', 'Thay đổi hệ điều hành thành công');
         this.returnPage();
       },
-      (error) => {
+      error: (error) => {
         console.log(error.error);
         this.notification.error('', 'Thay đổi hệ điều hành không thành công');
-      }
-    );
+      },
+    });
   }
 
   navigateToEdit() {

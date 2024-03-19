@@ -1,0 +1,67 @@
+<span style="color: #0066B3;"
+      class="more"
+      nz-icon nzType="edit"
+      nzTheme="outline"
+      nz-popover
+      [nzPopoverContent]="'Chỉnh sửa'"
+      nzPopoverPlacement="bottom"
+      (click)="showModal()"></span>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa thông tin Volume"
+          (nzOnCancel)="handleCancel()" nzMark="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
+  </div>
+  <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label nzFor="nameFileSystem">
+          <div style="margin-top: 15px;">
+            <span>Tên File System</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle" nzTheme="outline"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input nz-input
+                 formControlName="nameFileSystem"
+                 [placeholder]="'Nhập tên file system'" [maxLength]="70"/>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên file system</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
+              dấu tiếng Việt
+            </ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="description">
+          <div class="label">
+            <span>Mô tả</span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+                    <textarea nz-input
+                              formControlName="description"
+                              [placeholder]="'Nhập mô tả'"
+                              [maxLength]="255"
+                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+          <ng-template #descriptionErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
+            [nzLoading]="isLoadingUpdate"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

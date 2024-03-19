@@ -159,6 +159,9 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.isLoading = false;
         this.collection = data
         this.size = this.collection.totalCount
+      }, error => {
+        this.isLoading = false;
+        this.collection = null;
       });
   }
 

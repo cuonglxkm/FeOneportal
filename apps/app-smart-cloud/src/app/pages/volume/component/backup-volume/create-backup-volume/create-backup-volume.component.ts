@@ -15,6 +15,7 @@ import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {PackageBackupService} from "../../../../../shared/services/package-backup.service";
 import {PackageBackupModel} from "../../../../../shared/models/package-backup.model";
 import {ProjectService} from "../../../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-create-backup-volume',
@@ -40,6 +41,7 @@ export class CreateBackupVolumeComponent implements OnInit {
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
   onRegionChange(region: RegionModel) {
@@ -116,6 +118,9 @@ export class CreateBackupVolumeComponent implements OnInit {
       console.log('backup package', this.listOfPackage)
     })
 
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   constructor(private activatedRoute: ActivatedRoute,

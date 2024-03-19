@@ -57,7 +57,7 @@
 
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="kubernetesVersion" nzLabelWrap>Kubernetes version</nz-form-label>
+              <nz-form-label nzRequired nzFor="kubernetesVersion" nzLabelWrap>Phiên bản Kubernetes</nz-form-label>
               <nz-form-control nzErrorTip="Phiên bản Kubernetes không để trống">
                 <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn phiên bản Kubernetes"
                   formControlName="kubernetesVersion" id="kubernetesVersion">
@@ -82,37 +82,6 @@
             </ng-container>
           </ng-template>
         </nz-form-item>
-
-        <h3 class="mt-5">Cấu hình nâng cao</h3>
-
-        <div nz-row [nzGutter]="16">
-          <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig()"
-                  class="mr-3"></nz-switch>Bật Auto Scaling worker
-              </nz-form-control>
-              <small>Hỗ trợ chuyển đổi dự phòng cho master node. Số lượng master node có thể là 3 hoặc 5 node.</small>
-            </nz-form-item>
-
-            <!-- <nz-form-item>
-              <nz-form-control>
-                <nz-switch formControlName="ingressController" class="mr-3"></nz-switch>Bật Ingress Controller
-              </nz-form-control>
-              <small>Tích hợp NGINX ingress controller</small>
-            </nz-form-item> -->
-          </div>
-
-          <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch>Bật Auto Healing
-              </nz-form-control>
-              <small>Sản sinh ra các Minion khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
-                tải).</small>
-            </nz-form-item>
-          </div>
-        </div>
 
         <h3 class="mt-5">Cấu hình worker group</h3>
 
@@ -139,7 +108,26 @@
                   </ng-template>
                 </nz-form-item>
 
-                <ng-container *ngIf="isAutoScaleEnable">
+                <nz-form-item>
+                  <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
+                  <nz-form-control>
+                    <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
+                      (ngModelChange)="onSelectWorkerType($event, i)">
+                      <nz-option *ngFor="let item of listOfWorkerType"
+                        nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
+                      class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
+                  </nz-form-control>
+                  <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối đa</small>
+                </nz-form-item>
+
+                <ng-container *ngIf="isAutoScaleAtIndex(i)">
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="nodes">Số node tối thiểu</nz-form-label>
                     <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
@@ -156,53 +144,6 @@
                     </ng-template>
                   </nz-form-item>
                 </ng-container>
-
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
-                  <nz-form-control>
-                    <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
-                      (ngModelChange)="onSelectWorkerType($event, i)">
-                      <nz-option *ngFor="let item of listOfWorkerType"
-                        nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName"></nz-option>
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
-
-              <div nz-col [nzSpan]="12">
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
-                  <nz-form-control nzErrorTip="Số node không để trống">
-                    <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
-                      (keypress)="isNumber($event)" />
-                  </nz-form-control>
-                </nz-form-item>
-
-                <ng-container *ngIf="isAutoScaleEnable">
-                  <nz-form-item>
-                    <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
-                    <nz-form-control nzErrorTip="Số node tối đa không để trống">
-                      <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
-                        (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
-                    </nz-form-control>
-                  </nz-form-item>
-                </ng-container>
-
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
-                  <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                    <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng"
-                      formControlName="volumeStorage" id="volume" (keypress)="isNumber($event)" />
-                  </nz-form-control>
-                  <ng-template #volumeStorageErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                      Dung lượng ổ cứng không để trống
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Dung lượng trong khoảng từ 20-1000 (GB)
-                    </ng-container>
-                  </ng-template>
-                </nz-form-item>
 
                 <nz-form-item>
                   <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
@@ -224,6 +165,49 @@
                     </ng-container>
                   </nz-form-control>
                 </nz-form-item>
+              </div>
+
+              <div nz-col [nzSpan]="12">
+                <nz-form-item>
+                  <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
+                  <nz-form-control nzErrorTip="Số node không để trống">
+                    <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
+                      (keypress)="isNumber($event)" />
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-label nzRequired nzFor="volume">Ổ cứng (GiB)</nz-form-label>
+                  <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
+                    <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng"
+                      formControlName="volumeStorage" id="volume" (keypress)="isNumber($event)" />
+                  </nz-form-control>
+                  <ng-template #volumeStorageErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      Dung lượng ổ cứng không để trống
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                      Dung lượng trong khoảng từ 20-1000 (GiB)
+                    </ng-container>
+                  </ng-template>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch><label>Bật Auto Healing</label>
+                  </nz-form-control>
+                  <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá tải).</small>
+                </nz-form-item>
+
+                <ng-container *ngIf="isAutoScaleAtIndex(i)">
+                  <nz-form-item>
+                    <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
+                    <nz-form-control nzErrorTip="Số node tối đa không để trống">
+                      <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
+                        (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                    </nz-form-control>
+                  </nz-form-item>
+                </ng-container>
               </div>
             </div>
 
@@ -256,7 +240,7 @@
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
-              <nz-form-control nzErrorTip="Mạng VPC không để trống">
+              <nz-form-control nzErrorTip="Mạng VPC không để trống" >
                 <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
                   class="w-90" (ngModelChange)="onSelectedVlan($event)">
                   <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
@@ -270,6 +254,11 @@
                     </svg>
                   </span>
                 </button>
+                <div class="small-description">
+                  <small>Chọn một VPC cho kubernetes cluster của bạn.
+                    <a routerLink="" target="_balnk">Nhấp vào đây để quản lý các VPC của bạn</a>
+                  </small>
+                </div>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -284,9 +273,10 @@
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
-              <nz-form-control nzErrorTip="Subnet không để trống">
+              <nz-form-control nzErrorTip="Subnet không để trống" id="subnet-form">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90">
-                  <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.name" [nzValue]="item.subnetAddressRequired"></nz-option>
+                  <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
+                    [nzValue]="item.subnetAddressRequired"></nz-option>
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
                   nz-tooltip (click)="syncSubnet()" class="borderless">
@@ -297,8 +287,61 @@
                     </svg>
                   </span>
                 </button>
+                <div class="small-description">
+                  <small>Lựa chọn subnet cho cluster này</small>
+                </div>
               </nz-form-control>
             </nz-form-item>
+          </div>
+        </div>
+
+      </nz-card>
+
+      <!-- volume -->
+      <nz-card class="border-card">
+        <h3>Cấu hình volume</h3>
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="volumeCloudSize">Kích thước (GiB)</nz-form-label>
+              <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
+                <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập kích thước volume"
+                (keypress)="isNumber($event)" id="volumeCloudSize" />
+              </nz-form-control>
+              <ng-template #volumeCloudErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Kích thước volume không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('max') || control.hasError('min')">
+                  Dung lượng trong khoảng từ 20-1000 (GiB)
+                </ng-container>
+              </ng-template>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
+              <nz-form-control nzErrorTip="Thời gian sử dụng không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn thời gian sử dụng" formControlName="usageTime" id="usageTime">
+                  <nz-option *ngFor="let item of listOfUsageTime" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="volumeCloudType">Loại</nz-form-label>
+              <nz-form-control>
+                <nz-radio-group formControlName="volumeCloudType">
+                  <label nz-radio nzValue="hdd">HDD</label>
+                  <label nz-radio nzValue="sdd">SDD</label>
+                </nz-radio-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <div>
+              <p class="padtop-35">Thời gian bắt đầu sử dụng: {{currentDate}}</p>
+            </div>
           </div>
         </div>
 
@@ -309,173 +352,261 @@
 
   <!-- payment -->
   <div nz-col [nzSpan]="8" class="gutter-row">
-    <nz-card>
-      <h3>Thành tiền</h3>
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="ml-3">Tên cluster</div>
-        </div>
-        <div nz-col [nzSpan]="12">
-          <div class="price-style mr-3">{{clusterName}}</div>
-        </div>
-      </div>
+    <nz-affix [nzOffsetTop]="48">
+      <nz-card class="border-card">
+        <nz-tabset>
+          <!-- tab into money -->
+          <nz-tab [nzTitle]="titleIntoMoneyTpl">
+            <div>
+              <div nz-row [nzGutter]="8">
+                <div nz-col [nzSpan]="12">
+                  <div class="ml-3"><label>Chi phí worker</label></div>
+                </div>
 
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Phiên bản Kubernetes</div>
-        </div>
-        <div nz-col [nzSpan]="12">
-          <div class="price-style mt-3 mr-3">{{kubernetesVersion}}</div>
-        </div>
-      </div>
+                <div nz-col [nzSpan]="12">
+                  <div class="price-style price-color mr-3">2.000.000 VNĐ</div>
+                  <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+                </div>
+              </div>
 
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Khu vực</div>
-        </div>
-        <div nz-col [nzSpan]="12">
-          <div class="price-style mt-3 mr-3">local</div>
-        </div>
-      </div>
+              <div nz-row [nzGutter]="8">
+                <div nz-col [nzSpan]="12">
+                  <div class="mt-3 ml-3"><label>Chi phí volume</label></div>
+                </div>
 
-      <nz-divider class="divider-style"></nz-divider>
-      <h3>Cấu hình nâng cao</h3>
+                <div nz-col [nzSpan]="12">
+                  <div class="price-style price-color mt-3 mr-3">500.000 VNĐ</div>
+                  <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+                </div>
+              </div>
 
-      <div class="scroll scrollbar">
-        <ng-container *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="ml-3">Tên nhóm worker</div>
+              <div nz-row [nzGutter]="8" class="mt-5 price-panel">
+                <div nz-col [nzSpan]="12">
+                  <div class="mt-3 ml-3"><label>Thành tiền</label></div>
+                  <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
+                </div>
+                <div nz-col [nzSpan]="12">
+                  <div class="price-style total-color mt-3 mr-3">2.500.000 VNĐ</div>
+                  <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+                </div>
+              </div>
+
+              <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
+                <div nz-col [nzSpan]="12">
+                  <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()" [disabled]="isSubmitting">
+                    <span nz-icon nzType="close" nzTheme="outline"></span>
+                    Hủy
+                  </button>
+                </div>
+
+                <div nz-col [nzSpan]="12">
+                  <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitOrder()"
+                    [disabled]="myform.invalid || isSubmitting">
+                    Thanh toán
+                  </button>
+                </div>
+              </div>
+
+              <!-- remove after -->
+              <div class="mt-5">
+                <button nz-button nzType="primary" nzBlock (click)="onCreateCluster()"
+                  [disabled]="myform.invalid || isSubmitting">
+                  <ng-container *ngIf="isSubmitting; else paymentIconTpl">
+                    <span nz-icon [nzType]="'loading'"></span>
+                  </ng-container>
+                  <ng-template #paymentIconTpl>
+                    <span nz-icon>
+                      <svg viewBox="64 64 896 896" focusable="false">
+                        <path
+                          d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-32 464H528V448h320v128zm-268-64a40 40 0 1080 0 40 40 0 10-80 0z" />
+                      </svg>
+                    </span>
+                  </ng-template>
+                  Khởi tạo (test)
+                </button>
+              </div>
+
             </div>
-            <div nz-col [nzSpan]="12">
-              <div class="price-style mr-3">{{control.get('workerGroupName').value}}</div>
-            </div>
-          </div>
+          </nz-tab>
+          <ng-template #titleIntoMoneyTpl>
+            <label>Thành tiền</label>
+          </ng-template>
 
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="mt-3 ml-3">Số node</div>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <div class="price-style mt-3 mr-3">{{control.get('nodeNumber').value}}</div>
-            </div>
-          </div>
-
-          <ng-container *ngIf="isAutoScaleEnable">
+          <!-- tab summary -->
+          <nz-tab [nzTitle]="titleSummaryTpl">
             <div nz-row [nzGutter]="8">
               <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3">Số node tối thiểu</div>
+                <div class="ml-3"><label>Tên cluster</label></div>
               </div>
               <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{control.get('minimumNode').value}}</div>
+                <div class="price-style mr-3">{{clusterName}}</div>
               </div>
             </div>
+
             <div nz-row [nzGutter]="8">
               <div nz-col [nzSpan]="12">
-                <div class="mt-3 ml-3">Số node tối đa</div>
+                <div class="mt-3 ml-3"><label>Phiên bản Kubernetes</label></div>
               </div>
               <div nz-col [nzSpan]="12">
-                <div class="price-style mt-3 mr-3">{{control.get('maximumNode').value}}</div>
+                <div class="price-style mt-3 mr-3">{{kubernetesVersion}}</div>
               </div>
             </div>
-          </ng-container>
 
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="mt-3 ml-3">Cấu hình</div>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <div class="price-style mt-3 mr-3">{{control.get('configType').value}}</div>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="mt-3 ml-3">Ổ cứng (GB)</div>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <div class="price-style mt-3 mr-3">{{control.get('volumeStorage').value}}</div>
-            </div>
-          </div>
-
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="mt-3 ml-3">Loại ổ cứng</div>
-            </div>
-            <div nz-col [nzSpan]="12">
-              <div class="price-style mt-3 mr-3">
-                {{control.get('volumeType').value === DEFAULT_VOLUME_TYPE ? 'Premium-HDD1' : 'Premium-SSD1'}}
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>Khu vực</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{regionName}}</div>
               </div>
             </div>
-          </div>
-          <nz-divider [nzDashed]="true"></nz-divider>
-        </ng-container>
-      </div>
 
-      <div nz-row [nzGutter]="8" class="mt-5 price-panel">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Thành tiền</div>
-          <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
-        </div>
-        <div nz-col [nzSpan]="12">
-          <div class="price-style total-color mt-3 mr-3">2.500.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
-        </div>
-      </div>
+            <nz-divider class="divider-style"></nz-divider>
+            <h3>Cấu hình nâng cao</h3>
 
-      <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
-        <div nz-col [nzSpan]="12">
-          <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()">
-            <span nz-icon nzType="close" nzTheme="outline"></span>
-            Hủy
-          </button>
-        </div>
+            <div class="scroll scrollbar">
+              <ng-container *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
+                <div nz-row [nzGutter]="8">
+                  <div nz-col [nzSpan]="12">
+                    <div class="ml-3"><label>Tên nhóm worker</label></div>
+                  </div>
+                  <div nz-col [nzSpan]="12">
+                    <div class="price-style mr-3">{{control.get('workerGroupName').value}}</div>
+                  </div>
+                </div>
 
-        <div nz-col [nzSpan]="12">
-          <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitPayment()" [disabled]="myform.invalid">
-            <ng-container *ngIf="isSubmitting; else paymentIconTpl">
-              <span nz-icon [nzType]="'loading'"></span>
+                <div nz-row [nzGutter]="8">
+                  <div nz-col [nzSpan]="12">
+                    <div class="mt-3 ml-3"><label>Số node</label></div>
+                  </div>
+                  <div nz-col [nzSpan]="12">
+                    <div class="price-style mt-3 mr-3">{{control.get('nodeNumber').value}}</div>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="isAutoScaleEnable">
+                  <div nz-row [nzGutter]="8">
+                    <div nz-col [nzSpan]="12">
+                      <div class="mt-3 ml-3"><label>Số node tối thiểu</label></div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                      <div class="price-style mt-3 mr-3">{{control.get('minimumNode').value}}</div>
+                    </div>
+                  </div>
+                  <div nz-row [nzGutter]="8">
+                    <div nz-col [nzSpan]="12">
+                      <div class="mt-3 ml-3"><label>Số node tối đa</label></div>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                      <div class="price-style mt-3 mr-3">{{control.get('maximumNode').value}}</div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <div nz-row [nzGutter]="8">
+                  <div nz-col [nzSpan]="12">
+                    <div class="mt-3 ml-3"><label>Cấu hình</label></div>
+                  </div>
+                  <div nz-col [nzSpan]="12">
+                    <div class="price-style mt-3 mr-3">{{control.get('configType').value}}</div>
+                  </div>
+                </div>
+
+                <div nz-row [nzGutter]="8">
+                  <div nz-col [nzSpan]="12">
+                    <div class="mt-3 ml-3"><label>Ổ cứng (GiB)</label></div>
+                  </div>
+                  <div nz-col [nzSpan]="12">
+                    <div class="price-style mt-3 mr-3">{{control.get('volumeStorage').value}}</div>
+                  </div>
+                </div>
+
+                <div nz-row [nzGutter]="8">
+                  <div nz-col [nzSpan]="12">
+                    <div class="mt-3 ml-3"><label>Loại ổ cứng</label></div>
+                  </div>
+                  <div nz-col [nzSpan]="12">
+                    <div class="price-style mt-3 mr-3">
+                      {{control.get('volumeType').value === DEFAULT_VOLUME_TYPE ? 'Premium-HDD1' : 'Premium-SSD1'}}
+                    </div>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="i != (listFormWorkerGroup.controls.length - 1)">
+                  <nz-divider nzDashed class="divider-style"></nz-divider>
+                </ng-container>
               </ng-container>
-              <ng-template #paymentIconTpl>
-                <span nz-icon>
-                  <svg viewBox="64 64 896 896" focusable="false">
-                    <path
-                      d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-32 464H528V448h320v128zm-268-64a40 40 0 1080 0 40 40 0 10-80 0z" />
-                  </svg>
-                </span>
-              </ng-template>
-            Thanh toán
-          </button>
-        </div>
-      </div>
-    </nz-card>
+            </div>
 
-    <!-- payment -->
-    <!-- <nz-card class="border-card ">
-      <h3>Thành tiền</h3>
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí máy ảo:</div>
-        </div>
+            <nz-divider class="divider-style"></nz-divider>
+            <h3>Cấu hình network</h3>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="ml-3"><label>Loại network</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mr-3">{{networkType == 'calico' ? 'Calico' : 'Cilium'}}</div>
+              </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>CIDR</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{cidr}}</div>
+              </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>Mạng VPC</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{vpcNetwork}}</div>
+              </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>Subnet</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{subnet}}</div>
+              </div>
+            </div>
 
-        <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
-        </div>
-      </div>
+            <nz-divider class="divider-style"></nz-divider>
+            <h3>Cấu hình volume</h3>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="ml-3"><label>Kích thước (GiB)</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mr-3">{{volumeCloudSize}}</div>
+              </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>Loại</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{volumeCloudType == 'hdd' ? 'HDD' : 'SSD'}}</div>
+              </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+              <div nz-col [nzSpan]="12">
+                <div class="mt-3 ml-3"><label>Thời gian sử dụng (tháng)</label></div>
+              </div>
+              <div nz-col [nzSpan]="12">
+                <div class="price-style mt-3 mr-3">{{usageTime}}</div>
+              </div>
+            </div>
 
-      <nz-divider class="divider-style"></nz-divider>
 
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí Volume bổ sung:</div>
-        </div>
-
-        <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
-        </div>
-      </div>
-    </nz-card> -->
+          </nz-tab>
+          <ng-template #titleSummaryTpl>
+            <label>Tóm tắt</label>
+          </ng-template>
+        </nz-tabset>
+      </nz-card>
+    </nz-affix>
   </div>
 </div>

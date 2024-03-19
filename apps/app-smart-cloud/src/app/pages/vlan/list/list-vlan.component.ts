@@ -1,12 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {FormSearchNetwork, NetWorkModel} from "../../../shared/models/vlan.model";
-import {BaseResponse} from "../../../../../../../libs/common-utils/src";
-import {VlanService} from "../../../shared/services/vlan.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ProjectService} from "../../../shared/services/project.service";
-import {getCurrentRegionAndProject} from "@shared";
+import { Component, OnInit } from '@angular/core';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
+import { AppValidator, BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { VlanService } from '../../../shared/services/vlan.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { getCurrentRegionAndProject } from '@shared';
+import { debounceTime } from 'rxjs';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-list-vlan',
@@ -21,7 +23,6 @@ export class ListVlanComponent implements OnInit{
 
   value: string
 
-  formSearchNetwork: FormSearchNetwork = new FormSearchNetwork()
 
   response: BaseResponse<NetWorkModel[]>
 
@@ -30,78 +31,95 @@ export class ListVlanComponent implements OnInit{
 
   isLoading: boolean = false
 
+  validateForm: FormGroup<{
+    nameNetwork: FormControl<string>
+  }> = this.fb.group({
+    nameNetwork: ['', [Validators.required,
+      AppValidator.startsWithValidator('vlan_'),
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-Z0-9_]*$/)]]
+  });
+
+  isBegin: boolean = false
   constructor(private vlanService: VlanService,
               private router: Router,
               private route: ActivatedRoute,
-              private projectService: ProjectService) {
+              private notification: NzNotificationService,
+              private fb: NonNullableFormBuilder) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.getListVlanNetwork()
+    // this.getListVlanNetwork()
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id
-    this.typeVPC = project.type
+    this.project = project?.id
+    this.typeVPC = project?.type
 
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(true)
   }
 
   onInputChange(value) {
     this.value = value
 
+    this.getListVlanNetwork(false)
   }
 
   navigateToCreateNetwork() {
-
+    this.router.navigate(['/app-smart-cloud/vlan/create/network'])
   }
 
-  networkInit(){
-    this.formSearchNetwork.vlanName = this.value
-    this.formSearchNetwork.region = this.region
-    this.formSearchNetwork.pageSize = this.pageSize
-    this.formSearchNetwork.pageNumber = this.pageNumber
-  }
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
   onPageIndexChange(value) {
     this.pageNumber = value
-    this.getListVlanNetwork()
+    this.getListVlanNetwork(false)
   }
 
-  getListVlanNetwork() {
+  getListVlanNetwork(isCheckBegin) {
     this.isLoading = true
-    this.networkInit()
-    this.vlanService.getVlanNetworks(this.formSearchNetwork).subscribe(data => {
-      console.log('data', data)
+
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork()
+    formSearchNetwork.vlanName = this.value
+    formSearchNetwork.region = this.region
+    formSearchNetwork.pageSize = this.pageSize
+    formSearchNetwork.pageNumber = this.pageNumber
+    formSearchNetwork.project = this.project
+
+    this.vlanService.getVlanNetworks(formSearchNetwork)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
       this.response = data
       this.isLoading = false
-    })
+      if (isCheckBegin) {
+        this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
+      }
+    }, error => {
+        this.response = null
+        this.isLoading = false
+      })
   }
 
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
+  handleOkEdit() {
+    this.getListVlanNetwork(false)
+  }
+
+  handleOkDelete(){
+    this.getListVlanNetwork(false)
   }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    console.log('project', this.project)
-    // this.customerId = this.tokenService.get()?.userId
-    if (this.project && this.region) {
-      this.loadProjects()
-    }
-    this.getListVlanNetwork()
+    this.vlanService.model.subscribe(data => {
+      console.log(data)
+    })
+    // this.getListVlanNetwork()
   }
 }

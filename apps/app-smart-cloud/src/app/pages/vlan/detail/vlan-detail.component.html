@@ -16,6 +16,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -24,10 +25,10 @@
   <nz-card>
     <nz-tabset>
       <nz-tab nzTitle="Subnet">
-
+        <one-portal-detail-subnet [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
       <nz-tab nzTitle="Port">
-
+        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork"/>
       </nz-tab>
     </nz-tabset>
   </nz-card>

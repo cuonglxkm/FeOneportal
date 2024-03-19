@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Inject,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -31,12 +33,13 @@ import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.s
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 interface InstancesForm {
   name: FormControl<string>;
 }
 @Component({
-  selector: 'one-portal-instances-create',
+  selector: 'one-portal-instances-create-vpc',
   templateUrl: './instances-create-vpc.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -85,14 +88,14 @@ export class InstancesCreateVpcComponent implements OnInit {
   projectId: number;
   userId: number;
   user: any;
-  ipPublicValue: number;
+  ipPublicValue: number = 0;
   isUseLAN: boolean = false;
   passwordVisible = false;
   password?: string;
   hdh: any = null;
   selectedSSHKeyName: string;
   selectedSnapshot: number;
-  isEncryptVolume: boolean = false;
+  cardHeight: string = '140px';
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -101,7 +104,10 @@ export class InstancesCreateVpcComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -137,9 +143,41 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.getAllImageType();
     this.initSnapshot();
     this.getAllIPPublic();
-    this.getAllOfferImage(this.imageTypeId);
     this.getAllSecurityGroup();
     this.getAllSSHKey();
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '110px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '160px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '190px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '145px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '130px';
+        }
+
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
     this.cdr.detectChanges();
   }
 
@@ -158,6 +196,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
@@ -191,6 +230,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       });
   }
 
+  nameImage: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
@@ -199,6 +239,10 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
+    const filteredImages = this.listOfImageByImageType
+      .get(imageTypeId)
+      .filter((e) => e.id == event);
+    this.nameImage = filteredImages.length > 0 ? filteredImages[0].name : '';
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -243,7 +287,14 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#region HDD hay SDD
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
-
+  initHDD(): void {
+    this.activeBlockHDD = true;
+    this.activeBlockSSD = false;
+  }
+  initSSD(): void {
+    this.activeBlockHDD = false;
+    this.activeBlockSSD = true;
+  }
   //#endregion
 
   //#region Chọn IP Public Chọn Security Group
@@ -365,7 +416,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
     this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
-    this.instanceCreate.encryption = false;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;
@@ -409,11 +459,17 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
-  save(): void {
+  isVisibleCreate: boolean = false;
+  showModalCreate() {
     if (!this.isSnapshot && this.hdh == null) {
       this.notification.error('', 'Vui lòng chọn hệ điều hành');
       return;
     }
+    this.isVisibleCreate = true;
+  }
+
+  handleOkCreate(): void {
+    this.isVisibleCreate = false;
     this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
@@ -429,11 +485,26 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
 
-    var returnPath: string = window.location.pathname;
-    console.log('instance create', this.instanceCreate);
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    // var returnPath: string = window.location.pathname;
+    // console.log('instance create', this.instanceCreate);
+    // this.router.navigate(['/app-smart-cloud/order/cart'], {
+    //   state: { data: this.order, path: returnPath },
+    // });
+
+    this.dataService.create(this.order).subscribe({
+      next: (data: any) => {
+        this.notification.success('', 'Tạo máy ảo hành công');
+        this.router.navigate(['/app-smart-cloud/instances']);
+      },
+      error: (error) => {
+        console.log(error.error);
+        this.notification.error('', 'Tạo máy ảo không thành công');
+      },
     });
+  }
+
+  handleCancelCreate() {
+    this.isVisibleCreate = false;
   }
 
   cancel(): void {

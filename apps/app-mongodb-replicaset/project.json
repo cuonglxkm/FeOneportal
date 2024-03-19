@@ -1,0 +1,108 @@
+{
+  "name": "app-mongodb-replicaset",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-mongodb-replicaset/src",
+  "tags": ["app-mongodb-replicaset"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-mongodb-replicaset",
+        "index": "apps/app-mongodb-replicaset/src/index.html",
+        "main": "apps/app-mongodb-replicaset/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-mongodb-replicaset/tsconfig.app.json",
+        "assets": [
+          "apps/app-mongodb-replicaset/src/favicon.ico",
+          "apps/app-mongodb-replicaset/src/assets"
+        ],
+        "styles": ["apps/app-mongodb-replicaset/src/styles.css"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-mongodb-replicaset/webpack.config.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-mongodb-replicaset/webpack.prod.config.ts"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:webpack-dev-server",
+      "options": {
+        "port": 4206,
+        "publicHost": "http://localhost:4206"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-mongodb-replicaset:build:production"
+        },
+        "development": {
+          "browserTarget": "app-mongodb-replicaset:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-mongodb-replicaset:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/app-mongodb-replicaset/**/*.ts",
+          "apps/app-mongodb-replicaset/**/*.html"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "app-mongodb-replicaset:build",
+        "port": 4206,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-mongodb-replicaset:build:development"
+        },
+        "production": {
+          "buildTarget": "app-mongodb-replicaset:build:production"
+        }
+      }
+    }
+  }
+}

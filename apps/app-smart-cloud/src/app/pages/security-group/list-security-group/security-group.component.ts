@@ -55,6 +55,7 @@ export class SecurityGroupComponent implements OnInit {
 
   isLoading = false
 
+  isBegin: boolean = false
 
   constructor(private securityGroupService: SecurityGroupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -99,6 +100,14 @@ export class SecurityGroupComponent implements OnInit {
     this.getInstances()
   }
 
+  checkNullObject(object: any): Boolean {
+    if (object == null || object == undefined) {
+      return true;
+    }
+
+    return false;
+  }
+
   getSecurityGroup() {
     this.isLoading = true
     this.conditionSearch.regionId = this.region
@@ -110,6 +119,7 @@ export class SecurityGroupComponent implements OnInit {
         .subscribe((data) => {
           this.isLoading = false
           this.options = data;
+          
         }, error => {
           this.isLoading = false
           this.options = null;

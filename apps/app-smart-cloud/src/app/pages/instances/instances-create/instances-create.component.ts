@@ -38,6 +38,8 @@ import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { Observable, Subject, debounceTime, of, pipe } from 'rxjs';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -76,13 +78,6 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
-  images = [
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-  ];
-
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -94,8 +89,6 @@ export class InstancesCreateComponent implements OnInit {
     // interval: { timing: 1500 },
     animation: 'lazy',
   };
-
-  tempData: any[];
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -136,6 +129,7 @@ export class InstancesCreateComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
     private snapshotVLService: SnapshotVolumeService,
+    private catalogService: CatalogService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -143,7 +137,6 @@ export class InstancesCreateComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver
-
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -184,34 +177,43 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllSecurityGroup();
     this.getAllSSHKey();
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.breakpoints[Breakpoints.XSmall]) {
-        // Màn hình cỡ nhỏ
-        this.cardHeight = '130px';
-      } else if (result.breakpoints[Breakpoints.Small]) {
-        // Màn hình cỡ nhỏ - trung bình
-        this.cardHeight = '180px';
-      } else if (result.breakpoints[Breakpoints.Medium]) {
-        // Màn hình trung bình
-        this.cardHeight = '210px';
-      } else if (result.breakpoints[Breakpoints.Large]) {
-        // Màn hình lớn
-        this.cardHeight = '165px';
-      } else if (result.breakpoints[Breakpoints.XLarge]) {
-        // Màn hình rất lớn
-        this.cardHeight = '150px';
-      }
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '130px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '180px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '210px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '165px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '150px';
+        }
 
-      // Cập nhật chiều cao của card bằng Renderer2
-      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
-    });
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
     this.cdr.detectChanges();
+    this.getTotalAmountBlockStorage();
+    this.getTotalAmountIPv4();
+    this.getTotalAmountIPv6();
   }
 
   getUser() {}
@@ -294,7 +296,7 @@ export class InstancesCreateComponent implements OnInit {
           this.projectId,
           this.region,
           this.size,
-          99999,
+          9999,
           1,
           this.status,
           '',
@@ -401,7 +403,6 @@ export class InstancesCreateComponent implements OnInit {
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
   listOfferFlavors: OfferItem[] = [];
-
   selectedElementFlavor: string = null;
   isInitialClass = true;
   isNewClass = false;
@@ -426,20 +427,24 @@ export class InstancesCreateComponent implements OnInit {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU / ';
+              e.description += ch.charOptionValues[1] + ' VCPU';
             }
             if (ch.charOptionValues[0] == 'RAM') {
               e.description += ch.charOptionValues[1] + ' GB RAM / ';
             }
             if (ch.charOptionValues[0] == 'HDD') {
               if (this.activeBlockHDD) {
-                e.description += ch.charOptionValues[1] + ' GB HDD';
+                e.description += ch.charOptionValues[1] + ' GB HDD / ';
               } else {
-                e.description += ch.charOptionValues[1] + ' GB SSD';
+                e.description += ch.charOptionValues[1] + ' GB SSD / ';
               }
             }
           });
         });
+        this.myCarouselFlavor.dataSource = this.listOfferFlavors;
+        this.myCarouselFlavor.load = this.listOfferFlavors.length;
+        this.myCarouselFlavor.reset()
+        console.log('list flavor check', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
   }
@@ -537,10 +542,38 @@ export class InstancesCreateComponent implements OnInit {
     console.log('sshkey', event);
   }
 
-  onChangeTime() {
-    if (this.hdh != null && this.offerFlavor != null) {
+  onChangeTime(value: any) {
+    if (
+      this.hdh != null &&
+      (this.offerFlavor != null ||
+        (this.configCustom.vCPU != 0 &&
+          this.configCustom.ram != 0 &&
+          this.configCustom.capacity != 0))
+    ) {
       this.getTotalAmount();
     }
+
+    this.totalAmountVolume = 0;
+    this.totalAmountVolumeVAT = 0;
+    this.listOfDataBlockStorage.forEach((bs) => {
+      this.totalAmountVolume += bs.price * this.numberMonth;
+      this.totalAmountVolumeVAT += bs.priceAndVAT * this.numberMonth;
+    });
+
+    this.totalAmountIPv4 = 0;
+    this.totalAmountIPv4VAT = 0;
+    this.listOfDataIPv4.forEach((item) => {
+      this.totalAmountIPv4 += item.price * this.numberMonth;
+      this.totalAmountIPv4VAT += item.priceAndVAT * this.numberMonth;
+    });
+
+    this.totalAmountIPv6 = 0;
+    this.totalAmountIPv6VAT = 0;
+    this.listOfDataIPv6.forEach((item) => {
+      this.totalAmountIPv6 += item.price * this.numberMonth;
+      this.totalAmountIPv6VAT += item.priceAndVAT * this.numberMonth;
+    });
+    this.cdr.detectChanges();
   }
   //#endregion
 
@@ -564,8 +597,8 @@ export class InstancesCreateComponent implements OnInit {
     );
   }
 
-  onInputBlockStorage() {
-    this.getTotalAmountBlockStorage();
+  onInputBlockStorage(id: number, value: any) {
+    this.changeTotalAmountBlockStorage(id, value);
     const filteredArrayHas = this.listOfDataBlockStorage.filter(
       (item) => item.type == ''
     );
@@ -615,8 +648,8 @@ export class InstancesCreateComponent implements OnInit {
     this.listOfDataIPv6 = this.listOfDataIPv6.filter((d) => d.id !== id);
   }
 
-  onInputIPv4() {
-    this.getTotalAmountIPv4();
+  onInputIPv4(value: any) {
+    this.changeTotalAmountIPv4(value);
     const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
     );
@@ -630,8 +663,8 @@ export class InstancesCreateComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onInputIPv6() {
-    this.getTotalAmountIPv6();
+  onInputIPv6(value: any) {
+    this.changeTotalAmountIPv6(value);
     const filteredArrayHas = this.listOfDataIPv6.filter(
       (item) => item.ip == ''
     );
@@ -650,8 +683,8 @@ export class InstancesCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  onProjectChange(project: any) {
-    // this.router.navigate(['/app-smart-cloud/instances']);
+  userChangeProject() {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -777,14 +810,12 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.am = null;
     this.volumeCreate.amManager = null;
     this.volumeCreate.isTrial = false;
-    this.volumeCreate.offerId =
-      this.volumeCreate.volumeType == 'hdd' ? 145 : 156;
     this.volumeCreate.couponCode = null;
     this.volumeCreate.dhsxkd_SubscriptionId = null;
     this.volumeCreate.dSubscriptionNumber = null;
     this.volumeCreate.dSubscriptionType = null;
     this.volumeCreate.oneSME_SubscriptionId = null;
-    this.volumeCreate.actionType = 1;
+    this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
     this.volumeCreate.serviceName = blockStorage.name;
     this.volumeCreate.typeName =
@@ -794,17 +825,16 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   ipCreate: IpCreate = new IpCreate();
-  ipInit(ip: Network) {
+  ipInit(ip: Network, checkIpv6: boolean) {
     this.ipCreate.id = 0;
     this.ipCreate.duration = 0;
     this.ipCreate.ipAddress = null;
     this.ipCreate.vmToAttachId = null;
-    this.ipCreate.offerId = 50;
     this.ipCreate.networkId = ip.ip;
-    this.ipCreate.useIPv6 = null;
-    this.ipCreate.vpcId = this.projectId;
+    this.ipCreate.useIPv6 = checkIpv6 ? checkIpv6 : null;
+    this.ipCreate.vpcId = this.projectId.toString();
     this.ipCreate.oneSMEAddonId = null;
-    this.ipCreate.serviceType = 0;
+    this.ipCreate.serviceType = 4;
     this.ipCreate.serviceInstanceId = 0;
     this.ipCreate.customerId = this.tokenService.get()?.userId;
 
@@ -884,10 +914,10 @@ export class InstancesCreateComponent implements OnInit {
 
     this.listOfDataIPv4.forEach((e: Network) => {
       if (e.ip != '') {
-        this.ipInit(e);
+        this.ipInit(e, false);
         let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
-        orderItemIP.orderItemQuantity = 1;
+        orderItemIP.orderItemQuantity = e.amount;
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
@@ -898,10 +928,11 @@ export class InstancesCreateComponent implements OnInit {
 
     this.listOfDataIPv6.forEach((e: Network) => {
       if (e.ip != '') {
-        this.ipInit(e);
+        this.ipInit(e, true);
+        this.ipCreate.useIPv6 = true;
         let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
-        orderItemIP.orderItemQuantity = 1;
+        orderItemIP.orderItemQuantity = e.amount;
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
@@ -947,100 +978,181 @@ export class InstancesCreateComponent implements OnInit {
 
   totalAmountVolume = 0;
   totalAmountVolumeVAT = 0;
-  getTotalAmountBlockStorage() {
-    this.totalAmountVolume = 0;
-    this.totalAmountVolumeVAT = 0;
-    this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-      if (e.type != '') {
-        this.volumeInit(e);
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(this.volumeCreate);
-        itemPayment.specificationType = 'volume_create';
-        itemPayment.serviceDuration = this.numberMonth;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.projectId;
-        this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
-          console.log('thanh tien volume', result);
-          e.price =
-            Number.parseFloat(result.data.totalAmount.amount) /
-            this.numberMonth;
-          this.totalAmountVolume += e.price;
-          e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
-          this.totalAmountVolumeVAT += e.priceAndVAT;
-          this.cdr.detectChanges();
-        });
-      }
+  dataBSSubject: Subject<any> = new Subject<any>();
+  changeTotalAmountBlockStorage(id: number, value: any) {
+    this.dataBSSubject.next({
+      id: id,
+      value: value,
     });
+  }
+
+  getTotalAmountBlockStorage() {
+    let id: number, value: any;
+    this.dataBSSubject
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        id = res.id;
+        value = res.value;
+        this.totalAmountVolume = 0;
+        this.totalAmountVolumeVAT = 0;
+        let index = this.listOfDataBlockStorage.findIndex(
+          (obj) => obj.id == id
+        );
+        let changeBlockStorage = this.listOfDataBlockStorage[index];
+        this.volumeInit(changeBlockStorage);
+        let productId = changeBlockStorage.type == 'hdd' ? 2 : 61;
+        this.catalogService
+          .getCatalogOffer(productId, this.region, null)
+          .subscribe((data) => {
+            let offer = data.find(
+              (offer) => offer.status.toUpperCase() == 'ACTIVE'
+            );
+            this.volumeCreate.offerId = offer.id;
+            let itemPayment: ItemPayment = new ItemPayment();
+            itemPayment.orderItemQuantity = 1;
+            itemPayment.specificationString = JSON.stringify(this.volumeCreate);
+            itemPayment.specificationType = 'volume_create';
+            itemPayment.serviceDuration = this.numberMonth;
+            itemPayment.sortItem = 0;
+            let dataPayment: DataPayment = new DataPayment();
+            dataPayment.orderItems = [itemPayment];
+            dataPayment.projectId = this.projectId;
+            this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+              console.log('thanh tien volume', result);
+              changeBlockStorage.price =
+                Number.parseFloat(result.data.totalAmount.amount) /
+                this.numberMonth;
+              changeBlockStorage.priceAndVAT =
+                Number.parseFloat(result.data.totalPayment.amount) /
+                this.numberMonth;
+              this.listOfDataBlockStorage[index] = changeBlockStorage;
+              this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+                this.totalAmountVolume += e.price * this.numberMonth;
+                this.totalAmountVolumeVAT += e.priceAndVAT * this.numberMonth;
+              });
+              this.cdr.detectChanges();
+            });
+          });
+      });
   }
 
   totalAmountIPv4 = 0;
   totalAmountIPv4VAT = 0;
+  dataSubjectIpv4: Subject<any> = new Subject<any>();
+  changeTotalAmountIPv4(value: number) {
+    this.dataSubjectIpv4.next(value);
+  }
   getTotalAmountIPv4() {
-    this.totalAmountIPv4 = 0;
-    this.totalAmountIPv4VAT = 0;
-    this.listOfDataIPv4.forEach((e: Network) => {
-      if (e.ip != '') {
-        this.ipInit(e);
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(this.ipCreate);
-        itemPayment.specificationType = 'ip_create';
-        itemPayment.serviceDuration = this.numberMonth;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.projectId;
-        this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
-          console.log('thanh tien ipv4', result);
-          e.price =
-            Number.parseFloat(result.data.totalAmount.amount) /
-            this.numberMonth;
-          this.totalAmountIPv4 += e.price;
-          e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
-          this.totalAmountIPv4VAT += e.priceAndVAT;
-          this.cdr.detectChanges();
+    this.dataSubjectIpv4
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.totalAmountIPv4 = 0;
+        this.totalAmountIPv4VAT = 0;
+        this.listOfDataIPv4.forEach((e: Network) => {
+          if (e.ip != '') {
+            this.ipInit(e, false);
+            this.catalogService
+              .getCatalogOffer(3, this.region, null)
+              .subscribe((data) => {
+                let offer = data.find(
+                  (offer) => offer.status.toUpperCase() == 'ACTIVE'
+                );
+                this.ipCreate.offerId = offer.id;
+                let itemPayment: ItemPayment = new ItemPayment();
+                itemPayment.orderItemQuantity = e.amount;
+                itemPayment.specificationString = JSON.stringify(this.ipCreate);
+                itemPayment.specificationType = 'ip_create';
+                itemPayment.serviceDuration = this.numberMonth;
+                itemPayment.sortItem = 0;
+                let dataPayment: DataPayment = new DataPayment();
+                dataPayment.orderItems = [itemPayment];
+                dataPayment.projectId = this.projectId;
+                this.dataService
+                  .getTotalAmount(dataPayment)
+                  .subscribe((result) => {
+                    console.log('thanh tien ipv4', result);
+                    e.price =
+                      Number.parseFloat(result.data.totalAmount.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv4 += Number.parseFloat(
+                      result.data.totalAmount.amount
+                    );
+                    e.priceAndVAT =
+                      Number.parseFloat(result.data.totalPayment.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv4VAT += Number.parseFloat(
+                      result.data.totalPayment.amount
+                    );
+                    this.cdr.detectChanges();
+                  });
+              });
+          }
         });
-      }
-    });
+      });
   }
 
   totalAmountIPv6 = 0;
   totalAmountIPv6VAT = 0;
+  dataSubjectIpv6: Subject<any> = new Subject<any>();
+  changeTotalAmountIPv6(value: number) {
+    this.dataSubjectIpv6.next(value);
+  }
   getTotalAmountIPv6() {
-    this.totalAmountIPv6 = 0;
-    this.totalAmountIPv6VAT = 0;
-    this.listOfDataIPv6.forEach((e: Network) => {
-      if (e.ip != '') {
-        this.ipInit(e);
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(this.ipCreate);
-        itemPayment.specificationType = 'ip_create';
-        itemPayment.serviceDuration = this.numberMonth;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.projectId;
-        this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
-          console.log('thanh tien ipv6', result);
-          e.price = Number.parseFloat(result.data.totalAmount.amount);
-          this.totalAmountIPv6 += e.price;
-          e.priceAndVAT = Number.parseFloat(result.data.totalPayment.amount);
-          this.totalAmountIPv6VAT += e.priceAndVAT;
-          this.cdr.detectChanges();
+    this.dataSubjectIpv6
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.totalAmountIPv6 = 0;
+        this.totalAmountIPv6VAT = 0;
+        this.listOfDataIPv6.forEach((e: Network) => {
+          if (e.ip != '') {
+            this.ipInit(e, true);
+            this.catalogService
+              .getCatalogOffer(101, this.region, null)
+              .subscribe((data) => {
+                let offer = data.find(
+                  (offer) => offer.status.toUpperCase() == 'ACTIVE'
+                );
+                this.ipCreate.offerId = offer.id;
+                let itemPayment: ItemPayment = new ItemPayment();
+                itemPayment.orderItemQuantity = e.amount;
+                itemPayment.specificationString = JSON.stringify(this.ipCreate);
+                itemPayment.specificationType = 'ip_create';
+                itemPayment.serviceDuration = this.numberMonth;
+                itemPayment.sortItem = 0;
+                let dataPayment: DataPayment = new DataPayment();
+                dataPayment.orderItems = [itemPayment];
+                dataPayment.projectId = this.projectId;
+                this.dataService
+                  .getTotalAmount(dataPayment)
+                  .subscribe((result) => {
+                    console.log('thanh tien ipv6', result);
+                    e.price =
+                      Number.parseFloat(result.data.totalAmount.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv6 += Number.parseFloat(
+                      result.data.totalAmount.amount
+                    );
+                    e.priceAndVAT =
+                      Number.parseFloat(result.data.totalPayment.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv6VAT += Number.parseFloat(
+                      result.data.totalPayment.amount
+                    );
+                    this.cdr.detectChanges();
+                  });
+              });
+          }
         });
-      }
-    });
+      });
   }
 
   cancel(): void {
-    this.router.navigate(['/app-smart-cloud/instances']);
-  }
-
-  userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 }

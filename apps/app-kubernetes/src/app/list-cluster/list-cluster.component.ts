@@ -1,18 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { KubernetesCluster } from '../model/cluster.model';
-import { ClusterService } from '../services/cluster.service';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NotificationConstant } from '../constants/notification.constant';
-import { NotificationWsService } from '../services/ws.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { messageCallbackType } from '@stomp/stompjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { EMPTY, Observable, Subject, Subscription, catchError, combineLatest, finalize, from, mergeMap, pipe, takeUntil } from 'rxjs';
+import { NotificationConstant } from '../constants/notification.constant';
+import { KubernetesCluster, ProgressData } from '../model/cluster.model';
+import { ClusterStatus } from '../model/status.model';
+import { ClusterService } from '../services/cluster.service';
+import { ShareService } from '../services/share.service';
+import { NotificationWsService } from '../services/ws.service';
+import { Router } from '@angular/router';
+import { environment } from '@env/environment';
+import { KubernetesConstant } from '../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
   templateUrl: './list-cluster.component.html',
   styleUrls: ['./list-cluster.component.css'],
 })
-export class KubernetesDetailComponent implements OnInit {
+export class KubernetesDetailComponent implements OnInit, OnDestroy {
 
   listOfClusters: KubernetesCluster[];
   keySearch: string;
@@ -21,31 +26,79 @@ export class KubernetesDetailComponent implements OnInit {
   pageSize: number;
   total: number;
   setOfCheckedId = new Set<number>();
+  selectedCluster: KubernetesCluster;
 
-  // temp
-  listOfStatusCluster : Array<{ label: string; value: number }> = [
-    {label : "Chưa gia hạn" , value: 0},
-    {label : "Đang khởi tạo" , value: 1},
-    {label : "Đang hoạt động" , value: 2},
-    {label : "Đang xóa", value: 7},
-  ]
+  isShowIntroductionPage: boolean;
+  isShowModalDeleteCluster: boolean;
+  isWrongName: boolean;
+  isSubmitDelete: boolean;
+
+  // input confirm delete modal
+  deleteClusterName: string;
+
+  // for progress
+  listOfProgress: number[];
+  percent: number;
+  eventSources: EventSource[] = [];
+
+  // for status
+  listOfStatusCluster: ClusterStatus[];
+  listOfInProgressStatus = [
+    1, // Đang khởi tạo
+    7, // Đang xóa
+    6, // Đang nâng cấp
+  ];
+
+  baseUrl = "http://127.0.0.1:16003";
+  // baseUrl = environment['baseUrl'];
 
   constructor(
     private clusterService: ClusterService,
-    private modalService: NzModalService,
     private websocketService: NotificationWsService,
-    private notificationService: NzNotificationService
+    private notificationService: NzNotificationService,
+    private ref: ChangeDetectorRef,
+    private zone: NgZone,
+    private router: Router
   ) {
+    // const nav = this.router.getCurrentNavigation();
+    // const state = nav?.extras.state;
+    // console.log(state);
+    // if (state) {
+    //   const data = state.data;
+    //   console.log({data: data});
+
+    //   const namespace = data.namespace;
+    //   const clusterName = data.clusterName;
+    //   this.percent = 0;
+
+    //   if (namespace != null && clusterName != null) {
+    //     this.sseStream = this.clusterService.getProgressOfCluster(clusterName, namespace).subscribe(data => {
+    //       this.percent = +data;
+    //       this.ref.detectChanges();
+    //     });
+    //   }
+    // }
+  }
+
+  private subscription: Subscription;
+  ngOnInit(): void {
+    // display this page if user haven't any cluster
+    this.isShowIntroductionPage = false;
+
+    this.listOfProgress = [];
+    this.isShowModalDeleteCluster = false;
+    this.isSubmitDelete = false;
+    this.isWrongName = true;
     this.keySearch = '';
     this.serviceStatus = '';
     this.pageIndex = 1;
     this.pageSize = 10;
     this.total = 0;
-  }
 
-  ngOnInit(): void {
     // init ws
-    this.openWs();
+    // this.openWs();
+
+    this.getListStatus();
   }
 
   searchCluster() {
@@ -58,13 +111,117 @@ export class KubernetesDetailComponent implements OnInit {
     ).subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfClusters = [];
+        let listOfClusterInProgress = [];
+        let progress: Array<Observable<any>> = [];
+
         r.data?.content.forEach(item => {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
+
+          // get cluster is in-progress (initialing, deleting, upgrading,...)
+          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
+
+        // check list cluster is empty with all status?
+        if (this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) {
+          this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
+        }
+
+        // case user refresh page and have mulitple cluster and is in-progress
+        console.log({ inprogress: listOfClusterInProgress });
+        for (let i = 0; i < listOfClusterInProgress.length; i++) {
+          let cluster: KubernetesCluster = listOfClusterInProgress[i];
+
+          let progressObs: Observable<any>;
+          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
+
+            switch (cluster.serviceStatus) {
+              case 1: // initialing
+              case 6: // upgrading
+                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
+                break;
+              case 7: // deleting
+                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
+                break;
+              default:
+                progressObs = EMPTY;
+            }
+
+          } else {
+            progressObs = EMPTY;
+          }
+          progress.push(progressObs);
+        }
+
+        this.unsubscribeObs(this.eventSources);
+        // risk: combineLastet can't emits value if each observable emits at least once value
+        this.subscription = combineLatest(progress).subscribe(data => {
+          // console.log({combine: data});
+          this.listOfProgress = data;
+          this.ref.detectChanges();
+          // console.log({ progress: this.listOfProgress });
+        });
       }
     });
+  }
+
+  viewProgressCluster(namespace: string, clusterName: string, action: string) {
+    return new Observable(observable => {
+      let source = new EventSource(`${this.baseUrl}/k8s-service/k8s/view-progress/${namespace}/${clusterName}/${action}`);
+      this.eventSources.push(source);
+      source.onmessage = event => {
+        this.zone.run(() => {
+          let data: number = +event.data;
+          observable.next(data);
+
+          if (data == 100) {          // complete
+            observable.complete();
+            source.close();
+
+            this.searchCluster();     // refresh page
+          }
+        });
+      }
+
+      source.onerror = event => {
+        this.zone.run(() => {
+          console.log({ error: event });
+          observable.error(event);
+        })
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeObs(null);
+  }
+
+  unsubscribeObs(eventSources: EventSource[]) {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    if (eventSources) {
+      eventSources.forEach(source => source.close());
+      this.eventSources = [];
+    }
+  }
+
+  getListStatus() {
+    this.clusterService.getListStatus()
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.listOfStatusCluster = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
+  }
+
+  getIndexOfCluster(id: number) {
+    const item = this.listOfClusters.find(obj => obj.id == id);
+    return this.listOfClusters.indexOf(item) + 1;
   }
 
   onQueryParamsChange(event) {
@@ -86,6 +243,14 @@ export class KubernetesDetailComponent implements OnInit {
     }
   }
 
+  onInputDeleteCluster(clusterName: string) {
+    if (clusterName) {
+      const name = clusterName.trim();
+      if (name !== this.selectedCluster.clusterName) this.isWrongName = true;
+      else this.isWrongName = false;
+    }
+  }
+
   updateClusterChecked(id: number, checked: boolean) {
     if (checked) {
       this.setOfCheckedId.add(id);
@@ -102,34 +267,32 @@ export class KubernetesDetailComponent implements OnInit {
     console.log(123);
   }
 
-  showModalConfirmDeleteCluster(item: KubernetesCluster) {
-    this.modalService.confirm({
-      nzTitle: `Bạn có chắc muốn xóa cluster ${item.clusterName} không?`,
-      nzContent: '<b style="color: red;">Cluster sẽ bị xóa vĩnh viễn và không thể khôi phục</b>',
-      nzOkText: 'Xóa',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzOnOk: () => this.handleDeleteCluster(item.id),
-      nzCancelText: 'Đóng',
-      nzOnCancel: () => console.log('Cancel')
-    });
+  showModalConfirmDeleteCluster(cluster: KubernetesCluster) {
+    this.isShowModalDeleteCluster = true;
+    this.selectedCluster = cluster;
   }
 
-  handleDeleteMultipleCluster(){
+  handleDeleteMultipleCluster() {
     const selectedCluster = Array.from(this.setOfCheckedId);
     console.log(selectedCluster);
   }
 
-  handleDeleteCluster(clusterId: number) {
-    this.clusterService.deleteCluster(clusterId)
-    .subscribe((r: any) => {
-      if (r && r.code == 200) {
-        this.notificationService.success("Thành công", r.message);
-        this.searchCluster();
-      } else {
-        this.notificationService.error("Thất bại", r.message);
-      }
-    });
+  handleDeleteCluster() {
+    this.isSubmitDelete = true;
+    this.clusterService.deleteCluster(this.selectedCluster.id)
+      .pipe(finalize(() => {
+        this.isShowModalDeleteCluster = false;
+        this.isSubmitDelete = false;
+        this.deleteClusterName = null;
+      }))
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.notificationService.success("Thành công", r.message);
+          this.searchCluster();
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   // websocket
@@ -148,8 +311,8 @@ export class KubernetesDetailComponent implements OnInit {
                 NotificationConstant.NOTI_SUCCESS_LABEL,
                 notificationMessage.content);
 
-                // refresh page
-                this.searchCluster();
+              // refresh page
+              this.searchCluster();
 
             } else {
               this.notificationService.error(
@@ -182,6 +345,16 @@ export class KubernetesDetailComponent implements OnInit {
           }
         });
     }, 1000);
+  }
+
+  navigateToDocs() {
+    console.log("navigate");
+  }
+
+  handleCloseModalDelete() {
+    this.isShowModalDeleteCluster = false;
+    this.deleteClusterName = null;
+    this.onInputDeleteCluster(null);
   }
 
 }

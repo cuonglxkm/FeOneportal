@@ -16,6 +16,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -26,10 +27,12 @@
       <nz-col nzSpan="16">
         <nz-input-group [nzPrefix]="prefixIconSearch"
                         nzSize="large"
-                        style="width: 300px;"
-                        [(ngModel)]="value"
-                        (input)="onInputChange($event.target['value'])">
-          <input name="name" nz-input placeholder="Tìm kiếm"/>
+                        style="width: 300px;">
+          <input name="name"
+                 nz-input
+                 placeholder="Tìm kiếm"
+                 [(ngModel)]="value"
+                 (input)="onInputChange($event.target['value'])"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
@@ -76,16 +79,16 @@
                   nzTheme="outline"></span>
           </div>
           <div *ngIf="!data.name.includes('pri_network')">
-            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Chỉnh sửa'"
-                  nzPopoverPlacement="bottom"></span>
-            <span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-                  nz-popover
-                  [nzPopoverContent]="'Xóa'"
-                  nzPopoverPlacement="bottom"
-                  nz-icon nzType="delete" nzTheme="outline"></span>
+            <one-portal-vlan-edit [region]="region"
+                                  [project]="project"
+                                  [id]="data.id"
+                                  [nameNetwork]="data.name"
+                                  (onOk)="handleOkEdit()" />
+            <one-portal-delete-vlan [region]="region"
+                                    [project]="project"
+                                    [id]="data.id"
+                                    [nameNetwork]="data.name"
+                                    (onOk)="handleOkDelete()" />
           </div>
         </td>
       </tr>

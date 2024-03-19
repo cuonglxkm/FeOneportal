@@ -11,6 +11,7 @@ import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {IpPublicModel} from "../../../shared/models/ip-public.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {ProjectModel} from "../../../shared/models/project.model";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-detail-ip-public',
@@ -42,7 +43,9 @@ export class DetailIpPublicComponent {
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
-
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   private getIPPublicById(id: string) {
@@ -105,7 +108,8 @@ export class DetailIpPublicComponent {
   }
 
   projectChange(project: ProjectModel) {
-    this.projectId =  project.id;
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.projectId = project.id;
   }
 
   backToList() {

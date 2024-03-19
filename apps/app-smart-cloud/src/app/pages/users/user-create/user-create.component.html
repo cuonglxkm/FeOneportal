@@ -84,7 +84,7 @@
       <nz-col nzLg="24" style="border-radius: 4px">
         <nz-alert
           nzType="warning"
-          [nzMessage]="nzDescriptionWarning06"
+          [nzDescription]="nzDescriptionWarning06"
           nzShowIcon
         ></nz-alert>
         <ng-template #nzDescriptionWarning06>
@@ -158,12 +158,11 @@
   [(nzVisible)]="isVisibleCreate"
   nzTitle="Xác nhận tạo User"
   (nzOnCancel)="handleCancelCreate()"
-  (nzOnOk)="handleOkCreate()"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageCreate"
+      [nzDescription]="customTemplateMessageCreate"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageCreate>
@@ -173,8 +172,8 @@
     </ng-template>
     <nz-row nzGutter="16" style="margin-top: 10px">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <span class="customModal"
-          >Để thực hiện tạo mới User, vui lòng chọn "Đồng ý" để xác nhận.</span
+        <div
+          >Để thực hiện tạo mới User, vui lòng chọn "<b>Đồng ý</b>" để xác nhận.</div
         >
       </nz-col>
     </nz-row>
@@ -192,7 +191,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />Đồng ý
     </button>
   </div>
 </nz-modal>

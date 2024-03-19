@@ -3,13 +3,13 @@
 // - `dark` Import the official dark less style file
 // - `compact` Import the official compact less style file
 //@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
-@import "@fontsource/inter";
+@import '@fontsource/inter';
 @import '@delon/theme/theme-default.less';
 
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
 // @primary-color: #f50;
-@primary-color: #2f54eb;
+@primary-color: #0066b3;
 @alain-default-header-bg: #2f54eb;
 @alain-default-aside-nav-text-hover-color: #2f54eb;
 @alain-default-aside-nav-selected-text-color: #2f54eb;
@@ -19,15 +19,13 @@
 
 @button-border-medium-radius: 8px;
 
-@text-card-header
-
 // HEADER
 .alain-default__header-logo-expanded {
   max-width: 90%;
 }
 
 .alain-default__header {
-  background-color: #0066b3;
+  background-color: @primary-color;
 }
 
 .alain-default .page-header {
@@ -42,7 +40,7 @@
 // END HEADER
 
 .ant-form-item-label
-> label.ant-form-item-required:not(
+  > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::after {
   display: inline-block;
@@ -55,7 +53,7 @@
 }
 
 .ant-form-item-label
-> label.ant-form-item-required:not(
+  > label.ant-form-item-required:not(
     .ant-form-item-required-mark-optional
   )::before {
   display: none;
@@ -128,6 +126,10 @@ u {
   align-items: center;
 }
 
+.ant-alert-with-description {
+  align-items: start;
+}
+
 .ant-pagination-item-active {
   font-weight: 500;
   background: #0074cc;
@@ -191,8 +193,8 @@ u {
 
 // INPUT
 .ant-input[disabled] {
-  color: rgba(0, 0, 0, 0.25);
-  font-weight: 600;
+  color: #989bb3;
+  font-weight: 500;
 }
 
 .ant-input-affix-wrapper {
@@ -283,10 +285,9 @@ body {
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #0066b3;
-  border-color: #0066b3;
+  background-color: @primary-color;
+  border-color: @primary-color;
 }
-
 
 // TEXT //
 * {
@@ -327,7 +328,17 @@ body {
   text-align: left;
 }
 
+.ant-modal-title {
+  color: #2b2d3b;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
 .text-intro-title {
+  color: #0074cc;
   font-size: 32px;
   font-weight: 700;
   line-height: 48px;
@@ -358,7 +369,7 @@ body {
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  letter-spacing: 0.1px;
+  //letter-spacing: 0.1px;
   text-align: left;
 }
 
@@ -369,3 +380,39 @@ body {
   letter-spacing: 0.10000000149011612px;
   text-align: left;
 }
+
+.text-note-italicized {
+  color: #4c4f67;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 17px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+// MENU
+.sidebar-nav__selected > .sidebar-nav__item-link {
+  color: #0074cc;
+  font-weight: 600;
+}
+
+.sidebar-nav__selected {
+  border-left-color: @primary-color;
+}
+
+.sidebar-nav__item-text {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.sidebar-nav__item-link:hover {
+  color: @button-primary-color-hover;
+}
+
+body {
+  scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
+}
+// END MENU
