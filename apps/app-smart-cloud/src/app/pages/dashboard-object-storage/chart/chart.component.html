@@ -1,10 +1,74 @@
-<nz-row style="margin-top: 15px;" nzJustify="space-between">
-  <nz-col nzSpan="12">
-    <div id="container" style="width: 600px; height: 400px;"></div>
-
-  </nz-col>
-  <nz-col>
-    <div id="chart2" style="width: 600px; height: 400px;"></div>
-  </nz-col>
-</nz-row>
-
+<div class="grid-container">
+  <div class="item">
+    <div class="title">
+      <span class="text-card-header">Dung lượng sử dụng</span> <br>
+      <span *ngIf="summary && summary.length > 0">{{ summary[0]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }} đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+    </div>
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="opMenuStorageUse" style="cursor: pointer;"></span>
+    <nz-dropdown-menu #opMenuStorageUse="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="toggleFullScreen(1)">View in fullscreen</li>
+        <li nz-menu-item>Print chart</li>
+        <li nz-menu-item (click)="downloadImagePng('storage-use')">Dowload PNG image</li>
+        <li nz-menu-item (click)="downloadImageJpg('storage-use')">Dowload JPG image</li>
+        <li nz-menu-item (click)="downloadPDF('storage-use')">Dowload PDF document</li>
+        <li nz-menu-item (click)="downloadSVG('storage-use')">Dowload SVG vector image</li>
+      </ul>
+    </nz-dropdown-menu>
+    <div id="storage-use"></div>
+  </div>
+  <div class="item">
+    <div class="title">
+      <span class="text-card-header">Số lượng Object</span> <br>
+      <span *ngIf="summary && summary.length > 0">{{ summary[1]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }} đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+    </div>
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="opMenuNumberObject" style="cursor: pointer;"></span>
+    <nz-dropdown-menu #opMenuNumberObject="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item>View in fullscreen</li>
+        <li nz-menu-item>Print chart</li>
+        <li nz-menu-item (click)="downloadImagePng('number-object')">Dowload PNG image</li>
+        <li nz-menu-item (click)="downloadImageJpg('number-object')">Dowload JPG image</li>
+        <li nz-menu-item (click)="downloadPDF('number-object')">Dowload PDF document</li>
+        <li nz-menu-item (click)="downloadSVG('number-object')">Dowload SVG vector image</li>
+      </ul>
+    </nz-dropdown-menu>
+    <div id="number-object"></div>
+  </div>
+  <div class="item">
+    <div class="title">
+      <span class="text-card-header">Dung lượng tải lên</span> <br>
+      <span *ngIf="summary && summary.length > 0">{{ summary[2]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }} đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+    </div>
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="opMenuStorageUpload" style="cursor: pointer;"></span>
+    <nz-dropdown-menu #opMenuStorageUpload="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item>View in fullscreen</li>
+        <li nz-menu-item>Print chart</li>
+        <li nz-menu-item (click)="downloadImagePng('storage-upload')">Dowload PNG image</li>
+        <li nz-menu-item (click)="downloadImageJpg('storage-upload')">Dowload JPG image</li>
+        <li nz-menu-item (click)="downloadPDF('storage-upload')">Dowload PDF document</li>
+        <li nz-menu-item (click)="downloadSVG('storage-upload')">Dowload SVG vector image</li>
+      </ul>
+    </nz-dropdown-menu>
+    <div id="storage-upload"></div>
+  </div>
+  <div class="item">
+    <div class="title">
+      <span class="text-card-header">Dung lượng tải về</span> <br>
+      <span *ngIf="summary && summary.length > 0">{{ summary[3]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }} đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+    </div>
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="opMenuStorageDownload" style="cursor: pointer;"></span>
+    <nz-dropdown-menu #opMenuStorageDownload="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="toggleFullScreen(4)">View in fullscreen</li>
+        <li nz-menu-item>Print chart</li>
+        <li nz-menu-item (click)="downloadImagePng('storage-download')">Dowload PNG image</li>
+        <li nz-menu-item (click)="downloadImageJpg('storage-download')">Dowload JPG image</li>
+        <li nz-menu-item (click)="downloadPDF('storage-download')">Dowload PDF document</li>
+        <li nz-menu-item (click)="downloadSVG('storage-download')">Dowload SVG vector image</li>
+      </ul>
+    </nz-dropdown-menu>
+    <div id="storage-download"></div>
+  </div>
+</div>
