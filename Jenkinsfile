@@ -1,25 +1,31 @@
-def image 
+def image
+def imageTag
+def appName
 
 pipeline {
     agent any
 
     environment {        
-        branchName="${env.BRANCH_NAME}"
-        buildNumber="${env.BUILD_NUMBER}"
-        registry = "https://registry.onsmartcloud.com"
-        registryRepository = "registry.onsmartcloud.com/idg"
+        registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        imageTag = "${registryRepository}/${branchName}:${buildNumber}"
-        IMAGE_TAG = "${imageTag}"
-        APP_NAME = "${branchName}"
+        k8sCredential = "k8s-cred"
     }
 
     stages {
 
+        stage("Initializing") {
+            steps {
+                script {
+                    appName = env.BRANCH_NAME
+                    imageTag = "${registry}/idg/${appName}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+
         stage("Build image") {
             steps {
                 script {
-                    image = docker.build(imageTag, "-f apps/${branchName}/Dockerfile .")
+                    image = docker.build(imageTag, "-f apps/${appName}/Dockerfile .")
                 }
             }
         }
@@ -44,8 +50,8 @@ pipeline {
         stage("Deploying to K8s") {
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'k8s-cred']) {
-                        dir("apps/${branchName}/deploy") {
+                    withKubeConfig([credentialsId: k8sCredential]) {
+                        dir("apps/${appName}/deploy") {
                             sh 'for f in *.yaml; do envsubst < $f | kubectl apply -f - ; done '
                         }
                     }
