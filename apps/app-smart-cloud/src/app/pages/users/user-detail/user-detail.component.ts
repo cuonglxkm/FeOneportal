@@ -18,6 +18,7 @@ import { concatMap, finalize, from } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { ClipboardService } from 'ngx-clipboard';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -58,6 +59,7 @@ export class UserDetailComponent implements OnInit {
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
     private clipboardService: ClipboardService,
+    public message: NzMessageService
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
@@ -344,6 +346,7 @@ export class UserDetailComponent implements OnInit {
 
   copyText(data: any) {
     this.clipboardService.copyFromContent(JSON.stringify(data));
+    this.message.success('Copied to clipboard');
   }
 
   navigateToAddPolicies() {

@@ -432,6 +432,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   copyText(data: any) {
     this.clipboardService.copyFromContent(JSON.stringify(data));
+    this.message.success('Copied to clipboard');
   }
 
   navigateToCreateGroup() {

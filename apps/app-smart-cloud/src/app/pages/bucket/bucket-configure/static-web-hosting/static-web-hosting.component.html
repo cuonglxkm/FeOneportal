@@ -1,4 +1,4 @@
-<span class="titlecard-custom">Thiết lập Versioning</span>
+<span class="titlecard-custom">Thiết lập Static Web Hosting</span>
 <div style="margin-top: 10px" class="text-label">
   <span>Cấu hình Bucket hoạt động như một WebServer dành cho Website tĩnh</span
   ><br /><br />
@@ -7,27 +7,20 @@
     ảnh...</span
   >
 </div>
-<nz-row nzGutter="24" style="margin-top: 10px"
-  ><nz-col nzSpan="12">
-    <input
-      style="cursor: pointer"
-      type="radio"
-      [checked]="staticOn"
-      (click)="initStaticOn()"
-    />
-    <span class="text-value" style="margin-left: 5px">Bật</span>
-  </nz-col>
-  <nz-col nzSpan="12">
-    <input
-      type="radio"
-      style="cursor: pointer"
-      [checked]="staticOff"
-      (click)="initStaticOff()"
-    />
-    <span class="text-value" style="margin-left: 5px">Tắt</span>
-  </nz-col>
-</nz-row>
-<nz-row *ngIf="staticOn" nzGutter="24"
+<nz-radio-group
+  style="width: 100%; margin-top: 10px"
+  [(ngModel)]="bucketDetail.isWebsite"
+>
+  <nz-row>
+    <nz-col nzSpan="12">
+      <label class="text-value" nz-radio [nzValue]="true">Bật</label>
+    </nz-col>
+    <nz-col nzSpan="12">
+      <label class="text-value" nz-radio [nzValue]="false">Tắt</label>
+    </nz-col>
+  </nz-row>
+</nz-radio-group>
+<nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
     <div style="margin-top: 16px">
       File chứa nội dung hiển thị trang chủ của website có link là Endpoint bên
@@ -42,24 +35,27 @@
     <div style="margin-top: 16px">Ví dụ: error.html</div>
   </nz-col>
 </nz-row>
-<div *ngIf="staticOn" style="margin-top: 16px; color: #eb1414">
+<div *ngIf="bucketDetail.isWebsite" style="margin-top: 16px; color: #eb1414">
   Lưu ý: Để website hoạt động hãy đảm bảo file đã được public
 </div>
-<nz-row *ngIf="staticOn" nzGutter="24"
+<nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
     <input
       style="margin-top: 16px"
       class="input-custom"
       nz-input
-      [(ngModel)]="inputFile"
+      [(ngModel)]="bucketDetail.indexDocumentSuffix"
       placeholder="index.html"
-      (change)="inputFile = inputFile.trim()"
+      (change)="
+        bucketDetail.indexDocumentSuffix =
+          bucketDetail.indexDocumentSuffix.trim()
+      "
     />
     <label
       class="text-label"
       style="margin-top: 16px"
       nz-checkbox
-      [(ngModel)]="isNavigate"
+      [(ngModel)]="bucketDetail.checkRedirectAllRequests"
       [ngModelOptions]="{ standalone: true }"
       >Chuyển hướng đến một địa chỉ web khác</label
     >
@@ -67,10 +63,13 @@
       style="margin-top: 16px"
       class="input-custom"
       nz-input
-      [(ngModel)]="inputURL"
+      [(ngModel)]="bucketDetail.redirectAllRequestsTo"
       placeholder="http://www.example.com"
-      (change)="inputURL = inputURL.trim()"
-      [disabled]="!isNavigate"
+      (change)="
+        bucketDetail.redirectAllRequestsTo =
+          bucketDetail.redirectAllRequestsTo.trim()
+      "
+      [disabled]="!bucketDetail.checkRedirectAllRequests"
     />
     <div style="margin-top: 16px" class="text-label">
       Endpoint
@@ -81,16 +80,53 @@
         alt=""
       />
     </div>
-    <input class="input-custom" nz-input placeholder="" [disabled]="true" />
+    <nz-input-group
+      style="margin-right: 8px; width: 100%; border-radius: 8px"
+      [nzSuffix]="suffixIcon"
+      nzSize="large"
+    >
+      <input
+        nz-input
+        [ngModel]="bucketDetail.linkS3Website"
+        [readonly]="true"
+      />
+    </nz-input-group>
+    <ng-template #suffixIcon>
+      <img
+        src="assets/imgs/ph_copy.svg"
+        alt=""
+        style="cursor: pointer"
+        nz-tooltip="Copy"
+        (click)="copyText(bucketDetail.linkS3Website)"
+      />
+    </ng-template>
   </nz-col>
   <nz-col nzSpan="12">
     <input
       style="margin-top: 16px"
       class="input-custom"
       nz-input
-      [(ngModel)]="inputErrorFile"
+      [(ngModel)]="bucketDetail.errorDocument"
       placeholder="error.html"
-      (change)="inputErrorFile = inputErrorFile.trim()"
+      (change)="bucketDetail.errorDocument = bucketDetail.errorDocument.trim()"
     />
   </nz-col>
 </nz-row>
+
+<div style="float: right">
+  <button nz-button (click)="cancel()">
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/cancel.svg"
+      alt=""
+    />Hủy
+  </button>
+  <button nz-button nzType="primary" (click)="update()">
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/confirm.svg"
+      alt=""
+    />
+    Cập nhật
+  </button>
+</div>
