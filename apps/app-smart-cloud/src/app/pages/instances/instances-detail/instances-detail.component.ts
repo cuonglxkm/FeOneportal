@@ -4,7 +4,6 @@ import {
   Component,
   Inject,
   OnInit,
-  TemplateRef,
 } from '@angular/core';
 import {
   InstancesModel,
@@ -13,14 +12,10 @@ import {
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { finalize } from 'rxjs';
-import { LoadingService } from '@delon/abc/loading';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -38,12 +33,10 @@ export class InstancesDetailComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
     public message: NzMessageService,
-    private loadingSrv: LoadingService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -60,11 +53,9 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-
         this.dataService.getById(this.id, true).subscribe((data: any) => {
           this.instancesModel = data;
           this.loading = false;
@@ -79,7 +70,6 @@ export class InstancesDetailComponent implements OnInit {
               this.instancesModel.customerId,
               this.instancesModel.projectId
             )
-            .pipe(finalize(() => this.loadingSrv.close()))
             .subscribe((datasg: any) => {
               this.listSecurityGroupModel = datasg;
               this.cdr.detectChanges();
@@ -123,7 +113,7 @@ export class InstancesDetailComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
-  userChangeProject(){
+  userChangeProject() {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
@@ -201,7 +191,6 @@ export class InstancesDetailComponent implements OnInit {
         this.valueGSTIME,
         this.valueGSCPU
       )
-      .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data: any) => {
         data[0].datas.forEach((e: any) => {
           const item = {

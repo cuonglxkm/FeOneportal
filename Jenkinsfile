@@ -1,9 +1,9 @@
-def image 
+def image
 
 pipeline {
     agent any
 
-    environment {        
+    environment {
         branchName="${env.BRANCH_NAME}"
         buildNumber="${env.BUILD_NUMBER}"
         registry = "https://registry.onsmartcloud.com"
@@ -31,7 +31,7 @@ pipeline {
                         image.push()
                     }
                 }
-                
+
             }
         }
 
@@ -50,7 +50,7 @@ pipeline {
                         }
                     }
                 }
-                
+
             }
         }
 

@@ -9,3 +9,10 @@ export class StatusModel {
   }
 
 }
+
+export class ClusterStatus {
+
+  id: number;
+  statusName: string;
+
+}

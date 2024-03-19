@@ -1,15 +1,16 @@
 export class VPCNetworkModel {
 
   id: number;
-  cloudProfile: number;
-  network: string;
+  name: string;
+  subnetAddressRequired: string;
+  vpcId: number;
 
 }
 
 export class SubnetModel {
 
   id: number;
-  cloudProfile: number;
-  subnet: string;
+  subnetAddressRequired: string;
+  subnetCloudId: string;
 
 }

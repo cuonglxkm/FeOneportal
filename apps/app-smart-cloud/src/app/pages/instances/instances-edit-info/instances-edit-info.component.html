@@ -26,37 +26,36 @@
     </div>
   </ng-template>
 </page-header>
-<nz-card
-  [nzBordered]="false"
-  nzTitle="Thay đổi hệ điều hành"
-  *ngIf="currentImage"
->
-  <nz-row>
-    <p>Hệ điều hành hiện tại: {{ currentImage.name }}</p>
-  </nz-row>
-  <nz-row>
-    <p>Lựa chọn hệ điều hành mới</p>
-  </nz-row>
+<nz-card [nzBordered]="false" *ngIf="currentImage">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thay đổi hệ điều hành</span>
+  </div>
+  <span class="text-label">Hệ điều hành hiện tại: {{ currentImage.name }}</span>
+  <br />
+  <br />
+  <span class="text-label"
+    >Lựa chọn hệ điều hành mới (<span class="text-red">*</span>)</span
+  >
   <ngu-carousel
     #myCarouselImage
     [inputs]="carouselTileConfig"
     [dataSource]="listImageTypes"
-    style="width: 100%"
+    style="width: 100%; margin-left: -10px"
   >
     <ngu-tile
       *nguCarouselDef="let data; index as i; let ani = animate"
       [@slider]="ani"
     >
-      <table class="text-center" style="width: 100%">
-        <tbody
-          class="images-body"
-          [id]="'images_' + data.id"
-          [ngClass]="{
-            'images-body-active': data.id === selectedImageTypeId,
-            bgGray: !data.id === selectedImageTypeId
-          }"
-        >
-          <tr>
+      <div
+        class="images-body"
+        [id]="'images_' + data.id"
+        [ngClass]="{
+          'images-body-active': data.id === selectedImageTypeId,
+          bgGray: !data.id === selectedImageTypeId
+        }"
+      >
+        <nz-row>
+          <nz-col class="text-center" style="width: 100%">
             <img
               *ngIf="data.name == 'Linux'"
               src="assets/imgs/ubuntu.png"
@@ -67,8 +66,10 @@
               src="assets/imgs/window.png"
               alt=""
             />
-          </tr>
-          <tr>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col class="text-center" style="width: 100%">
             <div style="margin-top: 15px; margin-bottom: 15px">
               <nz-select
                 nzShowSearch
@@ -86,9 +87,9 @@
                 ></nz-option>
               </nz-select>
             </div>
-          </tr>
-        </tbody>
-      </table>
+          </nz-col>
+        </nz-row>
+      </div>
     </ngu-tile>
 
     <ul class="myPoint" NguCarouselPoint>
@@ -100,68 +101,62 @@
     </ul>
   </ngu-carousel>
   <br />
-  <br />
-  <nz-row nzGutter="16">
-    <div style="width: 100%">
-      <nz-alert
-        nzType="warning"
-        [nzMessage]="nzDescriptionWarning06"
-        nzShowIcon
-      ></nz-alert>
-      <ng-template #nzDescriptionWarning06>
-        <div>
-          Các phiên bản hệ điều hành Windows Server là bản dùng thử.Quý khách
-          hàng vui lòng kích hoạt bản quyền trước khi sử dụng.
-        </div>
-      </ng-template>
-    </div></nz-row
-  ><nz-row nzGutter="16">
-    <div style="width: 100%; margin-top: 2%; margin-bottom: 2%">
-      <nz-alert
-        nzType="warning"
-        [nzMessage]="nzDescriptionWarning02"
-        nzShowIcon
-      ></nz-alert>
-      <ng-template #nzDescriptionWarning02>
-        <div>
-          <b> Quý khách lưu ý:</b><br />
-          <b style="color: red">
-            - Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng
-            <span>{{ instancesModel.storage }}</span> GB) sẽ bị xóa và không thể
-            khôi phục lại.</b
-          >
-          <br />- Dữ liệu nằm trên volume gắn ngoài sẽ không bị ảnh hưởng.
-          <br />- Sau khi điều chỉnh thành công, mật khẩu đăng nhập mới sẽ được
-          gửi vào email <b>{{ email }}</b
-          >. <br />- Quá trình điều chỉnh hệ điều hành sẽ mất khoảng 15 đến 20
-          phút tùy dung lượng của volume root của máy ảo. <br />- Cấu hình máy
-          ảo (<span>{{ instancesModel.flavorName | slice : 3 }}</span
-          >), ip (<span>{{ listIPStr }}</span
-          >), security group (<span
-            *ngIf="instancesModel.securityGroupStr !== null; else defaultValue"
-            >{{ securityGroupStr }}</span
-          >
-          <ng-template #defaultValue>default</ng-template>) sẽ được giữ nguyên.
-        </div>
-      </ng-template>
-    </div></nz-row
-  >
+  <nz-alert
+    nzType="warning"
+    [nzDescription]="nzDescriptionWarning06"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #nzDescriptionWarning06>
+    <div>
+      Các phiên bản hệ điều hành Windows Server là bản dùng thử.Quý khách hàng
+      vui lòng kích hoạt bản quyền trước khi sử dụng.
+    </div>
+  </ng-template>
+  <nz-alert
+    style="margin-top: 2%; margin-bottom: 2%"
+    nzType="warning"
+    [nzDescription]="nzDescriptionWarning02"
+    nzShowIcon
+  ></nz-alert>
+  <ng-template #nzDescriptionWarning02>
+    <div>
+      <b> Quý khách lưu ý:</b><br />
+      <b style="color: #ea3829">
+        - Dữ liệu nằm trong volume cài đặt hệ điều hành cũ (dung lượng
+        <span>{{ instancesModel.storage }}</span> GB) sẽ bị xóa và không thể
+        khôi phục lại.</b
+      >
+      <br />- Dữ liệu nằm trên volume gắn ngoài sẽ không bị ảnh hưởng. <br />-
+      Sau khi điều chỉnh thành công, mật khẩu đăng nhập mới sẽ được gửi vào
+      email <b>{{ email }}</b
+      >. <br />- Quá trình điều chỉnh hệ điều hành sẽ mất khoảng 15 đến 20 phút
+      tùy dung lượng của volume root của máy ảo. <br />- Cấu hình máy ảo (<span
+        >{{ instancesModel.flavorName | slice : 3 }}</span
+      >), ip (<span>{{ listIPStr }}</span
+      >), security group (<span
+        *ngIf="instancesModel.securityGroupStr !== null; else defaultValue"
+        >{{ securityGroupStr }}</span
+      >
+      <ng-template #defaultValue>default</ng-template>) sẽ được giữ nguyên.
+    </div>
+  </ng-template>
   <nz-row nzGutter="16" style="display: inline">
     <div style="float: right">
-      <button
-        nz-button
-        style="background-color: #9c9c9c; color: white"
-        (click)="returnPage()"
-      >
-        Hủy
+      <button nz-button (click)="returnPage()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />Hủy
       </button>
       <button
         nz-button
-        [nzType]="'primary'"
+        nzSize="large"
+        nzType="primary"
         (click)="modify()"
         [disabled]="!isSelected"
       >
-        Chỉnh sửa
+        Cập nhật
       </button>
     </div>
   </nz-row>

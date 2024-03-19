@@ -52,7 +52,7 @@
         />
       </nz-select>
       <nz-input-group
-        style="margin-left: 8px; width: 50%; border-radius: 8px"
+        style="margin-left: 10px; width: 50%; border-radius: 8px"
         [nzPrefix]="prefixIconSearch"
         nzSize="large"
       >
@@ -95,7 +95,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span>Tạo mới máy ảo</span>
+        Tạo mới máy ảo
       </button>
     </div>
   </div>
@@ -186,25 +186,39 @@
               <li
                 *ngIf="data.taskState != 'SHUTOFF'"
                 nz-menu-item
-                (click)="restartInstance(data.id)"
+                (click)="showModalRestart(data.id)"
               >
                 Khởi động lại
               </li>
               <li
                 *ngIf="data.taskState != 'SHUTOFF'"
                 nz-menu-item
-                (click)="shutdownInstance(data.id)"
+                (click)="showModalShutdown(data.id)"
               >
                 Tắt máy ảo
               </li>
               <li
                 *ngIf="data.taskState == 'SHUTOFF'"
                 nz-menu-item
-                (click)="startInstance(data.id)"
+                (click)="showModalStart(data.id)"
               >
                 Bật máy ảo
               </li>
-              <li nz-menu-item (click)="rescueInstance(data.id)">RESCUE</li>
+              <li
+                *ngIf="data.taskState != 'RESCUE'"
+                nz-menu-item
+                (click)="showModalRescue(data.id)"
+              >
+                RESCUE
+              </li>
+              <li
+                *ngIf="data.taskState == 'RESCUE'"
+                nz-menu-item
+                (click)="showModalUnRescue(data.id)"
+              >
+                UNRESCUE
+              </li>
+              <li nz-menu-item (click)="openConsole(data.id)">Truy cập</li>
             </ul>
           </nz-dropdown-menu>
         </td>
@@ -214,21 +228,43 @@
 </nz-card>
 
 <div *ngIf="!loading && activeCreate">
-  <nz-card>
+  <nz-card style="border-radius: 4px">
     <result>
-      <img
-        style="height: 100%; width: 100%"
-        src="assets/imgs/blank_vm.png"
-        alt=""
-      />
-
+      <nz-row>
+        <nz-col class="text-center" style="width: 100%">
+          <img src="assets/imgs/blank_vm.svg" alt="" />
+        </nz-col>
+      </nz-row>
+      <nz-row style="margin-top: 20px">
+        <nz-col class="text-center" style="width: 100%"
+          ><span class="text-intro-title" style="color: #0066b3">
+            Máy chủ ảo<br />Dễ dàng khởi tạo và triển khai dịch vụ</span
+          ></nz-col
+        >
+      </nz-row>
+      <nz-row style="margin-top: 20px">
+        <nz-col class="text-center" style="width: 100%"
+          ><span class="text-intro-desc">
+            Dịch vụ cung cấp hệ thống máy chủ ảo an toàn, tin cậy được thiết kế
+            tập trung cho khả năng mở rộng dễ dàng.<br />
+            Người dùng có thể dễ dàng tạo, cấu hình compute instance với số
+            lượng thao tác đơn giản nhất.</span
+          ></nz-col
+        >
+      </nz-row>
       <button
+        style="margin-top: 20px"
         nz-button
         [nzType]="'primary'"
         (click)="navigateToCreate()"
         nzSize="large"
       >
-        Khởi tạo ngay
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cloud-plus-bold.svg"
+          alt=""
+        />
+        Tạo mới máy ảo
       </button>
     </result>
   </nz-card>
@@ -238,42 +274,43 @@
   [(nzVisible)]="isVisibleGanVLAN"
   nzTitle="Gắn VLAN"
   (nzOnCancel)="handleCancelGanVLAN()"
-  (nzOnOk)="handleOkGanVLAN()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
 >
   <ng-container *nzModalContent>
-    <nz-form-item>
-      <nz-form-label>Danh sách VLAN</nz-form-label>
-      <nz-form-control class="text-right">
-        <nz-select
-          [nzPlaceHolder]="'-- Chọn VLAN --'"
-          [nzShowSearch]="true"
-          style="width: 340px"
-        >
-          <nz-option
-            *ngFor="let i of listVLAN"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
-          />
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <div>
-        <a (click)="clickIPAddress()"
-          >Nhập IP Address <i *ngIf="!isExpand" nz-icon nzType="down"></i
-          ><i *ngIf="isExpand" nz-icon nzType="up"></i
-        ></a>
-      </div>
-    </nz-form-item>
-    <nz-form-item *ngIf="isExpand">
-      <nz-form-label>Danh sách Subnet</nz-form-label>
-      <nz-form-control class="text-right">
+    <span class="text-label">Danh sách VLAN</span>
+    <nz-form-control>
+      <nz-select
+        [nzPlaceHolder]="'-- Chọn VLAN --'"
+        [nzShowSearch]="true"
+        nzSize="large"
+      >
+        <nz-option
+          *ngFor="let i of listVLAN"
+          [nzLabel]="i.text"
+          [nzValue]="i.id"
+        />
+      </nz-select>
+    </nz-form-control>
+    <div style="margin-top: 10px; margin-bottom: 5px">
+      <a (click)="clickIPAddress()"
+        ><span style="color: #0066b3">Nhập IP Address</span>
+        <img
+          style="padding-right: 10px"
+          [src]="
+            isExpand
+              ? 'assets/imgs/arrow-up.svg'
+              : 'assets/imgs/arrow-down-b3.svg'
+          "
+          alt=""
+        />
+      </a>
+    </div>
+    <div *ngIf="isExpand">
+      <span class="text-label">Danh sách Subnet</span>
+      <nz-form-control style="margin-bottom: 10px" class="text-right">
         <nz-select
           [nzPlaceHolder]="'-- Chọn Subnet --'"
           [nzShowSearch]="true"
-          style="width: 340px"
+          nzSize="large"
         >
           <nz-option
             *ngFor="let i of listSubnet"
@@ -282,14 +319,12 @@
           />
         </nz-select>
       </nz-form-control>
-    </nz-form-item>
-    <nz-form-item *ngIf="isExpand">
-      <nz-form-label>Địa chỉ IP</nz-form-label>
-      <nz-form-control class="text-right">
+      <span class="text-label">Địa chỉ IP</span>
+      <nz-form-control style="margin-bottom: 10px" class="text-right">
         <nz-select
           [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
           [nzShowSearch]="true"
-          style="width: 340px"
+          nzSize="large"
         >
           <nz-option
             *ngFor="let i of listIPAddress"
@@ -298,13 +333,14 @@
           />
         </nz-select>
       </nz-form-control>
-    </nz-form-item>
+    </div>
+
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageGanVLAN"
+      [nzDescription]="customTemplateDescriptionGanVLAN"
       nzShowIcon
     ></nz-alert>
-    <ng-template #customTemplateMessageGanVLAN>
+    <ng-template #customTemplateDescriptionGanVLAN>
       <div>
         Trong trường hợp 1 Network của quý khách có nhiều Subnet, quý khách cần
         lựa chọn Subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP
@@ -313,43 +349,195 @@
       </div>
     </ng-template>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelGanVLAN()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkGanVLAN()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Gắn
+    </button>
+  </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleGoKhoiVLAN"
   nzTitle="Gỡ khỏi VLAN"
   (nzOnCancel)="handleCancelGoKhoiVLAN()"
-  (nzOnOk)="handleOkGoKhoiVLAN()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
 >
   <ng-container *nzModalContent>
     <nz-alert
+      style="margin-bottom: 20px"
       nzType="warning"
-      [nzMessage]="customTemplateMessageGanVLAN"
+      [nzDescription]="customTemplateDescriptionGoVLAN"
       nzShowIcon
     ></nz-alert>
-    <ng-template #customTemplateMessageGanVLAN>
+    <ng-template #customTemplateDescriptionGoVLAN>
       <div>
         Mỗi kết nối từ máy ảo với VLAN tương ứng với 1 IP được cấp, lựa chọn IP
         từ danh sách dưới đây để thực hiện gỡ kết nối máy ảo khỏi VLAN
       </div>
     </ng-template>
-    <br />
-    <nz-form-item>
-      <nz-form-label>Danh sách IP trên VLAN</nz-form-label>
-      <nz-form-control>
-        <nz-select
-          [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
-          [nzShowSearch]="true"
-        >
-          <nz-option
-            *ngFor="let i of listIPAddressOnVLAN"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
-          />
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
+    <span class="text-label">Danh sách IP trên VLAN</span>
+    <nz-form-control>
+      <nz-select
+        [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
+        [nzShowSearch]="true"
+        nzSize="large"
+      >
+        <nz-option
+          *ngFor="let i of listIPAddressOnVLAN"
+          [nzLabel]="i.text"
+          [nzValue]="i.id"
+        />
+      </nz-select>
+    </nz-form-control>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelGoKhoiVLAN()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkGoKhoiVLAN()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Gỡ
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleShutdown"
+  nzTitle="Tắt máy ảo"
+  (nzOnCancel)="handleCancelShutdown()"
+>
+  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện tắt máy ảo?</div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelShutdown()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkShutdown()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleRestart"
+  nzTitle="Khởi động lại máy ảo"
+  (nzOnCancel)="handleCancelRestart()"
+>
+  <div *nzModalContent>
+    Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelRestart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkRestart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleRescue"
+  nzTitle="RESCUE máy ảo"
+  (nzOnCancel)="handleCancelRescue()"
+>
+  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện RESCUE máy ảo?</div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelRescue()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkRescue()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleUnRescue"
+  nzTitle="UNRESCUE máy ảo"
+  (nzOnCancel)="handleCancelUnRescue()"
+>
+  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện UNRESCUE máy ảo?</div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelUnRescue()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkUnRescue()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleStart"
+  nzTitle="Bật máy ảo"
+  (nzOnCancel)="handleCancelStart()"
+>
+  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện bật máy ảo?</div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelStart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkStart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
 </nz-modal>

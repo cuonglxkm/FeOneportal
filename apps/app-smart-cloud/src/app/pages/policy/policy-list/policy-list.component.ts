@@ -134,7 +134,7 @@ export class PolicyListComponent {
     }
     catch(e) {
       console.log('error occored while you were typing the JSON');
-    };
+    }
   }
 
   copyText(data: any) {

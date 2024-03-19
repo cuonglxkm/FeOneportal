@@ -11,6 +11,8 @@ export class HeaderComponent {
 
     @Input() path: string[]
 
+    @Input() linkPath: string[]
+
     @Input() title: string
 
     @Input() regionId: number

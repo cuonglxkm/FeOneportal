@@ -160,7 +160,7 @@ export class ScheduleBackupVmComponent implements OnInit {
 
   submitForm() {
     if (this.validateForm.valid) {
-
+      
       this.formCreateSchedule = this.getData()
       this.formCreateSchedule.runtime = this.datepipe.transform(this.validateForm.controls.times.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
       this.backupScheduleService.create(this.formCreateSchedule).subscribe(data => {

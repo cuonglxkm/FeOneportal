@@ -9,6 +9,7 @@ import {NzSafeAny} from 'ng-zorro-antd/core/types';
 import {finalize} from 'rxjs';
 import {environment} from "../../../../../../app-smart-cloud/src/environments/environment";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {ReCaptchaV3Service} from "ng-recaptcha";
 
 export interface UserCreateDto {
   email: string;
@@ -58,7 +59,8 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       lastName: ['', [Validators.required]],
       mobile: ['', [Validators.pattern(/^0\d{8,10}$/)]],
       province: ['', [Validators.required]],
-      agreement: ['', [Validators.required]]
+      agreement: [true, [Validators.required]],
+      recaptchaReactive: ['', [Validators.required]]
     },
     {
       validators: MatchControl('password', 'confirm')
@@ -87,7 +89,9 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     this.form.controls.province.setValue('Hà Nội');
   }
 
-
+  public addTokenLog(message: string, token: string | null) {
+    console.log(message, token);
+  }
   static checkPassword(control: FormControl): NzSafeAny {
     if (!control) {
       return null;
@@ -173,7 +177,11 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.router.navigate(['passport', 'register-result'], {queryParams: {email: data.email}});
       }, error => {
-        this.notification.error('Tạo tài khoản thất bại!', `Xin vui lòng thử lại sau.`);
+        let message = 'Xin vui lòng thử lại sau.'
+        if (error.error && error.error.detail) {
+          message = error.error.detail;
+        }
+        this.notification.error('Tạo tài khoản không thành công!', message);
       });
   }
 

@@ -17,6 +17,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { concatMap, finalize, from } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -55,7 +56,8 @@ export class UserDetailComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private clipboardService: ClipboardService,
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
@@ -338,6 +340,10 @@ export class UserDetailComponent implements OnInit {
     } else {
       this.expandSet.delete(name);
     }
+  }
+
+  copyText(data: any) {
+    this.clipboardService.copyFromContent(JSON.stringify(data));
   }
 
   navigateToAddPolicies() {

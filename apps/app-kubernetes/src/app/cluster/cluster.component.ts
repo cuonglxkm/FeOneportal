@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
-import { NetworkingModel } from '../model/cluster.model';
+import { KubernetesCluster, NetworkingModel, Order, OrderItem } from '../model/cluster.model';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { VolumeTypeModel } from '../model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
@@ -15,6 +15,8 @@ import { ProjectModel } from '../shared/models/project.model';
 import { VlanService } from '../services/vlan.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
 import { finalize } from 'rxjs';
+import { ShareService } from '../services/share.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-cluster',
@@ -25,7 +27,6 @@ export class ClusterComponent implements OnInit {
 
   myform: FormGroup;
   listFormWorkerGroup: FormArray;
-  selectedInfra: string;
 
   isAutoScaleEnable: boolean;
   isSubmitting: boolean;
@@ -35,6 +36,16 @@ export class ClusterComponent implements OnInit {
   listOfWorkerType: WorkerTypeModel[];
   listOfVolumeType: VolumeTypeModel[];
   listOfSubnets: SubnetModel[];
+
+  listOfUsageTime = [
+    { label: '3 tháng', value: 3 },
+    { label: '6 tháng', value: 6 },
+    { label: '9 tháng', value: 9 },
+    { label: '12 tháng', value: 12 }
+  ];
+
+  // order data
+  orderData: KubernetesCluster;
 
   // infrastructure info
   regionId: number;
@@ -52,7 +63,9 @@ export class ClusterComponent implements OnInit {
     private modalService: NzModalService,
     private notificationService: NzNotificationService,
     private vlanService: VlanService,
-    private router: Router
+    private router: Router,
+    private shareService: ShareService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     this.listOfK8sVersion = [];
     this.listOfSubnets = [];
@@ -60,6 +73,8 @@ export class ClusterComponent implements OnInit {
     this.listOfVolumeType = [];
     this.listOfWorkerType = [];
     this.isSubmitting = false;
+
+    this.getCurrentDate();
   }
 
   ngOnInit(): void {
@@ -73,9 +88,7 @@ export class ClusterComponent implements OnInit {
       projectInfraId: [null, [Validators.required]],
       cloudProfileId: [null, [Validators.required]],
 
-      autoScalingWorker: [false],
-      autoHealing: [false],
-
+      // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
       cidr: [this.DEFAULT_CIDR, Validators.required],
@@ -83,6 +96,11 @@ export class ClusterComponent implements OnInit {
       subnet: [null, [Validators.required]],
 
       workerGroup: this.listFormWorkerGroup,
+
+      // volume
+      volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      usageTime: [3, [Validators.required]],
+      volumeCloudType: ['hdd', [Validators.required]],
     });
 
     // init worker group
@@ -103,6 +121,8 @@ export class ClusterComponent implements OnInit {
       volumeTypeId: [null, [Validators.required]],
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
+      autoScalingWorker: [false, Validators.required],
+      autoHealing: [false, Validators.required],
       minimumNode: [null],
       maximumNode: [null]
     });
@@ -123,6 +143,7 @@ export class ClusterComponent implements OnInit {
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {
+    this.listOfK8sVersion = [];
     this.clusterService.getListK8sVersion(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
@@ -132,20 +153,26 @@ export class ClusterComponent implements OnInit {
           const len = this.listOfK8sVersion?.length;
           const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[len - 1];
           this.myform.get('kubernetesVersion').setValue(latestVersion.k8sVersion);
+        } else {
+          this.notificationService.error("Thất bại", r.message);
         }
       });
   }
 
   getListWorkerType(regionId: number,cloudProfileName: string) {
+    this.listOfWorkerType = [];
     this.clusterService.getListWorkerTypes(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
           this.listOfWorkerType = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
         }
       })
   }
 
   getListVolumeType(regionId: number,cloudProfileName: string) {
+    this.listOfVolumeType = [];
     this.clusterService.getListVolumeTypes(regionId, cloudProfileName)
       .subscribe((r: any) => {
         if (r && r.code == 200) {
@@ -155,6 +182,8 @@ export class ClusterComponent implements OnInit {
           // if data is not already loaded, volumeTypeId will not fill value
           const volumeType = this.listOfVolumeType.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
           this.listFormWorkerGroup.at(0).get('volumeTypeId').setValue(volumeType.id);
+        } else {
+          this.notificationService.error("Thất bại", r.message);
         }
       });
   }
@@ -170,7 +199,6 @@ export class ClusterComponent implements OnInit {
 
   formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
   getVlanNetwork(projectId: number) {
-    console.log(123);
     this.formSearchNetwork.projectId = projectId;
     this.formSearchNetwork.pageSize = 1000;
     this.formSearchNetwork.pageNumber = 0;
@@ -191,6 +219,9 @@ export class ClusterComponent implements OnInit {
     this.formSearchSubnet.networkId = this.vlanId;
     this.formSearchSubnet.region = this.regionId;
 
+    // clear subnet
+    this.myform.get('subnet').setValue(null);
+
     this.vlanService.getListSubnet(this.formSearchSubnet)
     .subscribe((r: any) => {
       if (r && r.records) {
@@ -200,8 +231,10 @@ export class ClusterComponent implements OnInit {
   }
 
   // catch event region change and reload data
+  regionName: string;
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.regionName = region.regionDisplayName;
     this.cloudProfileId = region.cloudId;
 
     this.getListK8sVersion(this.regionId, this.cloudProfileId);
@@ -210,9 +243,6 @@ export class ClusterComponent implements OnInit {
 
     this.myform.get('regionId').setValue(this.regionId);
     this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
-
-    // TODO: handle reset select box of previous region ...
-
   }
 
   onProjectChange(project: ProjectModel) {
@@ -221,7 +251,9 @@ export class ClusterComponent implements OnInit {
     this.getVlanNetwork(this.projectInfraId);
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
 
-    // TODO: handle reset select box of previous project ...
+    // handle reset select box of previous project
+    this.myform.get('vpcNetwork').setValue(null);
+    this.myform.get('subnet').setValue(null);
 
   }
 
@@ -241,17 +273,21 @@ export class ClusterComponent implements OnInit {
     this.listFormWorkerGroup.at(index).get('configTypeId').setValue(selectedWorkerType.id);
   }
 
-  onChangeAdvancedConfig() {
-    const isAutoScaleWorker = this.myform.get('autoScalingWorker').value;
+  onChangeAdvancedConfig(index: number) {
+    const isAutoScaleWorker = this.isAutoScaleAtIndex(index);
     if (isAutoScaleWorker) {
       this.isAutoScaleEnable = true;
-      this.addValidateMinimumNode();
-      this.addValidateMaximumNode();
+      this.addValidateMinimumNode(index);
+      this.addValidateMaximumNode(index);
     } else {
       this.isAutoScaleEnable = false;
-      this.removeValidateMinimumNode();
-      this.removeValidateMaximumNode();
+      this.removeValidateMinimumNode(index);
+      this.removeValidateMaximumNode(index);
     }
+  }
+
+  isAutoScaleAtIndex(index: number) {
+    return this.listFormWorkerGroup.at(index).get('autoScalingWorker').value;
   }
 
   onChangeNodeValue(index: number) {
@@ -268,32 +304,24 @@ export class ClusterComponent implements OnInit {
   }
 
   // validator
-  addValidateMaximumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('maximumNode').setValidators([Validators.required]);
-      this.listFormWorkerGroup.at(i).get('maximumNode').updateValueAndValidity();
-    }
+  addValidateMaximumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('maximumNode').setValidators([Validators.required]);
+    this.listFormWorkerGroup.at(index).get('maximumNode').updateValueAndValidity();
   }
 
-  removeValidateMaximumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('maximumNode').clearValidators();
-      this.listFormWorkerGroup.at(i).get('maximumNode').updateValueAndValidity();
-    }
+  removeValidateMaximumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('maximumNode').clearValidators();
+    this.listFormWorkerGroup.at(index).get('maximumNode').updateValueAndValidity();
   }
 
-  addValidateMinimumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('minimumNode').setValidators([Validators.required]);
-      this.listFormWorkerGroup.at(i).get('minimumNode').updateValueAndValidity();
-    }
+  addValidateMinimumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('minimumNode').setValidators([Validators.required]);
+    this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
   }
 
-  removeValidateMinimumNode() {
-    for (let i = 0; i < this.listFormWorkerGroup.length; i++) {
-      this.listFormWorkerGroup.at(i).get('minimumNode').clearValidators();
-      this.listFormWorkerGroup.at(i).get('minimumNode').updateValueAndValidity();
-    }
+  removeValidateMinimumNode(index: number) {
+    this.listFormWorkerGroup.at(index).get('minimumNode').clearValidators();
+    this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
   }
 
   // validate duplicate worker group name
@@ -329,8 +357,47 @@ export class ClusterComponent implements OnInit {
     return this.myform.get('kubernetesVersion').value;
   }
 
-  get regionName() {
-    return this.myform.get('reigonId').value;
+  get networkType() {
+    return this.myform.get('networkType').value;
+  }
+
+  get vpcNetwork() {
+    let vpcId = this.myform.get('vpcNetwork').value;
+    let vpc = this.listOfVPCNetworks.find(item => item.id == vpcId);
+    if (vpc) return vpc.name;
+  }
+
+  get cidr() {
+    return this.myform.get('cidr').value;
+  }
+
+  get subnet() {
+    return this.myform.get('subnet').value;
+  }
+
+  get volumeCloudSize() {
+    return this.myform.get('volumeCloudSize').value;
+  }
+
+  get volumeCloudType() {
+    return this.myform.get('volumeCloudType').value;
+  }
+
+  get usageTime() {
+    return this.myform.get('usageTime').value;
+  }
+
+  currentDate: string;
+  getCurrentDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = (today.getMonth() + 1).toString(); // Months start at 0
+    let dd = today.getDate().toString();
+
+    if (+dd < 10) dd = '0' + dd;
+    if (+mm < 10) mm = '0' + mm;
+
+    this.currentDate = dd + '/' + mm + '/' + yyyy;
   }
 
   syncVPCNetwork() {
@@ -363,7 +430,37 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  onSubmitPayment() {
+  onSubmitOrder = () => {
+    const cluster = this.myform.value;
+    const networking: NetworkingModel = new NetworkingModel(null);
+    networking.networkType = cluster.networkType;
+    networking.vpcNetworkId = cluster.vpcNetwork;
+    networking.cidr = cluster.cidr;
+    networking.subnet = cluster.subnet;
+
+    cluster.networking = networking;
+
+    const data: Order = new Order();
+    const userId = this.tokenService.get()?.userId;
+    data.customerId = userId;
+    data.createdByUserId = userId;    // fix test
+    data.orderItems = [];
+
+    const orderItem: OrderItem = new OrderItem();
+    orderItem.price = 25000000;       // fix test
+    orderItem.orderItemQuantity = 1;  // fix test
+    orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
+    orderItem.specification = JSON.stringify(cluster);
+    orderItem.serviceDuration = this.usageTime;
+
+    data.orderItems = [...data.orderItems, orderItem];
+
+    let returnPath = window.location.pathname;
+
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+  }
+
+  onCreateCluster() {
     const cluster = this.myform.value;
     const networking: NetworkingModel = new NetworkingModel(null);
     networking.networkType = cluster.networkType;
@@ -381,7 +478,16 @@ export class ClusterComponent implements OnInit {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.notificationService.success('Thành công', r.message);
-        this.back2list();
+
+        const clusterName = this.myform.get('clusterName').value;
+
+        // let obj = {
+        //   namespace: r.data,
+        //   clusterName: clusterName
+        // };
+        // this.router.navigate(['/app-kubernetes'], {state: {data: obj}});
+        this.router.navigate(['/app-kubernetes']);
+
       } else {
         this.notificationService.error('Thất bại', r.message);
       }

@@ -1,0 +1,33 @@
+<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
+      nzTheme="outline" nz-popover
+      [nzPopoverContent]="'Xóa'"
+      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa Volume"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xóa Volume</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzMessage]="'Nếu volume có các bản Snapshot thì các bản Snapshot đó cũng sẽ bị xóa theo Volume.'">
+    </nz-alert>
+    <div>
+      <b style="text-align: center">Quý khách chắc chắn muốn xóa dịch vụ này?</b>
+      <br>
+      <i style="text-align: center">Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý.</i>
+    </div>
+
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

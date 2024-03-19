@@ -2,6 +2,9 @@ import {RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
 import {VpcCreateComponent} from "./vpc-create/vpc-create.component";
 import {VpcListComponent} from "./vpc-list/vpc-list.component";
+import {VpcDetailComponent} from "./vpc-detail/vpc-detail.component";
+import {VpcUpdateComponent} from "./vpc-update/vpc-update.component";
+import {VpcExtendComponent} from "./vpc-extend/vpc-extend.component";
 
 const routes: Routes = [
   {
@@ -16,13 +19,18 @@ const routes: Routes = [
   },
   {
     path: 'detail/:id',
-    component: VpcCreateComponent,
-    data: { title: 'Vpc Create', key: 'policy-create' },
+    component: VpcDetailComponent,
+    data: { title: 'Vpc Detail', key: 'policy-detail' },
   },
   {
     path: 'update/:id',
-    component: VpcCreateComponent,
-    data: { title: 'Vpc Create', key: 'policy-create' },
+    component: VpcUpdateComponent,
+    data: { title: 'Vpc Update', key: 'policy-update' },
+  },
+  {
+    path: 'extend/:id',
+    component: VpcExtendComponent,
+    data: { title: 'Vpc Extend', key: 'policy-update' },
   }
 
 ];
