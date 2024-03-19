@@ -123,9 +123,9 @@ export class InstancesComponent implements OnInit {
             this.dataList = next.records;
             this.total = next.totalCount;
           },
-          error: (error) => {
+          error: (e) => {
             this.notification.error(
-              '',
+              e.statusText,
               'Lấy danh sách máy ảo không thành công'
             );
           },
@@ -164,11 +164,11 @@ export class InstancesComponent implements OnInit {
             }
             this.cdr.detectChanges();
           },
-          error: (error) => {
+          error: (e) => {
             this.dataList = [];
             this.activeCreate = true;
             this.notification.error(
-              '',
+              e.statusText,
               'Lấy danh sách máy ảo không thành công'
             );
           },
@@ -263,7 +263,7 @@ export class InstancesComponent implements OnInit {
         }
       },
       error: (e) => {
-        this.notification.error('', 'Tắt máy ảo không thành công');
+        this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
       },
     });
   }
@@ -294,7 +294,7 @@ export class InstancesComponent implements OnInit {
         }
       },
       error: (e) => {
-        this.notification.error('', 'Bật máy ảo không thành công');
+        this.notification.error(e.statusText, 'Bật máy ảo không thành công');
       },
     });
   }
@@ -356,7 +356,7 @@ export class InstancesComponent implements OnInit {
         }
       },
       error: (e) => {
-        this.notification.error('', 'RESCUE máy ảo không thành công');
+        this.notification.error(e.statusText, 'RESCUE máy ảo không thành công');
       },
     });
   }
@@ -387,7 +387,10 @@ export class InstancesComponent implements OnInit {
         }
       },
       error: (e) => {
-        this.notification.error('', 'UNRESCUE máy ảo không thành công');
+        this.notification.error(
+          e.statusText,
+          'UNRESCUE máy ảo không thành công'
+        );
       },
     });
   }
@@ -417,7 +420,9 @@ export class InstancesComponent implements OnInit {
     if (this.project.type == 0) {
       this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
     } else {
-      this.router.navigate(['/app-smart-cloud/instances/instances-edit-vpc/' + id]);
+      this.router.navigate([
+        '/app-smart-cloud/instances/instances-edit-vpc/' + id,
+      ]);
     }
   }
 

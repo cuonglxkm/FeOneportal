@@ -421,7 +421,7 @@ const routes: Routes = [
     component: RouterListComponent
   },
   {
-    path: 'network/router/detail',
+    path: 'network/router/detail/:id',
     component: RouterDetailComponent
   },
   {

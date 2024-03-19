@@ -496,9 +496,8 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.notification.success('', 'Tạo máy ảo hành công');
         this.router.navigate(['/app-smart-cloud/instances']);
       },
-      error: (error) => {
-        console.log(error.error);
-        this.notification.error('', 'Tạo máy ảo không thành công');
+      error: (e) => {
+        this.notification.error(e.statusText, 'Tạo máy ảo không thành công');
       },
     });
   }

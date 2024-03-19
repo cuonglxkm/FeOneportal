@@ -121,9 +121,7 @@
             nz-tooltip
             nzTooltipTitle="Xem chi tiết"
             nzTooltipPlacement="bottom"
-            [routerLink]="
-              '/app-smart-cloud/instances/instances-detail/' + data.id
-            "
+            [routerLink]="'/app-smart-cloud/network/router/detail/' + data.id"
             >{{ data.routerName }}</a
           >
         </td>
@@ -290,7 +288,7 @@
       />
     </div>
     <input
-      style="margin-bottom: 16px"
+      style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder=""
@@ -305,7 +303,7 @@
         src="assets/imgs/message-question.svg"
         alt=""
     /></span>
-    <nz-form-control>
+    <nz-form-control style="margin-top: 5px">
       <nz-input-group>
         <nz-select
           [nzPlaceHolder]="'-- Chọn Network --'"
@@ -362,7 +360,7 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
       <div>
-        Bạn đang thực hiện xóa Router <span> {{ nameRouterDelete }} </span>
+        Bạn đang thực hiện xóa Router <b> {{ nameRouterDelete }} </b>
       </div>
       <div>
         Bạn phải xóa Router Interface và Static Router trước khi thực hiện xóa
@@ -372,7 +370,7 @@
     </ng-template>
 
     <span class="text-label"
-      >Để thực hiện xóa User, vui lòng nhập tên User để xác nhận</span
+      >Để thực hiện xóa Router, vui lòng nhập tên Router để xác nhận</span
     >
     <nz-form-control>
       <input

@@ -182,9 +182,11 @@ export class AddToGroupComponent implements OnInit {
           this.notification.success('', 'Cập nhật User thành công');
           this.navigateToDetail();
         },
-        (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Cập nhật User không thành công');
+        (e) => {
+          this.notification.error(
+            e.statusText,
+            'Cập nhật User không thành công'
+          );
         }
       );
   }
