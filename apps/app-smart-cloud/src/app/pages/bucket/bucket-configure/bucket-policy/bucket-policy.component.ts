@@ -11,6 +11,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { BucketPolicy } from 'src/app/shared/models/bucket.model';
+import { SubUser } from 'src/app/shared/models/sub-user.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 
 @Component({
@@ -27,6 +28,7 @@ export class BucketPolicyComponent implements OnInit {
   pageNumber: number = 1;
   total: number;
   loading: boolean = true;
+  listPermission = [{ name: 'Allow' }, { name: 'Deny' }];
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
 
@@ -44,7 +46,7 @@ export class BucketPolicyComponent implements OnInit {
     this.searchBucketPolicy();
   }
   searchBucketPolicy() {
-    this.loading = true
+    this.loading = true;
     this.bucketService
       .getListBucketPolicy(
         this.bucketName,
@@ -66,16 +68,42 @@ export class BucketPolicyComponent implements OnInit {
         error: (e) => {
           this.listBucketPolicy = [];
           this.notification.error(
-            '',
+            e.statusText,
             'Lấy danh sách Bucket Policy không thành công'
           );
         },
       });
   }
 
+  listSubuser: SubUser[] = [];
+  loadingSubuser: boolean = true;
+  getListSubuser() {
+    this.loadingSubuser = true;
+    this.bucketService
+      .getListSubuser(9999, 0)
+      .pipe(finalize(() => (this.loadingSubuser = false)))
+      .subscribe({
+        next: (data) => {
+          this.listSubuser = data.records;
+        },
+        error: (e) => {
+          this.listSubuser = [];
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Subuser không thành công'
+          );
+        },
+      });
+  }
+
   isVisibleCreate = false;
+  permission: string;
+  emailUser: string;
+  isUserOther: boolean = true;
+  listActionPermission: string[] = [];
   modalCreate() {
     this.isVisibleCreate = true;
+    this.getListSubuser();
   }
 
   handleCancelCreate() {
@@ -85,24 +113,30 @@ export class BucketPolicyComponent implements OnInit {
   handleOkCreate() {
     this.isVisibleCreate = false;
     this.notification.success('', 'Tạo mới Bucket Policy thành công');
-    // this.routerInterfaceCreate.regionId = this.regionId;
-    // this.routerInterfaceCreate.routerId = this.routerId;
-    // this.service.createRouterInterface(this.routerInterfaceCreate).subscribe({
-    //   next: (data) => {
-    //
-    //   },
-    //   error: (e) => {
-    //     this.notification.error(
-    //       '',
-    //       'Tạo mới Router Interface không thành công'
-    //     );
-    //   },
-    // });
+    this.bucketService
+      .createBucketPolicy(
+        this.bucketName,
+        this.permission,
+        this.emailUser,
+        this.isUserOther,
+        this.listActionPermission
+      )
+      .subscribe({
+        next: (data) => {},
+        error: (e) => {
+          this.notification.error(
+            '',
+            'Tạo mới Router Interface không thành công'
+          );
+        },
+      });
   }
 
   isVisibleUpdate = false;
-  modalUpdate(id: any) {
+  bucketPolicyUpdate: BucketPolicy = new BucketPolicy();
+  modalUpdate(data: any) {
     this.isVisibleCreate = true;
+    this.bucketPolicyUpdate = data;
   }
 
   handleCancelUpdate() {
@@ -125,17 +159,6 @@ export class BucketPolicyComponent implements OnInit {
     //     );
     //   },
     // });
-  }
-
-  subuser: boolean = true;
-  userVnpt: boolean = false;
-  initSubuser(): void {
-    this.subuser = true;
-    this.userVnpt = false;
-  }
-  initUserVnpt(): void {
-    this.subuser = false;
-    this.userVnpt = true;
   }
 
   isVisibleDelete: boolean = false;
