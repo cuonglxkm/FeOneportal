@@ -97,14 +97,17 @@
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>
-    <nz-radio-group style="width: 100%; margin-bottom: 16px" [(ngModel)]="isUserOther">
+    <nz-radio-group
+      style="width: 100%; margin-bottom: 16px"
+      [(ngModel)]="isUserOther"
+    >
       <div style="display: flex">
         <div style="flex: 1">
           <label class="text-value" nz-radio [nzValue]="true">Subuser</label>
         </div>
         <div style="flex: 1">
           <label class="text-value" nz-radio [nzValue]="false"
-            >Người dùng VNPT Clou</label
+            >Người dùng VNPT Cloud</label
           >
         </div>
       </div>
@@ -149,16 +152,33 @@
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       nzMode="multiple"
       nzPlaceHolder="-- Chọn thao tác quyền --"
-      [ngModelOptions]="{ standalone: true }"
       [(ngModel)]="selectedSecurityGroup"
       [nzServerSearch]="true"
       nzSize="large"
     >
-      <nz-option
-        *ngFor="let i of listActionPermission"
-        [nzLabel]="i.name"
-        [nzValue]="i.name"
-      />
+      <nz-option-group nzLabel="SUGGESTED COMBO">
+        <nz-option
+          nzValue="CreateBucket, DeleteBucket"
+          nzLabel="Create bucket"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObject, ListBucket"
+          nzLabel="Read / Download file"
+        ></nz-option>
+        <nz-option nzValue="PutObjectAcl, PutObject">Upload file</nz-option>
+        <nz-option nzValue="GetBucketAcl, GetBucketCORS"
+          >Config bucket (GetBucketAcl, GetBucketCORS,...)</nz-option
+        >
+      </nz-option-group>
+      <nz-option-group nzLabel="CUSTOM ACTION">
+        <nz-option nzValue="SELECT ALL">SELECT ALL</nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP BUCKET">
+        <nz-option nzValue="CreateBucket">CreateBucket</nz-option>
+        <nz-option nzValue="DeleteBucketPolicy">DeleteBucketPolicy</nz-option>
+        <!-- Các tùy chọn khác trong nhóm BUCKET -->
+      </nz-option-group>
+      <!-- Các nhóm và tùy chọn khác -->
     </nz-select>
   </ng-container>
   <div *nzModalFooter>
@@ -185,7 +205,10 @@
   (nzOnCancel)="handleCancelUpdate()"
 >
   <ng-container *nzModalContent>
-    <nz-radio-group style="width: 100%; margin-bottom: 16px" [(ngModel)]="isUserOther">
+    <nz-radio-group
+      style="width: 100%; margin-bottom: 16px"
+      [(ngModel)]="isUserOther"
+    >
       <div style="display: flex">
         <div style="flex: 1">
           <label class="text-value" nz-radio [nzValue]="true">Subuser</label>

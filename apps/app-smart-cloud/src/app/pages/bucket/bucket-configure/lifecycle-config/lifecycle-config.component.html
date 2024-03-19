@@ -69,25 +69,25 @@
     <ng-container *ngFor="let item of listLifecycle">
       <tr>
         <td>
-          {{ item.name }}
+          {{ item.enabledString }}
         </td>
-        <td>{{ item.type }}</td>
-        <td>{{ item.attachedVia }}</td>
-        <td><a>Xem chi tiết JSON</a></td>
-        <td></td>
-        <td></td>
+        <td>{{ item.prefix }}</td>
+        <td>{{ item.lifecycleTagPredicateString }}</td>
+        <td>{{ item.expiration_DayString }}</td>
+        <td>{{ item.noncurrentVersionExpiration_DayString }}</td>
+        <td>{{ item.abortIncompleteMultipartUpload_DayString }}</td>
         <td nzRight>
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
-            (click)="updateLifecycle(data.id)"
+            (click)="modalUpdate(item)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Chỉnh sửa"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
-            (click)="modalDelete(data.id)"
+            (click)="modalDelete(item)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Xóa"
           />
@@ -106,7 +106,7 @@
     <label
       class="text-label"
       nz-checkbox
-      [(ngModel)]="filterOn"
+      [(ngModel)]="lifecycleCreate.enabled"
       [ngModelOptions]="{ standalone: true }"
       >Bật bộ lọc</label
     >
@@ -124,6 +124,7 @@
       class="input-custom"
       nz-input
       placeholder="Nhập tiền tố"
+      [(ngModel)]="lifecycleCreate.prefix"
       [ngModelOptions]="{ standalone: true }"
     />
     <div class="text-label">
@@ -180,7 +181,7 @@
       class="text-label"
       style="margin-top: 16px"
       nz-checkbox
-      [(ngModel)]="currentVersion"
+      [(ngModel)]="lifecycleCreate.isSetExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
       >Thời hạn xóa file (Version hiện tại)</label
     >
@@ -191,7 +192,7 @@
           [nzMin]="1"
           [nzMax]="30"
           [nzStep]="1"
-          [(ngModel)]="numberDayOfCurrentVersion"
+          [(ngModel)]="lifecycleCreate.lifecycleRuleExpiration_Day"
           [ngModelOptions]="{ standalone: true }"
           nzSize="large"
         ></nz-input-number>
@@ -207,7 +208,7 @@
       class="text-label"
       style="margin-top: 16px"
       nz-checkbox
-      [(ngModel)]="notCurrentVersion"
+      [(ngModel)]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
       >Thời hạn xóa file (Không phải version hiện tại)</label
     >
@@ -218,7 +219,9 @@
           [nzMin]="1"
           [nzMax]="30"
           [nzStep]="1"
-          [(ngModel)]="numberDayOfNotCurrentVersion"
+          [(ngModel)]="
+            lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day
+          "
           [ngModelOptions]="{ standalone: true }"
           nzSize="large"
         ></nz-input-number>
@@ -234,7 +237,7 @@
       class="text-label"
       style="margin-top: 16px"
       nz-checkbox
-      [(ngModel)]="multipartUpload"
+      [(ngModel)]="lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day"
       [ngModelOptions]="{ standalone: true }"
       >Thời gian xóa Multipart upload không hoàn thành</label
     >
@@ -245,7 +248,9 @@
           [nzMin]="1"
           [nzMax]="30"
           [nzStep]="1"
-          [(ngModel)]="numberDayOfMultipartUpload"
+          [(ngModel)]="
+            lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day
+          "
           [ngModelOptions]="{ standalone: true }"
           nzSize="large"
         ></nz-input-number>
@@ -259,14 +264,14 @@
     </div>
   </ng-container>
   <div *nzModalFooter>
-    <button nz-button (click)="handleCancelCreateStatic()">
+    <button nz-button (click)="handleCancelCreate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateStatic()">
+    <button nz-button nzType="primary" (click)="handleOkCreate()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -299,6 +304,190 @@
         alt=""
       />
       Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleUpdate"
+  nzTitle="Chỉnh sửa Bucket Lifecycle"
+  (nzOnCancel)="handleCancelUpdate()"
+>
+  <ng-container *nzModalContent>
+    <label
+      class="text-label"
+      nz-checkbox
+      [(ngModel)]="lifecycleUpdate.enabled"
+      [ngModelOptions]="{ standalone: true }"
+      >Bật bộ lọc</label
+    >
+    <div style="margin-top: 16px" class="text-label">
+      Tiền tố
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip='Tiền tố xác định một hoặc nhiều tệp áp dụng quy tắc (ví dụ: "logs/"). Tiền tố trống có nghĩa là tất cả các tệp'
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <input
+      style="margin-bottom: 16px; margin-top: 5px"
+      class="input-custom"
+      nz-input
+      placeholder="Nhập tiền tố"
+      [(ngModel)]="lifecycleUpdate.prefix"
+      [ngModelOptions]="{ standalone: true }"
+    />
+    <div class="text-label">
+      Lọc theo Tag<img
+        style="margin-left: 5px"
+        src="assets/imgs/ei_plus.svg"
+        alt=""
+        (click)="addTag()"
+      />
+    </div>
+    <div
+      class="text-label"
+      style="color: #eb1414; margin-top: 16px; margin-bottom: 10px"
+    >
+      Lưu ý: Bạn chỉ có thể áp dụng một bộ lọc "Tiền tố" hoặc "Tag", để sử dụng
+      cả hai bạn phải tạo một bộ lọc mới.
+    </div>
+    <div *ngFor="let item of listTag">
+      <div style="display: flex">
+        <div style="flex: 5; padding-right: 16px">
+          <input
+            style="margin-bottom: 8px"
+            class="input-custom"
+            nz-input
+            placeholder="Nhập Key"
+            [(ngModel)]="item.key"
+            [ngModelOptions]="{ standalone: true }"
+          />
+        </div>
+        <div style="flex: 5">
+          <input
+            style="margin-bottom: 8px"
+            class="input-custom"
+            nz-input
+            placeholder="Nhập Value"
+            [(ngModel)]="item.value"
+            [ngModelOptions]="{ standalone: true }"
+          />
+        </div>
+        <div
+          style="margin-left: 10px"
+          class="d-flex align-items-center justify-content-end"
+        >
+          <img
+            style="cursor: pointer"
+            src="assets/imgs/trash1.svg"
+            alt=""
+            (click)="delelteTag(item.id)"
+          />
+        </div>
+      </div>
+    </div>
+    <label
+      class="text-label"
+      style="margin-top: 16px"
+      nz-checkbox
+      [(ngModel)]="lifecycleUpdate.isSetExpiration_Day"
+      [ngModelOptions]="{ standalone: true }"
+      >Thời hạn xóa file (Version hiện tại)</label
+    >
+    <div style="display: flex; margin-top: 5px">
+      <div style="flex: 2; padding-right: 16px">
+        <nz-input-number
+          style="width: 100%; margin-left: 0px"
+          [nzMin]="1"
+          [nzMax]="30"
+          [nzStep]="1"
+          [(ngModel)]="lifecycleUpdate.lifecycleRuleExpiration_Day"
+          [ngModelOptions]="{ standalone: true }"
+          nzSize="large"
+        ></nz-input-number>
+      </div>
+      <div
+        class="text-label"
+        style="flex: 3; display: flex; align-items: center"
+      >
+        Ngày - Kể từ ngày tạo
+      </div>
+    </div>
+    <label
+      class="text-label"
+      style="margin-top: 16px"
+      nz-checkbox
+      [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day"
+      [ngModelOptions]="{ standalone: true }"
+      >Thời hạn xóa file (Không phải version hiện tại)</label
+    >
+    <div style="display: flex; margin-top: 5px">
+      <div style="flex: 2; padding-right: 16px">
+        <nz-input-number
+          style="width: 100%; margin-left: 0px"
+          [nzMin]="1"
+          [nzMax]="30"
+          [nzStep]="1"
+          [(ngModel)]="
+            lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day
+          "
+          [ngModelOptions]="{ standalone: true }"
+          nzSize="large"
+        ></nz-input-number>
+      </div>
+      <div
+        class="text-label"
+        style="flex: 3; display: flex; align-items: center"
+      >
+        Ngày - Từ ngày thành bản cũ
+      </div>
+    </div>
+    <label
+      class="text-label"
+      style="margin-top: 16px"
+      nz-checkbox
+      [(ngModel)]="lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day"
+      [ngModelOptions]="{ standalone: true }"
+      >Thời gian xóa Multipart upload không hoàn thành</label
+    >
+    <div style="display: flex; margin-top: 5px">
+      <div style="flex: 2; padding-right: 16px">
+        <nz-input-number
+          style="width: 100%; margin-left: 0px"
+          [nzMin]="1"
+          [nzMax]="30"
+          [nzStep]="1"
+          [(ngModel)]="
+            lifecycleUpdate.lifecycleRuleAbortIncompleteMultipartUpload_Day
+          "
+          [ngModelOptions]="{ standalone: true }"
+          nzSize="large"
+        ></nz-input-number>
+      </div>
+      <div
+        class="text-label"
+        style="flex: 3; display: flex; align-items: center"
+      >
+        Ngày - Từ ngày bắt đầu upload
+      </div>
+    </div>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
     </button>
   </div>
 </nz-modal>

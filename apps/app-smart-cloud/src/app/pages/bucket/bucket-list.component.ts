@@ -90,8 +90,10 @@ export class BucketListComponent implements OnInit {
   isVisibleDeleteBucket: boolean = false;
   bucketDeleteName: string;
   titleModalDeleteBucket: string;
+  codeVerify: string;
   modalDeleteBucket(bucketName: string) {
     this.isVisibleDeleteBucket = true;
+    this.codeVerify = '';
     this.bucketDeleteName = bucketName;
     this.titleModalDeleteBucket = 'Xóa Bucket ' + bucketName;
   }
@@ -102,22 +104,26 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteBucket() {
     this.isVisibleDeleteBucket = false;
-    this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
-      next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Xóa Bucket thành công');
-          this.search();
-        } else {
-          this.notification.error('', 'Xóa Bucket không thành công');
-        }
-      },
-      error: (error) => {
-        this.notification.error(
-          error.statusText,
-          'Xóa Bucket không thành công'
-        );
-      },
-    });
+    if (this.codeVerify == this.bucketDeleteName) {
+      this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
+        next: (data) => {
+          if (data == 'Thao tác thành công') {
+            this.notification.success('', 'Xóa Bucket thành công');
+            this.search();
+          } else {
+            this.notification.error('', 'Xóa Bucket không thành công');
+          }
+        },
+        error: (error) => {
+          this.notification.error(
+            error.statusText,
+            'Xóa Bucket không thành công'
+          );
+        },
+      });
+    } else {
+      this.notification.error('Tên không khớp', 'Xóa Bucket không thành công');
+    }
   }
 
   isVisibleDeleteOS: boolean = false;

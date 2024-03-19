@@ -19,7 +19,7 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 })
 export class BucketConfigureComponent implements OnInit {
   bucketName: string;
-  bucketdaitail: BucketDetail = new BucketDetail();
+  bucketDetail: BucketDetail = new BucketDetail();
 
   constructor(
     private bucketService: BucketService,
@@ -37,14 +37,14 @@ export class BucketConfigureComponent implements OnInit {
       .getBucketDetail(this.bucketName)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data) => {
-        this.bucketdaitail = data;
+        this.bucketDetail = data;
         this.cdr.detectChanges();
       });
   }
 
   setBucketACL() {
     this.bucketService
-      .setBucketACL(this.bucketName, this.bucketdaitail.aclType)
+      .setBucketACL(this.bucketName, this.bucketDetail.aclType)
       .subscribe({
         next: (data) => {
           this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
@@ -64,7 +64,7 @@ export class BucketConfigureComponent implements OnInit {
 
   setBucketVersioning() {
     this.bucketService
-      .setBucketVersioning(this.bucketName, this.bucketdaitail.isVersioning)
+      .setBucketVersioning(this.bucketName, this.bucketDetail.isVersioning)
       .subscribe({
         next: (data) => {
           this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
@@ -77,5 +77,9 @@ export class BucketConfigureComponent implements OnInit {
           );
         },
       });
+  }
+
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
   }
 }

@@ -40,17 +40,15 @@ export class BucketCors {
 
 export class BucketCorsCreate {
   bucketName: string;
-  allowedOrigins: string[];
-  allowedMethods: string[];
-  allowedHeaders: string[];
-  exposeHeaders: string[];
+  allowedOrigins: string[] = [];
+  allowedMethods: string[] = [];
+  allowedHeaders: string[] = [];
+  exposeHeaders: string[] = [];
   maxAgeSeconds: number;
   id: string;
 }
 
 export class BucketWebsite {
-  regionId: number;
-  customerId: number;
   bucketName: string;
   indexDocumentSuffix: string;
   errorDocument: string;
@@ -58,8 +56,6 @@ export class BucketWebsite {
 }
 
 export class DeleteBucketWebsite {
-  regionId: number;
-  customerId: number;
   bucketName: string;
 }
 
@@ -97,7 +93,7 @@ export class BucketLifecycleCreate {
   bucketName: string;
   id: string;
   prefix: string;
-  lifecycleTagPredicate: LifecycleTagPredicate[];
+  lifecycleTagPredicate: LifecycleTagPredicate[] = [];
   isSetExpiration_Day: boolean;
   lifecycleRuleExpiration_Day: number;
   isSetNoncurrentVersionExpiration_Day: boolean;

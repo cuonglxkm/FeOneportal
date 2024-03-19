@@ -52,6 +52,7 @@ export class RouterDetailComponent implements OnInit {
     this.vpcId = regionAndProject.projectId;
     this.getRouterInterfaces();
     this.getRouterStatic();
+    this.getListSubnet();
   }
 
   getRouterInterfaces() {

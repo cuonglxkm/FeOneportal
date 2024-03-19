@@ -192,7 +192,7 @@ export class RouterListComponent implements OnInit {
     this.vlanService
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
-        this.listNetwork = data;
+        this.listNetwork = data.records;
         this.cdr.detectChanges();
       });
   }
