@@ -183,6 +183,7 @@ import { ObjectStorageExtendComponent } from './object-storage/object-storage-ex
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
+import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -355,6 +356,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ObjectStorageExtendComponent,
     ObjectStorageEditComponent,
     ChartComponent,
+    IsPermissionPipe
   ],
   imports: [
     CommonModule,
