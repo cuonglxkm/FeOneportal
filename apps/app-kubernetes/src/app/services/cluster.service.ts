@@ -42,6 +42,11 @@ export class ClusterService extends BaseService {
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data, { headers: this.getHeaders() });
   }
 
+  validateClusterInfo(data: any) {
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/validate-cluster`, data,
+    {headers: this.getHeaders()});
+  }
+
   getDetailCluster(serviceOrderCode: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/detail-cluster/${serviceOrderCode}`, { headers: this.getHeaders() });
   }

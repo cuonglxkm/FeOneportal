@@ -225,12 +225,7 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // for test when k8s needn't pay
-          if (this.serviceType == "k8s") {
-            this.router.navigate([`/app-smart-cloud/order/detail/${data.data.id}`]);
-          } else {
-            window.location.href = data.data;
-          }
+          window.location.href = data.data;
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');

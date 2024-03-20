@@ -14,7 +14,7 @@ import { RegionModel } from '../shared/models/region.model';
 import { ProjectModel } from '../shared/models/project.model';
 import { VlanService } from '../services/vlan.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
-import { finalize } from 'rxjs';
+import { finalize, switchMap } from 'rxjs';
 import { ShareService } from '../services/share.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
@@ -430,7 +430,7 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  onSubmitOrder = () => {
+  validateClusterInfo = () => {
     const cluster = this.myform.value;
     const networking: NetworkingModel = new NetworkingModel(null);
     networking.networkType = cluster.networkType;
@@ -440,7 +440,19 @@ export class ClusterComponent implements OnInit {
 
     cluster.networking = networking;
     cluster.serviceType = 19;         // fix for k8s
+    cluster.offerId = 200;            // temporary, get from order pack
 
+    this.clusterService.validateClusterInfo(cluster)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.onSubmitOrder(cluster);
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  onSubmitOrder = (cluster) => {
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
