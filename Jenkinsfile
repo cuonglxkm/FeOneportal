@@ -3,6 +3,7 @@ def imageTag
 def appName
 
 pipeline {
+    
     agent { label 'jenkins-oneportal' }
 
     environment {
@@ -25,25 +26,25 @@ pipeline {
         stage("Build image") {
             steps {
                 script {
-                    image = docker.build(imageTag, "-f apps/${appName}/Dockerfile .")
+                    sh "docker build -t ${imageTag} -f apps/${appName}/Dockerfile ."
                 }
             }
         }
 
         stage("Push image") {
             steps {
-                script {
-                    docker.withRegistry("https://" + registry, registryCredential) {
-                        image.push()
+                withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh "echo $DOCKER_PASSWORD | docker login ${registry} --username $DOCKER_USERNAME --password-stdin"
+                    script {
+                        sh "docker push ${imageTag}"
                     }
                 }
-
             }
         }
 
         stage("Cleaning up") {
             steps {
-                sh "docker rmi ${imageTag}"
+                sh "docker rmi -f ${imageTag}"
             }
         }
 
