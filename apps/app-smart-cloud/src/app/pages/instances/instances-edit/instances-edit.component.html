@@ -64,7 +64,7 @@
                   class="input-custom"
                   nz-input
                   formControlName="name"
-                  [(ngModel)]="instancesModel.name"
+                  [(ngModel)]="instanceNameEdit"
                   id="name"
                   placeholder="Nhập tên máy ảo"
                   maxlength="50"
@@ -139,12 +139,13 @@
                       [nzDescription]="nzDescriptionselectedHDDorSSD1"
                     >
                       <ng-template #nzAvatarselectedHDDorSSD1>
-                        <input
-                          type="radio"
-                          [disabled]="true"
-                          [checked]="activeBlockHDD"
+                        <label
+                          nz-radio
+                          [ngModel]="activeBlockHDD"
+                          [nzDisabled]="true"
+                          [ngModelOptions]="{ standalone: true }"
                           (click)="initHDD()"
-                        />
+                        ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD1>
                         <b>HDD</b>
@@ -200,12 +201,13 @@
                       [nzDescription]="nzDescriptionselectedHDDorSSD2"
                     >
                       <ng-template #nzAvatarselectedHDDorSSD2>
-                        <input
-                          type="radio"
-                          [disabled]="true"
-                          [checked]="activeBlockSSD"
+                        <label
+                          nz-radio
+                          [ngModel]="activeBlockSSD"
+                          [nzDisabled]="true"
+                          [ngModelOptions]="{ standalone: true }"
                           (click)="initSSD()"
-                        />
+                        ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD2>
                         <b>SSD</b>
@@ -515,10 +517,23 @@
               nzSize="large"
               nzType="primary"
               (click)="save()"
-              [disabled]="form.invalid"
+              [disabled]="
+                form.invalid ||
+                (totalincludesVAT == 0 &&
+                  instanceNameEdit == instancesModel.name &&
+                  selectedSecurityGroup == currentListSecurityGroup)
+              "
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'"
+              <span
+                [style.color]="
+                  form.invalid ||
+                  (totalincludesVAT == 0 &&
+                    instanceNameEdit == instancesModel.name &&
+                    selectedSecurityGroup == currentListSecurityGroup)
+                    ? 'gray'
+                    : 'white'
+                "
                 >Chỉnh sửa</span
               >
             </button>

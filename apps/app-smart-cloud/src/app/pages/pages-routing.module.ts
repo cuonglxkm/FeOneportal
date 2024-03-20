@@ -110,12 +110,14 @@ import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create
 import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
 import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
+import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ObjectStorageComponent } from "./object-storage/object-storage.component";
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
 import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
 import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
 import { PolicyService } from "../shared/services/policy.service";
+import {S3KeyComponent} from "./object-storage/s3-key/s3-key.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -421,7 +423,7 @@ const routes: Routes = [
     component: RouterListComponent
   },
   {
-    path: 'network/router/detail',
+    path: 'network/router/detail/:id',
     component: RouterDetailComponent
   },
   {
@@ -501,12 +503,20 @@ const routes: Routes = [
     component: CreateFileSystemSnapshotScheduleComponent,
   },
   {
+    path: 'file-system-snapshot-schedule/edit/:id',
+    component: EditFileSystemSnapshotScheduleComponent,
+  },
+  {
     path: 'object-storage/bucket',
     component: BucketListComponent
   },
   {
     path: 'object-storage/bucket/create',
     component: BucketCreateComponent
+  },
+  {
+    path: 'object-storage/bucket/configure/:bucketName',
+    component: BucketConfigureComponent
   },
   {
     path: 'object-storage',
@@ -527,6 +537,10 @@ const routes: Routes = [
   {
     path:'object-storage/bucket/:name',
     component: BucketDetailComponent
+  },
+  {
+    path:'object-storage/s3-key',
+    component: S3KeyComponent
   },
   ]
 @NgModule({

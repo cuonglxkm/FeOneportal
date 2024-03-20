@@ -73,7 +73,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           this.notification.success('Thành công', 'Xóa máy ảo thành công');
         },
         error: (e) => {
-          this.notification.error('Thất bại', 'Xóa máy ảo thất bại');
+          this.notification.error(e.statusText, 'Xóa máy ảo thất bại');
         },
       });
     } else {
@@ -98,6 +98,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   isOk = false;
   passwordVisible = false;
   passwordRepeatVisible = false;
+  autoCreate: boolean = false;
 
   isVisibleResetPass = false;
   modalResetPassword() {
@@ -171,7 +172,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           this.notification.success('', 'Tắt máy ảo thành công');
         },
         error: (e) => {
-          this.notification.error('', 'Tắt máy ảo không thành công');
+          this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
         },
       });
   }
@@ -202,7 +203,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           this.notification.success('', 'Khởi động lại máy ảo thành công');
         },
         error: (e) => {
-          this.notification.error('', 'Khởi động lại máy ảo không thành công');
+          this.notification.error(e.statusText, 'Khởi động lại máy ảo không thành công');
         },
       });
   }

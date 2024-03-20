@@ -7,6 +7,8 @@ import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floatin
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { debounceTime } from 'rxjs';
+import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 
 @Component({
   selector: 'one-portal-file-system',
@@ -14,7 +16,7 @@ import { debounceTime } from 'rxjs';
   styleUrls: ['./file-system-snapshot.component.less'],
 })
 export class FileSystemSnapshotComponent {
-  region = null;
+  region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
   customerId: number
@@ -24,13 +26,15 @@ export class FileSystemSnapshotComponent {
 
   value: string
 
-  response: BaseResponse<IpFloating[]>
+  response: BaseResponse<any>
 
   isLoading: boolean = false
 
   isBegin: boolean = false
 
-  constructor(private ipFloatingService: IpFloatingService,
+  formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot()
+
+  constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
@@ -47,18 +51,18 @@ export class FileSystemSnapshotComponent {
   projectChange(project: ProjectModel) {
     this.project = project.id;
     // this.projectType = project.type;
-    this.getData(true);
+    this.getData();
   }
 
   onPageSizeChange(event) {
     this.pageSize = event
     this.refreshParams();
-    this.getData(false);
+    this.getData();
   }
 
   onPageIndexChange(event) {
     this.pageIndex = event;
-    this.getData(false);
+    this.getData();
   }
 
   onInputChange(value){
@@ -66,36 +70,32 @@ export class FileSystemSnapshotComponent {
       this.value = null
     }
     this.value = value
-    this.getData(false)
+    this.getData()
   }
 
   showModalCreateIpFloating() {
 
   }
 
-  getData(isCheckBegin) {
+  getData() {
     this.isLoading = true
-    let formSearchIpFloating: FormSearchIpFloating = new FormSearchIpFloating()
-    formSearchIpFloating.projectId = this.project
-    formSearchIpFloating.regionId = this.region
-    formSearchIpFloating.ipAddress = this.value
-    formSearchIpFloating.pageSize = this.pageSize
-    formSearchIpFloating.currentPage = this.pageIndex
-    formSearchIpFloating.customerId = this.customerId
-    this.ipFloatingService.getListIpFloating(formSearchIpFloating)
+    this.formSearchFileSystemSnapshot.vpcId = this.project
+    this.formSearchFileSystemSnapshot.regionId = this.region
+    this.formSearchFileSystemSnapshot.isCheckState = false
+    this.formSearchFileSystemSnapshot.pageSize = this.pageSize
+    this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
+    this.formSearchFileSystemSnapshot.customerId = this.customerId
+    this.fileSystemSnapshotService.getFileSystemSnapshot(this.formSearchFileSystemSnapshot)
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
         console.log('data', data)
       this.response = data
-        if (isCheckBegin) {
-          this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
-        }
     })
   }
 
   handleOkCreateFileSystemSnapShot() {
-    this.getData(false)
+    this.getData()
   }
 
   ngOnInit() {
@@ -104,9 +104,6 @@ export class FileSystemSnapshotComponent {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.customerId = this.tokenService.get()?.userId
-    this.ipFloatingService.model.subscribe(data => {
-      console.log(data)
-    })
     // this.getData(true)
   }
 }

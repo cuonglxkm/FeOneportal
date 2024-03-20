@@ -137,16 +137,23 @@
             nzTooltipTitle="Xem chi tiết"
             nzTooltipPlacement="bottom"
             [routerLink]="
-              '/app-smart-cloud/instances/instances-detail/' + data.id
+              '/app-smart-cloud/object-storage/bucket/' + data.bucketName
             "
             >{{ data.bucketName }}</a
           >
         </td>
-        <td nzBreakWord>
-          {{ data.endPoints }}
+        <td>
+          <span>{{ data.endPoints }}</span>
+          <img
+            src="assets/imgs/icon_copy1.svg"
+            alt=""
+            (click)="copyText(data.endPoints)"
+            style="cursor: pointer; margin-left: 16px"
+            nz-tooltip="Copy"
+          />
         </td>
         <td nzBreakWord>
-          {{ aclType }}
+          {{ data.aclType }}
         </td>
         <td nzBreakWord>{{ data.isVersioning }}</td>
         <td nzBreakWord>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
@@ -179,9 +186,16 @@
 >
   <ng-container *nzModalContent>
     <div>
-      Đế thực hiện xoá Bucket {{ bucketDeleteName }}, vui lòng nhập tên Bucket
-      để xác nhận.
+      Đế thực hiện xoá Bucket <b>{{ bucketDeleteName }}</b
+      >, vui lòng nhập tên Bucket để xác nhận.
     </div>
+    <input
+      style="margin-top: 5px"
+      class="input-custom"
+      name="name"
+      nz-input
+      [(ngModel)]="codeVerify"
+    />
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDeleteBucket()">
@@ -216,7 +230,7 @@
     <ng-template #customTemplateDescriptionGanVLAN>
       <div>
         Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và
-        <span class="text-value">KHÔNG THỂ KHÔI PHỤC LẠI</span>.
+        <b>KHÔNG THỂ KHÔI PHỤC LẠI</b>.
       </div>
     </ng-template>
     <div>Quý khách có chắc chắn muốn xóa Object Storage không?</div>

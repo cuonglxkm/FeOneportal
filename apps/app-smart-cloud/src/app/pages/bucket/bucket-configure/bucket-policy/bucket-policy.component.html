@@ -20,7 +20,7 @@
       name="name"
       nz-input
       placeholder="Tìm kiếm tên"
-      [(ngModel)]="inputSearch"
+      [(ngModel)]="searchValue"
     />
   </nz-input-group>
   <ng-template #prefixIconSearch>
@@ -65,16 +65,16 @@
     <ng-container *ngFor="let item of listBucketPolicy">
       <tr>
         <td>
-          {{ item.name }}
+          {{ item.user }}
         </td>
-        <td>{{ item.type }}</td>
-        <td>{{ item.attachedVia }}</td>
+        <td>{{ item.permission }}</td>
+        <td>{{ item.action }}</td>
         <td><a (click)="modalJson(item)">Xem chi tiết JSON</a></td>
         <td nzRight>
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
-            (click)="modalUpdate(data.id)"
+            (click)="modalUpdate(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Chỉnh sửa"
           />
@@ -97,39 +97,34 @@
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>
-    <nz-row style="margin-bottom: 16px" nzGutter="24"
-      ><nz-col nzSpan="12">
-        <input
-          style="cursor: pointer"
-          type="radio"
-          [checked]="subuser"
-          (click)="initSubuser()"
-        />
-        <span class="text-value" style="margin-left: 5px">Subuser</span>
-      </nz-col>
-      <nz-col nzSpan="12">
-        <input
-          type="radio"
-          style="cursor: pointer"
-          [checked]="userVnpt"
-          (click)="initUserVnpt()"
-        />
-        <span class="text-value" style="margin-left: 5px"
-          >Người dùng VNPT Cloud</span
-        >
-      </nz-col>
-    </nz-row>
+    <nz-radio-group
+      style="width: 100%; margin-bottom: 16px"
+      [(ngModel)]="isUserOther"
+    >
+      <div style="display: flex">
+        <div style="flex: 1">
+          <label class="text-value" nz-radio [nzValue]="true">Subuser</label>
+        </div>
+        <div style="flex: 1">
+          <label class="text-value" nz-radio [nzValue]="false"
+            >Người dùng VNPT Cloud</label
+          >
+        </div>
+      </div>
+    </nz-radio-group>
     <div class="text-label">Người dùng (<span class="text-red">*</span>)</div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       [nzPlaceHolder]="'-- Chọn người dùng --'"
       [nzShowSearch]="true"
+      [nzLoading]="loadingSubuser"
+      [(ngModel)]="emailUser"
       nzSize="large"
     >
       <nz-option
-        *ngFor="let p of listUser"
-        [nzValue]="p.cloudId"
-        [nzLabel]="p.name"
+        *ngFor="let p of listSubuser"
+        [nzValue]="p.subUserId"
+        [nzLabel]="p.subUserId"
       />
     </nz-select>
     <div *ngIf="userVnpt" style="margin-bottom: 16px" class="text-label">
@@ -141,11 +136,12 @@
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       [nzPlaceHolder]="'-- Chọn người dùng --'"
       [nzShowSearch]="true"
+      [(ngModel)]="permission"
       nzSize="large"
     >
       <nz-option
         *ngFor="let p of listPermission"
-        [nzValue]="p.cloudId"
+        [nzValue]="p.name"
         [nzLabel]="p.name"
       />
     </nz-select>
@@ -156,16 +152,35 @@
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       nzMode="multiple"
       nzPlaceHolder="-- Chọn thao tác quyền --"
-      [ngModelOptions]="{ standalone: true }"
       [(ngModel)]="selectedSecurityGroup"
       [nzServerSearch]="true"
       nzSize="large"
     >
-      <nz-option
-        *ngFor="let i of listActionPermission"
-        [nzLabel]="i.name"
-        [nzValue]="i.name"
-      />
+      <nz-option-group nzLabel="SUGGESTED COMBO">
+        <nz-option
+          nzValue="CreateBucket, DeleteBucket"
+          nzLabel="Create bucket"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObject, ListBucket"
+          nzLabel="Read / Download file"
+        ></nz-option>
+        <nz-option nzValue="PutObjectAcl, PutObject">Upload file</nz-option>
+        <nz-option
+          nzValue="GetBucketAcl, GetBucketCORS,..."
+          nzLabel="Config bucket"
+        ></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="CUSTOM ACTION">
+        <nz-option nzLabel="SELECT ALL"></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP BUCKET">
+        <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
+        <nz-option
+          nzValue="DeleteBucketPolicy"
+          nzLabel="DeleteBucketPolicy"
+        ></nz-option>
+      </nz-option-group>
     </nz-select>
   </ng-container>
   <div *nzModalFooter>
@@ -188,32 +203,25 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleUpdate"
-  nzTitle="Tạo mới Bucket Policy"
+  nzTitle="Chỉnh sửa Bucket Policy"
   (nzOnCancel)="handleCancelUpdate()"
 >
   <ng-container *nzModalContent>
-    <nz-row style="margin-bottom: 16px" nzGutter="24"
-      ><nz-col nzSpan="12">
-        <input
-          style="cursor: pointer"
-          type="radio"
-          [checked]="subuser"
-          (click)="initSubuser()"
-        />
-        <span class="text-value" style="margin-left: 5px">Subuser</span>
-      </nz-col>
-      <nz-col nzSpan="12">
-        <input
-          type="radio"
-          style="cursor: pointer"
-          [checked]="userVnpt"
-          (click)="initUserVnpt()"
-        />
-        <span class="text-value" style="margin-left: 5px"
-          >Người dùng VNPT Cloud</span
-        >
-      </nz-col>
-    </nz-row>
+    <nz-radio-group
+      style="width: 100%; margin-bottom: 16px"
+      [(ngModel)]="isUserOther"
+    >
+      <div style="display: flex">
+        <div style="flex: 1">
+          <label class="text-value" nz-radio [nzValue]="true">Subuser</label>
+        </div>
+        <div style="flex: 1">
+          <label class="text-value" nz-radio [nzValue]="false"
+            >Người dùng VNPT Clou</label
+          >
+        </div>
+      </div>
+    </nz-radio-group>
     <div class="text-label">Người dùng (<span class="text-red">*</span>)</div>
     <nz-select
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
@@ -240,7 +248,7 @@
     >
       <nz-option
         *ngFor="let p of listPermission"
-        [nzValue]="p.cloudId"
+        [nzValue]="p.name"
         [nzLabel]="p.name"
       />
     </nz-select>

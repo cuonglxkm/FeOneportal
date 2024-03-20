@@ -10,6 +10,6 @@ import { Router } from '@angular/router';
 export class ObjectStorageComponent {
   constructor(private router: Router) {}
   navigateCreate() {
-    this.router.navigate(['/app-smart-cloud/object-storage/extend']);
+    this.router.navigate(['/app-smart-cloud/object-storage/create']);
   }
 }
