@@ -1,14 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
 import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../model/cluster.model';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { VPCNetworkModel } from '../model/vpc-network.model';
 import { ClusterService } from '../services/cluster.service';
 import { VlanService } from '../services/vlan.service';
-import * as yaml from 'js-yaml';
-import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -86,7 +85,6 @@ export class DetailClusterComponent implements OnInit {
   getKubeConfig(serviceOrderCode: string) {
     this.clusterService.getKubeConfig(serviceOrderCode)
       .subscribe((r: any) => {
-        console.log({response: r});
         if (r && r.code == 200) {
           this.yamlString = r.data;
         } else {

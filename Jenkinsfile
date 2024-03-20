@@ -5,7 +5,7 @@ def appName
 pipeline {
     agent any
 
-    environment {        
+    environment {
         registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
         k8sCredential = "k8s-cred"
@@ -37,7 +37,7 @@ pipeline {
                         image.push()
                     }
                 }
-                
+
             }
         }
 
@@ -58,7 +58,7 @@ pipeline {
                         }
                     }
                 }
-                
+
             }
         }
 
