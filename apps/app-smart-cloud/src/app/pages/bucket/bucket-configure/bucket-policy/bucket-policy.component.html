@@ -165,8 +165,14 @@
           nzValue="readDownloadFile"
           nzLabel="Read / Download file (GetObject, ListBucket)"
         ></nz-option>
-        <nz-option nzValue="uploadFile" nzLabel="Upload file (PutObjectAcl, PutObject,...)"></nz-option>
-        <nz-option nzValue="cofigBucket" nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"></nz-option>
+        <nz-option
+          nzValue="uploadFile"
+          nzLabel="Upload file (PutObjectAcl, PutObject,...)"
+        ></nz-option>
+        <nz-option
+          nzValue="cofigBucket"
+          nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"
+        ></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="CUSTOM ACTION">
         <nz-option nzLabel="SELECT ALL"></nz-option>
@@ -256,16 +262,38 @@
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       nzMode="multiple"
       nzPlaceHolder="-- Chọn thao tác quyền --"
-      [ngModelOptions]="{ standalone: true }"
-      [(ngModel)]="selectedSecurityGroup"
+      [(ngModel)]="bucketPolicyUpdate.action"
       [nzServerSearch]="true"
       nzSize="large"
     >
-      <nz-option
-        *ngFor="let i of listActionPermission"
-        [nzLabel]="i.name"
-        [nzValue]="i.name"
-      />
+      <nz-option-group nzLabel="SUGGESTED COMBO">
+        <nz-option
+          nzValue="CreateBucketCombo"
+          nzLabel="Create bucket (CreateBucket, DeleteBucket)"
+        ></nz-option>
+        <nz-option
+          nzValue="readDownloadFile"
+          nzLabel="Read / Download file (GetObject, ListBucket)"
+        ></nz-option>
+        <nz-option
+          nzValue="uploadFile"
+          nzLabel="Upload file (PutObjectAcl, PutObject,...)"
+        ></nz-option>
+        <nz-option
+          nzValue="cofigBucket"
+          nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"
+        ></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="CUSTOM ACTION">
+        <nz-option nzLabel="SELECT ALL"></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP BUCKET">
+        <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
+        <nz-option
+          nzValue="DeleteBucketPolicy"
+          nzLabel="DeleteBucketPolicy"
+        ></nz-option>
+      </nz-option-group>
     </nz-select>
   </ng-container>
   <div *nzModalFooter>
