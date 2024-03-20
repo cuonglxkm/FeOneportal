@@ -5,7 +5,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
 import { BucketModel } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
@@ -28,7 +30,9 @@ export class BucketListComponent implements OnInit {
     private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private clipboardService: ClipboardService,
+    private message: NzMessageService
   ) {}
 
   ngOnInit(): void {
@@ -52,9 +56,17 @@ export class BucketListComponent implements OnInit {
         },
         error: (e) => {
           this.listBucket = [];
-          this.notification.error('', 'Lấy danh sách Bucket không thành công');
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Bucket không thành công'
+          );
         },
       });
+  }
+
+  copyText(endPoint: string) {
+    this.clipboardService.copyFromContent(endPoint);
+    this.message.success('Copied to clipboard');
   }
 
   createBucket() {
@@ -78,8 +90,10 @@ export class BucketListComponent implements OnInit {
   isVisibleDeleteBucket: boolean = false;
   bucketDeleteName: string;
   titleModalDeleteBucket: string;
+  codeVerify: string;
   modalDeleteBucket(bucketName: string) {
     this.isVisibleDeleteBucket = true;
+    this.codeVerify = '';
     this.bucketDeleteName = bucketName;
     this.titleModalDeleteBucket = 'Xóa Bucket ' + bucketName;
   }
@@ -90,20 +104,26 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteBucket() {
     this.isVisibleDeleteBucket = false;
-    this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
-      next: (data) => {
-        if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Xóa Bucket thành công');
-          this.search();
-        } else {
-          this.notification.error('', 'Xóa Bucket không thành công');
-        }
-      },
-      error: (error) => {
-        console.log(error.error);
-        this.notification.error('', 'Xóa Bucket không thành công');
-      },
-    });
+    if (this.codeVerify == this.bucketDeleteName) {
+      this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
+        next: (data) => {
+          if (data == 'Thao tác thành công') {
+            this.notification.success('', 'Xóa Bucket thành công');
+            this.search();
+          } else {
+            this.notification.error('', 'Xóa Bucket không thành công');
+          }
+        },
+        error: (error) => {
+          this.notification.error(
+            error.statusText,
+            'Xóa Bucket không thành công'
+          );
+        },
+      });
+    } else {
+      this.notification.error('Tên không khớp', 'Xóa Bucket không thành công');
+    }
   }
 
   isVisibleDeleteOS: boolean = false;

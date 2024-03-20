@@ -98,9 +98,11 @@ export class UserCreateComponent implements OnInit {
           this.notification.success('', 'Tạo mới User thành công');
           this.navigateToList();
         },
-        error: (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Tạo mới User không thành công');
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Tạo mới User không thành công'
+          );
         },
       });
   }
