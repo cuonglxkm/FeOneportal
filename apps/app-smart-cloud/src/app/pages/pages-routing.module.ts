@@ -1,6 +1,6 @@
 import {RouterModule, Routes} from "@angular/router";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
-import {NgModule} from "@angular/core";
+import {NgModule, inject} from "@angular/core";
 import {V1Component} from "./test/v1.component";
 import {SecurityGroupComponent} from "./security-group/list-security-group/security-group.component";
 import {CreateSecurityGroupComponent} from "./security-group/create-security-group/create-security-group.component";
@@ -116,6 +116,7 @@ import { ObjectStorageComponent } from "./object-storage/object-storage.componen
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
 import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
 import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
+import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent} from "./object-storage/s3-key/s3-key.component";
 
 const routes: Routes = [
@@ -246,7 +247,8 @@ const routes: Routes = [
   },
   {
     path: 'iam/user-group',
-    component: ListUserGroupComponent
+    component: ListUserGroupComponent,
+    canMatch: [() => inject(PolicyService).hasPermission("iamgroup:List")],
   },
   {
     path: 'iam/user-group/create',
