@@ -1,6 +1,21 @@
-<ul>
-  <li *ngFor="let item of data">
-    {{ item.name }}
+<!--<ul>-->
+<!--  <li *ngFor="let item of data">-->
+<!--    <nz-row style="border: 1px solid #E2E2E9; height: 40px ; display: flex; align-items: center;">-->
+<!--      <img src="assets/imgs/box.svg" alt=""/>-->
+<!--      <div style="font-weight: bold" (click)="toFolder(item)">> {{item.name}} </div>-->
+<!--    </nz-row>-->
+<!--    <one-portal-tree-folder *ngIf="item.child && item.child.length > 0" [data]="item.child"></one-portal-tree-folder>-->
+<!--  </li>-->
+<!--</ul>-->
+<div class="tree">
+  <div *ngFor="let item of data" style="padding-left: 20px;">
+    <div class="tree-item">
+      <nz-row class="tree-row">
+        <img style="margin-left: 10px;margin-right:10px;" src="assets/imgs/box.svg" alt=""/>
+        <div style="font-weight: bold" (click)="toFolder(item)"> {{item.name}} </div>
+      </nz-row>
+    </div>
     <one-portal-tree-folder *ngIf="item.child && item.child.length > 0" [data]="item.child"></one-portal-tree-folder>
-  </li>
-</ul>
+  </div>
+</div>
+

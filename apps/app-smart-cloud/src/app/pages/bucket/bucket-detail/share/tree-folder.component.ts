@@ -7,4 +7,8 @@ import {Component, Input} from '@angular/core';
 })
 export class TreeFolderComponent {
   @Input() data: any[];
+
+  toFolder(item: any) {
+    
+  }
 }
