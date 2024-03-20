@@ -214,12 +214,12 @@
                       [nzDescription]="nzDescriptionselectedHDDorSSD1"
                     >
                       <ng-template #nzAvatarselectedHDDorSSD1>
-                        <input
-                          style="cursor: pointer"
-                          type="radio"
-                          [checked]="activeBlockHDD"
+                        <label
+                          nz-radio
+                          [ngModel]="activeBlockHDD"
+                          [ngModelOptions]="{ standalone: true }"
                           (click)="initHDD()"
-                        />
+                        ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD1>
                         <b>HDD</b>
@@ -275,12 +275,12 @@
                       [nzDescription]="nzDescriptionselectedHDDorSSD2"
                     >
                       <ng-template #nzAvatarselectedHDDorSSD2>
-                        <input
-                          type="radio"
-                          style="cursor: pointer"
-                          [checked]="activeBlockSSD"
+                        <label
+                          nz-radio
+                          [ngModel]="activeBlockSSD"
+                          [ngModelOptions]="{ standalone: true }"
                           (click)="initSSD()"
-                        />
+                        ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD2>
                         <b>SSD</b>
@@ -566,11 +566,12 @@
                   [nzDescription]="nzDescriptionselectedPasswordOrSSHkey1"
                 >
                   <ng-template #nzAvatarselectedPasswordOrSSHkey1>
-                    <input
-                      type="radio"
-                      [checked]="activeBlockPassword"
+                    <label
+                      nz-radio
+                      [ngModel]="activeBlockPassword"
+                      [ngModelOptions]="{ standalone: true }"
                       (click)="initPassword()"
-                    />
+                    ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey1>
                     <b>Mật khẩu</b>
@@ -598,11 +599,12 @@
                   [nzDescription]="nzDescriptionselectedPasswordOrSSHkey2"
                 >
                   <ng-template #nzAvatarselectedPasswordOrSSHkey2>
-                    <input
-                      type="radio"
-                      [checked]="activeBlockSSHKey"
+                    <label
+                      nz-radio
+                      [ngModel]="activeBlockSSHKey"
+                      [ngModelOptions]="{ standalone: true }"
                       (click)="initSSHkey()"
-                    />
+                    ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey2>
                     <b>SSH key</b>

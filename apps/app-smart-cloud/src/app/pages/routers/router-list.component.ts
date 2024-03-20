@@ -74,8 +74,6 @@ export class RouterListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService,
-    private instancesService: InstancesService,
     private vlanService: VlanService
   ) {}
 

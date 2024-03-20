@@ -134,6 +134,7 @@ export class RouterDetailComponent implements OnInit {
     this.service.createRouterInterface(this.routerInterfaceCreate).subscribe({
       next: (data) => {
         this.notification.success('', 'Tạo mới Router Interface thành công');
+        this.getRouterInterfaces();
       },
       error: (e) => {
         this.notification.error(
@@ -155,6 +156,7 @@ export class RouterDetailComponent implements OnInit {
     this.service.createStaticRouter(this.staticRouterCreate).subscribe({
       next: (data) => {
         this.notification.success('', 'Tạo mới Static Router thành công');
+        this.getRouterStatic();
       },
       error: (e) => {
         this.notification.error(
