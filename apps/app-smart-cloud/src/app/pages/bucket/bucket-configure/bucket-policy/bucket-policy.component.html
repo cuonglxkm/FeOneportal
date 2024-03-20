@@ -69,19 +69,19 @@
         </td>
         <td>{{ item.permission }}</td>
         <td>{{ item.action }}</td>
-        <td><a (click)="modalJson(item)">Xem chi tiết JSON</a></td>
+        <td><a (click)="modalJson(item.sid)">Xem chi tiết JSON</a></td>
         <td nzRight>
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
-            (click)="modalUpdate(data)"
+            (click)="modalUpdate(data.sid)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Chỉnh sửa"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
-            (click)="modalDelete(data.id)"
+            (click)="modalDelete(data.sid)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Xóa"
           />
@@ -152,24 +152,21 @@
       style="width: 100%; margin-top: 5px; margin-bottom: 16px"
       nzMode="multiple"
       nzPlaceHolder="-- Chọn thao tác quyền --"
-      [(ngModel)]="selectedSecurityGroup"
+      [(ngModel)]="listActionPermission"
       [nzServerSearch]="true"
       nzSize="large"
     >
       <nz-option-group nzLabel="SUGGESTED COMBO">
         <nz-option
-          nzValue="CreateBucket, DeleteBucket"
-          nzLabel="Create bucket"
+          nzValue="CreateBucketCombo"
+          nzLabel="Create bucket (CreateBucket, DeleteBucket)"
         ></nz-option>
         <nz-option
-          nzValue="GetObject, ListBucket"
-          nzLabel="Read / Download file"
+          nzValue="readDownloadFile"
+          nzLabel="Read / Download file (GetObject, ListBucket)"
         ></nz-option>
-        <nz-option nzValue="PutObjectAcl, PutObject">Upload file</nz-option>
-        <nz-option
-          nzValue="GetBucketAcl, GetBucketCORS,..."
-          nzLabel="Config bucket"
-        ></nz-option>
+        <nz-option nzValue="uploadFile" nzLabel="Upload file (PutObjectAcl, PutObject,...)"></nz-option>
+        <nz-option nzValue="cofigBucket" nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="CUSTOM ACTION">
         <nz-option nzLabel="SELECT ALL"></nz-option>

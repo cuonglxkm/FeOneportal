@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
-import { BucketPolicy } from 'src/app/shared/models/bucket.model';
+import { BucketPolicy, bucketPolicyDetail } from 'src/app/shared/models/bucket.model';
 import { SubUser } from 'src/app/shared/models/sub-user.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 
@@ -45,6 +45,7 @@ export class BucketPolicyComponent implements OnInit {
   ngOnInit(): void {
     this.searchBucketPolicy();
   }
+
   searchBucketPolicy() {
     this.loading = true;
     this.bucketService
@@ -122,7 +123,10 @@ export class BucketPolicyComponent implements OnInit {
         this.listActionPermission
       )
       .subscribe({
-        next: (data) => {},
+        next: (data) => {
+          this.notification.success('', 'Tạo mới Bucket Policy thành công');
+          this.searchBucketPolicy();
+        },
         error: (e) => {
           this.notification.error(
             '',
@@ -133,10 +137,20 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   isVisibleUpdate = false;
-  bucketPolicyUpdate: BucketPolicy = new BucketPolicy();
-  modalUpdate(data: any) {
+  bucketPolicyUpdate: bucketPolicyDetail = new bucketPolicyDetail();
+  modalUpdate(sid: string) {
     this.isVisibleCreate = true;
-    this.bucketPolicyUpdate = data;
+    this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
+      next: (data) => {
+        this.bucketPolicyUpdate = data;
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy chi tiết Bucket Policy không thành công'
+        );
+      },
+    });
   }
 
   handleCancelUpdate() {
@@ -145,27 +159,34 @@ export class BucketPolicyComponent implements OnInit {
 
   handleOkUpdate() {
     this.isVisibleUpdate = false;
-    this.notification.success('', 'Chỉnh sửa Bucket Policy thành công');
-    // this.routerInterfaceCreate.regionId = this.regionId;
-    // this.routerInterfaceCreate.routerId = this.routerId;
-    // this.service.createRouterInterface(this.routerInterfaceCreate).subscribe({
-    //   next: (data) => {
-    //
-    //   },
-    //   error: (e) => {
-    //     this.notification.error(
-    //       '',
-    //       'Tạo mới Router Interface không thành công'
-    //     );
-    //   },
-    // });
+    this.bucketService
+      .updateBucketPolicy(
+        this.bucketName,
+        this.bucketPolicyUpdate.sid,
+        this.bucketPolicyUpdate.permission,
+        this.bucketPolicyUpdate.subuser,
+        this.isUserOther,
+        this.bucketPolicyUpdate.actions
+      )
+      .subscribe({
+        next: (data) => {
+          this.notification.success('', 'Chỉnh sửa Bucket Policy thành công');
+          this.searchBucketPolicy();
+        },
+        error: (e) => {
+          this.notification.error(
+            '',
+            'Tạo mới Router Interface không thành công'
+          );
+        },
+      });
   }
 
   isVisibleDelete: boolean = false;
   bucketPolicyId: string;
-  modalDelete(id: string) {
+  modalDelete(sid: string) {
     this.isVisibleDelete = true;
-    this.bucketPolicyId = id;
+    this.bucketPolicyId = sid;
   }
 
   handleCancelDelete() {
@@ -190,10 +211,20 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   isVisibleJson: boolean = false;
-  bucketPolicy: any;
-  modalJson(item: any) {
+  bucketPolicyDetail: bucketPolicyDetail = new bucketPolicyDetail();
+  modalJson(sid: string) {
     this.isVisibleJson = true;
-    this.bucketPolicy = item;
+    this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
+      next: (data) => {
+        this.bucketPolicyDetail = data;
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy Bucket Policy JSON không thành công'
+        );
+      },
+    });
   }
   handleClose() {
     this.isVisibleJson = false;
