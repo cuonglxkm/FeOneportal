@@ -3,7 +3,7 @@ def imageTag
 def appName
 
 pipeline {
-    agent any
+    agent { label 'jenkins-oneportal' }
 
     environment {
         registry = "registry.onsmartcloud.com"
