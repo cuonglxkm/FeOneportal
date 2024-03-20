@@ -52,7 +52,7 @@ pipeline {
                 script {
                     env.APP_NAME = appName
                     env.IMAGE_TAG = imageTag
-                    withKubeConfig([credentialsId: k8sCredential]) {
+                    withCredentials([file(credentialsId: 'k8s-cred', variable: 'KUBECONFIG')]) {
                         dir("apps/${appName}/deploy") {
                             sh 'for f in *.yaml; do envsubst < $f | kubectl apply -f - ; done '
                         }
