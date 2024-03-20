@@ -71,6 +71,7 @@
               (nzCheckedChange)="onAllClusterChecked($event)"></th>
             <th class="header-table">STT</th>
             <th class="header-table">Tên cluster</th>
+            <th class="header-table">Phiên bản</th>
             <th class="header-table">Trạng thái dịch vụ</th>
             <th class="header-table">API Endpoint</th>
             <th class="center-align header-table">Tổng số node</th>
@@ -86,6 +87,7 @@
             <td>
               <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
             </td>
+            <td>{{ item.currentVersion }}</td>
             <td>
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
 

@@ -164,14 +164,15 @@
       />
     </div>
     <nz-select
+      style="width: 100%; margin-bottom: 16px; margin-top: 5px"
       [nzPlaceHolder]="'-- Chọn Subnet --'"
       [nzShowSearch]="true"
-      [(ngModel)]="routerCreate.networkId"
+      [(ngModel)]="routerInterfaceCreate.subnetId"
       nzSize="large"
     >
       <nz-option
         *ngFor="let p of listSubnet"
-        [nzValue]="p.cloudId"
+        [nzValue]="p.subnetCloudId"
         [nzLabel]="p.name"
       />
     </nz-select>
@@ -185,6 +186,7 @@
       />
     </div>
     <input
+      style="margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder=""
@@ -226,7 +228,7 @@
       />
     </div>
     <input
-      style="margin-bottom: 20px"
+      style="margin-bottom: 16px; margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder=""
@@ -243,6 +245,7 @@
       />
     </div>
     <input
+      style="margin-top: 5px"
       class="input-custom"
       nz-input
       placeholder=""

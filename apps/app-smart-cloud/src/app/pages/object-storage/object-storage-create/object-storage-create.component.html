@@ -32,6 +32,7 @@
               [nzMax]="1000"
               [nzStep]="1"
               [(ngModel)]="objectStorageCreate.quota"
+              (ngModelChange)="changeTotalAmount($event)"
               [ngModelOptions]="{ standalone: true }"
               nzSize="large"
             ></nz-input-number>

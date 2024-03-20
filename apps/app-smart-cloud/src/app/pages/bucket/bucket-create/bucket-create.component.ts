@@ -86,21 +86,25 @@ export class BucketCreateComponent implements OnInit {
   initPrivate(): void {
     this.activePrivate = true;
     this.activePublic = false;
+    this.type = 'Private';
   }
   initPublic(): void {
     this.activePrivate = false;
     this.activePublic = true;
+    this.type = 'Public';
   }
 
   save() {
-    this.type = this.activePrivate ? 'Private' : 'Public';
     this.bucketService.createBucket(this.bucketName, this.type).subscribe({
       next: (data) => {
         this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
       },
       error: (e) => {
         this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
-        this.notification.error('', 'Tạo mới Bucket không thành công');
+        this.notification.error(
+          e.statusText,
+          'Tạo mới Bucket không thành công'
+        );
       },
     });
   }

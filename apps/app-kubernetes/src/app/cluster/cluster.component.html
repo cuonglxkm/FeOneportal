@@ -141,6 +141,9 @@
                       <ng-container *ngIf="control.hasError('invalid')">
                         Số node tối thiểu không lớn hơn số node tối đa
                       </ng-container>
+                      <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                        Số node tối thiểu trong khoảng 1-10
+                      </ng-container>
                     </ng-template>
                   </nz-form-item>
                 </ng-container>
@@ -170,10 +173,18 @@
               <div nz-col [nzSpan]="12">
                 <nz-form-item>
                   <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
-                  <nz-form-control nzErrorTip="Số node không để trống">
+                  <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
                     <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
                       (keypress)="isNumber($event)" />
                   </nz-form-control>
+                  <ng-template #nodeNumberErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      Số node không để trống
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                      Số node trong khoảng từ 1-10
+                    </ng-container>
+                  </ng-template>
                 </nz-form-item>
 
                 <nz-form-item>
@@ -202,10 +213,18 @@
                 <ng-container *ngIf="isAutoScaleAtIndex(i)">
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
-                    <nz-form-control nzErrorTip="Số node tối đa không để trống">
+                    <nz-form-control [nzErrorTip]="maximumNodeErrorTpl">
                       <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
                         (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
                     </nz-form-control>
+                    <ng-template #maximumNodeErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Số node tối đa không để trống
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                        Số node tối đa trong khoảng từ 1-10
+                      </ng-container>
+                    </ng-template>
                   </nz-form-item>
                 </ng-container>
               </div>
@@ -400,7 +419,7 @@
                 </div>
 
                 <div nz-col [nzSpan]="12">
-                  <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitOrder()"
+                  <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()"
                     [disabled]="myform.invalid || isSubmitting">
                     Thanh toán
                   </button>

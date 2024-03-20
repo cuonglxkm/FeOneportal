@@ -1,9 +1,18 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnInit,
 } from '@angular/core';
+import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ClipboardService } from 'ngx-clipboard';
+import {
+  BucketDetail,
+  BucketWebsite,
+} from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 
 @Component({
@@ -14,24 +23,60 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 })
 export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
-  inputFile: string;
-  inputErrorFile: string;
-  inputURL: string;
-  isNavigate: boolean = false;
+  bucketDetail: BucketDetail = new BucketDetail();
+  bucketWebsitecreate: BucketWebsite = new BucketWebsite();
 
-  constructor(private bucketService: BucketService) {}
+  constructor(
+    private bucketService: BucketService,
+    private cdr: ChangeDetectorRef,
+    private clipboardService: ClipboardService,
+    private message: NzMessageService,
+    private notification: NzNotificationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.bucketService.getBucketDetail(this.bucketName).subscribe((data) => {
+      this.bucketDetail = data;
+      this.cdr.detectChanges();
+    });
   }
 
-  staticOn: boolean = true;
-  staticOff: boolean = false;
-  initStaticOn(): void {
-    this.staticOn = true;
-    this.staticOff = false;
+  copyText(endPoint: string) {
+    this.clipboardService.copyFromContent(endPoint);
+    this.message.success('Copied to clipboard');
   }
-  initStaticOff(): void {
-    this.staticOn = false;
-    this.staticOff = true;
+
+  update() {
+    this.bucketWebsitecreate.bucketName = this.bucketName;
+    this.bucketWebsitecreate.indexDocumentSuffix =
+      this.bucketDetail.indexDocumentSuffix;
+    this.bucketWebsitecreate.errorDocument = this.bucketDetail.errorDocument;
+    if (this.bucketDetail.checkRedirectAllRequests) {
+      this.bucketWebsitecreate.redirectAllRequestsTo =
+        this.bucketDetail.redirectAllRequestsTo;
+    } else {
+      this.bucketWebsitecreate.redirectAllRequestsTo = '';
+    }
+
+    this.bucketService.createBucketWebsite(this.bucketWebsitecreate).subscribe({
+      next: (data) => {
+        this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        this.notification.success(
+          '',
+          'Điều chỉnh Static Web Hosting thành công'
+        );
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Điều chỉnh Static Web Hosting không thành công'
+        );
+      },
+    });
+  }
+
+  cancel() {
+    this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
   }
 }

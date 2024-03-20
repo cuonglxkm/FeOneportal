@@ -1,30 +1,65 @@
-import {Component} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import * as _ from 'lodash';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NzUploadChangeParam} from "ng-zorro-antd/upload";
+import {ObjectObjectStorageService} from "../../../shared/services/object-object-storage.service";
+import {ObjectObjectStorageModel} from "../../../shared/models/object-storage.model";
+import {ActivatedRoute} from "@angular/router";
+import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import {BucketService} from "../../../shared/services/bucket.service";
 
 @Component({
   selector: 'one-portal-bucket-detail',
   templateUrl: './bucket-detail.component.html',
   styleUrls: ['./bucket-detail.component.less'],
 })
-export class BucketDetailComponent {
-  listOfData: any = [
-    {name: "son",size: "1",type: "XLSX",time: "2023",role: "Private",},
-    {name: "khai",size: "1",type: "XLSX",time: "2023",role: "Private",},
-    {name: "son",size: "1",type: "folder",time: "2023",role: "Private",},
-  ];
+export class BucketDetailComponent implements OnInit {
+
+  listOfData: ObjectObjectStorageModel[];
+  // listOfData: any = [
+  //   {
+  //     id: "1",
+  //     name: "son",
+  //     size: "1",
+  //     type: "XLSX",
+  //     time: "2023",
+  //     role: "Private",
+  //     checked: false,
+  //     indeterminate: false,
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "khai",
+  //     size: "1",
+  //     type: "XLSX",
+  //     time: "2023",
+  //     role: "Private",
+  //     checked: false,
+  //     indeterminate: false,
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "son",
+  //     size: "1",
+  //     type: "folder",
+  //     time: "2023",
+  //     role: "Private",
+  //     checked: false,
+  //     indeterminate: false,
+  //   },
+  // ];
   listOfFolder: any = [
-    {name: "folder1",id: "1"},
-    {name: "folder2",id: "2"},
-    {name: "folder3",id: "3"},
-    {name: "folder4",id: "4"},
-    {name: "folder5",id: "5"},
+    {name: "folder1", id: "1"},
+    {name: "folder2", id: "2"},
+    {name: "folder3", id: "3"},
+    {name: "folder4", id: "4"},
+    {name: "folder5", id: "5"},
   ];
   listOfMetadata: any = [
-    {key: "xin chao",value: "a"},
-    {key: "",value: ""},
+    {key: "xin chao", value: "a"},
+    {key: "", value: ""},
   ]
+  bucket: any;
   size = 10;
   index: number = 1;
   total: number = 0;
@@ -52,15 +87,28 @@ export class BucketDetailComponent {
   dataFilter = [{orderNum: 0, name: '', condition: '', value: '', type: '',}]
   dataFilterLog = [{orderNum: 0, name: '', condition: '', value: '', type: '',}];
 
+  setOfCheckedId = new Set<string>();
   form = new FormGroup({
     name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
   });
 
   version = 1;
   radioValue: any = 'Public';
+  checked = false;
+  indeterminate = false;
+  countObjectSelected = 0;
 
-  search(value: string) {
+  constructor(
+    private service: ObjectObjectStorageService,
+    private bucketservice: BucketService,
+    private activatedRoute: ActivatedRoute,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+  ) {
+  }
 
+  ngOnInit(): void {
+    this.loadBucket();
+    this.loadData('');
   }
 
   uploadFile() {
@@ -109,7 +157,7 @@ export class BucketDetailComponent {
       }
     }
 
-      this.dataFilterLog = JSON.parse(JSON.stringify(this.dataFilter));
+    this.dataFilterLog = JSON.parse(JSON.stringify(this.dataFilter));
   }
 
   selectCondition(orderNum: any, index: number, event: any) {
@@ -228,7 +276,7 @@ export class BucketDetailComponent {
 
   }
 
-  handleChange({ file, fileList }: NzUploadChangeParam) {
+  handleChange({file, fileList}: NzUploadChangeParam) {
     this.emptyFileUpload = false;
     const status = file.status;
     if (status !== 'uploading') {
@@ -237,5 +285,55 @@ export class BucketDetailComponent {
     if (status === 'done') {
     } else if (status === 'error') {
     }
+  }
+
+  updateCheckedSet(checked: boolean, key: string): void {
+    if (checked) {
+      this.setOfCheckedId.add(key);
+    } else {
+      this.setOfCheckedId.delete(key);
+    }
+  }
+
+  refreshCheckedStatus(): void {
+    for (let item of this.listOfData) {
+      item.checked = this.setOfCheckedId.has(item.key);
+      item.indeterminate = this.setOfCheckedId.has(item.key) && !item.checked;
+    }
+
+    this.countObjectSelected = this.setOfCheckedId.size;
+  }
+
+  onItemChecked(key: any, checked: boolean) {
+    this.updateCheckedSet(checked, key);
+    this.refreshCheckedStatus();
+  }
+
+  onAllChecked(isAddAll: boolean): void {
+    for (let item of this.listOfData) {
+      this.updateCheckedSet(isAddAll, item.key);
+    }
+    this.refreshCheckedStatus();
+  }
+
+  private loadData(folderName : any) {
+    this.service.getData(this.activatedRoute.snapshot.paramMap.get('name'), folderName, '', this.tokenService.get()?.userId, '', this.size, this.index)
+      .subscribe(data => {
+        this.listOfData = data.paginationObjectList.items;
+        this.total = data.paginationObjectList.totalItems;
+      })
+  }
+
+  private loadBucket() {
+    this.bucketservice.getBucketDetail(this.activatedRoute.snapshot.paramMap.get('name'))
+      .subscribe(
+        data => {
+          this.bucket = data;
+        }
+      )
+  }
+
+  search(searck : any) {
+
   }
 }

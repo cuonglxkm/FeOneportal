@@ -13,7 +13,7 @@ import { CreateSecurityGroupComponent } from './security-group/create-security-g
 import { CreateInboundComponent } from './security-group/inbound/create/create-inbound.component';
 import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { SearchOutline, SettingOutline} from '@ant-design/icons-angular/icons';
+import { SearchOutline, SettingOutline } from '@ant-design/icons-angular/icons';
 import { DeleteSecurityGroupComponent } from './security-group/delete-security-group/delete-security-group.component';
 import { DeleteRuleComponent } from './security-group/delete-rule/delete-rule.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -188,8 +188,10 @@ import { ObjectStorageExtendComponent } from './object-storage/object-storage-ex
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
+import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
+import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
-const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
+const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -365,6 +367,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
     ObjectStorageExtendComponent,
     ObjectStorageEditComponent,
     ChartComponent,
+    IsPermissionPipe,
+    S3KeyComponent,
   ],
   imports: [
     CommonModule,

@@ -14,7 +14,7 @@ import { RegionModel } from '../shared/models/region.model';
 import { ProjectModel } from '../shared/models/project.model';
 import { VlanService } from '../services/vlan.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
-import { finalize } from 'rxjs';
+import { finalize, switchMap } from 'rxjs';
 import { ShareService } from '../services/share.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
@@ -115,7 +115,7 @@ export class ClusterComponent implements OnInit {
     const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
     const wg = this.fb.group({
       workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index)]],
-      nodeNumber: [3, [Validators.required]],
+      nodeNumber: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
       volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       volumeType: [this.DEFAULT_VOLUME_TYPE, [Validators.required]],
       volumeTypeId: [null, [Validators.required]],
@@ -305,7 +305,7 @@ export class ClusterComponent implements OnInit {
 
   // validator
   addValidateMaximumNode(index: number) {
-    this.listFormWorkerGroup.at(index).get('maximumNode').setValidators([Validators.required]);
+    this.listFormWorkerGroup.at(index).get('maximumNode').setValidators([Validators.required, Validators.min(1), Validators.max(10)]);
     this.listFormWorkerGroup.at(index).get('maximumNode').updateValueAndValidity();
   }
 
@@ -315,7 +315,7 @@ export class ClusterComponent implements OnInit {
   }
 
   addValidateMinimumNode(index: number) {
-    this.listFormWorkerGroup.at(index).get('minimumNode').setValidators([Validators.required]);
+    this.listFormWorkerGroup.at(index).get('minimumNode').setValidators([Validators.required, Validators.min(1), Validators.max(10)]);
     this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
   }
 
@@ -430,7 +430,7 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  onSubmitOrder = () => {
+  validateClusterInfo = () => {
     const cluster = this.myform.value;
     const networking: NetworkingModel = new NetworkingModel(null);
     networking.networkType = cluster.networkType;
@@ -439,7 +439,20 @@ export class ClusterComponent implements OnInit {
     networking.subnet = cluster.subnet;
 
     cluster.networking = networking;
+    cluster.serviceType = 19;         // fix for k8s
+    cluster.offerId = 200;            // temporary, get from order pack
 
+    this.clusterService.validateClusterInfo(cluster)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.onSubmitOrder(cluster);
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  onSubmitOrder = (cluster) => {
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
