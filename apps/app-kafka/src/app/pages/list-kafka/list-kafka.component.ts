@@ -19,7 +19,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   pageIndex: number;
   pageSize: number;
   total: number;
-  isShowIntroductionPage: boolean = false;
+  isShowIntroductionPage = false;
 
 
   setOfCheckedId = new Set<number>();

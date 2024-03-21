@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { decamelize } from 'humps';
 import { Observable } from 'rxjs';
 import { AppConstants } from '../core/constants/app-constant';
@@ -12,6 +12,7 @@ import { KafkaInfor } from '../core/models/kafka-infor.model';
 import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
 import { BaseService } from './base.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +20,19 @@ import { BaseService } from './base.service';
 export class KafkaService extends BaseService {
   private kafkaUrl = this.baseUrl + '/kafka-service';
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+
     super()
+  }
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
   }
 
   getInfoConnection(
@@ -145,7 +157,7 @@ export class KafkaService extends BaseService {
       'log_segment_bytes': req.logSegmentBytes
     };
 
-    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/create', json);
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/create', json, {headers: this.getHeaders()});
   }
 
   getListPackageAvailable(): Observable<BaseResponse<ServicePack[]>> {

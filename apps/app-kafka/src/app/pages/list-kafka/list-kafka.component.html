@@ -66,7 +66,13 @@
               <span [ngStyle]="{color: status.color}">{{status.status}}</span>
             </ng-container>
           </td>
-          <td>{{ item.endPoint }}</td>
+          <td>
+            <ng-container *ngIf="item.endPoint">
+              <ng-container *ngFor="let item of item.endPoint.split(';')">
+                <span>{{ item }}</span> <br>
+              </ng-container>
+            </ng-container>
+          </td>
           <td>{{ item.servicePack }}</td>
           <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
           <td class="center-align">
