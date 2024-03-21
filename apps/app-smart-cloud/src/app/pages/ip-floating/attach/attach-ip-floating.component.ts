@@ -62,6 +62,7 @@ export class AttachIpFloatingComponent implements OnInit {
   }
 
   submitForm() {
+    this.isLoading = true
     if(this.validateForm.valid) {
       console.log('form attach', this.validateForm.getRawValue())
       let formAction = new FormAction()
@@ -69,8 +70,13 @@ export class AttachIpFloatingComponent implements OnInit {
       formAction.portId = this.validateForm.controls.portId.value
       formAction.action = 'attach'
       this.ipFloatingService.action(formAction).subscribe(data => {
+        this.isVisible = false
+        this.isLoading = false
         this.notification.success('Thành công', 'Gắn IP Floating thành công')
+        this.onOk.emit(data)
       }, error => {
+        this.isVisible = false
+        this.isLoading = false
         this.notification.error('Thất bại', 'Gắn IP Floating thất bại')
       })
     }

@@ -49,7 +49,7 @@ export class S3KeyComponent implements OnInit {
     this.isVisibleCreate = true;
     this.loadingDropdown = true;
     this.disableDropdown = true;
-    this.subUserService.getListSubUser(99999, 1)
+    this.subUserService.getListSubUser(null,99999, 1)
       .pipe(finalize(() => {
         this.loadingDropdown = false;
         this.disableDropdown = false;

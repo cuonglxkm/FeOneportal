@@ -8,7 +8,7 @@ import {
   FileSystemDetail,
   FileSystemModel, FormDeleteFileSystem,
   FormEditFileSystem,
-  FormSearchFileSystem
+  FormSearchFileSystem, ResizeFileSystemRequestModel, ResizeFileSystemResponseModel
 } from '../models/file-system.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
@@ -126,6 +126,21 @@ export class FileSystemService extends BaseService {
       }))
   }
 
+
+  resize(request: ResizeFileSystemRequestModel) {
+    return this.http.post<ResizeFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request)).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 
 
 }

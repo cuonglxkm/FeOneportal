@@ -102,6 +102,7 @@ export class OrderCreateFileSystem {
   oneSMEAddonId: string
   oneSME_SubscriptionId: string
   typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.ShareCreateSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null"
+
 }
 
 export class CreateFileSystemRequestModel {
@@ -133,4 +134,52 @@ export class FormDeleteFileSystem {
   regionId: number
 }
 
+export class ResizeFileSystemRequestModel {
+  customerId: number
+  createdByUserId: number
+  note: string
+  couponCode: string
+  orderItems: [
+    {
+      orderItemQuantity: number
+      specification: string
+      specificationType: string
+      serviceDuration: number
+    }
+  ]
+}
 
+export class ResizeFileSystemResponseModel {
+  // id: number
+  // orderCode: string
+  // customerId: number
+  // createdByUserId: number
+  // createdByUserEmail: string
+  // note: string
+  // statusCode: number
+  // orderDate: Date
+  // updatedDate: Date
+  // createdFrom: string
+  // resultNote: string
+  // orderItems: any
+  success: boolean;
+  code: number;
+  data: any;
+  message: any;
+  errorCode: any;
+}
+
+export class ResizeFileSystem {
+  size: number
+  newOfferId: number
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  regionId: number
+  serviceName: string
+  customerId: number
+  vpcId: number
+  typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.ShareResizeSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null"
+  userEmail: string
+  actorEmail: string
+}
