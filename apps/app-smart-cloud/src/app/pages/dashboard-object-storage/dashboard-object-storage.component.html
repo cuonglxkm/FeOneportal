@@ -35,6 +35,10 @@
         </nz-select>
       </nz-col>
     </nz-row>
-    <one-portal-chart [summary]="summary"></one-portal-chart>
+    <div *ngIf="summary != undefined || summary != null">
+      <one-portal-chart [summary]="summary"></one-portal-chart>
+    </div>
+
+<!--    <one-portal-chart-summary />-->
   </nz-card>
 </nz-content>

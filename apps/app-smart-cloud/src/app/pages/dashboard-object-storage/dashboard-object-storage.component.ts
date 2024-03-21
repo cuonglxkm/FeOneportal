@@ -30,8 +30,6 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   isCheckBegin: boolean = false;
 
-  userInfoObjectStorage: UserInfoObjectStorage;
-
   bucketList: BucketModel[];
 
   bucketSelected: any;
@@ -78,9 +76,7 @@ export class DashboardObjectStorageComponent implements OnInit {
       console.log('summary', data);
       this.summary = data;
     });
-
   }
-
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -94,7 +90,5 @@ export class DashboardObjectStorageComponent implements OnInit {
       console.log(this.bucketList)
       this.getSummaryObjectStorage()
     });
-
-
   }
 }
