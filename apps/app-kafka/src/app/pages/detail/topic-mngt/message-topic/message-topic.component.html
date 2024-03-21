@@ -27,7 +27,7 @@
             <tr *ngFor="let data of virtualTable.data">
                 <td>{{ data.offset }}</td>
                 <td>{{ data.partition }}</td>
-                <td>{{ data.timestamp }}</td>
+                <td>{{ data.timestamp | date: 'dd/MM/yyyy HH:mm'}}</td>
                 <td>{{ data.key }}</td>
                 <td>{{ data.value }}</td>
             </tr>
