@@ -1,42 +1,41 @@
-<nz-card>
-  <ng-container>
-    <ng-container>
-      <nz-row nzJustify="center">
-        <img
-          src="/assets/imgs/volume.png"
-          width="450"
-          height="450"
-          alt="blank-security-group"
-        />
-      </nz-row>
-      <nz-row nzJustify="center">
-        <div class="text-title">
-          <h1 style="text-align: center; margin-top: 12px">
-            VPN site to site <br />
-            Cho phép các mạng tại các vị trí khác nhau giao tiếp với nhau
-          </h1>
-        </div>
-      </nz-row>
-      <nz-row nzJustify="center">
-        <div
-          class="text-subtitle"
-          style="max-width: 885px; text-wrap: normal; text-align: center"
-        >
-          VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật
-          lý hoặc mạng máy tính khác nhau. Cho phéo các vị trí đia lý khác nhau
-          truy cập vào tài nguyên nội bộ.
-        </div>
-      </nz-row>
-      <nz-row nzJustify="center">
-        <button
-          style="text-align: center; margin-top: 10px"
-          nz-button
-          nzType="primary"
-          [routerLink]="'/app-smart-cloud/volume/create'"
-        >
-          Tạo mới VPN site to site
-        </button>
-      </nz-row>
-    </ng-container>
-  </ng-container>
+<page-header
+[breadcrumb]="breadcrumb"
+[action]="action"
+xmlns="http://www.w3.org/1999/html"
+>
+<ng-template #breadcrumb>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+    <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
+    <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
+  </nz-breadcrumb>
+</ng-template>
+<ng-template #action>
+  <div class="alain-custom-action text-right">
+    <region-select-dropdown
+      (valueChanged)="regionChanged($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      (valueChanged)="projectChanged($event)"
+      (userChanged)="projectChanged($event)"
+      [regionId]="region"
+    ></project-select-dropdown>
+  </div>
+</ng-template>
+</page-header>
+<nz-card style="border-radius: 8px;">
+  <nz-row nzJustify="center" class="pt-15">
+    <img src="/assets/imgs/vpn-site-to-site-bg.png" width="500" height="250" alt="blank-vpn-site-to-site">
+  </nz-row>
+  <nz-row nzJustify="center" style="margin-top:15px;">
+    <div class="text-title">
+      <h1>VPN site to site <br /> Cho phép các mạng tại các vị trí khác nhau giao tiếp với nhau</h1>
+    </div>
+  </nz-row>
+  <nz-row nzJustify="center" class="mb-6">
+    <div class="text-subtitle" style="text-align: center;">VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau. <br /> Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ</div>
+  </nz-row>
+  <nz-row nzJustify="center" class="pb-15">
+    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary">Tạo mới VPN site to site</button>
+  </nz-row>
 </nz-card>

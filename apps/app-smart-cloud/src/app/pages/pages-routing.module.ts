@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 import { PaymentSuccessComponent } from "../shared/components/payment-success/payment-success.component";
 import { PaymentSummaryComponent } from "../shared/components/payment-summary/payment-summary.component";
+import { PolicyService } from "../shared/services/policy.service";
 import { ActionHistoryComponent } from "./action-history/action-history.component";
 import { ListAllowAddressPairComponent } from "./allow-address-pair/list/list-allow-address-pair.component";
 import { CreatePackageBackupComponent } from "./backup-package/create/create-package-backup.component";
@@ -48,6 +49,7 @@ import { IpPublicComponent } from "./ip-public/ip-public.component";
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
 import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
 import { ObjectStorageComponent } from "./object-storage/object-storage.component";
+import { S3KeyComponent } from "./object-storage/s3-key/s3-key.component";
 import { OrderDetailComponent } from "./order/order-detail/order-detail.component";
 import { OrderListComponent } from "./order/order-list/order-list.component";
 import { PolicyAttachComponent } from "./policy/policy-attach/policy-attach.component";
@@ -114,10 +116,7 @@ import { EditVolumeComponent } from "./volume/component/edit-volume/edit-volume.
 import { VolumeComponent } from "./volume/component/list-volume/volume.component";
 import { RenewVolumeComponent } from "./volume/component/renew-volume/renew-volume.component";
 import { ResizeVolumeVpcComponent } from "./volume/component/resize-volume-vpc/resize-volume-vpc.component";
-import { VpnSiteToSiteManage } from "./vpn-site-to-site/manage/vpn-site-to-site-manage.component";
 import { ListWanComponent } from './wan/list/list-wan.component';
-import { PolicyService } from "../shared/services/policy.service";
-import { S3KeyComponent } from "./object-storage/s3-key/s3-key.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},

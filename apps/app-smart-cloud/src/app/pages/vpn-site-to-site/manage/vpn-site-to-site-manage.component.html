@@ -1,4 +1,6 @@
-<page-header
+
+<nz-content *ngIf="isBegin">
+  <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
   [title]="'Quản lý VPN site to site'"
@@ -24,7 +26,6 @@
     </div>
   </ng-template>
 </page-header>
-<nz-content *ngIf="!isBegin">
   <nz-card style="border-radius: 8px; margin-bottom: 20px">
     <nz-row style="margin-bottom: 20px" nzGutter="24">
       <div
@@ -51,7 +52,7 @@
         <button nz-button nzType="primary">
           <img
             style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/add-circle.svg"
+            src="assets/imgs/redo.svg"
             alt=""
           />
           Gia hạn
@@ -106,6 +107,6 @@
   </nz-card>
   
 </nz-content>
-<nz-content  *ngIf="isBegin">
+<nz-content  *ngIf="!isBegin">
     <one-portal-blank-vpn-site-to-site></one-portal-blank-vpn-site-to-site>
 </nz-content>

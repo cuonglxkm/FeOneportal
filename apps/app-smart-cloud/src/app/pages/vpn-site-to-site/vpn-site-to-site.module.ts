@@ -12,6 +12,10 @@ import { EndpointGroupComponent } from './manage/endpoint-group/endpoint-group.c
 import { BlankVpnSiteToSiteComponent } from './blank/blank-vpn-site-to-site.component';
 import { CommonModule } from '@angular/common';
 import { VpnSiteToSiteRoutingModule } from './vpn-site-to-site-routing.module';
+import { DeleteIpsecPoliciesComponent } from './manage/ipsec-policies/delete/ipsec-policies.component';
+import { CreateIpsecPoliciesComponent } from './manage/ipsec-policies/create/create-ipsec-policies.component';
+import { EditIpsecPoliciesComponent } from './manage/ipsec-policies/edit/edit-ipsec-policies.component';
+import { DetailIpsecPoliciesComponent } from './manage/ipsec-policies/detail/detail-ipsec-policies.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import { VpnSiteToSiteRoutingModule } from './vpn-site-to-site-routing.module';
     IkePoliciesComponent,
     VpnService,
     EndpointGroupComponent,
-    BlankVpnSiteToSiteComponent
+    BlankVpnSiteToSiteComponent,
+    DeleteIpsecPoliciesComponent,
+    CreateIpsecPoliciesComponent,
+    EditIpsecPoliciesComponent,
+    DetailIpsecPoliciesComponent
   ],
     imports: [
         VpnSiteToSiteRoutingModule,
