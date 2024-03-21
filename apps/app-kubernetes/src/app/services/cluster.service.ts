@@ -19,7 +19,7 @@ export class ClusterService extends BaseService {
   private progressSource = new Subject<any>();
   progressData = this.progressSource.asObservable();
 
-  // baseUrl = 'http://127.0.0.1:16003';
+  baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -36,6 +36,21 @@ export class ClusterService extends BaseService {
     pageSize: number
   ) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`, { headers: this.getHeaders() });
+  }
+
+  searchLogs(
+    userAction: string,
+    operation: string,
+    resource: string,
+    resourceType: string,
+    fromDate: number,
+    toDate: number,
+    pageIndex: number,
+    pageSize: number,
+    serviceOrderCode: string
+  ) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-logs?user_action=${userAction || ''}&operation=${operation || ''}&resource=${resource || ''}&resource_type=${resourceType || ''}&from_date=${fromDate || ''}&to_date=${toDate || ''}&service_order_code=${serviceOrderCode}&page=${pageIndex || 1}&size=${pageSize || 10}`,
+    {headers: this.getHeaders()});
   }
 
   createNewCluster(data) {

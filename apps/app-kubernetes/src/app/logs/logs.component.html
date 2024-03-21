@@ -1,0 +1,86 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'Lịch sử thao tác'">
+  <!-- breadcrumb -->
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cluster
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết cluster</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-content>
+  <nz-card>
+    <!-- filter -->
+    <div class="flex-style marbot-5 mbot-24">
+      <div class="w-25">
+        <nz-input-group nzSearch nzSize="default" [nzSuffix]="suffixButton" class="w-100" nzSize="large">
+          <input type="text" nz-input placeholder="Tên người dùng" [(ngModel)]="userAction"
+            (ngModelChange)="searchLogs()" />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <span nz-icon nzType="search" nzTheme="outline"></span>
+        </ng-template>
+      </div>
+
+      <div class="mleft-16 w-25">
+        <nz-input-group nzSearch nzSize="default" [nzSuffix]="suffixButton" class="w-100" nzSize="large">
+          <input type="text" nz-input placeholder="Nhập resource" [(ngModel)]="resource"
+            (ngModelChange)="searchLogs()" />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <span nz-icon nzType="search" nzTheme="outline"></span>
+        </ng-template>
+      </div>
+
+      <div class="mleft-16 w-25">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="searchLogs()"
+          [nzPlaceHolder]="'Resource type'" class="w-100" nzSize="large">
+          <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
+            [nzValue]="rt.value"></nz-option>
+        </nz-select>
+      </div>
+
+      <div mleft-16 class="mleft-16 w-25">
+        <nz-range-picker
+          nzFormat="dd/MM/yyyy"
+          [(ngModel)]="date"
+          (ngModelChange)="onChangeDate($event); searchLogs();"
+          [nzSize]="'large'"
+          [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"
+        ></nz-range-picker>
+      </div>
+    </div>
+
+    <!-- table -->
+    <nz-table #logTable [nzData]="listOfLogs" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      <thead>
+        <tr>
+          <th class="header-table">Tên người dùng</th>
+          <th class="header-table">Resource</th>
+          <th class="header-table">Resource Type</th>
+          <th class="header-table">Thao tác</th>
+          <th class="header-table">Ghi chú</th>
+          <th class="center-align header-table">Thời gian tạo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of logTable.data; let i = index;">
+          <td>{{ item.userAction }}</td>
+          <td>{{ item.resource }}</td>
+          <td>{{ item.resourceType }}</td>
+          <td>{{ item.operation }}</td>
+          <td>{{ item.note }}</td>
+          <td class="center-align">{{ item.opTime | date: 'dd/MM/yyyy' }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

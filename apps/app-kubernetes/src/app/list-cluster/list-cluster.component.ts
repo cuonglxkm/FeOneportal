@@ -49,8 +49,8 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
     6, // Đang nâng cấp
   ];
 
-  // baseUrl = "http://127.0.0.1:16003";
-  baseUrl = environment['baseUrl'];
+  baseUrl = "http://127.0.0.1:16003";
+  // baseUrl = environment['baseUrl'];
 
   constructor(
     private clusterService: ClusterService,

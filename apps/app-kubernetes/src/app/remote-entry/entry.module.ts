@@ -31,6 +31,7 @@ import { TruncateLabel } from '../pipes/truncate-label.pipe';
 import { CalculateDate } from '../pipes/calculate-date.pipe';
 import { ShareService } from '../services/share.service';
 import { ProgressPipe } from '../pipes/progress.pipe';
+import { LogsComponent } from '../logs/logs.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -48,6 +49,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     TruncateLabel,
     CalculateDate,
     ProgressPipe,
+    LogsComponent,
 
   ],
   imports: [

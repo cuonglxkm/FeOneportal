@@ -7,10 +7,9 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { STWidgetModule } from './shared/st-widget/st-widget.module';
-import { OrderedPaymentComponent } from './ordered-payment/ordered-payment.component';
 
 @NgModule({
-  declarations: [AppComponent, OrderedPaymentComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
