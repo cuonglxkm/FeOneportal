@@ -199,7 +199,7 @@ import { CreateWanComponent } from './wan/create/create-wan.component';
 import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
 import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
-import { ResizeFileSystemComponent } from './file-storage/file-system/action/extend/resize-file-system.component';
+import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
 import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
 import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';

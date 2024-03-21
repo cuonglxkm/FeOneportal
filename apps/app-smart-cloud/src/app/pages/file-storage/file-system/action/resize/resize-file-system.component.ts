@@ -14,7 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService } from '../../../../../shared/services/project.service';
 
 @Component({
-  selector: 'one-portal-extend-file-system',
+  selector: 'one-portal-resize-file-system',
   templateUrl: './resize-file-system.component.html',
   styleUrls: ['./resize-file-system.component.less'],
 })

@@ -74,7 +74,7 @@ export class ListSubUserComponent implements OnInit {
 
   getListSubUsers(isBegin) {
     this.isLoading = true
-    this.subUserService.getListSubUser(this.pageSize, this.pageIndex).subscribe(data => {
+    this.subUserService.getListSubUser(this.value, this.pageSize, this.pageIndex).subscribe(data => {
       this.response = data
       this.isLoading = false
 

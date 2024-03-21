@@ -87,7 +87,7 @@
             <nz-dropdown-menu #opMenu="nzDropdownMenu" >
               <ul nz-menu>
                 <li nz-menu-item>Tạo Snapshot</li>
-                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/extend/' + data.id">Điều chỉnh dung lượng</li>
+                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">Điều chỉnh dung lượng</li>
                 <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">Quản lý Access Rule</li>
                 <one-portal-delete-file-system [region]="region"
                                                [project]="project"
