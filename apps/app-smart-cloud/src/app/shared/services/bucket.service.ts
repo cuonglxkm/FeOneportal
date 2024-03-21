@@ -94,6 +94,45 @@ export class BucketService extends BaseService {
     );
   }
 
+  getBucketPolicyDetail(id: string, bucketName: string): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy/Detail?id=${id}&bucketName=${bucketName}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
+  }
+
+  createBucketPolicy(
+    bucketName: string,
+    effect: string,
+    childrenUser: string,
+    isUserOther: boolean,
+    listAction: string[]
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&effect=${effect}&childrenUser=${childrenUser}&isUserOther=${isUserOther}`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      listAction,
+      this.httpOptions
+    );
+  }
+
+  updateBucketPolicy(
+    bucketName: string,
+    id: string,
+    effect: string,
+    childrenUser: string,
+    isUserOther: boolean,
+    listAction: string[]
+  ): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}&effect=${effect}&childrenUser=${childrenUser}&isUserOther=${isUserOther}`;
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      listAction,
+      this.httpOptions
+    );
+  }
+
   deleteBucketPolicy(bucketName: string, id: string): Observable<any> {
     let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}`;
     return this.http.delete<any>(
@@ -110,38 +149,48 @@ export class BucketService extends BaseService {
     );
   }
 
-  createBucketCORS(data: any): Observable<any> {
+  createBucketCORS(data: any) {
     let url_ = `/object-storage/PutBucketCORS`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
-  updateBucketCORS(data: any): Observable<any> {
+  updateBucketCORS(data: any) {
     let url_ = `/object-storage/UpdateBucketCORS`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
-  deleteBucketCORS(data: any): Observable<any> {
+  deleteBucketCORS(data: any) {
     let url_ = `/object-storage/DeleteBucketCORS`;
-    return this.http.delete<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      { headers: this.httpOptions.headers, body: data }
-    );
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+      body: data,
+    });
   }
 
-  createBucketWebsite(data: any): Observable<any> {
+  createBucketWebsite(data: any) {
     let url_ = `/object-storage/PutBucketWebsite`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
@@ -161,29 +210,45 @@ export class BucketService extends BaseService {
     );
   }
 
-  createBucketLifecycle(data: any): Observable<any> {
+  createBucketLifecycle(data: any) {
     let url_ = `/object-storage/PutBucketLifecycle`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
-  updateBucketLifecycle(data: any): Observable<any> {
+  updateBucketLifecycle(data: any) {
     let url_ = `/object-storage/UpdateBucketLifecycle`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      {
+        headers: this.httpOptions.headers,
+        responseType: 'text',
+      }
     );
   }
 
-  deleteBucketLifecycle(data: any): Observable<any> {
+  deleteBucketLifecycle(data: any) {
     let url_ = `/object-storage/DeleteBucketLifecycle`;
-    return this.http.delete<any>(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+      body: data,
+    });
+  }
+
+  getListSubuser(pageSize: number, currentPage: number): Observable<any> {
+    let url_ = `/object-storage/subuser?pageSize=${pageSize}&currentPage=${currentPage}`;
+
+    return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      { headers: this.httpOptions.headers, body: data }
+      this.httpOptions
     );
   }
 }

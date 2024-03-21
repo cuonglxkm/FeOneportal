@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { inject, NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 import { PaymentSuccessComponent } from "../shared/components/payment-success/payment-success.component";
@@ -116,6 +116,8 @@ import { RenewVolumeComponent } from "./volume/component/renew-volume/renew-volu
 import { ResizeVolumeVpcComponent } from "./volume/component/resize-volume-vpc/resize-volume-vpc.component";
 import { VpnSiteToSiteManage } from "./vpn-site-to-site/manage/vpn-site-to-site-manage.component";
 import { ListWanComponent } from './wan/list/list-wan.component';
+import { PolicyService } from "../shared/services/policy.service";
+import { S3KeyComponent } from "./object-storage/s3-key/s3-key.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -245,7 +247,8 @@ const routes: Routes = [
   },
   {
     path: 'iam/user-group',
-    component: ListUserGroupComponent
+    component: ListUserGroupComponent,
+    canMatch: [() => inject(PolicyService).hasPermission("iamgroup:List")],
   },
   {
     path: 'iam/user-group/create',
@@ -420,7 +423,7 @@ const routes: Routes = [
     component: RouterListComponent
   },
   {
-    path: 'network/router/detail',
+    path: 'network/router/detail/:id',
     component: RouterDetailComponent
   },
   {
@@ -538,6 +541,10 @@ const routes: Routes = [
   {
     path: 'vpn-site-to-site',
     loadChildren: () => import('../pages/vpn-site-to-site/vpn-site-to-site.module').then(m => m.VpnSiteToSiteModule)
+  },
+  {
+    path:'object-storage/s3-key',
+    component: S3KeyComponent
   },
   ]
 @NgModule({

@@ -28,7 +28,8 @@ export class InstancesService extends BaseService {
   postAction(data: any) {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
-      data, { responseType: 'text' }
+      data,
+      { responseType: 'text' }
     );
   }
 
@@ -256,17 +257,24 @@ export class InstancesService extends BaseService {
 
   getListOffersByProductId(productId: string): Observable<any> {
     return this.http.get<any>(
-      `${
-        this.baseUrl + this.ENDPOINT.catalogs
-      }/offers?productId=${productId}`
+      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}`
     );
   }
 
   getDetailProductByUniqueName(name: string): Observable<any> {
     return this.http.get<any>(
-      `${
-        this.baseUrl + this.ENDPOINT.catalogs
-      }/products?uniqueName=${name}`
+      `${this.baseUrl + this.ENDPOINT.catalogs}/products?uniqueName=${name}`
+    );
+  }
+
+  getListAllPortByNetwork(networkId: string, region: number): Observable<any> {
+    let url_ = `/vlans/listallportbynetworkid?networkId=${networkId}&region=${region}`;
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+  }
+
+  getInfoVPC(productId: number): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId
     );
   }
 }

@@ -29,7 +29,7 @@ export class RouterService extends BaseService {
     pageSize: number,
     currentPage: number
   ): Observable<any> {
-    let url_ = `routers/list-router?regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}`;
+    let url_ = `/routers/list_router?regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -38,7 +38,7 @@ export class RouterService extends BaseService {
   }
 
   getRouterById(id: string, vpcId: number, regionId: number): Observable<any> {
-    let url_ = `routers/${id}?vpcId=${vpcId}&regionId=${regionId}`;
+    let url_ = `/routers/${id}?vpcId=${vpcId}&regionId=${regionId}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -47,7 +47,7 @@ export class RouterService extends BaseService {
   }
 
   deleteRouter(id: string, regionId: number, vpcId: number): Observable<any> {
-    let url_ = `routers/${id}?regionId=${regionId}&vpcId=${vpcId}`;
+    let url_ = `/routers/${id}?regionId=${regionId}&vpcId=${vpcId}`;
 
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -78,7 +78,7 @@ export class RouterService extends BaseService {
     regionId: number,
     vpcId: number
   ): Observable<any> {
-    let url_ = `router-interfaces?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
+    let url_ = `/router-interfaces?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
@@ -113,7 +113,7 @@ export class RouterService extends BaseService {
     regionId: number,
     vpcId: number
   ): Observable<any> {
-    let url_ = `route-static?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
+    let url_ = `/route-static?routerId=${routerId}&regionId=${regionId}&vpcId=${vpcId}`;
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,

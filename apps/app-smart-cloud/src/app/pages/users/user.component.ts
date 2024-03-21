@@ -106,9 +106,8 @@ export class UserComponent implements OnInit {
           this.notification.success('', 'Xóa User thành công');
           this.reloadTable();
         },
-        error: (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Xóa User không thành công');
+        error: (e) => {
+          this.notification.error(e.statusText, 'Xóa User không thành công');
         },
       });
     } else {
@@ -129,9 +128,8 @@ export class UserComponent implements OnInit {
           this.setOfCheckedName.clear();
           this.reloadTable();
         },
-        error: (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Xóa Users không thành công');
+        error: (e) => {
+          this.notification.error(e.statusText, 'Xóa Users không thành công');
         },
       });
     } else {

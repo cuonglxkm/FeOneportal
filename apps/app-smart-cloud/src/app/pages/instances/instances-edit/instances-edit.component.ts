@@ -113,7 +113,7 @@ export class InstancesEditComponent implements OnInit {
     private notification: NzNotificationService,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private loadingSrv: LoadingService, 
+    private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver
@@ -154,33 +154,39 @@ export class InstancesEditComponent implements OnInit {
     this.getListIpPublic();
     this.getCurrentInfoInstance(this.id);
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.breakpoints[Breakpoints.XSmall]) {
-        // Màn hình cỡ nhỏ
-        this.cardHeight = '130px';
-      } else if (result.breakpoints[Breakpoints.Small]) {
-        // Màn hình cỡ nhỏ - trung bình
-        this.cardHeight = '180px';
-      } else if (result.breakpoints[Breakpoints.Medium]) {
-        // Màn hình trung bình
-        this.cardHeight = '210px';
-      } else if (result.breakpoints[Breakpoints.Large]) {
-        // Màn hình lớn
-        this.cardHeight = '165px';
-      } else if (result.breakpoints[Breakpoints.XLarge]) {
-        // Màn hình rất lớn
-        this.cardHeight = '150px';
-      }
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '130px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '180px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '210px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '165px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '150px';
+        }
 
-      // Cập nhật chiều cao của card bằng Renderer2
-      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
-    });
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
   }
 
   //#region HDD hay SDD
@@ -327,6 +333,7 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  currentListSecurityGroup: any[] = [];
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe((data: any) => {
       this.instancesModel = data;
@@ -363,8 +370,10 @@ export class InstancesEditComponent implements OnInit {
         .pipe(finalize(() => this.loadingSrv.close()))
         .subscribe((datasg: any) => {
           console.log('getAllSecurityGroupByInstance', datasg);
-          var arraylistSecurityGroup = datasg.map((obj) => obj.id.toString());
-          this.selectedSecurityGroup = arraylistSecurityGroup;
+          this.currentListSecurityGroup = datasg.map((obj) =>
+            obj.id.toString()
+          );
+          this.selectedSecurityGroup = this.currentListSecurityGroup;
           this.cdr.detectChanges();
         });
       this.initFlavors();
@@ -508,7 +517,10 @@ export class InstancesEditComponent implements OnInit {
         },
         error: (e) => {
           console.log(e);
-          this.notification.error('', 'Cập nhật máy ảo không thành công');
+          this.notification.error(
+            e.statusText,
+            'Cập nhật máy ảo không thành công'
+          );
         },
       });
 
@@ -550,7 +562,10 @@ export class InstancesEditComponent implements OnInit {
           },
           error: (e) => {
             console.log(e);
-            this.notification.error('', 'Cập nhật máy ảo không thành công');
+            this.notification.error(
+              e.statusText,
+              'Cập nhật máy ảo không thành công'
+            );
           },
         });
     }

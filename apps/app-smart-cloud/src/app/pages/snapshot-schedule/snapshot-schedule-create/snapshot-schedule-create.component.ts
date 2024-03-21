@@ -90,7 +90,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            'Có lỗi xảy ra',
+            e.statusText,
             'Lấy danh sách Volume thất bại'
           );
           this.isLoading = false;
@@ -157,9 +157,8 @@ export class SnapshotScheduleCreateComponent implements OnInit {
                   this.isLoading = false;
                 }
               },
-              (error) => {
-                console.log(error);
-                this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
+              (e) => {
+                this.notification.error(e.statusText, 'Tạo lịch thất bại');
                 this.isLoading = false;
               }
             );

@@ -188,9 +188,10 @@ import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component
 import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
 import { CreateWanComponent } from './wan/create/create-wan.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
+import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
+import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
-
-const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
+const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -366,6 +367,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline ];
     ObjectStorageExtendComponent,
     ObjectStorageEditComponent,
     ChartComponent,
+    IsPermissionPipe,
+    S3KeyComponent,
   ],
   imports: [
     CommonModule,

@@ -1,6 +1,8 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Inject, Injectable, NgZone } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
+import { Observable, Subject } from "rxjs";
+import { UpgradeVersionClusterDto } from "../model/cluster.model";
 import { BaseService } from "../shared/services/base.service";
 
 @Injectable({
@@ -9,11 +11,15 @@ import { BaseService } from "../shared/services/base.service";
 
 export class ClusterService extends BaseService {
   constructor(private http: HttpClient,
+    private zone: NgZone,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
 
-  baseUrl = 'http://10.1.127.93:16003/k8s-service';
+  private progressSource = new Subject<any>();
+  progressData = this.progressSource.asObservable();
+
+  baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -29,35 +35,100 @@ export class ClusterService extends BaseService {
     pageIndex: number,
     pageSize: number
   ) {
-    return this.http.get(`${this.baseUrl}/k8s/search-cluster?clusterName=${clusterName}&status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`);
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`, { headers: this.getHeaders() });
   }
 
   createNewCluster(data) {
-    return this.http.post(`${this.baseUrl}/k8s/create-cluster`, data, {headers: this.getHeaders()});
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data, { headers: this.getHeaders() });
+  }
+
+  getDetailCluster(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/detail-cluster/${serviceOrderCode}`, { headers: this.getHeaders() });
+  }
+
+  getProgressOfCluster(clusterName: string, namespace: string) {
+    return new Observable<string>(obs => {
+      const es = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/view-progress/${namespace}/${clusterName}`);
+      es.addEventListener('message', (evt) => {
+        let data = evt.data;
+        obs.next(data);
+        if (+data == 100) { // complete
+          obs.unsubscribe();
+        }
+
+      });
+      return () => es.close();
+    });
+  }
+
+  observableTest() {
+    return new Observable<string>(obs => {
+      const es = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/test`);
+      es.addEventListener('message', (evt) => {
+        obs.next(evt.data);
+      });
+      return () => es.close();
+    });
+  }
+
+  upgradeVersionCluster(data: UpgradeVersionClusterDto) {
+    return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/upgrade-version`, data, { headers: this.getHeaders() });
+  }
+
+  getListStatus() {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-status`, { headers: this.getHeaders() });
+  }
+
+  deleteCluster(clusterId: number) {
+    return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`, { headers: this.getHeaders() });
   }
 
   testCreateCluster(data) {
-    return this.http.post(`${this.baseUrl}/k8s/get-dto/create-cluster`, data);
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-dto/create-cluster`, data, { headers: this.getHeaders() });
   }
 
-  getListK8sVersion(cloudProfileName: string) {
-    // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/k8s-versions`, { headers: this.getHeaders() });
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/k8s-versions`);
+  getListK8sVersion(regionId: number, cloudProfileName: string) {
+    let params = new HttpParams();
+    if (regionId) {
+      params = params.append('region_id', regionId);
+    }
+    if (cloudProfileName) {
+      params = params.append('cp_name', cloudProfileName);
+    }
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/k8s-versions`, { headers: this.getHeaders(), params: params });
   }
 
-  getListWorkerTypes(cloudProfileName: string) {
-    // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/worker-types`);
+  getListWorkerTypes(regionId: number, cloudProfileName: string) {
+    let params = new HttpParams();
+    if (regionId) {
+      params = params.append('region_id', regionId);
+    }
+    if (cloudProfileName) {
+      params = params.append('cp_name', cloudProfileName);
+    }
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/worker-types`, { headers: this.getHeaders(), params: params });
   }
 
-  getListVolumeTypes(cloudProfilenName: string) {
-    // return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfilenName}/volume-types`);
+  getListVolumeTypes(regionId: number, cloudProfileName: string) {
+    let params = new HttpParams();
+    if (regionId) {
+      params = params.append('region_id', regionId);
+    }
+    if (cloudProfileName) {
+      params = params.append('cp_name', cloudProfileName);
+    }
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/volume-types`, { headers: this.getHeaders(), params: params });
   }
 
-  getVPCNetwork(cloudProfileName: string) {
-    // return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`, {headers: this.getHeaders()});
-    return this.http.get(`${this.baseUrl}/cp/${cloudProfileName}/vpc-network`);
+  getVPCNetwork(regionId: number, cloudProfileName: string) {
+    let params = new HttpParams();
+    if (regionId) {
+      params = params.append('region_id', regionId);
+    }
+    if (cloudProfileName) {
+      params = params.append('cp_name', cloudProfileName);
+    }
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/cp/vpc-network`, { headers: this.getHeaders(), params: params });
   }
 
 }
