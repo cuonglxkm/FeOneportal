@@ -13,9 +13,11 @@
           >Dịch vụ hạ tầng</a
         >
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
-        >VPN site to site</a
-      ></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+          >VPN site to site</a
+        ></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>Chính sửa IPsec Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -34,165 +36,174 @@
 
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
+    <nz-card style="border-radius: 8px">
       <h2 class="custom-title">Thông tin IPsec Policy</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
-            <input
-              nz-input
-              type="text"
-              required
-              placeholder="Nhập tên"
-              formControlName="nameSnapshot"
-            />
-            
-          </nz-form-control>
-          </nz-form-item>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  required
+                  placeholder="Nhập tên"
+                  formControlName="nameSnapshot"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzRequired
+                  >Authorization Algorithm</nz-form-label
+                >
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedAuthorizationAlgorithm"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <nz-option
+                    *ngFor="let data of authorizationAlgorithm"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control nzErrorTip="File System không đuợc để trống!">
+                <nz-form-label nzFor="name" nzRequired
+                  >Encryption Mode</nz-form-label
+                >
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedEncryptionMode"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <nz-option
+                    *ngFor="let data of encryptionMode"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name" nzRequired
+                  >Encryption Algorithm</nz-form-label
+                >
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedEncryptionAlgorithm"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <nz-option
+                    *ngFor="let data of encryptionAlgorithm"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control nzErrorTip="File System không đuợc để trống!">
+                <nz-form-label nzFor="name" nzRequired
+                  >Lifetime Units</nz-form-label
+                >
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedLifetimeUnits"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <nz-option
+                    *ngFor="let data of lifetimeUnits"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name" nzRequired
+                  >Lifetime Value</nz-form-label
+                >
+                <input
+                  nz-input
+                  type="text"
+                  required
+                  [(ngModel)]="lifetimeValue"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control nzErrorTip="File System không đuợc để trống!">
+                <nz-form-label nzFor="name" nzRequired
+                  >Perfect Forward Secrecy</nz-form-label
+                >
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedPerfectForwardSecrecy"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <nz-option
+                    *ngFor="let data of perfectForwardSecrecy"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name" nzRequired
+                  >Transform Protocol</nz-form-label
+                >
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  [(ngModel)]="selectedTransformProtocol"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <nz-option
+                    *ngFor="let data of transformProtocol"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzRequired >Authorization Algorithm</nz-form-label>
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              [(ngModel)]="selectedAuthorizationAlgorithm"
-              [ngModelOptions]="{standalone: true}"
-            >
-              <nz-option
-              *ngFor="let data of authorizationAlgorithm"
-              [nzLabel]="data.label"
-              [nzValue]="data.value"
-              ></nz-option>
-            </nz-select>
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Encryption Mode</nz-form-label>
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              [(ngModel)]="selectedEncryptionMode"
-              [ngModelOptions]="{standalone: true}"
-            >
-              <nz-option
-              *ngFor="let data of encryptionMode"
-              [nzLabel]="data.label"
-              [nzValue]="data.value"
-              ></nz-option>
-            </nz-select>
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Encryption Algorithm</nz-form-label>
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              [(ngModel)]="selectedEncryptionAlgorithm"
-              [ngModelOptions]="{standalone: true}"
-            >
-              <nz-option
-              *ngFor="let data of encryptionAlgorithm"
-              [nzLabel]="data.label"
-              [nzValue]="data.value"
-              ></nz-option>
-            </nz-select>
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Lifetime Units</nz-form-label>
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              [(ngModel)]="selectedLifetimeUnits"
-              [ngModelOptions]="{standalone: true}"
-            >
-              <nz-option
-              *ngFor="let data of lifetimeUnits"
-              [nzLabel]="data.label"
-              [nzValue]="data.value"
-              ></nz-option>
-            </nz-select>
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Lifetime Value</nz-form-label>
-            <input
-              nz-input
-              type="text"
-              required
-              [(ngModel)]="lifetimeValue" 
-              [ngModelOptions]="{standalone: true}"
-            />
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Perfect Forward Secrecy</nz-form-label>
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              [(ngModel)]="selectedPerfectForwardSecrecy"
-              [ngModelOptions]="{standalone: true}"
-            >
-              <nz-option
-              *ngFor="let data of perfectForwardSecrecy"
-              [nzLabel]="data.label"
-              [nzValue]="data.value"
-              ></nz-option>
-            </nz-select>
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Transform Protocol</nz-form-label>
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              [(ngModel)]="selectedTransformProtocol"
-              [ngModelOptions]="{standalone: true}"
-            >
-              <nz-option
-              *ngFor="let data of transformProtocol"
-              [nzLabel]="data.label"
-              [nzValue]="data.value"
-              ></nz-option>
-            </nz-select>
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-      </div>
       </form>
     </nz-card>
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
+    <nz-card style="border-radius: 8px">
       <h2 class="custom-title">Thông số cấu hình</h2>
-      <div style="overflow: auto; height: 300px; margin-bottom: 16px;">
+      <div style="overflow: auto; height: 300px; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
           <span>Test</span>
@@ -227,19 +238,24 @@
         </div>
       </div>
       <button
-      (click)="handleCreate()"
-      nz-button
-      nzType="primary"
-      style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
-      nzSize="large"
-    >
-      <img
-        src="assets/imgs/wallet.svg"
-        alt=""
-      />
-      <span class="button-text-primary">Khởi tạo</span>
-    </button>
-      
+        (click)="handleCreate()"
+        nz-button
+        nzType="primary"
+        style="
+          border: none;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+        nzSize="large"
+      >
+        <span
+          nz-icon
+          nzType="edit"
+        ></span>
+        <span class="button-text-primary">Chỉnh sửa</span>
+      </button>
     </nz-card>
   </div>
 </div>
@@ -251,5 +267,4 @@
     justify-content: flex-end;
     height: 100%;
   "
->
-</div>
+></div>

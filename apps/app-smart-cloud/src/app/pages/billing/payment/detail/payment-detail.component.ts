@@ -13,6 +13,8 @@ import { environment } from '@env/environment';
 import { PaymentService } from 'src/app/shared/services/payment.service';
 import { PaymentModel } from 'src/app/shared/models/payment.model';
 import { Observable } from 'rxjs';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { OrderDTOSonch } from 'src/app/shared/models/order.model';
 
 class ServiceInfo {
   name: string;
@@ -31,17 +33,18 @@ class ServiceInfo {
 export class PaymentDetailComponent implements OnInit {
     payment: PaymentModel = new PaymentModel();
     serviceInfo: ServiceInfo = new ServiceInfo();
-    listServiceInfo: ServiceInfo[] = [];
+    data: OrderDTOSonch
     userModel$: Observable<UserModel>;
-  id: number;
-
+    id: number;
+  orderNumber:string
   constructor(
     private service: PaymentService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private orderService: OrderService,
   ) {}
 
   ngOnInit(): void {
@@ -56,23 +59,24 @@ export class PaymentDetailComponent implements OnInit {
       context: new HttpContext().set(ALLOW_ANONYMOUS, true),
   });
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.orderNumber = this.activatedRoute.snapshot.paramMap.get('orderNumber');
     console.log(this.activatedRoute.snapshot.paramMap);
     
     this.getPaymentDetail();
-    this.serviceInfo.name = 'Volume';
-    this.serviceInfo.price = 1000000;
-    this.serviceInfo.duration = 6;
-    this.serviceInfo.amount = 1;
-    this.serviceInfo.currency = 6000000;
-    this.listServiceInfo.push(this.serviceInfo);
-    this.listServiceInfo.push(this.serviceInfo);
-
-    
+    this.getOrderDetail()
   }
 
   getPaymentDetail() {
     this.service.getPaymentById(this.id).subscribe((data: any) => {
       this.payment = data;
+      console.log(data);
+      this.cdr.detectChanges();
+    });
+  }
+
+  getOrderDetail() {
+    this.orderService.getOrderBycode(this.orderNumber).subscribe((data: any) => {
+      this.data = data;
       console.log(data);
       this.cdr.detectChanges();
     });

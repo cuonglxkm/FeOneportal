@@ -1,5 +1,5 @@
 
-<nz-content *ngIf="isBegin">
+<nz-content *ngIf="!isBegin">
   <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
@@ -107,6 +107,6 @@
   </nz-card>
   
 </nz-content>
-<nz-content  *ngIf="!isBegin">
+<nz-content  *ngIf="isBegin">
     <one-portal-blank-vpn-site-to-site></one-portal-blank-vpn-site-to-site>
 </nz-content>

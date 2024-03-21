@@ -89,13 +89,7 @@
     >
       <span style="font-weight: 600; font-size: 20px;">Thông tin dịch vụ</span> <br />
     </nz-row>
-    <nz-table
-      style="padding: 2%"
-      #rowSelectionTable
-      nzShowSizeChanger
-      [nzFrontPagination]="false"
-      [nzData]="listServiceInfo"
-    >
+    <nz-table [nzData]="data.orderItems" nzHideOnSinglePage="true">
       <thead>
         <tr>
           <th>Dịch vụ</th>
@@ -106,13 +100,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of listServiceInfo; let i = index">
-
-          <td class="text-blue">{{ item.name }}</td>
-          <td>{{ item.price }}</td>
+        <tr *ngFor="let item of data.orderItems">
+          <td>{{ item.serviceName }}</td>
+          <td>{{ item.unitPrice.amount | number : '1.0-0' }}</td>
           <td>{{ item.duration }}</td>
-          <td>{{ item.amount }}</td>
-          <td>{{ item.currency }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.totalAmount.amount | number : '1.0-0' }}</td>
         </tr>
       </tbody>
     </nz-table>

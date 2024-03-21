@@ -342,7 +342,7 @@ const routes: Routes = [
     component: SnapshotScheduleEditComponent
   },
   {
-    path: 'billing/payments/detail/:id',
+    path: 'billing/payments/detail/:id/:orderNumber',
     component: PaymentDetailComponent
   },
   {

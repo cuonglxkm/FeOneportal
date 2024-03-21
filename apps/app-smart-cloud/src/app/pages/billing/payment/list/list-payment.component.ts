@@ -220,6 +220,10 @@ export class ListPaymentComponent implements OnInit{
   }
 
   getPaymentDetail(data: any) {
-    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + data.id]);
+    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + data.id +'/' + data.orderNumber]);
+  }
+
+  getOrderDetail(ordernumber: any) {
+    this.router.navigate(['/app-smart-cloud/order/detail/' + ordernumber]);
   }
 }

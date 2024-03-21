@@ -16,6 +16,7 @@ import { DeleteIpsecPoliciesComponent } from './manage/ipsec-policies/delete/ips
 import { CreateIpsecPoliciesComponent } from './manage/ipsec-policies/create/create-ipsec-policies.component';
 import { EditIpsecPoliciesComponent } from './manage/ipsec-policies/edit/edit-ipsec-policies.component';
 import { DetailIpsecPoliciesComponent } from './manage/ipsec-policies/detail/detail-ipsec-policies.component';
+import { CreateVpnConnectionComponent } from './manage/vpn-connection/create/create-vpn-connection.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { DetailIpsecPoliciesComponent } from './manage/ipsec-policies/detail/det
     DeleteIpsecPoliciesComponent,
     CreateIpsecPoliciesComponent,
     EditIpsecPoliciesComponent,
-    DetailIpsecPoliciesComponent
+    DetailIpsecPoliciesComponent,
+    CreateVpnConnectionComponent
   ],
     imports: [
         VpnSiteToSiteRoutingModule,
