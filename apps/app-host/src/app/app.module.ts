@@ -17,7 +17,7 @@ import {LayoutModule} from "./layout/layout.module";
 import {JsonSchemaModule, SharedModule} from "./shared";
 import {CoreModule} from "./core/core.module";
 import {DatePipe, registerLocaleData} from "@angular/common";
-import {NZ_DATE_LOCALE, provideNzI18n,  zh_CN as zorroLang} from "ng-zorro-antd/i18n";
+import {NZ_DATE_LOCALE, provideNzI18n,  vi_VN as zorroLang} from "ng-zorro-antd/i18n";
 import {DELON_LOCALE, en_US as delonLang, ALAIN_I18N_TOKEN} from "@delon/theme";
 import {enUS as dateLang} from "date-fns/locale";
 import { default as ngLang } from '@angular/common/locales/vi';
