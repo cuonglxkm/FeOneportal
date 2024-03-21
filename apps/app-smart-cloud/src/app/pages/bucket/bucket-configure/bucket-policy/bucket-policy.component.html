@@ -166,19 +166,21 @@
           nzLabel="Read / Download file"
         ></nz-option>
         <nz-option nzValue="PutObjectAcl, PutObject">Upload file</nz-option>
-        <nz-option nzValue="GetBucketAcl, GetBucketCORS"
-          >Config bucket (GetBucketAcl, GetBucketCORS,...)</nz-option
-        >
+        <nz-option
+          nzValue="GetBucketAcl, GetBucketCORS,..."
+          nzLabel="Config bucket"
+        ></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="CUSTOM ACTION">
-        <nz-option nzValue="SELECT ALL">SELECT ALL</nz-option>
+        <nz-option nzLabel="SELECT ALL"></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="GROUP BUCKET">
-        <nz-option nzValue="CreateBucket">CreateBucket</nz-option>
-        <nz-option nzValue="DeleteBucketPolicy">DeleteBucketPolicy</nz-option>
-        <!-- Các tùy chọn khác trong nhóm BUCKET -->
+        <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
+        <nz-option
+          nzValue="DeleteBucketPolicy"
+          nzLabel="DeleteBucketPolicy"
+        ></nz-option>
       </nz-option-group>
-      <!-- Các nhóm và tùy chọn khác -->
     </nz-select>
   </ng-container>
   <div *nzModalFooter>

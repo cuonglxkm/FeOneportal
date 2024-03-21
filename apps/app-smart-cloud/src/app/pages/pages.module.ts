@@ -230,6 +230,7 @@ import { ObjectStorageExtendComponent } from './object-storage/object-storage-ex
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
+import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { SafePipe } from '../../../../../libs/common-utils/src';
 import { ChartModule } from '@syncfusion/ej2-angular-charts';
@@ -410,6 +411,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ObjectStorageExtendComponent,
     ObjectStorageEditComponent,
     ChartComponent,
+    IsPermissionPipe,
     S3KeyComponent,
   ],
   imports: [

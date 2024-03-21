@@ -45,6 +45,21 @@ export class ObjectStorageExtend {
   actorEmail: any;
 }
 
+export class ObjectStorageResize {
+  newQuota: number;
+  newOfferId: number;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  regionId: number;
+  serviceName: any;
+  customerId: number;
+  vpcId: any;
+  typeName: string;
+  userEmail: any;
+  actorEmail: any;
+}
+
 export class UserInfoObjectStorage {
   tenant: string
   user_id: string
@@ -120,9 +135,9 @@ export class Bucket {
 }
 
 // export class Summary {
-//   user: string
-//   categories: Category[]
-//   total: Total
+//   user: string;
+//   categories: Category[];
+//   total: Total;
 // }
 //
 export class Category {
@@ -134,10 +149,10 @@ export class Category {
 }
 //
 // export class Total {
-//   bytes_sent: number
-//   bytes_received: number
-//   ops: number
-//   successful_ops: number
+//   bytes_sent: number;
+//   bytes_received: number;
+//   ops: number;
+//   successful_ops: number;
 // }
 //
 // export class FormSearchSummary {
@@ -175,4 +190,5 @@ export class ObjectObjectStorageModel {
   checked: boolean = false;
   indeterminate: boolean = false;
 }
+
 
