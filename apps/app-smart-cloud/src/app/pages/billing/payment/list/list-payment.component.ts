@@ -219,7 +219,7 @@ export class ListPaymentComponent implements OnInit{
     // this.getListInvoices()
   }
 
-  getPaymentDetail(id: any) {
-    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id]);
+  getPaymentDetail(data: any) {
+    this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + data.id]);
   }
 }

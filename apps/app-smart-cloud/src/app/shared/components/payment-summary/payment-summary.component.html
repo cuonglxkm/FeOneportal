@@ -23,11 +23,11 @@
           </nz-row>
           <nz-row style="height: 50px">
             <span class="fw-600" style="width: 40%">Số điện thoại:</span>
-            <span>{{ userModel.phoneNumber }}</span>
+            <span>{{ userModel.phoneNumber === '' ? '-' : userModel.phoneNumber }}</span>
           </nz-row>
           <nz-row style="height: 50px">
             <span class="fw-600" style="width: 40%">Email:</span>
-            <span> {{ userModel.email }}</span>
+            <span> {{ userModel.email === '' ? '-' : userModel.email }}</span>
           </nz-row>
           <nz-row style="height: 50px">
             <span class="fw-600" style="width: 40%">Địa chỉ:</span>

@@ -33,19 +33,19 @@
       <div nz-col nzSpan="12">
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Tên khách hàng:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.name}}</span>
+          <span class="fw-600">{{ (userModel$ | async)?.name === '' ? '-' : (userModel$ | async)?.name}}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Số điện thoại:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.phoneNumber }}</span>
+          <span class="fw-600">{{ (userModel$ | async)?.phoneNumber === '' ? '-' : (userModel$ | async)?.phoneNumber}}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Email:</span>
-          <span class="fw-600"> {{ (userModel$ | async)?.email }}</span>
+          <span class="fw-600"> {{ (userModel$ | async)?.email === '' ? '-' : (userModel$ | async)?.email }}</span>
         </nz-row>
         <nz-row style="height: 50px">
           <span class="fw-600" style="width: 40%">Địa chỉ:</span>
-          <span class="fw-600">{{ (userModel$ | async)?.address === '' && '-' }}</span>
+          <span class="fw-600">{{ (userModel$ | async)?.address === '' ? '-' :  (userModel$ | async)?.address}}</span>
         </nz-row>
       </div>
       <div nz-col nzSpan="12">
@@ -128,7 +128,7 @@
           <tr style="margin-bottom: 5px">
             <td>Tổng tiền</td>
             <td style="text-align: right">
-              <span class="price">10000000 VND</span>
+              <span class="price">{{payment.amount}} VND</span>
               <span>VND/tháng</span>
             </td>
           </tr>
@@ -144,7 +144,7 @@
             <td>VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
-                >1000000 VND</span
+                >{{payment.vat}} VND</span
               >
               <span>VND/tháng</span>
             </td>
@@ -163,7 +163,7 @@
               <span>( Đã bao gồm 10% VAT)</span>
             </td>
             <td style="text-align: right; color: #EA3829; font-weight: 600; padding: 10px; border-radius: 0 8px 8px 0">
-              100000
+              {{payment.totalAmount}}
               VND
             </td>
           </tr>

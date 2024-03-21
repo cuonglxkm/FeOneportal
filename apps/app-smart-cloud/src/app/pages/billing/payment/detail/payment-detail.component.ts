@@ -56,6 +56,8 @@ export class PaymentDetailComponent implements OnInit {
       context: new HttpContext().set(ALLOW_ANONYMOUS, true),
   });
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    console.log(this.activatedRoute.snapshot.paramMap);
+    
     this.getPaymentDetail();
     this.serviceInfo.name = 'Volume';
     this.serviceInfo.price = 1000000;
@@ -87,5 +89,7 @@ export class PaymentDetailComponent implements OnInit {
     });
   }
 
-  payNow() {}
+  payNow() {
+    window.location.href = this.payment.paymentUrl
+  }
 }

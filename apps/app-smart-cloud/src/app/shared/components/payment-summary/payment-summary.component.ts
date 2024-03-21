@@ -190,10 +190,14 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   chooseDiscount(code: string) {
-    this.discountPicked = code;
-    console.log(this.discountPicked);
+    if (this.discountPicked === code) {
+      this.discountPicked = null; 
+  } else {
+      this.discountPicked = code;
+  }
     
   }
+
 
   isVisibleDiscount: boolean = false;
   showModal() {
@@ -223,8 +227,8 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // window.location.href = data.data;
-          console.log(data);
+          window.location.href = data.data;
+          
           
         },
         error: (error) => {
