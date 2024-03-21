@@ -99,13 +99,10 @@ export enum Status {
 }
 
 export class RebuildInstances {
-  regionId: number = 0;
-  customerId: number = 0;
-  imageId: number = 0;
-  flavorId: number = 0;
-  volumeType: number = 0;
-  iops: number = 0;
-  id: number = 0;
+  regionId: number;
+  customerId: number;
+  imageId: number;
+  id: number;
 }
 
 export class UpdateInstances {

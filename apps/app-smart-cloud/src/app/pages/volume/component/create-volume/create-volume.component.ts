@@ -337,7 +337,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.controls.name.value;
+    this.volumeCreate.serviceName = this.validateForm.get('name').value
     this.volumeCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
@@ -356,7 +356,7 @@ export class CreateVolumeComponent implements OnInit {
 
   navigateToPaymentSummary() {
     // this.getTotalAmount()
-
+    this.volumeInit()
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
     request.customerId = this.volumeCreate.customerId;
     request.createdByUserId = this.volumeCreate.customerId;
@@ -372,6 +372,7 @@ export class CreateVolumeComponent implements OnInit {
     ]
     var returnPath: string = '/app-smart-cloud/volume/create'
     console.log('request', request)
+    console.log('service name', this.volumeCreate.serviceName)
     this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
   }
 

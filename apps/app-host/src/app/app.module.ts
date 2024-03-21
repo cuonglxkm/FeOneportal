@@ -45,8 +45,8 @@ const LANG_PROVIDES = [
 const I18NSERVICE_PROVIDES = [{ provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false }];
 
 const INTERCEPTOR_PROVIDES = [
-  // { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true },
-  // { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true }
+  { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true }
 ];
 // #endregion
 const FORM_MODULES = [JsonSchemaModule];
@@ -55,6 +55,7 @@ const FORM_MODULES = [JsonSchemaModule];
 import { StartupService } from '@core';
 import {Observable} from "rxjs";
 import {GlobalConfigModule} from "../../../app-smart-cloud/src/app/global-config.module";
+import { NotificationService } from "../../../app-smart-cloud/src/app/shared/services/notification.service";
 export function StartupServiceFactory(startupService: StartupService): () => Observable<void> {
   return () => startupService.load();
 }
@@ -65,6 +66,13 @@ const APPINIT_PROVIDES = [
     useFactory: StartupServiceFactory,
     deps: [StartupService],
     multi: true
+  },
+  NotificationService,
+  {
+    provide: APP_INITIALIZER,
+    useFactory: (notificationService: NotificationService) => () => notificationService.initiateSignalrConnection(true),
+    deps: [NotificationService],
+    multi: true,
   }
 ];
 // #endregion
@@ -90,7 +98,7 @@ const APPINIT_PROVIDES = [
     // ...GLOBAL_THIRD_MODULES,
     ...FORM_MODULES
   ],
-  providers: [...LANG_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
+  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

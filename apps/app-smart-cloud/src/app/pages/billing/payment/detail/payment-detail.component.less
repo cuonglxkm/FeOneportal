@@ -1,20 +1,36 @@
 @import '@delon/theme/index';
 
-.customRow {
-  border-bottom: 1px solid #f2f2f2;
-  padding-left: 2%;
-  padding-right: 2%;
+.custom-div {
+  margin-top: 20px;
+  background-color: #ffffff;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
   padding-top: 1%;
   padding-bottom: 1%;
 }
 
-.nameField {
-  color: rgba(0, 0, 0, 0.25);
-  font-family: Roboto;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
+.paidField {
+  font-size: 12px;
+  padding: 7px;
+  border-radius: 15px;
+  background-color: #008D47;
+  color: #fff;
+}
+
+.initField {
+  font-size: 12px;
+  padding: 7px;
+  border-radius: 15px;
+  background-color: #E58200;
+  color: #fff;
+}
+
+.failedField{
+  font-size: 12px;
+  padding: 7px;
+  border-radius: 15px;
+  background-color: #EB1414;
+  color: #fff;
 }
 
 .fw-600 {
@@ -28,4 +44,22 @@
 
 .cell-content {
   margin-bottom: 10px;
+}
+
+::ng-deep .ant-card-body-custom {
+  .ant-card-body {
+    padding: 5px !important;
+  }
+}
+
+.ant-card-meta {
+  margin: 0px 0 !important;
+}
+
+.price{
+  color: #0066B3;
+  font-size: 16px;
+  font-weight: 600;
+  display: block;
+  
 }

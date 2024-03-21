@@ -12,9 +12,7 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DataPayment,
-  Flavors,
   IPPublicModel,
-  IPSubnetModel,
   InstanceResize,
   InstancesModel,
   ItemPayment,
@@ -39,9 +37,6 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
-interface InstancesForm {
-  name: FormControl<string>;
-}
 class ConfigCustom {
   //cấu hình tùy chỉnh
   vCPU?: number = 0;
@@ -60,12 +55,14 @@ class ConfigCustom {
   animations: [slider],
 })
 export class InstancesEditComponent implements OnInit {
-  listOfOption: Array<{ value: string; label: string }> = [];
-  reverse = true;
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [
+        Validators.required,
+        Validators.max(50),
+        Validators.pattern(/^[a-zA-Z0-9]+$/),
+      ],
     }),
     // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
@@ -73,6 +70,7 @@ export class InstancesEditComponent implements OnInit {
   //danh sách các biến của form model
   id: number;
   instancesModel: InstancesModel;
+  instanceNameEdit: string = '';
 
   updateInstances: UpdateInstances = new UpdateInstances();
   instanceResize: InstanceResize = new InstanceResize();
@@ -115,7 +113,7 @@ export class InstancesEditComponent implements OnInit {
     private notification: NzNotificationService,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private loadingSrv: LoadingService, 
+    private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver
@@ -156,33 +154,39 @@ export class InstancesEditComponent implements OnInit {
     this.getListIpPublic();
     this.getCurrentInfoInstance(this.id);
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.breakpoints[Breakpoints.XSmall]) {
-        // Màn hình cỡ nhỏ
-        this.cardHeight = '130px';
-      } else if (result.breakpoints[Breakpoints.Small]) {
-        // Màn hình cỡ nhỏ - trung bình
-        this.cardHeight = '180px';
-      } else if (result.breakpoints[Breakpoints.Medium]) {
-        // Màn hình trung bình
-        this.cardHeight = '210px';
-      } else if (result.breakpoints[Breakpoints.Large]) {
-        // Màn hình lớn
-        this.cardHeight = '165px';
-      } else if (result.breakpoints[Breakpoints.XLarge]) {
-        // Màn hình rất lớn
-        this.cardHeight = '150px';
-      }
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '130px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '180px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '210px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '165px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '150px';
+        }
 
-      // Cập nhật chiều cao của card bằng Renderer2
-      this.renderer.setStyle(this.el.nativeElement, 'height', this.cardHeight);
-    });
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
   }
 
   //#region HDD hay SDD
@@ -329,9 +333,11 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  currentListSecurityGroup: any[] = [];
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe((data: any) => {
       this.instancesModel = data;
+      this.instanceNameEdit = this.instancesModel.name;
       if (this.instancesModel.volumeType == 0) {
         this.activeBlockHDD = true;
         this.activeBlockSSD = false;
@@ -364,8 +370,10 @@ export class InstancesEditComponent implements OnInit {
         .pipe(finalize(() => this.loadingSrv.close()))
         .subscribe((datasg: any) => {
           console.log('getAllSecurityGroupByInstance', datasg);
-          var arraylistSecurityGroup = datasg.map((obj) => obj.id.toString());
-          this.selectedSecurityGroup = arraylistSecurityGroup;
+          this.currentListSecurityGroup = datasg.map((obj) =>
+            obj.id.toString()
+          );
+          this.selectedSecurityGroup = this.currentListSecurityGroup;
           this.cdr.detectChanges();
         });
       this.initFlavors();
@@ -467,6 +475,9 @@ export class InstancesEditComponent implements OnInit {
         if (e.charOptionValues[0] == 'CPU') {
           this.instanceResize.cpu = Number.parseInt(e.charOptionValues[1]);
         }
+        if (e.charOptionValues[0] == 'HDD' || e.charOptionValues[0] == 'SSD') {
+          this.instanceResize.storage = Number.parseInt(e.charOptionValues[1]);
+        }
       });
     }
     this.instanceResize.addBtqt = 0;
@@ -486,7 +497,7 @@ export class InstancesEditComponent implements OnInit {
 
   readyEdit(): void {
     this.updateInstances.id = this.instancesModel.id;
-    this.updateInstances.name = this.instancesModel.name;
+    this.updateInstances.name = this.instanceNameEdit;
     this.updateInstances.regionId = this.region;
     this.updateInstances.projectId = this.projectId;
     this.updateInstances.customerId = this.userId;
@@ -506,7 +517,10 @@ export class InstancesEditComponent implements OnInit {
         },
         error: (e) => {
           console.log(e);
-          this.notification.error('', 'Cập nhật máy ảo không thành công');
+          this.notification.error(
+            e.statusText,
+            'Cập nhật máy ảo không thành công'
+          );
         },
       });
 
@@ -548,7 +562,10 @@ export class InstancesEditComponent implements OnInit {
           },
           error: (e) => {
             console.log(e);
-            this.notification.error('', 'Cập nhật máy ảo không thành công');
+            this.notification.error(
+              e.statusText,
+              'Cập nhật máy ảo không thành công'
+            );
           },
         });
     }

@@ -1,4 +1,11 @@
-<li nz-menu-item (click)="showModal()">Chỉnh sửa</li>
+<span style="color: #0066B3;"
+      class="more"
+      nz-icon nzType="edit"
+      nzTheme="outline"
+      nz-popover
+      [nzPopoverContent]="'Chỉnh sửa'"
+      nzPopoverPlacement="bottom"
+      (click)="showModal()"></span>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa thông tin Volume"
           (nzOnCancel)="handleCancel()" nzMark="false">
   <div *nzModalTitle>

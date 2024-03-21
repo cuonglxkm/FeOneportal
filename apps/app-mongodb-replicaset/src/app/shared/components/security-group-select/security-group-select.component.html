@@ -1,0 +1,9 @@
+<nz-select
+  name="security-group"
+  style="width: 100%"
+  (ngModelChange)="onSelect($event)"
+  [(ngModel)]="value"
+  [nzPlaceHolder]="'Security Group'"
+>
+  <nz-option *ngFor="let sg of listSecurityGroup; let idx = index" [nzLabel]="sg.name" [nzValue]="sg"/>
+</nz-select>

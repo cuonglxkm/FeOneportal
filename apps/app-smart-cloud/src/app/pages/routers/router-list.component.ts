@@ -23,7 +23,10 @@ import {
 import { RouterService } from 'src/app/shared/services/router.service';
 import { IPSubnetModel } from '../instances/instances.model';
 import { InstancesService } from '../instances/instances.service';
-import { FormSearchNetwork, NetWorkModel } from 'src/app/shared/models/vlan.model';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+} from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 
 @Component({
@@ -71,8 +74,6 @@ export class RouterListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService,
-    private instancesService: InstancesService,
     private vlanService: VlanService
   ) {}
 
@@ -119,9 +120,9 @@ export class RouterListComponent implements OnInit {
             this.dataList = next.records;
             this.total = next.totalCount;
           },
-          error: (error) => {
+          error: (e) => {
             this.notification.error(
-              '',
+              e.statusText,
               'Lấy danh sách Router không thành công'
             );
           },
@@ -151,11 +152,11 @@ export class RouterListComponent implements OnInit {
             }
             this.cdr.detectChanges();
           },
-          error: (error) => {
+          error: (e) => {
             this.dataList = [];
             this.activeCreate = true;
             this.notification.error(
-              '',
+              e.statusText,
               'Lấy danh sách máy ảo không thành công'
             );
           },
@@ -186,10 +187,12 @@ export class RouterListComponent implements OnInit {
     formSearchNetwork.pageNumber = 0;
     formSearchNetwork.pageSize = 9999;
     formSearchNetwork.vlanName = '';
-    this.vlanService.getVlanNetworks(formSearchNetwork).subscribe((data: any) => {
-      this.listNetwork = data;
-      this.cdr.detectChanges();
-    });
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listNetwork = data.records;
+        this.cdr.detectChanges();
+      });
   }
 
   routerCreate: RouterCreate = new RouterCreate();
@@ -214,7 +217,10 @@ export class RouterListComponent implements OnInit {
         this.notification.success('', 'Tạo mới Router thành công');
       },
       error: (e) => {
-        this.notification.error('', 'Tạo mới Router không thành công');
+        this.notification.error(
+          e.statusText,
+          'Tạo mới Router không thành công'
+        );
       },
     });
   }
@@ -244,7 +250,10 @@ export class RouterListComponent implements OnInit {
         this.notification.success('', 'Chỉnh sửa Router thành công');
       },
       error: (e) => {
-        this.notification.error('', 'Chỉnh sửa Router không thành công');
+        this.notification.error(
+          e.statusText,
+          'Chỉnh sửa Router không thành công'
+        );
       },
     });
   }
@@ -256,6 +265,7 @@ export class RouterListComponent implements OnInit {
     this.nameVerify = '';
     this.cloudId = cloudId;
     this.nameRouterDelete = nameRouter;
+    this.isVisibleDelete = true;
   }
 
   handleCancelDelete() {
@@ -274,9 +284,11 @@ export class RouterListComponent implements OnInit {
             this.notification.success('', 'Xóa Router thành công');
             this.reloadTable();
           },
-          error: (error) => {
-            console.log(error.error);
-            this.notification.error('', 'Xóa Router không thành công');
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Xóa Router không thành công'
+            );
           },
         });
     } else {

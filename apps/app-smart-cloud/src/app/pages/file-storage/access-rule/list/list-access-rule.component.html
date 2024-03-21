@@ -5,48 +5,62 @@
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/list'">File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown (userChanged)="userChanged($event)"
+                               (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 <nz-content>
   <nz-card style="border-radius: 8px;">
-    <nz-row>
-      <nz-col nzSpan="8">
-        <span>Danh sách Access Rule</span>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="6">
+        <span class="text-card-header">Danh sách Access Rule</span>
       </nz-col>
-      <nz-col nzSpan="16">
+      <nz-col nzSpan="18" style="flex:none;">
         <div>
-          <span>Access Level</span>
-          <nz-select>
+          <span>Access Level: </span>
+          <nz-select nzPlaceHolder="Chọn Access Level"
+                     style="width: 200px; border-radius: 8px;"
+                     [ngModel]="accessType"
+                     nzSize="large"
+                     (ngModelChange)="onAccessTypeSelect($event)">
             <nz-option [nzValue]="1" [nzLabel]="'Read-Only'"></nz-option>
             <nz-option [nzValue]="2" [nzLabel]="'Read-Write'"></nz-option>
           </nz-select>
           <nz-input-group [nzPrefix]="prefixIconSearch"
-                          nzSize="large">
-            <input nz-input
-                   class="input-custom"
-                   [ngModel]="value"
-                   (ngModelChange)="onInputChange($event)" />
+                          nzSize="large"
+                          style="width: 300px; margin-left: 10px;">
+            <input name="name"
+                   nz-input
+                   placeholder="Tìm kiếm Access To"
+                   [(ngModel)]="value"
+                   (input)="onInputChange($event.target['value'])"/>
           </nz-input-group>
           <ng-template #prefixIconSearch>
             <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
           </ng-template>
-          <button nz-button nzType="primary" nzSize="large">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-            <span class="button-text-primary">Tạo File System</span>
-          </button>
+          <one-portal-create-access-rule [region]="region" [project]="project" [shareCloudId]="idFileSystem" (onOk)="handleCreateOk()"/>
         </div>
       </nz-col>
     </nz-row>
-    <nz-table>
+    <nz-table #fixedTable
+              style="margin-top: 15px;"
+              nzShowPagination
+              [nzData]="response?.records"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
       <thead>
       <tr>
         <th>Access Type</th>
@@ -57,6 +71,25 @@
         <th>Thao tác</th>
       </tr>
       </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td>{{ data.access_type }}</td>
+        <td>{{ data.access_to }}</td>
+        <td [ngSwitch]="data.access_level">
+          <span *ngSwitchCase="'ro'">Read-Only</span>
+          <span *ngSwitchCase="'rw'">Read-Write</span>
+        </td>
+        <td>{{ data.state }}</td>
+        <td>{{ data.created_at }}</td>
+        <td>
+          <one-portal-delete-access-rule [region]="region"
+                                         [project]="project"
+                                         [shareRuleId]="data.id"
+                                         [shareCloudId]="data.shareId"
+                                         (onOk)="handleDeleteOk()"/>
+        </td>
+      </tr>
+      </tbody>
     </nz-table>
   </nz-card>
 </nz-content>

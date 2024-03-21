@@ -48,6 +48,7 @@ export class PaymentSummaryComponent implements OnInit {
   inputCode: string = '';
   loading: boolean = true;
   returnPath: string;
+  serviceType: string;
 
   constructor(
     private service: InstancesService,
@@ -65,6 +66,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
+      console.log({path: this.returnPath});
       const myOrder = state.data;
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
@@ -84,19 +86,32 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = 'Gia hạn máy ảo';
             break;
           case 'volume_create':
-            serviceItem.name = 'Tạo volume';
+            serviceItem.name = 'Tạo Volume';
             break;
           case 'volume_resize':
-            serviceItem.name = 'Chỉnh sửa volume';
+            serviceItem.name = 'Chỉnh sửa Volume';
             break;
           case 'volume_extend':
-            serviceItem.name = 'Gia hạn volume';
+            serviceItem.name = 'Gia hạn Volume';
             break;
           case 'ip_create':
             serviceItem.name = 'Tạo IP';
             break;
           case 'ip_extend':
             serviceItem.name = 'Gia hạn IP';
+            break;
+          case 'k8s_create':
+            this.serviceType = "k8s";
+            serviceItem.name = 'Tạo cluster';
+            break;
+          case 'objectstorage_create':
+            serviceItem.name = 'Tạo Object Storage';
+            break;
+          case 'objectstorage_resize':
+            serviceItem.name = 'Chỉnh sửa Object Storage';
+            break;
+          case 'objectstorage_extend':
+            serviceItem.name = 'Gia hạn Object Storage';
             break;
           default:
             serviceItem.name = '';
@@ -154,7 +169,10 @@ export class PaymentSummaryComponent implements OnInit {
           this.listDiscount = data.records;
         },
         error: (e) => {
-          this.notification.error('', 'Lây danh sách Voucher không thất bại');
+          this.notification.error(
+            e.statusText,
+            'Lây danh sách Voucher không thất bại'
+          );
         },
       });
   }
@@ -207,11 +225,15 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          window.location.href = data.data;
+          // for test when k8s needn't pay
+          if (this.serviceType == "k8s") {
+            this.router.navigate([`/app-smart-cloud/order/detail/${data.data.id}`]);
+          } else {
+            window.location.href = data.data;
+          }
         },
-        error: (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Tạo order không thành công');
+        error: (e) => {
+          this.notification.error(e.statusText, 'Tạo order không thành công');
         },
       });
   }

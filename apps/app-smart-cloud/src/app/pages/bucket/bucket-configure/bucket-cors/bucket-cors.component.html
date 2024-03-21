@@ -1,1 +1,315 @@
-<p>bucket-cors works!</p>
+<span class="titlecard-custom">Thiết lập Bucket CORS</span>
+<div style="margin-top: 20px; margin-bottom: 10px" class="text-label">
+  <span>Các cấu hình giới hạn CORS cho phép truy cập vào Bucket</span>
+</div>
+<div class="text-right p-0 m-b-0">
+  <nz-input-group
+    style="margin-right: 8px; width: 25%; border-radius: 8px"
+    [nzPrefix]="prefixIconSearch"
+    nzSize="large"
+  >
+    <input
+      name="name"
+      nz-input
+      placeholder="Tìm kiếm tên"
+      [(ngModel)]="inputSearch"
+    />
+  </nz-input-group>
+  <ng-template #prefixIconSearch>
+    <img
+      src="assets/imgs/search.svg"
+      alt=""
+      style="cursor: pointer"
+      nz-tooltip="Tìm kiếm"
+      (click)="searchBucketCors()"
+    />
+  </ng-template>
+  <button nz-button nzType="primary" (click)="modalCreate()">
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/add-circle.svg"
+      alt=""
+    />
+    <span>Tạo mới Bucket Cors</span>
+  </button>
+</div>
+<nz-table
+  style="margin-top: 10px"
+  #rowSelectionTable
+  nzShowSizeChanger
+  [nzScroll]="{ x: '100%', y: '250px' }"
+  [nzFrontPagination]="false"
+  [nzData]="listBucketCors"
+  (nzPageIndexChange)="searchBucketCors()"
+  (nzPageSizeChange)="searchBucketCors()"
+  [nzLoading]="loading"
+>
+  <thead>
+    <tr>
+      <th>Domain</th>
+      <th>Allow Methods</th>
+      <th>Allow Headers</th>
+      <th>Access Control Max Age</th>
+      <th>Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let item of listBucketCors">
+      <tr>
+        <td>
+          {{ item.allowedOrigins.join(', ') }}
+        </td>
+        <td>{{ item.allowedMethods.join(', ') }}</td>
+        <td>{{ item.allowedHeaders.join(', ') }}</td>
+        <td>{{ item.maxAgeSeconds }}</td>
+        <td nzRight>
+          <img
+            src="assets/imgs/edit-2.svg"
+            alt=""
+            (click)="modalUpdate(item)"
+            style="cursor: pointer; margin-right: 16px"
+            nz-tooltip="Chỉnh sửa"
+          />
+          <img
+            src="assets/imgs/trash.svg"
+            alt=""
+            (click)="modalDelete(item)"
+            style="cursor: pointer; margin-right: 16px"
+            nz-tooltip="Xóa"
+          />
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>
+
+<nz-modal
+  [(nzVisible)]="isVisibleCreate"
+  nzTitle="Tạo mới Bucket CORS"
+  (nzOnCancel)="handleCancelCreate()"
+>
+  <ng-container *nzModalContent>
+    <div class="text-label">Domain (<span class="text-red">*</span>)</div>
+    <input
+      style="margin-bottom: 16px; margin-top: 5px"
+      class="input-custom"
+      nz-input
+      placeholder=""
+      [(ngModel)]="domain"
+      [ngModelOptions]="{ standalone: true }"
+    />
+    <div class="text-label">Allowed Method</div>
+    <div style="display: flex">
+      <div style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="get">GET</label>
+      </div>
+      <div class="text-center" style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="post">POST</label>
+      </div>
+      <div class="text-right" style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="put">PUT</label>
+      </div>
+    </div>
+    <div style="display: flex; margin-bottom: 16px">
+      <div style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="delete"
+          >DELETE</label
+        >
+      </div>
+      <div class="text-center" style="flex: 1">
+        <label
+          class="text-label"
+          nz-checkbox
+          [(ngModel)]="head"
+          [ngModelOptions]="{ standalone: true }"
+          >HEAD</label
+        >
+      </div>
+      <div style="flex: 1"></div>
+    </div>
+    <div class="text-label">
+      Allowed Headers<img
+        style="margin-left: 5px"
+        src="assets/imgs/ei_plus.svg"
+        alt=""
+        (click)="addHeaderName()"
+      />
+    </div>
+    <div *ngFor="let item of listHeaderName">
+      <div style="display: flex">
+        <div style="flex: 9">
+          <input
+            style="margin-bottom: 8px"
+            class="input-custom"
+            nz-input
+            placeholder="Header name"
+            [(ngModel)]="item.name"
+            [ngModelOptions]="{ standalone: true }"
+          />
+        </div>
+        <div
+          style="margin-left: 10px"
+          class="d-flex align-items-center justify-content-end"
+        >
+          <img
+            style="cursor: pointer"
+            src="assets/imgs/trash1.svg"
+            alt=""
+            (click)="delelteHeaderName(item.id)"
+          />
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 16px" class="text-label">
+      Access Control Max Age
+    </div>
+    <input
+      style="margin-bottom: 16px; margin-top: 5px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="bucketCorsCreate.maxAgeSeconds"
+      placeholder=""
+    />
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDelete"
+  nzTitle="Xác nhận xóa Cors"
+  (nzOnCancel)="handleCancelDelete()"
+>
+  <ng-container *nzModalContent>
+    <div>Quý khách muốn thực hiện xóa Cors?</div>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleUpdate"
+  nzTitle="Cập nhật Bucket CORS"
+  (nzOnCancel)="handleCancelUpdate()"
+>
+  <ng-container *nzModalContent>
+    <div class="text-label">Domain (<span class="text-red">*</span>)</div>
+    <input
+      style="margin-bottom: 16px; margin-top: 5px"
+      class="input-custom"
+      nz-input
+      placeholder=""
+      [(ngModel)]="domain"
+    />
+    <div class="text-label">Allowed Method</div>
+    <div style="display: flex">
+      <div style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="get">GET</label>
+      </div>
+      <div class="text-center" style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="post">POST</label>
+      </div>
+      <div class="text-right" style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="put">PUT</label>
+      </div>
+    </div>
+    <div style="display: flex; margin-bottom: 16px">
+      <div style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="delete"
+          >DELETE</label
+        >
+      </div>
+      <div class="text-center" style="flex: 1">
+        <label class="text-label" nz-checkbox [(ngModel)]="head">HEAD</label>
+      </div>
+      <div style="flex: 1"></div>
+    </div>
+    <div class="text-label">
+      Allowed Headers<img
+        style="margin-left: 5px"
+        src="assets/imgs/ei_plus.svg"
+        alt=""
+        (click)="addHeaderName()"
+      />
+    </div>
+    <div *ngFor="let item of listHeaderName">
+      <div style="display: flex">
+        <div style="flex: 9">
+          <input
+            style="margin-bottom: 8px"
+            class="input-custom"
+            nz-input
+            placeholder="Header name"
+            [(ngModel)]="item.name"
+          />
+        </div>
+        <div
+          style="margin-left: 10px"
+          class="d-flex align-items-center justify-content-end"
+        >
+          <img
+            style="cursor: pointer"
+            src="assets/imgs/trash1.svg"
+            alt=""
+            (click)="delelteHeaderName(item.id)"
+          />
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 16px" class="text-label">
+      Access Control Max Age
+    </div>
+    <input
+      style="margin-bottom: 16px; margin-top: 5px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="bucketCorsUpdate.maxAgeSeconds"
+      placeholder=""
+    />
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

@@ -157,7 +157,7 @@
                 },
                 {
                   "text": "Router",
-                  "link": "/app-smart-cloud/vpc/router"
+                  "link": "/app-smart-cloud/network/router"
                 },
                 {
                   "text": "Direct Connect",
@@ -189,34 +189,17 @@
               "link": "/app-smart-cloud/security-group"
             },
             {
+              "key": "Object Storage",
               "text": "Object Storage",
-              "icon": "anticon-profile",
-              "children": [
-                {
-                  "text": "Bucket",
-                  "link": "/app-smart-cloud/bucket"
-                },
-                {
-                  "text": "Sub User",
-                  "link": "/app-smart-cloud/networks/object-storage/sub-user/list"
-                },
-                {
-                  "text": "S3 Key",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Thống kê",
-                  "link": "/app-smart-cloud/object"
-                }
-              ]
+              "icon": "anticon-profile"
             },
             {
               "text": "File Storage",
-              "link": "/app-smart-cloud/networks/file-storage/file-system/list",
+              "icon": "file",
               "children": [
                 {
                   "text": "File System",
-                  "link": "/app-smart-cloud/networks/file-storage/file-system/list"
+                  "link": "/app-smart-cloud/file-storage/file-system/list"
                 },
                 {
                   "text": "File System Snapshot",
@@ -225,6 +208,35 @@
                 {
                   "text": "Lịch Snapshot File System ",
                   "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "Floating IP",
+                  "link": "/app-smart-cloud/networks/ip-floating/list"
+                },
+                {
+                  "text": "Direct Connect",
+                  "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "Network Topology",
+                  "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "File Storage",
+                  "children": [
+                    {
+                      "text": "File System",
+                      "link": "/app-smart-cloud/file-storage/file-system/list"
+                    },
+                    {
+                      "text": "File System Snapshot",
+                      "link": "/app-smart-cloud/file-system-snapshot/list"
+                    },
+                    {
+                      "text": "Lịch Snapshot File System ",
+                      "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
+                    }
+                  ]
                 }
               ]
             },
@@ -247,6 +259,11 @@
               "text": "Kafka",
               "icon": "anticon-team",
               "link": "/app-kafka"
+            },
+            {
+              "text": "MongoDB Replicaset",
+              "icon": "anticon-team",
+              "link": "/app-mongodb-replicaset"
             }
           ]
         },

@@ -81,6 +81,7 @@ export class CreateIpFloatingComponent implements OnInit{
     formSearchNetwork.pageNumber = 1
     formSearchNetwork.networktAddress = null
     formSearchNetwork.vlanName = null
+    formSearchNetwork.project = this.project
     this.vlanService.getVlanNetworks(formSearchNetwork).subscribe(data => {
       this.listNetwork = data.records
     })

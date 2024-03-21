@@ -1,0 +1,182 @@
+<page-header [breadcrumb]="breadcrumb" title="Điều chỉnh Object Storage">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/object-storage']"
+          >Object Storage</a
+        ></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>Điều chỉnh Object Storage</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<form nz-form [nzLayout]="'vertical'">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px" [nzBordered]="false">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông tin Object Storage</span>
+        </div>
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Dung lượng - GB (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control>
+            <nz-input-number
+              style="width: 100%; margin-left: 0px"
+              [(ngModel)]="objectStorageCreate.quota"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="true"
+              nzSize="large"
+            ></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="name">Ghi chú</nz-form-label>
+          <nz-form-control>
+            <nz-textarea-count [nzMaxCharacterCount]="250">
+              <textarea
+                rows="4"
+                maxlength="250"
+                [(ngModel)]="objectStorageCreate.note"
+                [ngModelOptions]="{ standalone: true }"
+                [disabled]="true"
+                nz-input
+              ></textarea>
+            </nz-textarea-count>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="margin-top: -24px">
+          <nz-form-label
+            >Thời hạn sử dụng (<span class="text-red">*</span>) -
+            Tháng</nz-form-label
+          >
+          <nz-form-control>
+            <nz-row>
+              <nz-input-number
+                style="width: 50%; margin-left: -1px"
+                [(ngModel)]="numberMonth"
+                [disabled]="true"
+                nzSize="large"
+              ></nz-input-number>
+              <div
+                class="text-label"
+                style="display: flex; margin-left: 20px; align-items: center"
+              >
+                Ngày cấp dịch vụ: {{ today | date : 'dd/MM/yyyy' }}
+              </div>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+        <div class="text-label" style="margin-top: -24px">
+          Ngày hết hạn: 
+        </div>
+      </nz-card>
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông tin điều chỉnh</span>
+        </div>
+        <nz-alert
+          style="margin-bottom: 20px"
+          nzType="warning"
+          [nzDescription]="nzDescriptionWarning3"
+          nzShowIcon
+        ></nz-alert>
+        <ng-template #nzDescriptionWarning3>
+          <div>
+            Khi thực hiện tăng dung lượng Object Storage, chi phí mới sẽ được
+            tính từ ngày điều chỉnh cho tới ngày hết hạn
+          </div>
+        </ng-template>
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Dung lượng tăng thêm - GB (<span class="text-red">*</span
+            >)</nz-form-label
+          >
+          <nz-form-control>
+            <nz-input-number
+              style="width: 100%; margin-left: 0px"
+              [nzMin]="0"
+              [nzMax]="1000"
+              [nzStep]="1"
+              [(ngModel)]="objectStorageCreate.quota"
+              [ngModelOptions]="{ standalone: true }"
+              nzSize="large"
+            ></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+        <div style="margin-top: 20px" class="text-label">
+          Ngày điều chỉnh: {{ today | date : 'dd/MM/yyyy' }}
+        </div>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Chi phí ước tính</span>
+        </div>
+        <div style="margin-bottom: 10px">
+          <span class="text-value"> Dung lượng </span><br />
+          <span class="text-label">{{ objectStorageCreate.quota }} GB</span>
+        </div>
+        <nz-row
+          style="
+            margin-bottom: 10px;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 10px;
+          "
+          nzGutter="16"
+        >
+          <nz-col nzSpan="16">
+            <span class="text-value">
+              Chi phí <span>{{ numberMonth }}</span> tháng
+            </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount | number }} VNĐ
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row
+          style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          "
+          nzGutter="16"
+        >
+          <nz-col nzSpan="16">
+            <span class="text-label">Tổng thanh toán</span><br />
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #ea3829" nzAlign="right">
+              {{ totalincludesVAT | number }}
+              VNĐ
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%" class="text-right">
+            <button
+              style="width: 100%"
+              nz-button
+              nzSize="large"
+              nzType="primary"
+              (click)="update()"
+            >
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              Khởi tạo
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</form>

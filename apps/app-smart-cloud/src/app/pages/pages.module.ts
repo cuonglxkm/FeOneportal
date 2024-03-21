@@ -153,6 +153,12 @@ import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-
 import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
 import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
+import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
+import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
+import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
+import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
 import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
 import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
@@ -171,6 +177,19 @@ import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
 import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
+import { DeleteFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/delete-file-system-snapshot-schedule-file-system-snapshot-schedule/delete-file-system-snapshot-schedule.component';
+import { EditFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
+import { PauseFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/pause-file-system-snapshot-schedule-file-system-snapshot-schedule/pause-file-system-snapshot-schedule.component';
+import { DeleteFileSystemSnapshotComponent } from './file-system-snapshot/delete-create-file-system-snapshot/delete-file-system-snapshot.component';
+import { EditFileSystemSnapshotComponent } from './file-system-snapshot/edit-file-system-snapshot/edit-file-system-snapshot.component';
+import { ObjectStorageComponent } from './object-storage/object-storage.component';
+import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
+import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
+import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
+import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
+import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -313,6 +332,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     LifecycleConfigComponent,
     BucketPolicyComponent,
     BucketCorsComponent,
+    BucketDetailComponent,
+    FileSystemSnapshotComponent,
+    FileSystemSnapshotDetailComponent,
+    CreateFileSystemSnapshotComponent,
+    CreateFileSystemSnapshotScheduleComponent,
+    FileSystemSnapshotScheduleComponent,
     ListFileSystemComponent,
     ListWanComponent,
     DeleteWanComponent,
@@ -331,6 +356,19 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateSubUserComponent,
     DeleteSubUserComponent,
     EditSubUserComponent,
+    DeleteFileSystemSnapshotScheduleComponent,
+    EditFileSystemSnapshotScheduleComponent,
+    PauseFileSystemSnapshotScheduleComponent,
+    DeleteFileSystemSnapshotComponent,
+    EditFileSystemSnapshotComponent,
+    DashboardObjectStorageComponent,
+    ObjectStorageComponent,
+    ObjectStorageCreateComponent,
+    ObjectStorageExtendComponent,
+    ObjectStorageEditComponent,
+    ChartComponent,
+    IsPermissionPipe,
+    S3KeyComponent,
   ],
   imports: [
     CommonModule,

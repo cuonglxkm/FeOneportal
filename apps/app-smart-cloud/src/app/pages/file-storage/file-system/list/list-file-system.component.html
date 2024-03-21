@@ -5,7 +5,7 @@
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/networks/file-storage/file-system/list'">File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -18,11 +18,11 @@
 </page-header>
 <nz-content>
   <nz-card style="border-radius: 8px;">
-    <nz-row>
+    <nz-row nzJustify="space-between">
       <nz-col [nzSpan]="8">
         <span class="text-card-header">Danh sách File System</span>
       </nz-col>
-      <nz-col [nzSpan]="16">
+      <nz-col [nzSpan]="16"  style="flex:none;">
         <div>
           <nz-input-group [nzPrefix]="prefixIconSearch"
                           nzSize="large"
@@ -36,14 +36,24 @@
           <ng-template #prefixIconSearch>
             <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
           </ng-template>
-          <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
+          <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
             <span class="button-text-primary">Tạo File System</span>
           </button>
         </div>
       </nz-col>
     </nz-row>
-    <nz-table>
+    <nz-table #fixTable
+              style="margin-top: 24px;"
+              nzShowPagination
+              [nzData]="response?.records"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
       <thead>
       <tr>
         <th>STT</th>
@@ -56,6 +66,38 @@
         <th>Thao tác</th>
       </tr>
       </thead>
+      <tbody>
+      <tr *ngFor="let data of fixTable.data; index as i">
+        <td>{{ i + 1 }}</td>
+        <td><a [href]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
+        <td>{{ data.statusDisplay }}</td>
+        <td>{{ data.status }}</td>
+        <td>{{ data.type }}</td>
+        <td>{{ data.protocol }}</td>
+        <td>{{ data.size }}</td>
+        <td>
+          <div>
+            <one-portal-edit-file-system [region]="region"
+                                         [project]="project"
+                                         [fileSystemId]="data.id"
+                                         (onOk)="handleOkEdit()"/>
+            <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                  [nzDropdownMenu]="opMenu"></span>
+            <nz-dropdown-menu #opMenu="nzDropdownMenu" >
+              <ul nz-menu>
+                <li nz-menu-item>Tạo Snapshot</li>
+                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/extend/' + data.id">Điều chỉnh dung lượng</li>
+                <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">Quản lý Access Rule</li>
+                <one-portal-delete-file-system [region]="region"
+                                               [project]="project"
+                                               [fileSystemId]="data.id"
+                                               (onOk)="handleOkDelete()" />
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+        </td>
+      </tr>
+      </tbody>
     </nz-table>
   </nz-card>
 </nz-content>

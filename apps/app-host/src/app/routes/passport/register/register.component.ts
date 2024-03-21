@@ -177,7 +177,11 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.router.navigate(['passport', 'register-result'], {queryParams: {email: data.email}});
       }, error => {
-        this.notification.error('Tạo tài khoản thất bại!', `Xin vui lòng thử lại sau.`);
+        let message = 'Xin vui lòng thử lại sau.'
+        if (error.error && error.error.detail) {
+          message = error.error.detail;
+        }
+        this.notification.error('Tạo tài khoản không thành công!', message);
       });
   }
 

@@ -3,6 +3,7 @@ export class VpcModel {
   cloudIdentityId: number;
   cloudProjectName: string;
   description: string;
+  offerId: number;
   regionId: number;
   regionText: string;
   quotavCpu: number;
