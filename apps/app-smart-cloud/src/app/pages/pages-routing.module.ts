@@ -1,28 +1,28 @@
-import {RouterModule, Routes} from "@angular/router";
-import {UserProfileComponent} from "./user-profile/user-profile.component";
-import {NgModule, inject} from "@angular/core";
-import {V1Component} from "./test/v1.component";
-import {SecurityGroupComponent} from "./security-group/list-security-group/security-group.component";
-import {CreateSecurityGroupComponent} from "./security-group/create-security-group/create-security-group.component";
-import {CreateInboundComponent} from "./security-group/inbound/create/create-inbound.component";
-import {CreateOutboundComponent} from "./security-group/outbound/create/create-outbound.component";
-import {ListAllowAddressPairComponent} from "./allow-address-pair/list/list-allow-address-pair.component";
-import {BlankSecurityGroupComponent} from "./security-group/blank-security-group/blank-security-group.component";
-import { SshKeyComponent } from "./ssh-key/ssh-key.component";
-import { IpPublicComponent } from "./ip-public/ip-public.component";
-import {CreateUpdateIpPublicComponent} from "./ip-public/create-update-ip-public/create-update-ip-public.component";
-import {VolumeComponent} from "./volume/component/list-volume/volume.component";
-import {CreateVolumeComponent} from "./volume/component/create-volume/create-volume.component";
-import {DetailVolumeComponent} from "./volume/component/detail-volume/detail-volume.component";
-import {EditVolumeComponent} from "./volume/component/edit-volume/edit-volume.component";
-import { ActionHistoryComponent } from "./action-history/action-history.component";
-import {SnapshotVolumeListComponent} from "./snapshot-volume/snapshotvl-list/snapshotvl-list.component";
-import {SnappshotvlDetailComponent} from "./snapshot-volume/snapshotvl-detail/snappshotvl-detail.component";
-import {BlankBackupVmComponent} from "./backup-vm/blank/blank-backup-vm.component";
-import {ListBackupVmComponent} from "./backup-vm/list/list-backup-vm.component";
-import {RestoreBackupVmComponent} from "./backup-vm/restore/restore-backup-vm.component";
-import {DetailBackupVmComponent} from "./backup-vm/detail/detail-backup-vm.component";
-import {CreateBackupVmComponent} from "./backup-vm/create/create-backup-vm.component";
+import { RouterModule, Routes } from '@angular/router';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { NgModule , inject} from '@angular/core';
+import { V1Component } from './test/v1.component';
+import { SecurityGroupComponent } from './security-group/list-security-group/security-group.component';
+import { CreateSecurityGroupComponent } from './security-group/create-security-group/create-security-group.component';
+import { CreateInboundComponent } from './security-group/inbound/create/create-inbound.component';
+import { CreateOutboundComponent } from './security-group/outbound/create/create-outbound.component';
+import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
+import { BlankSecurityGroupComponent } from './security-group/blank-security-group/blank-security-group.component';
+import { SshKeyComponent } from './ssh-key/ssh-key.component';
+import { IpPublicComponent } from './ip-public/ip-public.component';
+import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
+import { VolumeComponent } from './volume/component/list-volume/volume.component';
+import { CreateVolumeComponent } from './volume/component/create-volume/create-volume.component';
+import { DetailVolumeComponent } from './volume/component/detail-volume/detail-volume.component';
+import { EditVolumeComponent } from './volume/component/edit-volume/edit-volume.component';
+import { ActionHistoryComponent } from './action-history/action-history.component';
+import { SnapshotVolumeListComponent } from './snapshot-volume/snapshotvl-list/snapshotvl-list.component';
+import { SnappshotvlDetailComponent } from './snapshot-volume/snapshotvl-detail/snappshotvl-detail.component';
+import { BlankBackupVmComponent } from './backup-vm/blank/blank-backup-vm.component';
+import { ListBackupVmComponent } from './backup-vm/list/list-backup-vm.component';
+import { RestoreBackupVmComponent } from './backup-vm/restore/restore-backup-vm.component';
+import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
+import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
 import {
   CreateBackupVolumeComponent
 } from "./volume/component/backup-volume/create-backup-volume/create-backup-volume.component";
@@ -99,7 +99,7 @@ import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.comp
 import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
 import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
-import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
 import { ListWanComponent } from './wan/list/list-wan.component';
@@ -112,12 +112,11 @@ import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-sche
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
 import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
-import { ObjectStorageComponent } from "./object-storage/object-storage.component";
-import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
-import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
-import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
+import { ObjectStorageComponent } from './object-storage/object-storage.component';
+import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
+import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { PolicyService } from "../shared/services/policy.service";
-import {S3KeyComponent} from "./object-storage/s3-key/s3-key.component";
+import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -460,7 +459,7 @@ const routes: Routes = [
   },
   {
     path: 'file-storage/file-system/extend/:id',
-    component: ExtendFileSystemComponent
+    component: ResizeFileSystemComponent
   },
   {
     path: 'file-storage/file-system/:idFileSystem/access-rule/list',

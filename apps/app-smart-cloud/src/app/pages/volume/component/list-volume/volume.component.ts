@@ -73,8 +73,8 @@ export class VolumeComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id;
-    this.typeVPC = project.type;
+    this.project = project?.id;
+    this.typeVPC = project?.type;
     this.isLoading = true;
     this.getListVolume(true);
   }
@@ -209,14 +209,14 @@ export class VolumeComponent implements OnInit {
           console.log(data);
 
           let volumeId = data.serviceId;
-  
+
           var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
           if (foundIndex > -1) {
             var record = this.response.records[foundIndex];
-  
+
             record.status = data.status;
             record.serviceStatus = data.serviceStatus;
-            
+
             this.response.records[foundIndex] = record;
             this.cdr.detectChanges();
           }
