@@ -4,7 +4,7 @@ def appName
 
 pipeline {
     
-    agent { label 'jenkins-oneportal' }
+    agent { label 'worker-6-agent||jenkins-oneportal' }
 
     environment {
         registry = "registry.onsmartcloud.com"
