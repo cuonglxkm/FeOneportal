@@ -115,7 +115,7 @@
                                     </li>
                                     <li nz-menu-item>
                                         <span nz-button nzType="text" (click)="detailTopic(data.topicName)">
-                                            <span nz-icon nzType="eye" nzTheme="outline"></span> Chi tiết
+                                            <span nz-icon nzType="eye" nzTheme="outline"></span> Danh sách messages
                                         </span>
                                     </li>
                                     <li nz-menu-item>
@@ -129,8 +129,8 @@
                                         </span>
                                     </li>
                                     <li nz-menu-item>
-                                        <span nz-button nzType="text" (click)="showDeleteConfirm(data)">
-                                            <span nz-icon nzType="delete" nzTheme="outline"></span> Xoá
+                                        <span nz-button nzDanger nzType="text" (click)="showDeleteConfirm(data)">
+                                            <span nz-icon nzType="delete" [nzTheme]="'twotone'" [nzTwotoneColor]="'#F13F30'"></span> Xoá
                                         </span>
                                     </li>
                                 </ul>
