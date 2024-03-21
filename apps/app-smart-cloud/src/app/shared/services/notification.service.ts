@@ -17,39 +17,39 @@ export class NotificationService extends BaseService {
   }
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
-    
-    var tokenModel = this.tokenService.get();
-    
-    if (tokenModel == null || Object.keys(tokenModel).length === 0) {
-      return;
-    }
-
-    console.log("start signalR connection");
-
-    try {
-      this.connection = new signalR.HubConnectionBuilder()
-        .withUrl(this.hubUrl, {
-            skipNegotiation: true,
-            transport: signalR.HttpTransportType.WebSockets,
-            accessTokenFactory: () => {
-              return this.getAccessToken();
-            }
-        })
-        .configureLogging(signalR.LogLevel.None)
-        .withAutomaticReconnect()
-        .build();
-
-      await this.connection.start();
-      if (isRegisterGlobalMessage == true) {
-        this.registerGlobalNotification();
-      }
-      
-      //this.notification.success('Thông báo', 'Kết nối tới máy chủ thành công')
-    }
-    catch (error) {
-      console.log(`SignalR connection error: ${error}`);
-      //this.notification.error('Lỗi máy chủ', 'Kết nối tới máy chủ đang bị gián đoạn')
-    }
+    //
+    // var tokenModel = this.tokenService.get();
+    //
+    // if (tokenModel == null || Object.keys(tokenModel).length === 0) {
+    //   return;
+    // }
+    //
+    // console.log("start signalR connection");
+    //
+    // try {
+    //   this.connection = new signalR.HubConnectionBuilder()
+    //     .withUrl(this.hubUrl, {
+    //         skipNegotiation: true,
+    //         transport: signalR.HttpTransportType.WebSockets,
+    //         accessTokenFactory: () => {
+    //           return this.getAccessToken();
+    //         }
+    //     })
+    //     .configureLogging(signalR.LogLevel.None)
+    //     .withAutomaticReconnect()
+    //     .build();
+    //
+    //   await this.connection.start();
+    //   if (isRegisterGlobalMessage == true) {
+    //     this.registerGlobalNotification();
+    //   }
+    //
+    //   //this.notification.success('Thông báo', 'Kết nối tới máy chủ thành công')
+    // }
+    // catch (error) {
+    //   console.log(`SignalR connection error: ${error}`);
+    //   //this.notification.error('Lỗi máy chủ', 'Kết nối tới máy chủ đang bị gián đoạn')
+    // }
   }
 
   public getAccessToken() {
