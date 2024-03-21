@@ -37,6 +37,7 @@ export class StartupService {
   }
 
   load(): Observable<void> {
+
     const defaultLang = this.i18n.defaultLang;
     const baseUrl = environment['baseUrl'];
 
