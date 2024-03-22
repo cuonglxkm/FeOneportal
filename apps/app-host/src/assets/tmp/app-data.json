@@ -87,7 +87,7 @@
           "children": [
             {
               "text": "VM (Máy ảo)",
-              "icon": {"type": "svg", "value":"assets/imgs/ph_laptop-light.svg"},
+              "icon": "anticon-laptop",
               "link": "/app-smart-cloud/instances"
             },
             {

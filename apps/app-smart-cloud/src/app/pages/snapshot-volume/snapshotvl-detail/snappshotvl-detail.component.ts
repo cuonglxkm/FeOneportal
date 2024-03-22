@@ -1,12 +1,11 @@
-import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {PopupDeleteSnapshotVolumeComponent} from "../popup-snapshot/popup-delete-snapshot-volume.component";
-import {PopupEditSnapshotVolumeComponent} from "../popup-snapshot/popup-edit-snapshot-volume.component";
-import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
-import {messages} from "nx/src/utils/ab-testing";
-import {EditSnapshotVolume} from "../../../shared/models/snapshotvl.model";
-import {NzMessageService} from "ng-zorro-antd/message";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
+import { EditSnapshotVolume } from '../../../shared/models/snapshotvl.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-snapshot-volume-detail',
@@ -14,46 +13,55 @@ import {NzMessageService} from "ng-zorro-antd/message";
   styleUrls: ['./snappshotvl-detail.component.less'],
 })
 export class SnappshotvlDetailComponent implements OnInit {
+  headerInfo: any;
 
-  headerInfo : any;
-
-  regionSearch : number;
-  projectSearch : number;
   isEdit: boolean;
   snapshotId: number;
   snapshotName: string;
   snapshotSize: number;
   snapshotDesc: string;
   snapshotVolumeName: string;
-  snapshotVPC:string;
   snapshotVlCreateDate: string;
   isLoading: boolean;
   isShowWarningSnapshotVlName: boolean;
   contentWarningSnapshotVlName: string;
-  ngOnInit(): void {
 
+  form = new FormGroup({
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.max(50),
+        Validators.pattern(/^[a-zA-Z0-9]+$/),
+      ],
+    }),
+  });
+
+  constructor(
+    private router: Router,
+    private snapshotVlService: SnapshotVolumeService,
+    private activatedRoute: ActivatedRoute,
+    private notification: NzNotificationService
+  ) {}
+
+  ngOnInit(): void {
     const idSnapshotVl = this.activatedRoute.snapshot.paramMap.get('id');
     this.snapshotId = Number.parseInt(idSnapshotVl);
 
-    this.activatedRoute.queryParams.subscribe(queryParams => {
-      this.isEdit =  queryParams['edit'];
-      if(this.isEdit){
+    this.activatedRoute.queryParams.subscribe((queryParams) => {
+      this.isEdit = queryParams['edit'];
+      if (this.isEdit) {
+        this.form.controls['name'].enable();
         this.headerInfo = {
-          breadcrumb1: 'Home',
-          breadcrumb2: 'Dịch vụ',
-          breadcrumb3: 'Snapshot Volume',
-          content: 'Chỉnh sửa Snapshot Volume'
+          breadcrumb: 'Chỉnh sửa',
+          content: 'Chỉnh sửa Snapshot Volume',
         };
         this.getSnapshotVolume(idSnapshotVl);
-
-
-      }else{
-        this.isEdit = false;
+      } else {
+        this.form.controls['name'].disable();
         this.headerInfo = {
-          breadcrumb1: 'Home',
-          breadcrumb2: 'Dịch vụ',
-          breadcrumb3: 'Snapshot Volume',
-          content: 'Xem chi tiết Snapshot Volume'
+          breadcrumb: 'Chi tiết',
+          content: 'Xem chi tiết Snapshot Volume',
         };
 
         this.getSnapshotVolume(idSnapshotVl);
@@ -63,105 +71,60 @@ export class SnappshotvlDetailComponent implements OnInit {
 
   private getSnapshotVolume(idSnapshotVl: string) {
     this.isLoading = true;
-    this.snapshotVlService.getSnapshotVolumeById(idSnapshotVl).subscribe(data => {
-      if (data !== undefined && data != null){
+    this.snapshotVlService.getSnapshotVolumeById(idSnapshotVl).subscribe({
+      next: (data) => {
         this.snapshotName = data.name;
         this.snapshotSize = data.sizeInGB;
         this.snapshotDesc = data.description;
         this.snapshotVolumeName = data.volumeName;
         this.snapshotVlCreateDate = data.startDate;
-        this.snapshotVPC = data.projectName;
-        this.isLoading = false;
-      }else{
-      }
-
-    })
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy chi tiết Snapshot Volume không thành công'
+        );
+      },
+    });
   }
 
   getProjectId(projectId: number) {
-    this.projectSearch = projectId;
+    this.backToListPage();
   }
 
   getRegionId(regionId: number) {
-    this.regionSearch = regionId;
-  }
-  constructor(private router: Router, private snapshotVlService: SnapshotVolumeService,
-              private activatedRoute: ActivatedRoute, private modalService: NzModalService,
-              private message: NzMessageService) {
+    this.backToListPage();
   }
 
-  backTOListPage(){
+  backToListPage() {
     this.router.navigate(['/app-smart-cloud/snapshotvls']);
   }
 
-  changeSnapshotName(){
-    this.isShowWarningSnapshotVlName = false;
-    this.contentWarningSnapshotVlName = null;
-    //check empty
-    if(this.snapshotName.trim() == '' ||  this.snapshotName === undefined){
-      this.isShowWarningSnapshotVlName = true;
-      this.contentWarningSnapshotVlName = 'Tên Snapshot Volume không được để trống.';
-    }
-    //check special
-    if(this.checkSpecialSnapshotName(this.snapshotName)){
-      this.isShowWarningSnapshotVlName = true;
-      this.contentWarningSnapshotVlName = 'Tên Snapshot Volume không được chứa ký tự đặc biệt.';
-    }
+  isVisibleUpdate: boolean = false;
+  modalUpdate() {
+    this.isVisibleUpdate = true;
   }
-  private checkSpecialSnapshotName( str: string): boolean{
-    //check ký tự đặc biệt
-    const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    return specialCharacters.test(str);
-  }
-
-
-  private doEditSnapshot() {
-    this.isLoading = true;
+  handleOkUpdate() {
+    this.isVisibleUpdate = false;
     let editRequest = new EditSnapshotVolume();
     editRequest.name = this.snapshotName;
     editRequest.id = this.snapshotId;
     editRequest.description = this.snapshotDesc;
-    this.snapshotVlService.editSnapshotVolume(editRequest).subscribe(
-      (data) => {
-        this.isLoading = false;
-        this.message.create('success', 'Chỉnh sửa Snapshot Volume thành công')
-        this.router.navigate(['/app-smart-cloud/snapshotvls']);
+    this.snapshotVlService.editSnapshotVolume(editRequest).subscribe({
+      next: (data) => {
+        this.notification.success('', 'Cập nhật Snapshot Volume thành công');
+        this.backToListPage();
       },
-      (error) => {
-      this.isLoading = false;
-        console.error('Lỗi:', error);
-
-        if (error.status === 404) {
-          this.message.create('error', 'Không tìm thấy thông tin Snapshot Volume')
-        } else if (error.status === 500) {
-          this.message.create('error', 'Lỗi Sever.')
-        } else {
-        }
-      })
-  }
-
-  editSnapshot(){
-    const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Xác định điều chỉnh Snapshot Volume',
-      nzWidth: '600px',
-      nzContent: PopupEditSnapshotVolumeComponent,
-      nzFooter: [
-        {
-          label: 'Hủy',
-          type: 'default',
-          onClick: () => modal.destroy()
-        },
-        {
-          label: 'Đồng ý',
-          type: 'primary',
-          onClick: () => {
-            this.doEditSnapshot()
-            modal.destroy();
-          }
-        }
-      ]
+      error: (error) => {
+        this.notification.error(
+          error.statusText,
+          'Cập nhật Snapshot Volume không thành công'
+        );
+        this.backToListPage();
+      },
     });
   }
-
-    protected readonly navigator = navigator;
+  handleCancelUpdate() {
+    this.isVisibleUpdate = false;
+  }
 }

@@ -330,17 +330,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   initSnapshot(): void {
     if (this.isSnapshot) {
       this.snapshotVLService
-        .getSnapshotVolumes(
-          this.tokenService.get()?.userId,
-          this.projectId,
-          this.region,
-          this.size,
-          99999,
-          1,
-          this.status,
-          '',
-          ''
-        )
+        .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
         .subscribe((data: any) => {
           this.listSnapshot = data.records.filter(
             (e: any) => e.fromRootVolume == true
