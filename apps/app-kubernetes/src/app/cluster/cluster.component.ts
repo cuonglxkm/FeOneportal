@@ -91,7 +91,7 @@ export class ClusterComponent implements OnInit {
       // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
-      cidr: [this.DEFAULT_CIDR, Validators.required],
+      cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)([/][0-3][0-2]?|[/][1-2][0-9]|[/][0-9])?$')]],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
       subnet: [null, [Validators.required]],
 

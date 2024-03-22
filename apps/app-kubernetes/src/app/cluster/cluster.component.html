@@ -235,7 +235,11 @@
         </div>
 
         <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
-          <span nz-icon nzType="plus" nzTheme="outline"></span>
+          <span nz-icon>
+            <svg viewBox="64 64 896 896" focusable="false">
+              <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" /><path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
+            </svg>
+          </span>
           Thêm worker group
         </button>
 
@@ -275,7 +279,7 @@
                 </button>
                 <div class="small-description">
                   <small>Chọn một VPC cho kubernetes cluster của bạn.
-                    <a routerLink="" target="_balnk">Nhấp vào đây để quản lý các VPC của bạn</a>
+                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_balnk">Nhấp vào đây để quản lý các VPC của bạn</a>
                   </small>
                 </div>
               </nz-form-control>
@@ -284,10 +288,18 @@
 
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="cidr">CIDR</nz-form-label>
-              <nz-form-control nzErrorTip="CIDR không để trống">
-                <input type="text" nz-input formControlName="cidr" readonly />
+              <nz-form-label nzRequired nzFor="cidr">{{networkType == 'calico' ? 'Calico' : 'Cilium'}} CIDR</nz-form-label>
+              <nz-form-control [nzErrorTip]="cidrErrorTpl">
+                <input type="text" nz-input formControlName="cidr" placeholder="Nhập CIDR"/>
               </nz-form-control>
+              <ng-template #cidrErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  CIDR không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">
+                  CIDR không đúng định dạng
+                </ng-container>
+              </ng-template>
             </nz-form-item>
 
             <nz-form-item>
@@ -336,15 +348,6 @@
                 </ng-container>
               </ng-template>
             </nz-form-item>
-
-            <nz-form-item>
-              <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
-              <nz-form-control nzErrorTip="Thời gian sử dụng không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn thời gian sử dụng" formControlName="usageTime" id="usageTime">
-                  <nz-option *ngFor="let item of listOfUsageTime" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
           </div>
 
           <div nz-col [nzSpan]="12">
@@ -357,13 +360,30 @@
                 </nz-radio-group>
               </nz-form-control>
             </nz-form-item>
+          </div>
+        </div>
 
+      </nz-card>
+
+      <nz-card class="border-card">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
+              <nz-form-control nzErrorTip="Thời gian sử dụng không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn thời gian sử dụng" formControlName="usageTime" id="usageTime">
+                  <nz-option *ngFor="let item of listOfUsageTime" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
             <div>
               <p class="padtop-35">Thời gian bắt đầu sử dụng: {{currentDate}}</p>
             </div>
           </div>
         </div>
-
       </nz-card>
 
     </form>
