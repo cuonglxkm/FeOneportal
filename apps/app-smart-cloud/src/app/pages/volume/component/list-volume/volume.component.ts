@@ -203,10 +203,11 @@ export class VolumeComponent implements OnInit {
     // this.getListVolume(true)
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
+    }
+    else
+    {
       this.notificationService.connection.on('UpdateVolume', (data) => {
         if (data) {
-          console.log(data);
-
           let volumeId = data.serviceId;
 
           var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
