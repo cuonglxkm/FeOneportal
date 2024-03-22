@@ -175,7 +175,7 @@
         ></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="CUSTOM ACTION">
-        <nz-option nzLabel="SELECT ALL"></nz-option>
+        <nz-option nzValue="selectAll" nzLabel="SELECT ALL"></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="GROUP BUCKET">
         <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
@@ -183,6 +183,157 @@
           nzValue="DeleteBucketPolicy"
           nzLabel="DeleteBucketPolicy"
         ></nz-option>
+        <nz-option nzValue="DeleteBucket" nzLabel="DeleteBucket"></nz-option>
+        <nz-option
+          nzValue="DeleteBucketWebsite"
+          nzLabel="DeleteBucketWebsite"
+        ></nz-option>
+        <nz-option nzValue="GetBucketAcl" nzLabel="GetBucketAcl"></nz-option>
+        <nz-option nzValue="GetBucketCORS" nzLabel="GetBucketCORS"></nz-option>
+        <nz-option
+          nzValue="GetBucketLocation"
+          nzLabel="GetBucketLocation"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketLogging"
+          nzLabel="GetBucketLogging"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketNotification"
+          nzLabel="GetBucketNotification"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketPolicy"
+          nzLabel="GetBucketPolicy"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketRequestPayment"
+          nzLabel="GetBucketRequestPayment"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketTagging"
+          nzLabel="GetBucketTagging"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketVersioning"
+          nzLabel="GetBucketVersioning"
+        ></nz-option>
+        <nz-option
+          nzValue="ListAllMyBuckets"
+          nzLabel="ListAllMyBuckets"
+        ></nz-option>
+        <nz-option
+          nzValue="ListBucketMultiPartUploads"
+          nzLabel="ListBucketMultiPartUploads"
+        ></nz-option>
+        <nz-option nzValue="ListBucket" nzLabel="ListBucket"></nz-option>
+        <nz-option
+          nzValue="ListBucketVersions"
+          nzLabel="ListBucketVersions"
+        ></nz-option>
+        <nz-option nzValue="PutBucketAcl" nzLabel="PutBucketAcl"></nz-option>
+        <nz-option nzValue="PutBucketCORS" nzLabel="PutBucketCORS"></nz-option>
+        <nz-option
+          nzValue="PutBucketLogging"
+          nzLabel="PutBucketLogging"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketNotification"
+          nzLabel="PutBucketNotification"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketPolicy"
+          nzLabel="PutBucketPolicy"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketRequestPayment"
+          nzLabel="PutBucketRequestPayment"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketTagging"
+          nzLabel="PutBucketTagging"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketVersioning"
+          nzLabel="PutBucketVersioning"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketWebsite"
+          nzLabel="PutBucketWebsite"
+        ></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP OBJECT">
+        <nz-option nzValue="DeleteObject" nzLabel="DeleteObject"></nz-option>
+        <nz-option
+          nzValue="DeleteObjectVersion"
+          nzLabel="DeleteObjectVersion"
+        ></nz-option>
+        <nz-option nzValue="GetObjectAcl" nzLabel="GetObjectAcl"></nz-option>
+        <nz-option nzValue="GetObject" nzLabel="GetObject"></nz-option>
+        <nz-option
+          nzValue="GetObjectTorrent"
+          nzLabel="GetObjectTorrent"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObjectVersionAcl"
+          nzLabel="GetObjectVersionAcl"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObjectVersion"
+          nzLabel="GetObjectVersion"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObjectVersionTorrent"
+          nzLabel="GetObjectVersionTorrent"
+        ></nz-option>
+        <nz-option nzValue="PutObjectAcl" nzLabel="PutObjectAcl"></nz-option>
+        <nz-option nzValue="PutObject" nzLabel="PutObject"></nz-option>
+        <nz-option
+          nzValue="PutObjectVersionAcl"
+          nzLabel="PutObjectVersionAcl"
+        ></nz-option>
+        <nz-option nzValue="RestoreObject" nzLabel="RestoreObject"></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP CONFIG">
+        <nz-option
+          nzValue="GetLifecycleConfiguration"
+          nzLabel="GetLifecycleConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="GetReplicationConfiguration"
+          nzLabel="GetReplicationConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="PutAccelerateConfiguration"
+          nzLabel="PutAccelerateConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="PutLifecycleConfiguration"
+          nzLabel="PutLifecycleConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="PutReplicationConfiguration"
+          nzLabel="PutReplicationConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="DeleteReplicationConfiguration"
+          nzLabel="DeleteReplicationConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="GetAccelerateConfiguration"
+          nzLabel="GetAccelerateConfiguration"
+        ></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="OTHER GROUP">
+        <nz-option
+          nzValue="AbortMultipartUpload"
+          nzLabel="AbortMultipartUpload"
+        ></nz-option>
+        <nz-option
+          nzValue="ListMultipartUploadParts"
+          nzLabel="ListMultipartUploadParts"
+        >
+        </nz-option>
       </nz-option-group>
     </nz-select>
   </ng-container>
@@ -285,7 +436,7 @@
         ></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="CUSTOM ACTION">
-        <nz-option nzLabel="SELECT ALL"></nz-option>
+        <nz-option nzValue="selectAll" nzLabel="SELECT ALL"></nz-option>
       </nz-option-group>
       <nz-option-group nzLabel="GROUP BUCKET">
         <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
@@ -293,6 +444,157 @@
           nzValue="DeleteBucketPolicy"
           nzLabel="DeleteBucketPolicy"
         ></nz-option>
+        <nz-option nzValue="DeleteBucket" nzLabel="DeleteBucket"></nz-option>
+        <nz-option
+          nzValue="DeleteBucketWebsite"
+          nzLabel="DeleteBucketWebsite"
+        ></nz-option>
+        <nz-option nzValue="GetBucketAcl" nzLabel="GetBucketAcl"></nz-option>
+        <nz-option nzValue="GetBucketCORS" nzLabel="GetBucketCORS"></nz-option>
+        <nz-option
+          nzValue="GetBucketLocation"
+          nzLabel="GetBucketLocation"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketLogging"
+          nzLabel="GetBucketLogging"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketNotification"
+          nzLabel="GetBucketNotification"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketPolicy"
+          nzLabel="GetBucketPolicy"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketRequestPayment"
+          nzLabel="GetBucketRequestPayment"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketTagging"
+          nzLabel="GetBucketTagging"
+        ></nz-option>
+        <nz-option
+          nzValue="GetBucketVersioning"
+          nzLabel="GetBucketVersioning"
+        ></nz-option>
+        <nz-option
+          nzValue="ListAllMyBuckets"
+          nzLabel="ListAllMyBuckets"
+        ></nz-option>
+        <nz-option
+          nzValue="ListBucketMultiPartUploads"
+          nzLabel="ListBucketMultiPartUploads"
+        ></nz-option>
+        <nz-option nzValue="ListBucket" nzLabel="ListBucket"></nz-option>
+        <nz-option
+          nzValue="ListBucketVersions"
+          nzLabel="ListBucketVersions"
+        ></nz-option>
+        <nz-option nzValue="PutBucketAcl" nzLabel="PutBucketAcl"></nz-option>
+        <nz-option nzValue="PutBucketCORS" nzLabel="PutBucketCORS"></nz-option>
+        <nz-option
+          nzValue="PutBucketLogging"
+          nzLabel="PutBucketLogging"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketNotification"
+          nzLabel="PutBucketNotification"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketPolicy"
+          nzLabel="PutBucketPolicy"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketRequestPayment"
+          nzLabel="PutBucketRequestPayment"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketTagging"
+          nzLabel="PutBucketTagging"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketVersioning"
+          nzLabel="PutBucketVersioning"
+        ></nz-option>
+        <nz-option
+          nzValue="PutBucketWebsite"
+          nzLabel="PutBucketWebsite"
+        ></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP OBJECT">
+        <nz-option nzValue="DeleteObject" nzLabel="DeleteObject"></nz-option>
+        <nz-option
+          nzValue="DeleteObjectVersion"
+          nzLabel="DeleteObjectVersion"
+        ></nz-option>
+        <nz-option nzValue="GetObjectAcl" nzLabel="GetObjectAcl"></nz-option>
+        <nz-option nzValue="GetObject" nzLabel="GetObject"></nz-option>
+        <nz-option
+          nzValue="GetObjectTorrent"
+          nzLabel="GetObjectTorrent"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObjectVersionAcl"
+          nzLabel="GetObjectVersionAcl"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObjectVersion"
+          nzLabel="GetObjectVersion"
+        ></nz-option>
+        <nz-option
+          nzValue="GetObjectVersionTorrent"
+          nzLabel="GetObjectVersionTorrent"
+        ></nz-option>
+        <nz-option nzValue="PutObjectAcl" nzLabel="PutObjectAcl"></nz-option>
+        <nz-option nzValue="PutObject" nzLabel="PutObject"></nz-option>
+        <nz-option
+          nzValue="PutObjectVersionAcl"
+          nzLabel="PutObjectVersionAcl"
+        ></nz-option>
+        <nz-option nzValue="RestoreObject" nzLabel="RestoreObject"></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="GROUP CONFIG">
+        <nz-option
+          nzValue="GetLifecycleConfiguration"
+          nzLabel="GetLifecycleConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="GetReplicationConfiguration"
+          nzLabel="GetReplicationConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="PutAccelerateConfiguration"
+          nzLabel="PutAccelerateConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="PutLifecycleConfiguration"
+          nzLabel="PutLifecycleConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="PutReplicationConfiguration"
+          nzLabel="PutReplicationConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="DeleteReplicationConfiguration"
+          nzLabel="DeleteReplicationConfiguration"
+        ></nz-option>
+        <nz-option
+          nzValue="GetAccelerateConfiguration"
+          nzLabel="GetAccelerateConfiguration"
+        ></nz-option>
+      </nz-option-group>
+      <nz-option-group nzLabel="OTHER GROUP">
+        <nz-option
+          nzValue="AbortMultipartUpload"
+          nzLabel="AbortMultipartUpload"
+        ></nz-option>
+        <nz-option
+          nzValue="ListMultipartUploadParts"
+          nzLabel="ListMultipartUploadParts"
+        >
+        </nz-option>
       </nz-option-group>
     </nz-select>
   </ng-container>

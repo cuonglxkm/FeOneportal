@@ -21,7 +21,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RoutesModule} from "./routes/routes.module";
 
 const LANG = {
-  abbr: 'zh',
+  abbr: 'vi-VI',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,
