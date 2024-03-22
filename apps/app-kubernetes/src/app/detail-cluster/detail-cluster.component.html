@@ -122,8 +122,8 @@
                 </tr>
 
                 <tr>
-                  <td class="w-50"><row-data value="{{item.cpu}} vCPU/{{item.ram}} GiB" [label]="'Cấu hình'"></row-data></td>
-                  <td class="w-50"><row-data [value]="item.volumeSize" [label]="'Ổ cứng (GiB)'"></row-data></td>
+                  <td class="w-50"><row-data value="{{item.cpu}} vCPU/{{item.ram}} GB" [label]="'Cấu hình'"></row-data></td>
+                  <td class="w-50"><row-data [value]="item.volumeSize" [label]="'Ổ cứng (GB)'"></row-data></td>
                 </tr>
 
                 <tr>
@@ -199,7 +199,7 @@
           <tbody>
             <tr>
               <td class="w-50"><row-data [value]="detailCluster.volumeCloudType == 'hdd' ? 'HDD' : 'SSD'" [label]="'Loại'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.volumeCloudSize" [label]="'Kích thước (GiB)'"></row-data></td>
+              <td class="w-50"><row-data [value]="detailCluster.volumeCloudSize" [label]="'Kích thước (GB)'"></row-data></td>
             </tr>
           </tbody>
         </nz-table>

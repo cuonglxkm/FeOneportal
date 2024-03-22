@@ -188,7 +188,7 @@
                 </nz-form-item>
 
                 <nz-form-item>
-                  <nz-form-label nzRequired nzFor="volume">Ổ cứng (GiB)</nz-form-label>
+                  <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
                   <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
                     <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng"
                       formControlName="volumeStorage" id="volume" (keypress)="isNumber($event)" />
@@ -198,7 +198,7 @@
                       Dung lượng ổ cứng không để trống
                     </ng-container>
                     <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Dung lượng trong khoảng từ 20-1000 (GiB)
+                      Dung lượng trong khoảng từ 20-1000 (GB)
                     </ng-container>
                   </ng-template>
                 </nz-form-item>
@@ -322,7 +322,7 @@
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="volumeCloudSize">Kích thước (GiB)</nz-form-label>
+              <nz-form-label nzRequired nzFor="volumeCloudSize">Kích thước (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
                 <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập kích thước volume"
                 (keypress)="isNumber($event)" id="volumeCloudSize" />
@@ -332,7 +332,7 @@
                   Kích thước volume không để trống
                 </ng-container>
                 <ng-container *ngIf="control.hasError('max') || control.hasError('min')">
-                  Dung lượng trong khoảng từ 20-1000 (GiB)
+                  Dung lượng trong khoảng từ 20-1000 (GB)
                 </ng-container>
               </ng-template>
             </nz-form-item>
@@ -533,7 +533,7 @@
 
                 <div nz-row [nzGutter]="8">
                   <div nz-col [nzSpan]="12">
-                    <div class="mt-3 ml-3"><label>Ổ cứng (GiB)</label></div>
+                    <div class="mt-3 ml-3"><label>Ổ cứng (GB)</label></div>
                   </div>
                   <div nz-col [nzSpan]="12">
                     <div class="price-style mt-3 mr-3">{{control.get('volumeStorage').value}}</div>
@@ -596,7 +596,7 @@
             <h3>Cấu hình volume</h3>
             <div nz-row [nzGutter]="8">
               <div nz-col [nzSpan]="12">
-                <div class="ml-3"><label>Kích thước (GiB)</label></div>
+                <div class="ml-3"><label>Kích thước (GB)</label></div>
               </div>
               <div nz-col [nzSpan]="12">
                 <div class="price-style mr-3">{{volumeCloudSize}}</div>
