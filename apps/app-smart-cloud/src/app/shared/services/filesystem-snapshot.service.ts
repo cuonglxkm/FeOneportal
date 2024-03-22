@@ -6,7 +6,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FormAction, FormCreateIp, FormSearchIpFloating, IpFloating } from '../models/ip-floating.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
-import { FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
+import { FormCreateFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +54,11 @@ export class FileSystemSnapshotService extends BaseService {
       headers: this.getHeaders(),
       params: params
     })
+  }
+
+  create(formCreate: FormCreateFileSystemSnapShot) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/sharesnapshot',
+        Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
 
