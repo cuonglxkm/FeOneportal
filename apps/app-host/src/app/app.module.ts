@@ -54,8 +54,8 @@ const FORM_MODULES = [JsonSchemaModule];
 // #region Startup Service
 import { StartupService } from '@core';
 import {Observable} from "rxjs";
-// import { NotificationService } from "../../../app-smart-cloud/src/app/shared/services/notification.service";
 import { GlobalConfigModule } from './global-config.module';
+import { NotificationService } from '../../../../libs/common-utils/src/lib/notification-service';
 export function StartupServiceFactory(startupService: StartupService): () => Observable<void> {
   return () => startupService.load();
 }
@@ -67,13 +67,12 @@ const APPINIT_PROVIDES = [
     deps: [StartupService],
     multi: true
   },  // NotificationService,
-  // {
-  //   provide: APP_INITIALIZER,
-  //   useFactory: (notificationService: NotificationService) => () => notificationService.initiateSignalrConnection(true),
-  //   deps: [NotificationService],
-  //   multi: true,
-  // }
-
+  {
+    provide: APP_INITIALIZER,
+    useFactory: (notificationService: NotificationService) => () => notificationService.initiateSignalrConnection(true),
+    deps: [NotificationService],
+    multi: true,
+  }
 ];
 // #endregion
 
