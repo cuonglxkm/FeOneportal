@@ -17,9 +17,9 @@ export class NotificationService extends BaseService {
   }
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
-    
+
     var tokenModel = this.tokenService.get();
-    
+
     if (tokenModel == null || Object.keys(tokenModel).length === 0) {
       return;
     }
@@ -43,7 +43,7 @@ export class NotificationService extends BaseService {
       if (isRegisterGlobalMessage == true) {
         this.registerGlobalNotification();
       }
-      
+
       //this.notification.success('Thông báo', 'Kết nối tới máy chủ thành công')
     }
     catch (error) {

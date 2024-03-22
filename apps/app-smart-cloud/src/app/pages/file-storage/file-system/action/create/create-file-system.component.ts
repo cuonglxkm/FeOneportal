@@ -155,7 +155,7 @@ export class CreateFileSystemComponent implements OnInit {
     let request = new CreateFileSystemRequestModel()
     request.customerId = this.formCreate.customerId;
     request.createdByUserId = this.formCreate.customerId;
-    request.note = 'tạo volume';
+    request.note = 'Tạo File System';
     request.orderItems = [
       {
         orderItemQuantity: 1,
