@@ -1,22 +1,20 @@
 import { Inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BaseService } from './base.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationService extends BaseService {
-  hubUrl: string;
+export class NotificationService {
   public connection: any;
 
   constructor(private notification: NzNotificationService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-    this.hubUrl = this.baseUrl + '/notify';
   }
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
+
+    let hubUrl = 'http://127.0.0.1:1019' + '/notify';
 
     var tokenModel = this.tokenService.get();
 
@@ -24,11 +22,9 @@ export class NotificationService extends BaseService {
       return;
     }
 
-    console.log("start signalR connection");
-
     try {
       this.connection = new signalR.HubConnectionBuilder()
-        .withUrl(this.hubUrl, {
+        .withUrl(hubUrl, {
             skipNegotiation: true,
             transport: signalR.HttpTransportType.WebSockets,
             accessTokenFactory: () => {

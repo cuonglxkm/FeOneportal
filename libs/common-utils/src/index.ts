@@ -5,3 +5,4 @@ export * from './lib/shared-model'
 
 export * from './lib/pipes/safe.pipe'
 export * from './lib/slide-animation'
+export * from './lib/notification-service'
