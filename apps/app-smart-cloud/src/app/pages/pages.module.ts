@@ -233,7 +233,7 @@ import { ChartComponent } from './dashboard-object-storage/chart/chart.component
 import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { SafePipe } from '../../../../../libs/common-utils/src';
-import { ChartModule } from '@syncfusion/ej2-angular-charts';
+// import { ChartModule } from '@syncfusion/ej2-angular-charts';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -442,7 +442,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AngJsoneditorModule,
     ClipboardModule,
     SafePipe,
-    ChartModule
+    // ChartModule
   ]
 })
 export class PagesModule {}

@@ -51,6 +51,7 @@ export class OrderDetailComponent {
         )
         .subscribe({
           next: (data) => {
+            console.log(data);           
             this.data = data;
           },
           error: (e) => {
@@ -78,6 +79,7 @@ export class OrderDetailComponent {
         )
         .subscribe({
           next: (data) => {
+            console.log(data); 
             this.data = data;
           },
           error: (e) => {
