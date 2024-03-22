@@ -10,7 +10,7 @@ import {registerLocaleData} from "@angular/common";
 import {NZ_DATE_LOCALE, provideNzI18n,  vi_VN as zorroLang } from "ng-zorro-antd/i18n";
 import {ALAIN_I18N_TOKEN, DELON_LOCALE, en_US as delonLang} from "@delon/theme";
 import {zhCN as dateLang} from "date-fns/locale";
-import { default as ngLang } from '@angular/common/locales/zh';
+import { default as ngLang } from '@angular/common/locales/en';
 import {LayoutModule} from "./layout/layout.module";
 import {JsonSchemaModule, SharedModule} from "@shared";
 import {STWidgetModule} from "./shared/st-widget/st-widget.module";
@@ -21,7 +21,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RoutesModule} from "./routes/routes.module";
 
 const LANG = {
-  abbr: 'vi-VI',
+  abbr: 'en-US',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,
@@ -79,7 +79,8 @@ const FORM_MODULES = [JsonSchemaModule];
     ...FORM_MODULES,
     HttpClientModule
   ],
-  providers: [...LANG_PROVIDES,
+  providers: [
+    // ...LANG_PROVIDES,
     // ...INTERCEPTOR_PROVIDES,
     ...I18NSERVICE_PROVIDES,
     ...APPINIT_PROVIDES],
