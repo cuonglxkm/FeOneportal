@@ -118,6 +118,7 @@ import { ObjectStorageEditComponent } from './object-storage/object-storage-edit
 import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
+
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
   {
@@ -342,7 +343,7 @@ const routes: Routes = [
     component: SnapshotScheduleEditComponent
   },
   {
-    path: 'billing/payments/detail/:id',
+    path: 'billing/payments/detail/:id/:orderNumber',
     component: PaymentDetailComponent
   },
   {
@@ -536,6 +537,10 @@ const routes: Routes = [
   {
     path:'object-storage/bucket/:name',
     component: BucketDetailComponent
+  },
+  {
+    path: 'vpn-site-to-site',
+    loadChildren: () => import('../pages/vpn-site-to-site/vpn-site-to-site.module').then(m => m.VpnSiteToSiteModule)
   },
   {
     path:'object-storage/s3-key',

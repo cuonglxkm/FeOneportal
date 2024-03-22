@@ -235,7 +235,6 @@ import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { TreeFolderComponent } from './bucket/bucket-detail/share/tree-folder.component';
 import { SafePipe } from '../../../../../libs/common-utils/src';
 import { ChartModule } from '@syncfusion/ej2-angular-charts';
-
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -417,7 +416,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     TreeFolderComponent,
   ],
   imports: [
-    CommonModule,
+  CommonModule,
     ReactiveFormsModule,
     G2MiniBarModule,
     PagesRoutingModule,

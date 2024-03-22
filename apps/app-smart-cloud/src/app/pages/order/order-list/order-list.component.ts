@@ -43,7 +43,8 @@ export class OrderListComponent implements OnInit {
   totalData: number;
   isLoadingEntities: boolean;
   customerID: number;
-
+  
+  value?: string;
   actionSelected: number;
 
   onQueryParamsChange(params: NzTableQueryParams) {
@@ -116,8 +117,10 @@ export class OrderListComponent implements OnInit {
   }
 
   onInputChange(value: string) {
-    this.searchName = value;
+    this.orderCode = value.toUpperCase();
     console.log('input text: ', this.searchName);
+    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
+      null, null, null, null, null, null, this.fromDate, this.toDate, this.searchStatus);
   }
 
   navigateToCreate() {
