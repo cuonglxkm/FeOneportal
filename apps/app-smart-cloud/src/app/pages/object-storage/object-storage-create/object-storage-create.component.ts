@@ -3,13 +3,20 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { addDays } from 'date-fns';
 import { ObjectStorageCreate } from 'src/app/shared/models/object-storage.model';
-import { OrderService } from 'src/app/shared/services/order.service';
-import { Order, OrderItem } from '../../instances/instances.model';
+import {
+  DataPayment,
+  ItemPayment,
+  Order,
+  OrderItem,
+} from '../../instances/instances.model';
+import { Subject, debounceTime } from 'rxjs';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
 @Component({
   selector: 'one-portal-object-storage-create',
@@ -17,7 +24,7 @@ import { Order, OrderItem } from '../../instances/instances.model';
   styleUrls: ['../object-storage.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ObjectStorageCreateComponent {
+export class ObjectStorageCreateComponent implements OnInit {
   today: Date = new Date();
   numberMonth: number = 1;
   expiredDate: Date = addDays(this.today, 30);
@@ -25,10 +32,14 @@ export class ObjectStorageCreateComponent {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private service: OrderService,
+    private service: ObjectStorageService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
+
+  ngOnInit(): void {
+    this.getTotalAmount();
+  }
 
   onChangeTime() {
     let lastDate = new Date();
@@ -36,13 +47,7 @@ export class ObjectStorageCreateComponent {
     this.expiredDate = lastDate;
   }
 
-  totalAmount: number = 0;
-  totalincludesVAT: number = 0;
-  getTotalAmout() {}
-
-  order: Order = new Order();
-  orderItem: OrderItem[] = [];
-  create() {
+  initObjectStorage() {
     this.objectStorageCreate.customerId = this.tokenService.get()?.userId;
     this.objectStorageCreate.userEmail = this.tokenService.get()?.email;
     this.objectStorageCreate.actorEmail = this.tokenService.get()?.email;
@@ -58,7 +63,46 @@ export class ObjectStorageCreateComponent {
       .toISOString()
       .substring(0, 19);
     this.objectStorageCreate.offerId = 0;
+  }
 
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
+  dataSubject: Subject<any> = new Subject<any>();
+  changeTotalAmount(value: number) {
+    this.dataSubject.next(value);
+  }
+  getTotalAmount() {
+    this.dataSubject
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.initObjectStorage();
+        let itemPayment: ItemPayment = new ItemPayment();
+        itemPayment.orderItemQuantity = 1;
+        itemPayment.specificationString = JSON.stringify(
+          this.objectStorageCreate
+        );
+        itemPayment.specificationType = 'objectstorage_create';
+        itemPayment.serviceDuration = this.numberMonth;
+        itemPayment.sortItem = 0;
+        let dataPayment: DataPayment = new DataPayment();
+        dataPayment.orderItems = [itemPayment];
+        this.service.getTotalAmount(dataPayment).subscribe((result) => {
+          console.log('thanh tien', result);
+          this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+          this.totalincludesVAT = Number.parseFloat(
+            result.data.totalPayment.amount
+          );
+          this.cdr.detectChanges();
+        });
+      });
+  }
+
+  order: Order = new Order();
+  orderItem: OrderItem[] = [];
+  create() {
+    this.initObjectStorage();
     let specification = JSON.stringify(this.objectStorageCreate);
     let orderItemOS = new OrderItem();
     orderItemOS.orderItemQuantity = 1;

@@ -191,4 +191,39 @@ export class PolicyService extends BaseService {
     return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
   }
 
+  getUserPermissions(): Observable<any> {
+    localStorage.removeItem('PermissionOPA')
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', this.httpOptions);
+  }
+
+  hasPermission(action: string): boolean {
+    if (localStorage.getItem('PermissionOPA') != null) {
+      var permission = JSON.parse(localStorage.getItem('PermissionOPA'));
+      return this.isPermission(action, permission);
+    } else {
+      this.getUserPermissions().pipe().subscribe( (permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        return this.isPermission(action, permission);
+      });
+    }
+    
+  }
+
+  isPermission(action, permission): boolean {
+    if(permission['IsAdmin']){
+      return true;
+    }
+    if(permission['Permissions']){
+      let actionItems = action.split(":");
+      let denyActions = permission['Permissions']['DenyActions'] ? permission['Permissions']['DenyActions'] : [];
+      let allowActions = permission['Permissions']['AllowActions'] ? permission['Permissions']['AllowActions'] : [];
+      if(denyActions.includes(action) || denyActions.includes(actionItems[0] + ":*")){
+        return false;
+      }
+      if(allowActions.includes(action) || allowActions.includes(actionItems[0] + ":*")){
+        return true;
+      }
+    }
+    return false;
+  }
 }

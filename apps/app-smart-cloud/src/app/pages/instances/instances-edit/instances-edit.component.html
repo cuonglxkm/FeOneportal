@@ -139,12 +139,13 @@
                       [nzDescription]="nzDescriptionselectedHDDorSSD1"
                     >
                       <ng-template #nzAvatarselectedHDDorSSD1>
-                        <input
-                          type="radio"
-                          [disabled]="true"
-                          [checked]="activeBlockHDD"
+                        <label
+                          nz-radio
+                          [ngModel]="activeBlockHDD"
+                          [nzDisabled]="true"
+                          [ngModelOptions]="{ standalone: true }"
                           (click)="initHDD()"
-                        />
+                        ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD1>
                         <b>HDD</b>
@@ -200,12 +201,13 @@
                       [nzDescription]="nzDescriptionselectedHDDorSSD2"
                     >
                       <ng-template #nzAvatarselectedHDDorSSD2>
-                        <input
-                          type="radio"
-                          [disabled]="true"
-                          [checked]="activeBlockSSD"
+                        <label
+                          nz-radio
+                          [ngModel]="activeBlockSSD"
+                          [nzDisabled]="true"
+                          [ngModelOptions]="{ standalone: true }"
                           (click)="initSSD()"
-                        />
+                        ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD2>
                         <b>SSD</b>

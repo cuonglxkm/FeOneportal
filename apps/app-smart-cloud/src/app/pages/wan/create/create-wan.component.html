@@ -30,7 +30,7 @@
           <nz-select formControlName="wanId"
                      nzPlaceHolder="Chọn dải IP WAN">
             <nz-option *ngFor="let item of response?.records" [nzValue]="item.id"
-                       nzLabel="{{item.name}} - ({{ item.subnetAddressRequired }})"></nz-option>
+                       nzLabel="{{item.wanName}} - ({{ item.subnetAddressRequired }})"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>

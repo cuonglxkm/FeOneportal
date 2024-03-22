@@ -7,8 +7,8 @@ import {SimpleInterceptor} from "@delon/auth";
 import {DefaultInterceptor, I18NService, StartupService} from "./core";
 import {Observable} from "rxjs";
 import {registerLocaleData} from "@angular/common";
-import {NZ_DATE_LOCALE, provideNzI18n,  zh_CN as zorroLang } from "ng-zorro-antd/i18n";
-import {ALAIN_I18N_TOKEN, DELON_LOCALE, zh_CN as delonLang} from "@delon/theme";
+import {NZ_DATE_LOCALE, provideNzI18n,  vi_VN as zorroLang } from "ng-zorro-antd/i18n";
+import {ALAIN_I18N_TOKEN, DELON_LOCALE, en_US as delonLang} from "@delon/theme";
 import {zhCN as dateLang} from "date-fns/locale";
 import { default as ngLang } from '@angular/common/locales/zh';
 import {LayoutModule} from "./layout/layout.module";
@@ -21,7 +21,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RoutesModule} from "./routes/routes.module";
 
 const LANG = {
-  abbr: 'zh',
+  abbr: 'vi-VI',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,

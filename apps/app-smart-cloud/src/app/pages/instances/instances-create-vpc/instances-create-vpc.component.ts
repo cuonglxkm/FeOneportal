@@ -34,6 +34,13 @@ import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+  Port,
+} from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
+import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -89,18 +96,24 @@ export class InstancesCreateVpcComponent implements OnInit {
   userId: number;
   user: any;
   ipPublicValue: number = 0;
-  isUseLAN: boolean = false;
+  vlanNetwork: string;
+  port: string;
+  isUseLAN: boolean = true;
   passwordVisible = false;
   password?: string;
   hdh: any = null;
   selectedSSHKeyName: string;
   selectedSnapshot: number;
   cardHeight: string = '140px';
+  remainingRAM: number = 0;
+  remainingVolume: number = 0;
+  remainingVCPU: number = 0;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
     private snapshotVLService: SnapshotVolumeService,
+    private vlanService: VlanService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -111,7 +124,6 @@ export class InstancesCreateVpcComponent implements OnInit {
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
-  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
   reloadCarousel: boolean = false;
 
   @HostListener('window:resize', ['$event'])
@@ -130,7 +142,6 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.reloadCarousel = false;
       setTimeout(() => {
         this.myCarouselImage.reset();
-        this.myCarouselFlavor.reset();
       }, 100);
     }
   }
@@ -145,6 +156,8 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.getAllIPPublic();
     this.getAllSecurityGroup();
     this.getAllSSHKey();
+    this.getListNetwork();
+    this.getInfoVPC();
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -181,7 +194,33 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  getUser() {}
+  infoVPC: TotalVpcResource = new TotalVpcResource();
+  getInfoVPC() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.dataService
+      .getInfoVPC(this.projectId)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.infoVPC = data;
+          this.remainingVolume =
+            this.infoVPC.cloudProject.quotaHddInGb -
+            this.infoVPC.cloudProjectResourceUsed.hdd;
+          this.remainingRAM =
+            this.infoVPC.cloudProject.quotaRamInGb -
+            this.infoVPC.cloudProjectResourceUsed.ram;
+          this.remainingVCPU =
+            this.infoVPC.cloudProject.quotavCpu -
+            this.infoVPC.cloudProjectResourceUsed.cpu;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy thông tin VPC không thành công'
+          );
+        },
+      });
+  }
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
   isLoading = false;
@@ -210,7 +249,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       .getListOffers(this.region, 'VM-Image')
       .subscribe((data: OfferItem[]) => {
         data.forEach((e: OfferItem) => {
-          if (e.status == 'Active') {
+          if (e.status.toUpperCase() == 'ACTIVE') {
             let tempImage = new Image();
             e.characteristicValues.forEach((char) => {
               if (char.charOptionValues[0] == 'Id') {
@@ -227,6 +266,39 @@ export class InstancesCreateVpcComponent implements OnInit {
         });
         this.cdr.detectChanges();
         console.log('list Images', this.listOfImageByImageType);
+      });
+  }
+
+  listVlanNetwork: NetWorkModel[] = [];
+
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listVlanNetwork = data.records;
+        this.cdr.detectChanges();
+      });
+  }
+
+  listPort: Port[] = [];
+  getListPort() {
+    this.dataService
+      .getListAllPortByNetwork(this.vlanNetwork, this.region)
+      .subscribe({
+        next: (data) => {
+          this.listPort = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Port không thành công'
+          );
+        },
       });
   }
 
@@ -290,10 +362,18 @@ export class InstancesCreateVpcComponent implements OnInit {
   initHDD(): void {
     this.activeBlockHDD = true;
     this.activeBlockSSD = false;
+    this.remainingVolume =
+      this.infoVPC.cloudProject.quotaHddInGb -
+      this.infoVPC.cloudProjectResourceUsed.hdd;
+    this.cdr.detectChanges();
   }
   initSSD(): void {
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
+    this.remainingVolume =
+      this.infoVPC.cloudProject.quotaSSDInGb -
+      this.infoVPC.cloudProjectResourceUsed.ssd;
+    this.cdr.detectChanges();
   }
   //#endregion
 
@@ -309,6 +389,12 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.listIPPublic = data.records;
         console.log('list IP public', this.listIPPublic);
       });
+  }
+
+  onChangeIpPublic() {
+    if (this.ipPublicValue != 0) {
+      this.isUseLAN = false;
+    }
   }
 
   getAllSecurityGroup() {

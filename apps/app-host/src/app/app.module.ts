@@ -17,7 +17,7 @@ import {LayoutModule} from "./layout/layout.module";
 import {JsonSchemaModule, SharedModule} from "./shared";
 import {CoreModule} from "./core/core.module";
 import {DatePipe, registerLocaleData} from "@angular/common";
-import {NZ_DATE_LOCALE, provideNzI18n,  zh_CN as zorroLang} from "ng-zorro-antd/i18n";
+import {NZ_DATE_LOCALE, provideNzI18n,  vi_VN as zorroLang} from "ng-zorro-antd/i18n";
 import {DELON_LOCALE, en_US as delonLang, ALAIN_I18N_TOKEN} from "@delon/theme";
 import {enUS as dateLang} from "date-fns/locale";
 import { default as ngLang } from '@angular/common/locales/vi';
@@ -54,8 +54,8 @@ const FORM_MODULES = [JsonSchemaModule];
 // #region Startup Service
 import { StartupService } from '@core';
 import {Observable} from "rxjs";
-import {GlobalConfigModule} from "../../../app-smart-cloud/src/app/global-config.module";
-import { NotificationService } from "../../../app-smart-cloud/src/app/shared/services/notification.service";
+// import { NotificationService } from "../../../app-smart-cloud/src/app/shared/services/notification.service";
+import { GlobalConfigModule } from './global-config.module';
 export function StartupServiceFactory(startupService: StartupService): () => Observable<void> {
   return () => startupService.load();
 }
@@ -66,14 +66,14 @@ const APPINIT_PROVIDES = [
     useFactory: StartupServiceFactory,
     deps: [StartupService],
     multi: true
-  },
-  NotificationService,
-  {
-    provide: APP_INITIALIZER,
-    useFactory: (notificationService: NotificationService) => () => notificationService.initiateSignalrConnection(true),
-    deps: [NotificationService],
-    multi: true,
-  }
+  },  // NotificationService,
+  // {
+  //   provide: APP_INITIALIZER,
+  //   useFactory: (notificationService: NotificationService) => () => notificationService.initiateSignalrConnection(true),
+  //   deps: [NotificationService],
+  //   multi: true,
+  // }
+
 ];
 // #endregion
 

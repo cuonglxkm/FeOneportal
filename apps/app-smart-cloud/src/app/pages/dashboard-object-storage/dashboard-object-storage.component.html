@@ -21,14 +21,24 @@
   <nz-card>
     <nz-row nzJustify="end">
       <nz-col nzSpan="8" style="flex:none;">
-        <nz-select [nzPlaceHolder]="'Chọn Bucket'">
-          <nz-option></nz-option>
+        <nz-select [nzPlaceHolder]="'Chọn Bucket'"
+                   style="width: 150px;"
+                   [ngModel]="bucketSelected"
+                   (ngModelChange)="onBucketChange($event)">
+          <nz-option *ngFor="let index of bucketList" [nzLabel]="index.bucketName" [nzValue]="index.bucketName"></nz-option>
         </nz-select>
-        <nz-select style="margin-left: 10px;" [nzPlaceHolder]="'15 phút'">
-          <nz-option></nz-option>
+        <nz-select style="margin-left: 10px; width: 100px;"
+                   [nzPlaceHolder]="'15 phút'"
+                   [ngModel]="timeSelected"
+                   (ngModelChange)="onTimeChange($event)">
+          <nz-option *ngFor="let i of times" [nzValue]="i.value" [nzLabel]="i.label"></nz-option>
         </nz-select>
       </nz-col>
     </nz-row>
-    <one-portal-chart></one-portal-chart>
+    <div *ngIf="summary != undefined || summary != null">
+      <one-portal-chart [summary]="summary"></one-portal-chart>
+    </div>
+
+<!--    <one-portal-chart-summary />-->
   </nz-card>
 </nz-content>

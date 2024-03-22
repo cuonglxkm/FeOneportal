@@ -24,7 +24,8 @@ export class DeletePortComponent {
   }
 
   showModalDeletePort() {
-    this.isVisibleDeletePort = false
+    this.isVisibleDeletePort = true
+    this.isLoadingDeletePort = false
   }
 
   handleCancelDeletePort() {
