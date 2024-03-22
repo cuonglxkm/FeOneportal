@@ -7,8 +7,7 @@ RUN pwd && ls
 RUN yarn global add @nrwl/cli
 RUN #cp ./apps/app-host/src/assets/module-federation-prod.manifest.json ./apps/app-host/src/assets/module-federation.manifest.json
 RUN yarn install
-RUN npx nx build app-host
-#--configuration=production
+RUN npx nx build app-host --configuration=production
 
 
 #stage 2

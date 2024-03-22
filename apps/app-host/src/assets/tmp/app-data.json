@@ -203,11 +203,11 @@
                 },
                 {
                   "text": "File System Snapshot",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/file-system-snapshot/list"
                 },
                 {
                   "text": "Lịch Snapshot File System ",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
                 },
                 {
                   "text": "Floating IP",
@@ -242,7 +242,7 @@
             },
             {
               "text": "VPN Site to Site",
-              "link": "/app-smart-cloud/object"
+              "link": "/app-smart-cloud/vpn-site-to-site/manage"
             }
           ]
         },
