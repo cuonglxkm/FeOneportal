@@ -39,8 +39,7 @@ export class NotificationService {
       if (isRegisterGlobalMessage == true) {
         this.registerGlobalNotification();
       }
-
-      //this.notification.success('Thông báo', 'Kết nối tới máy chủ thành công')
+      console.log(`Connected to notify hub`);
     }
     catch (error) {
       console.log(`SignalR connection error: ${error}`);
@@ -60,6 +59,7 @@ export class NotificationService {
 
   private registerGlobalNotification(): void {
     this.connection.on('SendMessage', (data: any) => {
+      console.log(`Received message: `, data);
       if (data.notificationType != undefined){
         switch (data.notificationType) {
           case "SUCCESS":
