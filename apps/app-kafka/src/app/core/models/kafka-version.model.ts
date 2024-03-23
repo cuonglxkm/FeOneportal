@@ -1,4 +1,5 @@
 export interface KafkaVersion {
+    id: number,
     apacheKafkaVersion: string,
-    helmChartVersion: string
+    helmVersion: string
 } 

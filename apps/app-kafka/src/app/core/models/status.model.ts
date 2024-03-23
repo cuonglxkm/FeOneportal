@@ -9,3 +9,9 @@ export class StatusModel {
   }
 
 }
+
+export interface KafkaStatus {
+  id: number;
+  statusName: string;
+  description: string;
+}

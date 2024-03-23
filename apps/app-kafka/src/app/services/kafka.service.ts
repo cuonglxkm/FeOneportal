@@ -13,6 +13,8 @@ import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { KafkaVersion } from '../core/models/kafka-version.model';
+import { KafkaStatus } from '../core/models/status.model';
 
 @Injectable({
   providedIn: 'root',
@@ -134,7 +136,7 @@ export class KafkaService extends BaseService {
     const headers = new HttpHeaders()
       .set('userCode', 'bbvk0bs1th0');
     
-    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch}&status=${status==null?"":status}`,{headers});
+    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}`,{headers});
   }
 
   createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>> {
@@ -162,5 +164,13 @@ export class KafkaService extends BaseService {
 
   getListPackageAvailable(): Observable<BaseResponse<ServicePack[]>> {
     return this.http.get<BaseResponse<ServicePack[]>>(this.kafkaUrl + '/kafka/get-packages');
+  }
+
+  getListVersion(): Observable<BaseResponse<KafkaVersion[]>> {
+    return this.http.get<BaseResponse<KafkaVersion[]>>(this.kafkaUrl + '/kafka/get-versions');
+  }
+
+  getListStatus(): Observable<BaseResponse<KafkaStatus[]>> {
+    return this.http.get<BaseResponse<KafkaStatus[]>>(this.kafkaUrl + '/kafka/get-status');
   }
 }

@@ -337,7 +337,7 @@ export class DashboardComponent implements OnInit {
           inverseColors: false,
           opacityFrom: 0.5,
           opacityTo: 0,
-          stops: [0, 90, 100]
+          // stops: [0, 90, 100]
         },
       },
       title: {

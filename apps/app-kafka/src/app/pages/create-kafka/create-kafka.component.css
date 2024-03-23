@@ -2,6 +2,11 @@
   width: 100%;
 }
 
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
 input,
 textarea,
 .border-card,
@@ -9,21 +14,36 @@ textarea,
   border-radius: 8px;
 }
 
-.price-style {
-  position: relative;
-  float: right;
+.label-price {
+  font-size: 16px;
+  margin: 12px 0 0 12px;
 }
 
-.price-color {
+.label-quantity {
+  margin: 4px 0 12px 12px;
+  font-size: 14px;
+}
+
+.value-price {
   color: #0066b3;
   font-weight: 600;
   width: 100%;
   font-size: 16px;
   text-align: right;
+  float: right;
+  margin: 12px 12px 0 0;
 }
 
-.unit-color {
-  color: #4c4f67;
+.unit-total {
+  color: #4C4F67;
+  float: right;
+  font-size: 14px;
+  margin-right: 12px;
+}
+
+.border-card ::ng-deep .ant-tabs-tab {
+  font-size: 16px; 
+  font-weight: 600;
 }
 
 .divider-style {
@@ -241,4 +261,10 @@ textarea,
 .price-card {
   border: 1px solid #B2DEFF;
   border-radius: 8px;
+}
+
+.other-config {
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 10px;
 }

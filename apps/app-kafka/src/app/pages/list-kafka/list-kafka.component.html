@@ -12,55 +12,60 @@
 <nz-content *ngIf="!isShowIntroductionPage; else introducePageTpl">
   <nz-card>
     <!-- filter -->
-    <div class="flex-style mbot-24">
-      <div class="w-25">
+    <div class="filter-div" nz-row>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4">
         <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
           [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
-          <nz-option *ngFor="let option of listOfStatusKafka" [nzValue]="option.value"
-            [nzLabel]="option.label"></nz-option>
+          <nz-option *ngFor="let item of listOfStatusKafka" [nzValue]="item.id"
+            [nzLabel]="item.statusName"></nz-option>
         </nz-select>
       </div>
 
-      <div class="mleft-16 w-25">
-        <nz-input-group nzSearch nzSize="default" [nzSuffix]="suffixButton" class="w-100" nzSize="large">
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" class="search-filter">
+        <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
           <input [(ngModel)]="keySearch" (keyup.enter)="handleChange()" type="text" nz-input
             placeholder="Tìm kiếm tên dịch vụ" />
         </nz-input-group>
-        <ng-template #suffixButton>
-          <span nz-icon nzType="search" nzTheme="outline"></span>
+        <ng-template #prefixButton>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
         </ng-template>
       </div>
-      <!-- <div>
-        <nz-range-picker nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"></nz-range-picker>
-      </div> -->
 
-      <div class="mleft-16">
-        <button nz-button nzType="primary" routerLink="create" class="border-button">
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" style="padding-left: 10px;">
+        <button nz-button nzType="default" class="btn-sync" (click)="handleChange()">
+          <span nz-icon nzType="sync" nzTheme="outline" class="icon-general"></span>
+        </button>
+      </div>
+
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="8" style="text-align: right;">
+        <button nz-button nzType="primary" routerLink="create" class="btn-create">
           <span nz-icon nzType="plus" nzTheme="outline">
           </span>
-          Tạo mới dịch vụ
+          Tạo mới Kafka
         </button>
       </div>
     </div>
 
     <!-- table -->
     <nz-table #kafkaTable [nzData]="listOfKafka" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="loading">
       <thead>
         <tr>
-          <th class="header-table">STT</th>
-          <th class="header-table">Tên dịch vụ</th>
-          <th class="header-table">Trạng thái</th>
-          <th class="header-table">Endpoint</th>
-          <th class="header-table">Gói dịch vụ</th>
-          <th class="header-table">Ngày tạo</th>
-          <th class="center-align header-table">Thao tác</th>
+          <th nzWidth="5%">STT</th>
+          <th nzWidth="15%">Tên Kafka</th>
+          <th nzWidth="10%">Phiên bản</th>
+          <th nzWidth="15%">Trạng thái</th>
+          <th nzWidth="15%">Endpoint</th>
+          <th nzWidth="15%">Gói dịch vụ</th>
+          <th nzWidth="15%">Thời gian tạo</th>
+          <th nzWidth="10%" nzAlign="center">Thao tác</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of kafkaTable.data; let i = index">
           <td>{{ i + 1 }}</td>
           <td> <a [routerLink]="[item.serviceOrderCode ]">{{ item.serviceName }}</a></td>
+          <td>{{ item.apacheKafkaVersion }}</td>
           <td>
             <ng-container *ngIf="item.status | status2ColorPipe as status">
               <span [ngStyle]="{color: status.color}">{{status.status}}</span>
@@ -73,17 +78,15 @@
               </ng-container>
             </ng-container>
           </td>
-          <td>{{ item.servicePack }}</td>
-          <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <ng-container *ngIf="item.servicePackName">{{ item.servicePackName}} / </ng-container>
+            {{ item.cpu }} vCPU / {{ item.ram}} RAM
+          </td>
+          <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td class="center-align">
-            <button nz-button nzType="text" nzTooltipTitle="Nâng cấp" nzTooltipPlacement="top" nz-tooltip
-              class="borderless">
-              <span nz-icon [nzType]="'to-top'" class="icon-color"></span>
-            </button>
-            <button nz-button nzType="text" nzTooltipTitle="Xóa" nzTooltipPlacement="top" nz-tooltip
-              class="borderless">
-              <span nz-icon [nzType]="'delete'" class="delete-icon"></span>
-            </button>
+            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px"
+              nz-tooltip="Nâng cấp" />
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-right: 16px" nz-tooltip="Xóa" />
           </td>
         </tr>
       </tbody>
@@ -100,7 +103,6 @@
         </div>
 
         <h3 class="mt-5 description-title">VNPT Message Streaming for Kafka</h3>
-        <!-- <h3 class="description-title">Dễ dàng khởi tạo và triển khai dịch vụ</h3> -->
 
         <!-- description -->
         <div class="mt-3 description-content">
@@ -113,22 +115,9 @@
         <!-- create btn -->
         <div class="mleft-16 mtop-15">
           <button nz-button nzType="primary" routerLink="create" class="border-button">
-            Tạo mới kafka
+            Tạo mới Kafka
           </button>
         </div>
-
-        <!-- <div class="mt-5">
-          <button nz-button nzType="default" (click)="navigateToDocs()">
-            <span nz-icon nzType="info-circle" nzTheme="outline"></span>
-            Tôi có thể làm gì với Kubernetes Cluster
-            <span nz-icon>
-              <svg viewBox="64 64 896 896" focusable="false">
-                <path
-                  d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 000-48.4z" />
-              </svg>
-            </span>
-          </button>
-        </div> -->
       </div>
     </nz-card>
   </nz-content>

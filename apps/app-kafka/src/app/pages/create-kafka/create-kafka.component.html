@@ -16,9 +16,9 @@
     <form nz-form [formGroup]="myform" nzLayout="horizontal" nzLabelAlign="left">
       
       <nz-card class="border-card">
-        <h3><b>Thông tin chung</b></h3>
+        <h3>Thông tin chung</h3>
         <span nzType="secondary" style="color: #6C757D">Vui lòng hoàn thiện đầy đủ các thông tin vào form bên dưới. <br>
-          Các trường thông tin có dấu (<span style="color: #ff4d4f;">*</span>) là các thông tin bắt buộc phải nhập
+          Các trường thông tin có dấu (<span style="color: #ff4d4f;">*</span>) là các thông tin bắt buộc nhập.
         </span>
         <div nz-row [nzGutter]="24">
           <div nz-col [nzSpan]="12">
@@ -26,7 +26,7 @@
               <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Tên Kafka</nz-form-label>
               <nz-form-control [nzErrorTip]="kafkaErrorTpl">
                 <nz-input-group class="w-100">
-                  <input nz-input type="text" placeholder="Nhập tên kafka" formControlName="kafkaName" id="kafkaName"
+                  <input nz-input type="text" placeholder="Nhập tên kafka" formControlName="serviceName" id="serviceName"
                     autofocus />
                 </nz-input-group>
               </nz-form-control>
@@ -49,7 +49,7 @@
               <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Phiên bản Kafka</nz-form-label>
               <nz-form-control nzErrorTip="Vui lòng chọn phiên bản Kafka">
                 <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" nzPlaceHolder="Chọn phiên bản Kafka">
-                  <nz-option [nzValue]="data.helmChartVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
+                  <nz-option [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -66,7 +66,7 @@
       
       <nz-card class="border-card">
         <h3><b>Các gói dịch vụ</b></h3>
-        <nz-tabset nzCentered nzSize="large">
+        <nz-tabset nzCentered>
           <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
             <ng-template nz-tab>
               <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
@@ -136,13 +136,13 @@
       <nz-card class="border-card">
         <h3><b>Cấu hình khác</b></h3>
         <nz-radio-group formControlName="configType" (ngModelChange)="onChangeConfig($event)">
-          <label nz-radio [nzValue]="0" class="w-100">Cấu hình mặc định <b>(Khuyến nghị)</b></label>
-          <label nz-radio [nzValue]="1">Cấu hình tùy chỉnh</label>
+          <label nz-radio [nzValue]="0" class="other-config">Cấu hình mặc định <b>(Khuyến nghị)</b></label>
+          <label nz-radio [nzValue]="1" class="other-config">Cấu hình tùy chỉnh</label>
         </nz-radio-group>
 
         <ng-container *ngIf="showCustomConfig">
           <nz-form-item>
-            <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="numPartitions" nzRequired>
+            <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="numPartitions" nzRequired>
                 num.partitions
                 <div class="info-icon" 
                     nzTooltipTitle="Cấu hình quy định số lượng partition (phân vùng) mà một topic có thể có khi nó được tạo. Mỗi partition là một phần của topic và chứa một phần của dữ liệu. Partition giúp Kafka phân phối và xử lý dữ liệu một cách hiệu quả" nzTooltipPlacement="rightTop" nz-tooltip>
@@ -165,7 +165,7 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="defaultReplicationFactor" nzRequired>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="defaultReplicationFactor" nzRequired>
                   default.replication.factor
                   <div class="info-icon" 
                       nzTooltipTitle="Cấu hình quy định số lượng replica mặc định cho một topic khi topic đó được tạo" nzTooltipPlacement="rightTop" nz-tooltip>
@@ -188,7 +188,7 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="minInsyncReplicas" nzRequired>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="minInsyncReplicas" nzRequired>
                   min.insync.replicas
                   <div class="info-icon" 
                       nzTooltipTitle="Xác định số lượng tối thiểu các replica của 1 partition mà producer cần đợi xác nhận từ trước khi coi message là đã được ghi an toàn" nzTooltipPlacement="rightTop" nz-tooltip>
@@ -214,7 +214,7 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="offsetTopicReplicationFactor" nzRequired>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="offsetTopicReplicationFactor" nzRequired>
                   offset.topic.replication.factor
                   <div class="info-icon" 
                       nzTooltipTitle="Cấu hình quy định số lượng replica mặc định cho topic '__consumer_offsets'; topic này lưu trữ thông tin về offset của consumer, giúp theo dõi vị trí đọc của mỗi consumer trong mỗi partition" nzTooltipPlacement="rightTop" nz-tooltip>
@@ -236,7 +236,7 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="logRetentionHours" nzRequired>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logRetentionHours" nzRequired>
                   log.retention.hours
                   <div class="info-icon" 
                       nzTooltipTitle="Cấu hình đặc tả thời gian giữ lại (retention) cho các log của partition trong Kafka; cấu hình này xác định bao lâu dữ liệu log sẽ được giữ lại trước khi bị xóa. Giá trị -1 là không giới hạn" nzTooltipPlacement="rightTop" nz-tooltip>
@@ -259,7 +259,7 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="logSegmentBytes" nzRequired>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logSegmentBytes" nzRequired>
                   log.segment.bytes
                   <div class="info-icon" 
                       nzTooltipTitle="Cấu hình quy định kích thước tối đa của mỗi segment trong log của 1 partition; log trong Kafka được chia thành các segment để quản lý và xóa dữ liệu hiệu quả" nzTooltipPlacement="rightTop" nz-tooltip>
@@ -291,46 +291,46 @@
       <h3><b>Thành tiền</b></h3>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí vCPU</div>
-          <div class="mt-1 ml-3 mb-3 unit-color"><i>2.500 đồng x 3 cái</i></div>
+          <div class="label-price">Chi phí vCPU</div>
+          <div class="label-quantity">300.000 đồng x 3 cái</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
-        </div>
-      </div>
-      <nz-divider class="divider-style"></nz-divider>
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí RAM</div>
-          <div class="mt-1 ml-3 mb-3 unit-color"><i>2.500 đồng x 3 cái</i></div>
-        </div>
-        <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+          <div class="value-price">1.000.000 VNĐ</div>
+          <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí Storage</div>
-          <div class="mt-1 ml-3 mb-3 unit-color"><i>2.500 đồng x 3 cái</i></div>
+          <div class="label-price">Chi phí RAM</div>
+          <div class="label-quantity">300.000 đồng x 3 cái</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+          <div class="value-price">1.000.000 VNĐ</div>
+          <div class="unit-total">VNĐ/tháng</div>
+        </div>
+      </div>
+      <nz-divider class="divider-style"></nz-divider>
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <div class="label-price">Chi phí Storage</div>
+          <div class="label-quantity">300.000 đồng x 3 cái</div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div class="value-price">1.000.000 VNĐ</div>
+          <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
 
       <div nz-row [nzGutter]="8" class="mt-5 price-panel">
         <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Thành tiền</div>
-          <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
+          <div class="label-price">Thành tiền</div>
+          <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="price-style total-color mt-3 mr-3">2.500.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
+          <div class="value-price">3.000.000 VNĐ</div>
+          <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
 
@@ -338,51 +338,17 @@
         <div nz-col [nzSpan]="12">
           <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()">
             <span nz-icon nzType="close" nzTheme="outline"></span>
-            Hủy
+            <b> Hủy</b>
           </button>
         </div>
 
         <div nz-col [nzSpan]="12">
           <button nz-button nzType="primary" nzBlock class="border-button" (click)="onSubmitPayment()"
             [disabled]="myform.invalid">
-            <span nz-icon>
-              <svg viewBox="64 64 896 896" focusable="false">
-                <path
-                  d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-32 464H528V448h320v128zm-268-64a40 40 0 1080 0 40 40 0 10-80 0z" />
-              </svg>
-            </span>
-            Thanh toán
+            <b>Khởi tạo</b>
           </button>
         </div>
       </div>
     </nz-card>
-
-    <!-- payment -->
-    <!-- <nz-card class="border-card ">
-      <h3>Thành tiền</h3>
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí máy ảo:</div>
-        </div>
-
-        <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
-        </div>
-      </div>
-
-      <nz-divider class="divider-style"></nz-divider>
-
-      <div nz-row [nzGutter]="8">
-        <div nz-col [nzSpan]="12">
-          <div class="mt-3 ml-3">Chi phí Volume bổ sung:</div>
-        </div>
-
-        <div nz-col [nzSpan]="12">
-          <div class="price-style price-color mt-3 mr-3">1.000.000 VNĐ</div>
-          <div class="price-style unit-color mr-3">VNĐ/tháng</div>
-        </div>
-      </div>
-    </nz-card> -->
   </div>
 </div>

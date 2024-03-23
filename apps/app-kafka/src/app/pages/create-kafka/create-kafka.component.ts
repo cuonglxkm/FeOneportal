@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
+import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
@@ -28,7 +31,7 @@ export class CreateKafkaComponent implements OnInit {
     grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
     load: 1,
     speed: 250,
-    interval: {timing: 4000, initialDelay: 4000},
+    // interval: {timing: 4000, initialDelay: 4000},
     loop: true,
     touch: true,
     velocity: 0.2,
@@ -39,18 +42,14 @@ export class CreateKafkaComponent implements OnInit {
 
   listOfServicePack: ServicePack[] = [];
 
-  listOfKafkaVersion: KafkaVersion[] = [
-    {
-      apacheKafkaVersion: '3.7.0',
-      helmChartVersion: '2.0.0'
-    }
-  ]
+  listOfKafkaVersion: KafkaVersion[] = [];
 
   showCustomConfig = false;
 
   kafkaCreateReq: KafkaCreateReq = new KafkaCreateReq();
   servicePackCode: string;
   @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
+  usageTime = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -58,18 +57,20 @@ export class CreateKafkaComponent implements OnInit {
     private router: Router,
     private loadingSrv: LoadingService,
     private kafkaService: KafkaService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
   }
 
   ngOnInit(): void {
     this.getListPackage();
+    this.getListVersion();
     this.initForm();
   }
 
   initForm() {
     this.myform = this.fb.group({
-      kafkaName: [null,
+      serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
@@ -98,13 +99,45 @@ export class CreateKafkaComponent implements OnInit {
     )
   }
 
+  getListVersion() {
+    this.kafkaService.getListVersion()
+      .subscribe(
+        res => {
+          if (res && res.code == 200) {
+            this.listOfKafkaVersion = camelizeKeys(res.data) as KafkaVersion[];
+          }
+        }
+      )
+  }
+
   onSubmitPayment() {
-    this.createKafkaService();
+
+    const kafka = this.myform.value;
+    const data: Order = new Order();
+    const userId = this.tokenService.get()?.userId;
+    data.customerId = userId;
+    data.createdByUserId = userId;
+    data.orderItems = [];
+    kafka.offerId = 229;
+
+    const orderItem: OrderItem = new OrderItem();
+    orderItem.price = 100000;
+    orderItem.orderItemQuantity = 1;
+    orderItem.specificationType = AppConstants.KAKFA_CREATE_TYPE;
+    orderItem.specification = JSON.stringify(kafka);
+    orderItem.serviceDuration = this.usageTime;
+
+    data.orderItems = [...data.orderItems, orderItem];
+
+    const returnPath = window.location.pathname;
+
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+    // this.createKafkaService();
   }
 
   createKafkaService() {
     const dto = this.myform;
-    this.kafkaCreateReq.serviceName = dto.get('kafkaName').value;
+    this.kafkaCreateReq.serviceName = dto.get('serviceName').value;
     this.kafkaCreateReq.version = dto.get('version').value;
     this.kafkaCreateReq.description = dto.get('description').value;
     this.kafkaCreateReq.servicePackCode = this.servicePackCode;

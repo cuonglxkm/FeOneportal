@@ -1,10 +1,23 @@
-.flex-style {
-  display: flex;
-  margin-bottom: 5px;
+nz-card {
+  border-radius: 8px;
 }
 
-.mbot-24 {
+.filter-div {
+  display: flex;
   margin-bottom: 24px;
+}
+
+.search-filter {
+  padding-left: 10px;
+}
+
+.btn-sync {
+  width: 40px;
+  border-color: #E2E2E9;
+}
+
+.icon-general {
+  font-size: 20px;
 }
 
 .mleft-16 {
@@ -23,24 +36,10 @@
   width: 100%;
 }
 
-.w-25 {
-  width: 25%;
-}
-
-.icon-color {
-  color: #0066b3;
-}
-
-.delete-icon {
-  color: #ea3829;
-}
-
-input, .border-button, ::ng-deep .ant-select-selector {
+input,
+.border-button,
+::ng-deep .ant-select-selector {
   border-radius: 8px !important;
-}
-
-.borderless {
-  border: none;
 }
 
 .align-center {
@@ -62,6 +61,6 @@ input, .border-button, ::ng-deep .ant-select-selector {
   color: #6C757D;
 }
 
-.mtop-15{
+.mtop-15 {
   margin-top: 65px;
 }
