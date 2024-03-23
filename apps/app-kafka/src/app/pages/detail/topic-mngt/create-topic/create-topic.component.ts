@@ -45,7 +45,7 @@ export class CreateTopicComponent implements OnInit {
     { name: 'segment_ms', value: 604800000, type: 'number', fullname: "segment.ms" },
     { name: 'mess_time_diff', value: "9007199254740991", type: 'number', fullname: "message.timestamp.difference.max.ms" },
     { name: 'deleteRet', value: 86400000, type: 'number', fullname: "delete.retention.ms" },
-    { name: 'segm_index', value: 10000000, type: 'number', fullname: "segment.index.bytes" },
+    { name: 'segm_index', value: 10485760, type: 'number', fullname: "segment.index.bytes" },
     { name: 'lead_rep', value: 'none', fullname: "leader.replication.throttled.replicas" }
   ];
 
