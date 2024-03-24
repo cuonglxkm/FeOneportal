@@ -8,6 +8,7 @@ import { OrderService } from '../../../shared/services/order.service';
 import { OrderDTOSonch } from '../../../shared/models/order.model';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NotificationService } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -25,7 +26,9 @@ export class OrderDetailComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private service: OrderService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
@@ -85,6 +88,17 @@ export class OrderDetailComponent {
           },
         });
     }
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    
+    this.notificationService.connection.on('UpdateOrder', (data) => {
+      if (data.statusCode) {
+        this.data.statusCode = data.statusCode;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   onRegionChange(region: RegionModel) {
