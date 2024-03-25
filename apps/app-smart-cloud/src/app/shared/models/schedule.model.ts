@@ -48,7 +48,7 @@ export class FormSearchScheduleBackup {
 export class FormAction {
   customerId: number
   scheduleId: number
-  actionType: 'pause' | 'play' | 'reactive'
+  actionType?: 'pause' | 'play' | 'reactive'
 }
 
 export class FormCreateSchedule {

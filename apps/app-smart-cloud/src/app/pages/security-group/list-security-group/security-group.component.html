@@ -57,8 +57,8 @@
 
     <div style="margin-bottom: 16px; display: flex; gap: 40px">
       <div class="description-title">Mô tả:</div>
-      <div class="description-detail">
-        {{selectedValue?.description || ''}}
+      <div *ngIf="selectedValue?.description && selectedValue?.description !== ''" class="description-detail">
+        {{selectedValue?.description}}
       </div>
     </div>
     <one-portal-inbound-list

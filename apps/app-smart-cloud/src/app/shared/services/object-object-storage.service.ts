@@ -43,4 +43,45 @@ export class ObjectObjectStorageService extends BaseService{
     };
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/deleteS3Key', httpOptionOk);
   }
+
+  createFolder(data: any) {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createFolder', data, this.httpOptions);
+  }
+
+  GetBucketTreeData(data: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetBucketTreeData', data, this.httpOptions);
+  }
+
+  copyProject(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CopyObject', data, this.httpOptions);
+  }
+
+  downloadFile(bucketName: string, key: string) {
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/download?bucketName=' + bucketName +'&key=' + key, {
+      // reportProgress: true,
+      observe: 'events',
+      responseType: 'blob'
+    });
+  }
+  blob(url: string, filename?: string): Observable<Blob> {
+    return this.http.get(url, {
+      responseType: 'blob'
+    })
+  }
+
+  deleteObject(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteMultipleObject', data, this.httpOptions);
+  }
+
+  getLinkShare(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ShareObject', data, this.httpOptions);
+  }
+
+  editPermission(bucketName: string, keyName: string, role: string) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ObjectAcl?bucketName=' + bucketName + '&keyName=' + keyName + '&public=' + role, this.httpOptions);
+  }
+
+  loadDataVersion(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetObjectVersions', data, this.httpOptions);
+  }
 }

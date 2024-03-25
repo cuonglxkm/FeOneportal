@@ -1,10 +1,91 @@
-<nz-row style="margin-top: 15px;" nzJustify="space-between">
-  <nz-col nzSpan="12">
-    <div id="container" style="width: 600px; height: 400px;"></div>
+<div class="grid-container">
+  <div class="item">
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown
+          [nzDropdownMenu]="opMenuStorageUse"></span>
+    <nz-dropdown-menu #opMenuStorageUse="nzDropdownMenu">
+      <ul nz-menu>
+<!--        <li nz-menu-item (click)="viewFullscreen('storage-use')">View in fullscreen</li>-->
+        <li nz-menu-item (click)="printChartStorageUse('storage-use')">Print chart</li>
+        <li nz-menu-item (click)="downloadImage('storage-use', 'png')">Download PNG image</li>
+        <li nz-menu-item (click)="downloadImage('storage-use', 'jpg')">Download JPG image</li>
+        <li nz-menu-item (click)="downloadImage('storage-use', 'pdf')">Download PDF document</li>
+<!--        <li nz-menu-item (click)="downloadImage('storage-use', 'svg')">Download SVG vector image</li>-->
+      </ul>
+    </nz-dropdown-menu>
+    <div #storageUse>
+      <div class="title">
+        <span class="text-card-header">Dung lượng sử dụng</span> <br>
+        <span>{{ summary[0]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }}
+          đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+      </div>
+      <div id="chartStorageUse" style="padding-bottom: 20px; padding-left: 10px; "></div>
+    </div>
+  </div>
+  <div class="item">
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown
+          [nzDropdownMenu]="opMenuNumberObject"></span>
+    <nz-dropdown-menu #opMenuNumberObject="nzDropdownMenu">
+      <ul nz-menu>
+<!--        <li nz-menu-item (click)="viewFullscreen('number-object')">View in fullscreen</li>-->
+        <li nz-menu-item (click)="printChartStorageUse('number-object')">Print chart</li>
+        <li nz-menu-item (click)="downloadImage('number-object', 'png')">Download PNG image</li>
+        <li nz-menu-item (click)="downloadImage('number-object', 'jpg')">Download JPG image</li>
+        <li nz-menu-item (click)="downloadImage('number-object', 'pdf')">Download PDF document</li>
+<!--        <li nz-menu-item (click)="downloadImage('number-object', 'svg')">Download SVG vector image</li>-->
+      </ul>
+    </nz-dropdown-menu>
+    <div #numberObject>
+      <div class="title">
+        <span class="text-card-header">Số lượng Object</span> <br>
+        <span>{{ summary[0]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }}
+          đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+      </div>
+      <div #chartNumberObject style="padding-bottom: 20px; padding-left: 10px; "></div>
+    </div>
+  </div>
+  <div class="item">
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown
+          [nzDropdownMenu]="opMenuStorageUpload"></span>
+    <nz-dropdown-menu #opMenuStorageUpload="nzDropdownMenu">
+      <ul nz-menu>
+<!--        <li nz-menu-item (click)="viewFullscreen('storage-upload')">View in fullscreen</li>-->
+        <li nz-menu-item (click)="printChartStorageUse('storage-upload')">Print chart</li>
+        <li nz-menu-item (click)="downloadImage('storage-upload', 'png')">Download PNG image</li>
+        <li nz-menu-item (click)="downloadImage('storage-upload', 'jpg')">Download JPG image</li>
+        <li nz-menu-item (click)="downloadImage('storage-upload', 'pdf')">Download PDF document</li>
+<!--        <li nz-menu-item (click)="downloadImage('storage-upload', 'svg')">Download SVG vector image</li>-->
+      </ul>
+    </nz-dropdown-menu>
+    <div #storageUpload>
+      <div class="title">
+        <span class="text-card-header">Dung lượng tải lên</span> <br>
+        <span>{{ summary[0]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }}
+          đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+      </div>
+      <div #chartStorageUpload style="padding-bottom: 20px; padding-left: 10px; "></div>
+    </div>
+  </div>
+  <div class="item">
+    <span class="separator" nz-icon nzType="menu" nzTheme="outline" nz-dropdown
+          [nzDropdownMenu]="opMenuStorageDownload"></span>
+    <nz-dropdown-menu #opMenuStorageDownload="nzDropdownMenu">
+      <ul nz-menu>
+<!--        <li nz-menu-item (click)="viewFullscreen('storage-download')">View in fullscreen</li>-->
+        <li nz-menu-item (click)="printChartStorageUse('storage-download')">Print chart</li>
+        <li nz-menu-item (click)="downloadImage('storage-download', 'png')">Download PNG image</li>
+        <li nz-menu-item (click)="downloadImage('storage-download', 'jpg')">Download JPG image</li>
+        <li nz-menu-item (click)="downloadImage('storage-download', 'pdf')">Download PDF document</li>
+<!--        <li nz-menu-item (click)="downloadImage('storage-download', 'svg')">Download SVG vector image</li>-->
+      </ul>
+    </nz-dropdown-menu>
+    <div #storageDownload>
+      <div class="title">
+        <span class="text-card-header">Dung lượng tải lên</span> <br>
+        <span>{{ summary[0]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }} đến {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+      </div>
+      <div #chartStorageDownload style="padding-bottom: 20px; padding-left: 10px; "></div>
+    </div>
+  </div>
+</div>
 
-  </nz-col>
-  <nz-col>
-    <div id="chart2" style="width: 600px; height: 400px;"></div>
-  </nz-col>
-</nz-row>
 

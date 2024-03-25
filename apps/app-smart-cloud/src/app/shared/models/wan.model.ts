@@ -8,6 +8,7 @@ export class WanIP {
   customerId: number
   regionId: number
   attachedVmId: number
+  subnetAddress: string
 }
 
 export class FormSearch {
@@ -38,7 +39,7 @@ export class FormAction {
  export class Wan {
    id: number
    cloudId: string
-   name: string
+   wanName: string
    vlanId: number
    adminState: true
    shared: true
