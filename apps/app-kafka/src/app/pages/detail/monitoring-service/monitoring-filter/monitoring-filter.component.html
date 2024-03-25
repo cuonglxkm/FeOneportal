@@ -1,0 +1,123 @@
+<div class="display-option mt-5 mb-5" *ngIf="dataLoaded">
+    <div class="w-20 resource-type">
+        <label class="mr-3" for="resource">Resource</label>
+        <nz-select id="resource" [(ngModel)]="resourceType" nzPlaceHolder="Chọn resource"
+            (ngModelChange)="onChangeResource()">
+            <nz-option nzValue="topic" nzLabel="Topic"></nz-option>
+            <nz-option nzValue="cg" nzLabel="Consumer Group"></nz-option>
+        </nz-select>
+    </div>
+
+    <div class="ml-5 w-40 resource-name">
+        <label class="mr-3">{{labelSelectList}}</label>
+        <div class="pr-25 marbot-25">
+            <a nz-dropdown nzTrigger="click" [nzClickHide]="false" [nzDropdownMenu]="menuResource">
+                <button class="text-left" nz-button nzType="default" nzBlock nz-popover
+                    [nzPopoverContent]="resourceTemplate" vPopoverPlacement="leftTop" id="btn-resource">
+                    <ng-container *ngIf="listOfLabelResource.length > 0; else noLabelResoureTpl">
+                        {{displayLabelResource | truncateLabel}}
+                    </ng-container>
+                    <ng-template #noLabelResoureTpl>
+                        <span class="no-label">{{displayLabelResource}}</span>
+                    </ng-template>
+                    <span nz-icon nzType="down" nzTheme="outline" class="icon-style"></span>
+                </button>
+                <ng-template #resourceTemplate class="popover-style">
+                    <ng-container *ngIf="listOfLabelResource.length > 0">
+                        <div class="popover-style">
+                            <ng-container *ngFor="let item of listOfLabelResource">
+                                <p class="maright-20">{{item}}</p>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </ng-template>
+            </a>
+
+            <nz-dropdown-menu #menuResource="nzDropdownMenu">
+                <ul nz-menu class="resource-drop">
+                    <li nz-menu-item class="input-search">
+                        <nz-input-group [nzPrefix]="prefixTemplateResource" [nzSuffix]="inputClearTpl">
+                            <input type="text" nz-input placeholder="Nhập tìm kiếm" [(ngModel)]="resourceKeyword"
+                                (ngModelChange)="onSearchResource()" />
+                        </nz-input-group>
+                        <ng-template #prefixTemplateResource><i nz-icon nzType="Search"></i></ng-template>
+                        <ng-template #inputClearTpl><i nz-icon class="oneui-input-clear-icon" nzType="StatusErrorFull"
+                                *ngIf="resourceKeyword"
+                                (click)="resourceKeyword = ''; onSearchResource()"></i></ng-template>
+                    </li>
+                    <ng-container *ngFor="let item of listOfResourceData">
+                        <li nz-menu-item>
+                            <label nz-checkbox [ngModel]="setOfResources.has(item)"
+                                [nzDisabled]="lenResource >= 5 && onCheckResource(item)"
+                                (ngModelChange)="updateCheckedResource(item); onChangeInput();">{{item}}</label>
+                        </li>
+                    </ng-container>
+                </ul>
+            </nz-dropdown-menu>
+        </div>
+        <ng-container *ngIf="listOfLabelResource.length === 0">
+            <label class="lbl-error">Vui lòng chọn {{labelSelectList}}</label>
+        </ng-container>
+    </div>
+
+    <div class="ml-5 w-20 metric">
+        <label class="mr-3" for="metric">Metric</label>
+        <a nz-dropdown nzTrigger="click" [nzClickHide]="false" [nzDropdownMenu]="menuMetric">
+            <button class="text-left" nz-button nzType="default" nzBlock nz-popover [nzPopoverContent]="metricTemplate"
+                nzPopoverPlacement="leftTop" id="btn-metric">
+                <ng-container *ngIf="listOfLabelMetrics.length > 0; else noLabelMetricsTpl">
+                    {{displayLabelMetrics | truncateLabel}}
+                </ng-container>
+                <ng-template #noLabelMetricsTpl>
+                    <span class="no-label">{{displayLabelMetrics}}</span>
+                </ng-template>
+                <span nz-icon nzType="down" nzTheme="outline" class="icon-style"></span>
+            </button>
+            <ng-template #metricTemplate class="popover-style">
+                <ng-container *ngIf="listOfLabelMetrics.length > 0">
+                    <div class="popover-style">
+                        <ng-container *ngFor="let item of listOfLabelMetrics">
+                            <p class="maright-20">{{item}}</p>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-template>
+        </a>
+
+        <nz-dropdown-menu #menuMetric="nzDropdownMenu">
+            <ul nz-menu>
+                <ng-container *ngIf="resourceType === 'topic'; else metricTopicTpl">
+                    <ng-container *ngFor="let item of listOfMetricsTopic">
+                        <li nz-menu-item>
+                            <label nz-checkbox [ngModel]="setOfMetrics.has(item.value)"
+                                (ngModelChange)="updateCheckedMetrics(item); onChangeInput();">
+                                {{item.label}}
+                            </label>
+                        </li>
+                    </ng-container>
+                </ng-container>
+                <ng-template #metricTopicTpl>
+                    <ng-container *ngFor="let item of listOfMetricsConsumerGroup">
+                        <li nz-menu-item>
+                            <label nz-checkbox [ngModel]="setOfMetrics.has(item.value)"
+                                (ngModelChange)="updateCheckedMetrics(item); onChangeInput();">
+                                {{item.label}}
+                            </label>
+                        </li>
+                    </ng-container>
+                </ng-template>
+            </ul>
+        </nz-dropdown-menu>
+        <ng-container *ngIf="listOfLabelMetrics.length === 0">
+            <label class="lbl-error">Vui lòng chọn Metric</label>
+        </ng-container>
+    </div>
+
+    <div class="ml-5 w-20 interval-div">
+        <label class="mr-3" for="interval">Interval</label>
+        <nz-select id="interval" [(ngModel)]="intervalSelected" vPlaceHolder="Chọn interval"
+            (ngModelChange)="onChangeInput()">
+            <nz-option *ngFor="let item of listRangeTime" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+    </div>
+</div>
