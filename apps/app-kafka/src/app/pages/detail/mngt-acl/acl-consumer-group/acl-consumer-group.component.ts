@@ -1,16 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AclDeleteModel } from 'apps/app-kafka/src/app/core/models/acl-delete.model';
-import { AclReqModel } from 'apps/app-kafka/src/app/core/models/acl-req.model';
-import { AclModel } from 'apps/app-kafka/src/app/core/models/acl.model';
-import { KafkaConsumerGroup } from 'apps/app-kafka/src/app/core/models/kafka-consumer-group.model';
-import { KafkaCredential } from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
-import { AclKafkaService } from 'apps/app-kafka/src/app/services/acl-kafka.service';
-import { ConsumerGroupKafkaService } from 'apps/app-kafka/src/app/services/consumer-group-kafka.service';
+import { AclDeleteModel } from 'src/app/core/models/acl-delete.model';
+import { AclModel } from 'src/app/core/models/acl.model';
+import { KafkaConsumerGroup } from 'src/app/core/models/kafka-consumer-group.model';
+import { KafkaCredential } from 'src/app/core/models/kafka-credential.model';
+import { AclKafkaService } from 'src/app/services/acl-kafka.service';
+import { ConsumerGroupKafkaService } from 'src/app/services/consumer-group-kafka.service';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
+import { AclReqModel } from 'src/app/core/models/acl-req.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-acl-consumer-group',
@@ -26,6 +27,7 @@ export class AclConsumerGroupComponent implements OnInit {
   permissionGroupName = 'READ';
 
   @Input() listOfPrincipals: KafkaCredential[];
+  @Input() serviceOrderCode: string;
 
   listOfConsumerGroup: KafkaConsumerGroup[];
 
@@ -50,8 +52,6 @@ export class AclConsumerGroupComponent implements OnInit {
   pageIndex: number;
   maxSize = 9999;
   resourceTypeGroup = 'consumer_group';
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
-
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -170,15 +170,20 @@ export class AclConsumerGroupComponent implements OnInit {
       this.aclRequest.allowDeny = 'ALLOW';
       this.aclRequest.host = this.aclConsumerGroupForm.controls['host'].value;
 
-      this.loadingSrv.open({type: "spin", text: "Loading..."});
-      this.aclKafkaService.createAcl(this.aclRequest).pipe()
+      this.loadingSrv.open({ type: "spin", text: "Loading..." });
+      this.aclKafkaService.createAcl(this.aclRequest)
+        .pipe(
+          finalize(() => this.loadingSrv.close())
+        )
         .subscribe(
           (data) => {
             if (data && data.code == 200) {
+              this.notification.success('Thành công', data.msg);
               this.showForm = this.idListForm;
               this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeGroup);
+            } else {
+              this.notification.error('Thất bại', data.msg);
             }
-            this.loadingSrv.close();
           }
         );
     }
@@ -194,8 +199,11 @@ export class AclConsumerGroupComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
-        this.loadingSrv.open({type: "spin", text: "Loading..."});
-        this.aclKafkaService.deleteAcl(data).pipe()
+        this.loadingSrv.open({ type: "spin", text: "Loading..." });
+        this.aclKafkaService.deleteAcl(data)
+          .pipe(
+            finalize(() => this.loadingSrv.close())
+          )
           .subscribe(
             (data) => {
               if (data && data.code == 200) {
@@ -205,7 +213,6 @@ export class AclConsumerGroupComponent implements OnInit {
               } else {
                 this.notification.error('Thất bại', data.msg);
               }
-              this.loadingSrv.close();
             }
           );
       },

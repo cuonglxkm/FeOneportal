@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { decamelizeKeys } from 'humps';
 import { Observable, ReplaySubject } from 'rxjs';
 import { BaseResponse } from '../core/models/base-response.model';
@@ -10,15 +11,22 @@ import {
   NewPasswordKafkaCredential,
 } from '../core/models/kafka-credential.model';
 import { Pagination } from '../core/models/pagination.model';
+import { BaseService } from './base.service';
 @Injectable({
   providedIn: 'root',
 })
-export class KafkaCredentialsService {
-  private baseUrl = 'http://localhost:16005/kafka-service';
+export class KafkaCredentialsService extends BaseService {
+  private kafkaUrl = this.baseUrl + '/kafka-service';
+  private userUrl = this.kafkaUrl + this.ENDPOINT.users;
   selectedCredential = new ReplaySubject<KafkaCredential>();
   activatedTab = new ReplaySubject<number>();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+
+    super()
+  }
 
   setCredential(credential: KafkaCredential) {
     this.selectedCredential.next(credential);
@@ -41,7 +49,7 @@ export class KafkaCredentialsService {
       .set('size', size);
 
     return this.http.get<BaseResponse<Pagination<KafkaCredential[]>>>(
-      `${this.baseUrl}/users`,
+      `${this.userUrl}`,
       {
         params,
       }
@@ -52,7 +60,7 @@ export class KafkaCredentialsService {
     data: CreateKafkaCredentialData
   ): Observable<BaseResponse<null>> {
     return this.http.post<BaseResponse<null>>(
-      `${this.baseUrl}/users`,
+      `${this.userUrl}`,
       decamelizeKeys(data)
     );
   }
@@ -61,7 +69,7 @@ export class KafkaCredentialsService {
     serviceOrderCode: string,
     username: string
   ): Observable<BaseResponse<null>> {
-    return this.http.delete<BaseResponse<null>>(`${this.baseUrl}/users`, {
+    return this.http.delete<BaseResponse<null>>(`${this.userUrl}`, {
       body: {
         service_order_code: serviceOrderCode,
         username,
@@ -72,15 +80,15 @@ export class KafkaCredentialsService {
   updatePassword(
     data: ChangePasswordKafkaCredential
   ): Observable<BaseResponse<null>> {
-    return this.http.patch<BaseResponse<null>>(
-      `${this.baseUrl}/users`,
-      decamelizeKeys(data)
+    return this.http.post<BaseResponse<null>>(
+      `${this.userUrl}/update`,
+                  decamelizeKeys(data)
     );
   }
 
   createNewPassword(data: NewPasswordKafkaCredential) {
     return this.http.post<BaseResponse<null>>(
-      `${this.baseUrl}/users/reset-password`,
+      `${this.userUrl}/reset-password`,
       decamelizeKeys(data)
     );
   }

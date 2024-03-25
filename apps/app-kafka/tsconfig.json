@@ -2,14 +2,14 @@
   "compilerOptions": {
     "target": "es2022",
     "useDefineForClassFields": false,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "baseUrl": "./",
+    "paths": {
+      "@env/*": [
+        "src/environments/*"
+      ],
+    }, 
   },
   "files": [],
-  "include": [],
   "references": [
     {
       "path": "./tsconfig.app.json"

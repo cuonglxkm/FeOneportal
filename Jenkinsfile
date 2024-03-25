@@ -1,56 +1,65 @@
-def image 
+def image
+def imageTag
+def appName
 
 pipeline {
-    agent any
+    
+    agent { label 'worker-6-agent||jenkins-oneportal' }
 
-    environment {        
-        branchName="${env.BRANCH_NAME}"
-        buildNumber="${env.BUILD_NUMBER}"
-        registry = "https://registry.onsmartcloud.com"
-        registryRepository = "registry.onsmartcloud.com/idg"
+    environment {
+        registry = "registry.onsmartcloud.com"
         registryCredential = "cloud-harbor-id"
-        imageTag = "${registryRepository}/${branchName}:${buildNumber}"
-        IMAGE_TAG = "${imageTag}"
-        APP_NAME = "${branchName}"
+        k8sCredential = "k8s-cred"
     }
 
     stages {
 
+        stage("Initializing") {
+            steps {
+                script {
+                    appName = env.BRANCH_NAME
+                    imageTag = "${registry}/idg/${appName}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+
         stage("Build image") {
             steps {
                 script {
-                    image = docker.build(imageTag, "-f apps/${branchName}/Dockerfile .")
+                    sh "docker build -t ${imageTag} -f apps/${appName}/Dockerfile ."
                 }
             }
         }
 
         stage("Push image") {
             steps {
-                script {
-                    docker.withRegistry(registry, registryCredential) {
-                        image.push()
+                withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh "echo $DOCKER_PASSWORD | docker login ${registry} --username $DOCKER_USERNAME --password-stdin"
+                    script {
+                        sh "docker push ${imageTag}"
                     }
                 }
-                
             }
         }
 
         stage("Cleaning up") {
             steps {
-                sh "docker rmi ${imageTag}"
+                sh "docker rmi -f ${imageTag}"
             }
         }
 
         stage("Deploying to K8s") {
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'k8s-cred']) {
-                        dir("apps/${branchName}/deploy") {
+                    env.APP_NAME = appName
+                    env.IMAGE_TAG = imageTag
+                    withCredentials([file(credentialsId: 'k8s-cred', variable: 'KUBECONFIG')]) {
+                        dir("apps/${appName}/deploy") {
                             sh 'for f in *.yaml; do envsubst < $f | kubectl apply -f - ; done '
                         }
                     }
                 }
-                
+
             }
         }
 
