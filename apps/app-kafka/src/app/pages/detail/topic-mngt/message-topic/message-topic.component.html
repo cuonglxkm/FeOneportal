@@ -12,8 +12,8 @@
     </div>
 
 
-    <nz-table #virtualTable [nzBordered]="true" [nzData]="messages" [nzFrontPagination]="false"
-        [nzShowPagination]="false" [nzScroll]="{ y: '450px' }">
+    <nz-table #virtualTable [nzBordered]="true" [nzData]="messages" [nzFrontPagination]="true"
+        [nzShowPagination]="true" nzTableLayout="fixed">
         <thead>
             <tr>
                 <th>Offset</th>
@@ -28,8 +28,8 @@
                 <td>{{ data.offset }}</td>
                 <td>{{ data.partition }}</td>
                 <td>{{ data.timestamp | date: 'dd/MM/yyyy HH:mm'}}</td>
-                <td>{{ data.key }}</td>
-                <td>{{ data.value }}</td>
+                <td nzEllipsis nz-tooltip nzTooltipPlacement="top" [nzTooltipTitle]="data.key">{{ data.key }}</td>
+                <td nzEllipsis nz-tooltip nzTooltipPlacement="top" [nzTooltipTitle]="data.value">{{ data.value }}</td>
             </tr>
         </tbody>
     </nz-table>
