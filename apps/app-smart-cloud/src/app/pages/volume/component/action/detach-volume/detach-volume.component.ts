@@ -69,8 +69,13 @@ export class DetachVolumeComponent {
     this.isLoadingDetach = true;
 
     let addVolumetoVmRequest = new AddVolumetoVmModel();
+
     addVolumetoVmRequest.volumeId = this.volumeId;
-    addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
+    if(this.isMultiple == false) {
+      addVolumetoVmRequest.instanceId = this.listInstanceInVolume[0].instanceId
+    } else {
+      addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
+    }
     addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
 
     this.volumeService.detachVolumeToVm(addVolumetoVmRequest).subscribe(data => {

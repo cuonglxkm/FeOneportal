@@ -10,7 +10,7 @@
                         </div>
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                        <input nz-input formControlName="name" id="name"/>
+                        <input nz-input formControlName="name" id="name" class="input-custom"/>
                         <ng-template #nameErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
                             <ng-container *ngIf="control.hasError('pattern')">Tên gồm 255 ký tự viết liền không dấu
@@ -31,8 +31,8 @@
                         </div>
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="maxBackupErrorTpl">
-                        <nz-input-number formControlName="maxBackup" id="maxBackup" nzMin="1" nzStep="1"
-                               style="width: 100%; border-radius: 8px;"/>
+                        <nz-input-number class="input-custom" formControlName="maxBackup" id="maxBackup" nzMin="1" nzStep="1"
+                               style="width: 100%; border-radius: 8px; margin-left: 0;"/>
                         <ng-template #maxBackupErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0</ng-container>
                         </ng-template>
@@ -50,7 +50,7 @@
                                 formControlName="backupPackage" id="backupPackage"
                                 [nzPlaceHolder]="'Gói backup'"
                                 style="border-radius: 8px;"
-                                [nzShowSearch]="false">
+                                [nzShowSearch]="false" [nzSize]="'large'">
                             <nz-option
                                     *ngFor="let i of backupPackages"
                                     [nzLabel]="i.packageName"
@@ -91,6 +91,7 @@
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceErrorTpl">
                         <nz-select formControlName="instanceId"
                                    id="instanceId"
+                                   [nzSize]="'large'"
                                    [nzPlaceHolder]="'Chọn máy ảo'"
                                    [nzShowSearch]="false"
                                    (ngModelChange)="selectInstanceChange($event)">
@@ -113,6 +114,7 @@
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="backupModeErrorTpl">
                         <nz-select
                                 formControlName="backupMode" id="backupMode"
+                                nzSize="large"
                                 [nzPlaceHolder]="'Chế độ Backup'"
                                 [nzShowSearch]="false"
                                 (ngModelChange)="modeChange($event)">
@@ -135,6 +137,7 @@
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                         <nz-time-picker formControlName=times
                                         id="times"
+                                        nzSize="large"
                                         [nzPlaceHolder]="'Chọn thời gian'"
                                         style="width: 100%; border-radius: 8px;"></nz-time-picker>
                         <ng-template #timeErrorTpl let-control>
@@ -152,7 +155,8 @@
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsErrorTpl">
                             <nz-input-number
-                                   style="width:100%; border-radius: 8px;"
+                                   style="width:100%; border-radius: 8px; margin-left: 0;"
+                                   class="input-custom"
                                    formControlName="months"
                                    id="months"
                                    nzMin="1"
@@ -174,8 +178,9 @@
                         </nz-form-label>
                         <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                             <nz-input-number
-                                   style="width:100%; border-radius: 8px;"
+                                   style="width:100%; border-radius: 8px; margin-left: 0;"
                                    formControlName="date"
+                                   class="input-custom"
                                    id="date"
                                    nzMin="1"
                                    nzMax="31"
@@ -201,6 +206,7 @@
                                     formControlName="numberOfWeek" id="numberOfWeek"
                                     [nzPlaceHolder]="'Số tuần thực hiện'"
                                     [nzShowSearch]="false"
+                                    nzSize="large"
                                     [(ngModel)]="numberOfWeekChangeSelected"
                                     (ngModelChange)="numberOfWeekChange($event)">
                                 <nz-option
@@ -221,6 +227,7 @@
                             <nz-select
                                     formControlName="daysOfWeek" id="daysOfWeek"
                                     [nzPlaceHolder]="'Chọn thứ'"
+                                    nzSize="large"
                                     [nzShowSearch]="false">
                                 <nz-option
                                         *ngFor="let i of daysOfWeek"
@@ -245,6 +252,7 @@
                             <nz-select
                                     formControlName="daysOfWeekMultiple" id="daysOfWeekMultiple"
                                     nzMode="multiple"
+                                    nzSize="large"
                                     [nzPlaceHolder]="'Chọn thứ'"
                                     [nzShowSearch]="false">
                                 <nz-option
@@ -270,6 +278,7 @@
                                 formControlName="volumeToBackupIds"
                                 [nzPlaceHolder]="'Volume gắn ngoài'"
                                 nzMode="multiple"
+                                nzSize="large"
                                 [nzShowSearch]="false">
 
                             <nz-option

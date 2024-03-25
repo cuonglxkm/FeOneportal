@@ -19,6 +19,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -87,7 +88,7 @@
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span><b>Ngày khởi tạo:</b> {{packageBackupModel.creationDate | date: 'dd/MM/yyyy'}}</span>
+                    <span *ngIf="orderItem?.orderItemPrices?.length > 0"><b>Ngày khởi tạo:</b> {{orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy'}}</span>
                   </div>
                 </nz-form-label>
               </nz-form-item>
@@ -96,7 +97,7 @@
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span><b>Ngày hết hạn: </b> {{packageBackupModel.expirationDate | date: 'dd/MM/yyyy'}}</span>
+                    <span *ngIf="orderItem?.orderItemPrices?.length > 0"><b>Ngày hết hạn: </b> {{orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy'}}</span>
                   </div>
                 </nz-form-label>
               </nz-form-item>
