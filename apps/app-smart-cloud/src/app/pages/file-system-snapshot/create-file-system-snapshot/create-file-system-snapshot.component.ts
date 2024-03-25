@@ -11,6 +11,9 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
+import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 
 
 @Component({
@@ -34,14 +37,28 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
 
   customerId: number;
 
+  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
+    new FormCreateFileSystemSnapShot();
+    selectedFileSystemName: string;
   form: FormGroup<{
-    nameFileSystem: FormControl<string>;
+    nameFileSystem: FormControl<number>;
     nameSnapshot: FormControl<string>
+    description: FormControl<string>
   }> = this.fb.group({
-    nameFileSystem: ['', [Validators.required]],
-    nameSnapshot: ['', [Validators.required]],
+    nameFileSystem: [null as number, [Validators.required]],
+    nameSnapshot: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    description: [''],
   });
 
+
+  updateSelectedFileSystems(selectedFileSystem: number): void {
+      const selectedOption = this.response.records.find(
+        (option) => option.id === selectedFileSystem
+      );
+      if (selectedOption) {
+        this.selectedFileSystemName = selectedOption.name;
+      }
+  }
 
   getListFileSystem() {
     this.isLoading = true;
@@ -77,73 +94,59 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
-     private fileSystemService: FileSystemService
-    // private volumeService: VolumeService,
-    // private modalService: NzModalService,
-    // private notification: NzNotificationService
+     private fileSystemService: FileSystemService,
+     private fileSystemSnapshotService: FileSystemSnapshotService,
+    private notification: NzNotificationService
   ) {}
 
   goBack() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
   }
+
+  getData(): any {
+    this.formCreateFileSystemSnapshot.customerId =
+      this.tokenService.get()?.userId;
+    this.formCreateFileSystemSnapshot.region = this.region;
+    this.formCreateFileSystemSnapshot.projectId = this.project.toString();
+    this.formCreateFileSystemSnapshot.name =
+      this.form.controls.nameSnapshot.value;
+    this.formCreateFileSystemSnapshot.description = this.form.controls.description.value;
+    this.formCreateFileSystemSnapshot.shareId = this.form.controls.nameFileSystem.value
+    this.formCreateFileSystemSnapshot.displayDescription = this.form.controls.description.value;
+    this.formCreateFileSystemSnapshot.displayName = this.form.controls.nameSnapshot.value;
+    this.formCreateFileSystemSnapshot.force = true
+    this.formCreateFileSystemSnapshot.size = 1
+    this.formCreateFileSystemSnapshot.vpcId = this.project
+    this.formCreateFileSystemSnapshot.scheduleId = 1
+    return this.formCreateFileSystemSnapshot;
+  }
   // request = new CreateScheduleSnapshotDTO();
-  // create() {
-  //   const modal: NzModalRef = this.modalService.create({
-  //     nzTitle: 'Xác nhận tạo lịch Snapshot',
-  //     nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tạo lịch Snapshot?</p>`,
-  //     nzFooter: [
-  //       {
-  //         label: 'Hủy',
-  //         type: 'default',
-  //         onClick: () => modal.destroy(),
-  //       },
-  //       {
-  //         label: 'Đồng ý',
-  //         type: 'primary',
-  //         onClick: () => {
-  //           this.isLoading = true;
-  //           this.request.dayOfWeek = this.dateStart;
-  //           this.request.daysOfWeek = [];
-  //           this.request.description = this.descSchedule;
-  //           this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
-  //           this.request.mode = 3; //fix cứng chế độ = theo tuần ;
-  //           this.request.dates = 0;
-  //           this.request.duration = 0;
-  //           this.request.volumeId = this.volumeId;
-  //           this.request.runtime = this.time.toISOString();
-  //           this.request.intervalMonth = 0;
-  //           this.request.maxBaxup = 1; // fix cứng số bản
-  //           this.request.snapshotPacketId = 0;
-  //           this.request.customerId = this.userId;
-  //           this.request.projectId = this.project;
-  //           this.request.regionId = this.region;
-  //           console.log(this.request);
-  //           this.snapshotService.createSnapshotSchedule(this.request).subscribe(
-  //             (data) => {
-  //               if (data != null) {
-  //                 console.log(data);
-  //                 this.isLoading = false;
-  //                 this.notification.success('Success', 'Tạo lịch thành công');
-  //                 this.router.navigate([
-  //                   '/app-smart-cloud/schedule/snapshot/list',
-  //                 ]);
-  //               } else {
-  //                 this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-  //                 this.isLoading = false;
-  //               }
-  //             },
-  //             (error) => {
-  //               console.log(error);
-  //               this.notification.error('Có lỗi xảy ra', 'Tạo lịch thất bại');
-  //               this.isLoading = false;
-  //             }
-  //           );
-  //           modal.destroy();
-  //         },
-  //       },
-  //     ],
-  //   });
-  // }
+  handleCreate() {
+    this.isLoading = true;
+    if (this.form.valid) {
+      this.formCreateFileSystemSnapshot = this.getData();
+      console.log(this.formCreateFileSystemSnapshot);
+      this.fileSystemSnapshotService
+        .create(this.formCreateFileSystemSnapshot)
+        .subscribe(
+          (data) => {
+            this.isLoading = false
+            this.notification.success(
+              'Thành công',
+              'Tạo mới file system snapshot thành công'
+            );
+          },
+          (error) => {
+            this.isLoading = false
+            this.notification.error(
+              'Thất bại',
+              'Tạo mới file system snapshot thất bại'
+            );
+            console.log(error);
+          }
+        );
+    }
+  }
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;

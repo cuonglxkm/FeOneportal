@@ -5,10 +5,9 @@ import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
-import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
-import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
@@ -207,25 +206,24 @@ export class VolumeComponent implements OnInit {
     // this.getListVolume(true)
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
-      this.notificationService.connection.on('UpdateVolume', (data) => {
-        if (data) {
-          console.log(data);
-
-          let volumeId = data.serviceId;
-
-          var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-          if (foundIndex > -1) {
-            var record = this.response.records[foundIndex];
-
-            record.status = data.status;
-            record.serviceStatus = data.serviceStatus;
-
-            this.response.records[foundIndex] = record;
-            this.cdr.detectChanges();
-          }
-        }
-      });
     }
+    
+    this.notificationService.connection.on('UpdateVolume', (data) => {
+      if (data) {
+        let volumeId = data.serviceId;
+
+        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+        if (foundIndex > -1) {
+          var record = this.response.records[foundIndex];
+
+          record.status = data.status;
+          record.serviceStatus = data.serviceStatus;
+
+          this.response.records[foundIndex] = record;
+          this.cdr.detectChanges();
+        }
+      }
+    });
   }
 
 }
