@@ -7,7 +7,9 @@
                     <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
                         [(ngModel)]="searchText" />
                 </nz-input-group>
-                <ng-template #prefixIconButton><span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span></ng-template>
+                <ng-template #prefixIconButton>
+                    <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                </ng-template>
 
                 <button nz-button nzType="primary" class="btn-create" (click)="createForm()">
                     <span nz-icon nzType="plus" nzTheme="outline"></span>
@@ -45,22 +47,11 @@
                             </td>
                             <td>{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
                             <td class="text-center">
-                                <a nz-dropdown [nzDropdownMenu]="menu">
-                                    <span nz-icon nzType="more" nzTheme="outline"></span>
-                                </a>
-                                <nz-dropdown-menu #menu="nzDropdownMenu">
-                                    <ul nz-menu nzSelectable>
-                                        <li nz-menu-item>
-                                            <span nz-icon nzType="edit" nzTheme="twotone" (click)="updateACLTopic(data)"
-                                                nzTwotoneColor="#0066B0"></span> Chỉnh sửa
-                                        </li>
-                                        <li nz-menu-item>
-                                            <span nz-icon nzType="delete" nzTheme="twotone" (click)="showDeleteConfirm(data)"
-                                                nzTwotoneColor="#0066B0"></span> Xóa
-                                        </li>
-                                    </ul>
-                                </nz-dropdown-menu>
-                                
+                                <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer; margin-right: 16px" (click)="updateACLTopic(data)"
+                                nz-tooltip="Quên mật khẩu" class="img-edit"/>
+
+                                <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-right: 16px" (click)="showDeleteConfirm(data)" 
+                                nz-tooltip="Xóa" />
                             </td>
                         </tr>
                     </tbody>
