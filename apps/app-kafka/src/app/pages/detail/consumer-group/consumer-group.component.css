@@ -147,3 +147,8 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 ::ng-deep .ant-pagination-item {
     border-radius: 8px;
 }
+
+nz-tag {
+    border-radius: 3px;
+    font-size: 14px;
+}

@@ -88,12 +88,17 @@ nz-table.tbl-acl th {
 
 .exact-lbl {
     width: 50%;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+    color: #C4C6D4;
 }
 
 .prefixed-lbl {
     width: 50%;
     margin-right: 0px;
-    border-color: #8A8886;
+    border-radius: 0 4px 4px 0;
+    font-size: 16px;
+    color: #C4C6D4;
 }
 
 ::ng-deep .ant-select-selector {
@@ -111,5 +116,23 @@ nz-table.tbl-acl th {
 .img-edit {
     width: 24px;
     height: 24px;
+}
+
+nz-tag {
+    font-size: 14px;
+    border-radius: 3px;
+    border: none;
+    line-height: 24px;
+}
+
+.tag-prefix {
+    background-color: #F0F1F4;
+    color: #000000;
+    min-width: 72px;
+}
+
+.tag-permission {
+    color: #ffffff;
+    min-width: 60px;
 }
 
