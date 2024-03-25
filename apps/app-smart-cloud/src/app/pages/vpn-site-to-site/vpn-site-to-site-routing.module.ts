@@ -5,6 +5,7 @@ import { CreateIpsecPoliciesComponent } from "./manage/ipsec-policies/create/cre
 import { EditIpsecPoliciesComponent } from "./manage/ipsec-policies/edit/edit-ipsec-policies.component";
 import { DetailIpsecPoliciesComponent } from "./manage/ipsec-policies/detail/detail-ipsec-policies.component";
 import { CreateVpnConnectionComponent } from "./manage/vpn-connection/create/create-vpn-connection.component";
+import { CreateIkePoliciesComponent } from "./manage/ike-policies/create/create-ike-policies.component";
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
     path: 'vpn-connection/create',
     component: CreateVpnConnectionComponent,
   },
+  {
+    path: 'ike-policies/create',
+    component: CreateIkePoliciesComponent,
+  }
 ];
 
 @NgModule({
