@@ -27,8 +27,8 @@ import {DatePipe} from "@angular/common";
   styleUrls: ['./schedule-backup-volume.component.less'],
 })
 export class ScheduleBackupVolumeComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
+  @Input() region: number;
+  @Input() project: number;
 
   isLoading: boolean = false
   validateForm: FormGroup<{
