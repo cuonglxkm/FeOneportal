@@ -3,13 +3,13 @@ import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EMPTY, Observable, Subscription, combineLatest, finalize } from 'rxjs';
-import { environment } from 'src/environments/environment.prod';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
 import { NotificationConstant } from '../constants/notification.constant';
 import { KubernetesCluster } from '../model/cluster.model';
 import { ClusterStatus } from '../model/status.model';
 import { ClusterService } from '../services/cluster.service';
 import { NotificationWsService } from '../services/ws.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
