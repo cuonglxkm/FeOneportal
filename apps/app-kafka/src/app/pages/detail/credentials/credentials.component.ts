@@ -166,6 +166,15 @@ export class CredentialsComponent implements OnInit {
   }
 
   sendOtpChangePassword(serviceOrderCode: string, username: string){
+    
+    //test
+    this.isVisibleOtpModal = true;
+    this.currentUserName = username;
+    this.titleOtp = 'Mã xác thực OTP đã được gửi đến email: nhiennd@vnpt.vn';
+    this.keyCheckOtp = '123456';
+    this.inputOtpCode = '';
+
+    /* Tạm ẩn luồng gửi mail 
     this.kafkaService.sendOtpForgotPassword(this.serviceOrderCode, username).subscribe(r => {
       if(r && r.code === 200){
         this.isVisibleOtpModal = true;
@@ -175,6 +184,7 @@ export class CredentialsComponent implements OnInit {
         this.inputOtpCode = '';
       }
     })
+    */
   }
 
   verifyOtp(){
@@ -184,6 +194,18 @@ export class CredentialsComponent implements OnInit {
       });
       return;
     }
+
+    //test
+    if (this.inputOtpCode == '123456') {
+      this.closeOtpModal();
+      this.changeTabStatus(this.showForgotPassword);
+    } else {
+      this.notification.error('Thông báo', 'Mã xác thực không đúng, xin vui lòng kiểm tra lại!', {
+        nzDuration: 2000,
+      });
+    }
+
+    /* Tạm ẩn luồng xác thực OTP
     this.kafkaService
       .verifyOtpForgotPassword(
         this.keyCheckOtp,
@@ -196,5 +218,6 @@ export class CredentialsComponent implements OnInit {
           this.changeTabStatus(this.showForgotPassword);
         }
       });
+    */
   }
 }

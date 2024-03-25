@@ -165,16 +165,19 @@ export class CreateCredentialComponent implements OnDestroy {
         this.kafkaCredentialService
           .createCredential(createData)
           .pipe(
-            filter((r) => r && r.code == 200),
             finalize(() => {
               this.loadingSrv.close();
             })
           )
-          .subscribe(() => {
-            this.closeFormEvent.emit();
-            this.notification.success('Thông báo', 'Tạo tài khoản thành công', {
-              nzDuration: 2000,
-            });
+          .subscribe((data) => {
+            if (data && data.code == 200) {
+              this.closeFormEvent.emit();
+              this.notification.success('Thông báo', data.msg, {
+                nzDuration: 2000,
+              });
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
           });
         break;
       }
@@ -190,16 +193,19 @@ export class CreateCredentialComponent implements OnDestroy {
         this.kafkaCredentialService
           .updatePassword(updateData)
           .pipe(
-            filter((r) => r && r.code == 200),
             finalize(() => {
               this.loadingSrv.close();
             })
           )
-          .subscribe(() => {
-            this.closeFormEvent.emit();
-            this.notification.success('Thông báo', 'Đổi mật khẩu thành công', {
-              nzDuration: 2000,
-            });
+          .subscribe((data) => {
+            if (data && data.code == 200) {
+              this.closeFormEvent.emit();
+              this.notification.success('Thông báo', data.msg, {
+                nzDuration: 2000,
+              });
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
           });
         break;
       }
@@ -213,15 +219,20 @@ export class CreateCredentialComponent implements OnDestroy {
         this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
         this.kafkaCredentialService
           .createNewPassword(newPasswordData)
-          .pipe(filter((r) => r && r.code == 200),
-          finalize(() => {
-            this.loadingSrv.close();
-          }))
-          .subscribe(() => {
-            this.closeFormEvent.emit();
-            this.notification.success('Thông báo', 'Đổi mật khẩu thành công', {
-              nzDuration: 2000,
-            });
+          .pipe(
+            finalize(() => {
+              this.loadingSrv.close();
+            })
+          )
+          .subscribe((data) => {
+            if (data && data.code == 200) {
+              this.closeFormEvent.emit();
+              this.notification.success('Thông báo', data.msg, {
+                nzDuration: 2000,
+              });
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
           });
         break;
       }
