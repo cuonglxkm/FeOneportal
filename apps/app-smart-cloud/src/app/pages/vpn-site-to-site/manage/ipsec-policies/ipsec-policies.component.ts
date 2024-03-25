@@ -1,12 +1,9 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
-import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
-import { FormSearchIpsecPolicy, IpsecPolicyDTO } from 'src/app/shared/models/ipsec-policy';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
+import { Component, Inject, Input } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 import { debounceTime } from 'rxjs';
-import { getCurrentRegionAndProject } from '@shared';
+import { FormSearchIpsecPolicy, IpsecPolicyDTO } from 'src/app/shared/models/ipsec-policy';
+import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
+import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 
 
 @Component({
@@ -18,11 +15,9 @@ import { getCurrentRegionAndProject } from '@shared';
 export class IpsecPoliciesComponent {
   @Input() region: number 
   @Input() project: number 
-  @Output() regionChange: EventEmitter<any> = new EventEmitter<any>();
-  @Output() projectChange: EventEmitter<any> = new EventEmitter<any>();
   customerId: number
 
-  pageSize: number = 10
+  pageSize: number = 5
   pageIndex: number = 1
 
   value: string
@@ -34,28 +29,20 @@ export class IpsecPoliciesComponent {
   formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()
 
   constructor(private ipsecPolicyService: IpsecPolicyService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    ) {
 }
 
   refreshParams() {
-    this.pageSize = 10;
+    this.pageSize = 5;
     this.pageIndex = 1;
   }
-
-  onRegionChange(event: any) {
-    this.regionChange.emit(event)
-    this.refreshParams();
-  }
-
+  
   onInputChange(value) {
     this.value = value;
     this.getData()
   }
 
-  onProjectChange(event: any) {
-    this.projectChange.emit(event)
-    this.getData();
-  }
 
   onPageSizeChange(event) {
     this.pageSize = event
@@ -83,12 +70,9 @@ export class IpsecPoliciesComponent {
       this.response = data
     })
   }
-
-  handleOkDelete() {
-    this.getData()
-  }
+  
 
   ngOnInit() {
-    this.getData()
+      this.getData();
   }
 }

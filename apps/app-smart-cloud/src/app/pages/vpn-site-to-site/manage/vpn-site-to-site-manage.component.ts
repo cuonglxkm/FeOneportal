@@ -1,13 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
-import { VolumeService } from 'src/app/shared/services/volume.service';
-import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
-import { VolumeDTO } from 'src/app/shared/dto/volume.dto';
+import { RegionModel } from 'src/app/shared/models/region.model';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -25,19 +19,21 @@ export class VpnSiteToSiteManage {
   constructor() {
   }
 
-  onRegionChange(region: RegionModel) {
+  regionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
-
+    console.log(this.project);
   }
+  
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
   }
 
 }

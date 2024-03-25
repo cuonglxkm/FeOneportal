@@ -150,12 +150,12 @@
             <nz-form-control>
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
-                <span>Local System Subnet</span>
+                <span>Local Endpoint Group</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Local System Subnet [bắt buộc] : tương ứng với trường Endpoint group for local subnet trên OpenStack.'"
+                      [nzPopoverContent]="'Local Endpoint Group [bắt buộc] : tương ứng với trường Endpoint group for local subnet trên OpenStack.'"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
@@ -234,12 +234,12 @@
             <nz-form-control>
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
-                <span>Remote Local Subnet</span>
+                <span> Remote Endpoint Group</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
                       nz-popover
-                      [nzPopoverContent]="'Remote local subnet(s)  [bắt buộc]: Khách hàng nhập Remote peer subnet(s) là các subnet local cần được quảng bá phía tunnel VPN Client. VD: 10.10.10.0/24, 192.168.10.0/24,..., tương ứng với trường Remote peer subnet(s) trên OpenStack.'"
+                      [nzPopoverContent]="'Khách hàng lựa chọn remote Endpoint Group đã tạo.'"
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
