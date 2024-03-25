@@ -44,13 +44,13 @@
             <nz-input-group
               style="width: 300px;"
               [nzPrefix]="prefixIconSearch"
-              nzSize="large"
-              [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])">
+              nzSize="large">
               <input
                 name="name"
                 nz-input
-                placeholder="Tìm kiếm tên ..." />
+                placeholder="Tìm kiếm tên ..."
+                [(ngModel)]="value"
+                (input)="onInputChange($event.target['value'])" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img
@@ -160,7 +160,7 @@
         <result>
           <nz-row>
             <nz-col class="text-center" style="width: 100%">
-              <img src="/assets/imgs/backupvm-blank.png" alt="" />
+              <img src="assets/imgs/backupvm-blank.png" alt="" />
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
