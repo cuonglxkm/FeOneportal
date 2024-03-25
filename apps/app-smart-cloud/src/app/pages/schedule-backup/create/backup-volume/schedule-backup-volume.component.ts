@@ -187,7 +187,7 @@ export class ScheduleBackupVolumeComponent implements OnInit{
 
   getBackupPackage() {
     this.backupVmService.getBackupPackages().subscribe(data => {
-      this.backupPackages = data
+      this.backupPackages = data.records
       console.log('backup package', this.backupPackages)
     })
   }
