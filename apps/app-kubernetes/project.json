@@ -47,7 +47,13 @@
           "outputHashing": "all",
           "customWebpackConfig": {
             "path": "apps/app-kubernetes/webpack.prod.config.ts"
-          }
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/app-kubernetes/rc/environments/environment.ts",
+              "with": "apps/app-kubernetes/src/environments/environment.prod.ts"
+            }
+          ]
         },
         "development": {
           "buildOptimizer": false,
