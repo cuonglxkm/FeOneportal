@@ -1,5 +1,4 @@
 <page-header
-  [content]="content"
   [breadcrumb]="breadcrumb"
   [action]="action"
   [title]="'Lịch sử thao tác'"
@@ -23,55 +22,43 @@
       ></project-select-dropdown>
     </div>
   </ng-template>
-
-  <ng-template #content>
-    <div nz-row class="mb-md">
-      <div nz-col nzSpan="18">
-        <div class="row">
-          <div class="col-md-4" style="display: flex">
-            <h4
-              style="margin-left: 0px; align-items: center; margin-right: 10px"
-            >
-              Thao tác:
-            </h4>
-            <nz-input-group nzCompact>
-              <nz-select [(ngModel)]="selectedAction" nzSize="large">
-                <nz-option
-                  *ngFor="let p of actionData"
-                  [nzValue]="p"
-                  [nzLabel]="p"
-                ></nz-option>
-              </nz-select>
-            </nz-input-group>
-          </div>
-          <div class="col-md-4" style="display: flex">
-            <h4
-              style="margin-left: 30px; align-items: center; margin-right: 10px"
-            >
-              Loại dịch vụ:
-            </h4>
-            <nz-input-group nzCompact>
-              <nz-select [(ngModel)]="selectedAction" nzSize="large">
-                <nz-option
-                  *ngFor="let p of actionData"
-                  [nzValue]="p"
-                  [nzLabel]="p"
-                ></nz-option>
-              </nz-select>
-            </nz-input-group>
-          </div>
-          <div class="col-md-4" style="display: flex">
-            <se-container style="margin-left: 30px">
-              <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange" (ngModelChange)="onChangeDateRange()" />
-            </se-container>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ng-template>
 </page-header>
-<nz-card>
-  <!-- Bảng-->
+
+<nz-card style="border-radius: 4px">
+  <nz-row style="margin-bottom: 20px">
+    <nz-col style="width: 100%">
+      <nz-range-picker
+        style="border-radius: 8px"
+        nzSize="large"
+        [nzFormat]="dateFormat"
+        [(ngModel)]="dateRange"
+        (ngModelChange)="onChangeDateRange()"
+      />
+
+      <nz-input-group
+        style="margin-left: 10px; width: 30%; border-radius: 8px"
+        [nzPrefix]="prefixIconSearch"
+        nzSize="large"
+      >
+        <input
+          name="name"
+          nz-input
+          placeholder="Tìm kiếm  theo thao tác, dịch vụ, loại dịch vụ"
+          [(ngModel)]="searchParam"
+          (keyup.enter)="getData()"
+        />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <img
+          src="assets/imgs/search.svg"
+          alt=""
+          style="cursor: pointer"
+          nz-tooltip="Tìm kiếm"
+          (click)="doSearch()"
+        />
+      </ng-template>
+    </nz-col>
+  </nz-row>
   <nz-table
     #rowSelectionTable
     [nzFrontPagination]="false"
@@ -91,7 +78,9 @@
         <th>Thao tác</th>
         <th>Loại dịch vụ</th>
         <th>Tên dịch vụ</th>
-        <th>Thời gian</th>
+        <th>Khu vực</th>
+        <th>Thông tin</th>
+        <th>Ngày tạo tác</th>
       </tr>
     </thead>
     <tbody>
@@ -99,7 +88,9 @@
         <td>{{ item.eventID }}</td>
         <td>{{ item.eventName }}</td>
         <td>{{ item.resourceType }}</td>
-        <td>{{ item.summary }}</td>
+        <td>{{ item.resourceName }}</td>
+        <td>{{ item.regionText }}</td>
+        <td>{{ item.additionalInfo }}</td>
         <td>{{ item.createdTime | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>

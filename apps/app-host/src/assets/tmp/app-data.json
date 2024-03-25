@@ -87,7 +87,7 @@
           "children": [
             {
               "text": "VM (Máy ảo)",
-              "icon": "anticon-cloud",
+              "icon": "anticon-laptop",
               "link": "/app-smart-cloud/instances"
             },
             {
