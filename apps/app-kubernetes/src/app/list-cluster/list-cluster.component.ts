@@ -1,16 +1,15 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, Observable, Subject, Subscription, catchError, combineLatest, finalize, from, mergeMap, pipe, takeUntil } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, finalize } from 'rxjs';
+import { environment } from 'src/environments/environment.prod';
+import { KubernetesConstant } from '../constants/kubernetes.constant';
 import { NotificationConstant } from '../constants/notification.constant';
-import { KubernetesCluster, ProgressData } from '../model/cluster.model';
+import { KubernetesCluster } from '../model/cluster.model';
 import { ClusterStatus } from '../model/status.model';
 import { ClusterService } from '../services/cluster.service';
-import { ShareService } from '../services/share.service';
 import { NotificationWsService } from '../services/ws.service';
-import { Router } from '@angular/router';
-import { environment } from '@env/environment';
-import { KubernetesConstant } from '../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-app-kubernetes',

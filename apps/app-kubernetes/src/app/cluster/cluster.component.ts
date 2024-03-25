@@ -1,22 +1,22 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
 import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../model/cluster.model';
 import { K8sVersionModel } from '../model/k8s-version.model';
+import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
 import { VolumeTypeModel } from '../model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
 import { WorkerTypeModel } from '../model/worker-type.model';
 import { ClusterService } from '../services/cluster.service';
-import { RegionModel } from '../shared/models/region.model';
-import { ProjectModel } from '../shared/models/project.model';
-import { VlanService } from '../services/vlan.service';
-import { FormSearchNetwork, FormSearchSubnet } from '../model/vlan.model';
-import { finalize, switchMap } from 'rxjs';
 import { ShareService } from '../services/share.service';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { VlanService } from '../services/vlan.service';
+import { ProjectModel } from '../shared/models/project.model';
+import { RegionModel } from '../shared/models/region.model';
 
 @Component({
   selector: 'one-portal-cluster',
