@@ -194,8 +194,9 @@
               "icon": "anticon-profile"
             },
             {
+              "key": "File Storage",
               "text": "File Storage",
-              "icon": "file",
+              "icon": "anticon-profile",
               "children": [
                 {
                   "text": "File System",
@@ -208,41 +209,13 @@
                 {
                   "text": "Lịch Snapshot File System ",
                   "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
-                },
-                {
-                  "text": "Floating IP",
-                  "link": "/app-smart-cloud/networks/ip-floating/list"
-                },
-                {
-                  "text": "Direct Connect",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Network Topology",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "File Storage",
-                  "children": [
-                    {
-                      "text": "File System",
-                      "link": "/app-smart-cloud/file-storage/file-system/list"
-                    },
-                    {
-                      "text": "File System Snapshot",
-                      "link": "/app-smart-cloud/file-system-snapshot/list"
-                    },
-                    {
-                      "text": "Lịch Snapshot File System ",
-                      "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
-                    }
-                  ]
                 }
               ]
             },
             {
               "text": "VPN Site to Site",
-              "link": "/app-smart-cloud/vpn-site-to-site/manage"
+              "link": "/app-smart-cloud/vpn-site-to-site/manage",
+              "icon": "anticon-profile"
             }
           ]
         },

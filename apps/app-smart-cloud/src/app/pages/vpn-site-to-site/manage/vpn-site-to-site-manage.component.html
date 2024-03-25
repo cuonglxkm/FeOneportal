@@ -92,7 +92,8 @@
         <ng-template nz-tab> <one-portal-ike-policies></one-portal-ike-policies> </ng-template>
       </nz-tab>
       <nz-tab nzTitle="IPsec Policies">
-        <ng-template nz-tab> <one-portal-ipsec-policies></one-portal-ipsec-policies> </ng-template>
+        <ng-template nz-tab> <one-portal-ipsec-policies (regionChange)="onRegionChange($event)" 
+          (projectChange)="projectChange($event)" [region]="region" [project]="project" ></one-portal-ipsec-policies> </ng-template>
       </nz-tab>
       <nz-tab nzTitle="VPN Service">
         <ng-template nz-tab> <one-portal-vpn-service></one-portal-vpn-service> </ng-template>

@@ -41,7 +41,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Name</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -56,7 +66,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzRequired >Authorization Algorithm</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>IPsec Policy</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'IPsec Policy: Khách hàng chọn IPsec Policy đã tạo thành công ở mục IPsec Policies trước đó ( lựa chọn theo tên).'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <nz-select
               nzShowSearch
               nzAllowClear
@@ -75,7 +95,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>VPN Service</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>VPN Service</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'VPN Service: Khách hàng lựa chọn VPN Service đã tạo thành công trước đó ( lựa chọn theo tên ).'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <nz-select
               nzShowSearch
               nzAllowClear
@@ -95,7 +125,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Peer Remote IP VPN Gateway</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Peer Remote IP VPN Gateway</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Peer Remote IP VPN  Gateway  [bắt buộc]: Khách hàng nhập IP VPN Gateway ở đầu VPN tunnel phía Client, tương ứng với trường Peer gateway public IPv4/IPv6 Address or FQDN.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -108,7 +148,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Local System Subnet</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Local System Subnet</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Local System Subnet [bắt buộc] : tương ứng với trường Endpoint group for local subnet trên OpenStack.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <nz-select
               nzShowSearch
               nzAllowClear
@@ -128,7 +178,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Peer ID VPN Connections</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Peer ID VPN Connections</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Peer ID VPN Connections  [bắt buộc]: Khách hàng nhập ID (có thể sử dụng luôn IP VPN Gateway) chung sử dụng cho cả tunnel đầu SmartCloud và đầu VPN tunnel phía Client (mục này bắt buộc điền tuy nhiên không cần thiết nếu đã nhập đúng IP VPN gateway ở 2 đầu tunnel), tương ứng với trường Peer router identity for authentication (Peer ID) trên OpenStack.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -142,7 +202,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>IKE Policy</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>IKE Policy</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'IKE Policy: Khách hàng chọn IKE Policy đã tạo thành công ở mục IKE Policies trước đó ( lựa chọn theo tên).'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <nz-select
               nzShowSearch
               nzAllowClear
@@ -162,7 +232,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Remote Local Subnet</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Remote Local Subnet</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Remote local subnet(s)  [bắt buộc]: Khách hàng nhập Remote peer subnet(s) là các subnet local cần được quảng bá phía tunnel VPN Client. VD: 10.10.10.0/24, 192.168.10.0/24,..., tương ứng với trường Remote peer subnet(s) trên OpenStack.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -175,7 +255,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Pre - Shared Key (PSK) string</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Pre - Shared Key (PSK) string</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Pre-Shared Key (PSK) String: Khách hàng nhập key chung giữa 2 tunnel để có thể dùng giải mã gói tin, Khách hàng tùy ý nhập key này.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -195,7 +285,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired>Maximum Transmission Unit size for the connection</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Maximum Transmission Unit size for the connection</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Maximum Transmission Unit size for the connection: MTU là kích thước tối đa của gói tin truyền tải trong mạng.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -208,7 +308,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzRequired >Dead peer detection actions</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Dead peer detection actions</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Dead peer detection actions: Bộ đếm thời gian gửi gói tin kiểm tra trạng thái của 2 đầu tunnel bao gồm các trạng thái: hold, clear, disable, restart, restart-by-peer.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
               nz-input
               type="text"
@@ -219,8 +329,18 @@
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Dead peer detection interval</nz-form-label>
+            <nz-form-control>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Dead peer detection interval</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Dead peer detection interval: Giá trị của khoảng thời bộ đếm thời gian Dead peer detection sẽ gửi gói tin kiểm tra.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
             nz-input
             type="text"
@@ -233,7 +353,17 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Dead peer detection timeout</nz-form-label>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Dead peer detection timeout</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Dead peer detection timeout: Thời gian xác định trạng thái là timeout khi không nhận được gói tin phản hồi trạng thái.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
             nz-input
             type="text"
@@ -244,8 +374,18 @@
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Initiator state</nz-form-label>
+            <nz-form-control>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Initiator state</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.'"
+                      nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
             <input
             nz-input
             type="text"
@@ -261,7 +401,7 @@
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông số cấu hình</h2>
-      <div style="margin-bottom: 145px;">
+      <div style="margin-bottom: 218px;">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
           <span>Test</span>

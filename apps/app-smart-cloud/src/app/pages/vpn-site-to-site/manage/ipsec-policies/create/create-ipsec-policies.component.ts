@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormCreateIpsecPolicy } from 'src/app/shared/models/ipsec-policy';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 
 
 @Component({
@@ -17,60 +20,73 @@ export class CreateIpsecPoliciesComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
 
   authorizationAlgorithm = [
-    { label: 'sha1', value: '1' },
-    { label: 'sha256', value: '2' },
-    { label: 'sha384', value: '3' },
-    { label: 'sha512', value: '4' },
+    { label: 'sha1', value: 'sha1' },
+    { label: 'sha256', value: 'sha256' },
+    { label: 'sha384', value: 'sha384' },
+    { label: 'sha512', value: 'sha512' },
   ];
 
   encryptionMode = [
-    { label: 'tunnel', value: '1' },
-    { label: 'transport', value: '2' },
+    { label: 'tunnel', value: 'tunnel' },
+    { label: 'transport', value: 'transport' },
   ];
 
   encryptionAlgorithm = [
-    { label: 'aes-128', value: '1' },
-    { label: '3des', value: '2' },
-    { label: 'aes-192', value: '3' },
-    { label: 'aes-256', value: '4' },
+    { label: 'aes-128', value: 'aes-128' },
+    { label: '3des', value: '3des' },
+    { label: 'aes-192', value: 'aes-192' },
+    { label: 'aes-256', value: 'aes-256' },
   ];
 
   lifetimeUnits = [
-    { label: 'seconds', value: '1' },
+    { label: 'seconds', value: 'seconds' },
   ];
 
   perfectForwardSecrecy = [
-    { label: 'group5', value: '1' },
-    { label: 'group2', value: '2' },
-    { label: 'group14 ', value: '3' },
+    { label: 'group5', value: 'group5' },
+    { label: 'group14 ', value: 'group14' },
   ];
 
   transformProtocol = [
-    { label: 'esp', value: '1' },
-    { label: 'ah', value: '2' },
-    { label: 'ah-esp ', value: '3' },
+    { label: 'esp', value: 'esp' },
+    { label: 'ah', value: 'ah' },
+    { label: 'ah-esp', value: 'ah-esp' },
   ];
 
-  selectedAuthorizationAlgorithm = '1'
-  selectedEncryptionMode = '1'
-  selectedEncryptionAlgorithm = '1'
-  selectedPerfectForwardSecrecy = '1'
-  selectedTransformProtocol = '1'
-  selectedLifetimeUnits = '1'
-  lifetimeValue = 3600
-  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
-    new FormCreateFileSystemSnapShot();
-    selectedFileSystemName: string;
+  selectedAuthorizationAlgorithm = 'sha1'
+  selectedEncryptionMode = 'tunnel'
+  selectedEncryptionAlgorithm = 'aes-128'
+  selectedPerfectForwardSecrecy = 'group5'
+  selectedTransformProtocol = 'esp'
+  selectedLifetimeUnits = 'seconds'
+  isLoading: boolean = false
+  formCreateIpsecPolicy: FormCreateIpsecPolicy =new FormCreateIpsecPolicy();
   form: FormGroup<{
-    nameFileSystem: FormControl<number>;
-    nameSnapshot: FormControl<string>
-    description: FormControl<string>
+    name: FormControl<string>;
+    lifeTimeValue: FormControl<number>
   }> = this.fb.group({
-    nameFileSystem: [null as number, [Validators.required]],
-    nameSnapshot: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-    description: [''],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 
+
+  getData(): any {
+    this.formCreateIpsecPolicy.customerId =
+      this.tokenService.get()?.userId;
+    this.formCreateIpsecPolicy.regionId = this.region;
+    this.formCreateIpsecPolicy.vpcId = this.project;
+    this.formCreateIpsecPolicy.name =
+      this.form.controls.name.value;
+    this.formCreateIpsecPolicy.description = "";
+    this.formCreateIpsecPolicy.authorizationAlgorithm = this.selectedAuthorizationAlgorithm
+    this.formCreateIpsecPolicy.encapsulationMode = this.selectedEncryptionMode;
+    this.formCreateIpsecPolicy.encryptionAlgorithm = this.selectedEncryptionAlgorithm;
+    this.formCreateIpsecPolicy.lifetimeUnit = this.selectedLifetimeUnits
+    this.formCreateIpsecPolicy.lifetimeValue = this.form.controls.lifeTimeValue.value
+    this.formCreateIpsecPolicy.perfectForwardSecrecy = this.selectedPerfectForwardSecrecy
+    this.formCreateIpsecPolicy.transformProtocol = this.selectedTransformProtocol
+    return this.formCreateIpsecPolicy;
+  }
 
 
   ngOnInit(): void {
@@ -82,11 +98,38 @@ export class CreateIpsecPoliciesComponent implements OnInit{
 
   constructor(
     private router: Router,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
+    private notification: NzNotificationService,
+    private ipsecPolicyService: IpsecPolicyService
   ) {}
 
   handleCreate() {
-    console.log('success');
+    this.isLoading = true;
+    if (this.form.valid) {
+      this.formCreateIpsecPolicy = this.getData();
+      console.log(this.formCreateIpsecPolicy);
+      this.ipsecPolicyService
+        .create(this.formCreateIpsecPolicy)
+        .subscribe(
+          (data) => {
+            this.isLoading = false
+            this.notification.success(
+              'Thành công',
+              'Tạo mới ipsec policy thành công'
+            );
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+          },
+          (error) => {
+            this.isLoading = false
+            this.notification.error(
+              'Thất bại',
+              'Tạo mới ipsec policy thất bại'
+            );
+            console.log(error);
+          }
+        );
+    }
     
   }
 

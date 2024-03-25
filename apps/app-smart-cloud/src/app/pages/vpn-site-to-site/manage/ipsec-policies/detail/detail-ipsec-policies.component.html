@@ -45,7 +45,7 @@
             <input
               nz-input
               type="text"
-              value="snapshot_01"  [disabled]="true"
+              value="{{ipsecPolicy?.name}}"  [disabled]="true"
             />
             
           </nz-form-control>
@@ -58,7 +58,8 @@
             <input
               nz-input
               type="text"
-              value="snapshot_01"  [disabled]="true"
+              value="{{ipsecPolicy?.
+                authorizationAlgorithm}}"  [disabled]="true"
             />
           </nz-form-control>
           </nz-form-item>
@@ -70,7 +71,8 @@
             <input
             nz-input
             type="text"
-            value="snapshot_01"  [disabled]="true"
+            value="{{ipsecPolicy?.
+              encapsulationMode}}"  [disabled]="true"
           />
             
           </nz-form-control>
@@ -83,7 +85,8 @@
             <input
             nz-input
             type="text"
-            value="snapshot_01"  [disabled]="true"
+            value="{{ipsecPolicy?.
+              encryptionAlgorithm}}"  [disabled]="true"
           />
           </nz-form-control>
           </nz-form-item>
@@ -95,7 +98,8 @@
             <input
             nz-input
             type="text"
-            value="snapshot_01"  [disabled]="true"
+            value="{{ipsecPolicy?.
+              lifetimeUnit}}"  [disabled]="true"
           />
             
           </nz-form-control>
@@ -108,7 +112,8 @@
             <input
             nz-input
             type="text"
-            value="snapshot_01"  [disabled]="true"
+            value="{{ipsecPolicy?.
+              lifetimeValue}}"  [disabled]="true"
           />
             
           </nz-form-control>
@@ -121,7 +126,8 @@
             <input
             nz-input
             type="text"
-            value="snapshot_01"  [disabled]="true"
+            value="{{ipsecPolicy?.
+              perfectForwardSecrecy}}"  [disabled]="true"
           />
           </nz-form-control>
           </nz-form-item>
@@ -133,7 +139,8 @@
             <input
             nz-input
             type="text"
-            value="snapshot_01"  [disabled]="true"
+            value="{{ipsecPolicy?.
+              transformProtocol}}"  [disabled]="true"
           />
           </nz-form-control>
           </nz-form-item>

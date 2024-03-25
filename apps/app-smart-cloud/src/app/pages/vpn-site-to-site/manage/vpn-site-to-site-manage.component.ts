@@ -15,7 +15,7 @@ import { VolumeDTO } from 'src/app/shared/dto/volume.dto';
   styleUrls: ['./vpn-site-to-site-manage.component.less']
 })
 
-export class VpnSiteToSiteManage implements OnInit {
+export class VpnSiteToSiteManage {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -25,7 +25,7 @@ export class VpnSiteToSiteManage implements OnInit {
   constructor() {
   }
 
-  regionChanged(region: RegionModel) {
+  onRegionChange(region: RegionModel) {
     this.region = region.regionId;
   }
 
