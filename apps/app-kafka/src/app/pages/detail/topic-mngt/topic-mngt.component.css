@@ -17,10 +17,9 @@
   justify-content: space-between;
 }
 
-[nz-button]{
+[nz-button] {
   height: 40px;
   border-radius: 8px;
-  font-weight: 600;
   font-size: 16px;
 }
 
@@ -32,13 +31,12 @@ nz-table.tbl-acl th {
   background-color: #E2EEFC;
   font-size: 16px;
   font-weight: 700;
-  line-height: 24px; 
+  line-height: 24px;
   letter-spacing: 0.1px;
 }
 
 [nz-icon] {
   font-size: 24px;
-  color: #0074CC;
 }
 
 ::ng-deep .ant-pagination-item-active {
@@ -51,19 +49,39 @@ nz-table.tbl-acl th {
   color: #ffffff;
 }
 
-::ng-deep .ant-pagination-item  {
+::ng-deep .ant-pagination-item {
   border-radius: 8px;
 }
 
-.breadcrumb{
+.breadcrumb {
   justify-content: space-between;
   margin: 15px;
 }
 
-.mg-right{
+.mg-right {
   margin-right: 10px;
 }
 
 ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
   border-radius: 8px;
+}
+
+.img {
+  vertical-align: auto;
+}
+
+.nav-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bold-title {
+  font-weight: bold; 
+}
+
+.btn-accept {
+  height: 40px;
+  border-radius: 4px;
+  font-size: 16px;
 }
