@@ -39,7 +39,6 @@ export class DeleteFileSystemSnapshotComponent{
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              // private ipFloatingService: IpFloatingService,
               private fb: NonNullableFormBuilder) {
   }
 

@@ -1,35 +1,42 @@
-.order-title{
-    font-size: 20px;
-    font-weight: 600;
+.order-title {
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.form-title{
-    font-size: 16px;
+.form-title {
+  font-size: 16px;
 }
 
-h3{
-    margin: 0;
+h3 {
+  margin: 0;
 }
 
-.order-failed{
-    color: #EA3829;
-    font-size: 20px;
-    font-weight: 600;
+.order-failed {
+  color: #ea3829;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.date-failed{
-    color: #D9D9D9;
-    font-size: 20px;
-    font-weight: 600;
+.date-failed {
+  color: #d9d9d9;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.price{
-    color: #0066B3;
-    font-size: 16px;
-    font-weight: 600;
-    display: block;
-  }
-
-.ant-steps-item-icon::after {
-  background-color: red !important;
+.price {
+  color: #0066b3;
+  font-size: 16px;
+  font-weight: 600;
+  display: block;
 }
+
+::ng-deep .ant-steps-item-finish .ant-steps-item-icon {
+  background-color: green;
+  border: none;
+}
+
+::ng-deep .ant-steps-item-finish .ant-steps-item-icon .anticon {
+  color: #fff;
+}
+
+

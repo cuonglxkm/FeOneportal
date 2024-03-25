@@ -1,7 +1,7 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import {preloaderFinished} from "@delon/theme";
-import {ViewEncapsulation} from "@angular/core";
+import {ViewEncapsulation, LOCALE_ID} from "@angular/core";
 import {NzSafeAny} from "ng-zorro-antd/core/types";
 
 preloaderFinished();
@@ -11,7 +11,8 @@ preloaderFinished();
 platformBrowserDynamic()
   .bootstrapModule(AppModule, {
     defaultEncapsulation: ViewEncapsulation.Emulated,
-    preserveWhitespaces: false
+    preserveWhitespaces: false,
+    providers: [{provide: LOCALE_ID, useValue: 'en-US' }]
   })
   .then(res => {
     const win = window as NzSafeAny;

@@ -6,7 +6,7 @@ import {ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {AppValidator, UserModel} from "../../../../../../libs/common-utils/src";
 import {_HttpClient} from "@delon/theme";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {environment} from "../../../../../app-smart-cloud/src/environments/environment";
+import { environment } from '@env/environment';
 
 
 @Component({

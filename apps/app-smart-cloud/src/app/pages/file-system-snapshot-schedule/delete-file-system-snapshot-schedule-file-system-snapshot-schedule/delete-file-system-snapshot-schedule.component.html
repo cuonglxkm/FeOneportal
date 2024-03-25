@@ -12,7 +12,7 @@
     <span class="text-modal-title">Xác nhận xóa Snapshot + tên snapshot</span>
   </ng-template>
   <ng-template #modalContent>
-    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+    <form [formGroup]="validateForm" nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-form-item>
 
         <nz-form-label>

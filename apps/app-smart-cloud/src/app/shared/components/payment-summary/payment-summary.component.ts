@@ -68,6 +68,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.returnPath = state.path;
       console.log({path: this.returnPath});
       const myOrder = state.data;
+      console.log(state.data);
+      
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
@@ -194,8 +196,14 @@ export class PaymentSummaryComponent implements OnInit {
   }
 
   chooseDiscount(code: string) {
-    this.discountPicked = code;
+    if (this.discountPicked === code) {
+      this.discountPicked = null; 
+  } else {
+      this.discountPicked = code;
   }
+    
+  }
+
 
   isVisibleDiscount: boolean = false;
   showModal() {
