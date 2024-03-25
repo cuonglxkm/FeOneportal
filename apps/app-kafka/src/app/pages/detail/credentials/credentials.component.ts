@@ -63,13 +63,15 @@ export class CredentialsComponent implements OnInit {
   }
 
   deleteUser(data: KafkaCredential) {
-    this.modal.confirm({
+    this.modal.create({
       nzTitle: 'Xoá tài khoản',
       nzContent:
-        'Bạn chắc chắn muốn xoá tài khoản có username ' + data.username + '?',
-      nzOkText: 'Xác nhận xoá',
+        '<h3>Bạn chắc chắn muốn xoá tài khoản có username <br> <b>' + data.username + '</b> ?</h3>',
+      nzBodyStyle: { textAlign: 'center' },
+      nzOkText: 'Xác nhận',
       nzOkType: 'primary',
-      nzOkDanger: true,
+      nzOkDanger: false,
+      nzCancelText: 'Hủy',
       nzOnOk: () => {
         this.kafkaCredentialService
           .deleteUser(this.serviceOrderCode, data.username)

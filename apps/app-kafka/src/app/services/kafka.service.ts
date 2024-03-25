@@ -8,7 +8,7 @@ import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
 import { KafkaCreateReq } from '../core/models/kafka-create-req.model';
-import { KafkaInfor } from '../core/models/kafka-infor.model';
+import { KafkaDetail, KafkaInfor } from '../core/models/kafka-infor.model';
 import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
 import { BaseService } from './base.service';
@@ -172,5 +172,9 @@ export class KafkaService extends BaseService {
 
   getListStatus(): Observable<BaseResponse<KafkaStatus[]>> {
     return this.http.get<BaseResponse<KafkaStatus[]>>(this.kafkaUrl + '/kafka/get-status');
+  }
+
+  getDetail(serviceOrderCode: string): Observable<BaseResponse<KafkaDetail>> {
+    return this.http.get<BaseResponse<KafkaDetail>>(this.kafkaUrl + `/kafka/${serviceOrderCode}`);
   }
 }

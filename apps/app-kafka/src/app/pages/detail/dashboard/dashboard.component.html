@@ -1,4 +1,8 @@
 <div nz-row nzGutter="16" class="general" *ngIf="isHealth !== null">
+    <div class="title-cluster">
+        Trạng thái cluster
+    </div>
+    <nz-divider></nz-divider>
     <ng-container *ngIf="isHealth === clusterHealth; else otherHealth">
         <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-check p-md">

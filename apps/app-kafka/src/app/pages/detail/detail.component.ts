@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
+import { KafkaService } from 'src/app/services/kafka.service';
 
 @Component({
   selector: 'one-portal-detail',
@@ -9,9 +11,11 @@ import { ActivatedRoute } from '@angular/router';
 export class DetailComponent implements OnInit {
   selectedIndex = 0;
   serviceOrderCode: string;
+  itemDetail: KafkaDetail;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
+    private kafkaService: KafkaService
   ) { }
 
   ngOnInit(): void {
@@ -27,12 +31,24 @@ export class DetailComponent implements OnInit {
 
     this._activatedRoute.params.subscribe((params) => {
       this.serviceOrderCode = params.id;
+      this.getDetail();
     });
   }
 
   setTransactionTabIndex(e: number) {
     this.selectedIndex = e;
     localStorage.setItem('selectedTabIndex', e.toString());
+  }
+
+  getDetail() {
+    this.kafkaService.getDetail(this.serviceOrderCode)
+    .subscribe(
+      res => {
+        if (res && res.code == 200) {
+          this.itemDetail = res.data;
+        }
+      }
+    )
   }
 
 

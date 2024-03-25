@@ -11,5 +11,24 @@ export interface KafkaInfor {
     createdDate: Date;
 }
 
+export interface KafkaDetail {
+    id: number;
+    serviceOrderCode: string;
+    serviceName: string;
+    serviceStatus: number;
+    createdUser: string;
+    createdName: string;
+    updatedUser: string;
+    createdDate: Date;
+    updatedDate: Date;
+    version: string;
+    servicePackCode: string;
+    ram: number;
+    cpu: number;
+    storage: number;
+    description: string;
+    
+}
+
 
 

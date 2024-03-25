@@ -7,6 +7,7 @@ import { BrokerConfig } from '../../../core/models/broker-config.model';
 import { AppConstants } from '../../../core/constants/app-constant';
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import { camelizeKeys } from 'humps';
+import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 
 @Component({
   selector: 'one-portal-summary-service',
@@ -15,8 +16,7 @@ import { camelizeKeys } from 'humps';
 })
 export class SummaryServiceComponent implements OnInit {
   @Input() serviceOrderCode: string;
-  @Input() ram: number;
-  @Input() cpu: number;
+  @Input() itemDetail: KafkaDetail;
 
   infoConnection: InfoConnection;
   brokerConfigs: BrokerConfig[];
