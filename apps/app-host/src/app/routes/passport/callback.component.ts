@@ -120,7 +120,9 @@ export class CallbackComponent implements OnInit {
             ...response,
           });
           this.socialService.callback(response);
-          this.notificationService.initiateSignalrConnection(true);
+          if (this.notificationService.connection == undefined) {
+            this.notificationService.initiateSignalrConnection(true);
+          }
           this.httpClient
             .get(baseUrl + '/provisions/object-storage/userinfo')
             .subscribe((checkData) => {

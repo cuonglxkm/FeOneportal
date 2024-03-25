@@ -79,8 +79,7 @@ export class CreateFileSystemComponent implements OnInit {
   }
 
   getListSnapshot() {
-    this.snapshotvlService.getSnapshotVolumes(this.tokenService.get()?.userId, this.project, this.region,
-      null, 10000, 1, null, null, null).subscribe(data => {
+    this.snapshotvlService.getSnapshotVolumes(9999, 1, this.region, this.project, '', '', '').subscribe(data => {
       data.records.forEach(snapshot => {
         this.snapshotList.push({label: snapshot.name, value: snapshot.id});
       })

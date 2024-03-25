@@ -99,7 +99,6 @@ export class InstancesCreateComponent implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9]+$/),
       ],
     }),
-    // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
 
   //danh sách các biến của form model
@@ -291,17 +290,7 @@ export class InstancesCreateComponent implements OnInit {
   initSnapshot(): void {
     if (this.isSnapshot) {
       this.snapshotVLService
-        .getSnapshotVolumes(
-          this.tokenService.get()?.userId,
-          this.projectId,
-          this.region,
-          this.size,
-          9999,
-          1,
-          this.status,
-          '',
-          ''
-        )
+        .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
         .subscribe((data: any) => {
           this.listSnapshot = data.records.filter(
             (e: any) => e.fromRootVolume == true
@@ -443,7 +432,7 @@ export class InstancesCreateComponent implements OnInit {
         });
         this.myCarouselFlavor.dataSource = this.listOfferFlavors;
         this.myCarouselFlavor.load = this.listOfferFlavors.length;
-        this.myCarouselFlavor.reset()
+        this.myCarouselFlavor.reset();
         console.log('list flavor check', this.listOfferFlavors);
         this.cdr.detectChanges();
       });

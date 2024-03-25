@@ -1,58 +1,172 @@
-<app-header-volume (projectId)="getProjectId($event)" (regionId)="getRegionId($event)"
-                   [headerInfo]="headerInfo"></app-header-volume>
-
-<nz-spin [nzSpinning]="isLoading">
-  <nz-card
-    class="m-b-10"
-    [nzBodyStyle]="{ 'padding': '30px' }"
-    nzTitle="Thông tin Snapshot Volume"
-  >
-
-    <!--  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Snapshot Volume</nz-form-label>-->
-    <!--  <input nz-input [disabled]="!isEdit" type="text" [ngModel]="snapshotName" (ngModelChange)="changeSnapshotName()"/>-->
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tên Snapshot Volume</nz-form-label>
-    <nz-form-control [nzValidateStatus]="isShowWarningSnapshotVlName?'error':''">
-      <input nz-input placeholder="Nhập tên Volume" [(ngModel)]="snapshotName" [disabled]="!isEdit"
-             (ngModelChange)="changeSnapshotName()" type="text"/>
-      <nz-form-explain class="warning-message" st *ngIf="isShowWarningSnapshotVlName">{{contentWarningSnapshotVlName}}
-      </nz-form-explain>
-    </nz-form-control>
-    <br>
-    <br>
-    <nz-form-label [nzSm]="6" [nzXs]="24">Dung lượng (GB)</nz-form-label>
-    <input nz-input [disabled]="true" type="number" [(ngModel)]="snapshotSize"/>
-
-    <br>
-    <br>
-    <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
-    <textarea rows="4" [disabled]="!isEdit" nz-input maxlength="255" [(ngModel)]="snapshotDesc"></textarea>
-
-    <br>
-    <br>
-    <nz-form-label [nzSm]="6" [nzXs]="24">Volume</nz-form-label>
-    <input nz-input [disabled]="true" type="text" [ngModel]="snapshotVolumeName"/>
-
-    <div *ngIf="projectSearch == null || projectSearch === undefined">
-      <br>
-      <br>
-      <nz-form-label [nzSm]="6" [nzXs]="24">VPC</nz-form-label>
-      <input nz-input [disabled]="true" [(ngModel)]="snapshotVPC" type="text"/>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="headerInfo.content"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="'/app-smart-cloud/snapshotvls'">
+          Snapshot Volume
+        </a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>{{ headerInfo.breadcrumb }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="getRegionId($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (userChanged)="getProjectId($event)"
+        [regionId]="regionId"
+      ></project-select-dropdown>
     </div>
-    <br>
-    <br>
-    <p>Thời gian khởi tạo: <span>{{ snapshotVlCreateDate | date:'dd/MM/yyyy' }}</span></p>
+  </ng-template>
+</page-header>
 
-  </nz-card>
-
-  <nz-card
-    [nzBodyStyle]="{ 'padding': '30px' }"
-  >
-    <div class="footer-detail">
-      <button class="buttonBack" nz-button nzType="default" (click)="backTOListPage()">Quay lại
-      </button>
-      <button *ngIf="isEdit" class="buttonEdit" nz-button nzType="primary" [disabled]="isShowWarningSnapshotVlName"
-              (click)="editSnapshot()">Chỉnh sửa
-      </button>
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-card style="border-radius: 8px" [nzBordered]="false">
+    <div style="margin-bottom: 20px">
+      <span class="text-card-header">Thông tin Snapshot Volume</span>
     </div>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Tên Snapshot Volume (<span class="text-red">*</span
+            >)</nz-form-label
+          >
+
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input
+              class="input-custom"
+              nz-input
+              formControlName="name"
+              [(ngModel)]="snapshotName"
+              id="name"
+              placeholder="Nhập tên máy ảo"
+              maxlength="50"
+              minlength="1"
+            />
+
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập thông tin</ng-container
+              >
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự đặc
+                biệt</ng-container
+              >
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Dung lượng</nz-form-label>
+          <nz-form-control>
+            <input
+              class="input-custom"
+              nz-input
+              [ngModel]="snapshotSize"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="true"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+    <nz-form-item>
+      <nz-form-label>Mô tả</nz-form-label>
+      <nz-form-control>
+        <nz-textarea-count [nzMaxCharacterCount]="255">
+          <textarea
+            rows="4"
+            nz-input
+            [(ngModel)]="snapshotDesc"
+            [ngModelOptions]="{ standalone: true }"
+            [disabled]="!isEdit"
+          ></textarea>
+        </nz-textarea-count>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-row style="margin-top: -24px" nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Volume</nz-form-label>
+          <nz-form-control>
+            <input
+              class="input-custom"
+              nz-input
+              [ngModel]="snapshotVolumeName"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="true"
+            />
+          </nz-form-control> </nz-form-item
+      ></nz-col>
+      <nz-col style="display: flex; align-items: center" nzSpan="12"
+        ><div>
+          Thời gian khởi tạo:
+          {{ snapshotVlCreateDate | date : 'dd/MM/yyyy' }}
+        </div>
+      </nz-col></nz-row
+    >
   </nz-card>
-</nz-spin>
+</form>
+<div class="text-right">
+  <button nz-button (click)="backToListPage()">
+    <img
+      style="padding-right: 10px"
+      src="assets/imgs/arrow-left-2.svg"
+      alt=""
+    />
+    <span>Quay lại</span>
+  </button>
+  <button
+    *ngIf="isEdit"
+    nz-button
+    nzType="primary"
+    [disabled]="form.invalid"
+    (click)="modalUpdate()"
+  >
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/confirm.svg"
+      alt=""
+    />
+    Cập nhật
+  </button>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleUpdate"
+  nzTitle="Xác nhận điều chỉnh Snapshot "
+  (nzOnCancel)="handleCancelUpdate()"
+>
+  <div *nzModalContent>
+    Quý khách chắn chắn muốn thực hiện cập nhật Snapshot Volume?
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
