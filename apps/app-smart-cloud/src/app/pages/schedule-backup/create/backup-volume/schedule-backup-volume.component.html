@@ -10,7 +10,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-            <input nz-input formControlName="name" id="name"/>
+            <input nz-input class="input-custom" formControlName="name" id="name"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">Tên gồm 255 ký tự viết liền không dấu
@@ -31,7 +31,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-            <input nz-input type="number" formControlName="maxBackup" id="maxBackup" min="1" step="1"
+            <input nz-input class="input-custom" type="number" formControlName="maxBackup" id="maxBackup" min="1" step="1"
                    style="width: 100%"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
@@ -48,6 +48,7 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="backupPackageErrorTpl">
             <nz-select
               formControlName="backupPackage" id="backupPackage"
+              nzSize="large"
               [nzPlaceHolder]="'Gói backup'"
               [nzShowSearch]="false">
               <nz-option
@@ -88,6 +89,7 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <nz-select formControlName="volumeId"
                        id="volumeId"
+                       nzSize="large"
                        [nzPlaceHolder]="'Chọn Volume'"
                        [nzShowSearch]="false"
                        (ngModelChange)="selectInstanceChange($event)">
@@ -110,6 +112,7 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="backupModeErrorTpl">
             <nz-select
               formControlName="backupMode" id="backupMode"
+              nzSize="large"
               [nzPlaceHolder]="'Chế độ Backup'"
               [nzShowSearch]="false"
               (ngModelChange)="modeChange($event)">
@@ -133,6 +136,7 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
             <nz-time-picker formControlName=times
                             id="times"
+                            class="input-custom"
                             [nzPlaceHolder]="'Chọn thời gian'"
                             style="width: 100%"></nz-time-picker>
             <ng-template #timeErrorTpl let-control>
@@ -151,6 +155,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsErrorTpl">
               <input nz-input type="number"
                      style="width:100%;"
+                     class="input-custom"
                      formControlName="months"
                      id="months"
                      min="1"
@@ -173,6 +178,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
               <input nz-input type="number"
                      style="width:100%;"
+                     class="input-custom"
                      formControlName="date"
                      id="date"
                      min="1"
@@ -197,6 +203,7 @@
             <nz-form-control nzDisableAutoTips>
               <nz-select
                 formControlName="numberOfWeek" id="numberOfWeek"
+                nzSize="large"
                 [nzPlaceHolder]="'Số tuần thực hiện'"
                 [nzShowSearch]="false"
                 [(ngModel)]="numberOfWeekChangeSelected"
@@ -218,6 +225,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
               <nz-select
                 formControlName="daysOfWeek" id="daysOfWeek"
+                nzSize="large"
                 [nzPlaceHolder]="'Chọn thứ'"
                 [nzShowSearch]="false">
                 <nz-option
@@ -243,6 +251,7 @@
               <nz-select
                 formControlName="daysOfWeekMultiple" id="daysOfWeekMultiple"
                 nzMode="multiple"
+                nzSize="large"
                 [nzPlaceHolder]="'Chọn thứ'"
                 [nzShowSearch]="false">
                 <nz-option

@@ -57,11 +57,11 @@
             <tr>
                 <th nzWidth="5%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">STT</div></nz-affix></th>
                 <th nzWidth="12%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Tên người dùng</div></nz-affix></th>
-                <th nzWidth="15%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Resource</div></nz-affix></th>
+                <th nzWidth="13%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Resource</div></nz-affix></th>
                 <th nzWidth="13%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Resource Type</div></nz-affix></th>
                 <th nzWidth="10%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thao tác</div></nz-affix></th>
-                <th nzWidth="35%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Ghi chú</div></nz-affix></th>
-                <th nzWidth="10%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thời gian</div></nz-affix></th>
+                <th nzWidth="30%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Ghi chú</div></nz-affix></th>
+                <th nzWidth="12%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thời gian</div></nz-affix></th>
             </tr>
         </thead>
         
@@ -72,7 +72,7 @@
                 <td>{{item.resource}}</td>
                 <td>{{ item.resourceType }}</td>
                 <td>{{ operations[item.operation] }}</td>
-                <td>{{ item.note }}</td>
+                <td nzEllipsis nz-tooltip [nzTooltipTitle]="item.note">{{ item.note }}</td>
                 <td>{{ item.opTime | date: 'dd/MM/yyyy HH:mm' }}</td>
             </tr>
         </tbody>

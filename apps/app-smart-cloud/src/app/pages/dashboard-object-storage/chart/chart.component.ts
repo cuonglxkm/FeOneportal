@@ -8,7 +8,10 @@ import { Router } from '@angular/router';
 import { Chart } from '@antv/g2';
 import { now } from 'lodash';
 
-
+export class DataChart {
+  time: any
+  data: any
+}
 @Component({
   selector: 'one-portal-chart',
   templateUrl: './chart.component.html',
@@ -29,16 +32,32 @@ export class ChartComponent implements AfterViewInit {
   @ViewChild('chartStorageDownload') chartStorageDownload!: ElementRef;
   @ViewChild('storageDownload') storageDownload!: ElementRef;
 
-  chartSU: Chart;
 
   createChartStorageUse() {
-    const line = new Line(this.chartNumberObject.nativeElement, {
-      data: this.summary[0].datas,
-      xField: 'year',
-      yField: 'value'
-    });
+    const data:any = [10,39,20,76,3,15]
+    const startDate = new Date(this.summary[0].startDate * 1000); // Example start date
+    const endDate = new Date(); // Example end date
 
-    line.render();
+    const chartStorageUse = new Chart({
+      container: this.chartStorageUse.nativeElement,
+      autoFit: true,
+      height: 400,
+    });
+    chartStorageUse.data(data)
+    chartStorageUse.scale({
+      date: {
+        type: 'time',
+        range: [0, 1],
+        nice: true,
+        min: startDate.getTime(), // Set minimum date to start date
+        max: endDate.getTime() // Set maximum date to end date
+      },
+      value: {
+        min: 0 // Optional: Set minimum value for y-axis
+      }
+    });
+    chartStorageUse.line().position('date*value').shape('smooth');
+    chartStorageUse.render();
   }
 
   createNumberObject() {

@@ -13,6 +13,9 @@
             <nz-breadcrumb-item *ngIf="control==detailNum">
                 Danh sách message Topic: {{topicDetail}}
             </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="control==editNum">
+                Cập nhật Topic: {{selectedTopic.topicName}}
+            </nz-breadcrumb-item>
         </nz-breadcrumb>
     </div>
     <div class="inner-content">
@@ -20,7 +23,7 @@
             <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
                 <div >
                     <nz-input-group nz-col [nzPrefix]="prefixTemplateUser" class="search">
-                        <input type="text" nz-input placeholder="Tìm kiếm" [(ngModel)]="search" (keyup.enter)="handleSearch()">
+                        <input type="text" maxlength="255" nz-input placeholder="Tìm kiếm" [(ngModel)]="search" (keyup.enter)="handleSearch()">
                     </nz-input-group>
                     <ng-template #prefixTemplateUser><span nz-icon nzType="search"
                             nzTheme="outline"></span></ng-template>
@@ -38,8 +41,8 @@
                                 <nz-form-item>
                                     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
                                     <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
-                                        <nz-select [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
-                                            <nz-option *ngFor="let item of listTopic" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
+                                        <nz-select nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
+                                            <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
                                         </nz-select>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -71,7 +74,7 @@
                         <div *nzModalFooter>
                             <button nz-button nzType="primary" nzDanger (click)="handleCloseProduceModal()">Hủy bỏ</button>
                             <button nz-button nzType="primary" (click)="handleSubmitTestProduce()"
-                                [disabled]="produceForm.invalid" [nzLoading]="isSubmitProduce">Test Producer</button>
+                                [disabled]="produceForm.invalid" >Test Producer</button>
                         </div>
                     </nz-modal>
                 </div>
@@ -80,14 +83,14 @@
             [nzFrontPagination]="false" [nzPageIndex]="index" [nzPageSize]="size" (nzPageIndexChange)="changePage($event)" (nzPageSizeChange)="changePageSize($event)">
                 <thead class="table-info">
                     <tr>
-                        <th [nzAlign]="'center'" nzWidth="4%">STT</th>
+                        <th [nzAlign]="'center'" nzWidth="3%">STT</th>
                         <th>Tên Topic</th>
                         <th nzWidth="8%">Partitions</th>
                         <th nzWidth="8%">Replicas</th>
                         <th nzWidth="20%">Tổng số lượng message</th>
                         <th nzWidth="8%">Size</th>
-                        <th nzWidth="15%">Out of sync replicas</th>
-                        <th nzWidth="8%" [nzAlign]="'center'">Thao tác</th>
+                        <th nzWidth="16%">Out of sync replicas</th>
+                        <th nzWidth="15%" [nzAlign]="'center'">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,38 +103,24 @@
                         <td>{{ data.sizeTopic }}</td>
                         <td>{{ data.outOfSync != null ? data.outOfSync : 0 }}</td>
                         <td [nzAlign]="'center'">
-                            <a nz-dropdown [nzDropdownMenu]="menu">
-                                <span nz-icon nzType="more" nzTheme="outline"></span>
-                            </a>
-                            <nz-dropdown-menu #menu="nzDropdownMenu">
-                                <ul nz-menu vSelectable>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="showTopicInfo(data)">
-                                            <span nz-icon nzType="info-circle" nzTheme="outline"></span> Thông tin
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="detailTopic(data.topicName)">
-                                            <span nz-icon nzType="eye" nzTheme="outline"></span> Chi tiết
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="deleteMessages(data)">
-                                            <span nz-icon nzType="delete-row" nzTheme="outline"></span> Xóa message
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text"  (click)="updateTopicForm(data)">
-                                            <span nz-icon nzType="edit" nzTheme="outline"></span> Cập nhật
-                                        </button>
-                                    </li>
-                                    <li nz-menu-item>
-                                        <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
-                                            <span nz-icon nzType="delete" nzTheme="outline"></span> Xoá
-                                        </button>
-                                    </li>
-                                </ul>
-                            </nz-dropdown-menu>
+                            <span nzTheme="outline" class="mg-right"
+                            nz-popover
+                            [nzPopoverContent]="'Chỉnh sửa'"
+                            nzPopoverPlacement="bottom"
+                            (click)="showTopicInfo(data)"
+                            nz-icon nzType="info-circle" ></span> 
+                            <span class="mg-right"
+                            nz-popover (click)="deleteMessages(data)"
+                            [nzPopoverContent]="'Xóa message'" 
+                            nzPopoverPlacement="bottom" [nzTwotoneColor]="'#F13F30'" nz-icon nzType="message" nzTheme="twotone"></span> 
+                            <span nzTheme="outline" class="mg-right"
+                            nz-popover (click)="updateTopicForm(data)"
+                            [nzPopoverContent]="'Cập nhật'"
+                            nzPopoverPlacement="bottom" nz-icon nzType="edit" nzTheme="outline"></span> 
+                            <span 
+                            nz-popover (click)="showDeleteConfirm(data)"
+                            [nzPopoverContent]="'Xoá'"
+                            nzPopoverPlacement="bottom" nz-icon nzType="delete" [nzTheme]="'twotone'" [nzTwotoneColor]="'#F13F30'"></span> 
                         </td>
                     </tr>
                 </tbody>
@@ -145,11 +134,11 @@
         </div>
     </div>
 </nz-content>
-<nz-drawer [nzClosable]="true" [nzWidth]="580" (nzOnClose)="closeTopicInfo()" [nzVisible]="visibleConfigInfo" vPlacement="right">
-    <ng-container *nzDrawerContent>
+<nz-modal [nzClosable]="true" nzFooter=" " (nzOnCancel)="closeTopicInfo()" [nzWidth]="580" [(nzVisible)]="visibleConfigInfo" vPlacement="right">
+    <ng-container *nzModalContent>
         <nz-descriptions nzTitle="Thông tin cấu hình" nzBordered>
             <nz-descriptions-item [nzSpan]="3" *ngFor="let item of configInfo | keyvalue"
-                [nzTitle]="item.key">{{item.value}}</nz-descriptions-item>
+                [nzTitle]="item.key">{{item.value==""||item.value==null?"None":item.value}}</nz-descriptions-item>
         </nz-descriptions>
     </ng-container>
-</nz-drawer>
+</nz-modal>
