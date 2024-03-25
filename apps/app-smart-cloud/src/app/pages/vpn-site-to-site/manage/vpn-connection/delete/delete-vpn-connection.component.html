@@ -17,14 +17,14 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xóa IPsec Policies</span>
+    <span class="text-modal-title">Xóa VPN Connection</span>
   </ng-template>
   <ng-template #modalContent>
-    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()" [formGroup]="validateForm">
+    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-form-item>
         <nz-alert
           nzType="warning"
-          nzDescription="Thao tác này sẽ không thể thực hiện với các IPsec Policies đang kết nối"
+          nzDescription="Quý khách có thực sự muốn xoá VPN Connections?"
           nzShowIcon
           style="margin-bottom: 10px"
         >
@@ -32,21 +32,17 @@
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá IPsec Policies +”IPsec Policies”, vui lòng nhập tên IPsec Policies để xác nhận.</span
+              >Đế thực hiện xoá VPN Connection tên VPN Connection, vui lòng nhập tên VPN Connection để xác nhận.</span
             >
           </div>
         </nz-form-label>
-        <nz-form-control [nzErrorTip]="nameErrorTpl">
+        <nz-form-control>
           <input
             nz-input
             class="input-custom"
             formControlName="name"
-            [placeholder]="'Nhập tên IPsec Policies'"
+            [placeholder]="'Nhập tên VPN Connection'"
           />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Tên Ipsec Policy không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('nameMismatch')">Tên không trùng khớp</ng-container>
-          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
@@ -66,7 +62,6 @@
               nzType="primary"
               [nzLoading]="isLoading"
               class="button-new"
-              [disabled]="validateForm.invalid"
             >
               Xác nhận
             </button>

@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Xem chi tiết IPsec Policy'"
+  [title]="'Tạo mới VPN Connection'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -9,14 +9,14 @@
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-          >Dịch vụ hạ tầng</a
+        <a>
+          Dịch vụ hạ tầng</a
         >
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
         >VPN site to site</a
       ></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Xem chi tiết IPsec Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới VPN Connection</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -35,7 +35,7 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="24" class="gutter-row">
     <nz-card style="border-radius: 8px;">
-      <h2 class="custom-title">Thông tin IPsec Policy</h2>
+      <h2 class="custom-title">Thông tin VPN Connection</h2>
       <form nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12" class="gutter-row">
@@ -45,7 +45,8 @@
             <input
               nz-input
               type="text"
-              value="{{ipsecPolicy?.name}}"  [disabled]="true"
+              value="Nhập tên"
+              [disabled]="true"
             />
             
           </nz-form-control>
@@ -54,26 +55,26 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzRequired >Authorization Algorithm</nz-form-label>
+            <nz-form-label nzRequired >IPsec Policy</nz-form-label>
             <input
               nz-input
               type="text"
-              value="{{ipsecPolicy?.
-                authorizationAlgorithm}}"  [disabled]="true"
+              value="sha1"
+              [disabled]="true"
             />
           </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Encryption Mode</nz-form-label>
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>VPN Service</nz-form-label>
             <input
-            nz-input
-            type="text"
-            value="{{ipsecPolicy?.
-              encapsulationMode}}"  [disabled]="true"
-          />
+              nz-input
+              type="text"
+              value="tunnel"
+              [disabled]="true"
+            />
             
           </nz-form-control>
           </nz-form-item>
@@ -81,26 +82,26 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Encryption Algorithm</nz-form-label>
+            <nz-form-label nzFor="name" nzRequired >Peer Remote IP VPN Gateway</nz-form-label>
             <input
-            nz-input
-            type="text"
-            value="{{ipsecPolicy?.
-              encryptionAlgorithm}}"  [disabled]="true"
-          />
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
           </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Lifetime Units</nz-form-label>
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>Local System Subnet</nz-form-label>
             <input
-            nz-input
-            type="text"
-            value="{{ipsecPolicy?.
-              lifetimeUnit}}"  [disabled]="true"
-          />
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
             
           </nz-form-control>
           </nz-form-item>
@@ -108,40 +109,54 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Lifetime Value</nz-form-label>
+            <nz-form-label nzFor="name" nzRequired >Peer ID VPN Connections</nz-form-label>
             <input
-            nz-input
-            type="text"
-            value="{{ipsecPolicy?.
-              lifetimeValue}}"  [disabled]="true"
-          />
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
             
           </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name" nzRequired>Perfect Forward Secrecy</nz-form-label>
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>IKE Policy</nz-form-label>
             <input
-            nz-input
-            type="text"
-            value="{{ipsecPolicy?.
-              perfectForwardSecrecy}}"  [disabled]="true"
-          />
+              nz-input
+              type="text"
+              value="group5"
+              [disabled]="true"
+            />
+            
           </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name" nzRequired >Transform Protocol</nz-form-label>
+            <nz-form-label nzFor="name" nzRequired >Remote Local Subnet</nz-form-label>
             <input
-            nz-input
-            type="text"
-            value="{{ipsecPolicy?.
-              transformProtocol}}"  [disabled]="true"
-          />
+              nz-input
+              type="text"
+              value="Nhập remote local subnet"
+              [disabled]="true"
+            />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >Pre - Shared Key (PSK) string</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
           </nz-form-control>
           </nz-form-item>
         </div>

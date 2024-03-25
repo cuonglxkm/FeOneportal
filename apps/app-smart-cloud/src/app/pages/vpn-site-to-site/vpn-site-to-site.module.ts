@@ -17,6 +17,9 @@ import { CreateIpsecPoliciesComponent } from './manage/ipsec-policies/create/cre
 import { EditIpsecPoliciesComponent } from './manage/ipsec-policies/edit/edit-ipsec-policies.component';
 import { DetailIpsecPoliciesComponent } from './manage/ipsec-policies/detail/detail-ipsec-policies.component';
 import { CreateVpnConnectionComponent } from './manage/vpn-connection/create/create-vpn-connection.component';
+import { EditVpnConnectionComponent } from './manage/vpn-connection/edit/edit-vpn-connection.component';
+import { DeleteVpnConnectionComponent } from './manage/vpn-connection/delete/delete-vpn-connection.component';
+import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/detail-vpn-connection.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { CreateVpnConnectionComponent } from './manage/vpn-connection/create/cre
     CreateIpsecPoliciesComponent,
     EditIpsecPoliciesComponent,
     DetailIpsecPoliciesComponent,
-    CreateVpnConnectionComponent
+    CreateVpnConnectionComponent,
+    EditVpnConnectionComponent,
+    DeleteVpnConnectionComponent,
+    DetailVpnConnectionComponent
   ],
     imports: [
         VpnSiteToSiteRoutingModule,
