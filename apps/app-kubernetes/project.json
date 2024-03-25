@@ -50,7 +50,7 @@
           },
           "fileReplacements": [
             {
-              "replace": "apps/app-kubernetes/rc/environments/environment.ts",
+              "replace": "apps/app-kubernetes/src/environments/environment.ts",
               "with": "apps/app-kubernetes/src/environments/environment.prod.ts"
             }
           ]
