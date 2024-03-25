@@ -21,6 +21,7 @@ export class ActionHistoryComponent implements OnInit {
   total: number;
   selectedAction = 'Tất cả';
   tableHeight: string;
+  searchParam: string = '';
 
   actionData = ['Tất cả', 'Tạo mới', 'Sửa', 'Xóa'];
   constructor(
@@ -43,9 +44,9 @@ export class ActionHistoryComponent implements OnInit {
         this.fromDate,
         this.toDate,
         '',
-        '',
-        '',
-        ''
+        this.searchParam,
+        this.searchParam,
+        this.searchParam
       )
       .subscribe((data) => {
         this.listOfActionHistory = data.records;
