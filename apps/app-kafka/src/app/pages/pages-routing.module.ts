@@ -1,12 +1,22 @@
-import {RouterModule, Routes} from "@angular/router";
-import { DetailComponent } from "./detail/detail.component";
 import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { CreateKafkaComponent } from "./create-kafka/create-kafka.component";
+import { LoadTopicComponent } from "./detail/topic-mngt/load-topic/load-topic.component";
+import { ListKafkaComponent } from "./list-kafka/list-kafka.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'detail', pathMatch: 'full'},
+  {path: '', redirectTo: '', pathMatch: 'full'},
   {
-    path: 'detail',
-    component: DetailComponent
+    path: '',
+    component: ListKafkaComponent
+  },
+  {
+    path: 'create',
+    component: CreateKafkaComponent
+  },
+  {
+    path: 'load-topic',
+    component: LoadTopicComponent
   }
   ]
 @NgModule({

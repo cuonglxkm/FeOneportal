@@ -1,0 +1,83 @@
+.display-option {
+    display: flex;
+    position: relative;
+}
+
+.w-40 {
+    width: 40%;
+}
+
+.w-30 {
+    width: 30%;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+nz-select {
+    width: 100%;
+}
+
+.popover-style {
+    height: fit-content;
+}
+
+.icon-style {
+    right: 0;
+    margin-top: 6px;
+    float: right;
+    color: #d9d9d9;
+    font-size: 12px;
+}
+
+.text-left {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.spin-style {
+    text-align: center;
+}
+
+.no-label {
+    color: #c5bfbf;
+}
+
+.resource-drop {
+    height: 250px;
+    overflow-y: scroll;
+}
+
+.input-search {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.lbl-error {
+    color: #B11226;
+    font-size: 14px;
+    line-height: 1.5715;
+}
+
+.btn-error {
+    border-color: #B11226;
+}
+
+::ng-deep .input-search>.ant-menu-title-content {
+    width: 100%;
+}
+
+::ng-deep .resource-name .ant-btn,
+.metric .ant-btn {
+    height: 32px;
+    font-size: 14px;
+    border-color: #d9d9d9;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+::ng-deep .resource-type .ant-select .ant-select-selector,
+::ng-deep .interval-div .ant-select .ant-select-selector {
+    border-radius: 8px;
+}
