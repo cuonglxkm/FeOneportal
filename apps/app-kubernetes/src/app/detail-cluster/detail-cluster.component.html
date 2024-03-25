@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [content]="content" [title]="'Chi tiết cluster'">
+<page-header [breadcrumb]="breadcrumb" [content]="content" [title]="title">
   <!-- breadcrumb -->
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -26,6 +26,12 @@
         Điều chỉnh
       </button>
     </div>
+  </ng-template>
+
+  <ng-template #title>
+    <ng-container *ngIf="detailCluster">
+      Chi tiết cluster {{detailCluster.clusterName}}
+    </ng-container>
   </ng-template>
 </page-header>
 
@@ -118,7 +124,7 @@
   <!-- Thông tin worker group -->
   <nz-card class="border-card">
     <h3>Thông tin worker group</h3>
-    <ng-container *ngIf="detailCluster.workerGroups.length > 0; else workerlessTpl">
+    <ng-container *ngIf="detailCluster.workerGroup.length > 0; else workerlessTpl">
       <ng-container *ngFor="let item of detailCluster.workerGroups; let i=index;">
         <div nz-row>
           <div nz-col [nzSpan]="24" class="detailtable">
@@ -230,7 +236,7 @@
       <div>
         <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100">
           <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"
-          [nzDisabled]="item.k8sVersion != detailCluster.upgradeVersion"></nz-option>
+          [nzDisabled]="item.k8sVersion | checkUpgradeVersion : detailCluster.upgradeVersion"></nz-option>
         </nz-select>
       </div>
     </ng-container>

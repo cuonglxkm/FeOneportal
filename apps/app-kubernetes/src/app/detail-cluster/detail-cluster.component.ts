@@ -60,10 +60,6 @@ export class DetailClusterComponent implements OnInit {
           this.getVlanbyId(this.detailCluster.vpcNetworkId);
           this.getKubeConfig(this.detailCluster.serviceOrderCode);
 
-          // test
-          // this.detailCluster.upgradeVersion = '1.29.0';
-          // this.detailCluster.currentVersion = '1.28.2';
-
         } else {
           this.notificationService.error("Thất bại", r.message);
         }

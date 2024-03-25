@@ -32,6 +32,7 @@ import { CalculateDate } from '../pipes/calculate-date.pipe';
 import { ShareService } from '../services/share.service';
 import { ProgressPipe } from '../pipes/progress.pipe';
 import { LogsComponent } from '../logs/logs.component';
+import { CheckUpgradeVersionPipe } from '../pipes/check-version.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -49,6 +50,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     TruncateLabel,
     CalculateDate,
     ProgressPipe,
+    CheckUpgradeVersionPipe,
     LogsComponent,
 
   ],

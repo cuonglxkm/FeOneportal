@@ -225,7 +225,11 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          window.location.href = data.data;
+          if (data.code == 310) {
+            window.location.href = data.data;
+          } else {
+            this.notification.error("Thất bại", "Hệ thống đang gián đoạn. Vui lòng thử lại sau");
+          }
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');

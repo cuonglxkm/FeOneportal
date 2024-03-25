@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesConstant } from '../constants/kubernetes.constant';
-import { KubernetesCluster, NetworkingModel, Order, OrderItem } from '../model/cluster.model';
+import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../model/cluster.model';
 import { K8sVersionModel } from '../model/k8s-version.model';
 import { VolumeTypeModel } from '../model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from '../model/vpc-network.model';
@@ -439,10 +439,13 @@ export class ClusterComponent implements OnInit {
     networking.subnet = cluster.subnet;
 
     cluster.networking = networking;
-    cluster.serviceType = 19;         // fix for k8s
+    cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.offerId = 200;            // temporary, get from order pack
 
-    this.clusterService.validateClusterInfo(cluster)
+    const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
+    console.log({data: data});
+    console.log({cluster: cluster});
+    this.clusterService.validateClusterInfo(data)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.onSubmitOrder(cluster);

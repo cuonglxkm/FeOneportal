@@ -1,5 +1,7 @@
 export class KubernetesConstant {
 
+  public static K8S_TYPE_ID = 19;
+
   public static DEFAULT_CIDR = "10.42.0.0/16";
 
   public static CLUSTER_CREATE_TYPE = 'k8s_create';

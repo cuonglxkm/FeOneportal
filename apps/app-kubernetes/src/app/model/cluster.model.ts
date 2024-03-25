@@ -9,7 +9,7 @@ export class KubernetesCluster {
   serviceStatus: number;
   actionStatus: number;
   currentVersion: string;
-  upgradeVersion: string;
+  upgradeVersion: string[];
   description: string;
   networkType: string;
   apiEndpoint: string;
@@ -21,7 +21,7 @@ export class KubernetesCluster {
   usageTime: number;
   totalNode: number;
   createdDate: Date;
-  workerGroups: WorkerGroupModel[];
+  workerGroup: WorkerGroupModel[];
   isProcessing: boolean;
 
   constructor(obj) {
@@ -35,7 +35,7 @@ export class KubernetesCluster {
     this.actionStatus = obj.action_status;
     this.apiEndpoint = obj.api_endpoint;
     this.currentVersion = obj.current_version;
-    this.upgradeVersion = obj.upgrade_version;
+    this.upgradeVersion = obj.upgrade_versions_available;
     this.networkType = obj.network_type;
     this.cidr = obj.cidr;
     this.subnet = obj.subnet;
@@ -49,14 +49,73 @@ export class KubernetesCluster {
     this.isProcessing = false;
 
     // get worker groups
-    this.workerGroups = [];
+    this.workerGroup = [];
     const wgs: [] = obj.worker_groups;
     if (wgs) {
       for (let i = 0; i < wgs.length; i++) {
         const wg = new WorkerGroupModel(wgs[i]);
-        this.workerGroups.push(wg);
+        this.workerGroup.push(wg);
       }
     }
+  }
+}
+
+export class CreateClusterReqDto {
+
+  ClusterName: string;
+  ProjectInfraId: string;
+  KubernetesVersion: string;
+  Description: string;
+  CloudProfileId: string;
+  ProviderType: string;
+  RegionId: string;
+
+  Networking: NetworkReqDto;
+  WorkerGroup: WorkerGroupReqDto[];
+
+  // for volume cloud
+  VolumeCloudSize: number;
+  VolumeCloudType: string;
+  UsageTime: number;
+
+  constructor(obj: any) {
+    if (obj) {
+      this.ClusterName = obj.clusterName;
+      this.ProjectInfraId = obj.projectInfraId;
+      this.KubernetesVersion = obj.kubernetesVersion;
+      this.Description = obj.description;
+      this.CloudProfileId = obj.cloudProfileId;
+      this.ProviderType = obj.providerType;
+      this.RegionId = obj.regionId;
+
+      this.Networking = new NetworkReqDto(obj.networking);
+
+      this.WorkerGroup = [];
+      const wgs: [] = obj.workerGroup;
+      for (let i = 0; i < wgs.length; i++) {
+        const wg = new WorkerGroupReqDto(wgs[i]);
+        this.WorkerGroup.push(wg);
+      }
+
+      this.VolumeCloudSize = obj.volumeCloudSize;
+      this.VolumeCloudType = obj.volumeCloudType;
+      this.UsageTime = obj.usageTime;
+    }
+  }
+}
+
+export class NetworkReqDto {
+
+  NetworkType: string;
+  VpcNetworkId: number;
+  Cidr: string;
+  Subnet: string;
+
+  constructor(obj: any) {
+    this.NetworkType = obj.networkType;
+    this.VpcNetworkId = obj.vpcNetworkId;
+    this.Cidr = obj.cidr;
+    this.Subnet = obj.subnet;
   }
 }
 
@@ -114,6 +173,37 @@ export class WorkerGroupModel {
     }
   }
 
+}
+
+export class WorkerGroupReqDto {
+
+  WorkerGroupName: string;
+  AutoHealing: boolean;
+  AutoScalingWorker: boolean;
+  MinimumNode: number;
+  MaximumNode: number;
+  VolumeType: string;
+  VolumeTypeId: number;
+  VolumeStorage: number;
+  ConfigType: string;
+  ConfigTypeId: number;
+  NodeNumber: number;
+
+
+  constructor(obj) {
+    if (obj) {
+      this.WorkerGroupName = obj.workerGroupName;
+      this.AutoHealing = obj.autoHealing;
+      this.AutoScalingWorker = obj.autoScalingWorker;
+      this.MinimumNode = obj.minimumNode;
+      this.MaximumNode = obj.maximumNode;
+      this.VolumeType = obj.volumeType;
+      this.VolumeStorage = obj.volumeStorage;
+      this.VolumeTypeId = obj.volumeTypeId;
+      this.ConfigType = obj.configType;
+      this.ConfigTypeId = obj.configTypeId;
+    }
+  }
 }
 
 
