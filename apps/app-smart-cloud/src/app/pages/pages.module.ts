@@ -59,13 +59,6 @@ import {
   CurrentVirtualMachineComponent
 } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import {
-  PopupDeleteSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
-import {
-  PopupEditSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
-
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
   CreateBackupVolumeComponent
@@ -277,8 +270,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
-    PopupDeleteSnapshotVolumeComponent,
-    PopupEditSnapshotVolumeComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
     CreateBackupVmComponent,

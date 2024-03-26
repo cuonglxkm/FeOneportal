@@ -1,103 +1,152 @@
-<page-header [breadcrumb]="breadcrumb"
-             [action]="action"
-             [title]="'Danh sách Snapshot Volumes'">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Danh sách Snapshot Volume'"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/snapshotvls'">
-          Danh sách Snapshot Volume
-        </a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> Snapshot Volume </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="getRegionId($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="getProjectId($event)"
-                               [regionId]="regionId"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="getRegionId($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (valueChanged)="getProjectId($event)"
+        (userChanged)="getProjectId($event)"
+        [regionId]="regionId"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 
 <div class="snapshot-volume-list">
-  <nz-row nzJustify="space-between">
-    <nz-col nzSpan="16" style="flex: none;">
-      <div>
-        <span>Trạng thái: </span>
-        <nz-select nzSize="large"
-                   [nzPlaceHolder]="'Tất cả trạng thái'"
-                   [nzOptions]="options"
-                   [(ngModel)]="snapshotStatusSearch"
-                   (ngModelChange)="searchSnapshot()"
-                   style="width: 250px; border-radius: 8px;">
-        </nz-select>
-        <nz-input-group nzSize="large"
-                        style="width: 300px; margin-left: 10px;"
-                        [nzPrefix]="prefixIconSearch">
-          <input [(ngModel)]="snapshotNameSearch"
-                 nz-input
-                 placeholder="Tìm kiếm tên, vpc,..."/>
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
-        </ng-template>
-      </div>
+  <nz-row>
+    <nz-col style="width: 100%" class="text-right">
+      <span class="text-label">Trạng thái: </span>
+      <nz-select
+        nzSize="large"
+        [nzPlaceHolder]="'Tất cả trạng thái'"
+        [nzOptions]="options"
+        [(ngModel)]="snapshotStatusSearch"
+        (ngModelChange)="getListSnapshotVl()"
+      >
+      </nz-select>
+      <nz-input-group
+        nzSize="large"
+        style="width: 25%; margin-left: 10px"
+        [nzPrefix]="prefixIconSearch"
+      >
+        <input [(ngModel)]="nameSearch" nz-input placeholder="Tìm kiếm" />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <img
+          src="assets/imgs/search.svg"
+          alt=""
+          style="cursor: pointer"
+          nz-tooltip="Tìm kiếm"
+        />
+      </ng-template>
     </nz-col>
   </nz-row>
   <nz-spin [nzSpinning]="isLoading">
-    <nz-table #tableSnapshotVolume
-              style="margin-top: 15px;"
-              [nzData]="listSnapshot"
-              [nzFrontPagination]="false"
-              [nzTotal]="totalSnapshot"
-              [(nzPageIndex)]="currentPage"
-              [(nzPageSize)]="pageSize"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzLoading]="isLoadingSearch"
+    <nz-table
+      #tableSnapshotVolume
+      style="margin-top: 15px"
+      [nzData]="listSnapshot"
+      [nzFrontPagination]="false"
+      [nzTotal]="totalSnapshot"
+      [(nzPageIndex)]="pageNumber"
+      [(nzPageSize)]="pageSize"
+      (nzPageIndexChange)="getListSnapshotVl()"
+      (nzPageSizeChange)="getListSnapshotVl()"
+      [nzLoading]="isLoading"
     >
       <thead>
-      <tr>
-        <th>Tên</th>
-        <th>Dung lượng(GB)</th>
-        <th>Mô tả</th>
-        <th>Volume</th>
-        <th>VPC</th>
-        <th>Thời gian tạo</th>
-        <th>Trạng thái dịch vụ</th>
-        <th>Trạng thái tác vụ</th>
-        <th>Thao tác</th>
-      </tr>
+        <tr>
+          <th>Tên Snapshot</th>
+          <th>Dung lượng(GB)</th>
+          <th>Volume</th>
+          <th>VPC</th>
+          <th>Thời gian tạo</th>
+          <th>Trạng thái dịch vụ</th>
+          <th>Trạng thái tác vụ</th>
+          <th>Thao tác</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let data of tableSnapshotVolume.data;">
-        <td (click)="getDetailSnapshotVl(data.id)"><a>{{ data.name }}</a></td>
-        <td>{{ data.sizeInGB}}</td>
-        <td>{{ data.description}}</td>
-        <td>{{data.volumeName}}</td>
-        <td>{{data.projectName}}</td>
-        <td>{{data.startDate}}</td>
-        <td>{{data.serviceStatus}}</td>
-        <td>{{data.resourceStatus}}</td>
-        <td>
-          <nz-select nzSize="small"
-                     class="custom-background"
-                     [nzPlaceHolder]="'Thao tác'"
-                     [nzOptions]="optionAction"
-                     style="width: 150px;"
-                     [ngModel]="selectedAction"
-                     (ngModelChange)="onSelectionChange($event , data)"
-          >
-          </nz-select>
-        </td>
-      </tr>
+        <tr *ngFor="let data of tableSnapshotVolume.data">
+          <td (click)="getDetailSnapshotVl(data.id)">
+            <a>{{ data.name }}</a>
+          </td>
+          <td>{{ data.sizeInGB }}</td>
+          <td>{{ data.volumeName }}</td>
+          <td>{{ data.projectName }}</td>
+          <td>{{ data.startDate }}</td>
+          <td>{{ data.serviceStatus }}</td>
+          <td>{{ data.resourceStatus }}</td>
+          <td>
+            <img
+              src="assets/imgs/edit-2.svg"
+              alt=""
+              (click)="navigateToEdit(data.id)"
+              style="cursor: pointer; margin-right: 16px"
+              nz-tooltip="Chỉnh sửa"
+            />
+            <img
+              src="assets/imgs/create-backup.svg"
+              alt=""
+              (click)="initVolume(data)"
+              style="cursor: pointer; margin-right: 16px"
+              nz-tooltip="Tạo Volume"
+            />
+            <img
+              src="assets/imgs/calendar-tick.svg"
+              alt=""
+              style="cursor: pointer; margin-right: 16px"
+              nz-tooltip="Tạo lịch Backup"
+            />
+            <img
+              src="assets/imgs/trash.svg"
+              alt=""
+              (click)="modalDelete(data.id)"
+              style="cursor: pointer; margin-right: 16px"
+              nz-tooltip="Xóa"
+            />
+          </td>
+        </tr>
       </tbody>
     </nz-table>
-
   </nz-spin>
 </div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDelete"
+  nzTitle="Xoá Snapshot Volume"
+  (nzOnCancel)="handleCancelDelete()"
+>
+  <div *nzModalContent>
+    Quý khách chắn chắn muốn thực hiện xóa Snapshot Volume?
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

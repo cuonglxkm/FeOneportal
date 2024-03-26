@@ -29,19 +29,14 @@ export class CreateScheduleBackupComponent implements OnInit{
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
               private route: ActivatedRoute,
-              private router: Router,
-              private projectService: ProjectService) {
+              private router: Router,) {
   }
 
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['app-smart-cloud/schedule/backup/list'])
-      }
-    });
+    this.router.navigate(['/app-smart-cloud/schedule/list'])
+
   }
 
   projectChanged(project: ProjectModel) {

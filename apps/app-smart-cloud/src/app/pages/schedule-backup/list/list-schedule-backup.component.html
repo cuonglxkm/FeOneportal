@@ -36,16 +36,14 @@
               <nz-option *ngFor="let item of status" [nzValue]="item.value"
                          [nzLabel]="item.label"></nz-option>
             </nz-select>
-            <nz-input-group
-              style="width: 300px;"
-              [nzPrefix]="prefixIconSearch"
-              nzSize="large"
-              [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])">
-              <input
-                name="name"
-                nz-input
-                placeholder="Tìm kiếm tên ..." />
+            <nz-input-group style="width: 300px;"
+                            [nzPrefix]="prefixIconSearch"
+                            nzSize="large">
+              <input name="name"
+                     nz-input
+                     placeholder="Tìm kiếm tên ..."
+                     [(ngModel)]="value"
+                     (input)="onInputChange($event.target['value'])"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img
@@ -289,21 +287,6 @@
     </ng-container>
     <ng-container *ngSwitchDefault>
       <nz-card>
-        <!--        <nz-row nzJustify="center">-->
-        <!--          <img src="/assets/tmp/schedule-backup.png" width="400" height="400" alt="blank-schedule-backup">-->
-        <!--        </nz-row>-->
-        <!--        <nz-row nzJustify="center" style="margin-top: 20px">-->
-        <!--          <div class="text-title">-->
-        <!--            <h1>Đặt lịch Backup - Tự động sao lưu</h1>-->
-        <!--          </div>-->
-        <!--        </nz-row>-->
-        <!--        <nz-row nzJustify="center">-->
-        <!--          <div class="text-subtitle" style="max-width: 885px; text-wrap: normal; text-align: center;">Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết.-->
-        <!--            Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm</div>-->
-        <!--        </nz-row>-->
-        <!--        <nz-row nzJustify="center">-->
-        <!--          <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" routerLink="/app-smart-cloud/schedule/backup/create">Khởi tạo ngay</button>-->
-        <!--        </nz-row>-->
         <result>
           <nz-row>
             <nz-col class="text-center" style="width: 100%">
