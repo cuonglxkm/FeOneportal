@@ -6,6 +6,8 @@ import { InfoConnection } from '../../../core/models/info-connection.model';
 import { BrokerConfig } from '../../../core/models/broker-config.model';
 import { AppConstants } from '../../../core/constants/app-constant';
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import { camelizeKeys } from 'humps';
+import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 
 @Component({
   selector: 'one-portal-summary-service',
@@ -14,8 +16,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 })
 export class SummaryServiceComponent implements OnInit {
   @Input() serviceOrderCode: string;
-  @Input() ram: number;
-  @Input() cpu: number;
+  @Input() itemDetail: KafkaDetail;
 
   infoConnection: InfoConnection;
   brokerConfigs: BrokerConfig[];
@@ -65,7 +66,7 @@ export class SummaryServiceComponent implements OnInit {
         map((r) => r.data)
       )
       .subscribe((data) => {
-        this.infoConnection = data;
+        this.infoConnection = camelizeKeys(data) as InfoConnection;
       });
   }
 
@@ -77,7 +78,7 @@ export class SummaryServiceComponent implements OnInit {
         map((r) => r.data)
       )
       .subscribe((data) => {
-        this.brokerConfigs = data;
+        this.brokerConfigs = camelizeKeys(data) as BrokerConfig[];
       });
   }
 }

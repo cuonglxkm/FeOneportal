@@ -14,6 +14,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {catchError} from "rxjs/internal/operators/catchError";
 import { throwError } from 'rxjs';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { BackupSchedule } from '../models/schedule.model';
 
 @Injectable({
     providedIn: 'root'
@@ -136,9 +138,8 @@ export class BackupVmService extends BaseService {
     }
 
     getBackupPackages() {
-        return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions
-          + `/backups/packages`, {headers: this.getHeaders()}).pipe(
-          catchError((error: HttpErrorResponse) => {
+        return this.http.get<BaseResponse<BackupPackage[]>>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages`, {headers: this.getHeaders()})
+          .pipe(catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
             } else if (error.status === 404) {

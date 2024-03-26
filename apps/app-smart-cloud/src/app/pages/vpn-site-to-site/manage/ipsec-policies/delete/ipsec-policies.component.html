@@ -20,7 +20,7 @@
     <span class="text-modal-title">Xóa IPsec Policies</span>
   </ng-template>
   <ng-template #modalContent>
-    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()" [formGroup]="validateForm">
       <nz-form-item>
         <nz-alert
           nzType="warning"
@@ -36,13 +36,17 @@
             >
           </div>
         </nz-form-label>
-        <nz-form-control>
+        <nz-form-control [nzErrorTip]="nameErrorTpl">
           <input
             nz-input
             class="input-custom"
             formControlName="name"
             [placeholder]="'Nhập tên IPsec Policies'"
           />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên Ipsec Policy không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('nameMismatch')">Tên không trùng khớp</ng-container>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
@@ -62,6 +66,7 @@
               nzType="primary"
               [nzLoading]="isLoading"
               class="button-new"
+              [disabled]="validateForm.invalid"
             >
               Xác nhận
             </button>

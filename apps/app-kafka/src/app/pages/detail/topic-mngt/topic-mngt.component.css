@@ -2,11 +2,11 @@
   background: #fff;
   padding: 24px;
   min-height: 280px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .search {
-  border-radius: 8px;
+  border-radius: 4px;
   width: 300px;
   height: 40px;
 }
@@ -16,7 +16,6 @@
   align-items: center;
   justify-content: space-between;
 }
-
 
 [nz-button]{
   height: 40px;
@@ -38,7 +37,7 @@ nz-table.tbl-acl th {
 }
 
 [nz-icon] {
-  font-size: 20px;
+  font-size: 24px;
   color: #0074CC;
 }
 
@@ -59,4 +58,12 @@ nz-table.tbl-acl th {
 .breadcrumb{
   justify-content: space-between;
   margin: 15px;
+}
+
+.mg-right{
+  margin-right: 10px;
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
 }

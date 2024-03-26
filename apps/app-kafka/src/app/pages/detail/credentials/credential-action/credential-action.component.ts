@@ -14,23 +14,24 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Subscription } from 'rxjs';
+import { filter, finalize } from 'rxjs/operators';
 import {
   ChangePasswordKafkaCredential,
   CreateKafkaCredentialData,
   KafkaCredential,
   NewPasswordKafkaCredential,
-} from 'apps/app-kafka/src/app/core/models/kafka-credential.model';
-import { KafkaCredentialsService } from 'apps/app-kafka/src/app/services/kafka-credentials.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+} from 'src/app/core/models/kafka-credential.model';
+import { KafkaCredentialsService } from 'src/app/services/kafka-credentials.service';
 
 @Component({
   selector: 'one-portal-credential-action',
   templateUrl: './credential-action.component.html',
   styleUrls: ['./credential-action.component.css'],
 })
-export class CreateCredentialComponent implements OnInit, OnDestroy {
+export class CreateCredentialComponent implements OnDestroy {
   @Input() serviceOrderCode: string;
   @Output() closeFormEvent = new EventEmitter();
 
@@ -43,6 +44,7 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
   passwordError: string;
   checkPasswordError: string;
 
+  oldPasswordVisible: boolean
   passwordVisible: boolean;
   repasswordVisible: boolean;
   credential: KafkaCredential;
@@ -63,8 +65,10 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
   constructor(
     private fb: NonNullableFormBuilder,
     private kafkaCredentialService: KafkaCredentialsService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) {
+    this.oldPasswordVisible = false;
     this.passwordVisible = false;
     this.repasswordVisible = false;
 
@@ -138,8 +142,6 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {}
-
   ngOnDestroy(): void {
     this.credentialSubcription.unsubscribe();
     this.tabSubcription.unsubscribe();
@@ -152,61 +154,88 @@ export class CreateCredentialComponent implements OnInit, OnDestroy {
 
   submitForm() {
     switch (this.activatedTab) {
-      case this.showCreateCredential:
+      case this.showCreateCredential: {
         const createData = new CreateKafkaCredentialData(
           this.serviceOrderCode,
           this.validateForm.get('username').value,
           this.validateForm.get('password').value,
-          this.validateForm.get('checkPassword').value,
+          this.validateForm.get('checkPassword').value
         );
-
+        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
         this.kafkaCredentialService
           .createCredential(createData)
-          .pipe(filter((r) => r && r.code == 200))
-          .subscribe(() => {
-            this.closeFormEvent.emit();
-            this.notification.success('Thông báo', 'Tạo tài khoản thành công', {
-              nzDuration: 2000,
-            });
+          .pipe(
+            finalize(() => {
+              this.loadingSrv.close();
+            })
+          )
+          .subscribe((data) => {
+            if (data && data.code == 200) {
+              this.closeFormEvent.emit();
+              this.notification.success('Thông báo', data.msg, {
+                nzDuration: 2000,
+              });
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
           });
         break;
-      case this.showUpdatePassword:
+      }
+      case this.showUpdatePassword: {
         const updateData = new ChangePasswordKafkaCredential(
           this.serviceOrderCode,
           this.validateForm.get('username').value,
           this.validateForm.get('oldPassword').value,
           this.validateForm.get('password').value,
-          this.validateForm.get('checkPassword').value,
+          this.validateForm.get('checkPassword').value
         );
-
+        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
         this.kafkaCredentialService
           .updatePassword(updateData)
-          .pipe(filter((r) => r && r.code == 200))
-          .subscribe(() => {
-            this.closeFormEvent.emit();
-            this.notification.success('Thông báo', 'Đổi mật khẩu thành công', {
-              nzDuration: 2000,
-            });
+          .pipe(
+            finalize(() => {
+              this.loadingSrv.close();
+            })
+          )
+          .subscribe((data) => {
+            if (data && data.code == 200) {
+              this.closeFormEvent.emit();
+              this.notification.success('Thông báo', data.msg, {
+                nzDuration: 2000,
+              });
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
           });
         break;
-      case this.showForgotPassword:
+      }
+      case this.showForgotPassword: {
         const newPasswordData = new NewPasswordKafkaCredential(
           this.serviceOrderCode,
           this.credential.username,
           this.validateForm.get('password').value,
-          this.validateForm.get('checkPassword').value,
-        )
-
+          this.validateForm.get('checkPassword').value
+        );
+        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
         this.kafkaCredentialService
           .createNewPassword(newPasswordData)
-          .pipe(filter((r) => r && r.code == 200))
-          .subscribe(() => {
-            this.closeFormEvent.emit();
-            this.notification.success('Thông báo', 'Đổi mật khẩu thành công', {
-              nzDuration: 2000,
-            });
+          .pipe(
+            finalize(() => {
+              this.loadingSrv.close();
+            })
+          )
+          .subscribe((data) => {
+            if (data && data.code == 200) {
+              this.closeFormEvent.emit();
+              this.notification.success('Thông báo', data.msg, {
+                nzDuration: 2000,
+              });
+            } else {
+              this.notification.error('Thất bại', data.msg);
+            }
           });
         break;
+      }
     }
   }
 

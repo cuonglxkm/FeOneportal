@@ -17,6 +17,10 @@ import { CreateIpsecPoliciesComponent } from './manage/ipsec-policies/create/cre
 import { EditIpsecPoliciesComponent } from './manage/ipsec-policies/edit/edit-ipsec-policies.component';
 import { DetailIpsecPoliciesComponent } from './manage/ipsec-policies/detail/detail-ipsec-policies.component';
 import { CreateVpnConnectionComponent } from './manage/vpn-connection/create/create-vpn-connection.component';
+import { EditVpnConnectionComponent } from './manage/vpn-connection/edit/edit-vpn-connection.component';
+import { DeleteVpnConnectionComponent } from './manage/vpn-connection/delete/delete-vpn-connection.component';
+import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/detail-vpn-connection.component';
+import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
 import { CreateEndpointGroupComponent } from './manage/endpoint-group/create/create-endpoint-group.component';
 import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/detail-endpoint-group.component';
 
@@ -33,6 +37,11 @@ import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/det
     CreateIpsecPoliciesComponent,
     EditIpsecPoliciesComponent,
     DetailIpsecPoliciesComponent,
+    CreateVpnConnectionComponent,
+    EditVpnConnectionComponent,
+    DeleteVpnConnectionComponent,
+    DetailVpnConnectionComponent,
+    CreateIkePoliciesComponent
     CreateVpnConnectionComponent,
     EndpointGroupComponent,
     CreateEndpointGroupComponent,

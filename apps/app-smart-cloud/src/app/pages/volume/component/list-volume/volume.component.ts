@@ -189,6 +189,9 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
+  navigateToCreate() {
+    this.router.navigate(['/app-smart-cloud/volume/create'])
+  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();

@@ -5,6 +5,9 @@ import { CreateIpsecPoliciesComponent } from "./manage/ipsec-policies/create/cre
 import { EditIpsecPoliciesComponent } from "./manage/ipsec-policies/edit/edit-ipsec-policies.component";
 import { DetailIpsecPoliciesComponent } from "./manage/ipsec-policies/detail/detail-ipsec-policies.component";
 import { CreateVpnConnectionComponent } from "./manage/vpn-connection/create/create-vpn-connection.component";
+import { CreateIkePoliciesComponent } from "./manage/ike-policies/create/create-ike-policies.component";
+import { EditVpnConnectionComponent } from "./manage/vpn-connection/edit/edit-vpn-connection.component";
+import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/detail-vpn-connection.component";
 import { CreateEndpointGroupComponent } from "./manage/endpoint-group/create/create-endpoint-group.component";
 import { DetailEndpointGroupComponent } from "./manage/endpoint-group/detail/detail-endpoint-group.component";
 
@@ -29,6 +32,18 @@ const routes: Routes = [
     path: 'vpn-connection/create',
     component: CreateVpnConnectionComponent,
   },
+  {
+    path: 'vpn-connection/edit/:id',
+    component: EditVpnConnectionComponent,
+  },
+  {
+    path: 'vpn-connection/:id',
+    component: DetailVpnConnectionComponent,
+  },
+  {
+    path: 'ike-policies/create',
+    component: CreateIkePoliciesComponent,
+  }
   {
     path: 'endpoint-group/create',
     component: CreateEndpointGroupComponent,

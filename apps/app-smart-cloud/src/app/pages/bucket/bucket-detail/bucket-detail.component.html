@@ -399,7 +399,7 @@
   </ng-container>
 </nz-modal>
 
-<!--Phân quyền-->
+<!--Phiên bản-->
 <nz-modal *ngIf="dataAction != undefined" [(nzVisible)]="isVisibleVersioning" nzTitle="Danh sách phiên bản của object: {{dataAction.key}}" (nzOnCancel)="handleCancel()"
           (nzOnOk)="editPermission()" [nzOkText]="null"
           nzCancelText="Quay lại" [nzStyle]="modalStyle">
