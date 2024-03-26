@@ -33,6 +33,7 @@ export class VpnSiteToSiteManage {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
   }
 
   
