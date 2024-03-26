@@ -123,7 +123,7 @@ export class KubernetesDetailComponent implements OnInit, OnDestroy {
         this.total = r.data.total;
 
         // check list cluster is empty with all status?
-        if (this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) {
+        if ((this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) && (k == '')) {
           this.listOfClusters.length == 0 ? this.isShowIntroductionPage = true : this.isShowIntroductionPage = false;
         }
 
