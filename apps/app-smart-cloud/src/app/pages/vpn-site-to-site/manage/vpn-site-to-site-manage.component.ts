@@ -36,4 +36,11 @@ export class VpnSiteToSiteManage {
 
   }
 
+  
+
+  handleGetData(event: any){
+    console.log(event);
+    
+  }
+
 }

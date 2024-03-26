@@ -57,7 +57,7 @@
               type="text"
               required
               placeholder="Nhập tên"
-              formControlName="nameSnapshot"
+              formControlName="name"
             />
             
           </nz-form-control>
@@ -80,11 +80,11 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="selectedAuthorizationAlgorithm"
+              [(ngModel)]="selectedIpsecPolicy"
               [ngModelOptions]="{standalone: true}"
             >
               <nz-option
-              *ngFor="let data of ipsecPolicy"
+              *ngFor="let data of ipsecPoliciesList"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -141,6 +141,7 @@
               type="text"
               required
               placeholder="Nhập Peer Remote IP"
+              formControlName="peerRemoteIp"
             />
           </nz-form-control>
           </nz-form-item>
@@ -194,6 +195,7 @@
               type="text"
               required
               placeholder="Nhập peer ID"
+              formControlName="peerId"
             />
             
           </nz-form-control>
@@ -243,12 +245,18 @@
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <input
-              nz-input
-              type="text"
-              required
-              placeholder="Nhập remote local subnet"
-            />
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [(ngModel)]="selectedPerfectForwardSecrecy"
+              [ngModelOptions]="{standalone: true}"
+            >
+              <nz-option
+              *ngFor="let data of ikePolicy"
+              [nzLabel]="data.label"
+              [nzValue]="data.value"
+              ></nz-option>
+            </nz-select>
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -271,6 +279,7 @@
               type="text"
               required
               placeholder="Nhập pre -shared Key"
+              formControlName="preSharedKey"
             />
           </nz-form-control>
           </nz-form-item>
@@ -404,7 +413,7 @@
       <div style="margin-bottom: 218px;">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>Test</span>
+          <span>{{form.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
@@ -412,7 +421,7 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IPsec Policy</h3>
-          <span>sha1</span>
+          <span>{{selectedIpsecPolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">VPN Service</h3>
@@ -420,11 +429,11 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
-          <span>aes-128</span>
+          <span>{{form.value.peerRemoteIp}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer ID VPN Connections</h3>
-          <span>seconds</span>
+          <span>{{form.value.peerId}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Local System Subnet</h3>
@@ -436,7 +445,7 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
-          <span>esp</span>
+          <span>{{form.value.preSharedKey}}</span>
         </div>
       </div>
       <button

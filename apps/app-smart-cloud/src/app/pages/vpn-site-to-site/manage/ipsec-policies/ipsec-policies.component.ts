@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output, SimpleChanges } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { debounceTime } from 'rxjs';
 import { FormSearchIpsecPolicy, IpsecPolicyDTO } from 'src/app/shared/models/ipsec-policy';
@@ -69,6 +69,21 @@ export class IpsecPoliciesComponent {
         console.log('data', data)
       this.response = data
     })
+  }
+
+  handleOkDelete(){
+    this.getData()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.project && !changes.project.firstChange) {
+
+      this.getData();
+    }
+    if (changes.region && !changes.region.firstChange) {
+
+      this.refreshParams();
+    }
   }
   
 
