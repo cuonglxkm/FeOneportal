@@ -8,8 +8,7 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
 import { FormCreateFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
 import { FormCreateIpsecPolicy, FormDeleteIpsecPolicy, FormEditIpsecPolicy, FormSearchIpsecPolicy, IpsecPolicyDetail } from '../models/ipsec-policy';
-import { FormCreateVpnConnection } from '../../../../../../.history/apps/app-smart-cloud/src/app/shared/models/vpn-connection_20240326095741';
-
+import { FormCreateVpnConnection } from '../models/vpn-connection';
 @Injectable({
   providedIn: 'root',
 })
