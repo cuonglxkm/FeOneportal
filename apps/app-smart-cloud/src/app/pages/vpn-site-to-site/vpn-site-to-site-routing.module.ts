@@ -43,7 +43,7 @@ const routes: Routes = [
   {
     path: 'ike-policies/create',
     component: CreateIkePoliciesComponent,
-  }
+  },
   {
     path: 'endpoint-group/create',
     component: CreateEndpointGroupComponent,

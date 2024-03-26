@@ -41,9 +41,7 @@ import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/det
     EditVpnConnectionComponent,
     DeleteVpnConnectionComponent,
     DetailVpnConnectionComponent,
-    CreateIkePoliciesComponent
-    CreateVpnConnectionComponent,
-    EndpointGroupComponent,
+    CreateIkePoliciesComponent,
     CreateEndpointGroupComponent,
     DetailEndpointGroupComponent
   ],
