@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
@@ -8,6 +8,7 @@ import { ConsumerGroupKafkaService } from '../../../services/consumer-group-kafk
 import { KafkaService } from '../../../services/kafka.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
+import { finalize } from 'rxjs';
 
 interface DataItem {
   partitionName: number,
@@ -33,8 +34,8 @@ interface ColumnItem {
 })
 
 
-export class ConsumerGroupComponent implements OnInit { 
-  serviceOrderCode: string;
+export class ConsumerGroupComponent implements OnInit {
+  @Input() serviceOrderCode: string;
 
   listConsumerGroup: KafkaConsumerGroup[];
 
@@ -126,7 +127,6 @@ export class ConsumerGroupComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.serviceOrderCode = 'kafka-s1hnuicj7u7g';
     this.getListConsumerGroup(1, this.pageSize, '', this.serviceOrderCode);
     this.getSyncTime(this.serviceOrderCode);
   }
@@ -206,8 +206,11 @@ export class ConsumerGroupComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => {
-        this.loadingSrv.open({type: "spin", text: "Loading..."});
-        this.consumerGroupKafkaService.deleteConsumerGroup(data).pipe()
+        this.loadingSrv.open({ type: "spin", text: "Loading..." });
+        this.consumerGroupKafkaService.deleteConsumerGroup(data)
+          .pipe(
+            finalize(() => this.loadingSrv.close())
+          )
           .subscribe(
             (data) => {
               if (data && data.code == 200) {
@@ -216,7 +219,6 @@ export class ConsumerGroupComponent implements OnInit {
               } else {
                 this.notification.error('Thất bại', data.msg);
               }
-              this.loadingSrv.close();
             }
           );
       },
@@ -227,10 +229,10 @@ export class ConsumerGroupComponent implements OnInit {
 
   getSyncTime(serviceOrderCode: string) {
     this.kafkaService.getSyncTime(serviceOrderCode)
-    .subscribe((res:any) => {
-      if (res.code && res.code == 200) {
-        this.syncInfo = res.data;
-      }
-    });
+      .subscribe((res: any) => {
+        if (res.code && res.code == 200) {
+          this.syncInfo = res.data;
+        }
+      });
   }
 }

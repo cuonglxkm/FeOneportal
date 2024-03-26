@@ -36,23 +36,21 @@
               <nz-option *ngFor="let item of status" [nzValue]="item.value"
                          [nzLabel]="item.label"></nz-option>
             </nz-select>
-            <nz-input-group
-              style="width: 300px;"
-              [nzPrefix]="prefixIconSearch"
-              nzSize="large"
-              [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])">
-              <input
-                name="name"
-                nz-input
-                placeholder="Tìm kiếm tên ..."/>
+            <nz-input-group style="width: 300px;"
+                            [nzPrefix]="prefixIconSearch"
+                            nzSize="large">
+              <input name="name"
+                     nz-input
+                     placeholder="Tìm kiếm tên ..."
+                     [(ngModel)]="value"
+                     (input)="onInputChange($event.target['value'])"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img
                 src="assets/imgs/search.svg"
                 alt=""
                 style="cursor: pointer"
-                nz-tooltip="Tìm kiếm"/>
+                nz-tooltip="Tìm kiếm" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
@@ -64,7 +62,7 @@
               <img
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/add-circle.svg"
-                alt=""/>
+                alt="" />
               <span class="button-text-primary">Tạo mới</span>
             </button>
           </nz-col>
@@ -86,8 +84,8 @@
               <th nzBreakWord>Đối tượng Backup</th>
               <th nzBreakWord>Gói Backup</th>
               <th nzBreakWord>Số bản ghi tối đa</th>
-              <th nzAlign="center" nzBreakWord >Trạng thái</th>
-              <th nzBreakWord >Lần Backup tiếp theo</th>
+              <th nzAlign="center" nzBreakWord>Trạng thái</th>
+              <th nzBreakWord>Lần Backup tiếp theo</th>
               <th nzBreakWord>Ngày tạo</th>
               <th nzAlign="center" nzBreakWord>Thao tác</th>
             </tr>
@@ -99,7 +97,7 @@
                 <span *ngIf="data.serviceType === 1">VM - {{ data.serviceName }}</span>
                 <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
               </td>
-              <td nzBreakWord>{{data.backupPackageName}}</td>
+              <td nzBreakWord>{{ data.backupPackageName }}</td>
               <td nzBreakWord>{{ data.maxBackup }}</td>
               <td nzAlign="center" nzBreakWord>
                 <div class="status" [ngSwitch]="data.status">
@@ -171,7 +169,7 @@
                           [isVisible]="isVisibleDelete"
                           [isLoading]="isLoadingDelete"
                           (onOk)="handleDeletedOk()"
-                          (onCancel)="handleDeleteCancel()"/>
+                          (onCancel)="handleDeleteCancel()" />
                       </ul>
                     </nz-dropdown-menu>
                   </div>
@@ -210,7 +208,7 @@
                           [isVisible]="isVisibleDelete"
                           [isLoading]="isLoadingDelete"
                           (onOk)="handleDeletedOk()"
-                          (onCancel)="handleDeleteCancel()"/>
+                          (onCancel)="handleDeleteCancel()" />
                       </ul>
                     </nz-dropdown-menu>
                   </div>
@@ -248,7 +246,7 @@
                           [isVisible]="isVisibleDelete"
                           [isLoading]="isLoadingDelete"
                           (onOk)="handleDeletedOk()"
-                          (onCancel)="handleDeleteCancel()"/>
+                          (onCancel)="handleDeleteCancel()" />
                       </ul>
                     </nz-dropdown-menu>
                   </div>
@@ -276,11 +274,11 @@
             </thead>
             <tbody>
             <tr *ngFor="let i of tableScheduleCapacityBackup.data">
-              <td nzLeft>{{i.packageName}}</td>
-              <td nzBreakWord>{{i.expirationDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-              <td nzBreakWord>{{i.totalCapacity}}</td>
-              <td nzBreakWord>{{i.usedCapacity}}</td>
-              <td nzBreakWord>{{i.remainingCapacity}}</td>
+              <td nzLeft>{{ i.packageName }}</td>
+              <td nzBreakWord>{{ i.expirationDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+              <td nzBreakWord>{{ i.totalCapacity }}</td>
+              <td nzBreakWord>{{ i.usedCapacity }}</td>
+              <td nzBreakWord>{{ i.remainingCapacity }}</td>
             </tr>
             </tbody>
           </nz-table>
@@ -289,21 +287,29 @@
     </ng-container>
     <ng-container *ngSwitchDefault>
       <nz-card>
-        <nz-row nzJustify="center">
-          <img src="/assets/tmp/schedule-backup.png" width="400" height="400" alt="blank-schedule-backup">
-        </nz-row>
-        <nz-row nzJustify="center" style="margin-top: 20px">
-          <div class="text-title">
-            <h1>Đặt lịch Backup - Tự động sao lưu</h1>
-          </div>
-        </nz-row>
-        <nz-row nzJustify="center">
-          <div class="text-subtitle" style="max-width: 885px; text-wrap: normal; text-align: center;">Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết.
-            Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm</div>
-        </nz-row>
-        <nz-row nzJustify="center">
-          <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" routerLink="/app-smart-cloud/schedule/backup/create">Khởi tạo ngay</button>
-        </nz-row>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="/assets/tmp/schedule-backup.png" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">Đặt lịch Backup - Tự động sao lưu</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết.
+                  Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+                  routerLink="/app-smart-cloud/schedule/backup/create" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            Khởi tạo ngay
+          </button>
+        </result>
       </nz-card>
     </ng-container>
   </ng-container>

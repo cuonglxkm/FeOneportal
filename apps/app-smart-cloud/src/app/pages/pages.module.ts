@@ -59,13 +59,6 @@ import {
   CurrentVirtualMachineComponent
 } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import {
-  PopupDeleteSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
-import {
-  PopupEditSnapshotVolumeComponent
-} from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
-
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
   CreateBackupVolumeComponent
@@ -234,7 +227,7 @@ import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { TreeFolderComponent } from './bucket/bucket-detail/share/tree-folder.component';
 import { SafePipe } from '../../../../../libs/common-utils/src';
-import { ChartModule } from '@syncfusion/ej2-angular-charts';
+// import { ChartModule } from '@syncfusion/ej2-angular-charts';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -277,8 +270,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
-    PopupDeleteSnapshotVolumeComponent,
-    PopupEditSnapshotVolumeComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
     CreateBackupVmComponent,
@@ -444,7 +435,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AngJsoneditorModule,
     ClipboardModule,
     SafePipe,
-    ChartModule
+    // ChartModule
   ]
 })
 export class PagesModule {}

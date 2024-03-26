@@ -1,0 +1,177 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Tạo mới VPN Connection'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a>
+          Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        >VPN site to site</a
+      ></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới VPN Connection</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="24" class="gutter-row">
+    <nz-card style="border-radius: 8px;">
+      <h2 class="custom-title">Thông tin VPN Connection</h2>
+      <form nz-form [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="Nhập tên"
+              [disabled]="true"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzRequired >IPsec Policy</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="sha1"
+              [disabled]="true"
+            />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>VPN Service</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="tunnel"
+              [disabled]="true"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >Peer Remote IP VPN Gateway</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>Local System Subnet</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >Peer ID VPN Connections</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>IKE Policy</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="group5"
+              [disabled]="true"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >Remote Local Subnet</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="Nhập remote local subnet"
+              [disabled]="true"
+            />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >Pre - Shared Key (PSK) string</nz-form-label>
+            <input
+              nz-input
+              type="text"
+              value="seconds"
+              [disabled]="true"
+            />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      </form>
+    </nz-card>
+  </div>
+</div>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+>
+</div>

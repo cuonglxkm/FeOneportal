@@ -3,13 +3,14 @@
     <nz-breadcrumb>
       <nz-breadcrumb-item>Home</nz-breadcrumb-item>
       <nz-breadcrumb-item>Dịch vụ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Lập lịch Backup</nz-breadcrumb-item>
+      <nz-breadcrumb-item routerLink="/app-smart-cloud/schedule/list">Lập lịch Backup</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
     </ng-template>
@@ -18,7 +19,7 @@
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
         <!--    <nz-card>-->
         <nz-card>
-            <div class="title"><h4><b>Tạo lịch Backup</b></h4></div>
+            <span class="text-card-header">Tạo lịch Backup</span>
             <nz-row>
                 <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
                                 formControlName="radio">
@@ -32,7 +33,8 @@
         <one-portal-schedule-backup-vm [region]="region"
                                         [project]="project"/>
     </div>
-    <div *ngIf="selectedValueRadio === 'VOLUME'">
-        <one-portal-schedule-backup-volume />
+    <div *ngIf="selectedValueRadio === 'VOLUME'" >
+        <one-portal-schedule-backup-volume [region]="region"
+                                           [project]="project"/>
     </div>
 </nz-content>

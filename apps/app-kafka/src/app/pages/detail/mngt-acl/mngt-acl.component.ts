@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { KafkaCredential } from '../../../core/models/kafka-credential.model';
 import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
 import { filter, map } from 'rxjs';
@@ -11,7 +11,7 @@ import { camelizeKeys } from 'humps';
 })
 export class MngtAclComponent implements OnInit {
   listOfPrincipals: KafkaCredential[];
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
+  @Input() serviceOrderCode: string;
 
   constructor(
     private credentialService: KafkaCredentialsService,
