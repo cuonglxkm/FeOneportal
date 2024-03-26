@@ -68,7 +68,7 @@
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chứa chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
           </ng-template>
         </nz-form-control>
         </nz-form-item>

@@ -15,7 +15,7 @@
     </div>
   </ng-template>
 </page-header>
-<form nz-form [formGroup]="form" >
+<!--<form nz-form [formGroup]="form" >-->
   <nz-card >
     <h3>Thông tin IP Public</h3>
     <hr style="opacity: 0.1">
@@ -42,28 +42,31 @@
         <p><b>Ngày cấp dịch vụ: </b> {{dateString | date:'dd/MM/yyyy'}} </p>
       </td>
       <td style="width: 50%">
-        <p><b>Ngày hết hạn: </b> {{dateStringExpired | date:'dd/MM/yyyy'}} </p>
+        <p><b>Ngày hết hạn: </b> {{ipInfo.expiredDate | date:'dd/MM/yyyy'}} </p>
       </td>
     </nz-table>
     <b>Số tháng cần gia hạn thêm</b>
-    <nz-input-group nzCompact  style="margin-top: 10px; margin-bottom: 18px">
-      <nz-select nzShowSearch nzAllowClear nzPlaceHolder="--Chọn thời gian sử dụng--"
-                 style="width: 100%"
-                 formControlName="numOfMonth" (nzOpenChange)="caculator()">
-        <nz-option nzValue="1" nzLabel="1"></nz-option>
-        <nz-option nzValue="3" nzLabel="3"></nz-option>
-        <nz-option nzValue="6" nzLabel="6"></nz-option>
-        <nz-option nzValue="9" nzLabel="9"></nz-option>
-        <nz-option nzValue="12" nzLabel="12"></nz-option>
-      </nz-select>
-      </nz-input-group>
+    <nz-input-number style="width: 100%; margin-top: 10px; margin-bottom: 18px;margin-left: -3px" [nzMin]="1" [nzMax]="99999" [nzStep]="1"
+                     [(ngModel)]="numOfMonth" (ngModelChange)="caculator()"
+                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+<!--    <nz-input-group nzCompact  style="">-->
+<!--      <nz-select nzShowSearch nzAllowClear nzPlaceHolder="&#45;&#45;Chọn thời gian sử dụng&#45;&#45;"-->
+<!--                 style="width: 100%"-->
+<!--                 formControlName="numOfMonth" (nzOpenChange)="caculator()">-->
+<!--        <nz-option nzValue="1" nzLabel="1"></nz-option>-->
+<!--        <nz-option nzValue="3" nzLabel="3"></nz-option>-->
+<!--        <nz-option nzValue="6" nzLabel="6"></nz-option>-->
+<!--        <nz-option nzValue="9" nzLabel="9"></nz-option>-->
+<!--        <nz-option nzValue="12" nzLabel="12"></nz-option>-->
+<!--      </nz-select>-->
+<!--      </nz-input-group>-->
     <p style="color: red"><b style="color: red">Ngày hết hạn dự kiến: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
   </nz-card>
 
   <nz-card nzTitle="Thành tiền" nzBorderless='false'>
     <div nz-row class="mb-md">
       <div nz-col nzSpan="12">
-        <p style="margin-top: 10px">Chi phí IP Public ( {{this.form.controls['numOfMonth'].value}} tháng )</p>
+        <p style="margin-top: 10px">Chi phí IP Public ( {{numOfMonth}} tháng )</p>
         <p style="margin-top: 10px">Thành tiền ( Đã bao gồm VAT )</p>
       </div>
       <div nz-col nzSpan="12">
@@ -76,9 +79,9 @@
     <div style="float: right; padding-top: 1%">
       <nz-form-item>
         <button nz-button nzType="default" (click)="backToList()">Quay lại</button>
-        <button nz-button nzType="primary" (click)="extendIpPublic()" [disabled]="form.invalid">Gia hạn</button>
+        <button nz-button nzType="primary" (click)="extendIpPublic()" [disabled]="numOfMonth == null || numOfMonth ==0">Gia hạn</button>
       </nz-form-item>
     </div>
   </nz-card>
-</form>
+<!--</form>-->
 

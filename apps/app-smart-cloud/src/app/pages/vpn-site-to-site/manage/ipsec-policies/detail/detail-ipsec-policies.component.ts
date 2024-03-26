@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
+import { IpsecPolicyDetail } from 'src/app/shared/models/ipsec-policy';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 
 
 @Component({
@@ -16,22 +18,43 @@ export class DetailIpsecPoliciesComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
+  isLoading: boolean = false
 
-  ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+  ipsecPolicy: IpsecPolicyDetail = new IpsecPolicyDetail();
+
+
+  constructor(private ipsecPolicyService: IpsecPolicyService,
+              private router: Router,
+              private activatedRoute: ActivatedRoute
+              ) {
   }
 
-
-  constructor() {}
-
-
-  onRegionChange(region: RegionModel) {
-    this.region = region.regionId;
+  regionChanged(region: RegionModel) {
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage'])
   }
 
-  onProjectChange(project: ProjectModel) {
-    this.project = project?.id;
+  projectChanged(project: ProjectModel) {
+    this.project = project?.id
+  }
+
+  userChanged(project: ProjectModel){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage'])
+  }
+
+  getFileSystemById(id) {
+    this.isLoading = true
+    this.ipsecPolicyService.getIpsecPoliciesById(id,this.project,this.region).subscribe(data => {
+      this.ipsecPolicy = data
+      console.log(data);
+      
+      this.isLoading = false
+    }, error => {
+      this.ipsecPolicy = null
+      this.isLoading = false
+    })
+  }
+
+  ngOnInit() {
+    this.getFileSystemById(this.activatedRoute.snapshot.paramMap.get('id'))
   }
 }

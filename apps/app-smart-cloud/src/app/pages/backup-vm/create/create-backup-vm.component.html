@@ -1,6 +1,6 @@
 <one-portal-header
   title="Backup VM"
-  [path]="['Home', 'Dịch vụ', 'Backup VM']"
+  [path]="['Home', 'Dịch vụ hạ tầng', 'Backup', 'Backup VM']"
   [regionId]="region"
   (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
@@ -31,6 +31,7 @@
                 <nz-select
                         id="volumeToBackupIds"
                         formControlName="volumeToBackupIds"
+                        nzSize="large"
                         [nzPlaceHolder]="'Volume gắn ngoài'"
                         nzMode="multiple"
                         [nzShowSearch]="false"
@@ -51,6 +52,7 @@
                 <nz-select
                         id="securityGroupToBackupIds"
                         formControlName="securityGroupToBackupIds"
+                        nzSize="large"
                         [nzPlaceHolder]="'Truy cập và bảo mật'"
                         [nzShowSearch]="false"
                         nzMode="multiple"
@@ -77,7 +79,7 @@
                 </div>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips [nzErrorTip]="backupNameErrorTpl">
-                <input nz-input formControlName="backupName" id="backupName"/>
+                <input nz-input class="input-custom" formControlName="backupName" id="backupName"/>
                 <ng-template #backupNameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">Vui lòng chỉ nhập kí tự là chữ hoặc số</ng-container>
@@ -113,6 +115,7 @@
               <nz-form-control nzDisableAutoTips>
                 <nz-select
                         formControlName="backupPacketId" id="backupPacketId"
+                        nzSize="large"
                         [nzPlaceHolder]="'Gói backup'"
                         [nzShowSearch]="false"
                         [nzLoading]="isLoading">

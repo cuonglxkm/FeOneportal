@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -53,7 +53,7 @@ export class DashboardComponent implements OnInit {
   // Tạo Subject để đánh dấu khi có lỗi
   private unsubscribe$ = new Subject<void>();
 
-  serviceOrderCode = 'kafka-s1hnuicj7u7g';
+  @Input() serviceOrderCode: string;
   healthCheckData: HealthCheckModel = new HealthCheckModel();
   byteInData: ChartData = new ChartData();
   byteOutData: ChartData = new ChartData();
@@ -131,6 +131,10 @@ export class DashboardComponent implements OnInit {
   ];
 
   resouceInstant = ['topic', 'offline_partition', 'message', 'partition']
+  byteInChartTitle = 'Producers';
+  byteOutChartTitle = 'Consumers';
+  messageRateChartTitle = 'Messages';
+  storageChartTitle = 'Storage';
 
   constructor(
     private dashBoardService: DashBoardService,
@@ -138,6 +142,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('serviceOrderCode: ', this.serviceOrderCode);
     this.getStatisticNumber();
     this.checkClusterIsHealth(this.serviceOrderCode);
     this.getCheckHealthChart(this.serviceOrderCode, -1, -1);
@@ -300,7 +305,7 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  setDataChart(chartData: ChartData, seriesName: string, yaxisTitle: string): Partial<ChartOptions> {
+  setDataChart(chartData: ChartData, seriesName: string, yaxisTitle: string, chartTitle: string): Partial<ChartOptions> {
     const chartOptions: Partial<ChartOptions> = {
       series: [
         {
@@ -332,8 +337,12 @@ export class DashboardComponent implements OnInit {
           inverseColors: false,
           opacityFrom: 0.5,
           opacityTo: 0,
-          stops: [0, 90, 100]
+          // stops: [0, 90, 100]
         },
+      },
+      title: {
+        text: chartTitle,
+        align: "center"
       },
       grid: {
         xaxis: {
@@ -392,11 +401,11 @@ export class DashboardComponent implements OnInit {
   getByteInChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.byteInData = res.data;
           if (this.byteInData) {
-            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Base Byte In (B/s)',)
+            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Base Byte In (B/s)', this.byteInChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -407,11 +416,11 @@ export class DashboardComponent implements OnInit {
   getByteOutChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.byteOutData = res.data;
           if (this.byteOutData) {
-            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Base Byte Out (B/s)');
+            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Base Byte Out (B/s)', this.byteOutChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -422,11 +431,11 @@ export class DashboardComponent implements OnInit {
   getMessageRateChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.messageRateData = res.data;
           if (this.messageRateData) {
-            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'Message rate/s');
+            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'Message rate/s', this.messageRateChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -437,11 +446,11 @@ export class DashboardComponent implements OnInit {
   getStorageChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number, unit: string) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, unit)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
+      .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.storageData = res.data;
           if (this.storageData) {
-            this.chartStorage = this.setDataChart(this.storageData, this.unitStorage, this.unitStorage)
+            this.chartStorage = this.setDataChart(this.storageData, this.unitStorage, this.unitStorage, this.storageChartTitle)
           }
         } else {
           this.unsubscribe$.next();

@@ -44,11 +44,11 @@
       <div style="display:flex;">
         <nz-input-group style="margin-right: 8px; width: 60%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                         nzSize="large">
-          <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm"/>
+          <input (keyup.enter)="loadData()" [(ngModel)]="folderNameLike" nz-input placeholder="Tìm kiếm"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm theo tên"
-               (click)="search(searchBox.value)"/>
+               (click)="loadData()"/>
         </ng-template>
         <button nz-button nzType="default" (click)="openFilter()" nzSize="large">
           <span class="button-text-primary">Lọc</span>
@@ -76,9 +76,9 @@
 
 
   <div style="border: 1px solid #E2E2E9;margin-bottom: 10px; height: 40px ; display: flex; align-items: center;">
-    <img style="padding-right: 10px;padding-left: 10px;" src="assets/imgs/box.svg" alt=""/>
+    <img style="padding-right: 10px;padding-left: 10px;" src="assets/imgs/box.svg" (click)="toFolder1('', true)"/>
     <ng-container *ngFor="let item of listOfFolder">
-      <div style="font-weight: bold;padding-right: 10px;" (click)="toFolder1(item)">> {{item.name}} </div>
+      <div style="font-weight: bold;padding-right: 10px;" (click)="toFolder1(item, false)">> {{item.name}} </div>
     </ng-container>
   </div>
   <!-- Bảng-->
@@ -106,7 +106,7 @@
         <td [nzChecked]="setOfCheckedId.has(item.key)"
             (nzCheckedChange)="onItemChecked(item.key , $event)"></td>
         <td *ngIf="item.objectType != 'folder'">{{item.key}}</td>
-        <td *ngIf="item.objectType == 'folder'" style="color: #0074CC" (click)="loadData(item.key)">
+        <td *ngIf="item.objectType == 'folder'" style="color: #0074CC" (click)="toFolder2(item.key + '/')">
           <img style="padding-right: 5px;" src="assets/imgs/folder.svg" alt=""/>
           {{item.key}}
         </td>
@@ -373,7 +373,8 @@
           (nzOnOk)="handleShare()" nzOkText="Sao chép liên kết" nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <div>Hiệu lực đến</div>
-    <nz-date-picker nzFormat="yyyy-MM-dd HH:mm:ss" [nzDisabledDate]="disabledDate" [nzDisabledTime]="disabledDateTime" [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
+    <nz-date-picker nzFormat="yyyy-MM-dd HH:mm:ss" [nzDisabledDate]="disabledDate" [nzDisabledTime]="disabledDateTime"
+                    [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
                     [ngModel]="dateShare" (ngModelChange)="getLinkShare()" style="width: 100%"></nz-date-picker>
     <div style="margin-top: 15px;">Đường dẫn chia sẻ</div>
     <input nz-input [disabled]="true" nzSize="large" [ngModel]="linkShare">
@@ -382,57 +383,120 @@
 
 
 <!--Phân quyền-->
-<nz-modal [(nzVisible)]="isVisiblePermission" nzTitle="Quản lý phân quyền" (nzOnCancel)="handleCancel()"
+<nz-modal [(nzVisible)]="isVisiblePermission" nzTitle="Quản lý phân quyền"
+          (nzOnCancel)="this.isVisiblePermission = false"
           (nzOnOk)="editPermission()" nzOkText="Xác nhận"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <div class="text-label">
-      <div>Chọn thư mục</div>
-      <one-portal-tree-folder [data]="treeFolder" [dataCheck]="treeFolder"
-                              (folderChange)="toFolder($event)"></one-portal-tree-folder>
-      <div style="margin-top: 10px">Đường dẫn</div>
-      <nz-row style="border: 1px solid #E2E2E9;height: 40px;display: flex;align-items: center;">
-        <img style="margin-left: 10px;margin-right:10px;" src="assets/imgs/box.svg" alt=""/>
-        <div style="font-weight: bold"> {{folderChange}} </div>
+    <nz-radio-group [(ngModel)]="radioValue1" style="width: 100%; display: inline-flex">
+      <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }" style="margin-top: 10px">
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-card
+            style="border-radius: 4px" [nzAlign]="'middle'"
+            [ngStyle]="{border: activePrivate? '1px solid #0066B3': '1px solid #DADADA',height: '150px',}">
+            <nz-row nzGutter="16">
+              <nz-col nzSpan="20">
+                <nz-card-meta
+                  [nzAvatar]="nzAvatarselectedHDDorSSD1"
+                  [nzTitle]="nzTitleselectedHDDorSSD1"
+                  [nzDescription]="nzDescriptionselectedHDDorSSD1"
+                >
+                  <ng-template #nzAvatarselectedHDDorSSD1>
+                    <label
+                      nz-radio
+                      [nzValue]="'Private'"
+                      (click)="selectPermisstion(1)"
+                    ></label>
+                  </ng-template>
+                  <ng-template #nzTitleselectedHDDorSSD1>
+                    <b>Private</b>
+                  </ng-template>
+                  <ng-template #nzDescriptionselectedHDDorSSD1>
+                    <ellipsis class="text-custom">
+                      Chỉ những người có quyền mới được truy cập
+                    </ellipsis>
+                  </ng-template>
+                </nz-card-meta>
+              </nz-col>
+            </nz-row>
+          </nz-card>
+        </nz-col>
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-card
+            style="border-radius: 4px"
+            [nzAlign]="'middle'"
+            [ngStyle]="{
+                  border: !activePrivate
+                  ? '1px solid #0066B3'
+                  : '1px solid #DADADA',
+                  height: '150px',
+                }"
+          >
+            <nz-row nzGutter="16">
+              <nz-col nzSpan="20">
+                <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD2" [nzTitle]="nzTitleselectedHDDorSSD2"
+                              [nzDescription]="nzDescriptionselectedHDDorSSD2">
+                  <ng-template #nzAvatarselectedHDDorSSD2>
+                    <label nz-radio [nzValue]="'Public'" (click)="selectPermisstion(2)"></label>
+                  </ng-template>
+                  <ng-template #nzTitleselectedHDDorSSD2>
+                    <b>Public</b>
+                  </ng-template>
+                  <ng-template #nzDescriptionselectedHDDorSSD2>
+                    <ellipsis class="text-custom"
+                    >Tất cả mọi người đều có thể truy cập thông tin của file.Lưu ý, Bucket public nhưng nếu object
+                      private thì cũng không truy cập được từ bên ngoài
+                    </ellipsis>
+                  </ng-template>
+                </nz-card-meta>
+              </nz-col>
+            </nz-row>
+          </nz-card>
+        </nz-col
+        >
       </nz-row>
-    </div>
+    </nz-radio-group>
+
   </ng-container>
 </nz-modal>
 
-<!--Phân quyền-->
-<nz-modal *ngIf="dataAction != undefined" [(nzVisible)]="isVisibleVersioning" nzTitle="Danh sách phiên bản của object: {{dataAction.key}}" (nzOnCancel)="handleCancel()"
+<!--Phiên bản-->
+<nz-modal *ngIf="dataAction != undefined" [(nzVisible)]="isVisibleVersioning"
+          nzTitle="Danh sách phiên bản của object: {{dataAction.key}}" (nzOnCancel)="handleCancel()"
           (nzOnOk)="editPermission()" [nzOkText]="null"
           nzCancelText="Quay lại" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <nz-table #rowSelectionTable [nzData]="listOfDataVersioning" [nzLoading]="loadingVersion" [nzHideOnSinglePage]="true">
+    <nz-table #rowSelectionTable [nzData]="listOfDataVersioning" [nzLoading]="loadingVersion"
+              [nzHideOnSinglePage]="true">
       <thead>
       <tr>
         <th>Phiên bản</th>
         <th>Thời gian chỉnh sửa</th>
-        <th>ID Phiển bản</th>
+        <th>Kích thước</th>
+        <th>Id phiển bản</th>
         <th>Thao tác</th>
       </tr>
       </thead>
       <tbody>
       <ng-container *ngFor="let item of listOfDataVersioning">
         <tr>
-          <td>{{item.key}}</td>
+          <td>{{item.key}}
+            <div *ngIf="item.isLatest == true">(Hiện tại)</div>
+          </td>
           <td>{{item.lastModified | date:'dd/MM/yyyy HH:mm:ss'}}</td>
           <td>{{(item.size / 1024).toFixed(2)}} KB</td>
+          <td>{{item.versionId}}</td>
           <td>
             <div>
-              <span style="color: #0066B3; margin-right: 10px;"
-                    nz-tooltip
-                    nzTooltipTitle="Tải xuống" nzTooltipPlacement="bottom"
-                    nz-icon nzType="download" nzTheme="outline" (click)="doAction('3',item)"></span>
-              <span style="color: #0066B3; margin-right: 10px;"
-                    nz-tooltip
-                    nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
-                    nz-icon nzType="eye" nzTheme="outline" (click)="doAction('4',item)"></span>
-              <span style="color: #0066B3"
-                    nz-tooltip
-                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                    nz-icon nzType="delete" nzTheme="outline" (click)="doAction('5',item)"></span>
+              <img src="assets/imgs/download.svg" style="padding-right:10px;height: 20px;"
+                   nz-tooltip nzTooltipTitle="Tải xuống" nzTooltipPlacement="bottom"
+                   (click)="doActionVersion('1',item)"/>
+              <img *ngIf="item.isLatest != true" src="assets/imgs/refresh.svg" style="padding-right:10px;height: 20px;"
+                   nz-tooltip nzTooltipTitle="Khôi phục" nzTooltipPlacement="bottom"
+                   (click)="doActionVersion('2',item)"/>
+              <img src="assets/imgs/delete.svg" style="height: 20px;"
+                   nz-tooltip nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                   (click)="doActionVersion('3',item)"/>
             </div>
           </td>
         </tr>
@@ -442,4 +506,26 @@
   </ng-container>
 </nz-modal>
 
+<!--Xóa Phiên bản-->
+<nz-modal [(nzVisible)]="isVisibleDeleteVersion"
+          nzTitle="Xác nhận xóa phiên bản Object?"
+          (nzOnCancel)="isVisibleDeleteVersion = false"
+          (nzOnOk)="deleteFolderVersion()" nzOkText="Xác nhận"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <nz-alert nzType="warning" nzMessage="Bạn đang thực hiện xóa phiên bản Object" nzShowIcon></nz-alert>
+    <div style="margin-top: 15px;">Quý khách có chắc chắn thực hiện xóa phiên bản Object này?</div>
+  </ng-container>
+</nz-modal>
 
+<!--Khôi phục Phiên bản-->
+<nz-modal [(nzVisible)]="isVisibleRestoreVersion"
+          nzTitle="Xác nhận khôi phục phiên bản Object?"
+          (nzOnCancel)="isVisibleRestoreVersion = false"
+          (nzOnOk)="restoreObjectVersion()" nzOkText="Xác nhận"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <nz-alert nzType="warning" nzMessage="Bạn đang thực hiện khôi phục phiên bản Object" nzShowIcon></nz-alert>
+    <div style="margin-top: 15px;">Quý khách có chắc chắn thực hiện khôi phục phiên bản Object này?</div>
+  </ng-container>
+</nz-modal>

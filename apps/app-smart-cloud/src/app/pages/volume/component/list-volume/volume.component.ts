@@ -189,6 +189,9 @@ export class VolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
   }
 
+  navigateToCreate() {
+    this.router.navigate(['/app-smart-cloud/volume/create'])
+  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -204,25 +207,23 @@ export class VolumeComponent implements OnInit {
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
-    else
-    {
-      this.notificationService.connection.on('UpdateVolume', (data) => {
-        if (data) {
-          let volumeId = data.serviceId;
+    
+    this.notificationService.connection.on('UpdateVolume', (data) => {
+      if (data) {
+        let volumeId = data.serviceId;
 
-          var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
-          if (foundIndex > -1) {
-            var record = this.response.records[foundIndex];
+        var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+        if (foundIndex > -1) {
+          var record = this.response.records[foundIndex];
 
-            record.status = data.status;
-            record.serviceStatus = data.serviceStatus;
+          record.status = data.status;
+          record.serviceStatus = data.serviceStatus;
 
-            this.response.records[foundIndex] = record;
-            this.cdr.detectChanges();
-          }
+          this.response.records[foundIndex] = record;
+          this.cdr.detectChanges();
         }
-      });
-    }
+      }
+    });
   }
 
 }

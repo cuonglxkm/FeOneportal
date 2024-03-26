@@ -19,10 +19,6 @@
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <span class="text-card-header">Thông tin IP Pulbic</span>
         <div nz-row class="mb-md pt-5">
-<!--          <div class="custom-styling">-->
-<!--              <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill" style="color: orangered"></span>-->
-<!--              Host name không thay đổi khi điều chỉnh tên máy ảo-->
-<!--          </div>-->
           <div nz-col nzSpan="11">
             <nz-form-label nzRequired>Dải IP</nz-form-label>
             <nz-input-group nzCompact>
@@ -30,12 +26,23 @@
                 <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.networkId"/>
               </nz-select>
             </nz-input-group>
-            <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
-              <nz-form-item>
-                <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }" (ngModelChange)="caculator(null)">IPv6</label>
-              </nz-form-item>
-            </div>
-
+          </div>
+          <div nz-col nzSpan="12" style="margin-left: 15px">
+            <nz-form-label>Máy ảo</nz-form-label>
+            <nz-input-group nzCompact>
+              <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse" [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--" (nzOpenChange)="caculator(null)">
+                <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
+              </nz-select>
+            </nz-input-group>
+          </div>
+        </div>
+        <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
+          <nz-form-item>
+            <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }" (ngModelChange)="caculator(null)">IPv6</label>
+          </nz-form-item>
+        </div>
+        <div nz-row class="mb-md pt-5">
+          <div nz-col nzSpan="11">
             <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
             <nz-form-item>
               <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
@@ -54,20 +61,19 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <nz-form-label>Máy ảo</nz-form-label>
-            <nz-input-group nzCompact>
-              <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse" [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--" (nzOpenChange)="caculator(null)">
-                <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
-              </nz-select>
-            </nz-input-group>
-            <p  style="margin-top: 102px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
+            <p  style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
           </div>
         </div>
       </nz-card>
     </nz-col>
+
+
+
+
+
+
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate">
         <h2 class="text-card-header">Thành tiền</h2>
