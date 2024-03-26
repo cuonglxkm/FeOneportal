@@ -40,6 +40,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Observable, Subject, debounceTime, of, pipe } from 'rxjs';
+import { addDays } from 'date-fns';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -49,7 +50,6 @@ class ConfigCustom {
   vCPU?: number = 0;
   ram?: number = 0;
   capacity?: number = 0;
-  iops?: string = '000';
   priceHour?: string = '000';
   priceMonth?: string = '000';
 }
@@ -264,6 +264,7 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
+  nameHdh: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
@@ -275,6 +276,10 @@ export class InstancesCreateComponent implements OnInit {
     if (this.offerFlavor != null) {
       this.getTotalAmount();
     }
+    const filteredImages = this.listOfImageByImageType
+      .get(imageTypeId)
+      .filter((e) => e.id == event);
+    this.nameHdh = filteredImages.length > 0 ? filteredImages[0].name : '';
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -288,6 +293,10 @@ export class InstancesCreateComponent implements OnInit {
   status: string;
 
   initSnapshot(): void {
+    this.selectedSnapshot = null;
+    for (let i = 0; i < this.listSelectedImage.length; ++i) {
+      this.listSelectedImage[i] = 0;
+    }
     if (this.isSnapshot) {
       this.snapshotVLService
         .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
@@ -298,10 +307,6 @@ export class InstancesCreateComponent implements OnInit {
           console.log('list snapshot volume root', this.listSnapshot);
         });
     }
-  }
-
-  onChangeSnapshot(event?: any) {
-    this.selectedSnapshot = event;
   }
 
   //#endregion
@@ -348,17 +353,23 @@ export class InstancesCreateComponent implements OnInit {
   isCustomconfig = false;
   onClickConfigPackage() {
     this.isCustomconfig = false;
-    this.offerFlavor = null;
-    this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalincludesVAT = 0;
+    this.resetInstanceConfig();
   }
 
   onClickCustomConfig() {
     this.configCustom = new ConfigCustom();
+    this.resetInstanceConfig();
+    this.isCustomconfig = true;
+  }
+
+  resetInstanceConfig() {
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
     this.totalAmount = 0;
     this.totalincludesVAT = 0;
-    this.isCustomconfig = true;
+    this.instanceCreate.volumeSize = null;
+    this.instanceCreate.ram = null;
+    this.instanceCreate.cpu = null;
   }
   //#endregion
 
@@ -416,16 +427,16 @@ export class InstancesCreateComponent implements OnInit {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU';
+              e.description += ch.charOptionValues[1] + ' VCPU / ';
             }
             if (ch.charOptionValues[0] == 'RAM') {
               e.description += ch.charOptionValues[1] + ' GB RAM / ';
             }
             if (ch.charOptionValues[0] == 'HDD') {
               if (this.activeBlockHDD) {
-                e.description += ch.charOptionValues[1] + ' GB HDD / ';
+                e.description += ch.charOptionValues[1] + ' GB HDD';
               } else {
-                e.description += ch.charOptionValues[1] + ' GB SSD / ';
+                e.description += ch.charOptionValues[1] + ' GB SSD';
               }
             }
           });
@@ -452,7 +463,56 @@ export class InstancesCreateComponent implements OnInit {
     this.selectedElementFlavor = id;
   }
 
+  volumeUnitPrice = 0;
+  volumeIntoMoney = 0;
+  ramUnitPrice = 0;
+  ramIntoMoney = 0;
+  cpuUnitPrice = 0;
+  cpuIntoMoney = 0;
+  getUnitPrice(volumeSize: number, ram: number, cpu: number) {
+    let tempInstance: InstanceCreate = new InstanceCreate();
+    tempInstance.imageId = this.hdh;
+    tempInstance.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
+    tempInstance.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
+    tempInstance.offerId = 0;
+    tempInstance.flavorId = 0;
+    tempInstance.volumeSize = volumeSize;
+    tempInstance.ram = ram;
+    tempInstance.cpu = cpu;
+    tempInstance.vpcId = this.projectId;
+    tempInstance.regionId = this.region;
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(tempInstance);
+    itemPayment.specificationType = 'instance_create';
+    itemPayment.serviceDuration = 1;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.projectId;
+    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien/đơn giá', result);
+      if (volumeSize == 1) {
+        this.volumeUnitPrice = Number.parseFloat(
+          result.data.totalAmount.amount
+        );
+        this.volumeIntoMoney =
+          this.volumeUnitPrice * this.configCustom.capacity;
+      }
+      if (ram == 1) {
+        this.ramUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
+        this.ramIntoMoney = this.ramUnitPrice * this.configCustom.ram;
+      }
+      if (cpu == 1) {
+        this.cpuUnitPrice = Number.parseFloat(result.data.totalAmount.amount);
+        this.cpuIntoMoney = this.cpuUnitPrice * this.configCustom.vCPU;
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
   onChangeVCPU() {
+    this.getUnitPrice(0, 0, 1);
     if (
       this.configCustom.vCPU != 0 &&
       this.configCustom.ram != 0 &&
@@ -467,6 +527,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onChangeRam() {
+    this.getUnitPrice(0, 1, 0);
     if (
       this.configCustom.vCPU != 0 &&
       this.configCustom.ram != 0 &&
@@ -481,6 +542,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   onChangeCapacity() {
+    this.getUnitPrice(1, 0, 0);
     if (
       this.configCustom.vCPU != 0 &&
       this.configCustom.ram != 0 &&
@@ -531,7 +593,11 @@ export class InstancesCreateComponent implements OnInit {
     console.log('sshkey', event);
   }
 
+  expiredDate: Date = addDays(this.today, 30);
   onChangeTime(value: any) {
+    let currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.expiredDate = currentDate;
     if (
       this.hdh != null &&
       (this.offerFlavor != null ||
@@ -584,6 +650,7 @@ export class InstancesCreateComponent implements OnInit {
     this.listOfDataBlockStorage = this.listOfDataBlockStorage.filter(
       (d) => d.id !== id
     );
+    this.externalVolume();
   }
 
   onInputBlockStorage(id: number, value: any) {
@@ -598,6 +665,22 @@ export class InstancesCreateComponent implements OnInit {
       this.defaultBlockStorage.id = this.idBlockStorage;
       this.listOfDataBlockStorage.push(this.defaultBlockStorage);
     }
+    this.cdr.detectChanges();
+  }
+
+  externalVolumeHdd: number = 0;
+  externalVolumeSsd: number = 0;
+  externalVolume() {
+    this.externalVolumeHdd = 0;
+    this.externalVolumeSsd = 0;
+    this.listOfDataBlockStorage.forEach((e) => {
+      if (e.type == 'hdd') {
+        this.externalVolumeHdd += e.capacity;
+      }
+      if (e.type == 'ssd') {
+        this.externalVolumeSsd += e.capacity;
+      }
+    });
     this.cdr.detectChanges();
   }
   //#endregion
@@ -631,10 +714,12 @@ export class InstancesCreateComponent implements OnInit {
 
   deleteRowIPv4(id: number): void {
     this.listOfDataIPv4 = this.listOfDataIPv4.filter((d) => d.id !== id);
+    this.externalIp(this.listOfDataIPv4, true);
   }
 
   deleteRowIPv6(id: number): void {
     this.listOfDataIPv6 = this.listOfDataIPv6.filter((d) => d.id !== id);
+    this.externalIp(this.listOfDataIPv6, false);
   }
 
   onInputIPv4(value: any) {
@@ -649,6 +734,7 @@ export class InstancesCreateComponent implements OnInit {
       this.defaultIPv4.id = this.idIPv4;
       this.listOfDataIPv4.push(this.defaultIPv4);
     }
+    this.externalIp(this.listOfDataIPv4, true);
     this.cdr.detectChanges();
   }
 
@@ -664,7 +750,27 @@ export class InstancesCreateComponent implements OnInit {
       this.defaultIPv6.id = this.idIPv6;
       this.listOfDataIPv6.push(this.defaultIPv6);
     }
+    this.externalIp(this.listOfDataIPv6, false);
     this.cdr.detectChanges();
+  }
+
+  numberOfIpv4: number = 0;
+  numberOfIpv6: number = 0;
+  externalIp(listIp: Network[], checkIpv4: boolean) {
+    if (checkIpv4) {
+      this.numberOfIpv4 = 0;
+    } else {
+      this.numberOfIpv6 = 0;
+    }
+    listIp.forEach((e) => {
+      if (e.ip != '') {
+        if (checkIpv4) {
+          this.numberOfIpv4 += e.amount;
+        } else {
+          this.numberOfIpv6 += e.amount;
+        }
+      }
+    });
   }
   //#endregion
 
@@ -733,19 +839,17 @@ export class InstancesCreateComponent implements OnInit {
       });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.typeName =
-      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.instanceCreate.vpcId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
-    this.instanceCreate.customerId = this.tokenService.get()?.userId;
+    // this.instanceCreate.customerId = this.tokenService.get()?.userId;
 
-    let currentDate = new Date();
-    let lastDate = new Date();
-    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
-    this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
+    // let currentDate = new Date();
+    // let lastDate = new Date();
+    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    // this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
+    // this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
 
     this.instanceCreate.saleDept = null;
     this.instanceCreate.saleDeptCode = null;
@@ -762,10 +866,9 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.dSubscriptionNumber = null;
     this.instanceCreate.dSubscriptionType = null;
     this.instanceCreate.oneSME_SubscriptionId = null;
-    this.instanceCreate.actionType = 0;
     this.instanceCreate.regionId = this.region;
-    this.instanceCreate.userEmail = this.tokenService.get()['email'];
-    this.instanceCreate.actorEmail = this.tokenService.get()['email'];
+    // this.instanceCreate.userEmail = this.tokenService.get()['email'];
+    // this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
   volumeCreate: VolumeCreate = new VolumeCreate();
@@ -783,11 +886,11 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
 
-    let currentDate = new Date();
-    let lastDate = new Date();
-    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    this.volumeCreate.createDate = currentDate.toISOString().substring(0, 19);
-    this.volumeCreate.expireDate = lastDate.toISOString().substring(0, 19);
+    // let currentDate = new Date();
+    // let lastDate = new Date();
+    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    // this.volumeCreate.createDate = currentDate.toISOString().substring(0, 19);
+    // this.volumeCreate.expireDate = lastDate.toISOString().substring(0, 19);
 
     this.volumeCreate.saleDept = null;
     this.volumeCreate.saleDeptCode = null;
@@ -804,13 +907,8 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.dSubscriptionNumber = null;
     this.volumeCreate.dSubscriptionType = null;
     this.volumeCreate.oneSME_SubscriptionId = null;
-    this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
     this.volumeCreate.serviceName = blockStorage.name;
-    this.volumeCreate.typeName =
-      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
-    this.volumeCreate.userEmail = this.tokenService.get()?.email;
-    this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
 
   ipCreate: IpCreate = new IpCreate();
@@ -827,11 +925,11 @@ export class InstancesCreateComponent implements OnInit {
     this.ipCreate.serviceInstanceId = 0;
     this.ipCreate.customerId = this.tokenService.get()?.userId;
 
-    let currentDate = new Date();
-    let lastDate = new Date();
-    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    this.ipCreate.createDate = currentDate.toISOString().substring(0, 19);
-    this.ipCreate.expireDate = lastDate.toISOString().substring(0, 19);
+    // let currentDate = new Date();
+    // let lastDate = new Date();
+    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    // this.ipCreate.createDate = currentDate.toISOString().substring(0, 19);
+    // this.ipCreate.expireDate = lastDate.toISOString().substring(0, 19);
 
     this.ipCreate.saleDept = null;
     this.ipCreate.saleDeptCode = null;
@@ -851,15 +949,15 @@ export class InstancesCreateComponent implements OnInit {
     this.ipCreate.actionType = 0;
     this.ipCreate.regionId = this.region;
     this.ipCreate.serviceName = null;
-    this.ipCreate.typeName =
-      'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.ipCreate.userEmail = this.tokenService.get()?.email;
-    this.ipCreate.actorEmail = this.tokenService.get()?.email;
   }
 
   save(): void {
     if (!this.isSnapshot && this.hdh == null) {
       this.notification.error('', 'Vui lòng chọn hệ điều hành');
+      return;
+    }
+    if (this.isSnapshot && this.selectedSnapshot == null) {
+      this.notification.error('', 'Vui lòng chọn Snapshot ');
       return;
     }
     if (this.isCustomconfig == false && this.offerFlavor == null) {
