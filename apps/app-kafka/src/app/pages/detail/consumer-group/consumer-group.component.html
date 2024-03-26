@@ -32,11 +32,12 @@
                     </div>
 
                     <nz-table id="groups" #basicTable [nzData]="listConsumerGroup" nzShowSizeChanger
-                        [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)">
+                        [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" 
+                        (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }">
                         <thead>
                             <tr>
-                                <th nzWidth="5%" nzAlign="center">STT</th>
-                                <th nzWidth="40%">ID Consumer Group</th>
+                                <th nzWidth="6%" nzAlign="center">STT</th>
+                                <th nzWidth="39%">ID Consumer Group</th>
                                 <th nzWidth="12%" nzAlign="center">Số lượng thành viên</th>
                                 <th nzWidth="10%" nzAlign="center">Số lượng Topic</th>
                                 <th nzWidth="8%" nzAlign="center">Overall lag</th>

@@ -44,10 +44,6 @@ nz-table.tbl-acl th {
     font-size: 20px;
 }
 
-.search-icon {
-    color: #989BB3;
-}
-
 ::ng-deep .ant-pagination-item-active {
     font-weight: 500;
     background: #0066B0;
@@ -118,6 +114,12 @@ nz-table.tbl-acl th {
     height: 24px;
 }
 
+@media only screen and (min-width: 1600px) {
+    .img-edit {
+        margin-right: 16px !important;
+    }
+}
+
 nz-tag {
     font-size: 14px;
     border-radius: 3px;
@@ -135,4 +137,3 @@ nz-tag {
     color: #ffffff;
     min-width: 60px;
 }
-

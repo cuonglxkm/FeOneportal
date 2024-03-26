@@ -22,9 +22,9 @@
                     (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)">
                     <thead>
                         <tr>
-                            <th nzWidth="5%" nzAlign="center">STT</th>
+                            <th nzWidth="6%" nzAlign="center">STT</th>
                             <th nzWidth="10%">Tài khoản</th>
-                            <th nzWidth="15%">Group</th>
+                            <th nzWidth="14%">Group</th>
                             <th nzWidth="10%" nzAlign="center">Exact / Prefixed</th>
                             <th nzWidth="15%" nzAlign="center">Hoạt động</th>
                             <th nzWidth="10%" nzAlign="center">Máy chủ</th>
@@ -69,7 +69,7 @@
                     </h3>
                 </ng-container>
                 <div *nzModalFooter>
-                    <button nz-button (click)="handleCancelDelete()">
+                    <button nz-button (click)="handleCancelDelete()" style="margin-right: 10px;">
                     <img
                         style="padding-right: 10px; margin-top: -4px"
                         src="assets/imgs/cancel.svg"
@@ -95,7 +95,7 @@
                     <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
                         <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder"
-                            id="principal" formControlName="principal">
+                            id="principal" formControlName="principal" nzSize="large">
                             <nz-option *ngFor="let item of listOfPrincipals" [nzLabel]="item.username"
                                 [nzValue]="item.username"></nz-option>
                         </nz-select>
@@ -108,14 +108,14 @@
                     <nz-form-label [nzSpan]="4" nzRequired nzFor="consumerGroups" class="lbl-form">Consumer
                         Group</nz-form-label>
                     <div nz-col [nzSpan]="8">
-                        <nz-radio-group [(ngModel)]="tabGroupValue" (ngModelChange)="onChangeRadio()"
+                        <nz-radio-group [(ngModel)]="tabGroupValue" (ngModelChange)="onChangeRadio()" nzSize="large"
                             [ngModelOptions]="{standalone: true}" class="topic-radio" nzButtonStyle="solid">
                             <label class="exact-lbl" nz-radio-button [nzValue]="groupExtract">Exact</label>
                             <label class="prefixed-lbl" nz-radio-button [nzValue]="groupPrefixed">Prefixed</label>
                         </nz-radio-group>
                         <ng-container *ngIf="tabGroupValue===groupExtract; else prefixedBlock">
-                            <nz-form-control nzErrorTip="Vui lòng chọn consumer group">
-                                <nz-select nzMode="multiple" nzPlaceHolder="Chọn Consumer group"
+                            <nz-form-control nzErrorTip="Vui lòng chọn consumer Group">
+                                <nz-select nzMode="multiple" nzPlaceHolder="Chọn Consumer group" nzSize="large"
                                     [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="consumerGroups">
                                     <ng-container *ngFor="let item of listOfConsumerGroup">
                                         <nz-option *ngIf="!isLoadingTopic" [nzLabel]="item.cgName"
@@ -132,7 +132,7 @@
                         <ng-template #prefixedBlock>
                             <nz-form-control nzErrorTip="Vui lòng nhập prefixed">
                                 <input nz-input class="prefixed-input" type="text" formControlName="groupPrefixed"
-                                    placeholder="Nhập prefixed">
+                                    placeholder="Nhập prefixed" nzSize="large">
                             </nz-form-control>
                         </ng-template>
                     </div>
@@ -147,7 +147,7 @@
                         </span>
                     </nz-form-label>
                     <nz-form-control [nzSpan]="8" [nzErrorTip]="errorTpl">
-                        <input nz-input type="text" formControlName="host"
+                        <input nz-input type="text" formControlName="host" nzSize="large"
                             pattern='^(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$' placeholder="0.0.0.0" />
                         <ng-template #errorTpl let-control>
                             <ng-container *ngIf="control.hasError('required')">
@@ -162,20 +162,29 @@
                 <nz-form-item>
                     <nz-form-control [nzSpan]="12">
                         <div class="footer-btn">
-                            <button nz-button class="cancel-btn" (click)="cancelCreate()">
-                                <span nz-icon nzType="close" nzTheme="outline"></span>
-                                Hủy
+                            <button nz-button (click)="cancelCreate()" style="margin-right: 16px;">
+                                <img
+                                    style="padding-right: 10px; margin-top: -4px"
+                                    src="assets/imgs/cancel.svg"
+                                    alt=""
+                                />Hủy bỏ
                             </button>
                             <ng-container *ngIf="showForm===idCreateForm">
-                                <button nz-button nzType="primary" class="btn-create">
-                                    <span nz-icon nzType="check" nzTheme="outline"></span>
-                                    Xác nhận
+                                <button nz-button nzType="primary">
+                                    <img
+                                        style="padding-right: 10px; margin-top: -4px"
+                                        src="assets/imgs/confirm.svg"
+                                        alt=""
+                                    />Tạo mới
                                 </button>
                             </ng-container>
                             <ng-container *ngIf="showForm===idUpdateForm">
-                                <button nz-button nzType="primary" class="btn-create">
-                                    <span nz-icon nzType="check" nzTheme="outline"></span>
-                                    Cập nhật
+                                <button nz-button nzType="primary">
+                                    <img
+                                        style="padding-right: 10px; margin-top: -4px"
+                                        src="assets/imgs/confirm.svg"
+                                        alt=""
+                                    />Cập nhật
                                 </button>
                             </ng-container>
                         </div>

@@ -25,7 +25,7 @@
             <nz-form-item class="mt-4">
               <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Tên Kafka</nz-form-label>
               <nz-form-control [nzErrorTip]="kafkaErrorTpl">
-                <nz-input-group class="w-100">
+                <nz-input-group class="w-100" nzSize="large">
                   <input nz-input type="text" placeholder="Nhập tên kafka" formControlName="serviceName" id="serviceName"
                     autofocus />
                 </nz-input-group>
@@ -48,7 +48,7 @@
             <nz-form-item class="mt-4">
               <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Phiên bản Kafka</nz-form-label>
               <nz-form-control nzErrorTip="Vui lòng chọn phiên bản Kafka">
-                <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" nzPlaceHolder="Chọn phiên bản Kafka">
+                <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" nzPlaceHolder="Chọn phiên bản Kafka" nzSize="large">
                   <nz-option [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
                 </nz-select>
               </nz-form-control>
@@ -59,7 +59,7 @@
         <nz-form-item>
           <nz-form-label [nzSm]="24" [nzXs]="24">Mô tả</nz-form-label>
           <nz-form-control nzErrorTip="">
-            <textarea formControlName="description" nz-input placeholder="Mô tả dịch vụ" [nzAutosize]="{ minRows: 5, maxRows: 12 }"></textarea>
+            <textarea formControlName="description" nz-input placeholder="Mô tả dịch vụ" [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large"></textarea>
           </nz-form-control>
         </nz-form-item>
       </nz-card>
