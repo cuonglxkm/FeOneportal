@@ -12,6 +12,7 @@ export class IKEPolicyModel {
   phase1NegotiationMode: string
   regionId: number
   customerId: number
+  projectId: number
 
 }
 

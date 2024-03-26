@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
@@ -6,6 +6,10 @@ import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-s
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { IKEPolicyModel} from 'src/app/shared/models/vpns2s.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+
 
 
 @Component({
@@ -27,7 +31,8 @@ export class CreateIkePoliciesComponent implements OnInit{
     perfectForwardSecrecy: 'group5',
     phase1NegotiationMode: 'main',
     regionId: 0,
-    customerId: 0
+    customerId: 0,
+    projectId: 0
   }; ;
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },
@@ -62,14 +67,8 @@ export class CreateIkePoliciesComponent implements OnInit{
     { label: 'main', value: 'main' },
     { label: 'aggressive', value: 'aggressive' }
   ];
-
-  selectedAuthorizationAlgorithm = '1'
-  selectedIKEVersion = '1'
-  selectedEncryptionAlgorithm = '1'
-  selectedPerfectForwardSecrecy = '1'
-  selectedphase1Negotiation = '1'
-  selectedLifetimeUnits = '1'
-  lifetimeValue = 3600
+  isLoading: boolean = false
+ 
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
     new FormCreateFileSystemSnapShot();
     selectedFileSystemName: string;
@@ -93,10 +92,43 @@ export class CreateIkePoliciesComponent implements OnInit{
   constructor(
     private router: Router,
     private fb: NonNullableFormBuilder,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    private ikePolicyService: IkePolicyService
   ) {}
-
+  getData(): any {
+    this.ikePolicyModel.customerId =
+      this.tokenService.get()?.userId;
+    this.ikePolicyModel.regionId = this.region;
+    this.ikePolicyModel.projectId = this.project;
+    return this.ikePolicyModel;
+  }
   handleCreate() {
-    console.log('success');
+    this.isLoading = true;
+    if (this.form.valid) {
+      //this.formCreateIpsecPolicy = this.getData();
+      console.log(this.ikePolicyModel);
+      this.ikePolicyService
+        .create(this.ikePolicyModel)
+        .subscribe(
+          (data) => {
+            this.isLoading = false
+            this.notification.success(
+              'Thành công',
+              'Tạo mới ike policy thành công'
+            );
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+          },
+          (error) => {
+            this.isLoading = false
+            this.notification.error(
+              'Thất bại',
+              'Tạo mới ike policy thất bại'
+            );
+            console.log(error);
+          }
+        );
+    }
     
   }
 
