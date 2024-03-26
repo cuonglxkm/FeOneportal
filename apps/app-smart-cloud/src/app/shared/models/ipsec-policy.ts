@@ -1,3 +1,5 @@
+import { List } from "lodash";
+
 export class IpsecPolicyDTO {
   name: string;
   authorizationAlgorithm: string;
@@ -75,4 +77,27 @@ export class FormDeleteIpsecPolicy {
   id: string
   vpcId: number
   regionId: number
+}
+
+export class FormCreateEndpointGroup {
+  name: string
+  type: string
+  endpoints: List<string>
+  description: string
+  customerId: number
+  vpcId: number
+  regionId: number
+}
+
+export class FormDetailEndpointGroup {
+  id: string
+  projectId: string
+  tenantId: string
+  endpoints: List<string>
+  type: string
+  name: string
+  description: string;
+  customerId: number;
+  vpcId: number;
+  regionId: number;
 }

@@ -20,33 +20,73 @@
   </ng-template>
 </page-header>
 
-<div nz-row [nzGutter]="24">
-  <div nz-col [nzSpan]="16" class="gutter-row">
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="17" class="gutter-row">
     <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông tin Endpoint Group</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
-              <nz-form-control>
-                <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
-                <input nz-input type="text" required placeholder="Nhập tên" formControlName="nameSnapshot" />
-
+              <nz-form-control [nzErrorTip]="nameErrorTpl">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Name</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                      nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <input nz-input type="text" required placeholder="Nhập tên" formControlName="name" />
+                <ng-template #nameErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Tên Endpoint Group không được để
+                    trống</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Tên Endpoint Group chỉ chứa kí tự viết thường, viết
+                    hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzRequired>Type</nz-form-label>
-                <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType"
-                  [ngModelOptions]="{standalone: true}">
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Type</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
+                      nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
                   <nz-option *ngFor="let data of authorizationAlgorithm" [nzLabel]="data.label"
                     [nzValue]="data.value"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
-          </div>          
+          </div>
+
+          <div *ngIf="selectedType = " nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <div style="margin-top: 15px;">
+                    <span>Type</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
+                      nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
+                  <nz-option *ngFor="let data of authorizationAlgorithm" [nzLabel]="data.label"
+                    [nzValue]="data.value"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </div>
       </form>
     </nz-card>
@@ -54,43 +94,19 @@
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông số cấu hình</h2>
-      <div style="overflow: auto; height: 300px; margin-bottom: 16px;">
+      <div style="overflow: auto; height: 358px; margin-bottom: 16px;">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span>Test</span>
+          <span>{{form.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Authorization Algorithm</h3>
-          <span>sha1</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Encryption Mode</h3>
-          <span>tunnel</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Encryption Algorithm</h3>
-          <span>aes-128</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Lifetime Units</h3>
-          <span>seconds</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Lifetime Value</h3>
-          <span>3600</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Perfect Forward Secrecy</h3>
-          <span>group5</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Transform Protocol</h3>
-          <span>esp</span>
+          <h3 class="custom-subtitle">Type</h3>
+          <span>{{selectedType}}</span>
         </div>
       </div>
       <button (click)="handleCreate()" nz-button nzType="primary"
         style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
-        nzSize="large">
+        nzSize="large" [disabled]="form.invalid">
         <img src="assets/imgs/wallet.svg" alt="" />
         <span class="button-text-primary">Khởi tạo</span>
       </button>
@@ -98,6 +114,7 @@
     </nz-card>
   </div>
 </div>
+
 <div class="text-right" style="
     display: flex;
     align-items: center;
