@@ -14,7 +14,7 @@ export class NotificationService {
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
 
-    let hubUrl = 'http://notification-api:1019/notify';
+    let hubUrl = 'http://127.0.0.1:1019/notify';
 
     var tokenModel = this.tokenService.get();
 
