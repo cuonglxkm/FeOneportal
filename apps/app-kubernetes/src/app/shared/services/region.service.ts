@@ -11,6 +11,7 @@ export class RegionService extends BaseService {
     super();
   }
 
+  baseUrl: string = "https://api.onsmartcloud.com";
 
   getAll() {
     return this.http.get<RegionModel[]>(this.baseUrl + this.ENDPOINT.provisions +  '/regions');

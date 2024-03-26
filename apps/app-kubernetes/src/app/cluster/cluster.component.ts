@@ -294,7 +294,7 @@ export class ClusterComponent implements OnInit {
     const minNode = this.listFormWorkerGroup.at(index).get('minimumNode').value;
     const maxNode = this.listFormWorkerGroup.at(index).get('maximumNode').value;
     if (minNode && maxNode) {
-      if (minNode > maxNode) {
+      if (+minNode > +maxNode) {
         this.listFormWorkerGroup.at(index).get('minimumNode').setErrors({invalid: true});
       } else {
         delete this.listFormWorkerGroup.at(index).get('minimumNode').errors?.invalid;

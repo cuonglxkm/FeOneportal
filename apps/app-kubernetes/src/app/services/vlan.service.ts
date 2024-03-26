@@ -16,6 +16,8 @@ export class VlanService extends BaseService {
     super();
   }
 
+  baseUrl: string = "https://api.onsmartcloud.com";
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',

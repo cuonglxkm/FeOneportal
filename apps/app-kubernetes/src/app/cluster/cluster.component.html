@@ -87,7 +87,7 @@
 
         <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
           <ng-container [formGroupName]="i">
-            <div nz-row [nzGutter]="16">
+            <div nz-row [nzGutter]="16" class="group-border mb-5">
               <div nz-col [nzSpan]="12">
                 <nz-form-item>
                   <nz-form-label nzRequired nzFor="workerGroupName">Tên nhóm worker</nz-form-label>
@@ -158,14 +158,6 @@
                         </label>
                       </ng-container>
                     </nz-radio-group>
-
-                    <!-- remove btn -->
-                    <ng-container *ngIf="listFormWorkerGroup.length > 1">
-                      <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
-                        nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
-                        <span nz-icon nzType="delete"></span>
-                      </button>
-                    </ng-container>
                   </nz-form-control>
                 </nz-form-item>
               </div>
@@ -227,10 +219,18 @@
                     </ng-template>
                   </nz-form-item>
                 </ng-container>
+
+                <div>
+                  <!-- remove btn -->
+                  <ng-container *ngIf="listFormWorkerGroup.length > 1">
+                    <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
+                      nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
+                      <span nz-icon nzType="delete"></span>
+                    </button>
+                  </ng-container>
+                </div>
               </div>
             </div>
-
-            <nz-divider class="divider-style"></nz-divider>
           </ng-container>
         </div>
 

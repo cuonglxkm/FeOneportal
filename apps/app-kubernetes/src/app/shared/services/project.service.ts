@@ -9,6 +9,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 })
 export class ProjectService extends BaseService {
 
+  baseUrl: string = "https://api.onsmartcloud.com";
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
