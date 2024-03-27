@@ -23,8 +23,12 @@
   display: flex;
 }
 
-.padtop-35 {
-  padding-top: 35px;
+.padtop-25 {
+  padding-top: 25px;
+}
+
+.marbot-0 {
+  margin-bottom: 0px;
 }
 
 .selected-infra {
@@ -129,6 +133,7 @@ textarea,
 
 h3 {
   font-size: 20px;
+  font-weight: 600;
 }
 
 label, span {

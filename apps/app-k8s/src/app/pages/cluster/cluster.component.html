@@ -374,7 +374,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
               <nz-form-control nzErrorTip="Thời gian sử dụng không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn thời gian sử dụng" formControlName="usageTime" id="usageTime">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn thời gian sử dụng" formControlName="usageTime" id="usageTime" (ngModelChange)="onSelectUsageTime($event)">
                   <nz-option *ngFor="let item of listOfUsageTime" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
                 </nz-select>
               </nz-form-control>
@@ -383,7 +383,10 @@
 
           <div nz-col [nzSpan]="12">
             <div>
-              <p class="padtop-35">Thời gian bắt đầu sử dụng: {{currentDate}}</p>
+              <p class="padtop-25 marbot-0">Ngày bắt đầu: {{currentDate}}</p>
+              <ng-container *ngIf="expiryDate">
+                <p class="delete-icon">Ngày hết hạn: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
+              </ng-container>
             </div>
           </div>
         </div>
@@ -455,7 +458,7 @@
                         </svg>
                       </span>
                     </ng-template>
-                    Khởi tạo
+                    Thanh toán
                   </button>
                 </div>
               </div>

@@ -70,8 +70,6 @@
         [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
         <thead>
           <tr>
-            <th class="header-table" [nzChecked]="setOfCheckedId.size > 0"
-              (nzCheckedChange)="onAllClusterChecked($event)"></th>
             <th class="header-table">STT</th>
             <th class="header-table">Tên cluster</th>
             <th class="header-table">Phiên bản</th>
@@ -84,8 +82,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of clusterTable.data; let i = index;">
-            <td [nzChecked]="setOfCheckedId.has(item.id)" (nzCheckedChange)="updateClusterChecked(item.id, $event)">
-            </td>
             <td>{{ getIndexOfCluster(item.id) }}</td>
             <td>
               <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>

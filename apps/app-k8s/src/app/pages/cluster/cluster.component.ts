@@ -53,6 +53,8 @@ export class ClusterComponent implements OnInit {
   cloudProfileId: string;
   vlanId: number;
 
+  expiryDate: number;
+
   public DEFAULT_CIDR = KubernetesConstant.DEFAULT_CIDR;
   public DEFAULT_VOLUME_TYPE = KubernetesConstant.DEFAULT_VOLUME_TYPE;
   public DEFAULT_NETWORK_TYPE = KubernetesConstant.DEFAULT_NETWORK_TYPE;
@@ -105,6 +107,10 @@ export class ClusterComponent implements OnInit {
 
     // init worker group
     this.addWorkerGroup();
+
+    // display expiry time
+    const usageTimeInit = this.myform.get('usageTime').value;
+    this.onSelectUsageTime(usageTimeInit);
   }
 
   addWorkerGroup(e?: MouseEvent): void {
@@ -283,6 +289,14 @@ export class ClusterComponent implements OnInit {
       this.isAutoScaleEnable = false;
       this.removeValidateMinimumNode(index);
       this.removeValidateMaximumNode(index);
+    }
+  }
+
+  onSelectUsageTime(event: any) {
+    if (event) {
+      let d = new Date();
+      d.setMonth(d.getMonth() + event);
+      this.expiryDate = d.getTime();
     }
   }
 

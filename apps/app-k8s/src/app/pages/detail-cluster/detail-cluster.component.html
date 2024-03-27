@@ -15,7 +15,7 @@
   </ng-template>
 
   <ng-template #content>
-    <div>
+    <!-- <div>
       <button nz-button nzType="primary" (click)="handleExtension()">
         <span nz-icon nzType="calendar" nzTheme="outline"></span>
         Gia hạn
@@ -25,7 +25,7 @@
         <span nz-icon nzType="edit" nzTheme="outline"></span>
         Điều chỉnh
       </button>
-    </div>
+    </div> -->
   </ng-template>
 
   <ng-template #title>
@@ -230,8 +230,8 @@
 <!-- modal upgrade -->
 <nz-modal [(nzVisible)]="showModalUpgradeVersion" nzTitle="Nâng cấp phiên bản" (nzOnCancel)="handleCancelShowModalUpgrade()">
   <div *nzModalContent>
-    <ng-container *ngIf="detailCluster.upgradeVersion; else noAvailableVersionTpl">
-      <p>Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
+    <ng-container *ngIf="detailCluster.upgradeVersion?.length > 0; else noAvailableVersionTpl">
+      <p class="description-info">Lưu ý: Chỉ có thể nâng cấp phiên bản, không thực hiện việc hạ phiên bản.</p>
       <p>Để tránh phát sinh vấn đề trong quá trình xử lý, chỉ nâng cấp phiên bản lần lượt theo thứ tự.</p>
       <div>
         <nz-select nzPlaceHolder="Chọn phiên bản nâng cấp" [(ngModel)]="upgradeVersionCluster" class="w-100">
@@ -245,7 +245,7 @@
     </ng-template>
   </div>
   <div *nzModalFooter>
-    <ng-container *ngIf="detailCluster.upgradeVersion; else noAvailableVersionFooterTpl">
+    <ng-container *ngIf="detailCluster.upgradeVersion?.length > 0; else noAvailableVersionFooterTpl">
       <button nz-button nzType="default" (click)="handleCancelShowModalUpgrade()">Hủy bỏ</button>
       <button nz-button nzType="primary" (click)="handleUpgadeVersionCluster()"
       [nzLoading]="isUpgradingVersion" [disabled]="upgradeVersionCluster == null || upgradeVersionCluster == undefined">Xác nhận</button>
