@@ -245,7 +245,7 @@
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <nz-row>
+            <nz-row style="height: 50px;">
               <nz-col nzSpan="12">
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                   <nz-input-number
@@ -277,6 +277,12 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
+            <nz-form-label>
+              <div class="label" style="color: red;">
+                <span>Ngày hết hạn: </span>
+                <span *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
+              </div>
+            </nz-form-label>
           </nz-form-item>
         </nz-card>
       </nz-col>
