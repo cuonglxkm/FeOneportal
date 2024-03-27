@@ -115,8 +115,8 @@ import { DashboardObjectStorageComponent } from './dashboard-object-storage/dash
 import { ObjectStorageComponent } from './object-storage/object-storage.component';
 import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
-import { PolicyService } from '../shared/services/policy.service';
-import {S3KeyComponent} from './object-storage/s3-key/s3-key.component';
+import { PolicyService } from "../shared/services/policy.service";
+import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
