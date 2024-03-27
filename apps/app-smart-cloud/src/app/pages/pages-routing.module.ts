@@ -118,6 +118,7 @@ import { ObjectStorageEditComponent } from './object-storage/object-storage-edit
 import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
+
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
   {
