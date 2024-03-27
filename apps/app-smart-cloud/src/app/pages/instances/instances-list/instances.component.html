@@ -197,7 +197,7 @@
                 Tắt máy ảo
               </li>
               <li
-                *ngIf="data.taskState == 'SHUTOFF'"
+                *ngIf="data.taskState == 'SHUTOFF' || data.taskState == 'powering-off'"
                 nz-menu-item
                 (click)="showModalStart(data.id)"
               >
