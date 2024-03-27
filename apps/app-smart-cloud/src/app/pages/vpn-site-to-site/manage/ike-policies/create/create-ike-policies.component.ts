@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { IKEPolicyModel} from 'src/app/shared/models/vpns2s.model';

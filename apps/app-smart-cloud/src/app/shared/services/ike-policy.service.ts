@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
-import { IKEPolicyModel} from '../models/vpns2s.model';
+import { FormSearchIKEPolicy, IKEPolicyModel} from '../models/vpns2s.model';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +48,38 @@ export class IkePolicyService extends BaseService {
         return throwError(error);
       }))
   }
+  getIKEpolicy(formSearch: FormSearchIKEPolicy) {
+    console.log("data truyen vao" ,formSearch)
+    let params = new HttpParams()
+    if (formSearch.regionId != undefined || formSearch.regionId != null) {
+      params = params.append('regionId', formSearch.regionId)
+    }
+    if (formSearch.searchValue != undefined || formSearch.searchValue != null) {
+      params = params.append('searchValue', formSearch.searchValue)
+    }
+    if(formSearch.searchValue == null || formSearch.searchValue == undefined)
+    {
+      params = params.append('searchValue', "kh") //fix tam
+    }
+    if (formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
+    }
+    console.log("pram-=---" , params);
+    // if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
+    //   params = params.append('pageSize', formSearch.pageSize)
+    // }
+    // if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
+    //   params = params.append('currentPage', formSearch.currentPage)
+    // }
+    // let url_ = `/vpn-sitetosite/ikepolicy?regionId=${5}&projectId=${50}&searchValue=${"khai"}`;
+    // url_ = url_.replace(/[?&]$/, '');
 
+    //return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ikepolicy', {
+      headers: this.getHeaders(),
+      params: params
+    })
+  }
   // deleteIkePolicy(formDelete: FormDeleteIkePolicy) {
   //   return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.id}?vpcId=${formDelete.vpcId}&regionId=${formDelete.regionId}`).pipe(
   //     catchError((error: HttpErrorResponse) => {

@@ -16,4 +16,10 @@ export class IKEPolicyModel {
 
 }
 
+export class FormSearchIKEPolicy {
+  projectId: number
+  regionId: number
+  searchValue?: string
+}
+
 
