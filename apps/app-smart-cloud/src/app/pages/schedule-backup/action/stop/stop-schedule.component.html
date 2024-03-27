@@ -1,18 +1,18 @@
 <span nz-icon
-      nzType="delete"
+      nzType="pause-circle"
       nzTheme="outline"
       nz-popover
-      [nzPopoverContent]="'Xóa'"
+      [nzPopoverContent]="'Tạm dừng'"
       nzPopoverPlacement="bottom"
       style="color: #0066B3; margin-right: 10px; cursor: pointer;"
       (click)="showModal()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa lịch backup"
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận tạm dừng lịch backup"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa lịch backup</span>
+    <span class="text-modal-title">Xác nhận tạm dừng lịch backup</span>
   </div>
   <div *nzModalContent>
-    <span class="text-label">Qúy khách có chắc chắn muốn xóa lịch backup</span>
+    <span class="text-label">Qúy khách có chắc chắn muốn tạm dừng lịch backup</span>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">

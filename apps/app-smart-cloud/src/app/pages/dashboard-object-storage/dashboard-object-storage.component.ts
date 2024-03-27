@@ -72,6 +72,7 @@ export class DashboardObjectStorageComponent implements OnInit {
   }
 
   getSummaryObjectStorage() {
+    console.log('time', this.timeSelected)
     this.objectStorageService.getMonitorObjectStorage(this.bucketSelected, this.timeSelected).subscribe(data => {
       console.log('summary', data);
       this.summary = data;
