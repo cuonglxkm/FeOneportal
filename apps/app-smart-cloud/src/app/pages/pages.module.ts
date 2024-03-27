@@ -193,7 +193,6 @@ import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { TreeFolderComponent } from './bucket/bucket-detail/share/tree-folder.component';
 import { SafePipe } from '../../../../../libs/common-utils/src';
 import { ChartModule } from '@syncfusion/ej2-angular-charts';
-import { SummaryChartComponent } from './dashboard-object-storage/summary-chart/summary-chart.component';
 import { StopScheduleComponent } from './schedule-backup/action/stop/stop-schedule.component';
 import { RestoreScheduleComponent } from './schedule-backup/action/restore/restore-schedule.component';
 import { ReplayScheduleComponent } from './schedule-backup/action/replay/replay-schedule.component';
@@ -376,7 +375,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     IsPermissionPipe,
     S3KeyComponent,
     TreeFolderComponent,
-    SummaryChartComponent,
     StopScheduleComponent,
     RestoreScheduleComponent,
     ReplayScheduleComponent,
