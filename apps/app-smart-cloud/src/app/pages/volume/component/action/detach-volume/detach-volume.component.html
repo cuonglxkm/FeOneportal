@@ -28,6 +28,7 @@
         <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
                    [nzValue]="item.instanceId"></nz-option>
       </nz-select>
+      <div *ngIf="isSelected">Vui lòng chọn máy ảo</div>
     </div>
     <div *ngIf="isMultiple == false">
       <div>
@@ -41,7 +42,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
-            [nzLoading]="isLoadingDetach"
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
     </button>

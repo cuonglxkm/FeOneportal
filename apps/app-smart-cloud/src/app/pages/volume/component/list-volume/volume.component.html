@@ -323,7 +323,7 @@
                         [nzDropdownMenu]="opMenu"></span>
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToCreateScheduleBackup()">Tạo lịch backup</li>
+                      <li nz-menu-item (click)="navigateToCreateScheduleBackup(i.id)">Tạo lịch backup</li>
                       <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                       <one-portal-update-volume [region]="region" [project]="project" [volume]="i" (onOk)="handleOkUpdate()"/>
                     </ul>
