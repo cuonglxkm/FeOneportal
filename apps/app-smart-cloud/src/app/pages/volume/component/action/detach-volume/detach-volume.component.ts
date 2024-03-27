@@ -17,6 +17,7 @@ export class DetachVolumeComponent {
   @Input() project: number
   @Input() volumeId: number
   @Input() isMultiple: boolean
+  @Input() instanceInVolume: AttachedDto[]
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -45,7 +46,8 @@ export class DetachVolumeComponent {
 
   handleCancel() {
     this.isVisible = false
-    this.isLoadingDetach = false
+    this.isLoading = false
+
     this.onCancel.emit()
   }
 
@@ -66,11 +68,12 @@ export class DetachVolumeComponent {
   }
 
   doDetach() {
-    this.isLoadingDetach = true;
+    this.isLoading = true;
 
     let addVolumetoVmRequest = new AddVolumetoVmModel();
 
     addVolumetoVmRequest.volumeId = this.volumeId;
+    console.log('attach',this.listInstanceInVolume)
     if(this.isMultiple == false) {
       addVolumetoVmRequest.instanceId = this.listInstanceInVolume[0].instanceId
     } else {
@@ -80,19 +83,21 @@ export class DetachVolumeComponent {
 
     this.volumeService.detachVolumeToVm(addVolumetoVmRequest).subscribe(data => {
       if (data == true) {
-        this.isLoadingDetach = false;
+        this.isLoading = false
         this.isVisible = false
         this.notification.success('Thành công', `Gỡ volume thành công`);
         this.onOk.emit(data)
       } else {
-        this.isLoadingDetach = false
         this.isVisible = false
+        this.isLoading = false
         this.notification.error('Thất bại', `Gỡ volume thất bại`);
+        this.onOk.emit(data)
       }
     }, error => {
-      this.isLoadingDetach = false
+      this.isLoading = false
       this.isVisible = false
       this.notification.error('Thất bại', `Gỡ volume thất bại`);
+      this.onOk.emit(error)
     })
   }
 }

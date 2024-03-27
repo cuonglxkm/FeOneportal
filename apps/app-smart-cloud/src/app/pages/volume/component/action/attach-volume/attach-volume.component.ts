@@ -5,6 +5,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
 import { AddVolumetoVmModel } from '../../../../../shared/models/volume.model';
+import { AttachedDto } from '../../../../../shared/dto/volume.dto';
 
 @Component({
   selector: 'one-portal-attach-volume',
@@ -15,6 +16,8 @@ export class AttachVolumeComponent {
   @Input() region: number
   @Input() project: number
   @Input() volumeId: number
+  @Input() instanceInVolume: AttachedDto[]
+  @Input() multiple: boolean
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -26,7 +29,6 @@ export class AttachVolumeComponent {
   listVm: InstancesModel[]
 
   instanceSelected: any
-
 
   constructor(private instancesService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -88,12 +90,14 @@ export class AttachVolumeComponent {
               this.isVisible = false
               this.isLoadingAttach = false;
               this.notification.error('Thất bại', 'Gắn Volume thất bại.')
+              this.onOk.emit(data)
             }
           }, error => {
             console.log('eror', error)
             this.isVisible = false
             this.isLoadingAttach = false;
             this.notification.error('Thất bại', 'Gắn Volume thất bại.')
+            this.onOk.emit(error)
           })
         }
       } else {

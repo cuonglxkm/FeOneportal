@@ -12,14 +12,16 @@ export class DeleteVolumeComponent {
   @Input() region: number
   @Input() project: number
   @Input() volumeId: number
+  @Input() volumeName: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
   isLoading: boolean = false
   isVisible: boolean = false
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService,
+  value: string
+
+  constructor(private notification: NzNotificationService,
               private volumeService: VolumeService) {
   }
 
@@ -33,25 +35,38 @@ export class DeleteVolumeComponent {
     this.onCancel.emit()
   }
 
+  onInputChange(value) {
+    this.value = value;
+  }
+
   handleOk() {
     this.isLoading = true
-    this.volumeService.deleteVolume(this.volumeId).subscribe(data => {
-      if(data) {
-        this.isLoading = false
-        this.isVisible = false
-        this.notification.success('Thành công', 'Xóa Volume thành công')
-        this.onOk.emit(data)
-      } else {
-        console.log('data', data)
+    if (this.value == this.volumeName) {
+      this.volumeService.deleteVolume(this.volumeId).subscribe(data => {
+        if (data) {
+          this.isLoading = false
+          this.isVisible = false
+          this.notification.success('Thành công', 'Xóa Volume thành công')
+          this.onOk.emit(data)
+        } else {
+          console.log('data', data)
+          this.isLoading = false
+          this.isVisible = false
+          this.notification.error('Thất bại', 'Xóa Volume thất bại')
+        }
+      }, error => {
+        console.log('error', error)
         this.isLoading = false
         this.isVisible = false
         this.notification.error('Thất bại', 'Xóa Volume thất bại')
-      }
-    }, error => {
-      console.log('error', error)
+      })
+    } else {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error('Thất bại', 'Xóa Volume thất bại')
-    })
+      this.notification.error('Thất bại', 'Xóa Volume thất bại do nhập sai tên Volume')
+    }
   }
+
 }
+
+

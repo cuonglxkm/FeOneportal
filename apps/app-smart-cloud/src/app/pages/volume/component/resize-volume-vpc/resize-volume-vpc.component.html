@@ -6,12 +6,15 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/volumes'">
-          Volume
-        </a></nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Điều chỉnh dung lượng Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>

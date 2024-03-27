@@ -195,17 +195,8 @@ export class CreateVolumeComponent implements OnInit {
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if ([1, 2].includes(this.region)) {
-        if (value < 20) return (this.iops = 0);
-        if (value <= 200) return (this.iops = 600);
-        if (value <= 500) return (this.iops = 1200);
-        if (value <= 1000) return (this.iops = 3000);
-        if (value <= 2000) return (this.iops = 6000);
-      }
-      if ([3, 4].includes(this.region)) {
-        if (value < 40) return (this.iops = 400);
-        this.iops = value * 10;
-      }
+      if(value <= 40) return (this.iops = 400);
+      this.iops = value * 10
     });
   }
 
@@ -290,6 +281,9 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
+    if(this.isInitSnapshot == true) {
+      this.validateForm.controls.snapshot.setValidators(Validators.required)
+    }
   }
 
   snapshotSelectedChange(value: number) {
@@ -298,6 +292,12 @@ export class CreateVolumeComponent implements OnInit {
 
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
+    // this.iops = this.validateForm.get('storage').value * 10
+    if(this.validateForm.get('storage').value <= 40) {
+      this.iops = 400
+    } else {
+      this.iops = this.validateForm.get('storage').value * 10
+    }
   }
 
   //get danh sách máy ảo
@@ -357,7 +357,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-
+    this.volumeCreate.iops = this.iops
     let currentDate = new Date();
     let lastDate = new Date();
     if (this.timeSelected == undefined || this.timeSelected == null) {
@@ -464,13 +464,6 @@ export class CreateVolumeComponent implements OnInit {
     // this.customerId = this.tokenService.get()?.userId
     if (this.project && this.region) {
       this.loadProjects();
-    }
-
-    if ([1, 2].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) this.iops = 0;
-    }
-    if ([3, 4].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) this.iops = 400;
     }
 
     this.getListSnapshot();
@@ -637,8 +630,8 @@ export class CreateVolumeComponent implements OnInit {
         1,
         this.region,
         this.project,
-        '', 
-        '', 
+        '',
+        '',
         ''
       )
       .subscribe((data) => {
