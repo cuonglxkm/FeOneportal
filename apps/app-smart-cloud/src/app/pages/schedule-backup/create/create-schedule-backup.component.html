@@ -9,8 +9,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               (userChanged)="projectChanged($event)"
+      <project-select-dropdown (userChanged)="userChanged($event)"
+                               (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
     </ng-template>
@@ -35,6 +35,7 @@
     </div>
     <div *ngIf="selectedValueRadio === 'VOLUME'" >
         <one-portal-schedule-backup-volume [region]="region"
-                                           [project]="project"/>
+                                           [project]="project"
+                                           [id]="id"/>
     </div>
 </nz-content>
