@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  BlockStorageAttachments,
   InstancesModel,
   Network,
   SecurityGroupModel,
@@ -16,6 +17,7 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -36,7 +38,7 @@ export class InstancesDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService,
+    public message: NzMessageService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -56,6 +58,7 @@ export class InstancesDetailComponent implements OnInit {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
+        this.getBlockStorage();
         this.dataService.getById(this.id, true).subscribe((data: any) => {
           this.instancesModel = data;
           this.loading = false;
@@ -105,6 +108,32 @@ export class InstancesDetailComponent implements OnInit {
           listIPLan = listIPLan.concat(e.fixedIPs);
         });
         this.listIPLanStr = listIPLan.join(', ');
+        this.cdr.detectChanges();
+      });
+  }
+
+  listOfDataBlockStorage: BlockStorageAttachments[] = [];
+  volumeRootType: string;
+  getBlockStorage() {
+    this.dataService
+      .getBlockStorage(this.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe((data) => {
+        this.listOfDataBlockStorage = data;
+        this.listOfDataBlockStorage.forEach((e) => {
+          if (e.bootable) {
+            if (e.volumeType == 'ssd') {
+              this.volumeRootType = 'SSD';
+            } else {
+              this.volumeRootType = 'HDD';
+            }
+          }
+        });
         this.cdr.detectChanges();
       });
   }

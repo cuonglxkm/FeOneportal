@@ -11,7 +11,8 @@ import {
   LeftOutline,
   ShopOutline,
   PlusOutline,
-  SearchOutline
+  SearchOutline,
+  WarningOutline
 } from '@ant-design/icons-angular/icons';
 
 const icons = [
@@ -24,7 +25,8 @@ const icons = [
   ShopOutline,
   LeftOutline,
   PlusOutline,
-  SearchOutline
+  SearchOutline,
+  WarningOutline
 ];
 
 @NgModule({

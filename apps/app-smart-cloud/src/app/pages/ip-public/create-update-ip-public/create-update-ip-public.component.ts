@@ -234,8 +234,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         .subscribe(
           data => {
             this.total = data;
-            this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
-            this.totalPayment = this.total.data.totalPayment.amount.toLocaleString()
+            this.totalAmount = Math.round(this.total.data.totalAmount.amount);
+            this.totalPayment = Math.round(this.total.data.totalPayment.amount)
           }
         );
     } else {
