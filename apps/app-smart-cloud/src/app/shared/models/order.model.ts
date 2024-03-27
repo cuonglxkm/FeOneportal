@@ -26,7 +26,8 @@ export class OrderDTOSonch{
   phoneNumber: any;
   address: any;
   invoiceCode: any;
-    amount: PaymentInfoDTO;
+  paymentCode: any;
+  amount: PaymentInfoDTO;
   totalAmount: PaymentInfoDTO;
   vat: PaymentInfoDTO;
   paymentMethod: any; //Thanh toán tr? tru?c

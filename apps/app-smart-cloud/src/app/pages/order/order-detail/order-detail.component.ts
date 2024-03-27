@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from '../../../shared/models/region.model';
@@ -9,6 +9,7 @@ import { OrderDTOSonch } from '../../../shared/models/order.model';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NotificationService } from '../../../../../../../libs/common-utils/src';
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -24,6 +25,7 @@ export class OrderDetailComponent {
   titleStepFour = 'test thôi';
 
   constructor(
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private service: OrderService,
     private notification: NzNotificationService,
@@ -32,6 +34,9 @@ export class OrderDetailComponent {
   ) {}
 
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     const url = this.id.split('-');
     if (url.length > 1) {
@@ -92,7 +97,7 @@ export class OrderDetailComponent {
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
-    
+
     this.notificationService.connection.on('UpdateOrder', (data) => {
       if (data.statusCode) {
         this.data.statusCode = data.statusCode;
@@ -107,5 +112,6 @@ export class OrderDetailComponent {
 
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
+    this.router.navigate(['/app-smart-cloud/order/list'])
   }
 }
