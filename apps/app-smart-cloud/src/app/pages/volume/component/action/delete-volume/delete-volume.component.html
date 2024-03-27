@@ -20,7 +20,7 @@
              [ngModel]="value"
              (ngModelChange)="onInputChange($event)"
              [placeholder]="'Nhập tên Volume'"/>
-      <span *ngIf="value != volumeName && value != null" style="color: red;">Vui lòng nhập đúng tên Volume</span>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Volume</span>
     </div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
@@ -29,7 +29,6 @@
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
-            [disabled]="value == undefined"
             [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận

@@ -36,7 +36,7 @@
                style="width: 300px;">
       <nz-option *ngFor="let item of listVm" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
     </nz-select>
-    <div *ngIf=""></div>
+    <div *ngIf="isSelected" style="color: red;">Vui lòng chọn máy ảo</div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
@@ -44,7 +44,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
-            [nzLoading]="isLoadingAttach"
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
     </button>

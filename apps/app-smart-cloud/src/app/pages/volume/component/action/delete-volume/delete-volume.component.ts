@@ -20,6 +20,7 @@ export class DeleteVolumeComponent {
   isVisible: boolean = false
 
   value: string
+  isInput: boolean = false
 
   constructor(private notification: NzNotificationService,
               private volumeService: VolumeService) {
@@ -32,6 +33,8 @@ export class DeleteVolumeComponent {
   handleCancel() {
     this.isVisible = false
     this.isLoading = false
+    this.isInput = false
+    this.value = null
     this.onCancel.emit()
   }
 
@@ -42,6 +45,7 @@ export class DeleteVolumeComponent {
   handleOk() {
     this.isLoading = true
     if (this.value == this.volumeName) {
+      this.isInput = false
       this.volumeService.deleteVolume(this.volumeId).subscribe(data => {
         if (data) {
           this.isLoading = false
@@ -61,9 +65,8 @@ export class DeleteVolumeComponent {
         this.notification.error('Thất bại', 'Xóa Volume thất bại')
       })
     } else {
+      this.isInput = true
       this.isLoading = false
-      this.isVisible = false
-      this.notification.error('Thất bại', 'Xóa Volume thất bại do nhập sai tên Volume')
     }
   }
 
