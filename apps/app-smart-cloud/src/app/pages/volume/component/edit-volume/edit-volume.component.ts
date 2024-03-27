@@ -70,17 +70,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if ([1, 2].includes(this.region)) {
-        if (value < 20) return this.iops = 0
-        if (value <= 200) return this.iops = 600
-        if (value <= 500) return this.iops = 1200
-        if (value <= 1000) return this.iops = 3000
-        if (value <= 2000) return this.iops = 6000
-      }
-      if ([3, 4].includes(this.region)) {
-        if (value < 40) return this.iops = 400
-        this.iops = value * 10
-      }
+      this.iops = value * 10
     });
   }
 
@@ -220,6 +210,8 @@ export class EditVolumeComponent implements OnInit {
         this.selectedValueRadio = data.volumeType
         this.validateForm.controls.radio.setValue(data.volumeType)
 
+        this.iops = this.volumeInfo?.iops
+
         if(this.volumeInfo?.instanceId != null) {
           this.getInstanceById(this.volumeInfo?.instanceId)
         }
@@ -290,7 +282,7 @@ export class EditVolumeComponent implements OnInit {
     volumeResize.customerId = this.tokenService.get()?.userId;
     volumeResize.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');
-    const user = JSON.parse(userString);1
+    const user = JSON.parse(userString);
     volumeResize.actorEmail = user.email;
     volumeResize.userEmail = user.email;
     volumeResize.serviceType = 2;

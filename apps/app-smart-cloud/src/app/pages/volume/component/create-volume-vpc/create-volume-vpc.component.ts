@@ -1,25 +1,23 @@
-import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
-import {CreateVolumeRequestModel, GetAllVmModel} from "../../../../shared/models/volume.model";
-import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
-import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {InstancesModel, VolumeCreate} from "../../../instances/instances.model";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {VolumeService} from "../../../../shared/services/volume.service";
-import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {InstancesService} from "../../../instances/instances.service";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
-import {OrderItem} from "../../../../shared/models/price";
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { CreateVolumeRequestModel, GetAllVmModel } from '../../../../shared/models/volume.model';
+import { CreateVolumeDto, VmDto } from '../../../../shared/dto/volume.dto';
+import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { InstancesModel, VolumeCreate } from '../../../instances/instances.model';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { VolumeService } from '../../../../shared/services/volume.service';
+import { SnapshotVolumeService } from '../../../../shared/services/snapshot-volume.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { InstancesService } from '../../../instances/instances.service';
+import { OrderItem } from '../../../../shared/models/price';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
   templateUrl: './create-volume-vpc.component.html',
-  styleUrls: ['./create-volume-vpc.component.less'],
+  styleUrls: ['./create-volume-vpc.component.less']
 })
-export class CreateVolumeVpcComponent implements OnInit{
+export class CreateVolumeVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -30,12 +28,12 @@ export class CreateVolumeVpcComponent implements OnInit{
   volumeName = '';
   vmList: NzSelectOptionInterface[] = [];
   expiryTimeList = [
-    {label: '1', value: '1'},
-    {label: '3', value: '3'},
-    {label: '6', value: '6'},
-    {label: '9', value: '9'},
-    {label: '12', value: '12'},
-    {label: '24', value: '24'},
+    { label: '1', value: '1' },
+    { label: '3', value: '3' },
+    { label: '6', value: '6' },
+    { label: '9', value: '9' },
+    { label: '12', value: '12' },
+    { label: '24', value: '24' }
   ];
   snapshotList: NzSelectOptionInterface[] = [];
 
@@ -49,7 +47,7 @@ export class CreateVolumeVpcComponent implements OnInit{
 
 
   createVolumeInfo: CreateVolumeDto = {
-    volumeType: "",
+    volumeType: '',
     volumeSize: 1,
     description: '',
     instanceToAttachId: null,
@@ -81,10 +79,10 @@ export class CreateVolumeVpcComponent implements OnInit{
     actionType: 1,
     regionId: null,
     serviceName: null,
-    typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
     userEmail: null,
     actorEmail: null,
-    createFromSnapshotId: null,
+    createFromSnapshotId: null
   };
   volumeExpiryTime: number;
 
@@ -108,38 +106,38 @@ export class CreateVolumeVpcComponent implements OnInit{
     isEncryption: FormControl<boolean>
     isMultiAttach: FormControl<boolean>
   }> = this.fb.group({
-    name: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     isSnapshot: [false, []],
-    snapshot: [null as number , []],
+    snapshot: [null as number, []],
     radio: [''],
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
     storage: [1, Validators.required],
     isEncryption: [false],
-    isMultiAttach: [false],
+    isMultiAttach: [false]
   });
 
-  snapshotSelected: number
+  snapshotSelected: number;
 
   multipleVolume: boolean = false;
 
-  listInstances: InstancesModel[]
+  listInstances: InstancesModel[];
 
-  instanceSelected: number
+  instanceSelected: number;
 
-  timeSelected: any
+  timeSelected: any;
 
-  date: Date
+  date: Date;
 
-  iops: number
+  iops: number;
 
-  nameList: string[] = []
+  nameList: string[] = [];
 
-  orderItem: OrderItem = new OrderItem()
-  unitPrice = 0
+  orderItem: OrderItem = new OrderItem();
+  unitPrice = 0;
 
-  isVisibleCreate: boolean = false
-  isLoadingCreate: boolean = false
+  isVisibleCreate: boolean = false;
+  isLoadingCreate: boolean = false;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -151,47 +149,37 @@ export class CreateVolumeVpcComponent implements OnInit{
               private instanceService: InstancesService,
               private cdr: ChangeDetectorRef) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
-      this.multipleVolume = value
-      this.validateForm.get('instanceId').reset()
+      this.multipleVolume = value;
+      this.validateForm.get('instanceId').reset();
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if ([1, 2].includes(this.region)) {
-        if (value < 20) return this.iops = 0
-        if (value <= 200) return this.iops = 600
-        if (value <= 500) return this.iops = 1200
-        if (value <= 1000) return this.iops = 3000
-        if (value <= 2000) return this.iops = 6000
-      }
-      if ([3, 4].includes(this.region)) {
-        if (value < 40) return this.iops = 400
-        this.iops = value * 10
-      }
+      this.iops = value * 10
     });
   }
 
   ngOnInit() {
 
     if ([1, 2].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) return this.iops = 0
-      if (this.validateForm.controls.storage.value <= 200) return this.iops = 600
-      if (this.validateForm.controls.storage.value <= 500) return this.iops = 1200
-      if (this.validateForm.controls.storage.value <= 1000) return this.iops = 3000
-      if (this.validateForm.controls.storage.value <= 2000) return this.iops = 6000
+      if (this.validateForm.controls.storage.value < 20) return this.iops = 0;
+      if (this.validateForm.controls.storage.value <= 200) return this.iops = 600;
+      if (this.validateForm.controls.storage.value <= 500) return this.iops = 1200;
+      if (this.validateForm.controls.storage.value <= 1000) return this.iops = 3000;
+      if (this.validateForm.controls.storage.value <= 2000) return this.iops = 6000;
     }
     if ([3, 4].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 40) return this.iops = 400
-      this.iops = this.validateForm.controls.storage.value * 10
+      if (this.validateForm.controls.storage.value < 40) return this.iops = 400;
+      this.iops = this.validateForm.controls.storage.value * 10;
     }
 
-    this.getListInstance()
+    this.getListInstance();
   }
 
   duplicateNameValidator(control) {
     const value = control.value;
     // Check if the input name is already in the list
     if (this.nameList && this.nameList.includes(value)) {
-      return {duplicateName: true}; // Duplicate name found
+      return { duplicateName: true }; // Duplicate name found
     } else {
       return null; // Name is unique
     }
@@ -207,54 +195,60 @@ export class CreateVolumeVpcComponent implements OnInit{
   //   this.getListInstance()
   // }
 
-  onSwitchSnapshot(){
-    this.isInitSnapshot = this.validateForm.controls.isSnapshot.value
-    console.log('snap shot', this.isInitSnapshot)
+  onSwitchSnapshot() {
+    this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
+    console.log('snap shot', this.isInitSnapshot);
+    if(this.isInitSnapshot == true) {
+      this.validateForm.controls.snapshot.setValidators(Validators.required)
+    }
   }
 
-  snapshotSelectedChange(value: number){
-    this.snapshotSelected = value
+  snapshotSelectedChange(value: number) {
+    this.snapshotSelected = value;
+
   }
 
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
+    this.iops = this.validateForm.controls.storage.value * 10
   }
 
   instanceSelectedChange(value: any) {
-    this.instanceSelected = value
+    this.instanceSelected = value;
   }
 
   showConfirmCreate() {
-    this.isVisibleCreate = true
+    this.isVisibleCreate = true;
   }
 
   handleCancelCreate() {
-    this.isVisibleCreate = false
-    this.isLoadingCreate = false
+    this.isVisibleCreate = false;
+    this.isLoadingCreate = false;
   }
 
   handleOkCreate() {
-    this.doCreateVolumeVPC()
+    this.doCreateVolumeVPC();
   }
 
   getListInstance() {
     this.instanceService.search(1, 9999, this.region, this.project,
       '', '', false, this.tokenService.get()?.userId)
       .subscribe(data => {
-        this.listInstances = data.records
-        this.cdr.detectChanges()
-      })
+        this.listInstances = data.records;
+        this.cdr.detectChanges();
+      });
   }
 
   volumeCreate: VolumeCreate = new VolumeCreate();
+
   volumeInit() {
     this.volumeCreate.volumeType = this.selectedValueRadio;
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
     this.volumeCreate.description = this.validateForm.get('description').value;
-    if(this.validateForm.controls.isSnapshot.value == true) {
+    if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId = this.validateForm.controls.snapshot.value;
     } else {
-      this.volumeCreate.createFromSnapshotId = null
+      this.volumeCreate.createFromSnapshotId = null;
     }
 
     this.volumeCreate.instanceToAttachId = this.validateForm.controls.instanceId.value;
@@ -295,16 +289,16 @@ export class CreateVolumeVpcComponent implements OnInit{
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.controls.name.value ;
+    this.volumeCreate.serviceName = this.validateForm.controls.name.value;
     this.volumeCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
     this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
 
-  doCreateVolumeVPC(){
-    if(this.validateForm.valid) {
-      this.volumeInit()
+  doCreateVolumeVPC() {
+    if (this.validateForm.valid) {
+      this.volumeInit();
       let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
       request.customerId = this.volumeCreate.customerId;
       request.createdByUserId = this.volumeCreate.customerId;
@@ -317,27 +311,27 @@ export class CreateVolumeVpcComponent implements OnInit{
           price: 0,
           serviceDuration: 1
         }
-      ]
+      ];
       console.log(request);
       this.volumeService.createNewVolume(request).subscribe(data => {
           if (data != null) {
-            if(data.code == 200){
+            if (data.code == 200) {
               this.isLoadingAction = false;
-              this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.')
+              this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.');
               this.router.navigate(['/app-smart-cloud/volumes']);
             }
-          }else{
+          } else {
             this.isLoadingAction = false;
           }
         },
         error => {
           this.isLoadingAction = false;
-        })
+        });
     }
   }
 
   clear() {
-    this.validateForm.reset()
+    this.validateForm.reset();
   }
 
 }

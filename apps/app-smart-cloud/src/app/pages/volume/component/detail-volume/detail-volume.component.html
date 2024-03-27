@@ -6,12 +6,15 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/volumes'">
-          Volume
-        </a></nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -68,8 +71,13 @@
     <span class="text-card-header">Thông tin Volume</span>
     <nz-descriptions [nzColumn]="2" nzBordered style="margin-top: 20px;">
       <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleType"><b>{{ volumeInfo?.volumeType }}</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }}</b></nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleType">
+        <b>
+          <span *ngIf="volumeInfo?.volumeType === 'hdd'">HDD</span>
+          <span *ngIf="volumeInfo?.volumeType === 'ssd'">SSD</span>
+        </b>
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }} GB</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"
@@ -101,7 +109,7 @@
       <span>Trạng thái Volume:</span>
     </ng-template>
     <ng-template #titleAttachInstance>
-      <span>Gán vào máy ảo:</span>
+      <span>Gắn vào máy ảo:</span>
     </ng-template>
     <ng-template #titleVolumeType>
       <span>Kiểu Volume:</span>
