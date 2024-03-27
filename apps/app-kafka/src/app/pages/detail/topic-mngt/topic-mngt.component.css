@@ -6,7 +6,7 @@
 }
 
 .search {
-  border-radius: 4px;
+  border-radius: 8px;
   width: 300px;
   height: 40px;
 }
@@ -59,15 +59,23 @@ nz-table.tbl-acl th {
 }
 
 .mg-right {
-  margin-right: 10px;
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
 }
 
 ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
   border-radius: 8px;
 }
 
+::ng-deep .ant-descriptions-item-label{
+  font-weight: bold; 
+}
+
 .img {
-  vertical-align: auto;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
 }
 
 .nav-btn {
@@ -76,12 +84,41 @@ nz-table.tbl-acl th {
   align-items: center;
 }
 
-.bold-title {
-  font-weight: bold; 
-}
-
 .btn-accept {
   height: 40px;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 16px;
+}
+
+.create-icon{
+  color: #fff;
+  font-size: 20px;
+}
+
+.dell-icon{
+  cursor: pointer;
+  width: 35px;
+  height: 24px;
+}
+
+.mg-right-del{
+  margin-right: 12px;
+  width: 35px;
+  height: 24px;
+}
+
+.question{
+  text-align: center;
+  font-size: 16px;
+}
+
+nz-table#topic th {
+  background-color: #e2eefc;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}
+
+@media only screen and (min-width: 1440px) {
 }

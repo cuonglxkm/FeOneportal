@@ -6,30 +6,33 @@
                 [(ngModel)]="listOfSelectedValue">
                 <nz-option *ngFor="let item of partitions" [nzLabel]="item" [nzValue]="item"></nz-option>
             </nz-select>
-            <nz-range-picker class="search" [nzShowTime]="true" [(ngModel)]="date"
+            <nz-range-picker [nzSuffixIcon]="icon" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']" class="search" [nzShowTime]="true" [(ngModel)]="date"
                 (ngModelChange)="onChangeDate($event)"></nz-range-picker>
+            <ng-template #icon >
+                <img style="pointer-events: all !important;height: 24px;width: 24px;" src="assets/imgs/calendar-outline.svg" alt=""/>
+            </ng-template>
         </div>
     </div>
 
 
-    <nz-table #virtualTable [nzBordered]="true" [nzData]="messages" [nzFrontPagination]="true"
+    <nz-table #virtualTable [nzBordered]="true" [nzData]="messages" [nzFrontPagination]="true" 
         [nzShowPagination]="true" nzTableLayout="fixed">
         <thead>
             <tr>
                 <th>Offset</th>
                 <th>Partition</th>
-                <th>Timestamp</th>
                 <th>Key</th>
                 <th>Value</th>
+                <th>Timestamp</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let data of virtualTable.data">
                 <td>{{ data.offset }}</td>
                 <td>{{ data.partition }}</td>
-                <td>{{ data.timestamp | date: 'dd/MM/yyyy HH:mm'}}</td>
                 <td nzEllipsis nz-tooltip nzTooltipPlacement="top" [nzTooltipTitle]="data.key">{{ data.key }}</td>
                 <td nzEllipsis nz-tooltip nzTooltipPlacement="top" [nzTooltipTitle]="data.value">{{ data.value }}</td>
+                <td>{{ data.timestamp | date: 'dd/MM/yyyy HH:mm'}}</td>
             </tr>
         </tbody>
     </nz-table>
