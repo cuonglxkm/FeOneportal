@@ -7,6 +7,12 @@ import {ObjectObjectStorageModel} from "../../../shared/models/object-storage.mo
 import {ActivatedRoute} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {BucketService} from "../../../shared/services/bucket.service";
+import {NzUploadFile} from "ng-zorro-antd/upload/interface";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {finalize} from "rxjs/operators";
+import {Clipboard} from "@angular/cdk/clipboard";
+import {differenceInCalendarDays, setHours} from 'date-fns';
+import {DisabledTimeFn, DisabledTimePartial} from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -16,67 +22,44 @@ import {BucketService} from "../../../shared/services/bucket.service";
 export class BucketDetailComponent implements OnInit {
 
   listOfData: ObjectObjectStorageModel[];
-  // listOfData: any = [
-  //   {
-  //     id: "1",
-  //     name: "son",
-  //     size: "1",
-  //     type: "XLSX",
-  //     time: "2023",
-  //     role: "Private",
-  //     checked: false,
-  //     indeterminate: false,
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "khai",
-  //     size: "1",
-  //     type: "XLSX",
-  //     time: "2023",
-  //     role: "Private",
-  //     checked: false,
-  //     indeterminate: false,
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "son",
-  //     size: "1",
-  //     type: "folder",
-  //     time: "2023",
-  //     role: "Private",
-  //     checked: false,
-  //     indeterminate: false,
-  //   },
-  // ];
-  listOfFolder: any = [
-    {name: "folder1", id: "1"},
-    {name: "folder2", id: "2"},
-    {name: "folder3", id: "3"},
-    {name: "folder4", id: "4"},
-    {name: "folder5", id: "5"},
-  ];
-  listOfMetadata: any = [
-    {key: "xin chao", value: "a"},
-    {key: "", value: ""},
-  ]
+  listOfDataVersioning: ObjectObjectStorageModel[];
+  dataAction: ObjectObjectStorageModel;
+  listOfFolder: any = [];
+  currentKey = '';
+
+  orderMetadata = 0;
+  defaultMetadata = {order: 1, key: "", value: ""};
+  listOfMetadata: any = []
   bucket: any;
   size = 10;
   index: number = 1;
   total: number = 0;
   loading = false;
+  loadingVersion = false;
   orderNum = 1;
   isVisibleFilter = false;
   isVisibleCreateFolder = false;
   isVisibleUploadFile = false;
   isVisibleAddFilte = true;
   emptyFileUpload = true;
-  listOfFilter: any;
+  isVisibleCopy = false;
+  isVisibleShare = false;
+  isVisiblePermission = false;
+  isVisibleDetail = false;
+  isVisibleDelete = false;
+  isVisibleVersioning = false;
+  isVisibleDeleteVersion = false;
+  isVisibleRestoreVersion = false;
+  folderChange: string;
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
-    'width': '60%',
+    'width': '80%',
   };
 
+  lstFileUpdate: NzUploadFile[];
+
+  listOfFilter: any;
   colReal = ['Tên', 'Thời gian chỉnh sửa', 'Dung lượng',]
   conditionNameReal = ['Bằng', 'Bao gồm', 'Bắt đầu', 'Kêt thức',]
   conditionTimeReal = ['Lớn hơn', 'Nhỏ hơn',]
@@ -91,24 +74,53 @@ export class BucketDetailComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
   });
-
-  version = 1;
   radioValue: any = 'Public';
+  radioValue1: any = 'Private';
   checked = false;
   indeterminate = false;
   countObjectSelected = 0;
+  nameFolder = '';
+  folderNameLike = '';
+
+  treeFolder = []
+  linkShare = '';
+  today = new Date();
+  timeDefaultValue = setHours(new Date(), 0);
+  dateShare: any;
+  versionId: string;
+  private : any;
+
+  range(start: number, end: number): number[] {
+    const result: number[] = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
+    return result;
+  }
+
+  disabledDate = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) > 0;
+  disabledDateTime: DisabledTimeFn = () => ({
+    nzDisabledHours: () => this.range(0, 24).splice(4, 20),
+    nzDisabledMinutes: () => this.range(30, 60),
+    nzDisabledSeconds: () => [55, 56]
+  });
+  activePrivate = true;
+
 
   constructor(
     private service: ObjectObjectStorageService,
     private bucketservice: BucketService,
     private activatedRoute: ActivatedRoute,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    private clipboard: Clipboard,
   ) {
   }
 
   ngOnInit(): void {
     this.loadBucket();
-    this.loadData('');
+    this.loadData();
   }
 
   uploadFile() {
@@ -131,6 +143,11 @@ export class BucketDetailComponent implements OnInit {
 
   handleCancel() {
     this.isVisibleFilter = false;
+    this.isVisibleCopy = false;
+    this.isVisibleDetail = false;
+    this.isVisibleDelete = false;
+    this.isVisibleShare = false;
+    this.isVisibleVersioning = false;
   }
 
   selectCol(item: any, event: any) {
@@ -226,10 +243,6 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
-  addOldFilterToReality() {
-
-  }
-
   addToReality(data: any) {
     this.addtoListString(this.colReal, data.name);
     if (data.name == 'Tên') {
@@ -265,18 +278,43 @@ export class BucketDetailComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, number));
   }
 
-  toFolder(item: any) {
-    let index = this.listOfFolder.findIndex(folder => folder.name == item.name);
-    if (index > 0) {
-      this.listOfFolder.splice(index + 1);
+  toFolder1(item: any, isBucket) {
+    if (isBucket) {
+      this.listOfFolder = [];
+      this.currentKey = '';
+      this.loadData();
+    } else {
+      let index = this.listOfFolder.findIndex(folder => folder.key == item.key);
+      if (index >= 0) {
+        this.currentKey = item.key;
+        this.loadData();
+        this.listOfFolder.splice(index + 1);
+      }
     }
   }
 
   createFolder() {
-
+    this.isVisibleCreateFolder = false;
+    let data = {
+      bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+      folderName: this.currentKey + this.nameFolder
+    }
+    this.service.createFolder(data)
+      .pipe(finalize(() => {
+        this.loadData();
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Thêm folder thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Thêm folder thất bại')
+        }
+      );
   }
 
   handleChange({file, fileList}: NzUploadChangeParam) {
+    this.lstFileUpdate = [...fileList];
     this.emptyFileUpload = false;
     const status = file.status;
     if (status !== 'uploading') {
@@ -316,8 +354,13 @@ export class BucketDetailComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
-  private loadData(folderName : any) {
-    this.service.getData(this.activatedRoute.snapshot.paramMap.get('name'), folderName, '', this.tokenService.get()?.userId, '', this.size, this.index)
+  loadData() {
+    this.loading = true;
+    this.service.getData(this.activatedRoute.snapshot.paramMap.get('name'), this.currentKey + this.folderNameLike, '', this.tokenService.get()?.userId, '', this.size, this.index)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.loadFolder(this.currentKey);
+      }))
       .subscribe(data => {
         this.listOfData = data.paginationObjectList.items;
         this.total = data.paginationObjectList.totalItems;
@@ -333,7 +376,294 @@ export class BucketDetailComponent implements OnInit {
       )
   }
 
-  search(searck : any) {
+  removeFile(item: NzUploadFile) {
+    let index = this.lstFileUpdate.findIndex(file => file.name == item.name && file.size == item.size);
+    if (index >= 0) {
+      this.lstFileUpdate.splice(index, 1);
+    }
+  }
 
+  addMoreMetadata() {
+    let defaultValue = {...this.defaultMetadata};
+    defaultValue.order = this.orderMetadata++;
+    this.listOfMetadata.push(defaultValue);
+  }
+
+  handleChange2({file, fileList}: NzUploadChangeParam) {
+    this.lstFileUpdate.push(file);
+  }
+
+  removeMetadata(order: any) {
+    const index = this.listOfMetadata.findIndex(item => item.order == order);
+    if (index >= 0) {
+      this.listOfMetadata.splice(index, 1);
+    }
+  }
+
+  deleteFolder() {
+    this.isVisibleDelete = false;
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      selectedItems: [this.dataAction]
+    }
+    this.service.deleteObject(data)
+      .pipe(finalize(() => {
+        this.loadData()
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Xóa thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Xóa thất bại')
+        }
+      );
+  }
+
+  doAction(action: any, item: ObjectObjectStorageModel) {
+    this.dataAction = item;
+
+    if (action == 1) {
+      this.isVisiblePermission = true;
+      if (item.isPublic) {
+        this.activePrivate = false;
+        this.radioValue1 = 'Public';
+      } else {
+        this.activePrivate = true;
+        this.radioValue1 = 'Private';
+      }
+    } else if (action == 2) {
+      this.isVisibleCopy = true;
+      this.loadTreeFolder();
+    } else if (action == 3) {
+      //download
+      this.downloadFile('')
+    } else if (action == 4) {
+      this.isVisibleDetail = true;
+    } else if (action == 5) {
+      this.isVisibleDelete = true;
+    } else if (action == 6) {
+      this.isVisibleShare = true;
+    } else if (action == 7) {
+      this.isVisibleVersioning = true;
+      this.loadDataVersion();
+    }
+  }
+
+  doActionVersion(action: any, item: ObjectObjectStorageModel) {
+    this.versionId = item.versionId;
+    if (action == 1) {
+      this.downloadFile(item.versionId);
+    } else if (action == 2) {
+      this.isVisibleRestoreVersion = true;
+    } else if (action == 3) {
+      this.isVisibleDeleteVersion = true;
+    }
+  }
+
+  toFolder(event: any) {
+    if (event.folderKey != undefined) {
+      this.folderChange = event.folderKey
+    } else {
+      this.folderChange = event.bucketName
+    }
+  }
+
+  downloadFile(versionId: any) {
+    this.service.downloadFile(this.dataAction.bucketName, this.dataAction.key, versionId)
+      .subscribe(
+        data => {
+          let anchor = document.createElement("a");
+          let objectUrl = window.URL.createObjectURL(data['body']);
+
+          anchor.href = objectUrl;
+          anchor.download = this.dataAction.key;
+          anchor.click();
+          window.URL.revokeObjectURL(objectUrl);
+          // this.triggerDownload(data);
+          console.log(data)
+        }, error => {
+          console.log(error)
+        }
+      );
+  }
+
+  private loadTreeFolder() {
+    const data = {
+      "customerId": 0,
+      "regionId": 0,
+      "bucketName": "",
+      "isAllBucket": true
+    }
+    this.service.GetBucketTreeData(data)
+      .subscribe(
+        data => {
+          this.treeFolder = data;
+        }
+      )
+  }
+
+  copyFolder() {
+    this.isVisibleCopy = false;
+    let destinationKey = '';
+    let destinationBucket = '';
+    if (this.folderChange.includes('/')) {
+      const separatorIndex = this.folderChange.indexOf('/');
+      destinationBucket = this.folderChange.substring(0, separatorIndex);
+      destinationKey = this.folderChange.substring(separatorIndex + 1);
+    } else {
+      destinationBucket = this.folderChange;
+    }
+    const data = {
+      sourceKey: this.dataAction.key,
+      sourceBucket: this.dataAction.bucketName,
+      destinationKey: destinationKey,
+      destinationBucket: destinationBucket
+    };
+
+    this.service.copyProject(data)
+      .pipe(finalize(() => {
+        this.loadData()
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Sao chép thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Sao chép thất bại')
+        }
+      );
+  }
+
+  copyUrl() {
+    this.clipboard.copy(this.dataAction.url);
+  }
+
+  editPermission() {
+    this.isVisiblePermission = false;
+    if ((this.dataAction.isPublic == true && this.activePrivate == true) ||
+      (this.dataAction.isPublic == false && this.activePrivate == false)) {
+      this.service.editPermission(this.dataAction.bucketName, this.dataAction.key, this.activePrivate == true ? 'private' : 'public')
+        .pipe(finalize(() => {
+          this.loadData()
+        }))
+        .subscribe(
+          () => {
+            this.notification.success('Thành công', 'Phân quyền thành công')
+          },
+          error => {
+            this.notification.error('Thất bại', 'Phân quyền thất bại')
+          }
+        );
+    }
+  }
+
+  handleShare() {
+    this.clipboard.copy(this.linkShare);
+  }
+
+  getLinkShare() {
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      key: this.dataAction.key,
+      validTo: this.dateShare,
+      isDownload: true
+    };
+    this.service.getLinkShare(data).subscribe(
+      data => {
+        this.linkShare = data.publicURL
+      }
+    )
+  }
+
+  private loadDataVersion() {
+    this.loadingVersion = true;
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      key: this.dataAction.key
+    }
+    this.service.loadDataVersion(data)
+      .pipe(finalize(() => {
+        this.loadingVersion = false;
+      }))
+      .subscribe(data => {
+        this.listOfDataVersioning = data;
+      })
+  }
+
+  deleteFolderVersion() {
+    this.isVisibleDeleteVersion = false;
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      objectType: this.dataAction.objectType,
+      key: this.dataAction.key,
+      versionId: this.versionId,
+      deleteAllVersions: false
+    }
+    this.service.deleteObjectSimple(data)
+      .pipe(finalize(() => {
+        this.loadDataVersion()
+        this.loadData()
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Xóa phiên bản thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Xóa phiên bản thất bại')
+        }
+      );
+  }
+
+  restoreObjectVersion() {
+    this.isVisibleRestoreVersion = false;
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      key: this.dataAction.key,
+      versionId: this.versionId
+    }
+    this.service.restoreObject(data)
+      .pipe(finalize(() => {
+        this.loadDataVersion()
+        this.loadData()
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Khôi phục bản thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Khôi phục phiên bản thất bại')
+        }
+      );
+  }
+
+  selectPermisstion(number: number) {
+    this.activePrivate = number == 1 ? true : false;
+  }
+
+  private loadFolder(data: any) {
+    if (data != '') {
+      let folder = {
+        key: data,
+        name: data
+      }
+
+      let lstFolderName = data.split('/');
+      if (lstFolderName.length > 1) {
+        folder.name = lstFolderName[lstFolderName.length - 2]
+      }
+
+      let index = this.listOfFolder.findIndex(folder => folder.key == data);
+      if (index == -1) {
+        this.listOfFolder.push(folder);
+        this.currentKey = folder.key;
+      }
+
+    }
+  }
+
+  toFolder2(s: string) {
+    this.currentKey = s;
+    this.loadData();
   }
 }

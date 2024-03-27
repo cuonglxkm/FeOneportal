@@ -15,6 +15,14 @@ export class BucketPolicy {
   action: string[];
 }
 
+export class bucketPolicyDetail {
+  subuser: string
+  permission: string
+  actions: string[]
+  sid: string
+  typeUser: string
+}
+
 export class BucketDetail {
   bucketName: string;
   isVersioning: boolean;

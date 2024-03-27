@@ -8,7 +8,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)" (userChanged)="projectChanged($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -28,17 +28,14 @@
         <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']" style="margin-left: 10px;" [(ngModel)]="date"
                          (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
         <div style="width: 300px; margin-left: 10px;">
-          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton" >
-            <input style="width: 300px" [(ngModel)]="searchName" (input)="onInputChange($event.target['value'])"
-                   type="text" nz-input
-                   placeholder="Tìm kiếm" />
-          </nz-input-group>
-          <ng-template #suffixButton>
-            <button style="height: 32px;" nz-button nzType="primary" nzSearch (click)="searchSnapshotScheduleList()">
-              <span nz-icon nzType="search" nzTheme="outline"></span>
-              Search
-            </button>
-          </ng-template>
+            <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
+              <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+                     type="text" nz-input
+                     placeholder="Tìm kiếm mã đơn hàng"/>
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+            </ng-template>
         </div>
       </nz-row>
     </div>
@@ -62,7 +59,7 @@
         <th>Mã đơn hàng</th>
         <th>Dịch vụ</th>
         <th>Thời gian đặt hàng</th>
-        <th>Trạng thái cài đặt</th>
+        <th>Trạng thái</th>
       </tr>
       </thead>
       <tbody>
@@ -70,8 +67,8 @@
         <td>{{ i + 1 }}</td>
         <td><a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a></td>
         <td>{{ data.note }}</td>
-        <td>{{ data.orderDate | date: 'dd/MM/YYYY' }}</td>
-        <td [ngStyle]="{'color': data.statusCode === 'Cancelled' ? 'red' : (data.statusCode === 'Completed' ? 'green' : '')}">{{ data.statusCode === 'Cancelled' ? 'Thất bại' : (data.statusCode === 'Completed' ? 'Thành công' : data.statusCode === 'Paid' ? 'Đã thanh toán' : 'Mới tạo') }}</td>
+        <td>{{ data.orderDate | date: 'HH:mm:ss dd/MM/YYYY' }}</td>
+        <td [ngStyle]="{'color': data.statusCode === 'Cancelled' ? 'red' : (data.statusCode === 'Completed' ? 'green' : '')}">{{ data.statusCode === 'Cancelled' ? 'Đã hủy' : (data.statusCode === 'Completed' ? 'Thành công' : data.statusCode === 'Paid' ? 'Đã thanh toán' : 'Mới tạo') }}</td>
       </tr>
       </tbody>
     </nz-table>

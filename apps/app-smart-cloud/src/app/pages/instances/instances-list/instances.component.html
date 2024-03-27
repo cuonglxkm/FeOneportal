@@ -138,8 +138,7 @@
           >
         </td>
         <td nzBreakWord>
-          {{ data.flavorName }}
-          <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
+          {{ data.flavorName | slice : 3}}
         </td>
         <td nzBreakWord>
           <div style="color: #0066b3">

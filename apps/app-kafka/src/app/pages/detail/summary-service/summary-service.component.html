@@ -1,16 +1,24 @@
 <nz-card id="kafka-config">
     <fieldset class="custom-legend">
-        <legend>Thông tin cấu hình Kafka Instance</legend>
+        <legend>Thông tin cấu hình Kafka Cluster</legend>
         <div class="table-info">
             <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                 <tbody>
                     <tr>
-                        <td class="config-label">RAM:</td>
-                        <td><b>{{ram}} GiB</b></td>
+                        <td class="config-label">Broker:</td>
+                        <td><b>3</b></td>
                     </tr>
                     <tr>
                         <td class="config-label">CPU:</td>
-                        <td><b>{{cpu}} vCPU</b></td>
+                        <td><b>{{itemDetail.cpu}} vCPU</b></td>
+                    </tr>
+                    <tr>
+                        <td class="config-label">RAM:</td>
+                        <td><b>{{itemDetail.ram}} GB</b></td>
+                    </tr>
+                    <tr>
+                        <td class="config-label">SSD:</td>
+                        <td><b>{{itemDetail.storage}} GB</b></td>
                     </tr>
                 </tbody>
             </nz-table>

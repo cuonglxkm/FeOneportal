@@ -36,12 +36,14 @@ export class ListWanComponent implements OnInit{
   }
 
   refreshParams() {
+
     this.pageSize = 10;
     this.pageIndex = 1;
   }
 
   onInputChange(value) {
     this.value = value
+    this.getListWanIps(false)
   }
 
   onRegionChange(region: RegionModel) {

@@ -62,7 +62,11 @@ import {
   QuestionCircleOutline,
   MoreOutline,
   ScheduleOutline,
-  LeftOutline
+  LeftOutline,
+  MenuOutline,
+  StopOutline,
+  PauseCircleOutline,
+  PlayCircleOutline,
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS_AUTO = [
@@ -124,5 +128,9 @@ export const ICONS_AUTO = [
   QuestionCircleOutline,
   MoreOutline,
   ScheduleOutline,
-  LeftOutline
+  LeftOutline,
+  MenuOutline,
+  StopOutline,
+  PauseCircleOutline,
+  PlayCircleOutline,
 ];

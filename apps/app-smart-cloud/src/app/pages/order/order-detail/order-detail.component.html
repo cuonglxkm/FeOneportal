@@ -23,17 +23,25 @@
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="regionId"
-        (valueChanged)="projectChange($event)"
+        (userChanged)="projectChange($event)"
       ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<div *ngIf="!(data.statusCode == 5 && data.invoiceCode == '')" class="mb-8">
+<div *ngIf="!(data?.statusCode == 5 && data.invoiceCode == '')" class="mb-8">
   <nz-steps
-    [nzCurrent]="data.statusCode - 1"
-    style="width: 50%; margin: 0 auto;"
+    [nzLabelPlacement]="vertical"
+    [nzCurrent]="
+      data?.statusCode === 4
+        ? data?.statusCode
+        : data?.statusCode === 5
+        ? data?.statusCode - 2
+        : data?.statusCode - 1
+    "
+    style="width: 50%; margin: 0 auto"
+
   >
-    <nz-step nzTitle="Đã đặt đơn"></nz-step>
+    <nz-step nzTitle="Đặt đơn"></nz-step>
     <nz-step nzTitle="Đã thanh toán"></nz-step>
     <nz-step nzTitle="Đang cài đặt"></nz-step>
     <nz-step nzTitle="{{ titleStepFour }}"></nz-step>
@@ -44,14 +52,20 @@
     <nz-card style="border-radius: 8px">
       <div class="d-flex align-items-center gap-2">
         <div class="h3-container d-flex gap-2">
-          <h3 class="order-title">Đơn hàng: {{ data.orderCode }}</h3>
+          <h3 class="order-title">Đơn hàng: {{ data?.orderCode }}</h3>
           <span
             *ngIf="
-              data.statusCode == 4 ||
-              (data.statusCode == 5 && data.invoiceCode != '')
+              data?.statusCode == 4 ||
+              (data?.statusCode == 5 && data.invoiceCode != '')
+            "
+            [style.background-color]="
+              data?.statusCode === 4
+                ? '#008d47'
+                : data?.statusCode === 5
+                ? '#F68511'
+                : ''
             "
             style="
-              background-color: #008d47;
               border-radius: 15px;
               color: #fff;
               display: flex;
@@ -64,9 +78,11 @@
         </div>
         <div
           class="d-flex gap-3"
-          *ngIf="data.statusCode == 5 && data.invoiceCode == ''"
+          *ngIf="data?.statusCode == 5 && data.invoiceCode == ''"
         >
-          <h3 class="order-failed"><span style="color: #000">|</span> Đã hủy</h3>
+          <h3 class="order-failed">
+            <span style="color: #000">|</span> Đã hủy
+          </h3>
           <h3 class="date-failed">
             vào {{ data.updatedDate | date : 'HH:mm dd/MM/yyyy' }}
           </h3>
@@ -92,44 +108,54 @@
         <nz-col nzSpan="7">
           <nz-form-item>
             <h3 style="font-weight: 600; font-size: 16px">
-              {{ data.customerName }}
+              {{ data.customerName === '' ? '-' : data.customerName }}
             </h3>
             <h3 style="color: white">.</h3>
           </nz-form-item>
           <nz-form-item>
             <h3 style="font-weight: 600; font-size: 16px">
-              {{ data.phoneNumber }}
+              {{ data.phoneNumber === '' ? '-' : data.phoneNumber }}
             </h3>
             <h3 style="color: white">.</h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px">{{ data.email }}</h3>
+            <h3 style="font-weight: 600; font-size: 16px">
+              {{ data.email === '' ? '-' : data.email }}
+            </h3>
             <h3 style="color: white">.</h3>
           </nz-form-item>
           <nz-form-item>
             <h3 style="font-weight: 600; font-size: 16px">
-              {{ data.address }}
+              {{ data.address === '' ? '-' : data.address }}
             </h3>
           </nz-form-item>
         </nz-col>
-        <nz-col nzSpan="5">
+        <nz-col nzSpan="6">
           <nz-form-item>
             <h3 class="form-title">Thời gian tạo đơn:</h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 class="form-title">Mã hóa đơn:</h3>
+            <h3 class="form-title">Hình thức thanh toán:</h3>
+          </nz-form-item>
+          <nz-form-item>
+            <h3 class="form-title">Mã thanh toán:</h3>
           </nz-form-item>
         </nz-col>
-        <nz-col nzSpan="7">
+        <nz-col nzSpan="6">
           <nz-form-item>
             <h3 style="font-weight: 600; font-size: 16px">
-              {{ data.orderDate | date : 'dd/MM/yyyy' }}
+              {{ data.orderDate | date : 'HH:mm:ss dd/MM/yyyy' }}
             </h3>
             <h3 style="color: white">.</h3>
           </nz-form-item>
           <nz-form-item>
+            <h3 style="font-weight: 600; font-size: 16px">
+              {{ data.paymentMethod === '' ? '-' : data.paymentMethod }}
+            </h3>
+          </nz-form-item>
+          <nz-form-item>
             <h3 style="font-weight: 600; font-size: 16px; color: #248fcc">
-              {{ data.invoiceCode }}
+              {{ data.paymentCode === '' ? '-' : data.paymentCode }}
             </h3>
           </nz-form-item>
         </nz-col>
@@ -138,7 +164,6 @@
       <nz-table [nzData]="data.orderItems" nzHideOnSinglePage="true">
         <thead>
           <tr>
-            <th>STT</th>
             <th>Dịch vụ</th>
             <th>Đơn giá (VNĐ)</th>
             <th>Thời hạn (Tháng)</th>
@@ -148,19 +173,18 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of data.orderItems">
-            <td>1</td>
             <td>{{ item.serviceName }}</td>
-            <td>{{ item.unitPrice.amount | number : '1.0-0' }}</td>
-            <td>{{ item.duration }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.totalAmount.amount | number : '1.0-0' }}</td>
+            <td class="text-right">{{ item.unitPrice.amount | number : '1.0-0' }}</td>
+            <td class="text-right">{{ item.duration }}</td>
+            <td class="text-right">{{ item.quantity }}</td>
+            <td class="text-right">{{ item.totalAmount.amount | number : '1.0-0' }}</td>
           </tr>
         </tbody>
       </nz-table>
     </nz-card>
   </div>
   <div nz-col nzSpan="8">
-    <nz-card style="border-radius: 8px">
+    <nz-card style="border-radius: 8px; border-color: #b2deff">
       <div style="margin-bottom: 20px">
         <span class="text-card-header">Thông tin thanh toán</span>
       </div>
@@ -172,7 +196,7 @@
               <span class="price"
                 >{{ data.amount.amount | number : '1.0-0' }} VNĐ</span
               >
-              <span>VND/tháng</span>
+              <span>VNĐ/tháng</span>
             </td>
           </tr>
           <tr>
@@ -184,12 +208,12 @@
             <td></td>
           </tr>
           <tr style="margin-bottom: 5px">
-            <td>VAT({{ (data.vat.amount * 100) / data.amount.amount }}%)</td>
+            <td>VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
                 >{{ data.vat.amount | number : '1.0-0' }} VNĐ</span
               >
-              <span>VND/tháng</span>
+              <span>VNĐ/tháng</span>
             </td>
           </tr>
           <tr>
@@ -200,10 +224,10 @@
             <td></td>
             <td></td>
           </tr>
-          <tr style="background-color: #cce9ff; border-radius: 8px">
-            <td style="padding: 10px">
+          <tr style="background-color: #cce9ff">
+            <td style="padding: 10px; border-radius: 8px 0 0 8px">
               <span style="display: block; font-size: 16px; font-weight: 600"
-                >Tổng tiền thanh toán</span
+                >Tổng thanh toán</span
               >
               <span>( Đã bao gồm 10% VAT)</span>
             </td>
@@ -213,6 +237,7 @@
                 color: #ea3829;
                 font-weight: 600;
                 padding: 10px;
+                border-radius: 0 8px 8px 0;
               "
             >
               {{ data.totalAmount.amount | number : '1.0-0' }} VNĐ
@@ -222,13 +247,13 @@
         <div class="mt-3">
           <button
             style="width: 100%"
-            *ngIf="data.statusCode == 5 && data.invoiceCode == ''"
+            *ngIf="data?.statusCode == 5 && data.invoiceCode == ''"
             nz-button
           >
             <span nz-icon nzType="shop" nzTheme="outline"></span> Mua lại
           </button>
           <button
-            *ngIf="data.statusCode < 2"
+            *ngIf="data?.statusCode < 2"
             nz-button
             nzType="primary"
             style="
@@ -244,7 +269,7 @@
           </button>
           <button
             class="mt-3 ml-0"
-            *ngIf="data.statusCode < 2 && titleStepFour != 'Gặp sự cố'"
+            *ngIf="data?.statusCode < 2 && titleStepFour != 'Gặp sự cố'"
             nz-button
             style="width: 100%"
           >
@@ -258,16 +283,11 @@
             style="width: 100%; border: none"
             [routerLink]="'/app-smart-cloud/order/list'"
             *ngIf="
-                data.statusCode != 4 &&
-                data.statusCode < 2 &&
-                titleStepFour != 'Gặp sự cố'
-              "
+              (data?.statusCode != 4 && data?.statusCode < 2) ||
+              (data?.statusCode === 5 && titleStepFour != 'Gặp sự cố')
+            "
           >
-            <span
-              nz-icon
-              nzType="left"
-              nzTheme="outline"
-            ></span>
+            <span nz-icon nzType="left" nzTheme="outline"></span>
             Quay lại
           </button>
         </div>

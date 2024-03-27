@@ -1,58 +1,24 @@
-def image 
-
+#!/usr/bin/env groovy
+def agentLabel = "it-si-cloud-linux1"
 pipeline {
-    agent any
-
-    environment {        
-        branchName="${env.BRANCH_NAME}"
-        buildNumber="${env.BUILD_NUMBER}"
-        registry = "https://registry.onsmartcloud.com"
-        registryRepository = "registry.onsmartcloud.com/idg"
-        registryCredential = "cloud-harbor-id"
-        imageTag = "${registryRepository}/${branchName}:${buildNumber}"
-        IMAGE_TAG = "${imageTag}"
-        APP_NAME = "${branchName}"
+    agent { label 'it-si-cloud-linux1' }
+    environment {
+        PACKAGE_NAME = "oneportal-frontend_${env.GIT_BRANCH.replaceAll("/","_")}_${env.GIT_COMMIT.substring(0, 5)}"
     }
-
     stages {
-
-        stage("Build image") {
+        stage('Show Build environment') {
             steps {
-                script {
-                    image = docker.build(imageTag, "-f apps/${branchName}/Dockerfile .")
-                }
+                sh 'env'
+                sh 'ip a'
             }
         }
 
-        stage("Push image") {
+        stage('Build and push images') {
             steps {
-                script {
-                    docker.withRegistry(registry, registryCredential) {
-                        image.push()
-                    }
-                }
-                
+                sh 'docker compose --parallel 2 build'
+                sh 'docker image prune -f'
+                sh 'docker compose push'
             }
         }
-
-        stage("Cleaning up") {
-            steps {
-                sh "docker rmi ${imageTag}"
-            }
-        }
-
-        stage("Deploying to K8s") {
-            steps {
-                script {
-                    withKubeConfig([credentialsId: 'k8s-cred']) {
-                        dir("apps/${branchName}/deploy") {
-                            sh 'for f in *.yaml; do envsubst < $f | kubectl apply -f - ; done '
-                        }
-                    }
-                }
-                
-            }
-        }
-
     }
 }

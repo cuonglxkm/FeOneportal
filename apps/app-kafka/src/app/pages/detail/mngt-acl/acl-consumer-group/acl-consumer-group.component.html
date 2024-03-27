@@ -24,9 +24,9 @@
                             <th nzWidth="10%">Tài khoản</th>
                             <th nzWidth="25%">Group/Prefixed Group</th>
                             <th nzWidth="15%">Hoạt động</th>
-                            <th nzWidth="15%">Máy chủ</th>
+                            <th nzWidth="10%">Máy chủ</th>
                             <th nzWidth="10%">Quyền</th>
-                            <th nzWidth="10%">Ngày tạo</th>
+                            <th nzWidth="15%">Ngày tạo</th>
                             <th nzWidth="15%" class="text-center">Thao tác</th>
                     </thead>
                     <tbody>
@@ -50,10 +50,8 @@
                                 <nz-dropdown-menu #menu="nzDropdownMenu">
                                     <ul nz-menu nzSelectable>
                                         <li nz-menu-item>
-                                            <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
-                                                <span nz-icon nzType="delete" nzTheme="twotone"
-                                                    nzTwotoneColor="#0066B0"></span> Xóa
-                                            </button>
+                                            <span nz-icon nzType="delete" nzTheme="twotone" (click)="showDeleteConfirm(data)"
+                                                nzTwotoneColor="#0066B0"></span> Xóa
                                         </li>
                                     </ul>
                                 </nz-dropdown-menu>

@@ -25,14 +25,14 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <h3>Danh sách gói Backup</h3>
-    <nz-row nzJustify="space-between">
+    <span class="text-card-header">Danh sách gói Backup</span>
+    <nz-row nzJustify="space-between" style="margin-top: 20px;">
       <nz-col nzSpan="16">
         <nz-select [nzPlaceHolder]="'Trạng thái'"
                    [ngModel]="selected"
                    (ngModelChange)="onChangeSelected($event)"
                    nzSize="large"
-                   style="margin-right: 15px;"
+                   style="margin-right: 15px; width: 170px;"
                    nzPlaceHolder="Tất cả trạng thái"
                    nzTooltipTitle="Tìm kiếm theo trạng thi"
                    nzTooltipPlacement="bottom"
@@ -50,13 +50,13 @@
         <nz-input-group
           style="width: 300px;"
           [nzPrefix]="prefixIconSearch"
-          nzSize="large"
-          [(ngModel)]="value"
-          (input)="onInputChange($event.target['value'])">
+          nzSize="large">
           <input
             name="name"
             nz-input
-            placeholder="Tìm kiếm tên ..."/>
+            placeholder="Tìm kiếm tên ..."
+            [(ngModel)]="value"
+            (input)="onInputChange($event.target['value'])"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
           <img
@@ -92,7 +92,6 @@
     <nz-table #fixedTable
               style="margin-top: 15px;"
               nzShowPagination
-              [nzShowTotal]="rangeTemplate"
               [nzScroll]="{ x: '100%', y: '55vh' }"
               [nzData]="response?.records"
               [nzPageSize]="response?.pageSize"
@@ -100,7 +99,6 @@
               [nzPageIndex]="response?.currentPage"
               (nzPageIndexChange)="onPageIndexChange($event)"
               [nzTotal]="response?.totalCount"
-
               [nzFrontPagination]="false"
               [nzLoading]="isLoading">
       <thead>
@@ -130,7 +128,7 @@
         <td>
           <div>
             <!---Chỉnh sửa------>
-            <span style="color: #0066B3; margin-right: 10px;"
+            <span style="color: #0066B3; margin-right: 10px; cursor: pointer"
                   nz-tooltip
                   nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
                   nz-icon
@@ -140,7 +138,7 @@
             <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin gói Backup" nzTabScrollList="true"
                       (nzOnCancel)="handleUpdateCancel()" nzCentered>
               <div *nzModalTitle>
-                <p class="text-h5"><b>Chỉnh sửa thông tin gói Backup</b></p>
+                <span class="text-modal-title">Chỉnh sửa thông tin gói Backup</span>
               </div>
               <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
                 <form nz-form [formGroup]="validateForm" nzLayout="vertical">
@@ -159,6 +157,7 @@
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
                       <input nz-input
                              formControlName="namePackage"
+                             class="input-custom"
                              [placeholder]="'Nhập tên gói'" [maxLength]="70"/>
                       <ng-template #nameErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Backup</ng-container>
@@ -200,12 +199,12 @@
               </div>
             </nz-modal>
             <!---Điều chỉnh dung lượng------>
-            <span style="color: #0066B3; margin-right: 10px;"
+            <span style="color: #0066B3; margin-right: 10px; cursor: pointer;"
                   nz-tooltip
                   nzTooltipTitle="Điều chỉnh dung lượng" nzTooltipPlacement="bottom"
                   nz-icon nzType="arrows-alt" nzTheme="outline" (click)="navigateToEdit(data.id)"> </span>
             <!---Xóa------>
-            <span style="color: #0066B3"
+            <span style="color: #0066B3; cursor: pointer;"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline"
@@ -213,7 +212,7 @@
             <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá gói Backup" nzTabScrollList="true"
                       (nzOnCancel)="handleDeleteCancel()" nzCentered>
               <div *nzModalTitle>
-                <p class="text-h5"><b>Xoá gói Backup</b></p>
+                <span class="text-modal-title">Xoá gói Backup</span>
               </div>
               <div *nzModalContent>
                 <nz-alert nzBanner
@@ -280,10 +279,10 @@
       </tr>
       </tbody>
     </nz-table>
-    <ng-template #rangeTemplate let-range="range" let-total >
-      <div>
-        <p style="font-size: 16px; padding-top: 2px;">Số bản ghi mỗi trang {{ range[0] }}-{{ range[1] }}/{{ total }}</p>
-      </div>
-    </ng-template>
+<!--    <ng-template #rangeTemplate let-range="range" let-total >-->
+<!--      <div>-->
+<!--        <p style="font-size: 16px; padding-top: 2px;">Số bản ghi mỗi trang {{ range[0] }}-{{ range[1] }}/{{ total }}</p>-->
+<!--      </div>-->
+<!--    </ng-template>-->
   </nz-card>
 </nz-content>

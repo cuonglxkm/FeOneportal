@@ -1,0 +1,169 @@
+<nz-content>
+    <div class="breadcrumb">
+        <nz-breadcrumb vSeparator=">>">
+            <nz-breadcrumb-item>
+                <a>Danh sách hệ thống Kafka</a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a>Load Topic</a>
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </div>
+    <div nz-row class="inner-content">
+        <div nz-col [nzOffset]="1" [nzSpan]="11">
+            <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <nz-input-group nz-col [nzPrefix]="prefixTemplateUser" class="search">
+                        <input type="text" nz-input placeholder="Tìm kiếm" [(ngModel)]="search"
+                            (keyup.enter)="handleSearch()">
+                    </nz-input-group>
+                    <ng-template #prefixTemplateUser><span nz-icon nzType="search"
+                            nzTheme="outline"></span></ng-template>
+                </div>
+            </div>
+            <nz-table [nzScroll]="{ y: '350px' }" [nzData]="listTopic" [nzPageSize]="50" [nzLoading]="loading"
+                #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total"
+                [nzFrontPagination]="false" [nzPageIndex]="index" [nzPageSize]="size"
+                (nzPageIndexChange)="changePage($event)" (nzPageSizeChange)="changePageSize($event)">
+                <thead class="table-info">
+                    <tr>
+                        <th>Tên Topic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data">
+                        <td>{{ data.topicName }}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+        <div nz-col class="gutter-row" [nzOffset]="1" [nzSpan]="10">
+            <form nz-form [formGroup]="myform" [nzLayout]="'vertical'">
+
+                <div class="input-style">
+                    <div class="w-100">
+                        <nz-form-item>
+                            <nz-form-label nzFor="kafka">Hệ thống Kafka</nz-form-label>
+                            <nz-form-control>
+                                <nz-select formControlName="serviceOrderCode"
+                                    (ngModelChange)="onChangeKafkaSystem($event)" nzPlaceHolder="Chọn hệ thống kafka">
+                                    <ng-container *ngIf="listOfKafkaSys.length > 0">
+                                        <nz-option *ngFor="let item of listOfKafkaSys"
+                                            [nzValue]="item.service_order_code"
+                                            [nzLabel]="item.service_name"></nz-option>
+                                    </ng-container>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div class="ml-3 btn-style">
+                        <button nz-button vType="primary" [disabled]="myform.invalid"
+                            (click)="showConfirmLoadTopic()">Thêm mới topic</button>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <nz-collapse nzAccordion nzExpandIconPosition="right">
+                        <nz-collapse-panel nzHeader="Thông tin metadata topic" [nzActive]="true">
+                            <nz-form-item>
+                                <nz-form-label nzFor="topics">
+                                    Danh sách topics
+                                    <span class="info-style" nz-popover nzPopoverTitle="Hướng dẫn cấu hình"
+                                        [nzPopoverContent]="contentTemplate" nzPopoverPlacement="rightTop">
+                                        <span nz-icon style="font-size: 16px;padding-left: 2px;" nzType="info-circle"
+                                            nzTheme="twotone"></span>
+                                    </span>
+                                    <ng-template #contentTemplate>
+                                        <div nz-typography class="description-style">
+                                            <div [innerHTML]="description3"></div>
+                                        </div>
+                                    </ng-template>
+                                </nz-form-label>
+                                <nz-form-control [nzErrorTip]='nameErrorTpl'>
+
+                                    <textarea rows="4" nz-input placeholder="Topic-1,Topic-2,..."
+                                        formControlName="topicList"></textarea>
+
+                                    <ng-template #nameErrorTpl let-control>
+                                        <ng-container *ngIf="control.hasError('required')">
+                                            Tên topic không được để trống
+                                        </ng-container>
+                                        <ng-container
+                                            *ngIf="control.hasError('pattern') || control.hasError('maxlength')">
+                                            Tên Topic dài 1-255 ký tự bao gồm các ký tự chữ, số và ký tự đặc biệt -
+                                        </ng-container>
+                                    </ng-template>
+                                    
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <div class="input-style">
+                                <div class="w-50 mr-3">
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="partion">Số partition</nz-form-label>
+                                        <nz-form-control [nzErrorTip]="partitionErrTpl">
+                                            <input type="text" nz-input placeholder="Nhập số partition"
+                                                formControlName="partitionNum" (keypress)="isNumber($event)" />
+                                        </nz-form-control>
+                                        <ng-template #partitionErrTpl let-control>
+                                            <!-- <ng-container *ngIf="control.hasError('invalidvalue')">
+                                                Số partition không lớn hơn số replica
+                                            </ng-container> -->
+                                            <ng-container *ngIf="control.hasError('required')">
+                                                Số partition không để trống
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('min')">
+                                                Số partition là số nguyên dương lớn hơn 0
+                                            </ng-container>
+                                        </ng-template>
+                                    </nz-form-item>
+                                </div>
+
+                                <div class="w-50">
+                                    <nz-form-item>
+                                        <nz-form-label vFor="replica">Số replica</nz-form-label>
+                                        <nz-form-control [nzErrorTip]="replicaErrTpl">
+                                            <input type="text" nz-input placeholder="Nhập số replica"
+                                                formControlName="replicaNum" (keypress)="isNumber($event)" />
+                                        </nz-form-control>
+                                        <ng-template #replicaErrTpl let-control>
+                                            <ng-container *ngIf="control.hasError('required')">
+                                                Số replica không để trống
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('min')">
+                                                Số replica là số nguyên dương lớn hơn 0
+                                            </ng-container>
+                                        </ng-template>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <nz-form-item>
+                                    <nz-form-label vFor="json">
+                                        Danh sách cấu hình (json)
+                                        <span class="info-style" nz-popover nzPopoverTitle="Hướng dẫn cấu hình"
+                                            [nzPopoverContent]="contentTemplate2" vPopoverPlacement="rightTop">
+                                            <span nz-icon style="font-size: 16px;padding-left: 2px;"
+                                                nzType="info-circle" nzTheme="twotone"></span>
+                                        </span>
+                                        <ng-template #contentTemplate2>
+                                            <div nz-typography class="description-style">
+                                                {{description1}}
+                                                <pre>{{description2 | json}}</pre>
+                                            </div>
+                                        </ng-template>
+                                    </nz-form-label>
+                                    <nz-form-control>
+                                        <json-editor [options]="jsonOption"
+                                            [formControlName]="'configMap'"></json-editor>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </nz-collapse-panel>
+                    </nz-collapse>
+                </div>
+            </form>
+        </div>
+    </div>
+</nz-content>

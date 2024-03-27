@@ -9,6 +9,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PopupAddVolumeComponent } from '../../volume/component/popup-volume/popup-add-volume.component';
 import { OrderService } from '../../../shared/services/order.service';
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-order',
@@ -44,6 +45,7 @@ export class OrderListComponent implements OnInit {
   isLoadingEntities: boolean;
   customerID: number;
 
+  value?: string;
   actionSelected: number;
 
   onQueryParamsChange(params: NzTableQueryParams) {
@@ -116,8 +118,10 @@ export class OrderListComponent implements OnInit {
   }
 
   onInputChange(value: string) {
-    this.searchName = value;
+    this.orderCode = value.toUpperCase();
     console.log('input text: ', this.searchName);
+    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.orderCode,
+      null, null, null, null, null, null, this.fromDate, this.toDate, this.searchStatus);
   }
 
   navigateToCreate() {
@@ -127,7 +131,6 @@ export class OrderListComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.searchSnapshotScheduleList();
   }
 
   projectChanged(project: ProjectModel) {

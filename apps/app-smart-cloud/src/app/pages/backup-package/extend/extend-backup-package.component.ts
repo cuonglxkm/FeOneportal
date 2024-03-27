@@ -60,16 +60,15 @@ export class ExtendBackupPackageComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/backup/packages'])
-      }
-    });
+    this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
+  }
+
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 
   getDetailPackageBackup(id) {
@@ -159,8 +158,6 @@ export class ExtendBackupPackageComponent implements OnInit{
     this.formExtendBackupPackage.actorEmail = this.tokenService.get()?.email;
   }
 
-  totalAmountVolume = 0;
-  totalAmountVolumeVAT = 0;
   orderItem: OrderItem = new OrderItem()
   unitPrice = 0
 
@@ -183,14 +180,6 @@ export class ExtendBackupPackageComponent implements OnInit{
     });
   }
   typeVPC: number
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
-  }
 
   ngOnInit() {
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'))
@@ -198,9 +187,6 @@ export class ExtendBackupPackageComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     // this.customerId = this.tokenService.get()?.userId
-    if (this.project && this.region) {
-      this.loadProjects()
-    }
     if(this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage)
 

@@ -1,17 +1,28 @@
-FROM node:18.18.2 as node
+#stage 1 cache node_modules
+FROM node:lts-alpine3.18 AS installer
 WORKDIR /app
+
+COPY package.json .
+
+RUN yarn install
+
+# stage 2 
+FROM node:lts-alpine3.18 as node
+WORKDIR /app
+
+COPY --from=installer /app /app
+
 COPY . .
 
 #RUN npm install --global yarn
 RUN pwd && ls
 RUN yarn global add @nrwl/cli
 RUN #cp ./apps/app-host/src/assets/module-federation-prod.manifest.json ./apps/app-host/src/assets/module-federation.manifest.json
-RUN yarn install
+#RUN yarn install
 RUN npx nx build app-host --configuration=production
-#--configuration=production
 
 
-#stage 2
+#stage 3
 FROM nginx:alpine
 COPY ./apps/app-host/nginx.conf /etc/nginx/nginx.conf
 COPY --from=node app/dist/apps/app-host /usr/share/nginx/html

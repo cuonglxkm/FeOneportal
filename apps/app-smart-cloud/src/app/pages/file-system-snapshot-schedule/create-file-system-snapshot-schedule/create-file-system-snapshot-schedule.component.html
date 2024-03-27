@@ -42,7 +42,7 @@
 >
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="18" class="gutter-row">
-      <nz-card>
+      <nz-card style="border-radius: 8px;">
         <h2 class="custom-title">Thông tin đặt lịch File System Snapshot</h2>
         <nz-form-item>
           <nz-form-label nzFor="name" nzRequired
@@ -73,14 +73,13 @@
           <nz-select
             nzMode="multiple"
             nzPlaceHolder="Chọn File System"
-            [(ngModel)]="listOfSelectedValue"
             formControlName="listOfFileSystem"
+            (ngModelChange)="updateSelectedFileSystems($event)"
           >
             <nz-option
-              *ngFor="let option of FileSystem"
-              [nzLabel]="option"
-              [nzValue]="option"
-              [nzHide]="!isNotSelected(option)"
+              *ngFor="let data of response?.records"
+              [nzLabel]="data.name"
+              [nzValue]="data.id"
             ></nz-option>
           </nz-select>
         </nz-form-control>
@@ -118,7 +117,7 @@
           </nz-select>
         </nz-form-control>
         </nz-form-item>
-        <ng-container *ngIf="snapshotMode === '0'">
+        <ng-container *ngIf="snapshotMode === '1'">
           <nz-form-item>
             <nz-form-control nzErrorTip="Số bản Snapshot không đuợc để trống!">
             <nz-form-label nzFor="name" nzRequired
@@ -133,7 +132,7 @@
           </nz-form-control>
           </nz-form-item>
         </ng-container>
-        <ng-container *ngIf="snapshotMode === '2'">
+        <ng-container *ngIf="snapshotMode === '3'">
           <div style="display: flex; flex-wrap: wrap">
             <nz-form-item
               style="flex-basis: calc(50% - 8px); margin-right: 16px"
@@ -190,7 +189,7 @@
           </nz-form-control>
           </nz-form-item>
         </ng-container>
-        <ng-container *ngIf="snapshotMode === '1'">
+        <ng-container *ngIf="snapshotMode === '2'">
           <div style="display: flex; flex-wrap: wrap">
             <nz-form-item
               style="flex-basis: calc(50% - 8px); margin-right: 16px"
@@ -205,7 +204,6 @@
                 nzMode="multiple"
                 [nzPlaceHolder]="'Chọn thứ'"
                 [nzShowSearch]="false"
-                [(ngModel)]="listOfSelectedDate"
               >
                 <nz-option
                   *ngFor="let i of daysOfWeek"
@@ -230,7 +228,7 @@
             </nz-form-item>
           </div>
         </ng-container>
-        <ng-container *ngIf="snapshotMode === '3'">
+        <ng-container *ngIf="snapshotMode === '4'">
           <div style="display: flex; flex-wrap: wrap">
             <nz-form-item
               style="flex-basis: calc(50% - 8px); margin-right: 16px"
@@ -291,15 +289,15 @@
       </nz-card>
     </div>
     <div nz-col [nzSpan]="6" class="gutter-row">
-      <nz-card>
+      <nz-card style="border-radius: 8px;">
         <h2 class="custom-title">Thông số cấu hình</h2>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Tên lịch Snapshot</h3>
           <span [innerText]="nameSnapshot"></span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Tên File System</h3>
-          <span>{{ listOfSelectedValue }}</span>
+          <h3 class="custom-subtitle">Tên File System</h3>     
+            <div style="overflow-wrap: break-word;">{{ selectedFileSystemName }}</div>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Thời điểm thực hiện Snapshot</h3>
@@ -308,16 +306,16 @@
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Chế độ Snapshot</h3>
           <span>{{
-            snapshotMode === '0'
+            snapshotMode === '1'
               ? 'Hằng ngày'
-              : snapshotMode === '1'
-              ? 'Theo thứ'
               : snapshotMode === '2'
+              ? 'Theo thứ'
+              : snapshotMode === '3'
               ? 'Theo tuần'
-              : snapshotMode === '3' && 'Theo tháng'
+              : snapshotMode === '4' && 'Theo tháng'
           }}</span>
         </div>
-        <ng-container *ngIf="snapshotMode === '2'">
+        <ng-container *ngIf="snapshotMode === '3'">
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">Số tuần thực hiện</h3>
             <span>{{
@@ -339,7 +337,7 @@
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
-        <ng-container *ngIf="snapshotMode === '3'">
+        <ng-container *ngIf="snapshotMode === '4'">
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">Số tháng thực hiện</h3>
             <span>{{ months }}</span>
@@ -353,13 +351,13 @@
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
-        <ng-container *ngIf="snapshotMode === '0'">
+        <ng-container *ngIf="snapshotMode === '1'">
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">Số bản Snapshot lưu trữ</h3>
             <span>{{ snapshotRecord }}</span>
           </div>
         </ng-container>
-        <ng-container *ngIf="snapshotMode === '1'">
+        <ng-container *ngIf="snapshotMode === '2'">
           <div style="margin-bottom: 20px">
             <h3 class="custom-subtitle">Ngày trong tuần</h3>
             <span *ngFor="let selectedValue of listOfSelectedDate">
@@ -405,7 +403,9 @@
 <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Xác nhận tạo mới Lịch Snapshot File System"
           (nzOnCancel)="handleCancel()"
           (nzOnOk)="handleCreate()"
-          nzOkText="Xác nhận" nzCancelText="Hủy bỏ">
+          nzOkText="Xác nhận" nzCancelText="Hủy bỏ"
+          [nzOkLoading]="isLoading"
+          >
   <ng-container *nzModalContent>
     <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn tạo mới Lịch Snapshot File System?</h3>
   </ng-container>

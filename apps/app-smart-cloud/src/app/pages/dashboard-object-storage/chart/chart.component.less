@@ -1,0 +1,28 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Chia layout thành 2 cột có chiều rộng bằng nhau */
+  grid-gap: 10px; /* Khoảng cách giữa các ô */
+}
+
+.item {
+  //background-color: #f0f0f0;
+  padding: 20px;
+  position: relative; /* Cho phép định vị phần tử con */
+  width: 90%;
+}
+
+.title {
+  text-align: center; /* Hiển thị tiêu đề ở giữa */
+  margin-bottom: 25px;
+}
+
+.separator {
+  position: absolute; /* Đặt vị trí tuyệt đối cho biểu tượng gạch ngang */
+  top: 25px;
+  padding: 0 5px; /* Tăng khoảng cách giữa gạch ngang và lề phải của ô */
+  width: 25px;
+  border: 1.5px;
+  cursor: pointer;
+  right: 0;
+
+}

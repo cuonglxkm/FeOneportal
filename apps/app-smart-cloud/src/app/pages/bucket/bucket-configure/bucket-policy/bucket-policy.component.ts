@@ -10,7 +10,10 @@ import { ActivatedRoute } from '@angular/router';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
-import { BucketPolicy } from 'src/app/shared/models/bucket.model';
+import {
+  BucketPolicy,
+  bucketPolicyDetail,
+} from 'src/app/shared/models/bucket.model';
 import { SubUser } from 'src/app/shared/models/sub-user.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 
@@ -45,6 +48,7 @@ export class BucketPolicyComponent implements OnInit {
   ngOnInit(): void {
     this.searchBucketPolicy();
   }
+
   searchBucketPolicy() {
     this.loading = true;
     this.bucketService
@@ -101,8 +105,11 @@ export class BucketPolicyComponent implements OnInit {
   emailUser: string;
   isUserOther: boolean = true;
   listActionPermission: string[] = [];
+  setActionPermission: Set<string> = new Set<string>();
+  listActionPermissionCustom: string[] = [];
   modalCreate() {
     this.isVisibleCreate = true;
+    this.setActionPermission.clear();
     this.getListSubuser();
   }
 
@@ -112,31 +119,133 @@ export class BucketPolicyComponent implements OnInit {
 
   handleOkCreate() {
     this.isVisibleCreate = false;
-    this.notification.success('', 'Tạo mới Bucket Policy thành công');
+    this.bucketPolicyUpdate.actions.forEach((e) => {
+      if (e == 'selectAll') {
+        this.setActionPermission.add('CreateBucket');
+        this.setActionPermission.add('DeleteBucketPolicy');
+        this.setActionPermission.add('DeleteBucket');
+        this.setActionPermission.add('DeleteBucketWebsite');
+        this.setActionPermission.add('GetBucketAcl');
+        this.setActionPermission.add('GetBucketCORS');
+        this.setActionPermission.add('GetBucketLocation');
+        this.setActionPermission.add('GetBucketLogging');
+        this.setActionPermission.add('GetBucketNotification');
+        this.setActionPermission.add('GetBucketPolicy');
+        this.setActionPermission.add('GetBucketRequestPayment');
+        this.setActionPermission.add('GetBucketTagging');
+        this.setActionPermission.add('GetBucketVersioning');
+        this.setActionPermission.add('ListAllMyBuckets');
+        this.setActionPermission.add('ListBucketMultiPartUploads');
+        this.setActionPermission.add('ListBucket');
+        this.setActionPermission.add('ListBucketVersions');
+        this.setActionPermission.add('PutBucketAcl');
+        this.setActionPermission.add('PutBucketCORS');
+        this.setActionPermission.add('PutBucketLogging');
+        this.setActionPermission.add('PutBucketNotification');
+        this.setActionPermission.add('PutBucketPolicy');
+        this.setActionPermission.add('PutBucketRequestPayment');
+        this.setActionPermission.add('PutBucketTagging');
+        this.setActionPermission.add('PutBucketVersioning');
+        this.setActionPermission.add('PutBucketWebsite');
+        this.setActionPermission.add('DeleteObject');
+        this.setActionPermission.add('DeleteObjectVersion');
+        this.setActionPermission.add('GetObjectAcl');
+        this.setActionPermission.add('GetObject');
+        this.setActionPermission.add('GetObjectTorrent');
+        this.setActionPermission.add('GetObjectVersionAcl');
+        this.setActionPermission.add('GetObjectVersion');
+        this.setActionPermission.add('GetObjectVersionTorrent');
+        this.setActionPermission.add('PutObjectAcl');
+        this.setActionPermission.add('PutObject');
+        this.setActionPermission.add('PutObjectVersionAcl');
+        this.setActionPermission.add('RestoreObject');
+        this.setActionPermission.add('GetLifecycleConfiguration');
+        this.setActionPermission.add('GetReplicationConfiguration');
+        this.setActionPermission.add('PutAccelerateConfiguration');
+        this.setActionPermission.add('PutLifecycleConfiguration');
+        this.setActionPermission.add('PutReplicationConfiguration');
+        this.setActionPermission.add('DeleteReplicationConfiguration');
+        this.setActionPermission.add('GetAccelerateConfiguration');
+        this.setActionPermission.add('AbortMultipartUpload');
+        this.setActionPermission.add('ListMultipartUploadParts');
+        return;
+      } else if (e == 'CreateBucketCombo') {
+        this.setActionPermission.add('CreateBucket');
+        this.setActionPermission.add('DeleteBucket');
+      } else if (e == 'readDownloadFile') {
+        this.setActionPermission.add('GetObject');
+        this.setActionPermission.add('ListBucket');
+      } else if (e == 'uploadFile') {
+        this.setActionPermission.add('PutObjectAcl');
+        this.setActionPermission.add('PutObject');
+        this.setActionPermission.add('PutObjectVersionAcl');
+      } else if (e == 'cofigBucket') {
+        this.setActionPermission.add('CreateBucket');
+        this.setActionPermission.add('DeleteBucketPolicy');
+        this.setActionPermission.add('DeleteBucket');
+        this.setActionPermission.add('DeleteBucketWebsite');
+        this.setActionPermission.add('GetBucketAcl');
+        this.setActionPermission.add('GetBucketCORS');
+        this.setActionPermission.add('GetBucketLocation');
+        this.setActionPermission.add('GetBucketLogging');
+        this.setActionPermission.add('GetBucketNotification');
+        this.setActionPermission.add('GetBucketPolicy');
+        this.setActionPermission.add('GetBucketRequestPayment');
+        this.setActionPermission.add('GetBucketTagging');
+        this.setActionPermission.add('GetBucketVersioning');
+        this.setActionPermission.add('ListAllMyBuckets');
+        this.setActionPermission.add('ListBucketMultiPartUploads');
+        this.setActionPermission.add('ListBucket');
+        this.setActionPermission.add('ListBucketVersions');
+        this.setActionPermission.add('PutBucketAcl');
+        this.setActionPermission.add('PutBucketCORS');
+        this.setActionPermission.add('PutBucketLogging');
+        this.setActionPermission.add('PutBucketNotification');
+        this.setActionPermission.add('PutBucketPolicy');
+        this.setActionPermission.add('PutBucketRequestPayment');
+        this.setActionPermission.add('PutBucketTagging');
+        this.setActionPermission.add('PutBucketVersioning');
+        this.setActionPermission.add('PutBucketWebsite');
+      } else {
+        this.setActionPermission.add(e);
+      }
+    });
     this.bucketService
       .createBucketPolicy(
         this.bucketName,
         this.permission,
         this.emailUser,
         this.isUserOther,
-        this.listActionPermission
+        Array.from(this.setActionPermission)
       )
       .subscribe({
-        next: (data) => {},
+        next: (data) => {
+          this.notification.success('', 'Tạo mới Bucket Policy thành công');
+          this.searchBucketPolicy();
+        },
         error: (e) => {
-          this.notification.error(
-            '',
-            'Tạo mới Router Interface không thành công'
-          );
+          this.notification.error('', 'Tạo mới Bucket Policy không thành công');
         },
       });
   }
 
   isVisibleUpdate = false;
-  bucketPolicyUpdate: BucketPolicy = new BucketPolicy();
-  modalUpdate(data: any) {
+  bucketPolicyUpdate: bucketPolicyDetail = new bucketPolicyDetail();
+  modalUpdate(sid: string) {
     this.isVisibleCreate = true;
-    this.bucketPolicyUpdate = data;
+    this.getListSubuser();
+    this.setActionPermission.clear();
+    this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
+      next: (data) => {
+        this.bucketPolicyUpdate = data;
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy chi tiết Bucket Policy không thành công'
+        );
+      },
+    });
   }
 
   handleCancelUpdate() {
@@ -145,27 +254,125 @@ export class BucketPolicyComponent implements OnInit {
 
   handleOkUpdate() {
     this.isVisibleUpdate = false;
-    this.notification.success('', 'Chỉnh sửa Bucket Policy thành công');
-    // this.routerInterfaceCreate.regionId = this.regionId;
-    // this.routerInterfaceCreate.routerId = this.routerId;
-    // this.service.createRouterInterface(this.routerInterfaceCreate).subscribe({
-    //   next: (data) => {
-    //
-    //   },
-    //   error: (e) => {
-    //     this.notification.error(
-    //       '',
-    //       'Tạo mới Router Interface không thành công'
-    //     );
-    //   },
-    // });
+    this.listActionPermission.forEach((e) => {
+      if (e == 'selectAll') {
+        this.setActionPermission.add('CreateBucket');
+        this.setActionPermission.add('DeleteBucketPolicy');
+        this.setActionPermission.add('DeleteBucket');
+        this.setActionPermission.add('DeleteBucketWebsite');
+        this.setActionPermission.add('GetBucketAcl');
+        this.setActionPermission.add('GetBucketCORS');
+        this.setActionPermission.add('GetBucketLocation');
+        this.setActionPermission.add('GetBucketLogging');
+        this.setActionPermission.add('GetBucketNotification');
+        this.setActionPermission.add('GetBucketPolicy');
+        this.setActionPermission.add('GetBucketRequestPayment');
+        this.setActionPermission.add('GetBucketTagging');
+        this.setActionPermission.add('GetBucketVersioning');
+        this.setActionPermission.add('ListAllMyBuckets');
+        this.setActionPermission.add('ListBucketMultiPartUploads');
+        this.setActionPermission.add('ListBucket');
+        this.setActionPermission.add('ListBucketVersions');
+        this.setActionPermission.add('PutBucketAcl');
+        this.setActionPermission.add('PutBucketCORS');
+        this.setActionPermission.add('PutBucketLogging');
+        this.setActionPermission.add('PutBucketNotification');
+        this.setActionPermission.add('PutBucketPolicy');
+        this.setActionPermission.add('PutBucketRequestPayment');
+        this.setActionPermission.add('PutBucketTagging');
+        this.setActionPermission.add('PutBucketVersioning');
+        this.setActionPermission.add('PutBucketWebsite');
+        this.setActionPermission.add('DeleteObject');
+        this.setActionPermission.add('DeleteObjectVersion');
+        this.setActionPermission.add('GetObjectAcl');
+        this.setActionPermission.add('GetObject');
+        this.setActionPermission.add('GetObjectTorrent');
+        this.setActionPermission.add('GetObjectVersionAcl');
+        this.setActionPermission.add('GetObjectVersion');
+        this.setActionPermission.add('GetObjectVersionTorrent');
+        this.setActionPermission.add('PutObjectAcl');
+        this.setActionPermission.add('PutObject');
+        this.setActionPermission.add('PutObjectVersionAcl');
+        this.setActionPermission.add('RestoreObject');
+        this.setActionPermission.add('GetLifecycleConfiguration');
+        this.setActionPermission.add('GetReplicationConfiguration');
+        this.setActionPermission.add('PutAccelerateConfiguration');
+        this.setActionPermission.add('PutLifecycleConfiguration');
+        this.setActionPermission.add('PutReplicationConfiguration');
+        this.setActionPermission.add('DeleteReplicationConfiguration');
+        this.setActionPermission.add('GetAccelerateConfiguration');
+        this.setActionPermission.add('AbortMultipartUpload');
+        this.setActionPermission.add('ListMultipartUploadParts');
+        return;
+      } else if (e == 'CreateBucketCombo') {
+        this.setActionPermission.add('CreateBucket');
+        this.setActionPermission.add('DeleteBucket');
+      } else if (e == 'readDownloadFile') {
+        this.setActionPermission.add('GetObject');
+        this.setActionPermission.add('ListBucket');
+      } else if (e == 'uploadFile') {
+        this.setActionPermission.add('PutObjectAcl');
+        this.setActionPermission.add('PutObject');
+        this.setActionPermission.add('PutObjectVersionAcl');
+      } else if (e == 'cofigBucket') {
+        this.setActionPermission.add('CreateBucket');
+        this.setActionPermission.add('DeleteBucketPolicy');
+        this.setActionPermission.add('DeleteBucket');
+        this.setActionPermission.add('DeleteBucketWebsite');
+        this.setActionPermission.add('GetBucketAcl');
+        this.setActionPermission.add('GetBucketCORS');
+        this.setActionPermission.add('GetBucketLocation');
+        this.setActionPermission.add('GetBucketLogging');
+        this.setActionPermission.add('GetBucketNotification');
+        this.setActionPermission.add('GetBucketPolicy');
+        this.setActionPermission.add('GetBucketRequestPayment');
+        this.setActionPermission.add('GetBucketTagging');
+        this.setActionPermission.add('GetBucketVersioning');
+        this.setActionPermission.add('ListAllMyBuckets');
+        this.setActionPermission.add('ListBucketMultiPartUploads');
+        this.setActionPermission.add('ListBucket');
+        this.setActionPermission.add('ListBucketVersions');
+        this.setActionPermission.add('PutBucketAcl');
+        this.setActionPermission.add('PutBucketCORS');
+        this.setActionPermission.add('PutBucketLogging');
+        this.setActionPermission.add('PutBucketNotification');
+        this.setActionPermission.add('PutBucketPolicy');
+        this.setActionPermission.add('PutBucketRequestPayment');
+        this.setActionPermission.add('PutBucketTagging');
+        this.setActionPermission.add('PutBucketVersioning');
+        this.setActionPermission.add('PutBucketWebsite');
+      } else {
+        this.setActionPermission.add(e);
+      }
+    });
+    this.bucketService
+      .updateBucketPolicy(
+        this.bucketName,
+        this.bucketPolicyUpdate.sid,
+        this.bucketPolicyUpdate.permission,
+        this.bucketPolicyUpdate.subuser,
+        this.isUserOther,
+        Array.from(this.setActionPermission)
+      )
+      .subscribe({
+        next: (data) => {
+          this.notification.success('', 'Chỉnh sửa Bucket Policy thành công');
+          this.searchBucketPolicy();
+        },
+        error: (e) => {
+          this.notification.error(
+            '',
+            'Chỉnh sửa Bucket Policy không thành công'
+          );
+        },
+      });
   }
 
   isVisibleDelete: boolean = false;
   bucketPolicyId: string;
-  modalDelete(id: string) {
+  modalDelete(sid: string) {
     this.isVisibleDelete = true;
-    this.bucketPolicyId = id;
+    this.bucketPolicyId = sid;
   }
 
   handleCancelDelete() {
@@ -190,10 +397,20 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   isVisibleJson: boolean = false;
-  bucketPolicy: any;
-  modalJson(item: any) {
+  bucketPolicyDetail: bucketPolicyDetail = new bucketPolicyDetail();
+  modalJson(sid: string) {
     this.isVisibleJson = true;
-    this.bucketPolicy = item;
+    this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
+      next: (data) => {
+        this.bucketPolicyDetail = data;
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy Bucket Policy JSON không thành công'
+        );
+      },
+    });
   }
   handleClose() {
     this.isVisibleJson = false;

@@ -18,6 +18,7 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { NotificationService } from '../../../../../../../libs/common-utils/src';
 
 class SearchParam {
   status: string = '';
@@ -41,8 +42,8 @@ export class InstancesComponent implements OnInit {
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
     { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: 'Đang hoạt động', value: 'KHOITAO' },
+    { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
@@ -67,7 +68,8 @@ export class InstancesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit() {
@@ -75,6 +77,29 @@ export class InstancesComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    
+    this.notificationService.connection.on('UpdateInstance', (data) => {
+      if (data) {
+        let instanceId = data.serviceId;
+
+        var foundIndex = this.dataList.findIndex(x => x.id == instanceId);
+        if (foundIndex > -1) {
+          var record = this.dataList[foundIndex];
+
+          record.status = data.status;
+          record.taskState = data.taskState;
+          record.ipPrivate = data.ipPrivate;
+          record.ipPublic = data.ipPublic;
+
+          this.dataList[foundIndex] = record;
+          this.cdr.detectChanges();
+        }
+      }
+    });
   }
 
   selectedChecked(e: any): void {

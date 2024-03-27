@@ -1,0 +1,64 @@
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <span class="text-card-header">Danh sách IKE Policies</span>
+  <nz-row style="gap: 16px">
+    <nz-col>
+      <nz-input-group [nzPrefix]="prefixIconSearch"
+                      nzSize="large"
+                      style="width: 300px;">
+        <input name="name"
+               nz-input
+               placeholder="Tìm kiếm theo tên"
+              
+               />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+      </ng-template>
+    </nz-col>
+    <nz-col>
+        <button [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/create']" nz-button nzType="primary" nzSize="large">
+            <i nz-icon nzType="plus"></i>
+            <span class="button-text-primary">Tạo mới IKE Policies</span>
+          </button>
+    </nz-col>
+  </nz-row>
+  </div>
+  <nz-table #fixedTable
+            style="margin-top: 20px;">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>VPN Connection</th>
+      <th>Authorization algorithm</th>
+      <th>Encryption algorithm</th>
+      <th>PFS</th>
+      <th nzAlign='center'>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/1']">phase1</a></td>
+      <td>
+        vpn_01
+      </td>
+      <td>sha256</td>
+      <td>aes-256</td>
+      <td>group1</td>
+      <td>
+          <div class="d-flex gap-2 justify-content-center align-items-center">
+            <span
+                style="color: #0066b3; margin-right: 10px; cursor: pointer"
+                nz-icon
+                nzType="edit"
+                nzTheme="outline"
+                [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/edit/1']"
+                [nzPopoverContent]="'Sửa'"
+                nz-popover
+                nzPopoverPlacement="bottom"
+              ></span>
+            <!-- <one-portal-delete-ike-policies></one-portal-delete-ike-policies> -->
+          </div>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>

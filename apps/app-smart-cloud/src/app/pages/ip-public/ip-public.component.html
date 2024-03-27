@@ -73,33 +73,21 @@
           <td>
             <div>
               <!----Gắn----->
-              <span style="color: #0066B3; margin-right: 10px;"
-                    nz-tooltip
-                    nzTooltipTitle="Gắn IP Pulbic" nzTooltipPlacement="bottom"
-                    nz-icon
-                    nzType="plus"
-                    nzTheme="outline"
-                    (click)="openIpMounted('Gắn Ip Pulbic', item.id)"
-                    *ngIf="item.status != 2"></span>
+              <img *ngIf="item.status != 2" style="padding-right: 10px;" src="assets/imgs/add.svg"
+                   nz-tooltip nzTooltipTitle="Gắn IP Pulbic" nzTooltipPlacement="bottom"
+                   (click)="openIpMounted('Gắn Ip Pulbic', item.id)"/>
               <!---Gỡ------>
-              <span style="color: #0066B3; margin-right: 10px;"
-                    nz-tooltip
-                    nzTooltipTitle="Gỡ IP Pulbic" nzTooltipPlacement="bottom"
-                    nz-icon nzType="close" nzTheme="outline" (click)="openIpMounted('Gỡ Ip Pulbic', item.id)"
-                    *ngIf="item.status == 2"></span>
+              <img *ngIf="item.status == 2" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
+                   nz-tooltip nzTooltipTitle="Gỡ IP Pulbic" nzTooltipPlacement="bottom"
+                   (click)="openIpMounted('Gỡ Ip Pulbic', item.id)"/>
               <!---Gia Han------>
-              <span style="color: #0066B3; margin-right: 10px;"
-                    nz-tooltip
-                    nzTooltipTitle="Gia Hạn IP Pulbic" nzTooltipPlacement="bottom"
-                    nz-icon nzType="clock-circle" nzTheme="outline"
-                    (click)="openIpMounted('Gia Hạn Ip Pulbic', item.id)" *ngIf="projectType != 1"></span>
+              <img *ngIf="projectType != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                   nz-tooltip nzTooltipTitle="Gia Hạn IP Pulbic" nzTooltipPlacement="bottom"
+                   (click)="openIpMounted('Gia Hạn Ip Pulbic', item.id)"/>
               <!----Xóa---->
-              <span style="color: #0066B3"
-                    nz-tooltip
-                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                    nz-icon nzType="delete" nzTheme="outline"
-                    (click)="openIpMounted('Xóa', item.id)"
-                    *ngIf="projectType != 1"></span>
+              <img src="assets/imgs/delete.svg" style="height: 20px"
+                   nz-tooltip nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                   (click)="openIpMounted('Xóa', item.id)"/>
             </div>
           </td>
         </tr>
@@ -138,9 +126,10 @@
           nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>
-    <br>
-    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>
+    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>
+<!--    <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>-->
+<!--    <br>-->
+<!--    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>-->
   </ng-container>
 </nz-modal>
 
