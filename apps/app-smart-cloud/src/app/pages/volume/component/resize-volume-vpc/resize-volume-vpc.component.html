@@ -40,7 +40,7 @@
         <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleStatus">
               <span *ngIf="volumeInfo?.status === 'KHOITAO'"
-                    style="color: #6abe39"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
+                    style="color: #0074CC"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
           <span *ngIf="volumeInfo?.status === 'ERROR'"
                 style="color: #FF3333"><b>{{ volumeStatus?.get(volumeInfo?.status) }}</b></span>
           <span *ngIf="volumeInfo?.status === 'SUSPENDED'"

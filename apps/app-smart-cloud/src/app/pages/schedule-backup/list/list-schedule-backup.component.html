@@ -7,7 +7,7 @@
         Dịch vụ
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/schedule/list">Lập lịch Backup</a>
+        <a routerLink="/app-smart-cloud/schedule/backup/list">Lập lịch Backup</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -15,6 +15,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
@@ -46,23 +47,12 @@
                      (input)="onInputChange($event.target['value'])"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img
-                src="assets/imgs/search.svg"
-                alt=""
-                style="cursor: pointer"
-                nz-tooltip="Tìm kiếm" />
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button
-              nz-button
-              nzType="primary"
-              nzSize="large"
-              (click)="navigateToCreate()">
-              <img
-                style="padding-right: 10px; margin-top: -4px"
-                src="assets/imgs/add-circle.svg"
-                alt="" />
+            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">Tạo mới</span>
             </button>
           </nz-col>
@@ -76,8 +66,9 @@
                     [nzPageSize]="response?.pageSize"
                     [nzPageIndex]="response?.currentPage"
                     [nzLoading]="isLoading"
-                    [nzScroll]="{ x: '1200px', y: '240px' }"
-                    (nzQueryParams)="onQueryParamsChange($event)">
+                    [nzScroll]="{ x: '100%', y: '55vh' }"
+                    (nzPageSizeChange)="onPageSizeChange($event)"
+                    (nzPageIndexChange)="onPageIndexChange($event)">
             <thead>
             <tr>
               <th nzLeft nzWidth="120px">Tên</th>
@@ -136,119 +127,24 @@
               <td nzAlign="center" nzBreakWord>
                 <div [ngSwitch]="data.status">
                   <div *ngSwitchCase="'ACTIVE'">
-                    <button nz-button
-                            [nzType]="'primary'"
-                            nz-dropdown
-                            [nzDropdownMenu]="opMenu">
-                      <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
-                    </button>
-                    <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                      <ul nz-menu>
-                        <li nz-menu-item (click)="navigateToEdit(data.serviceType, data.id)">Chỉnh sửa</li>
-                        <li nz-menu-item (click)="showModalPaused(data.id)">Tạm dừng</li>
-                        <nz-modal [(nzVisible)]="isVisiblePaused" nzTitle="Xác nhận tạm dừng lịch backup"
-                                  (nzOnCancel)="handlePausedCancel()" nzCentered>
-                          <div *nzModalTitle>
-                            <p class="text-h5"><b>Xác nhận tạm dừng lịch backup</b></p>
-                          </div>
-                          <div *nzModalContent>
-                            <p class="text-p">Qúy khách có chắc chắn muốn tạm dừng lịch backup</p>
-                          </div>
-                          <div *nzModalFooter>
-                            <button nz-button nzType="default" (click)="handlePausedCancel()"
-                                    class="button-cancel">Hủy
-                            </button>
-                            <button nz-button nzType="primary" (click)="handlePausedOk()"
-                                    [nzLoading]="isLoadingModalPaused"
-                                    class="button-ok">Đồng ý
-                            </button>
-                          </div>
-                        </nz-modal>
-                        <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
-                        <one-portal-delete-schedule
-                          [isVisible]="isVisibleDelete"
-                          [isLoading]="isLoadingDelete"
-                          (onOk)="handleDeletedOk()"
-                          (onCancel)="handleDeleteCancel()" />
-                      </ul>
-                    </nz-dropdown-menu>
+                    <span nz-icon
+                          nzType="edit"
+                          nzTheme="outline"
+                          nz-popover
+                          [nzPopoverContent]="'Chỉnh sửa'"
+                          nzPopoverPlacement="bottom"
+                          style="color: #0066B3; margin-right: 10px; cursor: pointer;"
+                          (click)="navigateToEdit(data.serviceType, data.id)"></span>
+                    <one-portal-stop-schedule [id]="data.id" (onOk)="handlePausedOk()"/>
+                    <one-portal-delete-schedule [id]="data.id" (onOk)="handleDeletedOk()"/>
                   </div>
                   <div *ngSwitchCase="'DISABLED'">
-                    <button nz-button
-                            [nzType]="'primary'"
-                            nz-dropdown
-                            [nzDropdownMenu]="opMenu">
-                      <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
-                    </button>
-                    <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                      <ul nz-menu>
-                        <li nz-menu-item (click)="showModalRestore(data.id)">Khôi phục</li>
-                        <nz-modal [(nzVisible)]="isVisibleRestore"
-                                  nzTitle="Khôi phục lập lịch backup bị tạm dừng"
-                                  (nzOnCancel)="handleRestoreCancel()" nzCentered>
-                          <div *nzModalTitle>
-                            <p class="text-h5"><b>Khôi phục lập lịch backup bị tạm dừng</b></p>
-                          </div>
-                          <div *nzModalContent>
-                            <p class="text-p">Qúy khách có chắc chắn muốn khôi phục lại lịch backup về
-                              trạng thái ban đầu</p>
-                          </div>
-                          <div *nzModalFooter>
-                            <button nz-button nzType="default" (click)="handleRestoreCancel()"
-                                    class="button-cancel">Hủy
-                            </button>
-                            <button nz-button nzType="primary" (click)="handleRestoredOk()"
-                                    [nzLoading]="isLoadingRestore"
-                                    class="button-ok">Đồng ý
-                            </button>
-                          </div>
-                        </nz-modal>
-                        <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
-                        <one-portal-delete-schedule
-                          [isVisible]="isVisibleDelete"
-                          [isLoading]="isLoadingDelete"
-                          (onOk)="handleDeletedOk()"
-                          (onCancel)="handleDeleteCancel()" />
-                      </ul>
-                    </nz-dropdown-menu>
+                    <one-portal-restore-schedule [id]="data.id" (onOk)="handleRestoredOk()"/>
+                    <one-portal-delete-schedule [id]="data.id" (onOk)="handleDeletedOk()"/>
                   </div>
                   <div *ngSwitchCase="'PAUSED'">
-                    <button nz-button
-                            [nzType]="'primary'"
-                            nz-dropdown
-                            [nzDropdownMenu]="opMenu">
-                      <span>Chọn thao tác</span> <i nz-icon nzType="down"></i>
-                    </button>
-                    <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                      <ul nz-menu>
-                        <li nz-menu-item (click)="showModalPlay(data.id)">Tiếp tục</li>
-                        <nz-modal [(nzVisible)]="isVisiblePlay"
-                                  nzTitle="Xác nhận tiếp tục lịch backup đã tạm dừng"
-                                  (nzOnCancel)="handlePlayCancel()" nzCentered>
-                          <div *nzModalTitle>
-                            <p class="text-h5"><b>Xác nhận tiếp tục lịch backup đã tạm dừng</b></p>
-                          </div>
-                          <div *nzModalContent>
-                            <p class="text-p">Qúy khách có chắc chắn muốn tiếp tục lịch backup</p>
-                          </div>
-                          <div *nzModalFooter>
-                            <button nz-button nzType="default" (click)="handlePlayCancel()"
-                                    class="button-cancel">Hủy
-                            </button>
-                            <button nz-button nzType="primary" (click)="handlePlaydOk()"
-                                    [nzLoading]="isLoadingPlay"
-                                    class="button-ok">Đồng ý
-                            </button>
-                          </div>
-                        </nz-modal>
-                        <li nz-menu-item (click)="showModalDelete(data.id)">Xóa</li>
-                        <one-portal-delete-schedule
-                          [isVisible]="isVisibleDelete"
-                          [isLoading]="isLoadingDelete"
-                          (onOk)="handleDeletedOk()"
-                          (onCancel)="handleDeleteCancel()" />
-                      </ul>
-                    </nz-dropdown-menu>
+                    <one-portal-replay-schedule [id]="data.id" (onOk)="handlePlaydOk()"/>
+                    <one-portal-delete-schedule [id]="data.id" (onOk)="handleDeletedOk()"/>
                   </div>
                 </div>
               </td>
@@ -257,12 +153,12 @@
           </nz-table>
         </div>
         <div style="margin-top: 30px;">
-          <h3>Thông tin dung lượng Backup</h3>
+          <span class="text-card-header">Thông tin dung lượng Backup</span>
           <nz-table #tableScheduleCapacityBackup
                     [nzData]="responseCapacityBackup"
                     nzShowSizeChanger
-                    [nzScroll]="{ x: '1000px', y: '240px' }"
-                    [nzLoading]="loadingCapacity">
+                    [nzScroll]="{ x: '100%', y: '55vh' }"
+                    [nzLoading]="loadingCapacity" style="margin-top: 15px;">
             <thead>
             <tr>
               <th nzLeft>Tên Backup</th>
