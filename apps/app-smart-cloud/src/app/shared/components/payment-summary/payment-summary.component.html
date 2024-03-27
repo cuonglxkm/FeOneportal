@@ -53,7 +53,8 @@
       >
         <thead>
           <tr>
-            <th>Dịch vụ</th>
+            <th>Tên dịch vụ</th>
+            <th>Hình thức</th>
             <th nzAlign="right">Đơn giá (VND)</th>
             <th nzAlign="right">Thời hạn (Tháng)</th>
             <th nzAlign="right">Số lượng</th>
@@ -63,6 +64,7 @@
         <tbody>
           <tr *ngFor="let item of listServiceInfo; let i = index">
             <td class="text-blue">{{ item.name }}</td>
+            <td>{{ item.type }}</td>
             <td nzAlign="right">{{ item.price | number: '1.0-0'  }}</td>
             <td nzAlign="right">{{ item.duration }}</td>
             <td nzAlign="right">{{ item.amount }}</td>

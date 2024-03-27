@@ -46,7 +46,7 @@ export class OrderListComponent implements OnInit {
   
   value?: string;
   actionSelected: number;
-
+  isVisibleError: boolean = false
   onQueryParamsChange(params: NzTableQueryParams) {
     const { pageSize, pageIndex } = params;
     this.pageSize = pageSize;
@@ -125,6 +125,19 @@ export class OrderListComponent implements OnInit {
 
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
+  }
+
+  handleNavigateToContact(){
+
+  }
+
+  handleCancel(){
+    this.isVisibleError = false
+  }
+
+
+  handleOpenError(){
+    this.isVisibleError = true
   }
 
 
