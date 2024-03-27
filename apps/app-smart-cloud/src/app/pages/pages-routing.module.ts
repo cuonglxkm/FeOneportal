@@ -114,7 +114,6 @@ import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ObjectStorageComponent } from "./object-storage/object-storage.component";
 import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
-import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
 import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
 import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent} from "./object-storage/s3-key/s3-key.component";
