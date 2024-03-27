@@ -117,12 +117,15 @@
         <td>
           <div>
             <!--            <img  style="padding-right: 5px;" src="assets/imgs/document-download.svg" alt=""/>-->
-            <span style="color: #0066B3; margin-right: 10px;" *ngIf="item.objectType != 'folder'"
-                  nz-tooltip
-                  nzTooltipTitle="Tải xuống" nzTooltipPlacement="bottom"
-                  nz-icon nzType="download" nzTheme="outline" (click)="doAction('3',item)"></span>
+<!--            <span style="color: #0066B3; margin-right: 10px;" *ngIf="item.objectType != 'folder'"-->
+<!--                  nz-tooltip-->
+<!--                  nzTooltipTitle="" nzTooltipPlacement="bottom"-->
+<!--                  nz-icon nzType="download" nzTheme="outline" (click)="doAction('3',item)"></span>-->
+            <img src="assets/imgs/download.svg" style="margin-right: 10px;height: 20px" *ngIf="item.objectType != 'folder'"
+                 nz-tooltip nzTooltipTitle="Tải xuống" nzTooltipPlacement="bottom"
+                 (click)="doAction('3',item)"/>
             <a *ngIf="item.objectType != 'folder'" nz-dropdown [nzDropdownMenu]="menu">
-              <span nz-icon nzType="more"></span>
+              <img src="assets/imgs/more.svg" style="height: 20px" *ngIf="item.objectType != 'folder'"/>
             </a>
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
@@ -134,14 +137,20 @@
                 <li nz-menu-item (click)="doAction('5',item)" style="color: red">Xóa</li>
               </ul>
             </nz-dropdown-menu>
-            <span style="color: #0066B3; margin-right: 10px;" *ngIf="item.objectType == 'folder'"
-                  nz-tooltip
-                  nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
-                  nz-icon nzType="eye" nzTheme="outline" (click)="doAction('4',item)"></span>
-            <span style="color: #0066B3" *ngIf="item.objectType == 'folder'"
-                  nz-tooltip
-                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
-                  nz-icon nzType="delete" nzTheme="outline" (click)="doAction('5',item)"></span>
+<!--            <span style="color: #0066B3; " -->
+<!--                  nz-tooltip-->
+<!--                  nzTooltipTitle="" nzTooltipPlacement="bottom"-->
+<!--                  nz-icon nzType="" nzTheme="outline" (click)="doAction('4',item)"></span>-->
+<!--            <span style="color: #0066B3" -->
+<!--                  nz-tooltip-->
+<!--                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"-->
+<!--                  nz-icon nzType="delete" nzTheme="outline" ></span>-->
+            <img src="assets/imgs/eye.svg" style="margin-right: 10px;height: 20px" *ngIf="item.objectType == 'folder'"
+                 nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+                 (click)="doAction('4',item)"/>
+            <img src="assets/imgs/delete.svg" style="height: 20px" *ngIf="item.objectType == 'folder'"
+                 nz-tooltip nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                 (click)="doAction('5',item)"/>
           </div>
         </td>
       </tr>
@@ -173,15 +182,15 @@
         </td>
         <td style="width: 20%">
           <nz-select *ngIf="item.name == 'Tên'" [(ngModel)]="item.condition"
-                     (ngModelChange)="selectCondition(item.orderNum, 1,$event)" nzSize="large" style="width: 100%;">
+                     (ngModelChange)="selectCondition(item.orderNum, 1,$event)" nzSize="large" [nzPlaceHolder]="item.condition" style="width: 100%;">
             <nz-option *ngFor="let p of conditionNameReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
           <nz-select *ngIf="item.name == 'Thời gian chỉnh sửa'" [(ngModel)]="item.condition"
-                     (ngModelChange)="selectCondition(item.orderNum, 2,$event)" nzSize="large" style="width: 100%;">
+                     (ngModelChange)="selectCondition(item.orderNum, 2,$event)" nzSize="large" [nzPlaceHolder]="item.condition" style="width: 100%;">
             <nz-option *ngFor="let p of conditionTimeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
           <nz-select *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.condition"
-                     (ngModelChange)="selectCondition(item.orderNum, 3,$event)" nzSize="large" style="width: 100%;">
+                     (ngModelChange)="selectCondition(item.orderNum, 3,$event)" nzSize="large" [nzPlaceHolder]="item.condition" style="width: 100%;">
             <nz-option *ngFor="let p of conditionCapacityReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
         </td>
@@ -193,12 +202,12 @@
           <nz-input-number *ngIf="item.name == 'Dung lượng'" [(ngModel)]="item.value"
                            [nzMin]="0" [nzMax]="62" [nzStep]="1" nzSize="large" style="width: 60%;"></nz-input-number>
           <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Lớn hơn'" [(ngModel)]="item.type"
-                     (ngModelChange)="selectType(item.condition, $event)" nzSize="large"
+                     (ngModelChange)="selectType(item.condition, $event)" nzSize="large" [nzPlaceHolder]="item.type"
                      style="width: 30%;margin-left: 5%;">
             <nz-option *ngFor="let p of capMoreTypeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>
           <nz-select *ngIf="item.name == 'Dung lượng' && item.condition == 'Nhỏ hơn'" [(ngModel)]="item.type"
-                     (ngModelChange)="selectType(item.condition, $event)" nzSize="large"
+                     (ngModelChange)="selectType(item.condition, $event)" nzSize="large" [nzPlaceHolder]="item.type"
                      style="width: 30%;margin-left: 5%;">
             <nz-option *ngFor="let p of capLessTypeReal" [nzValue]="p" [nzLabel]="p"></nz-option>
           </nz-select>

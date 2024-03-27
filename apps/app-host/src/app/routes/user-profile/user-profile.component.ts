@@ -117,8 +117,8 @@ export class UserProfileComponent implements OnInit {
     let updatedUser = {
       id: this.userModel.id,
       email: this.form.controls['email'].value!,
-      firstName: this.form.controls['surname'].value!,
-      lastName: this.form.controls['name'].value!,
+      firstName: this.form.controls['name'].value!,
+      lastName: this.form.controls['surname'].value!,
       phoneNumber: this.form.controls['phone'].value!,
       province: this.form.controls['province'].value!,
       address: this.form.controls['address'].value!,

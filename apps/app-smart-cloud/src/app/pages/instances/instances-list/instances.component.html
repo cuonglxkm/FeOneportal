@@ -138,8 +138,7 @@
           >
         </td>
         <td nzBreakWord>
-          {{ data.flavorName }}
-          <!-- flavorId với flavorCloudId(mã dưới hệ thống openstack) ạ -->
+          {{ data.flavorName | slice : 3}}
         </td>
         <td nzBreakWord>
           <div style="color: #0066b3">
@@ -198,7 +197,7 @@
                 Tắt máy ảo
               </li>
               <li
-                *ngIf="data.taskState == 'SHUTOFF'"
+                *ngIf="data.taskState == 'SHUTOFF' || data.taskState == 'powering-off'"
                 nz-menu-item
                 (click)="showModalStart(data.id)"
               >

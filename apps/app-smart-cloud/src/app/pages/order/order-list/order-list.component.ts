@@ -9,6 +9,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PopupAddVolumeComponent } from '../../volume/component/popup-volume/popup-add-volume.component';
 import { OrderService } from '../../../shared/services/order.service';
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-order',
@@ -43,10 +44,10 @@ export class OrderListComponent implements OnInit {
   totalData: number;
   isLoadingEntities: boolean;
   customerID: number;
-  
+
   value?: string;
   actionSelected: number;
-
+  isVisibleError: boolean = false
   onQueryParamsChange(params: NzTableQueryParams) {
     const { pageSize, pageIndex } = params;
     this.pageSize = pageSize;
@@ -127,10 +128,22 @@ export class OrderListComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
+  handleNavigateToContact(){
+
+  }
+
+  handleCancel(){
+    this.isVisibleError = false
+  }
+
+
+  handleOpenError(){
+    this.isVisibleError = true
+  }
+
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.searchSnapshotScheduleList();
   }
 
   projectChanged(project: ProjectModel) {
