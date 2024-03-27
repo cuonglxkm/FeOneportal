@@ -3,7 +3,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { FormDetailEndpointGroup } from 'src/app/shared/models/ipsec-policy';
+import { FormDetailEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { ActivatedRoute, Router } from '@angular/router';
 

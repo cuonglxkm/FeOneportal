@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { FormCreateEndpointGroup } from 'src/app/shared/models/ipsec-policy';
+import { FormCreateEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
