@@ -6,12 +6,15 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/volumes'">
-          Volume
-        </a></nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Điều chỉnh dung lượng Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
@@ -39,10 +42,11 @@
             <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}}</nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleIOPS">{{volumeInfo?.iops}}</nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'hdd'">{{ this.iops }}</nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'ssd'">{{ this.iops }}</nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleStatus">
               <span *ngIf="volumeInfo?.status === 'KHOITAO'"
-                    style="color: #6abe39">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
+                    style="color: #0074CC">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
               <span *ngIf="volumeInfo?.status === 'ERROR'"
                     style="color: #FF3333">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
               <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
@@ -56,25 +60,25 @@
               <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
           </nz-descriptions>
           <ng-template #titleName>
-            <span><b>Tên Volume:</b></span>
+            <span><b>Tên Volumes</b></span>
           </ng-template>
           <ng-template #titleType>
-            <span><b>Loại Volume:</b></span>
+            <span><b>Loại Volume</b></span>
           </ng-template>
           <ng-template #titleStorage>
-            <span><b>Dung lượng:</b></span>
+            <span><b>Dung lượng</b></span>
           </ng-template>
           <ng-template #titleIOPS>
-            <span><b>IOPS:</b></span>
+            <span><b>IOPS</b></span>
           </ng-template>
           <ng-template #titleStatus>
-            <span><b>Trạng thái Volume:</b></span>
+            <span><b>Trạng thái Volume</b></span>
           </ng-template>
           <ng-template #titleAttachInstance>
-            <span><b>Gán vào máy ảo:</b></span>
+            <span><b>Gán vào máy ảo</b></span>
           </ng-template>
           <ng-template #titleVolumeType>
-            <span><b>Kiểu Volume:</b></span>
+            <span><b>Kiểu Volume</b></span>
           </ng-template>
           <div style="margin-top: 15px;">
             <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
@@ -106,7 +110,8 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
               <nz-input-number formControlName="storage"
                                id="storage"
-                               style="width: 100%;"
+                               style="width: 100%; margin-left: 0;"
+                               class="input-custom"
                                [nzMin]="volumeInfo?.sizeInGB"
                                (ngModelChange)="changeValueInput()"
                                [nzStep]="1"/>

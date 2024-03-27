@@ -94,15 +94,12 @@ export class RenewVolumeComponent implements OnInit {
       this.estimateExpireDate = new Date(exp);
       console.log('old', this.volumeInfo?.expirationDate);
       if (data.attachedInstances != null) {
-        this.attachedDto = data.attachedInstances;
+        this.volumeInfo.attachedInstances?.forEach(item => {
+          this.listVMs += item.instanceName.toString() + ', '
+        })
+        this.getTotalAmount()
       }
 
-      if (this.attachedDto.length > 1) {
-        this.attachedDto.forEach(vm => {
-          this.listVMs += vm.instanceName + '\n';
-        });
-      }
-      this.getTotalAmount()
     }, error => {
       this.isLoading = false;
       this.volumeInfo = null;

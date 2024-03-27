@@ -158,13 +158,15 @@ export class IpPublicComponent implements OnInit {
     const request = {
       id: this.id
     }
-    this.service.attachIpPublic(request).subscribe(
+    this.service.attachIpPublic(request)
+      .pipe(finalize(() => {this.getData(false);}))
+      .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Xóa thành công Ip Public')
+          this.notification.success('Thành công', 'Gỡ thành công Ip Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Xóa thất bại Ip Public')
+          this.notification.error('Thất bại', 'Gỡ thất bại Ip Public')
         },
       }
     )
