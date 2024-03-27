@@ -185,8 +185,10 @@ export class VolumeComponent implements OnInit {
 
   }
 
-  navigateToCreateScheduleBackup() {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/create']);
+  navigateToCreateScheduleBackup(id) {
+    this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
+      queryParams: {type: 'VOLUME', idVolume: id}
+    });
   }
 
   navigateToCreate() {
@@ -207,7 +209,7 @@ export class VolumeComponent implements OnInit {
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
-    
+
     this.notificationService.connection.on('UpdateVolume', (data) => {
       if (data) {
         let volumeId = data.serviceId;

@@ -23,7 +23,7 @@
     >
     <br />
     <span>Mã thanh toán: </span><span>{{ paymentCode }}</span>
-    <span> - Tổng tiền: </span><span>{{ payment.totalAmount }}</span> <br />
+    <span> - Tổng tiền: </span><span>{{ payment.totalAmount | number : '1.0-1' }} VND</span> <br />
     <span> Kiểu thanh toán: Online</span>
   </div>
 </nz-card>

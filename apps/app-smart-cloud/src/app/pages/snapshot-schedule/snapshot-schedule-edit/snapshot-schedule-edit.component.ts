@@ -36,6 +36,9 @@ export class SnapshotScheduleEditComponent implements OnInit {
   project: number;
   scheduleSnapshot: ScheduleSnapshotVL = new ScheduleSnapshotVL();
   updateScheduleSnapshot: UpdateScheduleSnapshot = new UpdateScheduleSnapshot();
+  snapshotMode: string = 'Theo tuần';
+  numberOfweek: string = '1 tuần'
+  numberArchivedCopies = 1;
 
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 

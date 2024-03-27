@@ -112,26 +112,47 @@
           </form>
         </nz-form-control>
         <!--        xóa-->
-        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Các nhận xóa xóa backup volume này?"
+        <nz-modal [(nzVisible)]="isVisibleDelete"
                   (nzOnCancel)="handleCancel(myForm)" nzOkText="Đồng ý" [nzCancelText]="'Hủy'"
                   (nzOnOk)="handleDelete(data.id)">
-          <ng-container *nzModalContent>
-            <h3 style="font-weight: normal">Quý khách chắc chắn muốn xóa Backup Volume?</h3>
+          <ng-container *nzModalTitle>
+            <span class="text-modal-title">Các nhận xóa xóa backup volume này?</span>
           </ng-container>
+          <ng-container *nzModalContent>
+            <span class="text-label">Quý khách chắc chắn muốn xóa Backup Volume?</span>
+          </ng-container>
+
         </nz-modal>
         </tbody>
       </nz-table>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <nz-result [nzIcon]="customIcon" nzTitle="Backup Volume - Sao lưu,bảo mật" style="width:70%; margin-left:15%"
-                 nzSubTitle="Giải pháp ỗ trợ sao lưu,nhân bản một phần hoặc toàn bộ hệ thống máy chủ doanh nghiệp hạ tầng trên điện toán đám mây,đảm bảo dự phòng trong việc vận hành khi hệ thống chính gặp lỗi hoặc những sự cố không mong muốn">
-        <ng-template #customIcon>
-          <img src="assets/imgs/backup-volume.png" alt="Custom Icon">
-        </ng-template>
-        <div nz-result-extra>
-          <button (click)="goScheduleBackupVolume()" nz-button nzType="primary">Khởi tạo ngay</button>
-        </div>
-      </nz-result>
+      <nz-card>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="assets/imgs/backup-volume.png" alt="">
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">Backup Volume - Sao lưu, bảo mật</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">Giải pháp hỗ trợ sao lưu, nhân bản một phần hoặc toàn bộ hệ thống máy chủ
+                  doanh nghiệp lên hạ tầng điện toán đám mây, đảm bảo dự phòng cho việc vận hành khi hệ thống chính gặp
+                  lỗi hoặc những sự cố không mong muốn.</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+                  routerLink="/app-smart-cloud/schedule/backup/create" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            Khởi tạo ngay
+          </button>
+        </result>
+      </nz-card>
     </ng-container>
   </ng-container>
 </nz-card>

@@ -24,23 +24,29 @@ export class CreateScheduleBackupComponent implements OnInit{
     radio: [''],
   })
 
+  id: number
+
   backupVmId: number
 
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
-              private route: ActivatedRoute,
-              private router: Router,) {
+              private router: Router,
+              private activatedRoute: ActivatedRoute) {
   }
 
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.router.navigate(['/app-smart-cloud/schedule/list'])
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
 
   }
 
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+  }
+
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project
   }
 
   goBack() {
@@ -52,6 +58,14 @@ export class CreateScheduleBackupComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(data => {
+      console.log(data['idVolume'])
+      this.selectedValueRadio = data['type']
+      this.id = data['idVolume']
+      if(data['type'] == null || data['type'] == undefined) {
+        this.selectedValueRadio = 'VM'
+      }
+    })
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
