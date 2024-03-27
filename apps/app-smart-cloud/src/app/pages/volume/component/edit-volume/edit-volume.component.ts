@@ -223,12 +223,13 @@ export class EditVolumeComponent implements OnInit {
         if(this.volumeInfo?.instanceId != null) {
           this.getInstanceById(this.volumeInfo?.instanceId)
         }
-
-        if(this.volumeInfo.attachedInstances != null) {
-          this.volumeInfo.attachedInstances.forEach(item => {
+        console.log('volumesInfo', this.volumeInfo.attachedInstances)
+        if(data?.attachedInstances != null) {
+          this.volumeInfo.attachedInstances?.forEach(item => {
             this.listVMs += item.instanceName.toString() + ', '
           })
         }
+        this.getTotalAmount()
 
         //Thoi gian su dung
         const createDate = new Date(this.volumeInfo?.creationDate);

@@ -1,12 +1,32 @@
-<one-portal-header
-        title="Lập lịch Backup"
-        [path]="['Home', 'Dịch vụ', 'Lập lịch Backup']"
-        [regionId]="region"
-        (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
-/>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Danh sách lịch Backup'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Backup
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/schedule/backup/list">Lập lịch Backup</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
 <nz-content>
     <nz-card>
-        <div class="title"><h3>Điều chỉnh Backup</h3></div>
+        <span class="text-card-header">Điều chỉnh Backup</span>
         <nz-row>
             <div style="display: block;">
                 <label nz-radio nzValue="VM" class="label" [ngModel]="true" [nzDisabled]="true">Backup VM</label>

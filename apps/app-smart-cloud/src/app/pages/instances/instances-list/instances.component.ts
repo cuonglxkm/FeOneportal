@@ -42,8 +42,8 @@ export class InstancesComponent implements OnInit {
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
     { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: 'Đang hoạt động', value: 'KHOITAO' },
+    { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];

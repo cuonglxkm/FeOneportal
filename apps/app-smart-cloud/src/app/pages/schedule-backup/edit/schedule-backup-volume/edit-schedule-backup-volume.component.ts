@@ -86,12 +86,12 @@ export class EditScheduleBackupVolumeComponent {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
 
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
   }
 
   validateSpecialCharacters(control) {

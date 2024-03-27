@@ -243,10 +243,6 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
-  addOldFilterToReality() {
-
-  }
-
   addToReality(data: any) {
     this.addtoListString(this.colReal, data.name);
     if (data.name == 'Tên') {
