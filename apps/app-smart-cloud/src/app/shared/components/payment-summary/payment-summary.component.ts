@@ -66,7 +66,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
-      console.log({path: this.returnPath});
+      console.log({ path: this.returnPath });
       const myOrder = state.data;
       console.log(state.data);
       
@@ -103,7 +103,7 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = 'Gia hạn IP';
             break;
           case 'k8s_create':
-            this.serviceType = "k8s";
+            this.serviceType = 'k8s';
             serviceItem.name = 'Tạo cluster';
             break;
           case 'objectstorage_create':
@@ -233,12 +233,7 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // for test when k8s needn't pay
-          if (this.serviceType == "k8s") {
-            this.router.navigate([`/app-smart-cloud/order/detail/${data.data.id}`]);
-          } else {
-            window.location.href = data.data;
-          }
+          window.location.href = data.data;
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');

@@ -1,64 +1,98 @@
-<div style="display: flex; justify-content: space-between; align-items: center;">
-    <span class="text-card-header">Danh sách IPsec Policies</span>
+<div style="display: flex; justify-content: space-between; align-items: center">
+  <span class="text-card-header">Danh sách IPsec Policies</span>
   <nz-row style="gap: 16px">
     <nz-col>
-      <nz-input-group [nzPrefix]="prefixIconSearch"
-                      nzSize="large"
-                      style="width: 300px;">
-        <input name="name"
-               nz-input
-               placeholder="Tìm kiếm theo tên"
-              
-               />
+      <nz-input-group
+        [nzPrefix]="prefixIconSearch"
+        nzSize="large"
+        style="width: 300px"
+      >
+        <input
+          [(ngModel)]="value"
+          nz-input
+          placeholder="Tìm kiếm theo tên"
+          (input)="onInputChange($event.target['value'])"
+        />
       </nz-input-group>
       <ng-template #prefixIconSearch>
-        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+        <img
+          src="assets/imgs/search.svg"
+          alt=""
+          style="cursor: pointer"
+          nz-tooltip="Tìm kiếm"
+        />
       </ng-template>
     </nz-col>
     <nz-col>
-        <button [routerLink]="['/app-smart-cloud/vpn-site-to-site/ipsec-policies/create']" nz-button nzType="primary" nzSize="large">
-            <i nz-icon nzType="plus"></i>
-            <span class="button-text-primary">Tạo mới IPsec Policies</span>
-          </button>
+      <button
+        [routerLink]="[
+          '/app-smart-cloud/vpn-site-to-site/ipsec-policies/create'
+        ]"
+        nz-button
+        nzType="primary"
+        nzSize="large"
+      >
+        <i nz-icon nzType="plus"></i>
+        <span class="button-text-primary">Tạo mới IPsec Policies</span>
+      </button>
     </nz-col>
   </nz-row>
-  </div>
-  <nz-table #fixedTable
-            style="margin-top: 20px;">
-    <thead>
+</div>
+<nz-table
+  #fixedTable
+  style="margin-top: 20px"
+  [nzData]="response?.records"
+  [nzPageSize]="response?.pageSize"
+  (nzPageSizeChange)="onPageSizeChange($event)"
+  [nzPageIndex]="response?.currentPage"
+  (nzPageIndexChange)="onPageIndexChange($event)"
+  [nzTotal]="response?.totalCount"
+  [nzFrontPagination]="false"
+  [nzLoading]="isLoading"
+>
+  <thead>
     <tr>
       <th>Name</th>
       <th>VPN Connection</th>
       <th>Authorization algorithm</th>
       <th>Encryption algorithm</th>
       <th>PFS</th>
-      <th nzAlign='center'>Actions</th>
+      <th nzAlign="center">Actions</th>
     </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/ipsec-policies/1']">phase1</a></td>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of fixedTable.data; index as i">
       <td>
-        vpn_01
+        <a
+          [routerLink]="['/app-smart-cloud/vpn-site-to-site/ipsec-policies/' + data.id]"
+          >{{ data.name }}</a
+        >
       </td>
-      <td>sha256</td>
-      <td>aes-256</td>
-      <td>group1</td>
+      <td>{{ data.authorizationAlgorithm }}</td>
+      <td>{{ data.authorizationAlgorithm }}</td>
+      <td>{{ data.encryptionAlgorithm }}</td>
+      <td>{{ data.perfectForwardSecrecy }}</td>
       <td>
-          <div class="d-flex gap-2 justify-content-center align-items-center">
-            <span
-                style="color: #0066b3; margin-right: 10px; cursor: pointer"
-                nz-icon
-                nzType="edit"
-                nzTheme="outline"
-                [routerLink]="['/app-smart-cloud/vpn-site-to-site/ipsec-policies/edit/1']"
-                [nzPopoverContent]="'Sửa'"
-                nz-popover
-                nzPopoverPlacement="bottom"
-              ></span>
-            <one-portal-delete-ipsec-policies></one-portal-delete-ipsec-policies>
-          </div>
+        <div class="d-flex gap-2 justify-content-center align-items-center">
+          <span
+            style="color: #0066b3; margin-right: 10px; cursor: pointer"
+            nz-icon
+            nzType="edit"
+            nzTheme="outline"
+            [routerLink]="[
+              '/app-smart-cloud/vpn-site-to-site/ipsec-policies/edit/' + data.id
+            ]"
+            [nzPopoverContent]="'Sửa'"
+            nz-popover
+            nzPopoverPlacement="bottom"
+          ></span>
+          <one-portal-delete-ipsec-policies [region]="region"
+          [project]="project"
+          [ipsecpolicyid]="data.id"
+          [nameIpsecPolicy]="data.name"
+          (onOk)="handleOkDelete()"></one-portal-delete-ipsec-policies>
+        </div>
       </td>
     </tr>
-    </tbody>
-  </nz-table>
+  </tbody>
+</nz-table>

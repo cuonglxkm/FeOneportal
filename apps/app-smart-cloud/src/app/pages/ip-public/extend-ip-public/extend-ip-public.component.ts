@@ -35,8 +35,8 @@ export class ExtendIpPublicComponent {
 
   regionId: any;
   total: any
-  dateString;
-  dateStringExpired;
+  dateString: any;
+  dateStringExpired: any;
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -46,9 +46,9 @@ export class ExtendIpPublicComponent {
     this.projectId = regionAndProject.projectId;
   }
 
-  form = new FormGroup({
-    numOfMonth: new FormControl('', {validators: [Validators.required]}),
-  });
+  // form = new FormGroup({
+  //   numOfMonth: new FormControl('', {validators: [Validators.required]}),
+  // });
 
   private getIPPublicById(id: string) {
     this.isLoading = true;
@@ -58,7 +58,9 @@ export class ExtendIpPublicComponent {
         this.isIpV6 = this.ipInfo.iPv6Address != null && this.ipInfo.iPv6Address != '';
         this.isLoading = false;
         this.dateString = data.createDate;
-        this.dateStringExpired = data.expiredDate;
+        const dateExpired = new Date(this.ipInfo.expiredDate);
+        dateExpired.setMonth(dateExpired.getMonth() + 1);
+        this.dateStringExpired = dateExpired;
       }, error => {
         this.isLoading = false;
       }
@@ -89,6 +91,7 @@ export class ExtendIpPublicComponent {
 
 
   volumeStatus: Map<String, string>;
+  numOfMonth = 1;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: IpPublicService,
@@ -139,8 +142,8 @@ export class ExtendIpPublicComponent {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_extend",
-          price: this.total.data.totalPayment.amount / Number(this.form.controls['numOfMonth'].value),
-          serviceDuration: this.form.controls['numOfMonth'].value
+          price: this.total.data.totalPayment.amount / Number(this.numOfMonth),
+          serviceDuration: this.numOfMonth
         }
       ]
     }
@@ -149,11 +152,11 @@ export class ExtendIpPublicComponent {
   }
 
   caculator() {
-    let num = this.form.controls['numOfMonth'].value;
-    if (num != null && num != undefined && num != '') {
-      const dateNow = new Date();
-      dateNow.setMonth(dateNow.getMonth() + Number(num));
-      this.dateStringExpired = dateNow;
+    let num = this.numOfMonth;
+    if (num != null && num != undefined) {
+      const dateExpired = new Date(this.ipInfo.expiredDate);
+      dateExpired.setMonth(dateExpired.getMonth() + Number(num));
+      this.dateStringExpired = dateExpired;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
         vmToAttachId: this.ipInfo.attachedVmId,
@@ -199,7 +202,7 @@ export class ExtendIpPublicComponent {
             orderItemQuantity: 1,
             specificationString: JSON.stringify(requestBody),
             specificationType: "ip_create",
-            serviceDuration: this.form.controls['numOfMonth'].value
+            serviceDuration: num
           }
         ]
       }

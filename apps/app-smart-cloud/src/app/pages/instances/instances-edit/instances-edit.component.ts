@@ -86,7 +86,6 @@ export class InstancesEditComponent implements OnInit {
   isUseLAN: boolean = false;
   passwordVisible = false;
   password?: string;
-  numberMonth: number = 1;
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
@@ -530,8 +529,7 @@ export class InstancesEditComponent implements OnInit {
       orderItemInstanceResize.orderItemQuantity = 1;
       orderItemInstanceResize.specification = specificationInstance;
       orderItemInstanceResize.specificationType = 'instance_resize';
-      orderItemInstanceResize.price = this.totalAmount / this.numberMonth;
-      orderItemInstanceResize.serviceDuration = this.numberMonth;
+      orderItemInstanceResize.price = this.totalAmount;
       this.orderItem.push(orderItemInstanceResize);
 
       this.order.customerId = this.userId;
@@ -579,7 +577,6 @@ export class InstancesEditComponent implements OnInit {
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.instanceResize);
     itemPayment.specificationType = 'instance_resize';
-    itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
