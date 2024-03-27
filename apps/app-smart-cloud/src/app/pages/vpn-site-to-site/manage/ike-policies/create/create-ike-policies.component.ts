@@ -68,15 +68,13 @@ export class CreateIkePoliciesComponent implements OnInit{
     { label: 'aggressive', value: 'aggressive' }
   ];
   isLoading: boolean = false
- 
-  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
-    new FormCreateFileSystemSnapShot();
-    selectedFileSystemName: string;
+
+
   form: FormGroup<{
-    nameIke: FormControl<string>
+    name: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    nameIke: [''],
+    name: [''],
     description: [''],
   });
 
@@ -86,6 +84,7 @@ export class CreateIkePoliciesComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    console.log(this.region);
   }
 
 
@@ -101,12 +100,15 @@ export class CreateIkePoliciesComponent implements OnInit{
       this.tokenService.get()?.userId;
     this.ikePolicyModel.regionId = this.region;
     this.ikePolicyModel.projectId = this.project;
+    this.ikePolicyModel.name =
+    this.form.controls.name.value;
     return this.ikePolicyModel;
   }
   handleCreate() {
     this.isLoading = true;
     if (this.form.valid) {
       //this.formCreateIpsecPolicy = this.getData();
+      this.getData();
       console.log(this.ikePolicyModel);
       this.ikePolicyService
         .create(this.ikePolicyModel)
@@ -129,7 +131,7 @@ export class CreateIkePoliciesComponent implements OnInit{
           }
         );
     }
-    
+
   }
 
   onRegionChange(region: RegionModel) {
