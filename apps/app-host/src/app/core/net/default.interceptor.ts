@@ -84,6 +84,7 @@ export class DefaultInterceptor implements HttpInterceptor {
    * 刷新 Token 请求
    */
   private refreshTokenRequest() {
+    console.log("---vào hàm API refresh token 401---")
     const model = this.tokenSrv.get();
     const params = new HttpParams()
       .set('grant_type', 'refresh_token')
@@ -98,6 +99,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         responseType: 'json',
         context: new HttpContext().set(ALLOW_ANONYMOUS, true)
       });
+    console.log("---kêt quả hàm API refresh token 401 " + result)
     return result;
   }
 
@@ -162,7 +164,7 @@ export class DefaultInterceptor implements HttpInterceptor {
    * > Vì yêu cầu đã được bắt đầu nên nó sẽ không được thực hiện lại `@delon/auth` nên cần phải đính kèm lại Mã thông báo mới tùy theo tình hình kinh doanh.
    */
   private reAttachToken(req: HttpRequest<any>, token: any): HttpRequest<any> {
-
+    console.log("---Gắn token mới---")
     return req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
@@ -261,7 +263,10 @@ export class DefaultInterceptor implements HttpInterceptor {
     return next.handle(newReq).pipe(
       catchError(err => {
         if (err instanceof HttpResponseBase && err.status === 401) {
+          console.log("---Bắt lỗi 401---")
            return this.handle401Error(newReq, next);
+        } else {
+          console.log("---Bắt lỗi nhưng không phải 401---")
         }
         return throwError(err);
       }),
@@ -281,6 +286,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    console.log("---Vào hàm xử lý 401---")
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshToken$.next(null);
@@ -290,6 +296,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       if (token)
         return this.refreshTokenRequest().pipe(
           switchMap((token: any) => {
+            console.log("---Tra ve token " + token)
             this.isRefreshing = false;
 
             const helper = new JwtHelperService();
@@ -325,6 +332,8 @@ export class DefaultInterceptor implements HttpInterceptor {
             return throwError(err);
           })
         );
+    } else {
+      console.log("---Vào hàm xử lý 401 nhưng không refreshing---")
     }
 
     return this.refreshToken$.pipe(
