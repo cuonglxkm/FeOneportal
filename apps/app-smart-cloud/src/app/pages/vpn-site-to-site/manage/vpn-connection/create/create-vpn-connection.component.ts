@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { FormCreateVpnConnection } from '../../../../../../../../../.history/apps/app-smart-cloud/src/app/shared/models/vpn-connection_20240326095741';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -13,6 +12,7 @@ import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service
 import { debounceTime } from 'rxjs';
 import { BaseResponse } from '../../../../../../../../../libs/common-utils/src';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
+import { FormCreateVpnConnection } from 'src/app/shared/models/vpn-connection';
 
 
 @Component({
