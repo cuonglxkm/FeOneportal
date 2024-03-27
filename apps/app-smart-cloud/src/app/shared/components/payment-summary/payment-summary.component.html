@@ -17,24 +17,24 @@
         <span class="text-card-header">Thông tin khách hàng</span>
       </div>
       <nz-row>
-        <div nz-col nzSpan="12">
+        <div nz-col nzSpan="24">
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Tên khách hàng:</span>
-            <span>{{ userModel.name || '' }}</span>
+            <span class="fw-600" nz-col nzSpan="4">Tên khách hàng:</span>
+            <span nz-col nzSpan="20">{{ userModel.name || '' }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Số điện thoại:</span>
-            <span>{{
+            <span class="fw-600" nz-col nzSpan="4">Số điện thoại:</span>
+            <span nz-col nzSpan="20">{{
               userModel.phoneNumber === '' ? '-' : userModel.phoneNumber
             }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Email:</span>
-            <span> {{ userModel.email === '' ? '-' : userModel.email }}</span>
+            <span class="fw-600" nz-col nzSpan="4">Email:</span>
+            <span nz-col nzSpan="20"> {{ userModel.email === '' ? '-' : userModel.email }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" style="width: 40%">Địa chỉ:</span>
-            <span>{{
+            <span class="fw-600" nz-col nzSpan="4">Địa chỉ:</span>
+            <span nz-col nzSpan="20">{{
               userModel.address === '' ? '-' : userModel.address
             }}</span>
           </nz-row>
@@ -63,10 +63,10 @@
         <tbody>
           <tr *ngFor="let item of listServiceInfo; let i = index">
             <td class="text-blue">{{ item.name }}</td>
-            <td nzAlign="right">{{ item.price | number : '1.0-1' }}</td>
+            <td nzAlign="right">{{ item.price | number: '1.0-0'  }}</td>
             <td nzAlign="right">{{ item.duration }}</td>
             <td nzAlign="right">{{ item.amount }}</td>
-            <td nzAlign="right">{{ item.currency | number : '1.0-1' }}</td>
+            <td nzAlign="right">{{ item.currency | number: '1.0-0'  }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -83,7 +83,7 @@
             <td>Tổng tiền</td>
             <td style="text-align: right">
               <span class="price"
-                >{{ totalAmount | number : '1.0-1' }} VND</span
+                >{{ totalAmount | number: '1.0-0'  }} VND</span
               >
               <span>VND/tháng</span>
             </td>
@@ -101,7 +101,7 @@
             <td style="text-align: right">
               <span class="price"
                 >{{
-                  (totalAmount - promotion) * 0.1 | number : '1.0-1'
+                  (totalAmount - promotion) * 0.1 | number : '1.0-0'
                 }}
                 VND</span
               >
@@ -156,7 +156,7 @@
             >
               {{
                 totalAmount - promotion + (totalAmount - promotion) * 0.1
-                  | number : '1.0-1'
+                  | number: '1.0-0' 
               }}
               VND
             </td>
