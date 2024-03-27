@@ -34,8 +34,12 @@
           <nz-col nzSpan="24">
             <nz-form-item>
               <nz-form-label nzFor="name"
-                >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
-              >
+                >Tên máy ảo (<span class="text-red">*</span>)<img
+                  style="margin-left: 10px"
+                  nz-tooltip="Tên máy ảo. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt."
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+              /></nz-form-label>
 
               <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
                 <nz-row>
@@ -69,8 +73,13 @@
                     <label
                       nzFor="name"
                       style="text-align: right; padding-left: 1%"
-                      >Tạo từ Snapshot</label
-                    >
+                      >Tạo từ Snapshot
+                      <img
+                        style="margin-left: 10px"
+                        nz-tooltip="Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó."
+                        src="assets/imgs/pajamas_question.svg"
+                        alt=""
+                    /></label>
                   </nz-col>
                 </nz-row>
                 <ng-template #nameErrorTpl let-control>
@@ -78,8 +87,8 @@
                     >Vui lòng nhập thông tin</ng-container
                   >
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên gồm 50 ký tự viết liền không dấu và không chứa ký
-                    tự đặc biệt</ng-container
+                    >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự
+                    đặc biệt</ng-container
                   >
                 </ng-template>
               </nz-form-control>
@@ -88,14 +97,15 @@
         </nz-row>
         <div *ngIf="isSnapshot">
           <nz-form-item>
-            <nz-form-label nzFor="name">Chọn Snapshot</nz-form-label>
+            <nz-form-label nzFor="name"
+              >Chọn Snapshot (<span class="text-red">*</span>)</nz-form-label
+            >
             <nz-form-control nzErrorTip="Vui lòng Chọn Snapshot">
               <nz-select
                 [nzPlaceHolder]="'--Chọn Snapshot--'"
                 [nzShowSearch]="true"
                 [(ngModel)]="selectedSnapshot"
                 [ngModelOptions]="{ standalone: true }"
-                (ngModelChange)="onChangeSnapshot($event)"
                 nzSize="large"
               >
                 <nz-option
@@ -109,8 +119,12 @@
         </div>
         <div style="margin-left: -10px" *ngIf="!isSnapshot">
           <nz-form-label
-            >Hệ điều hành (<span class="text-red">*</span>)</nz-form-label
-          >
+            >Hệ điều hành (<span class="text-red">*</span>)<img
+              style="margin-left: 10px"
+              nz-tooltip="Hệ điều hành sử dụng để khởi tạo máy ảo."
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+          /></nz-form-label>
           <ngu-carousel
             #myCarouselImage
             [inputs]="carouselTileConfig"
@@ -179,8 +193,12 @@
         <br />
         <nz-row nzGutter="16">
           <nz-form-label
-            >Chọn loại Volume (<span class="text-red">*</span>)</nz-form-label
-          >
+            >Chọn loại Volume (<span class="text-red">*</span>)<img
+              style="margin-left: 10px"
+              nz-tooltip="Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot."
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+          /></nz-form-label>
         </nz-row>
         <nz-radio-group
           style="width: 100%; display: inline-flex"
@@ -406,25 +424,59 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>VCPU</th>
-                    <th>RAM (GB)</th>
-                    <th>Dung lượng (GB)</th>
-                    <th>IOPS</th>
-                    <th>Giá theo tháng (VNĐ)</th>
+                    <th>Tài nguyên</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền/Đơn giá</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr>
+                    <td style="width: 50%">
+                      <nz-form-label style="margin-left: -12px"
+                        >Dung lượng (<span class="text-red">*</span>) -
+                        GB</nz-form-label
+                      >
+                      <nz-slider
+                        [nzMin]="1"
+                        [nzMax]="1000"
+                        [(ngModel)]="configCustom.capacity"
+                        (ngModelChange)="onChangeCapacity()"
+                        [ngModelOptions]="{ standalone: true }"
+                      ></nz-slider>
+                    </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        [(ngModel)]="configCustom.capacity"
+                        (ngModelChange)="onChangeCapacity()"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
-                        [nzMax]="62"
+                        [nzMax]="1000"
                         [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
+                    </td>
+                    <td nzAlign="right">
+                      <label class="text-custom-price">
+                        {{ volumeIntoMoney | number }} VND </label
+                      ><br />
+                      <label class="text-custom-price">
+                        {{ volumeUnitPrice | number }} VND
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <nz-form-label style="margin-left: -12px"
+                        >RAM (<span class="text-red">*</span>) -
+                        GB</nz-form-label
+                      >
+                      <nz-slider
+                        [nzMin]="1"
+                        [nzMax]="62"
+                        [(ngModel)]="configCustom.ram"
+                        (ngModelChange)="onChangeRam()"
+                        [ngModelOptions]="{ standalone: true }"
+                      ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
@@ -437,25 +489,47 @@
                         nzSize="large"
                       ></nz-input-number>
                     </td>
+
+                    <td nzAlign="right">
+                      <label class="text-custom-price">
+                        {{ ramIntoMoney | number }} VND </label
+                      ><br />
+                      <label class="text-custom-price">
+                        {{ ramUnitPrice | number }} VND
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <nz-form-label style="margin-left: -12px"
+                        >CPU (<span class="text-red">*</span>) -
+                        vCPU</nz-form-label
+                      >
+                      <nz-slider
+                        [nzMin]="1"
+                        [nzMax]="62"
+                        [(ngModel)]="configCustom.vCPU"
+                        (ngModelChange)="onChangeVCPU()"
+                        [ngModelOptions]="{ standalone: true }"
+                      ></nz-slider>
+                    </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        [(ngModel)]="configCustom.vCPU"
+                        (ngModelChange)="onChangeVCPU()"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
-                        [nzMax]="100"
+                        [nzMax]="62"
                         [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
-                    <td>
+                    <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ configCustom.iops }}
-                      </label>
-                    </td>
-                    <td>
+                        {{ cpuIntoMoney | number }} VND </label
+                      ><br />
                       <label class="text-custom-price">
-                        {{ totalAmount / numberMonth | number }}
+                        {{ cpuUnitPrice | number }} VND
                       </label>
                     </td>
                   </tr>
@@ -469,7 +543,26 @@
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item>
               <nz-form-label
-                >Chọn IP Public (<span class="text-red">*</span>)</nz-form-label
+                >Chọn IP Public (<span class="text-red">*</span>)<img
+                  style="margin-left: 10px"
+                  nz-popover
+                  [nzPopoverContent]="contentTemplateIPPublic"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                /><ng-template #contentTemplateIPPublic>
+                  <div>
+                    Máy ảo tạo ra sẽ có thêm một card mạng<br />
+                    tương ứng với địa chỉ IP khách hàng lựa<br />
+                    chọn. Trường hợp muốn sử dụng IP Floating,<br />
+                    vụi lòng truy cập
+                    <a
+                      [routerLink]="[
+                        '/app-smart-cloud/networks/ip-floating/list'
+                      ]"
+                      >IP Floating</a
+                    >
+                  </div>
+                </ng-template></nz-form-label
               >
               <nz-form-control nzErrorTip="Chọn IP Public *">
                 <nz-select
@@ -493,15 +586,42 @@
                 nz-checkbox
                 [(ngModel)]="isUseIPv6"
                 [ngModelOptions]="{ standalone: true }"
-                >Sử dụng IPv6</label
+                >Sử dụng IPv6<img
+                  style="margin-left: 10px"
+                  nz-popover
+                  [nzPopoverContent]="contentTemplateIPv6"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                /><ng-template #contentTemplateIPv6>
+                  <div>
+                    Máy ảo sẽ được cấp thêm một địa chỉ IPv6<br />
+                    chạy song song với địa chỉ IPv4 theo cơ<br />
+                    chế Dual Stack. Dual-stack là cơ chế có<br />
+                    khả năng thực thi đồng thời cả hai giao<br />
+                    thức IPV4 và IPV6. Thiết bị này cho phép<br />
+                    cả hai giao thức cùng hoạt động trên một<br />
+                    máy chủ. Theo đó dual-stack sẽ cho phép <br />
+                    hệ điều hành tự lựa chọn giao thức liên <br />
+                    lạc phù hợp nhất. Xem thêm về IPv6
+                    <a
+                      href="https://docs.smartcloud.vn/index.php/knowledge-base/ipv6-la-gi-va-co-che-dual-stacks-trong-chuyen-doi-ipv4-sang-ipv6/"
+                      target="_blank"
+                      >tại đây</a
+                    >
+                  </div>
+                </ng-template></label
               >
               <br />
               <label
                 nz-checkbox
                 [(ngModel)]="isUseLAN"
                 [ngModelOptions]="{ standalone: true }"
-                >Sử dụng mạng LAN</label
-              >
+                >Sử dụng mạng LAN<img
+                  style="margin-left: 10px"
+                  nz-tooltip="Khi sử dụng mạng LAN, máy ảo sẽ được trang bị thêm 01 IP LAN."
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+              /></label>
             </div>
           </nz-col>
           <nz-col nzLg="12" nzMd="12" nzSm="24">
@@ -542,16 +662,19 @@
         </nz-row>
         <nz-row>
           <nz-form-label nzFor="name"
-            >Chọn phương thức truy cập máy ảo (<span class="text-red">*</span
-            >)</nz-form-label
-          >
+            >Phương thức truy cập máy ảo (<span class="text-red">*</span>)<img
+              style="margin-left: 10px"
+              nz-tooltip="Có thể sử dụng mật khẩu hoặc keypair để sử truy cập vào máy ảo."
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+          /></nz-form-label>
         </nz-row>
         <nz-row nzGutter="16">
           <nz-radio-group
             style="width: 100%; display: inline-flex"
             name="selectedPasswordOrSSHkey"
           >
-            <nz-col nzXs="24" nzMd="12">
+            <nz-col nzXs="24" nzMd="12" nzLg="12">
               <nz-card
                 style="border-radius: 4px"
                 [ngStyle]="{
@@ -584,7 +707,7 @@
                 </nz-card-meta>
               </nz-card>
             </nz-col>
-            <nz-col nzXs="24" nzMd="12">
+            <nz-col nzXs="24" nzMd="12" nzLg="12">
               <nz-card
                 style="border-radius: 4px"
                 [ngStyle]="{
@@ -619,7 +742,7 @@
             </nz-col>
           </nz-radio-group>
           <div *ngIf="activeBlockPassword" style="width: 100%">
-            <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-col nzSpan="24">
               <nz-form-item>
                 <nz-form-label nzFor="name"
                   >Mật khẩu truy cập máy ảo (<span class="text-red">*</span
@@ -652,7 +775,7 @@
               </nz-form-item>
             </nz-col>
 
-            <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-col nzSpan="24">
               <nz-alert
                 nzType="warning"
                 [nzDescription]="nzDescriptionWarning06"
@@ -669,7 +792,7 @@
             </nz-col>
           </div>
           <div *ngIf="activeBlockSSHKey" style="width: 100%">
-            <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-col nzSpan="24">
               <nz-form-item>
                 <nz-form-label
                   >Chọn SSH key (<span class="text-red">*</span>)</nz-form-label
@@ -692,8 +815,11 @@
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
-
-            <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-form-label style="margin-bottom: 20px">
+              Lựa chọn keypair có sẵn hoặc&nbsp;
+              <a [routerLink]="['/app-smart-cloud/ssh-key']">Tạo mới</a>
+            </nz-form-label>
+            <nz-col nzSpan="24">
               <nz-alert
                 nzType="warning"
                 [nzDescription]="nzDescriptionWarning07"
@@ -703,7 +829,12 @@
                 <div>
                   Chúng tôi khuyến cáo sử dụng SSH Key để đảm an toàn bảo mật
                   cho máy chủ của quý khách. Thông tin hướng dẫn sử dụng về SSH
-                  key cho máy chủ có thể xem tại đây.
+                  key cho máy chủ có thể xem
+                  <a
+                    href="https://docs.smartcloud.vn/index.php/knowledge-base/su-dung-keypair/"
+                    target="_blank"
+                    >tại đây</a
+                  >.
                   <br />
                   Mật khẩu đăng nhập vào máy chủ sẽ được tạo tự động và gửi vào
                   email của quý khách khi máy chủ được tạo thành công
@@ -714,12 +845,15 @@
         </nz-row>
 
         <nz-row style="margin-top: 20px; margin-bottom: -25px" nzGutter="16">
-          <nz-col nzLg="24" nzMd="12" nzSm="24">
+          <nz-col nzSpan="24">
             <nz-form-item style="margin-bottom: 5px">
               <nz-form-label
-                >Thời hạn sử dụng (<span class="text-red">*</span>) -
-                Tháng</nz-form-label
-              >
+                >Thời hạn sử dụng (<span class="text-red">*</span>) - Tháng<img
+                  style="margin-left: 10px"
+                  nz-tooltip="Thời gian khách hàng mua máy ảo để sử dụng, tính theo tháng."
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+              /></nz-form-label>
               <nz-form-control>
                 <nz-row>
                   <nz-input-number
@@ -747,6 +881,9 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
+        <div style="color: #eb1414; margin-top: 20px" class="text-label">
+          Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+        </div>
       </nz-card>
 
       <nz-card style="border-radius: 8px">
@@ -778,7 +915,7 @@
                     <th>Dung lượng (GB)</th>
                     <th>Mã hóa</th>
                     <th>Multi Attach</th>
-                    <th>Giá theo tháng (VNĐ)</th>
+                    <th>Giá theo tháng (VND)</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -815,7 +952,8 @@
                       <nz-input-number
                         [(ngModel)]="data.capacity"
                         (ngModelChange)="
-                          changeTotalAmountBlockStorage(data.id, $event)
+                          changeTotalAmountBlockStorage(data.id, $event);
+                          externalVolume()
                         "
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'capacity_' + data.id"
@@ -903,7 +1041,7 @@
                   <tr>
                     <th>Dải IP</th>
                     <th>Số lượng</th>
-                    <th>Giá theo tháng (VNĐ)</th>
+                    <th>Giá theo tháng (VND)</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -984,7 +1122,7 @@
                   <tr>
                     <th>Dải IP</th>
                     <th>Số lượng</th>
-                    <th>Giá theo tháng (VNĐ)</th>
+                    <th>Giá theo tháng (VND)</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -1056,40 +1194,95 @@
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thành tiền</span>
+          <span class="text-card-header">Chi phí ước tính</span>
         </div>
+        <div class="text-value">Tên máy ảo</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ instanceCreate.serviceName }}
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Hệ điều hành</div>
+        <div style="margin-top: 10px" class="text-label">{{ nameHdh }}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Gói dịch vụ</div>
+        <div
+          *ngIf="instanceCreate.cpu"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ instanceCreate.cpu }} CPUs
+        </div>
+        <div
+          *ngIf="instanceCreate.ram"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ instanceCreate.ram }} GB RAM
+        </div>
+        <div
+          *ngIf="instanceCreate.volumeSize"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
+            instanceCreate.volumeType | uppercase
+          }}</span
+          >)
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Cài đặt</div>
+        <div
+          *ngIf="externalVolumeHdd > 0"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ externalVolumeHdd }} GB Data Disk (HDD)
+        </div>
+        <div
+          *ngIf="externalVolumeSsd > 0"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ externalVolumeSsd }} GB Data Disk (SSD)
+        </div>
+        <div
+          *ngIf="numberOfIpv4 > 0"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ numberOfIpv4 }} IPv4
+        </div>
+        <div
+          *ngIf="numberOfIpv6 > 0"
+          style="margin-top: 10px"
+          class="text-label"
+        >
+          {{ numberOfIpv6 }} IPv6
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
-            <span class="text-label">
-              Chi phí máy ảo (<span>{{ numberMonth }}</span> tháng):
-            </span>
+            <span class="text-value"> Chi phí 1 tháng </span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount | number }} VND
+              {{
+                (totalAmount +
+                  totalAmountVolume +
+                  totalAmountIPv4 +
+                  totalAmountIPv6) /
+                  numberMonth | number
+              }}
+              VND
             </span>
           </nz-col>
         </nz-row>
-        <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-label"> Chi phí Volume bổ sung: </span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmountVolume | number }} VNĐ
-            </span>
+        <nz-row style="margin-bottom: 10px">
+          <nz-col style="width: 100%" class="text-right">
+            <span class="text-label"> VND/tháng </span>
           </nz-col>
         </nz-row>
-        <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-label"> Chi phí Network bổ sung: </span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmountIPv4 + totalAmountIPv6 | number }} VNĐ
-            </span>
-          </nz-col>
-        </nz-row>
+
         <nz-row
           style="
             margin-bottom: 20px;
@@ -1100,7 +1293,8 @@
           nzGutter="16"
         >
           <nz-col nzSpan="16">
-            <span class="text-label"> Thành tiền (Đã bao gồm 10% VAT): </span>
+            <span class="text-label">Tổng thanh toán</span><br />
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
@@ -1110,20 +1304,14 @@
                   totalAmountIPv4VAT +
                   totalAmountIPv6VAT | number
               }}
-              VNĐ
+              VND
             </span>
           </nz-col>
         </nz-row>
         <nz-row>
-          <nz-col style="width: 100%" class="text-right">
-            <button nz-button (click)="cancel()">
-              <img
-                style="padding-right: 10px; margin-top: -4px"
-                src="assets/imgs/cancel.svg"
-                alt=""
-              />Hủy
-            </button>
+          <nz-col style="width: 100%">
             <button
+              style="width: 100%"
               nz-button
               nzSize="large"
               nzType="primary"

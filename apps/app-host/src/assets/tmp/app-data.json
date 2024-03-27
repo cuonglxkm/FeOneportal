@@ -191,7 +191,25 @@
             {
               "key": "Object Storage",
               "text": "Object Storage",
-              "icon": "anticon-profile"
+              "icon": "anticon-profile",
+              "children": [
+                {
+                  "text": "Bucket",
+                  "link": "/app-smart-cloud/object-storage/bucket"
+                },
+                {
+                  "text": "Sub User",
+                  "link": "/app-smart-cloud/object-storage/sub-user/list"
+                },
+                {
+                  "text": "S3 Key",
+                  "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "Thống kê",
+                  "link": "/app-smart-cloud/object-storage/dashboard"
+                }
+              ]
             },
             {
               "key": "File Storage",
