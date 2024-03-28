@@ -179,12 +179,13 @@ export class InstancesService extends BaseService {
     );
   }
 
-  rebuild(data: any): Observable<any> {
+  rebuild(data: any) {
     let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
+      data,
+      { responseType: 'text' }
     );
   }
 

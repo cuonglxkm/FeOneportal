@@ -10,8 +10,11 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
-import { PageHeaderType } from 'src/app/core/models/interfaces/page';
-import { InstancesModel } from '../instances.model';
+import {
+  InstancesModel,
+  SecurityGroupModel,
+  UpdateInstances,
+} from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
@@ -19,6 +22,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { NotificationService } from '../../../../../../../libs/common-utils/src';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 class SearchParam {
   status: string = '';
@@ -34,6 +38,7 @@ export class InstancesComponent implements OnInit {
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
   searchParam: Partial<SearchParam> = {};
   dataList: InstancesModel[] = [];
+  userId: number;
 
   pageIndex = 1;
   pageSize = 10;
@@ -64,12 +69,10 @@ export class InstancesComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService,
-    private notificationService: NotificationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
@@ -77,16 +80,18 @@ export class InstancesComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-
+    this.userId = this.tokenService.get()?.userId;
+    this.getAllSecurityGroup();
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
     }
-    
+
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
         let actionType = data.actionType;
 
+        var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (!instanceId) {
           return;
         }
@@ -101,7 +106,7 @@ export class InstancesComponent implements OnInit {
               record.taskState = data.taskState;
               record.ipPrivate = data.ipPrivate;
               record.ipPublic = data.ipPublic;
-    
+
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
             break;
@@ -111,7 +116,7 @@ export class InstancesComponent implements OnInit {
               var record = this.dataList[foundIndex];
 
               record.taskState = data.taskState;
-    
+
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
             break;
@@ -441,6 +446,84 @@ export class InstancesComponent implements OnInit {
   handleCancelUnRescue() {
     this.isVisibleUnRescue = false;
   }
+
+  form = new FormGroup({
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.max(50),
+        Validators.pattern(/^[a-zA-Z0-9]+$/),
+      ],
+    }),
+  });
+  updateInstances: UpdateInstances = new UpdateInstances();
+  selectedSecurityGroup: string[] = [];
+  isVisibleEdit = false;
+  modalEdit(data: InstancesModel) {
+    this.selectedSecurityGroup = [];
+    this.dataService
+      .getAllSecurityGroupByInstance(
+        data.cloudId,
+        data.regionId,
+        data.customerId,
+        data.projectId
+      )
+      .subscribe({
+        next: (datasg: any) => {
+          console.log('getAllSecurityGroupByInstance', datasg);
+          datasg.forEach((e) => {
+            this.selectedSecurityGroup.push(e.id);
+          });
+          this.isVisibleEdit = true;
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.isVisibleEdit = true;
+          this.notification.error(
+            e.statusText,
+            'Lấy SecurityGroup của máy ảo không thành công'
+          );
+          this.cdr.detectChanges();
+        },
+      });
+    this.updateInstances.name = data.name;
+    this.updateInstances.customerId = this.userId;
+    this.updateInstances.id = data.id;
+  }
+
+  handleCancelEdit() {
+    this.isVisibleEdit = false;
+  }
+
+  handleOkEdit() {
+    this.isVisibleEdit = false;
+    this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
+    this.dataService.update(this.updateInstances).subscribe({
+      next: (next) => {
+        this.notification.success('', 'Chỉnh sửa máy ảo thành công');
+        this.reloadTable();
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Chỉnh sửa máy ảo không thành công'
+        );
+      },
+    });
+  }
+
+  //#region Chọn Security Group
+  listSecurityGroup: SecurityGroupModel[] = [];
+  getAllSecurityGroup() {
+    this.dataService
+      .getAllSecurityGroup(this.region, this.userId, this.projectId)
+      .subscribe((data: any) => {
+        console.log('getAllSecurityGroup', data);
+        this.listSecurityGroup = data;
+      });
+  }
+  //#endregion
 
   openConsole(id: number): void {
     this.router.navigateByUrl(
