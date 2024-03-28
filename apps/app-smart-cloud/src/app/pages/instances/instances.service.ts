@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class InstancesService extends BaseService {
 
   constructor(
     private http: HttpClient,
+    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     super();
@@ -253,7 +255,18 @@ export class InstancesService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
       data
-    );
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
   }
 
   getListOffersByProductId(productId: string): Observable<any> {

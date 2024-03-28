@@ -33,6 +33,7 @@ import { OrderItem } from 'src/app/shared/models/price';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { ProjectService } from '../../../../shared/services/project.service';
 import { getCurrentRegionAndProject } from '@shared';
+import { Product } from '../../../../shared/models/catalog.model';
 
 @Component({
   selector: 'app-create-volume',
@@ -176,6 +177,8 @@ export class CreateVolumeComponent implements OnInit {
   typeMultiple: boolean;
   typeEncrypt: boolean;
 
+  listProducts: Product[]
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -189,23 +192,18 @@ export class CreateVolumeComponent implements OnInit {
     private catalogService: CatalogService,
     private projectService: ProjectService
   ) {
+    this.validateForm.get('radio').valueChanges.subscribe((value) => {
+        this.selectedValueRadio = value
+        this.getTotalAmount()
+    })
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if ([1, 2].includes(this.region)) {
-        if (value < 20) return (this.iops = 0);
-        if (value <= 200) return (this.iops = 600);
-        if (value <= 500) return (this.iops = 1200);
-        if (value <= 1000) return (this.iops = 3000);
-        if (value <= 2000) return (this.iops = 6000);
-      }
-      if ([3, 4].includes(this.region)) {
-        if (value < 40) return (this.iops = 400);
-        this.iops = value * 10;
-      }
+      if(value <= 40) return (this.iops = 400);
+      this.iops = value * 10
     });
   }
 
@@ -219,17 +217,19 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
-  getCatalogOffer(productId) {
+
+
+  getCatalogOffer(type) {
     this.catalogService
-      .getCatalogOffer(productId, this.region, null)
+      .getCatalogOffer(null, this.region, null, type)
       .subscribe((data) => {
         console.log('data catalog', data);
-        if (data) {
-          if (productId == 90) {
-            this.typeMultiple = true;
+        if (data[0]?.regions[0]?.regionId == this.region) {
+          if(type == 'MultiAttachment') {
+            this.typeMultiple = true
           }
-          if (productId == 92) {
-            this.typeEncrypt = true;
+          if(type == 'Encryption') {
+            this.typeEncrypt = true
           }
         } else {
           this.typeMultiple = false;
@@ -275,8 +275,9 @@ export class CreateVolumeComponent implements OnInit {
 
     this.getListSnapshot();
     this.getListInstance();
-    this.getCatalogOffer(90);
-    this.getCatalogOffer(92);
+
+    // this.getCatalogOffer('MultiAttachment')
+    // this.getCatalogOffer('Encryption')
 
     this.getListVolumes();
     //
@@ -290,6 +291,9 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
+    if(this.isInitSnapshot == true) {
+      this.validateForm.controls.snapshot.setValidators(Validators.required)
+    }
   }
 
   snapshotSelectedChange(value: number) {
@@ -298,6 +302,12 @@ export class CreateVolumeComponent implements OnInit {
 
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
+    // this.iops = this.validateForm.get('storage').value * 10
+    if(this.validateForm.get('storage').value <= 40) {
+      this.iops = 400
+    } else {
+      this.iops = this.validateForm.get('storage').value * 10
+    }
   }
 
   //get danh sách máy ảo
@@ -357,7 +367,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-
+    this.volumeCreate.iops = this.iops
     let currentDate = new Date();
     let lastDate = new Date();
     if (this.timeSelected == undefined || this.timeSelected == null) {
@@ -466,22 +476,18 @@ export class CreateVolumeComponent implements OnInit {
       this.loadProjects();
     }
 
-    if ([1, 2].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) this.iops = 0;
-    }
-    if ([3, 4].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) this.iops = 400;
-    }
-
     this.getListSnapshot();
     this.getListInstance();
-    this.getCatalogOffer(90);
-    this.getCatalogOffer(92);
+
+
 
     this.getListVolumes();
 
     this.date = new Date();
     this.getTotalAmount();
+
+    // this.getCatalogOffer('MultiAttachment')
+    // this.getCatalogOffer('Encryption')
   }
 
   submitForm() {
@@ -541,92 +547,6 @@ export class CreateVolumeComponent implements OnInit {
     );
   }
 
-  //
-  //
-  // validateData(): boolean {
-  //   if (!this.createVolumeInfo.serviceName) {
-  //     this.nzMessage.create('error', 'Tên Volume không được để trống.');
-  //     this.showWarningVolumeName = true;
-  //     return false;
-  //   }
-  //   if (!this.createVolumeInfo.volumeType) {
-  //     this.nzMessage.create('error', 'Cần chọn loại Volume.');
-  //     this.showWarningVolumeType = true;
-  //     return false;
-  //   }
-  //   if (!this.volumeExpiryTime) {
-  //     this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
-  //     this.showWarningVolumeExpTime = true;
-  //     return false;
-  //   }
-  //   if (!this.createVolumeInfo.regionId) {
-  //     this.nzMessage.create('error', 'Cần chọn khu vực.');
-  //     return false;
-  //   }
-  //   if (!this.createVolumeInfo.vpcId) {
-  //     this.nzMessage.create('error', 'Cần chọn dự án.');
-  //     return false;
-  //   }
-  //
-  //   return true;
-  // }
-  //
-  // changeVolumeName() {
-  //   this.createVolumeInfo.serviceName = this.createVolumeInfo.serviceName.trim();
-  //   if(this.checkSpecialSnapshotName(this.createVolumeInfo.serviceName)){
-  //     this.showWarningVolumeName = true;
-  //     this.contentShowWarningVolumeName = 'Tên Volume không được chứa ký tự đặc biệt.';
-  //   }else if(this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == ''){
-  //     this.showWarningVolumeName = true;
-  //     this.contentShowWarningVolumeName = 'Tên Volume không được để trống';
-  //   }else{
-  //     this.showWarningVolumeName = false;
-  //     this.contentShowWarningVolumeName = '';
-  //   }
-  //
-  // }
-  //
-  // checkSpecialSnapshotName( str: string): boolean{
-  //   //check ký tự đặc biệt
-  //   const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-  //   return specialCharacters.test(str);
-  // }
-  //
-  // loadSnapshotVolumeInfo(event: any) {
-  //   this.isLoadingAction = true
-  //   this.snapshotvlService.getSnapshotVolumeById(event).subscribe(
-  //     (data) => {
-  //       this.createVolumeInfo.volumeSize = data.sizeInGB;
-  //       this.createVolumeInfo.createFromSnapshotId = Number.parseInt(event);
-  //       this.createVolumeInfo.volumeType = data.iops > 0 ? 'hdd' : 'ssd';
-  //       this.isLoadingAction = false;
-  //     })
-  // }
-  //
-  // getProjectId(project: ProjectModel) {
-  //   this.createVolumeInfo.vpcId = project.id;
-  //   this.getListSnapshot();
-  // }
-  //
-  // async getRegionId(region: RegionModel) {
-  //   this.createVolumeInfo.regionId = region.regionId;
-  //   this.getListSnapshot()
-  //   this.getListVm()
-  // }
-  //
-  // selectEncryptionVolume(value: any) {
-  //   if (value) {
-  //     this.createVolumeInfo.isMultiAttach = !value;
-  //   }
-  //
-  // }
-  //
-  // selectMultiAttachVolume(value: any) {
-  //   if (value) {
-  //     this.createVolumeInfo.isEncryption = !value;
-  //   }
-  // }
-  //
   private getListSnapshot() {
     this.isLoadingAction = true;
     this.snapshotList = [];
@@ -637,8 +557,8 @@ export class CreateVolumeComponent implements OnInit {
         1,
         this.region,
         this.project,
-        '', 
-        '', 
+        '',
+        '',
         ''
       )
       .subscribe((data) => {

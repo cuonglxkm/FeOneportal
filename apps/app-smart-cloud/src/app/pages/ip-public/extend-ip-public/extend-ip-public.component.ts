@@ -22,7 +22,8 @@ import {getCurrentRegionAndProject} from "@shared";
 })
 export class ExtendIpPublicComponent {
   ipInfo: IpPublicModel;
-
+  ipAddress: any;
+  attachedVm: any;
   isIpV6: boolean;
 
   attachedDto: AttachedDto[] = [];
@@ -55,6 +56,8 @@ export class ExtendIpPublicComponent {
 
     this.ipService.getDetailIpPublic(Number.parseInt(id)).subscribe(data => {
         this.ipInfo = data;
+        this.ipAddress = data.ipAddress;
+        this.attachedVm = data.attachedVm;
         this.isIpV6 = this.ipInfo.iPv6Address != null && this.ipInfo.iPv6Address != '';
         this.isLoading = false;
         this.dateString = data.createDate;

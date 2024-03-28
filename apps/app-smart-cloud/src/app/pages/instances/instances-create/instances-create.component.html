@@ -385,7 +385,7 @@
                         <span class="priceFlavor">{{
                           item.price.fixedPrice.amount | number
                         }}</span
-                        ><span> đ/tháng</span>
+                        ><span> VND/tháng</span>
                       </div>
                     </nz-col>
                   </nz-row>
@@ -1271,7 +1271,7 @@
                   totalAmountVolume +
                   totalAmountIPv4 +
                   totalAmountIPv6) /
-                  numberMonth | number
+                  numberMonth | number: '1.0-0'
               }}
               VND
             </span>
@@ -1296,7 +1296,7 @@
                 totalincludesVAT +
                   totalAmountVolumeVAT +
                   totalAmountIPv4VAT +
-                  totalAmountIPv6VAT | number
+                  totalAmountIPv6VAT | number: '1.0-0'
               }}
               VND
             </span>

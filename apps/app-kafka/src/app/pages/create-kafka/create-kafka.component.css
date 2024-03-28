@@ -34,6 +34,10 @@ textarea,
   margin: 12px 12px 0 0;
 }
 
+.total-price {
+  color: #ea3829 !important;
+}
+
 .unit-total {
   color: #4C4F67;
   float: right;

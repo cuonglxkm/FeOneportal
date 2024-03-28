@@ -1,8 +1,12 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-      nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Gắn Volume'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<button nz-button (click)="showModal()" style="border: none; background-color: unset; color: darkgrey;"
+        [disabled]="!multiple && !!instanceInVolume.length">
+  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
+        nzTheme="outline"
+        nz-popover
+        [nzPopoverContent]="'Gắn Volume'"
+        nzPopoverPlacement="bottom" ></span>
+</button>
+
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Gắn máy ảo"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
@@ -16,9 +20,12 @@
                [(ngModel)]="instanceSelected"
                (ngModelChange)="onChange($event)"
                nzShowSearch
+               [required]="true"
+               [ngModelOptions]="{ standalone: true }"
                style="width: 300px;">
       <nz-option *ngFor="let item of listVm" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
     </nz-select>
+    <div *ngIf="isSelected" style="color: red;">Vui lòng chọn máy ảo</div>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
@@ -26,7 +33,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
-            [nzLoading]="isLoadingAttach"
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
     </button>

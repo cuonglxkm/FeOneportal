@@ -117,6 +117,8 @@ export class ConsumerGroupComponent implements OnInit {
   };
 
   syncInfo: SyncInfoModel = new SyncInfoModel();
+  isVisibleDelete = false;
+  currentConsumerGroup: KafkaConsumerGroup;
 
   constructor(
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
@@ -199,32 +201,32 @@ export class ConsumerGroupComponent implements OnInit {
     }
   }
 
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
   showDeleteConfirm(data: KafkaConsumerGroup) {
-    this.modal.confirm({
-      nzTitle: 'Bạn có chắc chắn muốn xóa Consumer Group không?',
-      nzOkText: 'Đồng ý',
-      nzOkType: 'primary',
-      nzOkDanger: false,
-      nzOnOk: () => {
-        this.loadingSrv.open({ type: "spin", text: "Loading..." });
-        this.consumerGroupKafkaService.deleteConsumerGroup(data)
-          .pipe(
-            finalize(() => this.loadingSrv.close())
-          )
-          .subscribe(
-            (data) => {
-              if (data && data.code == 200) {
-                this.notification.success('Thành công', data.msg);
-                this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
-              } else {
-                this.notification.error('Thất bại', data.msg);
-              }
-            }
-          );
-      },
-      nzCancelText: 'Hủy bỏ',
-      nzOnCancel: () => console.log('Cancel')
-    });
+    this.isVisibleDelete = true;
+    this.currentConsumerGroup = data;
+  }
+
+  handleOkDelete() {
+    this.isVisibleDelete = false;
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.consumerGroupKafkaService.deleteConsumerGroup(this.currentConsumerGroup)
+      .pipe(
+        finalize(() => this.loadingSrv.close())
+      )
+      .subscribe(
+        (data) => {
+          if (data && data.code == 200) {
+            this.notification.success('Thành công', data.msg);
+            this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
+          } else {
+            this.notification.error('Thất bại', data.msg);
+          }
+        }
+      );
   }
 
   getSyncTime(serviceOrderCode: string) {

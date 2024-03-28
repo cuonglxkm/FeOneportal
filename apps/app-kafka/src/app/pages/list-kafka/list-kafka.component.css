@@ -64,3 +64,13 @@ input,
 .mtop-15 {
   margin-top: 65px;
 }
+
+.btn-create {
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+.img-edit {
+  width: 24px;
+  height: 24px;
+}

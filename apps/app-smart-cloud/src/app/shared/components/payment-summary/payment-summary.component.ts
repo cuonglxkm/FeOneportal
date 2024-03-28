@@ -23,6 +23,7 @@ class ServiceInfo {
   duration: number;
   amount: number;
   currency: number;
+  type:string;
 }
 
 class Discount {
@@ -74,46 +75,59 @@ export class PaymentSummaryComponent implements OnInit {
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
       this.order.orderItems = myOrder.orderItems;
-      console.log('order summary', this.order);
+       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         var serviceItem = new ServiceInfo();
+        const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = 'Tạo máy ảo';
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
-            serviceItem.name = 'Chỉnh sửa máy ảo';
+            serviceItem.name = 'Máy ảo';
+            serviceItem.type = `Chỉnh sửa - ${specificationObj.serviceName}`;
             break;
           case 'instance_extend':
-            serviceItem.name = 'Gia hạn máy ảo';
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
-            serviceItem.name = 'Tạo Volume';
+            serviceItem.name = `Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'volume_resize':
-            serviceItem.name = 'Chỉnh sửa Volume';
+            serviceItem.name = `Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'volume_extend':
-            serviceItem.name = 'Gia hạn Volume';
+            serviceItem.name = `Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'ip_create':
-            serviceItem.name = 'Tạo IP';
+            serviceItem.name = `IP Public - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'ip_extend':
-            serviceItem.name = 'Gia hạn IP';
+            serviceItem.name = `IP Public - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = 'Tạo cluster';
+            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
-            serviceItem.name = 'Tạo Object Storage';
+            serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_resize':
-            serviceItem.name = 'Chỉnh sửa Object Storage';
+            serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'objectstorage_extend':
-            serviceItem.name = 'Gia hạn Object Storage';
+            serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Gia hạn';
             break;
           default:
             serviceItem.name = '';

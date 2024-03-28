@@ -13,6 +13,12 @@ import { debounceTime } from 'rxjs';
 import { BaseResponse } from '../../../../../../../../../libs/common-utils/src';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FormCreateVpnConnection } from 'src/app/shared/models/vpn-connection';
+import { FormSearchIKEPolicy } from 'src/app/shared/models/vpns2s.model';
+import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
+import { FormSearchEndpointGroup } from 'src/app/shared/models/endpoint-group';
+import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
+import { FormSearchVpnService } from 'src/app/shared/models/vpn-service';
+import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 
 
 @Component({
@@ -24,54 +30,43 @@ export class CreateVpnConnectionComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  ipsecPolicy = [
-    { label: 'sha1', value: '1' },
-    { label: 'sha256', value: '2' },
-    { label: 'sha384', value: '3' },
-    { label: 'sha512', value: '4' },
-  ];
-
-  vpnService = [
-    { label: 'tunnel', value: '1' },
-    { label: 'transport', value: '2' },
-  ];
-
-  localSystemSubnet = [
-    { label: 'seconds', value: '1' },
-  ];
-
-  ikePolicy = [
-    { label: 'group5', value: '1' },
-    { label: 'group2', value: '2' },
-    { label: 'group14 ', value: '3' },
-  ];
-
-  transformProtocol = [
-    { label: 'esp', value: '1' },
-    { label: 'ah', value: '2' },
-    { label: 'ah-esp ', value: '3' },
-  ];
   ipsecPoliciesList: NzSelectOptionInterface[] = [];
+  ikePoliciesList: NzSelectOptionInterface[] = [];
+  localEndpointGroupList : NzSelectOptionInterface[] = [];
+  remoteEndpointGroupList : NzSelectOptionInterface[] = [];
+  vpnServiceList : NzSelectOptionInterface[] = [];
+
+  selectedIkePolicy: string
   selectedIpsecPolicy: string
-  selectedEncryptionMode = '1'
-  selectedEncryptionAlgorithm = '1'
-  selectedPerfectForwardSecrecy = '1'
-  selectedTransformProtocol = '1'
-  selectedLifetimeUnits = '1'
+  selectedLocalEndpointGroup: string
+  selectedRemoteEndpointGroup: string
+  selectedVpnService: string
+
+  selectedIkePolicyName: any
+  selectedIpsecPolicyName: any
+  selectedLocalEndpointGroupName: any
+  selectedRemoteEndpointGroupName: any
+  selectedVpnServiceName: any
+
   isLoading: boolean = false
-  
+  preSharedKeyVisible: boolean = false
+
   FormCreateVpnConnection: FormCreateVpnConnection =
     new FormCreateVpnConnection();
   formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()  
+  formSearchIkePolicy: FormSearchIKEPolicy = new FormSearchIKEPolicy()  
+  formSearchEnpointGroup: FormSearchEndpointGroup = new FormSearchEndpointGroup()
+  formSearchVpnService: FormSearchVpnService = new FormSearchVpnService()
+
   form: FormGroup<{
     name: FormControl<string>;
     peerRemoteIp: FormControl<string>
     peerId: FormControl<string>,
     preSharedKey: FormControl<string>,
   }> = this.fb.group({
-    name: ['', [Validators.required]],
-    peerRemoteIp: ['', [Validators.required]],
-    peerId: ['', [Validators.required]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    peerRemoteIp: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
+    peerId: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
     preSharedKey: ['', [Validators.required]],
   });
 
@@ -81,7 +76,10 @@ export class CreateVpnConnectionComponent implements OnInit{
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private vpnConnectionService: VpnConnectionService,
     private notification: NzNotificationService,
-    private ipsecPolicyService: IpsecPolicyService
+    private ipsecPolicyService: IpsecPolicyService,
+    private ikePolicyService: IkePolicyService,
+    private endpointGroupService: EndpointGroupService,
+    private vpnServiceService: VpnServiceService
   ) {}
 
   getDataIpsecPolices() {
@@ -93,11 +91,83 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
       .pipe(debounceTime(500))
       .subscribe(data => {
+      console.log(data);        
       data.records.forEach(ipsecPolicy => {
-        this.ipsecPoliciesList.push({label: ipsecPolicy.name, value: ipsecPolicy.name});
+        this.ipsecPoliciesList.push({label: ipsecPolicy.name, value: ipsecPolicy.id});
       })
       if (this.ipsecPoliciesList.length > 0) {
         this.selectedIpsecPolicy = this.ipsecPoliciesList[0].value;
+        this.selectedIpsecPolicyName = this.ipsecPoliciesList.find(policy => policy.value === this.selectedIpsecPolicy)?.label
+      }
+    })
+  }
+
+  getDataIkePolices() {
+    this.formSearchIkePolicy.projectId = this.project
+    this.formSearchIkePolicy.regionId = this.region
+    this.formSearchIkePolicy.searchValue = "kh"
+    this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
+      .subscribe(data => {
+        console.log(data);  
+      data.records.forEach(ikePolicy => {
+        this.ikePoliciesList.push({label: ikePolicy.name, value: ikePolicy.cloudId});
+      })
+      if (this.ikePoliciesList.length > 0) {
+        this.selectedIkePolicy = this.ikePoliciesList[0].value;
+        this.selectedIkePolicyName = this.ikePoliciesList.find(policy => policy.value === this.selectedIkePolicy)?.label
+      }
+    })
+  }
+
+  // getSelectedIkePolicyName(): string {
+  //   const selectedPolicy = this.ikePoliciesList.find(policy => policy.value == this.selectedIkePolicy);
+  //   return selectedPolicy && selectedPolicy.label
+  // }
+
+  getDataEndPointGroup() {
+    this.formSearchEnpointGroup.vpcId = this.project
+    this.formSearchEnpointGroup.regionId = this.region
+    this.formSearchEnpointGroup.name = ''
+    this.formSearchEnpointGroup.pageSize = 1000
+    this.formSearchEnpointGroup.currentPage = 1
+
+    this.endpointGroupService.getListEndpointGroup(this.formSearchEnpointGroup)
+      .subscribe(data => {
+        console.log(data);  
+      data.records.forEach(endPointGroup => {
+        if (endPointGroup.type === 'subnet') {
+          this.localEndpointGroupList.push({ label: endPointGroup.name, value: endPointGroup.id });
+        } else if (endPointGroup.type === 'cidr') {
+          this.remoteEndpointGroupList.push({ label: endPointGroup.name, value: endPointGroup.id });
+        }
+      })
+      if (this.localEndpointGroupList.length > 0) {
+        this.selectedLocalEndpointGroup = this.localEndpointGroupList[0].value;
+        this.selectedLocalEndpointGroupName = this.localEndpointGroupList.find(policy => policy.value === this.selectedLocalEndpointGroup)?.label
+      }
+      if (this.remoteEndpointGroupList.length > 0) {
+        this.selectedRemoteEndpointGroup = this.remoteEndpointGroupList[0].value;
+        this.selectedRemoteEndpointGroupName = this.remoteEndpointGroupList.find(policy => policy.value === this.selectedRemoteEndpointGroup)?.label
+      }
+    })
+  }
+
+  getDataVpnService() {
+    this.formSearchVpnService.projectId = this.project
+    this.formSearchVpnService.regionId = this.region
+    this.formSearchVpnService.name = ''
+    this.formSearchVpnService.pageSize = 1000
+    this.formSearchVpnService.currentPage = 1
+
+    this.vpnServiceService.getVpnService(this.formSearchVpnService)
+      .subscribe(data => {
+        console.log(data);  
+        data.records.forEach(vpnService => {
+          this.vpnServiceList.push({label: vpnService.name, value: vpnService.id});
+        })
+      if (this.vpnServiceList.length > 0) {
+        this.selectedVpnService = this.vpnServiceList[0].value;
+        this.selectedVpnServiceName = this.vpnServiceList.find(policy => policy.value === this.selectedVpnService)?.label
       }
     })
   }
@@ -109,6 +179,9 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.getDataIpsecPolices()
+    this.getDataIkePolices()
+    this.getDataEndPointGroup()
+    this.getDataVpnService()
   }
 
 
@@ -122,20 +195,22 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.FormCreateVpnConnection.name =
       this.form.controls.name.value;
     this.FormCreateVpnConnection.ipSecPolicyId = this.selectedIpsecPolicy
-    this.FormCreateVpnConnection.vpnServiceId = ""
+    this.FormCreateVpnConnection.vpnServiceId = this.selectedVpnService
     this.FormCreateVpnConnection.peerRemoteIp = this.form.controls.peerRemoteIp.value;
     this.FormCreateVpnConnection.peerId = this.form.controls.peerId.value;
-    this.FormCreateVpnConnection.ikepolicyId = ""
-    this.FormCreateVpnConnection.localSystemSubnet = ""
-    this.FormCreateVpnConnection.remoteLocalSubnet = ""
+    this.FormCreateVpnConnection.ikepolicyId = this.selectedIkePolicy
+    this.FormCreateVpnConnection.localEndpointGroupId = this.selectedLocalEndpointGroup
+    this.FormCreateVpnConnection.remoteEnpointGroupId = this.selectedRemoteEndpointGroup
     this.FormCreateVpnConnection.preSharedKey = this.form.controls.preSharedKey.value;
-    this.FormCreateVpnConnection.maximumTransmissionUnit = 0;
+    this.FormCreateVpnConnection.maximumTransmissionUnit = 1500;
     this.FormCreateVpnConnection.deadPeerDetectionAction = "hold";
-    this.FormCreateVpnConnection.deadPeerDetectionInterval = 0;
-    this.FormCreateVpnConnection.deadPeerDetectionTimeout = 0;
+    this.FormCreateVpnConnection.deadPeerDetectionInterval = 30;
+    this.FormCreateVpnConnection.deadPeerDetectionTimeout = 120;
     this.FormCreateVpnConnection.initiatorState = "bi-directional";
     return this.FormCreateVpnConnection;
   }
+
+  
 
   handleCreate() {
     this.isLoading = true;

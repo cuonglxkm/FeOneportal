@@ -102,10 +102,10 @@
       <tbody>
         <tr *ngFor="let item of data.orderItems">
           <td>{{ item.serviceName }}</td>
-          <td>{{ item.unitPrice.amount | number : '1.0-0' }}</td>
-          <td>{{ item.duration }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.totalAmount.amount | number : '1.0-0' }}</td>
+          <td class="text-right">{{ item.unitPrice.amount | number : '1.0-0' }}</td>
+          <td class="text-right">{{ item.duration }}</td>
+          <td class="text-right">{{ item.quantity }}</td>
+          <td class="text-right">{{ item.totalAmount.amount | number : '1.0-0' }}</td>
         </tr>
       </tbody>
     </nz-table>
@@ -121,7 +121,7 @@
           <tr style="margin-bottom: 5px">
             <td>Tổng tiền</td>
             <td style="text-align: right">
-              <span class="price">{{payment.amount}} VND</span>
+              <span class="price">{{payment.amount | number: '1.0-0'}} VND</span>
               <span>VND/tháng</span>
             </td>
           </tr>
@@ -137,7 +137,7 @@
             <td>VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
-                >{{payment.vat}} VND</span
+                >{{payment.vat | number: '1.0-1'}} VND</span
               >
               <span>VND/tháng</span>
             </td>
@@ -156,7 +156,7 @@
               <span>( Đã bao gồm 10% VAT)</span>
             </td>
             <td style="text-align: right; color: #EA3829; font-weight: 600; padding: 10px; border-radius: 0 8px 8px 0">
-              {{payment.totalAmount}}
+              {{payment.totalAmount | number: '1.0-0'}}
               VND
             </td>
           </tr>
