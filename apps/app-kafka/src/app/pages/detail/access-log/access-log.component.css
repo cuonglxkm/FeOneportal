@@ -2,7 +2,7 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  
+
 }
 
 .w-10 {
@@ -21,8 +21,6 @@ nz-table#access-logs th {
   letter-spacing: 0.1px;
 }
 
-
-
 .search-icon {
   color: #989bb3;
   display: flex;
@@ -34,8 +32,7 @@ nz-table#access-logs th {
 
 .filters nz-input-group,
 ::ng-deep .filters .ant-select-selector,
-.filters nz-range-picker
-{
+.filters nz-range-picker {
   border-radius: 8px !important;
 }
 
@@ -69,16 +66,16 @@ nz-table#access-logs th {
   transition: all 0.2s ease-in-out;
 }
 
-.affix-bar{
+.affix-bar {
   background-color: #e2eefc;
   padding: 16px;
 }
 
-.affix-header{
+.affix-header {
   padding: 0px;
 }
 
-.affix-filter{
+.affix-filter {
   background-color: #fff;
   padding: 16px 0;
 }

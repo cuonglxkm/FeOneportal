@@ -320,7 +320,7 @@
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
             <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
-              {{ orderItem?.totalPayment?.amount | number }} {{ orderItem?.totalPayment?.currency }}
+              {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
             </span>
               <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
               0 VNĐ
