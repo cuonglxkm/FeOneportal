@@ -1,50 +1,58 @@
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { Component, Inject, Input } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  SimpleChange,
+  SimpleChanges,
+} from '@angular/core';
 import { debounceTime } from 'rxjs';
-import { EndpointGroupDTO, FormSearchEndpointGroup } from 'src/app/shared/models/endpoint-group';
+import {
+  EndpointGroupDTO,
+  FormSearchEndpointGroup,
+} from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-endpoint-group',
   templateUrl: './endpoint-group.component.html',
-  styleUrls: ['./endpoint-group.component.less']
+  styleUrls: ['./endpoint-group.component.less'],
 })
-
 export class EndpointGroupComponent {
-  @Input() region: number 
-  @Input() project: number 
-  customerId: number
+  @Input() region: number;
+  @Input() project: number;
+  customerId: number;
 
-  pageSize: number = 5
-  pageIndex: number = 1
+  pageSize: number = 5;
+  pageIndex: number = 1;
 
-  value: string
+  value: string;
 
-  response: BaseResponse<EndpointGroupDTO>
+  response: BaseResponse<EndpointGroupDTO>;
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  formSearchEnpointGroup: FormSearchEndpointGroup = new FormSearchEndpointGroup()
+  formSearchEnpointGroup: FormSearchEndpointGroup =
+    new FormSearchEndpointGroup();
 
-  constructor(private endpointGroupService: EndpointGroupService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    ) {
-}
+  constructor(
+    private endpointGroupService: EndpointGroupService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+  ) {}
 
   refreshParams() {
     this.pageSize = 5;
     this.pageIndex = 1;
   }
-  
+
   onInputChange(value) {
     this.value = value;
-    this.getData()
+    this.getData();
   }
 
-
   onPageSizeChange(event) {
-    this.pageSize = event
+    this.pageSize = event;
     this.refreshParams();
     this.getData();
   }
@@ -55,23 +63,40 @@ export class EndpointGroupComponent {
   }
 
   getData() {
-    this.isLoading = true
-    this.formSearchEnpointGroup.vpcId = this.project
-    this.formSearchEnpointGroup.regionId = this.region
-    this.formSearchEnpointGroup.name =this.value
-    this.formSearchEnpointGroup.pageSize = this.pageSize
-    this.formSearchEnpointGroup.currentPage = this.pageIndex
-    this.endpointGroupService.getListEndpointGroup(this.formSearchEnpointGroup)
+    this.isLoading = true;
+    this.formSearchEnpointGroup.vpcId = this.project;
+    this.formSearchEnpointGroup.regionId = this.region;
+    this.formSearchEnpointGroup.name = this.value;
+    this.formSearchEnpointGroup.pageSize = this.pageSize;
+    this.formSearchEnpointGroup.currentPage = this.pageIndex;
+    this.endpointGroupService
+      .getListEndpointGroup(this.formSearchEnpointGroup)
       .pipe(debounceTime(500))
-      .subscribe(data => {
-      this.isLoading = false
-        console.log('data', data)
-      this.response = data
-    })
+      .subscribe((data) => {
+        this.isLoading = false;
+        console.log('data', data);
+        this.response = data;
+      });
   }
-  
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.project && !changes.project.firstChange) {
+      this.getData();
+    }
+    if (changes.region && !changes.region.firstChange) {
+      this.refreshParams();
+    }
+  }
+
+  handleOkDelete(){
+    this.getData()
+  }
+
+  handleOkEdit(){
+    this.getData()
+  }
 
   ngOnInit() {
-      this.getData();
+    this.getData();
   }
 }

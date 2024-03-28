@@ -2,28 +2,33 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormDeleteEndpointGroup } from 'src/app/shared/models/endpoint-group';
+import { FormDetailEndpointGroup, FormEditEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 
 @Component({
-  selector: 'one-portal-delete-endpoint-group',
-  templateUrl: './endpoint-group.component.html',
-  styleUrls: ['./endpoint-group.component.less'],
+  selector: 'one-portal-edit-endpoint-group',
+  templateUrl: './edit-endpoint-group.component.html',
+  styleUrls: ['./edit-endpoint-group.component.less'],
 })
-export class DeleteEndpointGroupComponent{
+export class EditEndpointGroupComponent{
   @Input() region: number
   @Input() project: number
   @Input() id: string
   @Input() name: string
+  @Input() description: string
+  @Input() type: string
+  @Input() endpoints: string
   @Output() onOk = new EventEmitter()
 
   isVisible: boolean = false
   isLoading: boolean = false
 
+  endpointGroup: FormDetailEndpointGroup = new FormDetailEndpointGroup()
+
   validateForm: FormGroup<{
     name: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, this.nameEndpointGroupValidator.bind(this)]]
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]]
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -33,14 +38,23 @@ export class DeleteEndpointGroupComponent{
               ) {
   }
 
-  nameEndpointGroupValidator(control: FormControl): { [key: string]: any } | null {
-    const name = control.value;
-    if (name !== this.name) {
-      return { 'nameMismatch': true };
-    }
-    return null;
+  getEndpointGroupById(id) {
+    this.isLoading = true;
+    this.endpointGroupService
+      .getEndpointGroupById(id, this.project, this.region)
+      .subscribe(
+        (data) => {
+          this.endpointGroup = data;
+          this.type = this.endpointGroup.type
+          this.isLoading = false;
+        },
+        (error) => {
+          this.endpointGroup = null;
+          this.isLoading = false;
+        }
+      );
   }
-
+  
   showModal(){
     this.isVisible = true
   }
@@ -52,15 +66,17 @@ export class DeleteEndpointGroupComponent{
 
   handleOk() {
     this.isLoading = true
-    let formDelete = new FormDeleteEndpointGroup()
-    formDelete.id = this.id
-    formDelete.regionId = this.region
-    formDelete.vpcId = this.project
-    console.log(formDelete);
+    let formEdit = new FormEditEndpointGroup()
+    formEdit.id = this.id
+    formEdit.regionId = this.region
+    formEdit.vpcId = this.project
+    formEdit.name = this.name
+    formEdit.description = ''
+    console.log(formEdit);
     
     if(this.validateForm.valid) {
       if(this.name.includes(this.validateForm.controls.name.value)){
-        this.endpointGroupService.deleteEndpointGroup(formDelete).subscribe(data => {
+        this.endpointGroupService.editEndpoinGroup(this.id, formEdit).subscribe(data => {
           if(data) {
             this.isVisible = false
             this.isLoading =  false
@@ -76,5 +92,8 @@ export class DeleteEndpointGroupComponent{
     }
   }
 
+  ngOnInit(){
+    this.getEndpointGroupById(this.id);
+  }
   
 }

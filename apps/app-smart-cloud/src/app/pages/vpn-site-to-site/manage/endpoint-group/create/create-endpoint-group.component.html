@@ -61,14 +61,14 @@
                   </div>
                 </nz-form-label>
                 <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
-                  <nz-option *ngFor="let data of authorizationAlgorithm" [nzLabel]="data.label"
+                  <nz-option *ngFor="let data of type" [nzLabel]="data.label"
                     [nzValue]="data.value"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
           </div>
 
-          <div *ngIf="selectedType = " nz-col [nzSpan]="12" class="gutter-row">
+          <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
@@ -81,7 +81,7 @@
                   </div>
                 </nz-form-label>
                 <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
-                  <nz-option *ngFor="let data of authorizationAlgorithm" [nzLabel]="data.label"
+                  <nz-option *ngFor="let data of type" [nzLabel]="data.label"
                     [nzValue]="data.value"></nz-option>
                 </nz-select>
               </nz-form-control>

@@ -40,25 +40,27 @@
         >
       </td>
       <td>{{ data.type }}</td>
-      <td>{{ data.enpoints }}</td>
+      <td>
+        <ng-container *ngFor="let endpoint of data.endpoints; let last = last">
+          {{ endpoint }}
+          <span *ngIf="!last">, </span>
+        </ng-container>
+      </td>
+      
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <span
-            style="color: #0066b3; margin-right: 10px; cursor: pointer"
-            nz-icon
-            nzType="edit"
-            nzTheme="outline"
-            [routerLink]="[
-              '/app-smart-cloud/vpn-site-to-site/ipsec-policies/edit/' + data.id
-            ]"
-            [nzPopoverContent]="'Sửa'"
-            nz-popover
-            nzPopoverPlacement="bottom"
-          ></span>
+          <one-portal-edit-endpoint-group [region]="region"
+          [project]="project"
+          [id]="data.id"
+          [name]="data.name"
+          [type]="data.type"
+          [endpoints]="data.endpoints"
+          (onOk)="handleOkEdit()"></one-portal-edit-endpoint-group>
+
           <one-portal-delete-endpoint-group [region]="region"
           [project]="project"
           [id]="data.id"
-          [nameIpsecPolicy]="data.name"
+          [name]="data.name"
           (onOk)="handleOkDelete()"></one-portal-delete-endpoint-group>
         </div>
       </td>

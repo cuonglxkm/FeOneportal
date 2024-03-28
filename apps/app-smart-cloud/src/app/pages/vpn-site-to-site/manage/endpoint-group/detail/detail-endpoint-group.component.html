@@ -29,7 +29,15 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Name</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                      nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
                 <input nz-input type="text" value="{{endpointGroup?.name}}" [disabled]="true" />
 
               </nz-form-control>
@@ -38,16 +46,25 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzRequired>Type</nz-form-label>
-                <input *ngIf="endpointGroup?.type == 'subnet'" nz-input type="text" value="{{endpointGroup?.type}}" [disabled]="true" placeholder="Subnet(for local systems)"/>
-                <input *ngIf="endpointGroup?.type == 'cidr'" nz-input type="text" value="{{endpointGroup?.type}}" [disabled]="true" placeholder="Cidr(for external systems)"/>
+                <nz-form-label nzFor="name">
+                  <div>
+                    <span>Type</span>
+                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                      [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
+                      nzPopoverPlacement="bottom"></span>
+                  </div>
+                </nz-form-label>
+                <input *ngIf="endpointGroup?.type == 'subnet'" nz-input type="text" [disabled]="true" placeholder="Subnet(for local systems)"/>
+                <input *ngIf="endpointGroup?.type == 'cidr'" nz-input type="text" [disabled]="true" placeholder="Cidr(for external systems)"/>
               </nz-form-control>
             </nz-form-item>
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzFor="name" nzRequired>{{endpointGroup.type}}:</nz-form-label>
+                <nz-form-label *ngIf="endpointGroup?.type == 'subnet'" nzFor="name">Cidr:</nz-form-label>
+                <nz-form-label *ngIf="endpointGroup?.type == 'cidr'" nzFor="name">Subnet:</nz-form-label>
                 <div *ngFor="let item of endpointGroup.endpoints" style="margin-bottom: 15px" class="text-label">
                   {{item}}
                 </div>

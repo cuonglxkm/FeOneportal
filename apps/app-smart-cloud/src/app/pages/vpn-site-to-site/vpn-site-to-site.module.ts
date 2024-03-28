@@ -23,7 +23,8 @@ import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/det
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
 import { CreateEndpointGroupComponent } from './manage/endpoint-group/create/create-endpoint-group.component';
 import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/detail-endpoint-group.component';
-import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/endpoint-group.component';
+import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/delete-endpoint-group.component';
+import { EditEndpointGroupComponent } from './manage/endpoint-group/edit/edit-endpoint-group.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/end
     CreateIkePoliciesComponent,
     CreateEndpointGroupComponent,
     DetailEndpointGroupComponent,
-    DeleteEndpointGroupComponent
+    DeleteEndpointGroupComponent,
+    EditEndpointGroupComponent
   ],
     imports: [
         VpnSiteToSiteRoutingModule,
