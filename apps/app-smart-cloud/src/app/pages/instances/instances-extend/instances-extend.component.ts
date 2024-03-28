@@ -182,7 +182,7 @@ export class InstancesExtendComponent implements OnInit {
     orderItemInstanceResize.orderItemQuantity = 1;
     orderItemInstanceResize.specification = specificationInstance;
     orderItemInstanceResize.specificationType = 'instance_extend';
-    orderItemInstanceResize.price = this.totalincludesVAT;
+    orderItemInstanceResize.price = this.totalAmount / this.numberMonth;
     orderItemInstanceResize.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstanceResize);
 
