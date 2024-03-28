@@ -40,7 +40,7 @@
         <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control>
+            <nz-form-control [nzErrorTip]="nameErrorTpl">
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
                 <span>Name</span>
@@ -60,7 +60,10 @@
               formControlName="name"
               class="input-custom"
             />
-            
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Tên vpn connection không được để trống</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Tên vpn connection chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+            </ng-template> 
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -111,12 +114,12 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="selectedEncryptionMode"
+              [(ngModel)]="selectedVpnService"
               [ngModelOptions]="{standalone: true}"
               class="input-select-custom"
             >
               <nz-option
-              *ngFor="let data of vpnService"
+              *ngFor="let data of vpnServiceList"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -127,7 +130,7 @@
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control>
+            <nz-form-control [nzErrorTip]="peerRemoteIdErrorTpl">
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
                 <span>Peer Remote IP VPN Gateway</span>
@@ -147,6 +150,10 @@
               formControlName="peerRemoteIp"
               class="input-custom"
             />
+            <ng-template #peerRemoteIdErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Peer Remote IP không được để trống</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Peer Remote IP không đúng định dạng</ng-container>
+            </ng-template> 
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -167,12 +174,12 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="selectedLifetimeUnits"
+              [(ngModel)]="selectedLocalEndpointGroup"
               [ngModelOptions]="{standalone: true}"
               class="input-select-custom"
             >
               <nz-option
-              *ngFor="let data of localSystemSubnet"
+              *ngFor="let data of localEndpointGroupList"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -183,7 +190,7 @@
         </div>
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
-            <nz-form-control>
+            <nz-form-control [nzErrorTip]="peerIdErrorTpl">
             <nz-form-label nzFor="name">
               <div style="margin-top: 15px;">
                 <span>Peer ID VPN Connections</span>
@@ -203,7 +210,10 @@
               formControlName="peerId"
               class="input-custom"
             />
-            
+            <ng-template #peerIdErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Peer Id không được để trống</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Peer Id không đúng định dạng</ng-container>
+            </ng-template> 
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -255,12 +265,12 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="selectedPerfectForwardSecrecy"
+              [(ngModel)]="selectedRemoteEndpointGroup"
               [ngModelOptions]="{standalone: true}"
               class="input-select-custom"
             >
               <nz-option
-              *ngFor="let data of ikePolicy"
+              *ngFor="let data of remoteEndpointGroupList"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -271,7 +281,7 @@
         <div nz-col [nzSpan]="12" class="gutter-row">
           <nz-form-item >
             <nz-form-control>
-            <nz-form-label nzFor="name">
+            <nz-form-label nzFor="name" [nzErrorTip]="preShareKeyErrorTpl">
               <div style="margin-top: 15px;">
                 <span>Pre - Shared Key (PSK) string</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
@@ -301,6 +311,9 @@
               style="cursor: pointer;"
             ></span>
           </ng-template>
+          <ng-template #preShareKeyErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Pre share key không được để trống</ng-container>
+          </ng-template> 
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -442,15 +455,15 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
-          <span>sha1</span>
+          <span>{{ selectedIkePolicyName }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IPsec Policy</h3>
-          <span>{{selectedIpsecPolicy}}</span>
+          <span>{{selectedIpsecPolicyName}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">VPN Service</h3>
-          <span>tunnel</span>
+          <span>{{selectedVpnServiceName}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
@@ -462,11 +475,11 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Local System Subnet</h3>
-          <span>3600</span>
+          <span>{{selectedLocalEndpointGroupName}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Remote Local Subnet</h3>
-          <span>group5</span>
+          <span>{{selectedRemoteEndpointGroupName}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
@@ -479,6 +492,8 @@
       nzType="primary"
       style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
       nzSize="large"
+      [nzLoading]="isLoading"
+      [disabled]="form.invalid"
     >
       <img
         src="assets/imgs/wallet.svg"

@@ -45,7 +45,7 @@ export class IpPublicComponent implements OnInit {
 
 
   statusData = [
-    {name: 'Tất cả trạng thái', value: ''},
+    {name: 'Trạng thái', value: ''},
     {name: 'Khởi tạo', value: '0'},
     {name: 'Đang sử dụng', value: '2'}];
   actionData = ['Gắn Ip Pulbic', 'Gỡ Ip Pulbic', 'Xóa'];

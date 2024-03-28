@@ -45,13 +45,13 @@ style="margin-top: 20px"
   </thead>
   <tbody>
     <tr *ngFor="let data of fixedTable.data">
-    <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/1']">{{data.name}}</a></td>
+    <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/' +data.id]">{{data.name}}</a></td>
     <td>
       {{data.vpnService}}
     </td>
     <td>{{data.ikepolicy}}</td>
     <td>{{data.ipSecPolicy}}</td>
-    <td>{{data.status}}</td>
+    <td>{{data.status === 'PENDING_CREATE' ? 'Pending Create' : data.status === 'DOWN' && 'Down'}}</td>
     <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
           <span
@@ -59,12 +59,18 @@ style="margin-top: 20px"
               nz-icon
               nzType="edit"
               nzTheme="outline"
-              [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/1']"
+              [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/' +data.id]"
               [nzPopoverContent]="'Sửa'"
               nz-popover
               nzPopoverPlacement="bottom"
             ></span>
-          <one-portal-delete-vpn-connection></one-portal-delete-vpn-connection>
+          <one-portal-delete-vpn-connection
+          [region]="region"
+          [project]="project"
+          [vpnconnectionid]="data.id"
+          [nameVpnconnection]="data.name"
+          (onOk)="handleOkDelete()"
+          ></one-portal-delete-vpn-connection>
         </div>
     </td>
   </tr>
