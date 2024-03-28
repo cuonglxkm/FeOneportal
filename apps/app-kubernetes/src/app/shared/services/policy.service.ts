@@ -1,18 +1,11 @@
 import {Inject, Injectable} from '@angular/core';
 import {BaseService} from "./base.service";
 import {Observable, of} from "rxjs";
+import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
-import {
-  AttachedEntitiesDTO,
-  AttachOrDetachRequest,
-  PermissionDTO,
-  PermissionPolicyModel,
-  PolicyInfo,
-  PolicyModel
-} from "../../pages/policy/policy.model";
 import {FormSearchUserGroup} from "../models/user-group.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { BaseResponse } from '@one-portal/common-utils';
+import { AttachOrDetachRequest, AttachedEntitiesDTO, PermissionDTO, PermissionPolicyModel, PolicyInfo, PolicyModel } from '../models/policy.model';
 
 
 @Injectable({
@@ -191,4 +184,39 @@ export class PolicyService extends BaseService {
     return this.http.post<HttpResponse<any>>(this.urlIAM, request, this.httpOptions);
   }
 
+  getUserPermissions(): Observable<any> {
+    localStorage.removeItem('PermissionOPA')
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', this.httpOptions);
+  }
+
+  hasPermission(action: string): boolean {
+    if (localStorage.getItem('PermissionOPA') != null) {
+      var permission = JSON.parse(localStorage.getItem('PermissionOPA'));
+      return this.isPermission(action, permission);
+    } else {
+      this.getUserPermissions().pipe().subscribe( (permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        return this.isPermission(action, permission);
+      });
+    }
+
+  }
+
+  isPermission(action, permission): boolean {
+    if(permission['IsAdmin']){
+      return true;
+    }
+    if(permission['Permissions']){
+      let actionItems = action.split(":");
+      let denyActions = permission['Permissions']['DenyActions'] ? permission['Permissions']['DenyActions'] : [];
+      let allowActions = permission['Permissions']['AllowActions'] ? permission['Permissions']['AllowActions'] : [];
+      if(denyActions.includes(action) || denyActions.includes(actionItems[0] + ":*")){
+        return false;
+      }
+      if(allowActions.includes(action) || allowActions.includes(actionItems[0] + ":*")){
+        return true;
+      }
+    }
+    return false;
+  }
 }

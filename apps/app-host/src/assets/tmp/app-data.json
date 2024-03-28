@@ -264,11 +264,6 @@
               "text": "MongoDB Replicaset",
               "icon": "anticon-team",
               "link": "/app-mongodb-replicaset"
-            },
-            {
-              "text": "K8s",
-              "icon": "anticon-team",
-              "link": "/app-k8s"
             }
           ]
         },

@@ -13,7 +13,7 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'http://127.0.0.1:16003',
+  baseUrl: 'https://api.onsmartcloud.com',
   // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 

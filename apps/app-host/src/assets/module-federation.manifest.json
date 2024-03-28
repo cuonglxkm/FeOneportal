@@ -2,6 +2,5 @@
   "app-smart-cloud": "http://localhost:4203",
   "app-kafka": "http://localhost:4201",
   "app-kubernetes": "http://localhost:4205",
-  "app-mongodb-replicaset": "http://localhost:4206",
-  "app-k8s": "http://localhost:4207"
+  "app-mongodb-replicaset": "http://localhost:4206"
 }

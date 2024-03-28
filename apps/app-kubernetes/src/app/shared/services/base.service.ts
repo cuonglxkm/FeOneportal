@@ -1,5 +1,5 @@
-import { environment } from '@env/environment';
 import {Injectable} from '@angular/core';
+import {environment} from "@env/environment";
 import {HttpErrorResponse} from "@angular/common/http";
 import {throwError} from "rxjs";
 

@@ -55,13 +55,6 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'app-k8s',
-        loadChildren: () =>
-          loadRemoteModule('app-k8s', './Module').then(
-            (m) => m.RemoteEntryModule
-          ),
-      },
-      {
         path: 'app-mongodb-replicaset',
         loadChildren: () =>
           loadRemoteModule('app-mongodb-replicaset', './Module').then(

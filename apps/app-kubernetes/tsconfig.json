@@ -2,27 +2,21 @@
   "compilerOptions": {
     "target": "es2022",
     "useDefineForClassFields": false,
-    // "baseUrl": "./",
+    "baseUrl": "./",
     "paths": {
       "@shared": [
-        "apps/app-kubernetes/src/app/shared/index"
+        "src/app/shared/index"
       ],
       "@core": [
-        "apps/app-kubernetes/src/app/core/index"
+        "src/app/core/index"
       ],
       "@env/*": [
-        "apps/app-kubernetes/src/environments/*"
+        "src/environments/*"
       ],
       "@_mock": [
         "_mock/index"
       ]
     }
-    // "forceConsistentCasingInFileNames": true,
-    // "strict": false,
-    // "noImplicitOverride": true,
-    // "noPropertyAccessFromIndexSignature": true,
-    // "noImplicitReturns": true,
-    // "noFallthroughCasesInSwitch": true
   },
   "files": [],
   "include": [],
@@ -34,11 +28,5 @@
       "path": "./tsconfig.editor.json"
     }
   ],
-  "extends": "../../tsconfig.base.json",
-  // "angularCompilerOptions": {
-  //   "enableI18nLegacyMessageIdFormat": false,
-  //   "strictInjectionParameters": true,
-  //   "strictInputAccessModifiers": true,
-  //   "strictTemplates": true
-  // }
+  "extends": "../../tsconfig.base.json"
 }

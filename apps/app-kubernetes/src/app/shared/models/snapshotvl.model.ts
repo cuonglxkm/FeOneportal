@@ -7,40 +7,32 @@ export class GetListSnapshotVlModel {
   previousPage: number;
   records: SnapshotVolumeDto[];
 }
-export class EditSnapshotVolume {
-  id: number;
-  name: string;
-  description: string;
-}
 
 export class ScheduleSnapshotVL {
-  id: number;
-  cloudId: string;
-  name: string;
-  description: string;
-  sizeInGB: number;
-  volumeId: number;
-  customerId: number;
-  customer: any;
-  contract: Contract;
-  region: number;
-  regionText: string;
-  serviceStatus: string;
-  resourceStatus: string;
   volumeName: string;
-  suspendType: any;
+  name: string;
+  serviceId: number;
+  description: string;
+  mode: number;
+  runtime: string;
+  maxSnapshot: number;
+  interval: number;
   duration: number;
-  startDate: string;
-  endDate: string;
-  suspendDate: any;
-  offerId: number;
-  iops: number;
-  totalCount: number;
-  projectName: string;
-  projectId: number;
-  fromRootVolume: boolean;
-  note: any;
-  scheduleId: number;
+  dates: number;
+  daysOfWeek: string;
+  createdAt: string;
+  updatedAt: any;
+  status: string;
+  nextRuntime: string;
+  currentSnapshot: any;
+  proccessId: any;
+  serviceType: number;
+  warningMessage: any;
+  snapshotPackageId: number;
+  customerId: any;
+  regionId: any;
+  projectId: any;
+  id: number;
 }
 
 export class Contract {
@@ -70,26 +62,25 @@ export class CreateScheduleSnapshotDTO {
   regionId: number;
 }
 
-export class SnapshotScheduleDetailDTO {
+export class EditSnapshotVolume {
   id: number;
   name: string;
-  serviceId: number;
   description: string;
+}
+
+export class UpdateScheduleSnapshot {
+  id: number;
+  dayOfWeek: string;
+  daysOfWeek: string[];
+  description: string;
+  intervalWeek: number;
   mode: number;
-  runtime: string;
-  maxSnapshot: number;
-  interval: number;
-  duration: number;
   dates: number;
-  daysOfWeek: string;
-  createdAt: string;
-  updatedAt: string;
-  status: string;
-  nextRuntime: string;
-  currentSnapshot: number;
-  proccessId: string;
-  serviceType: number;
-  warningMessage: string;
-  snapshotPackageId: number;
-  volumeName: string;
+  duration: number;
+  name: string;
+  runtime: string;
+  intervalMonth: number;
+  customerId: number;
+  projectId: number;
+  regionId: number;
 }
