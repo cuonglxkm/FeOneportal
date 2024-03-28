@@ -34,6 +34,7 @@ import { CatalogService } from '../../../../shared/services/catalog.service';
 import { ProjectService } from '../../../../shared/services/project.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { Product } from '../../../../shared/models/catalog.model';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-create-volume',
@@ -138,12 +139,7 @@ export class CreateVolumeComponent implements OnInit {
     isMultiAttach: FormControl<boolean>;
   }> = this.fb.group({
     name: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9\s]+$/),
-        this.duplicateNameValidator.bind(this),
-      ],
+      null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)],
     ],
     isSnapshot: [false, []],
     snapshot: [null as number, []],
@@ -179,6 +175,8 @@ export class CreateVolumeComponent implements OnInit {
 
   listProducts: Product[]
 
+  dataSubjectStorage: Subject<any> = new Subject<any>();
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -202,8 +200,11 @@ export class CreateVolumeComponent implements OnInit {
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if(value <= 40) return (this.iops = 400);
-      this.iops = value * 10
+      if(this.volumeCreate.volumeType == 'hdd') return (this.iops = 300)
+      if(this.volumeCreate.volumeType == 'ssd') {
+        if(value <= 40) return (this.iops = 400);
+        this.iops = value * 10
+      }
     });
   }
 
@@ -216,8 +217,6 @@ export class CreateVolumeComponent implements OnInit {
       return null; // Name is unique
     }
   }
-
-
 
   getCatalogOffer(type) {
     this.catalogService
@@ -303,11 +302,17 @@ export class CreateVolumeComponent implements OnInit {
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
     // this.iops = this.validateForm.get('storage').value * 10
-    if(this.validateForm.get('storage').value <= 40) {
-      this.iops = 400
-    } else {
-      this.iops = this.validateForm.get('storage').value * 10
+    if(this.selectedValueRadio == 'hdd') {
+      this.iops = 300
     }
+    if(this.selectedValueRadio == 'ssd') {
+      if(this.validateForm.get('storage').value <= 40) {
+        this.iops = 400
+      } else {
+        this.iops = this.validateForm.get('storage').value * 10
+      }
+    }
+
   }
 
   //get danh sách máy ảo
@@ -411,7 +416,7 @@ export class CreateVolumeComponent implements OnInit {
 
   changeValueInput() {
     console.log('total amount');
-    this.getTotalAmount();
+    this.getTotalAmount()
   }
 
   navigateToPaymentSummary() {
@@ -451,7 +456,9 @@ export class CreateVolumeComponent implements OnInit {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
-    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+    this.instanceService.getTotalAmount(dataPayment)
+      .pipe(debounceTime(500))
+      .subscribe((result) => {
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -486,67 +493,12 @@ export class CreateVolumeComponent implements OnInit {
     this.date = new Date();
     this.getTotalAmount();
 
+
+
     // this.getCatalogOffer('MultiAttachment')
     // this.getCatalogOffer('Encryption')
   }
-
-  submitForm() {
-    this.nameList = [];
-    if (this.validateForm.valid) {
-      console.log(this.validateForm.value);
-      this.doCreateVolume();
-    } else {
-      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin');
-    }
-  }
-
   //
-  doCreateVolume() {
-    this.isLoadingAction = true;
-    this.getTotalAmount();
-    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
-    request.customerId = this.volumeCreate.customerId;
-    request.createdByUserId = this.volumeCreate.customerId;
-    request.note = 'tạo volume';
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.volumeCreate),
-        specificationType: 'volume_create',
-        price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: this.validateForm.controls.time.value,
-      },
-    ];
-
-    console.log(request);
-    this.volumeService.createNewVolume(request).subscribe(
-      (data) => {
-        if (data != null) {
-          //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
-          if (data.code == 200) {
-            this.isLoadingAction = false;
-            this.notification.success(
-              'Thành công',
-              'Yêu cầu tạo Volume thành công.'
-            );
-            this.router.navigate(['/app-smart-cloud/volumes']);
-          }
-          //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
-          else if (data.code == 310) {
-            this.isLoadingAction = false;
-            // this.router.navigate([data.data]);
-            window.location.href = data.data;
-          }
-        } else {
-          this.isLoadingAction = false;
-        }
-      },
-      (error) => {
-        this.isLoadingAction = false;
-      }
-    );
-  }
-
   private getListSnapshot() {
     this.isLoadingAction = true;
     this.snapshotList = [];
