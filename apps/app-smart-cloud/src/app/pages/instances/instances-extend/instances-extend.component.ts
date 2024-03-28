@@ -82,19 +82,31 @@ export class InstancesExtendComponent implements OnInit {
     });
   }
 
-  listIPStr = '';
+  listIPPublicStr = '';
+  listIPLanStr = '';
   getListIpPublic() {
     this.service
       .getPortByInstance(this.id, this.regionId)
       .subscribe((dataNetwork: any) => {
-        let listOfDataNetwork: Network[] = dataNetwork.filter(
+        //list IP public
+        let listOfPublicNetwork: Network[] = dataNetwork.filter(
           (e: Network) => e.isExternal == true
         );
-        let listIP: string[] = [];
-        listOfDataNetwork.forEach((e) => {
-          listIP = listIP.concat(e.fixedIPs);
+        let listIPPublic: string[] = [];
+        listOfPublicNetwork.forEach((e) => {
+          listIPPublic = listIPPublic.concat(e.fixedIPs);
         });
-        this.listIPStr = listIP.join(', ');
+        this.listIPPublicStr = listIPPublic.join(', ');
+
+        //list IP Lan
+        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        let listIPLan: string[] = [];
+        listOfPrivateNetwork.forEach((e) => {
+          listIPLan = listIPLan.concat(e.fixedIPs);
+        });
+        this.listIPLanStr = listIPLan.join(', ');
         this.cdr.detectChanges();
       });
   }
@@ -184,6 +196,14 @@ export class InstancesExtendComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: this.order, path: returnPath },
     });
+  }
+
+  onRegionChange(region: any) {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  onProjectChange(project: any) {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToEdit() {
