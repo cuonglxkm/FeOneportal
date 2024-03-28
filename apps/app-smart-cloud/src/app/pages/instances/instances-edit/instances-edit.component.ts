@@ -129,7 +129,6 @@ export class InstancesEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activeRoute.snapshot.paramMap.get('id'));
