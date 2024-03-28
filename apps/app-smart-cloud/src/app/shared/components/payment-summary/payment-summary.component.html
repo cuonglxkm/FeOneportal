@@ -63,7 +63,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of listServiceInfo; let i = index">
-            <td class="text-blue">{{ item.name }}</td>
+            <td>{{ item.name }}</td>
             <td>{{ item.type }}</td>
             <td nzAlign="right">{{ item.price | number: '1.0-0'  }}</td>
             <td nzAlign="right">{{ item.duration }}</td>
@@ -87,7 +87,6 @@
               <span class="price"
                 >{{ totalAmount | number: '1.0-0'  }} VND</span
               >
-              <span>VND/tháng</span>
             </td>
           </tr>
           <tr>
@@ -107,7 +106,6 @@
                 }}
                 VND</span
               >
-              <span>VND/tháng</span>
             </td>
           </tr>
           <tr>
