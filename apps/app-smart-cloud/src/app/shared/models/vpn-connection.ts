@@ -82,6 +82,7 @@ export class VpnConnectionDetail {
 
 export class FormEditVpnConnection{
   customerId: number;
+  id:string;
   regionId: number;
   projectId: number;
   name: string;
