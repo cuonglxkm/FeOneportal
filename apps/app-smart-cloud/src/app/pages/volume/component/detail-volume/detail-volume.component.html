@@ -37,7 +37,7 @@
         Chi tiết Volume
       </nz-col>
     </nz-row>
-    <div *ngIf=" volumeInfo?.bootable != 'Volume root'">
+    <div *ngIf="!volumeInfo?.bootable">
       <div *ngIf="typeVPC == 0" style="display: flex">
         <div style="margin-right: 8px;">
           <div nz-col nzSpan="4">
