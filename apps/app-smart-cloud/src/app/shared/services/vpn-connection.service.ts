@@ -8,7 +8,7 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
 import { FormCreateFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
 import { FormCreateIpsecPolicy, FormDeleteIpsecPolicy, FormEditIpsecPolicy, FormSearchIpsecPolicy, IpsecPolicyDetail } from '../models/ipsec-policy';
-import { FormCreateVpnConnection } from '../models/vpn-connection';
+import { FormCreateVpnConnection, FormSearchVpnConnection } from '../models/vpn-connection';
 @Injectable({
   providedIn: 'root',
 })
@@ -30,16 +30,16 @@ export class VpnConnectionService extends BaseService {
     })
   }
 
-  getIpsecpolicy(formSearch: FormSearchIpsecPolicy) {
+  getVpnConnection(formSearch: FormSearchVpnConnection) {
     let params = new HttpParams()
     if (formSearch.regionId != undefined || formSearch.regionId != null) {
       params = params.append('regionId', formSearch.regionId)
     }
-    if (formSearch.name != undefined || formSearch.name != null) {
-      params = params.append('name', formSearch.name)
+    if (formSearch.searchValue != undefined || formSearch.searchValue != null) {
+      params = params.append('searchValue', formSearch.searchValue)
     }
-    if (formSearch.vpcId != undefined || formSearch.vpcId != null) {
-      params = params.append('vpcId', formSearch.vpcId)
+    if (formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
     }
     if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
       params = params.append('pageSize', formSearch.pageSize)
@@ -48,7 +48,7 @@ export class VpnConnectionService extends BaseService {
       params = params.append('currentPage', formSearch.currentPage)
     }
 
-    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ipsecpolicy/paging', {
+    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnconnection/paging', {
       headers: this.getHeaders(),
       params: params
     })
