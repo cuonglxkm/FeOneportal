@@ -49,7 +49,7 @@ export class TopicMngtComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private topicKafkaService: TopicService,
+    private topicService: TopicService,
     private modal: NzModalService,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
@@ -76,7 +76,7 @@ export class TopicMngtComponent implements OnInit {
   }
 
   getListTopic() {
-    this.topicKafkaService.getListTopic(1, 10000, "", this.serviceOrderCode)
+    this.topicService.getListTopic(1, 10000, "", this.serviceOrderCode)
       .pipe(
         filter((r) => r && r.code == 200),
         map((r) => r.data)
@@ -88,7 +88,7 @@ export class TopicMngtComponent implements OnInit {
 
   getList() {
     this.loading = true
-    this.topicKafkaService.getListTopic(this.index, this.size, this.search, this.serviceOrderCode)
+    this.topicService.getListTopic(this.index, this.size, this.search, this.serviceOrderCode)
       .pipe(
         filter((r) => r && r.code == 200),
         map((r) => r.data)
@@ -171,9 +171,14 @@ export class TopicMngtComponent implements OnInit {
       this.loadingSrv.open({ type: "spin", text: "Loading..." });
 
       let data = this.produceForm.value;
-      this.topicKafkaService.testProduce(data)
+      this.topicService.testProduce(data)
         .pipe(finalize(() => {
           this.loadingSrv.close();
+          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
+          setTimeout(() => {
+            this.handleSyncTopic(this.serviceOrderCode);
+          }, 6000);
+          
         }))
         .subscribe((r: any) => {
           if (r && r.code == 200) {
@@ -189,7 +194,6 @@ export class TopicMngtComponent implements OnInit {
                 }
               },
             );
-            this.getList()
             this.control = this.listNum;
             this.handleCloseProduceModal();
           } else {
@@ -222,9 +226,14 @@ export class TopicMngtComponent implements OnInit {
 
   handleDeleteMessages(data: KafkaTopic) {
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
-        this.topicKafkaService.deleteMessages(data.topicName, this.serviceOrderCode)
+        this.topicService.deleteMessages(data.topicName, this.serviceOrderCode)
         .pipe(finalize(() => {
           this.loadingSrv.close();
+          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
+
+          setTimeout(() => {
+            this.handleSyncTopic(this.serviceOrderCode);
+          }, 6000);
         }))
         .subscribe(
           (data: any) => {
@@ -255,7 +264,6 @@ export class TopicMngtComponent implements OnInit {
                 },
               );
             }
-            this.getList();
             this.isDelVisible = false;
           }
         );
@@ -265,7 +273,7 @@ export class TopicMngtComponent implements OnInit {
   handleDeleteTopic(data: KafkaTopic) {
     
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
-        this.topicKafkaService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
+        this.topicService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
         .pipe(finalize(() => {
           this.loadingSrv.close();
         }))
@@ -303,6 +311,47 @@ export class TopicMngtComponent implements OnInit {
             }
           );
   }
+
+  handleSyncTopic(serviceOrderCode:string){
+
+    this.topicService.syncTopic(serviceOrderCode)
+    .pipe(finalize(() => {
+      this.loadingSrv.close();
+    }))
+      .subscribe(
+        (data: any) => {
+          if (data && data.code == 200) {
+            this.notification.success(
+              'Thông báo',
+              "Đồng bộ message thành công",
+              {
+                nzPlacement: 'bottomRight',
+                nzStyle: {
+                  backgroundColor: '#dff6dd',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                }
+              },
+            );
+          } else {
+            this.notification.error(
+              "Đồng bộ message thất bại",
+              data.msg,
+              {
+                nzPlacement: 'bottomRight',
+                nzStyle: {
+                  backgroundColor: '#fed9cc',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                }
+              },
+            );
+          }
+          this.getList();
+        }
+      );
+  }
+
 }
 export function validateFormBeforeSubmit(formGroup: FormGroup) {
   const noWhitespaceInHeadAndTailPattern = /^[^\s]+(\s+[^\s]+)*$/;

@@ -139,4 +139,10 @@ export class TopicService extends BaseService {
 
     return eventSource;
   }
+
+  syncTopic(serviceOrderCode: string) {
+    return this.http.get(
+      `${this.topicUrl}/syncTopic?serviceOrderCode=${serviceOrderCode}`
+    );
+  }
 }
