@@ -110,6 +110,13 @@ nz-table.tbl-acl th {
 .question{
   text-align: center;
   font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.error-del{
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #ff4d4f;
 }
 
 nz-table#topic th {
@@ -119,6 +126,12 @@ nz-table#topic th {
   line-height: 24px;
   letter-spacing: 0.1px;
 }
+
+.err-name{
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px #ff4d4f33;
+}
+
 
 @media only screen and (min-width: 1440px) {
 }

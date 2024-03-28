@@ -119,10 +119,12 @@ export class CreateTopicComponent implements OnInit {
   }
 
   addValidateCustomConfig(configs: string) {
+    console.log('addValidateCustomConfig');
+    
     let jsonObject = JSON.parse(configs);
     this.listConfigLabel.forEach(element => {
       const { name, value, fullname } = element;
-      let valueDB = jsonObject[fullname]
+      let valueDB = jsonObject[fullname] == null ? value : jsonObject[fullname];
       let validators = [];
       switch (name) {
         case 'lead_rep':
@@ -176,6 +178,8 @@ export class CreateTopicComponent implements OnInit {
           validators.push(Validators.min(0), Validators.max(9007199254740991), Validators.pattern(/^\d+$/))
           break;
       }
+      console.log(name,' : ',valueDB ,' : ',value);
+      
       this.validateForm.get(name).setValue(valueDB ? valueDB : value);
       this.validateForm.get(name).setValidators(validators);
       this.validateForm.get(name).updateValueAndValidity();
@@ -377,7 +381,7 @@ export class CreateTopicComponent implements OnInit {
           .filter(element => element.name !== "typeTime" && element.name !== "re_hours")
           .forEach(element => {
             const { name, value, type, fullname } = element;
-            if (this.validateForm.get(name).value != "" && this.validateForm.get(name).value != null)
+            if (this.validateForm.get(name).value != "" || this.validateForm.get(name).value != null)
               switch (name) {
                 case 'lead_rep':
                 case 'foll_repl':
@@ -390,7 +394,8 @@ export class CreateTopicComponent implements OnInit {
                   else
                     json[fullname] = this.validateForm.get(name).value;
                   break;
-              } else {
+              }
+            else {
               json[fullname] = value;
             }
           })
@@ -452,7 +457,18 @@ export class CreateTopicComponent implements OnInit {
         .filter(element => element.name !== "typeTime" && element.name !== "re_hours")
         .forEach(element => {
           const { name, value, fullname } = element;
-          if (this.validateForm.get(name).value != "")
+          if (this.validateForm.get(name).value === "" || this.validateForm.get(name).value === null){
+            switch (name) {
+              case 'lead_rep':
+              case 'foll_repl':
+                json[fullname] = (value == "none") ? "" : "*"
+                break;
+              default:
+                json[fullname] = value;
+                break;
+              }
+          }
+          else {
             switch (name) {
               case 'lead_rep':
               case 'foll_repl':
@@ -462,6 +478,8 @@ export class CreateTopicComponent implements OnInit {
                 json[fullname] = this.validateForm.get(name).value;
                 break;
             }
+          }
+
           i++;
         })
       this.topicKafkaService.updateTopic(topicName, this.serviceOrderCode, json)
