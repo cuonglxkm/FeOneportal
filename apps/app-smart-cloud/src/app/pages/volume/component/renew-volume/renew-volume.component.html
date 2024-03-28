@@ -65,7 +65,7 @@
         <nz-descriptions [nzColumn]="2" style="margin-top: 20px;">
           <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
-          <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}}</nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}} GB</nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleIOPS">{{volumeInfo?.iops}}</nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"

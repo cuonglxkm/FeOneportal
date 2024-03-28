@@ -139,12 +139,7 @@ export class CreateVolumeComponent implements OnInit {
     isMultiAttach: FormControl<boolean>;
   }> = this.fb.group({
     name: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9\s]+$/),
-        this.duplicateNameValidator.bind(this),
-      ],
+      null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)],
     ],
     isSnapshot: [false, []],
     snapshot: [null as number, []],
@@ -222,8 +217,6 @@ export class CreateVolumeComponent implements OnInit {
       return null; // Name is unique
     }
   }
-
-
 
   getCatalogOffer(type) {
     this.catalogService

@@ -68,9 +68,7 @@
                      [placeholder]="'Nhập tên Volume'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
-                  Việt
-                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
                 <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume
                   khác
@@ -201,6 +199,7 @@
                 <span nz-icon nzType="question-circle" style="margin-left: 5px;"
                       nzTheme="outline"
                       nz-popover
+
                       [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
                       nzPopoverPlacement="bottom"></span>
               </div>
@@ -211,6 +210,7 @@
                          id="instanceId"
                          [nzPlaceHolder]="'-Chọn máy ảo-'"
                          [nzShowSearch]="false"
+                         nzAllowClear
                          [(ngModel)]="instanceSelected"
                          (ngModelChange)="instanceSelectedChange($event)"
                          style="width: 100%;">

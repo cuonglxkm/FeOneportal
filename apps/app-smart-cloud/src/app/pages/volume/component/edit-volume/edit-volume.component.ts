@@ -156,7 +156,7 @@ export class EditVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.volumeEdit),
           specificationType: 'volume_resize',
-          price: this.orderItem?.totalPayment?.amount,
+          price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
           serviceDuration: this.expiryTime
         }
       ]
@@ -334,6 +334,8 @@ export class EditVolumeComponent implements OnInit {
         serviceDuration: this.expiryTime
       }
     ]
+    console.log('request', request)
+    console.log('price', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
     var returnPath: string = '/app-smart-cloud/volume/detail/'+this.volumeId;
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: request, path: returnPath },

@@ -39,7 +39,7 @@
       <nz-descriptions [nzColumn]="2" style="margin-top: 20px;">
         <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleType"><b>{{ volumeInfo?.volumeType }}</b></nz-descriptions-item>
-        <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }}</b></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }} GB</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleStatus">
               <span *ngIf="volumeInfo?.status === 'KHOITAO'"

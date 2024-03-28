@@ -39,48 +39,48 @@
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông tin Volume</span>
           <nz-descriptions [nzColumn]="2" style="margin-top: 20px;">
-            <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleType" *ngIf="volumeInfo?.volumeType == 'hdd'">HDD</nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleType" *ngIf="volumeInfo?.volumeType == 'ssd'">SSD</nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}}</nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'hdd'">{{ this.iops }}</nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'ssd'">{{ this.iops }}</nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleName"><b>{{volumeInfo?.name}}</b></nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleType" *ngIf="volumeInfo?.volumeType == 'hdd'"><b>HDD</b></nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleType" *ngIf="volumeInfo?.volumeType == 'ssd'"><b>SSD</b></nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleStorage"><b>{{volumeInfo?.sizeInGB}} GB</b></nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'hdd'"><b>{{ this.iops }}</b></nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'ssd'"><b>{{ this.iops }}</b></nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleStatus">
               <span *ngIf="volumeInfo?.status === 'KHOITAO'"
-                    style="color: #0074CC">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
+                    style="color: #0074CC"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
               <span *ngIf="volumeInfo?.status === 'ERROR'"
-                    style="color: #FF3333">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
+                    style="color: #FF3333"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
               <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
-                    style="color: #FF7C33">{{ volumeStatus?.get(volumeInfo?.status)}}</span>
+                    style="color: #FF7C33"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleAttachInstance">
-              <span *ngIf="volumeInfo?.attachedInstances?.length > 0">{{listVMs}}</span>
-              <span *ngIf="volumeInfo?.attachedInstances?.length <= 0">Không có máy ảo</span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length > 0"><b>{{listVMs}}</b></span>
+              <span *ngIf="volumeInfo?.attachedInstances?.length <= 0"><b>Không có máy ảo</b></span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleVolumeType">
               <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
           </nz-descriptions>
-          <span class="text-label">Mô tả: {{ volumeInfo?.description }}</span>
+          <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
           <ng-template #titleName>
-            <span><b>Tên Volumes</b></span>
+            <span>Tên Volumes</span>
           </ng-template>
           <ng-template #titleType>
-            <span><b>Loại Volume</b></span>
+            <span>Loại Volume</span>
           </ng-template>
           <ng-template #titleStorage>
-            <span><b>Dung lượng</b></span>
+            <span>Dung lượng</span>
           </ng-template>
           <ng-template #titleIOPS>
-            <span><b>IOPS</b></span>
+            <span>IOPS</span>
           </ng-template>
           <ng-template #titleStatus>
-            <span><b>Trạng thái Volume</b></span>
+            <span>Trạng thái Volume</span>
           </ng-template>
           <ng-template #titleAttachInstance>
-            <span><b>Gán vào máy ảo</b></span>
+            <span>Gán vào máy ảo</span>
           </ng-template>
           <ng-template #titleVolumeType>
-            <span><b>Kiểu Volume</b></span>
+            <span>Kiểu Volume</span>
           </ng-template>
           <div style="margin-top: 15px;">
             <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>

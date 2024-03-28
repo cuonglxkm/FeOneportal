@@ -169,6 +169,8 @@ export class RenewVolumeComponent implements OnInit {
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
+    console.log('request', request)
+    console.log('unit', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
     var returnPath: string = '/app-smart-cloud/volume/detail/'+this.idVolume;
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: request, path: returnPath },
@@ -213,7 +215,7 @@ export class RenewVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.extendsDto),
           specificationType: 'volume_extend',
-          price: this.orderItem?.totalPayment?.amount,
+          price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
           serviceDuration: this.validateForm.controls.time.value
         }
       ];
