@@ -60,6 +60,7 @@
                   required
                   placeholder="Nhập tên"
                   formControlName="name"
+                  class="input-custom"
                 />
                 <ng-template #nameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">Tên ipsec policy không được để trống</ng-container>
@@ -87,6 +88,7 @@
                   nzAllowClear
                   [(ngModel)]="selectedAuthorizationAlgorithm"
                   [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
                 >
                   <nz-option
                     *ngFor="let data of authorizationAlgorithm"
@@ -116,6 +118,7 @@
                   nzAllowClear
                   [(ngModel)]="selectedEncryptionMode"
                   [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
                 >
                   <nz-option
                     *ngFor="let data of encryptionMode"
@@ -145,6 +148,7 @@
                   nzAllowClear
                   [(ngModel)]="selectedEncryptionAlgorithm"
                   [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
                 >
                   <nz-option
                     *ngFor="let data of encryptionAlgorithm"
@@ -174,6 +178,7 @@
                   nzAllowClear
                   [(ngModel)]="selectedLifetimeUnits"
                   [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
                 >
                   <nz-option
                     *ngFor="let data of lifetimeUnits"
@@ -203,6 +208,7 @@
                   type="number"
                   formControlName="lifeTimeValue"
                   required
+                  class="input-custom"
                 />
                 <ng-template #lifeTimeValueErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">Lifetime Value không được để trống</ng-container>
@@ -230,6 +236,7 @@
                   nzAllowClear
                   [(ngModel)]="selectedPerfectForwardSecrecy"
                   [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
                 >
                   <nz-option
                     *ngFor="let data of perfectForwardSecrecy"
@@ -259,6 +266,7 @@
                   nzAllowClear
                   [(ngModel)]="selectedTransformProtocol"
                   [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
                 >
                   <nz-option
                     *ngFor="let data of transformProtocol"

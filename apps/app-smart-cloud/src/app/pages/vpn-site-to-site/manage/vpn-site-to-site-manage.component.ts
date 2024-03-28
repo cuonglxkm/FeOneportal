@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
+import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -15,8 +19,9 @@ export class VpnSiteToSiteManage {
 
 
   isBegin: boolean = false;
-
-  constructor() {
+  isLoading: boolean = false
+  response: BaseResponse<VpnSiteToSiteDTO>
+  constructor(private vpnSiteToSiteService: VpnSiteToSiteService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -26,6 +31,7 @@ export class VpnSiteToSiteManage {
   projectChanged(project: ProjectModel) {
     this.project = project.id;
     console.log(this.project);
+    this.getData(true)
   }
   
 
@@ -33,14 +39,30 @@ export class VpnSiteToSiteManage {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
+    this.getData(true)
   }
 
-  
-
-  handleGetData(event: any){
-    console.log(event);
-    
+  getData(isBegin) {
+    this.isLoading = true
+    this.vpnSiteToSiteService.getVpnSiteToSite(this.project)
+      .subscribe(data => {
+        if(data){
+          this.isLoading = false
+          this.response = data
+          console.log(this.response);
+          
+        }
+      if (isBegin) {
+        this.isBegin = this.response === null ? true : false;
+      }
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      console.log(this.response);
+      if (isBegin) {
+        this.isBegin = this.response === null ? true : false;
+      }
+    })
   }
 
 }

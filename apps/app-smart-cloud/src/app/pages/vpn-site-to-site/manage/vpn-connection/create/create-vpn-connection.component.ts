@@ -13,6 +13,8 @@ import { debounceTime } from 'rxjs';
 import { BaseResponse } from '../../../../../../../../../libs/common-utils/src';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FormCreateVpnConnection } from 'src/app/shared/models/vpn-connection';
+import { FormSearchIKEPolicy } from 'src/app/shared/models/vpns2s.model';
+import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 
 
 @Component({
@@ -52,17 +54,20 @@ export class CreateVpnConnectionComponent implements OnInit{
     { label: 'ah-esp ', value: '3' },
   ];
   ipsecPoliciesList: NzSelectOptionInterface[] = [];
+  ikePoliciesList: NzSelectOptionInterface[] = [];
   selectedIpsecPolicy: string
+  selectedIkePolicy: string
   selectedEncryptionMode = '1'
   selectedEncryptionAlgorithm = '1'
   selectedPerfectForwardSecrecy = '1'
   selectedTransformProtocol = '1'
   selectedLifetimeUnits = '1'
   isLoading: boolean = false
-  
+  preSharedKeyVisible: boolean = false
   FormCreateVpnConnection: FormCreateVpnConnection =
     new FormCreateVpnConnection();
   formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()  
+  formSearchIkePolicy: FormSearchIKEPolicy = new FormSearchIKEPolicy()  
   form: FormGroup<{
     name: FormControl<string>;
     peerRemoteIp: FormControl<string>
@@ -81,7 +86,8 @@ export class CreateVpnConnectionComponent implements OnInit{
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private vpnConnectionService: VpnConnectionService,
     private notification: NzNotificationService,
-    private ipsecPolicyService: IpsecPolicyService
+    private ipsecPolicyService: IpsecPolicyService,
+    private ikePolicyService: IkePolicyService
   ) {}
 
   getDataIpsecPolices() {
@@ -93,11 +99,28 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
       .pipe(debounceTime(500))
       .subscribe(data => {
+      console.log(data);        
       data.records.forEach(ipsecPolicy => {
         this.ipsecPoliciesList.push({label: ipsecPolicy.name, value: ipsecPolicy.name});
       })
       if (this.ipsecPoliciesList.length > 0) {
         this.selectedIpsecPolicy = this.ipsecPoliciesList[0].value;
+      }
+    })
+  }
+
+  getDataIkePolices() {
+    this.formSearchIkePolicy.projectId = this.project
+    this.formSearchIkePolicy.regionId = this.region
+    this.formSearchIkePolicy.searchValue = "kh"
+    this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
+      .subscribe(data => {
+        console.log(data);  
+      data.forEach(ikePolicy => {
+        this.ikePoliciesList.push({label: ikePolicy.name, value: ikePolicy.name});
+      })
+      if (this.ikePoliciesList.length > 0) {
+        this.selectedIkePolicy = this.ikePoliciesList[0].value;
       }
     })
   }
@@ -109,6 +132,7 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.getDataIpsecPolices()
+    this.getDataIkePolices()
   }
 
 
