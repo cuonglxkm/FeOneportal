@@ -41,7 +41,7 @@ export class DetailIpsecPoliciesComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage'])
   }
 
-  getFileSystemById(id) {
+  getIpsecPolicyById(id) {
     this.isLoading = true
     this.ipsecPolicyService.getIpsecPoliciesById(id,this.project,this.region).subscribe(data => {
       this.ipsecPolicy = data
@@ -55,6 +55,6 @@ export class DetailIpsecPoliciesComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.getFileSystemById(this.activatedRoute.snapshot.paramMap.get('id'))
+    this.getIpsecPolicyById(this.activatedRoute.snapshot.paramMap.get('id'))
   }
 }

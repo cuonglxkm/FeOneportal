@@ -2,6 +2,8 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormDeleteVpnConnection } from 'src/app/shared/models/vpn-connection';
+import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 
 
 @Component({
@@ -12,8 +14,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class DeleteVpnConnectionComponent{
   @Input() region; number
   @Input() project: number
-  @Input() idIpFloating: number
-  @Input() ip: string
+  @Input() vpnconnectionid: string
+  @Input() nameVpnconnection: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -21,12 +23,20 @@ export class DeleteVpnConnectionComponent{
   isLoading: boolean = false
 
   validateForm: FormGroup<{
-    ip: FormControl<string>
+    name: FormControl<string>
   }> = this.fb.group({
-    ip: ['', [Validators.required]]
+    name: ['', [Validators.required, this.nameVpnConnectionValidator.bind(this)]]
   });
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+  nameVpnConnectionValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.nameVpnconnection) {
+      return { 'nameMismatch': true };
+    }
+    return null;
+  }
+
+  constructor(private vpnConnectionService: VpnConnectionService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder) {
   }
@@ -40,25 +50,31 @@ export class DeleteVpnConnectionComponent{
     this.isLoading =  false
   }
 
-  // handleOk() {
-  //   this.isLoading = true
-  //   if(this.validateForm.valid) {
-  //     if(this.ip.includes(this.validateForm.controls.ip.value)){
-  //       this.ipFloatingService.deleteIp(this.idIpFloating).subscribe(data => {
-  //         if(data) {
-  //           this.isVisible = false
-  //           this.isLoading =  false
-  //           this.notification.success('Thành công', 'Xoá IP Floating thành công')
-  //           this.onOk.emit(data)
-  //         }
-  //       }, error => {
-  //         this.isVisible = false
-  //         this.isLoading =  false
-  //         this.notification.success('Thất bại', 'Xoá IP Floating thất bại')
-  //       })
-  //     }
-  //   }
-  // }
+  handleOk() {
+    this.isLoading = true
+    let formDelete = new FormDeleteVpnConnection()
+    formDelete.id = this.vpnconnectionid
+    formDelete.regionId = this.region
+    formDelete.projectId = this.project
+    console.log(formDelete);
+    
+    if(this.validateForm.valid) {
+      if(this.nameVpnconnection.includes(this.validateForm.controls.name.value)){
+        this.vpnConnectionService.deleteVpnConnection(formDelete).subscribe(data => {
+          if(data) {
+            this.isVisible = false
+            this.isLoading =  false
+            this.notification.success('Thành công', 'Xoá vpn connection thành công')
+            this.onOk.emit(data)
+          }
+        }, error => {
+          this.isVisible = false
+          this.isLoading =  false
+          this.notification.error('Thất bại', 'Xoá vpn connection thất bại')
+        })
+      }
+    }
+  }
 
   
 }
