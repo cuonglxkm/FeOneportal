@@ -208,10 +208,9 @@
             <nz-form-control>
               <nz-select nzSize="large"
                          formControlName="instanceId"
-                         id="instanceId"
+                         nzAllowClear
                          [nzPlaceHolder]="'-Chọn máy ảo-'"
                          [nzShowSearch]="false"
-                         nzAllowClear
                          [(ngModel)]="instanceSelected"
                          (ngModelChange)="instanceSelectedChange($event)"
                          style="width: 100%;">
