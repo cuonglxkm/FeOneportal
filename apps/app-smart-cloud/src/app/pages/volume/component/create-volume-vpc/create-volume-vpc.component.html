@@ -128,8 +128,7 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span *ngIf="selectedValueRadio === 'hdd'">IOPS: 200</span>
-          <span *ngIf="selectedValueRadio === 'ssd'">IOPS: {{iops}}</span>
+          <span>{{ iops }}</span>
         </nz-form-label>
       </nz-form-item>
       <label nz-checkbox formControlName="isEncryption">Mã hóa Volume</label>

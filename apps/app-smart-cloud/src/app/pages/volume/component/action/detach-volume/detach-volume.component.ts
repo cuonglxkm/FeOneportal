@@ -74,10 +74,11 @@ export class DetachVolumeComponent {
   doDetach() {
     this.isLoading = true;
     if (this.isMultiple) {
-      if(this.instanceInVolumeSelected == null || this.instanceInVolumeSelected == undefined) {
+      if(this.instanceInVolumeSelected == undefined) {
         this.isSelected = true
         this.isLoading = false
       } else {
+        this.isLoading = true
         let addVolumetoVmRequest = new AddVolumetoVmModel();
         addVolumetoVmRequest.volumeId = this.volumeId;
         console.log('attach', this.listInstanceInVolume);
@@ -88,19 +89,25 @@ export class DetachVolumeComponent {
           if (data == true) {
             this.isLoading = false;
             this.isVisible = false;
-            this.notification.success('Thành công', `Gỡ volume thành công`);
-            this.onOk.emit(data);
+            this.notification.success('Thành công', `Yêu cầu gỡ volume thành công`);
+            setTimeout(() => {
+              this.onOk.emit(data)
+            }, 1500);
           } else {
             this.isVisible = false;
             this.isLoading = false;
-            this.notification.error('Thất bại', `Gỡ volume thất bại`);
-            this.onOk.emit(data);
+            this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
+            setTimeout(() => {
+              this.onOk.emit(data)
+            }, 1500);
           }
         }, error => {
           this.isLoading = false;
           this.isVisible = false;
-          this.notification.error('Thất bại', `Gỡ volume thất bại`);
-          this.onOk.emit(error);
+          this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
+          setTimeout(() => {
+            this.onOk.emit(error)
+          }, 1500);
         });
       }
 
@@ -117,18 +124,18 @@ export class DetachVolumeComponent {
         if (data == true) {
           this.isLoading = false;
           this.isVisible = false;
-          this.notification.success('Thành công', `Gỡ volume thành công`);
+          this.notification.success('Thành công', `Yêu cầu gỡ volume thành công`);
           this.onOk.emit(data);
         } else {
           this.isVisible = false;
           this.isLoading = false;
-          this.notification.error('Thất bại', `Gỡ volume thất bại`);
+          this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
           this.onOk.emit(data);
         }
       }, error => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error('Thất bại', `Gỡ volume thất bại`);
+        this.notification.error('Thất bại', `Yêu cầu gỡ volume thất bại`);
         this.onOk.emit(error);
       });
     }
