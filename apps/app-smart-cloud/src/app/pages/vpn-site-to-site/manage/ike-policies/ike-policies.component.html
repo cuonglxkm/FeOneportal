@@ -23,16 +23,18 @@
     </nz-col>
   </nz-row>
   </div>
-  <nz-table  #fixedTable
-            style="margin-top: 20px;"
-            [nzData]="response"
-            [nzPageSize]="2"
-            (nzPageSizeChange)="onPageSizeChange($event)"
-            [nzPageIndex]="1"
-            (nzPageIndexChange)="onPageIndexChange($event)"
-            [nzTotal]="10"
-            [nzFrontPagination]="false"
-            [nzLoading]="isLoading">
+  <nz-table   
+    #fixedTable
+    style="margin-top: 20px"
+    [nzData]="response?.records"
+    [nzPageSize]="response?.pageSize"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzPageIndex]="response?.currentPage"
+    (nzPageIndexChange)="onPageIndexChange($event)"
+    [nzTotal]="response?.totalCount"
+    [nzFrontPagination]="false"
+    [nzLoading]="isLoading"
+            >
     <thead>
     <tr   >
       <th>Name</th>

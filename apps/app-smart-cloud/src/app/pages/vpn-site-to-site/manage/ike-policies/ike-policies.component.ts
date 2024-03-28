@@ -66,8 +66,8 @@ export class IkePoliciesComponent {
     this.formSearchIkePolicy.searchValue =this.value
     console.log("get data");
     console.log(this.formSearchIkePolicy);
-    // this.formSearchIkePolicy.pageSize = this.pageSize
-    // this.formSearchIkePolicy.currentPage = this.pageIndex
+    this.formSearchIkePolicy.pageSize = this.pageSize
+    this.formSearchIkePolicy.pageNumber = this.pageIndex
     this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
       .pipe(debounceTime(500))
       .subscribe(data => {

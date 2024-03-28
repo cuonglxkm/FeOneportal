@@ -25,10 +25,10 @@ export class CreateIkePoliciesComponent implements OnInit{
     encryptionAlgorithm: 'aes-128',
     authorizationAlgorithm: 'sha1',
     ikeVersion: 'v1',
-    lifetimeUnits: 'seconds',
+    lifetimeUnit: 'seconds',
     lifetimeValue: 3600,
-    perfectForwardSecrecy: 'group5',
-    phase1NegotiationMode: 'main',
+    perfectForwardSecrey: 'group5',
+    ikePhase1NegotiationMode: 'main',
     regionId: 0,
     customerId: 0,
     projectId: 0
@@ -52,11 +52,11 @@ export class CreateIkePoliciesComponent implements OnInit{
     { label: 'aes-256', value: 'aes-256' },
   ];
 
-  lifetimeUnits = [
+  lifetimeUnit = [
     { label: 'seconds', value: 'seconds' },
   ];
 
-  perfectForwardSecrecy = [
+  perfectForwardSecrey = [
     { label: 'group5', value: 'group5' },
     { label: 'group2', value: 'group2' },
     { label: 'group14 ', value: 'group14' },
