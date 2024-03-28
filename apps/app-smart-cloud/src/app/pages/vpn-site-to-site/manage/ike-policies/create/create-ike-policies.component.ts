@@ -27,7 +27,8 @@ export class CreateIkePoliciesComponent implements OnInit{
     perfectForwardSecrecy: 'group5',
     phase1NegotiationMode: 'main',
     regionId: 0,
-    customerId: 0
+    customerId: 0,
+    projectId: 0
   }; ;
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },

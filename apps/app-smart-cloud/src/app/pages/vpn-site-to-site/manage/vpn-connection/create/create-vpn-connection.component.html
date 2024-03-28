@@ -10,7 +10,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a>
-          >Dịch vụ hạ tầng</a
+          Dịch vụ hạ tầng</a
         >
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
@@ -58,6 +58,7 @@
               required
               placeholder="Nhập tên"
               formControlName="name"
+              class="input-custom"
             />
             
           </nz-form-control>
@@ -82,6 +83,7 @@
               nzAllowClear
               [(ngModel)]="selectedIpsecPolicy"
               [ngModelOptions]="{standalone: true}"
+              class="input-select-custom"
             >
               <nz-option
               *ngFor="let data of ipsecPoliciesList"
@@ -111,6 +113,7 @@
               nzAllowClear
               [(ngModel)]="selectedEncryptionMode"
               [ngModelOptions]="{standalone: true}"
+              class="input-select-custom"
             >
               <nz-option
               *ngFor="let data of vpnService"
@@ -142,6 +145,7 @@
               required
               placeholder="Nhập Peer Remote IP"
               formControlName="peerRemoteIp"
+              class="input-custom"
             />
           </nz-form-control>
           </nz-form-item>
@@ -165,6 +169,7 @@
               nzAllowClear
               [(ngModel)]="selectedLifetimeUnits"
               [ngModelOptions]="{standalone: true}"
+              class="input-select-custom"
             >
               <nz-option
               *ngFor="let data of localSystemSubnet"
@@ -196,6 +201,7 @@
               required
               placeholder="Nhập peer ID"
               formControlName="peerId"
+              class="input-custom"
             />
             
           </nz-form-control>
@@ -218,11 +224,12 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="selectedPerfectForwardSecrecy"
+              [(ngModel)]="selectedIkePolicy"
               [ngModelOptions]="{standalone: true}"
+              class="input-select-custom"
             >
               <nz-option
-              *ngFor="let data of ikePolicy"
+              *ngFor="let data of ikePoliciesList"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -250,6 +257,7 @@
               nzAllowClear
               [(ngModel)]="selectedPerfectForwardSecrecy"
               [ngModelOptions]="{standalone: true}"
+              class="input-select-custom"
             >
               <nz-option
               *ngFor="let data of ikePolicy"
@@ -274,13 +282,25 @@
                       nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
+            <nz-input-group style="width: 100%; border-radius: 4px;" nzSearch [nzSuffix]="suffixTemplate">
             <input
               nz-input
-              type="text"
+              [type]="preSharedKeyVisible ? 'text' : 'password'"
+              style="height: 30px;"
               required
               placeholder="Nhập pre -shared Key"
               formControlName="preSharedKey"
+              class="input-custom"
             />
+          </nz-input-group>
+          <ng-template #suffixTemplate>
+            <span
+              nz-icon
+              [nzType]="preSharedKeyVisible ? 'eye-invisible' : 'eye'"
+              (click)="preSharedKeyVisible = !preSharedKeyVisible"
+              style="cursor: pointer;"
+            ></span>
+          </ng-template>
           </nz-form-control>
           </nz-form-item>
         </div>
@@ -309,6 +329,7 @@
               nz-input
               type="text"
               value="1500"  [disabled]="true"
+              class="input-custom"
             />
             
           </nz-form-control>
@@ -332,6 +353,7 @@
               nz-input
               type="text"
               value="hold"  [disabled]="true"
+              class="input-custom"
             />
           </nz-form-control>
           </nz-form-item>
@@ -354,6 +376,7 @@
             nz-input
             type="text"
             value="30"  [disabled]="true"
+            class="input-custom"
           />
             
           </nz-form-control>
@@ -377,6 +400,7 @@
             nz-input
             type="text"
             value="120"  [disabled]="true"
+            class="input-custom"
           />
           </nz-form-control>
           </nz-form-item>
@@ -399,6 +423,7 @@
             nz-input
             type="text"
             value="bi-directional"  [disabled]="true"
+            class="input-custom"
           />
             
           </nz-form-control>

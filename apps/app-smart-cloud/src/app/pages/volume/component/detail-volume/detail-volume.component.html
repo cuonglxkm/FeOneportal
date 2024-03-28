@@ -37,31 +37,33 @@
         Chi tiết Volume
       </nz-col>
     </nz-row>
-    <div *ngIf="typeVPC == 0" style="display: flex">
-      <div style="margin-right: 8px;">
+    <div *ngIf="!volumeInfo?.bootable">
+      <div *ngIf="typeVPC == 0" style="display: flex">
+        <div style="margin-right: 8px;">
+          <div nz-col nzSpan="4">
+            <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
+                    nz-button
+                    nzType="primary">
+              <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
+            </button>
+          </div>
+        </div>
         <div nz-col nzSpan="4">
-          <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
-                  nz-button
-                  nzType="primary">
-            <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
+          <button class="button-cancel"
+                  (click)="navigateEditVolume(volumeInfo.id)"
+                  nz-button nzType="default">
+            <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
           </button>
         </div>
       </div>
-      <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateEditVolume(volumeInfo.id)"
-                nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
-        </button>
-      </div>
-    </div>
-    <div *ngIf="typeVPC == 1" style="display: flex">
-      <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateToResizeVPC(volumeInfo.id)"
-                nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
-        </button>
+      <div *ngIf="typeVPC == 1" style="display: flex">
+        <div nz-col nzSpan="4">
+          <button class="button-cancel"
+                  (click)="navigateToResizeVPC(volumeInfo.id)"
+                  nz-button nzType="default">
+            <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+          </button>
+        </div>
       </div>
     </div>
   </ng-template>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { InstancesService } from '../../../../instances/instances.service';
 import { InstancesModel } from '../../../../instances/instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -35,7 +35,8 @@ export class AttachVolumeComponent {
   constructor(private instancesService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private volumeService: VolumeService) {
+              private volumeService: VolumeService,
+              private cdr: ChangeDetectorRef) {
   }
 
   onChange(value) {
@@ -71,7 +72,7 @@ export class AttachVolumeComponent {
 
   addVolumeToVm() {
     this.isLoadingAttach = true
-    if(this.instanceSelected == undefined || this.instanceSelected == null) {
+    if(this.instanceSelected == undefined) {
       this.isSelected = true
       this.isLoading = false
     } else {
@@ -94,6 +95,7 @@ export class AttachVolumeComponent {
                 this.isLoading = false;
                 this.notification.success('Thành công', 'Gắn Volume thành công.')
                 this.onOk.emit(data)
+
               } else {
                 console.log('data', data)
                 this.isVisible = false
@@ -108,6 +110,7 @@ export class AttachVolumeComponent {
               this.notification.error('Thất bại', 'Gắn Volume thất bại.')
               this.onOk.emit(error)
             })
+            this.cdr.detectChanges()
           }
         } else {
           this.isVisible = false
@@ -115,6 +118,7 @@ export class AttachVolumeComponent {
           this.notification.error('Thất bại', 'Gắn Volume thất bại.')
         }
       })
+
     }
 
   }
