@@ -129,6 +129,11 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';
             break;
+          case 'kafka_create':
+            this.serviceType = 'kafka';
+            serviceItem.name = 'Kafka';
+            serviceItem.type = 'Tạo mới';
+            break;
           default:
             serviceItem.name = '';
             break;

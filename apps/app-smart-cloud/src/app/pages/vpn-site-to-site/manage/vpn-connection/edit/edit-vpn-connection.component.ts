@@ -11,9 +11,8 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
+import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
-import { FormEditVpnConnection } from '../../../../../../../../../.history/apps/app-smart-cloud/src/app/shared/models/vpn-connection_20240328152904';
 
 @Component({
   selector: 'one-portal-edit-vpn-connection',
@@ -89,8 +88,7 @@ export class EditVpnConnectionComponent implements OnInit {
 
   getData(): any {
     this.formEditVpnConnection.customerId = this.tokenService.get()?.userId;
-    this.formEditVpnConnection.id =
-      this.activatedRoute.snapshot.paramMap.get('id');
+    this.formEditVpnConnection.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.formEditVpnConnection.regionId = this.region;
     this.formEditVpnConnection.projectId = this.project;
     this.formEditVpnConnection.name = this.vpnConnection?.name;
