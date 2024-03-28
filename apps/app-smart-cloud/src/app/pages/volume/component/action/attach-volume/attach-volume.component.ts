@@ -71,12 +71,13 @@ export class AttachVolumeComponent {
   }
 
   addVolumeToVm() {
-    this.isLoadingAttach = true
+    this.isLoading = true
     if(this.instanceSelected == undefined) {
       this.isSelected = true
       this.isLoading = false
     } else {
       this.isSelected = false
+      this.isLoading = true
       this.volumeService.getVolumeById(this.volumeId).subscribe(data => {
         if(data != null) {
           if (data.isMultiAttach == false && data.attachedInstances?.length == 1) {

@@ -165,22 +165,26 @@ export class RenewVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.extendsDto),
         specificationType: 'volume_extend',
-        price: this.orderItem?.totalPayment?.amount,
+        price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
-    this.isLoadingRenew = true;
-    this.volumeService.extendsVolume(request).subscribe(
-      data => {
-        this.isLoadingRenew = false;
-        this.notification.success('Thành công', 'Gia hạn Volume thành công.');
-        this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
-      }, error => {
-        this.isLoadingRenew = false;
-        this.notification.error('Thất bại', 'Gia hạn Volume không thành công.');
-
-      }
-    );
+    var returnPath: string = '/app-smart-cloud/volume/detail/'+this.idVolume;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: request, path: returnPath },
+    });
+    // this.isLoadingRenew = true;
+    // this.volumeService.extendsVolume(request).subscribe(
+    //   data => {
+    //     this.isLoadingRenew = false;
+    //     this.notification.success('Thành công', 'Gia hạn Volume thành công.');
+    //     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
+    //   }, error => {
+    //     this.isLoadingRenew = false;
+    //     this.notification.error('Thất bại', 'Gia hạn Volume không thành công.');
+    //
+    //   }
+    // );
   }
 
   showModalConfirmRenew() {

@@ -70,6 +70,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
+      if(value <= 40) return (this.iops = 400);
       this.iops = value * 10
     });
   }
@@ -259,8 +260,6 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.actionType = 4; //resize
   }
 
-  totalAmountVolume = 0;
-  totalAmountVolumeVAT = 0;
   orderItem: OrderItem = new OrderItem()
   unitPrice = 0
 
@@ -319,47 +318,7 @@ export class EditVolumeComponent implements OnInit {
       this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
     });
   }
-  //
-  // getProjectId(projectId: number) {
-  //   this.projectIdSearch = projectId;
-  // }
-  //
-  // async getRegionId(regionId: number) {
-  //   this.regionIdSearch = regionId;
-  //
-  //   this.vmList = [];
-  //   let userId = this.tokenService.get()?.userId;
-  //   this.getAllVmResponse = await this.volumeSevice.getListVM(userId, this.regionIdSearch).toPromise();
-  //   this.listAllVMs = this.getAllVmResponse.records;
-  //   this.listAllVMs.forEach((vm) => {
-  //     this.vmList.push({value: vm.id, label: vm.name});
-  //   })
-  // }
-  //
-  // editVolume() {
-  //   if (this.oldSize !== this.volumeInfo.sizeInGB) {
-  //     console.log('Call API Create.')
-  //     this.doEditSizeVolume();
-  //   } else {
-  //     console.log('Call API PUT')
-  //     this.doEditTextVolume();
-  //   }
-  // }
-  //
-  // async doEditTextVolume() {
-  //   let request = new EditTextVolumeModel();
-  //   request.volumeId = this.volumeInfo.id;
-  //   request.newDescription = this.volumeInfo.description;
-  //   request.newName = this.volumeInfo.name;
-  //   let response = this.volumeSevice.editTextVolume(request).toPromise();
-  //   if (await response == true) {
-  //     this.nzMessage.create('success', 'Chỉnh sửa thông tin Volume thành công.');
-  //     this.router.navigate(['/app-smart-cloud/volume']);
-  //   } else
-  //     return false;
-  //
-  // }
-  //
+
   doEditSizeVolume() {
     this.getTotalAmount()
     let request = new EditSizeVolumeModel();
@@ -371,43 +330,31 @@ export class EditVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.volumeEdit),
         specificationType: 'volume_resize',
-        price: this.orderItem?.totalPayment?.amount,
+        price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
         serviceDuration: this.expiryTime
       }
     ]
-    this.isLoading = true
-    this.volumeService.editSizeVolume(request).subscribe(data => {
-        if (data.code == 200) {
-          this.isLoading = false
-          this.notification.success('Thành công', 'Chỉnh sửa Volume thành công.')
-          console.log(data);
-          this.router.navigate(['/app-smart-cloud/volumes']);
-        } else if (data.code == 310) {
-          this.isLoading = false;
-          // this.router.navigate([data.data]);
-          window.location.href = data.data;
-        } else {
-          this.isLoading = false
-          this.notification.error('Thất bại', 'Chỉnh sửa Volume thất bại.')
-        }
-      }
-    );
-
+    var returnPath: string = '/app-smart-cloud/volume/detail/'+this.volumeId;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: request, path: returnPath },
+    });
+    // this.isLoading = true
+    // this.volumeService.editSizeVolume(request).subscribe(data => {
+    //     if (data.code == 200) {
+    //       this.isLoading = false
+    //       this.notification.success('Thành công', 'Chỉnh sửa Volume thành công.')
+    //       console.log(data);
+    //       this.router.navigate(['/app-smart-cloud/volumes']);
+    //     } else if (data.code == 310) {
+    //       this.isLoading = false;
+    //       // this.router.navigate([data.data]);
+    //       window.location.href = data.data;
+    //     } else {
+    //       this.isLoading = false
+    //       this.notification.error('Thất bại', 'Chỉnh sửa Volume thất bại.')
+    //     }
+    //   }
+    // );
   }
-  //
-  // getPremiumVolume(size: number) {
-  //
-  //   if (size !== undefined && size != null) {
-  //
-  //
-  //     this.volumeSevice.getPremium(this.volumeInfo.volumeType, size, this.expiryTime).subscribe(data => {
-  //       if (data != null) {
-  //         this.nzMessage.create('success', 'Phí đã được cập nhật.')
-  //         this.priceVolumeInfo = data;
-  //       }
-  //     })
-  //   }
-  // }
-
 
 }

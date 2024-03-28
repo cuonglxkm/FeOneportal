@@ -56,6 +56,9 @@
 <!--        <nz-descriptions-item [nzTitle]="titleVolumeType">-->
 <!--          <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>-->
       </nz-descriptions>
+      <div style="display: flex;">
+        <label class="text-label">Mô tả: </label> {{ volumeInfo?.description }}
+      </div>
       <ng-template #titleName>
         <span>Tên Volume</span>
       </ng-template>

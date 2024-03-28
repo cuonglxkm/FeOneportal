@@ -74,10 +74,11 @@ export class DetachVolumeComponent {
   doDetach() {
     this.isLoading = true;
     if (this.isMultiple) {
-      if(this.instanceInVolumeSelected == null || this.instanceInVolumeSelected == undefined) {
+      if(this.instanceInVolumeSelected == undefined) {
         this.isSelected = true
         this.isLoading = false
       } else {
+        this.isLoading = true
         let addVolumetoVmRequest = new AddVolumetoVmModel();
         addVolumetoVmRequest.volumeId = this.volumeId;
         console.log('attach', this.listInstanceInVolume);
