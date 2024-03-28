@@ -33,3 +33,17 @@ export class KafkaCreateReq {
         this.logSegmentBytes = 0;
     }
 }
+
+export class KafkaUpdateReq {
+    serviceOrderCode: string;
+    serviceName: string;
+    version: string;
+    description: string;
+
+    constructor() {
+        this.serviceOrderCode = '';
+        this.serviceName = '';
+        this.version =  '';
+        this.description = '';
+    }
+}

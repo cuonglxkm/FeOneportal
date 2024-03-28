@@ -84,9 +84,11 @@
           </td>
           <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td nzAlign="center">
-            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px"
+            <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'edit/' + item.serviceOrderCode"
+              nz-tooltip="Chỉnh sửa" class="img-edit" />
+            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px" [routerLink]="'upgrade/' + item.serviceOrderCode"
               nz-tooltip="Nâng cấp" />
-            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-right: 16px" nz-tooltip="Xóa" />
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa" />
           </td>
         </tr>
       </tbody>
@@ -115,7 +117,7 @@
         <!-- create btn -->
         <div class="mleft-16 mtop-15">
           <button nz-button nzType="primary" routerLink="create" class="border-button">
-            Tạo mới Kafka
+            Khởi tạo Kafka
           </button>
         </div>
       </div>

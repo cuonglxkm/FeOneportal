@@ -7,7 +7,7 @@ import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { KafkaCreateReq } from '../core/models/kafka-create-req.model';
+import { KafkaCreateReq, KafkaUpdateReq } from '../core/models/kafka-create-req.model';
 import { KafkaDetail, KafkaInfor } from '../core/models/kafka-infor.model';
 import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
@@ -133,10 +133,7 @@ export class KafkaService extends BaseService {
     keySearch: string,
     status:number
   ): Observable<BaseResponse<Pagination<KafkaInfor[]>>> {
-    const headers = new HttpHeaders()
-      .set('userCode', 'bbvk0bs1th0');
-    
-    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}`,{headers});
+    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}`,{headers: this.getHeaders()});
   }
 
   createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>> {
@@ -176,5 +173,16 @@ export class KafkaService extends BaseService {
 
   getDetail(serviceOrderCode: string): Observable<BaseResponse<KafkaDetail>> {
     return this.http.get<BaseResponse<KafkaDetail>>(this.kafkaUrl + `/kafka/${serviceOrderCode}`);
+  }
+
+  update(req: KafkaUpdateReq): Observable<BaseResponse<null>> {
+    const json = {
+      'service_order_code': req.serviceOrderCode,
+      'service_name': req.serviceName,
+      'version': req.version,
+      'description': req.description
+    };
+
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/update', json, {headers: this.getHeaders()});
   }
 }

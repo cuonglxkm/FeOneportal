@@ -131,8 +131,8 @@ export class CreateKafkaComponent implements OnInit {
 
     const returnPath = window.location.pathname;
 
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
-    // this.createKafkaService();
+    // this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+    this.createKafkaService();
   }
 
   createKafkaService() {
