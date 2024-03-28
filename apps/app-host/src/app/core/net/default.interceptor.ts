@@ -336,7 +336,9 @@ export class DefaultInterceptor implements HttpInterceptor {
           })
         );
       } else {
-        console.log("---handle401Error->refresh->tokenFail---")
+        console.log("---handle401Error->refresh->token refresh empty---")
+        this.tokenSrv.clear()
+        this.toLogin();
       }
 
     } else {

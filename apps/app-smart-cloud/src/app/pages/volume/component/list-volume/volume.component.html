@@ -11,7 +11,7 @@
         Block Storage
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a routerLink="/app-smart-cloud/volumes">Danh sách Volume</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -245,7 +245,7 @@
           </nz-row>
           <nz-table #fixedTable2
                     style="margin-top: 20px;"
-                    nzShowPagination
+                    nzShowSizeChanger
                     [nzData]="response?.records"
                     [nzPageSize]="response?.pageSize"
                     (nzPageSizeChange)="onPageSizeChange($event)"

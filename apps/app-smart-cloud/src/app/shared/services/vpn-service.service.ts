@@ -1,17 +1,17 @@
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { BaseService } from './base.service';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { head } from 'lodash';
+import { FormSearchVpnService } from '../models/vpn-service';
+import { BaseService } from './base.service';
 import { VPNServiceDetail } from '../models/vpn-service';
 
 @Injectable({
   providedIn: 'root',
 })
 
-export class VPNServiceService extends BaseService {
+export class VpnServiceService extends BaseService {
 
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
@@ -27,6 +27,31 @@ export class VPNServiceService extends BaseService {
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
+
+  getVpnService(formSearch: FormSearchVpnService) {
+    let params = new HttpParams()
+    if (formSearch.regionId != undefined || formSearch.regionId != null) {
+      params = params.append('regionId', formSearch.regionId)
+    }
+    if (formSearch.name != undefined || formSearch.name != null) {
+      params = params.append('name', formSearch.name)
+    }
+    if (formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
+    }
+    if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
+      params = params.append('pageSize', formSearch.pageSize)
+    }
+    if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
+      params = params.append('currentPage', formSearch.currentPage)
+    }
+
+    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnservice/paging', {
+      headers: this.getHeaders(),
+      params: params
+    })
+  }
+
   getVpnServiceById(id: number, vpcid: number, region: number){
     return this.http.get<VPNServiceDetail>(this.baseUrl + this.ENDPOINT.provisions +
       `/vpn-sitetosite/vpnservice/${id}?projectId=${vpcid}&regionId=${region}`).pipe(

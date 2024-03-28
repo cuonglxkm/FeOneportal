@@ -154,23 +154,18 @@ export class CreateVolumeVpcComponent implements OnInit {
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      this.iops = value * 10
+      if(this.volumeCreate.volumeType == 'hdd') return (this.iops = 300)
+      if(this.volumeCreate.volumeType == 'ssd') {
+        if(value <= 40) return (this.iops = 400);
+        this.iops = value * 10
+      }
     });
   }
 
   ngOnInit() {
 
-    if ([1, 2].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) return this.iops = 0;
-      if (this.validateForm.controls.storage.value <= 200) return this.iops = 600;
-      if (this.validateForm.controls.storage.value <= 500) return this.iops = 1200;
-      if (this.validateForm.controls.storage.value <= 1000) return this.iops = 3000;
-      if (this.validateForm.controls.storage.value <= 2000) return this.iops = 6000;
-    }
-    if ([3, 4].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 40) return this.iops = 400;
-      this.iops = this.validateForm.controls.storage.value * 10;
-    }
+    if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
+    this.iops = this.validateForm.controls.storage.value * 10
 
     this.getListInstance();
   }
@@ -210,7 +205,16 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
-    this.iops = this.validateForm.controls.storage.value * 10
+    if(this.selectedValueRadio == 'hdd') {
+      this.iops = 300
+    }
+    if(this.selectedValueRadio == 'ssd') {
+      if(this.validateForm.get('storage').value <= 40) {
+        this.iops = 400
+      } else {
+        this.iops = this.validateForm.get('storage').value * 10
+      }
+    }
   }
 
   instanceSelectedChange(value: any) {

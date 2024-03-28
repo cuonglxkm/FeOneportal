@@ -5,7 +5,7 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VPNServiceDetail } from 'src/app/shared/models/vpn-service';
-import { VPNServiceService } from 'src/app/shared/services/vpn-service.service';
+import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 
 
 @Component({
@@ -21,7 +21,7 @@ export class DetailVpnServiceComponent implements OnInit{
   vpnService: VPNServiceDetail = new VPNServiceDetail();
   
   
-  constructor(private vpnServiceService: VPNServiceService,
+  constructor(private vpnServiceService: VpnServiceService,
     private router: Router,
     private activatedRoute: ActivatedRoute
     ) {

@@ -23,7 +23,7 @@
             <label *ngIf="data.volumeType == 'ssd'"> SSD </label>
             <label *ngIf="data.volumeType == 'hdd'"> HDD </label>
           </td>
-          <td nzLeft>
+          <td *ngIf="!data.bootable" nzLeft>
             <a
               nz-tooltip
               nzTooltipTitle="Xem chi tiết"
@@ -32,11 +32,15 @@
               >{{ data.name }}</a
             >
           </td>
+          <td *ngIf="data.bootable" nzLeft>{{ data.name }}</td>
           <td>
             {{ data.sizeInGB }}
           </td>
           <td *ngIf="data.status == 'KHOITAO'" style="color: #52c41a">
-            KHỞI TẠO
+            Đang hoạt động
+          </td>
+          <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
+            Chậm gia hạn
           </td>
           <td>
             <div *ngIf="data.bootable">

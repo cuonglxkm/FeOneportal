@@ -151,13 +151,43 @@
       </button>
       <button
         nz-button
-        nzSize="large"
         nzType="primary"
-        (click)="modify()"
+        (click)="showModalUpdate()"
         [disabled]="!isSelected"
       >
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />
         Cập nhật
       </button>
     </div>
   </nz-row>
 </nz-card>
+
+<nz-modal
+  [(nzVisible)]="isVisibleUpdate"
+  nzTitle="Xác nhận thay đổi hệ điều hành"
+  (nzOnCancel)="handleCancelUpdate()"
+>
+  <div class="text-value" *nzModalContent>
+    Quý khách chắn chắn muốn thực hiện thay đổi hệ điều hành máy ảo?
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkUpdate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

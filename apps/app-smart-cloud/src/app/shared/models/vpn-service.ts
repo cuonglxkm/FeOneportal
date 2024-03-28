@@ -1,3 +1,11 @@
+export class FormSearchVpnService{
+    projectId: number
+    regionId: number
+    name?: string
+    pageSize: number
+    currentPage: number
+}
+
 export class VPNServiceDetail {
     name: string;
     routerName: string;
