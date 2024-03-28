@@ -1,14 +1,3 @@
-<!--<span *ngIf="multiple == false && (instanceInVolume == null || instanceInVolume == undefined)" style="color: darkgrey" nz-icon nzType="plus"-->
-<!--      nzTheme="outline"-->
-<!--      nz-popover-->
-<!--      [nzPopoverContent]="'Gắn Volume'"-->
-<!--      nzPopoverPlacement="bottom"></span>-->
-<!--<span *ngIf="multiple == false && (instanceInVolume != null || instanceInVolume != undefined || instanceInVolume?.length > 0)" style="color: darkgrey" nz-icon nzType="plus"-->
-<!--      nzTheme="outline"-->
-<!--      nz-popover-->
-<!--      [nzPopoverContent]="'Gắn Volume'"-->
-<!--      nzPopoverPlacement="bottom"></span>-->
-
 <button nz-button (click)="showModal()" style="border: none; background-color: unset; color: darkgrey;"
         [disabled]="!multiple && !!instanceInVolume.length">
   <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"

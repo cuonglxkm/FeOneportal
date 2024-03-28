@@ -1091,7 +1091,7 @@ export class InstancesCreateComponent implements OnInit {
         this.volumeInit(changeBlockStorage);
         let productId = changeBlockStorage.type == 'hdd' ? 2 : 61;
         this.catalogService
-          .getCatalogOffer(productId, this.region, null)
+          .getCatalogOffer(productId, this.region, null, null)
           .subscribe((data) => {
             let offer = data.find(
               (offer) => offer.status.toUpperCase() == 'ACTIVE'
@@ -1143,7 +1143,7 @@ export class InstancesCreateComponent implements OnInit {
           if (e.ip != '') {
             this.ipInit(e, false);
             this.catalogService
-              .getCatalogOffer(3, this.region, null)
+              .getCatalogOffer(3, this.region, null, null)
               .subscribe((data) => {
                 let offer = data.find(
                   (offer) => offer.status.toUpperCase() == 'ACTIVE'
@@ -1200,7 +1200,7 @@ export class InstancesCreateComponent implements OnInit {
           if (e.ip != '') {
             this.ipInit(e, true);
             this.catalogService
-              .getCatalogOffer(101, this.region, null)
+              .getCatalogOffer(101, this.region, null, null)
               .subscribe((data) => {
                 let offer = data.find(
                   (offer) => offer.status.toUpperCase() == 'ACTIVE'
