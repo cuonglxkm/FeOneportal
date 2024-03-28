@@ -77,7 +77,7 @@
                    nz-tooltip nzTooltipTitle="Gắn IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gắn Ip Pulbic', item.id)"/>
               <!---Gỡ------>
-              <img *ngIf="item.status == 2" style="padding-right: 10px;" src="assets/imgs/Cancel.svg"
+              <img *ngIf="item.status == 2" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
                    nz-tooltip nzTooltipTitle="Gỡ IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gỡ Ip Pulbic', item.id)"/>
               <!---Gia Han------>
@@ -126,9 +126,10 @@
           nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>
-    <br>
-    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>
+    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>
+<!--    <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>-->
+<!--    <br>-->
+<!--    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>-->
   </ng-container>
 </nz-modal>
 

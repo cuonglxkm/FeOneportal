@@ -120,46 +120,48 @@ export class CallbackComponent implements OnInit {
             ...response,
           });
           this.socialService.callback(response);
-          this.notificationService.initiateSignalrConnection(true);
-          this.httpClient
-            .get(baseUrl + '/provisions/object-storage/userinfo')
-            .subscribe((checkData) => {
-              if (checkData) {
-                let json = {
-                  key: 'Object Storage',
-                  text: 'Object Storage',
-                  icon: 'anticon-profile',
-                  children: [
-                    {
-                      text: 'Bucket',
-                      link: '/app-smart-cloud/object-storage/bucket',
-                    },
-                    {
-                      text: 'Sub User',
-                      link: '/app-smart-cloud/object-storage/sub-user/list',
-                    },
-                    {
-                      text: 'S3 Key',
-                      link: '/app-smart-cloud/object',
-                    },
-                    {
-                      text: 'Thống kê',
-                      link: '/app-smart-cloud/object-storage/dashboard',
-                    },
-                  ],
-                };
-                this.menuService.setItem('Object Storage', json);
-                this.menuService.resume();
-              } else {
-                let json = {
-                  key: 'Object Storage',
-                  text: 'Object Storage',
-                  icon: 'anticon-profile',
-                  link: '/app-smart-cloud/object-storage',
-                };
-                this.menuService.setItem('Object Storage', json);
-              }
-            });
+          if (this.notificationService.connection == undefined) {
+            this.notificationService.initiateSignalrConnection(true);
+          }
+          // this.httpClient
+          //   .get(baseUrl + '/provisions/object-storage/userinfo')
+          //   .subscribe((checkData) => {
+          //     if (checkData) {
+          //       let json = {
+                  // key: 'Object Storage',
+                  // text: 'Object Storage',
+                  // icon: 'anticon-profile',
+                  // children: [
+                  //   {
+                  //     text: 'Bucket',
+                  //     link: '/app-smart-cloud/object-storage/bucket',
+                  //   },
+                  //   {
+                  //     text: 'Sub User',
+                  //     link: '/app-smart-cloud/object-storage/sub-user/list',
+                  //   },
+                  //   {
+                  //     text: 'S3 Key',
+                  //     link: '/app-smart-cloud/object',
+                  //   },
+                  //   {
+                  //     text: 'Thống kê',
+                  //     link: '/app-smart-cloud/object-storage/dashboard',
+                  //   },
+                  // ],
+          //       };
+          //       this.menuService.setItem('Object Storage', json);
+          //       this.menuService.resume();
+          //     } else {
+          //       let json = {
+          //         key: 'Object Storage',
+          //         text: 'Object Storage',
+          //         icon: 'anticon-profile',
+          //         link: '/app-smart-cloud/object-storage',
+          //       };
+          //       this.menuService.setItem('Object Storage', json);
+          //     }
+          //   });
         },
         (error) => {
           console.log(error);

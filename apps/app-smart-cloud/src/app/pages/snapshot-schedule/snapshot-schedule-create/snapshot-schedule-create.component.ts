@@ -36,6 +36,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   dateStart: string;
   descSchedule: string = '';
   snapshotMode: string = 'Theo tuần';
+  numberOfweek: string = '1 tuần'
   numberArchivedCopies = 1;
 
   time: Date = new Date();

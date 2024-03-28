@@ -14,7 +14,7 @@ export class NotificationService {
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
 
-    let hubUrl = 'http://127.0.0.1:1019' + '/notify';
+    let hubUrl = 'https://notification-api.onsmartcloud.com/notify';
 
     var tokenModel = this.tokenService.get();
 
@@ -39,10 +39,10 @@ export class NotificationService {
       if (isRegisterGlobalMessage == true) {
         this.registerGlobalNotification();
       }
-      console.log(`Connected to notify hub`);
+      console.log(`Connected to hub`);
     }
     catch (error) {
-      console.log(`SignalR connection error: ${error}`);
+      //console.log(`SignalR connection error: ${error}`);
       //this.notification.error('Lỗi máy chủ', 'Kết nối tới máy chủ đang bị gián đoạn')
     }
   }

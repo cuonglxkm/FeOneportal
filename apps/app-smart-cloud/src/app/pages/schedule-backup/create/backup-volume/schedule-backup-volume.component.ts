@@ -10,7 +10,7 @@ import {
 } from "../../../../shared/models/backup-vm";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {Router} from "@angular/router";
+import { ActivatedRoute, Router } from '@angular/router';
 import {BackupVmService} from "../../../../shared/services/backup-vm.service";
 import {BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {BaseResponse} from "../../../../../../../../libs/common-utils/src";
@@ -27,8 +27,9 @@ import {DatePipe} from "@angular/common";
   styleUrls: ['./schedule-backup-volume.component.less'],
 })
 export class ScheduleBackupVolumeComponent implements OnInit{
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
+  @Input() region: number;
+  @Input() project: number;
+  @Input() id: number
 
   isLoading: boolean = false
   validateForm: FormGroup<{
@@ -112,7 +113,9 @@ export class ScheduleBackupVolumeComponent implements OnInit{
               private backupVmService: BackupVmService,
               private backupScheduleService: ScheduleService,
               private volumeService: VolumeService,
-              public datepipe: DatePipe) {
+              public datepipe: DatePipe,
+              private activatedRoute: ActivatedRoute) {
+
   }
 
   validateSpecialCharacters(control) {
@@ -187,7 +190,7 @@ export class ScheduleBackupVolumeComponent implements OnInit{
 
   getBackupPackage() {
     this.backupVmService.getBackupPackages().subscribe(data => {
-      this.backupPackages = data
+      this.backupPackages = data.records
       console.log('backup package', this.backupPackages)
     })
   }
@@ -285,6 +288,7 @@ export class ScheduleBackupVolumeComponent implements OnInit{
 
   selectInstanceChange(value) {
     // this.instanceSelected = value
+    // this.validateForm.controls.volumeId.setValue(value)
     console.log(value)
     this.getVolumeInstanceAttachment(value)
   }
@@ -311,5 +315,8 @@ export class ScheduleBackupVolumeComponent implements OnInit{
     this.getListScheduleBackup()
     this.getBackupPackage()
     this.getListVolume()
+    this.validateForm.controls.volumeId.setValue(this.id)
+    console.log('volume',this.validateForm.controls.volumeId.getRawValue() )
+    // this.getVolumeInstanceAttachment(this.id)
   }
 }

@@ -1,31 +1,30 @@
-
 <nz-content *ngIf="!isBegin">
   <page-header
-  [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'Quản lý VPN site to site'"
-  xmlns="http://www.w3.org/1999/html"
->
-  <ng-template #breadcrumb>
-    <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
-      <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
-    </nz-breadcrumb>
-  </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="regionChanged($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        (valueChanged)="projectChanged($event)"
-        (userChanged)="projectChanged($event)"
-        [regionId]="region"
-      ></project-select-dropdown>
-    </div>
-  </ng-template>
-</page-header>
+    [breadcrumb]="breadcrumb"
+    [action]="action"
+    [title]="'Quản lý VPN site to site'"
+    xmlns="http://www.w3.org/1999/html"
+  >
+    <ng-template #breadcrumb>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+        <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
+        <nz-breadcrumb-item> VPN site to site </nz-breadcrumb-item>
+      </nz-breadcrumb>
+    </ng-template>
+    <ng-template #action>
+      <div class="alain-custom-action text-right">
+        <region-select-dropdown
+          (valueChanged)="regionChanged($event)"
+        ></region-select-dropdown>
+        <project-select-dropdown
+          (valueChanged)="projectChanged($event)"
+          (userChanged)="projectChanged($event)"
+          [regionId]="region"
+        ></project-select-dropdown>
+      </div>
+    </ng-template>
+  </page-header>
   <nz-card style="border-radius: 8px; margin-bottom: 20px">
     <nz-row style="margin-bottom: 20px" nzGutter="24">
       <div
@@ -87,26 +86,38 @@
     </div>
   </nz-card>
   <nz-card style="border-radius: 8px">
-    <nz-tabset>
+    <nz-tabset nzSelectedIndex>
       <nz-tab nzTitle="IKE Policies">
-        <ng-template nz-tab> <one-portal-ike-policies></one-portal-ike-policies> </ng-template>
+        <ng-template nz-tab>
+          <one-portal-ike-policies></one-portal-ike-policies
+        ></ng-template>
       </nz-tab>
       <nz-tab nzTitle="IPsec Policies">
-        <ng-template nz-tab> <one-portal-ipsec-policies></one-portal-ipsec-policies> </ng-template>
+        <ng-template nz-tab>
+          <one-portal-ipsec-policies
+            [region]="region"
+            [project]="project"
+          ></one-portal-ipsec-policies>
+        </ng-template>
       </nz-tab>
       <nz-tab nzTitle="VPN Service">
-        <ng-template nz-tab> <one-portal-vpn-service></one-portal-vpn-service> </ng-template>
+        <ng-template nz-tab>
+          <one-portal-vpn-service></one-portal-vpn-service>
+        </ng-template>
       </nz-tab>
       <nz-tab nzTitle="Endpoint Group">
-        <ng-template nz-tab> <one-portal-endpoint-group></one-portal-endpoint-group> </ng-template>
+        <ng-template nz-tab>
+          <one-portal-endpoint-group></one-portal-endpoint-group>
+        </ng-template>
       </nz-tab>
       <nz-tab nzTitle="VPN Connections">
-        <ng-template nz-tab> <one-portal-vpn-connection></one-portal-vpn-connection> </ng-template>
+        <ng-template nz-tab>
+          <one-portal-vpn-connection></one-portal-vpn-connection>
+        </ng-template>
       </nz-tab>
-  </nz-tabset>
+    </nz-tabset>
   </nz-card>
-  
 </nz-content>
-<nz-content  *ngIf="isBegin">
-    <one-portal-blank-vpn-site-to-site></one-portal-blank-vpn-site-to-site>
+<nz-content *ngIf="isBegin">
+  <one-portal-blank-vpn-site-to-site></one-portal-blank-vpn-site-to-site>
 </nz-content>

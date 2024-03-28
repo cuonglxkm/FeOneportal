@@ -87,7 +87,7 @@
             (nzCheckedChange)="onItemChecked(data.id, $event)" nzLeft></td>
         <td nzLeft><a (click)="getPaymentDetail(data)" >{{data.paymentNumber}}</a></td>
         <td nzBreakWord><a (click)="getOrderDetail(data.orderNumber)" >{{data.orderNumber}}</a></td>
-        <td nzBreakWord>{{data.amount}}</td>
+        <td nzBreakWord>{{data.amount | number}}</td>
         <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
         <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
           Đã thanh toán

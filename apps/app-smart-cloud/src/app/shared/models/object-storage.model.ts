@@ -176,6 +176,7 @@ export class Summary {
 export class ObjectObjectStorageModel {
   key: string;
   lastModified: string;
+  versionId: string;
   size: number;
   bucketName: string;
   objectType: string;

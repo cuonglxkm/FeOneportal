@@ -7,6 +7,11 @@
           <div style="margin-top: 15px;">
             <span>Tên Volume</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
+                  nzPopoverPlacement="bottom"></span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -15,11 +20,12 @@
                  formControlName="name"
                  [placeholder]="'Nhập tên Volume'" [maxLength]="70"/>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Volume</ng-container>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
               Việt
             </ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -28,6 +34,11 @@
           <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
                      nzUnCheckedChildren="OFF"></nz-switch>
           <span style="margin-left: 10px; margin-top: 1px;">Tạo từ Snapshot</span>
+          <span nz-icon nzType="question-circle" style="margin-left: 5px; margin-top: 5px;"
+                nzTheme="outline"
+                nz-popover
+                [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
+                nzPopoverPlacement="bottom"></span>
         </div>
       </nz-form-item>
       <div *ngIf="isInitSnapshot === true">
@@ -35,10 +46,10 @@
           <nz-form-label nzFor="snapshot">
             <div class="label">
               <span>Chọn Snapshot</span>
-              <span style="color: rgba(252, 16, 16, 1); "> *</span>
+              <span style="color: rgba(252, 16, 16, 1); ">*</span>
             </div>
           </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="snapshotErrorTpl">
             <nz-select nzSize="default"
                        formControlName="snapshot"
                        id="snapshot"
@@ -49,6 +60,9 @@
                        style="width: 100%;">
               <nz-option *ngFor="let item of snapshotList" [nzLabel]="item.label.toString()"
                          [nzValue]="item.value"></nz-option>
+              <ng-template #snapshotErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng chọn Snapshot</ng-container>
+              </ng-template>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -58,6 +72,11 @@
           <div class="label">
             <span>Chọn loại volume</span>
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
+                  nzPopoverPlacement="bottom"></span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
@@ -89,6 +108,11 @@
           <div style="margin-top: 15px;">
             <span>Dung lượng </span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Dung lượng Volume tối thiểu là 1'"
+                  nzPopoverPlacement="bottom"></span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
@@ -104,16 +128,32 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>
-          <span>IOPS: {{iops}}</span>
+          <span *ngIf="selectedValueRadio === 'hdd'">IOPS: 200</span>
+          <span *ngIf="selectedValueRadio === 'ssd'">IOPS: {{iops}}</span>
         </nz-form-label>
       </nz-form-item>
       <label nz-checkbox formControlName="isEncryption">Mã hóa Volume</label>
+      <span nz-icon nzType="question-circle"
+            nzTheme="outline"
+            nz-popover
+            [nzPopoverContent]="'Mã hóa volume để tăng tính bảo mật đọc, ghi cho volume'"
+            nzPopoverPlacement="bottom"></span>
       <br>
       <label nz-checkbox style="margin-top: 10px;" formControlName="isMultiAttach">Gắn nhiều máy ảo</label>
+      <span nz-icon nzType="question-circle"
+            nzTheme="outline"
+            nz-popover
+            [nzPopoverContent]="'Volume có thể gắn đồng thời vào nhiều máy ảo khác nhau. Nếu chọn volume multi attach thì không thể chọn mã hóa volume'"
+            nzPopoverPlacement="bottom"></span>
       <nz-form-item style="margin-top: 10px;">
         <nz-form-label nzFor="instanceName">
           <div class="label">
             <span>Chọn máy ảo</span>
+            <span nz-icon nzType="question-circle" style="margin-left: 5px;"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
+                  nzPopoverPlacement="bottom"></span>
           </div>
         </nz-form-label>
         <nz-form-control>

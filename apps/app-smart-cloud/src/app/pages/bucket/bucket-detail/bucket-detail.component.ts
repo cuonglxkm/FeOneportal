@@ -24,13 +24,8 @@ export class BucketDetailComponent implements OnInit {
   listOfData: ObjectObjectStorageModel[];
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
-  listOfFolder: any = [
-    {name: "folder1", id: "1"},
-    {name: "folder2", id: "2"},
-    {name: "folder3", id: "3"},
-    {name: "folder4", id: "4"},
-    {name: "folder5", id: "5"},
-  ];
+  listOfFolder: any = [];
+  currentKey = '';
 
   orderMetadata = 0;
   defaultMetadata = {order: 1, key: "", value: ""};
@@ -53,6 +48,8 @@ export class BucketDetailComponent implements OnInit {
   isVisibleDetail = false;
   isVisibleDelete = false;
   isVisibleVersioning = false;
+  isVisibleDeleteVersion = false;
+  isVisibleRestoreVersion = false;
   folderChange: string;
   modalStyle = {
     'padding': '20px',
@@ -78,16 +75,20 @@ export class BucketDetailComponent implements OnInit {
     name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
   });
   radioValue: any = 'Public';
+  radioValue1: any = 'Private';
   checked = false;
   indeterminate = false;
   countObjectSelected = 0;
   nameFolder = '';
+  folderNameLike = '';
 
   treeFolder = []
   linkShare = '';
   today = new Date();
   timeDefaultValue = setHours(new Date(), 0);
   dateShare: any;
+  versionId: string;
+  private : any;
 
   range(start: number, end: number): number[] {
     const result: number[] = [];
@@ -104,6 +105,7 @@ export class BucketDetailComponent implements OnInit {
     nzDisabledMinutes: () => this.range(30, 60),
     nzDisabledSeconds: () => [55, 56]
   });
+  activePrivate = true;
 
 
   constructor(
@@ -118,8 +120,7 @@ export class BucketDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBucket();
-    this.loadTreeFolder();
-    this.loadData('');
+    this.loadData();
   }
 
   uploadFile() {
@@ -242,10 +243,6 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
-  addOldFilterToReality() {
-
-  }
-
   addToReality(data: any) {
     this.addtoListString(this.colReal, data.name);
     if (data.name == 'Tên') {
@@ -281,10 +278,18 @@ export class BucketDetailComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, number));
   }
 
-  toFolder1(item: any) {
-    let index = this.listOfFolder.findIndex(folder => folder.name == item.name);
-    if (index > 0) {
-      this.listOfFolder.splice(index + 1);
+  toFolder1(item: any, isBucket) {
+    if (isBucket) {
+      this.listOfFolder = [];
+      this.currentKey = '';
+      this.loadData();
+    } else {
+      let index = this.listOfFolder.findIndex(folder => folder.key == item.key);
+      if (index >= 0) {
+        this.currentKey = item.key;
+        this.loadData();
+        this.listOfFolder.splice(index + 1);
+      }
     }
   }
 
@@ -292,11 +297,11 @@ export class BucketDetailComponent implements OnInit {
     this.isVisibleCreateFolder = false;
     let data = {
       bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
-      folderName: this.nameFolder
+      folderName: this.currentKey + this.nameFolder
     }
     this.service.createFolder(data)
       .pipe(finalize(() => {
-        this.loadData('');
+        this.loadData();
       }))
       .subscribe(
         () => {
@@ -349,11 +354,12 @@ export class BucketDetailComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
-  private loadData(folderName: any) {
+  loadData() {
     this.loading = true;
-    this.service.getData(this.activatedRoute.snapshot.paramMap.get('name'), folderName, '', this.tokenService.get()?.userId, '', this.size, this.index)
+    this.service.getData(this.activatedRoute.snapshot.paramMap.get('name'), this.currentKey + this.folderNameLike, '', this.tokenService.get()?.userId, '', this.size, this.index)
       .pipe(finalize(() => {
         this.loading = false;
+        this.loadFolder(this.currentKey);
       }))
       .subscribe(data => {
         this.listOfData = data.paginationObjectList.items;
@@ -368,10 +374,6 @@ export class BucketDetailComponent implements OnInit {
           this.bucket = data;
         }
       )
-  }
-
-  search(searck: any) {
-
   }
 
   removeFile(item: NzUploadFile) {
@@ -406,7 +408,7 @@ export class BucketDetailComponent implements OnInit {
     }
     this.service.deleteObject(data)
       .pipe(finalize(() => {
-        this.loadData('')
+        this.loadData()
       }))
       .subscribe(
         () => {
@@ -420,28 +422,22 @@ export class BucketDetailComponent implements OnInit {
 
   doAction(action: any, item: ObjectObjectStorageModel) {
     this.dataAction = item;
+
     if (action == 1) {
       this.isVisiblePermission = true;
+      if (item.isPublic) {
+        this.activePrivate = false;
+        this.radioValue1 = 'Public';
+      } else {
+        this.activePrivate = true;
+        this.radioValue1 = 'Private';
+      }
     } else if (action == 2) {
       this.isVisibleCopy = true;
+      this.loadTreeFolder();
     } else if (action == 3) {
       //download
-      this.service.downloadFile(item.bucketName, item.key)
-        .subscribe(
-          data => {
-            let anchor = document.createElement("a");
-            let objectUrl = window.URL.createObjectURL(data['body']);
-
-            anchor.href = objectUrl;
-            anchor.download = item.key;
-            anchor.click();
-            window.URL.revokeObjectURL(objectUrl);
-            // this.triggerDownload(data);
-            console.log(data)
-          }, error => {
-            console.log(error)
-          }
-        );
+      this.downloadFile('')
     } else if (action == 4) {
       this.isVisibleDetail = true;
     } else if (action == 5) {
@@ -454,12 +450,42 @@ export class BucketDetailComponent implements OnInit {
     }
   }
 
+  doActionVersion(action: any, item: ObjectObjectStorageModel) {
+    this.versionId = item.versionId;
+    if (action == 1) {
+      this.downloadFile(item.versionId);
+    } else if (action == 2) {
+      this.isVisibleRestoreVersion = true;
+    } else if (action == 3) {
+      this.isVisibleDeleteVersion = true;
+    }
+  }
+
   toFolder(event: any) {
     if (event.folderKey != undefined) {
       this.folderChange = event.folderKey
     } else {
       this.folderChange = event.bucketName
     }
+  }
+
+  downloadFile(versionId: any) {
+    this.service.downloadFile(this.dataAction.bucketName, this.dataAction.key, versionId)
+      .subscribe(
+        data => {
+          let anchor = document.createElement("a");
+          let objectUrl = window.URL.createObjectURL(data['body']);
+
+          anchor.href = objectUrl;
+          anchor.download = this.dataAction.key;
+          anchor.click();
+          window.URL.revokeObjectURL(objectUrl);
+          // this.triggerDownload(data);
+          console.log(data)
+        }, error => {
+          console.log(error)
+        }
+      );
   }
 
   private loadTreeFolder() {
@@ -497,7 +523,7 @@ export class BucketDetailComponent implements OnInit {
 
     this.service.copyProject(data)
       .pipe(finalize(() => {
-        this.loadData('')
+        this.loadData()
       }))
       .subscribe(
         () => {
@@ -514,15 +540,22 @@ export class BucketDetailComponent implements OnInit {
   }
 
   editPermission() {
-    this.service.editPermission('bucketName','keyName','public')
-      .subscribe(
-        () => {
-          this.notification.success('Thành công', 'Phân quyền thành công')
-        },
-        error => {
-          this.notification.error('Thất bại', 'Phân quyền thất bại')
-        }
-      );
+    this.isVisiblePermission = false;
+    if ((this.dataAction.isPublic == true && this.activePrivate == true) ||
+      (this.dataAction.isPublic == false && this.activePrivate == false)) {
+      this.service.editPermission(this.dataAction.bucketName, this.dataAction.key, this.activePrivate == true ? 'private' : 'public')
+        .pipe(finalize(() => {
+          this.loadData()
+        }))
+        .subscribe(
+          () => {
+            this.notification.success('Thành công', 'Phân quyền thành công')
+          },
+          error => {
+            this.notification.error('Thất bại', 'Phân quyền thất bại')
+          }
+        );
+    }
   }
 
   handleShare() {
@@ -537,7 +570,9 @@ export class BucketDetailComponent implements OnInit {
       isDownload: true
     };
     this.service.getLinkShare(data).subscribe(
-      data => {this.linkShare = data.publicURL}
+      data => {
+        this.linkShare = data.publicURL
+      }
     )
   }
 
@@ -552,7 +587,83 @@ export class BucketDetailComponent implements OnInit {
         this.loadingVersion = false;
       }))
       .subscribe(data => {
-      this.listOfDataVersioning = data;
-    })
+        this.listOfDataVersioning = data;
+      })
+  }
+
+  deleteFolderVersion() {
+    this.isVisibleDeleteVersion = false;
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      objectType: this.dataAction.objectType,
+      key: this.dataAction.key,
+      versionId: this.versionId,
+      deleteAllVersions: false
+    }
+    this.service.deleteObjectSimple(data)
+      .pipe(finalize(() => {
+        this.loadDataVersion()
+        this.loadData()
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Xóa phiên bản thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Xóa phiên bản thất bại')
+        }
+      );
+  }
+
+  restoreObjectVersion() {
+    this.isVisibleRestoreVersion = false;
+    let data = {
+      bucketName: this.dataAction.bucketName,
+      key: this.dataAction.key,
+      versionId: this.versionId
+    }
+    this.service.restoreObject(data)
+      .pipe(finalize(() => {
+        this.loadDataVersion()
+        this.loadData()
+      }))
+      .subscribe(
+        () => {
+          this.notification.success('Thành công', '`Khôi phục bản thành công')
+        },
+        error => {
+          this.notification.error('Thất bại', 'Khôi phục phiên bản thất bại')
+        }
+      );
+  }
+
+  selectPermisstion(number: number) {
+    this.activePrivate = number == 1 ? true : false;
+  }
+
+  private loadFolder(data: any) {
+    if (data != '') {
+      let folder = {
+        key: data,
+        name: data
+      }
+
+      let lstFolderName = data.split('/');
+      if (lstFolderName.length > 1) {
+        folder.name = lstFolderName[lstFolderName.length - 2]
+      }
+
+      let index = this.listOfFolder.findIndex(folder => folder.key == data);
+      if (index == -1) {
+        this.listOfFolder.push(folder);
+        this.currentKey = folder.key;
+      }
+
+    }
+  }
+
+  toFolder2(s: string) {
+    this.currentKey = s;
+    this.loadData();
   }
 }

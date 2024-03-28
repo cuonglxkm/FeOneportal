@@ -23,6 +23,7 @@ class ServiceInfo {
   duration: number;
   amount: number;
   currency: number;
+  type:string;
 }
 
 class Discount {
@@ -66,7 +67,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
-      console.log({path: this.returnPath});
+      console.log({ path: this.returnPath });
       const myOrder = state.data;
       console.log(state.data);
       
@@ -74,46 +75,58 @@ export class PaymentSummaryComponent implements OnInit {
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
       this.order.orderItems = myOrder.orderItems;
-      console.log('order summary', this.order);
+       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         var serviceItem = new ServiceInfo();
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = 'Tạo máy ảo';
+            serviceItem.name = 'Máy ảo';
+            serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
-            serviceItem.name = 'Chỉnh sửa máy ảo';
+            serviceItem.name = 'Máy ảo';
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'instance_extend':
-            serviceItem.name = 'Gia hạn máy ảo';
+            serviceItem.name = 'Máy ảo';
+            serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
-            serviceItem.name = 'Tạo Volume';
+            serviceItem.name = 'Volume';
+            serviceItem.type = 'Tạo mới';
             break;
           case 'volume_resize':
-            serviceItem.name = 'Chỉnh sửa Volume';
+            serviceItem.name = 'Volume';
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'volume_extend':
-            serviceItem.name = 'Gia hạn Volume';
+            serviceItem.name = 'Volume';
+            serviceItem.type = 'Gia hạn';
             break;
           case 'ip_create':
-            serviceItem.name = 'Tạo IP';
+            serviceItem.name = 'IP Public';
+            serviceItem.type = 'Tạo mới';
             break;
           case 'ip_extend':
-            serviceItem.name = 'Gia hạn IP';
+            serviceItem.name = 'IP Public';
+            serviceItem.type = 'Gia hạn';
             break;
           case 'k8s_create':
-            this.serviceType = "k8s";
-            serviceItem.name = 'Tạo cluster';
+            this.serviceType = 'k8s';
+            serviceItem.name = 'k8s';
+            serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
-            serviceItem.name = 'Tạo Object Storage';
+            serviceItem.name = 'Object Storage';
+            serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_resize':
-            serviceItem.name = 'Chỉnh sửa Object Storage';
+            serviceItem.name = 'Object Storage';
+            serviceItem.type = 'Chỉnh sửa';
             break;
           case 'objectstorage_extend':
-            serviceItem.name = 'Gia hạn Object Storage';
+            serviceItem.name = 'Object Storage';
+            serviceItem.type = 'Gia hạn';
             break;
           default:
             serviceItem.name = '';
@@ -233,12 +246,7 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // for test when k8s needn't pay
-          if (this.serviceType == "k8s") {
-            this.router.navigate([`/app-smart-cloud/order/detail/${data.data.id}`]);
-          } else {
-            window.location.href = data.data;
-          }
+          window.location.href = data.data;
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');

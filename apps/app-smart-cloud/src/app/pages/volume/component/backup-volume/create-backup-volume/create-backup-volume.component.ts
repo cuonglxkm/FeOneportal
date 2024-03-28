@@ -33,6 +33,7 @@ export class CreateBackupVolumeComponent implements OnInit {
   listOfPackage: PackageBackupModel[];
   selectedPackage: any;
 
+  isLoading: boolean = false
   form = new FormGroup({
     select: new FormControl('', {validators: [Validators.required]}),
     name: new FormControl('', {validators: [Validators.required]}),
@@ -40,18 +41,11 @@ export class CreateBackupVolumeComponent implements OnInit {
   });
 
   projectChange(project: ProjectModel) {
-    this.projectId = project.id;
     this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
   onRegionChange(region: RegionModel) {
-    this.regionId = region.regionId;
-    this.projectService.getByRegion(this.regionId).subscribe(data => {
-      if (data.length) {
-        localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/backup-volume']);
-      }
-    });
+    this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
   backToList() {
@@ -59,6 +53,7 @@ export class CreateBackupVolumeComponent implements OnInit {
   }
 
   createBackup() {
+    this.isLoading = true
     //todo call api anh sucribe
     const ax = {
       volumeId: this.idVolume,
@@ -98,10 +93,12 @@ export class CreateBackupVolumeComponent implements OnInit {
 
     this.backupVolumeService.createBackupVolume(createBackupVolumeOrderData).subscribe(
       () => {
+        this.isLoading = false
         this.notification.success('Thành công', 'Yêu cầu tạo backup volume đã được gửi đi')
+        this.router.navigate(['/app-smart-cloud/backup-volume']);
       }
     );
-    this.router.navigate(['/app-smart-cloud/backup-volume']);
+
   }
 
   ngOnInit(): void {
