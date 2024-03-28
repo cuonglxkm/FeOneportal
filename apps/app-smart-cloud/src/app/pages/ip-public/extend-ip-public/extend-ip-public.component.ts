@@ -126,7 +126,7 @@ export class ExtendIpPublicComponent {
   extendIpPublic() {
     const requestBody = {
       regionId: this.regionId,
-      serviceName: null,
+      serviceName: 'gia hạn',
       customerId: this.tokenService.get()?.userId,
       vpcId: this.projectId,
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IpExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
