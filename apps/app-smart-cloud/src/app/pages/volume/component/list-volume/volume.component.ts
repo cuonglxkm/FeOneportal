@@ -68,7 +68,7 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    // this.getListVolume(true)
+    this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
@@ -166,7 +166,7 @@ export class VolumeComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.getListVolume(false);
+    this.getListVolume(true);
   }
 
   //update

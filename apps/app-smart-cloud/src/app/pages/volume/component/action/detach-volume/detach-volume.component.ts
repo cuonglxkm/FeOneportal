@@ -10,89 +10,129 @@ import { AddVolumetoVmModel } from '../../../../../shared/models/volume.model';
 @Component({
   selector: 'one-portal-detach-volume',
   templateUrl: './detach-volume.component.html',
-  styleUrls: ['./detach-volume.component.less'],
+  styleUrls: ['./detach-volume.component.less']
 })
 export class DetachVolumeComponent {
-  @Input() region: number
-  @Input() project: number
-  @Input() volumeId: number
-  @Input() isMultiple: boolean
-  @Output() onOk = new EventEmitter()
-  @Output() onCancel = new EventEmitter()
+  @Input() region: number;
+  @Input() project: number;
+  @Input() volumeId: number;
+  @Input() isMultiple: boolean;
+  @Input() instanceInVolume: AttachedDto[];
+  @Output() onOk = new EventEmitter();
+  @Output() onCancel = new EventEmitter();
 
-  isLoading: boolean = false
-  isVisible: boolean = false
-  isLoadingDetach: boolean = false
+  isLoading: boolean = false;
+  isVisible: boolean = false;
 
-  instanceInVolumeSelected: any
+  instanceInVolumeSelected: any;
 
-  listInstanceInVolume: AttachedDto[] = []
+  listInstanceInVolume: AttachedDto[] = [];
+
+  isSelected: boolean = false;
 
   constructor(private instancesService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private volumeService: VolumeService){
+              private volumeService: VolumeService) {
   }
 
   onChange(value) {
-    this.instanceInVolumeSelected = value
+    this.instanceInVolumeSelected = value;
   }
 
   showModal() {
-    this.isVisible = true
-    this.getListVmInVolume()
+    this.isVisible = true;
+    this.getListVmInVolume();
   }
 
   handleCancel() {
-    this.isVisible = false
-    this.isLoadingDetach = false
-    this.onCancel.emit()
+    this.isVisible = false;
+    this.isLoading = false;
+    if (this.isMultiple) {
+      this.isSelected = false;
+      this.instanceInVolumeSelected = null;
+    }
+    this.onCancel.emit();
   }
 
   handleOk() {
-    this.doDetach()
+    this.doDetach();
   }
 
   getListVmInVolume() {
     this.volumeService.getVolumeById(this.volumeId)
       .pipe(debounceTime(300))
-      .subscribe( response => {
-        if(response != null){
-          if(response?.attachedInstances?.length > 0){
-            this.listInstanceInVolume = response.attachedInstances
+      .subscribe(response => {
+        if (response != null) {
+          if (response?.attachedInstances?.length > 0) {
+            this.listInstanceInVolume = response.attachedInstances;
           }
         }
-      })
+      });
   }
 
   doDetach() {
-    this.isLoadingDetach = true;
-
-    let addVolumetoVmRequest = new AddVolumetoVmModel();
-
-    addVolumetoVmRequest.volumeId = this.volumeId;
-    if(this.isMultiple == false) {
-      addVolumetoVmRequest.instanceId = this.listInstanceInVolume[0].instanceId
-    } else {
-      addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
-    }
-    addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
-
-    this.volumeService.detachVolumeToVm(addVolumetoVmRequest).subscribe(data => {
-      if (data == true) {
-        this.isLoadingDetach = false;
-        this.isVisible = false
-        this.notification.success('Thành công', `Gỡ volume thành công`);
-        this.onOk.emit(data)
+    this.isLoading = true;
+    if (this.isMultiple) {
+      if(this.instanceInVolumeSelected == null || this.instanceInVolumeSelected == undefined) {
+        this.isSelected = true
+        this.isLoading = false
       } else {
-        this.isLoadingDetach = false
-        this.isVisible = false
-        this.notification.error('Thất bại', `Gỡ volume thất bại`);
+        let addVolumetoVmRequest = new AddVolumetoVmModel();
+        addVolumetoVmRequest.volumeId = this.volumeId;
+        console.log('attach', this.listInstanceInVolume);
+        addVolumetoVmRequest.instanceId = Number.parseInt(this.instanceInVolumeSelected);
+        addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+
+        this.volumeService.detachVolumeToVm(addVolumetoVmRequest).subscribe(data => {
+          if (data == true) {
+            this.isLoading = false;
+            this.isVisible = false;
+            this.notification.success('Thành công', `Gỡ volume thành công`);
+            this.onOk.emit(data);
+          } else {
+            this.isVisible = false;
+            this.isLoading = false;
+            this.notification.error('Thất bại', `Gỡ volume thất bại`);
+            this.onOk.emit(data);
+          }
+        }, error => {
+          this.isLoading = false;
+          this.isVisible = false;
+          this.notification.error('Thất bại', `Gỡ volume thất bại`);
+          this.onOk.emit(error);
+        });
       }
-    }, error => {
-      this.isLoadingDetach = false
-      this.isVisible = false
-      this.notification.error('Thất bại', `Gỡ volume thất bại`);
-    })
+
+    } else {
+      this.isSelected = false
+
+      let addVolumetoVmRequest = new AddVolumetoVmModel();
+      addVolumetoVmRequest.volumeId = this.volumeId;
+      console.log('attach', this.listInstanceInVolume);
+      addVolumetoVmRequest.instanceId = this.instanceInVolume[0].instanceId
+      addVolumetoVmRequest.customerId = this.tokenService.get()?.userId;
+
+      this.volumeService.detachVolumeToVm(addVolumetoVmRequest).subscribe(data => {
+        if (data == true) {
+          this.isLoading = false;
+          this.isVisible = false;
+          this.notification.success('Thành công', `Gỡ volume thành công`);
+          this.onOk.emit(data);
+        } else {
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.error('Thất bại', `Gỡ volume thất bại`);
+          this.onOk.emit(data);
+        }
+      }, error => {
+        this.isLoading = false;
+        this.isVisible = false;
+        this.notification.error('Thất bại', `Gỡ volume thất bại`);
+        this.onOk.emit(error);
+      });
+    }
+
+
   }
 }

@@ -20,7 +20,9 @@
                                 <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
                                     [(ngModel)]="searchText" />
                             </nz-input-group>
-                            <ng-template #prefixIconButton><span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span></ng-template>
+                            <ng-template #prefixIconButton>
+                                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                            </ng-template>
                         </div>
                     </div>
                 </div>
@@ -29,29 +31,30 @@
                     <div class="async">Dữ liệu được đồng bộ lúc: <span class="time-async">{{syncInfo.group}}</span>
                     </div>
 
-                    <nz-table id="groups" nzBordered #basicTable [nzData]="listConsumerGroup" nzShowSizeChanger
-                        [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)">
+                    <nz-table id="groups" #basicTable [nzData]="listConsumerGroup" nzShowSizeChanger
+                        [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" 
+                        (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }">
                         <thead>
                             <tr>
-                                <th nzWidth="5%">STT</th>
-                                <th nzWidth="40%">ID Consumer Group</th>
-                                <th nzWidth="12%" class="text-center">Số lượng thành viên</th>
-                                <th nzWidth="10%" class="text-center">Số lượng Topic</th>
-                                <th nzWidth="8%" class="text-center">Overall lag</th>
-                                <th nzWidth="10%" class="text-center">Coordinator ID</th>
-                                <th nzWidth="8%" class="text-center">Trạng thái</th>
-                                <th nzWidth="7%" class="text-center">Thao tác</th>
+                                <th nzWidth="6%" nzAlign="center">STT</th>
+                                <th nzWidth="39%">ID Consumer Group</th>
+                                <th nzWidth="12%" nzAlign="center">Số lượng thành viên</th>
+                                <th nzWidth="10%" nzAlign="center">Số lượng Topic</th>
+                                <th nzWidth="8%" nzAlign="center">Overall lag</th>
+                                <th nzWidth="10%" nzAlign="center">Coordinator ID</th>
+                                <th nzWidth="8%" nzAlign="center">Trạng thái</th>
+                                <th nzWidth="7%" nzAlign="center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of basicTable.data; let i = index" class="row-group">
-                                <td>{{ i + 1 }}</td>
+                                <td nzAlign="center">{{ i + 1 }}</td>
                                 <td><a (click)="viewDetail(data.cgName)">{{ data.cgName }}</a></td>
-                                <td class="text-center">{{ data.members }}</td>
-                                <td class="text-center">{{ data.topics }}</td>
-                                <td class="text-center">{{ data.overallLag }}</td>
-                                <td class="text-center">{{ data.coordinatorInfo }}</td>
-                                <td style="text-align: center;">
+                                <td nzAlign="center">{{ data.members }}</td>
+                                <td nzAlign="center">{{ data.topics }}</td>
+                                <td nzAlign="center">{{ data.overallLag }}</td>
+                                <td nzAlign="center">{{ data.coordinatorInfo }}</td>
+                                <td nzAlign="center">
                                     <ng-container *ngIf="data.stateConsumer===stateActive; else empty">
                                         <nz-tag [nzColor]="'#66ccff'" nz-tooltip
                                             [nzTooltipTitle]="contentOfState.active" [nzTooltipColor]="'#66ccff'"
@@ -84,22 +87,44 @@
                                             nzTooltipPlacement="rightTop">INACTIVE</nz-tag>
                                     </ng-template>
                                 </td>
-                                <td class="text-center operation">
-                                    <a nz-dropdown [nzDropdownMenu]="menu">
-                                        <span nz-icon nzType="more" nzTheme="outline"></span>
-                                    </a>
-                                    <nz-dropdown-menu #menu="nzDropdownMenu">
-                                        <ul nz-menu nzSelectable>
-                                            <li nz-menu-item>
-                                                <span nz-icon nzType="delete" nzTheme="twotone" (click)="showDeleteConfirm(data)"
-                                                    nzTwotoneColor="#0066B0"></span> Xóa
-                                            </li>
-                                        </ul>
-                                    </nz-dropdown-menu>
+                                <td nzAlign="center">
+                                    <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa" (click)="showDeleteConfirm(data)"/>
                                 </td>
                             </tr>
                         </tbody>
                     </nz-table>
+
+                   <!-- Modal Delete  -->
+                   <nz-modal
+                        [(nzVisible)]="isVisibleDelete"
+                        nzTitle="Xóa consumer group"
+                        (nzOnCancel)="handleCancelDelete()"
+                        nzKeyboard="false"
+                        nzMaskClosable="false"
+                    >
+                        <ng-container *nzModalContent>
+                            <h3 style="text-align: center;">Bạn chắc chắn muốn xoá consumer group <br> 
+                                <b> {{ this.currentConsumerGroup.cgName }} </b> ?
+                            </h3>
+                        </ng-container>
+                        <div *nzModalFooter>
+                            <button nz-button (click)="handleCancelDelete()">
+                            <img
+                                style="padding-right: 10px; margin-top: -4px"
+                                src="assets/imgs/cancel.svg"
+                                alt=""
+                            />Hủy
+                            </button>
+                            <button nz-button nzType="primary" (click)="handleOkDelete()">
+                            <img
+                                style="padding-right: 10px; margin-top: -4px"
+                                src="assets/imgs/confirm.svg"
+                                alt=""
+                            />Xác nhận
+                            </button>
+                        </div>
+
+                    </nz-modal>
                 </div>
             </div>
         </ng-container>
@@ -169,11 +194,13 @@
                 </div>
 
                 <div id="block-search">
-                    <nz-input-group [nzPrefix]="prefixTemplateUser" class="search">
+                    <nz-input-group [nzPrefix]="prefixTemplate" class="search">
                         <input type="text" nz-input placeholder="Tìm kiếm theo tên topic" (keyup.enter)="onSearchTopic()"
                             [(ngModel)]="searchTopicText" />
                     </nz-input-group>
-                    <ng-template #prefixTemplateUser><span nz-icon nzType="search" nzTheme="outline"></span></ng-template>
+                    <ng-template #prefixTemplate>
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
+                    </ng-template>
                 </div>
 
                 <div id="list-topic">

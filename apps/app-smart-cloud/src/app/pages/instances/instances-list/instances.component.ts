@@ -85,18 +85,37 @@ export class InstancesComponent implements OnInit {
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
+        let actionType = data.actionType;
 
+        if (!instanceId) {
+          return;
+        }
         var foundIndex = this.dataList.findIndex(x => x.id == instanceId);
         if (foundIndex > -1) {
-          var record = this.dataList[foundIndex];
+          switch (actionType)
+          {
+            case "CREATE":
+              var record = this.dataList[foundIndex];
 
-          record.status = data.status;
-          record.taskState = data.taskState;
-          record.ipPrivate = data.ipPrivate;
-          record.ipPublic = data.ipPublic;
+              record.status = data.status;
+              record.taskState = data.taskState;
+              record.ipPrivate = data.ipPrivate;
+              record.ipPublic = data.ipPublic;
+    
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
 
-          this.dataList[foundIndex] = record;
-          this.cdr.detectChanges();
+            case "SHUTOFF":
+            case "START":
+              var record = this.dataList[foundIndex];
+
+              record.taskState = data.taskState;
+    
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
+          }
         }
       }
     });
@@ -279,16 +298,16 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Tắt máy ảo thành công');
+          this.notification.success('', 'Yêu cầu tắt máy ảo đã được gửi đi');
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Tắt máy ảo không thành công');
+          this.notification.error('', 'Yêu cầu tắt máy ảo không thất bại');
         }
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
+        this.notification.error(e.statusText, 'Yêu cầu tắt máy ảo không thực hiện được');
       },
     });
   }
@@ -310,16 +329,16 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Bật máy ảo thành công');
+          this.notification.success('', 'Yêu cầu bật máy ảo đã được gửi đi');
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Bật máy ảo không thành công');
+          this.notification.error('', 'Yêu cầu bật máy ảo thất bại');
         }
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Bật máy ảo không thành công');
+        this.notification.error(e.statusText, 'Yêu cầu bật máy ảo thất bại');
       },
     });
   }
