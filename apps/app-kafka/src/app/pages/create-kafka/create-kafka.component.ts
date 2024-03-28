@@ -77,7 +77,7 @@ export class CreateKafkaComponent implements OnInit {
       serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
-      description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
+      description: [null, [Validators.maxLength(500), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
       vCpu: [null, [Validators.required]],
       ram: [null, [Validators.required]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
@@ -91,6 +91,8 @@ export class CreateKafkaComponent implements OnInit {
       logRetentionHours: [168],
       logSegmentBytes: [1073741824]
     });
+
+    this.myform.controls.broker.disable();
   }
 
   getListPackage() {

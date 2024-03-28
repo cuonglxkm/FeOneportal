@@ -17,7 +17,7 @@
       
       <nz-card class="border-card">
         <h3>Thông tin chung</h3>
-        <span nzType="secondary" style="color: #6C757D">Vui lòng hoàn thiện đầy đủ các thông tin vào form bên dưới. <br>
+        <span nzType="secondary" style="color: #6C757D">Vui lòng hoàn thiện đầy đủ các thông tin vào form bên dưới. 
           Các trường thông tin có dấu (<span style="color: #ff4d4f;">*</span>) là các thông tin bắt buộc nhập.
         </span>
         <div nz-row [nzGutter]="24">
@@ -59,7 +59,11 @@
         <nz-form-item>
           <nz-form-label [nzSm]="24" [nzXs]="24">Mô tả</nz-form-label>
           <nz-form-control nzErrorTip="">
-            <textarea formControlName="description" nz-input placeholder="Mô tả dịch vụ" [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large"></textarea>
+            <nz-textarea-count [nzMaxCharacterCount]="500">
+              <textarea formControlName="description" nz-input placeholder="Mô tả dịch vụ" 
+                [nzAutosize]="{ minRows: 5, maxRows: 12 }" nzSize="large">
+              </textarea>
+            </nz-textarea-count>
           </nz-form-control>
         </nz-form-item>
       </nz-card>
@@ -98,37 +102,51 @@
           </nz-tab>
           
           <nz-tab nzTitle="Cấu hình tùy chọn">
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>vCPU</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị vCpu">
-                <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus />
-              </nz-form-control>
-            </nz-form-item>
+            <div nz-row class="customize-config">
+              <div nz-col [nzSpan]="5">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24">Số Broker</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập số lượng Broker">
+                    <input nz-input type="number" formControlName="broker" id="broker" autofocus nzSize="large" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
 
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>RAM</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Ram">
-                <input nz-input type="number" formControlName="ram" id="ram" autofocus />
-              </nz-form-control>
-            </nz-form-item>
+              <div nz-col [nzSpan]="5">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>vCPU</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị vCpu">
+                    <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus nzSize="large" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
 
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>Storage</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Storage">
-                <input nz-input type="number" formControlName="storage" id="storage" autofocus />
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
-              <div nz-col [nzSpan]="4"></div>
-              <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired>Broker</nz-form-label>
-              <nz-form-control [nzSm]="8" [nzXs]="24" nzErrorTip="Vui lòng nhập số lượng Broker">
-                <input nz-input type="number" formControlName="broker" id="broker" autofocus />
-              </nz-form-control>
-            </nz-form-item>
+              <div nz-col [nzSpan]="5" class="config-suffix">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>RAM</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Ram">
+                    <nz-input-group nzSuffix="(GB)" nzSize="large">
+                      <input nz-input type="number" formControlName="ram" id="ram"
+                          autofocus />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+  
+              <div nz-col [nzSpan]="5" class="config-suffix">
+                <nz-form-item>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Dung lượn SSD</nz-form-label>
+                  <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Storage">
+                    <nz-input-group nzSuffix="(GB)" nzSize="large">
+                      <input nz-input type="number" formControlName="storage" id="storage"
+                          autofocus />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+  
+              
+            </div>
           </nz-tab>
         </nz-tabset>
 
@@ -142,8 +160,8 @@
 
       <nz-card class="border-card">
         <h3><b>Cấu hình khác</b></h3>
-        <nz-radio-group formControlName="configType" (ngModelChange)="onChangeConfig($event)">
-          <label nz-radio [nzValue]="0" class="other-config">Cấu hình mặc định <b>(Khuyến nghị)</b></label>
+        <nz-radio-group formControlName="configType" (ngModelChange)="onChangeConfig($event)" style="margin-bottom: 15px;">
+          <label nz-radio [nzValue]="0" class="other-config" style="margin-right: 80px;">Cấu hình mặc định <b>(Khuyến nghị)</b></label>
           <label nz-radio [nzValue]="1" class="other-config">Cấu hình tùy chỉnh</label>
         </nz-radio-group>
 

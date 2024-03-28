@@ -47,6 +47,7 @@ export class UpgradeKafkaComponent implements OnInit {
   createDate: Date;
   expiryDate: Date;
   kafkaUpgradeDto: KafkaUpgradeReq = new KafkaUpgradeReq();
+  storage: number;
 
   constructor(
     private fb: FormBuilder,
@@ -82,6 +83,7 @@ export class UpgradeKafkaComponent implements OnInit {
             this.createDate = new Date(this.itemDetail.createdDate);
             this.setExpiryDate();
             this.updateDataForm();
+            this.storage = this.itemDetail.storage;
             // phát sự kiện để render lại 
             this.cdr.markForCheck();
           } else {
@@ -93,11 +95,11 @@ export class UpgradeKafkaComponent implements OnInit {
 
   initForm() {
     this.myform = this.fb.group({
-      vCpu: [null, [Validators.required]],
-      ram: [null, [Validators.required]],
-      storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
+      vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$")]],
+      ram: [null, [Validators.required, Validators.pattern("^[0-9]*$")]],
+      storage: [null, [Validators.required, Validators.min(1), Validators.max(1024), Validators.pattern("^[0-9]*$")]],
       broker: [3, [Validators.required]],
-      usageTime: [1, [Validators.required]]
+      usageTime: [1, [Validators.required, Validators.pattern("^[0-9]*$")]]
     });
   }
 
@@ -105,7 +107,9 @@ export class UpgradeKafkaComponent implements OnInit {
     this.myform.controls.vCpu.setValue(this.itemDetail.cpu);
     this.myform.controls.ram.setValue(this.itemDetail.ram);
     this.myform.controls.storage.setValue(this.itemDetail.storage);
-    this.myform.controls.storage.setValue(this.itemDetail.storage);
+    this.myform.controls.broker.disable();
+    // this.myform.controls.storage.setValidators([Validators.minLength(this.itemDetail.storage)]);
+
   }
 
   getListPackage() {

@@ -18,6 +18,10 @@ h3 {
     box-sizing: border-box;
 }
 
+.pack-item-disable {
+    pointer-events: none;
+}
+
 .pack-item {
     min-height: 180px;
     background-color: #ffffff;
@@ -26,6 +30,11 @@ h3 {
     border-radius: 4px;
     padding: 1px;
     width: 100%;
+    cursor: pointer;
+}
+
+.item-header-disable {
+    background-color: #F0F1F4 !important;
 }
 
 .item-header {
@@ -36,6 +45,10 @@ h3 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.item-name-disable {
+    color: #989BB3 !important;
 }
 
 .item-name {
