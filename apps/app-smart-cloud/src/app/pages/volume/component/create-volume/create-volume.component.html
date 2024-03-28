@@ -14,7 +14,7 @@
         <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volume/create">Tạo Volume</a>
+        <a routerLink="/app-smart-cloud/volume/create">Tạo mới Volume</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -37,7 +37,7 @@
         <!--                style="margin-right: 10px;"></span>-->
         <!--        </nz-col>-->
         <nz-col>
-          <div>Tạo Volume</div>
+          <div>Tạo mới Volume</div>
         </nz-col>
       </nz-row>
     </div>
@@ -121,6 +121,7 @@
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
+                      style="margin-top: 5px;"
                       nz-popover
                       [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
                       nzPopoverPlacement="bottom"></span>
@@ -156,7 +157,7 @@
               <tr>
                 <th>Dung lượng(GB)</th>
                 <th>IOPS</th>
-                <th>Giá theo tháng(VNĐ)</th>
+                <th>Giá theo tháng(VND)</th>
               </tr>
               </thead>
               <tbody>
@@ -226,7 +227,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" id="description" [maxLength]="255"
+              <textarea nz-input formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
@@ -236,8 +237,9 @@
           <nz-form-item>
             <nz-form-label nzFor="time">
               <div class="label">
-                <span>Thời gian sử dụng (Tháng)</span>
+                <span>Thời gian sử dụng </span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span> - Tháng</span>
                 <span nz-icon nzType="question-circle" style="margin-left: 5px;"
                       nzTheme="outline"
                       nz-popover

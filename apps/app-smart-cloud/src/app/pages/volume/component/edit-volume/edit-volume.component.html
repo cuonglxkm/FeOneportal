@@ -127,7 +127,7 @@
             <nz-form-label>
               <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
+                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount / 30 | number}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
                 </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
                   <b>Đơn giá: </b> 0 VND/GB/ngày

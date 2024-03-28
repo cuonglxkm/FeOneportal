@@ -245,7 +245,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.serviceInstanceId = this.volumeInfo?.id
     this.volumeEdit.newDescription = this.validateForm.controls.description.value
     this.volumeEdit.regionId = this.volumeInfo?.regionId;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value
+    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB
     this.volumeEdit.iops = this.iops
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.validateForm.controls.name.value
@@ -253,7 +253,7 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.customerId = this.tokenService.get()?.userId;
     this.volumeEdit.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');
-    const user = JSON.parse(userString);1
+    const user = JSON.parse(userString);
     this.volumeEdit.actorEmail = user.email;
     this.volumeEdit.userEmail = user.email;
     this.volumeEdit.serviceType = 2;
