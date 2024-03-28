@@ -63,46 +63,46 @@
       <nz-card [nzLoading]="isLoading" style="border-radius: 8px;">
         <span class="text-card-header">Thông tin Volume</span>
         <nz-descriptions [nzColumn]="2" style="margin-top: 20px;">
-          <nz-descriptions-item [nzTitle]="titleName">{{volumeInfo?.name}}</nz-descriptions-item>
-          <nz-descriptions-item [nzTitle]="titleType">{{volumeInfo?.volumeType}}</nz-descriptions-item>
-          <nz-descriptions-item [nzTitle]="titleStorage">{{volumeInfo?.sizeInGB}} GB</nz-descriptions-item>
-          <nz-descriptions-item [nzTitle]="titleIOPS">{{volumeInfo?.iops}}</nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleName"><b>{{volumeInfo?.name}}</b></nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleType"><b>{{volumeInfo?.volumeType}}</b></nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleStorage"><b>{{volumeInfo?.sizeInGB}} GB</b></nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{volumeInfo?.iops}}</b></nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"
-              style="color: #0074CC">{{ volumeStatus.get(volumeInfo.status)}}</span>
+              style="color: #0074CC"><b>{{ volumeStatus.get(volumeInfo.status)}}</b></span>
             <span *ngIf="volumeInfo.status === 'ERROR'"
-                  style="color: #FF3333">{{ volumeStatus.get(volumeInfo.status)}}</span>
+                  style="color: #FF3333"><b>{{ volumeStatus.get(volumeInfo.status)}}</b></span>
             <span *ngIf="volumeInfo.status === 'SUSPENDED'"
-                  style="color: #FF7C33">{{ volumeStatus.get(volumeInfo.status)}}</span>
+                  style="color: #FF7C33"><b>{{ volumeStatus.get(volumeInfo.status)}}</b></span>
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleAttachInstance">
-            <span *ngIf="listVMs.length > 0">{{listVMs}}</span>
-            <span *ngIf="listVMs.length <= 0">Không có máy ảo</span>
+            <span *ngIf="listVMs.length > 0"><b>{{listVMs}}</b></span>
+            <span *ngIf="listVMs.length <= 0"><b>Không có máy ảo</b></span>
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleVolumeType">
             <b>{{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
         </nz-descriptions>
-        <span class="text-label">Mô tả: {{ volumeInfo?.description }}</span>
+        <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
         <ng-template #titleName>
-          <span><b>Tên Volume:</b></span>
+          <span>Tên Volume:</span>
         </ng-template>
         <ng-template #titleType>
-          <span><b>Loại Volume:</b></span>
+          <span>Loại Volume:</span>
         </ng-template>
         <ng-template #titleStorage>
-          <span><b>Dung lượng:</b></span>
+          <span>Dung lượng:</span>
         </ng-template>
         <ng-template #titleIOPS>
-          <span><b>IOPS:</b></span>
+          <span>IOPS:</span>
         </ng-template>
         <ng-template #titleStatus>
-          <span><b>Trạng thái Volume:</b></span>
+          <span>Trạng thái Volume:</span>
         </ng-template>
         <ng-template #titleAttachInstance>
-          <span><b>Gán vào máy ảo:</b></span>
+          <span>Gán vào máy ảo:</span>
         </ng-template>
         <ng-template #titleVolumeType>
-          <span><b>Kiểu Volume:</b></span>
+          <span>Kiểu Volume:</span>
         </ng-template>
         <div style="margin-top: 15px;">
           <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
@@ -115,16 +115,16 @@
         <span class="text-card-header">Thông tin gia hạn</span>
         <nz-row nzGutter="24" style="margin-top: 20px;">
           <nz-col nzSpan="12">
-            <span><b>Ngày cấp dịch vụ:</b> {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
+            <span>Ngày cấp dịch vụ: {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
           </nz-col>
           <nz-col nzSpan="12">
-            <span><b>Ngày hết hạn: </b> {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+            <span>Ngày hết hạn:  {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
           </nz-col>
         </nz-row>
         <nz-form-item >
           <nz-form-label nzFor="time">
             <div class="label" style="margin-top: 15px;">
-              <span><b>Số tháng cần gia hạn thêm</b></span>
+              <span>Số tháng cần gia hạn thêm</span>
               <span style="color: rgba(252, 16, 16, 1); "> *</span>
             </div>
           </nz-form-label>
@@ -146,7 +146,7 @@
         </nz-form-item>
         <nz-row nzGutter="24">
           <nz-col nzSpan="12">
-            <span style="color: #F50000;"><b>Ngày hết hạn dự kiến:</b> {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
+            <span style="color: #F50000;">Ngày hết hạn dự kiến: {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
           </nz-col>
         </nz-row>
       </nz-card>

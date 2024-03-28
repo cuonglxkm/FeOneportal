@@ -127,7 +127,7 @@
         <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled class="text-label">Gắn nhiều máy ảo</label>
       </div>
     </div>
-    <span class="text-label" >Mô tả: {{ volumeInfo?.description }}</span>
+    <span class="text-label" >Mô tả: <b>{{ volumeInfo?.description }}</b></span>
     <nz-descriptions [nzColumn]="2" style="margin-top: 10px;" *ngIf="typeVPC == 0">
       <nz-descriptions-item [nzTitle]="titleCreateDate"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b>
       </nz-descriptions-item>
