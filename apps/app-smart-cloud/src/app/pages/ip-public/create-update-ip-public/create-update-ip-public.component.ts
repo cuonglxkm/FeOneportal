@@ -97,6 +97,10 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       }
     })
 
+    const dateExpired = new Date();
+    dateExpired.setMonth(dateExpired.getMonth() + 1);
+    dateExpired.setDate(dateExpired.getDate() - 1);
+    this.dateStringExpired = dateExpired;
   }
 
   onRegionChange(region: RegionModel) {
@@ -191,6 +195,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     let num = this.form.controls['numOfMonth'].value;
     const dateExpired = new Date();
     dateExpired.setMonth(dateExpired.getMonth() + Number(num));
+    dateExpired.setDate(dateExpired.getDate() - 1);
     this.dateStringExpired = dateExpired;
     if (ip != null && ip != undefined && ip != '' &&
       num != null && num != undefined) {

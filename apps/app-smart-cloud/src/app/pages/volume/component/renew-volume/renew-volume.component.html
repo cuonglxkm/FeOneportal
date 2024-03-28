@@ -115,16 +115,16 @@
         <span class="text-card-header">Thông tin gia hạn</span>
         <nz-row nzGutter="24" style="margin-top: 20px;">
           <nz-col nzSpan="12">
-            <span><b>Ngày cấp dịch vụ:</b> {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
+            <span>Ngày cấp dịch vụ: {{volumeInfo?.creationDate | date: 'dd/MM/yyyy'}} </span>
           </nz-col>
           <nz-col nzSpan="12">
-            <span><b>Ngày hết hạn: </b> {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+            <span>Ngày hết hạn:  {{volumeInfo?.expirationDate | date: 'dd/MM/yyyy'}}</span>
           </nz-col>
         </nz-row>
         <nz-form-item >
           <nz-form-label nzFor="time">
             <div class="label" style="margin-top: 15px;">
-              <span><b>Số tháng cần gia hạn thêm</b></span>
+              <span>Số tháng cần gia hạn thêm</span>
               <span style="color: rgba(252, 16, 16, 1); "> *</span>
             </div>
           </nz-form-label>
@@ -146,7 +146,7 @@
         </nz-form-item>
         <nz-row nzGutter="24">
           <nz-col nzSpan="12">
-            <span style="color: #F50000;"><b>Ngày hết hạn dự kiến:</b> {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
+            <span style="color: #F50000;">Ngày hết hạn dự kiến: {{ estimateExpireDate | date: 'dd/MM/yyyy'}} </span>
           </nz-col>
         </nz-row>
       </nz-card>
