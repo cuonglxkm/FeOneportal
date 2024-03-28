@@ -37,7 +37,7 @@ export class IpPublicComponent implements OnInit {
   isVisibleRemove: boolean = false;
   isVisibleDelete: boolean = false;
   listInstance: any[];
-  instanceSelected;
+  instanceSelected = '';
   loadingAtt = true;
   disableAtt = true;
   id: any;
@@ -129,6 +129,7 @@ export class IpPublicComponent implements OnInit {
     this.isVisibleMounted = false;
     this.isVisibleRemove = false;
     this.isVisibleDelete = false;
+    this.instanceSelected = '';
   }
 
   openIpMounted(event: any, id: any) {
@@ -155,6 +156,7 @@ export class IpPublicComponent implements OnInit {
   }
 
   openIpRemove() {
+    this.loading = true;
     const request = {
       id: this.id
     }
@@ -176,6 +178,7 @@ export class IpPublicComponent implements OnInit {
   }
 
   openIpDelete() {
+    this.loading = true;
     this.service.remove(this.id)
       .pipe(finalize(() => {this.getData(true);}))
       .subscribe(
@@ -194,13 +197,20 @@ export class IpPublicComponent implements OnInit {
   }
 
   Mounted() {
+    this.loading = true;
     // call api
     const request = {
       id: this.id,
       attachedVmId: this.instanceSelected,
     }
 
-    this.service.attachIpPublic(request).subscribe(
+    this.service.attachIpPublic(request)
+      .pipe(finalize(() => {
+        this.instanceSelected = '';
+        this.refreshParams();
+        this.getData(true);
+      }))
+      .subscribe(
       {
         next: post => {
           this.notification.success('Thành công', 'Gắn thành công Ip Public')
@@ -211,8 +221,6 @@ export class IpPublicComponent implements OnInit {
       }
     )
     this.isVisibleMounted = false;
-    this.refreshParams();
-    this.getData(true);
   }
 
   refreshParams() {
