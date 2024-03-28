@@ -8,6 +8,7 @@ export class KafkaCreateReq {
     cpu: number;
     storage: number;
     brokers: number;
+    usageTime: number;
     numPartitions: number;
     defaultReplicationFactor: number;
     minInsyncReplicas: number;
@@ -24,7 +25,8 @@ export class KafkaCreateReq {
         this.ram = 0;
         this.cpu = 0;
         this.storage = 0;
-        this.brokers = 0;
+        this.brokers = 3;
+        this.usageTime = 1;
         this.numPartitions = 0;
         this.defaultReplicationFactor = 0;
         this.minInsyncReplicas = 0;

@@ -148,6 +148,7 @@ export class KafkaService extends BaseService {
       'cpu': req.cpu,
       'storage': req.storage,
       'brokers': req.brokers, 
+      'usage_time': req.usageTime,
       'num_partitions': req.numPartitions, 
       'default_replication_factor': req.defaultReplicationFactor,
       'min_insync_replicas': req.minInsyncReplicas,
