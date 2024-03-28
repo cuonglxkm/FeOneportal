@@ -254,7 +254,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   }
 
   getCatalogOffer(productId) {
-    this.catalogService.getCatalogOffer(productId, this.regionId, null).subscribe(data => {
+    this.catalogService.getCatalogOffer(productId, this.regionId, null, null).subscribe(data => {
       console.log('data catalog', data)
       if(data) {
         this.checkIpv6 = false;
