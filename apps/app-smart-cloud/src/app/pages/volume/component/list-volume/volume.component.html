@@ -32,10 +32,10 @@
           <nz-col nzSpan="16">
             <nz-select [(ngModel)]="selectedValue"
                        nzSize="large"
-                       style="margin-right: 10px;"
+                       style="margin-right: 10px; width: 170px;"
                        (ngModelChange)="onChange($event)"
                        nzPlaceHolder="Tất cả trạng thái"
-                       nzTooltipTitle="Tìm kiếm theo trạng thi"
+                       nzTooltipTitle="Tìm kiếm theo trạng thái"
                        nzTooltipPlacement="bottom"
                        nz-tooltip>
               <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
@@ -89,7 +89,7 @@
             <th nzLeft>Tên Volume</th>
             <th nzBreakWord>Dung lượng (GB)</th>
             <th nzBreakWord>IOPS</th>
-            <th nzBreakWord>Trạng thái</th>
+            <th nzBreakWord>Trạng thái Volume</th>
             <th nzBreakWord>Trạng thái tác vụ</th>
             <th nzBreakWord>Máy ảo</th>
             <th nzBreakWord>Thao tác</th>
@@ -134,11 +134,14 @@
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
+                                          [multiple]="data.isMultiAttach"
+                                          [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkAttachVm()" />
                 <one-portal-detach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [isMultiple]="data.isMultiAttach"
+                                          [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkDetachVm()"/>
                 <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
                       nzTheme="outline" nz-popover
@@ -147,12 +150,13 @@
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
+                                          [volumeName]="data.name"
                                           (onOk)="handleOkDelete()"/>
                 <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
                       [nzDropdownMenu]="opMenu"></span>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="navigateToCreateScheduleBackup()">Tạo lịch backup</li>
+                    <li nz-menu-item (click)="navigateToCreateScheduleBackup(data.id)">Tạo lịch Backup</li>
                     <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                     <one-portal-update-volume [region]="region" [project]="project" [volume]="data" (onOk)="handleOkUpdate()"/>
                   </ul>
@@ -164,20 +168,28 @@
         </nz-table>
       </ng-container>
       <ng-container *ngSwitchDefault>
-        <nz-row nzJustify="center">
-          <img src="/assets/imgs/volume.png" width="450" height="450" alt="blank-security-group">
-        </nz-row>
-        <nz-row nzJustify="center">
-          <div class="text-title">
-            <h1 style="text-align: center; margin-top: 12px;">Volume <br> Lưu trữ ổ đĩa máy chủ</h1>
-          </div>
-        </nz-row>
-        <nz-row nzJustify="center">
-          <div class="text-subtitle" style="max-width: 885px; text-wrap: normal; text-align: center;">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</div>
-        </nz-row>
-        <nz-row nzJustify="center">
-          <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" [routerLink]="'/app-smart-cloud/volume/create'">Khởi tạo ngay</button>
-        </nz-row>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="/assets/imgs/volume.png" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">Volume<br>Lưu trữ ổ đĩa máy chủ</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều
+                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</span>
+            </nz-col>
+          </nz-row>
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            Khởi tạo Volume
+          </button>
+        </result>
       </ng-container>
     </ng-container>
   </nz-card>
@@ -293,7 +305,7 @@
                                             [project]="project"
                                             [volumeId]="i.id"
                                             (onOk)="handleOkAttachVm()" />
-                  <div *ngIf="i.isMultiAttach == true"></div>
+<!--                  <div *ngIf="i.isMultiAttach == true"></div> -->
                   <one-portal-detach-volume [region]="region"
                                             [project]="project"
                                             [volumeId]="i.id"
@@ -311,7 +323,7 @@
                         [nzDropdownMenu]="opMenu"></span>
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToCreateScheduleBackup()">Tạo lịch backup</li>
+                      <li nz-menu-item (click)="navigateToCreateScheduleBackup(i.id)">Tạo lịch backup</li>
                       <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                       <one-portal-update-volume [region]="region" [project]="project" [volume]="i" (onOk)="handleOkUpdate()"/>
                     </ul>
@@ -323,20 +335,28 @@
           </nz-table>
         </ng-container>
         <ng-container *ngSwitchDefault>
-          <nz-row nzJustify="center">
-            <img src="/assets/imgs/volume.png" width="450" height="450" alt="blank-security-group">
-          </nz-row>
-          <nz-row nzJustify="center">
-            <div class="text-title">
-              <h1 style="text-align: center; margin-top: 12px;">Volume <br> Lưu trữ ổ đĩa máy chủ</h1>
-            </div>
-          </nz-row>
-          <nz-row nzJustify="center">
-            <div class="text-subtitle" style="max-width: 885px; text-wrap: normal; text-align: center;">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</div>
-          </nz-row>
-          <nz-row nzJustify="center">
-            <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" [routerLink]="'/app-smart-cloud/volume/create'">Khởi tạo ngay</button>
-          </nz-row>
+          <result>
+            <nz-row>
+              <nz-col class="text-center" style="width: 100%">
+                <img src="/assets/imgs/volume.png" alt="" />
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-title" style="color: #0066b3">Volume<br>Lưu trữ ổ đĩa máy chủ</span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều
+                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</span>
+              </nz-col>
+            </nz-row>
+            <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+              Khởi tạo Volume
+            </button>
+          </result>
         </ng-container>
       </ng-container>
     </nz-card>

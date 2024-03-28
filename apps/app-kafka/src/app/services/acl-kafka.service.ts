@@ -1,19 +1,36 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { Observable } from 'rxjs';
 import { AclDeleteModel } from '../core/models/acl-delete.model';
 import { AclReqModel } from '../core/models/acl-req.model';
-import { BaseResponse } from '../core/models/base-response.model';
-import { Pagination } from '../core/models/pagination.model';
 import { AclModel } from '../core/models/acl.model';
+import { BaseResponse } from '../core/models/base-response.model';
+import { KafkaTopic } from '../core/models/kafka-topic.model';
+import { Pagination } from '../core/models/pagination.model';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AclKafkaService {
-  private baseUrl = 'http://localhost:16005/kafka-service';
+export class AclKafkaService extends BaseService {
+  private kafkaUrl = this.baseUrl + '/kafka-service';
+  private aclsUrl = this.kafkaUrl + this.ENDPOINT.acls;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+
+    super()
+  }
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'user_root_id': this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
 
   getListAcl(
     page: number,
@@ -22,7 +39,7 @@ export class AclKafkaService {
     serviceOrderCode: string,
     resourceType: string,
   ): Observable<BaseResponse<Pagination<AclModel[]>>> {
-    return this.http.get<BaseResponse<Pagination<AclModel[]>>>(`${this.baseUrl}/acls/search?page=${page}&limit=${limit}&key_search=${keySearch}&service_order_code=${serviceOrderCode}&resource_type=${resourceType}`);
+    return this.http.get<BaseResponse<Pagination<AclModel[]>>>(this.aclsUrl + `/search?page=${page}&limit=${limit}&key_search=${keySearch}&service_order_code=${serviceOrderCode}&resource_type=${resourceType}`);
   }
 
   createAcl(data: AclReqModel): Observable<BaseResponse<null>> {
@@ -38,7 +55,7 @@ export class AclKafkaService {
       host: data.host,
       is_edit: data.isEdit
     };
-    return this.http.post<BaseResponse<null>>(`${this.baseUrl}/acls`, json);
+    return this.http.post<BaseResponse<null>>(this.aclsUrl, json);
   }
 
   deleteAcl(data: AclDeleteModel): Observable<BaseResponse<null>> {
@@ -53,7 +70,16 @@ export class AclKafkaService {
         host: data.host
       }
     };
-    return this.http.delete<BaseResponse<null>>(`${this.baseUrl}/acls`, json);
+    return this.http.delete<BaseResponse<null>>(this.aclsUrl, json);
+  }
+
+  getListTopic(
+    page: number,
+    size: number,
+    keySearch: string,
+    serviceOrderCode: string
+  ): Observable<BaseResponse<Pagination<KafkaTopic[]>>> {
+    return this.http.get<BaseResponse<Pagination<KafkaTopic[]>>>(`${this.kafkaUrl}/topics?page=${page}&size=${size}&keySearch=${keySearch}&serviceOrderCode=${serviceOrderCode}`);
   }
 
 }

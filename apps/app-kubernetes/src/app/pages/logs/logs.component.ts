@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LogModel } from 'src/app/model/log.model';
 import { ClusterService } from 'src/app/services/cluster.service';
@@ -9,6 +9,8 @@ import { ClusterService } from 'src/app/services/cluster.service';
   styleUrls: ['./logs.component.css'],
 })
 export class LogsComponent implements OnInit {
+
+  @Input('serviceOrderCode') serviceOrderCode: string;
 
   userAction: string;
   operation: string;
@@ -22,15 +24,15 @@ export class LogsComponent implements OnInit {
   pageSize: number;
   total: number;
 
-  serviceOrderCode: string;
   listOfLogs: LogModel[];
   listOfResourceType = [
     {name: 'Cluster', value: 'cluster'},
+    {name: 'nhóm Worker', value: 'worker'}
   ];
+  listOfWorkerGroupName: any[];
 
   constructor(
-    private clusterService: ClusterService,
-    private activatedRouter: ActivatedRoute
+    private clusterService: ClusterService
   ) {
     this.userAction = '';
     this.operation = '';
@@ -42,9 +44,7 @@ export class LogsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRouter.params.subscribe(data => {
-      this.serviceOrderCode = data['id'];
-    });
+    this.getWorkerGroupOfCluster(this.serviceOrderCode);
   }
 
   searchLogs() {
@@ -65,8 +65,15 @@ export class LogsComponent implements OnInit {
           const log = new LogModel(item);
           this.listOfLogs.push(log);
         })
-        this.total = r.total;
+        this.total = r.data.total;
       }
+    });
+  }
+
+  getWorkerGroupOfCluster(serviceOrderCode: string) {
+    this.clusterService.getWorkerGroupOfCluster(serviceOrderCode)
+    .subscribe((r: any) => {
+      this.listOfWorkerGroupName = r.data;
     });
   }
 

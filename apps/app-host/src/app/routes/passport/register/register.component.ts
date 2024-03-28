@@ -7,9 +7,9 @@ import {_HttpClient} from '@delon/theme';
 import {MatchControl} from '@delon/util/form';
 import {NzSafeAny} from 'ng-zorro-antd/core/types';
 import {finalize} from 'rxjs';
-import {environment} from "../../../../../../app-smart-cloud/src/environments/environment";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {ReCaptchaV3Service} from "ng-recaptcha";
+import { environment } from '@env/environment';
 
 export interface UserCreateDto {
   email: string;

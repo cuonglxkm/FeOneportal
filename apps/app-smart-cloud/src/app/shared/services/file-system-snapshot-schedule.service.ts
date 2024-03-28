@@ -64,15 +64,26 @@ export class FileSystemSnapshotScheduleService extends BaseService {
         `/backups/schedules/${id}?customerId=${customerId}`, {headers: this.getHeaders()})
   }
 
-  action(formAction: FormAction) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules/action',
-        Object.assign(formAction), {headers: this.getHeaders()})
+
+  delete(customerId:number, scheduleId:number) {
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions +
+        `/file-storage/schedulesharesnapshot`, 
+          {
+            headers: this.getHeaders(),
+            body: JSON.stringify({customerId, scheduleId})
+          }
+      ).pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
   }
 
-  delete(customerId: number, id: number) {
-    return this.http.delete<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customer=${customerId}`, {headers: this.getHeaders()})
-  }
 
   create(formCreate: FormCreateFileSystemSsSchedule) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/schedulesharesnapshot',
@@ -84,10 +95,4 @@ export class FileSystemSnapshotScheduleService extends BaseService {
          Object.assign(formEdit), {headers: this.getHeaders()})
   }
 
-  getCapacityBackup(regionId: number, projectId: number) {
-    return this.http.get<CapacityBackupSchedule[]>(this.baseUrl +
-        this.ENDPOINT.provisions +
-        `/backups/capacity?customerId=${this.tokenService.get()?.userId}&regionId=${regionId}&projectId=${projectId}`,
-        {headers: this.getHeaders()})
-  }
 }

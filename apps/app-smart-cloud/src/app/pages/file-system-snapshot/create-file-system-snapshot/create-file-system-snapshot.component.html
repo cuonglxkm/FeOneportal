@@ -35,26 +35,30 @@
 
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="18" class="gutter-row">
-    <nz-card>
+    <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông tin lịch Snapshot</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
+          <nz-form-control nzErrorTip="File System không đuợc để trống!">
           <nz-form-label nzFor="name" nzRequired>Tên File System</nz-form-label>
           <nz-select
             nzShowSearch
             nzAllowClear
             nzPlaceHolder="Chọn File System"
             formControlName="nameFileSystem"
+            (ngModelChange)="updateSelectedFileSystems($event)"
           >
             <nz-option
               *ngFor="let data of response?.records"
               [nzLabel]="data.name"
-              [nzValue]="data.name"
+              [nzValue]="data.id"
             ></nz-option>
           </nz-select>
+        </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label nzFor="name" nzRequired>Tên Snapshot</nz-form-label>
+          <nz-form-control [nzErrorTip]="nameErrorTpl">
+          <nz-form-label nzFor="name" nzRequired >Tên Snapshot</nz-form-label>
           <input
             nz-input
             type="text"
@@ -62,24 +66,30 @@
             placeholder="Nhập tên Snapshot"
             formControlName="nameSnapshot"
           />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên lịch snapshot chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+          </ng-template>
+        </nz-form-control>
         </nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24">Mô tả</nz-form-label>
-        <textarea placeholder="Nhập mô tả" rows="4" nz-input></textarea>
+        <textarea formControlName="description" placeholder="Nhập mô tả" rows="4" nz-input></textarea>
       </form>
     </nz-card>
   </div>
   <div nz-col [nzSpan]="6" class="gutter-row">
-    <nz-card>
+    <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông số cấu hình</h2>
       <div style="margin-bottom: 12px">
         <h3 class="custom-subtitle">Tên File System</h3>
-        <span>{{ form.value.nameFileSystem }}</span>
+        <span>{{ selectedFileSystemName }}</span>
       </div>
       <div style="margin-bottom: 20px">
         <h3 class="custom-subtitle">Tên Snapshot</h3>
         <span>{{ form.value.nameSnapshot }}</span>
       </div>
       <button
+        (click)="handleCreate()"
         nz-button
         nzType="primary"
         style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"

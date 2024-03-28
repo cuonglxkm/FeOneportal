@@ -37,15 +37,16 @@ export class StartupService {
   }
 
   load(): Observable<void> {
+
     const defaultLang = this.i18n.defaultLang;
     const baseUrl = environment['baseUrl'];
 
     return zip(
       this.i18n.loadLangData(defaultLang),
       this.httpClient.get('assets/tmp/app-data.json'),
-      localStorage.getItem('_token')
-        ? this.httpClient.get(baseUrl + '/provisions/object-storage/userinfo')
-        : of(null)
+      // localStorage.getItem('_token')
+      //   ? this.httpClient.get(baseUrl + '/provisions/object-storage/userinfo')
+      //   : of(null)
     ).pipe(
       catchError((res) => {
         console.warn(`StartupService.load: Network request failed`, res);
@@ -53,10 +54,9 @@ export class StartupService {
         return [];
       }),
       map(
-        ([langData, appData, checkData]: [
+        ([langData, appData]: [
           Record<string, string>,
           NzSafeAny,
-          any
         ]) => {
           // setting language data
           this.i18n.use(defaultLang, langData);
@@ -71,41 +71,41 @@ export class StartupService {
           this.aclService.setFull(true);
 
           this.menuService.add(appData.menu);
-          if (checkData) {
-            let json = {
-              key: 'Object Storage',
-              text: 'Object Storage',
-              icon: 'anticon-profile',
-              children: [
-                {
-                  text: 'Bucket',
-                  link: '/app-smart-cloud/object-storage/bucket',
-                },
-                {
-                  text: 'Sub User',
-                  link: '/app-smart-cloud/object-storage/sub-user/list',
-                },
-                {
-                  text: 'S3 Key',
-                  link: '/app-smart-cloud/object-storage/s3-key',
-                },
-                {
-                  text: 'Thống kê',
-                  link: '/app-smart-cloud/object-storage/dashboard',
-                },
-              ],
-            };
-            this.menuService.setItem('Object Storage', json);
-          } else {
-            let json = {
-              key: 'Object Storage',
-              text: 'Object Storage',
-              icon: 'anticon-profile',
-              link: '/app-smart-cloud/object-storage',
-            };
-            this.menuService.setItem('Object Storage', json);
-          }
-          this.menuService.resume();
+          // if (checkData) {
+          //   let json = {
+          //     key: 'Object Storage',
+          //     text: 'Object Storage',
+          //     icon: 'anticon-profile',
+          //     children: [
+          //       {
+          //         text: 'Bucket',
+          //         link: '/app-smart-cloud/object-storage/bucket',
+          //       },
+          //       {
+          //         text: 'Sub User',
+          //         link: '/app-smart-cloud/object-storage/sub-user/list',
+          //       },
+          //       {
+          //         text: 'S3 Key',
+          //         link: '/app-smart-cloud/object-storage/s3-key',
+          //       },
+          //       {
+          //         text: 'Thống kê',
+          //         link: '/app-smart-cloud/object-storage/dashboard',
+          //       },
+          //     ],
+          //   };
+          //   this.menuService.setItem('Object Storage', json);
+          // } else {
+          //   let json = {
+          //     key: 'Object Storage',
+          //     text: 'Object Storage',
+          //     icon: 'anticon-profile',
+          //     link: '/app-smart-cloud/object-storage',
+          //   };
+          //   this.menuService.setItem('Object Storage', json);
+          // }
+          // this.menuService.resume();
 
           this.titleService.default = '';
           this.titleService.suffix = appData.app.name;

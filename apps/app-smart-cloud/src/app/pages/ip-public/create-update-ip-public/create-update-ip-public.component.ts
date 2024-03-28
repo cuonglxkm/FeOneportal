@@ -79,17 +79,25 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           this.listInstance = data.records;
         }
       );
-    this.getCatalogOffer(101);
+
+    this.instancService.getDetailProductByUniqueName('ipv6').subscribe(data => {
+      if (data != undefined && data.length > 0) {
+        let index = data.findIndex(item => item.name == 'IPv6');
+        if (index != -1) {
+          this.getCatalogOffer(data[index].id);
+        } else {
+          this.checkIpv6 = false;
+        }
+      } else {
+        this.checkIpv6 = false;
+      }
+    })
+
   }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/ip-public']);
-    // if (this.regionId === 3 || this.regionId === 5) {
-    //   this.checkIpv6 = false;
-    // } else {
-    //   this.checkIpv6 = null;
-    // }
   }
 
   projectChange(project: ProjectModel) {
@@ -226,8 +234,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         .subscribe(
           data => {
             this.total = data;
-            this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
-            this.totalPayment = this.total.data.totalPayment.amount.toLocaleString()
+            this.totalAmount = Math.round(this.total.data.totalAmount.amount);
+            this.totalPayment = Math.round(this.total.data.totalPayment.amount)
           }
         );
     } else {

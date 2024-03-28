@@ -7,12 +7,15 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/volumes'">
-          Volume
-        </a></nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Gia hạn Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
 
   </ng-template>
@@ -66,7 +69,7 @@
           <nz-descriptions-item [nzTitle]="titleIOPS">{{volumeInfo?.iops}}</nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"
-              style="color: #6abe39">{{ volumeStatus.get(volumeInfo.status)}}</span>
+              style="color: #0074CC">{{ volumeStatus.get(volumeInfo.status)}}</span>
             <span *ngIf="volumeInfo.status === 'ERROR'"
                   style="color: #FF3333">{{ volumeStatus.get(volumeInfo.status)}}</span>
             <span *ngIf="volumeInfo.status === 'SUSPENDED'"

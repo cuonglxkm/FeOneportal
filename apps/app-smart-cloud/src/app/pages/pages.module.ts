@@ -57,9 +57,6 @@ import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.com
 import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
 import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
-import { PopupDeleteSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-delete-snapshot-volume.component';
-import { PopupEditSnapshotVolumeComponent } from './snapshot-volume/popup-snapshot/popup-edit-snapshot-volume.component';
-
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBackupVolumeComponent } from './volume/component/backup-volume/create-backup-volume/create-backup-volume.component';
 import { DetailBackupVolumeComponent } from './volume/component/backup-volume/detail-backup-volume/detail-backup-volume.component';
@@ -167,7 +164,7 @@ import { CreateWanComponent } from './wan/create/create-wan.component';
 import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
 import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
-import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
 import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
 import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
@@ -190,7 +187,12 @@ import { DashboardObjectStorageComponent } from './dashboard-object-storage/dash
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
 import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
-
+import { TreeFolderComponent } from './bucket/bucket-detail/share/tree-folder.component';
+import { SafePipe } from '../../../../../libs/common-utils/src';
+import { ChartModule } from '@syncfusion/ej2-angular-charts';
+import { StopScheduleComponent } from './schedule-backup/action/stop/stop-schedule.component';
+import { RestoreScheduleComponent } from './schedule-backup/action/restore/restore-schedule.component';
+import { ReplayScheduleComponent } from './schedule-backup/action/replay/replay-schedule.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -233,8 +235,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListBackupVmComponent,
     RestoreBackupVmComponent,
     DeleteBackupVmComponent,
-    PopupDeleteSnapshotVolumeComponent,
-    PopupEditSnapshotVolumeComponent,
     ActionHistoryComponent,
     DetailBackupVmComponent,
     CreateBackupVmComponent,
@@ -346,7 +346,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AttachWanComponent,
     CreateFileSystemComponent,
     DetailFileSystemComponent,
-    ExtendFileSystemComponent,
+    ResizeFileSystemComponent,
     DeleteFileSystemComponent,
     EditFileSystemComponent,
     ListAccessRuleComponent,
@@ -369,6 +369,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ChartComponent,
     IsPermissionPipe,
     S3KeyComponent,
+    TreeFolderComponent,
+    StopScheduleComponent,
+    RestoreScheduleComponent,
+    ReplayScheduleComponent,
   ],
   imports: [
     CommonModule,
@@ -398,6 +402,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     // Starting Angular 13
     AngJsoneditorModule,
     ClipboardModule,
+    SafePipe,
+    ChartModule,
   ],
 })
 export class PagesModule {}

@@ -61,7 +61,7 @@
           <th>Trạng thái tác vụ</th>
           <th>Tên File System</th>
           <th>Ngày cấp dịch vụ</th>
-          <th>Thao tác</th>
+          <th nzAlign='center'>Thao tác</th>
         </tr>
         </thead>
         <tbody>
@@ -75,12 +75,12 @@
           <td>file-system-01</td>
           <td>20/03/2024</td>
           <td>
-            <div>
-              <one-portal-edit-file-system-snapshot [region]="region"
+              <div class="d-flex gap-2 justify-content-center">
+                <one-portal-edit-file-system-snapshot [region]="region"
               [project]="project" />
               <one-portal-delete-file-system-snapshot [region]="region"
               [project]="project" />
-            </div>
+              </div>
           </td>
         </tr>
         </tbody>

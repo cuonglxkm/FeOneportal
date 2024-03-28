@@ -18,6 +18,7 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { NotificationService } from '../../../../../../../libs/common-utils/src';
 
 class SearchParam {
   status: string = '';
@@ -41,8 +42,8 @@ export class InstancesComponent implements OnInit {
   filterStatus = [
     { text: 'Tất cả trạng thái', value: '' },
     { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Khởi tạo', value: 'KHOITAO' },
-    { text: 'Tạm ngưng', value: 'TAMNGUNG' },
+    { text: 'Đang hoạt động', value: 'KHOITAO' },
+    { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
   ];
 
   listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
@@ -67,7 +68,8 @@ export class InstancesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit() {
@@ -75,6 +77,48 @@ export class InstancesComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    
+    this.notificationService.connection.on('UpdateInstance', (data) => {
+      if (data) {
+        let instanceId = data.serviceId;
+        let actionType = data.actionType;
+
+        if (!instanceId) {
+          return;
+        }
+        var foundIndex = this.dataList.findIndex(x => x.id == instanceId);
+        if (foundIndex > -1) {
+          switch (actionType)
+          {
+            case "CREATE":
+              var record = this.dataList[foundIndex];
+
+              record.status = data.status;
+              record.taskState = data.taskState;
+              record.ipPrivate = data.ipPrivate;
+              record.ipPublic = data.ipPublic;
+    
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
+
+            case "SHUTOFF":
+            case "START":
+              var record = this.dataList[foundIndex];
+
+              record.taskState = data.taskState;
+    
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
+          }
+        }
+      }
+    });
   }
 
   selectedChecked(e: any): void {
@@ -254,16 +298,16 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Tắt máy ảo thành công');
+          this.notification.success('', 'Yêu cầu tắt máy ảo đã được gửi đi');
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Tắt máy ảo không thành công');
+          this.notification.error('', 'Yêu cầu tắt máy ảo không thất bại');
         }
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
+        this.notification.error(e.statusText, 'Yêu cầu tắt máy ảo không thực hiện được');
       },
     });
   }
@@ -285,16 +329,16 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Bật máy ảo thành công');
+          this.notification.success('', 'Yêu cầu bật máy ảo đã được gửi đi');
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          this.notification.error('', 'Bật máy ảo không thành công');
+          this.notification.error('', 'Yêu cầu bật máy ảo thất bại');
         }
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Bật máy ảo không thành công');
+        this.notification.error(e.statusText, 'Yêu cầu bật máy ảo thất bại');
       },
     });
   }

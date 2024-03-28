@@ -15,6 +15,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -35,6 +36,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   dateStart: string;
   descSchedule: string = '';
   snapshotMode: string = 'Theo tuần';
+  numberOfweek: string = '1 tuần'
   numberArchivedCopies = 1;
 
   time: Date = new Date();
@@ -62,6 +64,9 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
   ngOnInit(): void {
     const now = new Date();
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
     this.scheduleStartTime =
       now.getHours().toString() +
       ':' +

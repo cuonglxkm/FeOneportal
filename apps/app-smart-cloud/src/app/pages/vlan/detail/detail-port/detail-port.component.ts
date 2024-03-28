@@ -61,19 +61,19 @@ export class DetailPortComponent implements OnInit{
   }
 
   handleOkAttach() {
-    this.getPortByNetwork(this.idNetwork)
+    this.getVlanByNetworkId()
   }
 
   handleOkDetach() {
-    this.getPortByNetwork(this.idNetwork)
+    this.getVlanByNetworkId()
   }
 
   handleOkDeletePort() {
-    this.getPortByNetwork(this.idNetwork)
+    this.getVlanByNetworkId()
   }
 
   handleOkCreatePort() {
-    this.getPortByNetwork(this.idNetwork)
+    this.getVlanByNetworkId()
   }
 
   getVlanByNetworkId() {

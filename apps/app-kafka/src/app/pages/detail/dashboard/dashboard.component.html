@@ -1,4 +1,8 @@
 <div nz-row nzGutter="16" class="general" *ngIf="isHealth !== null">
+    <div class="title-cluster">
+        Trạng thái cluster
+    </div>
+    <nz-divider></nz-divider>
     <ng-container *ngIf="isHealth === clusterHealth; else otherHealth">
         <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-check p-md">
@@ -62,7 +66,7 @@
     <div nz-col nzXs="24" nzMd="24">
         <nz-card [nzTitle]="healthCheck" [nzBordered]="false">
             <ng-template #healthCheck>
-                Health check
+                <span class="card-title">Health check</span>
             </ng-template>
             <div id="health-chart">
                 <apx-chart *ngIf="chartHealthCheck && chartHealthCheck.series" [series]="chartHealthCheck.series"
@@ -77,26 +81,13 @@
 </div>
 
 <div nz-row nzGutter="16">
-    <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="producerTitle" [nzBordered]="false">
-            <ng-template #producerTitle>
-                <span>Giám sát Producers</span>
-            </ng-template>
-            <div id="chart-producers">
-                <apx-chart *ngIf="chartProducers && chartProducers.series" [series]="chartProducers.series"
-                    [chart]="chartProducers.chart" [xaxis]="chartProducers.xaxis" [yaxis]="chartProducers.yaxis"
-                    [dataLabels]="chartProducers.dataLabels" [fill]="chartProducers.fill" [grid]="chartProducers.grid"
-                    [stroke]="chartProducers.stroke" [tooltip]="chartProducers.tooltip">
-                </apx-chart>
-            </div>
-        </nz-card>
-    </div>
-    <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="consumerTitle" [nzBordered]="false">
-            <ng-template #consumerTitle>
-                <span>Giám sát Consumers</span>
-                <div style="float: right">
-                    <button nz-button nzType="default" style="margin-right: 15px;" (click)="getInfo4Chart()">
+    <div nz-col nzXs="24" nzMd="24">
+        <nz-card [nzTitle]="chartStat" [nzBordered]="false">
+            <ng-template #chartStat>
+                <span class="card-title">Biểu đồ giám sát</span>
+                <div class="stats-chart">
+                    <button id="btn-refresh" nz-button nzType="default" style="margin-right: 15px;" (click)="getInfo4Chart()">
+                        <span nz-icon nzType="reload" nzTheme="outline"></span>
                         Refresh
                     </button>
                     <nz-select id="range-time" [(ngModel)]="previousTimeMins" (ngModelChange)="onChangeTime()">
@@ -104,48 +95,58 @@
                     </nz-select>
                 </div>
             </ng-template>
-            <div id="chart-consumers">
-                <apx-chart *ngIf="chartConsumers && chartConsumers.series" [series]="chartConsumers.series"
-                    [chart]="chartConsumers.chart" [xaxis]="chartConsumers.xaxis" [yaxis]="chartConsumers.yaxis"
-                    [dataLabels]="chartConsumers.dataLabels" [fill]="chartConsumers.fill" [grid]="chartConsumers.grid"
-                    [stroke]="chartConsumers.stroke" [tooltip]="chartConsumers.tooltip">
-                </apx-chart>
-            </div>
-        </nz-card>
-    </div>
-</div>
-
-<div nz-row nzGutter="16">
-    <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="messageTitle" [nzBordered]="false">
-            <ng-template #messageTitle>
-                <span>Giám sát Messages</span>
-            </ng-template>
-            <div id="chart-message">
-                <apx-chart *ngIf="chartMessage && chartMessage.series" [series]="chartMessage.series"
-                    [chart]="chartMessage.chart" [xaxis]="chartMessage.xaxis" [yaxis]="chartMessage.yaxis"
-                    [dataLabels]="chartMessage.dataLabels" [fill]="chartMessage.fill" [grid]="chartMessage.grid"
-                    [stroke]="chartMessage.stroke" [tooltip]="chartMessage.tooltip">
-                </apx-chart>
-            </div>
-        </nz-card>
-    </div>
-    <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="storageTitle" [nzBordered]="false">
-            <ng-template #storageTitle>
-                <span>Giám sát Storage</span>
-                <div style="float: right;">
-                    <nz-select id="cbx-unit" [(ngModel)]="unitStorage" (ngModelChange)="onChangeUnitStorage()">
-                        <nz-option *ngFor="let unit of listUnit" [nzLabel]="unit.label" [nzValue]="unit.value"></nz-option>
-                    </nz-select>
+            <!-- Giám sát Producers -->
+            <div nz-row style="margin-bottom: 30px;">
+                <div nz-col nzXs="24" nzMd="11">
+                    <div id="chart-producers">
+                        <apx-chart *ngIf="chartProducers && chartProducers.series" [series]="chartProducers.series"
+                            [chart]="chartProducers.chart" [xaxis]="chartProducers.xaxis" [yaxis]="chartProducers.yaxis"
+                            [dataLabels]="chartProducers.dataLabels" [fill]="chartProducers.fill" [grid]="chartProducers.grid"
+                            [stroke]="chartProducers.stroke" [title]="chartProducers.title" [tooltip]="chartProducers.tooltip">
+                        </apx-chart>
+                    </div>
                 </div>
-            </ng-template>
-            <div id="chart-storage">
-                <apx-chart *ngIf="chartStorage && chartStorage.series" [series]="chartStorage.series"
-                    [chart]="chartStorage.chart" [xaxis]="chartStorage.xaxis" [yaxis]="chartStorage.yaxis"
-                    [dataLabels]="chartStorage.dataLabels" [fill]="chartStorage.fill" [grid]="chartStorage.grid"
-                    [stroke]="chartStorage.stroke" [tooltip]="chartStorage.tooltip">
-                </apx-chart>
+                <div nz-col nzXs="0" nzMd="2"></div>
+                <!-- Giám sát Consumers -->
+                <div nz-col nzXs="24" nzMd="11">
+                    <div id="chart-consumers">
+                        <apx-chart *ngIf="chartConsumers && chartConsumers.series" [series]="chartConsumers.series"
+                            [chart]="chartConsumers.chart" [xaxis]="chartConsumers.xaxis" [yaxis]="chartConsumers.yaxis"
+                            [dataLabels]="chartConsumers.dataLabels" [fill]="chartConsumers.fill" [grid]="chartConsumers.grid"
+                            [stroke]="chartConsumers.stroke" [title]="chartConsumers.title" [tooltip]="chartConsumers.tooltip">
+                        </apx-chart>
+                    </div>
+                </div>
+            </div>
+            <div nz-row>
+                <!-- Giám sát Messages -->
+                <div nz-col nzXs="24" nzMd="11">
+                    <div style="min-height: 32px; width: 100%;"></div>
+                    <div id="chart-message">
+                        <apx-chart *ngIf="chartMessage && chartMessage.series" [series]="chartMessage.series"
+                            [chart]="chartMessage.chart" [xaxis]="chartMessage.xaxis" [yaxis]="chartMessage.yaxis"
+                            [dataLabels]="chartMessage.dataLabels" [fill]="chartMessage.fill" [grid]="chartMessage.grid"
+                            [stroke]="chartMessage.stroke" [title]="chartMessage.title" [tooltip]="chartMessage.tooltip">
+                        </apx-chart>
+                    </div>
+                </div>
+                <div nz-col nzXs="0" nzMd="2"></div>
+                <!-- Giám sát Storage -->
+                <div nz-col nzXs="24" nzMd="11">
+                    <div style="min-height: 32px; text-align: right;">
+                        <label class="lbl-unit">Đơn vị Storage: </label>
+                        <nz-select id="cbx-unit" [(ngModel)]="unitStorage" (ngModelChange)="onChangeUnitStorage()">
+                            <nz-option *ngFor="let unit of listUnit" [nzLabel]="unit.label" [nzValue]="unit.value"></nz-option>
+                        </nz-select>
+                    </div>
+                    <div id="chart-storage">
+                        <apx-chart *ngIf="chartStorage && chartStorage.series" [series]="chartStorage.series"
+                            [chart]="chartStorage.chart" [xaxis]="chartStorage.xaxis" [yaxis]="chartStorage.yaxis"
+                            [dataLabels]="chartStorage.dataLabels" [fill]="chartStorage.fill" [grid]="chartStorage.grid"
+                            [stroke]="chartStorage.stroke" [title]="chartStorage.title" [tooltip]="chartStorage.tooltip">
+                        </apx-chart>
+                    </div>
+                </div>
             </div>
         </nz-card>
     </div>

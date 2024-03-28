@@ -22,7 +22,10 @@ import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor';
 import { ClipboardModule } from 'ngx-clipboard';
 import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 import { LogsComponent } from './logs/logs.component';
-import { DetailClusterComponent, RowDetailData } from './detail-cluster/detail-cluster.component';
+import {
+  DetailClusterComponent,
+  RowDetailData,
+} from './detail-cluster/detail-cluster.component';
 import { ListClusterComponent } from './list-cluster/list-cluster.component';
 import { Status2ColorPipe } from '../pipes/status2color.pipe';
 import { Network2Label } from '../pipes/network-type.pipe';
@@ -31,6 +34,7 @@ import { CalculateDate } from '../pipes/calculate-date.pipe';
 import { ProgressPipe } from '../pipes/progress.pipe';
 import { CheckUpgradeVersionPipe } from '../pipes/check-version.pipe';
 import { ClusterComponent } from './cluster/cluster.component';
+import { OverallComponent } from './overall/overall.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -49,6 +53,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ProgressPipe,
     CheckUpgradeVersionPipe,
     LogsComponent,
+    OverallComponent,
 
   ],
   imports: [

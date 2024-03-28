@@ -210,12 +210,14 @@ export class ClusterComponent implements OnInit {
     this.formSearchNetwork.pageNumber = 0;
     this.formSearchNetwork.region = this.regionId;
 
-    this.vlanService.getVlanNetworks(this.formSearchNetwork)
-    .subscribe((r: any) => {
-      if (r && r.records) {
-        this.listOfVPCNetworks = r.records;
-      }
-    });
+    if (projectId && this.regionId) {
+      this.vlanService.getVlanNetworks(this.formSearchNetwork)
+      .subscribe((r: any) => {
+        if (r && r.records) {
+          this.listOfVPCNetworks = r.records;
+        }
+      });
+    }
   }
 
   formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
@@ -253,7 +255,7 @@ export class ClusterComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.projectInfraId = project.id;
-
+    console.log(this.projectInfraId);
     this.getVlanNetwork(this.projectInfraId);
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
 

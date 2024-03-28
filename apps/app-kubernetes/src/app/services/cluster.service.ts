@@ -86,6 +86,10 @@ export class ClusterService extends BaseService {
     {headers: this.getHeaders()});
   }
 
+  getWorkerGroupOfCluster(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${serviceOrderCode}/workers-name`, {headers: this.getHeaders()});
+  }
+
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {
     return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/upgrade-version`, data, { headers: this.getHeaders() });
   }

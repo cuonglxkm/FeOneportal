@@ -1,14 +1,24 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách đơn hàng'">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Danh sách đơn hàng'"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item> <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/order/list']">Đơn hàng</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/order/list']"
+          >Đơn hàng</a
+        ></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)" (userChanged)="projectChanged($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -28,52 +38,108 @@
         <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']" style="margin-left: 10px;" [(ngModel)]="date"
                          (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
         <div style="width: 300px; margin-left: 10px;">
-          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton" >
-            <input style="width: 300px" [(ngModel)]="searchName" (input)="onInputChange($event.target['value'])"
-                   type="text" nz-input
-                   placeholder="Tìm kiếm" />
-          </nz-input-group>
-          <ng-template #suffixButton>
-            <button style="height: 32px;" nz-button nzType="primary" nzSearch (click)="searchSnapshotScheduleList()">
-              <span nz-icon nzType="search" nzTheme="outline"></span>
-              Search
-            </button>
-          </ng-template>
+            <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
+              <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
+                     type="text" nz-input
+                     placeholder="Tìm kiếm mã đơn hàng"/>
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+            </ng-template>
         </div>
-      </nz-row>
-    </div>
+    </nz-row>
+  </div>
 
-    <nz-table
-      style="margin-top: 2%;"
-      class="table-data"
-      #rowSelectionTable
-      [nzData]="listOfData"
-      nzShowSizeChanger
-      [nzFrontPagination]="false"
-      [nzTotal]="totalData"
-      [nzPageSize]="pageSize"
-      [nzPageIndex]="currentPage"
-      [nzLoading]="isLoadingEntities"
-      (nzQueryParams)="onQueryParamsChange($event)"
-    >
-      <thead>
+  <nz-table
+    style="margin-top: 2%"
+    class="table-data"
+    #rowSelectionTable
+    [nzData]="listOfData"
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzTotal]="totalData"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="currentPage"
+    [nzLoading]="isLoadingEntities"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
+    <thead>
       <tr>
         <th>STT</th>
         <th>Mã đơn hàng</th>
         <th>Dịch vụ</th>
         <th>Thời gian đặt hàng</th>
-        <th>Trạng thái cài đặt</th>
+        <th>Trạng thái</th>
       </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of rowSelectionTable.data; let i  = index">
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data; let i = index">
         <td>{{ i + 1 }}</td>
-        <td><a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a></td>
+        <td>
+          <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
+        </td>
         <td>{{ data.note }}</td>
-        <td>{{ data.orderDate | date: 'dd/MM/YYYY' }}</td>
-        <td [ngStyle]="{'color': data.statusCode === 'Cancelled' ? 'red' : (data.statusCode === 'Completed' ? 'green' : '')}">{{ data.statusCode === 'Cancelled' ? 'Thất bại' : (data.statusCode === 'Completed' ? 'Thành công' : data.statusCode === 'Paid' ? 'Đã thanh toán' : 'Mới tạo') }}</td>
+        <td>{{ data.orderDate | date : 'HH:mm:ss dd/MM/YYYY' }}</td>
+        <td
+          [ngStyle]="{
+            color:
+              data.statusCode === 'Cancelled'
+                ? 'red'
+                : data.statusCode === 'Completed'
+                ? 'green'
+                : data.statusCode === 'New'
+                ? '#CFEA29EB'
+                : data.statusCode === 'Paid'
+                ? '#C4621A'
+                : ''
+          }"
+        >   
+        <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()" *ngIf="data.statusCode === 'Cancelled'" nz-icon nzType="warning" nzTheme="outline"></span>
+        <span [innerHTML]="
+          data.statusCode === 'Cancelled'
+            ? 'Gặp sự cố'
+            : data.statusCode === 'Completed'
+            ? 'Đã cài đặt thành công'
+            : data.statusCode === 'Paid'
+            ? 'Đã thanh toán'
+            : data.statusCode === 'New'
+            ? 'Mới tạo'
+            : ''
+        "></span>
+        </td>
       </tr>
-      </tbody>
-    </nz-table>
-
-  </nz-card>
+    </tbody>
+  </nz-table>
+</nz-card>
+<nz-modal [(nzVisible)]="isVisibleError" [nzFooter]="null" [nzTitle]="null" (nzOnCancel)="handleCancel()"        >
+  <ng-container *nzModalContent>
+    <div class="d-flex justify-content-center mt-3">
+      <img src="assets/imgs/warning.svg" alt="" />
+    </div>
+    <div class="mt-3 text-center">
+      <div class="title">
+        Thông báo
+      </div>
+      <div class="description">
+        Quý khách có thể liên hệ trực tiếp qua hotline <span style="color: red">19008198</span> hoặc gửi email đến địa chỉ <span style="color: red">cskh@vnpt.vn</span>. Nhân viên hỗ trợ sẽ liên lạc với bạn trong thời gian sớm nhất
+      </div>
+      <button
+      nz-button
+      nzType="primary"
+      style="
+        border: none;
+        width: 100%;
+        background-color: red;
+        margin-top: 15px
+      "
+      nzSize="large"
+      (click)="handleNavigateToContact()"
+    >
+      <span style="
+      color: #fff;
+    ">Liên hệ ngay</span>
+    </button>
+    </div>
+    
+  </ng-container>
+</nz-modal>
