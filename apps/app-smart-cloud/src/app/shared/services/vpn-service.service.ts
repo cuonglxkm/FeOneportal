@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { FormSearchVpnService } from '../models/vpn-service';
+import { FormSearchVpnService, VPNServiceDetail } from '../models/vpn-service';
 import { BaseService } from './base.service';
 
 @Injectable({
@@ -51,5 +51,17 @@ export class VpnServiceService extends BaseService {
     })
   }
 
-
+  getVpnServiceById(id: number, vpcid: number, region: number){
+    return this.http.get<VPNServiceDetail>(this.baseUrl + this.ENDPOINT.provisions +
+      `/vpn-sitetosite/vpnservice/${id}?projectId=${vpcid}&regionId=${region}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 }
