@@ -3,9 +3,8 @@ import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { FormSearchVpnService } from '../models/vpn-service';
+import { FormSearchVpnService, VPNServiceDetail } from '../models/vpn-service';
 import { BaseService } from './base.service';
-import { VPNServiceDetail } from '../models/vpn-service';
 
 @Injectable({
   providedIn: 'root',
