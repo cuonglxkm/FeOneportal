@@ -90,7 +90,9 @@
                 : data.statusCode === 'New'
                 ? '#CFEA29EB'
                 : data.statusCode === 'Paid'
-                ? '#C4621A'
+                ? '#C4621A' 
+                : data.statusCode === 'InProcessing'
+                ? '#0066B0'
                 : ''
           }"
         >   
@@ -104,6 +106,8 @@
             ? 'Đã thanh toán'
             : data.statusCode === 'New'
             ? 'Mới tạo'
+            : data.statusCode === 'InProcessing'
+            ? 'Đang cài đặt'
             : ''
         "></span>
         </td>

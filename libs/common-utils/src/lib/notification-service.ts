@@ -59,7 +59,7 @@ export class NotificationService {
 
   private registerGlobalNotification(): void {
     this.connection.on('SendMessage', (data: any) => {
-      console.log(`Received message: `, data);
+      //console.log(`Received message: `, data);
       if (data.notificationType != undefined){
         switch (data.notificationType) {
           case "SUCCESS":

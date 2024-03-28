@@ -50,6 +50,8 @@ export class CreateKafkaComponent implements OnInit {
   servicePackCode: string;
   @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
   usageTime = 1;
+  createDate: Date;
+  expiryDate: Date;
 
   constructor(
     private fb: FormBuilder,
@@ -66,6 +68,8 @@ export class CreateKafkaComponent implements OnInit {
     this.getListPackage();
     this.getListVersion();
     this.initForm();
+    this.createDate = new Date();
+    this.setExpiryDate();
   }
 
   initForm() {
@@ -78,6 +82,7 @@ export class CreateKafkaComponent implements OnInit {
       ram: [null, [Validators.required]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
       broker: [3, [Validators.required]],
+      usageTime: [1, [Validators.required]],
       configType: [0, [Validators.required]],
       numPartitions: [3],
       defaultReplicationFactor: [3],
@@ -131,8 +136,8 @@ export class CreateKafkaComponent implements OnInit {
 
     const returnPath = window.location.pathname;
 
-    // this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
-    this.createKafkaService();
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+    // this.createKafkaService();
   }
 
   createKafkaService() {
@@ -145,6 +150,7 @@ export class CreateKafkaComponent implements OnInit {
     this.kafkaCreateReq.ram = dto.get('ram').value;
     this.kafkaCreateReq.storage = dto.get('storage').value;
     this.kafkaCreateReq.brokers = dto.get('broker').value;
+    this.kafkaCreateReq.usageTime = dto.get('usageTime').value;
     this.kafkaCreateReq.configType = dto.get('configType').value;
     this.kafkaCreateReq.numPartitions = dto.get('numPartitions').value;
     this.kafkaCreateReq.defaultReplicationFactor = dto.get('defaultReplicationFactor').value;
@@ -255,6 +261,15 @@ export class CreateKafkaComponent implements OnInit {
     this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
     this.myform.controls['log.retention.hours'].updateValueAndValidity();
     this.myform.controls['log.segment.bytes'].updateValueAndValidity();
+  }
+
+  onChangeUsageTime() {
+    this.usageTime = this.myform.controls.usageTime.value;
+    this.setExpiryDate();
+  }
+
+  setExpiryDate() {
+    this.expiryDate = new Date(this.createDate.getTime() + (this.usageTime * 30 * 24 * 60 * 60 * 1000));
   }
 
 }

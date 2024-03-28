@@ -5,10 +5,10 @@
     <nz-input-group [nzPrefix]="prefixIconSearch"
                     nzSize="large"
                     style="width: 300px;">
-      <input name="name"
+      <input [(ngModel)]="value"
              nz-input
              placeholder="Tìm kiếm theo tên"
-            
+             (input)="onInputChange($event.target['value'])"
              />
     </nz-input-group>
     <ng-template #prefixIconSearch>
@@ -23,8 +23,16 @@
   </nz-col>
 </nz-row>
 </div>
-<nz-table #fixedTable
-          style="margin-top: 20px;">
+<nz-table  #fixedTable
+style="margin-top: 20px"
+[nzData]="response?.records"
+[nzPageSize]="response?.pageSize"
+(nzPageSizeChange)="onPageSizeChange($event)"
+[nzPageIndex]="response?.currentPage"
+(nzPageIndexChange)="onPageIndexChange($event)"
+[nzTotal]="response?.totalCount"
+[nzFrontPagination]="false"
+[nzLoading]="isLoading">
   <thead>
   <tr>
     <th>Name</th>
@@ -36,14 +44,14 @@
   </tr>
   </thead>
   <tbody>
-  <tr>
-    <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/1']">phase1</a></td>
+    <tr *ngFor="let data of fixedTable.data">
+    <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/' +data.id]">{{data.name}}</a></td>
     <td>
-      vpn_01
+      {{data.vpnService}}
     </td>
-    <td>sha256</td>
-    <td>aes-256</td>
-    <td>group1</td>
+    <td>{{data.ikepolicy}}</td>
+    <td>{{data.ipSecPolicy}}</td>
+    <td>{{data.status === 'PENDING_CREATE' ? 'Pending Create' : data.status === 'DOWN' && 'Down'}}</td>
     <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
           <span
@@ -51,12 +59,18 @@
               nz-icon
               nzType="edit"
               nzTheme="outline"
-              [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/1']"
+              [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-connection/edit/' +data.id]"
               [nzPopoverContent]="'Sửa'"
               nz-popover
               nzPopoverPlacement="bottom"
             ></span>
-          <one-portal-delete-vpn-connection></one-portal-delete-vpn-connection>
+          <one-portal-delete-vpn-connection
+          [region]="region"
+          [project]="project"
+          [vpnconnectionid]="data.id"
+          [nameVpnconnection]="data.name"
+          (onOk)="handleOkDelete()"
+          ></one-portal-delete-vpn-connection>
         </div>
     </td>
   </tr>

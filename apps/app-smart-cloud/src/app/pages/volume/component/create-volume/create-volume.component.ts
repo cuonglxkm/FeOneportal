@@ -193,7 +193,8 @@ export class CreateVolumeComponent implements OnInit {
     private projectService: ProjectService
   ) {
     this.validateForm.get('radio').valueChanges.subscribe((value) => {
-
+        this.selectedValueRadio = value
+        this.getTotalAmount()
     })
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -218,17 +219,17 @@ export class CreateVolumeComponent implements OnInit {
 
 
 
-  getCatalogOffer(productId) {
+  getCatalogOffer(type) {
     this.catalogService
-      .getCatalogOffer(productId, this.region, null)
+      .getCatalogOffer(null, this.region, null, type)
       .subscribe((data) => {
         console.log('data catalog', data);
-        if (data) {
-          if (productId == 90) {
-            this.typeMultiple = true;
+        if (data[0]?.regions[0]?.regionId == this.region) {
+          if(type == 'MultiAttachment') {
+            this.typeMultiple = true
           }
-          if (productId == 92) {
-            this.typeEncrypt = true;
+          if(type == 'Encryption') {
+            this.typeEncrypt = true
           }
         } else {
           this.typeMultiple = false;
@@ -274,8 +275,9 @@ export class CreateVolumeComponent implements OnInit {
 
     this.getListSnapshot();
     this.getListInstance();
-    this.getCatalogOffer(90);
-    this.getCatalogOffer(92);
+
+    // this.getCatalogOffer('MultiAttachment')
+    // this.getCatalogOffer('Encryption')
 
     this.getListVolumes();
     //
@@ -483,6 +485,9 @@ export class CreateVolumeComponent implements OnInit {
 
     this.date = new Date();
     this.getTotalAmount();
+
+    // this.getCatalogOffer('MultiAttachment')
+    // this.getCatalogOffer('Encryption')
   }
 
   submitForm() {
