@@ -63,6 +63,8 @@ export class AclTopicComponent implements OnInit {
 
   resourceTypeTopic = 'topic';
   aclRequest: AclReqModel = new AclReqModel();
+  isVisibleDelete = false;
+  currentAclTopic: AclDeleteModel;
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -225,33 +227,31 @@ export class AclTopicComponent implements OnInit {
     this.aclTopicForm.get('host').setValue(data.host);
   }
 
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
   showDeleteConfirm(data: AclDeleteModel) {
-    this.modal.create({
-      nzTitle: 'Xóa ACL',
-      nzContent: '<h3>Quý khách chắc chắn muốn thực hiện xóa ACL của ' + data.resourceName + '? </h3>'
-        + '<br> <i>Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý</i>',
-      nzBodyStyle: { textAlign: 'center' },
-      nzOkText: 'Đồng ý',
-      nzOkType: 'primary',
-      nzOkDanger: false,
-      nzOnOk: () => {
-        this.loadingSrv.open({ type: "spin", text: "Loading..." });
-        this.aclKafkaService.deleteAcl(data).pipe()
-          .subscribe(
-            (data) => {
-              if (data && data.code == 200) {
-                this.notification.success('Thành công', data.msg);
-                this.showForm = this.idListForm;
-                this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
-              }
-              else {
-                this.notification.error('Thất bại', data.msg);
-              }
-              this.loadingSrv.close();
-            }
-          );
-      },
-      nzCancelText: 'Hủy'
-    });
+    this.isVisibleDelete = true;
+    this.currentAclTopic = data;
+  }
+
+  handleOkDelete() {
+    this.isVisibleDelete = false;
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.aclKafkaService.deleteAcl(this.currentAclTopic).pipe()
+      .subscribe(
+        (data) => {
+          if (data && data.code == 200) {
+            this.notification.success('Thành công', data.msg);
+            this.showForm = this.idListForm;
+            this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
+          }
+          else {
+            this.notification.error('Thất bại', data.msg);
+          }
+          this.loadingSrv.close();
+        }
+      );
   }
 }

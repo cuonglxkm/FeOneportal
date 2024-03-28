@@ -142,7 +142,6 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('serviceOrderCode: ', this.serviceOrderCode);
     this.getStatisticNumber();
     this.checkClusterIsHealth(this.serviceOrderCode);
     this.getCheckHealthChart(this.serviceOrderCode, -1, -1);
@@ -258,7 +257,7 @@ export class DashboardComponent implements OnInit {
           show: false
         }
       },
-      colors: ['#2eb82e', '#cc0000', '#ff9800'],
+      colors: ['#06BC62', '#F74132', '#FFA42E'],
       dataLabels: {
         enabled: false
       },

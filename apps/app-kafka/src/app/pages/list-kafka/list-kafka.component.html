@@ -51,7 +51,7 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="loading">
       <thead>
         <tr>
-          <th nzWidth="5%">STT</th>
+          <th nzWidth="5%" nzAlign="center">STT</th>
           <th nzWidth="15%">Tên Kafka</th>
           <th nzWidth="10%">Phiên bản</th>
           <th nzWidth="15%">Trạng thái</th>
@@ -63,7 +63,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of kafkaTable.data; let i = index">
-          <td>{{ i + 1 }}</td>
+          <td nzAlign="center">{{ i + 1 }}</td>
           <td> <a [routerLink]="[item.serviceOrderCode ]">{{ item.serviceName }}</a></td>
           <td>{{ item.apacheKafkaVersion }}</td>
           <td>
@@ -83,10 +83,12 @@
             {{ item.cpu }} vCPU / {{ item.ram}} RAM
           </td>
           <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
-          <td class="center-align">
-            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px"
+          <td nzAlign="center">
+            <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'edit/' + item.serviceOrderCode"
+              nz-tooltip="Chỉnh sửa" class="img-edit" />
+            <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px" [routerLink]="'upgrade/' + item.serviceOrderCode"
               nz-tooltip="Nâng cấp" />
-            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-right: 16px" nz-tooltip="Xóa" />
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa" />
           </td>
         </tr>
       </tbody>
@@ -115,7 +117,7 @@
         <!-- create btn -->
         <div class="mleft-16 mtop-15">
           <button nz-button nzType="primary" routerLink="create" class="border-button">
-            Tạo mới Kafka
+            Khởi tạo Kafka
           </button>
         </div>
       </div>
