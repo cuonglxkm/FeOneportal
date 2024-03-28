@@ -7,6 +7,8 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
+import { KafkaUpgradeReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
@@ -44,6 +46,7 @@ export class UpgradeKafkaComponent implements OnInit {
   serviceOrderCode: string;
   createDate: Date;
   expiryDate: Date;
+  kafkaUpgradeDto: KafkaUpgradeReq = new KafkaUpgradeReq();
 
   constructor(
     private fb: FormBuilder,
@@ -77,7 +80,7 @@ export class UpgradeKafkaComponent implements OnInit {
           if (res && res.code == 200) {
             this.itemDetail = camelizeKeys(res.data) as KafkaDetail;
             this.createDate = new Date(this.itemDetail.createdDate);
-            this.expiryDate = new Date(this.itemDetail.createdDate);
+            this.setExpiryDate();
             this.updateDataForm();
             // phát sự kiện để render lại 
             this.cdr.markForCheck();
@@ -98,7 +101,7 @@ export class UpgradeKafkaComponent implements OnInit {
     });
   }
 
-  updateDataForm() {    
+  updateDataForm() {
     this.myform.controls.vCpu.setValue(this.itemDetail.cpu);
     this.myform.controls.ram.setValue(this.itemDetail.ram);
     this.myform.controls.storage.setValue(this.itemDetail.storage);
@@ -135,6 +138,10 @@ export class UpgradeKafkaComponent implements OnInit {
 
   onChangeUsageTime() {
     this.usageTime = this.myform.controls.usageTime.value;
+    this.setExpiryDate();
+  }
+
+  setExpiryDate() {
     this.expiryDate = new Date(this.createDate.getTime() + (this.usageTime * 30 * 24 * 60 * 60 * 1000));
   }
 
@@ -145,8 +152,33 @@ export class UpgradeKafkaComponent implements OnInit {
   }
 
   upgrade() {
-    this.notification.success('Thành công', 'Yêu cầu nâng cấp dịch vụ thành công.');
-    this.backToList();
+    const dto = this.myform;
+    this.kafkaUpgradeDto.serviceName = this.itemDetail.serviceName;
+    this.kafkaUpgradeDto.serviceOrderCode = this.itemDetail.serviceOrderCode;
+    this.kafkaUpgradeDto.version = this.itemDetail.version;
+    this.kafkaUpgradeDto.description = this.itemDetail.description;
+    this.kafkaUpgradeDto.servicePackCode = this.servicePackCode;
+    this.kafkaUpgradeDto.cpu = dto.get('vCpu').value;
+    this.kafkaUpgradeDto.ram = dto.get('ram').value;
+    this.kafkaUpgradeDto.storage = dto.get('storage').value;
+    this.kafkaUpgradeDto.servicePackCode = this.servicePackCode;
+
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.kafkaService.upgrade(this.kafkaUpgradeDto)
+      .pipe(
+        finalize(() => this.loadingSrv.close())
+      )
+      .subscribe(
+        (data) => {
+          if (data && data.code == 200) {
+            this.notification.success('Thành công', data.msg);
+            // navigate
+            this.backToList();
+          } else {
+            this.notification.error('Thất bại', data.msg);
+          }
+        }
+      );
   }
 
 

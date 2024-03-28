@@ -49,3 +49,27 @@ export class KafkaUpdateReq {
         this.description = '';
     }
 }
+
+export class KafkaUpgradeReq {
+    serviceOrderCode: string;
+    serviceName: string;
+    version: string;
+    description: string;
+    regionId: string;
+    ram: number;
+    cpu: number;
+    storage: number;
+    servicePackCode: string;
+
+    constructor() {
+        this.serviceOrderCode = '';
+        this.serviceName = '';
+        this.version = '';
+        this.description = '';
+        this.regionId = '1';
+        this.ram = 1;
+        this.cpu = 1;
+        this.storage = 1;
+        this.servicePackCode = '';
+    }
+}

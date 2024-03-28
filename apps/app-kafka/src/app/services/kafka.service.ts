@@ -7,7 +7,7 @@ import { AccessLog, FetchAccessLogs } from '../core/models/access-log.model';
 import { BaseResponse } from '../core/models/base-response.model';
 import { BrokerConfig } from '../core/models/broker-config.model';
 import { InfoConnection } from '../core/models/info-connection.model';
-import { KafkaCreateReq, KafkaUpdateReq } from '../core/models/kafka-create-req.model';
+import { KafkaCreateReq, KafkaUpdateReq, KafkaUpgradeReq } from '../core/models/kafka-create-req.model';
 import { KafkaDetail, KafkaInfor } from '../core/models/kafka-infor.model';
 import { Pagination } from '../core/models/pagination.model';
 import { ServicePack } from '../core/models/service-pack.model';
@@ -186,4 +186,21 @@ export class KafkaService extends BaseService {
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/update', json, {headers: this.getHeaders()});
   }
+
+  upgrade(req: KafkaUpgradeReq): Observable<BaseResponse<null>> {
+    const json = {
+      'service_order_code': req.serviceOrderCode,
+      'service_name': req.serviceName,
+      'version': req.version,
+      'description': req.description,
+      'regionId': req.regionId,
+      'ram': req.ram,
+      'cpu': req.cpu,
+      'storage': req.storage
+    };
+
+    return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/upgrade', json, {headers: this.getHeaders()})
+  }
+
+
 }
