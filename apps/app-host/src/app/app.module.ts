@@ -24,7 +24,7 @@ import {SimpleInterceptor} from "@delon/auth";
 
 
 import {DatePipe, registerLocaleData} from "@angular/common";
-import {NZ_DATE_LOCALE, NZ_I18N, provideNzI18n, zh_CN,  en_US as zorroLang} from "ng-zorro-antd/i18n";
+import {NZ_DATE_LOCALE, NZ_I18N, provideNzI18n, vi_VN, zh_CN,  en_US as zorroLang} from "ng-zorro-antd/i18n";
 import {DELON_LOCALE, en_US as delonLang, ALAIN_I18N_TOKEN} from "@delon/theme";
 import {enUS as dateLang} from "date-fns/locale";
 // import { default as ngLang } from '@angular/common/locales/zh';
@@ -51,7 +51,7 @@ const LANG_PROVIDES = [
 
 const I18NSERVICE_PROVIDES = [
   { provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false },
-  { provide: NZ_I18N, useValue: zh_CN }
+  { provide: NZ_I18N, useValue: vi_VN }
 ];
 
 const INTERCEPTOR_PROVIDES = [
