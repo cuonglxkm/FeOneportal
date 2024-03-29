@@ -1039,6 +1039,17 @@ export class InstancesCreateComponent implements OnInit {
       this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
       return;
     }
+    if (
+      this.isCustomconfig == true &&
+      (this.configCustom.vCPU / this.configCustom.ram <= 0.5 ||
+        this.configCustom.vCPU / this.configCustom.ram >= 1)
+    ) {
+      this.notification.error(
+        'Cấu hình chưa hợp lệ',
+        'Tỷ lệ CPU/RAM nằm trong khoảng 0.5 < CPU/RAM < 1'
+      );
+      return;
+    }
     this.dataService
       .checkExistName(this.instanceCreate.serviceName, this.region)
       .subscribe((data) => {
