@@ -453,7 +453,7 @@ export class InstancesCreateComponent implements OnInit {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU / ';
+              e.description += ch.charOptionValues[1] + ' vCPU / ';
             }
             if (ch.charOptionValues[0] == 'RAM') {
               e.description += ch.charOptionValues[1] + ' GB RAM / ';
