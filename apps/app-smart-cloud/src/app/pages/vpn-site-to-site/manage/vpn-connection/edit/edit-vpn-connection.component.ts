@@ -14,7 +14,6 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 
-
 @Component({
   selector: 'one-portal-edit-vpn-connection',
   templateUrl: './edit-vpn-connection.component.html',
