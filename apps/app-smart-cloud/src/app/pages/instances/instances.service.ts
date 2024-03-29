@@ -1,6 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -252,21 +256,21 @@ export class InstancesService extends BaseService {
   }
 
   getTotalAmount(data: any): Observable<any> {
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
-    ).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-          // Redirect to login page or show unauthorized message
-          this.router.navigate(['/passport/login']);
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }));
+    return this.http
+      .post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', data)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+            // Redirect to login page or show unauthorized message
+            this.router.navigate(['/passport/login']);
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        })
+      );
   }
 
   getListOffersByProductId(productId: string): Observable<any> {
@@ -289,6 +293,14 @@ export class InstancesService extends BaseService {
   getInfoVPC(productId: number): Observable<any> {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId
+    );
+  }
+
+  checkExistName(instanceId: number, name: string): Observable<boolean> {
+    let url_ = `/instances/exist-instancename?instanceId=${instanceId}&name=${name}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<boolean>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
     );
   }
 }

@@ -129,7 +129,6 @@ export class InstancesEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activeRoute.snapshot.paramMap.get('id'));
@@ -507,7 +506,7 @@ export class InstancesEditComponent implements OnInit {
     // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = null;
+    this.instanceResize.serviceName = "Điều chỉnh";
     this.instanceResize.vpcId = this.projectId;
   }
 

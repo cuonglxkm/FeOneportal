@@ -82,19 +82,31 @@ export class InstancesExtendComponent implements OnInit {
     });
   }
 
-  listIPStr = '';
+  listIPPublicStr = '';
+  listIPLanStr = '';
   getListIpPublic() {
     this.service
       .getPortByInstance(this.id, this.regionId)
       .subscribe((dataNetwork: any) => {
-        let listOfDataNetwork: Network[] = dataNetwork.filter(
+        //list IP public
+        let listOfPublicNetwork: Network[] = dataNetwork.filter(
           (e: Network) => e.isExternal == true
         );
-        let listIP: string[] = [];
-        listOfDataNetwork.forEach((e) => {
-          listIP = listIP.concat(e.fixedIPs);
+        let listIPPublic: string[] = [];
+        listOfPublicNetwork.forEach((e) => {
+          listIPPublic = listIPPublic.concat(e.fixedIPs);
         });
-        this.listIPStr = listIP.join(', ');
+        this.listIPPublicStr = listIPPublic.join(', ');
+
+        //list IP Lan
+        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        let listIPLan: string[] = [];
+        listOfPrivateNetwork.forEach((e) => {
+          listIPLan = listIPLan.concat(e.fixedIPs);
+        });
+        this.listIPLanStr = listIPLan.join(', ');
         this.cdr.detectChanges();
       });
   }
@@ -116,7 +128,7 @@ export class InstancesExtendComponent implements OnInit {
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = null;
+    this.instanceExtend.serviceName = 'Gia hạn';
     this.instanceExtend.customerId = this.customerId;
     this.instanceExtend.vpcId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
@@ -170,7 +182,7 @@ export class InstancesExtendComponent implements OnInit {
     orderItemInstanceResize.orderItemQuantity = 1;
     orderItemInstanceResize.specification = specificationInstance;
     orderItemInstanceResize.specificationType = 'instance_extend';
-    orderItemInstanceResize.price = this.totalincludesVAT;
+    orderItemInstanceResize.price = this.totalAmount / this.numberMonth;
     orderItemInstanceResize.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstanceResize);
 
@@ -184,6 +196,14 @@ export class InstancesExtendComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: this.order, path: returnPath },
     });
+  }
+
+  onRegionChange(region: any) {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  onProjectChange(project: any) {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToEdit() {

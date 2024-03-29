@@ -95,11 +95,10 @@ export class InstancesComponent implements OnInit {
         if (!instanceId) {
           return;
         }
-        var foundIndex = this.dataList.findIndex(x => x.id == instanceId);
+        var foundIndex = this.dataList.findIndex((x) => x.id == instanceId);
         if (foundIndex > -1) {
-          switch (actionType)
-          {
-            case "CREATE":
+          switch (actionType) {
+            case 'CREATE':
               var record = this.dataList[foundIndex];
 
               record.status = data.status;
@@ -109,17 +108,17 @@ export class InstancesComponent implements OnInit {
 
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
-            break;
+              break;
 
-            case "SHUTOFF":
-            case "START":
+            case 'SHUTOFF':
+            case 'START':
               var record = this.dataList[foundIndex];
 
               record.taskState = data.taskState;
 
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
-            break;
+              break;
           }
         }
       }
@@ -312,7 +311,10 @@ export class InstancesComponent implements OnInit {
         }
       },
       error: (e) => {
-        this.notification.error(e.statusText, 'Yêu cầu tắt máy ảo không thực hiện được');
+        this.notification.error(
+          e.statusText,
+          'Yêu cầu tắt máy ảo không thực hiện được'
+        );
       },
     });
   }
@@ -460,7 +462,10 @@ export class InstancesComponent implements OnInit {
   updateInstances: UpdateInstances = new UpdateInstances();
   selectedSecurityGroup: string[] = [];
   isVisibleEdit = false;
+  instanceEdit: InstancesModel;
+  currentSecurityGroup: string[] = [];
   modalEdit(data: InstancesModel) {
+    this.instanceEdit = data;
     this.selectedSecurityGroup = [];
     this.dataService
       .getAllSecurityGroupByInstance(
@@ -474,6 +479,7 @@ export class InstancesComponent implements OnInit {
           console.log('getAllSecurityGroupByInstance', datasg);
           datasg.forEach((e) => {
             this.selectedSecurityGroup.push(e.id);
+            this.currentSecurityGroup.push(e.id);
           });
           this.isVisibleEdit = true;
           this.cdr.detectChanges();
