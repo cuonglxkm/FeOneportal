@@ -173,6 +173,7 @@ export class UpgradeKafkaComponent implements OnInit {
     this.kafkaUpgradeDto.ram = dto.get('ram').value;
     this.kafkaUpgradeDto.storage = dto.get('storage').value;
     this.kafkaUpgradeDto.servicePackCode = this.servicePackCode;
+    this.kafkaUpgradeDto.usageTime = this.usageTime;
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.kafkaService.upgrade(this.kafkaUpgradeDto)

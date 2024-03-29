@@ -60,6 +60,7 @@ export class KafkaUpgradeReq {
     cpu: number;
     storage: number;
     servicePackCode: string;
+    usageTime: number;
 
     constructor() {
         this.serviceOrderCode = '';
@@ -71,5 +72,6 @@ export class KafkaUpgradeReq {
         this.cpu = 1;
         this.storage = 1;
         this.servicePackCode = '';
+        this.usageTime = 1;
     }
 }

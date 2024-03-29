@@ -196,7 +196,9 @@ export class KafkaService extends BaseService {
       'regionId': req.regionId,
       'ram': req.ram,
       'cpu': req.cpu,
-      'storage': req.storage
+      'storage': req.storage,
+      'usage_time': req.usageTime,
+      'service_pack_code': req.servicePackCode
     };
 
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/upgrade', json, {headers: this.getHeaders()})
