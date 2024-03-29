@@ -128,7 +128,7 @@ export class InstancesExtendComponent implements OnInit {
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = null;
+    this.instanceExtend.serviceName = 'Gia hạn';
     this.instanceExtend.customerId = this.customerId;
     this.instanceExtend.vpcId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
