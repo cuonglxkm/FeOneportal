@@ -80,7 +80,6 @@
           <nz-descriptions-item [nzTitle]="titleVolumeType">
             <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
         </nz-descriptions>
-
         <ng-template #titleName>
           <span>Tên Volume:</span>
         </ng-template>
@@ -105,7 +104,7 @@
         <ng-template #titleDescription>
           <span>Mô tả:</span>
         </ng-template>
-        <div>
+        <div style="margin-top: 15px;">
           <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
         </div>
         <div style="margin-top: 15px;">
