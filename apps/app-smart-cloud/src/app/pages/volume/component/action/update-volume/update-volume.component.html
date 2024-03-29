@@ -11,15 +11,15 @@
           <div style="margin-top: 15px;">
             <span>Tên Volume</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            <span nz-icon nzType="question-circle" nzTheme="outline"></span>
+            <span nz-icon nzType="question-circle" nz-popover
+                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
+                  nzPopoverPlacement="bottom" nzTheme="outline"></span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
                  formControlName="nameVolume"
-                 nz-popover
-                 [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
-                 nzPopoverPlacement="bottom"
+
                  [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
