@@ -469,6 +469,9 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  isDigit(number) {
+    return number % 1 !== 0;
+  }
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe((data) => {
       let project = data.find((project) => project.id === +this.project);

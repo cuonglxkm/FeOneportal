@@ -302,6 +302,10 @@ export class EditVolumeComponent implements OnInit {
     });
   }
 
+  isDigit(number) {
+    return number % 1 !== 0;
+  }
+
   getTotalAmount() {
     this.volumeInit()
     let itemPayment: ItemPayment = new ItemPayment();
