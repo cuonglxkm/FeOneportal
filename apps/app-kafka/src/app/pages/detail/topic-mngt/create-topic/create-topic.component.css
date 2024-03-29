@@ -17,18 +17,12 @@
   justify-content: space-between;
 }
 
-.btn-search {
-  height: 40px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 16px;
-}
 
 .btn-accept {
   height: 40px;
   border-radius: 8px;
-  font-weight: 600;
   font-size: 16px;
+  vertical-align: middle;
 }
 
 .tbl-acl {

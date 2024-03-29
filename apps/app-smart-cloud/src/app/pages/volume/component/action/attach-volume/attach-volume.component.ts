@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { InstancesService } from '../../../../instances/instances.service';
 import { InstancesModel } from '../../../../instances/instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -12,7 +12,7 @@ import { AttachedDto } from '../../../../../shared/dto/volume.dto';
   templateUrl: './attach-volume.component.html',
   styleUrls: ['./attach-volume.component.less'],
 })
-export class AttachVolumeComponent {
+export class AttachVolumeComponent implements AfterViewInit{
   @Input() region: number
   @Input() project: number
   @Input() volumeId: number
@@ -35,16 +35,23 @@ export class AttachVolumeComponent {
   constructor(private instancesService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private volumeService: VolumeService) {
+              private volumeService: VolumeService,
+              private cdr: ChangeDetectorRef) {
   }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
+    }
 
   onChange(value) {
     this.instanceSelected = value
+    this.isSelected = false
   }
 
   showModal() {
     this.isVisible = true
     this.getListVm()
+
   }
 
   handleCancel() {
@@ -52,6 +59,7 @@ export class AttachVolumeComponent {
     this.isLoadingAttach = false
     this.instanceSelected = null
     this.isSelected = false
+    this.cdr.detectChanges();
     this.onCancel.emit()
   }
 
@@ -70,12 +78,13 @@ export class AttachVolumeComponent {
   }
 
   addVolumeToVm() {
-    this.isLoadingAttach = true
-    if(this.instanceSelected == undefined || this.instanceSelected == null) {
+    this.isLoading = true
+    if(this.instanceSelected == undefined) {
       this.isSelected = true
       this.isLoading = false
     } else {
       this.isSelected = false
+      this.isLoading = true
       this.volumeService.getVolumeById(this.volumeId).subscribe(data => {
         if(data != null) {
           if (data.isMultiAttach == false && data.attachedInstances?.length == 1) {
@@ -92,29 +101,38 @@ export class AttachVolumeComponent {
               if (data == true) {
                 this.isVisible = false
                 this.isLoading = false;
-                this.notification.success('Thành công', 'Gắn Volume thành công.')
-                this.onOk.emit(data)
+                this.notification.success('Thành công', 'Yêu cầu gắn Volume thành công.')
+                setTimeout(() => {
+                  this.onOk.emit(data)
+                }, 1500);
+
+
               } else {
                 console.log('data', data)
                 this.isVisible = false
                 this.isLoading = false;
-                this.notification.error('Thất bại', 'Gắn Volume thất bại.')
-                this.onOk.emit(data)
+                this.notification.error('Thất bại', 'Yêu cầu gắn Volume thất bại.')
+                setTimeout(() => {
+                  this.onOk.emit(data)
+                }, 1500);
               }
             }, error => {
               console.log('eror', error)
               this.isVisible = false
               this.isLoading = false;
-              this.notification.error('Thất bại', 'Gắn Volume thất bại.')
-              this.onOk.emit(error)
+              this.notification.error('Thất bại', 'Yêu cầu gắn Volume thất bại.')
+              setTimeout(() => {
+                this.onOk.emit(error)
+              }, 1500);
             })
           }
         } else {
           this.isVisible = false
           this.isLoadingAttach = false;
-          this.notification.error('Thất bại', 'Gắn Volume thất bại.')
+          this.notification.error('Thất bại', 'Yêu cầu gắn Volume thất bại.')
         }
       })
+      // this.cdr.detectChanges();
     }
 
   }

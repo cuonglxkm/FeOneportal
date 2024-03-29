@@ -7,7 +7,26 @@
     <li nz-menu-item (click)="continue()">Gia hạn</li>
     <li nz-menu-item (click)="openConsole()">Truy cập</li>
     <li nz-menu-item (click)="showModalRestart()">Khởi động lại</li>
-    <li nz-menu-item (click)="showModalShutdown()">Tắt</li>
+    <li
+      *ngIf="
+        instancesModel.taskState != 'SHUTOFF' &&
+        instancesModel.taskState != 'powering-off'
+      "
+      nz-menu-item
+      (click)="showModalShutdown()"
+    >
+      Tắt
+    </li>
+    <li
+      *ngIf="
+        instancesModel.taskState == 'SHUTOFF' ||
+        instancesModel.taskState == 'powering-off'
+      "
+      nz-menu-item
+      (click)="showModalStart()"
+    >
+      Bật
+    </li>
     <li nz-menu-item (click)="modalResetPassword()">Reset Password</li>
     <li nz-menu-item style="color: red" (click)="showModalDelete()">Xóa</li>
   </ul>
@@ -194,6 +213,30 @@
       />Hủy
     </button>
     <button nz-button nzType="primary" (click)="handleOkResetPassword()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleStart"
+  nzTitle="Bật máy ảo"
+  (nzOnCancel)="handleCancelStart()"
+>
+  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện bật máy ảo?</div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelStart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkStart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"

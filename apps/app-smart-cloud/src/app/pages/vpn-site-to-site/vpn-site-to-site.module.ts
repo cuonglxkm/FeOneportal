@@ -21,6 +21,7 @@ import { EditVpnConnectionComponent } from './manage/vpn-connection/edit/edit-vp
 import { DeleteVpnConnectionComponent } from './manage/vpn-connection/delete/delete-vpn-connection.component';
 import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/detail-vpn-connection.component';
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
+import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vpn-service.component';
 import { CreateEndpointGroupComponent } from './manage/endpoint-group/create/create-endpoint-group.component';
 import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/detail-endpoint-group.component';
 import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/delete-endpoint-group.component';
@@ -44,6 +45,7 @@ import { EditEndpointGroupComponent } from './manage/endpoint-group/edit/edit-en
     DeleteVpnConnectionComponent,
     DetailVpnConnectionComponent,
     CreateIkePoliciesComponent,
+    DetailVpnServiceComponent,
     CreateEndpointGroupComponent,
     DetailEndpointGroupComponent,
     DeleteEndpointGroupComponent,

@@ -11,6 +11,7 @@ import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/det
 import { CreateEndpointGroupComponent } from "./manage/endpoint-group/create/create-endpoint-group.component";
 import { DetailEndpointGroupComponent } from "./manage/endpoint-group/detail/detail-endpoint-group.component";
 
+import { DetailVpnServiceComponent } from "./manage/vpn-service/detail/detail-vpn-service.component";
 const routes: Routes = [
   {
     path: 'manage',
@@ -52,6 +53,11 @@ const routes: Routes = [
     path: 'endpoint-group/:id',
     component: DetailEndpointGroupComponent,
   },
+  },
+  {
+    path: 'vpn-service/:id',
+    component: DetailVpnServiceComponent,
+  }
 ];
 
 @NgModule({

@@ -14,11 +14,12 @@ export class CatalogService extends BaseService {
     super();
   }
 
-  getCatalogOffer(productId: number, regionId: number, unitOfMeasure: string) {
+  getCatalogOffer(productId: number, regionId: number, unitOfMeasure: string, unitOfMeasureProduct: string) {
     let param = new HttpParams()
     if(productId != undefined || productId != null) param = param.append('productId', productId)
     if(regionId != undefined || regionId != null) param = param.append('regionId', regionId)
     if(unitOfMeasure != undefined || unitOfMeasure != null) param = param.append('unitOfMeasure', unitOfMeasure)
+    if(unitOfMeasureProduct != undefined || unitOfMeasureProduct != null) param = param.append('unitOfMeasureProduct', unitOfMeasureProduct)
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs + '/offers', {
       params: param
     })
