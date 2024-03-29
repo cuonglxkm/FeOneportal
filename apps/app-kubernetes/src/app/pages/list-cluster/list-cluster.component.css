@@ -66,6 +66,11 @@ input, .border-button {
   text-align: center;
 }
 
+.align-right {
+  position: relative;
+  float: right;
+}
+
 img {
   border-radius: 4px;
 }

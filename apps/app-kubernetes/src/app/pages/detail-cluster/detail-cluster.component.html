@@ -30,7 +30,7 @@
 
             <tr>
               <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'API Endpoint'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.serviceOrderCode" [label]="'Mã đơn hàng'"></row-data></td>
+              <td class="w-50"><row-data [value]="detailCluster.orderCode" [label]="'Mã đơn hàng'"></row-data></td>
             </tr>
 
             <tr>
@@ -60,7 +60,7 @@
                   <div nz-col [nzSpan]="8">Cấu hình</div>
                   <div nz-col [nzSpan]="16">
                     <span class="description-info">
-                      <a (click)="handleViewKubeConfig()">Kubeconfig</a>
+                      <a (click)="handleViewKubeConfig()">{{detailCluster.clusterName}}.Kubeconfig</a>
                     </span>
                     <button nz-button nzType="text" (click)="handleDownloadKubeConfig()" class="action-icon borderless"
                       nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip>
@@ -88,7 +88,7 @@
   <nz-card class="border-card">
     <h3>Thông tin worker group</h3>
     <ng-container *ngIf="detailCluster.workerGroup.length > 0; else workerlessTpl">
-      <ng-container *ngFor="let item of detailCluster.workerGroups; let i=index;">
+      <ng-container *ngFor="let item of detailCluster.workerGroup; let i=index;">
         <div nz-row>
           <div nz-col [nzSpan]="24" class="detailtable">
             <nz-table [nzTemplateMode]="true" nzBordered>
@@ -104,33 +104,31 @@
                 </tr>
 
                 <tr>
-                  <td class="w-50"><row-data [value]="item.autoScaling == true ? 'Kích hoạt' : 'Không kích hoạt'"
-                    [label]="'Auto scale'"></row-data></td>
-
-                  <td class="w-50"><row-data [value]="item.autoHealing == true ? 'Kích hoạt' : 'Không kích hoạt'"
-                    [label]="'Auto healing'"></row-data></td>
-                </tr>
-
-                <ng-container *ngIf="item.autoScaling">
-                  <tr>
-                    <td class="w-50">
-                      <div nz-row>
-                        <div nz-col [nzSpan]="8">Auto scale</div>
-                        <div nz-col [nzSpan]="16" class="description-info">
+                  <td class="w-50">
+                    <div nz-row>
+                      <div nz-col [nzSpan]="8">Auto scale</div>
+                      <div nz-col [nzSpan]="16" class="description-info">
+                        <ng-container *ngIf="item.autoScaling; else noScaleTpl">
                           Min Node: {{item.minimumNode}} - Max Node: {{item.maximumNode}}
                           <button nz-button nzType="text" (click)="handleChangeScaleNode(item)" class="action-icon borderless"
                             nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="top" nz-tooltip>
                             <span nz-icon nzType="edit" nzTheme="outline"></span>
                           </button>
-                        </div>
+                        </ng-container>
+                        <ng-template #noScaleTpl>
+                          Tắt
+                        </ng-template>
                       </div>
-                    </td>
-                  </tr>
-                </ng-container>
+                    </div>
+                  </td>
+
+                  <td class="w-50"><row-data [value]="item.autoHealing == true ? 'Bật' : 'Tắt'"
+                    [label]="'Auto healing'"></row-data></td>
+                </tr>
               </tbody>
             </nz-table>
           </div>
-          <ng-container *ngIf="i != (detailCluster.workerGroups.length - 1)">
+          <ng-container *ngIf="i != (detailCluster.workerGroup.length - 1)">
             <nz-divider nzDashed></nz-divider>
           </ng-container>
         </div>

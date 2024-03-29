@@ -425,10 +425,10 @@ export class ClusterComponent implements OnInit {
 
   onCancelCreate() {
     this.modalService.confirm({
-      nzTitle: 'Hủy tạo mới cluster',
-      nzContent: 'Cluster của bạn chưa được tạo. <br>Bạn có muốn hủy tạo mới và xóa bản nháp?',
-      nzOkText: "Xác nhận",
-      nzCancelText: "Hủy",
+      nzTitle: `<b>Đang tiến hành thanh toán</b>`,
+      nzContent: `<p>Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.</p> <p>Bạn có chắc chắn muốn thoát khỏi trang này?</p>`,
+      nzOkText: `Rời trang`,
+      nzCancelText: `Ở lại trang`,
       nzOnOk: () => this.back2list()
     });
   }
@@ -458,8 +458,8 @@ export class ClusterComponent implements OnInit {
     cluster.offerId = 200;            // temporary, get from order pack
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
-    console.log({data: data});
-    console.log({cluster: cluster});
+    // console.log({data: data});
+    // console.log({cluster: cluster});
     this.clusterService.validateClusterInfo(data)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
@@ -510,13 +510,6 @@ export class ClusterComponent implements OnInit {
       if (r && r.code == 200) {
         this.notificationService.success('Thành công', r.message);
 
-        const clusterName = this.myform.get('clusterName').value;
-
-        // let obj = {
-        //   namespace: r.data,
-        //   clusterName: clusterName
-        // };
-        // this.router.navigate(['/app-kubernetes'], {state: {data: obj}});
         this.router.navigate(['/app-kubernetes']);
 
       } else {
