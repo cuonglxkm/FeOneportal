@@ -65,9 +65,9 @@ export class EditVolumeComponent implements OnInit {
               private instanceService: InstancesService,
               private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if(value <= 40) return (this.iops = 400);
