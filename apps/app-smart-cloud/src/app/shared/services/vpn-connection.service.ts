@@ -1,14 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
-import { BaseService } from './base.service';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FormAction, FormCreateIp, FormSearchIpFloating, IpFloating } from '../models/ip-floating.model';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { head } from 'lodash';
-import { FormCreateFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
-import { FormCreateIpsecPolicy, FormDeleteIpsecPolicy, FormEditIpsecPolicy, FormSearchIpsecPolicy, IpsecPolicyDetail } from '../models/ipsec-policy';
-import { FormCreateVpnConnection } from '../models/vpn-connection';
+import { FormDeleteIpsecPolicy, FormEditIpsecPolicy, IpsecPolicyDetail } from '../models/ipsec-policy';
+import { FormCreateVpnConnection, FormDeleteVpnConnection, FormEditVpnConnection, FormSearchVpnConnection, VpnConnectionDetail } from '../models/vpn-connection';
+import { BaseService } from './base.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -30,38 +27,38 @@ export class VpnConnectionService extends BaseService {
     })
   }
 
-  getIpsecpolicy(formSearch: FormSearchIpsecPolicy) {
+  getVpnConnection(formSearch: FormSearchVpnConnection) {
     let params = new HttpParams()
     if (formSearch.regionId != undefined || formSearch.regionId != null) {
       params = params.append('regionId', formSearch.regionId)
     }
-    if (formSearch.name != undefined || formSearch.name != null) {
-      params = params.append('name', formSearch.name)
+    if (formSearch.searchValue != undefined || formSearch.searchValue != null) {
+      params = params.append('searchValue', formSearch.searchValue)
     }
-    if (formSearch.vpcId != undefined || formSearch.vpcId != null) {
-      params = params.append('vpcId', formSearch.vpcId)
+    if (formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
     }
     if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
       params = params.append('pageSize', formSearch.pageSize)
     }
     if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
-      params = params.append('currentPage', formSearch.currentPage)
+      params = params.append('pageNumber', formSearch.currentPage)
     }
 
-    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ipsecpolicy/paging', {
+    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnconnection/paging', {
       headers: this.getHeaders(),
       params: params
     })
   }
 
   create(formCreate: FormCreateVpnConnection) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/provisions/vpn-sitetosite',
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnconnection',
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
-  getIpsecPoliciesById(id: number, vpcid: number, region: number){
-    return this.http.get<IpsecPolicyDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/ipsecpolicy/${id}?vpcId=${vpcid}&regionId=${region}`).pipe(
+  getVpnConnectionById(id: number, projectId: number, regionId: number){
+    return this.http.get<VpnConnectionDetail>(this.baseUrl + this.ENDPOINT.provisions +
+      `/vpn-sitetosite/vpnconnection/${id}?projectId=${projectId}&regionId=${regionId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -73,8 +70,8 @@ export class VpnConnectionService extends BaseService {
       }))
   }
 
-  deleteIpsecPolicy(formDelete: FormDeleteIpsecPolicy) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ipsecpolicy/${formDelete.id}?vpcId=${formDelete.vpcId}&regionId=${formDelete.regionId}`).pipe(
+  deleteVpnConnection(formDelete: FormDeleteVpnConnection) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnconnection/${formDelete.id}?projectId=${formDelete.projectId}&regionId=${formDelete.regionId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -86,8 +83,8 @@ export class VpnConnectionService extends BaseService {
       }))
   }
 
-  edit(id: string, formEdit: FormEditIpsecPolicy) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ipsecpolicy/${id}`,
+  edit(formEdit: FormEditVpnConnection) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnconnection`,
       Object.assign(formEdit)).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

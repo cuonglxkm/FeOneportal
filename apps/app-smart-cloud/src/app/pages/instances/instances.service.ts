@@ -1,9 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +24,7 @@ export class InstancesService extends BaseService {
 
   constructor(
     private http: HttpClient,
+    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     super();
@@ -177,12 +183,13 @@ export class InstancesService extends BaseService {
     );
   }
 
-  rebuild(data: any): Observable<any> {
+  rebuild(data: any) {
     let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
+      data,
+      { responseType: 'text' }
     );
   }
 
@@ -249,10 +256,21 @@ export class InstancesService extends BaseService {
   }
 
   getTotalAmount(data: any): Observable<any> {
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
-    );
+    return this.http
+      .post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', data)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+            // Redirect to login page or show unauthorized message
+            this.router.navigate(['/passport/login']);
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        })
+      );
   }
 
   getListOffersByProductId(productId: string): Observable<any> {
@@ -275,6 +293,14 @@ export class InstancesService extends BaseService {
   getInfoVPC(productId: number): Observable<any> {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId
+    );
+  }
+
+  checkExistName(name: string, regionId: number): Observable<boolean> {
+    let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}`;
+    url_ = url_.replace(/[?&]$/, '');
+    return this.http.get<boolean>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
     );
   }
 }

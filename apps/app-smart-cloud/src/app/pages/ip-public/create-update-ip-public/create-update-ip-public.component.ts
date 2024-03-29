@@ -28,7 +28,7 @@ import {CatalogService} from "../../../shared/services/catalog.service";
 export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
-  checkIpv6: boolean;
+  checkIpv6: boolean = null;
   selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
@@ -47,7 +47,12 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     numOfMonth: new FormControl(1, {validators: [Validators.required, this.validNumOfMonth.bind(this)]}),
     instanceSelected: new FormControl('', {}),
   });
-
+  dateStringExpired = new Date();
+  ipName = '';
+  VMName = '';
+  ipId = '';
+  VMId = '';
+  unitPrice: any;
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -86,13 +91,16 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         if (index != -1) {
           this.getCatalogOffer(data[index].id);
         } else {
-          this.checkIpv6 = false;
+          this.checkIpv6 = null;
         }
       } else {
-        this.checkIpv6 = false;
+        this.checkIpv6 = null;
       }
     })
 
+    const dateExpired = new Date();
+    dateExpired.setDate(dateExpired.getDate() + 30);
+    this.dateStringExpired = dateExpired;
   }
 
   onRegionChange(region: RegionModel) {
@@ -114,16 +122,15 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     expiredDate.setMonth(expiredDate.getMonth() + Number(this.form.controls['numOfMonth'].value));
     const requestBody = {
       customerId: this.tokenService.get()?.userId,
-      vmToAttachId: this.form.controls['instanceSelected'].value,
+      vmToAttachId: this.VMId,
       regionId: this.regionId,
       projectId: this.projectId,
-      networkId: this.form.controls['ipSubnet'].value,
+      networkId: this.ipId,
       useIpv6: this.checkIpv6,
       id: 0,
       duration: 0,
       ipAddress: null,
       offerId: 0,
-      useIPv6: null,
       vpcId: this.projectId,
       oneSMEAddonId: null,
       serviceType: 4,
@@ -154,13 +161,13 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Tạo Ip Public",
+      note: "Tạo IP Public",
       orderItems: [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_create",
-          price: this.total.data.totalPayment.amount / Number(this.form.controls['numOfMonth'].value),
+          price: this.total.data.totalAmount.amount / Number(this.form.controls['numOfMonth'].value),
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]
@@ -171,24 +178,44 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   }
 
   caculator(event) {
-    let ip = this.form.controls['ipSubnet'].value;
-    let num = this.form.controls['numOfMonth'].value;
+    let ip = '';
+    let lstIp = this.form.controls['ipSubnet'].value.split('|||');
+    if (lstIp.length > 1) {
+      ip = lstIp[1];
+      this.ipName = lstIp[0];
+    }
 
+    const vmSelect = this.form.controls['instanceSelected'].value;
+    if (vmSelect == null) {
+      this.form.controls['instanceSelected'].setValue('');
+      this.VMName = ''
+    } else {
+      let lstVm = vmSelect.split('|||');
+      if (lstVm.length > 1) {
+        this.VMId = lstVm[1];
+        this.VMName = lstVm[0];
+      }
+    }
+
+    let num = this.form.controls['numOfMonth'].value;
+    const dateExpired = new Date();
+    dateExpired.setDate(dateExpired.getDate() + Number(num)*30);
+    this.dateStringExpired = dateExpired;
     if (ip != null && ip != undefined && ip != '' &&
       num != null && num != undefined) {
+      this.ipId = ip;
       this.loadingCalculate = true;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
-        vmToAttachId: this.form.controls['instanceSelected'].value,
+        vmToAttachId: this.VMId,
         regionId: this.regionId,
         projectId: this.projectId,
-        networkId: this.form.controls['ipSubnet'].value,
+        networkId: this.ipId,
         useIpv6: this.checkIpv6,
         id: 0,
         duration: 0,
         ipAddress: null,
         offerId: 0,
-        useIPv6: null,
         vpcId: this.projectId,
         oneSMEAddonId: null,
         serviceType: 4,
@@ -234,8 +261,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         .subscribe(
           data => {
             this.total = data;
-            this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
-            this.totalPayment = this.total.data.totalPayment.amount.toLocaleString()
+            this.totalAmount = Math.round(this.total?.data?.totalAmount?.amount);
+            this.totalPayment = Math.round(this.total?.data?.totalPayment?.amount)
           }
         );
     } else {
@@ -254,7 +281,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   }
 
   getCatalogOffer(productId) {
-    this.catalogService.getCatalogOffer(productId, this.regionId, null).subscribe(data => {
+    this.catalogService.getCatalogOffer(productId, this.regionId, null, null).subscribe(data => {
       console.log('data catalog', data)
       if(data) {
         this.checkIpv6 = false;

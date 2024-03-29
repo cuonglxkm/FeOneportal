@@ -2,8 +2,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/ip-public']">Ip Public</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">IP Public</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo IP Public</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -13,49 +13,77 @@
     </div>
   </ng-template>
 </page-header>
-<form nz-form [formGroup]="form">
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <span class="text-card-header">Thông tin IP Pulbic</span>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label nzRequired>Dải IP</nz-form-label>
+            <nz-form-label nzFor="name">Dải IP <span class="text-red">*</span>
+              <img
+                style="margin-left: 10px"
+                nz-tooltip="IP sẽ được cấp trong dải IP tương ứng"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              />
+            </nz-form-label>
             <nz-input-group nzCompact>
-              <nz-select nzSize="large" [nzLoading]="loadingIp" [nzDisabled]="disableIp" style="width: 100%;border-radius: 10px;" nzPlaceHolder="--Chọn dải IP--" formControlName="ipSubnet" (nzOpenChange)="caculator(null)">
-                <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.networkId"/>
+              <nz-select nzSize="large" [nzLoading]="loadingIp" [nzDisabled]="disableIp"
+                         style="width: 100%;border-radius: 10px;" nzPlaceHolder="--Chọn dải IP--"
+                         formControlName="ipSubnet" (nzOpenChange)="caculator(null)">
+                <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
               </nz-select>
             </nz-input-group>
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <nz-form-label>Máy ảo</nz-form-label>
+            <nz-form-label>Máy ảo
+              <img
+                style="margin-left: 10px"
+                nz-tooltip="Chọn máy ảo để gắn thêm IP Public"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+              /></nz-form-label>
             <nz-input-group nzCompact>
-              <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse" [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%" nzPlaceHolder="--Chọn máy ảo--" (nzOpenChange)="caculator(null)">
-                <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.id"/>
+              <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse"
+                         [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%"
+                         nzPlaceHolder="--Chọn máy ảo--" (ngModelChange)="caculator(null)">
+                <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.name+'|||'+i.id" />
               </nz-select>
             </nz-input-group>
           </div>
         </div>
         <div style="margin-top: 20px;" *ngIf="checkIpv6 !== null">
-          <nz-form-item>
-            <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }" (ngModelChange)="caculator(null)">IPv6</label>
-          </nz-form-item>
+          <label nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
+                 (ngModelChange)="caculator(null)">IPv6</label>
+          <img
+            style="margin-left: 10px"
+            nz-tooltip="Sử dụng công nghệ Dual Stack cho phép mua kèm IPv6 với IPv4 được tạo ra"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+          />
         </div>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
+            <nz-form-label>Thời gian sử dụng (<span class="text-red">*</span>) - Tháng <img
+              style="margin-left: 10px"
+              nz-tooltip="Thời gian khách hàng mua IP Public để sử dụng, tính theo tháng."
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+            /></nz-form-label>
             <nz-form-item>
               <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                 <nz-input-number
-                  style="width:100%;"
+                  style="width:100%; margin-left: -3px;"
                   formControlName="numOfMonth"
                   (ngModelChange)="caculator($event)"
                   nzMin="1"
                   nzMax="100"
                   nzStep="1"
-                  nzSize="large"/>
+                  nzSize="large" />
                 <ng-template #dateErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                  </ng-container>
                   <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
                   <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
                 </ng-template>
@@ -63,52 +91,66 @@
             </nz-form-item>
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <p  style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
+            <p style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{ dateString | date:'dd/MM/yyyy' }}</p>
           </div>
         </div>
+        <p style="color: red"><b style="color: red">Ngày hết hạn: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
       </nz-card>
     </nz-col>
 
 
-
-
-
-
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate">
-        <h2 class="text-card-header">Thành tiền</h2>
-        <nz-table>
-          <tr class="text-label">
-            <td>Chi phí IP Public</td>
-            <td style="color: #0066B3;" nzAlign="right">
-              <b>{{totalAmount || 0}} VNĐ</b>
-            </td>
-          </tr>
-          <tr class="text-label">
-            <td><i>({{this.form.controls['numOfMonth'].value || 0}} tháng)</i></td>
-            <td nzAlign="right">VNĐ/tháng</td>
-          </tr>
-          <tr class="text-label">
-            <td>Thành tiền</td>
-            <td nzAlign="right" style="color: #EA3829;">
-              <b>{{totalPayment || 0}} VNĐ</b>
-            </td>
-          </tr>
-          <tr class="text-label">
-            <td><i>(Đã bao gồm 10% VAT)</i></td>
-            <td nzAlign="right">VNĐ/tháng</td>
-          </tr>
-        </nz-table>
-          <button class="button-cancel" nz-button nzSize="large" nzType="default" (click)="backToList()">
-            <span nz-icon nzType="close" nzTheme="outline"></span>
-            <span>Hủy</span>
-          </button>
-          <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">
-            <span nz-icon nzType="wallet" nzTheme="outline"></span>
-            <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
-          </button>
-<!--        <button nz-button nzType="default" (click)="backToList()">Quay lại</button>-->
-<!--        <button nz-button nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid"> <span nz-icon nzType="wallet" nzTheme="outline"></span>Tạo IP Public</button>-->
+      <nz-card style="border-radius: 8px" [nzLoading]="loadingCalculate">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Chi phí ước tính</span>
+        </div>
+        <div class="text-value">Dải IP</div>
+        <div style="margin-top: 10px" class="text-label">{{ipName}}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Gắn vào máy ảo</div>
+        <div style="margin-top: 10px" class="text-label">{{VMName}}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div class="text-value">Loại IP</div>
+        <div style="margin-top: 10px" class="text-label">{{checkIpv6 == true ? 'IPv6' : 'IPv4'}}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value"> Chi phí {{ this.form.controls['numOfMonth'].value || 0 }} tháng </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount |number }}
+              VND
+            </span>
+          </nz-col>
+        </nz-row>
+<!--        <nz-row style="margin-bottom: 10px">-->
+<!--          <nz-col style="width: 100%" class="text-right">-->
+<!--            <span class="text-label"> VND/tháng </span>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+        <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-label">Tổng thanh toán</span><br />
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }}VND</span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              <span [style.color]="form.invalid ? 'gray' : 'white'">Khởi tạo</span>
+            </button>
+          </nz-col>
+        </nz-row>
       </nz-card>
     </nz-col>
   </nz-row>

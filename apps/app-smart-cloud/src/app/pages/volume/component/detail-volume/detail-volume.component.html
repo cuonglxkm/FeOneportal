@@ -6,12 +6,15 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/volumes'">
-          Volume
-        </a></nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -34,31 +37,33 @@
         Chi tiết Volume
       </nz-col>
     </nz-row>
-    <div *ngIf="typeVPC == 0" style="display: flex">
-      <div style="margin-right: 8px;">
+    <div *ngIf="!volumeInfo?.bootable">
+      <div *ngIf="typeVPC == 0" style="display: flex">
+        <div style="margin-right: 8px;">
+          <div nz-col nzSpan="4">
+            <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
+                    nz-button
+                    nzType="primary">
+              <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
+            </button>
+          </div>
+        </div>
         <div nz-col nzSpan="4">
-          <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
-                  nz-button
-                  nzType="primary">
-            <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
+          <button class="button-cancel"
+                  (click)="navigateEditVolume(volumeInfo.id)"
+                  nz-button nzType="default">
+            <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
           </button>
         </div>
       </div>
-      <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateEditVolume(volumeInfo.id)"
-                nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
-        </button>
-      </div>
-    </div>
-    <div *ngIf="typeVPC == 1" style="display: flex">
-      <div nz-col nzSpan="4">
-        <button class="button-cancel"
-                (click)="navigateToResizeVPC(volumeInfo.id)"
-                nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
-        </button>
+      <div *ngIf="typeVPC == 1" style="display: flex">
+        <div nz-col nzSpan="4">
+          <button class="button-cancel"
+                  (click)="navigateToResizeVPC(volumeInfo.id)"
+                  nz-button nzType="default">
+            <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+          </button>
+        </div>
       </div>
     </div>
   </ng-template>
@@ -68,12 +73,17 @@
     <span class="text-card-header">Thông tin Volume</span>
     <nz-descriptions [nzColumn]="2" nzBordered style="margin-top: 20px;">
       <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleType"><b>{{ volumeInfo?.volumeType }}</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }}</b></nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleType">
+        <b>
+          <span *ngIf="volumeInfo?.volumeType === 'hdd'">HDD</span>
+          <span *ngIf="volumeInfo?.volumeType === 'ssd'">SSD</span>
+        </b>
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }} GB</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"
-              style="color: #0074CC"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
+              style="color: #0066B3"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
         <span *ngIf="volumeInfo.status === 'ERROR'"
               style="color: #FF3333"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
         <span *ngIf="volumeInfo.status === 'SUSPENDED'"
@@ -101,7 +111,7 @@
       <span>Trạng thái Volume:</span>
     </ng-template>
     <ng-template #titleAttachInstance>
-      <span>Gán vào máy ảo:</span>
+      <span>Gắn vào máy ảo:</span>
     </ng-template>
     <ng-template #titleVolumeType>
       <span>Kiểu Volume:</span>
@@ -109,26 +119,34 @@
     <div style="margin-top: 15px;">
       <b>Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>
     </div>
-    <div style="display: flex;">
+    <div style="display: flex; margin-bottom: 15px;">
       <div style="margin-top: 15px;">
-        <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
+        <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >Mã hóa Volume</label>
       </div>
       <div style="margin-top: 15px; margin-left: 15px;">
-        <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
+        <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled >Gắn nhiều máy ảo</label>
       </div>
     </div>
-    <nz-descriptions [nzColumn]="2" style="margin-top: 15px;" *ngIf="typeVPC == 0">
-      <nz-descriptions-item [nzTitle]="titleCreateDate"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b>
+    <ng-template #titleDescription>
+      <span>Mô tả:</span>
+    </ng-template>
+    <nz-descriptions>
+      <nz-descriptions-item [nzTitle]="titleDescription">
+        <b>{{ volumeInfo?.description }}</b>
       </nz-descriptions-item>
+    </nz-descriptions>
+    <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
+      <nz-descriptions-item [nzTitle]="titleCreateDate"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleExpireDate">
         <span style="color: rgba(235, 20, 20, 0.85)"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
-        <span>Ngày khởi tạo:</span>
+        <span class="text-label">Ngày khởi tạo:</span>
       </ng-template>
       <ng-template #titleExpireDate>
-        <span style="color: rgba(235, 20, 20, 0.85)">Ngày hết hạn:</span>
+        <span style="color: rgba(235, 20, 20, 0.85)" >Ngày hết hạn:</span>
       </ng-template>
+
     </nz-descriptions>
   </nz-card>
 </nz-content>

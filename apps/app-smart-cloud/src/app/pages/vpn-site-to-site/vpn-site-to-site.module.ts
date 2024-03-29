@@ -25,6 +25,7 @@ import { DeleteVpnConnectionComponent } from './manage/vpn-connection/delete/del
 import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/detail-vpn-connection.component';
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
 import { VpnS2sCreateComponent } from './manage/vpn-s2s-create/vpn-s2s-create.component';
+import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vpn-service.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { VpnS2sCreateComponent } from './manage/vpn-s2s-create/vpn-s2s-create.co
     NguCarousel,
     NguCarouselDefDirective,
     NguTileComponent,
+    DetailVpnServiceComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

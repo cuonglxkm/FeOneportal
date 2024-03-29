@@ -68,7 +68,7 @@ export class CreateTopicComponent implements OnInit {
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      name_tp: [null, [Validators.required, Validators.maxLength(255), Validators.pattern(/^[\-a-zA-Z0-9]+$/)]],
+      name_tp: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(255), Validators.pattern(/^[\-a-zA-Z0-9]+$/)]],
       partition: [3, [Validators.required, Validators.max(100), Validators.min(1), Validators.pattern(/^\d+$/)]],
       rep_fac: [3, [Validators.required, Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/)]],
       max_mess: [null],
@@ -307,7 +307,7 @@ export class CreateTopicComponent implements OnInit {
   changePartition() {
     const parControl = this.validateForm.get('partition');
     if (parControl.hasError('required')) {
-      this.errMessPartition = "Partition Không được để trống";
+      this.errMessPartition = "Partition không được để trống";
     } else if (parControl.hasError('max') || parControl.hasError('min') || parControl.hasError('pattern')) {
       this.errMessPartition = "Partition chỉ nằm trong khoảng 1 đến 100";
     }
@@ -316,7 +316,7 @@ export class CreateTopicComponent implements OnInit {
   checkRep() {
     const repControl = this.validateForm.get('rep_fac');
     if (repControl.hasError('required')) {
-      this.errMessRep = "Replication factor Không được để trống";
+      this.errMessRep = "Replication factor không được để trống";
     } else if (repControl.hasError("min") || repControl.hasError("max") || repControl.hasError('pattern')) {
       this.errMessRep = "Replication factor nằm trong khoảng 1 đến 3";
     }

@@ -11,7 +11,7 @@
         Block Storage
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a routerLink="/app-smart-cloud/volumes">Danh sách Volume</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -32,10 +32,10 @@
           <nz-col nzSpan="16">
             <nz-select [(ngModel)]="selectedValue"
                        nzSize="large"
-                       style="margin-right: 10px;"
+                       style="margin-right: 10px; width: 170px;"
                        (ngModelChange)="onChange($event)"
                        nzPlaceHolder="Tất cả trạng thái"
-                       nzTooltipTitle="Tìm kiếm theo trạng thi"
+                       nzTooltipTitle="Tìm kiếm theo trạng thái"
                        nzTooltipPlacement="bottom"
                        nz-tooltip>
               <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
@@ -89,7 +89,7 @@
             <th nzLeft>Tên Volume</th>
             <th nzBreakWord>Dung lượng (GB)</th>
             <th nzBreakWord>IOPS</th>
-            <th nzBreakWord>Trạng thái</th>
+            <th nzBreakWord>Trạng thái Volume</th>
             <th nzBreakWord>Trạng thái tác vụ</th>
             <th nzBreakWord>Máy ảo</th>
             <th nzBreakWord>Thao tác</th>
@@ -98,12 +98,12 @@
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
             <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{data.name}}</a></td>
-            <td nzBreakWord>{{data.sizeInGB}}</td>
-            <td nzBreakWord>
+            <td nzBreakWord nzAlign="right">{{data.sizeInGB}}</td>
+            <td nzBreakWord nzAlign="right">
               <div *ngIf="data.iops == null">200</div>
               <div *ngIf="data.iops != null">{{data.iops}}</div>
             </td>
-            <td nzBreakWord>
+            <td nzBreakWord nzAlign="left">
               <div class="status" [ngSwitch]="data.status">
                                 <span class="available" *ngSwitchCase="'KHOITAO'">
                                             Đang hoạt động
@@ -122,8 +122,8 @@
                                           </span>
               </div>
             </td>
-            <td nzBreakWord>{{ data.serviceStatus }}</td>
-            <td nzBreakWord>
+            <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
+            <td nzBreakWord nzAlign="left">
               <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>
               <div *ngIf="data.attachedInstances != null || data.attachedInstances.length > 0">
                 <div *ngFor="let index of data.attachedInstances">{{index.instanceName}}</div>
@@ -134,11 +134,14 @@
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
+                                          [multiple]="data.isMultiAttach"
+                                          [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkAttachVm()" />
                 <one-portal-detach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [isMultiple]="data.isMultiAttach"
+                                          [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkDetachVm()"/>
                 <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
                       nzTheme="outline" nz-popover
@@ -147,6 +150,7 @@
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
+                                          [volumeName]="data.name"
                                           (onOk)="handleOkDelete()"/>
                 <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
                       [nzDropdownMenu]="opMenu"></span>
@@ -241,7 +245,7 @@
           </nz-row>
           <nz-table #fixedTable2
                     style="margin-top: 20px;"
-                    nzShowPagination
+                    nzShowSizeChanger
                     [nzData]="response?.records"
                     [nzPageSize]="response?.pageSize"
                     (nzPageSizeChange)="onPageSizeChange($event)"
@@ -319,7 +323,7 @@
                         [nzDropdownMenu]="opMenu"></span>
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToCreateScheduleBackup()">Tạo lịch backup</li>
+                      <li nz-menu-item (click)="navigateToCreateScheduleBackup(i.id)">Tạo lịch backup</li>
                       <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
                       <one-portal-update-volume [region]="region" [project]="project" [volume]="i" (onOk)="handleOkUpdate()"/>
                     </ul>

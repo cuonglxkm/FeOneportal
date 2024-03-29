@@ -53,7 +53,8 @@ export class ChartComponent implements AfterViewInit {
         max: endDate.getTime() // Set maximum date to end date
       },
       value: {
-        min: 0 // Optional: Set minimum value for y-axis
+        min: 0, // Optional: Set minimum value for y-axis
+        max: 30
       }
     });
     chartStorageUse.line().position('date*value').shape('smooth');

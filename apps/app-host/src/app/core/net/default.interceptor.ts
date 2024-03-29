@@ -84,7 +84,7 @@ export class DefaultInterceptor implements HttpInterceptor {
    * 刷新 Token 请求
    */
   private refreshTokenRequest() {
-    const model = this.tokenSrv.get();
+    console.log("---refreshTokenRequest---")
     const params = new HttpParams()
       .set('grant_type', 'refresh_token')
       .set('refresh_token', this.tokenSrv.get()?.['refresh_token']);
@@ -92,12 +92,14 @@ export class DefaultInterceptor implements HttpInterceptor {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Basic ' + btoa(environment['sso'].clientId + ':')
     });
+    console.log("---refreshTokenRequest->startAPI---")
     const result = this.httpClient.post<TokenResponse>(this.url + '/connect/token', params.toString(),
       {
         headers,
         responseType: 'json',
         context: new HttpContext().set(ALLOW_ANONYMOUS, true)
       });
+    console.log("---refreshTokenRequest->startAPI->result---"+result)
     return result;
   }
 
@@ -162,7 +164,7 @@ export class DefaultInterceptor implements HttpInterceptor {
    * > Vì yêu cầu đã được bắt đầu nên nó sẽ không được thực hiện lại `@delon/auth` nên cần phải đính kèm lại Mã thông báo mới tùy theo tình hình kinh doanh.
    */
   private reAttachToken(req: HttpRequest<any>, token: any): HttpRequest<any> {
-
+    console.log("---reAttachToken---")
     return req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
@@ -247,6 +249,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log("---Vào hàm intercept---")
     let url = req.url;
     if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
       const {baseUrl} = environment.api;
@@ -261,7 +264,10 @@ export class DefaultInterceptor implements HttpInterceptor {
     return next.handle(newReq).pipe(
       catchError(err => {
         if (err instanceof HttpResponseBase && err.status === 401) {
+          console.log("---Bắt lỗi 401---")
            return this.handle401Error(newReq, next);
+        } else {
+          console.log("---Bắt lỗi nhưng không phải 401---")
         }
         return throwError(err);
       }),
@@ -281,15 +287,19 @@ export class DefaultInterceptor implements HttpInterceptor {
 
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    console.log("---handle401Error---")
     if (!this.isRefreshing) {
+      console.log("---handle401Error->refresh---")
       this.isRefreshing = true;
       this.refreshToken$.next(null);
 
       const token = this.tokenSrv.get()?.['refresh_token'];
-
-      if (token)
+      console.log("TOKEN REFRESH: "+token)
+      if (token) {
+        console.log("---handle401Error->refresh->token---")
         return this.refreshTokenRequest().pipe(
           switchMap((token: any) => {
+            console.log("---handle401Error->pipe1---" + token)
             this.isRefreshing = false;
 
             const helper = new JwtHelperService();
@@ -298,7 +308,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
             const accessToken = token.access_token || '';
             const decodedToken = helper.decodeToken(accessToken);
-
+            console.log("---handle401Error->pipe2---" + accessToken+"/"+decodedToken)
             let addition = {
               token: token.access_token,
               time: token.expires_in,
@@ -306,7 +316,7 @@ export class DefaultInterceptor implements HttpInterceptor {
               refresh_token: token.refresh_token,
             };
             let result =
-            this.tokenSrv.get();
+              this.tokenSrv.get();
             this.tokenSrv.set({
               ...result,
               ...addition
@@ -315,7 +325,7 @@ export class DefaultInterceptor implements HttpInterceptor {
               ...this.settingsSrv.user,
               ...result
             });
-
+            console.log("---handle401Error->pipe3---")
             return next.handle(this.reAttachToken(request, token.access_token));
           }),
           catchError((err) => {
@@ -325,6 +335,14 @@ export class DefaultInterceptor implements HttpInterceptor {
             return throwError(err);
           })
         );
+      } else {
+        console.log("---handle401Error->refresh->token refresh empty---")
+        this.tokenSrv.clear()
+        this.toLogin();
+      }
+
+    } else {
+      console.log("---Vào hàm xử lý 401 nhưng không refreshing---")
     }
 
     return this.refreshToken$.pipe(

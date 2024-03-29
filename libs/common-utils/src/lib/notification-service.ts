@@ -14,7 +14,7 @@ export class NotificationService {
 
   public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
 
-    let hubUrl = 'http://127.0.0.1:1019/notify';
+    let hubUrl = 'https://notification-api.onsmartcloud.com/notify';
 
     var tokenModel = this.tokenService.get();
 
@@ -59,7 +59,7 @@ export class NotificationService {
 
   private registerGlobalNotification(): void {
     this.connection.on('SendMessage', (data: any) => {
-      console.log(`Received message: `, data);
+      //console.log(`Received message: `, data);
       if (data.notificationType != undefined){
         switch (data.notificationType) {
           case "SUCCESS":

@@ -68,7 +68,7 @@ export class VolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    // this.getListVolume(true)
+    this.getListVolume(true)
   }
 
   projectChanged(project: ProjectModel) {
@@ -162,11 +162,13 @@ export class VolumeComponent implements OnInit {
 
   //detach
   handleOkDetachVm() {
-    this.getListVolume(false);
+    setTimeout(() => {
+      this.getListVolume(false);
+    }, 1500)
   }
 
   handleOkDelete() {
-    this.getListVolume(false);
+    this.getListVolume(true);
   }
 
   //update
@@ -204,6 +206,9 @@ export class VolumeComponent implements OnInit {
     this.volumeService.model.subscribe(data => {
       console.log(data);
     });
+    if(!this.region && !this.project){
+      this.router.navigate(['/exception/500'])
+    }
     // this.getListVm()
     // this.getListVolume(true)
     if (this.notificationService.connection == undefined) {

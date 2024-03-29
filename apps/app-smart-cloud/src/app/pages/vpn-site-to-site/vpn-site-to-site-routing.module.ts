@@ -9,6 +9,7 @@ import { CreateIkePoliciesComponent } from "./manage/ike-policies/create/create-
 import { EditVpnConnectionComponent } from "./manage/vpn-connection/edit/edit-vpn-connection.component";
 import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/detail-vpn-connection.component";
 import { VpnS2sCreateComponent } from "./manage/vpn-s2s-create/vpn-s2s-create.component";
+import { DetailVpnServiceComponent } from "./manage/vpn-service/detail/detail-vpn-service.component";
 
 const routes: Routes = [
   {
@@ -46,6 +47,10 @@ const routes: Routes = [
   {
     path: 'ike-policies/create',
     component: CreateIkePoliciesComponent,
+  },
+  {
+    path: 'vpn-service/:id',
+    component: DetailVpnServiceComponent,
   }
 ];
 

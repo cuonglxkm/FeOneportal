@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  BlockStorageAttachments,
   InstancesModel,
   Network,
   SecurityGroupModel,
@@ -16,6 +17,7 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { RegionModel } from 'src/app/shared/models/region.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -36,7 +38,7 @@ export class InstancesDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService,
+    public message: NzMessageService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -107,6 +109,19 @@ export class InstancesDetailComponent implements OnInit {
         this.listIPLanStr = listIPLan.join(', ');
         this.cdr.detectChanges();
       });
+  }
+
+  onReloadInstanceDetail(data: any) {
+    if (data == 'REBOOT') {
+      this.route.navigate(['/app-smart-cloud/instances']);
+    } else {
+      setTimeout(() => {
+        this.dataService.getById(this.id, true).subscribe((data: any) => {
+          this.instancesModel = data;
+          this.cdr.detectChanges();
+        });
+      }, 5000);
+    }
   }
 
   onRegionChange(region: RegionModel) {

@@ -19,7 +19,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -80,43 +80,66 @@ export class InstancesExtendComponent implements OnInit {
         });
       this.cdr.detectChanges();
     });
+    this.onChangeTime();
   }
 
-  listIPStr = '';
+  listIPPublicStr = '';
+  listIPLanStr = '';
   getListIpPublic() {
     this.service
       .getPortByInstance(this.id, this.regionId)
       .subscribe((dataNetwork: any) => {
-        let listOfDataNetwork: Network[] = dataNetwork.filter(
+        //list IP public
+        let listOfPublicNetwork: Network[] = dataNetwork.filter(
           (e: Network) => e.isExternal == true
         );
-        let listIP: string[] = [];
-        listOfDataNetwork.forEach((e) => {
-          listIP = listIP.concat(e.fixedIPs);
+        let listIPPublic: string[] = [];
+        listOfPublicNetwork.forEach((e) => {
+          listIPPublic = listIPPublic.concat(e.fixedIPs);
         });
-        this.listIPStr = listIP.join(', ');
+        this.listIPPublicStr = listIPPublic.join(', ');
+
+        //list IP Lan
+        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        let listIPLan: string[] = [];
+        listOfPrivateNetwork.forEach((e) => {
+          listIPLan = listIPLan.concat(e.fixedIPs);
+        });
+        this.listIPLanStr = listIPLan.join(', ');
         this.cdr.detectChanges();
       });
   }
 
-  onChangeTime(event: any) {
-    if (event == 0) {
-      this.isDisable = true;
-      this.totalAmount = 0;
-      this.totalincludesVAT = 0;
-      this.newExpiredDate = '';
-    } else {
-      this.isDisable = false;
-      let expiredDate = new Date(this.instancesModel.expiredDate);
-      expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-      this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-      this.getTotalAmount();
-    }
+  dataSubjectTime: Subject<any> = new Subject<any>();
+  changeTime(value: number) {
+    this.dataSubjectTime.next(value);
+  }
+  onChangeTime() {
+    this.dataSubjectTime
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (res == 0) {
+          this.isDisable = true;
+          this.totalAmount = 0;
+          this.totalincludesVAT = 0;
+          this.newExpiredDate = '';
+        } else {
+          this.isDisable = false;
+          let expiredDate = new Date(this.instancesModel.expiredDate);
+          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+          this.getTotalAmount();
+        }
+      });
   }
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = null;
+    this.instanceExtend.serviceName = 'Gia hạn';
     this.instanceExtend.customerId = this.customerId;
     this.instanceExtend.vpcId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
@@ -153,24 +176,14 @@ export class InstancesExtendComponent implements OnInit {
     });
   }
 
-  isVisibleExtend: boolean = false;
-  showModal() {
-    this.isVisibleExtend = true;
-  }
-
-  handleCancelExtend() {
-    this.isVisibleExtend = false;
-  }
-
   handleOkExtend(): void {
-    this.isVisibleExtend = false;
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();
     orderItemInstanceResize.orderItemQuantity = 1;
     orderItemInstanceResize.specification = specificationInstance;
     orderItemInstanceResize.specificationType = 'instance_extend';
-    orderItemInstanceResize.price = this.totalincludesVAT;
+    orderItemInstanceResize.price = this.totalAmount / this.numberMonth;
     orderItemInstanceResize.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstanceResize);
 
@@ -184,6 +197,14 @@ export class InstancesExtendComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: this.order, path: returnPath },
     });
+  }
+
+  onRegionChange(region: any) {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  onProjectChange(project: any) {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToEdit() {
