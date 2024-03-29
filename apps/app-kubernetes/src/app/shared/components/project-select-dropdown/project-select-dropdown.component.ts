@@ -24,7 +24,8 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   projectChange(project: ProjectModel) {
     localStorage.setItem('projectId', project.id + "")
-    this.userChanged.emit(project);
+    // this.userChanged.emit(project);
+    this.valueChanged.emit(project);
   }
 
   ngOnInit(): void {

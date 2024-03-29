@@ -255,7 +255,6 @@ export class ClusterComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.projectInfraId = project.id;
-    console.log(this.projectInfraId);
     this.getVlanNetwork(this.projectInfraId);
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
 

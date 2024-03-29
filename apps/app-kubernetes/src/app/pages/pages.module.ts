@@ -35,6 +35,7 @@ import { ProgressPipe } from '../pipes/progress.pipe';
 import { CheckUpgradeVersionPipe } from '../pipes/check-version.pipe';
 import { ClusterComponent } from './cluster/cluster.component';
 import { OverallComponent } from './overall/overall.component';
+import { Action2Label } from '../pipes/action2label.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -51,6 +52,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     TruncateLabel,
     CalculateDate,
     ProgressPipe,
+    Action2Label,
     CheckUpgradeVersionPipe,
     LogsComponent,
     OverallComponent,

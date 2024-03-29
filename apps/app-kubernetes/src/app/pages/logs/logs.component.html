@@ -27,8 +27,8 @@
       <div class="mleft-16 w-20">
         <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="searchLogs()"
           [nzPlaceHolder]="'Chọn nhóm worker'" class="w-100" nzSize="large">
-          <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
-            [nzValue]="rt.value"></nz-option>
+          <nz-option *ngFor="let item of listOfWorkerGroupName" [nzLabel]="item"
+            [nzValue]="item"></nz-option>
         </nz-select>
       </div>
 
@@ -41,6 +41,10 @@
           [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"
         ></nz-range-picker>
       </div>
+    </div>
+
+    <div class="mb-1">
+      <small class="delete-color"><i>Hệ thống chỉ lưu nhật ký trong 30 ngày gần đây</i></small>
     </div>
 
     <!-- table -->
@@ -61,8 +65,24 @@
           <td>{{ item.userAction }}</td>
           <td>{{ item.resourceType }}</td>
           <td>{{ item.resource }}</td>
-          <td>{{ item.operation }}</td>
-          <td>{{ item.note }}</td>
+          <td>{{ item.operation | action2label }}</td>
+          <td>
+            <ng-container *ngIf="item.note?.length <= 30; else truncateValueTpl">
+              {{ item.note }}
+            </ng-container>
+            <ng-template #truncateValueTpl>
+              <div nz-popover
+                nzPopoverTitle="Nội dung"
+                [nzPopoverContent]="contentTpl"
+                nzPopoverPlacement="bottom">
+                {{item.note | truncateLabel}}
+              </div>
+
+              <ng-template #contentTpl>
+                <div style="width: fit-content">{{item.note}}</div>
+              </ng-template>
+            </ng-template>
+          </td>
           <td class="center-align">{{ item.opTime | date: 'dd/MM/yyyy' }}</td>
         </tr>
       </tbody>

@@ -30,6 +30,10 @@ h3 {
   font-size: 20px;
 }
 
+small {
+  font-size: 13px;
+}
+
 .w-100 {
   width: 100%;
 }
