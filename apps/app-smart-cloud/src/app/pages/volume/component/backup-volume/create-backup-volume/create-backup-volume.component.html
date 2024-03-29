@@ -1,9 +1,11 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Volume'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo mới Backup Volume'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Volume</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Tạo mới</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Backup Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới Backup Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -29,13 +31,19 @@
 </nz-card>
 <nz-card>
   <span class="text-card-header">Thông tin Backup Volume</span>
-  <form #myForm="ngForm" nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <form #myForm="ngForm" nz-form [formGroup]="form" [nzLayout]="'vertical'" style="margin-top: 15px;">
     <nz-row nzJustify="space-between" nzGutter="24">
       <nz-col nzSpan="12">
         <nz-form-item>
           <nz-form-label>
             <span>Tên backup</span>
-            <span nz-typography nzType="danger" style="color: red">*</span>
+            (<span style="color: red">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  style="margin-top: 2px; margin-left: 4px;"
+                  nz-popover
+                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
+                  nzPopoverPlacement="bottom"></span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input nz-input
@@ -44,7 +52,7 @@
                    class="input-custom"
                    formControlName="name" style="width: 100%" />
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Backup</ng-container>
+              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Backup Volume</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
