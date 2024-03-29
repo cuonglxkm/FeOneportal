@@ -88,7 +88,8 @@ export class EditVpnConnectionComponent implements OnInit {
 
   getData(): any {
     this.formEditVpnConnection.customerId = this.tokenService.get()?.userId;
-    this.formEditVpnConnection.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.formEditVpnConnection.id =
+      this.activatedRoute.snapshot.paramMap.get('id');
     this.formEditVpnConnection.regionId = this.region;
     this.formEditVpnConnection.projectId = this.project;
     this.formEditVpnConnection.name = this.vpnConnection?.name;

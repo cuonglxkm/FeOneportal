@@ -83,7 +83,7 @@
       <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"
-              style="color: #0074CC"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
+              style="color: #0066B3"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
         <span *ngIf="volumeInfo.status === 'ERROR'"
               style="color: #FF3333"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
         <span *ngIf="volumeInfo.status === 'SUSPENDED'"
@@ -141,7 +141,7 @@
         <span style="color: rgba(235, 20, 20, 0.85)"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
-        <span>Ngày khởi tạo:</span>
+        <span class="text-label">Ngày khởi tạo:</span>
       </ng-template>
       <ng-template #titleExpireDate>
         <span style="color: rgba(235, 20, 20, 0.85)" >Ngày hết hạn:</span>
