@@ -302,6 +302,16 @@ export class EditVolumeComponent implements OnInit {
     });
   }
 
+  formatNumber(number) {
+    if (number % 1 !== 0) {
+      let roundedNumber = number.toFixed(1);
+      let parts = roundedNumber.split('.');
+      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + parts[1];
+    } else {
+      return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+  }
+
   getTotalAmount() {
     this.volumeInit()
     let itemPayment: ItemPayment = new ItemPayment();
