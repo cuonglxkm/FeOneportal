@@ -162,7 +162,9 @@ export class VolumeComponent implements OnInit {
 
   //detach
   handleOkDetachVm() {
-    this.getListVolume(false);
+    setTimeout(() => {
+      this.getListVolume(false);
+    }, 1500)
   }
 
   handleOkDelete() {

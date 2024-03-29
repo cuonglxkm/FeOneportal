@@ -103,7 +103,7 @@
                     [nzMessage]="'Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
                     nzShowIcon>
           </nz-alert>
-          <nz-form-item style="margin-top: 10px;">
+          <nz-form-item style="margin-top: 10px; margin-bottom: 10px;">
             <nz-form-label nzFor="storage">
               <div class="label">
                 <span>Dung lượng bổ sung</span>
@@ -130,16 +130,20 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
               <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  <b>Đơn giá: </b> {{ formatNumber(orderItem?.orderItemPrices[0]?.unitPricePerDay.amount / 30)}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
-                </span>
+                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount }} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}} </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                  <b>Đơn giá: </b> 0 VND/GB/ngày
+                  Đơn giá: 0 VND
                 </span>
               </div>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Ngày điều chỉnh: {{ now() | date: 'dd/MM/yyyy' }}</span>
             </nz-form-label>
           </nz-form-item>
         </nz-card>
