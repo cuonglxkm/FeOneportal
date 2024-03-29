@@ -26,7 +26,7 @@ spec:
             - name: APP_SMART_CLOUD_URL
               value: https://appsmartcloud.onsmartcloud.com
             - name: APP_KUBERNETES_URL
-              value: https://appkubernetes.onsmartcloud.com
+              value: https://appk8s.onsmartcloud.com
             - name: BASE_URL
               value: https://api.onsmartcloud.com
             - name: ISSUER
@@ -36,7 +36,7 @@ spec:
             - name: LOGOUT_CALLBACK
               value: https://oneportal.onsmartcloud.com
             - name: SCOPE
-              value: openid profile email
+              value: openid profile email offline_access
       imagePullSecrets:
         - name: regcred
 ---
