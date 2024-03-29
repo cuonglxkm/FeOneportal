@@ -70,19 +70,14 @@
                 <span class="text-label" style="width: 35%">Hệ điều hành:</span>
                 <span class="text-value-detail"
                   >{{ instancesModel.imageName }}
-                  <a
-                    class="text-blue"
+                  <img
+                    style="cursor: pointer; margin-left: 10px"
+                    nz-tooltip="Thay đổi"
+                    src="assets/imgs/refresh.svg"
+                    alt=""
                     (click)="navigateToChangeImage()"
-                    style="margin-left: 15px"
-                  >
-                    <img src="assets/imgs/undo.png" alt="" /><span
-                      style="margin-left: 15px"
-                      >Thay đổi</span
-                    ></a
-                  ></span
-                >
-              </nz-row></nz-col
-            >
+                /></span> </nz-row
+            ></nz-col>
           </nz-row>
           <nz-row style="background-color: #e2e2e9">
             <nz-col nzSpan="12">
@@ -352,14 +347,14 @@
                         [nzMin]="0"
                         [nzMax]="1000"
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="1000"
@@ -386,14 +381,14 @@
                         [nzMin]="0"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeRam()"
+                        (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeRam()"
+                        (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -421,14 +416,14 @@
                         [nzMin]="0"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
