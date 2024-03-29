@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   ImageTypesModel,
   Image,
@@ -89,7 +88,6 @@ export class InstancesEditInfoComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
@@ -226,27 +224,18 @@ export class InstancesEditInfoComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
-  modify(): void {
-    this.modalSrv.create({
-      nzTitle: 'Xác nhận thay đổi hệ điều hành',
-      nzContent:
-        'Quý khách chắn chắn muốn thực hiện thay đổi hệ điều hành máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.save();
-      },
-    });
+  isVisibleUpdate: boolean = false;
+  showModalUpdate() {
+    this.isVisibleUpdate = true;
   }
-
-  save(): void {
+  handleOkUpdate() {
+    this.isVisibleUpdate = false;
     this.rebuildInstances.regionId = this.instancesModel.regionId;
     this.rebuildInstances.customerId = this.instancesModel.customerId;
     this.rebuildInstances.imageId = this.hdh;
     this.rebuildInstances.id = this.instancesModel.id;
     this.dataService.rebuild(this.rebuildInstances).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.notification.success('', 'Thay đổi hệ điều hành thành công');
         this.returnPage();
       },
@@ -257,6 +246,9 @@ export class InstancesEditInfoComponent implements OnInit {
         );
       },
     });
+  }
+  handleCancelUpdate() {
+    this.isVisibleUpdate = false;
   }
 
   navigateToEdit() {

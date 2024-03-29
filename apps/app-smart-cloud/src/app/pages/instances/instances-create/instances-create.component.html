@@ -1271,18 +1271,12 @@
                   totalAmountVolume +
                   totalAmountIPv4 +
                   totalAmountIPv6) /
-                  numberMonth | number
+                  numberMonth | number: '1.0-0'
               }}
               VND
             </span>
           </nz-col>
         </nz-row>
-        <nz-row style="margin-bottom: 10px">
-          <nz-col style="width: 100%" class="text-right">
-            <span class="text-label"> VND/tháng </span>
-          </nz-col>
-        </nz-row>
-
         <nz-row
           style="
             margin-bottom: 20px;
@@ -1302,7 +1296,7 @@
                 totalincludesVAT +
                   totalAmountVolumeVAT +
                   totalAmountIPv4VAT +
-                  totalAmountIPv6VAT | number
+                  totalAmountIPv6VAT | number: '1.0-0'
               }}
               VND
             </span>

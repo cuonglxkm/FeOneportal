@@ -21,7 +21,7 @@
              [nzXXl]="12">
           <div style="display:flex;">
             <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="large"
-                       style="width: 170px; margin-right: 20px;">
+                       style="width: 140px; margin-right: 20px;">
               <nz-option *ngFor="let p of statusData" [nzValue]="p.value" [nzLabel]="p.name"></nz-option>
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
@@ -60,13 +60,12 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfIp">
-          <td
-            style="color: #0D67B0">{{ item.ipAddress === null || item.ipAddress === '' ? item.iPv6Address : item.ipAddress }}</td>
+          <td>{{ item.ipAddress === null || item.ipAddress === '' ? item.iPv6Address : item.ipAddress }}</td>
           <td>{{item.createDate | date : "dd/MM/YYYY"}}</td>
           <td>{{item.expiredDate | date : "dd/MM/YYYY"}}</td>
           <!--          <td>{{ item.ipAddress === null || item.ipAddress === '' ? 'IPv6' : 'IPv4' }}</td>-->
           <td>{{ item.attachedVm }}</td>
-          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>
+          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: #0066B3">Đang hoạt động</td>
           <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>
           <td *ngIf="item.status === 0">-</td>
           <td *ngIf="item.status === 2">IN-USE</td>
@@ -82,7 +81,7 @@
                    (click)="openIpMounted('Gỡ Ip Pulbic', item.id)"/>
               <!---Gia Han------>
               <img *ngIf="projectType != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
-                   nz-tooltip nzTooltipTitle="Gia Hạn IP Pulbic" nzTooltipPlacement="bottom"
+                   nz-tooltip nzTooltipTitle="Gia hạn IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia Hạn Ip Pulbic', item.id)"/>
               <!----Xóa---->
               <img src="assets/imgs/delete.svg" style="height: 20px"
@@ -109,9 +108,9 @@
 </nz-card>
 
 <!--Gắn-->
-<nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="Gắn Ip Public" (nzOnCancel)="handleCancel()" (nzOnOk)="Mounted()"
+<nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="Gắn IP Public" (nzOnCancel)="handleCancel()" (nzOnOk)="Mounted()"
           nzOkText="Xác nhận"
-          nzCancelText="Hủy" [nzStyle]="modalStyle">
+          nzCancelText="Hủy" [nzStyle]="modalStyle" [nzOkDisabled]="instanceSelected == '' ? true : false">
   <ng-container *nzModalContent>
     <h4>Máy ảo</h4>
     <nz-select [nzLoading]="loadingAtt" [nzDisabled]="disableAtt" [(ngModel)]="instanceSelected" style="width: 100%"
@@ -122,19 +121,19 @@
 </nz-modal>
 
 <!--Gỡ-->
-<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ Ip Public" (nzOnCancel)="handleCancel()" (nzOnOk)="openIpRemove()"
+<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ IP Public" (nzOnCancel)="handleCancel()" (nzOnOk)="openIpRemove()"
           nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>
-<!--    <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>-->
-<!--    <br>-->
-<!--    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>-->
+<!--    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>-->
+    <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>
+    <br>
+    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>
   </ng-container>
 </nz-modal>
 
 <!--Xóa-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa IP Public" (nzOnCancel)="handleCancel()"
           (nzOnOk)="openIpDelete()" nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>

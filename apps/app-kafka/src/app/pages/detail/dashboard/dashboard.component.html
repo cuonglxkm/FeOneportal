@@ -1,60 +1,59 @@
 <div nz-row nzGutter="16" class="general" *ngIf="isHealth !== null">
-    <div class="title-cluster">
+    <div class="title-cluster" style="width: 100%; margin-bottom: 15px;">
         Trạng thái cluster
     </div>
-    <nz-divider></nz-divider>
     <ng-container *ngIf="isHealth === clusterHealth; else otherHealth">
-        <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
-            <div nz-row nzType="flex" nzAlign="middle" class="div-check p-md">
-                <label class="text-check">HEALTH</label>
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="div-check div-status-cluster p-md">
                 <span class="text-health">Cluster</span>
+                <label class="text-check">HEALTH</label>
             </div>
         </div>
     </ng-container>
     
     <ng-template #otherHealth>
         <ng-container *ngIf="isHealth === clusterUnHealth; else warningHealth">
-            <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
-                <div nz-row nzType="flex" nzAlign="middle" class="div-unhealth p-md" nz-tooltip
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
+                <div nz-row nzType="flex" nzAlign="middle" class="div-unhealth div-status-cluster p-md" nz-tooltip
                     [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ef5350'" nzTooltipPlacement="bottom"
                     nzTooltipOverlayClassName="tooltip-health">
-                    <label class="text-check">UNHEALTH</label>
                     <span class="text-health">Cluster</span>
+                    <label class="text-check">UNHEALTH</label>
                 </div>
             </div>
         </ng-container>
     </ng-template>
 
     <ng-template #warningHealth>
-        <div nz-col nzXs="24" nzSm="12" nzMd="4" class="mb-md">
-            <div nz-row nzType="flex" nzAlign="middle" class="div-warning p-md" nz-tooltip
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
+            <div nz-row nzType="flex" nzAlign="middle" class="div-warning div-status-cluster p-md" nz-tooltip
                 [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ffa31a'" nzTooltipPlacement="bottom"
                 nzTooltipOverlayClassName="tooltip-health">
-                <label class="text-check">WARNING</label>
                 <span class="text-health">Cluster</span>
+                <label class="text-check">WARNING</label>
             </div>
         </div>
     </ng-template>
 
-    <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
+    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
             <div class="sum-value">{{ statisticsNumber.topic }}</div>
             <label class="text-nowrap mb0 sum-lbl">Tổng số topic</label>
         </div>
     </div>
-    <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
+    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
             <div class="sum-value">{{statisticsNumber.partition}}</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số partition</p>
         </div>
     </div>
-    <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
+    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
             <div class="sum-value">{{statisticsNumber.message}}</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số message</p>
         </div>
     </div>
-    <div nz-col nzXs="24" nzSm="12" nzMd="5" class="mb-md">
+    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
             <div class="sum-value" [style.color]="getOffParColor()">{{statisticsNumber.offline_partition}}</div>
             <p class="text-nowrap mb0 sum-lbl">Tổng số partition offline</p>
@@ -62,12 +61,12 @@
     </div>
 </div>
 
-<div nz-row nzGutter="16">
+<div nz-row nzGutter="16" class="general-2">
     <div nz-col nzXs="24" nzMd="24">
-        <nz-card [nzTitle]="healthCheck" [nzBordered]="false">
-            <ng-template #healthCheck>
-                <span class="card-title">Health check</span>
-            </ng-template>
+        <nz-card [nzBordered]="false">
+            <div class="title-card" style="width: 100%;">
+                Health check
+            </div>
             <div id="health-chart">
                 <apx-chart *ngIf="chartHealthCheck && chartHealthCheck.series" [series]="chartHealthCheck.series"
                     [chart]="chartHealthCheck.chart" [xaxis]="chartHealthCheck.xaxis" [yaxis]="chartHealthCheck.yaxis"
@@ -80,21 +79,20 @@
     </div>
 </div>
 
-<div nz-row nzGutter="16">
+<div nz-row nzGutter="16" class="general-2">
     <div nz-col nzXs="24" nzMd="24">
-        <nz-card [nzTitle]="chartStat" [nzBordered]="false">
-            <ng-template #chartStat>
-                <span class="card-title">Biểu đồ giám sát</span>
+        <nz-card [nzBordered]="false">
+            <div class="title-card" style="width: 100%; margin-bottom: 20px;">
+                <span>Biểu đồ giám sát</span>
                 <div class="stats-chart">
-                    <button id="btn-refresh" nz-button nzType="default" style="margin-right: 15px;" (click)="getInfo4Chart()">
-                        <span nz-icon nzType="reload" nzTheme="outline"></span>
-                        Refresh
+                    <button id="btn-refresh" nz-button nzType="default" (click)="getInfo4Chart()">
+                        <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
                     </button>
-                    <nz-select id="range-time" [(ngModel)]="previousTimeMins" (ngModelChange)="onChangeTime()">
+                    <nz-select id="range-time" [(ngModel)]="previousTimeMins" (ngModelChange)="onChangeTime()" nzSize="large">
                         <nz-option *ngFor="let time of listRangeTime" [nzLabel]="time.label" [nzValue]="time.value"></nz-option>
                     </nz-select>
                 </div>
-            </ng-template>
+            </div>
             <!-- Giám sát Producers -->
             <div nz-row style="margin-bottom: 30px;">
                 <div nz-col nzXs="24" nzMd="11">
@@ -134,8 +132,7 @@
                 <!-- Giám sát Storage -->
                 <div nz-col nzXs="24" nzMd="11">
                     <div style="min-height: 32px; text-align: right;">
-                        <label class="lbl-unit">Đơn vị Storage: </label>
-                        <nz-select id="cbx-unit" [(ngModel)]="unitStorage" (ngModelChange)="onChangeUnitStorage()">
+                        <nz-select id="cbx-unit" [(ngModel)]="unitStorage" (ngModelChange)="onChangeUnitStorage()" nzSize="large">
                             <nz-option *ngFor="let unit of listUnit" [nzLabel]="unit.label" [nzValue]="unit.value"></nz-option>
                         </nz-select>
                     </div>

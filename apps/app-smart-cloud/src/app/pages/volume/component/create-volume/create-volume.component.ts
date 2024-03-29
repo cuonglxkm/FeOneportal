@@ -33,6 +33,8 @@ import { OrderItem } from 'src/app/shared/models/price';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { ProjectService } from '../../../../shared/services/project.service';
 import { getCurrentRegionAndProject } from '@shared';
+import { Product } from '../../../../shared/models/catalog.model';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-create-volume',
@@ -137,12 +139,7 @@ export class CreateVolumeComponent implements OnInit {
     isMultiAttach: FormControl<boolean>;
   }> = this.fb.group({
     name: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9\s]+$/),
-        this.duplicateNameValidator.bind(this),
-      ],
+      null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)],
     ],
     isSnapshot: [false, []],
     snapshot: [null as number, []],
@@ -176,6 +173,10 @@ export class CreateVolumeComponent implements OnInit {
   typeMultiple: boolean;
   typeEncrypt: boolean;
 
+  listProducts: Product[]
+
+  dataSubjectStorage: Subject<any> = new Subject<any>();
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -189,22 +190,20 @@ export class CreateVolumeComponent implements OnInit {
     private catalogService: CatalogService,
     private projectService: ProjectService
   ) {
+    this.validateForm.get('radio').valueChanges.subscribe((value) => {
+        this.selectedValueRadio = value
+        this.getTotalAmount()
+    })
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
     });
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if ([1, 2].includes(this.region)) {
-        if (value < 20) return (this.iops = 0);
-        if (value <= 200) return (this.iops = 600);
-        if (value <= 500) return (this.iops = 1200);
-        if (value <= 1000) return (this.iops = 3000);
-        if (value <= 2000) return (this.iops = 6000);
-      }
-      if ([3, 4].includes(this.region)) {
-        if (value < 40) return (this.iops = 400);
-        this.iops = value * 10;
+      if(this.volumeCreate.volumeType == 'hdd') return (this.iops = 300)
+      if(this.volumeCreate.volumeType == 'ssd') {
+        if(value <= 40) return (this.iops = 400);
+        this.iops = value * 10
       }
     });
   }
@@ -219,17 +218,17 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
-  getCatalogOffer(productId) {
+  getCatalogOffer(type) {
     this.catalogService
-      .getCatalogOffer(productId, this.region, null)
+      .getCatalogOffer(null, this.region, null, type)
       .subscribe((data) => {
         console.log('data catalog', data);
-        if (data) {
-          if (productId == 90) {
-            this.typeMultiple = true;
+        if (data[0]?.regions[0]?.regionId == this.region) {
+          if(type == 'MultiAttachment') {
+            this.typeMultiple = true
           }
-          if (productId == 92) {
-            this.typeEncrypt = true;
+          if(type == 'Encryption') {
+            this.typeEncrypt = true
           }
         } else {
           this.typeMultiple = false;
@@ -275,8 +274,9 @@ export class CreateVolumeComponent implements OnInit {
 
     this.getListSnapshot();
     this.getListInstance();
-    this.getCatalogOffer(90);
-    this.getCatalogOffer(92);
+
+    // this.getCatalogOffer('MultiAttachment')
+    // this.getCatalogOffer('Encryption')
 
     this.getListVolumes();
     //
@@ -290,6 +290,9 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
+    if(this.isInitSnapshot == true) {
+      this.validateForm.controls.snapshot.setValidators(Validators.required)
+    }
   }
 
   snapshotSelectedChange(value: number) {
@@ -298,6 +301,18 @@ export class CreateVolumeComponent implements OnInit {
 
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
+    // this.iops = this.validateForm.get('storage').value * 10
+    if(this.selectedValueRadio == 'hdd') {
+      this.iops = 300
+    }
+    if(this.selectedValueRadio == 'ssd') {
+      if(this.validateForm.get('storage').value <= 40) {
+        this.iops = 400
+      } else {
+        this.iops = this.validateForm.get('storage').value * 10
+      }
+    }
+
   }
 
   //get danh sách máy ảo
@@ -357,7 +372,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-
+    this.volumeCreate.iops = this.iops
     let currentDate = new Date();
     let lastDate = new Date();
     if (this.timeSelected == undefined || this.timeSelected == null) {
@@ -401,7 +416,7 @@ export class CreateVolumeComponent implements OnInit {
 
   changeValueInput() {
     console.log('total amount');
-    this.getTotalAmount();
+    this.getTotalAmount()
   }
 
   navigateToPaymentSummary() {
@@ -441,7 +456,9 @@ export class CreateVolumeComponent implements OnInit {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
-    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+    this.instanceService.getTotalAmount(dataPayment)
+      .pipe(debounceTime(500))
+      .subscribe((result) => {
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -466,166 +483,21 @@ export class CreateVolumeComponent implements OnInit {
       this.loadProjects();
     }
 
-    if ([1, 2].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) this.iops = 0;
-    }
-    if ([3, 4].includes(this.region)) {
-      if (this.validateForm.controls.storage.value < 20) this.iops = 400;
-    }
-
     this.getListSnapshot();
     this.getListInstance();
-    this.getCatalogOffer(90);
-    this.getCatalogOffer(92);
+
+
 
     this.getListVolumes();
 
     this.date = new Date();
     this.getTotalAmount();
+
+
+
+    // this.getCatalogOffer('MultiAttachment')
+    // this.getCatalogOffer('Encryption')
   }
-
-  submitForm() {
-    this.nameList = [];
-    if (this.validateForm.valid) {
-      console.log(this.validateForm.value);
-      this.doCreateVolume();
-    } else {
-      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin');
-    }
-  }
-
-  //
-  doCreateVolume() {
-    this.isLoadingAction = true;
-    this.getTotalAmount();
-    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
-    request.customerId = this.volumeCreate.customerId;
-    request.createdByUserId = this.volumeCreate.customerId;
-    request.note = 'tạo volume';
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.volumeCreate),
-        specificationType: 'volume_create',
-        price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: this.validateForm.controls.time.value,
-      },
-    ];
-
-    console.log(request);
-    this.volumeService.createNewVolume(request).subscribe(
-      (data) => {
-        if (data != null) {
-          //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
-          if (data.code == 200) {
-            this.isLoadingAction = false;
-            this.notification.success(
-              'Thành công',
-              'Yêu cầu tạo Volume thành công.'
-            );
-            this.router.navigate(['/app-smart-cloud/volumes']);
-          }
-          //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
-          else if (data.code == 310) {
-            this.isLoadingAction = false;
-            // this.router.navigate([data.data]);
-            window.location.href = data.data;
-          }
-        } else {
-          this.isLoadingAction = false;
-        }
-      },
-      (error) => {
-        this.isLoadingAction = false;
-      }
-    );
-  }
-
-  //
-  //
-  // validateData(): boolean {
-  //   if (!this.createVolumeInfo.serviceName) {
-  //     this.nzMessage.create('error', 'Tên Volume không được để trống.');
-  //     this.showWarningVolumeName = true;
-  //     return false;
-  //   }
-  //   if (!this.createVolumeInfo.volumeType) {
-  //     this.nzMessage.create('error', 'Cần chọn loại Volume.');
-  //     this.showWarningVolumeType = true;
-  //     return false;
-  //   }
-  //   if (!this.volumeExpiryTime) {
-  //     this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
-  //     this.showWarningVolumeExpTime = true;
-  //     return false;
-  //   }
-  //   if (!this.createVolumeInfo.regionId) {
-  //     this.nzMessage.create('error', 'Cần chọn khu vực.');
-  //     return false;
-  //   }
-  //   if (!this.createVolumeInfo.vpcId) {
-  //     this.nzMessage.create('error', 'Cần chọn dự án.');
-  //     return false;
-  //   }
-  //
-  //   return true;
-  // }
-  //
-  // changeVolumeName() {
-  //   this.createVolumeInfo.serviceName = this.createVolumeInfo.serviceName.trim();
-  //   if(this.checkSpecialSnapshotName(this.createVolumeInfo.serviceName)){
-  //     this.showWarningVolumeName = true;
-  //     this.contentShowWarningVolumeName = 'Tên Volume không được chứa ký tự đặc biệt.';
-  //   }else if(this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == ''){
-  //     this.showWarningVolumeName = true;
-  //     this.contentShowWarningVolumeName = 'Tên Volume không được để trống';
-  //   }else{
-  //     this.showWarningVolumeName = false;
-  //     this.contentShowWarningVolumeName = '';
-  //   }
-  //
-  // }
-  //
-  // checkSpecialSnapshotName( str: string): boolean{
-  //   //check ký tự đặc biệt
-  //   const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-  //   return specialCharacters.test(str);
-  // }
-  //
-  // loadSnapshotVolumeInfo(event: any) {
-  //   this.isLoadingAction = true
-  //   this.snapshotvlService.getSnapshotVolumeById(event).subscribe(
-  //     (data) => {
-  //       this.createVolumeInfo.volumeSize = data.sizeInGB;
-  //       this.createVolumeInfo.createFromSnapshotId = Number.parseInt(event);
-  //       this.createVolumeInfo.volumeType = data.iops > 0 ? 'hdd' : 'ssd';
-  //       this.isLoadingAction = false;
-  //     })
-  // }
-  //
-  // getProjectId(project: ProjectModel) {
-  //   this.createVolumeInfo.vpcId = project.id;
-  //   this.getListSnapshot();
-  // }
-  //
-  // async getRegionId(region: RegionModel) {
-  //   this.createVolumeInfo.regionId = region.regionId;
-  //   this.getListSnapshot()
-  //   this.getListVm()
-  // }
-  //
-  // selectEncryptionVolume(value: any) {
-  //   if (value) {
-  //     this.createVolumeInfo.isMultiAttach = !value;
-  //   }
-  //
-  // }
-  //
-  // selectMultiAttachVolume(value: any) {
-  //   if (value) {
-  //     this.createVolumeInfo.isEncryption = !value;
-  //   }
-  // }
   //
   private getListSnapshot() {
     this.isLoadingAction = true;
@@ -637,8 +509,8 @@ export class CreateVolumeComponent implements OnInit {
         1,
         this.region,
         this.project,
-        '', 
-        '', 
+        '',
+        '',
         ''
       )
       .subscribe((data) => {

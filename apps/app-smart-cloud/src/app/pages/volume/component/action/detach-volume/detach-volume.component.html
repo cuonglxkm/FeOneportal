@@ -1,11 +1,18 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-      nzTheme="outline" nz-popover
+<img src="assets/imgs/cancel.svg"
+     [class.disabled]="!isMultiple && instanceInVolume.length <= 0"
+     (click)="showModal()"
+     nzTheme="outline" nz-popover
       [nzPopoverContent]="'Gỡ Volume'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Gỡ máy ảo"
+      nzPopoverPlacement="bottom"
+     style="margin-right: 3px; cursor: pointer"/>
+<!--<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"-->
+<!--      nzTheme="outline" nz-popover-->
+<!--      [nzPopoverContent]="'Gỡ Volume'"-->
+<!--      nzPopoverPlacement="bottom" (click)="showModal()"></span>-->
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Gỡ máy ảo</span>
+    <span class="text-modal-title">Gỡ Volume</span>
   </div>
   <div *nzModalContent>
     <div *ngIf="isMultiple == true">
@@ -20,6 +27,7 @@
         <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
                    [nzValue]="item.instanceId"></nz-option>
       </nz-select>
+      <div *ngIf="isSelected">Vui lòng chọn máy ảo</div>
     </div>
     <div *ngIf="isMultiple == false">
       <div>
@@ -33,7 +41,7 @@
     </button>
     <button nz-button nzType="primary"
             (click)="handleOk()"
-            [nzLoading]="isLoadingDetach"
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
     </button>

@@ -6,12 +6,15 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Dịch vụ</a>
+        Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="'/app-smart-cloud/volumes'">
-          Volume
-        </a></nz-breadcrumb-item>
+        Block Storage
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Điều chỉnh dung lượng Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
@@ -36,7 +39,7 @@
       <nz-descriptions [nzColumn]="2" style="margin-top: 20px;">
         <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleType"><b>{{ volumeInfo?.volumeType }}</b></nz-descriptions-item>
-        <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }}</b></nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }} GB</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
         <nz-descriptions-item [nzTitle]="titleStatus">
               <span *ngIf="volumeInfo?.status === 'KHOITAO'"
@@ -53,6 +56,7 @@
 <!--        <nz-descriptions-item [nzTitle]="titleVolumeType">-->
 <!--          <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>-->
       </nz-descriptions>
+      <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
       <ng-template #titleName>
         <span>Tên Volume</span>
       </ng-template>
