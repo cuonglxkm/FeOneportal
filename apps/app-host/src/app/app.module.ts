@@ -34,7 +34,7 @@ import { default as ngLang } from '@angular/common/locales/en';
 
 
 const LANG = {
-  abbr: 'zh',
+  abbr: 'en',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,
