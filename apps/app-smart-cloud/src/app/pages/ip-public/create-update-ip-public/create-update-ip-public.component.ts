@@ -28,7 +28,7 @@ import {CatalogService} from "../../../shared/services/catalog.service";
 export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
-  checkIpv6: boolean;
+  checkIpv6: boolean = null;
   selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
@@ -91,16 +91,15 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         if (index != -1) {
           this.getCatalogOffer(data[index].id);
         } else {
-          this.checkIpv6 = false;
+          this.checkIpv6 = null;
         }
       } else {
-        this.checkIpv6 = false;
+        this.checkIpv6 = null;
       }
     })
 
     const dateExpired = new Date();
-    dateExpired.setMonth(dateExpired.getMonth() + 1);
-    dateExpired.setDate(dateExpired.getDate() - 1);
+    dateExpired.setDate(dateExpired.getDate() + 30);
     this.dateStringExpired = dateExpired;
   }
 
@@ -132,7 +131,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       duration: 0,
       ipAddress: null,
       offerId: 0,
-      useIPv6: null,
       vpcId: this.projectId,
       oneSMEAddonId: null,
       serviceType: 4,
@@ -163,7 +161,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Tạo Ip Public",
+      note: "Tạo IP Public",
       orderItems: [
         {
           orderItemQuantity: 1,
@@ -187,16 +185,21 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       this.ipName = lstIp[0];
     }
 
-    let lstVm = this.form.controls['instanceSelected'].value.split('|||');
-    if (lstVm.length > 1) {
-      this.VMId = lstVm[1];
-      this.VMName = lstVm[0];
+    const vmSelect = this.form.controls['instanceSelected'].value;
+    if (vmSelect == null) {
+      this.form.controls['instanceSelected'].setValue('');
+      this.VMName = ''
+    } else {
+      let lstVm = vmSelect.split('|||');
+      if (lstVm.length > 1) {
+        this.VMId = lstVm[1];
+        this.VMName = lstVm[0];
+      }
     }
 
     let num = this.form.controls['numOfMonth'].value;
     const dateExpired = new Date();
-    dateExpired.setMonth(dateExpired.getMonth() + Number(num));
-    dateExpired.setDate(dateExpired.getDate() - 1);
+    dateExpired.setDate(dateExpired.getDate() + Number(num)*30);
     this.dateStringExpired = dateExpired;
     if (ip != null && ip != undefined && ip != '' &&
       num != null && num != undefined) {
@@ -213,7 +216,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         duration: 0,
         ipAddress: null,
         offerId: 0,
-        useIPv6: null,
         vpcId: this.projectId,
         oneSMEAddonId: null,
         serviceType: 4,

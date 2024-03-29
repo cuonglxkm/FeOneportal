@@ -165,7 +165,7 @@ export class RenewVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.extendsDto),
         specificationType: 'volume_extend',
-        price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
+        price: this.orderItem?.totalAmount.amount,
         serviceDuration: this.validateForm.controls.time.value
       }
     ];
@@ -215,7 +215,7 @@ export class RenewVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.extendsDto),
           specificationType: 'volume_extend',
-          price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
+          price: this.orderItem?.totalAmount.amount,
           serviceDuration: this.validateForm.controls.time.value
         }
       ];

@@ -70,8 +70,8 @@
           <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{volumeInfo?.iops}}</b></nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo?.status === 'KHOITAO'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
-            <span *ngIf="volumeInfo.status === 'ERROR'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
-            <span *ngIf="volumeInfo.status === 'SUSPENDED'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
+            <span *ngIf="volumeInfo?.status === 'ERROR'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
+            <span *ngIf="volumeInfo?.status === 'SUSPENDED'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleAttachInstance">
             <span *ngIf="listVMs.length > 0"><b>{{listVMs}}</b></span>

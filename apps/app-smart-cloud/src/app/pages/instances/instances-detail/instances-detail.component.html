@@ -36,7 +36,7 @@
       </button>
       <one-portal-instances-btn
         [instancesId]="id"
-        (valueChanged)="onReloadInstanceDetail()"
+        (valueChanged)="onReloadInstanceDetail($event)"
         style="margin-left: 8px"
       >
       </one-portal-instances-btn>
@@ -118,19 +118,14 @@
           <span class="text-label" style="width: 35%">Hệ điều hành:</span>
           <span class="text-value-detail"
             >{{ instancesModel.imageName }}
-            <a
-              class="text-blue"
+            <img
+              style="cursor: pointer; margin-left: 10px"
+              nz-tooltip="Thay đổi"
+              src="assets/imgs/refresh.svg"
+              alt=""
               (click)="navigateToChangeImage()"
-              style="margin-left: 15px"
-            >
-              <img src="assets/imgs/undo.png" alt="" /><span
-                style="margin-left: 15px"
-                >Thay đổi</span
-              ></a
-            ></span
-          >
-        </nz-row></nz-col
-      >
+          /></span> </nz-row
+      ></nz-col>
     </nz-row>
     <nz-row style="background-color: #e2e2e9">
       <nz-col nzSpan="12">

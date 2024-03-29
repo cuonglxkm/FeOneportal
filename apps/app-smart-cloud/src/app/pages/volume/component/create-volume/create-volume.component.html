@@ -200,7 +200,6 @@
                 <span nz-icon nzType="question-circle" style="margin-left: 5px;"
                       nzTheme="outline"
                       nz-popover
-
                       [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
                       nzPopoverPlacement="bottom"></span>
               </div>
@@ -250,7 +249,7 @@
               <nz-col nzSpan="12">
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                   <nz-input-number
-                    style="width:100%; border-radius: 8px;"
+                    style="width:100%; border-radius: 8px; margin-left: 0;"
                     formControlName="time"
                     (ngModelChange)="timeSelectedChange($event)"
                     class="input-custom"
@@ -359,7 +358,7 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">Dung lượng Volume</div>
-          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">IOPS</div>
           <div style="margin-top: 10px" class="text-label">{{ volumeCreate.iops }}</div>

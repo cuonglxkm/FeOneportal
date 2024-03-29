@@ -200,7 +200,6 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   snapshotSelectedChange(value: number) {
     this.snapshotSelected = value;
-
   }
 
   onChangeStatus() {

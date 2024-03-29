@@ -5,12 +5,43 @@
 <nz-dropdown-menu #opMenu="nzDropdownMenu">
   <ul nz-menu>
     <li nz-menu-item (click)="continue()">Gia hạn</li>
-    <li nz-menu-item (click)="openConsole()">Truy cập</li>
-    <li nz-menu-item (click)="showModalRestart()">Khởi động lại</li>
     <li
       *ngIf="
-        instancesModel.taskState != 'SHUTOFF' &&
-        instancesModel.taskState != 'powering-off'
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+        instancesModel.taskState.toUpperCase() != 'RESCUE'
+      "
+      nz-menu-item
+      (click)="openConsole()"
+    >
+      Truy cập
+    </li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
+      "
+      nz-menu-item
+      (click)="showModalRestart()"
+    >
+      Khởi động lại
+    </li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
       "
       nz-menu-item
       (click)="showModalShutdown()"
@@ -19,15 +50,27 @@
     </li>
     <li
       *ngIf="
-        instancesModel.taskState == 'SHUTOFF' ||
-        instancesModel.taskState == 'powering-off'
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        (instancesModel.taskState.toUpperCase() == 'SHUTOFF' ||
+          instancesModel.taskState.toUpperCase() == 'POWERING-OFF')
       "
       nz-menu-item
       (click)="showModalStart()"
     >
       Bật
     </li>
-    <li nz-menu-item (click)="modalResetPassword()">Reset Password</li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR'
+      "
+      nz-menu-item
+      (click)="modalResetPassword()"
+    >
+      Reset Password
+    </li>
     <li nz-menu-item style="color: red" (click)="showModalDelete()">Xóa</li>
   </ul>
 </nz-dropdown-menu>
