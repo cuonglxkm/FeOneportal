@@ -47,7 +47,12 @@ export class UpgradeKafkaComponent implements OnInit {
   createDate: Date;
   expiryDate: Date;
   kafkaUpgradeDto: KafkaUpgradeReq = new KafkaUpgradeReq();
+  ram: number;
+  cpu: number;
   storage: number;
+  pricePerRam = 200000;
+  pricePerCpu = 100000;
+  pricePerStorage = 150000;
 
   constructor(
     private fb: FormBuilder,
@@ -83,6 +88,8 @@ export class UpgradeKafkaComponent implements OnInit {
             this.createDate = new Date(this.itemDetail.createdDate);
             this.setExpiryDate();
             this.updateDataForm();
+            this.ram = this.itemDetail.ram;
+            this.cpu = this.itemDetail.cpu;
             this.storage = this.itemDetail.storage;
             // phát sự kiện để render lại 
             this.cdr.markForCheck();

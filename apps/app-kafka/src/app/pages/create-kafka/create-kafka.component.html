@@ -81,7 +81,7 @@
                         <span>{{item.servicePackName}}</span>
                         <div class="item-price">
                           <div class="price">
-                            <span>{{ item.price | CustomCurrency }}</span><br>
+                            <span>{{ item.price | number: '1.0-0' }}</span><br>
                             <span class="unit-price">đ/tháng</span>
                           </div>
                         </div>
@@ -135,7 +135,7 @@
   
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Dung lượn SSD</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Dung lượng SSD</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Storage">
                     <nz-input-group nzSuffix="(GB)" nzSize="large">
                       <input nz-input type="number" formControlName="storage" id="storage"
@@ -317,10 +317,10 @@
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price">Chi phí vCPU</div>
-          <div class="label-quantity">300.000 đồng x 3 cái</div>
+          <div class="label-quantity">{{pricePerCpu | number: '1.0-0'}} đồng x {{cpu}} vCPU</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">1.000.000 VNĐ</div>
+          <div class="value-price">{{ pricePerCpu * cpu | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
@@ -328,10 +328,10 @@
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price">Chi phí RAM</div>
-          <div class="label-quantity">300.000 đồng x 3 cái</div>
+          <div class="label-quantity">{{pricePerRam | number: '1.0-0'}} đồng x {{ram}} GB</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">1.000.000 VNĐ</div>
+          <div class="value-price">{{ pricePerRam * ram | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
@@ -339,22 +339,22 @@
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price">Chi phí Storage</div>
-          <div class="label-quantity">300.000 đồng x 3 cái</div>
+          <div class="label-quantity">{{pricePerStorage | number: '1.0-0'}} đồng x {{storage}} GB</div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">1.000.000 VNĐ</div>
+          <div class="value-price">{{ pricePerStorage * storage | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-              <div class="label-price">Thời hạn sử dụng</div>
+              <div class="label-price" style="margin-bottom: 10px;">Thời hạn sử dụng</div>
               <div class="label-quantity">- Ngày bắt đầu:</div>
               <div class="label-quantity">- Ngày hết hạn:</div>
           </div>
           <div nz-col [nzSpan]="12">
-              <div class="value-usage-time">{{ usageTime }} tháng</div>
+              <div class="value-usage-time" style="margin-bottom: 10px;">{{ usageTime }} tháng</div>
               <div class="unit-total" style="margin-bottom: 12px;">{{ createDate | date : 'dd/MM/yyyy' }}</div>
               <div class="unit-total">{{ expiryDate | date : 'dd/MM/yyyy' }}</div>
           </div>
@@ -367,7 +367,7 @@
           <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price total-price">3.000.000 VNĐ</div>
+          <div class="value-price total-price">{{ (pricePerCpu * cpu + pricePerRam * ram + pricePerStorage * storage) * usageTime * 1.1 | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>

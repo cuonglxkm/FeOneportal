@@ -52,6 +52,13 @@ export class CreateKafkaComponent implements OnInit {
   usageTime = 1;
   createDate: Date;
   expiryDate: Date;
+  ram = 1;
+  cpu = 1;
+  storage = 1;
+  pricePerRam = 200000;
+  pricePerCpu = 100000;
+  pricePerStorage = 150000;
+
 
   constructor(
     private fb: FormBuilder,
@@ -191,6 +198,13 @@ export class CreateKafkaComponent implements OnInit {
     this.myform.get('ram').setValue(item.ram);
     this.myform.get('storage').setValue(item.storage);
     this.myform.get('broker').setValue(item.broker);
+    this.ram = item.ram;
+    this.cpu = item.cpu;
+    this.storage = item.storage;
+  }
+
+  onChangeCpu(event) {
+    console.log(event.data);
   }
 
   clicktab(){    
