@@ -375,7 +375,7 @@
             </span>
               <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
                     nzAlign="right">
-              {{ isDigit(orderItem?.orderItemPrices[0].unitPrice.amount) ? orderItem?.orderItemPrices[0].unitPrice.amount.toFixed(1) : orderItem?.orderItemPrices[0].unitPrice.amount }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+              {{ formatNumber(orderItem?.orderItemPrices[0].unitPrice.amount) }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
             </span>
             </nz-col>
           </nz-row>
