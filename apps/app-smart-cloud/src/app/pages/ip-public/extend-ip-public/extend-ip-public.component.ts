@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { IpPublicModel } from '../../../shared/models/ip-public.model';
 import { AttachedDto } from '../../../shared/dto/volume.dto';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -14,13 +14,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { InstancesService } from '../../instances/instances.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'one-portal-extend-ip-public',
   templateUrl: './extend-ip-public.component.html',
   styleUrls: ['./extend-ip-public.component.less']
 })
-export class ExtendIpPublicComponent {
+export class ExtendIpPublicComponent implements OnInit{
   ipInfo: IpPublicModel;
   ipAddress: any;
   attachedVm: any;
@@ -45,6 +46,7 @@ export class ExtendIpPublicComponent {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+
   }
 
   // form = new FormGroup({
@@ -54,17 +56,17 @@ export class ExtendIpPublicComponent {
   private getIPPublicById(id: string) {
     this.isLoading = true;
 
-    this.ipService.getDetailIpPublic(Number.parseInt(id)).subscribe(data => {
+    this.ipService.getDetailIpPublic(Number.parseInt(id))
+      .pipe(finalize(() => {
+        this.caculator();
+      }))
+      .subscribe(data => {
         this.ipInfo = data;
         this.ipAddress = data.ipAddress;
         this.attachedVm = data.attachedVm;
         this.isIpV6 = this.ipInfo.iPv6Address != null && this.ipInfo.iPv6Address != '';
         this.isLoading = false;
         this.dateString = data.createDate;
-        const dateExpired = new Date(this.ipInfo.expiredDate);
-        dateExpired.setMonth(dateExpired.getMonth() + 1);
-        dateExpired.setDate(dateExpired.getDate() - 1);
-        this.dateStringExpired = dateExpired;
       }, error => {
         this.isLoading = false;
       }
@@ -126,7 +128,7 @@ export class ExtendIpPublicComponent {
   extendIpPublic() {
     const requestBody = {
       regionId: this.regionId,
-      serviceName: 'gia hạn',
+      serviceName: '',
       customerId: this.tokenService.get()?.userId,
       vpcId: this.projectId,
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IpExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
@@ -140,13 +142,13 @@ export class ExtendIpPublicComponent {
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: 'Gia hạn Ip Public',
+      note: 'Gia hạn IP Public',
       orderItems: [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: 'ip_extend',
-          price: this.total.data.totalPayment.amount / Number(this.numOfMonth),
+          price: this.total.data.totalAmount.amount / Number(this.numOfMonth),
           serviceDuration: this.numOfMonth
         }
       ]
@@ -158,9 +160,9 @@ export class ExtendIpPublicComponent {
   caculator() {
     let num = this.numOfMonth;
     if (num != null && num != undefined) {
-      const dateExpired = new Date(this.ipInfo.expiredDate);
-      dateExpired.setMonth(dateExpired.getMonth() + Number(num));
-      dateExpired.setDate(dateExpired.getDate() - 1);
+      const dateExpired = new Date(this.ipInfo?.expiredDate);
+      // dateExpired.setMonth(dateExpired.getMonth() +);
+      dateExpired.setDate(dateExpired.getDate() +  Number(num)*30);
       this.dateStringExpired = dateExpired;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
