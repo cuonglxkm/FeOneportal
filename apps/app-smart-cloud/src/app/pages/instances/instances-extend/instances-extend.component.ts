@@ -39,7 +39,7 @@ export class InstancesExtendComponent implements OnInit {
   customerId: number;
   email: string;
   instanceExtend: InstanceExtend = new InstanceExtend();
-  numberMonth: number = 0;
+  numberMonth: number = 1;
   newExpiredDate: string;
   order: Order = new Order();
   orderItem: OrderItem[] = [];
@@ -66,6 +66,7 @@ export class InstancesExtendComponent implements OnInit {
       this.regionId = this.instancesModel.regionId;
       this.loading = false;
       this.getListIpPublic();
+      this.getTotalAmount();
       this.service
         .getAllSecurityGroupByInstance(
           this.instancesModel.cloudId,
@@ -81,6 +82,7 @@ export class InstancesExtendComponent implements OnInit {
       this.cdr.detectChanges();
     });
     this.onChangeTime();
+    
   }
 
   listIPPublicStr = '';
