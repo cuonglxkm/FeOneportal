@@ -1,0 +1,112 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Xem chi tiết VPN Service'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a>
+          Dịch vụ hạ tầng</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        >VPN site to site</a
+      ></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Xem chi tiết VPN Service</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="24" class="gutter-row">
+    <nz-card style="border-radius: 8px;">
+      <h2 class="custom-title">Thông tin VPN Service</h2>
+      <form nz-form [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
+            <input
+              class="h-40"
+              nz-input
+              type="text"
+              value="{{vpnService?.name}}"  [disabled]="true"
+            />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzRequired >Router</nz-form-label>
+            <input
+              class="h-40"
+              nz-input
+              type="text"
+              value="{{vpnService?.
+                routerName}}"  [disabled]="true"
+            />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired>Status</nz-form-label>
+            <input
+            class="h-40"
+            nz-input
+            type="text"
+            value="{{vpnService?.
+              status}}"  [disabled]="true"
+          />
+            
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12" class="gutter-row">
+          <nz-form-item >
+            <nz-form-control>
+            <nz-form-label nzFor="name" nzRequired >IP VPN Gateway</nz-form-label>
+            <input
+            class="h-40"
+            nz-input
+            type="text"
+            value="{{vpnService?.
+              vpnGatway}}"  [disabled]="true"
+          />
+          </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      </form>
+    </nz-card>
+  </div>
+</div>
+<div
+  class="text-right"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  "
+>
+</div>

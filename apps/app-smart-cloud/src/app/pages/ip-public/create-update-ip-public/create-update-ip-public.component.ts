@@ -52,6 +52,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   VMName = '';
   ipId = '';
   VMId = '';
+  unitPrice: any;
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -168,7 +169,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "ip_create",
-          price: this.total.data.totalPayment.amount / Number(this.form.controls['numOfMonth'].value),
+          price: this.total.data.totalAmount.amount / Number(this.form.controls['numOfMonth'].value),
           serviceDuration: this.form.controls['numOfMonth'].value
         }
       ]
