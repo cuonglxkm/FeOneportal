@@ -1,24 +1,24 @@
-import {Component, Inject} from '@angular/core';
-import {IpPublicModel} from "../../../shared/models/ip-public.model";
-import {AttachedDto} from "../../../shared/dto/volume.dto";
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {PopupExtendVolumeComponent} from "../../volume/component/popup-volume/popup-extend-volume.component";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {VolumeService} from "../../../shared/services/volume.service";
-import {IpPublicService} from "../../../shared/services/ip-public.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {NzMessageService} from "ng-zorro-antd/message";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {InstancesService} from "../../instances/instances.service";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {getCurrentRegionAndProject} from "@shared";
+import { Component, Inject } from '@angular/core';
+import { IpPublicModel } from '../../../shared/models/ip-public.model';
+import { AttachedDto } from '../../../shared/dto/volume.dto';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { PopupExtendVolumeComponent } from '../../volume/component/popup-volume/popup-extend-volume.component';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { VolumeService } from '../../../shared/services/volume.service';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { InstancesService } from '../../instances/instances.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-extend-ip-public',
   templateUrl: './extend-ip-public.component.html',
-  styleUrls: ['./extend-ip-public.component.less'],
+  styleUrls: ['./extend-ip-public.component.less']
 })
 export class ExtendIpPublicComponent {
   ipInfo: IpPublicModel;
@@ -35,7 +35,7 @@ export class ExtendIpPublicComponent {
   projectId: any;
 
   regionId: any;
-  total: any
+  total: any;
   dateString: any;
   dateStringExpired: any;
 
@@ -63,11 +63,12 @@ export class ExtendIpPublicComponent {
         this.dateString = data.createDate;
         const dateExpired = new Date(this.ipInfo.expiredDate);
         dateExpired.setMonth(dateExpired.getMonth() + 1);
+        dateExpired.setDate(dateExpired.getDate() - 1);
         this.dateStringExpired = dateExpired;
       }, error => {
         this.isLoading = false;
       }
-    )
+    );
   }
 
   openPopupExtend() {
@@ -85,7 +86,7 @@ export class ExtendIpPublicComponent {
           type: 'primary',
           onClick: () => {
             this.router.navigate(['/app-smart-cloud/ip-public/extend/' + this.ipInfo.id]);
-            modal.destroy()
+            modal.destroy();
           }
         }
       ]
@@ -102,7 +103,7 @@ export class ExtendIpPublicComponent {
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private modalService: NzModalService,
-              private notification: NzNotificationService,) {
+              private notification: NzNotificationService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -125,33 +126,33 @@ export class ExtendIpPublicComponent {
   extendIpPublic() {
     const requestBody = {
       regionId: this.regionId,
-      serviceName: null,
+      serviceName: 'gia hạn',
       customerId: this.tokenService.get()?.userId,
       vpcId: this.projectId,
-      typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.IpExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IpExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
       serviceType: 4,
       actionType: 3,
       serviceInstanceId: this.ipInfo.id,
       newExpireDate: this.dateStringExpired,
       userEmail: null,
       actorEmail: null
-    }
+    };
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Gia hạn Ip Public",
+      note: 'Gia hạn Ip Public',
       orderItems: [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
-          specificationType: "ip_extend",
+          specificationType: 'ip_extend',
           price: this.total.data.totalPayment.amount / Number(this.numOfMonth),
           serviceDuration: this.numOfMonth
         }
       ]
-    }
+    };
     var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
   }
 
   caculator() {
@@ -159,6 +160,7 @@ export class ExtendIpPublicComponent {
     if (num != null && num != undefined) {
       const dateExpired = new Date(this.ipInfo.expiredDate);
       dateExpired.setMonth(dateExpired.getMonth() + Number(num));
+      dateExpired.setDate(dateExpired.getDate() - 1);
       this.dateStringExpired = dateExpired;
       const requestBody = {
         customerId: this.tokenService.get()?.userId,
@@ -175,8 +177,8 @@ export class ExtendIpPublicComponent {
         oneSMEAddonId: null,
         serviceType: 4,
         serviceInstanceId: 0,
-        createDate: "0001-01-01T00:00:00",
-        expireDate: "0001-01-01T00:00:00",
+        createDate: '0001-01-01T00:00:00',
+        expireDate: '0001-01-01T00:00:00',
         saleDept: null,
         saleDeptCode: null,
         contactPersonEmail: null,
@@ -194,21 +196,21 @@ export class ExtendIpPublicComponent {
         oneSME_SubscriptionId: null,
         actionType: 0,
         serviceName: null,
-        typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
         userEmail: null,
         actorEmail: null
-      }
+      };
       const request = {
         projectId: this.projectId,
         orderItems: [
           {
             orderItemQuantity: 1,
             specificationString: JSON.stringify(requestBody),
-            specificationType: "ip_create",
+            specificationType: 'ip_create',
             serviceDuration: num
           }
         ]
-      }
+      };
       this.service.getTotalAmount(request).subscribe(
         data => {
           this.total = data;

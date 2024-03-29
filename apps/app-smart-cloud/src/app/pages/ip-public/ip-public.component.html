@@ -108,9 +108,9 @@
 </nz-card>
 
 <!--Gắn-->
-<nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="Gắn Ip Public" (nzOnCancel)="handleCancel()" (nzOnOk)="Mounted()"
+<nz-modal [(nzVisible)]="isVisibleMounted" nzTitle="Gắn IP Public" (nzOnCancel)="handleCancel()" (nzOnOk)="Mounted()"
           nzOkText="Xác nhận"
-          nzCancelText="Hủy" [nzStyle]="modalStyle">
+          nzCancelText="Hủy" [nzStyle]="modalStyle" [nzOkDisabled]="instanceSelected == '' ? true : false">
   <ng-container *nzModalContent>
     <h4>Máy ảo</h4>
     <nz-select [nzLoading]="loadingAtt" [nzDisabled]="disableAtt" [(ngModel)]="instanceSelected" style="width: 100%"
@@ -121,7 +121,7 @@
 </nz-modal>
 
 <!--Gỡ-->
-<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ Ip Public" (nzOnCancel)="handleCancel()" (nzOnOk)="openIpRemove()"
+<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ IP Public" (nzOnCancel)="handleCancel()" (nzOnOk)="openIpRemove()"
           nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
@@ -133,7 +133,7 @@
 </nz-modal>
 
 <!--Xóa-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Ip Public" (nzOnCancel)="handleCancel()"
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa IP Public" (nzOnCancel)="handleCancel()"
           (nzOnOk)="openIpDelete()" nzOkText="Đồng ý"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>

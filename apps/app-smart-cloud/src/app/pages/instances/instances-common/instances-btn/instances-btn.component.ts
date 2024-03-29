@@ -149,6 +149,34 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     }
   }
 
+  isVisibleStart: boolean = false;
+  showModalStart() {
+    this.isVisibleStart = true;
+  }
+  handleOkStart() {
+    this.isVisibleStart = false;
+    var body = {
+      command: 'start',
+      id: this.instancesId,
+    };
+    this.dataService.postAction(body).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Bật máy ảo thành công');
+          this.valueChanged.emit(data)
+        } else {
+          this.notification.error('', 'Bật máy ảo không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error(e.statusText, 'Bật máy ảo không thành công');
+      },
+    });
+  }
+  handleCancelStart() {
+    this.isVisibleStart = false;
+  }
+
   isVisibleShutdown: boolean = false;
   showModalShutdown() {
     this.isVisibleShutdown = true;
@@ -170,6 +198,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       .subscribe({
         next: (data) => {
           this.notification.success('', 'Tắt máy ảo thành công');
+          this.valueChanged.emit(data)
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
@@ -201,6 +230,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       .subscribe({
         next: (data) => {
           this.notification.success('', 'Khởi động lại máy ảo thành công');
+          this.valueChanged.emit(data)
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Khởi động lại máy ảo không thành công');

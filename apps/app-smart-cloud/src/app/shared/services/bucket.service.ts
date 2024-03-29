@@ -108,12 +108,12 @@ export class BucketService extends BaseService {
     childrenUser: string,
     isUserOther: boolean,
     listAction: string[]
-  ): Observable<any> {
+  ) {
     let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&effect=${effect}&childrenUser=${childrenUser}&isUserOther=${isUserOther}`;
-    return this.http.post<any>(
+    return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       listAction,
-      this.httpOptions
+      { headers: this.httpOptions.headers, responseType: 'text' }
     );
   }
 

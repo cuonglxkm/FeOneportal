@@ -11,7 +11,7 @@
         Block Storage
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a routerLink="/app-smart-cloud/volumes">Danh sách Volume</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -98,12 +98,12 @@
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
             <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{data.name}}</a></td>
-            <td nzBreakWord>{{data.sizeInGB}}</td>
-            <td nzBreakWord>
+            <td nzBreakWord nzAlign="right">{{data.sizeInGB}}</td>
+            <td nzBreakWord nzAlign="right">
               <div *ngIf="data.iops == null">200</div>
               <div *ngIf="data.iops != null">{{data.iops}}</div>
             </td>
-            <td nzBreakWord>
+            <td nzBreakWord nzAlign="left">
               <div class="status" [ngSwitch]="data.status">
                                 <span class="available" *ngSwitchCase="'KHOITAO'">
                                             Đang hoạt động
@@ -122,8 +122,8 @@
                                           </span>
               </div>
             </td>
-            <td nzBreakWord>{{ data.serviceStatus }}</td>
-            <td nzBreakWord>
+            <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
+            <td nzBreakWord nzAlign="left">
               <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>
               <div *ngIf="data.attachedInstances != null || data.attachedInstances.length > 0">
                 <div *ngFor="let index of data.attachedInstances">{{index.instanceName}}</div>
@@ -245,7 +245,7 @@
           </nz-row>
           <nz-table #fixedTable2
                     style="margin-top: 20px;"
-                    nzShowPagination
+                    nzShowSizeChanger
                     [nzData]="response?.records"
                     [nzPageSize]="response?.pageSize"
                     (nzPageSizeChange)="onPageSizeChange($event)"
