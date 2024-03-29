@@ -63,8 +63,8 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label *ngIf="endpointGroup?.type == 'subnet'" nzFor="name">Cidr:</nz-form-label>
-                <nz-form-label *ngIf="endpointGroup?.type == 'cidr'" nzFor="name">Subnet:</nz-form-label>
+                <nz-form-label *ngIf="endpointGroup?.type == 'subnet'" nzFor="name">Subnet:</nz-form-label>
+                <nz-form-label *ngIf="endpointGroup?.type == 'cidr'" nzFor="name">Cidr:</nz-form-label>
                 <div *ngFor="let item of endpointGroup.endpoints" style="margin-bottom: 15px" class="text-label">
                   {{item}}
                 </div>

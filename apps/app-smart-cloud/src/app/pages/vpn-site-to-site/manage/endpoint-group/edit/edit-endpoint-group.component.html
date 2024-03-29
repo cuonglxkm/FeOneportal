@@ -1,12 +1,5 @@
-<span 
-  style="color: #0066b3; margin-right: 10px; cursor: pointer" 
-  nz-icon 
-  nzType="edit" 
-  nzTheme="outline" 
-  nz-popover
-  [nzPopoverContent]="'Sửa'" 
-  nzPopoverPlacement="bottom" 
-  (click)="showModal()">
+<span style="color: #0066b3; margin-right: 10px; cursor: pointer" nz-icon nzType="edit" nzTheme="outline" nz-popover
+  [nzPopoverContent]="'Sửa'" nzPopoverPlacement="bottom" (click)="showModal()">
 </span>
 <nz-modal [(nzVisible)]="isVisible" nzCentered [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
   (nzOnCancel)="handleCancel()">
@@ -24,7 +17,7 @@
             nzPopoverPlacement="bottom"></span>
         </div>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl" style="margin-top: 10px">
-          <input nz-input formControlName="name" id="name" placeholder="Vui lòng nhập thông tin" [maxlength]="50" />
+          <input nz-input formControlName="nameEndpointGroup" id="nameEndpointGroup" placeholder="Vui lòng nhập thông tin" [maxlength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Name : Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa
@@ -44,20 +37,17 @@
               nzPopoverPlacement="bottom"></span>
           </div>
         </nz-form-label>
-        <nz-form-control nzDisableAutoTips>
-          <nz-select formControlName="type" aria-disabled="true">
-            <nz-option nzValue="subnet" nzLabel="Subnet(for local systems)"></nz-option>
-            <nz-option nzValue="cidr" nzLabel="Cidr(for external systems)"></nz-option>
-          </nz-select>
-        </nz-form-control>
+        <input *ngIf="type == 'subnet'" nz-input type="text" [disabled]="true"
+          placeholder="Subnet(for local systems)" />
+        <input *ngIf="type == 'cidr'" nz-input type="text" [disabled]="true" placeholder="Cidr(for external systems)" />       
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-control>
-          <input *ngIf="type == 'subnet'" nz-input type="text" [disabled]="true" placeholder="Subnet(for local systems)"/>
-          <input *ngIf="type == 'cidr'" nz-input type="text" [disabled]="true" placeholder="Cidr(for external systems)"/>
-          <div *ngFor="let item of type" style="margin-bottom: 15px" class="text-label">
-            {{item}}
+          <nz-form-label *ngIf="type == 'subnet'" nzFor="name">Subnet:</nz-form-label>
+          <nz-form-label *ngIf="type == 'cidr'" nzFor="name">Cidr:</nz-form-label>
+          <div *ngFor="let item of endpoints" style="margin-bottom: 15px" class="text-label">
+            <div>{{item}}</div>
           </div>
         </nz-form-control>
       </nz-form-item>

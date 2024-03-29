@@ -25,69 +25,62 @@
     <nz-card style="border-radius: 8px;">
       <h2 class="custom-title">Thông tin Endpoint Group</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
-        <div nz-row [nzGutter]="16">
-          <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
-              <nz-form-control [nzErrorTip]="nameErrorTpl">
-                <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
-                    <span>Name</span>
-                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
-                      nzPopoverPlacement="bottom"></span>
-                  </div>
-                </nz-form-label>
-                <input nz-input type="text" required placeholder="Nhập tên" formControlName="name" />
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Tên Endpoint Group không được để
-                    trống</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">Tên Endpoint Group chỉ chứa kí tự viết thường, viết
-                    hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
-                    <span>Type</span>
-                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
-                      nzPopoverPlacement="bottom"></span>
-                  </div>
-                </nz-form-label>
-                <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
-                  <nz-option *ngFor="let data of type" [nzLabel]="data.label"
-                    [nzValue]="data.value"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="nameErrorTpl">
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Name</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                  [nzPopoverContent]="'Tên của Endpoint, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                  nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
+            <input nz-input type="text" required placeholder="Nhập tên" formControlName="name" />
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">Tên Endpoint Group không được để
+                trống</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Tên Endpoint Group chỉ chứa kí tự viết thường, viết
+                hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
 
-          <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px;">
-                    <span>Type</span>
-                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
-                      nzPopoverPlacement="bottom"></span>
-                  </div>
-                </nz-form-label>
-                <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
-                  <nz-option *ngFor="let data of type" [nzLabel]="data.label"
-                    [nzValue]="data.value"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-        </div>
+        <nz-form-item>
+          <nz-form-control>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Type</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                  [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
+                  nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
+            <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
+              <nz-option *ngFor="let data of type" [nzLabel]="data.label"
+                [nzValue]="data.value"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Type</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                  [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
+                  nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
+            <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
+              <nz-option *ngFor="let data of type" [nzLabel]="data.label"
+                [nzValue]="data.value"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
       </form>
     </nz-card>
   </div>

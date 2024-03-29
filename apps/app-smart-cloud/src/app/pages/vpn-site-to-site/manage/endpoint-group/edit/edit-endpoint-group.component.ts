@@ -14,8 +14,6 @@ export class EditEndpointGroupComponent{
   @Input() region: number
   @Input() project: number
   @Input() id: string
-  @Input() name: string
-  @Input() description: string
   @Input() type: string
   @Input() endpoints: string
   @Output() onOk = new EventEmitter()
@@ -26,9 +24,11 @@ export class EditEndpointGroupComponent{
   endpointGroup: FormDetailEndpointGroup = new FormDetailEndpointGroup()
 
   validateForm: FormGroup<{
-    name: FormControl<string>
+    nameEndpointGroup: FormControl<string>
+    description: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]]
+    nameEndpointGroup: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+    description: ['', [Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]]
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -45,7 +45,8 @@ export class EditEndpointGroupComponent{
       .subscribe(
         (data) => {
           this.endpointGroup = data;
-          this.type = this.endpointGroup.type
+          this.validateForm.controls.nameEndpointGroup.setValue(data.name);
+          this.validateForm.controls.description.setValue(data.description);
           this.isLoading = false;
         },
         (error) => {
@@ -57,6 +58,7 @@ export class EditEndpointGroupComponent{
   
   showModal(){
     this.isVisible = true
+    this.getEndpointGroupById(this.id)
   }
 
   handleCancel(){
@@ -70,25 +72,23 @@ export class EditEndpointGroupComponent{
     formEdit.id = this.id
     formEdit.regionId = this.region
     formEdit.vpcId = this.project
-    formEdit.name = this.name
-    formEdit.description = ''
+    formEdit.name = this.validateForm.controls.nameEndpointGroup.value
+    formEdit.description = this.validateForm.controls.description.value
     console.log(formEdit);
     
-    if(this.validateForm.valid) {
-      if(this.name.includes(this.validateForm.controls.name.value)){
-        this.endpointGroupService.editEndpoinGroup(this.id, formEdit).subscribe(data => {
-          if(data) {
-            this.isVisible = false
-            this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá Endpoint Group thành công')
-            this.onOk.emit(data)
-          }
-        }, error => {
+    if(this.validateForm.valid){
+      this.endpointGroupService.editEndpoinGroup(formEdit).subscribe(data => {
+        if(data) {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.error('Thất bại', 'Xoá Endpoint Group thất bại')
-        })
-      }
+          this.notification.success('Thành công', 'Edit Endpoint Group thành công')
+          this.onOk.emit(data)
+        }
+      }, error => {
+        this.isVisible = false
+        this.isLoading =  false
+        this.notification.error('Thất bại', 'Edit Endpoint Group thất bại')
+      })
     }
   }
 

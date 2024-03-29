@@ -83,8 +83,8 @@ export class EndpointGroupService extends BaseService {
       }))
   }
 
-  editEndpoinGroup(id: string, formEdit: FormEditEndpointGroup) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${id}`,
+  editEndpoinGroup(formEdit: FormEditEndpointGroup) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formEdit.id}?name=${formEdit.name}&description=${formEdit.description}&vpcId=${formEdit.vpcId}&regionId=${formEdit.regionId}&`,
       Object.assign(formEdit)).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {

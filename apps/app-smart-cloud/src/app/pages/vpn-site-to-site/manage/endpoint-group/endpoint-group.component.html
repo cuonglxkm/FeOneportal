@@ -26,6 +26,7 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>VPN Connection</th>
       <th>Type</th>
       <th>Enpoints</th>
       <th nzAlign="center">Actions</th>
@@ -39,6 +40,7 @@
           >{{ data.name }}</a
         >
       </td>
+      <td>{{ data.type }}</td>
       <td>{{ data.type }}</td>
       <td>
         <ng-container *ngFor="let endpoint of data.endpoints; let last = last">

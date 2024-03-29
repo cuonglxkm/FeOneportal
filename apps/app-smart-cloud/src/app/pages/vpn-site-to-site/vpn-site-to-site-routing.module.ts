@@ -53,7 +53,6 @@ const routes: Routes = [
     path: 'endpoint-group/:id',
     component: DetailEndpointGroupComponent,
   },
-  },
   {
     path: 'vpn-service/:id',
     component: DetailVpnServiceComponent,
