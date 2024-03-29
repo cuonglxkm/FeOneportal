@@ -171,10 +171,10 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Gỡ thành công Ip Public')
+          this.notification.success('Thành công', 'Gỡ thành công IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Gỡ thất bại Ip Public')
+          this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
         },
       }
     )
@@ -190,10 +190,10 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Xóa thành công Ip Public')
+          this.notification.success('Thành công', 'Xóa thành công IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Xóa thất bại Ip Public')
+          this.notification.error('Thất bại', 'Xóa thất bại IP Public')
         },
       }
     )
@@ -220,7 +220,7 @@ export class IpPublicComponent implements OnInit {
         .subscribe(
           {
             next: post => {
-              this.notification.success('Thành công', 'Gắn thành công Ip Public')
+              this.notification.success('Thành công', 'Gắn thành công IP Public')
             },
             error: e => {
               this.notification.error('Thất bại', 'Gắn thất bại IP Public')
