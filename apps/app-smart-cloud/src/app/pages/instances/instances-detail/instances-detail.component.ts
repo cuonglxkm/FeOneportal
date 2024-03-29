@@ -112,7 +112,7 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onReloadInstanceDetail(data: any) {
-    if (data == 'REBOOT') {
+    if (data == 'REBOOT' || data == 'DELETE') {
       this.route.navigate(['/app-smart-cloud/instances']);
     } else {
       setTimeout(() => {
