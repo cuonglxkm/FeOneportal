@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { IKEPolicyModel} from 'src/app/shared/models/vpns2s.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+
 
 
 @Component({
@@ -22,10 +25,10 @@ export class CreateIkePoliciesComponent implements OnInit{
     encryptionAlgorithm: 'aes-128',
     authorizationAlgorithm: 'sha1',
     ikeVersion: 'v1',
-    lifetimeUnits: 'seconds',
+    lifetimeUnit: 'seconds',
     lifetimeValue: 3600,
-    perfectForwardSecrecy: 'group5',
-    phase1NegotiationMode: 'main',
+    perfectForwardSecrey: 'group5',
+    ikePhase1NegotiationMode: 'main',
     regionId: 0,
     customerId: 0,
     projectId: 0
@@ -49,11 +52,11 @@ export class CreateIkePoliciesComponent implements OnInit{
     { label: 'aes-256', value: 'aes-256' },
   ];
 
-  lifetimeUnits = [
+  lifetimeUnit = [
     { label: 'seconds', value: 'seconds' },
   ];
 
-  perfectForwardSecrecy = [
+  perfectForwardSecrey = [
     { label: 'group5', value: 'group5' },
     { label: 'group2', value: 'group2' },
     { label: 'group14 ', value: 'group14' },
@@ -63,22 +66,14 @@ export class CreateIkePoliciesComponent implements OnInit{
     { label: 'main', value: 'main' },
     { label: 'aggressive', value: 'aggressive' }
   ];
+  isLoading: boolean = false
 
-  selectedAuthorizationAlgorithm = '1'
-  selectedIKEVersion = '1'
-  selectedEncryptionAlgorithm = '1'
-  selectedPerfectForwardSecrecy = '1'
-  selectedphase1Negotiation = '1'
-  selectedLifetimeUnits = '1'
-  lifetimeValue = 3600
-  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
-    new FormCreateFileSystemSnapShot();
-    selectedFileSystemName: string;
+
   form: FormGroup<{
-    nameIke: FormControl<string>
+    name: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    nameIke: [''],
+    name: [''],
     description: [''],
   });
 
@@ -88,17 +83,54 @@ export class CreateIkePoliciesComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    console.log(this.region);
   }
 
 
   constructor(
     private router: Router,
     private fb: NonNullableFormBuilder,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    private ikePolicyService: IkePolicyService
   ) {}
-
+  getData(): any {
+    this.ikePolicyModel.customerId =
+      this.tokenService.get()?.userId;
+    this.ikePolicyModel.regionId = this.region;
+    this.ikePolicyModel.projectId = this.project;
+    this.ikePolicyModel.name =
+    this.form.controls.name.value;
+    return this.ikePolicyModel;
+  }
   handleCreate() {
-    console.log('success');
-    
+    this.isLoading = true;
+    if (this.form.valid) {
+      //this.formCreateIpsecPolicy = this.getData();
+      this.getData();
+      console.log(this.ikePolicyModel);
+      this.ikePolicyService
+        .create(this.ikePolicyModel)
+        .subscribe(
+          (data) => {
+            this.isLoading = false
+            this.notification.success(
+              'Thành công',
+              'Tạo mới ike policy thành công'
+            );
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+          },
+          (error) => {
+            this.isLoading = false
+            this.notification.error(
+              'Thất bại',
+              'Tạo mới ike policy thất bại'
+            );
+            console.log(error);
+          }
+        );
+    }
+
   }
 
   onRegionChange(region: RegionModel) {

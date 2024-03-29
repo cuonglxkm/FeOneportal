@@ -15,6 +15,7 @@ import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../i
 import {InstancesService} from "../../../instances/instances.service";
 import {OrderItem} from "../../../../shared/models/price";
 import {ProjectService} from "../../../../shared/services/project.service";
+import { now } from 'lodash';
 
 @Component({
   selector: 'app-edit-volume',
@@ -65,9 +66,9 @@ export class EditVolumeComponent implements OnInit {
               private instanceService: InstancesService,
               private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if(value <= 40) return (this.iops = 400);
@@ -156,7 +157,7 @@ export class EditVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.volumeEdit),
           specificationType: 'volume_resize',
-          price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
+          price: this.orderItem?.totalAmount.amount,
           serviceDuration: this.expiryTime
         }
       ]
@@ -199,7 +200,7 @@ export class EditVolumeComponent implements OnInit {
       this.instance = data
     })
   }
-
+  array: string[] = []
    getVolumeById(idVolume: number) {
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null) {
@@ -218,8 +219,8 @@ export class EditVolumeComponent implements OnInit {
         }
         console.log('volumesInfo', this.volumeInfo.attachedInstances)
         if(data?.attachedInstances != null) {
-          this.volumeInfo.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName.toString() + ', '
+          this.volumeInfo?.attachedInstances?.forEach(item => {
+            this.listVMs += item.instanceName.toString()
           })
         }
         this.getTotalAmount()
@@ -359,4 +360,5 @@ export class EditVolumeComponent implements OnInit {
     // );
   }
 
+  protected readonly now = now;
 }

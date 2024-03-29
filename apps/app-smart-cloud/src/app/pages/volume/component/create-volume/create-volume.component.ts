@@ -290,9 +290,13 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
-    if(this.isInitSnapshot == true) {
+    if(this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required)
+    } else {
+      this.validateForm.controls.snapshot.clearValidators()
+      this.validateForm.controls.snapshot.updateValueAndValidity();
     }
+
   }
 
   snapshotSelectedChange(value: number) {
@@ -431,7 +435,7 @@ export class CreateVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.volumeCreate),
         specificationType: 'volume_create',
-        price: this.unitPrice,
+        price: this.orderItem?.totalAmount.amount,
         serviceDuration: this.validateForm.controls.time.value,
       },
     ];
@@ -464,7 +468,6 @@ export class CreateVolumeComponent implements OnInit {
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
     });
   }
-
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe((data) => {
       let project = data.find((project) => project.id === +this.project);

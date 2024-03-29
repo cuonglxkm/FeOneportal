@@ -46,12 +46,9 @@
             <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'hdd'"><b>{{ this.iops }}</b></nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleIOPS" *ngIf="volumeInfo?.volumeType === 'ssd'"><b>{{ this.iops }}</b></nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleStatus">
-              <span *ngIf="volumeInfo?.status === 'KHOITAO'"
-                    style="color: #0074CC"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
-              <span *ngIf="volumeInfo?.status === 'ERROR'"
-                    style="color: #FF3333"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
-              <span *ngIf="volumeInfo?.status === 'SUSPENDED'"
-                    style="color: #FF7C33"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
+              <span *ngIf="volumeInfo?.status === 'KHOITAO'"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
+              <span *ngIf="volumeInfo?.status === 'ERROR'"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
+              <span *ngIf="volumeInfo?.status === 'SUSPENDED'"><b>{{ volumeStatus?.get(volumeInfo?.status)}}</b></span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="titleAttachInstance">
               <span *ngIf="volumeInfo?.attachedInstances?.length > 0"><b>{{listVMs}}</b></span>
@@ -60,7 +57,6 @@
             <nz-descriptions-item [nzTitle]="titleVolumeType">
               <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
           </nz-descriptions>
-          <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
           <ng-template #titleName>
             <span>Tên Volumes</span>
           </ng-template>
@@ -82,21 +78,32 @@
           <ng-template #titleVolumeType>
             <span>Kiểu Volume</span>
           </ng-template>
-          <div style="margin-top: 15px;">
+          <ng-template #titleDescription>
+            <span>Mô tả:</span>
+          </ng-template>
+          <div>
             <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
           </div>
           <div style="margin-top: 15px;">
             <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled>Gắn nhiều máy ảo</label>
           </div>
+          <div  style="margin-top: 15px;">
+            <nz-descriptions>
+              <nz-descriptions-item [nzTitle]="titleDescription">
+                <b>{{ volumeInfo?.description }}</b>
+              </nz-descriptions-item>
+            </nz-descriptions>
+          </div>
+
         </nz-card>
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-heaader">Thông tin điều chỉnh</span>
+          <span class="text-card-header">Thông tin điều chỉnh</span>
           <nz-alert nzBanner
                     style="margin-top: 20px;"
                     [nzMessage]="'Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
                     nzShowIcon>
           </nz-alert>
-          <nz-form-item style="margin-top: 10px;">
+          <nz-form-item style="margin-top: 10px; margin-bottom: 10px;">
             <nz-form-label nzFor="storage">
               <div class="label">
                 <span>Dung lượng bổ sung</span>
@@ -123,16 +130,20 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
               <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount / 30 | number}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
-                </span>
+                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount }} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}} </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                  <b>Đơn giá: </b> 0 VND/GB/ngày
+                  Đơn giá: 0 VND
                 </span>
               </div>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Ngày điều chỉnh: {{ now() | date: 'dd/MM/yyyy' }}</span>
             </nz-form-label>
           </nz-form-item>
         </nz-card>
@@ -216,7 +227,7 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">Dung lượng Volume</div>
-          <div style="margin-top: 10px" class="text-label">{{ volumeEdit?.newSize }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ volumeEdit?.newSize }} GB</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">IOPS</div>
           <div style="margin-top: 10px" class="text-label">{{ volumeEdit?.iops }}</div>
