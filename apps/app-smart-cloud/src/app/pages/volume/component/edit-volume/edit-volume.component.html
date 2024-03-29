@@ -134,7 +134,7 @@
             <nz-form-label>
               <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount }} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}} </span>
+                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}} </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
                   Đơn giá: 0 VND
                 </span>
