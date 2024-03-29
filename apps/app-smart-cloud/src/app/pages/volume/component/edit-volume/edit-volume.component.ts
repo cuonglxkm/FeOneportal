@@ -15,6 +15,7 @@ import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../i
 import {InstancesService} from "../../../instances/instances.service";
 import {OrderItem} from "../../../../shared/models/price";
 import {ProjectService} from "../../../../shared/services/project.service";
+import { now } from 'lodash';
 
 @Component({
   selector: 'app-edit-volume',
@@ -156,7 +157,7 @@ export class EditVolumeComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.volumeEdit),
           specificationType: 'volume_resize',
-          price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
+          price: this.orderItem?.totalAmount.amount,
           serviceDuration: this.expiryTime
         }
       ]
@@ -302,16 +303,6 @@ export class EditVolumeComponent implements OnInit {
     });
   }
 
-  formatNumber(number) {
-    if (number % 1 !== 0) {
-      let roundedNumber = number.toFixed(1);
-      let parts = roundedNumber.split('.');
-      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + parts[1];
-    } else {
-      return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-  }
-
   getTotalAmount() {
     this.volumeInit()
     let itemPayment: ItemPayment = new ItemPayment();
@@ -369,4 +360,5 @@ export class EditVolumeComponent implements OnInit {
     // );
   }
 
+  protected readonly now = now;
 }
