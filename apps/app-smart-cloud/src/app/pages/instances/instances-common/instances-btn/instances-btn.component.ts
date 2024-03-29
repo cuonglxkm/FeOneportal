@@ -230,7 +230,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       .subscribe({
         next: (data) => {
           this.notification.success('', 'Khởi động lại máy ảo thành công');
-          this.valueChanged.emit(data)
+          this.valueChanged.emit("REBOOT")
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Khởi động lại máy ảo không thành công');

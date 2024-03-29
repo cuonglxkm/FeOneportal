@@ -296,8 +296,8 @@ export class InstancesService extends BaseService {
     );
   }
 
-  checkExistName(instanceId: number, name: string): Observable<boolean> {
-    let url_ = `/instances/exist-instancename?instanceId=${instanceId}&name=${name}`;
+  checkExistName(name: string, regionId: number): Observable<boolean> {
+    let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
       this.baseUrl + this.ENDPOINT.provisions + url_

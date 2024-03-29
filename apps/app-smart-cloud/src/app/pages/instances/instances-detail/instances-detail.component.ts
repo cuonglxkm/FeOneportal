@@ -111,13 +111,17 @@ export class InstancesDetailComponent implements OnInit {
       });
   }
 
-  onReloadInstanceDetail() {
-    setTimeout(() => {
-      this.dataService.getById(this.id, true).subscribe((data: any) => {
-        this.instancesModel = data;
-        this.cdr.detectChanges();
-      });
-    }, 5000);
+  onReloadInstanceDetail(data: any) {
+    if (data == 'REBOOT') {
+      this.route.navigate(['/app-smart-cloud/instances']);
+    } else {
+      setTimeout(() => {
+        this.dataService.getById(this.id, true).subscribe((data: any) => {
+          this.instancesModel = data;
+          this.cdr.detectChanges();
+        });
+      }, 5000);
+    }
   }
 
   onRegionChange(region: RegionModel) {
