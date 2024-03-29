@@ -20,7 +20,7 @@
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
           <div style="display:flex;">
-            <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="large"
+            <nz-select class="text-left" [(ngModel)]="selectedStatus" (ngModelChange)="search(null)" nzSize="large"
                        style="width: 170px; margin-right: 20px;">
               <nz-option *ngFor="let p of statusData" [nzValue]="p.value" [nzLabel]="p.name"></nz-option>
             </nz-select>
@@ -100,7 +100,7 @@
           <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
-          <button (click)="createIp()" nz-button nzSize="large" nzType="primary" *ngIf="projectType != 1">Khởi tạo IP Public</button>
+          <button (click)="createIp()" nz-button nzSize="large" nzType="primary" *ngIf="projectType != 1">Tạo mới IP Public</button>
         </div>
       </nz-result>
     </ng-container>
