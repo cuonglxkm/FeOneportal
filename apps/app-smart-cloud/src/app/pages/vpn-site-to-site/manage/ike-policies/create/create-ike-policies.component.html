@@ -47,7 +47,7 @@
               type="text"
               required
               placeholder="Nhập tên"
-              formControlName="ikePolicyModel.name"
+              formControlName="name"
             />
             
           </nz-form-control>
@@ -127,11 +127,11 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="ikePolicyModel.lifetimeUnits"
+              [(ngModel)]="ikePolicyModel.lifetimeUnit"
               [ngModelOptions]="{standalone: true}"
             >
               <nz-option
-              *ngFor="let data of lifetimeUnits"
+              *ngFor="let data of lifetimeUnit"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -170,11 +170,11 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="ikePolicyModel.perfectForwardSecrecy"
+              [(ngModel)]="ikePolicyModel.perfectForwardSecrey"
               [ngModelOptions]="{standalone: true}"
             >
               <nz-option
-              *ngFor="let data of perfectForwardSecrecy"
+              *ngFor="let data of perfectForwardSecrey"
               [nzLabel]="data.label"
               [nzValue]="data.value"
               ></nz-option>
@@ -191,7 +191,7 @@
             <nz-select
               nzShowSearch
               nzAllowClear
-              [(ngModel)]="ikePolicyModel.phase1NegotiationMode"
+              [(ngModel)]="ikePolicyModel.ikePhase1NegotiationMode"
               [ngModelOptions]="{standalone: true}"
             >
               <nz-option
@@ -237,11 +237,11 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Perfect Forward Secrecy</h3>
-          <span>{{ikePolicyModel.perfectForwardSecrecy}}</span>
+          <span>{{ikePolicyModel.perfectForwardSecrey}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Phase1 Negotiation Mode</h3>
-          <span>{{ikePolicyModel.phase1NegotiationMode}}</span>
+          <span>{{ikePolicyModel.ikePhase1NegotiationMode}}</span>
         </div>
       </div>
       <button
