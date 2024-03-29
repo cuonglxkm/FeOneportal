@@ -8,11 +8,16 @@ import { CreateVpnConnectionComponent } from "./manage/vpn-connection/create/cre
 import { CreateIkePoliciesComponent } from "./manage/ike-policies/create/create-ike-policies.component";
 import { EditVpnConnectionComponent } from "./manage/vpn-connection/edit/edit-vpn-connection.component";
 import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/detail-vpn-connection.component";
+import { VpnS2sCreateComponent } from "./manage/vpn-s2s-create/vpn-s2s-create.component";
 
 const routes: Routes = [
   {
     path: 'manage',
     component: VpnSiteToSiteManage,
+  },
+  {
+    path: 'create',
+    component: VpnS2sCreateComponent,
   },
   {
     path: 'ipsec-policies/create',

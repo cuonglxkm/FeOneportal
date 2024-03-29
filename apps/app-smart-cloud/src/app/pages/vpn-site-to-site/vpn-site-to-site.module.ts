@@ -1,8 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { SharedModule } from '@shared';
 
-
-import {NguCarousel, NguCarouselDefDirective, NguTileComponent} from "@ngu/carousel";
+import {
+  NguCarousel,
+  NguCarouselDefDirective,
+  NguTileComponent,
+} from '@ngu/carousel';
 import { VpnSiteToSiteManage } from './manage/vpn-site-to-site-manage.component';
 import { VpnConnection } from './manage/vpn-connection/vpn-connection.component';
 import { IpsecPoliciesComponent } from './manage/ipsec-policies/ipsec-policies.component';
@@ -21,6 +24,7 @@ import { EditVpnConnectionComponent } from './manage/vpn-connection/edit/edit-vp
 import { DeleteVpnConnectionComponent } from './manage/vpn-connection/delete/delete-vpn-connection.component';
 import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/detail-vpn-connection.component';
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
+import { VpnS2sCreateComponent } from './manage/vpn-s2s-create/vpn-s2s-create.component';
 
 @NgModule({
   declarations: [
@@ -39,16 +43,17 @@ import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-
     EditVpnConnectionComponent,
     DeleteVpnConnectionComponent,
     DetailVpnConnectionComponent,
-    CreateIkePoliciesComponent
+    CreateIkePoliciesComponent,
+    VpnS2sCreateComponent,
   ],
-    imports: [
-        VpnSiteToSiteRoutingModule,
-        CommonModule,
-        SharedModule,
-        NguCarousel,
-        NguCarouselDefDirective,
-        NguTileComponent,
-    ],
+  imports: [
+    VpnSiteToSiteRoutingModule,
+    CommonModule,
+    SharedModule,
+    NguCarousel,
+    NguCarouselDefDirective,
+    NguTileComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class VpnSiteToSiteModule {}

@@ -1,0 +1,146 @@
+<page-header
+[breadcrumb]="breadcrumb" [title]="'Tạo mới VPN site to site'"
+[action]="action"
+
+>
+<ng-template #breadcrumb>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Dịch vụ hạ tầng</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to site</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Tạo mới VPN site to site</nz-breadcrumb-item>
+  </nz-breadcrumb>
+</ng-template>
+<ng-template #action>
+  <div class="alain-custom-action text-right">
+    <region-select-dropdown
+      (valueChanged)="regionChanged($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      (valueChanged)="projectChanged($event)"
+      (userChanged)="projectChanged($event)"
+      [regionId]="region"
+    ></project-select-dropdown>
+  </div>
+</ng-template>
+</page-header>
+<nz-card class="body-form">
+    <nz-row nzGutter="24">
+        <nz-col nzSpan="16">
+          <span class="text-card-header">Chọn gói VPN site to site</span>
+          <div class="header-content">Giá thuê bao gói VPN theo tháng (Chưa VAT)</div>
+          <nz-table
+            #ajaxTable3
+            nzShowSizeChanger
+            [nzFrontPagination]="false"
+            [nzData]="offerDatas"
+            [nzLoading]="loading"
+            (nzQueryParams)="getOffers()"
+          >
+            <thead>
+              <tr>
+                <th nzLeft>Tên gói</th>
+                <th>Bandwidth (MB/S)</th>
+                <th>Giá (VND/tháng)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of ajaxTable3.data" (click)="selectOffer($event, data)">
+                <td nzLeft id="offer-title-{{data.Id}}" offer-id="{{data.Id}}">
+                  {{ data.OfferName }}
+                </td>
+                <td nzLeft>
+                  {{ data.Bandwidth }}
+                </td>
+                <td nzRight nzAlign="right">
+                  {{ data.Price | number }}
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+
+          <div nz-row class="mb-md pt-5">
+            <div nz-col nzSpan="11">
+              <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
+              <nz-form-item>
+                <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+                  <nz-input-number
+                  [(ngModel)]="numberMonth"
+                    style="width:100%;"
+                    (ngModelChange)="caculator($event)"
+                    nzMin="1"
+                    nzMax="100"
+                    nzStep="1"
+                    nzSize="large"/>
+                  <ng-template #dateErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12" style="margin-left: 15px">
+              <p  style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
+            </div>
+          </div>
+          <div nz-col>
+            <p>Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
+          </div>
+
+        </nz-col>
+        <nz-col nzSpan="8">
+            <nz-card class="right-form">
+              <div class="right-title">
+                    <span class="text-card-header">Chi phí ước tính</span>
+              </div>
+              
+              <nz-row class="right-form-content-month" nzGutter="16">
+                <nz-col nzSpan="16">
+                  <span class="text-value">
+                    Chi phí <span>{{ numberMonth | number }}</span> tháng
+                  </span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value month-money" nzAlign="right">
+                    {{ totalAmount | number }} VND
+                  </span>
+                </nz-col>
+              </nz-row>
+              <nz-row class="right-form-content-total" nzGutter="16" >
+                <nz-col nzSpan="16">
+                  <span class="text-label">Tổng thanh toán</span><br />
+                  <span class="text-note-italicized">(Đã bao gồm {{vatPer}}% VAT)</span>
+                </nz-col>
+                <nz-col class="text-right" nzSpan="8">
+                  <span class="text-value vat-money" nzAlign="right">
+                    {{ totalincludesVAT | number }}
+                    VND
+                  </span>
+                </nz-col>
+              </nz-row>
+              <nz-row>
+                <nz-col style="width: 100%" class="text-right">
+                  <button
+                    style="width: 100%"
+                    nz-button
+                    nzSize="large"
+                    nzType="primary"
+                    [disabled]="!isEnable"
+                    (click)="extend()"
+                  >
+                    <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                    Khởi tạo
+                  </button>
+                </nz-col>
+              </nz-row>
+            </nz-card>
+        </nz-col>
+    </nz-row>
+</nz-card>

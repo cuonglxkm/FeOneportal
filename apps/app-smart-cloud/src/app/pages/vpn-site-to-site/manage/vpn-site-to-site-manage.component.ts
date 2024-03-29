@@ -14,7 +14,7 @@ export class VpnSiteToSiteManage {
   project = JSON.parse(localStorage.getItem('projectId'));
 
 
-  isBegin: boolean = false;
+  isBegin: boolean = true;
 
   constructor() {
   }
