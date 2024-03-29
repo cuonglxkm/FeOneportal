@@ -56,6 +56,8 @@ export class EditVolumeComponent implements OnInit {
 
   listVMs: string = '';
 
+  dateEdit: Date;
+
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
@@ -167,12 +169,24 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  getMonthDifference(expiredDateStr: string, createdDateStr: string): number {
+    // Chuyển đổi chuỗi thành đối tượng Date
+    const expiredDate = new Date(expiredDateStr);
+    const createdDate = new Date(createdDateStr);
+
+    // Tính số tháng giữa hai ngày
+    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
+    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
+    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
+    return diffMonths;
+  }
   goBack(): void {
     this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId])
   }
 
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'))
+    this.dateEdit = new Date();
     if(this.volumeId != undefined || this.volumeId != null) {
       console.log('id', this.volumeId)
       this.getVolumeById(this.volumeId)
