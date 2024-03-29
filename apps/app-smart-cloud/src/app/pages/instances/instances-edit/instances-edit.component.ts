@@ -506,7 +506,7 @@ export class InstancesEditComponent implements OnInit {
     // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = null;
+    this.instanceResize.serviceName = "Điều chỉnh";
     this.instanceResize.vpcId = this.projectId;
   }
 

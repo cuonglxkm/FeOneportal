@@ -23,7 +23,7 @@ class ServiceInfo {
   duration: number;
   amount: number;
   currency: number;
-  type:string;
+  type: string;
 }
 
 class Discount {
@@ -70,18 +70,18 @@ export class PaymentSummaryComponent implements OnInit {
       console.log({ path: this.returnPath });
       const myOrder = state.data;
       console.log(state.data);
-      
+
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
       this.order.orderItems = myOrder.orderItems;
-       console.log('order summary', this.order);
+      console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         var serviceItem = new ServiceInfo();
         const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
@@ -89,7 +89,7 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = `Chỉnh sửa - ${specificationObj.serviceName}`;
             break;
           case 'instance_extend':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
@@ -141,7 +141,11 @@ export class PaymentSummaryComponent implements OnInit {
         serviceItem.price = e.price;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        serviceItem.currency = e.price * e.serviceDuration;
+        if (serviceItem.type == 'Chỉnh sửa') {
+          serviceItem.currency = e.price;
+        } else {
+          serviceItem.currency = e.price * e.serviceDuration;
+        }
         this.listServiceInfo.push(serviceItem);
       });
       this.listServiceInfo.forEach((e) => {
@@ -216,13 +220,11 @@ export class PaymentSummaryComponent implements OnInit {
 
   chooseDiscount(code: string) {
     if (this.discountPicked === code) {
-      this.discountPicked = null; 
-  } else {
+      this.discountPicked = null;
+    } else {
       this.discountPicked = code;
+    }
   }
-    
-  }
-
 
   isVisibleDiscount: boolean = false;
   showModal() {

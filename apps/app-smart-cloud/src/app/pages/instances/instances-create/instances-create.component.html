@@ -49,14 +49,9 @@
                       nz-input
                       formControlName="name"
                       [(ngModel)]="instanceCreate.serviceName"
-                      id="name"
                       placeholder="Nhập tên máy ảo"
                       maxlength="50"
                       minlength="1"
-                      (change)="
-                        instanceCreate.serviceName =
-                          instanceCreate.serviceName.trim()
-                      "
                     />
                   </nz-col>
                   <nz-col
@@ -582,7 +577,7 @@
               </nz-form-control>
             </nz-form-item>
             <div>
-              <label
+              <!-- <label
                 nz-checkbox
                 [(ngModel)]="isUseIPv6"
                 [ngModelOptions]="{ standalone: true }"
@@ -611,7 +606,7 @@
                   </div>
                 </ng-template></label
               >
-              <br />
+              <br /> -->
               <label
                 nz-checkbox
                 [(ngModel)]="isUseLAN"
@@ -1100,7 +1095,7 @@
             </div>
           </nz-card>
         </div>
-        <div style="margin-top: 5px" *ngIf="!activeIPv6">
+        <!-- <div style="margin-top: 5px" *ngIf="!activeIPv6">
           <button
             style="height: 32px; margin-top: 10px"
             nz-button
@@ -1113,7 +1108,7 @@
               alt=""
             />Bổ sung IPv6
           </button>
-        </div>
+        </div> -->
         <div *ngIf="activeIPv6">
           <nz-card nzHoverable>
             <div class="ant-table">
