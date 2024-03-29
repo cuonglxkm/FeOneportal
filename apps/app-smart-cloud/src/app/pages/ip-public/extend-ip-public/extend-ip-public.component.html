@@ -39,20 +39,19 @@
       </nz-card>
       <nz-card style="border-radius: 8px;">
         <span class="text-card-header">Thông tin gia hạn</span>
-<!--        <hr style="opacity: 0.1">-->
         <nz-table style="margin-top: 25px">
           <td style="width: 50%">
-            <p>Ngày cấp dịch vụ: {{dateString | date:'dd/MM/yyyy'}} </p>
+            <div class="text-label">Ngày cấp dịch vụ: {{dateString | date:'dd/MM/yyyy'}} </div>
           </td>
           <td style="width: 50%">
-            <p>Ngày hết hạn: {{ipInfo?.expiredDate | date:'dd/MM/yyyy'}} </p>
+            <div class="text-label">Ngày hết hạn: {{ipInfo?.expiredDate | date:'dd/MM/yyyy'}} </div>
           </td>
         </nz-table>
-        <div>Số tháng cần gia hạn thêm (<span class="text-red">*</span>)</div>
+        <div  class="text-label" style=" margin-top: 18px;">Số tháng cần gia hạn thêm (<span class="text-red">*</span>)</div>
         <nz-input-number style="width: 100%; margin-top: 10px; margin-bottom: 18px;margin-left: -3px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
                          [(ngModel)]="numOfMonth" (ngModelChange)="caculator()"
                          [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
-        <p style="color: red">Ngày hết hạn dự kiến: {{dateStringExpired | date : "dd/MM/YYYY"}}</p>
+        <div  class="text-label" style="color: red">Ngày hết hạn dự kiến: {{dateStringExpired | date : "dd/MM/YYYY"}}</div>
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
