@@ -82,7 +82,6 @@ export class InstancesExtendComponent implements OnInit {
       this.cdr.detectChanges();
     });
     this.onChangeTime();
-    
   }
 
   listIPPublicStr = '';
@@ -130,7 +129,6 @@ export class InstancesExtendComponent implements OnInit {
           this.totalincludesVAT = 0;
           this.newExpiredDate = '';
         } else {
-          this.isDisable = false;
           let expiredDate = new Date(this.instancesModel.expiredDate);
           expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
           this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
@@ -157,6 +155,7 @@ export class InstancesExtendComponent implements OnInit {
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
+    this.isDisable = true;
     this.instanceExtendInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -174,6 +173,7 @@ export class InstancesExtendComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.isDisable = false;
       this.cdr.detectChanges();
     });
   }
