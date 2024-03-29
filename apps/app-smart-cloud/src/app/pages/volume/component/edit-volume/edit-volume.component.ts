@@ -199,7 +199,7 @@ export class EditVolumeComponent implements OnInit {
       this.instance = data
     })
   }
-
+  array: string[] = []
    getVolumeById(idVolume: number) {
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null) {
@@ -218,8 +218,8 @@ export class EditVolumeComponent implements OnInit {
         }
         console.log('volumesInfo', this.volumeInfo.attachedInstances)
         if(data?.attachedInstances != null) {
-          this.volumeInfo.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName.toString() + ', '
+          this.volumeInfo?.attachedInstances?.forEach(item => {
+            this.listVMs += item.instanceName.toString()
           })
         }
         this.getTotalAmount()

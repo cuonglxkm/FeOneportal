@@ -290,9 +290,13 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
-    if(this.isInitSnapshot == true) {
+    if(this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required)
+    } else {
+      this.validateForm.controls.snapshot.clearValidators()
+      this.validateForm.controls.snapshot.updateValueAndValidity();
     }
+
   }
 
   snapshotSelectedChange(value: number) {

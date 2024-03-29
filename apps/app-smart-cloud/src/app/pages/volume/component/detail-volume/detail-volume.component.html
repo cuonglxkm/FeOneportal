@@ -127,19 +127,26 @@
         <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled class="text-label">Gắn nhiều máy ảo</label>
       </div>
     </div>
-    <span class="text-label" >Mô tả: <b>{{ volumeInfo?.description }}</b></span>
-    <nz-descriptions [nzColumn]="2" style="margin-top: 10px;" *ngIf="typeVPC == 0">
-      <nz-descriptions-item [nzTitle]="titleCreateDate"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b>
+    <ng-template #titleDescription>
+      <span>Mô tả:</span>
+    </ng-template>
+    <nz-descriptions>
+      <nz-descriptions-item [nzTitle]="titleDescription">
+        <b>{{ volumeInfo?.description }}</b>
       </nz-descriptions-item>
+    </nz-descriptions>
+    <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
+      <nz-descriptions-item [nzTitle]="titleCreateDate"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleExpireDate">
         <span style="color: rgba(235, 20, 20, 0.85)"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
-        <span class="text-label">Ngày khởi tạo:</span>
+        <span>Ngày khởi tạo:</span>
       </ng-template>
       <ng-template #titleExpireDate>
         <span style="color: rgba(235, 20, 20, 0.85)" >Ngày hết hạn:</span>
       </ng-template>
+
     </nz-descriptions>
   </nz-card>
 </nz-content>
