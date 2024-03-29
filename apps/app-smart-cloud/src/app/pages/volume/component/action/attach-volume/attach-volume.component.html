@@ -1,23 +1,14 @@
-<!--<span *ngIf="multiple == false && (instanceInVolume == null || instanceInVolume == undefined)" style="color: darkgrey" nz-icon nzType="plus"-->
-<!--      nzTheme="outline"-->
-<!--      nz-popover-->
-<!--      [nzPopoverContent]="'Gắn Volume'"-->
-<!--      nzPopoverPlacement="bottom"></span>-->
-<!--<span *ngIf="multiple == false && (instanceInVolume != null || instanceInVolume != undefined || instanceInVolume?.length > 0)" style="color: darkgrey" nz-icon nzType="plus"-->
-<!--      nzTheme="outline"-->
-<!--      nz-popover-->
-<!--      [nzPopoverContent]="'Gắn Volume'"-->
-<!--      nzPopoverPlacement="bottom"></span>-->
-
-<button nz-button (click)="showModal()" style="border: none; background-color: unset; color: darkgrey;"
-        [disabled]="!multiple && !!instanceInVolume.length">
-  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
-        nzTheme="outline"
-        nz-popover
-        [nzPopoverContent]="'Gắn Volume'"
-        nzPopoverPlacement="bottom" ></span>
-</button>
-
+<!--<button nz-button (click)="showModal()" style="border: unset; background-color: unset; color: darkgrey;"-->
+<!--        [disabled]="!multiple && instanceInVolume.length > 0">-->
+<!--  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"-->
+<!--        nzTheme="outline"-->
+<!--        nz-popover-->
+<!--        [nzPopoverContent]="'Gắn Volume'"-->
+<!--        nzPopoverPlacement="bottom" ></span>-->
+<!--</button>-->
+<img src="assets/imgs/add.svg" [class.disabled]="!multiple && instanceInVolume.length > 0" (click)="showModal()" nzTheme="outline" nz-popover
+     [nzPopoverContent]="'Gắn Volume'"
+     nzPopoverPlacement="bottom" style="cursor: pointer;"/>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Gắn máy ảo"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
@@ -26,11 +17,11 @@
   <div *nzModalContent>
     <nz-form-label>Chọn máy ảo</nz-form-label>
     <nz-select nzSize="default"
+               nzAllowClear
                [nzLoading]="isLoading"
                [nzPlaceHolder]="'-Chọn máy ảo-'"
                [(ngModel)]="instanceSelected"
                (ngModelChange)="onChange($event)"
-               nzShowSearch
                [required]="true"
                [ngModelOptions]="{ standalone: true }"
                style="width: 300px;">

@@ -40,6 +40,8 @@ export class UpdateVolumeComponent {
 
   showModal() {
     this.isVisible = true
+    this.validateForm.get('nameVolume').setValue(this.volume.name)
+    this.validateForm.get('description').setValue(this.volume.description)
   }
 
   handleCancel() {

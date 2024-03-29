@@ -32,9 +32,13 @@
       </button>
       <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
         <i nz-icon nzType="edit"></i>
-        <span>Chỉnh sửa</span>
+        <span>Điều chỉnh</span>
       </button>
-      <one-portal-instances-btn [instancesId]="id" style="margin-left: 8px">
+      <one-portal-instances-btn
+        [instancesId]="id"
+        (valueChanged)="onReloadInstanceDetail()"
+        style="margin-left: 8px"
+      >
       </one-portal-instances-btn>
     </div>
   </nz-row>
@@ -97,125 +101,166 @@
   <div style="margin-bottom: 20px">
     <span class="text-card-header">Thông tin máy ảo</span>
   </div>
-  <nz-row class="customRow">
-    <div nz-col nzSpan="12">
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Tên máy ảo:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.name || ''
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >Gói cấu hình:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.flavorName | slice : 3
-        }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Trạng thái tác vụ:</span
-        >
-        <span
-          *ngIf="instancesModel.taskState == 'SHUTOFF'"
-          class="text-value-detail customSpan"
-          style="color: #ea3829"
-          >{{ instancesModel.taskState }}</span
-        >
-        <span
-          *ngIf="instancesModel.taskState == 'powering-off'"
-          class="text-value-detail customSpan"
-          style="color: #ea3829"
-          >{{ instancesModel.taskState }}</span
-        >
-        <span
-          *ngIf="instancesModel.taskState == 'ACTIVE'"
-          class="text-value-detail customSpan"
-          style="color: #008d47"
-          >{{ instancesModel.taskState }}</span
-        >
-        <span
-          *ngIf="instancesModel.taskState == 'powering-on'"
-          class="text-value-detail customSpan"
-          style="color: #008d47"
-          >{{ instancesModel.taskState }}</span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >Loại ổ cứng:</span
-        >
-        <span class="text-value-detail customSpan">{{ volumeRootType }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan" style="width: 40%"
-          >Băng thông trong nước:</span
-        >
-        <span class="text-value-detail customSpan"
-          >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan" style="width: 40%"
-          >Thời gian khởi tạo:</span
-        >
-        <span class="text-value-detail customSpan">{{
-          instancesModel.createdDate | date : 'dd/MM/yyyy'
-        }}</span>
-      </nz-row>
-    </div>
-    <div nz-col nzSpan="12">
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >Hệ điều hành:</span
-        >
-        <span class="text-value-detail customSpan1"
-          >{{ instancesModel.imageName }}
-          <a
-            class="text-blue"
-            (click)="navigateToChangeImage()"
-            style="margin-left: 15px"
+  <div class="customRow">
+    <nz-row>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >Tên máy ảo:</span
           >
-            <img src="assets/imgs/undo.png" alt="" /><span
+          <span class="text-value-detail customSpan">{{
+            instancesModel.name || ''
+          }}</span>
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label" style="width: 35%">Hệ điều hành:</span>
+          <span class="text-value-detail"
+            >{{ instancesModel.imageName }}
+            <a
+              class="text-blue"
+              (click)="navigateToChangeImage()"
               style="margin-left: 15px"
-              >Thay đổi</span
-            ></a
-          ></span
-        >
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%"
-          >Truy cập và bảo mật:</span
-        >
-        <span
-          class="text-value-detail customSpan1"
-          *ngFor="let item of listSecurityGroupModel; let first = first"
-          >{{ !first ? ', ' : '' }}{{ item.name }}
-        </span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >IP Public:</span
-        >
-        <span class="text-value-detail customSpan1">{{ listIPPublicStr }}</span>
-      </nz-row>
-      <nz-row style="height: 50px; background-color: #e2e2e9">
-        <span class="text-label customSpan1" style="width: 40%">IP LAN:</span>
-        <span class="text-value-detail customSpan1">{{ listIPLanStr }}</span>
-      </nz-row>
-      <nz-row style="height: 50px">
-        <span class="text-label customSpan1" style="width: 40%"
-          >Băng thông quốc tế:</span
-        >
-        <span class="text-value-detail customSpan1"
-          >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
-        >
-      </nz-row>
-    </div>
-  </nz-row>
+            >
+              <img src="assets/imgs/undo.png" alt="" /><span
+                style="margin-left: 15px"
+                >Thay đổi</span
+              ></a
+            ></span
+          >
+        </nz-row></nz-col
+      >
+    </nz-row>
+    <nz-row style="background-color: #e2e2e9">
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >Gói cấu hình:</span
+          >
+          <span class="text-value-detail customSpan">{{
+            instancesModel.flavorName | slice : 3
+          }}</span>
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label" style="width: 35%"
+            >Truy cập và bảo mật:</span
+          >
+          <span
+            class="text-value-detail"
+            *ngFor="let item of listSecurityGroupModel; let first = first"
+            >{{ !first ? ', ' : '' }}{{ item.name }}
+          </span>
+        </nz-row></nz-col
+      >
+    </nz-row>
+    <nz-row>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >Trạng thái tác vụ:</span
+          >
+          <span
+            *ngIf="instancesModel.taskState == 'SHUTOFF'"
+            class="text-value-detail customSpan"
+            style="color: #ea3829"
+            >{{ instancesModel.taskState }}</span
+          >
+          <span
+            *ngIf="instancesModel.taskState == 'powering-off'"
+            class="text-value-detail customSpan"
+            style="color: #ea3829"
+            >{{ instancesModel.taskState }}</span
+          >
+          <span
+            *ngIf="instancesModel.taskState == 'ACTIVE'"
+            class="text-value-detail customSpan"
+            style="color: #008d47"
+            >{{ instancesModel.taskState }}</span
+          >
+          <span
+            *ngIf="instancesModel.taskState == 'powering-on'"
+            class="text-value-detail customSpan"
+            style="color: #008d47"
+            >{{ instancesModel.taskState }}</span
+          >
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label" style="width: 35%">IP Public:</span>
+          <span class="text-value-detail">{{ listIPPublicStr }}</span>
+        </nz-row></nz-col
+      >
+    </nz-row>
+    <nz-row style="background-color: #e2e2e9">
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >Loại ổ cứng:</span
+          >
+          <span
+            *ngIf="instancesModel.volumeType == 0"
+            class="text-value-detail customSpan"
+            >HDD</span
+          >
+          <span
+            *ngIf="instancesModel.volumeType == 1"
+            class="text-value-detail customSpan"
+            >SSD</span
+          >
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label" style="width: 35%">IP LAN:</span>
+          <span class="text-value-detail">{{ listIPLanStr }}</span>
+        </nz-row></nz-col
+      >
+    </nz-row>
+    <nz-row>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >Băng thông trong nước:</span
+          >
+          <span class="text-value-detail customSpan"
+            >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+          >
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label" style="width: 35%">Băng thông quốc tế:</span>
+          <span class="text-value-detail"
+            >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+          >
+        </nz-row></nz-col
+      >
+    </nz-row>
+    <nz-row style="background-color: #e2e2e9">
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label customSpan" style="width: 35%"
+            >Ngày khởi tạo:</span
+          >
+          <span class="text-value-detail customSpan">{{
+            instancesModel.createdDate | date : 'dd/MM/yyyy'
+          }}</span>
+        </nz-row>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-row style="padding: 12px 0 12px 0">
+          <span class="text-label" style="width: 35%">Ngày hết hạn:</span>
+          <span class="text-value-detail"
+            >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
+          </span>
+        </nz-row></nz-col
+      >
+    </nz-row>
+  </div>
 </nz-card>
 <one-portal-blockstorage-detail
   [instancesId]="id"

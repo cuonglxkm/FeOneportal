@@ -1,16 +1,15 @@
-<button nz-button (click)="showModal()" style="border: none; background-color: unset; color: darkgrey;"
-        [disabled]="!isMultiple && instanceInVolume.length <= 0">
-  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"
-        nzTheme="outline"
-        nz-popover
-        [nzPopoverContent]="'Gỡ Volume'"
-        nzPopoverPlacement="bottom" ></span>
-</button>
+<img src="assets/imgs/cancel.svg"
+     [class.disabled]="!isMultiple && instanceInVolume.length <= 0"
+     (click)="showModal()"
+     nzTheme="outline" nz-popover
+      [nzPopoverContent]="'Gỡ Volume'"
+      nzPopoverPlacement="bottom"
+     style="margin-right: 3px; cursor: pointer"/>
 <!--<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="close"-->
 <!--      nzTheme="outline" nz-popover-->
 <!--      [nzPopoverContent]="'Gỡ Volume'"-->
 <!--      nzPopoverPlacement="bottom" (click)="showModal()"></span>-->
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Gỡ máy ảo"
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
     <span class="text-modal-title">Gỡ Volume</span>

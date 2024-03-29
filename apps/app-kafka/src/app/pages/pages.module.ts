@@ -24,7 +24,7 @@ import {
   NguCarouselNextDirective,
   NguCarouselPrevDirective,
   NguItemComponent,
-  NguTileComponent
+  NguTileComponent,
 } from '@ngu/carousel';
 
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -46,6 +46,8 @@ import { TopicMngtComponent } from './detail/topic-mngt/topic-mngt.component';
 import { ListKafkaComponent } from './list-kafka/list-kafka.component';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
+import { EditKafkaComponent } from './edit-kafka/edit-kafka.component';
+import { UpgradeKafkaComponent } from './upgrade-kafka/upgrade-kafka.component';
 @NgModule({
   declarations: [
     DetailComponent,
@@ -69,6 +71,8 @@ import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
     Status2ColorPipe,
     CreateKafkaComponent,
     CustomCurrencyPipe,
+    EditKafkaComponent,
+    UpgradeKafkaComponent,
   ],
   imports: [
     PagesRoutingModule,
@@ -86,13 +90,13 @@ import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
     NgJsonEditorModule,
     NzCardModule,
     NzCarouselModule,
-    NguCarousel, 
+    NguCarousel,
     NguCarouselDefDirective,
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
     NguItemComponent,
     NguTileComponent,
-    NzImageModule
+    NzImageModule,
   ],
 })
 export class PagesModule {}

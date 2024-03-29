@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
-import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
-import { KafkaCredential } from '../../../core/models/kafka-credential.model';
+import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { KafkaService } from '../../../services/kafka.service';
+import { filter, finalize, map } from 'rxjs/operators';
+import { KafkaCredential } from '../../../core/models/kafka-credential.model';
+import { KafkaCredentialsService } from '../../../services/kafka-credentials.service';
 
 @Component({
   selector: 'one-portal-credentials',
@@ -36,12 +35,12 @@ export class CredentialsComponent implements OnInit {
   titleOtp: string;
   keyCheckOtp: string;
   inputOtpCode: string;
+  isVisibleDelete = false;
 
   constructor(
     private kafkaCredentialService: KafkaCredentialsService,
-    private kafkaService: KafkaService,
-    private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private loadingSrv: LoadingService
   ) {
     this.tabStatus = this.showListCredentials;
     this.isVisibleOtpModal = false;
@@ -63,28 +62,35 @@ export class CredentialsComponent implements OnInit {
   }
 
   deleteUser(data: KafkaCredential) {
-    this.modal.create({
-      nzTitle: 'Xoá tài khoản',
-      nzContent:
-        '<h3>Bạn chắc chắn muốn xoá tài khoản có username <br> <b>' + data.username + '</b> ?</h3>',
-      nzBodyStyle: { textAlign: 'center' },
-      nzOkText: 'Xác nhận',
-      nzOkType: 'primary',
-      nzOkDanger: false,
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.kafkaCredentialService
-          .deleteUser(this.serviceOrderCode, data.username)
-          .pipe(filter((r) => r && r.code == 200))
-          .subscribe(() => {
-            this.reload();
-            this.getCredentials();
-            this.notification.success('Thông báo', 'Xoá tài khoản thành công', {
-              nzDuration: 2000,
-            });
+    this.isVisibleDelete = true;
+    this.currentUserName = data.username;
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
+  handleOkDelete() {
+    this.isVisibleDelete = false;
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.kafkaCredentialService
+      .deleteUser(this.serviceOrderCode, this.currentUserName)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe((data) => {
+        if (data && data.code == 200) {
+          this.reload();
+          this.getCredentials();
+          this.notification.success('Thông báo', data.msg, {
+            nzDuration: 2000,
           });
-      },
-    });
+        } else {
+          this.notification.error('Thất bại', data.msg);
+        }
+      });
   }
 
   changePage(event) {

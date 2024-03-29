@@ -138,12 +138,13 @@
           >
         </td>
         <td nzBreakWord>
-          {{ data.flavorName | slice : 3}}
+          {{ data.flavorName | slice : 3 }}
         </td>
-        <td nzBreakWord>
-          <div style="color: #0066b3">
-            {{ getStatus(data.status) }}
-          </div>
+        <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
+          Đang hoạt động
+        </td>
+        <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
+          Chậm gia hạn
         </td>
         <td nzBreakWord>{{ data.taskState }}</td>
         <td nzBreakWord>{{ data.ipPrivate }}</td>
@@ -159,7 +160,7 @@
           <img
             src="assets/imgs/edit-2.svg"
             alt=""
-            (click)="navigateToEdit(data.id)"
+            (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
             nz-tooltip="Chỉnh sửa"
           />
@@ -177,7 +178,6 @@
           />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item>Chỉnh sửa Security Group</li>
               <li nz-menu-item (click)="showHandleGanVLAN()">Gắn vào VLAN</li>
               <li nz-menu-item (click)="showHandleGoKhoiVLAN()">
                 Gỡ khỏi VLAN
@@ -190,14 +190,20 @@
                 Khởi động lại
               </li>
               <li
-                *ngIf="data.taskState != 'SHUTOFF'"
+                *ngIf="
+                  data.taskState != 'SHUTOFF' &&
+                  data.taskState != 'powering-off'
+                "
                 nz-menu-item
                 (click)="showModalShutdown(data.id)"
               >
                 Tắt máy ảo
               </li>
               <li
-                *ngIf="data.taskState == 'SHUTOFF' || data.taskState == 'powering-off'"
+                *ngIf="
+                  data.taskState == 'SHUTOFF' ||
+                  data.taskState == 'powering-off'
+                "
                 nz-menu-item
                 (click)="showModalStart(data.id)"
               >
@@ -532,6 +538,83 @@
       />Hủy
     </button>
     <button nz-button nzType="primary" (click)="handleOkStart()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleEdit"
+  nzTitle="Chỉnh sửa thông tin máy ảo"
+  (nzOnCancel)="handleCancelEdit()"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <nz-form-item>
+        <nz-form-label nzFor="name"
+          >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
+        >
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input
+            class="input-custom"
+            nz-input
+            formControlName="name"
+            [(ngModel)]="updateInstances.name"
+            id="name"
+            placeholder="Nhập tên máy ảo"
+            maxlength="50"
+            minlength="1"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Vui lòng nhập thông tin</ng-container
+            >
+            <ng-container *ngIf="control.hasError('pattern')"
+              >Tên gồm 50 ký tự viết liền không dấu cách và không chứa ký tự đặc
+              biệt</ng-container
+            >
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Chọn Security Group</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Chọn Security Group"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="selectedSecurityGroup"
+            nzSize="large"
+            [nzShowSearch]="true"
+          >
+            <nz-option
+              *ngFor="let i of listSecurityGroup"
+              [nzLabel]="i.name"
+              [nzValue]="i.id"
+            />
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelEdit()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkEdit()"
+      [disabled]="form.invalid"
+    >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
