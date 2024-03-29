@@ -28,7 +28,7 @@ import {CatalogService} from "../../../shared/services/catalog.service";
 export class CreateUpdateIpPublicComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
-  checkIpv6: boolean;
+  checkIpv6: boolean = null;
   selectedAction: any;
   listIpSubnet: any[];
   listInstance: any[];
@@ -91,10 +91,10 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         if (index != -1) {
           this.getCatalogOffer(data[index].id);
         } else {
-          this.checkIpv6 = false;
+          this.checkIpv6 = null;
         }
       } else {
-        this.checkIpv6 = false;
+        this.checkIpv6 = null;
       }
     })
 
@@ -132,7 +132,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       duration: 0,
       ipAddress: null,
       offerId: 0,
-      useIPv6: null,
       vpcId: this.projectId,
       oneSMEAddonId: null,
       serviceType: 4,
@@ -213,7 +212,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
         duration: 0,
         ipAddress: null,
         offerId: 0,
-        useIPv6: null,
         vpcId: this.projectId,
         oneSMEAddonId: null,
         serviceType: 4,

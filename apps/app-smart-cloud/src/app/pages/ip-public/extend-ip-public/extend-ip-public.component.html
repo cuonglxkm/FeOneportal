@@ -48,7 +48,7 @@
             <p><b>Ngày hết hạn: </b> {{ipInfo?.expiredDate | date:'dd/MM/yyyy'}} </p>
           </td>
         </nz-table>
-        <b>Số tháng cần gia hạn thêm</b>
+        <b>Số tháng cần gia hạn thêm (<span class="text-red">*</span>)</b>
         <nz-input-number style="width: 100%; margin-top: 10px; margin-bottom: 18px;margin-left: -3px" [nzMin]="1" [nzStep]="1"
                          [(ngModel)]="numOfMonth" (ngModelChange)="caculator()"
                          [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
