@@ -435,14 +435,14 @@
                         [nzMin]="1"
                         [nzMax]="1000"
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="1000"
@@ -469,14 +469,14 @@
                         [nzMin]="1"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeRam()"
+                        (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeRam()"
+                        (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -504,14 +504,14 @@
                         [nzMin]="1"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -577,7 +577,8 @@
               </nz-form-control>
             </nz-form-item>
             <div>
-              <!-- <label
+              <label
+                *ngIf="hasOfferIpv6"
                 nz-checkbox
                 [(ngModel)]="isUseIPv6"
                 [ngModelOptions]="{ standalone: true }"
@@ -606,7 +607,7 @@
                   </div>
                 </ng-template></label
               >
-              <br /> -->
+              <br *ngIf="hasOfferIpv6" />
               <label
                 nz-checkbox
                 [(ngModel)]="isUseLAN"
@@ -857,7 +858,7 @@
                     [nzMax]="100"
                     [nzStep]="1"
                     [(ngModel)]="numberMonth"
-                    (ngModelChange)="onChangeTime($event)"
+                    (ngModelChange)="changeTime($event)"
                     [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   ></nz-input-number>
@@ -1066,7 +1067,7 @@
                         (ngModelChange)="onInputIPv4($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
@@ -1095,7 +1096,7 @@
             </div>
           </nz-card>
         </div>
-        <!-- <div style="margin-top: 5px" *ngIf="!activeIPv6">
+        <div style="margin-top: 5px" *ngIf="!activeIPv6 && hasOfferIpv6">
           <button
             style="height: 32px; margin-top: 10px"
             nz-button
@@ -1108,8 +1109,8 @@
               alt=""
             />Bổ sung IPv6
           </button>
-        </div> -->
-        <div *ngIf="activeIPv6">
+        </div>
+        <div *ngIf="activeIPv6 && hasOfferIpv6">
           <nz-card nzHoverable>
             <div class="ant-table">
               <table>
@@ -1147,7 +1148,7 @@
                         (ngModelChange)="onInputIPv6($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
@@ -1266,7 +1267,7 @@
                   totalAmountVolume +
                   totalAmountIPv4 +
                   totalAmountIPv6) /
-                  numberMonth | number: '1.0-0'
+                  numberMonth | number : '1.0-0'
               }}
               VND
             </span>
@@ -1291,7 +1292,7 @@
                 totalincludesVAT +
                   totalAmountVolumeVAT +
                   totalAmountIPv4VAT +
-                  totalAmountIPv6VAT | number: '1.0-0'
+                  totalAmountIPv6VAT | number : '1.0-0'
               }}
               VND
             </span>

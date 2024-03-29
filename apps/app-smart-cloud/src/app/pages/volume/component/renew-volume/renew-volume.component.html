@@ -70,8 +70,8 @@
           <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{volumeInfo?.iops}}</b></nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleStatus">
         <span *ngIf="volumeInfo?.status === 'KHOITAO'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
-            <span *ngIf="volumeInfo.status === 'ERROR'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
-            <span *ngIf="volumeInfo.status === 'SUSPENDED'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
+            <span *ngIf="volumeInfo?.status === 'ERROR'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
+            <span *ngIf="volumeInfo?.status === 'SUSPENDED'"><b>{{ volumeStatus.get(volumeInfo?.status)}}</b></span>
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="titleAttachInstance">
             <span *ngIf="listVMs.length > 0"><b>{{listVMs}}</b></span>
@@ -80,7 +80,6 @@
           <nz-descriptions-item [nzTitle]="titleVolumeType">
             <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
         </nz-descriptions>
-
         <ng-template #titleName>
           <span>Tên Volume:</span>
         </ng-template>
@@ -105,7 +104,7 @@
         <ng-template #titleDescription>
           <span>Mô tả:</span>
         </ng-template>
-        <div>
+        <div style="margin-top: 15px;">
           <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled>Mã hóa Volume</label>
         </div>
         <div style="margin-top: 15px;">

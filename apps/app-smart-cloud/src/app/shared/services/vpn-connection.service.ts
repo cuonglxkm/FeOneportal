@@ -42,7 +42,7 @@ export class VpnConnectionService extends BaseService {
       params = params.append('pageSize', formSearch.pageSize)
     }
     if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
-      params = params.append('currentPage', formSearch.currentPage)
+      params = params.append('pageNumber', formSearch.currentPage)
     }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnconnection/paging', {

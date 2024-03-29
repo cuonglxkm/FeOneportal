@@ -57,6 +57,7 @@
             <nz-descriptions-item [nzTitle]="titleVolumeType">
               <b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></nz-descriptions-item>
           </nz-descriptions>
+          <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
           <ng-template #titleName>
             <span>Tên Volumes</span>
           </ng-template>
@@ -134,7 +135,7 @@
             <nz-form-label>
               <div>
                 <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount }} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}} </span>
+                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}} </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
                   Đơn giá: 0 VND
                 </span>
