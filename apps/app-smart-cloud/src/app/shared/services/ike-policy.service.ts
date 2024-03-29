@@ -31,6 +31,7 @@ export class IkePolicyService extends BaseService {
  
 
   create(formCreate: IKEPolicyModel) {
+    console.log("tao ike service: ", formCreate);
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ikepolicy/create',
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
@@ -57,25 +58,21 @@ export class IkePolicyService extends BaseService {
     if (formSearch.searchValue != undefined || formSearch.searchValue != null) {
       params = params.append('searchValue', formSearch.searchValue)
     }
-    if(formSearch.searchValue == null || formSearch.searchValue == undefined)
-    {
-      params = params.append('searchValue', "kh") //fix tam
-    }
+    // if(formSearch.searchValue == null || formSearch.searchValue == undefined)
+    // {
+    //   params = params.append('searchValue', "kh") //fix tam
+    // }
     if (formSearch.projectId != undefined || formSearch.projectId != null) {
       params = params.append('projectId', formSearch.projectId)
     }
+    if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
+      params = params.append('pageSize', formSearch.pageSize)
+    }
+    if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
+      params = params.append('currentPage', formSearch.pageNumber)
+    }
     console.log("pram-=---" , params);
-    // if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
-    //   params = params.append('pageSize', formSearch.pageSize)
-    // }
-    // if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
-    //   params = params.append('currentPage', formSearch.currentPage)
-    // }
-    // let url_ = `/vpn-sitetosite/ikepolicy?regionId=${5}&projectId=${50}&searchValue=${"khai"}`;
-    // url_ = url_.replace(/[?&]$/, '');
-
-    //return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ikepolicy', {
+    return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ikepolicy', {
       headers: this.getHeaders(),
       params: params
     })
