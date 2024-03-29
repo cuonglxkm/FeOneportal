@@ -190,10 +190,10 @@
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
               <div>
-                <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} </span>
+                Đơn giá: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                  Đơn giá: 0 VND
+                   0 VND
                 </span>
               </div>
             </nz-form-label>
