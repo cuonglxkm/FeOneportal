@@ -89,7 +89,7 @@ export class NewVirtualMachineComponent implements OnInit {
 
   getAllIPPublic() {
     this.instanceService
-      .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
+      .getAllIPPublic(this.project,'', this.userId, this.region, 9999, 1, false)
       .subscribe((data: any) => {
         this.listIPPublic = data.records;
         console.log('list IP public', this.listIPPublic);
