@@ -9,7 +9,7 @@
       <div class="mleft-16 w-20">
         <nz-input-group nzSearch nzSize="default" [nzSuffix]="suffixButton" class="w-100" nzSize="large">
           <input type="text" nz-input placeholder="Tên người dùng" [(ngModel)]="userAction"
-            (ngModelChange)="searchLogs()" />
+            (ngModelChange)="this.changeUserKeySearch.next($event)" />
         </nz-input-group>
         <ng-template #suffixButton>
           <span nz-icon nzType="search" nzTheme="outline"></span>

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { LogModel } from 'src/app/model/log.model';
 import { ClusterService } from 'src/app/services/cluster.service';
 
@@ -24,6 +25,8 @@ export class LogsComponent implements OnInit {
   pageSize: number;
   total: number;
 
+  changeUserKeySearch = new Subject<string>();
+
   listOfLogs: LogModel[];
   listOfResourceType = [
     {name: 'Cluster', value: 'cluster'},
@@ -45,6 +48,15 @@ export class LogsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getWorkerGroupOfCluster(this.serviceOrderCode);
+
+    this.changeUserKeySearch.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      map(key => key.trim())
+    ).subscribe((key: string) => {
+      this.userAction = key;
+      this.searchLogs();
+    });
   }
 
   searchLogs() {
