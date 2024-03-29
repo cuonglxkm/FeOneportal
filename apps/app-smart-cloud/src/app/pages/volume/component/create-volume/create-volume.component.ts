@@ -290,9 +290,13 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
-    if(this.isInitSnapshot == true) {
+    if(this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required)
+    } else {
+      this.validateForm.controls.snapshot.clearValidators()
+      this.validateForm.controls.snapshot.updateValueAndValidity();
     }
+
   }
 
   snapshotSelectedChange(value: number) {
@@ -465,6 +469,15 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  formatNumber(number) {
+    if (number % 1 !== 0) {
+      let roundedNumber = number.toFixed(1);
+      let parts = roundedNumber.split('.');
+      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + parts[1];
+    } else {
+      return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+  }
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe((data) => {
       let project = data.find((project) => project.id === +this.project);

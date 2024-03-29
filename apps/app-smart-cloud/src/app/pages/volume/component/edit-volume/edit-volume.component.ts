@@ -65,9 +65,9 @@ export class EditVolumeComponent implements OnInit {
               private instanceService: InstancesService,
               private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if(value <= 40) return (this.iops = 400);
@@ -199,7 +199,7 @@ export class EditVolumeComponent implements OnInit {
       this.instance = data
     })
   }
-
+  array: string[] = []
    getVolumeById(idVolume: number) {
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null) {
@@ -218,8 +218,8 @@ export class EditVolumeComponent implements OnInit {
         }
         console.log('volumesInfo', this.volumeInfo.attachedInstances)
         if(data?.attachedInstances != null) {
-          this.volumeInfo.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName.toString() + ', '
+          this.volumeInfo?.attachedInstances?.forEach(item => {
+            this.listVMs += item.instanceName.toString()
           })
         }
         this.getTotalAmount()
@@ -300,6 +300,16 @@ export class EditVolumeComponent implements OnInit {
       this.orderItem = result.data
       this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
     });
+  }
+
+  formatNumber(number) {
+    if (number % 1 !== 0) {
+      let roundedNumber = number.toFixed(1);
+      let parts = roundedNumber.split('.');
+      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + parts[1];
+    } else {
+      return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
   }
 
   getTotalAmount() {

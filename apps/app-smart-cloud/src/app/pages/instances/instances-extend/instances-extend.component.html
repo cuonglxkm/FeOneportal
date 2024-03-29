@@ -17,10 +17,12 @@
     <nz-breadcrumb-item> Gia hạn máy ảo </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right">
-    <region-select-dropdown [isDetail]="true"></region-select-dropdown>
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
     <project-select-dropdown
-      [isDetail]="true"
       [regionId]="regionId"
+      (userChanged)="onProjectChange($event)"
     ></project-select-dropdown>
   </div>
   <div>
@@ -212,10 +214,7 @@
         <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzSpan="12">
             <nz-form-item>
-              <nz-form-label
-                >Chọn chu kỳ thanh toán (<span class="text-red">*</span>) -
-                Tháng</nz-form-label
-              >
+              <nz-form-label>Số tháng cần gia hạn thêm</nz-form-label>
               <nz-form-control>
                 <nz-input-number
                   [nzMin]="0"
