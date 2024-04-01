@@ -46,7 +46,7 @@ export class UpgradeKafkaComponent implements OnInit {
   serviceOrderCode: string;
   createDate: Date;
   expiryDate: Date;
-  kafkaUpgradeDto: KafkaUpgradeReq = new KafkaUpgradeReq();
+  kafkaUpgradeDto: KafkaUpgradeReq;
   ram: number;
   cpu: number;
   storage: number;

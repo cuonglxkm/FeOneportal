@@ -1,4 +1,4 @@
-export class KafkaCreateReq {
+export interface KafkaCreateReq {
     serviceName: string;
     version: string;
     description: string;
@@ -15,39 +15,13 @@ export class KafkaCreateReq {
     offsetTopicReplicationFactor: number;
     logRetentionHours: number;
     logSegmentBytes: number
-
-    constructor() {
-        this.serviceName = '';
-        this.version =  '';
-        this.description = '';
-        this.configType = 0;
-        this.servicePackCode = '';
-        this.ram = 0;
-        this.cpu = 0;
-        this.storage = 0;
-        this.brokers = 3;
-        this.usageTime = 1;
-        this.numPartitions = 0;
-        this.defaultReplicationFactor = 0;
-        this.minInsyncReplicas = 0;
-        this.offsetTopicReplicationFactor = 0;
-        this.logRetentionHours = 0;
-        this.logSegmentBytes = 0;
-    }
 }
 
-export class KafkaUpdateReq {
+export interface KafkaUpdateReq {
     serviceOrderCode: string;
     serviceName: string;
     version: string;
     description: string;
-
-    constructor() {
-        this.serviceOrderCode = '';
-        this.serviceName = '';
-        this.version =  '';
-        this.description = '';
-    }
 }
 
 export class KafkaUpgradeReq {

@@ -46,7 +46,7 @@ export class CreateKafkaComponent implements OnInit {
 
   showCustomConfig = false;
 
-  kafkaCreateReq: KafkaCreateReq = new KafkaCreateReq();
+  kafkaCreateReq: KafkaCreateReq;
   servicePackCode: string;
   @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
   usageTime = 1;
@@ -151,22 +151,24 @@ export class CreateKafkaComponent implements OnInit {
 
   createKafkaService() {
     const dto = this.myform;
-    this.kafkaCreateReq.serviceName = dto.get('serviceName').value;
-    this.kafkaCreateReq.version = dto.get('version').value;
-    this.kafkaCreateReq.description = dto.get('description').value;
-    this.kafkaCreateReq.servicePackCode = this.servicePackCode;
-    this.kafkaCreateReq.cpu = dto.get('vCpu').value;
-    this.kafkaCreateReq.ram = dto.get('ram').value;
-    this.kafkaCreateReq.storage = dto.get('storage').value;
-    this.kafkaCreateReq.brokers = dto.get('broker').value;
-    this.kafkaCreateReq.usageTime = dto.get('usageTime').value;
-    this.kafkaCreateReq.configType = dto.get('configType').value;
-    this.kafkaCreateReq.numPartitions = dto.get('numPartitions').value;
-    this.kafkaCreateReq.defaultReplicationFactor = dto.get('defaultReplicationFactor').value;
-    this.kafkaCreateReq.minInsyncReplicas = dto.get('minInsyncReplicas').value;
-    this.kafkaCreateReq.offsetTopicReplicationFactor = dto.get('offsetTopicReplicationFactor').value;
-    this.kafkaCreateReq.logRetentionHours = dto.get('logRetentionHours').value;
-    this.kafkaCreateReq.logSegmentBytes = dto.get('logSegmentBytes').value;
+    this.kafkaCreateReq = {
+      serviceName: dto.get('serviceName').value,
+      version: dto.get('version').value,
+      description: dto.get('description').value,
+      ram: dto.get('ram').value,
+      cpu: dto.get('vCpu').value,
+      servicePackCode: this.servicePackCode,
+      storage: dto.get('storage').value,
+      brokers: dto.get('broker').value,
+      usageTime: dto.get('usageTime').value,
+      configType: dto.get('configType').value,
+      numPartitions: dto.get('numPartitions').value,
+      defaultReplicationFactor: dto.get('defaultReplicationFactor').value,
+      minInsyncReplicas: dto.get('minInsyncReplicas').value,
+      offsetTopicReplicationFactor: dto.get('offsetTopicReplicationFactor').value,
+      logRetentionHours: dto.get('logRetentionHours').value,
+      logSegmentBytes: dto.get('logSegmentBytes').value,
+    }
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.kafkaService.createKafkaService(this.kafkaCreateReq)
@@ -201,10 +203,6 @@ export class CreateKafkaComponent implements OnInit {
     this.ram = item.ram;
     this.cpu = item.cpu;
     this.storage = item.storage;
-  }
-
-  onChangeCpu(event) {
-    console.log(event.data);
   }
 
   clicktab(){    
