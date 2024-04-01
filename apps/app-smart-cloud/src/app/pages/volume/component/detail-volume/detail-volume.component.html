@@ -72,74 +72,88 @@
   <nz-card [nzLoading]="isLoading">
     <span class="text-card-header">Thông tin Volume</span>
     <nz-descriptions [nzColumn]="2" nzBordered style="margin-top: 20px;">
-      <nz-descriptions-item [nzTitle]="titleName"><b>{{ volumeInfo?.name }}</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleType">
-        <b>
-          <span *ngIf="volumeInfo?.volumeType === 'hdd'">HDD</span>
-          <span *ngIf="volumeInfo?.volumeType === 'ssd'">SSD</span>
-        </b>
+      <nz-descriptions-item [nzTitle]="titleName" class="text-label">
+        <span class="text-label"><b>{{ volumeInfo?.name }}</b></span>
       </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleStorage"><b>{{ volumeInfo?.sizeInGB }} GB</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleIOPS"><b>{{ volumeInfo?.iops }}</b></nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleStatus">
+      <nz-descriptions-item [nzTitle]="titleType">
+          <span *ngIf="volumeInfo?.volumeType === 'hdd'" class="text-label"><b>HDD</b></span>
+          <span *ngIf="volumeInfo?.volumeType === 'ssd'" class="text-label"><b>SSD</b></span>
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleStorage">
+        <span class="text-label"><b>{{ volumeInfo?.sizeInGB }} GB</b></span>
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleIOPS" >
+        <span class="text-label">
+          <b>{{ volumeInfo?.iops }}</b>
+        </span>
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleStatus" class="text-label">
         <span *ngIf="volumeInfo.status === 'KHOITAO'"
-              style="color: #0074CC"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
+              style="color: #0066B3" class="text-label"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
         <span *ngIf="volumeInfo.status === 'ERROR'"
-              style="color: #FF3333"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
+              style="color: #FF3333" class="text-label"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
         <span *ngIf="volumeInfo.status === 'SUSPENDED'"
-              style="color: #FF7C33"><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
+              style="color: #FF7C33" class="text-label" ><b>{{ volumeStatus.get(volumeInfo.status) }}</b></span>
       </nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleAttachInstance">
-        <span *ngIf="listVMs.length > 0" style="color: #0074CC;"><b>{{ listVMs }}</b></span>
-        <span *ngIf="listVMs.length <= 0" style="color: #0074CC;"><b>Không có máy ảo</b></span>
+        <span *ngIf="listVMs.length > 0" style="color: #0074CC;" class="text-label"><b>{{ listVMs }}</b></span>
+        <span *ngIf="listVMs.length <= 0" style="color: #0074CC;" class="text-label"><b>Không có máy ảo</b></span>
       </nz-descriptions-item>
 
     </nz-descriptions>
     <ng-template #titleName>
-      <span>Tên Volume:</span>
+      <span class="text-label">Tên Volume:</span>
     </ng-template>
     <ng-template #titleType>
-      <span>Loại Volume:</span>
+      <span class="text-label">Loại Volume:</span>
     </ng-template>
     <ng-template #titleStorage>
-      <span>Dung lượng:</span>
+      <span class="text-label">Dung lượng:</span>
     </ng-template>
     <ng-template #titleIOPS>
-      <span>IOPS:</span>
+      <span class="text-label">IOPS:</span>
     </ng-template>
     <ng-template #titleStatus>
-      <span>Trạng thái Volume:</span>
+      <span class="text-label">Trạng thái Volume:</span>
     </ng-template>
     <ng-template #titleAttachInstance>
-      <span>Gắn vào máy ảo:</span>
+      <span class="text-label">Gắn vào máy ảo:</span>
     </ng-template>
     <ng-template #titleVolumeType>
-      <span>Kiểu Volume:</span>
+      <span class="text-label">Kiểu Volume:</span>
     </ng-template>
     <div style="margin-top: 15px;">
-      <b>Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>
+      <b class="text-label">Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>
     </div>
     <div style="display: flex; margin-bottom: 15px;">
       <div style="margin-top: 15px;">
-        <label nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled class="text-label">Mã hóa Volume</label>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >Mã hóa Volume</label>
       </div>
       <div style="margin-top: 15px; margin-left: 15px;">
-        <label nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled class="text-label">Gắn nhiều máy ảo</label>
+        <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled >Gắn nhiều máy ảo</label>
       </div>
     </div>
-    <span class="text-label" >Mô tả: <b>{{ volumeInfo?.description }}</b></span>
-    <nz-descriptions [nzColumn]="2" style="margin-top: 10px;" *ngIf="typeVPC == 0">
-      <nz-descriptions-item [nzTitle]="titleCreateDate"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b>
+    <ng-template #titleDescription>
+      <span class="text-label">Mô tả:</span>
+    </ng-template>
+    <nz-descriptions>
+      <nz-descriptions-item [nzTitle]="titleDescription">
+        <span class="text-label"><b>{{ volumeInfo?.description }}</b></span>
       </nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="titleExpireDate">
-        <span style="color: rgba(235, 20, 20, 0.85)"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
+    </nz-descriptions>
+    <nz-descriptions [nzColumn]="2" *ngIf="typeVPC == 0">
+      <nz-descriptions-item [nzTitle]="titleCreateDate" >
+        <span class="text-label"><b>{{ volumeInfo?.creationDate | date:'dd/MM/yyyy' }}</b></span></nz-descriptions-item>
+      <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">
+        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
         <span class="text-label">Ngày khởi tạo:</span>
       </ng-template>
       <ng-template #titleExpireDate>
-        <span style="color: rgba(235, 20, 20, 0.85)" >Ngày hết hạn:</span>
+        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">Ngày hết hạn:</span>
       </ng-template>
+
     </nz-descriptions>
   </nz-card>
 </nz-content>

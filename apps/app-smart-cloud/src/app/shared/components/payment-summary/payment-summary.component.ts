@@ -23,7 +23,7 @@ class ServiceInfo {
   duration: number;
   amount: number;
   currency: number;
-  type:string;
+  type: string;
 }
 
 class Discount {
@@ -70,12 +70,12 @@ export class PaymentSummaryComponent implements OnInit {
       console.log({ path: this.returnPath });
       const myOrder = state.data;
       console.log(state.data);
-      
+
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
       this.order.note = myOrder.note;
       this.order.orderItems = myOrder.orderItems;
-       console.log('order summary', this.order);
+      console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         var serviceItem = new ServiceInfo();
         const specificationObj = JSON.parse(e.specification);
@@ -85,8 +85,8 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
-            serviceItem.name = 'Máy ảo';
-            serviceItem.type = `Chỉnh sửa - ${specificationObj.serviceName}`;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
+            serviceItem.type = `Chỉnh sửa`;
             break;
           case 'instance_extend':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
@@ -105,28 +105,28 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = 'Gia hạn';
             break;
           case 'ip_create':
-            serviceItem.name = `IP Public - ${specificationObj.serviceName}`;
+            serviceItem.name = `IP`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'ip_extend':
-            serviceItem.name = `IP Public - ${specificationObj.serviceName}`;
+            serviceItem.name = `IP`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s - ${specificationObj.serviceName}`;
+            serviceItem.name = `k8s`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
-            serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
+            serviceItem.name = `Object Storage`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_resize':
-            serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
+            serviceItem.name = `Object Storage`;
             serviceItem.type = 'Chỉnh sửa';
             break;
           case 'objectstorage_extend':
-            serviceItem.name = `Object Storage - ${specificationObj.serviceName}`;
+            serviceItem.name = `Object Storage`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'kafka_create':
@@ -141,7 +141,11 @@ export class PaymentSummaryComponent implements OnInit {
         serviceItem.price = e.price;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        serviceItem.currency = e.price * e.serviceDuration;
+        if (serviceItem.type == 'Chỉnh sửa') {
+          serviceItem.currency = e.price;
+        } else {
+          serviceItem.currency = e.price * e.serviceDuration;
+        }
         this.listServiceInfo.push(serviceItem);
       });
       this.listServiceInfo.forEach((e) => {
@@ -216,13 +220,11 @@ export class PaymentSummaryComponent implements OnInit {
 
   chooseDiscount(code: string) {
     if (this.discountPicked === code) {
-      this.discountPicked = null; 
-  } else {
+      this.discountPicked = null;
+    } else {
       this.discountPicked = code;
+    }
   }
-    
-  }
-
 
   isVisibleDiscount: boolean = false;
   showModal() {

@@ -2,26 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: vnptcloud
-  name: app-kafka-deployment
+  name: app-smartcloud-deployment
   labels:
-    app: app-kafka
+    app: app-smartcloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: app-kafka
+      service: app-smartcloud
   template:
     metadata:
       labels:
-        app: app-kafka
-        service: app-kafka
+        app: app-smartcloud
+        service: app-smartcloud
     spec:
       containers:
-        - name: app-kafka
-          image: registry.onsmartcloud.com/cloudportal/oneportal-app-smart-cloud
+        - name: app-smartcloud
+          image: registry.onsmartcloud.com/cloudportal/app-smartcloud
           ports:
             - containerPort: 80
               protocol: TCP
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
       imagePullSecrets:
         - name: regcred
 #          env:
@@ -31,13 +38,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-kafka
+  name: app-smartcloud
   namespace: vnptcloud
 spec:
   type: NodePort
   ports:
     - port: 80
-      name: port1
-      nodePort: 30766
+      name: http
   selector:
-    app: app-kafka
+    app: app-smartcloud

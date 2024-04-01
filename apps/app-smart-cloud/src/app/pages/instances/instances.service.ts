@@ -69,15 +69,15 @@ export class InstancesService extends BaseService {
   }
 
   getAllIPPublic(
-    regionId: any,
-    customerId: any,
-    status: any,
-    pageSize: any,
-    currentPage: any,
-    isCheckState: any,
-    ipAddress: any
+    projectId: number,
+    ipAddress: string,
+    customerId: number,
+    regionId: number,
+    pageSize: number,
+    currentPage: number,
+    isCheckState: any
   ): Observable<any> {
-    let url_ = `/Ip?status=${status}&customerId=${customerId}&regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}&isCheckState=${isCheckState}&ipAddress=${ipAddress}`;
+    let url_ = `/Ip?projectId=${projectId}&customerId=${customerId}&regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}&isCheckState=${isCheckState}&ipAddress=${ipAddress}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
@@ -296,8 +296,8 @@ export class InstancesService extends BaseService {
     );
   }
 
-  checkExistName(instanceId: number, name: string): Observable<boolean> {
-    let url_ = `/instances/exist-instancename?instanceId=${instanceId}&name=${name}`;
+  checkExistName(name: string, regionId: number): Observable<boolean> {
+    let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
       this.baseUrl + this.ENDPOINT.provisions + url_

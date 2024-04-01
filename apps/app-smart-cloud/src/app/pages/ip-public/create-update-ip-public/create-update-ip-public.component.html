@@ -2,8 +2,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Ip Public</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo Ip Public</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">IP Public</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo IP Public</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -47,7 +47,7 @@
             <nz-input-group nzCompact>
               <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse"
                          [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%"
-                         nzPlaceHolder="--Chọn máy ảo--" (nzOpenChange)="caculator(null)">
+                         nzPlaceHolder="--Chọn máy ảo--" (ngModelChange)="caculator(null)">
                 <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.name+'|||'+i.id" />
               </nz-select>
             </nz-input-group>

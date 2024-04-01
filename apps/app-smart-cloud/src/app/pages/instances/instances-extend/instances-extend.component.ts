@@ -19,7 +19,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -39,7 +39,7 @@ export class InstancesExtendComponent implements OnInit {
   customerId: number;
   email: string;
   instanceExtend: InstanceExtend = new InstanceExtend();
-  numberMonth: number = 0;
+  numberMonth: number = 1;
   newExpiredDate: string;
   order: Order = new Order();
   orderItem: OrderItem[] = [];
@@ -66,6 +66,7 @@ export class InstancesExtendComponent implements OnInit {
       this.regionId = this.instancesModel.regionId;
       this.loading = false;
       this.getListIpPublic();
+      this.getTotalAmount();
       this.service
         .getAllSecurityGroupByInstance(
           this.instancesModel.cloudId,
@@ -80,6 +81,7 @@ export class InstancesExtendComponent implements OnInit {
         });
       this.cdr.detectChanges();
     });
+    this.onChangeTime();
   }
 
   listIPPublicStr = '';
@@ -111,24 +113,33 @@ export class InstancesExtendComponent implements OnInit {
       });
   }
 
-  onChangeTime(event: any) {
-    if (event == 0) {
-      this.isDisable = true;
-      this.totalAmount = 0;
-      this.totalincludesVAT = 0;
-      this.newExpiredDate = '';
-    } else {
-      this.isDisable = false;
-      let expiredDate = new Date(this.instancesModel.expiredDate);
-      expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-      this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-      this.getTotalAmount();
-    }
+  dataSubjectTime: Subject<any> = new Subject<any>();
+  changeTime(value: number) {
+    this.dataSubjectTime.next(value);
+  }
+  onChangeTime() {
+    this.dataSubjectTime
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (res == 0) {
+          this.isDisable = true;
+          this.totalAmount = 0;
+          this.totalincludesVAT = 0;
+          this.newExpiredDate = '';
+        } else {
+          let expiredDate = new Date(this.instancesModel.expiredDate);
+          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+          this.getTotalAmount();
+        }
+      });
   }
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = null;
+    this.instanceExtend.serviceName = 'Gia hạn';
     this.instanceExtend.customerId = this.customerId;
     this.instanceExtend.vpcId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
@@ -144,6 +155,7 @@ export class InstancesExtendComponent implements OnInit {
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
+    this.isDisable = true;
     this.instanceExtendInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -161,21 +173,12 @@ export class InstancesExtendComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.isDisable = false;
       this.cdr.detectChanges();
     });
   }
 
-  isVisibleExtend: boolean = false;
-  showModal() {
-    this.isVisibleExtend = true;
-  }
-
-  handleCancelExtend() {
-    this.isVisibleExtend = false;
-  }
-
   handleOkExtend(): void {
-    this.isVisibleExtend = false;
     this.instanceExtendInit();
     let specificationInstance = JSON.stringify(this.instanceExtend);
     let orderItemInstanceResize = new OrderItem();
