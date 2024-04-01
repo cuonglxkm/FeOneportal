@@ -66,19 +66,11 @@
 
         <nz-form-item>
           <nz-form-control>
-            <nz-form-label nzFor="name">
-              <div>
-                <span>Type</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
-                  [nzPopoverContent]="'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'"
-                  nzPopoverPlacement="bottom"></span>
-              </div>
-            </nz-form-label>
-            <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedType" [ngModelOptions]="{standalone: true}">
-              <nz-option *ngFor="let data of type" [nzLabel]="data.label"
-                [nzValue]="data.value"></nz-option>
-            </nz-select>
+            <nz-form-label *ngIf="selectedType == 'subnet'" nzFor="name">Subnet:</nz-form-label>
+            <nz-form-label *ngIf="selectedType == 'cidr'" nzFor="name">Cidr:</nz-form-label>
+
+            <input formControlName="endpoints" *ngIf="selectedType == 'subnet'" nz-input type="text" placeholder="Subnet(for local systems)" />
+            <input formControlName="endpoints" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -95,6 +87,11 @@
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Type</h3>
           <span>{{selectedType}}</span>
+        </div>
+
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Type</h3>
+          <span>{{form.value.endpoints}}</span>
         </div>
       </div>
       <button (click)="handleCreate()" nz-button nzType="primary"

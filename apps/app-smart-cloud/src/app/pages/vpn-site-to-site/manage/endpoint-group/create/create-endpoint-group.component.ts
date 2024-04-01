@@ -29,10 +29,10 @@ export class CreateEndpointGroupComponent implements OnInit {
     formCreateEndpointGroup: FormCreateEndpointGroup = new FormCreateEndpointGroup();
     form: FormGroup<{
         name: FormControl<string>;
-        type: FormControl<string>;
+        endpoints: FormControl<string[]>;
     }> = this.fb.group({
         name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-        type: ['', Validators.required]
+        endpoints: [[] as string[], Validators.required],
     });
 
 
@@ -44,7 +44,8 @@ export class CreateEndpointGroupComponent implements OnInit {
         this.formCreateEndpointGroup.name =
             this.form.controls.name.value;
         this.formCreateEndpointGroup.description = "";
-        this.formCreateEndpointGroup.type = this.form.controls.type.value
+        this.formCreateEndpointGroup.type = this.selectedType;
+        this.formCreateEndpointGroup.endpoints = this.form.controls.endpoints.value;
         return this.formCreateEndpointGroup;
     }
 
