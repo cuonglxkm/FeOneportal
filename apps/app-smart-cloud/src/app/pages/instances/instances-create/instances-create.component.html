@@ -190,7 +190,7 @@
           <nz-form-label
             >Chọn loại Volume (<span class="text-red">*</span>)<img
               style="margin-left: 10px"
-              nz-tooltip="Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot."
+              nz-tooltip="Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau."
               src="assets/imgs/pajamas_question.svg"
               alt=""
           /></nz-form-label>
@@ -1306,10 +1306,27 @@
               nzSize="large"
               nzType="primary"
               (click)="save()"
-              [disabled]="form.invalid"
+              [disabled]="
+                form.invalid ||
+                totalincludesVAT +
+                  totalAmountVolumeVAT +
+                  totalAmountIPv4VAT +
+                  totalAmountIPv6VAT ==
+                  0
+              "
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'"
+              <span
+                [style.color]="
+                  form.invalid ||
+                  totalincludesVAT +
+                    totalAmountVolumeVAT +
+                    totalAmountIPv4VAT +
+                    totalAmountIPv6VAT ==
+                    0
+                    ? 'gray'
+                    : 'white'
+                "
                 >Khởi tạo</span
               >
             </button>

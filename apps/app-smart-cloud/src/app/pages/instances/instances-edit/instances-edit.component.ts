@@ -333,12 +333,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onReloadInstanceDetail() {
-    setTimeout(() => {
-      this.dataService.getById(this.id, true).subscribe((data: any) => {
-        this.instancesModel = data;
-        this.cdr.detectChanges();
-      });
-    }, 5000);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   volumeUnitPrice = 0;

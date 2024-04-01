@@ -39,7 +39,7 @@ export class InstancesExtendComponent implements OnInit {
   customerId: number;
   email: string;
   instanceExtend: InstanceExtend = new InstanceExtend();
-  numberMonth: number = 0;
+  numberMonth: number = 1;
   newExpiredDate: string;
   order: Order = new Order();
   orderItem: OrderItem[] = [];
@@ -66,6 +66,7 @@ export class InstancesExtendComponent implements OnInit {
       this.regionId = this.instancesModel.regionId;
       this.loading = false;
       this.getListIpPublic();
+      this.getTotalAmount();
       this.service
         .getAllSecurityGroupByInstance(
           this.instancesModel.cloudId,
@@ -128,7 +129,6 @@ export class InstancesExtendComponent implements OnInit {
           this.totalincludesVAT = 0;
           this.newExpiredDate = '';
         } else {
-          this.isDisable = false;
           let expiredDate = new Date(this.instancesModel.expiredDate);
           expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
           this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
@@ -155,6 +155,7 @@ export class InstancesExtendComponent implements OnInit {
   totalAmount: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
+    this.isDisable = true;
     this.instanceExtendInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -172,6 +173,7 @@ export class InstancesExtendComponent implements OnInit {
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.isDisable = false;
       this.cdr.detectChanges();
     });
   }
