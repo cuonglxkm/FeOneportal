@@ -2,44 +2,44 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  HostListener,
   Inject,
   OnInit,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-} from '@angular/forms';
-import { NzSafeAny } from 'ng-zorro-antd/core/types';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   InstanceCreate,
-  Flavors,
   IPPublicModel,
   IPSubnetModel,
   ImageTypesModel,
-  Images,
   SHHKeyModel,
   SecurityGroupModel,
-  Snapshot,
   VolumeCreate,
   Order,
   OrderItem,
   IpCreate,
+  OfferItem,
+  Image,
+  DataPayment,
+  ItemPayment,
 } from '../instances.model';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { Observable, concatMap, finalize, from, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { Observable, Subject, debounceTime, of, pipe } from 'rxjs';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -60,13 +60,15 @@ class BlockStorage {
   capacity?: number = 0;
   encrypt?: boolean = false;
   multiattach?: boolean = false;
-  price?: number = 1;
+  price?: number = 0;
+  priceAndVAT?: number = 0;
 }
 class Network {
   id: number = 0;
   ip?: string = '';
-  amount?: number = 0;
-  price?: number = 1;
+  amount?: number = 1;
+  price?: number = 0;
+  priceAndVAT?: number = 0;
 }
 @Component({
   selector: 'one-portal-instances-create',
@@ -76,16 +78,8 @@ class Network {
   animations: [slider],
 })
 export class InstancesCreateComponent implements OnInit {
-  images = [
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-  ];
-
-  public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true,
@@ -96,12 +90,14 @@ export class InstancesCreateComponent implements OnInit {
     animation: 'lazy',
   };
 
-  tempData: any[];
-
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [
+        Validators.required,
+        Validators.max(50),
+        Validators.pattern(/^[a-zA-Z0-9]+$/),
+      ],
     }),
     // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
@@ -122,11 +118,103 @@ export class InstancesCreateComponent implements OnInit {
   password?: string;
   numberMonth: number = 1;
   hdh: any = null;
-  flavor: any = null;
+  offerFlavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
   selectedSSHKeyName: string;
   selectedSnapshot: number;
+  cardHeight: string = '160px';
+
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private dataService: InstancesService,
+    private snapshotVLService: SnapshotVolumeService,
+    private catalogService: CatalogService,
+    private notification: NzNotificationService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private loadingSrv: LoadingService,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
+  ) {}
+
+  @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
+  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselImage.reset();
+        this.myCarouselFlavor.reset();
+      }, 100);
+    }
+  }
+
+  ngOnInit(): void {
+    this.userId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.initIpSubnet();
+    this.initFlavors();
+    this.initSnapshot();
+    this.getAllIPPublic();
+    this.getAllImageType();
+    this.getAllSecurityGroup();
+    this.getAllSSHKey();
+
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '130px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '180px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '210px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '165px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '150px';
+        }
+
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
+    this.cdr.detectChanges();
+    this.getTotalAmountBlockStorage();
+    this.getTotalAmountIPv4();
+    this.getTotalAmountIPv6();
+  }
 
   getUser() {}
   //#region Hệ điều hành
@@ -134,7 +222,7 @@ export class InstancesCreateComponent implements OnInit {
   isLoading = false;
   listSelectedImage = [];
   selectedImageTypeId: number;
-  listOfImageByImageType = [];
+  listOfImageByImageType: Map<number, Image[]> = new Map();
   imageTypeId = [];
 
   getAllImageType() {
@@ -143,23 +231,38 @@ export class InstancesCreateComponent implements OnInit {
       this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
       });
+      this.getAllOfferImage(this.imageTypeId);
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllImageByImageType(imageTypeId: any[]) {
-    this.listOfImageByImageType = [];
-    // Đảm bảo tuần tự ds Image theo như ds ImageType tương ứng
-    from(imageTypeId)
-      .pipe(
-        concatMap((e) =>
-          this.dataService.getAllImage(null, this.region, e, this.userId)
-        )
-      )
-      .subscribe((result) => {
-        this.listOfImageByImageType.push(result);
+  getAllOfferImage(imageTypeId: any[]) {
+    imageTypeId.forEach((id) => {
+      let listImage: Image[] = [];
+      this.listOfImageByImageType.set(id, listImage);
+    });
+    this.dataService
+      .getListOffers(this.region, 'VM-Image')
+      .subscribe((data: OfferItem[]) => {
+        data.forEach((e: OfferItem) => {
+          if (e.status.toUpperCase() == 'ACTIVE') {
+            let tempImage = new Image();
+            e.characteristicValues.forEach((char) => {
+              if (char.charOptionValues[0] == 'Id') {
+                tempImage.id = Number.parseInt(char.charOptionValues[1]);
+                tempImage.name = e.offerName;
+              }
+              if (char.charOptionValues[0] == 'ImageTypeId') {
+                this.listOfImageByImageType
+                  .get(Number.parseInt(char.charOptionValues[1]))
+                  .push(tempImage);
+              }
+            });
+          }
+        });
+        this.cdr.detectChanges();
+        console.log('list Images', this.listOfImageByImageType);
       });
-    console.log('list of image by imagetype', this.listOfImageByImageType);
   }
 
   onInputHDH(event: any, index: number, imageTypeId: number) {
@@ -170,6 +273,9 @@ export class InstancesCreateComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
+    if (this.offerFlavor != null) {
+      this.getTotalAmount();
+    }
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -177,8 +283,7 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region  Snapshot
-  isSnapshot: boolean = true;
-  listImages: Images[] = [];
+  isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
   size: number;
   status: string;
@@ -191,7 +296,7 @@ export class InstancesCreateComponent implements OnInit {
           this.projectId,
           this.region,
           this.size,
-          99999,
+          9999,
           1,
           this.status,
           '',
@@ -219,18 +324,51 @@ export class InstancesCreateComponent implements OnInit {
   initHDD(): void {
     this.activeBlockHDD = true;
     this.activeBlockSSD = false;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
+    if (
+      this.isCustomconfig &&
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0
+    ) {
+      this.getTotalAmount();
+    }
+    this.initFlavors();
   }
   initSSD(): void {
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
+    if (
+      this.isCustomconfig &&
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0
+    ) {
+      this.getTotalAmount();
+    }
+    this.initFlavors();
   }
 
   isCustomconfig = false;
   onClickConfigPackage() {
     this.isCustomconfig = false;
+    this.offerFlavor = null;
+    this.selectedElementFlavor = null;
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
   }
 
   onClickCustomConfig() {
+    this.configCustom = new ConfigCustom();
+    this.totalAmount = 0;
+    this.totalincludesVAT = 0;
     this.isCustomconfig = true;
   }
   //#endregion
@@ -258,68 +396,115 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
+        this.cdr.detectChanges();
       });
   }
   //#endregion
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
-  activeBlockFlavors: boolean = true;
-  activeBlockFlavorCloud: boolean = false;
-  listFlavors: Flavors[] = [];
-  pagedCardList: Array<Array<any>> = [];
-  effect = 'scrollx';
-
+  listOfferFlavors: OfferItem[] = [];
   selectedElementFlavor: string = null;
   isInitialClass = true;
   isNewClass = false;
 
   initFlavors(): void {
-    this.activeBlockFlavors = true;
-    this.activeBlockFlavorCloud = false;
     this.dataService
-      .getAllFlavors(false, this.region, false, false, true)
+      .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listFlavors = data;
-        // Divide the cardList into pages with 4 cards per page
-        for (let i = 0; i < this.listFlavors.length; i += 4) {
-          this.pagedCardList.push(this.listFlavors.slice(i, i + 4));
+        this.listOfferFlavors = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+        if (this.activeBlockHDD) {
+          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+            e.offerName.includes('HDD')
+          );
+        } else {
+          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+            e.offerName.includes('SSD')
+          );
         }
+        this.listOfferFlavors.forEach((e: OfferItem) => {
+          e.description = '';
+          e.characteristicValues.forEach((ch) => {
+            if (ch.charOptionValues[0] == 'CPU') {
+              e.description += ch.charOptionValues[1] + ' VCPU';
+            }
+            if (ch.charOptionValues[0] == 'RAM') {
+              e.description += ch.charOptionValues[1] + ' GB RAM / ';
+            }
+            if (ch.charOptionValues[0] == 'HDD') {
+              if (this.activeBlockHDD) {
+                e.description += ch.charOptionValues[1] + ' GB HDD / ';
+              } else {
+                e.description += ch.charOptionValues[1] + ' GB SSD / ';
+              }
+            }
+          });
+        });
+        this.myCarouselFlavor.dataSource = this.listOfferFlavors;
+        this.myCarouselFlavor.load = this.listOfferFlavors.length;
+        this.myCarouselFlavor.reset()
+        console.log('list flavor check', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
   }
 
-  initFlavorCloud(): void {
-    this.activeBlockFlavors = false;
-    this.activeBlockFlavorCloud = true;
-  }
-
   onInputFlavors(event: any) {
-    this.flavor = this.listFlavors.find((flavor) => flavor.id === event);
-    console.log(this.flavor);
-  }
-
-  toggleClass(id: string) {
-    this.selectedElementFlavor = id;
-    if (this.selectedElementFlavor) {
-      this.isInitialClass = !this.isInitialClass;
-      this.isNewClass = !this.isNewClass;
-    } else {
-      this.isInitialClass = true;
-      this.isNewClass = false;
+    this.offerFlavor = this.listOfferFlavors.find(
+      (flavor) => flavor.id === event
+    );
+    if (this.hdh != null) {
+      this.getTotalAmount();
     }
-
-    this.cdr.detectChanges();
+    console.log(this.offerFlavor);
   }
 
   selectElementInputFlavors(id: string) {
     this.selectedElementFlavor = id;
   }
-  //#endregion
 
-  onSelectedSecurityGroup(event: any) {
-    this.selectedSecurityGroup = event;
-    console.log('list selected Security Group', this.selectedSecurityGroup);
+  onChangeVCPU() {
+    if (
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    } else if (this.configCustom.vCPU == 0) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+    }
   }
+
+  onChangeRam() {
+    if (
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    } else if (this.configCustom.ram == 0) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+    }
+  }
+
+  onChangeCapacity() {
+    if (
+      this.configCustom.vCPU != 0 &&
+      this.configCustom.ram != 0 &&
+      this.configCustom.capacity != 0 &&
+      this.hdh != null
+    ) {
+      this.getTotalAmount();
+    } else if (this.configCustom.capacity == 0) {
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+    }
+  }
+  //#endregion
 
   //#region selectedPasswordOrSSHkey
   listSSHKey: SHHKeyModel[] = [];
@@ -357,6 +542,39 @@ export class InstancesCreateComponent implements OnInit {
     console.log('sshkey', event);
   }
 
+  onChangeTime(value: any) {
+    if (
+      this.hdh != null &&
+      (this.offerFlavor != null ||
+        (this.configCustom.vCPU != 0 &&
+          this.configCustom.ram != 0 &&
+          this.configCustom.capacity != 0))
+    ) {
+      this.getTotalAmount();
+    }
+
+    this.totalAmountVolume = 0;
+    this.totalAmountVolumeVAT = 0;
+    this.listOfDataBlockStorage.forEach((bs) => {
+      this.totalAmountVolume += bs.price * this.numberMonth;
+      this.totalAmountVolumeVAT += bs.priceAndVAT * this.numberMonth;
+    });
+
+    this.totalAmountIPv4 = 0;
+    this.totalAmountIPv4VAT = 0;
+    this.listOfDataIPv4.forEach((item) => {
+      this.totalAmountIPv4 += item.price * this.numberMonth;
+      this.totalAmountIPv4VAT += item.priceAndVAT * this.numberMonth;
+    });
+
+    this.totalAmountIPv6 = 0;
+    this.totalAmountIPv6VAT = 0;
+    this.listOfDataIPv6.forEach((item) => {
+      this.totalAmountIPv6 += item.price * this.numberMonth;
+      this.totalAmountIPv6VAT += item.priceAndVAT * this.numberMonth;
+    });
+    this.cdr.detectChanges();
+  }
   //#endregion
 
   //#region BlockStorage
@@ -379,23 +597,13 @@ export class InstancesCreateComponent implements OnInit {
     );
   }
 
-  onInputBlockStorage(index: number, event: any) {
-    // const inputElement = this.renderer.selectRootElement('#type_' + index);
-    // const inputValue = inputElement.value;
-    // Sử dụng filter() để lọc các object có trường 'type' khác rỗng
-    const filteredArray = this.listOfDataBlockStorage.filter(
-      (item) => item.type !== ''
-    );
+  onInputBlockStorage(id: number, value: any) {
+    this.changeTotalAmountBlockStorage(id, value);
     const filteredArrayHas = this.listOfDataBlockStorage.filter(
       (item) => item.type == ''
     );
 
-    if (filteredArrayHas.length > 0) {
-      this.listOfDataBlockStorage[index].type = event;
-    } else {
-      // Add a new row with the same value as the current row
-      //const currentItem = this.itemsTest[count];
-      //this.itemsTest.splice(count + 1, 0, currentItem);
+    if (filteredArrayHas.length == 0) {
       this.defaultBlockStorage = new BlockStorage();
       this.idBlockStorage++;
       this.defaultBlockStorage.id = this.idBlockStorage;
@@ -415,26 +623,21 @@ export class InstancesCreateComponent implements OnInit {
   defaultIPv6: Network = new Network();
   listIPSubnetModel: IPSubnetModel[] = [];
 
+  initIpSubnet(): void {
+    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
+      this.listIPSubnetModel = data;
+      this.cdr.detectChanges();
+    });
+  }
+
   initIPv4(): void {
     this.activeIPv4 = true;
     this.listOfDataIPv4.push(this.defaultIPv4);
-
-    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
-      // var resultHttp = data;
-      // this.listOfDataNetwork.push(...resultHttp);
-    });
   }
 
   initIPv6(): void {
     this.activeIPv6 = true;
     this.listOfDataIPv6.push(this.defaultIPv6);
-
-    this.dataService.getAllIPSubnet(this.region).subscribe((data: any) => {
-      this.listIPSubnetModel = data;
-      // var resultHttp = data;
-      // this.listOfDataNetwork.push(...resultHttp);
-    });
   }
 
   deleteRowIPv4(id: number): void {
@@ -445,90 +648,43 @@ export class InstancesCreateComponent implements OnInit {
     this.listOfDataIPv6 = this.listOfDataIPv6.filter((d) => d.id !== id);
   }
 
-  onInputIPv4() {
-    this.defaultIPv4 = new Network();
-    this.idIPv4++;
-    this.defaultIPv4.id = this.idIPv4;
-    this.listOfDataIPv4.push(this.defaultIPv4);
+  onInputIPv4(value: any) {
+    this.changeTotalAmountIPv4(value);
+    const filteredArrayHas = this.listOfDataIPv4.filter(
+      (item) => item.ip == ''
+    );
+
+    if (filteredArrayHas.length == 0) {
+      this.defaultIPv4 = new Network();
+      this.idIPv4++;
+      this.defaultIPv4.id = this.idIPv4;
+      this.listOfDataIPv4.push(this.defaultIPv4);
+    }
     this.cdr.detectChanges();
   }
 
-  onInputIPv6() {
-    this.defaultIPv6 = new Network();
-    this.idIPv6++;
-    this.defaultIPv6.id = this.idIPv6;
-    this.listOfDataIPv6.push(this.defaultIPv6);
+  onInputIPv6(value: any) {
+    this.changeTotalAmountIPv6(value);
+    const filteredArrayHas = this.listOfDataIPv6.filter(
+      (item) => item.ip == ''
+    );
+
+    if (filteredArrayHas.length == 0) {
+      this.defaultIPv6 = new Network();
+      this.idIPv6++;
+      this.defaultIPv6.id = this.idIPv6;
+      this.listOfDataIPv6.push(this.defaultIPv6);
+    }
     this.cdr.detectChanges();
   }
   //#endregion
 
-  constructor(
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private dataService: InstancesService,
-    private snapshotVLService: SnapshotVolumeService,
-    private modalSrv: NzModalService,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
-    public message: NzMessageService,
-    private renderer: Renderer2,
-    private loadingSrv: LoadingService
-  ) {
-    this.tempData = [
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-      this.images[Math.floor(Math.random() * this.images.length)],
-    ];
-
-    this.carouselTileItems$ = of(this.tempData);
-
-    // this.carouselTileItems$ = interval(500).pipe(
-    //   startWith(-1),
-    //   take(30),
-    //   map(() => {
-    //     const data = (this.tempData = [
-    //       ...this.tempData,
-    //       this.images[Math.floor(Math.random() * this.images.length)]
-    //     ]);
-    //
-    //     return data;
-    //   })
-    // );
-  }
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    this.listSecurityGroup = [];
-    this.listIPPublic = [];
-    this.selectedSecurityGroup = [];
-    this.ipPublicValue = 0;
-    this.initFlavors();
-    this.initSnapshot();
-    this.getAllIPPublic();
-    this.getAllImageByImageType(this.imageTypeId);
-    this.cdr.detectChanges();
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  onProjectChange(project: any) {
-    // Handle the region change event
-    this.projectId = project.id;
-    this.listSecurityGroup = [];
-    this.selectedSecurityGroup = [];
-    this.getAllSecurityGroup();
-    this.getAllSSHKey();
-    this.cdr.detectChanges();
-  }
-
-  ngOnInit(): void {
-    this.userId = this.tokenService.get()?.userId;
-    this.getAllImageType();
+  userChangeProject() {
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   createInstancesForm(): FormGroup<InstancesForm> {
@@ -540,27 +696,9 @@ export class InstancesCreateComponent implements OnInit {
     });
   }
 
-  // get items(): FormArray<FormGroup<InstancesForm>> {
-  //   return this.form.controls.items;
-  // }
-
-  save(): void {
-    let arraylistSecurityGroup = null;
-    // if (this.selectedSecurityGroup.length > 0) {
-    //   arraylistSecurityGroup = this.selectedSecurityGroup.map((obj) =>
-    //     obj.id.toString()
-    //   );
-    // }
-    if (!this.isSnapshot && this.hdh == null) {
-      this.message.error('Vui lòng chọn hệ điều hành');
-      return;
-    }
-    if (this.flavor == null) {
-      this.message.error('Vui lòng chọn gói cấu hình');
-      return;
-    }
+  instanceInit() {
     this.instanceCreate.description = null;
-    
+
     this.instanceCreate.imageId = this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
@@ -581,15 +719,29 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.usedMss = false;
     this.instanceCreate.customerUsingMss = null;
     if (this.isCustomconfig) {
+      this.instanceCreate.offerId = 0;
       this.instanceCreate.flavorId = 0;
       this.instanceCreate.ram = this.configCustom.ram;
       this.instanceCreate.cpu = this.configCustom.vCPU;
       this.instanceCreate.volumeSize = this.configCustom.capacity;
     } else {
-      this.instanceCreate.flavorId = this.flavor.id;
-      this.instanceCreate.ram = this.flavor.ram;
-      this.instanceCreate.cpu = this.flavor.cpu;
-      this.instanceCreate.volumeSize = this.flavor.hdd;
+      this.instanceCreate.offerId = this.offerFlavor.id;
+      this.offerFlavor.characteristicValues.forEach((e) => {
+        if (e.charOptionValues[0] == 'Id') {
+          this.instanceCreate.flavorId = Number.parseInt(e.charOptionValues[1]);
+        }
+        if (e.charOptionValues[0] == 'RAM') {
+          this.instanceCreate.ram = Number.parseInt(e.charOptionValues[1]);
+        }
+        if (e.charOptionValues[0] == 'CPU') {
+          this.instanceCreate.cpu = Number.parseInt(e.charOptionValues[1]);
+        }
+        if (e.charOptionValues[0] == 'HDD') {
+          this.instanceCreate.volumeSize = Number.parseInt(
+            e.charOptionValues[1]
+          );
+        }
+      });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.typeName =
@@ -599,8 +751,13 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
     this.instanceCreate.customerId = this.tokenService.get()?.userId;
-    this.instanceCreate.createDate = '2023-11-01T00:00:00';
-    this.instanceCreate.expireDate = '2023-12-01T00:00:00';
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
+    this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
+
     this.instanceCreate.saleDept = null;
     this.instanceCreate.saleDeptCode = null;
     this.instanceCreate.contactPersonEmail = null;
@@ -611,7 +768,6 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.am = null;
     this.instanceCreate.amManager = null;
     this.instanceCreate.isTrial = false;
-    this.instanceCreate.offerId = -2446;
     this.instanceCreate.couponCode = null;
     this.instanceCreate.dhsxkd_SubscriptionId = null;
     this.instanceCreate.dSubscriptionNumber = null;
@@ -621,167 +777,166 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.regionId = this.region;
     this.instanceCreate.userEmail = this.tokenService.get()['email'];
     this.instanceCreate.actorEmail = this.tokenService.get()['email'];
+  }
+
+  volumeCreate: VolumeCreate = new VolumeCreate();
+  volumeInit(blockStorage: BlockStorage) {
+    this.volumeCreate.volumeType = blockStorage.type;
+    this.volumeCreate.volumeSize = blockStorage.capacity;
+    this.volumeCreate.description = null;
+    this.volumeCreate.createFromSnapshotId = null;
+    this.volumeCreate.instanceToAttachId = null;
+    this.volumeCreate.isMultiAttach = blockStorage.multiattach;
+    this.volumeCreate.isEncryption = blockStorage.encrypt;
+    this.volumeCreate.vpcId = this.projectId.toString();
+    this.volumeCreate.oneSMEAddonId = null;
+    this.volumeCreate.serviceType = 2;
+    this.volumeCreate.serviceInstanceId = 0;
+    this.volumeCreate.customerId = this.tokenService.get()?.userId;
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.volumeCreate.createDate = currentDate.toISOString().substring(0, 19);
+    this.volumeCreate.expireDate = lastDate.toISOString().substring(0, 19);
+
+    this.volumeCreate.saleDept = null;
+    this.volumeCreate.saleDeptCode = null;
+    this.volumeCreate.contactPersonEmail = null;
+    this.volumeCreate.contactPersonPhone = null;
+    this.volumeCreate.contactPersonName = null;
+    this.volumeCreate.note = null;
+    this.volumeCreate.createDateInContract = null;
+    this.volumeCreate.am = null;
+    this.volumeCreate.amManager = null;
+    this.volumeCreate.isTrial = false;
+    this.volumeCreate.couponCode = null;
+    this.volumeCreate.dhsxkd_SubscriptionId = null;
+    this.volumeCreate.dSubscriptionNumber = null;
+    this.volumeCreate.dSubscriptionType = null;
+    this.volumeCreate.oneSME_SubscriptionId = null;
+    this.volumeCreate.actionType = 0;
+    this.volumeCreate.regionId = this.region;
+    this.volumeCreate.serviceName = blockStorage.name;
+    this.volumeCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
+    this.volumeCreate.userEmail = this.tokenService.get()?.email;
+    this.volumeCreate.actorEmail = this.tokenService.get()?.email;
+  }
+
+  ipCreate: IpCreate = new IpCreate();
+  ipInit(ip: Network, checkIpv6: boolean) {
+    this.ipCreate.id = 0;
+    this.ipCreate.duration = 0;
+    this.ipCreate.ipAddress = null;
+    this.ipCreate.vmToAttachId = null;
+    this.ipCreate.networkId = ip.ip;
+    this.ipCreate.useIPv6 = checkIpv6 ? checkIpv6 : null;
+    this.ipCreate.vpcId = this.projectId.toString();
+    this.ipCreate.oneSMEAddonId = null;
+    this.ipCreate.serviceType = 4;
+    this.ipCreate.serviceInstanceId = 0;
+    this.ipCreate.customerId = this.tokenService.get()?.userId;
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+    this.ipCreate.createDate = currentDate.toISOString().substring(0, 19);
+    this.ipCreate.expireDate = lastDate.toISOString().substring(0, 19);
+
+    this.ipCreate.saleDept = null;
+    this.ipCreate.saleDeptCode = null;
+    this.ipCreate.contactPersonEmail = null;
+    this.ipCreate.contactPersonPhone = null;
+    this.ipCreate.contactPersonName = null;
+    this.ipCreate.note = null;
+    this.ipCreate.createDateInContract = null;
+    this.ipCreate.am = null;
+    this.ipCreate.amManager = null;
+    this.ipCreate.isTrial = false;
+    this.ipCreate.couponCode = null;
+    this.ipCreate.dhsxkd_SubscriptionId = null;
+    this.ipCreate.dSubscriptionNumber = null;
+    this.ipCreate.dSubscriptionType = null;
+    this.ipCreate.oneSME_SubscriptionId = null;
+    this.ipCreate.actionType = 0;
+    this.ipCreate.regionId = this.region;
+    this.ipCreate.serviceName = null;
+    this.ipCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.ipCreate.userEmail = this.tokenService.get()?.email;
+    this.ipCreate.actorEmail = this.tokenService.get()?.email;
+  }
+
+  save(): void {
+    if (!this.isSnapshot && this.hdh == null) {
+      this.notification.error('', 'Vui lòng chọn hệ điều hành');
+      return;
+    }
+    if (this.isCustomconfig == false && this.offerFlavor == null) {
+      this.notification.error('', 'Vui lòng chọn gói cấu hình');
+      return;
+    }
+    if (
+      this.isCustomconfig == true &&
+      (this.configCustom.vCPU == 0 ||
+        this.configCustom.ram == 0 ||
+        this.configCustom.capacity == 0)
+    ) {
+      this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
+      return;
+    }
+    this.instanceInit();
 
     let specificationInstance = JSON.stringify(this.instanceCreate);
     let orderItemInstance = new OrderItem();
     orderItemInstance.orderItemQuantity = 1;
     orderItemInstance.specification = specificationInstance;
     orderItemInstance.specificationType = 'instance_create';
-    orderItemInstance.price = 1;
-    orderItemInstance.serviceDuration = 1;
+    orderItemInstance.price = this.totalAmount / this.numberMonth;
+    orderItemInstance.serviceDuration = this.numberMonth;
     this.orderItem.push(orderItemInstance);
     console.log('order instance', orderItemInstance);
 
     this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-      if (e.type != '' && e.name != '' && e.capacity) {
-        let volumeCreate = new VolumeCreate();
-        volumeCreate.volumeType = e.type;
-        volumeCreate.volumeSize = e.capacity;
-        volumeCreate.description = null;
-        volumeCreate.createFromSnapshotId = null;
-        volumeCreate.instanceToAttachId = null;
-        volumeCreate.isMultiAttach = e.multiattach;
-        volumeCreate.isEncryption = e.encrypt;
-        volumeCreate.vpcId = this.projectId.toString();
-        volumeCreate.oneSMEAddonId = null;
-        volumeCreate.serviceType = 2;
-        volumeCreate.serviceInstanceId = 0;
-        volumeCreate.customerId = this.tokenService.get()?.userId;
-        volumeCreate.createDate = '0001-01-01T00:00:00';
-        volumeCreate.expireDate = '0001-01-01T00:00:00';
-        volumeCreate.saleDept = null;
-        volumeCreate.saleDeptCode = null;
-        volumeCreate.contactPersonEmail = null;
-        volumeCreate.contactPersonPhone = null;
-        volumeCreate.contactPersonName = null;
-        volumeCreate.note = null;
-        volumeCreate.createDateInContract = null;
-        volumeCreate.am = null;
-        volumeCreate.amManager = null;
-        volumeCreate.isTrial = false;
-        volumeCreate.offerId = 2;
-        volumeCreate.couponCode = null;
-        volumeCreate.dhsxkd_SubscriptionId = null;
-        volumeCreate.dSubscriptionNumber = null;
-        volumeCreate.dSubscriptionType = null;
-        volumeCreate.oneSME_SubscriptionId = null;
-        volumeCreate.actionType = 1;
-        volumeCreate.regionId = this.region;
-        volumeCreate.serviceName = e.name;
-        volumeCreate.typeName =
-          'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
-        volumeCreate.userEmail = this.tokenService.get()?.email;
-        volumeCreate.actorEmail = this.tokenService.get()?.email;
-
-        let specificationVolume = JSON.stringify(volumeCreate);
+      if (e.type != '' && e.capacity != 0) {
+        this.volumeInit(e);
+        let specificationVolume = JSON.stringify(this.volumeCreate);
         let orderItemVolume = new OrderItem();
         orderItemVolume.orderItemQuantity = 1;
         orderItemVolume.specification = specificationVolume;
         orderItemVolume.specificationType = 'volume_create';
         orderItemVolume.price = e.price;
-        orderItemVolume.serviceDuration = 1;
+        orderItemVolume.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemVolume);
       }
     });
 
     this.listOfDataIPv4.forEach((e: Network) => {
-      let ipCreate = new IpCreate();
-      if (e.ip != '' && e.amount != 0) {
-        ipCreate.id = 0;
-        ipCreate.duration = 0;
-        ipCreate.ipAddress = null;
-        ipCreate.vmToAttachId = null;
-        ipCreate.offerId = 0;
-        ipCreate.networkId = e.ip;
-        ipCreate.useIPv6 = null;
-        ipCreate.vpcId = this.projectId;
-        ipCreate.oneSMEAddonId = null;
-        ipCreate.serviceType = 0;
-        ipCreate.serviceInstanceId = 0;
-        ipCreate.customerId = this.tokenService.get()?.userId;
-        ipCreate.createDate = '0001-01-01T00:00:00';
-        ipCreate.expireDate = '0001-01-01T00:00:00';
-        ipCreate.saleDept = null;
-        ipCreate.saleDeptCode = null;
-        ipCreate.contactPersonEmail = null;
-        ipCreate.contactPersonPhone = null;
-        ipCreate.contactPersonName = null;
-        ipCreate.note = null;
-        ipCreate.createDateInContract = null;
-        ipCreate.am = null;
-        ipCreate.amManager = null;
-        ipCreate.isTrial = false;
-        ipCreate.couponCode = null;
-        ipCreate.dhsxkd_SubscriptionId = null;
-        ipCreate.dSubscriptionNumber = null;
-        ipCreate.dSubscriptionType = null;
-        ipCreate.oneSME_SubscriptionId = null;
-        ipCreate.actionType = 0;
-        ipCreate.regionId = this.region;
-        ipCreate.serviceName = null;
-        ipCreate.typeName =
-          'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-        ipCreate.userEmail = this.tokenService.get()?.email;
-        ipCreate.actorEmail = this.tokenService.get()?.email;
-
-        let specificationIP = JSON.stringify(ipCreate);
+      if (e.ip != '') {
+        this.ipInit(e, false);
+        let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
-        orderItemIP.orderItemQuantity = 1;
+        orderItemIP.orderItemQuantity = e.amount;
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
-        orderItemIP.serviceDuration = 1;
+        orderItemIP.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemIP);
       }
     });
 
     this.listOfDataIPv6.forEach((e: Network) => {
-      let ipCreate = new IpCreate();
-      if (e.ip != '' && e.amount != 0) {
-        ipCreate.id = 0;
-        ipCreate.duration = 0;
-        ipCreate.ipAddress = null;
-        ipCreate.vmToAttachId = null;
-        ipCreate.offerId = 0;
-        ipCreate.networkId = e.ip;
-        ipCreate.useIPv6 = null;
-        ipCreate.vpcId = this.projectId;
-        ipCreate.oneSMEAddonId = null;
-        ipCreate.serviceType = 0;
-        ipCreate.serviceInstanceId = 0;
-        ipCreate.customerId = this.tokenService.get()?.userId;
-        ipCreate.createDate = '0001-01-01T00:00:00';
-        ipCreate.expireDate = '0001-01-01T00:00:00';
-        ipCreate.saleDept = null;
-        ipCreate.saleDeptCode = null;
-        ipCreate.contactPersonEmail = null;
-        ipCreate.contactPersonPhone = null;
-        ipCreate.contactPersonName = null;
-        ipCreate.note = null;
-        ipCreate.createDateInContract = null;
-        ipCreate.am = null;
-        ipCreate.amManager = null;
-        ipCreate.isTrial = false;
-        ipCreate.couponCode = null;
-        ipCreate.dhsxkd_SubscriptionId = null;
-        ipCreate.dSubscriptionNumber = null;
-        ipCreate.dSubscriptionType = null;
-        ipCreate.oneSME_SubscriptionId = null;
-        ipCreate.actionType = 0;
-        ipCreate.regionId = this.region;
-        ipCreate.serviceName = null;
-        ipCreate.typeName =
-          'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-        ipCreate.userEmail = this.tokenService.get()?.email;
-        ipCreate.actorEmail = this.tokenService.get()?.email;
-
-        let specificationIP = JSON.stringify(ipCreate);
+      if (e.ip != '') {
+        this.ipInit(e, true);
+        this.ipCreate.useIPv6 = true;
+        let specificationIP = JSON.stringify(this.ipCreate);
         let orderItemIP = new OrderItem();
-        orderItemIP.orderItemQuantity = 1;
+        orderItemIP.orderItemQuantity = e.amount;
         orderItemIP.specification = specificationIP;
         orderItemIP.specificationType = 'ip_create';
         orderItemIP.price = e.price;
-        orderItemIP.serviceDuration = 1;
+        orderItemIP.serviceDuration = this.numberMonth;
         this.orderItem.push(orderItemIP);
       }
     });
@@ -791,47 +946,213 @@ export class InstancesCreateComponent implements OnInit {
     this.order.note = 'tạo vm';
     this.order.orderItems = this.orderItem;
 
+    var returnPath: string = window.location.pathname;
     console.log('instance create', this.instanceCreate);
+    this.router.navigate(['/app-smart-cloud/order/cart'], {
+      state: { data: this.order, path: returnPath },
+    });
+  }
 
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-
-    this.dataService
-      .create(this.order)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
-      .subscribe(
-        (data: any) => {
-          console.log(data);
-          this.message.success('Tạo order máy ảo thành công');
-          this.router.navigateByUrl(`/app-smart-cloud/instances`);
-        },
-        (error) => {
-          console.log(error.error);
-          this.message.error('Tạo order máy ảo không thành công');
-        }
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
+  getTotalAmount() {
+    this.instanceInit();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.instanceCreate);
+    itemPayment.specificationType = 'instance_create';
+    itemPayment.serviceDuration = this.numberMonth;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.projectId;
+    this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
       );
+      this.cdr.detectChanges();
+    });
+  }
+
+  totalAmountVolume = 0;
+  totalAmountVolumeVAT = 0;
+  dataBSSubject: Subject<any> = new Subject<any>();
+  changeTotalAmountBlockStorage(id: number, value: any) {
+    this.dataBSSubject.next({
+      id: id,
+      value: value,
+    });
+  }
+
+  getTotalAmountBlockStorage() {
+    let id: number, value: any;
+    this.dataBSSubject
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        id = res.id;
+        value = res.value;
+        this.totalAmountVolume = 0;
+        this.totalAmountVolumeVAT = 0;
+        let index = this.listOfDataBlockStorage.findIndex(
+          (obj) => obj.id == id
+        );
+        let changeBlockStorage = this.listOfDataBlockStorage[index];
+        this.volumeInit(changeBlockStorage);
+        let productId = changeBlockStorage.type == 'hdd' ? 2 : 61;
+        this.catalogService
+          .getCatalogOffer(productId, this.region, null)
+          .subscribe((data) => {
+            let offer = data.find(
+              (offer) => offer.status.toUpperCase() == 'ACTIVE'
+            );
+            this.volumeCreate.offerId = offer.id;
+            let itemPayment: ItemPayment = new ItemPayment();
+            itemPayment.orderItemQuantity = 1;
+            itemPayment.specificationString = JSON.stringify(this.volumeCreate);
+            itemPayment.specificationType = 'volume_create';
+            itemPayment.serviceDuration = this.numberMonth;
+            itemPayment.sortItem = 0;
+            let dataPayment: DataPayment = new DataPayment();
+            dataPayment.orderItems = [itemPayment];
+            dataPayment.projectId = this.projectId;
+            this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
+              console.log('thanh tien volume', result);
+              changeBlockStorage.price =
+                Number.parseFloat(result.data.totalAmount.amount) /
+                this.numberMonth;
+              changeBlockStorage.priceAndVAT =
+                Number.parseFloat(result.data.totalPayment.amount) /
+                this.numberMonth;
+              this.listOfDataBlockStorage[index] = changeBlockStorage;
+              this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+                this.totalAmountVolume += e.price * this.numberMonth;
+                this.totalAmountVolumeVAT += e.priceAndVAT * this.numberMonth;
+              });
+              this.cdr.detectChanges();
+            });
+          });
+      });
+  }
+
+  totalAmountIPv4 = 0;
+  totalAmountIPv4VAT = 0;
+  dataSubjectIpv4: Subject<any> = new Subject<any>();
+  changeTotalAmountIPv4(value: number) {
+    this.dataSubjectIpv4.next(value);
+  }
+  getTotalAmountIPv4() {
+    this.dataSubjectIpv4
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.totalAmountIPv4 = 0;
+        this.totalAmountIPv4VAT = 0;
+        this.listOfDataIPv4.forEach((e: Network) => {
+          if (e.ip != '') {
+            this.ipInit(e, false);
+            this.catalogService
+              .getCatalogOffer(3, this.region, null)
+              .subscribe((data) => {
+                let offer = data.find(
+                  (offer) => offer.status.toUpperCase() == 'ACTIVE'
+                );
+                this.ipCreate.offerId = offer.id;
+                let itemPayment: ItemPayment = new ItemPayment();
+                itemPayment.orderItemQuantity = e.amount;
+                itemPayment.specificationString = JSON.stringify(this.ipCreate);
+                itemPayment.specificationType = 'ip_create';
+                itemPayment.serviceDuration = this.numberMonth;
+                itemPayment.sortItem = 0;
+                let dataPayment: DataPayment = new DataPayment();
+                dataPayment.orderItems = [itemPayment];
+                dataPayment.projectId = this.projectId;
+                this.dataService
+                  .getTotalAmount(dataPayment)
+                  .subscribe((result) => {
+                    console.log('thanh tien ipv4', result);
+                    e.price =
+                      Number.parseFloat(result.data.totalAmount.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv4 += Number.parseFloat(
+                      result.data.totalAmount.amount
+                    );
+                    e.priceAndVAT =
+                      Number.parseFloat(result.data.totalPayment.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv4VAT += Number.parseFloat(
+                      result.data.totalPayment.amount
+                    );
+                    this.cdr.detectChanges();
+                  });
+              });
+          }
+        });
+      });
+  }
+
+  totalAmountIPv6 = 0;
+  totalAmountIPv6VAT = 0;
+  dataSubjectIpv6: Subject<any> = new Subject<any>();
+  changeTotalAmountIPv6(value: number) {
+    this.dataSubjectIpv6.next(value);
+  }
+  getTotalAmountIPv6() {
+    this.dataSubjectIpv6
+      .pipe(
+        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.totalAmountIPv6 = 0;
+        this.totalAmountIPv6VAT = 0;
+        this.listOfDataIPv6.forEach((e: Network) => {
+          if (e.ip != '') {
+            this.ipInit(e, true);
+            this.catalogService
+              .getCatalogOffer(101, this.region, null)
+              .subscribe((data) => {
+                let offer = data.find(
+                  (offer) => offer.status.toUpperCase() == 'ACTIVE'
+                );
+                this.ipCreate.offerId = offer.id;
+                let itemPayment: ItemPayment = new ItemPayment();
+                itemPayment.orderItemQuantity = e.amount;
+                itemPayment.specificationString = JSON.stringify(this.ipCreate);
+                itemPayment.specificationType = 'ip_create';
+                itemPayment.serviceDuration = this.numberMonth;
+                itemPayment.sortItem = 0;
+                let dataPayment: DataPayment = new DataPayment();
+                dataPayment.orderItems = [itemPayment];
+                dataPayment.projectId = this.projectId;
+                this.dataService
+                  .getTotalAmount(dataPayment)
+                  .subscribe((result) => {
+                    console.log('thanh tien ipv6', result);
+                    e.price =
+                      Number.parseFloat(result.data.totalAmount.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv6 += Number.parseFloat(
+                      result.data.totalAmount.amount
+                    );
+                    e.priceAndVAT =
+                      Number.parseFloat(result.data.totalPayment.amount) /
+                      this.numberMonth;
+                    this.totalAmountIPv6VAT += Number.parseFloat(
+                      result.data.totalPayment.amount
+                    );
+                    this.cdr.detectChanges();
+                  });
+              });
+          }
+        });
+      });
   }
 
   cancel(): void {
     this.router.navigate(['/app-smart-cloud/instances']);
-  }
-
-  _submitForm(): void {
-    // this.formValidity(this.form.controls);
-    // if (this.form.invalid) {
-    //   return;
-    // }
-    this.save();
-  }
-
-  private formValidity(controls: NzSafeAny): void {
-    Object.keys(controls).forEach((key) => {
-      const control = (controls as NzSafeAny)[key] as AbstractControl;
-      control.markAsDirty();
-      control.updateValueAndValidity();
-    });
   }
 }

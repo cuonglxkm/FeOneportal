@@ -1,13 +1,12 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {RegionModel} from "../../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../../shared/models/project.model";
 import {UserService} from "../../../../../shared/services/user.service";
 import {User} from "../../../../../shared/models/user.model";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {FormUserGroup} from "../../../../../shared/models/user-group.model";
 import {UserGroupService} from "../../../../../shared/services/user-group.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {PolicyModel} from "../../../../policy/policy.model";
 
 @Component({
   selector: 'one-portal-create-user',
@@ -16,32 +15,24 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 })
 export class CreateUserComponent implements OnInit {
   nameGroup: string
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
 
   value?: string
-  checked = false;
-  loading = false;
-  indeterminate = false;
-
-  listOfCurrentPageData: readonly User[] = [];
-  setOfCheckedId: Set<string> = new Set<string>();
-
-  listUsers: User[]
-
-  listUsersUnique: User[]
-
-  pageIndex: number = 1
+  loading: boolean = false
   pageSize: number = 10
+  pageIndex: number = 1
 
-  listUserSelected:  any[] = []
-  listUserNameSelected: any[] = []
+  listUsers: User[] = []
+  listUsersUnique: User[] = []
+  listOfCurrentPageData: readonly User[] = []
 
-  parent: string
+  setOfCheckedId = new Set<string>()
+  checked = false
+  indeterminate = false
 
   formCreate: FormUserGroup = new FormUserGroup()
 
-  listPolicies: any[] = []
+  listUserSelected: any[] = []
+  listUserNameSelected: any[] = []
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -50,67 +41,15 @@ export class CreateUserComponent implements OnInit {
               private notification: NzNotificationService) {
   }
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    // this.formSearch.regionId = this.region
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    // this.formSearch.project = this.project
-  }
-
   onInputChange(value: string) {
-    this.value = value;
+    this.value = value
     console.log('input text: ', this.value)
-  }
-
-  // onCurrentPageDataChange(listOfCurrentPageData: readonly User[]): void {
-  //   this.listOfCurrentPageData = listOfCurrentPageData;
-  //   this.refreshCheckedStatus();
-  // }
-
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const {pageSize, pageIndex} = params
-    this.pageSize = pageSize;
-    this.pageIndex = pageIndex
     this.getUsers()
-    this.refreshCheckedStatus()
-  }
-
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({userName}) => this.setOfCheckedId.has(userName));
-    this.indeterminate = listOfEnabledData.some(({userName}) => this.setOfCheckedId.has(userName)) && !this.checked;
-  }
-
-  updateCheckedSet(name: string, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(name);
-    } else {
-      this.setOfCheckedId.delete(name);
-    }
-    this.listUserSelected = this.listOfCurrentPageData.filter(data => this.setOfCheckedId.has(data.userName))
-  }
-
-  onItemChecked(name: string, checked: boolean): void {
-    this.updateCheckedSet(name, checked);
-    this.refreshCheckedStatus();
-  }
-
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-      .forEach(({userName}) => this.updateCheckedSet(userName, checked));
-    this.refreshCheckedStatus();
-  }
-
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.nameGroup])
   }
 
   getUsers() {
     this.loading = true
-    this.userService.search('', 1000000, 1).subscribe(data => {
+    this.userService.search(this.value, this.pageSize, this.pageIndex).subscribe(data => {
       this.loading = false
       this.listUsers = data.records
       this.listUsers.forEach(item => {
@@ -126,12 +65,52 @@ export class CreateUserComponent implements OnInit {
     })
   }
 
+  updateCheckedSet(userName: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedId.add(userName);
+    } else {
+      this.setOfCheckedId.delete(userName);
+    }
+  }
+
+  onItemChecked(userName: string, checked: boolean): void {
+    this.updateCheckedSet(userName, checked);
+    this.refreshCheckedStatus();
+  }
+
+  onAllChecked(value: boolean): void {
+    this.listOfCurrentPageData.forEach(item => this.updateCheckedSet(item.userName, value));
+    this.refreshCheckedStatus();
+  }
+
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex} = params
+    this.pageSize = pageSize;
+    this.pageIndex = pageIndex
+    this.getUsers()
+    this.refreshCheckedStatus()
+  }
+
+  onCurrentPageDataChange(listOfCurrentPageData: readonly User[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.userName));
+    this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.userName)) && !this.checked;
+  }
+
+  goBack() {
+    this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.nameGroup])
+  }
+
   create() {
-    this.userGroupService.detail(this.nameGroup).subscribe( data => {
+    this.userGroupService.detail(this.nameGroup).subscribe(data => {
       this.formCreate.groupName = this.nameGroup
       this.formCreate.parentName = data.parent
       this.formCreate.policyNames = data.policies
-      this.formCreate.users = this.getListUserName()
+      this.formCreate.users = Array.from(this.setOfCheckedId)
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
         this.notification.success('Thành công', 'Thêm user vào group thành công')
         this.router.navigate(['/app-smart-cloud/iam/user-group/' + this.nameGroup])
@@ -143,10 +122,9 @@ export class CreateUserComponent implements OnInit {
     })
 
   }
-
   getListUserName() {
     this.listUserSelected.forEach(item => {
-      if(this.listUserNameSelected?.length > 0){
+      if (this.listUserNameSelected?.length > 0) {
         this.listUserNameSelected.push(item.userName)
       } else {
         this.listUserNameSelected = [item.userName]
@@ -157,6 +135,7 @@ export class CreateUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.nameGroup = this.route.snapshot.paramMap.get('groupName')
+    this.setOfCheckedId = new Set<string>()
     console.log(this.nameGroup)
     this.getUsers()
   }

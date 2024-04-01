@@ -1,0 +1,234 @@
+<nz-content>
+    <div class="inner-content">
+        <!-- list consumer group -->
+        <ng-container *ngIf="showForm===idListForm">
+            <div id="list-form">
+                <div>
+                    <div class="breadcrumb">
+                        <nz-breadcrumb class="breadcrumb" vSeparator="/">
+                            <nz-breadcrumb-item>
+                                Consumer Group
+                            </nz-breadcrumb-item>
+                            <nz-breadcrumb-item>
+                                Danh sách Consumer Group
+                            </nz-breadcrumb-item>
+                        </nz-breadcrumb>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div style="margin-right: auto;">
+                            <nz-input-group [nzPrefix]="prefixIconButton" class="search">
+                                <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
+                                    [(ngModel)]="searchText" />
+                            </nz-input-group>
+                            <ng-template #prefixIconButton><span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span></ng-template>
+                        </div>
+                    </div>
+                </div>
+                <div>
+
+                    <div class="async">Dữ liệu được đồng bộ lúc: <span class="time-async">{{syncInfo.group}}</span>
+                    </div>
+
+                    <nz-table id="groups" nzBordered #basicTable [nzData]="listConsumerGroup" nzShowSizeChanger
+                        [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize"
+                        [nzLoading]="loadingTbl" (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)">
+                        <thead>
+                            <tr>
+                                <th nzWidth="5%">STT</th>
+                                <th nzWidth="40%">ID Consumer Group</th>
+                                <th nzWidth="12%" class="text-center">Số lượng thành viên</th>
+                                <th nzWidth="10%" class="text-center">Số lượng Topic</th>
+                                <th nzWidth="8%" class="text-center">Overall lag</th>
+                                <th nzWidth="10%" class="text-center">Coordinator ID</th>
+                                <th nzWidth="8%" class="text-center">Trạng thái</th>
+                                <th nzWidth="7%" class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable.data; let i = index" class="row-group">
+                                <td>{{ i + 1 }}</td>
+                                <td><a (click)="viewDetail(data.cgName)">{{ data.cgName }}</a></td>
+                                <td class="text-center">{{ data.members }}</td>
+                                <td class="text-center">{{ data.topics }}</td>
+                                <td class="text-center">{{ data.overallLag }}</td>
+                                <td class="text-center">{{ data.coordinatorInfo }}</td>
+                                <td style="text-align: center;">
+                                    <ng-container *ngIf="data.stateConsumer===stateActive; else empty">
+                                        <nz-tag [nzColor]="'#66ccff'" nz-tooltip
+                                            [nzTooltipTitle]="contentOfState.active" [nzTooltipColor]="'#66ccff'"
+                                            nzTooltipPlacement="rightTop">
+                                            ACTIVE</nz-tag>
+                                    </ng-container>
+                                    <ng-template #empty>
+                                        <ng-container *ngIf="data.stateConsumer===stateEmpty; else rebalancing">
+                                            <nz-tag [nzColor]="'#ef5350'" nz-tooltip
+                                                [nzTooltipTitle]="contentOfState.empty" [nzTooltipColor]="'#ef5350'"
+                                                nzTooltipPlacement="rightTop">{{ data.stateConsumer }}</nz-tag>
+                                        </ng-container>
+                                    </ng-template>
+                                    <ng-template #rebalancing>
+                                        <ng-container
+                                            *ngIf="data.stateConsumer===statePreRebalancing || data.stateConsumer===stateCompleteRebalancing; else inActive">
+                                            <nz-tag [nzColor]="'#ff9800'" nz-tooltip [nzTooltipTitle]="contentRef"
+                                                [nzTooltipColor]="'#ff9800'"
+                                                nzTooltipPlacement="rightTop">REBALANCING</nz-tag>
+                                        </ng-container>
+                                    </ng-template>
+                                    <ng-template #contentRef>
+                                        {{ contentOfState.rebalancing }} <a
+                                            href="https://docs.idg.vnpt.vn/services/kafka/concepts/basic_concepts_consumer_groups/#rebalance-trong-consumer-groups"
+                                            target="_blank">tại đây.</a>
+                                    </ng-template>
+                                    <ng-template #inActive>
+                                        <nz-tag [nzColor]="'#9d9d7b'" nz-tooltip
+                                            [nzTooltipTitle]="contentOfState.inActive" [nzTooltipColor]="'#9d9d7b'"
+                                            nzTooltipPlacement="rightTop">INACTIVE</nz-tag>
+                                    </ng-template>
+                                </td>
+                                <td class="text-center">
+                                    <a nz-dropdown [nzDropdownMenu]="menu">
+                                        <span nz-icon nzType="more" nzTheme="outline"></span>
+                                    </a>
+                                    <nz-dropdown-menu #menu="nzDropdownMenu">
+                                        <ul nz-menu nzSelectable>
+                                            <li nz-menu-item>
+                                                <button nz-button nzType="text" (click)="showDeleteConfirm(data)">
+                                                    <span nz-icon nzType="delete" nzTheme="twotone"
+                                                        nzTwotoneColor="#0066B0"></span> Xóa
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </nz-dropdown-menu>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- detail: list topic in consumer group -->
+        <ng-container *ngIf="showForm===idDetailForm">
+            <div id="detail-form">
+                <div>
+                    <div class="breadcrumb">
+                        <nz-breadcrumb class="breadcrumb" vSeparator="/">
+                            <nz-breadcrumb-item>
+                                Consumer Group
+                            </nz-breadcrumb-item>
+                            <nz-breadcrumb-item>
+                                <a (click)="backList()">Danh sách Consumer Group</a>
+                            </nz-breadcrumb-item>
+                            <nz-breadcrumb-item>
+                                {{currentGroupId}}
+                            </nz-breadcrumb-item>
+                        </nz-breadcrumb>
+                    </div>
+                </div>
+
+                <div id="general-info" nz-row *ngIf="detailConsumerGroup">
+                    <div nz-col [nzSpan]="3" class="block-info">
+                        <div class="lbl-info">Trạng thái</div>
+                        <div class="value-info">
+                            <ng-container *ngIf="detailConsumerGroup.stateConsumer===stateActive; else empty">
+                                <nz-tag [nzColor]="'#66ccff'">ACTIVE</nz-tag>
+                            </ng-container>
+                            <ng-template #empty>
+                                <ng-container *ngIf="detailConsumerGroup.stateConsumer===stateEmpty; else rebalancing">
+                                    <nz-tag [nzColor]="'#ef5350'">{{ detailConsumerGroup.stateConsumer }}</nz-tag>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #rebalancing>
+                                <ng-container
+                                    *ngIf="detailConsumerGroup.stateConsumer===statePreRebalancing || detailConsumerGroup.stateConsumer===stateCompleteRebalancing; else inActive">
+                                    <nz-tag [nzColor]="'#ff9800'">REBALANCING</nz-tag>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #inActive>
+                                <nz-tag [nzColor]="'#9d9d7b'">INACTIVE</nz-tag>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div nz-col [nzSpan]="3" class="block-info">
+                        <span class="lbl-info">Số lượng thành viên</span>
+                        <label class="value-info">{{detailConsumerGroup.members}}</label>
+                    </div>
+                    <div nz-col [nzSpan]="3" class="block-info">
+                        <span class="lbl-info">Tổng số Topic</span>
+                        <label class="value-info">{{detailConsumerGroup.topics}}</label>
+                    </div>
+                    <div nz-col [nzSpan]="3" class="block-info">
+                        <span class="lbl-info">Tổng số Partition</span>
+                        <label class="value-info">{{detailConsumerGroup.partitions}}</label>
+                    </div>
+                    <div nz-col [nzSpan]="3" class="block-info">
+                        <span class="lbl-info">Coordinator ID</span>
+                        <label class="value-info">{{detailConsumerGroup.coordinatorInfo}}</label>
+                    </div>
+                    <div nz-col [nzSpan]="3" class="block-info">
+                        <span class="lbl-info">Overall Lag</span>
+                        <label class="value-info">{{detailConsumerGroup.overallLag}}</label>
+                    </div>
+                </div>
+
+                <div id="block-search">
+                    <nz-input-group [nzPrefix]="prefixTemplateUser" class="search">
+                        <input type="text" nz-input placeholder="Tìm kiếm theo tên topic" (keyup.enter)="onSearchTopic()"
+                            [(ngModel)]="searchTopicText" />
+                    </nz-input-group>
+                    <ng-template #prefixTemplateUser><span nz-icon nzType="search" nzTheme="outline"></span></ng-template>
+                </div>
+
+                <div id="list-topic">
+                    <nz-table id="topic-tbl" #nzTable [nzData]="listTopicOfCG" nzShowPagination="false"
+                        nzFrontPagination="false">
+                        <thead>
+                            <tr>
+                                <th nzWidth="40px"></th>
+                                <th nzWidth="85%">Topic</th>
+                                <th nzWidth="15%">Overall lag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let data of nzTable.data">
+                                <tr>
+                                    <td [nzExpand]="expandSet.has(data.id)"
+                                        (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+                                    <td>{{data.topicName}}</td>
+                                    <td>{{data.overallLag}}</td>
+                                </tr>
+                                <tr [nzExpand]="expandSet.has(data.id)">
+                                    <nz-table id="expand-tbl" #expTable [nzData]="data.detailTopic"
+                                        nzTableLayout="fixed" nzShowPagination="false">
+                                        <thead>
+                                            <tr>
+                                                <th *ngFor="let column of listOfColumnTopic" [nzWidth]="column.width"
+                                                    [nzSortOrder]="column.sortOrder" [nzSortFn]="column.sortFn"
+                                                    [nzSortDirections]="column.sortDirections">
+                                                    {{ column.name }}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ng-container *ngFor="let e of expTable.data">
+                                                <tr>
+                                                    <td>{{e.partitionName}}</td>
+                                                    <td>{{e.consumerId}}</td>
+                                                    <td>{{e.hostInfo}}</td>
+                                                    <td>{{e.lag}}</td>
+                                                    <td>{{e.currentOffset}}</td>
+                                                    <td>{{e.endOffset}}</td>
+                                                </tr>
+                                            </ng-container>
+                                        </tbody>
+                                    </nz-table>
+                                 </tr>
+                            </ng-container>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+</nz-content>

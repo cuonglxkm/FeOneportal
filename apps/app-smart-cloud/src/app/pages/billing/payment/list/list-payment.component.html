@@ -36,24 +36,21 @@
                          [nzFormat]="dateFormat"></nz-range-picker>
       </div>
       <div *nzSpaceItem>
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+        <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
           <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
                  type="text" nz-input
                  placeholder="Tìm kiếm mã thanh toán, mã đơn hàng"/>
         </nz-input-group>
-        <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="getListInvoices()">
-            <span nz-icon nzType="search" nzTheme="outline"></span>
-            Search
-          </button>
+        <ng-template #prefixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
         </ng-template>
       </div>
     </nz-space>
   </ng-template>
   <ng-template #extra>
-    <button nz-button nzSize="default" style="cursor: pointer; margin-left: 5px">
-      <span nz-icon nzType="download" nzTheme="outline"></span>
-      Download
+    <button class="d-flex align-items-center gap-3" nz-button nzSize="default" style="cursor: pointer; margin-left: 5px" (click)="downloadMany()" [disabled]="!downloadList.length">
+      <img [ngStyle]="{'filter': !downloadList.length ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}" alt="" src="assets/imgs/download.svg" />
+      <span>Download</span>
     </button>
   </ng-template>
 </page-header>
@@ -61,47 +58,49 @@
   <nz-card>
     <nz-table #rowSelectionTable
               nzShowSizeChanger
-              [nzFrontPagination]="false"
-              [nzData]="listFilteredData"
-              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-              [nzLoading]="isLoading"
+
+              [nzData]="response?.records"
+
+              [nzPageIndex]="response?.currentPage"
               [nzTotal]="response?.totalCount"
-              [nzPageSize]="response?.pageSize"
-              [nzPageIndex]="response?.currentPage">
+              (nzQueryParams)="onQueryParamsChange($event)"
+              [nzLoading]="isLoading"
+              [nzFrontPagination]="false"
+              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
       <thead>
       <tr>
         <th [nzChecked]="checked"
             [nzIndeterminate]="indeterminate"
-            nzLabel="Select all"
-            (nzCheckedChange)="onAllChecked($event)"></th>
-        <th>Mã thanh toán</th>
+            (nzCheckedChange)="onAllChecked($event)"
+            nzLeft></th>
+        <th nzLeft>Mã thanh toán</th>
         <th>Mã đơn hàng</th>
         <th>Tổng tiền (VNĐ)</th>
         <th>Ngày tạo</th>
         <th>Trạng thái</th>
-        <th>Download Hóa dơn/ Hóa đơn nháp</th>
+        <th>Download Hóa dơn</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of rowSelectionTable.data">
         <td [nzChecked]="setOfCheckedId.has(data.id)"
-            (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-        <td><a (click)="getPaymentDetail(data.id)" >{{data.paymentNumber}}</a></td>
-        <td>{{data.orderNumber}}</td>
-        <td>{{data.amount}}</td>
-        <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
-        <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid">
+            (nzCheckedChange)="onItemChecked(data.id, $event)" nzLeft></td>
+        <td nzLeft><a (click)="getPaymentDetail(data.id)" >{{data.paymentNumber}}</a></td>
+        <td nzBreakWord><a (click)="getPaymentDetail(data.id)" >{{data.orderNumber}}</a></td>
+        <td nzBreakWord>{{data.amount}}</td>
+        <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
+        <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
           Đã thanh toán
         </td>
-        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not">
+        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not" nzBreakWord>
           Chưa thanh toán
         </td>
-        <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="download(data.invoiceIssuedId)"
-            style="cursor: pointer">
-          <span nz-icon nzType="download" nzTheme="outline"></span>
+        <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="serviceDownload(data.invoiceIssuedId)"
+            style="cursor: pointer; text-align: center;" nzBreakWord>
+            <img alt="" src="assets/imgs/download.svg" />
         </td>
-        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid">
-          <span nz-icon nzType="download" nzTheme="outline"></span>
+        <td *ngIf="data.paymentLatestStatus != 'PAID'" class="unpaid" nzBreakWord>
+          <img style="filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%);" alt="" src="assets/imgs/download.svg" />
         </td>
       </tr>
       </tbody>

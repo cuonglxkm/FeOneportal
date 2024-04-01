@@ -1,13 +1,13 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {Router} from "@angular/router";
-import {NzTableQueryParams} from "ng-zorro-antd/table";
-import {SnapshotVolumeService} from "../../../shared/services/snapshot-volume.service";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {PopupAddVolumeComponent} from "../../volume/component/popup-volume/popup-add-volume.component";
+import { Component, Inject, OnInit } from '@angular/core';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { Router } from '@angular/router';
+import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ScheduleSnapshotVL } from 'src/app/shared/models/snapshotvl.model';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -15,207 +15,273 @@ import {PopupAddVolumeComponent} from "../../volume/component/popup-volume/popup
   styleUrls: ['./snapshot-schedule-list.component.less'],
 })
 export class SnapshotScheduleListComponent implements OnInit {
+  region: number;
+  project: number;
 
-  region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
-
-  searchStatus?: string = null
-  searchName?: string;
+  searchStatus: string = '';
+  searchName: string = '';
 
   status = [
-    {label: 'Tất cả', value: null},
-    {label: 'Đang hoạt động', value: 'ACTIVE'},
-    {label: 'Vô hiệu hóa', value: 'DISABLED'},
-    {label: 'Tạm dừng', value: 'PAUSED'}
-  ]
+    { label: 'Tất cả trạng thái', value: '' },
+    { label: 'Đang khởi tạo', value: 'DANGKHOITAO' },
+    { label: 'Hủy', value: 'HUY' },
+    { label: 'Tạm ngừng', value: 'TAMNGUNG' },
+  ];
 
-  pageSize: number = 5;
-  currentPage: number = 1;
-  listOfData: any;
-  totalData: number
-  isLoadingEntities:boolean;
-  customerID: number;
+  pageSize: number = 10;
+  pageNumber: number = 1;
+  listOfData: ScheduleSnapshotVL[];
+  totalData: number;
+  isLoadingEntities: boolean = true;
+  customerId: number;
 
   actionSelected: number;
 
-  onQueryParamsChange(params: NzTableQueryParams){
-    const {pageSize, pageIndex} = params;
-    this.pageSize = pageSize;
-    this.currentPage = pageIndex;
-    this.searchSnapshotScheduleList();
-  }
-  searchSnapshotScheduleList(){
-    this.doGetSnapSchedules(this.pageSize, this.currentPage, this.customerID , this.project, this.region, this.searchStatus);
+  searchSnapshotScheduleList() {
+    this.doGetSnapSchedules(
+      this.pageSize,
+      this.pageNumber,
+      this.region,
+      this.project,
+      this.searchName,
+      ''
+    );
   }
 
-  private doGetSnapSchedules(pageSize:number, currentPage:number, customerID: number, projectId: number, regionId: number, status: string){
+  private doGetSnapSchedules(
+    pageSize: number,
+    pageNumber: number,
+    regionId: number,
+    projectId: number,
+    name: string,
+    volumeName: string
+  ) {
     this.isLoadingEntities = true;
-    this.snapshot.getListSchedule(pageSize,currentPage,customerID,projectId,regionId,status).subscribe(
-      data => {
-        this.totalData = data.totalCount;
-        this.listOfData = data.records;
-        this.isLoadingEntities = false;
-      },
-      error => {
-        this.notification.error('Có lỗi xảy ra','Lấy danh sách lịch Snapshot thất bại');
-        this.isLoadingEntities = false;
-      }
-    )
+    this.listOfData = [];
+    this.snapshot
+      .getListSchedule(
+        pageSize,
+        pageNumber,
+        regionId,
+        projectId,
+        name,
+        volumeName
+      )
+      .subscribe({
+        next: (next) => {
+          this.totalData = next.totalCount;
+          this.listOfData = next.records;
+          this.isLoadingEntities = false;
+        },
+        error: (error) => {
+          this.notification.error(
+            'Có lỗi xảy ra',
+            'Lấy danh sách lịch Snapshot thất bại'
+          );
+          this.isLoadingEntities = false;
+        },
+      });
   }
 
-  constructor(private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private snapshot: SnapshotVolumeService,
-              private modalService: NzModalService,
-              private snapshotVolumeService: SnapshotVolumeService,
-              private notification: NzNotificationService) {
-  }
+  constructor(
+    private router: Router,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private snapshot: SnapshotVolumeService,
+    private modalService: NzModalService,
+    private snapshotVolumeService: SnapshotVolumeService,
+    private notification: NzNotificationService
+  ) {}
 
   ngOnInit(): void {
-    this.customerID = this.tokenService.get()?.userId;
+    this.customerId = this.tokenService.get()?.userId;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
   }
 
-  selectedActionChange(value: any, data: any){
-
-  }
-
-  navigateToUpdate(id: number){
+  navigateToUpdate(id: number) {
     console.log(id);
   }
-  showModalSuppend(id: number){
+  showModalSuppend(id: number) {
     console.log(id);
   }
 
-  showModalDelete(id: number){
+  showModalDelete(id: number) {
     console.log(id);
   }
 
   onChange(value: string) {
-    console.log('abc', this.searchStatus)
+    console.log('abc', this.searchStatus);
     this.searchStatus = value;
     this.searchSnapshotScheduleList();
   }
 
-  onChangeAction(value: number , id: number){
-    if(value == 2){
-      const modal: NzModalRef = this.modalService.create({
-          nzTitle: 'Xóa lịch Snapshot',
-        nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện xóa lịch Snapshot?</p>`,
-        nzFooter: [
-          {
-            label: 'Hủy',
-            type: 'default',
-            onClick: () => modal.destroy()
+  DeleteSnapshot(id: number) {
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Xóa lịch Snapshot',
+      nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện xóa lịch Snapshot?</p>`,
+      nzFooter: [
+        {
+          label: 'Hủy',
+          type: 'default',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Đồng ý',
+          type: 'primary',
+          onClick: () => {
+            this.snapshotVolumeService
+              .deleteSnapshotSchedule(
+                id,
+                this.customerId,
+                this.region,
+                this.project
+              )
+              .subscribe((result: any) => {
+                if (result == true) {
+                  this.notification.success('', 'Xóa lịch Snapshot thành công');
+                  this.doGetSnapSchedules(
+                    this.pageSize,
+                    this.pageNumber,
+                    this.region,
+                    this.project,
+                    this.searchName,
+                    ''
+                  );
+                } else {
+                  this.notification.error(
+                    '',
+                    'Xóa lịch Snapshot không thành công'
+                  );
+                }
+              });
+            modal.destroy();
           },
-          {
-            label: 'Đồng ý',
-            type: 'primary',
-            onClick: () => {
-              this.doDeleteSnapshotSchedule(id);
-              modal.destroy()
-            }
-          }
-        ]
-      });
-    }
-    if(value == 3){
-      const modal: NzModalRef = this.modalService.create({
-        nzTitle: 'Xóa lịch Snapshot',
-        nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện Tạm dừng lịch Snapshot?</p>`,
-        nzFooter: [
-          {
-            label: 'Hủy',
-            type: 'default',
-            onClick: () => modal.destroy()
-          },
-          {
-            label: 'Đồng ý',
-            type: 'primary',
-            onClick: () => {
-              this.doPauseSnapshotSchedule(id);
-              modal.destroy()
-            }
-          }
-        ]
-      });
-    }
-    if(value == 4){
-      const modal: NzModalRef = this.modalService.create({
-        nzTitle: 'Xóa lịch Snapshot',
-        nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện Tiếp tục lịch Snapshot?</p>`,
-        nzFooter: [
-          {
-            label: 'Hủy',
-            type: 'default',
-            onClick: () => modal.destroy()
-          },
-          {
-            label: 'Đồng ý',
-            type: 'primary',
-            onClick: () => {
-              this.doResumeSnapshotSchedule(id);
-              modal.destroy()
-            }
-          }
-        ]
-      });
-    }
+        },
+      ],
+    });
   }
 
-  doDeleteSnapshotSchedule(id: number){
-    console.log('Delete:  '+id);
-  }
-  doPauseSnapshotSchedule(id: number){
-    this.isLoadingEntities = true;
-    this.snapshotVolumeService.actionSchedule(id,'suspend',this.customerID, this.region, this.project).subscribe(
-      data =>{
-        if(data){
-          this.notification.success('Success','Tạm dừng lịch thành công.');
-          this.isLoadingEntities = false;
-        }else{
-          this.notification.error('Có lỗi xảy ra','Tạm dừng Entities thất bại.');
-          this.isLoadingEntities = false;
-        }
-      }
-    )
-  }
-  doResumeSnapshotSchedule(id: number){
-    this.isLoadingEntities = true;
-    this.snapshotVolumeService.actionSchedule(id,'restore',this.customerID, this.region, this.project).subscribe(
-      data =>{
-        if(data){
-          this.notification.success('Success','Tiếp tục lịch thành công.');
-          this.isLoadingEntities = false;
-        }else{
-          this.notification.error('Có lỗi xảy ra','Tiếp tục lịch thất bại.');
-          this.isLoadingEntities = false;
-        }
-      }
-    )
+  doPauseSnapshotSchedule(id: number) {
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Tạm dừng lịch Snapshot',
+      nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tạm dừng lịch Snapshot?</p>`,
+      nzFooter: [
+        {
+          label: 'Hủy',
+          type: 'default',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Đồng ý',
+          type: 'primary',
+          onClick: () => {
+            this.snapshotVolumeService
+              .actionSchedule(
+                id,
+                'suspend',
+                this.customerId,
+                this.region,
+                this.project
+              )
+              .subscribe({
+                next: (next) => {
+                  this.notification.success(
+                    'Success',
+                    'Tạm dừng lịch Snapshot thành công.'
+                  );
+                  this.doGetSnapSchedules(
+                    this.pageSize,
+                    this.pageNumber,
+                    this.region,
+                    this.project,
+                    this.searchName,
+                    ''
+                  );
+                },
+                error: (e) => {
+                  this.notification.error(
+                    'Có lỗi xảy ra',
+                    'Tạm dừng lịch Snapshot thất bại.'
+                  );
+                },
+              });
+            modal.destroy();
+          },
+        },
+      ],
+    });
   }
 
-  navigateToDetail(id: number){
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/detail/'+id])
+  doResumeSnapshotSchedule(id: number) {
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Tiếp tục lịch Snapshot',
+      nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tiếp tục lịch Snapshot?</p>`,
+      nzFooter: [
+        {
+          label: 'Hủy',
+          type: 'default',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Đồng ý',
+          type: 'primary',
+          onClick: () => {
+            this.snapshotVolumeService
+              .actionSchedule(
+                id,
+                'restore',
+                this.customerId,
+                this.region,
+                this.project
+              )
+              .subscribe({
+                next: (next) => {
+                  this.notification.success(
+                    'Success',
+                    'Tiếp tục lịch Snapshot thành công.'
+                  );
+                  this.doGetSnapSchedules(
+                    this.pageSize,
+                    this.pageNumber,
+                    this.region,
+                    this.project,
+                    this.searchName,
+                    ''
+                  );
+                },
+                error: (e) => {
+                  this.notification.error(
+                    'Có lỗi xảy ra',
+                    'Tiếp tục lịch Snapshot thất bại.'
+                  );
+                },
+              });
+            modal.destroy();
+          },
+        },
+      ],
+    });
   }
 
-  onInputChange(value: string) {
-    this.searchName = value;
-    console.log('input text: ', this.searchName)
+  navigateToDetail(id: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/detail/' + id]);
+  }
+
+  navigateToEdit(id: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/edit/' + id]);
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create'])
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
 
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
+  onProjectChange(project: ProjectModel) {
+    this.project = project?.id;
     this.searchSnapshotScheduleList();
   }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    this.searchSnapshotScheduleList();
-  }
-
 }

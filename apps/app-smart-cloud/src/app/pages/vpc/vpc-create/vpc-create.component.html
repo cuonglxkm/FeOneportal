@@ -1,0 +1,506 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo VPC'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpc']">Quản lý VPC</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> Tạo VPC</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<!---------------FORM-------------->
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <!---------------CARD-THÔNG TIN VPC-------------->
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông tin VPC</span>
+        </div>
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên VPC</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="Nhập tên VPC" style="width: 100%"
+                   formControlName="name">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Mô tả</nz-form-label>
+          <nz-form-control>
+          <textarea maxlength="1000" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+                    formControlName="description"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
+          <nz-tab nzTitle="Gói cấu hình sẵn">
+            <ngu-carousel #myCarouselFlavor
+              [inputs]="carouselTileConfig"
+              [dataSource]="listOfferFlavors"
+            >
+              <ngu-tile
+                *nguCarouselDef="let item; index as i; let ani = animate"
+                [@slider]="ani"
+              >
+                <div
+                  style="cursor: pointer"
+                  (click)="onInputFlavors(item.id);"
+                  [id]="'flavor_' + item.id"
+                >
+                  <nz-row>
+                    <nz-col
+                      style="padding-bottom: 5px"
+                      class="newClassFlavor text-center"
+                      [class.initialClassFlavor]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                    >
+                      <div style="position: relative;">
+                        <span
+                          class="nameFlavor"
+                          [class.initialNameFlavor]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                        >{{item.offerName}}</span
+                        >
+                        <div style="margin-top: -16px">
+                          <img
+                            style="width: 100px"
+                            [src]="
+                              selectedElementFlavor === 'flavor_' + item.id
+                                ? 'assets/imgs/line2.svg'
+                                : 'assets/imgs/line.svg'
+                            "
+                            alt=""
+                          />
+                        </div>
+                        <span class="priceFlavor">{{
+                          item.price.fixedPrice.amount | number:'1.0-0':'en-US'
+                          }}</span
+                        ><span> đ/tháng</span>
+                      </div>
+                      <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
+                        <img src="assets/imgs/mostpop.svg">
+                      </div>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col
+                      style="width: 100%; padding-top: 5px"
+                      [class.flavor-footer-active]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                      [class.flavor-footer]="
+                        selectedElementFlavor != 'flavor_' + item.id
+                      "
+                    >
+                      <div>
+                        <p>{{ item.description }}</p>
+                      </div>
+                    </nz-col>
+                  </nz-row>
+                </div>
+              </ngu-tile>
+
+              <ul class="myPoint" NguCarouselPoint>
+                <li
+                  *ngFor="let i of myCarouselFlavor.pointNumbers"
+                  [class.active]="i === myCarouselFlavor.activePoint"
+                  (click)="myCarouselFlavor.moveTo(i)"
+                ></li>
+              </ul>
+            </ngu-carousel>
+          </nz-tab>
+          <nz-tab nzTitle="Cấu hình tùy chọn">
+            <div class="ant-table">
+              <table>
+                <thead class="ant-table-thead">
+                <tr>
+                  <th>VCPU (<span class="text-red">*</span>)</th>
+                  <th>RAM (GB) (<span class="text-red">*</span>)</th>
+                  <th>Dung lượng HHD (GB)</th>
+                  <th>Dung lượng SSD (GB)</th>
+                  <th>Giá (VNĐ/tháng)</th>
+                </tr>
+                </thead>
+                <tbody class="ant-table-tbody">
+                <tr>
+                  <td>
+                    <nz-input-number formControlName="vCPU" (ngModelChange)="calculate()"
+                                     [nzMin]="1" [nzMax]="62" [nzStep]="1" nzSize="large"></nz-input-number>
+                  </td>
+                  <td>
+                    <nz-input-number formControlName="ram" (ngModelChange)="calculate()"
+                                     [nzMin]="1" [nzMax]="62" [nzStep]="1" nzSize="large"></nz-input-number>
+                  </td>
+                  <td>
+                    <nz-input-number formControlName="hhd" (ngModelChange)="calculate()"
+                                     [nzMin]="0" [nzMax]="100" [nzStep]="1" nzSize="large"></nz-input-number>
+                  </td>
+                  <td>
+                    <nz-input-number formControlName="ssd" (ngModelChange)="calculate()"
+                                     [nzMin]="0" [nzMax]="100" [nzStep]="1" nzSize="large"></nz-input-number>
+                  </td>
+                  <td>
+                    <p class="text-custom-price">
+                      0 đ
+                    </p>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </nz-tab>
+        </nz-tabset>
+        <nz-row style="margin-top: 20px;margin-bottom: 10px;" nzGutter="16">
+          <nz-col nzLg="24" nzMd="12" nzSm="24">
+            <nz-form-item style="margin-bottom: 5px">
+              <nz-form-label
+              >Thời hạn sử dụng (<span class="text-red">*</span>) -
+                Tháng
+              </nz-form-label
+              >
+              <nz-form-control>
+                <nz-row>
+                  <nz-input-number style="width: 50%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
+                                   formControlName="numOfMonth" (ngModelChange)="onChangeTime()"
+                                   nzSize="large"></nz-input-number>
+                  <div class="text-custom-time" style="display: flex; margin-left: 20px;align-items: center;">
+                    Ngày khởi tạo: {{ today | date : 'dd/MM/yyyy' }}
+                  </div>
+                </nz-row>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+
+        <div class="text-custom-time" style="color: red;">
+          Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+        </div>
+      </nz-card>
+
+      <!---------------CARD-NW-------------->
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px"><span class="text-card-header">Networks</span></div>
+        <div class="ant-table">
+          <table>
+            <td style="width:50%">
+              <nz-form-item>
+                <nz-form-label>Số lượng Network</nz-form-label>
+                <nz-form-control>
+                  <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   [(ngModel)]="numberNetwork" (ngModelChange)="calculate()"
+                                   [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>Chọn dải IP kết nối Internet (<span class="text-red">*</span>)</nz-form-label>
+                <nz-form-control>
+                  <nz-input-group nzCompact>
+                    <nz-select nzSize="large" [nzLoading]="loadingIpConnectInternet" [nzDisabled]="disableIpConnectInternet"
+                               style="width: 90%; margin-left: -1px;border-radius: 10px;"
+                               nzPlaceHolder="--Chọn IP kết nôi--"
+                               formControlName="ipConnectInternet" (nzOpenChange)="openIpSubnet()">
+                      <nz-option *ngFor="let i of listIpConnectInternet" [nzLabel]="i.displayName"
+                                 [nzValue]="i.networkId +'--'+ i.displayName"/>
+                    </nz-select>
+                  </nz-input-group>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td style="width:50%">
+              <nz-form-item>
+                <nz-form-label>Số lượng Router</nz-form-label>
+                <nz-form-control>
+                  <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   [(ngModel)]="numberRouter" (ngModelChange)="calculate()"
+                                   [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>Số lượng Security Group</nz-form-label>
+                <nz-form-control>
+                  <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   [(ngModel)]="numberSecurityGroup" (ngModelChange)="calculate()"
+                                   [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+          </table>
+        </div>
+        <div *ngIf="selectIndexTab == 0">
+          <nz-form-item *ngIf="openIPType == true">
+            <nz-form-label>Chọn loại IP (<span class="text-red">*</span>)</nz-form-label>
+            <nz-form-control>
+              <nz-input-group nzCompact>
+                <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
+                           style="width: 95%; margin-left: -1px;border-radius: 10px;"
+                           nzPlaceHolder="--Chọn loại IP--"
+                           formControlName="ipType" (nzOpenChange)="calculate()">
+                  <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"
+                             [nzValue]="i.value"/>
+                </nz-select>
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div *ngIf="selectIndexTab == 1">
+          <div class="ant-table">
+            <table>
+              <td style="width:80%">
+                <nz-form-item>
+                  <nz-form-label>Số lượng IP Floating</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                     [(ngModel)]="numberIpFloating" (ngModelChange)="calculate()"
+                                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Số lượng IP Public</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                     [(ngModel)]="numberIpPublic" (ngModelChange)="calculate()"
+                                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Số lượng IPv6</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                     [(ngModel)]="numberIpv6" (ngModelChange)="calculate()"
+                                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+              <td style="width:20%">
+                <nz-form-item>
+                  <nz-form-label>Giá (VNĐ/tháng)</nz-form-label>
+                  <nz-form-control>
+                    <p class="text-custom-price" style="width: 90%; margin-left: -1px">
+                      0 đ
+                    </p>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Giá (VNĐ/tháng)</nz-form-label>
+                  <nz-form-control>
+                    <p class="text-custom-price" style="width: 90%; margin-left: -1px">
+                      0 đ
+                    </p>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Giá (VNĐ/tháng)</nz-form-label>
+                  <nz-form-control>
+                    <p class="text-custom-price" style="width: 90%; margin-left: -1px">
+                      0 đ
+                    </p>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+            </table>
+          </div>
+        </div>
+        <p>Tìm hiểu thêm về IP Floating và IP Public</p>
+      </nz-card>
+
+      <!---------------CARD-BACKUP-------------->
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px"><span class="text-card-header">Backup</span></div>
+        <div *ngIf="!activeBackup">
+          <button style="height: 32px" nz-button nzType="default" (click)="initBackup()">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt=""/>Bổ sung Backup
+          </button>
+        </div>
+        <div *ngIf="activeBackup">
+          <div class="ant-table">
+            <table>
+              <td style="width:80%">
+                <nz-form-item>
+                  <nz-form-label>Dung lượng Backup Volume/VM (GB)</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="20"
+                                     [(ngModel)]="numberBackup" (ngModelChange)="calculate()"
+                                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+              <td style="width:20%">
+                <nz-form-item>
+                  <nz-form-label>Giá (VNĐ/tháng)</nz-form-label>
+                  <nz-form-control>
+                    <p class="text-custom-price" style="width: 90%; margin-left: -1px">
+                      0 đ
+                    </p>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+            </table>
+          </div>
+        </div>
+        <nz-alert class="ant-alert-warning-custom" (click)="initBackup()" nzType="warning"
+                  nzDescription="Với các ứng dụng cần bảo vệ dữ liệu và duy trì hiệu suất hệ thống, nên sử dụng Backup - sao lưu định kỹ để đảm bảo an toàn và
+          khả năng khôi phục nhanh chóng khi cần thiết" nzShowIcon></nz-alert>
+      </nz-card>
+
+      <!---------------CARD-LOAD_BALANCER-------------->
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px"><span class="text-card-header">Load Balancer</span></div>
+        <div *ngIf="!activeLoadBalancer">
+          <button style="height: 32px" nz-button nzType="default" (click)="initLoadBalancer()">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt=""/>Bổ sung Load Balancer
+          </button>
+        </div>
+        <div *ngIf="activeLoadBalancer">
+          <div class="ant-table">
+            <table>
+              <td style="width:40%">
+                <nz-form-item>
+                  <nz-form-label>Số lượng Load Balancer</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                     [(ngModel)]="numberLoadBalancer" (ngModelChange)="calculate()"
+                                     [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+              <td style="width:40%">
+                <nz-form-item>
+                  <nz-form-label>Chọn gói Load Balancer</nz-form-label>
+                  <nz-form-control>
+                    <nz-input-group nzCompact>
+                      <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
+                                 style="width: 90%; margin-left: -1px;border-radius: 10px;"
+                                 nzPlaceHolder="--Chọn gói Load Balancer-"
+                                 formControlName="ipSubnet" (nzOpenChange)="calculate()">
+                        <nz-option *ngFor="let i of listLoadBalancer" [nzLabel]="i.displayName"
+                                   [nzValue]="i.networkId"/>
+                      </nz-select>
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+              <td style="width:20%">
+                <nz-form-item>
+                  <nz-form-label>Giá (VNĐ/tháng)</nz-form-label>
+                  <nz-form-control>
+                    <p class="text-custom-price" style="width: 90%; margin-left: -1px">
+                      0 đ
+                    </p>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+            </table>
+          </div>
+        </div>
+        <nz-alert class="ant-alert-warning-custom" (click)="initLoadBalancer()" nzType="warning"
+                  nzDescription="Load Balancer giúp nhân phối tải hiệu quả, nâng cao khả năng chịu tải của hệ thống và tăng trải nghiệm người dùng"
+                  nzShowIcon></nz-alert>
+      </nz-card>
+
+      <!---------------CARD-FILE STORAGE-------------->
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px"><span class="text-card-header">File Storage</span></div>
+        <div *ngIf="!activeFileStorage">
+          <button style="height: 32px" nz-button nzType="default" (click)="initFileStorage()">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt=""/>Bổ sung File Storage
+          </button>
+        </div>
+        <div *ngIf="activeFileStorage">
+          <div class="ant-table">
+            <table>
+              <td style="width:40%">
+                <nz-form-item>
+                  <nz-form-label>Dung lượng File System (GB)</nz-form-label>
+                  <nz-form-control>
+                    <nz-row>
+                      <nz-input-number style="width: 90%;margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                       [(ngModel)]="numberFileSystem" (ngModelChange)="calculate()"
+                                       [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                    </nz-row>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+              <td style="width:40%">
+                <nz-form-item>
+                  <nz-form-label>Dung lượng File System Scnapsshot (GB)</nz-form-label>
+                  <nz-form-control>
+                    <nz-row>
+                      <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
+                                       [(ngModel)]="numberFileScnapsshot" (ngModelChange)="calculate()"
+                                       [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                    </nz-row>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+              <td style="width:20%">
+                <nz-form-item>
+                  <nz-form-label>Giá (VNĐ/tháng)</nz-form-label>
+                  <nz-form-control>
+                    <p class="text-custom-price" style="width: 90%; margin-left: -1px">
+                      0 đ
+                    </p>
+                  </nz-form-control>
+                </nz-form-item>
+              </td>
+            </table>
+          </div>
+        </div>
+        <nz-alert class="ant-alert-warning-custom" (click)="initFileStorage()" nzType="warning"
+                  nzDescription="Dịch vụ File Storage giúp đảm bảo an toàn dữ liệu, tiện ích trong việc chia sẻ thông tin và nâng cao khả năng quản lý tệp tin"
+                  nzShowIcon></nz-alert>
+      </nz-card>
+    </nz-col>
+
+    <!---------------CARD-THÀNH TIỀN-------------->
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate">
+        <div style="margin-bottom: 20px">
+          <p class="text-card-header">Thành tiền</p>
+        </div>
+        <nz-table>
+          <tr class="text-label">
+            <td>Chi phí VPC</td>
+            <td style="color: #0066B3;" nzAlign="right">
+              <b>{{totalAmount || 0}} VNĐ</b>
+            </td>
+          </tr>
+          <tr class="text-label">
+            <td><i>({{this.form.controls['numOfMonth'].value || 0}} tháng)</i></td>
+            <td nzAlign="right">VNĐ/tháng</td>
+          </tr>
+          <tr class="text-label">
+            <td>Thành tiền</td>
+            <td nzAlign="right" style="color: #EA3829;">
+              <b>{{totalPayment || 0}} VNĐ</b>
+            </td>
+          </tr>
+          <tr class="text-label">
+            <td><i>(Đã bao gồm 10% VAT)</i></td>
+            <td nzAlign="right">VNĐ/tháng</td>
+          </tr>
+        </nz-table>
+        <button class="button-cancel" nz-button nzSize="large" nzType="default" (click)="backToList()">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+          <span>Hủy</span>
+        </button>
+        <button class="button-create" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
+                [disabled]="form.invalid || (selectIndexTab == 0 && (selectedElementFlavor == null || form.controls['ipType'].value == ''))">
+          <span nz-icon nzType="wallet" nzTheme="outline"></span>
+          <span style="color: {{form.invalid ? 'gray' : 'white'}}">Thanh toán</span>
+        </button>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+
+
+</form>
+
+
+
+
+

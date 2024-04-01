@@ -1,4 +1,4 @@
-<page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
+<page-header [breadcrumb]="breadcrumb" [action]="action"
              [title]="'SSH Key'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -9,34 +9,33 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
-  <ng-template #content>
-    <div *ngIf="!isBegin" nz-row class="mb-md">
-      <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-        <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" style="width: 350px"/>
-        <ng-template #suffixButton>
-          <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-            <i nz-icon nzType="search"></i>
-            Tim kiếm
-          </button>
-        </ng-template>
-      </nz-input-group>
-    </div>
-  </ng-template>
-  <ng-template #extra>
-    <button *ngIf="!isBegin" (click)="createKey()" nz-button nzType="primary" style="
-            border: 1px solid #52c41a;
-            border-radius: 2px;
-            background-color: #52c41a;
-          "><i nz-icon nzType="plus"></i> Tạo mới
-    </button>
-  </ng-template>
+
 
 </page-header>
 
 <nz-card>
+
+    <div class="d-flex justify-content-between">
+      <div *ngIf="!isBegin" nz-row class="mb-md">
+        <nz-input-group nzSize="large" nzSearch [nzAddOnAfter]="suffixButton">
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" [nzPrefix]="prefixIconSearch" style="width: 350px"/>
+          <ng-template #suffixButton>
+            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
+              <i nz-icon nzType="search"></i>
+              Tim kiếm
+            </button>
+          </ng-template>
+        </nz-input-group>
+        
+      </div>
+  
+      <button *ngIf="!isBegin" (click)="createKey()"  nz-button nzType="primary" ><i nz-icon nzType="plus"></i> Tạo mới SSH Key
+      </button>
+    </div>
+
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
       <!--      <h2>Danh sách SSH Key</h2>-->
@@ -47,7 +46,7 @@
                 (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>
         <tr>
-          <th>Tên keypaird</th>
+          <th>Tên keypair</th>
           <th>Finger print</th>
           <th>Thao tác</th>
         </tr>
@@ -58,7 +57,7 @@
           <td (click)="detailKey(data)">{{ data.fingerprint }}</td>
           <td>
             <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">
-              Xóa
+              <span nz-icon nzType="delete" [nzPopoverContent]="'Xóa'" nzTheme="outline"></span>
             </button>
           </td>
         </tr>
@@ -73,15 +72,23 @@
       </nz-table>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <nz-result [nzIcon]="customIcon" nzTitle="SSH KEY - Ổ Khóa truy cập dịch vụ"
-                 nzSubTitle="Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối">
-        <ng-template #customIcon>
-          <img src="assets/imgs/ssh-key.png" alt="Custom Icon">
-        </ng-template>
-        <div nz-result-extra>
-          <button (click)="createKey()" nz-button nzType="primary">Khởi tạo ngay</button>
-        </div>
-      </nz-result>
+      <nz-card>
+        <nz-row nzJustify="center" style="margin-top: 30px;">
+            <img src="assets/imgs/ssh-key.png" width="400" height="300" alt="blank-security-group">
+        </nz-row>
+        <nz-row nzJustify="center" style="margin-top: 40px">
+            <div class="text-title">
+                <h1 style="font-size: 32px; color: #0066B3; text-align: center; margin-bottom: 0;"><b>SSH KEY</b></h1>
+                <h1 style="font-size: 32px; color: #0066B3;"><b>Ổ Khóa truy cập dịch vụ</b></h1>
+            </div>
+        </nz-row>
+        <nz-row nzJustify="center">
+            <div class="text-subtitle" style="margin-top: 5px; max-width: 710px; text-wrap: normal; color: #6C757D">Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối</div>
+        </nz-row>
+        <nz-row nzJustify="center" style="margin: 50px 0 20px 0">
+            <button (click)="createKey()" style="text-align: center" nz-button nzType="primary">Khởi tạo SSH Key</button>
+        </nz-row>
+    </nz-card>
     </ng-container>
   </ng-container>
 

@@ -4,6 +4,20 @@ import { loadRemoteModule } from '@nx/angular/mf';
 
 export const appRoutes: Route[] = [
   {
+    path: 'app-mongodb-replicaset',
+    loadChildren: () =>
+      loadRemoteModule('app-mongodb-replicaset', './Module').then(
+        (m) => m.RemoteEntryModule
+      ),
+  },
+  {
+    path: 'app-kafka',
+    loadChildren: () =>
+      loadRemoteModule('app-kafka', './Module').then(
+        (m) => m.RemoteEntryModule
+      ),
+  },
+  {
     path: 'app-smart-cloud',
     loadChildren: () =>
       loadRemoteModule('app-smart-cloud', './Module').then(
@@ -13,9 +27,7 @@ export const appRoutes: Route[] = [
   {
     path: 'app-base',
     loadChildren: () =>
-      loadRemoteModule('app-base', './Module').then(
-        (m) => m.RemoteEntryModule
-      ),
+      loadRemoteModule('app-base', './Module').then((m) => m.RemoteEntryModule),
   },
   {
     path: 'app-dashboard',

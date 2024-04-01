@@ -10,13 +10,13 @@
   },
   "menu": [
     {
-      "text": "Smart Cloud",
+      "text": "",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
           "text": "Dashboard",
-          "icon": "anticon-team",
+          "icon": "anticon-dashboard",
           "link": "/app-smart-cloud/dashboard"
         },
         {
@@ -38,6 +38,11 @@
                   "text": "Thanh toán",
                   "icon": "anticon-dashboard",
                   "link": "/app-smart-cloud/billing/payments"
+                },
+                {
+                  "text": "Đơn hàng",
+                  "icon": "anticon-dashboard",
+                  "link": "/app-smart-cloud/order/list"
                 }
               ]
             },
@@ -51,11 +56,11 @@
                   "link": "/app-smart-cloud/iam/dashboard"
                 },
                 {
-                  "text": "IAM Users",
+                  "text": "Users",
                   "link": "/app-smart-cloud/users"
                 },
                 {
-                  "text": "IAM Groups",
+                  "text": "Groups",
                   "link": "/app-smart-cloud/iam/user-group"
                 },
                 {
@@ -91,7 +96,7 @@
               "children": [
                 {
                   "text": "Volume",
-                  "link": "/app-smart-cloud/volume"
+                  "link": "/app-smart-cloud/volumes"
                 },
                 {
                   "text": "Snapshot Volume",
@@ -121,13 +126,57 @@
                   "text": "Lập lịch Backup",
                   "icon": "anticon-calendar",
                   "link": "/app-smart-cloud/schedule/backup/list"
+                },
+                {
+                  "text": "Gói Backup",
+                  "icon": "anticon-calendar",
+                  "link": "/app-smart-cloud/backup/packages"
                 }
               ]
             },
             {
-              "text": "IP Public",
-              "icon": "anticon-exception",
-              "link": "/app-smart-cloud/ip-public"
+              "text": "Networks",
+              "icon": "anticon-cloud",
+              "children": [
+                {
+                  "text": "IP Public",
+                  "icon": "anticon-exception",
+                  "link": "/app-smart-cloud/ip-public"
+                },
+                {
+                  "text": "IP Floating",
+                  "link": "/app-smart-cloud/networks/ip-floating/list"
+                },
+                {
+                  "text": "Dải IP Kết nối WAN",
+                  "link": "/app-smart-cloud/networks/ip-wan/list"
+                },
+                {
+                  "text": "Mạng LAN (VLAN)",
+                  "link": "/app-smart-cloud/vlan/network/list"
+                },
+                {
+                  "text": "Router",
+                  "link": "/app-smart-cloud/network/router"
+                },
+                {
+                  "text": "Direct Connect",
+                  "link": "/app-smart-cloud/object"
+                },
+                {
+                  "text": "Network Topology",
+                  "link": "/app-smart-cloud/object"
+                }
+              ]
+            },
+            {
+              "text": "VPC",
+              "icon": "anticon-profile",
+              "link": "/app-smart-cloud/vpc"
+            },
+            {
+              "text": "Load balancer SDN",
+              "link": "/app-smart-cloud/object"
             },
             {
               "text": "Khóa truy cập (Keypair)",
@@ -140,62 +189,29 @@
               "link": "/app-smart-cloud/security-group"
             },
             {
+              "key": "Object Storage",
               "text": "Object Storage",
-              "icon": "anticon-profile",
-              "children": [
-                {
-                  "text": "Bucket",
-                  "link": "/app-smart-cloud/bucket"
-                },
-                {
-                  "text": "Sub User",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "S3 Key",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Thống kê",
-                  "link": "/app-smart-cloud/object"
-                }
-              ]
+              "icon": "anticon-profile"
             },
             {
-              "text": "VPC",
-              "icon": "anticon-profile",
+              "text": "File Storage",
+              "icon": "file",
               "children": [
                 {
-                  "text": "Quản lý VPC",
+                  "text": "File System",
+                  "link": "/app-smart-cloud/file-storage/file-system/list"
+                },
+                {
+                  "text": "File System Snapshot",
                   "link": "/app-smart-cloud/object"
                 },
                 {
-                  "text": "Dải IP Floating",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Dải IP Kết nối WAN",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Mạng LAN",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Router",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Load balancer SDN",
-                  "link": "/app-smart-cloud/object"
-                },
-                {
-                  "text": "Quản lý Cert SSL",
+                  "text": "Lịch Snapshot File System ",
                   "link": "/app-smart-cloud/object"
                 },
                 {
                   "text": "Floating IP",
-                  "link": "/app-smart-cloud/object"
+                  "link": "/app-smart-cloud/networks/ip-floating/list"
                 },
                 {
                   "text": "Direct Connect",
@@ -207,23 +223,26 @@
                 },
                 {
                   "text": "File Storage",
-                  "link": "/app-smart-cloud/object",
                   "children": [
                     {
                       "text": "File System",
-                      "link": "/app-smart-cloud/object"
+                      "link": "/app-smart-cloud/file-storage/file-system/list"
                     },
                     {
                       "text": "File System Snapshot",
-                      "link": "/app-smart-cloud/object"
+                      "link": "/app-smart-cloud/file-system-snapshot/list"
                     },
                     {
                       "text": "Lịch Snapshot File System ",
-                      "link": "/app-smart-cloud/object"
+                      "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
                     }
                   ]
                 }
               ]
+            },
+            {
+              "text": "VPN Site to Site",
+              "link": "/app-smart-cloud/object"
             }
           ]
         },
@@ -233,7 +252,18 @@
           "children": [
             {
               "text": "Kubernetes",
-              "icon": "anticon-team"
+              "icon": "anticon-team",
+              "link": "/app-kubernetes"
+            },
+            {
+              "text": "Kafka",
+              "icon": "anticon-team",
+              "link": "/app-kafka"
+            },
+            {
+              "text": "MongoDB Replicaset",
+              "icon": "anticon-team",
+              "link": "/app-mongodb-replicaset"
             }
           ]
         },

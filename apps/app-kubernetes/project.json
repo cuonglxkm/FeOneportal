@@ -1,0 +1,113 @@
+{
+  "name": "app-kubernetes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-kubernetes/src",
+  "tags": ["app-kubernetes"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-kubernetes",
+        "index": "apps/app-kubernetes/src/index.html",
+        "main": "apps/app-kubernetes/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-kubernetes/tsconfig.app.json",
+        "assets": [
+          "apps/app-kubernetes/src/favicon.ico",
+          "apps/app-kubernetes/src/assets"
+        ],
+        "styles": ["apps/app-kubernetes/src/styles.less"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-kubernetes/webpack.config.ts"
+        },
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "node_modules/"
+          ]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "10kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-kubernetes/webpack.prod.config.ts"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:webpack-dev-server",
+      "options": {
+        "port": 4205,
+        "publicHost": "http://localhost:4205"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-kubernetes:build:production"
+        },
+        "development": {
+          "browserTarget": "app-kubernetes:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-kubernetes:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/app-kubernetes/**/*.ts",
+          "apps/app-kubernetes/**/*.html"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "app-kubernetes:build",
+        "port": 4205,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-kubernetes:build:development"
+        },
+        "production": {
+          "buildTarget": "app-kubernetes:build:production"
+        }
+      }
+    }
+  }
+}

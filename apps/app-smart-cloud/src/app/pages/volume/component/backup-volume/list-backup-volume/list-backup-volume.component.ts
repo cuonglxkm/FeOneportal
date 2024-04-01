@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 import {VolumeService} from "../../../../../shared/services/volume.service";
 import {VolumeDTO} from "../../../../../shared/dto/volume.dto";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -67,11 +68,14 @@ export class ListBackupVolumeComponent {
   });
   ngOnInit() {
     this.selectedStatus = this.listStatus[0].value;
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   loadBackupVolume(isCheckBegin: boolean) {
     this.loading = true;
-    this.service.getbackupVolumeKeys(this.tokenService.get()?.userId, this.projectId, this.regionId,
+    this.service.getbackupVolumeKeys(this.projectId, this.regionId,
       this.index, this.size, this.searchKey, this.selectedStatus)
       .pipe(finalize(() => this.loading = false))
       .subscribe(response => {
@@ -159,7 +163,7 @@ export class ListBackupVolumeComponent {
   openDataMounted(event: any, data: BackupVolume): void {
     this.data = data;
     if (event == "1") {
-      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.projectId, this.regionId, false,
+      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.projectId, this.regionId,
         999, 1, '','').subscribe(
         (data) => {
           this.listOfVolume = data.records;

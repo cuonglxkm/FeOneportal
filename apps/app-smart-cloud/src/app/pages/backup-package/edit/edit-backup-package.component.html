@@ -1,0 +1,199 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="title">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Backup
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/backup/packages">Điều chỉnh dung lượng gói Backup</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <ng-template #title>
+    <div nz-row nzJustify="space-between">
+      <nz-row>
+<!--        <nz-col>-->
+<!--          <span nz-icon-->
+<!--                nzType="arrow-left"-->
+<!--                nzTheme="outline"-->
+<!--                [routerLink]="'/app-smart-cloud/backup/packages'"-->
+<!--                style="margin-right: 10px;"></span>-->
+<!--        </nz-col>-->
+        <nz-col>
+          <div>Điều chỉnh dung lượng gói Backup</div>
+        </nz-col>
+      </nz-row>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card>
+          <h3><b>Thông tin của gói Backup</b></h3>
+          <nz-form-item>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Tên gói Backup</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              </div>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input
+                     [value]="packageBackupModel.packageName"
+                     disabled="true"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="name">
+              <div style="margin-top: 15px;">
+                <span>Dung lượng gói Backup hiện tại</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              </div>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input
+                     [value]="packageBackupModel.sizeInGB"
+                     disabled="true"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzFor="description">
+              <div class="label">
+                <span>Mô tả</span>
+              </div>
+            </nz-form-label>
+            <nz-form-control>
+          <textarea nz-input
+                    [value]="packageBackupModel.description"
+                    disabled="true">
+          </textarea>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-row>
+            <nz-col nzSpan="8">
+              <nz-form-item>
+                <nz-form-label>
+                  <div>
+                    <span>Ngày khởi tạo: {{packageBackupModel?.creationDate | date: 'dd/MM/yyyy'}}</span>
+                  </div>
+                </nz-form-label>
+              </nz-form-item>
+            </nz-col>
+            <nz-col nzSpan="8">
+              <nz-form-item>
+                <nz-form-label>
+                  <div>
+                    <span style="color: #FC1010;">Ngày hết hạn: {{packageBackupModel?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+                  </div>
+                </nz-form-label>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+        <nz-card>
+          <h3><b>Thông tin điều chỉnh</b></h3>
+          <nz-alert nzBanner
+                    [nzMessage]="'Khi thực hiện tăng dung lượng gói Backup, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
+                    nzShowIcon>
+          </nz-alert>
+          <nz-form-item>
+            <nz-form-label nzFor="storage">
+              <div class="label">
+                <span>Dung lượng gói Backup bổ sung</span>
+                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                <span nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
+                      nzPopoverPlacement="bottom">
+                </span>
+              </div>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+              <nz-input-number formControlName="storage"
+                               id="storage"
+                               style="width: 100%;"
+                               [nzMin]="packageBackupModel.sizeInGB"
+                               (ngModelChange)="changeValueInput()"
+                               [nzStep]="1"/>
+              <ng-template #storageErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Backup
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
+                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
+                </span>
+                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
+                  <b>Đơn giá: </b> 0 VNĐ/GB/ngày
+                </span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <div>
+                <span><b>Ngày điều chỉnh: {{resizeDate | date: 'dd/MM/yyyy'}}</b></span>
+              </div>
+            </nz-form-label>
+          </nz-form-item>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card>
+          <h3>Thành tiền</h3>
+          <nz-table>
+            <tr>
+              <td>Chi phí tăng dung lượng</td>
+              <td nzAlign="right">
+                <b *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>
+                <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td nzAlign="right">VNĐ/tháng</td>
+            </tr>
+            <tr>
+              <td>Thành tiền</td>
+              <td nzAlign="right" style="color: #EA3829;">
+                <b
+                  *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b>
+                <b *ngIf="orderItem == undefined">0 VNĐ</b>
+              </td>
+            </tr>
+            <tr>
+              <td><i>(Đã bao gồm 10% VAT)</i></td>
+              <td nzAlign="right">VNĐ/tháng</td>
+            </tr>
+          </nz-table>
+          <button class="btn-update" [disabled]="!validateForm.valid" (click)="update()">
+            <div style="color: white;line-height: 24px; word-wrap: break-word">
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              Cập nhật
+            </div>
+          </button>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </form>
+</nz-content>

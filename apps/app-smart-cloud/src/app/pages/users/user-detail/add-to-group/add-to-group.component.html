@@ -5,7 +5,9 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
@@ -30,21 +32,37 @@
   </ng-template>
 </page-header>
 
-<nz-card [nzBordered]="false" nzTitle="Thông tin Groups">
-  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
+<nz-card style="border-radius: 4px" [nzBordered]="false">
+  <div
+    style="margin-bottom: 20px"
+    nz-row
+    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }"
+  >
     <div
       nz-col
-      [nzLg]="10"
-      [nzMd]="10"
+      [nzLg]="12"
+      [nzMd]="12"
       [nzSm]="24"
-      [nzXl]="10"
+      [nzXl]="12"
       [nzXs]="24"
-      [nzXXl]="10"
+      [nzXXl]="12"
+    >
+      <span class="text-card-header">Thông tin Groups</span>
+    </div>
+    <div
+      class="text-right p-0 m-b-0"
+      nz-col
+      [nzLg]="12"
+      [nzMd]="12"
+      [nzSm]="24"
+      [nzXl]="12"
+      [nzXs]="24"
+      [nzXXl]="12"
     >
       <nz-input-group
-        style="width: 100%"
-        nzSearch
-        [nzAddOnAfter]="suffixButton"
+        style="margin-right: 8px; width: 50%; border-radius: 8px"
+        [nzPrefix]="prefixIconSearch"
+        nzSize="large"
       >
         <input
           name="name"
@@ -54,47 +72,36 @@
           (ngModelChange)="changeSearch($event)"
         />
       </nz-input-group>
-      <ng-template #suffixButton>
-        <button nz-button nzType="primary" nzSearch (click)="getGroup()">
-          <i nz-icon nzType="search"></i>
-          Search
-        </button>
+      <ng-template #prefixIconSearch>
+        <img
+          src="assets/imgs/search.svg"
+          alt=""
+          style="cursor: pointer"
+          nz-tooltip="Tìm kiếm"
+          (click)="getGroup()"
+        />
       </ng-template>
-    </div>
-    <div
-      class="text-right p-0 m-b-0"
-      nz-col
-      [nzLg]="14"
-      [nzMd]="14"
-      [nzSm]="24"
-      [nzXl]="14"
-      [nzXs]="24"
-      [nzXXl]="14"
-    >
       <button
-        class="m-r-8"
+        style="border: none; border-radius: 8px"
         nz-button
-        style="cursor: pointer"
         (click)="reloadGroupTable()"
       >
-        <span nz-icon nzType="reload" nzTheme="outline"></span>
+        <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
       </button>
-      <button
-        class="m-r-8"
-        class="bg-success border-success"
-        nz-button
-        nzType="primary"
-        (click)="navigateToCreateGroup()"
-      >
-        <i nz-icon nzType="plus"></i>
-        Tạo mới
+      <button nz-button nzType="primary" (click)="navigateToCreateGroup()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/add-circle.svg"
+          alt=""
+        />
+        <span>Tạo mới</span>
       </button>
     </div>
   </div>
   <nz-table
-    style="margin-top: 2%"
     #rowSelectionTable
     nzShowSizeChanger
+    [nzScroll]="{ x: '100%', y: '45vh' }"
     [nzFrontPagination]="false"
     [nzData]="listOfGroups"
     [nzLoading]="loading"
@@ -106,14 +113,14 @@
   >
     <thead>
       <tr>
-        <th style="width: 20px">
-          <input
-            nz-input
-            type="checkbox"
-            (change)="onChangeCheckAllGroup($event.target.checked)"
-            [(ngModel)]="checkedAllInPage"
-          />
-        </th>
+        <th
+          [(nzChecked)]="checkedGroup"
+          [(nzIndeterminate)]="indeterminateGroup"
+          nzLabel="Select all group"
+          [nzWidth]="'50px'"
+          (nzCheckedChange)="onAllCheckedGroup($event)"
+          nzLeft
+        ></th>
         <th>Tên Group</th>
         <th>Số lượng User</th>
         <th>Attached policies</th>
@@ -122,57 +129,70 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of listOfGroups; let i = index">
-        <td>
-          <input
-            nz-input
-            type="checkbox"
-            (change)="onClickGroupItem(item.name, item)"
-            [(ngModel)]="listCheckedGroupInPage[i]"
-          />
+        <td
+          [nzChecked]="mapOfCheckedGroup.has(item.name)"
+          (nzCheckedChange)="onItemCheckedGroup(item, $event)"
+          nzLeft
+        ></td>
+        <td nzLeft>
+          <a
+            nz-tooltip
+            nzTooltipTitle="Xem chi tiết"
+            nzTooltipPlacement="bottom"
+            [routerLink]="'/app-smart-cloud/iam/user-group/' + item.name"
+            >{{ item.name }}</a
+          >
         </td>
-        <td class="fieldColor">{{ item.name }}</td>
-        <td>{{ item.numberOfUser }}</td>
-        <td *ngIf="item.policies.length == 0">None</td>
-        <td class="fieldColor" *ngIf="item.policies.length == 1">
+        <td class="fieldColor">{{ item.numberOfUser }}</td>
+        <td *ngIf="item.policies == null || item.policies.length == 0">None</td>
+        <td
+          class="fieldColor"
+          *ngIf="item.policies != null && item.policies.length == 1"
+        >
           {{ item.policies[0] }}
         </td>
-        <td class="fieldColor" *ngIf="item.policies.length == 2">
+        <td
+          class="fieldColor"
+          *ngIf="item.policies != null && item.policies.length == 2"
+        >
           {{ item.policies[0] }}, {{ item.policies[1] }}
         </td>
-        <td class="fieldColor" *ngIf="item.policies.length > 2">
+        <td
+          class="fieldColor"
+          *ngIf="item.policies != null && item.policies.length > 2"
+        >
           {{ item.policies[0] }}, {{ item.policies[1] }}
           <span class="nameField">
             and {{ item.policies.length - 2 }} policies
           </span>
         </td>
-        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+        <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>
   </nz-table>
 </nz-card>
 
-<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-  <div
-    class="text-right p-0 m-b-0"
-    nz-col
-    [nzLg]="24"
-    [nzMd]="24"
-    [nzSm]="24"
-    [nzXl]="24"
-    [nzXs]="24"
-    [nzXXl]="24"
-  >
+<div nz-row [nzGutter]="24">
+  <div class="text-right p-0 m-b-0" nz-col nzSpan="24">
     <button
-      class="m-r-8"
       nz-button
-      nzType="default"
-      style="background-color: #9c9c9c; color: white"
+      style="color: var(--Primary-1, #0066b3)"
       (click)="navigateToDetail()"
     >
-      Quay lại
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/arrow-left-2.svg"
+        alt=""
+      />
+      <span>Quay lại</span>
     </button>
-    <button class="m-r-8" nz-button nzType="primary" (click)="addToGroups()">
-      Add to Groups
+    <button nz-button nzType="primary" (click)="addToGroups()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/add-circle.svg"
+        alt=""
+      />
+      <span>Thêm vào Groups</span>
     </button>
   </div>
 </div>

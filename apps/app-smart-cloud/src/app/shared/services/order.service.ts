@@ -1,60 +1,89 @@
-import {Injectable} from "@angular/core";
-import {BaseService} from "./base.service";
-import {Observable, of} from "rxjs";
-import {GetListSnapshotVlModel} from "../models/snapshotvl.model";
-import {catchError} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
-import {NzMessageService} from "ng-zorro-antd/message";
-import {BaseResponse} from "../../../../../../libs/common-utils/src";
-import {OrderDTO} from "../models/order.model";
+import { Inject, Injectable } from '@angular/core';
+import { BaseService } from './base.service';
+import { Observable, of } from 'rxjs';
+import { GetListSnapshotVlModel } from '../models/snapshotvl.model';
+import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { OrderDTO, OrderDTOSonch } from '../models/order.model';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderService extends BaseService {
   private urlSnapshotVl = this.baseUrl + this.ENDPOINT.orders;
 
-  constructor(private http: HttpClient, private message: NzMessageService) {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+      user_root_id: this.tokenService.get()?.userId,
+    }),
+  };
+
+  constructor(
+    private http: HttpClient,
+    private message: NzMessageService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+  ) {
     super();
   }
 
-  getOrders(pageSize: number,
-            pageNumber: number,
-            orderCode: string,
-            customerId: number,
-            saleDept: string,
-            saleDeptCode: string,
-            seller: string,
-            ticketCode: string,
-            dSubscriptionNumber: string,
-            dSubscriptionType: string,
-            orderAfter: string,
-            resultNote: string
-  ): Observable<BaseResponse<OrderDTO[]>>{
-    let urlResult = this.getConditionSearcOrders(pageSize, pageNumber, orderCode, customerId, saleDept, saleDeptCode, seller, ticketCode, dSubscriptionNumber, dSubscriptionType, orderAfter, resultNote);
-    return this.http.get<BaseResponse<OrderDTO[]>>(urlResult).pipe(
-      catchError(this.handleError<BaseResponse<OrderDTO[]>>('get order-list error'))
+  getOrders(
+    pageSize: number,
+    pageNumber: number,
+    orderCode: string,
+    saleDept: string,
+    saleDeptCode: string,
+    seller: string,
+    ticketCode: string,
+    dSubscriptionNumber: string,
+    dSubscriptionType: string,
+    fromDate: Date,
+    toDate: Date,
+    status: number
+  ): Observable<BaseResponse<OrderDTO[]>> {
+    let urlResult = this.getConditionSearcOrders(
+      pageSize,
+      pageNumber,
+      orderCode,
+      saleDept,
+      saleDeptCode,
+      seller,
+      ticketCode,
+      dSubscriptionNumber,
+      dSubscriptionType,
+      fromDate,
+      toDate,
+      status
     );
+    return this.http
+      .get<BaseResponse<OrderDTO[]>>(urlResult)
+      .pipe(
+        catchError(
+          this.handleError<BaseResponse<OrderDTO[]>>('get order-list error')
+        )
+      );
   }
 
-  private getConditionSearcOrders(pageSize: number,
-                                  pageNumber: number,
-                                  orderCode: string,
-                                  customerId: number,
-                                  saleDept: string,
-                                  saleDeptCode: string,
-                                  seller: string,
-                                  ticketCode: string,
-                                  dSubscriptionNumber: string,
-                                  dSubscriptionType: string,
-                                  orderAfter: string,
-                                  resultNote: string): string {
+  private getConditionSearcOrders(
+    pageSize: number,
+    pageNumber: number,
+    orderCode: string,
+    saleDept: string,
+    saleDeptCode: string,
+    seller: string,
+    ticketCode: string,
+    dSubscriptionNumber: string,
+    dSubscriptionType: string,
+    fromDate: Date,
+    toDate: Date,
+    status: number
+  ): string {
     let urlResult = this.urlSnapshotVl;
     let count = 0;
-    if (customerId !== undefined && customerId != null) {
-      urlResult += '?customerId=' + customerId;
-      count++;
-    }
     if (pageSize !== undefined && pageSize != null) {
       if (count == 0) {
         urlResult += '?pageSize=' + pageSize;
@@ -136,20 +165,28 @@ export class OrderService extends BaseService {
         urlResult += '&dSubscriptionType=' + dSubscriptionType;
       }
     }
-    if (orderAfter !== undefined && orderAfter != null) {
+    if (fromDate !== undefined && fromDate != null) {
       if (count == 0) {
-        urlResult += '?orderAfter=' + orderAfter;
+        urlResult += '?fromDate=' + fromDate.toISOString();
         count++;
       } else {
-        urlResult += '&orderAfter=' + orderAfter;
+        urlResult += '&fromDate=' + fromDate.toISOString();
       }
     }
-    if (resultNote !== undefined && resultNote != null) {
+    if (toDate !== undefined && toDate != null) {
       if (count == 0) {
-        urlResult += '?resultNote=' + resultNote;
+        urlResult += '?toDate=' + toDate.toISOString();
         count++;
       } else {
-        urlResult += '&resultNote=' + resultNote;
+        urlResult += '&toDate=' + toDate.toISOString();
+      }
+    }
+    if (status !== undefined && status != null) {
+      if (count == 0) {
+        urlResult += '?status=' + status;
+        count++;
+      } else {
+        urlResult += '&status=' + status;
       }
     }
     return urlResult;
@@ -164,5 +201,27 @@ export class OrderService extends BaseService {
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
+  }
+
+  getDetail(id: any): Observable<OrderDTOSonch> {
+    return this.http.get<OrderDTOSonch>(
+      this.urlSnapshotVl + '/' + id,
+      this.httpOptions
+    );
+  }
+
+  getOrderBycode(code: any): Observable<any> {
+    return this.http.get<OrderDTOSonch>(
+      this.urlSnapshotVl + `/getbycode?code=${code}`,
+      this.httpOptions
+    );
+  }
+
+  createOrder(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders,
+      data,
+      this.httpOptions
+    );
   }
 }

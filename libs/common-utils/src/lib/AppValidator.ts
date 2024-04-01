@@ -284,4 +284,62 @@ export class AppValidator {
     return null;
   }
 
+  static portNameValidator(): ValidationErrors | null {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const portName = control.value;
+      if (!portName) {
+        return null; // Cho phép trường rỗng
+      }
+
+      // Kiểm tra ký tự đặc biệt, dấu cách và dấu tiếng Việt
+      const specialCharacters = /[!@#$%^&*(),.?":{}|<>_+=/\\[\];`~\s]/;
+      if (specialCharacters.test(portName)) {
+        return { 'invalidCharacters': true };
+      }
+
+      return null; // Tên cổng hợp lệ
+    };
+  }
 }
+  export function ipAddressValidator(subnet: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const ipAddress: string = control.value;
+      if (!ipAddress) {
+        return null; // Cho phép trường rỗng
+      }
+
+      // Kiểm tra định dạng IP
+      const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (!ipRegex.test(ipAddress)) {
+        return { 'invalidIp': true };
+      }
+
+      // Tách dải và bit cuối
+      const [subnetPart, lastPart] = ipAddress.split('.').slice(0, 4);
+
+      // Kiểm tra dải /16
+      if (subnet === '/16') {
+        const subnetPrefix = subnetPart.substring(0, subnetPart.lastIndexOf('.'));
+        if (subnetPrefix !== '10.21') {
+          return { 'invalidSubnet': true };
+        }
+      }
+
+      // Kiểm tra dải /24
+      if (subnet === '/24') {
+        if (subnetPart !== '10.21.0') {
+          return { 'invalidSubnet': true };
+        }
+      }
+
+      // Kiểm tra bit cuối
+      const lastBit = parseInt(lastPart, 10);
+      if (lastBit < 1 || lastBit > 254) {
+        return { 'invalidLastBit': true };
+      }
+
+      return null; // IP hợp lệ
+    };
+  }
+
+// }

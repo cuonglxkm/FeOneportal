@@ -1,0 +1,91 @@
+<button nz-button nzType="primary" nzSize="large" (click)="showModal()">
+  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+  <span class="button-text-primary">Tạo mới Port</span>
+</button>
+<nz-modal [(nzVisible)]="isVisible"
+          nzCentered
+          [nzTitle]="modalTitle"
+          [nzContent]="modalContent"
+          [nzFooter]="null"
+          (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    <span class="text-modal-title">Thêm mới</span>
+  </ng-template>
+  <ng-template #modalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Chọn dải</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Chọn dải'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="idSubnetErrorTpl" style="margin-top:10px;">
+          <nz-select formControlName="idSubnet"
+                     nzPlaceHolder="Chọn dải">
+            <nz-option *ngFor="let item of listSubnet" [nzValue]="item.id" nzLabel="{{ item.subnetAddressRequired }}"></nz-option>
+          </nz-select>
+          <ng-template #idSubnetErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Tên Port</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'Tên Port'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input nz-input class="input-custom" formControlName="namePort" [maxLength]="50"/>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên Port không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">Tên Port tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('invalidCharacters')">Tên Port không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng việt</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>IP Address</span>
+            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+            <span nz-icon nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="'IP Address'"
+                  nzPopoverPlacement="bottom"></span>
+          </div>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
+          <input nz-input class="input-custom" formControlName="ipAddress" />
+          <ng-template #ipAddressErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">IP Address không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIp')">IP Address không hợp lệ</ng-container>
+            <ng-container *ngIf="control.hasError('invalidSubnet')"> IP Address không nằm trong dải subnet {{ subnetAddress }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidLastBit')">Bit cuối không hợp lệ</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="middle">
+          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">Quay lại</button>
+          <nz-form-control *nzSpaceItem>
+            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" [disabled]="!validateForm.valid">Tạo mới</button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>

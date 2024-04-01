@@ -21,7 +21,6 @@ import { InboundListComponent } from './security-group/inbound/list/inbound-list
 import { ListOutboundComponent } from './security-group/outbound/list/list-outbound.component';
 import { CreateOutboundComponent } from './security-group/outbound/create/create-outbound.component';
 import { CreateAllowAddressPairComponent } from './allow-address-pair/create/create-allow-address-pair.component';
-import { ListVirtualMachineComponent } from './security-group/vm/list/list-virtual-machine.component';
 import { BlankSecurityGroupComponent } from './security-group/blank-security-group/blank-security-group.component';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzImageModule } from 'ng-zorro-antd/image';
@@ -108,7 +107,88 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PaymentDetailComponent } from './billing/payment/detail/payment-detail.component';
 import { OrderListComponent } from './order/order-list/order-list.component';
 import { ListPaymentComponent } from './billing/payment/list/list-payment.component';
-import { OperationHistoryComponent } from './operation-history/operation-history.component';
+import { OrderDetailComponent } from './order/order-detail/order-detail.component';
+import { RenewVolumeComponent } from './volume/component/renew-volume/renew-volume.component';
+import { SnapshotScheduleEditComponent } from './snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component';
+import { ListPackagesBackupComponent } from './backup-package/list/list-packages-backup.component';
+import { DetailPackageBackupComponent } from './backup-package/detail/detail-package-backup.component';
+import { CreatePackageBackupComponent } from './backup-package/create/create-package-backup.component';
+import { ExtendBackupPackageComponent } from './backup-package/extend/extend-backup-package.component';
+import { EditBackupPackageComponent } from './backup-package/edit/edit-backup-package.component';
+import { DeleteBackupPackageComponent } from './backup-package/delete/delete-backup-package.component';
+import { ExtendIpPublicComponent } from './ip-public/extend-ip-public/extend-ip-public.component';
+import { CreateVolumeVpcComponent } from './volume/component/create-volume-vpc/create-volume-vpc.component';
+import { ResizeVolumeVpcComponent } from './volume/component/resize-volume-vpc/resize-volume-vpc.component';
+import { ListVlanComponent } from './vlan/list/list-vlan.component';
+import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
+import { VlanDetailComponent } from './vlan/detail/vlan-detail.component';
+import { RouterListComponent } from './routers/router-list.component';
+import { RouterDetailComponent } from './routers/router-detail/router-detail.component';
+import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
+import { VlanCreatePortComponent } from './vlan/create/create-port/vlan-create-port.component';
+import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
+import { SubnetFormComponent } from './vlan/form/subnet-form.component';
+import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import { CreateIpFloatingComponent } from './ip-floating/create-ip-floating/create-ip-floating.component';
+import { AttachIpFloatingComponent } from './ip-floating/attach/attach-ip-floating.component';
+import { DetachIpFloatingComponent } from './ip-floating/detach/detach-ip-floating.component';
+import { DeleteIpFloatingComponent } from './ip-floating/delete/delete-ip-floating.component';
+import { DeleteVlanComponent } from './vlan/delete/delete-vlan/delete-vlan.component';
+import { VlanEditComponent } from './vlan/edit/edit-vlan/vlan-edit.component';
+import { DeleteSubnetComponent } from './vlan/delete/delete-subnet/delete-subnet.component';
+import { AttachPortComponent } from './vlan/attach/attach-port.component';
+import { DetachPortComponent } from './vlan/detach/detach-port.component';
+import { DeletePortComponent } from './vlan/delete/delete-port/delete-port.component';
+import { DetailPortComponent } from './vlan/detail/detail-port/detail-port.component';
+import { DetailSubnetComponent } from './vlan/detail/detail-subnet/detail-subnet.component';
+import { AttachVolumeComponent } from './volume/component/action/attach-volume/attach-volume.component';
+import { DetachVolumeComponent } from './volume/component/action/detach-volume/detach-volume.component';
+import { DeleteVolumeComponent } from './volume/component/action/delete-volume/delete-volume.component';
+import { UpdateVolumeComponent } from './volume/component/action/update-volume/update-volume.component';
+import { BucketListComponent } from './bucket/bucket-list.component';
+import { BucketCreateComponent } from './bucket/bucket-create/bucket-create.component';
+import { BucketConfigureComponent } from './bucket/bucket-configure/bucket-configure.component';
+import { StaticWebHostingComponent } from './bucket/bucket-configure/static-web-hosting/static-web-hosting.component';
+import { LifecycleConfigComponent } from './bucket/bucket-configure/lifecycle-config/lifecycle-config.component';
+import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/bucket-policy.component';
+import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
+import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
+import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
+import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
+import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { DeleteWanComponent } from './wan/action/delete-wan/delete-wan.component';
+import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component';
+import { CreateWanComponent } from './wan/create/create-wan.component';
+import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
+import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
+import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
+import { DeleteSubUserComponent } from './sub-user/action/delete/delete-sub-user.component';
+import { EditSubUserComponent } from './sub-user/action/edit/edit-sub-user.component';
+import { DeleteFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/delete-file-system-snapshot-schedule-file-system-snapshot-schedule/delete-file-system-snapshot-schedule.component';
+import { EditFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component';
+import { PauseFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/pause-file-system-snapshot-schedule-file-system-snapshot-schedule/pause-file-system-snapshot-schedule.component';
+import { DeleteFileSystemSnapshotComponent } from './file-system-snapshot/delete-create-file-system-snapshot/delete-file-system-snapshot.component';
+import { EditFileSystemSnapshotComponent } from './file-system-snapshot/edit-file-system-snapshot/edit-file-system-snapshot.component';
+import { ObjectStorageComponent } from './object-storage/object-storage.component';
+import { ObjectStorageCreateComponent } from './object-storage/object-storage-create/object-storage-create.component';
+import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
+import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
+import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -129,7 +209,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     InboundListComponent,
     ListOutboundComponent,
     CreateAllowAddressPairComponent,
-    ListVirtualMachineComponent,
     BlankSecurityGroupComponent,
     FormRuleComponent,
     SshKeyComponent,
@@ -204,7 +283,90 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DashboardComponent,
     OrderListComponent,
     ListPaymentComponent,
-    OperationHistoryComponent
+    OrderDetailComponent,
+    RenewVolumeComponent,
+    ExtendIpPublicComponent,
+    SnapshotScheduleEditComponent,
+    ListPackagesBackupComponent,
+    DetailPackageBackupComponent,
+    CreatePackageBackupComponent,
+    ExtendBackupPackageComponent,
+    EditBackupPackageComponent,
+    DeleteBackupPackageComponent,
+    CreateVolumeVpcComponent,
+    ResizeVolumeVpcComponent,
+    ListVlanComponent,
+    BlankVolumeComponent,
+    VlanDetailComponent,
+    RouterListComponent,
+    RouterDetailComponent,
+    CreateNetworkComponent,
+    VlanCreatePortComponent,
+    VlanCreateSubnetComponent,
+    VlanEditSubnetComponent,
+    SubnetFormComponent,
+    ListIpFloatingComponent,
+    CreateIpFloatingComponent,
+    CreateIpFloatingComponent,
+    AttachIpFloatingComponent,
+    DetachIpFloatingComponent,
+    DeleteIpFloatingComponent,
+    DeleteVlanComponent,
+    VlanEditComponent,
+    DeleteSubnetComponent,
+    AttachPortComponent,
+    DetachPortComponent,
+    DeletePortComponent,
+    DetailPortComponent,
+    DetailSubnetComponent,
+    AttachVolumeComponent,
+    AttachVolumeComponent,
+    DetachVolumeComponent,
+    DeleteVolumeComponent,
+    UpdateVolumeComponent,
+    BucketListComponent,
+    BucketCreateComponent,
+    BucketConfigureComponent,
+    StaticWebHostingComponent,
+    LifecycleConfigComponent,
+    BucketPolicyComponent,
+    BucketCorsComponent,
+    BucketDetailComponent,
+    FileSystemSnapshotComponent,
+    FileSystemSnapshotDetailComponent,
+    CreateFileSystemSnapshotComponent,
+    CreateFileSystemSnapshotScheduleComponent,
+    FileSystemSnapshotScheduleComponent,
+    ListFileSystemComponent,
+    ListWanComponent,
+    DeleteWanComponent,
+    DetachWanComponent,
+    CreateWanComponent,
+    AttachWanComponent,
+    CreateFileSystemComponent,
+    DetailFileSystemComponent,
+    ExtendFileSystemComponent,
+    DeleteFileSystemComponent,
+    EditFileSystemComponent,
+    ListAccessRuleComponent,
+    CreateAccessRuleComponent,
+    DeleteAccessRuleComponent,
+    ListSubUserComponent,
+    CreateSubUserComponent,
+    DeleteSubUserComponent,
+    EditSubUserComponent,
+    DeleteFileSystemSnapshotScheduleComponent,
+    EditFileSystemSnapshotScheduleComponent,
+    PauseFileSystemSnapshotScheduleComponent,
+    DeleteFileSystemSnapshotComponent,
+    EditFileSystemSnapshotComponent,
+    DashboardObjectStorageComponent,
+    ObjectStorageComponent,
+    ObjectStorageCreateComponent,
+    ObjectStorageExtendComponent,
+    ObjectStorageEditComponent,
+    ChartComponent,
+    S3KeyComponent,
   ],
   imports: [
     CommonModule,

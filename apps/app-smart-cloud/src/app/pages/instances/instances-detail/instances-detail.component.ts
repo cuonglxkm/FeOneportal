@@ -4,7 +4,6 @@ import {
   Component,
   Inject,
   OnInit,
-  TemplateRef,
 } from '@angular/core';
 import {
   InstancesModel,
@@ -13,12 +12,10 @@ import {
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { finalize } from 'rxjs';
-import { LoadingService } from '@delon/abc/loading';
 import { G2TimelineData } from '@delon/chart/timeline';
+import { RegionModel } from 'src/app/shared/models/region.model';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -36,12 +33,10 @@ export class InstancesDetailComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
     public message: NzMessageService,
-    private loadingSrv: LoadingService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -58,16 +53,15 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-
-        this.dataService.getById(this.id, false).subscribe((data: any) => {
+        this.dataService.getById(this.id, true).subscribe((data: any) => {
           this.instancesModel = data;
           this.loading = false;
           this.cloudId = this.instancesModel.cloudId;
           this.regionId = this.instancesModel.regionId;
+          this.getListIpPublic();
           this.getMonitorData();
           this.dataService
             .getAllSecurityGroupByInstance(
@@ -76,7 +70,6 @@ export class InstancesDetailComponent implements OnInit {
               this.instancesModel.customerId,
               this.instancesModel.projectId
             )
-            .pipe(finalize(() => this.loadingSrv.close()))
             .subscribe((datasg: any) => {
               this.listSecurityGroupModel = datasg;
               this.cdr.detectChanges();
@@ -85,6 +78,43 @@ export class InstancesDetailComponent implements OnInit {
         });
       }
     });
+  }
+
+  listIPPublicStr = '';
+  listIPLanStr = '';
+  getListIpPublic() {
+    this.dataService
+      .getPortByInstance(this.id, this.regionId)
+      .subscribe((dataNetwork: any) => {
+        //list IP public
+        let listOfPublicNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == true
+        );
+        let listIPPublic: string[] = [];
+        listOfPublicNetwork.forEach((e) => {
+          listIPPublic = listIPPublic.concat(e.fixedIPs);
+        });
+        this.listIPPublicStr = listIPPublic.join(', ');
+
+        //list IP Lan
+        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        let listIPLan: string[] = [];
+        listOfPrivateNetwork.forEach((e) => {
+          listIPLan = listIPLan.concat(e.fixedIPs);
+        });
+        this.listIPLanStr = listIPLan.join(', ');
+        this.cdr.detectChanges();
+      });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.route.navigate(['/app-smart-cloud/instances']);
+  }
+
+  userChangeProject() {
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToEdit() {
@@ -103,16 +133,6 @@ export class InstancesDetailComponent implements OnInit {
     this.route.navigate(['/app-smart-cloud/instances']);
   }
 
-  add(tpl: TemplateRef<{}>): void {
-    this.modalSrv.create({
-      nzTitle: '',
-      nzContent: tpl,
-      nzOnOk: () => {
-        // this.http.post('/rule', { description: this.description }).subscribe(() => this.getData());
-      },
-    });
-  }
-
   //Giám sát
   activeGS: boolean = false;
   maxAxis = 1;
@@ -121,6 +141,7 @@ export class InstancesDetailComponent implements OnInit {
   valueGSTIME: number = 5;
   cloudId: string;
   regionId: number;
+  projectId: number;
   chartData: G2TimelineData[] = [];
 
   GSCPU = [
@@ -170,7 +191,6 @@ export class InstancesDetailComponent implements OnInit {
         this.valueGSTIME,
         this.valueGSCPU
       )
-      .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data: any) => {
         data[0].datas.forEach((e: any) => {
           const item = {
@@ -191,7 +211,8 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onChangeCPU(event?: any) {
-    this.valueGSTIME = null;
+    this.valueGSCPU = event;
+    this.getMonitorData();
   }
   onChangeTIME(event?: any) {
     this.valueGSTIME = event;

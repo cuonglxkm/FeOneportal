@@ -255,7 +255,6 @@ export class EditScheduleBackupVmComponent implements OnInit {
     getListScheduleBackup() {
         this.formSearch.pageSize = 1000000
         this.formSearch.pageIndex = 1
-        this.formSearch.customerId = this.tokenService.get()?.userId
         this.scheduleService.search(this.formSearch).subscribe(data => {
             data.records?.forEach(item => {
                 if(!this.backupSchedule?.name.includes(item.name)) {

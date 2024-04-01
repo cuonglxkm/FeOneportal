@@ -72,7 +72,51 @@ import { PaymentSuccessComponent } from "../shared/components/payment-success/pa
 import { PaymentFailedComponent } from "../shared/components/payment-failed/payment-failed.component";
 import {OrderListComponent} from "./order/order-list/order-list.component";
 import {ListPaymentComponent} from "./billing/payment/list/list-payment.component";
-import { OperationHistoryComponent } from "./operation-history/operation-history.component";
+import {OrderDetailComponent} from "./order/order-detail/order-detail.component";
+import {RenewVolumeComponent} from "./volume/component/renew-volume/renew-volume.component";
+import {ExtendIpPublicComponent} from "./ip-public/extend-ip-public/extend-ip-public.component";
+import { SnapshotScheduleEditComponent } from "./snapshot-schedule/snapshot-schedule-edit/snapshot-schedule-edit.component";
+import {ListPackagesBackupComponent} from "./backup-package/list/list-packages-backup.component";
+import {CreatePackageBackupComponent} from "./backup-package/create/create-package-backup.component";
+import {DetailPackageBackupComponent} from "./backup-package/detail/detail-package-backup.component";
+import {EditBackupPackageComponent} from "./backup-package/edit/edit-backup-package.component";
+import {ExtendBackupPackageComponent} from "./backup-package/extend/extend-backup-package.component";
+import { PaymentSummaryComponent } from "../shared/components/payment-summary/payment-summary.component";
+import {CreateVolumeVpcComponent} from "./volume/component/create-volume-vpc/create-volume-vpc.component";
+import {ResizeVolumeVpcComponent} from "./volume/component/resize-volume-vpc/resize-volume-vpc.component";
+import {ListVlanComponent} from "./vlan/list/list-vlan.component";
+import {BlankVolumeComponent} from "./volume/component/blank/blank-volume.component";
+import {VlanDetailComponent} from "./vlan/detail/vlan-detail.component";
+import { RouterListComponent } from "./routers/router-list.component";
+import { RouterDetailComponent } from "./routers/router-detail/router-detail.component";
+import { CreateNetworkComponent } from './vlan/create/create-network/create-network.component';
+import { VlanCreateSubnetComponent } from './vlan/create/create-subnet/vlan-create-subnet.component';
+import { VlanEditSubnetComponent } from './vlan/edit/edit-subnet/vlan-edit-subnet.component';
+import { ListIpFloatingComponent } from './ip-floating/list-ip-floating.component';
+import {BucketDetailComponent} from "./bucket/bucket-detail/bucket-detail.component";
+import { BucketListComponent } from "./bucket/bucket-list.component";
+import { BucketCreateComponent } from "./bucket/bucket-create/bucket-create.component";
+import { BucketConfigureComponent } from "./bucket/bucket-configure/bucket-configure.component";
+import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { ExtendFileSystemComponent } from './file-storage/file-system/action/extend/extend-file-system.component';
+import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
+import { ListSubUserComponent } from './sub-user/list/list-sub-user.component';
+import { ListWanComponent } from './wan/list/list-wan.component';
+import { ListFileSystemComponent } from './file-storage/file-system/list/list-file-system.component';
+import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
+import { FileSystemSnapshotComponent } from "./file-system-snapshot/file-system-snapshot.component";
+import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component";
+import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
+import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
+import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
+import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
+import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
+import { ObjectStorageComponent } from "./object-storage/object-storage.component";
+import { ObjectStorageCreateComponent } from "./object-storage/object-storage-create/object-storage-create.component";
+import { ObjectStorageExtendComponent } from "./object-storage/object-storage-extend/object-storage-extend.component";
+import { ObjectStorageEditComponent } from "./object-storage/object-storage-edit/object-storage-edit.component";
+import {S3KeyComponent} from "./object-storage/s3-key/s3-key.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -89,7 +133,7 @@ const routes: Routes = [
     component: V1Component
   },
   {
-    path: 'volume',
+    path: 'volumes',
     component: VolumeComponent
   },
   {
@@ -125,8 +169,16 @@ const routes: Routes = [
     component: DetailIpPublicComponent
   },
   {
+    path: "ip-public/extend/:id",
+    component: ExtendIpPublicComponent
+  },
+  {
     path: 'security-group',
     component: SecurityGroupComponent
+  },
+  {
+    path: 'blank-security-group',
+    component: BlankSecurityGroupComponent
   },
   {
     path: 'create-security-group',
@@ -141,12 +193,8 @@ const routes: Routes = [
     component: CreateOutboundComponent
   },
   {
-    path: 'allow-address-pair',
+    path: 'instance/:instanceId/allow-address-pair/:portId',
     component: ListAllowAddressPairComponent
-  },
-  {
-    path: 'blank-security-group',
-    component: BlankSecurityGroupComponent
   },
   {
     path: 'action-history',
@@ -289,11 +337,15 @@ const routes: Routes = [
     component: SnapshotScheduleDetailComponent
   },
   {
+    path: 'schedule/snapshot/edit/:id',
+    component: SnapshotScheduleEditComponent
+  },
+  {
     path: 'billing/payments/detail/:id',
     component: PaymentDetailComponent
   },
   {
-    path: 'paymentSuccess',
+    path: 'billing/payments/success',
     component: PaymentSuccessComponent
   },
   {
@@ -309,9 +361,185 @@ const routes: Routes = [
     component: OrderListComponent
   },
   {
-    path: 'operation-history',
-    component: OperationHistoryComponent
-  }
+    path: 'order/detail/:id',
+    component: OrderDetailComponent
+  },
+  {
+    path: 'volumes/renew/:id',
+    component: RenewVolumeComponent
+  },
+  {
+    path: 'backup/packages',
+    component: ListPackagesBackupComponent
+  },
+  {
+    path: 'backup/packages/detail/:id',
+    component: DetailPackageBackupComponent
+  },
+  {
+    path: 'backup/packages/create',
+    component: CreatePackageBackupComponent
+  },
+  {
+    path: 'backup/packages/edit/:id',
+    component: EditBackupPackageComponent
+  },
+  {
+    path: 'backup/packages/extend/:id',
+    component: ExtendBackupPackageComponent
+  },
+  {
+    path: 'order/cart',
+    component: PaymentSummaryComponent
+  },
+  {
+    path: 'volume/vpc/create',
+    component: CreateVolumeVpcComponent
+  },
+  {
+    path: 'volume/vpc/resize/:id',
+    component: ResizeVolumeVpcComponent
+  },
+  {
+    path: 'volume/blank',
+    component: BlankVolumeComponent
+  },
+  {
+    path: 'vlan/network/list',
+    component: ListVlanComponent
+  },
+  {
+    path: 'vlan/network/detail/:id',
+    component: VlanDetailComponent
+  },
+  {
+    path: 'vpc',
+    loadChildren: () => import('../pages/vpc/vpc.module').then(m => m.VpcModule)
+  },
+  {
+    path: 'network/router',
+    component: RouterListComponent
+  },
+  {
+    path: 'network/router/detail/:id',
+    component: RouterDetailComponent
+  },
+  {
+    path: 'vlan/create/network',
+    component: CreateNetworkComponent
+  },
+  {
+    path: 'vlan/:id/create/subnet',
+    component: VlanCreateSubnetComponent
+  },
+  {
+    path: 'vlan/:id/network/edit/subnet/:subnetId',
+    component: VlanEditSubnetComponent
+  },
+  {
+    path:'networks/ip-floating/list',
+    component: ListIpFloatingComponent
+  },
+  {
+    path:'networks/ip-wan/list',
+    component: ListWanComponent
+  },
+  {
+    path: 'file-storage/file-system/create',
+    component: CreateFileSystemComponent
+  },
+  {
+    path: 'file-storage/file-system/list',
+    component: ListFileSystemComponent
+  },
+  {
+    path: 'file-storage/file-system/detail/:id',
+    component: DetailFileSystemComponent
+  },
+  {
+    path: 'file-storage/file-system/extend/:id',
+    component: ExtendFileSystemComponent
+  },
+  {
+    path: 'file-storage/file-system/:idFileSystem/access-rule/list',
+    component: ListAccessRuleComponent
+  },
+  {
+    path: 'object-storage/sub-user/list',
+    component: ListSubUserComponent
+  },
+  {
+    path: 'object-storage/sub-user/create',
+    component: CreateSubUserComponent
+  },
+  {
+    path: 'object-storage/dashboard',
+    component: DashboardObjectStorageComponent
+  },
+  {
+    path: 'networks/ip-floating/list',
+    component: ListIpFloatingComponent,
+  },
+  {
+    path: 'file-system-snapshot/list',
+    component: FileSystemSnapshotComponent,
+  },
+  {
+    path: 'file-system-snapshot/create',
+    component: CreateFileSystemSnapshotComponent,
+  },
+  {
+    path: 'file-system-snapshot/detail/:id',
+    component: FileSystemSnapshotDetailComponent,
+  },
+  {
+    path: 'file-system-snapshot-schedule/list',
+    component: FileSystemSnapshotScheduleComponent,
+  },
+  {
+    path: 'file-system-snapshot-schedule/create',
+    component: CreateFileSystemSnapshotScheduleComponent,
+  },
+  {
+    path: 'file-system-snapshot-schedule/edit/:id',
+    component: EditFileSystemSnapshotScheduleComponent,
+  },
+  {
+    path: 'object-storage/bucket',
+    component: BucketListComponent
+  },
+  {
+    path: 'object-storage/bucket/create',
+    component: BucketCreateComponent
+  },
+  {
+    path: 'object-storage/bucket/configure/:bucketName',
+    component: BucketConfigureComponent
+  },
+  {
+    path: 'object-storage',
+    component: ObjectStorageComponent
+  },
+  {
+    path: 'object-storage/create',
+    component: ObjectStorageCreateComponent
+  },
+  {
+    path: 'object-storage/extend',
+    component: ObjectStorageEditComponent
+  },
+  {
+    path: 'object-storage/edit/:id',
+    component: ObjectStorageEditComponent
+  },
+  {
+    path:'object-storage/bucket/:name',
+    component: BucketDetailComponent
+  },
+  {
+    path:'object-storage/s3-key',
+    component: S3KeyComponent
+  },
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],

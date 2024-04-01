@@ -33,7 +33,8 @@
                         formControlName="volumeToBackupIds"
                         [nzPlaceHolder]="'Volume gắn ngoài'"
                         nzMode="multiple"
-                        [nzShowSearch]="false">
+                        [nzShowSearch]="false"
+                        [nzLoading]="isLoading">
 
                   <nz-option
                           *ngFor="let i of volumeAttachments"
@@ -52,7 +53,8 @@
                         formControlName="securityGroupToBackupIds"
                         [nzPlaceHolder]="'Truy cập và bảo mật'"
                         [nzShowSearch]="false"
-                        nzMode="multiple">
+                        nzMode="multiple"
+                        [nzLoading]="isLoading">
                   <nz-option
                           *ngFor="let i of securityGroups"
                           [nzLabel]="i.name"
@@ -112,11 +114,11 @@
                 <nz-select
                         formControlName="backupPacketId" id="backupPacketId"
                         [nzPlaceHolder]="'Gói backup'"
-                        [nzShowSearch]="false">
-                  <nz-option
-                          *ngFor="let i of backupPackages"
-                          [nzLabel]="i.packageName"
-                          [nzValue]="i.id"/>
+                        [nzShowSearch]="false"
+                        [nzLoading]="isLoading">
+                  <nz-option *ngFor="let i of backupPackages"
+                             [nzLabel]="i.packageName"
+                             [nzValue]="i.id"/>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>

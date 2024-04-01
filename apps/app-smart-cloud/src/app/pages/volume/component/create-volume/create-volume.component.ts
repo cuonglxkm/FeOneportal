@@ -1,16 +1,21 @@
-import {Component, Inject, OnInit, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {GetAllVmModel} from "../../../../shared/models/volume.model";
+import {CreateVolumeRequestModel, GetAllVmModel} from "../../../../shared/models/volume.model";
 import {CreateVolumeDto, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
-import {NzMessageService} from "ng-zorro-antd/message";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {CreateVolumeRequestModel} from "../../../../shared/models/volume.model";
-import {HeaderVolumeComponent} from "../header-volume/header-volume.component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SnapshotVolumeService} from "../../../../shared/services/snapshot-volume.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
+import {NzNotificationService} from 'ng-zorro-antd/notification';
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {InstancesService} from "../../../instances/instances.service";
+import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../instances/instances.model";
+import {OrderItem} from 'src/app/shared/models/price';
+import {CatalogService} from "../../../../shared/services/catalog.service";
+import {ProjectService} from "../../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'app-create-volume',
@@ -18,6 +23,8 @@ import {ProjectModel} from "../../../../shared/models/project.model";
   styleUrls: ['./create-volume.component.less'],
 })
 export class CreateVolumeComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('region')).regionId;
+  project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoadingAction = false;
   getAllVmResponse: GetAllVmModel;
@@ -25,13 +32,13 @@ export class CreateVolumeComponent implements OnInit {
 
   volumeName = '';
   vmList: NzSelectOptionInterface[] = [];
-  expiryTimeList: NzSelectOptionInterface[] = [
-    {label: '1', value: 1},
-    {label: '3', value: 3},
-    {label: '6', value: 6},
-    {label: '9', value: 9},
-    {label: '12', value: 12},
-    {label: '24', value: 24},
+  expiryTimeList = [
+    {label: '1', value: '1'},
+    {label: '3', value: '3'},
+    {label: '6', value: '6'},
+    {label: '9', value: '9'},
+    {label: '12', value: '12'},
+    {label: '24', value: '24'},
   ];
   snapshotList: NzSelectOptionInterface[] = [];
 
@@ -90,7 +97,7 @@ export class CreateVolumeComponent implements OnInit {
   isInitSnapshot = false;
   snapshot: any;
   mota = '';
-  protected readonly onchange = onchange;
+
 
   //Phi Volume
   priceVolumeInfo: PriceVolumeDto = {
@@ -99,205 +106,472 @@ export class CreateVolumeComponent implements OnInit {
     tax: 0
   };
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService,
-              private snapshotvlService: SnapshotVolumeService, private activatedRoute: ActivatedRoute,
-              private nzMessage: NzMessageService, private router: Router) {
-  }
+  selectedValueRadio = 'hdd';
 
-  async ngOnInit(): Promise<void> {
-    this.activatedRoute.queryParams.subscribe(params => {
-      console.log(params);
-      const createdFromSnapshot = params['createdFromSnapshot'];
-      const idSnapshot = params['idSnapshot'];
-      const sizeSnapshot = params['sizeSnapshot'];
-      const typeSnapshot = params['typeSnapshot'];
+  validateForm: FormGroup<{
+    name: FormControl<string>
+    isSnapshot: FormControl<boolean>
+    snapshot: FormControl<number>
+    radio: FormControl<any>
+    instanceId: FormControl<number>
+    time: FormControl<number>
+    description: FormControl<string>
+    storage: FormControl<number>
+    isEncryption: FormControl<boolean>
+    isMultiAttach: FormControl<boolean>
+  }> = this.fb.group({
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
+    isSnapshot: [false, []],
+    snapshot: [null as number, []],
+    radio: [''],
+    instanceId: [null as number],
+    time: [1, Validators.required],
+    description: ['', Validators.maxLength(700)],
+    storage: [1, Validators.required],
+    isEncryption: [false],
+    isMultiAttach: [false],
+  });
 
-      if (createdFromSnapshot == 'true') {
-        this.isInitSnapshot = true;
-        this.createVolumeInfo.createFromSnapshotId = Number.parseInt(idSnapshot);
-        this.createVolumeInfo.volumeSize = Number.parseInt(sizeSnapshot);
-        this.createVolumeInfo.volumeType = typeSnapshot;
-      }
+  snapshotSelected: number
 
+  multipleVolume: boolean = false;
+
+  listInstances: InstancesModel[]
+
+  instanceSelected: number
+
+  timeSelected: any
+
+  date: Date
+
+  iops: number
+
+  nameList: string[] = []
+
+  typeVPC: number
+
+  typeMultiple: boolean
+  typeEncrypt: boolean
+
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private volumeService: VolumeService,
+              private snapshotvlService: SnapshotVolumeService,
+              private route: ActivatedRoute,
+              private notification: NzNotificationService,
+              private router: Router,
+              private fb: NonNullableFormBuilder,
+              private instanceService: InstancesService,
+              private cdr: ChangeDetectorRef,
+              private catalogService: CatalogService,
+              private projectService: ProjectService) {
+
+    this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
+      this.multipleVolume = value
+      this.validateForm.get('instanceId').reset()
     });
 
+    this.validateForm.get('storage').valueChanges.subscribe((value) => {
+      if ([1, 2].includes(this.region)) {
+        if (value < 20) return this.iops = 0
+        if (value <= 200) return this.iops = 600
+        if (value <= 500) return this.iops = 1200
+        if (value <= 1000) return this.iops = 3000
+        if (value <= 2000) return this.iops = 6000
+      }
+      if ([3, 4].includes(this.region)) {
+        if (value < 40) return this.iops = 400
+        this.iops = value * 10
+      }
+    });
   }
 
-  getPremiumVolume(volumeType: string, size: number, duration: number) {
-    this.showWarningVolumeType = false;
-    this.showWarningVolumeExpTime = false;
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return {duplicateName: true}; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
 
-    if (duration !== undefined && duration != null) {
-      this.endDateVolume = new Date(this.createDateVolume.getFullYear(), this.createDateVolume.getMonth()
-        + this.volumeExpiryTime, this.createDateVolume.getDate());
-      this.createVolumeInfo.createDate = this.createDateVolume.toISOString()
-      this.createVolumeInfo.expireDate = this.endDateVolume.toISOString();
-      if (volumeType !== undefined && volumeType != null && volumeType != ''
-        && size !== undefined && size != null) {
+  getCatalogOffer(productId) {
+    this.catalogService.getCatalogOffer(productId, this.region, null).subscribe(data => {
+      console.log('data catalog', data)
+      if (data) {
+        if (productId == 90) {
+          this.typeMultiple = true
+        }
+        if (productId == 92) {
+          this.typeEncrypt = true
+        }
+      } else {
+        this.typeMultiple = false
+        this.typeEncrypt = false
+      }
+    })
+  }
 
-
-        this.volumeSevice.getPremium(volumeType, size, duration).subscribe(data => {
-          if (data != null) {
-            this.nzMessage.create('success', 'Phí đã được cập nhật.')
-            this.priceVolumeInfo = data;
+  getListVolumes() {
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region,
+      9999, 1, null, null)
+      .subscribe(data => {
+        data.records.forEach(item => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name)
+          } else {
+            this.nameList = [item.name]
           }
         })
-      }
-    }
-
-
-  }
-  checkDisableCreate(): boolean{
-    return this.createVolumeInfo.serviceName == null || this.createVolumeInfo.volumeType == null || this.createVolumeInfo.expireDate == null;
+      }, error => {
+        this.nameList = null
+      })
   }
 
-  createNewVolume() {
+  isFirstMounting: boolean = false
+  regionChanged(region: RegionModel) {
+        this.router.navigate(['/app-smart-cloud/volumes'])
+  }
 
-    if (this.validateData()) {
+  projectChanged(project: ProjectModel)  {
+    this.project = project.id
 
-      this.createVolumeInfo.customerId = this.tokenService.get()?.userId;
-      const userString = localStorage.getItem('user');
-      const user = JSON.parse(userString);
-      this.createVolumeInfo.actorEmail = user.email;
-      this.createVolumeInfo.userEmail = user.email;
-      if (this.createVolumeInfo.volumeType == 'hdd') {
-        this.createVolumeInfo.offerId = 2;
-      }
-      if (this.createVolumeInfo.volumeType == 'ssd') {
-        this.createVolumeInfo.offerId = 156;
-      }
-      this.doCreateVolume();
-      console.log(this.createVolumeInfo);
+    this.getListSnapshot()
+    this.getListInstance()
+    this.getCatalogOffer(90)
+    this.getCatalogOffer(92)
+
+    this.getListVolumes()
+    //
+  }
+
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
+
+  onSwitchSnapshot() {
+    this.isInitSnapshot = this.validateForm.controls.isSnapshot.value
+    console.log('snap shot', this.isInitSnapshot)
+  }
+
+  snapshotSelectedChange(value: number) {
+    this.snapshotSelected = value
+  }
+
+  onChangeStatus() {
+    console.log('Selected option changed:', this.selectedValueRadio);
+  }
+
+  //get danh sách máy ảo
+  getListInstance() {
+    this.instanceService.search(1, 9999, this.region, this.project,
+      '', '', false, this.tokenService.get()?.userId)
+      .subscribe(data => {
+        this.listInstances = data.records
+        this.cdr.detectChanges()
+      })
+  }
+
+  instanceSelectedChange(value: any) {
+    this.instanceSelected = value
+  }
+
+  timeSelectedChange(value) {
+    this.timeSelected = value
+    console.log(this.timeSelected)
+    this.getTotalAmount()
+  }
+
+  goBack(): void {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+  }
+
+  volumeCreate: VolumeCreate = new VolumeCreate();
+
+  volumeInit() {
+    this.volumeCreate.volumeType = this.selectedValueRadio;
+    this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
+    this.volumeCreate.description = this.validateForm.get('description').value;
+    if (this.validateForm.controls.isSnapshot.value == true) {
+      this.volumeCreate.createFromSnapshotId = this.validateForm.controls.snapshot.value;
     } else {
-
+      this.volumeCreate.createFromSnapshotId = null
     }
+
+    this.volumeCreate.instanceToAttachId = this.validateForm.controls.instanceId.value;
+    this.volumeCreate.isMultiAttach = this.validateForm.controls.isMultiAttach.value;
+    this.volumeCreate.isEncryption = this.validateForm.controls.isEncryption.value;
+    this.volumeCreate.vpcId = this.project.toString();
+    this.volumeCreate.oneSMEAddonId = null;
+    this.volumeCreate.serviceType = 2;
+    this.volumeCreate.serviceInstanceId = 0;
+    this.volumeCreate.customerId = this.tokenService.get()?.userId;
+
+    let currentDate = new Date();
+    let lastDate = new Date();
+    if (this.timeSelected == undefined || this.timeSelected == null) {
+      lastDate.setDate(currentDate.getDate() + 30);
+    } else {
+      lastDate.setDate(currentDate.getDate() + this.timeSelected * 30);
+    }
+    this.volumeCreate.createDate = currentDate?.toISOString().substring(0, 19);
+    this.volumeCreate.expireDate = lastDate?.toISOString().substring(0, 19);
+
+    this.volumeCreate.saleDept = null;
+    this.volumeCreate.saleDeptCode = null;
+    this.volumeCreate.contactPersonEmail = null;
+    this.volumeCreate.contactPersonPhone = null;
+    this.volumeCreate.contactPersonName = null;
+    this.volumeCreate.note = null;
+    this.volumeCreate.createDateInContract = null;
+    this.volumeCreate.am = null;
+    this.volumeCreate.amManager = null;
+    this.volumeCreate.isTrial = false;
+    // this.volumeCreate.offerId =
+    //     this.volumeCreate.volumeType == 'hdd' ? 2 : 156;
+    this.volumeCreate.couponCode = null;
+    this.volumeCreate.dhsxkd_SubscriptionId = null;
+    this.volumeCreate.dSubscriptionNumber = null;
+    this.volumeCreate.dSubscriptionType = null;
+    this.volumeCreate.oneSME_SubscriptionId = null;
+    this.volumeCreate.actionType = 0;
+    this.volumeCreate.regionId = this.region;
+    this.volumeCreate.serviceName = this.validateForm.get('name').value
+    this.volumeCreate.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
+    this.volumeCreate.userEmail = this.tokenService.get()?.email;
+    this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
 
-  doCreateVolume() {
-    this.isLoadingAction = true;
+  totalAmountVolume = 0;
+  totalAmountVolumeVAT = 0;
+  orderItem: OrderItem = new OrderItem()
+  unitPrice = 0
+
+  changeValueInput() {
+    console.log('total amount')
+    this.getTotalAmount()
+  }
+
+  navigateToPaymentSummary() {
+    // this.getTotalAmount()
+    this.volumeInit()
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
-    request.customerId = this.createVolumeInfo.customerId;
-    request.createdByUserId = this.createVolumeInfo.customerId;
+    request.customerId = this.volumeCreate.customerId;
+    request.createdByUserId = this.volumeCreate.customerId;
     request.note = 'tạo volume';
     request.orderItems = [
       {
         orderItemQuantity: 1,
-        specification: JSON.stringify(this.createVolumeInfo),
+        specification: JSON.stringify(this.volumeCreate),
         specificationType: 'volume_create',
-        price: this.priceVolumeInfo.price,
-        serviceDuration: this.volumeExpiryTime
+        price: this.unitPrice,
+        serviceDuration: this.validateForm.controls.time.value
       }
     ]
-    console.log(request);
-    this.volumeSevice.createNewVolume(request).subscribe(data => {
-      if (data != null) {
-        this.isLoadingAction = false;
-        this.nzMessage.create('success', 'Tạo Volume thành công.')
-        console.log(data);
-        this.router.navigate(['/app-smart-cloud/volume']);
-      }else{
-        this.isLoadingAction = false;
+    var returnPath: string = '/app-smart-cloud/volume/create'
+    console.log('request', request)
+    console.log('service name', this.volumeCreate.serviceName)
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+  }
+
+  getTotalAmount() {
+    this.volumeInit()
+
+    console.log('time', this.timeSelected)
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.volumeCreate);
+    itemPayment.specificationType = 'volume_create';
+    itemPayment.serviceDuration = this.validateForm.get('time').value;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.project;
+    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien volume', result.data);
+      this.orderItem = result.data
+      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
+
+    });
+  }
+
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
       }
-    },
+    });
+  }
+
+  ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // this.customerId = this.tokenService.get()?.userId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
+
+    if ([1, 2].includes(this.region)) {
+      if (this.validateForm.controls.storage.value < 20) this.iops = 0
+    }
+    if ([3, 4].includes(this.region)) {
+      if (this.validateForm.controls.storage.value < 20) this.iops = 400
+    }
+
+    this.getListSnapshot()
+    this.getListInstance()
+    this.getCatalogOffer(90)
+    this.getCatalogOffer(92)
+
+    this.getListVolumes()
+
+    this.date = new Date()
+    this.getTotalAmount()
+  }
+
+  submitForm() {
+    this.nameList = []
+    if (this.validateForm.valid) {
+      console.log(this.validateForm.value);
+      this.doCreateVolume()
+    } else {
+      this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
+    }
+  }
+
+  //
+  doCreateVolume() {
+    this.isLoadingAction = true;
+    this.getTotalAmount()
+    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
+    request.customerId = this.volumeCreate.customerId;
+    request.createdByUserId = this.volumeCreate.customerId;
+    request.note = 'tạo volume';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.volumeCreate),
+        specificationType: 'volume_create',
+        price: this.orderItem?.totalPayment?.amount,
+        serviceDuration: this.validateForm.controls.time.value
+      }
+    ]
+
+    console.log(request);
+    this.volumeService.createNewVolume(request).subscribe(data => {
+        if (data != null) {
+          //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
+          if (data.code == 200) {
+            this.isLoadingAction = false;
+            this.notification.success('Thành công', 'Yêu cầu tạo Volume thành công.')
+            this.router.navigate(['/app-smart-cloud/volumes']);
+          }
+          //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
+          else if (data.code == 310) {
+            this.isLoadingAction = false;
+            // this.router.navigate([data.data]);
+            window.location.href = data.data;
+          }
+        } else {
+          this.isLoadingAction = false;
+        }
+      },
       error => {
         this.isLoadingAction = false;
       })
-    // this.router.navigate(['/app-smart-cloud/volume']);
   }
 
 
-  validateData(): boolean {
-
-    if (!this.createVolumeInfo.serviceName) {
-      this.nzMessage.create('error', 'Tên Volume không được để trống.');
-      this.showWarningVolumeName = true;
-      return false;
-    }
-    if (!this.createVolumeInfo.volumeType) {
-      this.nzMessage.create('error', 'Cần chọn loại Volume.');
-      this.showWarningVolumeType = true;
-      return false;
-    }
-    if (!this.volumeExpiryTime) {
-      this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
-      this.showWarningVolumeExpTime = true;
-      return false;
-    }
-    if (!this.createVolumeInfo.regionId) {
-      this.nzMessage.create('error', 'Cần chọn khu vực.');
-      return false;
-    }
-    if (!this.createVolumeInfo.vpcId) {
-      this.nzMessage.create('error', 'Cần chọn dự án.');
-      return false;
-    }
-
-    return true;
-  }
-
-  changeVolumeName() {
-    this.createVolumeInfo.serviceName = this.createVolumeInfo.serviceName.trim();
-    if(this.checkSpecialSnapshotName(this.createVolumeInfo.serviceName)){
-      this.showWarningVolumeName = true;
-      this.contentShowWarningVolumeName = 'Tên Volume không được chứa ký tự đặc biệt.';
-    }else if(this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == ''){
-      this.showWarningVolumeName = true;
-      this.contentShowWarningVolumeName = 'Tên Volume không được để trống';
-    }else{
-      this.showWarningVolumeName = false;
-      this.contentShowWarningVolumeName = '';
-    }
-
-  }
-
-
-  checkSpecialSnapshotName( str: string): boolean{
-    //check ký tự đặc biệt
-    const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    return specialCharacters.test(str);
-  }
-
-  loadSnapshotVolumeInfo(event: any) {
-    this.isLoadingAction = true
-    this.snapshotvlService.getSnapshotVolummeById(event).subscribe(
-      (data) => {
-
-        this.createVolumeInfo.volumeSize = data.sizeInGB;
-        this.createVolumeInfo.createFromSnapshotId = Number.parseInt(event);
-        this.createVolumeInfo.volumeType = data.iops > 0 ? 'hdd' : 'ssd';
-        this.isLoadingAction = false;
-      },
-      (error) => {
-        this.nzMessage.create('error', 'Lấy thông tin snapshot không thành công.')
-        this.isLoadingAction = false;
-      }
-  )
-  }
-
-  getProjectId(project: ProjectModel) {
-    this.createVolumeInfo.vpcId = project.id;
-    this.getListSnapshot();
-  }
-
-  async getRegionId(region: RegionModel) {
-    this.createVolumeInfo.regionId = region.regionId;
-    this.getListSnapshot()
-    this.getListVm()
-  }
-
-  selectEncryptionVolume(value: any) {
-    if (value) {
-      this.createVolumeInfo.isMultiAttach = !value;
-    }
-
-  }
-
-  selectMultiAttachVolume(value: any) {
-    if (value) {
-      this.createVolumeInfo.isEncryption = !value;
-    }
-  }
-
+  //
+  //
+  // validateData(): boolean {
+  //   if (!this.createVolumeInfo.serviceName) {
+  //     this.nzMessage.create('error', 'Tên Volume không được để trống.');
+  //     this.showWarningVolumeName = true;
+  //     return false;
+  //   }
+  //   if (!this.createVolumeInfo.volumeType) {
+  //     this.nzMessage.create('error', 'Cần chọn loại Volume.');
+  //     this.showWarningVolumeType = true;
+  //     return false;
+  //   }
+  //   if (!this.volumeExpiryTime) {
+  //     this.nzMessage.create('error', 'Cần chọn thời gian sử dụng.');
+  //     this.showWarningVolumeExpTime = true;
+  //     return false;
+  //   }
+  //   if (!this.createVolumeInfo.regionId) {
+  //     this.nzMessage.create('error', 'Cần chọn khu vực.');
+  //     return false;
+  //   }
+  //   if (!this.createVolumeInfo.vpcId) {
+  //     this.nzMessage.create('error', 'Cần chọn dự án.');
+  //     return false;
+  //   }
+  //
+  //   return true;
+  // }
+  //
+  // changeVolumeName() {
+  //   this.createVolumeInfo.serviceName = this.createVolumeInfo.serviceName.trim();
+  //   if(this.checkSpecialSnapshotName(this.createVolumeInfo.serviceName)){
+  //     this.showWarningVolumeName = true;
+  //     this.contentShowWarningVolumeName = 'Tên Volume không được chứa ký tự đặc biệt.';
+  //   }else if(this.createVolumeInfo.serviceName === null || this.createVolumeInfo.serviceName == ''){
+  //     this.showWarningVolumeName = true;
+  //     this.contentShowWarningVolumeName = 'Tên Volume không được để trống';
+  //   }else{
+  //     this.showWarningVolumeName = false;
+  //     this.contentShowWarningVolumeName = '';
+  //   }
+  //
+  // }
+  //
+  // checkSpecialSnapshotName( str: string): boolean{
+  //   //check ký tự đặc biệt
+  //   const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+  //   return specialCharacters.test(str);
+  // }
+  //
+  // loadSnapshotVolumeInfo(event: any) {
+  //   this.isLoadingAction = true
+  //   this.snapshotvlService.getSnapshotVolumeById(event).subscribe(
+  //     (data) => {
+  //       this.createVolumeInfo.volumeSize = data.sizeInGB;
+  //       this.createVolumeInfo.createFromSnapshotId = Number.parseInt(event);
+  //       this.createVolumeInfo.volumeType = data.iops > 0 ? 'hdd' : 'ssd';
+  //       this.isLoadingAction = false;
+  //     })
+  // }
+  //
+  // getProjectId(project: ProjectModel) {
+  //   this.createVolumeInfo.vpcId = project.id;
+  //   this.getListSnapshot();
+  // }
+  //
+  // async getRegionId(region: RegionModel) {
+  //   this.createVolumeInfo.regionId = region.regionId;
+  //   this.getListSnapshot()
+  //   this.getListVm()
+  // }
+  //
+  // selectEncryptionVolume(value: any) {
+  //   if (value) {
+  //     this.createVolumeInfo.isMultiAttach = !value;
+  //   }
+  //
+  // }
+  //
+  // selectMultiAttachVolume(value: any) {
+  //   if (value) {
+  //     this.createVolumeInfo.isEncryption = !value;
+  //   }
+  // }
+  //
   private getListSnapshot() {
     this.isLoadingAction = true;
     this.snapshotList = [];
@@ -307,18 +581,6 @@ export class CreateVolumeComponent implements OnInit {
       data.records.forEach(snapshot => {
         this.snapshotList.push({label: snapshot.name, value: snapshot.id});
       })
-      this.isLoadingAction = false;
-    });
-  }
-
-  private getListVm() {
-    this.isLoadingAction = true;
-    this.vmList = [];
-    let userId = this.tokenService.get()?.userId;
-    this.volumeSevice.getListVM(userId, this.createVolumeInfo.regionId).subscribe(data => {
-      data.records.forEach(vm => {
-        this.vmList.push({value: vm.id, label: vm.name});
-      });
       this.isLoadingAction = false;
     });
   }

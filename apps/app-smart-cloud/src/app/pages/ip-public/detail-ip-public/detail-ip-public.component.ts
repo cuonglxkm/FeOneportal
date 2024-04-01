@@ -9,6 +9,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {IpPublicModel} from "../../../shared/models/ip-public.model";
+import {RegionModel} from "../../../shared/models/region.model";
+import {ProjectModel} from "../../../shared/models/project.model";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-detail-ip-public',
@@ -33,10 +36,16 @@ export class DetailIpPublicComponent {
 
   isLoading: boolean = false;
 
+  projectId: any;
+
+  regionId: any;
+
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
-
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
   }
 
   private getIPPublicById(id: string) {
@@ -66,7 +75,7 @@ export class DetailIpPublicComponent {
           label: 'Đồng ý',
           type: 'primary',
           onClick: () => {
-            this.doExtendVolume();
+            this.router.navigate(['/app-smart-cloud/ip-public/extend/' + this.ipInfo.id]);
             modal.destroy()
           }
         }
@@ -93,4 +102,18 @@ export class DetailIpPublicComponent {
     this.volumeStatus.set('ERROR', 'Lỗi');
     this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
   }
+
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
+  projectChange(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.projectId = project.id;
+  }
+
+  backToList() {
+    this.router.navigate(['/app-smart-cloud/ip-public']);
+  }
+
 }

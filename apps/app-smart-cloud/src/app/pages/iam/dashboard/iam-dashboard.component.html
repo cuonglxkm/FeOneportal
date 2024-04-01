@@ -1,26 +1,4 @@
-<!--<page-header [autoBreadcrumb]="false" [autoTitle]="false" style="background: #fff;">-->
-<!--    <nz-col nzSpan="24" style="display: flex; flex-direction: column;">-->
-<!--        <nz-row nzJustify="space-between" nzAlign="middle">-->
-<!--            <nz-breadcrumb nz-page-header-breadcrumb>-->
-<!--                <nz-breadcrumb-item>Home</nz-breadcrumb-item>-->
-<!--                <nz-breadcrumb-item>-->
-<!--                    IAM-->
-<!--                </nz-breadcrumb-item>-->
-<!--                <nz-breadcrumb-item>-->
-<!--                    <a routerLink="/app-smart-cloud/iam/dashboard">IAM Dashboard</a>-->
-<!--                </nz-breadcrumb-item>-->
-<!--            </nz-breadcrumb>-->
-<!--            <nz-space>-->
-<!--                <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
-<!--                <project-select-dropdown (valueChanged)="projectChanged($event)"-->
-<!--                                         [regionId]="region"></project-select-dropdown>-->
-<!--            </nz-space>-->
-<!--        </nz-row>-->
-<!--      <h3>IAM Dashboard</h3>-->
-<!--    </nz-col>-->
-<!--</page-header>-->
 <page-header [breadcrumb]="breadcrumb"
-             [action]="action"
              [title]="'IAM Dashboard'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -35,13 +13,13 @@
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
-    </div>
-  </ng-template>
+<!--  <ng-template #action>-->
+<!--    <div class="alain-custom-action text-right">-->
+<!--      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>-->
+<!--      <project-select-dropdown (valueChanged)="projectChanged($event)"-->
+<!--                               [regionId]="region"></project-select-dropdown>-->
+<!--    </div>-->
+<!--  </ng-template>-->
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="loading">

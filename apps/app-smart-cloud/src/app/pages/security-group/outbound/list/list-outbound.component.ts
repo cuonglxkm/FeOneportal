@@ -18,13 +18,13 @@ export class ListOutboundComponent implements OnInit{
   @Input() projectId: number
 
   title: string = 'Xác nhận xóa Outbound';
-  content: string = 'Bạn có chắc chăn muốn xóa Outbound';
+  content: string = 'Quý khách chắc chắn muốn xóa dịch vụ này?';
 
   collection: Pagination<SecurityGroupRule>;
   condition = new RuleSearchCondition()
   isVisible = false;
   isLoading = false;
-  pageSize: number = 20
+  pageSize: number = 5
   pageNumber: number = 1
 
   constructor(
@@ -53,7 +53,7 @@ export class ListOutboundComponent implements OnInit{
         records: [],
         currentPage: 1,
         totalCount: 0,
-        pageSize: 20
+        pageSize: 10
       }
       this.isLoading = false
       return;
@@ -83,11 +83,14 @@ export class ListOutboundComponent implements OnInit{
     this.isVisible = false;
   }
 
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const {pageSize, pageIndex} = params
-    this.pageSize = pageSize;
-    this.pageNumber = pageIndex
-    this.getRule()
+  onPageSizeChange(event: any) {
+    this.pageSize = event
+    this.getRule();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageNumber = event;
+    this.getRule();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

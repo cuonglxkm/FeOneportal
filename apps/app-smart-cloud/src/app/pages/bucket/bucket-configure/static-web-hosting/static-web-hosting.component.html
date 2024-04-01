@@ -1,0 +1,132 @@
+<span class="titlecard-custom">Thiết lập Static Web Hosting</span>
+<div style="margin-top: 10px" class="text-label">
+  <span>Cấu hình Bucket hoạt động như một WebServer dành cho Website tĩnh</span
+  ><br /><br />
+  <span
+    >Trên bucket chỉ chứa các dữ liệu tĩnh của website: HTML, CSS, JS,
+    ảnh...</span
+  >
+</div>
+<nz-radio-group
+  style="width: 100%; margin-top: 10px"
+  [(ngModel)]="bucketDetail.isWebsite"
+>
+  <nz-row>
+    <nz-col nzSpan="12">
+      <label class="text-value" nz-radio [nzValue]="true">Bật</label>
+    </nz-col>
+    <nz-col nzSpan="12">
+      <label class="text-value" nz-radio [nzValue]="false">Tắt</label>
+    </nz-col>
+  </nz-row>
+</nz-radio-group>
+<nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
+  ><nz-col nzSpan="12">
+    <div style="margin-top: 16px">
+      File chứa nội dung hiển thị trang chủ của website có link là Endpoint bên
+      dưới
+    </div>
+    <div style="margin-top: 16px">Ví dụ: index.html</div>
+  </nz-col>
+  <nz-col nzSpan="12">
+    <div style="margin-top: 16px">
+      File chứa nội dung hiển thị lỗi của website
+    </div>
+    <div style="margin-top: 16px">Ví dụ: error.html</div>
+  </nz-col>
+</nz-row>
+<div *ngIf="bucketDetail.isWebsite" style="margin-top: 16px; color: #eb1414">
+  Lưu ý: Để website hoạt động hãy đảm bảo file đã được public
+</div>
+<nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
+  ><nz-col nzSpan="12">
+    <input
+      style="margin-top: 16px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="bucketDetail.indexDocumentSuffix"
+      placeholder="index.html"
+      (change)="
+        bucketDetail.indexDocumentSuffix =
+          bucketDetail.indexDocumentSuffix.trim()
+      "
+    />
+    <label
+      class="text-label"
+      style="margin-top: 16px"
+      nz-checkbox
+      [(ngModel)]="bucketDetail.checkRedirectAllRequests"
+      [ngModelOptions]="{ standalone: true }"
+      >Chuyển hướng đến một địa chỉ web khác</label
+    >
+    <input
+      style="margin-top: 16px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="bucketDetail.redirectAllRequestsTo"
+      placeholder="http://www.example.com"
+      (change)="
+        bucketDetail.redirectAllRequestsTo =
+          bucketDetail.redirectAllRequestsTo.trim()
+      "
+      [disabled]="!bucketDetail.checkRedirectAllRequests"
+    />
+    <div style="margin-top: 16px" class="text-label">
+      Endpoint
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="message-question"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+    </div>
+    <nz-input-group
+      style="margin-right: 8px; width: 100%; border-radius: 8px"
+      [nzSuffix]="suffixIcon"
+      nzSize="large"
+    >
+      <input
+        nz-input
+        [ngModel]="bucketDetail.linkS3Website"
+        [readonly]="true"
+      />
+    </nz-input-group>
+    <ng-template #suffixIcon>
+      <img
+        src="assets/imgs/ph_copy.svg"
+        alt=""
+        style="cursor: pointer"
+        nz-tooltip="Copy"
+        (click)="copyText(bucketDetail.linkS3Website)"
+      />
+    </ng-template>
+  </nz-col>
+  <nz-col nzSpan="12">
+    <input
+      style="margin-top: 16px"
+      class="input-custom"
+      nz-input
+      [(ngModel)]="bucketDetail.errorDocument"
+      placeholder="error.html"
+      (change)="bucketDetail.errorDocument = bucketDetail.errorDocument.trim()"
+    />
+  </nz-col>
+</nz-row>
+
+<div style="float: right">
+  <button nz-button (click)="cancel()">
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/cancel.svg"
+      alt=""
+    />Hủy
+  </button>
+  <button nz-button nzType="primary" (click)="update()">
+    <img
+      style="padding-right: 10px; margin-top: -4px"
+      src="assets/imgs/confirm.svg"
+      alt=""
+    />
+    Cập nhật
+  </button>
+</div>

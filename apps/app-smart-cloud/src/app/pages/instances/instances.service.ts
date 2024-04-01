@@ -1,7 +1,7 @@
-import { Inject, Injectable} from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { Flavors, Images, InstancesModel } from './instances.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
@@ -12,7 +12,7 @@ export class InstancesService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-        'user_root_id': this.tokenService.get()?.userId,
+      user_root_id: this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -23,15 +23,12 @@ export class InstancesService extends BaseService {
   ) {
     super();
   }
+
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
-  postAction(id: number, data: any): Observable<any> {
-    //let url_ = `/images?show=${show}&region=${region}&type=${type}&customerId=${customerId}`;
-    let url_ = `/instances/${id}/action`;
-    url_ = url_.replace(/[?&]$/, '');
-    // const _body = JSON.stringify(data)
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
+  postAction(data: any) {
+    return this.http.post(
+      this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
+      data, { responseType: 'text' }
     );
   }
 
@@ -108,20 +105,6 @@ export class InstancesService extends BaseService {
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
-  getAllImage(
-    show: any,
-    region: any,
-    type: any,
-    customerId: any
-  ): Observable<Images[]> {
-    let url_ = `/images?region=${region}&type=${type}&customerId=${customerId}`;
-    // let url_ = `/images?region=${region}`;
-    url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<Images[]>(
-      this.baseUrl + this.ENDPOINT.provisions + url_
-    );
-  }
-
   getAllImageType(): Observable<{}> {
     let url_ = `/images/imageTypes`;
     url_ = url_.replace(/[?&]$/, '');
@@ -159,11 +142,13 @@ export class InstancesService extends BaseService {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
   }
 
-  getById(id: number, checkState: boolean = false): Observable<any> {
+  getById(id: number, checkState: boolean = true): Observable<any> {
     let url_ = `/instances/${id}?checkState=${checkState}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {headers: this.httpOptions.headers});
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+    });
   }
 
   delete(id: number): Observable<any> {
@@ -175,10 +160,8 @@ export class InstancesService extends BaseService {
   }
 
   create(data: any): Observable<any> {
-    let url_ = ``;
-    url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.orders + url_,
+      this.baseUrl + this.ENDPOINT.orders,
       data,
       this.httpOptions
     );
@@ -253,6 +236,37 @@ export class InstancesService extends BaseService {
     return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data
+    );
+  }
+
+  getListOffers(regionId: number, unitOfMeasure: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
+    );
+  }
+
+  getTotalAmount(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
+
+  getListOffersByProductId(productId: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}`
+    );
+  }
+
+  getDetailProductByUniqueName(name: string): Observable<any> {
+    return this.http.get<any>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/products?uniqueName=${name}`
     );
   }
 }

@@ -1,10 +1,11 @@
-<nz-modal [(nzVisible)]="isVisible" [nzWidth]="560" nzTitle="Custom Modal Title"
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzCentered>
     <div *nzModalTitle>
         <p class="text-confirm-title">{{ title }}</p>
     </div>
-    <div *nzModalContent>
+    <div *nzModalContent style="display: flex; flex-direction: column; align-items: center;">
         <p class="text-confirm-content">{{ content }} </p>
+        <p class="text-alert-content">Vui lòng cân nhắc thật kỹ trước khi click nút Đồng ý. </p>
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy bỏ</button>

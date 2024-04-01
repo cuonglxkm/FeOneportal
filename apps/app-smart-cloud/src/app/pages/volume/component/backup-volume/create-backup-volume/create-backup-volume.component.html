@@ -9,7 +9,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -55,7 +55,18 @@
         </nz-select>
       </td>
     </nz-table>
-    <button (click)="backToList()" nz-button style="background-color: darkgray; color: white; margin: 60px 3% 0 80%;">Quay lại</button>
-    <button (click)="createBackup()" [disabled]="form.invalid" nz-button nzType="primary">Xác nhận</button>
+    <nz-form-item nzAlign="bottom" nzJustify="end">
+      <nz-space nzSize="large">
+        <button *nzSpaceItem nz-button nzType="default" class="button-cancel" (click)="backToList()">
+          <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+        <nz-form-control *nzSpaceItem>
+          <button nz-button nzType="primary" [disabled]="form.invalid"
+                  class="button-ok" (click)="createBackup()">
+            <span nz-icon nzType="check" nzTheme="outline" ></span>Tạo mới</button>
+        </nz-form-control>
+      </nz-space>
+    </nz-form-item>
+<!--    <button (click)="backToList()" nz-button style="background-color: darkgray; color: white; margin: 60px 3% 0 80%;">Quay lại</button>-->
+<!--    <button (click)="createBackup()" [disabled]="form.invalid" nz-button nzType="primary">Xác nhận</button>-->
   </form>
 </nz-card>

@@ -2,10 +2,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import {
@@ -19,6 +21,8 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { Router } from '@angular/router';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'one-portal-attach-permission-policy',
@@ -34,16 +38,15 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
   listOfGroups: UserGroup[] = [];
   listOfUsers: User[] = [];
-  listOfpolicies: PermissionPolicies[] = [];
+  listOfPolicies: PermissionPolicies[] = [];
   pageIndex = 1;
   pageSize = 10;
-  total: number = 3;
-  id: any;
   searchParam: string;
   loading = true;
   typePolicy: string = '';
-  checkedAllInPage = false;
-  listCheckedInPage = [];
+  groupNames: string[] = [];
+  policyNames = new Set<string>();
+  cardHeight: string = '130px';
 
   filterStatus = [
     { text: 'Tất cả các loại', value: '' },
@@ -61,23 +64,52 @@ export class AttachPermissionPolicyComponent implements OnInit {
     private policyService: PolicyService,
     public message: NzMessageService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver,
+    private clipboardService: ClipboardService
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
   }
 
   ngOnInit(): void {
-    console.log('isCreate', this.isCreate);
-    console.log('userName', this.userName);
-    this.service.model.subscribe((data) => {
-      console.log(data);
-    });
-    this.getGroup();
-  }
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((result) => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          // Màn hình cỡ nhỏ
+          this.cardHeight = '110px';
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          // Màn hình cỡ nhỏ - trung bình
+          this.cardHeight = '190px';
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          // Màn hình trung bình
+          this.cardHeight = '190px';
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          // Màn hình lớn
+          this.cardHeight = '170px';
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          // Màn hình rất lớn
+          this.cardHeight = '130px';
+        }
 
-  changeSearch(e: any): void {
-    this.searchParam = e;
+        // Cập nhật chiều cao của card bằng Renderer2
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'height',
+          this.cardHeight
+        );
+      });
+
+    this.getGroup();
   }
 
   // Dùng để truyền dữ liệu khi có thay đổi
@@ -87,10 +119,11 @@ export class AttachPermissionPolicyComponent implements OnInit {
   }
 
   resetDataPicked(): void {
+    this.mapOfCheckedGroup.clear();
+    this.mapOfCheckedUser.clear();
+    this.setOfCheckedPolicy.clear();
     this.groupNames = [];
     this.policyNames.clear();
-    this.listCheckedInPage = [];
-    this.checkedAllInPage = false;
     this.emitData();
   }
 
@@ -107,50 +140,60 @@ export class AttachPermissionPolicyComponent implements OnInit {
     this.activeBlockAddUsertoGroup = true;
     this.activeBlockCopyPolicies = false;
     this.activeBlockAttachPolicies = false;
+    this.resetDataPicked();
     this.resetParams();
     this.getGroup();
-    this.listGroupPicked = [];
   }
   initCopyPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
     this.activeBlockCopyPolicies = true;
     this.activeBlockAttachPolicies = false;
+    this.resetDataPicked();
     this.resetParams();
     this.getCopyUserPlicies();
-    this.listUserPicked = [];
   }
   initAttachPolicies(): void {
     this.activeBlockAddUsertoGroup = false;
     this.activeBlockCopyPolicies = false;
     this.activeBlockAttachPolicies = true;
+    this.resetDataPicked();
     this.resetParams();
     this.getPermissionPolicies();
   }
 
-  // xử lý tập các quyền khi chọn
-  handlePolicyNames(listPicked: any[]) {
-    this.policyNames.clear();
-    listPicked.forEach((e) => {
-      e.userPolicies.forEach((element) => {
-        this.policyNames.add(element);
+  // xử lý tập các lựa chọn tạo user
+  handleDataPicked() {
+    if (this.activeBlockAddUsertoGroup) {
+      this.groupNames = Array.from(this.mapOfCheckedGroup.keys());
+      this.policyNames.clear();
+      this.mapOfCheckedGroup.forEach((e) => {
+        e.forEach((item) => {
+          this.policyNames.add(item);
+        });
       });
-    });
-  }
-
-  // Kiểm tra xem có chọn tất cả không
-  checkPickAll(listPicked: any[], listCurrent: any[]): void {
-    if (listPicked.length == listCurrent.length) {
-      this.checkedAllInPage = true;
-    } else {
-      this.checkedAllInPage = false;
+      this.emitData();
+    }
+    if (this.activeBlockCopyPolicies) {
+      this.groupNames = [];
+      this.policyNames.clear();
+      this.mapOfCheckedUser.forEach((e) => {
+        e.forEach((item) => {
+          this.policyNames.add(item);
+        });
+      });
+      this.emitData();
+    }
+    if (this.activeBlockAttachPolicies) {
+      this.groupNames = [];
+      this.policyNames = this.setOfCheckedPolicy;
+      this.emitData();
     }
   }
 
   // Danh sách Groups
+  totalGroup = 0;
   getGroup(): void {
     this.loading = true;
-    this.resetDataPicked();
-    this.listGroupPicked = [];
     this.service
       .getGroups(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
@@ -161,6 +204,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfGroups = data.records;
+        this.totalGroup = data.totalCount;
         this.listOfGroups.forEach((e) => {
           this.service
             .getUsersOfGroup(e.name, 9999, 1)
@@ -179,84 +223,59 @@ export class AttachPermissionPolicyComponent implements OnInit {
 
         console.log(this.listOfGroups);
       });
-    console.log('listGroupPicked', this.listGroupPicked);
   }
 
   reloadGroupTable(): void {
     this.listOfGroups = [];
+    this.resetDataPicked();
     this.getGroup();
   }
 
-  listGroupPicked: UserGroup[] = [];
-  groupNames = [];
-  policyNames = new Set<string>();
-  onClickGroupItem(groupName: string, item: UserGroup) {
-    var index = 0;
-    var isAdded = true;
-    // Kiểm tra mảng có phần tử đc chọn không
-    this.groupNames.forEach((e) => {
-      if (e == groupName) {
-        // nếu có xóa đi
-        this.groupNames.splice(index, 1);
-        this.listGroupPicked.splice(index, 1);
-        isAdded = false;
-      }
-      index++;
-    });
-    if (isAdded) {
-      //nếu không thêm vào
-      this.groupNames.push(groupName);
-      this.listGroupPicked.push(item);
-    }
+  checkedGroup = false;
+  indeterminateGroup = false;
+  mapOfCheckedGroup = new Map<string, string[]>();
 
-    this.checkPickAll(this.listGroupPicked, this.listOfGroups);
-
-    this.policyNames.clear();
-    this.listGroupPicked.forEach((e) => {
-      e.policies.forEach((element) => {
-        this.policyNames.add(element);
-      });
-    });
-    this.emitData();
-
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  onCurrentPageDataChangeGroup(listOfCurrentPageData: UserGroup[]): void {
+    this.listOfGroups = listOfCurrentPageData;
+    this.refreshCheckedStatusGroup();
   }
 
-  onChangeCheckAllGroup(checked: any) {
-    let listChecked = [];
-    this.listOfGroups.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedInPage = listChecked;
-    if (checked == true) {
-      this.listGroupPicked = [];
-      this.listOfGroups.forEach((e) => {
-        this.listGroupPicked.push(e);
-      });
+  refreshCheckedStatusGroup(): void {
+    const listOfEnabledData = this.listOfGroups;
+    this.checkedGroup = listOfEnabledData.every(({ name }) =>
+      this.mapOfCheckedGroup.has(name)
+    );
+    this.indeterminateGroup =
+      listOfEnabledData.some(({ name }) => this.mapOfCheckedGroup.has(name)) &&
+      !this.checkedGroup;
+  }
+
+  updateCheckedSetGroup(item: UserGroup, checked: boolean): void {
+    if (checked) {
+      this.mapOfCheckedGroup.set(item.name, item.policies);
     } else {
-      this.listGroupPicked = [];
+      this.mapOfCheckedGroup.delete(item.name);
     }
+  }
 
-    this.groupNames = [];
-    this.policyNames.clear();
-    this.listGroupPicked.forEach((e) => {
-      this.groupNames.push(e.name);
-      e.policies.forEach((element) => {
-        this.policyNames.add(element);
-      });
-    });
-    this.emitData();
+  onItemCheckedGroup(item: UserGroup, checked: boolean): void {
+    this.updateCheckedSetGroup(item, checked);
+    this.handleDataPicked();
+    this.refreshCheckedStatusGroup();
+  }
 
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  onAllCheckedGroup(checked: boolean): void {
+    this.listOfGroups.forEach((item) =>
+      this.updateCheckedSetGroup(item, checked)
+    );
+    this.handleDataPicked();
+    this.refreshCheckedStatusGroup();
   }
 
   //Danh sách Users
+  totalUser = 0;
   getCopyUserPlicies() {
     this.loading = true;
-    this.resetDataPicked();
-    this.listUserPicked = [];
     this.service
       .search(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
@@ -267,72 +286,67 @@ export class AttachPermissionPolicyComponent implements OnInit {
       )
       .subscribe((data) => {
         this.listOfUsers = data.records;
+        this.totalUser = data.totalCount;
         if (!this.isCreate) {
           this.listOfUsers = this.listOfUsers.filter(
             (e) => e.userName !== this.userName
           );
         }
       });
-
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
   }
 
   reloadUserTable(): void {
     this.listOfUsers = [];
+    this.resetDataPicked();
     this.getCopyUserPlicies();
   }
 
-  listUserPicked: User[] = [];
-  onClickUserItem(item: User) {
-    var index = 0;
-    var isAdded = true;
-    this.listUserPicked.forEach((e) => {
-      if (e.userName == item.userName) {
-        this.listUserPicked.splice(index, 1);
-        isAdded = false;
-      }
-      index++;
-    });
-    if (isAdded) {
-      this.listUserPicked.push(item);
-    }
+  checkedUser = false;
+  indeterminateUser = false;
+  mapOfCheckedUser = new Map<string, string[]>();
 
-    this.checkPickAll(this.listUserPicked, this.listOfUsers);
-
-    this.handlePolicyNames(this.listUserPicked);
-    this.emitData();
-
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  onCurrentPageDataChangeUser(listOfCurrentPageData: User[]): void {
+    this.listOfUsers = listOfCurrentPageData;
+    this.refreshCheckedStatusUser();
   }
 
-  onChangeCheckAllUser(checked: any) {
-    let listChecked = [];
-    this.listOfUsers.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedInPage = listChecked;
-    if (checked == true) {
-      this.listUserPicked = [];
-      this.listOfUsers.forEach((e) => {
-        this.listUserPicked.push(e);
-      });
+  refreshCheckedStatusUser(): void {
+    const listOfEnabledData = this.listOfUsers;
+    this.checkedUser = listOfEnabledData.every(({ userName }) =>
+      this.mapOfCheckedUser.has(userName)
+    );
+    this.indeterminateUser =
+      listOfEnabledData.some(({ userName }) =>
+        this.mapOfCheckedUser.has(userName)
+      ) && !this.checkedUser;
+  }
+
+  updateCheckedSetUser(item: User, checked: boolean): void {
+    if (checked) {
+      this.mapOfCheckedUser.set(item.userName, item.userPolicies);
     } else {
-      this.listUserPicked = [];
+      this.mapOfCheckedUser.delete(item.userName);
     }
+  }
 
-    this.handlePolicyNames(this.listUserPicked);
-    this.emitData();
+  onItemCheckedUser(item: User, checked: boolean): void {
+    this.updateCheckedSetUser(item, checked);
+    this.handleDataPicked();
+    this.refreshCheckedStatusUser();
+  }
 
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  onAllCheckedUser(checked: boolean): void {
+    this.listOfUsers.forEach((item) =>
+      this.updateCheckedSetUser(item, checked)
+    );
+    this.handleDataPicked();
+    this.refreshCheckedStatusUser();
   }
 
   //Danh sách Policies
+  totalPolicy = 0;
   getPermissionPolicies() {
     this.loading = true;
-    this.resetDataPicked();
     this.service
       .getPolicies(this.searchParam, this.pageSize, this.pageIndex)
       .pipe(
@@ -342,8 +356,9 @@ export class AttachPermissionPolicyComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        this.listOfpolicies = data.records;
-        this.listOfpolicies.forEach((e: any) => {
+        this.listOfPolicies = data.records;
+        this.totalPolicy = data.totalCount;
+        this.listOfPolicies.forEach((e: any) => {
           this.policyService
             .getAttachedEntities(e.name, '', 1, 9999, 1)
             .subscribe((result) => {
@@ -352,53 +367,55 @@ export class AttachPermissionPolicyComponent implements OnInit {
             });
         });
       });
-
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
   }
 
   reloadPolicyTable(): void {
-    this.listOfpolicies = [];
+    this.listOfPolicies = [];
+    this.resetDataPicked();
     this.getPermissionPolicies();
   }
 
-  onClickPolicyItem(policyName: string) {
-    var isAdded = true;
-    this.policyNames.forEach((e) => {
-      if (e == policyName) {
-        this.policyNames.delete(e);
-        isAdded = false;
-      }
-    });
-    if (isAdded) {
-      this.policyNames.add(policyName);
-    }
+  checkedPolicy = false;
+  indeterminatePolicy = false;
+  setOfCheckedPolicy = new Set<string>();
 
-    this.checkPickAll(Array.from(this.policyNames), this.listOfpolicies);
-
-    this.emitData();
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  onCurrentPageDataChangePolicy(
+    listOfCurrentPageData: PermissionPolicies[]
+  ): void {
+    this.listOfPolicies = listOfCurrentPageData;
+    this.refreshCheckedStatusPolicy();
   }
 
-  onChangeCheckAllPolicy(checked: any) {
-    let listChecked = [];
-    this.listOfpolicies.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedInPage = listChecked;
-    if (checked == true) {
-      this.policyNames.clear();
-      this.listOfpolicies.forEach((e) => {
-        this.policyNames.add(e.name);
-      });
-    } else {
-      this.policyNames.clear();
-    }
+  refreshCheckedStatusPolicy(): void {
+    const listOfEnabledData = this.listOfPolicies;
+    this.checkedPolicy = listOfEnabledData.every(({ name }) =>
+      this.setOfCheckedPolicy.has(name)
+    );
+    this.indeterminatePolicy =
+      listOfEnabledData.some(({ name }) => this.setOfCheckedPolicy.has(name)) &&
+      !this.checkedPolicy;
+  }
 
-    this.emitData();
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  updateCheckedSetPolicy(name: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedPolicy.add(name);
+    } else {
+      this.setOfCheckedPolicy.delete(name);
+    }
+  }
+
+  onItemCheckedPolicy(name: string, checked: boolean): void {
+    this.updateCheckedSetPolicy(name, checked);
+    this.handleDataPicked();
+    this.refreshCheckedStatusPolicy();
+  }
+
+  onAllCheckedPolicy(checked: boolean): void {
+    this.listOfPolicies.forEach(({ name }) =>
+      this.updateCheckedSetPolicy(name, checked)
+    );
+    this.handleDataPicked();
+    this.refreshCheckedStatusPolicy();
   }
 
   // View Json Object
@@ -411,6 +428,11 @@ export class AttachPermissionPolicyComponent implements OnInit {
     } else {
       this.expandSet.delete(name);
     }
+  }
+
+  copyText(data: any) {
+    this.clipboardService.copyFromContent(JSON.stringify(data));
+    this.message.success('Copied to clipboard');
   }
 
   navigateToCreateGroup() {

@@ -17,13 +17,13 @@ export class InboundListComponent implements OnInit, OnChanges {
     @Input() projectId: number
 
     title: string = 'Xác nhận xóa Inbound';
-    content: string = 'Bạn có chắc chăn muốn xóa Inbound';
+    content: string = 'Quý khách chắc chắn muốn xóa dịch vụ này?';
 
     collection: Pagination<SecurityGroupRule>;
     condition = new RuleSearchCondition()
     isVisible = false;
     isLoading = false;
-    pageSize: number = 10
+    pageSize: number = 5
     pageNumber: number = 1
 
     constructor(
@@ -37,12 +37,15 @@ export class InboundListComponent implements OnInit, OnChanges {
         this.getRule();
     }
 
-    onQueryParamsChange(params: NzTableQueryParams) {
-        const {pageSize, pageIndex} = params
-        this.pageSize = pageSize;
-        this.pageNumber = pageIndex
-        this.getRule()
-    }
+  onPageSizeChange(event: any) {
+    this.pageSize = event
+    this.getRule();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageNumber = event;
+    this.getRule();
+  }
 
     getRule() {
         this.condition.direction = 'ingress'

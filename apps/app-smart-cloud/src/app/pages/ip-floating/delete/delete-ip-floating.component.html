@@ -1,0 +1,44 @@
+<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
+      nzTheme="outline" nz-popover
+      [nzPopoverContent]="'Xóa'"
+      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<nz-modal [(nzVisible)]="isVisible"
+          nzCentered
+          [nzTitle]="modalTitle"
+          [nzContent]="modalContent"
+          [nzFooter]="null"
+          (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    <span class="text-modal-title">Gắn IP Floating</span>
+  </ng-template>
+  <ng-template #modalContent>
+    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+      <nz-alert nzType="warning"
+                nzDescription="Bạn đang thực hiện xóa IP Floating + địa chỉ IP Floating."
+                nzShowIcon
+                style="margin-bottom: 24px;">
+      </nz-alert>
+      <nz-form-item>
+        <nz-form-label>
+          <div>
+            <span>Đế thực hiện xoá IP Floating, vui lòng nhập chính xác IP để xác nhận.</span>
+          </div>
+        </nz-form-label>
+        <nz-form-control>
+          <input nz-input
+                 class="input-custom"
+                 formControlName="name"
+                 [placeholder]="'nhập IP'" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="middle">
+          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">Huỷ</button>
+          <nz-form-control *nzSpaceItem>
+            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new">Xác nhận</button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>

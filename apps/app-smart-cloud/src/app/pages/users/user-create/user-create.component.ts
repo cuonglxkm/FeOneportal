@@ -17,6 +17,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Component({
   selector: 'one-portal-user-create',
   templateUrl: './user-create.component.html',
@@ -48,7 +49,7 @@ export class UserCreateComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private service: UserService,
     private router: Router,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService
   ) {}
@@ -57,18 +58,6 @@ export class UserCreateComponent implements OnInit {
     this.service.model.subscribe((data) => {
       console.log(data);
     });
-  }
-
-  onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.regionId = region.regionId;
-    this.cdr.detectChanges();
-  }
-
-  onProjectChange(project: any) {
-    // Handle the region change event
-    this.projectId = project.id;
-    this.cdr.detectChanges();
   }
 
   onChangeGroupNames(event: any[]) {
@@ -95,7 +84,7 @@ export class UserCreateComponent implements OnInit {
     this.userCreate.groupNames = this.groupNames;
     this.userCreate.policyNames = this.policyNames;
     this.isVisibleCreate = false;
-    console.log("user create", this.userCreate);
+    console.log('user create', this.userCreate);
     this.service
       .createOrUpdate(this.userCreate)
       .pipe(
@@ -103,17 +92,19 @@ export class UserCreateComponent implements OnInit {
           this.loadingSrv.close();
         })
       )
-      .subscribe(
-        (data: any) => {
+      .subscribe({
+        next: (data: any) => {
           console.log(data);
-          this.message.success('Tạo mới User thành công');
-          this.router.navigateByUrl(`/app-smart-cloud/users`);
+          this.notification.success('', 'Tạo mới User thành công');
+          this.navigateToList();
         },
-        (error) => {
-          console.log(error.error);
-          this.message.error('Tạo mới User không thành công');
-        }
-      );
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Tạo mới User không thành công'
+          );
+        },
+      });
   }
 
   //Router

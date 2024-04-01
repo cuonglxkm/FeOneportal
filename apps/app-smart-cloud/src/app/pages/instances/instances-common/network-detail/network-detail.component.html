@@ -1,43 +1,37 @@
-<nz-card nzTitle="Network">
+<nz-card style="border-radius: 8px" [nzBordered]="false">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Network</span>
+  </div>
   <div class="ant-table">
     <nz-table
       [nzData]="listOfDataNetwork"
       [nzLoading]="loading"
       [nzShowPagination]="false"
     >
-      <thead class="ant-table-thead">
+      <thead>
         <tr>
           <th>Tên Network</th>
           <th>MAC Address</th>
           <th>FixedIPs</th>
           <th>Status</th>
-          <th>Thao tác</th>
-          <th></th>
+          <th *ngIf="isDetail">Thao tác</th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
         <tr *ngFor="let data of listOfDataNetwork">
-          <td>
-            <label>
-              {{ data.name }}
-            </label>
+          <td nzBreakWord>
+            {{ data.name }}
           </td>
           <td>
-            <label>
-              {{ data.macAddress }}
-            </label>
+            {{ data.macAddress }}
           </td>
-          <td>
-            <label>
-              {{ data.fixedIPs }}
-            </label>
+          <td nzBreakWord>
+            {{ data.fixedIPs }}
           </td>
-          <td>
-            <label style="color: #52c41a">
-              {{ data.status }}
-            </label>
+          <td style="color: #52c41a">
+            {{ data.status }}
           </td>
-          <td>
+          <td *ngIf="isDetail">
             <button
               nz-button
               [nzType]="'primary'"
@@ -48,15 +42,22 @@
             </button>
             <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="editPort(modalContentEditPort, data.id)">
+                <li
+                  nz-menu-item
+                  (click)="editPort(modalContentEditPort, data.id)"
+                >
                   Chỉnh sửa
                 </li>
                 <li
                   nz-menu-item
-                  [routerLink]="['/app-smart-cloud/allow-address-pair']"
-                  [queryParams]="{ param: portId }"
+                  [routerLink]="[
+                    '/app-smart-cloud/instance/' +
+                      instancesId +
+                      '/allow-address-pair/' +
+                      data.id
+                  ]"
                 >
-                  Address Pair
+                  Quản lý Address Pair
                 </li>
               </ul>
             </nz-dropdown-menu>

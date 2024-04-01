@@ -1,0 +1,31 @@
+:host {
+    /* text-align: center; */
+    /* background-color: #ebf0f9fe; */
+  }
+
+
+  nz-sider {
+    background: #fff;
+    /* background: #3ba0e9; */
+    color: #3ba0e9;
+    /* background-color: #ebf0f9fe; */
+
+  }
+
+  nz-content {
+    background-color: #fff;
+  }
+
+  nz-layout {
+    /* margin-bottom: 48px; */
+  }
+
+  nz-layout nz-layout,
+  nz-layout:last-child {
+    margin: 0;
+  }
+
+  [nz-button] {
+    margin-right: 8px;
+    margin-bottom: 12px;
+  }

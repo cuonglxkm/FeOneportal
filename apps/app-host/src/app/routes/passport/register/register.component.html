@@ -2,11 +2,11 @@
 <p class="text-font text-des"> {{ 'app.register.des' | i18n }} </p>
 
 
-<form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
+<form nz-form [formGroup]="form" [nzNoColon]="true" (ngSubmit)="submit()" role="form">
   <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"/>
   <nz-form-item>
     <nz-form-control [nzErrorTip]="mailErrorTip">
-      <nz-form-label [nzSm]="6" [nzXs]="24">Email đăng ký</nz-form-label>
+      <nz-form-label  [nzRequired]="true"  [nzSm]="8" [nzXs]="24">Email đăng ký </nz-form-label>
       <nz-input-group nzSize="large" nzAddonBeforeIcon="user">
         <input nz-input formControlName="mail" placeholder="Nhập e-mail đăng ký"/>
       </nz-input-group>
@@ -19,7 +19,7 @@
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="'validation.password.required' | i18n">
-      <nz-form-label [nzSm]="6" [nzXs]="24">Mật khẩu</nz-form-label>
+      <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24">Mật khẩu</nz-form-label>
       <nz-input-group
         nzSize="large"
         nzAddonBeforeIcon="lock"
@@ -51,7 +51,7 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-control [nzErrorTip]="confirmErrorTip">
-      <nz-form-label>Nhập lại mật mật khẩu</nz-form-label>
+      <nz-form-label [nzRequired]="true" >Nhập lại mật mật khẩu</nz-form-label>
       <nz-input-group nzSize="large" nzAddonBeforeIcon="lock">
         <input nz-input type="password" formControlName="confirm" placeholder="Nhập lại mật mật khẩu"/>
       </nz-input-group>
@@ -78,29 +78,29 @@
   <!--      </ng-template>-->
   <!--    </nz-form-control>-->
   <!--  </nz-form-item>-->
-  <!--  <nz-form-item>-->
-  <!--    <nz-form-control [nzErrorTip]="'validation.verification-code.required' | i18n">-->
-  <!--      <nz-row [nzGutter]="8">-->
-  <!--        <nz-col [nzSpan]="16">-->
-  <!--          <nz-input-group nzSize="large" nzAddonBeforeIcon="mail">-->
-  <!--            <input nz-input formControlName="captcha" placeholder="Captcha"/>-->
-  <!--          </nz-input-group>-->
-  <!--        </nz-col>-->
-  <!--        <nz-col [nzSpan]="8">-->
-  <!--          <button type="button" nz-button nzSize="large" (click)="getCaptcha()" [disabled]="count > 0" nzBlock-->
-  <!--                  [nzLoading]="loading">-->
-  <!--            {{ count ? count + 's' : ('app.register.get-verification-code' | i18n) }}-->
-  <!--          </button>-->
-  <!--        </nz-col>-->
-  <!--      </nz-row>-->
-  <!--    </nz-form-control>-->
-  <!--  </nz-form-item>-->
+<!--    <nz-form-item>-->
+<!--      <nz-form-control [nzErrorTip]="'validation.verification-code.required' | i18n">-->
+<!--        <nz-row [nzGutter]="8">-->
+<!--          <nz-col [nzSpan]="16">-->
+<!--            <nz-input-group nzSize="large" nzAddonBeforeIcon="mail">-->
+<!--              <input nz-input formControlName="captcha" placeholder="Captcha"/>-->
+<!--            </nz-input-group>-->
+<!--          </nz-col>-->
+<!--          <nz-col [nzSpan]="8">-->
+<!--            <button type="button" nz-button nzSize="large" (click)="getCaptcha()" [disabled]="count > 0" nzBlock-->
+<!--                    [nzLoading]="loading">-->
+<!--              {{ count ? count + 's' : ('app.register.get-verification-code' | i18n) }}-->
+<!--            </button>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+<!--      </nz-form-control>-->
+<!--    </nz-form-item>-->
 
   <div nz-row [nzGutter]="16">
     <div nz-col nzSpan="12">
       <nz-form-item>
         <nz-form-control [nzErrorTip]="nameErrorTip">
-          <nz-form-label [nzSm]="6" [nzXs]="24">Tên</nz-form-label>
+          <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24">Tên</nz-form-label>
           <nz-input-group nzSize="large">
             <input nz-input formControlName="firstName" placeholder="Nhập tên"/>
           </nz-input-group>
@@ -113,7 +113,7 @@
     <div nz-col nzSpan="12">
       <nz-form-item>
         <nz-form-control [nzErrorTip]="lastNameErrorTip">
-          <nz-form-label [nzSm]="6" [nzXs]="24">Họ</nz-form-label>
+          <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24">Họ</nz-form-label>
           <nz-input-group nzSize="large">
             <input nz-input formControlName="lastName" placeholder="Nhập họ"/>
           </nz-input-group>
@@ -128,7 +128,7 @@
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="provinceErrorTip">
-      <nz-form-label>Chọn Tỉnh/Thành</nz-form-label>
+      <nz-form-label [nzRequired]="true" >Chọn Tỉnh/Thành</nz-form-label>
       <nz-input-group nzSize="large">
         <nz-select nzSize="large" nzShowSearch nzAllowClear nzPlaceHolder="Chọn tỉnh thành" formControlName="province">
           <nz-option [nzLabel]="'Hà Nội'" [nzValue]="'Hà Nội'"/>
@@ -142,55 +142,62 @@
     </nz-form-control>
   </nz-form-item>
 
+
   <nz-form-item>
-    <nz-collapse class="top-bot-border" style="width: 100%" [nzGhost]="true" [nzBordered]="false"
-                 [nzExpandIconPosition]="'right'">
-      <nz-collapse-panel
-        [nzHeader]="panel.name"
-        [nzActive]="panel.active"
-        [nzDisabled]="panel.disabled">
+    <nz-form-control [nzErrorTip]="mobileErrorTip">
+      <nz-form-label [nzRequired]="true">Số điện thoại</nz-form-label>
+      <nz-input-group nzSize="large">
+        <!--              <nz-input-group nzSize="large" [nzAddOnBefore]="addOnBeforeTemplate">-->
+        <!--                <ng-template #addOnBeforeTemplate>-->
+        <!--                  <nz-select formControlName="mobilePrefix" style="width: 100px">-->
+        <!--                    <nz-option [nzLabel]="'+84'" [nzValue]="'+84'"/>-->
+        <!--&lt;!&ndash;                    <nz-option [nzLabel]="'+87'" [nzValue]="'+87'"/>&ndash;&gt;-->
+        <!--                  </nz-select>-->
+        <!--                </ng-template>-->
+        <input formControlName="mobile" nz-input placeholder="Số điện thoại"/>
+      </nz-input-group>
+      <ng-template #mobileErrorTip let-i>
+        <ng-container *ngIf="i.errors?.required">{{ 'validation.phone-number.required' | i18n }}</ng-container>
+        <ng-container *ngIf="i.errors?.pattern">{{ 'validation.phone-number.wrong-format' | i18n }}</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
 
 
-        <nz-form-item>
-          <nz-form-control [nzErrorTip]="mobileErrorTip">
-            <nz-form-label>Số điện thoại</nz-form-label>
-            <nz-input-group nzSize="large">
-              <!--              <nz-input-group nzSize="large" [nzAddOnBefore]="addOnBeforeTemplate">-->
-              <!--                <ng-template #addOnBeforeTemplate>-->
-              <!--                  <nz-select formControlName="mobilePrefix" style="width: 100px">-->
-              <!--                    <nz-option [nzLabel]="'+84'" [nzValue]="'+84'"/>-->
-              <!--&lt;!&ndash;                    <nz-option [nzLabel]="'+87'" [nzValue]="'+87'"/>&ndash;&gt;-->
-              <!--                  </nz-select>-->
-              <!--                </ng-template>-->
-              <input formControlName="mobile" nz-input placeholder="Phone number"/>
-            </nz-input-group>
-            <ng-template #mobileErrorTip let-i>
-              <ng-container *ngIf="i.errors?.required">{{ 'validation.phone-number.required' | i18n }}</ng-container>
-              <ng-container *ngIf="i.errors?.pattern">{{ 'validation.phone-number.wrong-format' | i18n }}</ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
+<!--  <nz-form-item>-->
+<!--    <nz-collapse class="top-bot-border" style="width: 100%" [nzGhost]="true" [nzBordered]="false"-->
+<!--                 [nzExpandIconPosition]="'right'">-->
+<!--      <nz-collapse-panel-->
+<!--        [nzHeader]="panel.name"-->
+<!--        [nzActive]="panel.active"-->
+<!--        [nzDisabled]="panel.disabled">-->
+<!--      </nz-collapse-panel>-->
+<!--    </nz-collapse>-->
+<!--  </nz-form-item>-->
 
-
-      </nz-collapse-panel>
-    </nz-collapse>
+  <nz-form-item>
+    <re-captcha
+      formControlName="recaptchaReactive"
+      (resolved)="addTokenLog('Reactive form mode resolved', $event)">
+    </re-captcha>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-control>
       <label nz-checkbox formControlName="agreement">
-        <span>{{ 'app.register.agreement' | i18n }}</span>
+<!--        <span>{{ 'app.register.agreement' | i18n }}</span>-->
+        <span class="text-agreement"> Tôi đồng ý với <a href="https://vnpt.vn" target="_blank">các điều khoản</a></span>
       </label>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <button nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
+    <button [disabled]="form.invalid" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
       {{ 'app.register.register' | i18n }}
     </button>
 
   </nz-form-item>
 
-  <nz-form-item>
+  <nz-form-item style="margin-top: 30px; justify-content: center">
     <a class="login" routerLink="/passport/login"> <span
       style="color: #555555">Bạn đã có tài khoản,</span> {{ 'app.register.sign-in' | i18n }}</a>
   </nz-form-item>

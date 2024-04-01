@@ -48,6 +48,8 @@ export class CreateUserGroupComponent implements OnInit {
 
   isVisibleCreate: boolean = false
 
+  listNameParent: string[] = []
+  isLoadingConfirm: boolean = false
   constructor(
     private fb: NonNullableFormBuilder,
     private location: Location,
@@ -58,7 +60,7 @@ export class CreateUserGroupComponent implements OnInit {
     this.validateForm = this.fb.group({
       groupName: ['', [Validators.required,
         Validators.pattern(/^[\w+=,.@\-_]{1,128}$/),
-        Validators.maxLength(128)]],
+        Validators.maxLength(128), Validators.minLength(3)]],
       parentName: [null as string | null],
       policyNames: [null as string[] | null],
       userNames: [null as string[] | null]
@@ -127,14 +129,16 @@ export class CreateUserGroupComponent implements OnInit {
       }
       this.formCreate.policyNames = this.validateForm.value.policyNames
       this.formCreate.users = this.validateForm.value.userNames
+      this.isLoadingConfirm = true
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
         console.log('data return', data)
         this.isVisibleCreate = false
+        this.isLoadingConfirm = false
         this.notification.success('Thành công', 'Tạo mới group thành công')
         this.validateForm.reset()
         this.router.navigate(['/app-smart-cloud/iam/user-group'])
       }, error => {
-
+        this.isLoadingConfirm = false
         this.notification.error('Thất bại', 'Tạo mới thất bại')
       })
 
@@ -149,16 +153,16 @@ export class CreateUserGroupComponent implements OnInit {
     }
   }
 
-  showCreatePolicy() {
+  showCreate() {
     this.isVisibleCreate = true;
   }
 
   handleCancel() {
     this.isVisibleCreate = false
+    this.isLoadingConfirm = false
   }
 
   handleCreate(){
-
     this.submitForm()
   }
 
@@ -170,11 +174,18 @@ export class CreateUserGroupComponent implements OnInit {
 
   receivedListUsersSelected(object: any) {
     this.listUserSelected = object
-    console.log('selected', this.listUserSelected)
+    console.log('selected user', this.listUserSelected)
+  }
+
+  getNameParent() {
+    this.userGroupService.getName().subscribe(data => {
+      this.listNameParent = data
+    })
   }
 
   ngOnInit(): void {
     this.getGroupParent()
+    this.getNameParent()
   }
 
   goBack(): void {

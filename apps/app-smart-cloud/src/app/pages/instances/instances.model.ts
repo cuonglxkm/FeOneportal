@@ -63,27 +63,16 @@ export class Flavors {
   id: number;
 }
 
-export class Images {
-  name: string;
-  imageTypeId: number;
-  cloudId: string;
-  flavorId: number;
-  show: number;
-  regionId: number;
-  regionText: string;
-  status: string;
-  isLicense: boolean;
-  isForAllUser: boolean;
+export class Image {
   id: number;
+  name: string;
 }
 
 export class ImageTypesModel {
+  id: number;
   name: string;
   uniqueKey: string;
-  id: number;
-  isChecked: boolean = false;
-  items: Images[] = [];
-  versionId: any;
+  images: OfferItem[];
 }
 
 export class Snapshot {
@@ -110,13 +99,10 @@ export enum Status {
 }
 
 export class RebuildInstances {
-  regionId: number = 0;
-  customerId: number = 0;
-  imageId: number = 0;
-  flavorId: number = 0;
-  volumeType: number = 0;
-  iops: number = 0;
-  id: number = 0;
+  regionId: number;
+  customerId: number;
+  imageId: number;
+  id: number;
 }
 
 export class UpdateInstances {
@@ -153,16 +139,15 @@ export class CreateInstances {
 }
 
 export class InstancesModel {
+  id: number;
   cloudId: string;
   name: string;
   flavorId: number;
-  flavorName: string;
   flavorCloudId: string;
   imageId: number;
-  imageName: string;
   customerId: number;
   ipPublic: string;
-  ipPrivate: null;
+  ipPrivate: string;
   cpu: number;
   ram: number;
   storage: number;
@@ -170,8 +155,6 @@ export class InstancesModel {
   preResizeInstanceId: number;
   regionId: number;
   regionText: string;
-  createdDate: Date;
-  expiredDate: Date;
   cloudIdentityId: number;
   projectName: string;
   projectId: number;
@@ -183,9 +166,16 @@ export class InstancesModel {
   btqtAdditional: number;
   volumeRootId: number;
   status: string;
-  taskState: null;
-  project: null;
-  id: number;
+  taskState: string;
+  securityGroupStr: string;
+  computeHost: string;
+  type: string;
+  flavorName: string;
+  volumeType: number;
+  createdDate: string;
+  expiredDate: string;
+  totalCount: number;
+  imageName: string;
 }
 
 export class InstanceFormSearch {
@@ -322,6 +312,7 @@ export class VolumeCreate {
 export class Order {
   customerId: number;
   createdByUserId: number;
+  couponCode: string;
   note: string;
   orderItems: any[];
 }
@@ -338,10 +329,9 @@ export class InstanceResize {
   description: any;
   currentFlavorId: number;
   newFlavorId: number;
-  addRam: number;
-  addCpu: number;
   addBttn: number;
   addBtqt: number;
+  storage: number;
   ram: number;
   cpu: number;
   typeName: string;
@@ -466,6 +456,78 @@ export class IpCreate {
   regionId: number;
   serviceName: any;
   typeName: string;
+  userEmail: any;
+  actorEmail: any;
+}
+
+export class OfferItem {
+  id: number;
+  productId: number;
+  offerName: string;
+  price: Price;
+  status: string;
+  unitOfMeasure: string;
+  timePeriod: TimePeriod;
+  regions: Region[];
+  discounts: any[];
+  characteristicValues: CharacteristicValue[];
+  description: string;
+  ipNumber: string;
+}
+
+export class Price {
+  fixedPrice: FixedPrice;
+  priceType: number;
+  chargeType: number;
+}
+
+export class FixedPrice {
+  amount: number;
+  currency: string;
+}
+
+export class TimePeriod {
+  startDateTime: string;
+  endDateTime: any;
+}
+
+export class Region {
+  id: number;
+  offerId: number;
+  regionId: number;
+}
+
+export class CharacteristicValue {
+  id: number;
+  charName: string;
+  type: number;
+  charOptionValues: string[];
+  productOfferId: number;
+}
+
+export class DataPayment {
+  orderItems: ItemPayment[];
+  projectId: number;
+}
+
+export class ItemPayment {
+  orderItemQuantity: number;
+  specificationString: string;
+  specificationType: string;
+  sortItem: number;
+  serviceDuration: number;
+}
+
+export class InstanceExtend {
+  regionId: number;
+  serviceName: any;
+  customerId: number;
+  vpcId: any;
+  typeName: string;
+  serviceType: number;
+  actionType: number;
+  serviceInstanceId: number;
+  newExpireDate: string;
   userEmail: any;
   actorEmail: any;
 }

@@ -1,8 +1,7 @@
-<nz-card
-  [nzBordered]="false"
-  nzTitle="
-Block Storage"
->
+<nz-card style="border-radius: 8px" [nzBordered]="false">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Block Storage</span>
+  </div>
   <div class="ant-table">
     <nz-table
       [nzData]="listOfDataBlockStorage"
@@ -16,8 +15,6 @@ Block Storage"
           <th>Dung lượng (GB)</th>
           <th>Trạng thái Volume</th>
           <th>Kiểu Volume</th>
-          <th>Giá theo tháng (VNĐ)</th>
-          <th></th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
@@ -26,42 +23,52 @@ Block Storage"
             <label *ngIf="data.volumeType == 'ssd'"> SSD </label>
             <label *ngIf="data.volumeType == 'hdd'"> HDD </label>
           </td>
-          <td>
-            <label class="text-blue">
-              {{ data.name }}
-            </label>
+          <td nzLeft>
+            <a
+              nz-tooltip
+              nzTooltipTitle="Xem chi tiết"
+              nzTooltipPlacement="bottom"
+              [routerLink]="'/app-smart-cloud/volume/detail/' + data.id"
+              >{{ data.name }}</a
+            >
           </td>
           <td>
-            <label>
-              {{ data.sizeInGB }}
-            </label>
+            {{ data.sizeInGB }}
+          </td>
+          <td *ngIf="data.status == 'KHOITAO'" style="color: #52c41a">
+            KHỞI TẠO
           </td>
           <td>
-            <label *ngIf="data.status == 'KHOITAO'" style="color: #52c41a">
-              KHỞI TẠO
-            </label>
-          </td>
-          <td>
-            <label *ngIf="data.bootable">
+            <div *ngIf="data.bootable">
               <i nz-icon nzType="hdd"></i>
               VOLUME ROOT
-            </label>
-            <label *ngIf="!data.bootable">
+            </div>
+            <div *ngIf="!data.bootable">
               <img
                 style="width: 8%; height: 8%"
                 src="assets/imgs/attach_volume.png"
                 alt=""
               />
               VOLUME GẮN THÊM
-            </label>
-          </td>
-          <td>
-            <label>
-              {{ data.price }}
-            </label>
+            </div>
           </td>
         </tr>
       </tbody>
     </nz-table>
+  </div>
+  <div *ngIf="isDetail" style="width: 100%; margin-top: 20px">
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="nzDescriptionWarning06"
+      nzShowIcon
+    ></nz-alert>
+    <ng-template #nzDescriptionWarning06>
+      <div>
+        Quý khách hàng lưu ý, trường hợp khi kiểm tra bên trong máy ảo hiển thị
+        loại ổ cứng là Hard Disk Drive (HDD) tuy nhiên trong thực tế máy ảo đã
+        được lưu trữ tại phân vùng SSD để đảm bảo tối đa hiệu năng và tốc độ
+        truy xuất.
+      </div>
+    </ng-template>
   </div>
 </nz-card>

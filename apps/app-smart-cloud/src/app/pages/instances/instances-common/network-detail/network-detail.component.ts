@@ -18,6 +18,7 @@ import {
   UpdatePortInstance,
 } from '../../instances.model';
 import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-network-detail',
@@ -27,12 +28,12 @@ import { finalize } from 'rxjs';
 export class NetworkDetailComponent implements OnInit {
   selectedProject: any;
   @Input() instancesId: any;
+  @Input() isDetail: any;
 
   @Output() valueChanged = new EventEmitter();
 
   instancesModel: InstancesModel;
   listSecurityGroup: SecurityGroupModel[] = [];
-  listIPPublicDefault: [{ id: ''; ipAddress: 'Mặc định' }];
   selectedSecurityGroup: any[] = [];
   listOfDataNetwork: Network[] = [];
   updatePortInstance: UpdatePortInstance = new UpdatePortInstance();
@@ -40,12 +41,20 @@ export class NetworkDetailComponent implements OnInit {
 
   portId: string; //sau chị Sim gán giá trị này cho em nhé để truyền vào param
 
+  constructor(
+    private dataService: InstancesService,
+    private modalSrv: NzModalService,
+    private cdr: ChangeDetectorRef,
+    private route: Router,
+    private notification: NzNotificationService
+  ) {}
+
   ngOnInit(): void {
     this.getNetworkAndSecurityGroup();
   }
 
   getNetworkAndSecurityGroup() {
-    this.dataService.getById(this.instancesId, false).subscribe((data: any) => {
+    this.dataService.getById(this.instancesId, true).subscribe((data: any) => {
       this.instancesModel = data;
       this.dataService
         .getPortByInstance(this.instancesId, this.instancesModel.regionId)
@@ -56,7 +65,9 @@ export class NetworkDetailComponent implements OnInit {
           })
         )
         .subscribe((dataNetwork: any) => {
-          this.listOfDataNetwork = dataNetwork;
+          this.listOfDataNetwork = dataNetwork.filter(
+            (e: Network) => e.isExternal == false
+          );
           this.cdr.detectChanges();
         });
       this.dataService
@@ -76,14 +87,6 @@ export class NetworkDetailComponent implements OnInit {
   //   this.updatePortInstance.securityGroup = even;
   // }
 
-  constructor(
-    private dataService: InstancesService,
-    private modalSrv: NzModalService,
-    private cdr: ChangeDetectorRef,
-    private route: Router,
-    public message: NzMessageService
-  ) {}
-
   editPort(tpl: TemplateRef<{}>, id: any): void {
     this.selectedSecurityGroup = this.listOfDataNetwork.filter(
       (e) => (e.id = id)
@@ -102,7 +105,7 @@ export class NetworkDetailComponent implements OnInit {
         this.updatePortInstance.portSecurityEnanble = true;
         console.log('Update Port VM', this.updatePortInstance);
         this.dataService.updatePortVM(this.updatePortInstance).subscribe();
-        this.message.success('Chỉnh sửa port thành công!');
+        this.notification.success('', 'Chỉnh sửa port thành công!');
         this.route.navigate(['/app-smart-cloud/instances']);
       },
     });

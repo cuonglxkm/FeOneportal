@@ -6,6 +6,8 @@ import {PaymentService} from "../../../../shared/services/payment.service";
 import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 import { Router } from '@angular/router';
+import {NzTableQueryParams} from "ng-zorro-antd/table";
+import {PolicyModel} from "../../../policy/policy.model";
 
 @Component({
   selector: 'one-portal-list-payment',
@@ -36,10 +38,14 @@ export class ListPaymentComponent implements OnInit{
   checked = false;
   loading = false;
   indeterminate = false;
+
   listOfData: readonly PaymentModel[] = [];
   listFilteredData: readonly PaymentModel[] = [];
   listOfCurrentPageData: readonly PaymentModel[] = [];
+
   setOfCheckedId = new Set<number>();
+
+  downloadList: readonly PaymentModel[] = [];
 
   response: BaseResponse<PaymentModel[]>
 
@@ -47,7 +53,7 @@ export class ListPaymentComponent implements OnInit{
   fromDate: Date | null = null;
   toDate: Date | null = null;
 
-
+  formSearch: PaymentSearch = new PaymentSearch()
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private paymentService: PaymentService, private router: Router,) {
@@ -58,9 +64,9 @@ export class ListPaymentComponent implements OnInit{
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
+    this.project = project?.id 
   }
-
+  
   onChange(value: string) {
     console.log('abc', this.selectedValue)
     if (value === 'all') {
@@ -83,8 +89,9 @@ export class ListPaymentComponent implements OnInit{
       // this.toDate = value[1]
       this.getListInvoices()
     }
-
   }
+
+  
 
   onInputChange(value: string) {
     this.value = value;
@@ -100,61 +107,69 @@ export class ListPaymentComponent implements OnInit{
     }
   }
 
-  onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
+  // onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
+  //   this.listOfCurrentPageData = listOfCurrentPageData;
+  //   this.refreshCheckedStatus();
+  // }
+
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex} = params
+    this.pageSize = pageSize;
+    this.pageIndex = pageIndex
+    this.getListInvoices();
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData
-    this.checked = listOfEnabledData.every(({id}) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({id}) => this.setOfCheckedId.has(id)) && !this.checked;
+    this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.id));
+    this.downloadList = this.listOfData.filter(data => this.setOfCheckedId.has(data.id) && !!data.invoiceIssuedId);
+    this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
   }
 
+  onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
   onItemChecked(id: number, checked: boolean): void {
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
   }
 
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-        .forEach(({id}) => this.updateCheckedSet(id, checked));
+  onAllChecked(value: boolean): void {
+    this.listOfCurrentPageData.forEach(item => this.updateCheckedSet(item.id, value));
     this.refreshCheckedStatus();
   }
 
-
-
   getListInvoices() {
-    const formSearch: PaymentSearch = new PaymentSearch()
-    formSearch.customerId = this.tokenService.get()?.userId
+    this.formSearch.customerId = this.tokenService.get()?.userId
     if (this.value === null || this.value === undefined) {
-      formSearch.code = ''
+      this.formSearch.code = ''
     } else {
-      formSearch.code = this.value
+      this.formSearch.code = this.value
     }
 
     if(this.selectedValue === 'all') {
-      formSearch.status = ''
+      this.formSearch.status = ''
     }
     else {
-      formSearch.status = this.selectedValue
+      this.formSearch.status = this.selectedValue
     }
-    console.log(this.dateRange)
     if(this.dateRange?.length > 0) {
-      formSearch.fromDate = this.dateRange[0].toLocaleString()
-      formSearch.toDate = this.dateRange[1].toLocaleString()
+      this.formSearch.fromDate = this.dateRange[0].toLocaleString()
+      this.formSearch.toDate = this.dateRange[1].toLocaleString()
     } else {
-      formSearch.fromDate = ''
-      formSearch.toDate = ''
+      this.formSearch.fromDate = ''
+      this.formSearch.toDate = ''
     }
-    formSearch.pageSize = this.pageSize
-    formSearch.currentPage = this.pageIndex
+    this.formSearch.pageSize = this.pageSize
+    this.formSearch.currentPage = this.pageIndex
     this.isLoading = true
-    this.paymentService.search(formSearch).subscribe(data => {
+    this.paymentService.search(this.formSearch).subscribe(data => {
       this.isLoading = false
       this.response = data
       this.listOfData = data.records
       this.listFilteredData = data.records
+      this.listOfCurrentPageData = data.records
     }, error => {
       this.isLoading = false
       this.response = null
@@ -162,8 +177,12 @@ export class ListPaymentComponent implements OnInit{
     })
   }
 
-  disabledDate = (current: Date): boolean => {
+  onPageIndexChange(pageIndex: number): void {
+    this.pageIndex = pageIndex;
+    this.getListInvoices();
+  }
 
+  disabledDate = (current: Date): boolean => {
     const now = new Date();
     // Nếu "from date" đã được chọn, tính 30 ngày từ "from date", ngược lại tính từ ngày hiện tại
     const startDate = this.fromDate || now;
@@ -177,10 +196,15 @@ export class ListPaymentComponent implements OnInit{
     return current < thirtyDaysAgo || current > thirtyDaysLeft;
   };
 
-  download(id: number) {
+  downloadMany() {
+    this.downloadList.map(item => item.invoiceIssuedId).map((id) => {
+      this.serviceDownload(id)
+    })
+  }
+
+  serviceDownload(id: number) {
     this.paymentService.export(id).subscribe((data: Blob) => {
       // const blob = new Blob([data], {type: 'application/docx' });
-
       let downloadURL = window.URL.createObjectURL(data);
       let link = document.createElement('a');
       link.href = downloadURL;
@@ -189,9 +213,10 @@ export class ListPaymentComponent implements OnInit{
     })
   }
 
+
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId
-    this.getListInvoices()
+    // this.getListInvoices()
   }
 
   getPaymentDetail(id: any) {

@@ -65,7 +65,6 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
 
   onInputChange(value: string) {
     this.value = value;
-    console.log('input text: ', this.value)
     this.getData()
   }
 
@@ -128,6 +127,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     } else {
       this.form.name = ''
     }
+    this.refreshCheckedStatus()
     this.userGroupService.search(this.form).subscribe(data => {
       this.collection = data
       console.log('data', this.collection)
@@ -136,6 +136,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
       this.loading = false
     }, error => {
       this.collection = null
+      this.loading = false
     })
   }
 
@@ -146,7 +147,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     let listGroup = this.collection.records;
     listGroup.forEach(item => {
       this.userGroupService
-        .getUserByGroup(item.name, 9999, 1)
+        .getUserByGroup(null, item.name, 9999, 1)
         .subscribe(data => {
           listGroup.forEach(group => {
             if (group.name == item.name)
@@ -174,6 +175,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
 
   refresh() {
     this.loading = true
+
     setTimeout(() => {
       this.getData();
     }, 2000);

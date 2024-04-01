@@ -21,22 +21,25 @@
 
 
         <div style="margin-top: 80px" nz-row nzJustify="center" nzAlign="bottom">
-          <div nz-col nzSpan="18" nz-space nzAlign="center">
-            <img class="mt-5" src="assets/imgs/logo_vnpt_cloud_with_text.png">
+          <div style="justify-content: center" nz-col nzSpan="18" nz-space nzAlign="center">
+            <img width="100%" class="img-responsive" src="assets/imgs/logo-vnpcloud-svg.svg">
           </div>
 
         </div>
 
-        <div class="mt-7" nz-row nzJustify="center" nzAlign="bottom">
-          <div>
-            <button (click)="clickLogin()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
+        <div class="mt-5" nz-row nzJustify="center" nzAlign="bottom">
+            <button style="min-width: 250px !important;" (click)="clickLogin()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
               Đăng nhập vào Portal
             </button>
+<!--            <button (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">-->
+<!--              Đăng ký tài khoản Portal-->
+<!--            </button>-->
+        </div>
+        <div class="mt-3" nz-row nzJustify="center" nzAlign="bottom">
 
-            <button (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
+            <button style="min-width: 250px !important;" (click)="clickRegister()" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="">
               Đăng ký tài khoản Portal
             </button>
-          </div>
         </div>
 
       </div>

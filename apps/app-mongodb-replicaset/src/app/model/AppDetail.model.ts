@@ -1,0 +1,33 @@
+// export class AppDetail {
+//     service_code: string ;
+//     service_name: string;
+//     service_status: number;
+//     service_order_code: string;
+//     created_user: string;
+//     created_name: string;
+//     updated_user: string;
+//     created_date: number;
+//     updated_date: number;
+//     avatar: string;
+//     version: string;
+//     pbm_version: string;
+//     cluster_ip: string;
+//     connection_string: string;
+//     cluster_tier: number;
+//     cluster_tier_label: string;
+//     cpu: number;
+//     memory: number;
+//     memory_unit: string;
+//     storage: number;
+//     storage_unit: string;
+//     management_domain: string;
+//     management_user: string;
+//     monitoring_domain: string;
+//     monitoring_user: string;
+//     created_org_name: string;
+//     cluster_name: string;
+//     cluster_id: string;
+//     region_name: string;
+//     region_id: string;
+//     reject_reason: string;
+//   }

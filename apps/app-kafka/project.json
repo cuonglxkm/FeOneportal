@@ -1,0 +1,108 @@
+{
+  "name": "app-kafka",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "one-portal",
+  "sourceRoot": "apps/app-kafka/src",
+  "tags": ["app-kafka"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/app-kafka",
+        "index": "apps/app-kafka/src/index.html",
+        "main": "apps/app-kafka/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/app-kafka/tsconfig.app.json",
+        "assets": [
+          "apps/app-kafka/src/favicon.ico",
+          "apps/app-kafka/src/assets"
+        ],
+        "styles": ["apps/app-kafka/src/styles.less"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/app-kafka/webpack.config.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-kafka/webpack.prod.config.ts"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nx/angular:webpack-dev-server",
+      "options": {
+        "port": 4201,
+        "publicHost": "http://localhost:4201"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "app-kafka:build:production"
+        },
+        "development": {
+          "browserTarget": "app-kafka:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-kafka:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/app-kafka/**/*.ts",
+          "apps/app-kafka/**/*.html"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "app-kafka:build",
+        "port": 4201,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-kafka:build:development"
+        },
+        "production": {
+          "buildTarget": "app-kafka:build:production"
+        }
+      }
+    }
+  }
+}

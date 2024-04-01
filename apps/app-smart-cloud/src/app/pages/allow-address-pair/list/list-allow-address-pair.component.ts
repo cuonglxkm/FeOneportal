@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import PairInfo, {
   AllowAddressPair,
@@ -21,13 +21,13 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
   styleUrls: ['./list-allow-address-pair.component.less'],
 })
 export class ListAllowAddressPairComponent implements OnInit {
-  @Input() portId: string
-
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private allowAddressPairService: AllowAddressPairService,
               private notification: NzNotificationService,
               private route: ActivatedRoute) {
   }
+
+  portId: string
 
   isVisibleCreate = false;
   userId: number
@@ -65,6 +65,7 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   size: number = 0
 
+  instanceId: string
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
@@ -80,8 +81,8 @@ export class ListAllowAddressPairComponent implements OnInit {
   getParam(): AllowAddressPairSearchForm {
     this.formSearch.vpcId = this.project;
     this.formSearch.region = this.region;
-    this.formSearch.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
-    this.formSearch.pageSize = 5;
+    this.formSearch.portId = this.portId;
+    this.formSearch.pageSize = 10;
     this.formSearch.currentPage = 1;
     if (this.value === undefined) {
       this.formSearch.search = null;
@@ -101,7 +102,7 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   handleOkDelete(pairInfo: PairInfo): void {
     this.isConfirmLoading = true;
-    this.formDeleteOrCreate.portId = "08e91567-db66-4034-be81-608dceeb9a5f";
+    this.formDeleteOrCreate.portId = this.portId;
     this.formDeleteOrCreate.pairInfos = [pairInfo];
 
     this.formDeleteOrCreate.isDelete = true;
@@ -158,16 +159,17 @@ export class ListAllowAddressPairComponent implements OnInit {
         this.isLoading = false;
         this.collection = data
         this.size = this.collection.totalCount
+      }, error => {
+        this.isLoading = false;
+        this.collection = null;
       });
   }
 
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId
     this.formSearch.customerId = this.userId
-    this.route.queryParams.subscribe(queryParams => {
-      const value = queryParams['param'];
-      this.portId = value;
-    });
+    this.portId = this.route.snapshot.paramMap.get('portId')
+    this.instanceId = this.route.snapshot.paramMap.get('instanceId')
   }
 
   search() {

@@ -2,12 +2,417 @@
 // - `default` Default theme
 // - `dark` Import the official dark less style file
 // - `compact` Import the official compact less style file
+//@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
+@import '@fontsource/inter';
 @import '@delon/theme/theme-default.less';
 
 // ==========The following is the custom theme variable area==========
 // The theme paraments can be generated at https://ng-alain.github.io/ng-alain/
 // @primary-color: #f50;
-@primary-color: #2F54EB;
-@alain-default-header-bg: #2F54EB;
-@alain-default-aside-nav-text-hover-color: #2F54EB;
-@alain-default-aside-nav-selected-text-color: #2F54EB;
+@primary-color: #0066b3;
+@alain-default-header-bg: #2f54eb;
+@alain-default-aside-nav-text-hover-color: #2f54eb;
+@alain-default-aside-nav-selected-text-color: #2f54eb;
+
+@button-primary-color: #0066b0;
+@button-primary-color-hover: #005999;
+
+@button-border-medium-radius: 8px;
+
+// HEADER
+.alain-default__header-logo-expanded {
+  max-width: 90%;
+}
+
+.alain-default__header {
+  background-color: @primary-color;
+}
+
+.alain-default .page-header {
+  margin-right: -24px;
+  margin-bottom: auto;
+  margin-left: -24px;
+  padding: 12px 24px 0 24px;
+  border-bottom: none;
+  background-color: #ebf0f9;
+}
+
+// END HEADER
+
+.ant-form-item-label
+  > label.ant-form-item-required:not(
+    .ant-form-item-required-mark-optional
+  )::after {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
+}
+
+.ant-form-item-label
+  > label.ant-form-item-required:not(
+    .ant-form-item-required-mark-optional
+  )::before {
+  display: none;
+}
+
+.ant-table-thead > tr > th {
+  position: relative;
+  color: var(--Dark, #2b2d3b);
+  /* Body/16px - Bold */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.1px;
+  text-align: left;
+  background: #e2eefc;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.3s ease;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0;
+  color: var(--Dark, #2b2d3b);
+  /* Body/16px - Regular */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.1px;
+  transition: background 0.3s;
+}
+
+a {
+  color: #248fcc;
+
+  &:hover {
+    color: #005999;
+  }
+}
+
+u {
+  color: #248fcc;
+
+  &:hover {
+    color: #005999;
+  }
+}
+
+.ant-form-item-label > label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  color: var(--Neutral-1, #2b2d3b);
+  /* Body/16px - Regular */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.1px;
+}
+
+.ant-alert-warning {
+  border-radius: 4px;
+  background-color: #fffbe6;
+  border: 1px solid #ffe58f;
+}
+
+.ant-alert-with-description {
+  align-items: center;
+}
+
+.ant-alert-with-description {
+  align-items: start;
+}
+
+.ant-pagination-item-active {
+  font-weight: 500;
+  background: #0074cc;
+  border-color: #0074cc;
+}
+
+.ant-pagination-item-active a {
+  color: #fff;
+}
+
+.ant-pagination-item {
+  border-radius: 8px;
+}
+
+.ant-pagination-disabled .ant-pagination-item-link,
+.ant-pagination-disabled:hover .ant-pagination-item-link {
+  color: rgba(0, 0, 0, 0.25);
+  border-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination-next .ant-pagination-item-link {
+  border-radius: 8px;
+}
+
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 4px;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #0074cc;
+  text-shadow: 0 0 0.25px currentcolor;
+}
+
+.ant-tabs-tab-btn:hover {
+  color: #005999;
+}
+
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: #0074cc;
+  pointer-events: none;
+}
+
+::ng-deep .page-header {
+  position: relative;
+}
+
+.alain-custom-action {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: @alain-default-header-hg + 10px;
+  margin-right: 24px;
+}
+
+.alain-default__aside-inner {
+  overflow: hidden scroll;
+}
+
+// INPUT
+.ant-input[disabled] {
+  color: #989bb3;
+  font-weight: 500;
+}
+
+.ant-input-affix-wrapper {
+  // Input group
+  border-radius: 8px;
+}
+
+.ant-input {
+  border-radius: 8px;
+}
+
+.input-custom {
+  display: flex;
+  height: 40px;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// END INPUT
+
+// BUTTON
+
+.ant-btn {
+  border-radius: @button-border-medium-radius;
+  height: 40px;
+  border-color: @button-primary-color;
+  color: @button-primary-color;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+}
+
+.ant-btn:hover,
+.ant-btn:focus {
+  border-color: @button-primary-color-hover;
+  color: @button-primary-color-hover;
+}
+
+.ant-btn-primary {
+  color: #ffffff;
+  border-color: @button-primary-color;
+  background-color: @button-primary-color;
+  border-radius: @button-border-medium-radius;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  border-color: @button-primary-color-hover;
+  background: @button-primary-color-hover;
+  color: #ffffff;
+}
+
+// END BUTTON
+
+// SLIDER
+
+.ant-slider:hover .ant-slider-track {
+  background-color: @button-primary-color-hover;
+}
+
+.ant-slider-track {
+  background-color: @button-primary-color;
+}
+
+.ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+  border-color: @button-primary-color-hover;
+}
+
+.ant-slider-handle {
+  border: solid 2px @button-primary-color;
+}
+
+.ant-input-number {
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+// END SLIDER
+
+.tile {
+  box-shadow: none !important;
+}
+
+body {
+  background-color: #ebf0f9;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: @primary-color;
+  border-color: @primary-color;
+}
+
+// TEXT //
+* {
+  font-family: Inter;
+}
+
+.text-page-header {
+  //styleName: Heading/28px - SemiBold;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-card-header {
+  color: #333333;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-button {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.ant-modal-title {
+  color: #2b2d3b;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-intro-title {
+  color: #0074cc;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.text-intro-desc {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+}
+
+.page-header__title {
+  color: #2b2d3b;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0.1px;
+  text-align: left;
+  font-family: Inter;
+}
+
+.text-label {
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  //letter-spacing: 0.1px;
+  text-align: left;
+}
+
+.text-value {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.text-note-italicized {
+  color: #4c4f67;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 17px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+// MENU
+.sidebar-nav__selected > .sidebar-nav__item-link {
+  color: #0074cc;
+  font-weight: 600;
+}
+
+.sidebar-nav__selected {
+  border-left-color: @primary-color;
+}
+
+.sidebar-nav__item-text {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: left;
+}
+
+.sidebar-nav__item-link:hover {
+  color: @button-primary-color-hover;
+}
+
+body {
+  scrollbar-color: rgba(0, 0, 0, 0.3) #fafafa;
+}
+// END MENU

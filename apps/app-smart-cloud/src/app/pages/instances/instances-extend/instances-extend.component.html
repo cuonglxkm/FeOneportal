@@ -1,0 +1,294 @@
+<page-header>
+  <nz-breadcrumb style="float: left">
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a
+        [routerLink]="[
+          '/app-smart-cloud/instances/instances-detail/' + this.id
+        ]"
+        >Chi tiết máy ảo</a
+      >
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item> Gia hạn máy ảo </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="text-right">
+    <region-select-dropdown [isDetail]="true"></region-select-dropdown>
+    <project-select-dropdown
+      [isDetail]="true"
+      [regionId]="regionId"
+    ></project-select-dropdown>
+  </div>
+  <div>
+    <nz-row style="margin-bottom: -10px">
+      <span class="text-page-header">Gia hạn máy ảo</span>
+    </nz-row>
+    <nz-row style="margin-top: 20px">
+      <div class="non-pointer" style="width: 100%">
+        <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
+          <i nz-icon nzType="edit"></i>
+          <span>Chỉnh sửa</span>
+        </button>
+        <one-portal-instances-btn [instancesId]="id" style="margin-left: 8px">
+        </one-portal-instances-btn>
+      </div>
+    </nz-row>
+  </div>
+</page-header>
+
+<div>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16"
+      ><nz-card
+        style="border-radius: 8px"
+        [nzBordered]="false"
+        [nzLoading]="loading"
+        *ngIf="instancesModel"
+      >
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông tin máy ảo</span>
+        </div>
+        <nz-row class="customRow">
+          <div nz-col nzSpan="12">
+            <nz-row style="height: 50px">
+              <span class="text-label customSpan" style="width: 40%"
+                >Tên máy ảo:</span
+              >
+              <span class="text-value-detail customSpan">{{
+                instancesModel.name || ''
+              }}</span>
+            </nz-row>
+            <nz-row style="height: 50px; background-color: #e2e2e9">
+              <span class="text-label customSpan" style="width: 40%"
+                >Gói cấu hình:</span
+              >
+              <span class="text-value-detail customSpan">{{
+                instancesModel.flavorName | slice : 3
+              }}</span>
+            </nz-row>
+            <nz-row style="height: 50px">
+              <span class="text-label customSpan" style="width: 40%"
+                >Trạng thái:</span
+              >
+              <span
+                *ngIf="instancesModel.status == 'KHOITAO'"
+                class="text-value-detail customSpan"
+                style="color: #52c41a"
+                >KHỞI TẠO</span
+              >
+              <span
+                *ngIf="instancesModel.status == 'ACTIVE'"
+                class="text-value-detail customSpan"
+                style="color: #52c41a"
+                >ACTIVE</span
+              >
+            </nz-row>
+            <nz-row style="height: 50px; background-color: #e2e2e9">
+              <span class="text-label customSpan" style="width: 40%"
+                >Băng thông trong nước:</span
+              >
+              <span class="text-value-detail customSpan"
+                >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+              >
+            </nz-row>
+            <nz-row style="height: 50px">
+              <span class="text-label customSpan" style="width: 40%"
+                >Băng thông quốc tế:</span
+              >
+              <span class="text-value-detail customSpan"
+                >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+              >
+            </nz-row>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-row style="height: 50px">
+              <span class="text-label customSpan1" style="width: 40%"
+                >Hệ điều hành:</span
+              >
+              <span class="text-value-detail customSpan1"
+                >{{ instancesModel.imageName }}
+                <a
+                  class="text-blue"
+                  (click)="navigateToChangeImage()"
+                  style="margin-left: 15px"
+                >
+                  <img src="assets/imgs/undo.png" alt="" /><span
+                    style="margin-left: 15px"
+                    >Thay đổi</span
+                  ></a
+                ></span
+              >
+            </nz-row>
+            <nz-row style="height: 50px; background-color: #e2e2e9">
+              <span class="text-label customSpan1" style="width: 40%"
+                >Truy cập và bảo mật:</span
+              >
+              <span
+                class="text-value-detail customSpan1"
+                *ngFor="let item of listSecurityGroupModel; let first = first"
+                >{{ !first ? ', ' : '' }}{{ item.name }}
+              </span>
+            </nz-row>
+            <nz-row style="height: 50px">
+              <span class="text-label customSpan1" style="width: 40%"
+                >IP Public:</span
+              >
+              <span class="text-value-detail customSpan1">{{ listIPStr }}</span>
+            </nz-row>
+            <nz-row style="height: 50px; background-color: #e2e2e9">
+              <span class="text-label customSpan1" style="width: 40%"
+                >IP LAN:</span
+              >
+              <span class="text-value-detail customSpan1">{{
+                instancesModel.ipPrivate
+              }}</span>
+            </nz-row>
+          </div>
+        </nz-row>
+      </nz-card>
+
+      <nz-card
+        style="border-radius: 8px"
+        [nzBordered]="false"
+        [nzLoading]="loading"
+        *ngIf="instancesModel"
+      >
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Chu kỳ thanh toán</span>
+        </div>
+        <nz-row nzGutter="16">
+          <nz-col nzSpan="12">
+            <span class="text-label">Ngày cấp dịch vụ:</span>
+            <span class="text-value-detail">{{
+              instancesModel.createdDate | date : 'dd/MM/yyyy'
+            }}</span>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <span class="text-label">Ngày hết hạn:</span>
+            <span class="text-value-detail">
+              {{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}</span
+            >
+          </nz-col>
+        </nz-row>
+        <nz-row style="margin-top: 20px" nzGutter="16">
+          <nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label
+                >Chọn chu kỳ thanh toán (<span class="text-red">*</span>) -
+                Tháng</nz-form-label
+              >
+              <nz-form-control>
+                <nz-input-number
+                  [nzMin]="0"
+                  [nzMax]="100"
+                  [nzStep]="1"
+                  [(ngModel)]="numberMonth"
+                  (ngModelChange)="onChangeTime($event)"
+                  [ngModelOptions]="{ standalone: true }"
+                  nzSize="large"
+                ></nz-input-number>
+              </nz-form-control> </nz-form-item
+          ></nz-col>
+          <nz-col nzSpan="12">
+            <div
+              class="text-label text-red"
+              style="display: flex; align-items: center"
+            >
+              Ngày hết hạn dự kiến:
+              {{ newExpiredDate | date : 'dd/MM/yyyy' }}
+            </div>
+          </nz-col>
+        </nz-row>
+      </nz-card></nz-col
+    >
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thành tiền</span>
+        </div>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-label">
+              Chi phí gia hạn máy ảo (<span>{{ numberMonth }}</span> tháng)
+            </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount | number }} VNĐ
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row
+          style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          "
+          nzGutter="16"
+        >
+          <nz-col nzSpan="16">
+            <span class="text-label"> Thành tiền (Đã bao gồm 10% VAT): </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #ea3829" nzAlign="right">
+              {{ totalincludesVAT | number }}
+              VNĐ
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%" class="text-right">
+            <button nz-button (click)="cancel()">
+              <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/cancel.svg"
+                alt=""
+              />Hủy
+            </button>
+            <button
+              nz-button
+              nzSize="large"
+              nzType="primary"
+              (click)="showModal()"
+              [disabled]="isDisable"
+            >
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              Gia hạn
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleExtend"
+  nzTitle="Xác nhận gia hạn máy ảo"
+  (nzOnCancel)="handleCancelExtend()"
+>
+  <ng-container *nzModalContent>
+    <div>Quý khách chắc chắn muốn gia hạn dịch vụ này?</div>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelExtend()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkExtend()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

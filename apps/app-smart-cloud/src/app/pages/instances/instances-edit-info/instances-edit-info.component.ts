@@ -2,27 +2,29 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  HostListener,
   Inject,
   OnInit,
-  Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   ImageTypesModel,
-  Images,
+  Image,
   InstancesModel,
   RebuildInstances,
+  OfferItem,
 } from '../instances.model';
 import { InstancesService } from '../instances.service';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { concatMap, finalize, from } from 'rxjs';
+import { finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
-import { NguCarouselConfig } from '@ngu/carousel';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -37,6 +39,7 @@ export class InstancesEditInfoComponent implements OnInit {
   region: number;
   projectId: number;
   customerId: number;
+  email: string;
   //userId: number = this.tokenService.get()?.userId;
 
   rebuildInstances: RebuildInstances = new RebuildInstances();
@@ -44,17 +47,17 @@ export class InstancesEditInfoComponent implements OnInit {
   instancesModel: InstancesModel;
   id: number;
   pagedCardListImages: Array<Array<any>> = [];
-  effect = 'scrollx';
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
   isSelected: boolean = false;
-  hdh: Images;
-  currentImage: Images;
+  hdh: number;
+  currentImage: Image;
   listSelectedImage = [];
   selectedImageTypeId: number;
-  listOfImageByImageType = [];
+  listOfImageByImageType: Map<number, Image[]> = new Map();
   imageTypeId = [];
+  securityGroupStr = '';
 
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
@@ -76,11 +79,7 @@ export class InstancesEditInfoComponent implements OnInit {
         this.listSelectedImage[i] = 0;
       }
     }
-    if (this.currentImage.id != event) {
-      this.isSelected = true;
-    } else {
-      this.isSelected = false;
-    }
+    this.isSelected = true;
     console.log('Hệ điều hành', this.hdh);
     console.log('list seleted Image', this.listSelectedImage);
   }
@@ -94,74 +93,138 @@ export class InstancesEditInfoComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService,
-    private el: ElementRef,
-    private renderer: Renderer2,
+    private notification: NzNotificationService,
     private loadingSrv: LoadingService
   ) {}
 
+  @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
+  reloadCarousel: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.reloadCarousel = true;
+    this.updateActivePoint();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
+  }
+
+  updateActivePoint(): void {
+    // Gọi hàm reloadCarousel khi cần reload
+    if (this.reloadCarousel) {
+      this.reloadCarousel = false;
+      setTimeout(() => {
+        this.myCarouselImage.reset();
+      }, 100);
+    }
+  }
+
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
+    this.email = this.tokenService.get()?.email;
     this.getAllImageType();
+    this.cdr.detectChanges();
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService
-          .getById(this.id, false)
+          .getById(this.id, true)
           .subscribe((dataInstance: any) => {
             this.instancesModel = dataInstance;
+
+            if (this.instancesModel.securityGroupStr != null) {
+              let SGSet = new Set<string>(
+                this.instancesModel.securityGroupStr.split(',')
+              );
+              this.securityGroupStr = Array.from(SGSet).join(', ');
+            }
             this.region = this.instancesModel.regionId;
-            this.getAllImageByImageType(this.imageTypeId);
+            this.getListIpPublic();
+            this.getAllOfferImage(
+              this.imageTypeId,
+              this.instancesModel.imageId
+            );
             this.dataService
               .getImageById(this.instancesModel.imageId)
               .pipe(finalize(() => this.loadingSrv.close()))
 
               .subscribe((dataimage: any) => {
-                //this.hdh = dataimge;
                 this.currentImage = dataimage;
-                //  this.selectedTypeImageId = this.hdh.imageTypeId;
                 this.loading = false;
                 this.cdr.detectChanges();
               });
+            this.cdr.detectChanges();
           });
       }
     });
     this.cdr.detectChanges();
   }
 
+  listIPStr = '';
+  getListIpPublic() {
+    this.dataService
+      .getPortByInstance(this.id, this.region)
+      .subscribe((dataNetwork: any) => {
+        let listIP: string[] = [];
+        dataNetwork.forEach((e) => {
+          listIP = listIP.concat(e.fixedIPs);
+        });
+        this.listIPStr = listIP.join(', ');
+        this.cdr.detectChanges();
+      });
+  }
+
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
-      this.listImageTypes.forEach (e => {
+      this.listImageTypes.forEach((e) => {
         this.imageTypeId.push(e.id);
-      })
+      });
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllImageByImageType(imageTypeId: any[]) {
-    this.listOfImageByImageType = [];
-    // Đảm bảo tuần tự ds Image theo như ds ImageType tương ứng
-    from(imageTypeId)
-      .pipe(
-        concatMap((e) =>
-          this.dataService.getAllImage(null, this.region, e, this.tokenService.get()?.userId)
-        )
-      )
-      .subscribe((result) => {
-        this.listOfImageByImageType.push(result);
+  getAllOfferImage(imageTypeId: any[], currentImageId: number) {
+    imageTypeId.forEach((id) => {
+      let listImage: Image[] = [];
+      this.listOfImageByImageType.set(id, listImage);
+    });
+    this.dataService
+      .getListOffers(this.region, 'VM-Image')
+      .subscribe((data: OfferItem[]) => {
+        data.forEach((e: OfferItem) => {
+          if (e.status.toUpperCase() == 'ACTIVE') {
+            let tempImage = new Image();
+            e.characteristicValues.forEach((char) => {
+              if (char.charOptionValues[0] == 'Id') {
+                tempImage.id = Number.parseInt(char.charOptionValues[1]);
+                tempImage.name = e.offerName;
+              }
+              if (char.charOptionValues[0] == 'ImageTypeId') {
+                if (tempImage.id != currentImageId) {
+                  this.listOfImageByImageType
+                    .get(Number.parseInt(char.charOptionValues[1]))
+                    .push(tempImage);
+                }
+              }
+            });
+          }
+        });
+        this.cdr.detectChanges();
+        console.log('list Images', this.listOfImageByImageType);
       });
-    console.log('list of image by imagetype', this.listOfImageByImageType);
   }
 
   onRegionChange(region: RegionModel) {
-    // Handle the region change event
-    this.region = region.regionId;
-    console.log(this.tokenService.get()?.userId);
-    this.getAllImageByImageType(this.imageTypeId);
-    this.cdr.detectChanges();
+    this.route.navigate(['/app-smart-cloud/instances']);
   }
-  onProjectChange(project: any) {}
+  onProjectChange(project: any) {
+    this.route.navigate(['/app-smart-cloud/instances']);
+  }
 
   modify(): void {
     this.modalSrv.create({
@@ -179,20 +242,21 @@ export class InstancesEditInfoComponent implements OnInit {
   save(): void {
     this.rebuildInstances.regionId = this.instancesModel.regionId;
     this.rebuildInstances.customerId = this.instancesModel.customerId;
-    this.rebuildInstances.imageId = this.hdh.id;
-    this.rebuildInstances.flavorId = this.instancesModel.flavorId;
+    this.rebuildInstances.imageId = this.hdh;
     this.rebuildInstances.id = this.instancesModel.id;
-    this.dataService.rebuild(this.rebuildInstances).subscribe(
-      (data: any) => {
+    this.dataService.rebuild(this.rebuildInstances).subscribe({
+      next: (data: any) => {
         console.log(data);
-        this.message.success('Thay đổi hệ điều hành thành công');
+        this.notification.success('', 'Thay đổi hệ điều hành thành công');
         this.returnPage();
       },
-      (error) => {
-        console.log(error.error);
-        this.message.error('Thay đổi hệ điều hành không thành công');
-      }
-    );
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Thay đổi hệ điều hành không thành công'
+        );
+      },
+    });
   }
 
   navigateToEdit() {
@@ -200,11 +264,7 @@ export class InstancesEditInfoComponent implements OnInit {
       '/app-smart-cloud/instances/instances-edit/' + this.id,
     ]);
   }
-  navigateToChangeImage() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
-    ]);
-  }
+
   returnPage(): void {
     this.route.navigate(['/app-smart-cloud/instances']);
   }

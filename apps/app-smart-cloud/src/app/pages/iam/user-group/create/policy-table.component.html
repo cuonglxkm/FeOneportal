@@ -1,24 +1,46 @@
-<nz-card [nzTitle]="policyCardTitle">
-    <nz-row style="margin-bottom: 16px" nzJustify="space-between">
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
-            <input style="width: 300px;" [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text"
-                   nz-input
-                   placeholder="Tìm kếm tên."/>
+<nz-card>
+  <nz-row nzJustify="space-between" nzAlign="middle" style="margin-bottom: 16px">
+    <nz-col>
+      <div style="font-size: 20px; font-weight: 600">Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
+    </nz-col>
+    <nz-col>
+      <nz-space>
+        <nz-input-group
+          *nzSpaceItem
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large"
+          [(ngModel)]="value"
+          (input)="onInputChange($event.target['value'])"
+        >
+          <input
+            name="name"
+            nz-input
+            placeholder="Tìm kiếm tên, thời gian tạo ..."
+          />
         </nz-input-group>
-        <ng-template #suffixButton>
-            <button nz-button nzType="primary" nzSearch htmlType="button" (click)="searchPolicies()">
-                <span nz-icon nzTheme="outline"></span>Search
-            </button>
+        <ng-template #prefixIconSearch>
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            nz-tooltip="Tìm kiếm"
+          />
         </ng-template>
-        <nz-row nzAlign="middle">
-            <button nz-button nzSize="default" style="cursor: pointer;" (click)="getPolicies()">
-                <span nz-icon nzType="reload" nzTheme="outline"></span>
-            </button>
-        </nz-row>
-    </nz-row>
-    <nz-row>
-        <h3>Thông tin Policy</h3>
-    </nz-row>
+        <button
+          *nzSpaceItem
+          style="border: none;"
+          nz-button
+          nzSize="large"
+          nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
+          (click)="reload()"
+        >
+          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
+        </button>
+      </nz-space>
+    </nz-col>
+  </nz-row>
+
     <nz-table
         #rowSelectionTable
         nzShowSizeChanger
@@ -28,7 +50,8 @@
         [nzLoading]="loading"
         [nzTotal]="response?.totalCount"
         [nzPageSize]="response?.pageSize"
-        [nzPageIndex]="response?.currentPage">
+        [nzPageIndex]="response?.currentPage"
+        (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
         <thead>
         <tr>
             <th [nzChecked]="checked"
@@ -83,6 +106,3 @@
         </tbody>
     </nz-table>
 </nz-card>
-<ng-template #policyCardTitle>
-    <div>Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
-</ng-template>

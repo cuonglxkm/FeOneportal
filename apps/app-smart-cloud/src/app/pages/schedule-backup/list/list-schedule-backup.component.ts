@@ -13,6 +13,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {BaseResponse} from "../../../../../../../libs/common-utils/src";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {ProjectService} from "../../../shared/services/project.service";
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -20,6 +22,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
   styleUrls: ['./list-schedule-backup.component.less'],
 })
 export class ListScheduleBackupComponent implements OnInit{
+
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -63,21 +66,27 @@ export class ListScheduleBackupComponent implements OnInit{
 
   responseCapacityBackup: CapacityBackupSchedule[] = []
   loadingCapacity: boolean = false
+
+  typeVPC: number
+  isBegin: boolean = false
+
   constructor(private router: Router,
               private backupScheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private projectService: ProjectService) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    this.getListScheduleBackup(true)
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
-    this.getListScheduleBackup()
+    this.getListScheduleBackup(true)
   }
 
   onChange(value: string) {
@@ -89,13 +98,14 @@ export class ListScheduleBackupComponent implements OnInit{
     }
 
     this.formSearch.scheduleStatus = this.selectedValue
-    this.getListScheduleBackup()
+    this.getListScheduleBackup(false)
   }
 
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
     this.formSearch.scheduleName = this.value
+    this.getListScheduleBackup(false)
   }
 
   navigateToCreate() {
@@ -108,45 +118,31 @@ export class ListScheduleBackupComponent implements OnInit{
     this.pageIndex = pageIndex
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
-    this.getListScheduleBackup();
+    this.getListScheduleBackup(false);
   }
 
-  getListScheduleBackup() {
+  getListScheduleBackup(isBegin) {
     this.isLoading = true
     console.log(this.formSearch.pageIndex)
     console.log(this.formSearch.pageSize)
+
+    this.formSearch.regionId = this.region;
+    this.formSearch.projectId = this.project;
+
+    console.log(this.formSearch)
+
     this.backupScheduleService.search(this.formSearch).subscribe(data => {
       console.log(data)
         this.response = data
         this.listBackupSchedule = data.records
         this.isLoading = false
-
+      if (isBegin) {
+        this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
+      }
+    }, error => {
+      this.response = null
+      this.isLoading = false
     })
-  }
-
-  selectedOptionActionChange(value: any, data: any) {
-    this.selectedOptionAction = value
-    this.selectedAction = data
-    switch (parseInt(value, 10)){
-      case 1:
-        this.navigateToEdit(this.selectedAction.serviceType, this.selectedAction.id)
-        break;
-      case 2:
-        this.showModalPaused(this.selectedAction.id)
-        break;
-      case 3:
-        this.showModalDelete(this.selectedAction.id)
-        break;
-      case 4:
-        console.log(this.selectedAction.id)
-        this.showModalRestore(this.selectedAction.id)
-        break;
-      case 5:
-        this.showModalPlay(this.selectedAction.id)
-        break;
-      default:
-        break;
-    }
   }
 
   navigateToEdit(serviceType: number, id: number) {
@@ -164,7 +160,7 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handlePausedCancel() {
     this.isVisiblePaused = false;
-    this.getListScheduleBackup()
+    this.getListScheduleBackup(false)
   }
   handlePausedOk() {
     this.formAction.customerId = this.tokenService.get()?.userId
@@ -174,12 +170,12 @@ export class ListScheduleBackupComponent implements OnInit{
       this.isVisiblePaused = false;
       this.isVisiblePaused = false;
       this.notification.success('Thành công', 'Tạm dừng lịch backup thành công')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     }, error =>  {
       this.isVisiblePaused = false;
       this.isVisiblePaused = false;
       this.notification.error('Thất bại','Tạm dừng lịch backup thất bại')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     })
 
   }
@@ -191,17 +187,17 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handleDeleteCancel() {
     this.isVisibleDelete = false;
-    this.getListScheduleBackup()
+    this.getListScheduleBackup(false)
   }
   handleDeletedOk() {
     this.backupScheduleService.delete(this.customerId, this.idSchedule).subscribe(data => {
       this.isVisibleDelete = false;
       this.notification.success('Thành công', 'Xóa lịch backup thành công')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     }, error =>  {
       this.isVisibleDelete = false;
       this.notification.error('Thất bại','Xóa lịch backup thất bại')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     })
   }
 
@@ -212,7 +208,7 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handlePlayCancel() {
     this.isVisiblePlay = false;
-    this.getListScheduleBackup()
+    this.getListScheduleBackup(false)
   }
   handlePlaydOk() {
     this.formAction.customerId = this.tokenService.get()?.userId
@@ -221,12 +217,12 @@ export class ListScheduleBackupComponent implements OnInit{
       this.isVisiblePlay = false;
       this.isLoadingPlay = false;
       this.notification.success('Thành công', 'Tiếp tục lịch backup thành công')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     }, error =>  {
       this.isVisiblePlay = false;
       this.isLoadingPlay = false;
       this.notification.error('Thất bại','Tiếp tục lịch backup thất bại')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     })
   }
 
@@ -237,7 +233,7 @@ export class ListScheduleBackupComponent implements OnInit{
   }
   handleRestoreCancel() {
     this.isVisibleRestore = false;
-    this.getListScheduleBackup()
+    this.getListScheduleBackup(false)
   }
   handleRestoredOk() {
     console.log('id', this.formAction)
@@ -247,12 +243,12 @@ export class ListScheduleBackupComponent implements OnInit{
       this.isVisibleRestore = false;
       this.isLoadingRestore = false
       this.notification.success('Thành công', 'Khôi phục lập lịch backup thành công')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     }, error =>  {
       this.isVisibleRestore = false;
       this.isLoadingRestore = false
       this.notification.error('Thất bại','Khôi phục lập lịch backup thất bại')
-      this.getListScheduleBackup()
+      this.getListScheduleBackup(false)
     })
   }
 
@@ -267,29 +263,30 @@ export class ListScheduleBackupComponent implements OnInit{
     })
   }
 
+  loadProjects() {
+    this.projectService.getByRegion(this.region).subscribe(data => {
+      let project = data.find(project => project.id === +this.project);
+      if (project) {
+        this.typeVPC = project.type
+      }
+    });
+  }
+
   ngOnInit(): void {
-    console.log(this.pageSize)
-    console.log(this.pageIndex)
-    this.formSearch.customerId = this.tokenService.get()?.userId
     this.formSearch.pageIndex = this.pageIndex
     this.formSearch.pageSize = this.pageSize
+    this.formSearch.regionId = this.region;
+    this.formSearch.projectId = this.project;
 
-    const initFormSearch = new FormSearchScheduleBackup()
-    initFormSearch.customerId = this.tokenService.get()?.userId
-    initFormSearch.pageIndex = this.pageIndex
-    initFormSearch.pageSize = this.pageSize
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    if (this.project && this.region) {
+      this.loadProjects()
+    }
 
-    this.isLoading = true
-    this.backupScheduleService.search(initFormSearch).subscribe(data => {
-      if (!data.totalCount) {
-        this.router.navigate(['/app-smart-cloud/schedule/backup/blank'])
-      }
-      this.response = data
-      this.listBackupSchedule = data.records
-      this.isLoading = false
+    this.getListScheduleBackup(true)
 
-    })
-    // this.getListScheduleBackup()
     this.getCapacityBackup()
   }
 }

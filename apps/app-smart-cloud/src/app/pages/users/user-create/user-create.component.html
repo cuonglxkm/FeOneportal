@@ -1,36 +1,31 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo User'">
+<page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo User'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item> Tạo User </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
-    </div>
-  </ng-template>
 </page-header>
 
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-  <nz-card [nzBordered]="false" nzTitle="Thông tin của User">
+  <nz-card [nzBordered]="false" style="border-radius: 4px">
+    <div style="margin-bottom: 20px">
+      <span class="text-card-header">Thông tin của User</span>
+    </div>
     <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Tên của User<span class="text-red">*</span></nz-form-label
+            >Tên của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
             <input
+              class="input-custom"
               nz-input
               formControlName="name"
               [(ngModel)]="userCreate.userName"
@@ -55,15 +50,14 @@
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="email"
-            >Email của User<span class="text-red">*</span></nz-form-label
+            >Email của User (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzDisableAutoTips [nzErrorTip]="emailErrorTpl">
             <input
+              class="input-custom"
               nz-input
               formControlName="email"
               [(ngModel)]="userCreate.email"
@@ -85,11 +79,12 @@
         </nz-form-item>
       </nz-col>
     </nz-row>
+    <nz-row nzGutter="16"> </nz-row>
     <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
+      <nz-col nzLg="24" style="border-radius: 4px">
         <nz-alert
           nzType="warning"
-          [nzMessage]="nzDescriptionWarning06"
+          [nzDescription]="nzDescriptionWarning06"
           nzShowIcon
         ></nz-alert>
         <ng-template #nzDescriptionWarning06>
@@ -135,17 +130,26 @@
     [nzXs]="24"
     [nzXXl]="24"
   >
-    <button
-      class="m-r-8"
-      nz-button
-      nzType="default"
-      style="background-color: #9c9c9c; color: white"
-      (click)="navigateToList()"
-    >
-      Quay lại
+    <button nz-button (click)="navigateToList()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/arrow-left-2.svg"
+        alt=""
+      />
+      <span>Quay lại</span>
     </button>
-    <button class="m-r-8" nz-button nzType="primary" (click)="showModal()">
-      Tạo mới
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="!form.valid"
+      (click)="showModal()"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/add-circle.svg"
+        alt=""
+      />
+      <span>Thêm User</span>
     </button>
   </div>
 </div>
@@ -154,14 +158,11 @@
   [(nzVisible)]="isVisibleCreate"
   nzTitle="Xác nhận tạo User"
   (nzOnCancel)="handleCancelCreate()"
-  (nzOnOk)="handleOkCreate()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      [nzMessage]="customTemplateMessageCreate"
+      [nzDescription]="customTemplateMessageCreate"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageCreate>
@@ -169,15 +170,28 @@
         Bạn đang thực hiện tạo mới User <span>{{ userCreate.userName }}</span>
       </div>
     </ng-template>
-    <nz-row nzGutter="16">
+    <nz-row nzGutter="16" style="margin-top: 10px">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Để thực hiện tạo mới User, vui lòng chọn "Đồng ý" để xác nhận.
-            nhận</nz-form-label
-          >
-        </nz-form-item>
+        <div
+          >Để thực hiện tạo mới User, vui lòng chọn "<b>Đồng ý</b>" để xác nhận.</div
+        >
       </nz-col>
     </nz-row>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkCreate()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Đồng ý
+    </button>
+  </div>
 </nz-modal>

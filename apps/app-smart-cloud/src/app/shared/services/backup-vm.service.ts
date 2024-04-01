@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {
     BackupPackage,
     BackupVm,
@@ -13,6 +13,7 @@ import Pagination from "../models/pagination";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {catchError} from "rxjs/internal/operators/catchError";
+import { throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -57,39 +58,107 @@ export class BackupVmService extends BaseService {
         return this.http.get<Pagination<BackupVm>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', {
             headers: this.getHeaders(),
             params: params
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
+
     }
 
     detail(id: number) {
         return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
             headers: this.getHeaders()
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
+
     }
 
     delete(id: number) {
         return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
             headers: this.getHeaders()
-        })
-            .pipe(catchError(this.errorCode))
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
+
     }
 
     restoreCurrentBackupVm(form: RestoreFormCurrent) {
         return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form), {
             headers: this.getHeaders()
-        })
+        }).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
+
     }
 
     getVolumeInstanceAttachment(id: number) {
-        return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}/instance-attachments`, {headers: this.getHeaders()})
+        return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions
+          + `/instances/${id}/instance-attachments?includeVolumeRoot=false`,
+          {headers: this.getHeaders()}).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
+
     }
 
-    getBackupPackages(customerId: number) {
-        return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages?customerId=${customerId}`, {headers: this.getHeaders()})
+    getBackupPackages() {
+        return this.http.get<BackupPackage[]>(this.baseUrl + this.ENDPOINT.provisions
+          + `/backups/packages`, {headers: this.getHeaders()}).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 
     create(data: CreateBackupVmOrderData) {
-        return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data), {
-            headers: this.getHeaders()
-        })
+        return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
+          .pipe(catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              console.error('login');
+            } else if (error.status === 404) {
+              // Handle 404 Not Found error
+              console.error('Resource not found');
+            }
+            return throwError(error);
+          }))
     }
 }

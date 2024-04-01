@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {AttachedDto, EditSizeMemoryVolumeDTO, ExtendVolumeDTO, VolumeDTO} from "../../../../shared/dto/volume.dto";
+import {AttachedDto, ExtendVolumeDTO, VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {VolumeService} from "../../../../shared/services/volume.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -7,6 +7,10 @@ import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupExtendVolumeComponent} from "../popup-volume/popup-extend-volume.component";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
+import {RegionModel} from "../../../../shared/models/region.model";
+import { ProjectModel, SizeInCLoudProject } from '../../../../shared/models/project.model';
+import { ProjectService } from 'src/app/shared/services/project.service';
+import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
   selector: 'app-detail-volume',
@@ -14,6 +18,9 @@ import {EditSizeVolumeModel} from "../../../../shared/models/volume.model";
   styleUrls: ['./detail-volume.component.less'],
 })
 export class DetailVolumeComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('region')).regionId;
+  project = JSON.parse(localStorage.getItem('projectId'));
+
   headerInfo = {
     breadcrumb1: 'Home',
     breadcrumb2: 'Dịch vụ',
@@ -21,7 +28,7 @@ export class DetailVolumeComponent implements OnInit {
     content: 'Chi tiết Volume '
   };
 
-  volumeInfo: VolumeDTO;
+  volumeInfo: VolumeDTO = new VolumeDTO();
 
   attachedDto: AttachedDto[] = [];
 
@@ -29,26 +36,59 @@ export class DetailVolumeComponent implements OnInit {
 
   isLoading: boolean = false;
 
-  ngOnInit(): void {
-    const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
-    this.getVolumeById(idVolume);
+  typeVPC: number
+
+  sizeInCloudProject: SizeInCLoudProject = new SizeInCLoudProject()
+
+  regionChanged(region: RegionModel) {
+    // this.region = region.regionId
+    // this.projectService.getByRegion(this.region).subscribe(data => {
+    //   if (data.length){
+    //     localStorage.setItem("projectId", data[0].id.toString())
+        this.router.navigate(['/app-smart-cloud/volumes'])
+    //   }
+    // });
   }
 
-  private getVolumeById(idVolume: string) {
+  projectChanged(project: ProjectModel) {
+    this.project = project?.id
+    this.typeVPC = project.type
+
+    // this.router.navigate(['/app-smart-cloud/volumes'])
+    // this.getListVolumes()
+  }
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/volumes'])
+    //
+  }
+
+  ngOnInit(): void {
+    const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
+    let regionAndProject = getCurrentRegionAndProject()
+    this.region = regionAndProject.regionId
+    this.project = regionAndProject.projectId
+    // this.customerId = this.tokenService.get()?.userId
+    this.getVolumeById(Number.parseInt(idVolume));
+  }
+
+  onModelChange() {
+
+  }
+
+  getVolumeById(idVolume: number) {
     this.isLoading = true;
-
-    this.volumeSevice.getVolummeById(idVolume).subscribe(data => {
-
+    this.volumeSevice.getVolumeById(idVolume).subscribe(data => {
+        this.isLoading = false;
+        console.log('data get volume by id', data)
         this.volumeInfo = data;
-        if(data.attachedInstances!=null){
+        if (data.attachedInstances != null) {
           this.attachedDto = data.attachedInstances;
         }
-        this.isLoading = false;
-        if (this.attachedDto.length > 1) {
+
+        if (this.attachedDto.length > 0) {
           this.attachedDto.forEach(vm => {
             this.listVMs += vm.instanceName + '\n';
           })
-
         }
       }, error => {
         this.isLoading = false;
@@ -135,13 +175,27 @@ export class DetailVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volume/edit/' + idVolume]);
   }
 
+  navigateToRenew(idVolume: number) {
+    this.router.navigate(['/app-smart-cloud/volumes/renew/' + idVolume])
+  }
+
+  navigateToResizeVPC(idVolume: number) {
+    this.router.navigate(['/app-smart-cloud/volume/vpc/resize/' + idVolume])
+  }
+
   volumeStatus: Map<String, string>;
 
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private volumeSevice: VolumeService, private router: Router, private activatedRoute: ActivatedRoute, private nzMessage: NzMessageService, private modalService: NzModalService) {
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private volumeSevice: VolumeService,
+              private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private nzMessage: NzMessageService,
+              private modalService: NzModalService,
+              private projectService: ProjectService) {
     this.volumeStatus = new Map<String, string>();
-    this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
-    this.volumeStatus.set('ERROR', 'Lỗi');
-    this.volumeStatus.set('SUSPENDED', 'Tạm ngừng');
+    this.volumeStatus.set('KHOITAO', 'ĐANG HOẠT ĐỘNG');
+    this.volumeStatus.set('ERROR', 'LỖI');
+    this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
   }
 
 }

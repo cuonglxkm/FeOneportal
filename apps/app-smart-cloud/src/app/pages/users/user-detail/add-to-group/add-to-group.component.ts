@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
 import { User, UserCreate, UserGroup } from 'src/app/shared/models/user.model';
 import { LoadingService } from '@delon/abc/loading';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-add-to-group',
@@ -37,7 +38,7 @@ export class AddToGroupComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    public message: NzMessageService,
+    private notification: NzNotificationService,
     private loadingSrv: LoadingService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -56,10 +57,8 @@ export class AddToGroupComponent implements OnInit {
   // Danh sách Groups
   getGroup(): void {
     this.loading = true;
-    this.listGroupPicked = [];
     this.groupNames = [];
     this.policyNames.clear();
-    this.listCheckedGroupInPage = [];
     this.checkedAllInPage = false;
     this.service
       .getGroups(this.searchParam, this.pageSize, this.pageIndex)
@@ -97,71 +96,65 @@ export class AddToGroupComponent implements OnInit {
 
   reloadGroupTable(): void {
     this.listOfGroups = [];
+    this.groupNames = [];
+    this.mapOfCheckedGroup.clear();
+    this.policyNames.clear();
+    this.checkedGroup = false;
+    this.indeterminateGroup = false;
     this.getGroup();
   }
 
-  listGroupPicked: UserGroup[] = [];
   groupNames = [];
   policyNames = new Set<string>();
-  onClickGroupItem(groupName: string, item: any) {
-    var index = 0;
-    var isAdded = true;
-    this.groupNames.forEach((e) => {
-      if (e == groupName) {
-        this.groupNames.splice(index, 1);
-        this.listGroupPicked.splice(index, 1);
-        isAdded = false;
-      }
-      index++;
-    });
-    if (isAdded) {
-      this.groupNames.push(groupName);
-      this.listGroupPicked.push(item);
-    }
+  checkedGroup = false;
+  indeterminateGroup = false;
+  mapOfCheckedGroup = new Map<string, string[]>();
 
-    this.policyNames.clear();
-    this.listGroupPicked.forEach((e) => {
-      e.policies.forEach((element) => {
-        this.policyNames.add(element);
-      });
-    });
-
-    if (this.listGroupPicked.length == this.listOfGroups.length) {
-      this.checkedAllInPage = true;
-    } else {
-      this.checkedAllInPage = false;
-    }
-
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  onCurrentPageDataChangeGroup(listOfCurrentPageData: UserGroup[]): void {
+    this.listOfGroups = listOfCurrentPageData;
+    this.refreshCheckedStatusGroup();
   }
 
-  listCheckedGroupInPage = [];
-  onChangeCheckAllGroup(checked: any) {
-    let listChecked = [];
-    this.listOfGroups.forEach(() => {
-      listChecked.push(checked);
-    });
-    this.listCheckedGroupInPage = listChecked;
-    if (checked == true) {
-      this.listGroupPicked = [];
-      this.listOfGroups.forEach((e) => {
-        this.listGroupPicked.push(e);
-      });
-    } else {
-      this.listGroupPicked = [];
-    }
-    this.groupNames = [];
-    this.policyNames.clear();
-    this.listGroupPicked.forEach((e) => {
-      this.groupNames.push(e.name);
-      e.policies.forEach((element) => {
-        this.policyNames.add(element);
-      });
-    });
+  refreshCheckedStatusGroup(): void {
+    const listOfEnabledData = this.listOfGroups;
+    this.checkedGroup = listOfEnabledData.every(({ name }) =>
+      this.mapOfCheckedGroup.has(name)
+    );
+    this.indeterminateGroup =
+      listOfEnabledData.some(({ name }) => this.mapOfCheckedGroup.has(name)) &&
+      !this.checkedGroup;
+  }
 
-    console.log('list groupNames', this.groupNames);
-    console.log('list policyNames', this.policyNames);
+  updateCheckedSetGroup(item: UserGroup, checked: boolean): void {
+    if (checked) {
+      this.mapOfCheckedGroup.set(item.name, item.policies);
+    } else {
+      this.mapOfCheckedGroup.delete(item.name);
+    }
+  }
+
+  handleDataPicked() {
+    this.groupNames = Array.from(this.mapOfCheckedGroup.keys());
+    this.policyNames.clear();
+    this.mapOfCheckedGroup.forEach((e) => {
+      e.forEach((item) => {
+        this.policyNames.add(item);
+      });
+    });
+  }
+
+  onItemCheckedGroup(item: UserGroup, checked: boolean): void {
+    this.updateCheckedSetGroup(item, checked);
+    this.handleDataPicked();
+    this.refreshCheckedStatusGroup();
+  }
+
+  onAllCheckedGroup(checked: boolean): void {
+    this.listOfGroups.forEach((item) =>
+      this.updateCheckedSetGroup(item, checked)
+    );
+    this.handleDataPicked();
+    this.refreshCheckedStatusGroup();
   }
 
   addToGroups() {
@@ -186,12 +179,14 @@ export class AddToGroupComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-          this.message.success('Cập nhật User thành công');
+          this.notification.success('', 'Cập nhật User thành công');
           this.navigateToDetail();
         },
-        (error) => {
-          console.log(error.error);
-          this.message.error('Cập nhật User không thành công');
+        (e) => {
+          this.notification.error(
+            e.statusText,
+            'Cập nhật User không thành công'
+          );
         }
       );
   }

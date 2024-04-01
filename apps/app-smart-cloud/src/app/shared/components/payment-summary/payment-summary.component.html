@@ -1,0 +1,293 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'Thanh toán dịch vụ'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Cart </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+<div nz-row nzGutter="16">
+  <div nz-col nzSpan="16">
+    <nz-card style="border-radius: 8px">
+      <div style="margin-bottom: 20px">
+        <span class="text-card-header">Thông tin khách hàng</span>
+      </div>
+      <nz-row>
+        <div nz-col nzSpan="12">
+          <nz-row style="height: 50px">
+            <span class="fw-600" style="width: 40%">Tên khách hàng:</span>
+            <span>{{ userModel.name || '' }}</span>
+          </nz-row>
+          <nz-row style="height: 50px">
+            <span class="fw-600" style="width: 40%">Số điện thoại:</span>
+            <span>{{ userModel.phoneNumber }}</span>
+          </nz-row>
+          <nz-row style="height: 50px">
+            <span class="fw-600" style="width: 40%">Email:</span>
+            <span> {{ userModel.email }}</span>
+          </nz-row>
+          <nz-row style="height: 50px">
+            <span class="fw-600" style="width: 40%">Địa chỉ:</span>
+            <span>{{ userModel.address }}</span>
+          </nz-row>
+        </div>
+      </nz-row>
+    </nz-card>
+    <nz-card style="border-radius: 8px">
+      <div style="margin-bottom: 20px">
+        <span class="text-card-header">Thông tin dịch vụ</span>
+      </div>
+      <nz-table
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="listServiceInfo"
+      >
+        <thead>
+          <tr>
+            <th style="width: 20px">STT</th>
+            <th>Dịch vụ</th>
+            <th>Đơn giá (VNĐ)</th>
+            <th>Thời hạn (Tháng)</th>
+            <th>Số lượng</th>
+            <th>Số tiền (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listServiceInfo; let i = index">
+            <td>
+              {{ i + 1 }}
+            </td>
+            <td class="text-blue">{{ item.name }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.duration }}</td>
+            <td>{{ item.amount }}</td>
+            <td>{{ item.currency }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+
+    <div style="border-radius: 8px" class="custom-div">
+      <label
+        nz-checkbox
+        [(ngModel)]="acceptTerm"
+        [ngModelOptions]="{ standalone: true }"
+        >Đồng ý với <a>Điều khoản đăng ký dịch vụ</a></label
+      >
+    </div>
+  </div>
+  <div nz-col nzSpan="8">
+    <nz-card style="border-radius: 8px">
+      <div style="margin-bottom: 20px">
+        <span class="text-card-header">Thông tin thanh toán</span>
+      </div>
+      <div>
+        <nz-table>
+          <tr style="margin-bottom: 5px">
+            <td>Tổng tiền</td>
+            <td style="text-align: right">
+              <span class="price">{{ totalAmount }} VND</span>
+              <span>VND/tháng</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+          </tr>
+          <tr style="height: 10px">
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="margin-bottom: 5px">
+            <td>VAT(10%)</td>
+            <td style="text-align: right">
+              <span class="price"
+                >{{ (totalAmount - promotion) * 0.1 }} VND</span
+              >
+              <span>VND/tháng</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+          </tr>
+          <tr style="height: 10px">
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="display: flex; align-items: center">
+              <img alt="" src="assets/imgs/ticket-discount.png" />
+              <span>Khuyến mãi:</span>
+            </td>
+            <td style="text-align: right">
+              <span style="margin-right: 10px">{{ order.couponCode }}</span>
+              <a (click)="showModal()">Chọn hoặc nhập mã</a>
+            </td>
+          </tr>
+          <tr style="height: 10px">
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+            <td style="border-bottom: 1px solid rgba(0, 0, 0, 0.06)"></td>
+          </tr>
+          <tr style="height: 20px">
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="background-color: #CCE9FF; border-radius: 8px;">
+            <td style="padding: 10px;">
+              <span style="display: block; font-size: 16px; font-weight: 600;">Tổng thanh toán</span>
+              <span>( Đã bao gồm 10% VAT)</span>
+            </td>
+            <td style="text-align: right; color: #EA3829; font-weight: 600; padding: 10px;">
+              {{ totalAmount - promotion + (totalAmount - promotion) * 0.1 }}
+              VNĐ
+            </td>
+          </tr>
+        </nz-table>
+        <div style="margin-top: 30px;">
+          <button
+          [disabled]="!acceptTerm"
+          nz-button
+          nzType="primary"
+          (click)="payNow()"
+            style="
+              width: 100%;
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              justify-content: center;
+            "
+          >
+            <img src="assets/imgs/wallet.svg" />
+            Thanh toán
+          </button>
+          <button style="width: 100%; ; margin: 15px 0px 0px 0px; border: none" nz-button (click)="navigateToCreate()">
+            <img
+              style="padding-right: 10px"
+              src="assets/imgs/arrow-left-2.svg"
+              alt=""
+            />
+            <span>Quay lại</span>
+          </button>
+          
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDiscount"
+  nzTitle="Chọn Voucher"
+  nzWidth="700px"
+  (nzOnCancel)="handleCancelDiscount()"
+>
+  <ng-container *nzModalContent>
+    <nz-input-group
+      style="margin-right: 8px; margin-bottom: 8px; width: 100%"
+      [nzSuffix]="suffixApply"
+      [nzPrefix]="prefixLable"
+      nzSize="large"
+    >
+      <input
+        name="name"
+        nz-input
+        style="border: 1px solid #d9d9d9; padding-left: 8px"
+        placeholder="Nhập mã VNPT Cloud Voucher"
+        [(ngModel)]="inputCode"
+      />
+      <ng-template #prefixLable>
+        <label>Mã Voucher</label>
+      </ng-template>
+      <ng-template #suffixApply>
+        <button
+          nz-button
+          nzType="primary"
+          (click)="applyInputDiscount()"
+          [disabled]="inputCode == ''"
+        >
+          Áp dụng
+        </button>
+      </ng-template>
+    </nz-input-group>
+    <span *ngIf="!checkedExistDiscount" style="color: #ff4d4f"
+      >Rất tiếc! Không thể tìm thấy mã voucher này.</span
+    >
+    <nz-table
+      style="margin-top: 8px"
+      [nzLoading]="loading"
+      [nzData]="listDiscount"
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+      [nzScroll]="{ y: '320px' }"
+    >
+      <tbody>
+        <tr
+          class="test-1"
+          *ngFor="let item of listDiscount"
+          style="display: flex; padding-right: 10px"
+        >
+          <nz-card
+            class="ant-card-body-custom"
+            style="width: 100%; border-radius: 4px; cursor: pointer"
+            (click)="chooseDiscount(item.promotionCode)"
+          >
+            <nz-card-meta
+              [nzAvatar]="nzAvatarselected2"
+              [nzDescription]="nzDescriptionselected2"
+            >
+              <ng-template #nzAvatarselected2>
+                <img
+                  style="width: 150px; height: 100%"
+                  src="assets/imgs/image_discount.png"
+                  alt=""
+                />
+              </ng-template>
+              <ng-template #nzDescriptionselected2>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="20"
+                    ><span>{{ item.description }}</span
+                    ><br /><span
+                      >Thời gian áp dụng: {{ item.endDate }}</span
+                    ></nz-col
+                  >
+                  <nz-col style="display: flex; align-items: center" nzSpan="4">
+                    <input
+                      style="cursor: pointer"
+                      type="radio"
+                      [checked]="item.promotionCode == discountPicked"
+                    />
+                  </nz-col>
+                </nz-row>
+              </ng-template>
+            </nz-card-meta>
+          </nz-card>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDiscount()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDiscount()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

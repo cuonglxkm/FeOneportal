@@ -1,111 +1,62 @@
-<page-header
-  [content]="content"
-  [breadcrumb]="breadcrumb"
-  [action]="action"
-  [title]="'Danh sách Users'"
->
+<page-header [breadcrumb]="breadcrumb" [title]="'Danh sách Users'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item><a [routerLink]="['/']">Home</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item> Users </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
-    </div>
-  </ng-template>
-
-  <ng-template #content>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
-      <div
-        nz-col
-        [nzLg]="8"
-        [nzMd]="8"
-        [nzSm]="24"
-        [nzXl]="8"
-        [nzXs]="24"
-        [nzXXl]="8"
-      >
-        <nz-input-group
-          style="width: 100%"
-          nzSearch
-          [nzAddOnAfter]="suffixButton"
-        >
-          <input
-            name="name"
-            nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
-            [ngModel]="searchParam"
-            (ngModelChange)="changeSearch($event)"
-          />
-        </nz-input-group>
-        <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="getData()">
-            <i nz-icon nzType="search"></i>
-            Search
-          </button>
-        </ng-template>
-      </div>
-      <div
-        class="text-right p-0 m-b-0"
-        nz-col
-        [nzLg]="16"
-        [nzMd]="16"
-        [nzSm]="24"
-        [nzXl]="16"
-        [nzXs]="24"
-        [nzXXl]="16"
-      >
-        <button
-          class="m-r-8"
-          nz-button
-          style="cursor: pointer"
-          (click)="reloadTable()"
-        >
-          <span nz-icon nzType="reload" nzTheme="outline"></span>
-        </button>
-        <button
-          nz-button
-          nzType="default"
-          style="background-color: #9c9c9c; color: white"
-          (click)="showModal()"
-        >
-          <i nz-icon nzType="delete" style="margin-right: 10px"></i>
-          Xóa
-        </button>
-        <button
-          class="bg-success border-success"
-          nz-button
-          nzType="primary"
-          (click)="navigateToCreate()"
-        >
-          <span
-            nz-icon
-            nzType="plus"
-            nzTheme="outline"
-            style="margin-right: 10px"
-          >
-          </span>
-          Tạo mới
-        </button>
-      </div>
-    </div>
-  </ng-template>
 </page-header>
 
-<nz-card>
+<nz-card style="border-radius: 4px">
+  <div style="margin-bottom: 20px" nz-row [nzGutter]="24">
+    <div class="text-right p-0 m-b-0" nz-col nzSpan="24">
+      <nz-input-group
+        style="margin-right: 8px; width: 25%"
+        [nzPrefix]="prefixIconSearch"
+        nzSize="large"
+      >
+        <input
+          name="name"
+          nz-input
+          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [ngModel]="searchParam"
+          (ngModelChange)="changeSearch($event)"
+        />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <img
+          src="assets/imgs/search.svg"
+          alt=""
+          style="cursor: pointer"
+          nz-tooltip="Tìm kiếm"
+          (click)="getData()"
+        />
+      </ng-template>
+      <button style="border: none" nz-button (click)="showModal()">
+        <img style="margin-top: -4px" src="assets/imgs/trash.svg" />
+      </button>
+      <button style="border: none" nz-button (click)="reloadTable()">
+        <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
+      </button>
+      <button nz-button nzType="primary" (click)="navigateToCreate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/add-circle.svg"
+          alt=""
+        />
+        <span>Tạo mới</span>
+      </button>
+    </div>
+  </div>
   <nz-table
     #rowSelectionTable
     nzShowSizeChanger
+    [nzScroll]="{ x: '100%', y: '55vh' }"
     [nzFrontPagination]="false"
-    [nzData]="listOfUser"
+    [nzData]="listOfCurrentPageData"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
     [nzLoading]="loading"
     [nzTotal]="total"
     [(nzPageIndex)]="pageIndex"
@@ -115,33 +66,37 @@
   >
     <thead>
       <tr>
-        <th style="width: 20px">
-          <input
-            nz-input
-            type="checkbox"
-            (change)="onChangeCheckAll($event.target.checked)"
-            [(ngModel)]="checkedAllInPage"
-          />
-        </th>
+        <th
+          [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          nzLabel="Select all"
+          [nzWidth]="'50px'"
+          (nzCheckedChange)="onAllChecked($event)"
+          nzLeft
+        ></th>
         <th>Tên User</th>
         <th>Groups</th>
         <th>Thời gian tạo</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of listOfUser; let i = index">
-        <td>
-          <input
-            type="checkbox"
-            (change)="onClickItem(item.userName, $event.target.checked)"
-            [(ngModel)]="listCheckedInPage[i]"
-          />
+      <tr *ngFor="let item of listOfCurrentPageData; let i = index">
+        <td
+          [nzChecked]="setOfCheckedName.has(item.userName)"
+          (nzCheckedChange)="onItemChecked(item.userName, $event)"
+          nzLeft
+        ></td>
+        <td nzLeft>
+          <a
+            nz-tooltip
+            nzTooltipTitle="Xem chi tiết"
+            nzTooltipPlacement="bottom"
+            [routerLink]="'/app-smart-cloud/users/detail/' + item.userName"
+            >{{ item.userName }}</a
+          >
         </td>
-        <td (click)="getUserDetail(item.userName)">
-          <a>{{ item.userName }}</a>
-        </td>
-        <td>{{ item.userGroups.length }}</td>
-        <td>{{ item.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+        <td style="color: #248fcc">{{ item.userGroups.length }}</td>
+        <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
       </tr>
     </tbody>
   </nz-table>
@@ -151,14 +106,12 @@
   [(nzVisible)]="isVisibleDelete"
   [nzTitle]="nameModal"
   (nzOnCancel)="handleCancelDelete()"
-  (nzOnOk)="handleOkDelete()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
 >
   <ng-container *nzModalContent>
     <nz-alert
+      style="margin-bottom: 20px"
       nzType="warning"
-      [nzMessage]="customTemplateMessageDelete"
+      [nzDescription]="customTemplateMessageDelete"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
@@ -171,44 +124,53 @@
       </div>
       <div>Hành động này không thể được hoàn tác</div>
     </ng-template>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Để thực hiện xóa User, vui lòng nhập tên User để xác
-            nhận.</nz-form-label
-          >
-          <nz-form-control>
-            <input
-              name="name"
-              nz-input
-              [ngModel]="codeVerify"
-              (ngModelChange)="changecodeVerify($event)"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
+
+    <span class="text-label"
+      >Để thực hiện xóa User, vui lòng nhập tên User để xác nhận</span
+    >
+    <nz-form-control>
+      <input
+        class="input-custom"
+        name="name"
+        nz-input
+        [(ngModel)]="codeVerify"
+      />
+    </nz-form-control>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Xác nhận
+    </button>
+  </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteUsers"
   [nzTitle]="nameModal"
   (nzOnCancel)="handleCancelDeleteUsers()"
-  (nzOnOk)="handleOkDeleteUsers()"
-  nzOkText="Xác nhận"
-  nzCancelText="Hủy"
 >
   <ng-container *nzModalContent>
     <nz-alert
+      style="margin-bottom: 20px"
       nzType="warning"
-      [nzMessage]="customTemplateMessageDeleteUsers"
+      [nzDescription]="customTemplateMessageDeleteUsers"
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDeleteUsers>
       <div>
-        Bạn đang thực hiện xóa <span>{{ listUserPicked.length }}</span> User
+        Bạn đang thực hiện xóa <span>{{ setOfCheckedName.size }}</span> User
       </div>
       <div>
         Việc thực hiện xóa các Users đồng thời cũng sẽ xóa toàn bộ dữ liệu liên
@@ -216,23 +178,34 @@
       </div>
       <div>Hành động này không thể được hoàn tác</div>
     </ng-template>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzFor="name"
-            >Để thực hiện xóa các Users, vui lòng nhập "delete" để xác
-            nhận.</nz-form-label
-          >
-          <nz-form-control>
-            <input
-              name="name"
-              nz-input
-              [ngModel]="codeVerify"
-              (ngModelChange)="changecodeVerify($event)"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
+    <span class="text-label"
+      >Để thực hiện xóa các Users, vui lòng nhập "delete" để xác nhận</span
+    >
+    <nz-form-control>
+      <input
+        class="input-custom"
+        name="name"
+        nz-input
+        [(ngModel)]="codeVerify"
+      />
+    </nz-form-control>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDeleteUsers()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />
+      Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDeleteUsers()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Xác nhận
+    </button>
+  </div>
 </nz-modal>
