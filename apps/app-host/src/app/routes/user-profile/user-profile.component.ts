@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
   AppValidator,
@@ -86,12 +86,22 @@ export class UserProfileComponent implements OnInit {
     this.loadUserProfile();
   }
 
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      user_root_id: this.tokenService.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
   loadUserProfile() {
     // @ts-ignore
     let email = this.tokenService.get()['email'];
 
     const baseUrl = environment['baseUrl'];
-    this.http.get<UserModel>(`${baseUrl}/users/${email}`, {}).subscribe(
+    this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
+      headers: this.httpOptions.headers
+    }).subscribe(
       (res) => {
         this.userModel = res;
 
@@ -128,6 +138,7 @@ export class UserProfileComponent implements OnInit {
     this.http
       .put(`${baseUrl}/users`, updatedUser, {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
+        headers: this.httpOptions.headers
       })
       .subscribe({
         next: (res) => {
@@ -166,14 +177,6 @@ export class UserProfileComponent implements OnInit {
     ]);
     this.form.controls['confirm_password'].updateValueAndValidity();
   }
-
-  updateConfirmValidator(): void {
-    /** wait for refresh value */
-    Promise.resolve().then(() =>
-      this.form.controls['confirm_password'].updateValueAndValidity()
-    );
-  }
-
   onNewPassChange(data: any) {}
 
   onRetypePassChange(data: any) {}

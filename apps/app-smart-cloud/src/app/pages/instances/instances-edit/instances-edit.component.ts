@@ -227,7 +227,7 @@ export class InstancesEditComponent implements OnInit {
               this.listOfferFlavors[index] = null;
             }
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU / ';
+              e.description += ch.charOptionValues[1] + ' vCPU / ';
               if (
                 Number.parseInt(ch.charOptionValues[1]) <
                 this.instancesModel.cpu
@@ -333,12 +333,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onReloadInstanceDetail() {
-    setTimeout(() => {
-      this.dataService.getById(this.id, true).subscribe((data: any) => {
-        this.instancesModel = data;
-        this.cdr.detectChanges();
-      });
-    }, 5000);
+    this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   volumeUnitPrice = 0;

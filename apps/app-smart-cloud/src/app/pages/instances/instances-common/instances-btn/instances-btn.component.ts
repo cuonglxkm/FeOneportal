@@ -15,6 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesModel } from '../../instances.model';
 import { LoadingService } from '@delon/abc/loading';
 import { finalize } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -25,7 +26,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   @Input() instancesId: any;
   @Output() valueChanged = new EventEmitter();
 
-  instancesModel: InstancesModel = new InstancesModel();
+  instancesModel: InstancesModel;
   isVisibleDelete: boolean = false;
   inputConfirm: string = '';
 
@@ -56,6 +57,14 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     );
   }
 
+  form = new FormGroup({
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+      ],
+    }),
+  });
   titleDeleteInstance: string = '';
   showModalDelete() {
     this.isVisibleDelete = true;
@@ -64,20 +73,26 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   }
 
   handleOk() {
-    this.isVisibleDelete = false;
     if (this.inputConfirm == this.instancesModel.name) {
       this.dataService.delete(this.instancesId).subscribe({
         next: (data: any) => {
-          console.log(data);
-          this.route.navigate(['/app-smart-cloud/instances']);
-          this.notification.success('Thành công', 'Xóa máy ảo thành công');
+          this.isVisibleDelete = false;
+          this.valueChanged.emit('DELETE')
+          this.notification.success('', 'Xóa máy ảo thành công');
         },
         error: (e) => {
+          this.isVisibleDelete = false;
           this.notification.error(e.statusText, 'Xóa máy ảo thất bại');
         },
       });
+    } else if (this.inputConfirm == '') {
+      this.notification.error('Vui lòng nhập tên máy ảo', '');
     } else {
-      this.notification.error('Tên máy ảo không khớp', 'Xóa máy ảo thất bại');
+      this.isVisibleDelete = false;
+      this.notification.error(
+        'Vui lòng nhập đúng tên máy ảo',
+        'Xóa máy ảo thất bại'
+      );
     }
   }
 
@@ -163,7 +178,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Bật máy ảo thành công');
-          this.valueChanged.emit(data)
+          this.valueChanged.emit(data);
         } else {
           this.notification.error('', 'Bật máy ảo không thành công');
         }
@@ -198,7 +213,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       .subscribe({
         next: (data) => {
           this.notification.success('', 'Tắt máy ảo thành công');
-          this.valueChanged.emit(data)
+          this.valueChanged.emit(data);
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tắt máy ảo không thành công');
@@ -230,10 +245,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       .subscribe({
         next: (data) => {
           this.notification.success('', 'Khởi động lại máy ảo thành công');
-          this.valueChanged.emit("REBOOT")
+          this.valueChanged.emit('REBOOT');
         },
         error: (e) => {
-          this.notification.error(e.statusText, 'Khởi động lại máy ảo không thành công');
+          this.notification.error(
+            e.statusText,
+            'Khởi động lại máy ảo không thành công'
+          );
         },
       });
   }
