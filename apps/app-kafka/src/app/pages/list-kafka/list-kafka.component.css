@@ -74,3 +74,18 @@ input,
   width: 24px;
   height: 24px;
 }
+
+.err-service {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px #ff4d4f33;
+}
+
+.err-msg{
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #ff4d4f;
+}
+
+::ng-deep .ant-modal-body {
+  padding-bottom: 10px !important;
+}

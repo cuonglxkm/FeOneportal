@@ -1,8 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
 import { Subscription, finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaInfor } from 'src/app/core/models/kafka-infor.model';
+import { ProjectModel } from 'src/app/core/models/project.model';
+import { RegionModel } from 'src/app/core/models/region.model';
 import { KafkaStatus } from 'src/app/core/models/status.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 import { UtilService } from 'src/app/services/utils.service';
@@ -26,14 +29,27 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   sub: Subscription;
   eventSource: EventSource;
 
+  // infrastructure info
+  regionId: number;
+  projectInfraId: number;
+  cloudProfileId: string;
+  vlanId: number;
+  
+  isVisibleDelete = false;
+  isErrorCheckDelete = false;
+  isInitModal = true;
+  msgError = '';
+  serviceNameDelete: string;
+  currentKafka: KafkaInfor;
+
   // websocket service
   private websocketService: ServiceActiveWebsocketService;
 
   constructor(
     private kafkaService: KafkaService,
     private cdr: ChangeDetectorRef,
+    private loadingSrv: LoadingService,
     // private utilService: UtilService,
-    // private modalService: NzModalService
   ) {
     this.keySearch = '';
     this.serviceStatus = null;
@@ -99,6 +115,28 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     };
   }
 
+  // catch event region change and reload data
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    this.cloudProfileId = region.cloudId;
+
+    // this.getListService(this.regionId, this.cloudProfileId);
+
+    // this.myform.get('regionId').setValue(this.regionId);
+    // this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectInfraId = project.id;
+
+    // this.getVlanNetwork(this.projectInfraId);
+    // this.myform.get('projectInfraId').setValue(this.projectInfraId);
+
+    // handle reset select box of previous project
+    // this.myform.get('vpcNetwork').setValue(null);
+    // this.myform.get('subnet').setValue(null);
+  }
+
   ngOnDestroy() {
     this.eventSource.close();
     // close websocket
@@ -146,5 +184,36 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   }
   onAllClusterChecked(event) {
     console.log();
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
+  showDeleteConfirm(data: KafkaInfor) {
+    this.isVisibleDelete = true;
+    this.isErrorCheckDelete = false;
+    this.isInitModal = true;
+    this.msgError = '';
+    this.currentKafka = data;
+  }
+
+  handleOkDelete() {
+    this.isVisibleDelete = false;
+    // this.loadingSrv.open({ type: "spin", text: "Loading..." });
+  }
+
+  checkServiceNameDel() {
+    this.isInitModal = false;
+    if (this.serviceNameDelete.length == 0) {
+      this.isErrorCheckDelete = true;
+      this.msgError = 'Vui lòng nhập tên dịch vụ';
+    } else if (this.serviceNameDelete != this.currentKafka.serviceName) {
+      this.isErrorCheckDelete = true;
+      this.msgError = 'Tên dịch vụ nhập chưa đúng';
+    } else {
+      this.isErrorCheckDelete = false;
+      this.msgError = '';
+    }
   }
 }

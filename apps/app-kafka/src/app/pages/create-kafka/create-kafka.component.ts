@@ -246,35 +246,34 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   addValidateForAdvancedConfig() {
-    this.myform.controls['num.partitions'].setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
-    this.myform.controls['default.replication.factor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
-    this.myform.controls['min.insync.replicas'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
-    this.myform.controls['offset.topic.replication.factor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
-    this.myform.controls['log.retention.hours'].setValidators([Validators.required, Validators.min(-1), Validators.max(2147483647)]);
-    this.myform.controls['log.segment.bytes'].setValidators([Validators.required, Validators.min(1), Validators.max(10737418240)]);
+    this.myform.controls['numPartitions'].setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
+    this.myform.controls['defaultReplicationFactor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['minInsyncReplicas'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['offsetTopicReplicationFactor'].setValidators([Validators.required, Validators.min(1), Validators.max(3)]);
+    this.myform.controls['logRetentionHours'].setValidators([Validators.required, Validators.min(-1), Validators.max(2147483647)]);
+    this.myform.controls['logSegmentBytes'].setValidators([Validators.required, Validators.min(1), Validators.max(10737418240)]);
 
-    this.myform.controls['num.partitions'].updateValueAndValidity();
-    this.myform.controls['default.replication.factor'].updateValueAndValidity();
-    this.myform.controls['min.insync.replicas'].updateValueAndValidity();
-    this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
-    this.myform.controls['log.retention.hours'].updateValueAndValidity();
-    this.myform.controls['log.segment.bytes'].updateValueAndValidity();
+    this.updateValueAndValidConfig();
   }
 
   removeValidateOfAdvancedConfig() {
-    this.myform.controls['num.partitions'].clearValidators();
-    this.myform.controls['default.replication.factor'].clearValidators();
-    this.myform.controls['min.insync.replicas'].clearValidators();
-    this.myform.controls['offset.topic.replication.factor'].clearValidators();
-    this.myform.controls['log.retention.hours'].clearValidators();
-    this.myform.controls['log.segment.bytes'].clearValidators();
+    this.myform.controls['numPartitions'].clearValidators();
+    this.myform.controls['defaultReplicationFactor'].clearValidators();
+    this.myform.controls['minInsyncReplicas'].clearValidators();
+    this.myform.controls['offsetTopicReplicationFactor'].clearValidators();
+    this.myform.controls['logRetentionHours'].clearValidators();
+    this.myform.controls['logSegmentBytes'].clearValidators();
 
-    this.myform.controls['num.partitions'].updateValueAndValidity();
-    this.myform.controls['default.replication.factor'].updateValueAndValidity();
-    this.myform.controls['min.insync.replicas'].updateValueAndValidity();
-    this.myform.controls['offset.topic.replication.factor'].updateValueAndValidity();
-    this.myform.controls['log.retention.hours'].updateValueAndValidity();
-    this.myform.controls['log.segment.bytes'].updateValueAndValidity();
+    this.updateValueAndValidConfig();
+  }
+
+  updateValueAndValidConfig() {
+    this.myform.controls['numPartitions'].updateValueAndValidity();
+    this.myform.controls['defaultReplicationFactor'].updateValueAndValidity();
+    this.myform.controls['minInsyncReplicas'].updateValueAndValidity();
+    this.myform.controls['offsetoffsetTopicReplicationFactor'].updateValueAndValidity();
+    this.myform.controls['logRetentionHours'].updateValueAndValidity();
+    this.myform.controls['logSegmentBytes'].updateValueAndValidity();
   }
 
   onChangeUsageTime() {
