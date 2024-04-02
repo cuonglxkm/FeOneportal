@@ -20,7 +20,7 @@ import { RoutesModule } from "./routes/routes.module";
 import { STWidgetModule } from "./shared/st-widget/st-widget.module";
 
 const LANG = {
-  abbr: 'zh',
+  abbr: 'vi',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,
