@@ -131,7 +131,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'kafka_create':
             this.serviceType = 'kafka';
-            serviceItem.name = 'Kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           default:

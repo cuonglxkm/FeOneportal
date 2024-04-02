@@ -73,9 +73,6 @@ export class FileSystemSnapshotComponent {
     this.getData()
   }
 
-  showModalCreateIpFloating() {
-
-  }
 
   getData() {
     this.isLoading = true

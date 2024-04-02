@@ -5,6 +5,8 @@ import {AppValidator} from "../../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {SecurityGroupService} from "../../../shared/services/security-group.service";
+import { FormEditFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 
 
 @Component({
@@ -13,27 +15,30 @@ import {SecurityGroupService} from "../../../shared/services/security-group.serv
     styleUrls: ['./edit-file-system-snapshot.component.less'],
 })
 export class EditFileSystemSnapshotComponent {
-    @Input()  conditionSearch: SecurityGroupSearchCondition
+    @Input() filesystemsnapshotId: number
+    @Input() region; number
+     @Input() project: number
     @Output() onOk = new EventEmitter()
     @Output() onCancel = new EventEmitter()
 
     isVisible: boolean = false;
     isLoading: boolean = false;
 
+    formEditFileSystemSnapshot: FormEditFileSystemSnapShot =
+    new FormEditFileSystemSnapShot();
+
     validateForm: FormGroup<{
         name: FormControl<string>;
         description: FormControl<string>;
     }> = this.fb.group({
-        name: ['', [Validators.required,
-            Validators.maxLength(50),
-            AppValidator.startsWithValidator('SG_')]],
+        name: ['', [Validators.required]],
         description: ['', [Validators.maxLength(500)]]
     });
 
     constructor(private fb: NonNullableFormBuilder,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
                 private notification: NzNotificationService,
-                private securityGroupService: SecurityGroupService,) {
+                private fileSystemSnapshotService: FileSystemSnapshotService,) {
     }
 
     showModal(): void {
@@ -45,19 +50,36 @@ export class EditFileSystemSnapshotComponent {
         this.validateForm.reset();
         this.onCancel.emit();
     }
+
+
+    getData(): FormEditFileSystemSnapShot {
+        this.formEditFileSystemSnapshot.customerId =
+          this.tokenService.get()?.userId;
+        this.formEditFileSystemSnapshot.regionId = this.region;
+        this.formEditFileSystemSnapshot.vpcId = this.project;
+        this.formEditFileSystemSnapshot.name =
+          this.validateForm.controls.name.value;
+        this.formEditFileSystemSnapshot.description = this.validateForm.controls.description.value;
+        this.formEditFileSystemSnapshot.id = this.filesystemsnapshotId
+        return this.formEditFileSystemSnapshot;
+      }
+
     submitForm(): void {
         if (this.validateForm.valid) {
             this.isLoading = true;
-            this.securityGroupService.create(this.validateForm.value, this.conditionSearch)
+            this.formEditFileSystemSnapshot = this.getData()
+            console.log(this.formEditFileSystemSnapshot);
+            
+            this.fileSystemSnapshotService.edit(this.formEditFileSystemSnapshot)
                 .subscribe(data => {
-                    this.notification.success('Thành công', 'Tạo Security Group thành công');
+                    this.notification.success('Thành công', 'Cập nhật FileSystem Snapshot thành công');
                     this.validateForm.reset();
                     this.isVisible = false;
                     this.isLoading = false;
                     this.onOk.emit(data);
                 }, error => {
                     this.isLoading = false;
-                    this.notification.error('Thất bại', 'Tạo Security Group thất bại');
+                    this.notification.error('Thất bại', 'Cập nhật FileSystem Snapshot thất bại');
                 })
         }
 

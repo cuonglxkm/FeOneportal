@@ -35,49 +35,65 @@
 
 
 
-    <nz-card>
-      <h2 class="custom-title">Thông tin lịch Snapshot</h2>
-      <div nz-row [nzGutter]="16">
-          <div nz-col class="gutter-row" [nzSpan]="12" style="margin-bottom: 12px;">
-            <p style="margin-bottom: 2px">Tên Snapshot <span style="color: red;">(*)</span></p>
-          <input readonly nz-input type="text" required style="padding: 10px;" />
-          </div>
-          <div nz-col class="gutter-row" [nzSpan]="12" style="margin-bottom: 12px;">
-            <p style="margin-bottom: 2px">Dung lượng - GB <span style="color: red;">(*)</span></p>
-            <input
-            readonly 
-              style="padding: 10px;"
-              nz-input
-              type="text"
-              required
-            />
-          </div>
-          <div nz-col class="gutter-row" [nzSpan]="12" style="margin-bottom: 12px;">
-            <p style="margin-bottom: 2px">Tên Filesystem <span style="color: red;">(*)</span></p>
-            <input
-            readonly 
-              style="padding: 10px;"
-              nz-input
-              type="text"
-              required
-            />
-          </div>
-          <div nz-col class="gutter-row" [nzSpan]="12" style="margin-bottom: 12px;">
-            <p style="margin-bottom: 2px">Ngày cấp dịch vụ <span style="color: red;">(*)</span></p>
-            <input
-            readonly 
-              style="padding: 10px;"
-              nz-input
-              type="text"
-              required
-            />
-          </div>
-          <div nz-col class="gutter-row" [nzSpan]="12">
-            <p style="margin-bottom: 2px">Mô tả</p>
-            <textarea readonly  rows="4" nz-input></textarea>
-          </div>     
-      </div>
-    </nz-card>
+<nz-content>
+  <nz-card style="border-radius: 8px">
+    <h2 class="custom-title">Thông tin File System Snapshot</h2>
+   <form nz-form nzLayout="vertical">
+     <nz-row nzJustify="space-between" nzGutter="24">
+       <nz-col nzSpan="12">
+         <nz-form-item>
+           <nz-form-label>
+             <span>Tên Snapshot</span>
+           </nz-form-label>
+           <nz-form-control>
+             <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.name
+             }}"  [disabled]="true" />
+           </nz-form-control>
+         </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+         <nz-form-item>
+           <nz-form-label>
+             <span>Dung lượng - GB</span>
+           </nz-form-label>
+           <nz-form-control>
+             <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.sizeInGB }}" [disabled]="true" />
+           </nz-form-control>
+         </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+         <nz-form-item>
+           <nz-form-label>
+             <span>Tên Filesystem</span>
+           </nz-form-label>
+           <nz-form-control>
+             <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystem?.name }}"  [disabled]="true" />
+           </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>
+              <span>Ngày cấp dịch vụ</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" style="width: 100%" value="{{ fileSystemSnapshotDetail?.createTime | date: 'dd/MM/yyyy'
+              }}"  [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+     </nz-row>
+     <nz-form-item>
+       <nz-form-label>
+         <span>Mô tả</span>
+       </nz-form-label>
+       <nz-form-control>
+         <textarea nz-input rows="4" value="{{ fileSystemSnapshotDetail?.description }}" [disabled]="true" ></textarea>
+       </nz-form-control>
+     </nz-form-item>
+   </form>
+  </nz-card>
+</nz-content>
 
 <div
   class="text-right"

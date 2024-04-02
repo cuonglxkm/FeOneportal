@@ -47,9 +47,6 @@
             <ng-container *ngIf="control.hasError('required')"
               >Vui lòng nhập thông tin</ng-container
             >
-            <ng-container *ngIf="control.hasError('startsWith')"
-              >Tên phải bắt đầu bằng SG_</ng-container
-            >
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -129,7 +126,7 @@
               class="button-new"
               [disabled]="!validateForm.valid"
             >
-              Tạo mới
+              Chỉnh sửa
             </button>
           </nz-form-control>
         </nz-space>

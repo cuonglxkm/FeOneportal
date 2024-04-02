@@ -20,7 +20,7 @@
     <span class="text-modal-title">Xác nhận xóa Snapshot + tên snapshot</span>
   </ng-template>
   <ng-template #modalContent>
-    <form nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical" (ngSubmit)="handleOk()">
       <nz-form-item>
         <nz-alert
           nzType="warning"
@@ -32,17 +32,17 @@
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá Lịch Snapshot + tên lịch Snapshot, vui lòng nhập
-              tên Lịch Snapshot để xác nhận.</span
+              >Đế thực hiện xoá Snapshot + tên lịch Snapshot, vui lòng nhập
+              tên Snapshot để xác nhận.</span
             >
           </div>
         </nz-form-label>
-        <nz-form-control>
+        <nz-form-control nzErrorTip="Tên không trùng khớp">
           <input
             nz-input
             class="input-custom"
             formControlName="name"
-            [placeholder]="'Nhập tên lịch snapshot'"
+            [placeholder]="'Nhập tên FileSystem Snapshot'"
           />
         </nz-form-control>
       </nz-form-item>
@@ -63,6 +63,7 @@
               nzType="primary"
               [nzLoading]="isLoading"
               class="button-new"
+              [disabled]="validateForm.invalid"
             >
               Xác nhận
             </button>
