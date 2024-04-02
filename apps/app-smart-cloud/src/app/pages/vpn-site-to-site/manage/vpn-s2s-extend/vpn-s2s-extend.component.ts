@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnInit, Renderer2 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { addDays } from 'date-fns';
@@ -8,13 +8,15 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 
 @Component({
-  selector: 'one-portal-vpn-s2s-create',
-  templateUrl: './vpn-s2s-create.component.html',
-  styleUrls: ['./vpn-s2s-create.component.less'],
+  selector: 'one-portal-vpn-s2s-extend',
+  templateUrl: './vpn-s2s-extend.component.html',
+  styleUrls: ['./vpn-s2s-extend.component.less'],
 })
-export class VpnS2sCreateComponent implements OnInit {
+export class VpnS2sExtendComponent implements OnInit{
+  vpcId = 0;
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
   numberMonth: number = 1;
@@ -30,6 +32,7 @@ export class VpnS2sCreateComponent implements OnInit {
   spec: any;
   vatNumber = 0;
   vatPer = 10;
+  vpn: any;
   /**
    *
    */
@@ -39,16 +42,15 @@ export class VpnS2sCreateComponent implements OnInit {
     private renderer: Renderer2,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private orderService: OrderService
+    private activatedRoute: ActivatedRoute,
+    private orderService: OrderService,
+    private vpnSiteToSiteService: VpnSiteToSiteService,
   ) {
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
-
-  ngOnInit() {
+  ngOnInit(): void {
+    this.vpcId = Number(this.activatedRoute.snapshot.paramMap.get('vpcId'));
     this.numberMonth = 1;
-  }
-
-  ngAfterContentInit(){
   }
 
   regionChanged(region: RegionModel) {
@@ -77,28 +79,10 @@ export class VpnS2sCreateComponent implements OnInit {
               'Price': item['price']['fixedPrice']['amount'],
             });
           });
+          this.getOffer();
         }
         this.loading = false;
       });
-  }
-
-  selectOffer(e, data){
-    if(!this.offer || data['Id'] != this.offer['Id']){
-      this.offer = data;
-      let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
-      let listTr = element.parentNode.parentNode.children;
-      for (let elementTr of listTr) {
-        this.renderer.removeClass(elementTr, 'tr-selected');
-
-      }
-      this.renderer.addClass(element.parentNode, 'tr-selected');
-      this.totalAmount = this.offer['Price'] * this.numberMonth;
-      this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
-      this.isEnable = true;
-      this.specChange();
-      this.priceChange();
-    }
-    
   }
 
   caculator(event) {
@@ -112,17 +96,16 @@ export class VpnS2sCreateComponent implements OnInit {
   }
 
   extend() {
-    
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Tạo VPN site to site",
+      note: "Gia hạn VPN site to site",
       orderItems: [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.spec),
-          specificationType: "vpnsitetosite_create",
-          price: this.totalAmount,
+          specificationType: "vpnsitetosite_extend",
+          price: this.offer['Price'],
           serviceDuration: this.numberMonth
         }
       ]
@@ -136,7 +119,7 @@ export class VpnS2sCreateComponent implements OnInit {
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.spec);
-    itemPayment.specificationType = 'vpnsitetosite_create';
+    itemPayment.specificationType = 'vpnsitetosite_extend';
     itemPayment.sortItem = 0;
     itemPayment.serviceDuration = this.numberMonth;
     let dataPayment: DataPayment = new DataPayment();
@@ -156,37 +139,46 @@ export class VpnS2sCreateComponent implements OnInit {
 
   specChange() {
     this.spec = {
-      "offerName": this.offer['OfferName'],
-      "bandwidth": this.offer['Bandwidth'],
-      "customerId": this.tokenService.get()?.userId,
-      "userEmail": null,
-      "actorEmail": null,
-      "vpcId": this.project,
       "regionId": this.region,
       "serviceName": null,
+      "customerId": this.tokenService.get()?.userId,
+      "vpcId": this.project,
+      "typeName": "SharedKernel.IntegrationEvents.Orders.Specifications.VpnSiteToSiteExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "serviceType": 20,
-      "actionType": 0,
-      "serviceInstanceId": 0,
-      "createDate": this.dateString,
-      "expireDate": this.expiredDate,
-      "createDateInContract": null,
-      "saleDept": null,
-      "saleDeptCode": null,
-      "contactPersonEmail": null,
-      "contactPersonPhone": null,
-      "contactPersonName": null,
-      "am": null,
-      "amManager": null,
-      "note": null,
-      "isTrial": false,
-      "offerId": this.offer['Id'],
-      "couponCode": null,
-      "dhsxkd_SubscriptionId": null,
-      "dSubscriptionNumber": null,
-      "dSubscriptionType": null,
-      "oneSMEAddonId": null,
-      "oneSME_SubscriptionId": null,
-      "typeName": "SharedKernel.IntegrationEvents.Orders.Specifications.VpnSiteToSiteCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+      "actionType": 3,
+      "serviceInstanceId": this.vpn['id'],
+      "newExpireDate": this.expiredDate,
+      "userEmail": null,
+      "actorEmail": null
     };
+  }
+
+  getOffer(){
+    this.loading = true;
+    this.vpnSiteToSiteService.getVpnSiteToSite(this.vpcId).pipe().subscribe(data => {
+      this.loading = false;
+      if(data){
+        this.vpn = data;
+        this.dateString = new Date(this.vpn['expiredDate']);
+        this.expiredDate = addDays(this.dateString, 30);
+        this.offer = this.offerDatas.find(x => x['OfferName'] == data['offerName'] && x['Bandwidth'] == data['bandwidth']);
+        if(this.offer){
+          let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
+          let listTr = element.parentNode.parentNode.children;
+          for (let elementTr of listTr) {
+            this.renderer.addClass(elementTr, 'disable-class');
+    
+          }
+          this.renderer.addClass(element.parentNode, 'tr-selected');
+          this.totalAmount = this.offer['Price'] * this.numberMonth;
+          this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
+          this.specChange();
+          this.priceChange();
+          this.isEnable = true;
+        }
+      }
+    }, error => {
+      this.loading = false;
+    })
   }
 }

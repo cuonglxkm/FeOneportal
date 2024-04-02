@@ -1,5 +1,5 @@
 <page-header
-[breadcrumb]="breadcrumb" [title]="'Tạo mới VPN site to site'"
+[breadcrumb]="breadcrumb" [title]="'Gia hạn VPN site to site'"
 [action]="action"
 
 >
@@ -14,15 +14,15 @@
     <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']">VPN site to site</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>Tạo mới VPN site to site</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Gia hạn VPN site to site</nz-breadcrumb-item>
   </nz-breadcrumb>
 </ng-template>
 <ng-template #action>
   <div class="alain-custom-action text-right">
-    <region-select-dropdown
+    <region-select-dropdown [isDetail]="true"
       (valueChanged)="regionChanged($event)"
     ></region-select-dropdown>
-    <project-select-dropdown
+    <project-select-dropdown [isDetail]="true"
       (valueChanged)="projectChanged($event)"
       (userChanged)="projectChanged($event)"
       [regionId]="region"
@@ -33,7 +33,7 @@
 <nz-row nzGutter="24" class="body-form">
   <nz-col nzSpan="16" class="left-content">
     <nz-card class="left-content-card">
-      <span class="text-card-header">Chọn gói VPN site to site</span>
+      <span class="text-card-header">Thông tin VPN site to site</span>
       <div class="header-content">Giá thuê bao gói VPN theo tháng (Chưa VAT)</div>
       <nz-table
         #ajaxTable3
@@ -51,7 +51,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of ajaxTable3.data" (click)="selectOffer($event, data)">
+          <tr *ngFor="let data of ajaxTable3.data">
             <td nzLeft id="offer-title-{{data.Id}}" offer-id="{{data.Id}}">
               {{ data.OfferName }}
             </td>
@@ -64,13 +64,29 @@
           </tr>
         </tbody>
       </nz-table>
-
-      <div nz-row class="mb-md pt-5">
-        <div nz-col nzSpan="11">
-          <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
+    </nz-card>
+    <nz-card class="left-content-card">
+      <span class="text-card-header">Thông tin gia hạn</span>
+      <nz-row nzGutter="16" class="pt-5">
+        <nz-col nzSpan="12">
+          <span class="text-label">Ngày cấp dịch vụ: </span>
+          <span class="text-value-detail">{{
+            vpn?.createdDate | date : 'dd/MM/yyyy'
+          }}</span>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <span class="text-label">Ngày hết hạn: </span>
+          <span class="text-value-detail">
+            {{ vpn?.expiredDate | date : 'dd/MM/yyyy' }}</span
+          >
+        </nz-col>
+      </nz-row>
+      <div nz-row class="mb-md pt-5" style="margin-bottom: 0 !important;">
+        <div nz-col nzSpan="24">
+          <nz-form-label nzRequired>Số tháng cần gia hạn thêm</nz-form-label>
           <nz-form-item>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-              <nz-input-number
+              <nz-input-number class="input-number-element"
               [(ngModel)]="numberMonth"
                 style="width:100%;"
                 (ngModelChange)="caculator($event)"
@@ -86,16 +102,14 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col nzSpan="12" style="margin-left: 15px">
-          <p  style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
-        </div>
+        
       </div>
-      <div nz-col>
+      <div nz-col class="title-pading-left">
         <p>Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
       </div>
     </nz-card>
   </nz-col>
-  <nz-col nzSpan="8" class="right-content">
+  <nz-col nzSpan="8">
       <nz-card class="right-form">
         <div class="right-title">
               <span class="text-card-header">Chi phí ước tính</span>

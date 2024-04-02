@@ -26,6 +26,8 @@ import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/det
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
 import { VpnS2sCreateComponent } from './manage/vpn-s2s-create/vpn-s2s-create.component';
 import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vpn-service.component';
+import { VpnS2sExtendComponent } from './manage/vpn-s2s-extend/vpn-s2s-extend.component';
+import { VpnS2sResizeComponent } from './manage/vpn-s2s-resize/vpn-s2s-resize.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,9 @@ import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vp
     DetailVpnConnectionComponent,
     CreateIkePoliciesComponent,
     VpnS2sCreateComponent,
+    DetailVpnServiceComponent,
+    VpnS2sExtendComponent,
+    VpnS2sResizeComponent,
   ],
   imports: [
     VpnSiteToSiteRoutingModule,
@@ -54,7 +59,6 @@ import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vp
     NguCarousel,
     NguCarouselDefDirective,
     NguTileComponent,
-    DetailVpnServiceComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

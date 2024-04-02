@@ -10,6 +10,8 @@ import { EditVpnConnectionComponent } from "./manage/vpn-connection/edit/edit-vp
 import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/detail-vpn-connection.component";
 import { VpnS2sCreateComponent } from "./manage/vpn-s2s-create/vpn-s2s-create.component";
 import { DetailVpnServiceComponent } from "./manage/vpn-service/detail/detail-vpn-service.component";
+import { VpnS2sExtendComponent } from "./manage/vpn-s2s-extend/vpn-s2s-extend.component";
+import { VpnS2sResizeComponent } from "./manage/vpn-s2s-resize/vpn-s2s-resize.component";
 
 const routes: Routes = [
   {
@@ -19,6 +21,14 @@ const routes: Routes = [
   {
     path: 'create',
     component: VpnS2sCreateComponent,
+  },
+  {
+    path: 'extend/:vpcId',
+    component: VpnS2sExtendComponent,
+  },
+  {
+    path: 'resize/:vpcId',
+    component: VpnS2sResizeComponent,
   },
   {
     path: 'ipsec-policies/create',
