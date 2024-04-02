@@ -4,6 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { addDays } from 'date-fns';
 import { DataPayment, ItemPayment } from 'src/app/pages/instances/instances.model';
+import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
@@ -147,8 +148,8 @@ export class VpnS2sResizeComponent implements OnInit{
       "bandwidth": this.offer['Bandwidth'],
       "offerId": this.oldOfferId,
       "newOfferId": this.offer['Id'],
-      "serviceType": 20,
-      "actionType": 4,
+      "serviceType": ServiceType.VPNSiteToSites,
+      "actionType": ServiceActionType.RESIZE,
       "serviceInstanceId": this.vpn['id'],
       "regionId": this.region,
       "serviceName": null,
