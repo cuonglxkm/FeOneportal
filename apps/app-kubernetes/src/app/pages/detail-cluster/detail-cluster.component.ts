@@ -89,6 +89,11 @@ export class DetailClusterComponent implements OnInit {
     this.notificationService.success("Đã sao chép", null);
   }
 
+  handleCopyAPIEndpoint() {
+    this.clipboardService.copy(this.detailCluster.apiEndpoint);
+    this.notificationService.success("Đã sao chép", null);
+  }
+
   handleDownloadKubeConfig() {
     const blob = new Blob([this.yamlString], { type: 'text/yaml' })
     const url = window.URL.createObjectURL(blob);

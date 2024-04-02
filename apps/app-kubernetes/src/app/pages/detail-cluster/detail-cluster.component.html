@@ -29,7 +29,35 @@
             </tr>
 
             <tr>
-              <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'API Endpoint'"></row-data></td>
+              <!-- <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'API Endpoint'"></row-data></td> -->
+              <td class="w-50">
+                <div nz-row>
+                  <div nz-col [nzSpan]="8">
+                    API Endpoint
+                  </div>
+                  <div nz-col [nzSpan]="16" class="description-info">
+                    <ng-container *ngIf="detailCluster.apiEndpoint?.length <= 30; else truncateEndpointTpl">
+                      {{detailCluster.apiEndpoint}}
+                    </ng-container>
+                    <ng-template #truncateEndpointTpl>
+                      <span nz-popover nzPopoverTitle="API Endpoint"
+                        [nzPopoverContent]="apiEnpointTpl"
+                        nzPopoverPlacement="bottom">
+                        {{detailCluster.apiEndpoint | truncateLabel}}
+                      </span>
+
+                      <ng-template #apiEnpointTpl>
+                        <div style="width: fit-content">{{detailCluster.apiEndpoint}}</div>
+                      </ng-template>
+                    </ng-template>
+
+                    <button nz-button nzType="text" (click)="handleCopyAPIEndpoint()" class="action-icon borderless"
+                      nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
+                      <span nz-icon nzType="copy" nzTheme="outline"></span>
+                    </button>
+                  </div>
+                </div>
+              </td>
               <td class="w-50"><row-data [value]="detailCluster.orderCode" [label]="'Mã đơn hàng'"></row-data></td>
             </tr>
 
@@ -152,7 +180,7 @@
           <tbody>
             <tr>
               <td class="w-50"><row-data [value]="detailCluster.networkType | network2label" [label]="'Loại network'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.cidr" [label]="'CIDR'"></row-data></td>
+              <td class="w-50"><row-data [value]="detailCluster.cidr" [label]="'Pod CIDR'"></row-data></td>
             </tr>
 
             <tr>

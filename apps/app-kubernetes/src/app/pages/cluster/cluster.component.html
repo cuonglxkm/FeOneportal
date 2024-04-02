@@ -271,8 +271,8 @@
                   class="w-90" (ngModelChange)="onSelectedVlan($event)">
                   <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
                 </nz-select>
-                <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
-                  nz-tooltip (click)="syncVPCNetwork()" class="borderless">
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top"
+                  nz-tooltip (click)="refreshVPCNetwork()" class="borderless">
                   <span nz-icon class="icon-color">
                     <svg viewBox="64 64 896 896" focusable="false">
                       <path
@@ -291,16 +291,16 @@
 
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="cidr">{{networkType == 'calico' ? 'Calico' : 'Cilium'}} CIDR</nz-form-label>
+              <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
               <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <input type="text" nz-input formControlName="cidr" placeholder="Nhập CIDR"/>
+                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"/>
               </nz-form-control>
               <ng-template #cidrErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                  CIDR không để trống
+                  Pod CIDR không để trống
                 </ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">
-                  CIDR không đúng định dạng
+                  Pod CIDR không đúng định dạng
                 </ng-container>
               </ng-template>
             </nz-form-item>
@@ -312,8 +312,8 @@
                   <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
                     [nzValue]="item.subnetAddressRequired"></nz-option>
                 </nz-select>
-                <button nz-button nzType="text" nzTooltipTitle="Đồng bộ" nzTooltipPlacement="top"
-                  nz-tooltip (click)="syncSubnet()" class="borderless">
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top"
+                  nz-tooltip (click)="refreshSubnet()" class="borderless">
                   <span nz-icon class="icon-color">
                     <svg viewBox="64 64 896 896" focusable="false">
                       <path
@@ -333,21 +333,21 @@
 
       <!-- volume -->
       <nz-card class="border-card">
-        <h3>Cấu hình volume</h3>
+        <h3>Cấu hình persistent volume</h3>
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="volumeCloudSize">Kích thước (GB)</nz-form-label>
+              <nz-form-label nzRequired nzFor="volumeCloudSize">Quota (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
-                <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập kích thước volume"
+                <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume"
                 (keypress)="isNumber($event)" id="volumeCloudSize" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                  Kích thước volume không để trống
+                  Quota volume không để trống
                 </ng-container>
                 <ng-container *ngIf="control.hasError('max') || control.hasError('min')">
-                  Dung lượng trong khoảng từ 20-1000 (GB)
+                  Quota trong khoảng từ 20-1000 (GB)
                 </ng-container>
               </ng-template>
             </nz-form-item>
@@ -383,7 +383,7 @@
 
           <div nz-col [nzSpan]="12">
             <div>
-              <p class="padtop-25 marbot-0">Ngày bắt đầu: {{currentDate}}</p>
+              <p class="padtop-25 marbot-0">Ngày bắt đầu sử dụng: {{currentDate}}</p>
               <ng-container *ngIf="expiryDate">
                 <p class="delete-icon">Ngày hết hạn: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
               </ng-container>

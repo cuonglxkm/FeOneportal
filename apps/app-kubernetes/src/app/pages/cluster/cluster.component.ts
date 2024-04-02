@@ -266,7 +266,7 @@ export class ClusterComponent implements OnInit {
 
   onSelectedVlan(vlanId: number) {
     this.vlanId = vlanId;
-    this.getSubnetByVlanNetwork();
+    if (this.vlanId) this.getSubnetByVlanNetwork();
   }
 
   onSelectVolumeType(volumeType: string, index: number) {
@@ -415,12 +415,12 @@ export class ClusterComponent implements OnInit {
     this.currentDate = dd + '/' + mm + '/' + yyyy;
   }
 
-  syncVPCNetwork() {
-    console.log(123);
+  refreshVPCNetwork() {
+    this.getVlanNetwork(this.projectInfraId);
   }
 
-  syncSubnet() {
-    console.log(123);
+  refreshSubnet() {
+    this.getSubnetByVlanNetwork();
   }
 
   onCancelCreate() {
