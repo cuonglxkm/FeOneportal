@@ -95,8 +95,7 @@ export class InstancesCreateComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.max(50),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
       ],
     }),
   });
