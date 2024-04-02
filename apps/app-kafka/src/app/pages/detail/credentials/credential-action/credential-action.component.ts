@@ -84,8 +84,8 @@ export class CreateCredentialComponent implements OnDestroy {
 
     this.pwdTplString =
       this.activatedTab !== this.showCreateCredential
-        ? 'mật khẩu mới'
-        : 'mật khẩu';
+        ? 'Mật khẩu mới'
+        : 'Mật khẩu';
     this.confirmTplString = (() => {
       switch (this.activatedTab) {
         case this.showCreateCredential:

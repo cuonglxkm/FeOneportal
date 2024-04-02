@@ -76,14 +76,14 @@ input,
 }
 
 .err-service {
-  border-color: #ff4d4f !important;
+  border-color: #EA3829 !important;
   box-shadow: 0 0 0 2px #ff4d4f33;
 }
 
 .err-msg{
   font-size: 14px;
   line-height: 1.5715;
-  color: #ff4d4f;
+  color: #EA3829;
 }
 
 ::ng-deep .ant-modal-body {
