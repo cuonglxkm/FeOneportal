@@ -374,7 +374,15 @@ export class InstancesCreateVpcComponent implements OnInit {
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
+      .getAllIPPublic(
+        this.projectId,
+        '',
+        this.userId,
+        this.region,
+        9999,
+        1,
+        false
+      )
       .subscribe((data: any) => {
         this.listIPPublic = data.records;
         console.log('list IP public', this.listIPPublic);

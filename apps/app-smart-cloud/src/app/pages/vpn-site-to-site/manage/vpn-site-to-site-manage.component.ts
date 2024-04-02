@@ -6,6 +6,8 @@ import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { debounceTime } from 'rxjs';
+import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -21,7 +23,13 @@ export class VpnSiteToSiteManage {
   isBegin: boolean = false;
   isLoading: boolean = false
   response: BaseResponse<VpnSiteToSiteDTO>
-  constructor(private vpnSiteToSiteService: VpnSiteToSiteService) {
+  isVisibleDelete: boolean = false;
+
+  constructor(
+    private vpnSiteToSiteService: VpnSiteToSiteService, 
+    private router: Router, 
+    private notification: NzNotificationService,
+  ) {
   }
 
   regionChanged(region: RegionModel) {
@@ -65,4 +73,42 @@ export class VpnSiteToSiteManage {
     })
   }
 
+  createVpn() {
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/create']);
+  }
+
+  extendVpn() {
+    this.router.navigate([`/app-smart-cloud/vpn-site-to-site/extend/${this.project}`]);
+  }
+
+  resizeVpn() {
+    this.router.navigate([`/app-smart-cloud/vpn-site-to-site/resize/${this.project}`]);
+  }
+
+  modalDelete() {
+    this.isVisibleDelete = true;
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+  }
+
+  handleOkDelete() {
+    this.isVisibleDelete = false;
+    this.notification.success('', 'Xóa VPN site to site thành công');
+    if(this.response['id']){
+      this.vpnSiteToSiteService
+      .deteleVpnSiteToSite(this.response['id'])
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.notification.success('', 'Xóa VPN site to site thành công');
+        },
+        error: (error) => {
+          console.log(error.error);
+          this.notification.error('', 'Xóa VPN site to site không thành công');
+        },
+      });
+    }
+  }
 }
