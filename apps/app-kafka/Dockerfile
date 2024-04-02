@@ -1,5 +1,5 @@
 # stage 1 cache node_modules
-FROM registry.onsmartcloud.com/idg/node:18 as node
+FROM registry.onsmartcloud.com/idg/node:18 as installer
 WORKDIR /app
 
 COPY package.json .
@@ -9,7 +9,7 @@ RUN yarn install
 # stage 2 build image
 FROM registry.onsmartcloud.com/idg/node:18 as node
 WORKDIR /app
-COPY --from=node /app /app
+COPY --from=installer /app /app
 
 COPY . .
 
