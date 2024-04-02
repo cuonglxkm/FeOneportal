@@ -91,10 +91,13 @@ export class FileSystemSnapshotComponent {
     })
   }
 
-  handleOkCreateFileSystemSnapShot() {
+  handleOkDeleteFileSystemSnapShot() {
     this.getData()
   }
 
+  handleOkEditFileSystemSnapShot(){
+    this.getData()
+  }
   ngOnInit() {
 
     let regionAndProject = getCurrentRegionAndProject();

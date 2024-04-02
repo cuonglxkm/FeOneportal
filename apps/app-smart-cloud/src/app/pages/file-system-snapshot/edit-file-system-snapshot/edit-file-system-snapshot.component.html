@@ -39,8 +39,6 @@
           <input
             nz-input
             formControlName="name"
-            id="name"
-            placeholder="Vui lòng nhập thông tin"
             [maxlength]="50"
           />
           <ng-template #nameErrorTpl let-control>
@@ -60,7 +58,7 @@
         >
           <input
             nz-input
-            value="asdsad"
+            [value]="data?.shareName"
             disabled="true"
           />
         </nz-form-control>
@@ -75,7 +73,7 @@
         >
           <input
             nz-input
-            [value]="5"
+            [value]="data?.size"
             disabled="true"
           />
         </nz-form-control>
@@ -90,7 +88,7 @@
         >
           <input
             nz-input
-            [value]="5"
+            [value]="data?.createdDate | date: 'dd/MM/yyyy'"
             disabled="true"
           />
         </nz-form-control>
@@ -102,8 +100,6 @@
             rows="5"
             nz-input
             formControlName="description"
-            id="description"
-            placeholder="Cập nhật thông tin mô tả"
           ></textarea>
         </nz-form-control>
       </nz-form-item>

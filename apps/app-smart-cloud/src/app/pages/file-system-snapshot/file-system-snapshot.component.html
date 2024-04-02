@@ -77,12 +77,12 @@
           <td>
               <div class="d-flex gap-2 justify-content-center">
                 <one-portal-edit-file-system-snapshot [region]="region"
-              [project]="project" [filesystemsnapshotId]="data.id" />
+              [project]="project" [data]="data" (onOk)="handleOkEditFileSystemSnapShot()" [filesystemsnapshotId]="data.id" />
               <one-portal-delete-file-system-snapshot 
               [region]="region"
               [project]="project" [filesystemsnapshotId]="data.id" 
               [filesystemsnapshotName]="data.name" 
-              (onOk)="handleOkCreateFileSystemSnapShot()"
+              (onOk)="handleOkDeleteFileSystemSnapShot()"
               />
               </div>
           </td>
