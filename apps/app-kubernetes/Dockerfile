@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.18 AS installer
+FROM nregistry.onsmartcloud.com/idg/node:18 as installer
 WORKDIR /app
 
 COPY package.json .
@@ -8,6 +8,8 @@ RUN yarn install
 FROM registry.onsmartcloud.com/idg/node:18 as node
 WORKDIR /app
 COPY --from=installer /app /app
+
+COPY . .
 
 RUN pwd && ls
 RUN yarn global add @nrwl/cli
