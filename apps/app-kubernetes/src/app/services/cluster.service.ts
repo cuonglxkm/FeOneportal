@@ -19,7 +19,7 @@ export class ClusterService extends BaseService {
   private progressSource = new Subject<any>();
   progressData = this.progressSource.asObservable();
 
-  // baseUrl = 'http://127.0.0.1:16003';
+  baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({

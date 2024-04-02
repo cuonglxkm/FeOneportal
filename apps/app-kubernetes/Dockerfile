@@ -1,6 +1,8 @@
 FROM registry.onsmartcloud.com/idg/node:18 as node
 WORKDIR /app
-COPY . .
+COPY package.json .
+
+RUN yarn install
 
 RUN pwd && ls
 RUN yarn global add @nrwl/cli
