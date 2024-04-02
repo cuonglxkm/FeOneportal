@@ -22,6 +22,9 @@ import { DeleteVpnConnectionComponent } from './manage/vpn-connection/delete/del
 import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/detail-vpn-connection.component';
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
 import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vpn-service.component';
+import { EditIkePoliciesComponent } from './manage/ike-policies/edit/edit-ike-policies.component';
+import { DeleteIkePoliciesComponent } from './manage/ike-policies/delete/delete-ike-policies.component';
+import { DetailIkePoliciesComponent } from './manage/ike-policies/detail/detail-ike-policies.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,10 @@ import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vp
     DeleteVpnConnectionComponent,
     DetailVpnConnectionComponent,
     CreateIkePoliciesComponent,
-    DetailVpnServiceComponent
+    EditIkePoliciesComponent,
+    DetailVpnServiceComponent,
+    DeleteIkePoliciesComponent,
+    DetailIkePoliciesComponent
   ],
     imports: [
         VpnSiteToSiteRoutingModule,

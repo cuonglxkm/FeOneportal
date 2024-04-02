@@ -9,6 +9,8 @@ import { CreateIkePoliciesComponent } from "./manage/ike-policies/create/create-
 import { EditVpnConnectionComponent } from "./manage/vpn-connection/edit/edit-vpn-connection.component";
 import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/detail-vpn-connection.component";
 import { DetailVpnServiceComponent } from "./manage/vpn-service/detail/detail-vpn-service.component";
+import { EditIkePoliciesComponent } from "./manage/ike-policies/edit/edit-ike-policies.component";
+import { DetailIkePoliciesComponent } from "./manage/ike-policies/detail/detail-ike-policies.component";
 const routes: Routes = [
   {
     path: 'manage',
@@ -43,9 +45,18 @@ const routes: Routes = [
     component: CreateIkePoliciesComponent,
   },
   {
+    path: 'ike-policies/edit/:id',
+    component: EditIkePoliciesComponent,
+  },
+ 
+  {
     path: 'vpn-service/:id',
     component: DetailVpnServiceComponent,
-  }
+  },
+  {
+    path: 'ike-policies/:id',
+    component: DetailIkePoliciesComponent,
+  },
 ];
 
 @NgModule({
