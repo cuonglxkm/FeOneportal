@@ -1,4 +1,4 @@
-FROM nregistry.onsmartcloud.com/idg/node:18 as installer
+FROM registry.onsmartcloud.com/idg/node:18 as installer
 WORKDIR /app
 
 COPY package.json .
