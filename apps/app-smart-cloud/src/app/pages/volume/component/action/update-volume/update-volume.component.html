@@ -12,7 +12,7 @@
             <span>Tên Volume</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
             <span nz-icon nzType="question-circle" nz-popover
-                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
+                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt (trừ _).'"
                   nzPopoverPlacement="bottom" nzTheme="outline"></span>
           </div>
         </nz-form-label>
@@ -24,7 +24,7 @@
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
-              dấu tiếng Việt
+              dấu tiếng Việt (trừ _)
             </ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
           </ng-template>
