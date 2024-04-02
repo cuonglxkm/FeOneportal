@@ -106,7 +106,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     isEncryption: FormControl<boolean>
     isMultiAttach: FormControl<boolean>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]],
     isSnapshot: [false, []],
     snapshot: [null as number, []],
     radio: [''],
@@ -200,7 +200,6 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   snapshotSelectedChange(value: number) {
     this.snapshotSelected = value;
-
   }
 
   onChangeStatus() {

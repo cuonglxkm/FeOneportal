@@ -21,9 +21,7 @@
                  [placeholder]="'Nhập tên Volume'" [maxLength]="70"/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
-              Việt
-            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
             <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume khác</ng-container>
           </ng-template>
@@ -46,7 +44,7 @@
           <nz-form-label nzFor="snapshot">
             <div class="label">
               <span>Chọn Snapshot</span>
-              <span style="color: rgba(252, 16, 16, 1); ">*</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="snapshotErrorTpl">

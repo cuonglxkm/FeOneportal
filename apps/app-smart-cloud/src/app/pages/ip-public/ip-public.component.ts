@@ -37,18 +37,18 @@ export class IpPublicComponent implements OnInit {
   isVisibleRemove: boolean = false;
   isVisibleDelete: boolean = false;
   listInstance: any[];
-  instanceSelected;
+  instanceSelected = '';
   loadingAtt = true;
   disableAtt = true;
   id: any;
 
-
-
   statusData = [
     {name: 'Trạng thái', value: ''},
-    {name: 'Khởi tạo', value: '0'},
-    {name: 'Đang sử dụng', value: '2'}];
+    {name: 'Đang hoạt động', value: 'KHOITAO'},
+    {name: 'Chậm gia hạn', value: 'TAMNGUNG'}];
   actionData = ['Gắn Ip Pulbic', 'Gỡ Ip Pulbic', 'Xóa'];
+  disableDelete = true;
+  ipAddressDelete = '';
 
   constructor(private service: IpPublicService, private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -129,10 +129,12 @@ export class IpPublicComponent implements OnInit {
     this.isVisibleMounted = false;
     this.isVisibleRemove = false;
     this.isVisibleDelete = false;
+    this.instanceSelected = '';
+    this.isSelected = false;
   }
 
-  openIpMounted(event: any, id: any) {
-      this.id = id;
+  openIpMounted(event: any, item: any) {
+      this.id = item.id;
       if (event === 'Gắn Ip Pulbic') {
         this.instancService.search(1, 999, this.regionId, this.projectId, '', '',true, this.tokenService.get()?.userId)
           .pipe(finalize(() => {
@@ -148,13 +150,19 @@ export class IpPublicComponent implements OnInit {
       } else if (event === 'Gỡ Ip Pulbic') {
         this.isVisibleRemove = true;
       } else if (event === 'Xóa') {
+        if (item.ipAddress === null || item.ipAddress === '') {
+          this.ipAddressDelete = item.iPv6Address
+        } else {
+          this.ipAddressDelete = item.ipAddress
+        }
         this.isVisibleDelete = true;
       } else if (event === 'Gia Hạn Ip Pulbic') {
-        this.router.navigate(['/app-smart-cloud/ip-public/extend/' + id]);
+        this.router.navigate(['/app-smart-cloud/ip-public/extend/' + item.id]);
       }
   }
 
   openIpRemove() {
+    this.loading = true;
     const request = {
       id: this.id
     }
@@ -163,10 +171,10 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Gỡ thành công Ip Public')
+          this.notification.success('Thành công', 'Gỡ thành công IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Gỡ thất bại Ip Public')
+          this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
         },
       }
     )
@@ -176,15 +184,16 @@ export class IpPublicComponent implements OnInit {
   }
 
   openIpDelete() {
+    this.loading = true;
     this.service.remove(this.id)
       .pipe(finalize(() => {this.getData(true);}))
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Xóa thành công Ip Public')
+          this.notification.success('Thành công', 'Xóa thành công IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Xóa thất bại Ip Public')
+          this.notification.error('Thất bại', 'Xóa thất bại IP Public')
         },
       }
     )
@@ -194,25 +203,36 @@ export class IpPublicComponent implements OnInit {
   }
 
   Mounted() {
-    // call api
-    const request = {
-      id: this.id,
-      attachedVmId: this.instanceSelected,
+    if (this.instanceSelected != '') {
+      this.loading = true;
+      // call api
+      const request = {
+        id: this.id,
+        attachedVmId: this.instanceSelected,
+      }
+
+      this.service.attachIpPublic(request)
+        .pipe(finalize(() => {
+          this.instanceSelected = '';
+          this.refreshParams();
+          this.getData(true);
+        }))
+        .subscribe(
+          {
+            next: post => {
+              this.notification.success('Thành công', 'Gắn thành công IP Public')
+            },
+            error: e => {
+              this.notification.error('Thất bại', 'Gắn thất bại IP Public')
+            },
+          }
+        )
+      this.isVisibleMounted = false;
+      this.isSelected = false;
+    } else {
+      this.isSelected = true;
     }
 
-    this.service.attachIpPublic(request).subscribe(
-      {
-        next: post => {
-          this.notification.success('Thành công', 'Gắn thành công Ip Public')
-        },
-        error: e => {
-          this.notification.error('Thất bại', 'Gắn thất bại IP Public')
-        },
-      }
-    )
-    this.isVisibleMounted = false;
-    this.refreshParams();
-    this.getData(true);
   }
 
   refreshParams() {
@@ -223,4 +243,14 @@ export class IpPublicComponent implements OnInit {
   }
 
     protected readonly navigator = navigator;
+  isSelected = false;
+  nameDelete: any;
+
+  confirmNameDelete(event: any) {
+    if (event == this.ipAddressDelete) {
+      this.disableDelete = false;
+    } else {
+      this.disableDelete = true;
+    }
+  }
 }

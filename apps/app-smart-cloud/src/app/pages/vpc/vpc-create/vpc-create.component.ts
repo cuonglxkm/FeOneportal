@@ -70,7 +70,7 @@ export class VpcCreateComponent {
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
   selectIndexTab: any = 0;
-
+  vCPU = 0;
   form = new FormGroup({
     name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
     description: new FormControl(''),
@@ -185,8 +185,9 @@ export class VpcCreateComponent {
   onChangeConfigCustom() {
 
   }
-
-  onInputFlavors(event: any) {
+  selectPackge = '';
+  onInputFlavors(event: any,name: any) {
+    this.selectPackge = name;
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
     );

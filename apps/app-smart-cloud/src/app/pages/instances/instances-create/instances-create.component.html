@@ -49,14 +49,9 @@
                       nz-input
                       formControlName="name"
                       [(ngModel)]="instanceCreate.serviceName"
-                      id="name"
                       placeholder="Nhập tên máy ảo"
-                      maxlength="50"
+                      [maxlength]="50"
                       minlength="1"
-                      (change)="
-                        instanceCreate.serviceName =
-                          instanceCreate.serviceName.trim()
-                      "
                     />
                   </nz-col>
                   <nz-col
@@ -83,13 +78,8 @@
                   </nz-col>
                 </nz-row>
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập thông tin</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự
-                    đặc biệt</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -195,7 +185,7 @@
           <nz-form-label
             >Chọn loại Volume (<span class="text-red">*</span>)<img
               style="margin-left: 10px"
-              nz-tooltip="Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot."
+              nz-tooltip="Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau."
               src="assets/imgs/pajamas_question.svg"
               alt=""
           /></nz-form-label>
@@ -440,14 +430,14 @@
                         [nzMin]="1"
                         [nzMax]="1000"
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="onChangeCapacity()"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="1000"
@@ -474,14 +464,14 @@
                         [nzMin]="1"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeRam()"
+                        (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="onChangeRam()"
+                        (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -509,14 +499,14 @@
                         [nzMin]="1"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="onChangeVCPU()"
+                        (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -583,6 +573,7 @@
             </nz-form-item>
             <div>
               <label
+                *ngIf="hasOfferIpv6"
                 nz-checkbox
                 [(ngModel)]="isUseIPv6"
                 [ngModelOptions]="{ standalone: true }"
@@ -611,7 +602,7 @@
                   </div>
                 </ng-template></label
               >
-              <br />
+              <br *ngIf="hasOfferIpv6" />
               <label
                 nz-checkbox
                 [(ngModel)]="isUseLAN"
@@ -862,7 +853,7 @@
                     [nzMax]="100"
                     [nzStep]="1"
                     [(ngModel)]="numberMonth"
-                    (ngModelChange)="onChangeTime($event)"
+                    (ngModelChange)="changeTime($event)"
                     [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   ></nz-input-number>
@@ -1071,7 +1062,7 @@
                         (ngModelChange)="onInputIPv4($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
@@ -1100,7 +1091,7 @@
             </div>
           </nz-card>
         </div>
-        <div style="margin-top: 5px" *ngIf="!activeIPv6">
+        <div style="margin-top: 5px" *ngIf="!activeIPv6 && hasOfferIpv6">
           <button
             style="height: 32px; margin-top: 10px"
             nz-button
@@ -1114,7 +1105,7 @@
             />Bổ sung IPv6
           </button>
         </div>
-        <div *ngIf="activeIPv6">
+        <div *ngIf="activeIPv6 && hasOfferIpv6">
           <nz-card nzHoverable>
             <div class="ant-table">
               <table>
@@ -1152,7 +1143,7 @@
                         (ngModelChange)="onInputIPv6($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="7"
                         nzSize="large"
                       ></nz-input-number>
@@ -1271,7 +1262,7 @@
                   totalAmountVolume +
                   totalAmountIPv4 +
                   totalAmountIPv6) /
-                  numberMonth | number: '1.0-0'
+                  numberMonth | number : '1.0-0'
               }}
               VND
             </span>
@@ -1296,7 +1287,7 @@
                 totalincludesVAT +
                   totalAmountVolumeVAT +
                   totalAmountIPv4VAT +
-                  totalAmountIPv6VAT | number: '1.0-0'
+                  totalAmountIPv6VAT | number : '1.0-0'
               }}
               VND
             </span>
@@ -1310,10 +1301,27 @@
               nzSize="large"
               nzType="primary"
               (click)="save()"
-              [disabled]="form.invalid"
+              [disabled]="
+                form.invalid ||
+                totalincludesVAT +
+                  totalAmountVolumeVAT +
+                  totalAmountIPv4VAT +
+                  totalAmountIPv6VAT ==
+                  0
+              "
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="form.invalid ? 'gray' : 'white'"
+              <span
+                [style.color]="
+                  form.invalid ||
+                  totalincludesVAT +
+                    totalAmountVolumeVAT +
+                    totalAmountIPv4VAT +
+                    totalAmountIPv6VAT ==
+                    0
+                    ? 'gray'
+                    : 'white'
+                "
                 >Khởi tạo</span
               >
             </button>

@@ -3,8 +3,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Ip Public</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Extend</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">IP Public</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Gia hạn</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -18,19 +18,19 @@
   <nz-row [nzGutter]="24">
     <nz-col nzSpan="16">
       <nz-card [nzLoading]="isLoading" style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin Volume</span>
+        <span class="text-card-header">Thông tin IP Public</span>
         <div nz-row class="mb-md pt-5">
           <div nz-col nzSpan="11">
-            <nz-form-label nzFor="name">Địa chỉ IP <span class="text-red">*</span></nz-form-label>
-            <nz-input-group nzCompact>
-              <input nz-input [(ngModel)]="ipAddress" type="text" [disabled]="true" nzSize="large"/>
-            </nz-input-group>
+            <div class="text-label" style="margin-bottom: 10px;">Địa chỉ IP (<span class="text-red">*</span>)</div>
+            <input nz-input style="border-radius: 8px;" [(ngModel)]="ipAddress" type="text" [disabled]="true" nzSize="large"/>
           </div>
           <div nz-col nzSpan="12" style="margin-left: 15px">
-            <nz-form-label>Máy ảo</nz-form-label>
-            <nz-input-group nzCompact>
-              <input nz-input [(ngModel)]="attachedVm" type="text" [disabled]="true" nzSize="large"/>
-            </nz-input-group>
+            <div class="text-label" style="margin-bottom: 10px;">Máy ảo</div>
+            <input nz-input style="border-radius: 8px;" [(ngModel)]="attachedVm" type="text" [disabled]="true" nzSize="large"/>
+<!--            <nz-form-label>Máy ảo</nz-form-label>-->
+<!--            <nz-input-group nzCompact>-->
+<!--              <input nz-input style="border-radius: 8px;" [(ngModel)]="attachedVm" type="text" [disabled]="true" nzSize="large"/>-->
+<!--            </nz-input-group>-->
           </div>
         </div>
         <div style="margin-top: 20px;">
@@ -39,23 +39,19 @@
       </nz-card>
       <nz-card style="border-radius: 8px;">
         <span class="text-card-header">Thông tin gia hạn</span>
-        <hr style="opacity: 0.1">
-        <hr>
-        <nz-table style="margin-top: 50px">
+        <nz-table style="margin-top: 25px">
           <td style="width: 50%">
-            <p><b>Ngày cấp dịch vụ: </b> {{dateString | date:'dd/MM/yyyy'}} </p>
+            <div class="text-label">Ngày cấp dịch vụ: {{dateString | date:'dd/MM/yyyy'}} </div>
           </td>
           <td style="width: 50%">
-            <p><b>Ngày hết hạn: </b> {{ipInfo?.expiredDate | date:'dd/MM/yyyy'}} </p>
+            <div class="text-label">Ngày hết hạn: {{ipInfo?.expiredDate | date:'dd/MM/yyyy'}} </div>
           </td>
         </nz-table>
-        <b>Số tháng cần gia hạn thêm</b>
-        <nz-input-number style="width: 100%; margin-top: 10px; margin-bottom: 18px;margin-left: -3px" [nzMin]="1"
-                         [nzMax]="99999" [nzStep]="1"
+        <div  class="text-label" style=" margin-top: 18px;">Số tháng cần gia hạn thêm (<span class="text-red">*</span>)</div>
+        <nz-input-number style="width: 100%; margin-top: 10px; margin-bottom: 18px;margin-left: -3px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
                          [(ngModel)]="numOfMonth" (ngModelChange)="caculator()"
                          [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
-        <p style="color: red"><b style="color: red">Ngày hết hạn dự
-          kiến: </b>{{dateStringExpired | date : "dd/MM/YYYY"}}</p>
+        <div  class="text-label" style="color: red">Ngày hết hạn dự kiến: {{dateStringExpired | date : "dd/MM/YYYY"}}</div>
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
@@ -67,7 +63,7 @@
         <div style="margin-top: 10px" class="text-label">{{ipInfo?.ipAddress}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div class="text-value">Gắn vào máy ảo</div>
-        <div style="margin-top: 10px" class="text-label">{{ipInfo?.attachedVm || '-'}}</div>
+        <div style="margin-top: 10px" class="text-label">{{ipInfo?.attachedVm}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div class="text-value">Loại IP</div>
         <div style="margin-top: 10px" class="text-label">{{isIpV6 == true ? 'IPv6' : 'IPv4'}}</div>
@@ -106,7 +102,7 @@
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="extendIpPublic()" [disabled]="numOfMonth == null || numOfMonth ==0">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="numOfMonth == null || numOfMonth ==0 ? 'gray' : 'white'">Gia Hạn</span>
+              <span [style.color]="numOfMonth == null || numOfMonth ==0 ? 'gray' : 'white'">Gia hạn</span>
             </button>
           </nz-col>
         </nz-row>

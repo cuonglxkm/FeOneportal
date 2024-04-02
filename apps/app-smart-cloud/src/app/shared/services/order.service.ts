@@ -224,4 +224,11 @@ export class OrderService extends BaseService {
       this.httpOptions
     );
   }
+
+  getTotalAmount(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
 }

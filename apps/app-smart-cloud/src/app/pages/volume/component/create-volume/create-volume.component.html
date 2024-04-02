@@ -68,7 +68,7 @@
                      [placeholder]="'Nhập tên Volume'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
                 <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume
                   khác
@@ -169,8 +169,8 @@
                                    (ngModelChange)="changeValueInput()"
                                    [nzMin]="1" [nzStep]="1"></nz-input-number>
                 </td>
-                <td>{{ iops }}</td>
-                <td>{{ unitPrice | number }}</td>
+                <td nzAlign="right">{{ iops }}</td>
+                <td nzAlign="right">{{ unitPrice | number }}</td>
               </tr>
               </tbody>
             </nz-table>
@@ -200,7 +200,6 @@
                 <span nz-icon nzType="question-circle" style="margin-left: 5px;"
                       nzTheme="outline"
                       nz-popover
-
                       [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
                       nzPopoverPlacement="bottom"></span>
               </div>
@@ -250,7 +249,7 @@
               <nz-col nzSpan="12">
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                   <nz-input-number
-                    style="width:100%; border-radius: 8px;"
+                    style="width:100%; border-radius: 8px; margin-left: 0;"
                     formControlName="time"
                     (ngModelChange)="timeSelectedChange($event)"
                     class="input-custom"
@@ -349,7 +348,7 @@
           </div>
           <div class="text-value">Tên Volume</div>
           <div style="margin-top: 10px" class="text-label">
-            {{ volumeCreate.serviceName }}
+            {{ validateForm.controls.name.getRawValue() }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">Loại Volume</div>
@@ -359,10 +358,10 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">Dung lượng Volume</div>
-          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">IOPS</div>
-          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.iops }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">

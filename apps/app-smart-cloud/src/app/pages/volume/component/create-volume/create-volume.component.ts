@@ -290,9 +290,13 @@ export class CreateVolumeComponent implements OnInit {
   onSwitchSnapshot() {
     this.isInitSnapshot = this.validateForm.controls.isSnapshot.value;
     console.log('snap shot', this.isInitSnapshot);
-    if(this.isInitSnapshot == true) {
+    if(this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required)
+    } else {
+      this.validateForm.controls.snapshot.clearValidators()
+      this.validateForm.controls.snapshot.updateValueAndValidity();
     }
+
   }
 
   snapshotSelectedChange(value: number) {
@@ -354,6 +358,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.volumeType = this.selectedValueRadio;
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
     this.volumeCreate.description = this.validateForm.get('description').value;
+    this.volumeCreate.iops = this.iops
     if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId =
         this.validateForm.controls.snapshot.value;
@@ -372,7 +377,6 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-    this.volumeCreate.iops = this.iops
     let currentDate = new Date();
     let lastDate = new Date();
     if (this.timeSelected == undefined || this.timeSelected == null) {
@@ -431,7 +435,7 @@ export class CreateVolumeComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.volumeCreate),
         specificationType: 'volume_create',
-        price: this.unitPrice,
+        price: this.orderItem?.totalAmount.amount,
         serviceDuration: this.validateForm.controls.time.value,
       },
     ];
@@ -464,7 +468,6 @@ export class CreateVolumeComponent implements OnInit {
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
     });
   }
-
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe((data) => {
       let project = data.find((project) => project.id === +this.project);
@@ -479,6 +482,7 @@ export class CreateVolumeComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     // this.customerId = this.tokenService.get()?.userId
+
     if (this.project && this.region) {
       this.loadProjects();
     }

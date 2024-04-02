@@ -17,10 +17,12 @@
     <nz-breadcrumb-item> Gia hạn máy ảo </nz-breadcrumb-item>
   </nz-breadcrumb>
   <div class="text-right">
-    <region-select-dropdown [isDetail]="true"></region-select-dropdown>
+    <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
     <project-select-dropdown
-      [isDetail]="true"
       [regionId]="regionId"
+      (userChanged)="onProjectChange($event)"
     ></project-select-dropdown>
   </div>
   <div>
@@ -59,19 +61,14 @@
                 <span class="text-label" style="width: 35%">Hệ điều hành:</span>
                 <span class="text-value-detail"
                   >{{ instancesModel.imageName }}
-                  <a
-                    class="text-blue"
+                  <img
+                    style="cursor: pointer; margin-left: 10px"
+                    nz-tooltip="Thay đổi"
+                    src="assets/imgs/refresh.svg"
+                    alt=""
                     (click)="navigateToChangeImage()"
-                    style="margin-left: 15px"
-                  >
-                    <img src="assets/imgs/undo.png" alt="" /><span
-                      style="margin-left: 15px"
-                      >Thay đổi</span
-                    ></a
-                  ></span
-                >
-              </nz-row></nz-col
-            >
+                /></span> </nz-row
+            ></nz-col>
           </nz-row>
           <nz-row style="background-color: #e2e2e9">
             <nz-col nzSpan="12">
@@ -212,17 +209,14 @@
         <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzSpan="12">
             <nz-form-item>
-              <nz-form-label
-                >Chọn chu kỳ thanh toán (<span class="text-red">*</span>) -
-                Tháng</nz-form-label
-              >
+              <nz-form-label>Số tháng cần gia hạn thêm</nz-form-label>
               <nz-form-control>
                 <nz-input-number
                   [nzMin]="0"
                   [nzMax]="100"
                   [nzStep]="1"
                   [(ngModel)]="numberMonth"
-                  (ngModelChange)="onChangeTime($event)"
+                  (ngModelChange)="changeTime($event)"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 ></nz-input-number>
@@ -314,7 +308,7 @@
               nz-button
               nzSize="large"
               nzType="primary"
-              (click)="showModal()"
+              (click)="handleOkExtend()"
               [disabled]="isDisable"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
@@ -326,29 +320,3 @@
     </nz-col>
   </nz-row>
 </div>
-
-<nz-modal
-  [(nzVisible)]="isVisibleExtend"
-  nzTitle="Xác nhận gia hạn máy ảo"
-  (nzOnCancel)="handleCancelExtend()"
->
-  <ng-container *nzModalContent>
-    <div>Quý khách chắc chắn muốn gia hạn dịch vụ này?</div>
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button (click)="handleCancelExtend()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />Hủy
-    </button>
-    <button nz-button nzType="primary" (click)="handleOkExtend()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
-      />Xác nhận
-    </button>
-  </div>
-</nz-modal>

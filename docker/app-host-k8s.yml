@@ -26,7 +26,7 @@ spec:
             - name: APP_SMART_CLOUD_URL
               value: https://appsmartcloud.onsmartcloud.com
             - name: APP_KUBERNETES_URL
-              value: https://appkubernetes.onsmartcloud.com
+              value: https://appk8s.onsmartcloud.com
             - name: BASE_URL
               value: https://api.onsmartcloud.com
             - name: ISSUER
@@ -36,7 +36,14 @@ spec:
             - name: LOGOUT_CALLBACK
               value: https://oneportal.onsmartcloud.com
             - name: SCOPE
-              value: openid profile email
+              value: openid profile email offline_access
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
       imagePullSecrets:
         - name: regcred
 ---
@@ -49,7 +56,6 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      name: port1
-      nodePort: 30766
+      name: http
   selector:
     app: app-host

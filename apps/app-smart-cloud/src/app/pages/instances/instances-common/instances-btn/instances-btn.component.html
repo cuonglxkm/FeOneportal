@@ -3,14 +3,45 @@
   ><img src="assets/imgs/arrow-down.svg" alt="" />
 </button>
 <nz-dropdown-menu #opMenu="nzDropdownMenu">
-  <ul nz-menu>
+  <ul *ngIf="instancesModel" nz-menu>
     <li nz-menu-item (click)="continue()">Gia hạn</li>
-    <li nz-menu-item (click)="openConsole()">Truy cập</li>
-    <li nz-menu-item (click)="showModalRestart()">Khởi động lại</li>
     <li
       *ngIf="
-        instancesModel.taskState != 'SHUTOFF' &&
-        instancesModel.taskState != 'powering-off'
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
+        instancesModel.taskState.toUpperCase() != 'RESCUE'
+      "
+      nz-menu-item
+      (click)="openConsole()"
+    >
+      Truy cập
+    </li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
+      "
+      nz-menu-item
+      (click)="showModalRestart()"
+    >
+      Khởi động lại
+    </li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+        instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
       "
       nz-menu-item
       (click)="showModalShutdown()"
@@ -19,15 +50,27 @@
     </li>
     <li
       *ngIf="
-        instancesModel.taskState == 'SHUTOFF' ||
-        instancesModel.taskState == 'powering-off'
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        (instancesModel.taskState.toUpperCase() == 'SHUTOFF' ||
+          instancesModel.taskState.toUpperCase() == 'POWERING-OFF')
       "
       nz-menu-item
       (click)="showModalStart()"
     >
       Bật
     </li>
-    <li nz-menu-item (click)="modalResetPassword()">Reset Password</li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
+        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'ERROR'
+      "
+      nz-menu-item
+      (click)="modalResetPassword()"
+    >
+      Reset Password
+    </li>
     <li nz-menu-item style="color: red" (click)="showModalDelete()">Xóa</li>
   </ul>
 </nz-dropdown-menu>
@@ -37,19 +80,33 @@
   (nzOnCancel)="handleCancel()"
 >
   <div *nzModalContent>
-    <nz-alert
-      style="margin-bottom: 20px"
-      nzType="warning"
-      [nzDescription]="customTemplateMessageDelete"
-      nzShowIcon
-    ></nz-alert>
-    <span class="text-label">
-      Để thực hiện xoá máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
-      ảo để xác nhận.
-    </span>
-    <nz-form-control>
-      <input class="input-custom" nz-input [(ngModel)]="inputConfirm" />
-    </nz-form-control>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <nz-alert
+        style="margin-bottom: 20px"
+        nzType="warning"
+        [nzDescription]="customTemplateMessageDelete"
+        nzShowIcon
+      ></nz-alert>
+      <span class="text-label">
+        Để thực hiện xoá máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
+        ảo để xác nhận.
+      </span>
+      <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
+        ><nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input
+            class="input-custom"
+            nz-input
+            formControlName="name"
+            [(ngModel)]="inputConfirm"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Vui lòng nhập tên máy ảo</ng-container
+            >
+          </ng-template>
+        </nz-form-control></nz-form-item
+      >
+    </form>
   </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
