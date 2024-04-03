@@ -47,13 +47,15 @@
     </thead>
     <tbody>
     <tr *ngFor="let data of fixedTable.data; index as i">
-      <td><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/1']">{{ data.name }}</a></td>
+      <td> <a
+        [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/' + data.cloudId]"
+        >{{ data.name }}</a></td>
 
   
   <td>{{ data.authorizationAlgorithm }}</td>
   <td>{{ data.authorizationAlgorithm }}</td>
   <td>{{ data.encryptionAlgorithm }}</td>
-  <td>{{ data.perfectForwardSecrecy }}</td>
+  <td>{{ data.perfectForwardSecrey }}</td>
       <td>
           <div class="d-flex gap-2 justify-content-center align-items-center">
             <span
@@ -61,12 +63,18 @@
                 nz-icon
                 nzType="edit"
                 nzTheme="outline"
-                [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/edit/1']"
+                [routerLink]="[
+                '/app-smart-cloud/vpn-site-to-site/ike-policies/edit/' + data.cloudId
+              ]"
                 [nzPopoverContent]="'Sửa'"
                 nz-popover
                 nzPopoverPlacement="bottom"
               ></span>
-            <!-- <one-portal-delete-ike-policies></one-portal-delete-ike-policies> -->
+            <one-portal-delete-ike-policies [region]="region"
+            [project]="project"
+            [ikepolicyid]="data.cloudId"
+            [nameIkePolicy]="data.name"
+            (onOk)="handleOkDelete()"></one-portal-delete-ike-policies>
           </div>
       </td>
     </tr>

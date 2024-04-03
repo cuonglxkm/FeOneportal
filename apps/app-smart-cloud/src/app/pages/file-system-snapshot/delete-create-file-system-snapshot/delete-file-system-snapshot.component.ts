@@ -1,18 +1,9 @@
-import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
-import { ProjectService } from 'src/app/shared/services/project.service';
-import { AppValidator } from '../../../../../../../libs/common-utils/src';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
-import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
+import { FormDeleteFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
+import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 
 
 @Component({
@@ -23,8 +14,8 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
 export class DeleteFileSystemSnapshotComponent{
   @Input() region; number
   @Input() project: number
-  @Input() idIpFloating: number
-  @Input() ip: string
+  @Input() filesystemsnapshotId: number
+  @Input() filesystemsnapshotName: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -32,14 +23,23 @@ export class DeleteFileSystemSnapshotComponent{
   isLoading: boolean = false
 
   validateForm: FormGroup<{
-    ip: FormControl<string>
+    name: FormControl<string>
   }> = this.fb.group({
-    ip: ['', [Validators.required]]
+    name: ['', [Validators.required, this.nameVpnConnectionValidator.bind(this)]]
   });
+
+  nameVpnConnectionValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.filesystemsnapshotName) {
+      return { 'nameMismatch': true };
+    }
+    return null;
+  }
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              private fileSystemSnapshotService: FileSystemSnapshotService) {
   }
 
   showModal(){
@@ -51,25 +51,30 @@ export class DeleteFileSystemSnapshotComponent{
     this.isLoading =  false
   }
 
-  // handleOk() {
-  //   this.isLoading = true
-  //   if(this.validateForm.valid) {
-  //     if(this.ip.includes(this.validateForm.controls.ip.value)){
-  //       this.ipFloatingService.deleteIp(this.idIpFloating).subscribe(data => {
-  //         if(data) {
-  //           this.isVisible = false
-  //           this.isLoading =  false
-  //           this.notification.success('Thành công', 'Xoá IP Floating thành công')
-  //           this.onOk.emit(data)
-  //         }
-  //       }, error => {
-  //         this.isVisible = false
-  //         this.isLoading =  false
-  //         this.notification.success('Thất bại', 'Xoá IP Floating thất bại')
-  //       })
-  //     }
-  //   }
-  // }
+  handleOk() {
+    this.isLoading = true
+    let formDelete = new FormDeleteFileSystemSnapshot()
+    formDelete.id = this.filesystemsnapshotId
+    formDelete.customerId = this.tokenService.get()?.userId;
+    console.log(formDelete);
+    
+    if(this.validateForm.valid) {
+      if(this.filesystemsnapshotName.includes(this.validateForm.controls.name.value)){
+        this.fileSystemSnapshotService.deleteFileSystemSnapshot(formDelete).subscribe(data => {
+          if(data) {
+            this.isVisible = false
+            this.isLoading =  false
+            this.notification.success('Thành công', 'Xoá FileSystem Snapshot thành công')
+            this.onOk.emit(data)
+          }
+        }, error => {
+          this.isVisible = false
+          this.isLoading =  false
+          this.notification.error('Thất bại', 'Xoá FileSystem Snapshot thất bại')
+        })
+      }
+    }
+  }
 
   
 }

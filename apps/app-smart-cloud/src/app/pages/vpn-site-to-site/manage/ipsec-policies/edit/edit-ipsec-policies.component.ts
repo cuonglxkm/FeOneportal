@@ -91,7 +91,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
       .subscribe(
         (data) => {
           this.ipsecPolicy = data;
-          console.log(data);
+          
           this.selectedAuthorizationAlgorithm =
             this.ipsecPolicy.authorizationAlgorithm;
           this.selectedEncryptionMode = this.ipsecPolicy.encapsulationMode;
