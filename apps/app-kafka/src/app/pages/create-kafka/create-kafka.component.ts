@@ -126,7 +126,7 @@ export class CreateKafkaComponent implements OnInit {
 
   onSubmitPayment() {
 
-    const kafka = this.myform.value;
+    const kafka = this.myform.getRawValue();
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
