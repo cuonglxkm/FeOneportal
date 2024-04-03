@@ -27,6 +27,10 @@ spec:
               value: https://appsmartcloud.onsmartcloud.com
             - name: APP_KUBERNETES_URL
               value: https://appk8s.onsmartcloud.com
+            - name: APP_KAFKA_URL
+              value: https://appkafka.onsmartcloud.com
+            - name: APP_MONGODB_REPLICASET_URL
+              value: https://appmongodb.onsmartcloud.com
             - name: BASE_URL
               value: https://api.onsmartcloud.com
             - name: ISSUER
