@@ -152,7 +152,7 @@ import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/b
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
 import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
-import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
 import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
 import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
 import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
