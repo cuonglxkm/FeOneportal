@@ -68,6 +68,12 @@ export class ListSecurityGroupComponent implements OnInit {
       this.isLoadingSG = false;
       this.listSG = data;
 
+      data.forEach(item => {
+        if(item.name.includes("default")) {
+          this.selectedSG = item
+        }
+      })
+
       if (isBegin) {
         this.isBegin = this.listSG.length < 1 || this.listSG === null ? true : false;
       }
