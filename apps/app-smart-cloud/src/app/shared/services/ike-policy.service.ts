@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
-import { FormSearchIKEPolicy, IKEPolicyModel} from '../models/vpns2s.model';
+import { FormDeleteIKEPolicy, FormSearchIKEPolicy, IKEPolicyModel} from '../models/vpns2s.model';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +38,7 @@ export class IkePolicyService extends BaseService {
 
   getIkePolicyById(id: number, vpcid: number, region: number){
     return this.http.get<IKEPolicyModel>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/ikepolicy/${id}?vpcId=${vpcid}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/ikepolicy/${id}?projectId=${vpcid}&regionId=${region}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -69,7 +69,7 @@ export class IkePolicyService extends BaseService {
       params = params.append('pageSize', formSearch.pageSize)
     }
     if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
-      params = params.append('currentPage', formSearch.pageNumber)
+      params = params.append('pageNumber', formSearch.pageNumber)
     }
     console.log("pram-=---" , params);
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ikepolicy', {
@@ -77,31 +77,49 @@ export class IkePolicyService extends BaseService {
       params: params
     })
   }
-  // deleteIkePolicy(formDelete: FormDeleteIkePolicy) {
-  //   return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.id}?vpcId=${formDelete.vpcId}&regionId=${formDelete.regionId}`).pipe(
-  //     catchError((error: HttpErrorResponse) => {
-  //       if (error.status === 401) {
-  //         console.error('login');
-  //       } else if (error.status === 404) {
-  //         // Handle 404 Not Found error
-  //         console.error('Resource not found');
-  //       }
-  //       return throwError(error);
-  //     }))
-  // }
+  getIKEPoliciesById(id: number, vpcid: number, region: number){
+    return this.http.get<IKEPolicyModel>(this.baseUrl + this.ENDPOINT.provisions +
+      `/vpn-sitetosite/ikepolicy/${id}?projectId=${vpcid}&regionId=${region}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 
-  // edit(id: string, formEdit: IKEPolicyModel) {
-  //   return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${id}`,
-  //     Object.assign(formEdit)).pipe(
-  //     catchError((error: HttpErrorResponse) => {
-  //       if (error.status === 401) {
-  //       } else if (error.status === 404) {
-  //         // Handle 404 Not Found error
-  //         console.error('Resource not found');
-  //       }
-  //       return throwError(error);
-  //     }))
-  // }
+  deleteIkePolicy(formDelete: FormDeleteIKEPolicy) {
+    console.log("form Delete",formDelete)
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.cloudId}`,
+    Object.assign(formDelete))
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+  edit(id: string, formEdit: IKEPolicyModel) {
+    console.log("data edit ike---", formEdit);
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/update`,
+      Object.assign(formEdit)).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 
 
 }
