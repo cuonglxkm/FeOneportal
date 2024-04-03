@@ -186,7 +186,7 @@
             {
               "text": "Security Group",
               "icon": "anticon-profile",
-              "link": "/app-smart-cloud/security-group"
+              "link": "/app-smart-cloud/security-group/list"
             },
             {
               "key": "Object Storage",
