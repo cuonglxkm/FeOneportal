@@ -178,7 +178,6 @@ export class InstancesCreateComponent implements OnInit {
     this.getAllIPPublic();
     this.getAllImageType();
     this.getAllSecurityGroup();
-    this.getAllSSHKey();
 
     this.breakpointObserver
       .observe([
@@ -320,7 +319,13 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   nameHdh: string = '';
+  isLinuxHDH: boolean = false;
   onInputHDH(event: any, index: number, imageTypeId: number) {
+    if (imageTypeId == 1) {
+      this.getAllSSHKey();
+    } else {
+      this.listSSHKey = [];
+    }
     this.hdh = event;
     this.selectedImageTypeId = imageTypeId;
     for (let i = 0; i < this.listSelectedImage.length; ++i) {
@@ -386,9 +391,11 @@ export class InstancesCreateComponent implements OnInit {
     ) {
       this.getTotalAmount();
     }
+    this.listOfferFlavors = [];
     this.initFlavors();
   }
   initSSD(): void {
+    this.myCarouselFlavor.ngOnDestroy();
     this.activeBlockHDD = false;
     this.activeBlockSSD = true;
     this.offerFlavor = null;
@@ -404,6 +411,7 @@ export class InstancesCreateComponent implements OnInit {
     ) {
       this.getTotalAmount();
     }
+    this.listOfferFlavors = [];
     this.initFlavors();
   }
 
@@ -447,7 +455,7 @@ export class InstancesCreateComponent implements OnInit {
         false
       )
       .subscribe((data: any) => {
-        this.listIPPublic = data.records;
+        this.listIPPublic = data.records.filter((e) => e.status == 0);
         console.log('list IP public', this.listIPPublic);
       });
   }
@@ -476,15 +484,15 @@ export class InstancesCreateComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'VM-Flavor')
       .subscribe((data: any) => {
-        this.listOfferFlavors = data.filter(
+        let listOfferFlavorsTemp = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
         if (this.activeBlockHDD) {
-          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+          this.listOfferFlavors = listOfferFlavorsTemp.filter((e) =>
             e.offerName.includes('HDD')
           );
         } else {
-          this.listOfferFlavors = this.listOfferFlavors.filter((e) =>
+          this.listOfferFlavors = listOfferFlavorsTemp.filter((e) =>
             e.offerName.includes('SSD')
           );
         }
@@ -683,7 +691,6 @@ export class InstancesCreateComponent implements OnInit {
         validators: [Validators.required],
       })
     );
-    this.getAllSSHKey();
   }
 
   getAllSSHKey() {

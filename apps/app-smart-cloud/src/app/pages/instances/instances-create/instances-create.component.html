@@ -36,7 +36,7 @@
               <nz-form-label nzFor="name"
                 >Tên máy ảo (<span class="text-red">*</span>)<img
                   style="margin-left: 10px"
-                  nz-tooltip="Tên máy ảo. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt."
+                  nz-tooltip="Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)"
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
               /></nz-form-label>
@@ -337,6 +337,85 @@
         <nz-tabset nzCentered nzSize="large">
           <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
             <ngu-carousel
+              *ngIf="activeBlockHDD"
+              #myCarouselFlavor
+              [inputs]="carouselTileConfig"
+              [dataSource]="listOfferFlavors"
+            >
+              <ngu-tile
+                *nguCarouselDef="let item; let ani = animate"
+                [@slider]="ani"
+              >
+                <div
+                  style="cursor: pointer"
+                  (click)="
+                    onInputFlavors(item.id);
+                    selectElementInputFlavors('flavor_' + item.id)
+                  "
+                  [id]="'flavor_' + item.id"
+                >
+                  <nz-row>
+                    <nz-col
+                      style="padding-bottom: 5px"
+                      class="newClassFlavor text-center"
+                      [class.initialClassFlavor]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                    >
+                      <div>
+                        <span
+                          class="nameFlavor"
+                          [class.initialNameFlavor]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                          >{{ item.offerName | slice : 3 : -4 }}</span
+                        >
+                        <div style="margin-top: -16px">
+                          <img
+                            style="width: 100px"
+                            [src]="
+                              selectedElementFlavor === 'flavor_' + item.id
+                                ? 'assets/imgs/line2.svg'
+                                : 'assets/imgs/line.svg'
+                            "
+                            alt=""
+                          />
+                        </div>
+                        <span class="priceFlavor">{{
+                          item.price.fixedPrice.amount | number
+                        }}</span
+                        ><span> VND/tháng</span>
+                      </div>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col
+                      style="width: 100%; padding-top: 5px"
+                      [class.flavor-footer-active]="
+                        selectedElementFlavor === 'flavor_' + item.id
+                      "
+                      [class.flavor-footer]="
+                        selectedElementFlavor != 'flavor_' + item.id
+                      "
+                    >
+                      <div>
+                        <p>{{ item.description }}</p>
+                      </div>
+                    </nz-col>
+                  </nz-row>
+                </div>
+              </ngu-tile>
+
+              <ul class="myPoint" NguCarouselPoint>
+                <li
+                  *ngFor="let i of myCarouselFlavor.pointNumbers"
+                  [class.active]="i === myCarouselFlavor.activePoint"
+                  (click)="myCarouselFlavor.moveTo(i)"
+                ></li>
+              </ul>
+            </ngu-carousel>
+            <ngu-carousel
+              *ngIf="activeBlockSSD"
               #myCarouselFlavor
               [inputs]="carouselTileConfig"
               [dataSource]="listOfferFlavors"
@@ -667,7 +746,7 @@
           <nz-form-label nzFor="name"
             >Phương thức truy cập máy ảo (<span class="text-red">*</span>)<img
               style="margin-left: 10px"
-              nz-tooltip="Có thể sử dụng mật khẩu hoặc keypair để sử truy cập vào máy ảo."
+              nz-tooltip="Có thể sử dụng mật khẩu hoặc keypair để truy cập vào máy ảo."
               src="assets/imgs/pajamas_question.svg"
               alt=""
           /></nz-form-label>

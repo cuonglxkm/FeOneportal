@@ -176,10 +176,10 @@ export class InstancesService extends BaseService {
 
   resetpassword(data: any): Observable<any> {
     let url_ = `/instances/resetpassword?id=${data.id}&newPassword=${data.newPassword}`;
-    url_ = url_.replace(/[?&]$/, '');
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      ''
+      '',
+      this.httpOptions
     );
   }
 
