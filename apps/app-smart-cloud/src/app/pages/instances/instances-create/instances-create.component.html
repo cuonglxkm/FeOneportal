@@ -49,9 +49,9 @@
                       nz-input
                       formControlName="name"
                       [(ngModel)]="instanceCreate.serviceName"
+                      (ngModelChange)="changeName($event)"
                       placeholder="Nhập tên máy ảo"
                       [maxlength]="50"
-                      minlength="1"
                     />
                   </nz-col>
                   <nz-col
@@ -77,9 +77,17 @@
                     /></label>
                   </nz-col>
                 </nz-row>
+                <div *ngIf="isExistName" style="color: #ff4d4f">
+                  Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác
+                </div>
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)</ng-container>
+                  <ng-container *ngIf="control.hasError('required')"
+                    >Vui lòng nhập thông tin</ng-container
+                  >
+                  <ng-container *ngIf="control.hasError('pattern')"
+                    >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
+                    _)</ng-container
+                  >
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -427,7 +435,7 @@
                         GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="1000"
                         [(ngModel)]="configCustom.capacity"
                         (ngModelChange)="changeCapacity($event)"
@@ -461,7 +469,7 @@
                         GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.ram"
                         (ngModelChange)="changeRam($event)"
@@ -496,7 +504,7 @@
                         vCPU</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="1"
+                        [nzMin]="0"
                         [nzMax]="62"
                         [(ngModel)]="configCustom.vCPU"
                         (ngModelChange)="changeVCPU($event)"
@@ -562,7 +570,7 @@
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
-                  <nz-option nzLabel="Mặc định" nzValue="" />
+                  <nz-option nzLabel="Mặc định" [nzValue]="0" />
                   <nz-option
                     *ngFor="let i of listIPPublic"
                     [nzLabel]="i.ipAddress || i.networkId"
@@ -644,8 +652,12 @@
               <ng-template #nzDescriptionWarning3>
                 <div>
                   Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
-                  hình Security Group <br />
-                  trong mục <u>Truy cập và Bảo mật</u>
+                  hình Security Group trong mục
+                  <u
+                    style="cursor: pointer"
+                    [routerLink]="['/app-smart-cloud/security-group']"
+                    >Truy cập và Bảo mật</u
+                  >
                 </div>
               </ng-template>
             </div>
@@ -739,9 +751,7 @@
                   >Mật khẩu truy cập máy ảo (<span class="text-red">*</span
                   >)</nz-form-label
                 >
-                <nz-form-control
-                  nzErrorTip="Vui lòng nhập mật khẩu truy cập máy ảo"
-                >
+                <nz-form-control [nzErrorTip]="passwordErrorTpl">
                   <nz-input-group
                     [nzSuffix]="suffixTemplate"
                     style="width: 100%"
@@ -751,8 +761,8 @@
                       [type]="passwordVisible ? 'text' : 'password'"
                       nz-input
                       placeholder="input password"
+                      formControlName="passOrKeyFormControl"
                       [(ngModel)]="password"
-                      [ngModelOptions]="{ standalone: true }"
                     />
                   </nz-input-group>
                   <ng-template #suffixTemplate>
@@ -763,6 +773,15 @@
                     ></i>
                   </ng-template>
                 </nz-form-control>
+                <ng-template #passwordErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')"
+                    >Vui lòng nhập mật khẩu</ng-container
+                  >
+                  <ng-container *ngIf="control.hasError('pattern')"
+                    >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số,
+                    chữ hoa, chữ thường và ký hiệu đặc biệt</ng-container
+                  >
+                </ng-template>
               </nz-form-item>
             </nz-col>
 
@@ -788,13 +807,13 @@
                 <nz-form-label
                   >Chọn SSH key (<span class="text-red">*</span>)</nz-form-label
                 >
-                <nz-form-control nzErrorTip="Chọn  *">
+                <nz-form-control [nzErrorTip]="keypairErrorTpl">
                   <nz-select
+                    *ngIf="activeBlockSSHKey"
                     [nzPlaceHolder]="'--Chọn SSH key--'"
                     [nzShowSearch]="true"
-                    [ngModelOptions]="{ standalone: true }"
+                    formControlName="passOrKeyFormControl"
                     [(ngModel)]="selectedSSHKeyName"
-                    (ngModelChange)="onSSHKeyChange($event)"
                     nzSize="large"
                   >
                     <nz-option
@@ -804,6 +823,11 @@
                     />
                   </nz-select>
                 </nz-form-control>
+                <ng-template #keypairErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')"
+                    >Vui lòng chọn SSH key</ng-container
+                  >
+                </ng-template>
               </nz-form-item>
             </nz-col>
             <nz-form-label style="margin-bottom: 20px">
@@ -997,7 +1021,6 @@
         <nz-alert
           style="margin-left: -22px"
           class="ant-alert-warning-custom"
-          (click)="initBlockStorage()"
           nzType="warning"
           nzDescription="Với các ứng dụng cần lưu trữ lớn, quý khách nên sử dụng ổ cứng
           gắn ngoài để đảm bảo về dữ liệu và khả năng mở rộng dễ
@@ -1303,6 +1326,7 @@
               (click)="save()"
               [disabled]="
                 form.invalid ||
+                isExistName ||
                 totalincludesVAT +
                   totalAmountVolumeVAT +
                   totalAmountIPv4VAT +
@@ -1314,6 +1338,7 @@
               <span
                 [style.color]="
                   form.invalid ||
+                  isExistName ||
                   totalincludesVAT +
                     totalAmountVolumeVAT +
                     totalAmountIPv4VAT +
