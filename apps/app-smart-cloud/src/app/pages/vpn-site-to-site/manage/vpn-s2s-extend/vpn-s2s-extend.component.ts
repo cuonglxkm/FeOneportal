@@ -4,6 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { addDays } from 'date-fns';
 import { DataPayment, ItemPayment } from 'src/app/pages/instances/instances.model';
+import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
@@ -144,8 +145,8 @@ export class VpnS2sExtendComponent implements OnInit{
       "customerId": this.tokenService.get()?.userId,
       "vpcId": this.project,
       "typeName": "SharedKernel.IntegrationEvents.Orders.Specifications.VpnSiteToSiteExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "serviceType": 20,
-      "actionType": 3,
+      "serviceType": ServiceType.VPNSiteToSites,
+      "actionType": ServiceActionType.EXTEND,
       "serviceInstanceId": this.vpn['id'],
       "newExpireDate": this.expiredDate,
       "userEmail": null,

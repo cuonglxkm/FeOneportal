@@ -8,7 +8,7 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
-
+import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 @Component({
   selector: 'one-portal-vpn-s2s-create',
   templateUrl: './vpn-s2s-create.component.html',
@@ -166,8 +166,8 @@ export class VpnS2sCreateComponent implements OnInit {
       "vpcId": this.project,
       "regionId": this.region,
       "serviceName": null,
-      "serviceType": 20,
-      "actionType": 0,
+      "serviceType": ServiceType.VPNSiteToSites,
+      "actionType": ServiceActionType.CREATE,
       "serviceInstanceId": 0,
       "createDate": this.dateString,
       "expireDate": this.expiredDate,
