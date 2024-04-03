@@ -10,22 +10,21 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {
-  FormEditIpsecPolicy,
-  IpsecPolicyDetail
-} from 'src/app/shared/models/ipsec-policy';
+  IKEPolicyModel
+} from 'src/app/shared/models/vpns2s.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
+import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 
 @Component({
-  selector: 'one-portal-edit-ipsec-policies',
-  templateUrl: './edit-ipsec-policies.component.html',
-  styleUrls: ['./edit-ipsec-policies.component.less'],
+  selector: 'one-portal-edit-ike-policies',
+  templateUrl: './edit-ike-policies.component.html',
+  styleUrls: ['./edit-ike-policies.component.less'],
 })
-export class EditIpsecPoliciesComponent implements OnInit {
+export class EditIkePoliciesComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
-  ipsecPolicy: IpsecPolicyDetail = new IpsecPolicyDetail();
+  ikePolicy: IKEPolicyModel = new IKEPolicyModel();
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },
     { label: 'sha256', value: 'sha256' },
@@ -33,9 +32,10 @@ export class EditIpsecPoliciesComponent implements OnInit {
     { label: 'sha512', value: 'sha512' },
   ];
 
-  encryptionMode = [
-    { label: 'tunnel', value: 'tunnel' },
-    { label: 'transport', value: 'transport' },
+  
+  ikeVersion = [
+    { label: 'v1', value: 'v1' },
+    { label: 'v2', value: 'v2' },
   ];
 
   encryptionAlgorithm = [
@@ -52,22 +52,22 @@ export class EditIpsecPoliciesComponent implements OnInit {
     { label: 'group14 ', value: 'group14' },
   ];
 
-  transformProtocol = [
-    { label: 'esp', value: 'esp' },
-    { label: 'ah', value: 'ah' },
-    { label: 'ah-esp', value: 'ah-esp' },
+ 
+  phase1Negotiation = [
+    { label: 'main', value: 'main' },
+    { label: 'aggressive', value: 'aggressive' }
   ];
 
   selectedAuthorizationAlgorithm: string;
-  selectedEncryptionMode: string;
+  selectedIKEVersion: string;
   selectedEncryptionAlgorithm: string;
   selectedPerfectForwardSecrecy: string;
-  selectedTransformProtocol: string;
+  selectedPhaseMode: string;
   selectedLifetimeUnits: string;
   selectedLifetimeValue: number;
   isLoading: boolean = false;
 
-  formEditIpsecPolicy: FormEditIpsecPolicy = new FormEditIpsecPolicy();
+  formEditIkePolicy: IKEPolicyModel = new IKEPolicyModel();
   form: FormGroup<{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>;
@@ -81,39 +81,39 @@ export class EditIpsecPoliciesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
-    this.getIpsecPolicyById(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.getIkePolicyById(this.activatedRoute.snapshot.paramMap.get('id'));
   }
 
-  getIpsecPolicyById(id) {
+  getIkePolicyById(id) {
     this.isLoading = true;
-    this.ipsecPolicyService
-      .getIpsecPoliciesById(id, this.project, this.region)
+    this.ikePolicyService
+      .getIkePolicyById(id, this.project, this.region)
       .subscribe(
         (data) => {
-          this.ipsecPolicy = data;
-          
+          this.ikePolicy = data;
+          console.log("data ike get ----" ,data);
           this.selectedAuthorizationAlgorithm =
-            this.ipsecPolicy.authorizationAlgorithm;
-          this.selectedEncryptionMode = this.ipsecPolicy.encapsulationMode;
+            this.ikePolicy.authorizationAlgorithm;
+          this.selectedIKEVersion = this.ikePolicy.ikeVersion;
           this.selectedEncryptionAlgorithm =
-            this.ipsecPolicy.encryptionAlgorithm;
-          this.selectedLifetimeUnits = this.ipsecPolicy.lifetimeUnit;
+            this.ikePolicy.encryptionAlgorithm;
+          this.selectedLifetimeUnits = this.ikePolicy.lifetimeUnit;
           this.selectedPerfectForwardSecrecy =
-            this.ipsecPolicy.perfectForwardSecrecy;
-          this.selectedTransformProtocol = this.ipsecPolicy.transformProtocol;
+            this.ikePolicy.perfectForwardSecrey;
+          this.selectedPhaseMode = this.ikePolicy.ikePhase1NegotiationMode;
           this.form.controls.name.setValue(data.name);
           this.form.controls.lifeTimeValue.setValue(data.lifetimeValue);
           this.isLoading = false;
         },
         (error) => {
-          this.ipsecPolicy = null;
+          this.ikePolicy = null;
           this.isLoading = false;
         }
       );
   }
 
   constructor(
-    private ipsecPolicyService: IpsecPolicyService,
+    private ikePolicyService: IkePolicyService,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private activatedRoute: ActivatedRoute,
@@ -134,40 +134,39 @@ export class EditIpsecPoliciesComponent implements OnInit {
   }
 
   getData(): any {
-    this.formEditIpsecPolicy.customerId = this.tokenService.get()?.userId;
-    this.formEditIpsecPolicy.id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.formEditIpsecPolicy.regionId = this.region;
-    this.formEditIpsecPolicy.vpcId = this.project;
-    this.formEditIpsecPolicy.name = this.form.controls.name.value;
-    this.formEditIpsecPolicy.description = '';
-    this.formEditIpsecPolicy.authorizationAlgorithm =
+    this.formEditIkePolicy.customerId = this.tokenService.get()?.userId;
+    this.formEditIkePolicy.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.formEditIkePolicy.regionId = this.region;
+    this.formEditIkePolicy.projectId = this.project;
+    this.formEditIkePolicy.name = this.form.controls.name.value;
+    this.formEditIkePolicy.authorizationAlgorithm =
       this.selectedAuthorizationAlgorithm;
-    this.formEditIpsecPolicy.encapsulationMode = this.selectedEncryptionMode;
-    this.formEditIpsecPolicy.encryptionAlgorithm =
+    this.formEditIkePolicy.ikeVersion = this.selectedIKEVersion;
+    this.formEditIkePolicy.encryptionAlgorithm =
       this.selectedEncryptionAlgorithm;
-    this.formEditIpsecPolicy.lifetimeUnit = this.selectedLifetimeUnits;
-    this.formEditIpsecPolicy.lifetimeValue =
+    this.formEditIkePolicy.lifetimeUnit = this.selectedLifetimeUnits;
+    this.formEditIkePolicy.lifetimeValue =
       this.form.controls.lifeTimeValue.value;
-    this.formEditIpsecPolicy.perfectForwardSecrecy =
+    this.formEditIkePolicy.perfectForwardSecrey =
       this.selectedPerfectForwardSecrecy;
-    this.formEditIpsecPolicy.transformProtocol =
-      this.selectedTransformProtocol;
-    return this.formEditIpsecPolicy;
+    this.formEditIkePolicy.ikePhase1NegotiationMode =
+      this.selectedPhaseMode;
+    return this.formEditIkePolicy;
   }
 
   handleEdit() {
     this.isLoading = true;
     if (this.form.valid) {
-      this.formEditIpsecPolicy = this.getData();
-      console.log(this.formEditIpsecPolicy);
-      this.ipsecPolicyService
-        .edit(this.activatedRoute.snapshot.paramMap.get('id'), this.formEditIpsecPolicy)
+      this.formEditIkePolicy = this.getData();
+      console.log(this.formEditIkePolicy);
+      this.ikePolicyService
+        .edit(this.activatedRoute.snapshot.paramMap.get('id'), this.formEditIkePolicy)
         .subscribe(
           (data) => {
             this.isLoading = false
             this.notification.success(
               'Thành công',
-              'Cập nhật ipsec policy thành công'
+              'Cập nhật ike policy thành công'
             );
             this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
           },
@@ -175,7 +174,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
             this.isLoading = false
             this.notification.error(
               'Thất bại',
-              'Cập nhật ipsec policy thất bại'
+              'Cập nhật ike policy thất bại'
             );
             console.log(error);
           }

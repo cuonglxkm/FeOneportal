@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Chỉnh sửa IPsecPolicies'"
+  [title]="'Chỉnh sửa IKEPolicies'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -18,7 +18,7 @@
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Chính sửa IPsec Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chính sửa IKE Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -37,7 +37,7 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">Thông tin IPsec Policy</h2>
+      <h2 class="custom-title">Thông tin IKE Policy</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
@@ -50,7 +50,7 @@
                     <span nz-icon nzType="question-circle"
                           nzTheme="outline"
                           nz-popover
-                          [nzPopoverContent]="'Tên của IPsec, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
+                          [nzPopoverContent]="'Tên của IKE, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 255 ký tự.'"
                           nzPopoverPlacement="bottom"></span>
                   </div>
                 </nz-form-label>
@@ -63,8 +63,8 @@
                   class="input-custom"
                 />
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Tên ipsec policy không được để trống</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">Tên ipsec policy chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
+                  <ng-container *ngIf="control.hasError('required')">Tên ike policy không được để trống</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Tên ike policy chỉ chứa kí tự viết thường, viết hoa, số, dấu ngạch ngang (-), dấu gạch dưới (_)</ng-container>
                 </ng-template> 
               </nz-form-control>
             </nz-form-item>
@@ -79,7 +79,7 @@
                     <span nz-icon nzType="question-circle"
                           nzTheme="outline"
                           nz-popover
-                          [nzPopoverContent]="'Thuật toán xác thực danh tính cho IPsec Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'"
+                          [nzPopoverContent]="'Thuật toán xác thực danh tính cho IKE Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'"
                           nzPopoverPlacement="bottom"></span>
                   </div>
                 </nz-form-label>
@@ -104,24 +104,24 @@
               <nz-form-control>
                 <nz-form-label nzFor="name">
                   <div style="margin-top: 15px;">
-                    <span>Encryption Mode</span>
+                    <span>IKE version</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <span nz-icon nzType="question-circle"
                           nzTheme="outline"
                           nz-popover
-                          [nzPopoverContent]="'Giao thức này cung cấp tính bí mật dữ liệu bằng việc mật mã hóa các gói tin. Bao gồm tunnel và transport (mặc định là tunnel).'"
+                          [nzPopoverContent]="'Là một giao thức được sử dụng để thiết lập liên lạc an toàn giữa hai thiết bị qua internet. Có 2 lựa chọn v1 và v2, v2 sẽ bao gồm nhiều phương pháp xác thực và mã hóa hơn đảm bảo tính bảo mật và toàn vẹn dữ liệu hơn. mặc định là v1.'"
                           nzPopoverPlacement="bottom"></span>
                   </div>
                 </nz-form-label>
                 <nz-select
                   nzShowSearch
                   nzAllowClear
-                  [(ngModel)]="selectedEncryptionMode"
+                  [(ngModel)]="selectedIKEVersion"
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
                 >
                   <nz-option
-                    *ngFor="let data of encryptionMode"
+                    *ngFor="let data of ikeVersion"
                     [nzLabel]="data.label"
                     [nzValue]="data.value"
                   ></nz-option>
@@ -139,7 +139,7 @@
                     <span nz-icon nzType="question-circle"
                           nzTheme="outline"
                           nz-popover
-                          [nzPopoverContent]="'Thuật toán mã hóa đối xứng sử dụng cho IPsec Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'"
+                          [nzPopoverContent]="'Thuật toán mã hóa đối xứng sử dụng cho IKE Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'"
                           nzPopoverPlacement="bottom"></span>
                   </div>
                 </nz-form-label>
@@ -169,7 +169,7 @@
                     <span nz-icon nzType="question-circle"
                           nzTheme="outline"
                           nz-popover
-                          [nzPopoverContent]="'Đơn vị đo thời gian tồn tại của IPsec Policy key (mặc định là giây).'"
+                          [nzPopoverContent]="'Đơn vị đo thời gian tồn tại của IKE Policy key (mặc định là giây).'"
                           nzPopoverPlacement="bottom"></span>
                   </div>
                 </nz-form-label>
@@ -253,24 +253,24 @@
               <nz-form-control>
                 <nz-form-label nzFor="name">
                   <div style="margin-top: 15px;">
-                    <span>Transform Protocol</span>
+                    <span>  IKE Phase1 Negotiation Mode </span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                     <span nz-icon nzType="question-circle"
                           nzTheme="outline"
                           nz-popover
-                          [nzPopoverContent]="'Giao thức truyền tải mã hóa của IPsec bao gồm các lựa chọn: esp, ah, ah-esp (mặc định esp).'"
+                          [nzPopoverContent]="'Có 2 lựa chọn là Main và aggressive ( mặc định là main sẽ đảm bảo mật hơn)'"
                           nzPopoverPlacement="bottom"></span>
                   </div>
                 </nz-form-label>
                 <nz-select
                   nzShowSearch
                   nzAllowClear
-                  [(ngModel)]="selectedTransformProtocol"
+                  [(ngModel)]="selectedPhaseMode"
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
                 >
                   <nz-option
-                    *ngFor="let data of transformProtocol"
+                    *ngFor="let data of phase1Negotiation"
                     [nzLabel]="data.label"
                     [nzValue]="data.value"
                   ></nz-option>
@@ -295,8 +295,8 @@
           <span>{{selectedAuthorizationAlgorithm}}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Encryption Mode</h3>
-          <span>{{selectedEncryptionMode}}</span>
+          <h3 class="custom-subtitle">IKE version</h3>
+          <span>{{selectedIKEVersion}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Encryption Algorithm</h3>
@@ -315,8 +315,8 @@
           <span>{{selectedPerfectForwardSecrecy}}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Transform Protocol</h3>
-          <span>{{selectedTransformProtocol}}</span>
+          <h3 class="custom-subtitle">IKE Phase1 Negotiation Mode  </h3>
+          <span>{{selectedPhaseMode}}</span>
         </div>
       </div>
       <button

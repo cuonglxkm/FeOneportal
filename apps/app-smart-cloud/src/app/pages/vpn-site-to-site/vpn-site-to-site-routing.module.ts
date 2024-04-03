@@ -1,5 +1,5 @@
 import {RouterModule, Routes} from "@angular/router";
-import {NgModule} from "@angular/core";
+import {NgModule, inject} from "@angular/core";
 import { VpnSiteToSiteManage } from "./manage/vpn-site-to-site-manage.component";
 import { CreateIpsecPoliciesComponent } from "./manage/ipsec-policies/create/create-ipsec-policies.component";
 import { EditIpsecPoliciesComponent } from "./manage/ipsec-policies/edit/edit-ipsec-policies.component";
@@ -10,8 +10,11 @@ import { EditVpnConnectionComponent } from "./manage/vpn-connection/edit/edit-vp
 import { DetailVpnConnectionComponent } from "./manage/vpn-connection/detail/detail-vpn-connection.component";
 import { VpnS2sCreateComponent } from "./manage/vpn-s2s-create/vpn-s2s-create.component";
 import { DetailVpnServiceComponent } from "./manage/vpn-service/detail/detail-vpn-service.component";
+import { EditIkePoliciesComponent } from "./manage/ike-policies/edit/edit-ike-policies.component";
+import { DetailIkePoliciesComponent } from "./manage/ike-policies/detail/detail-ike-policies.component";
 import { VpnS2sExtendComponent } from "./manage/vpn-s2s-extend/vpn-s2s-extend.component";
 import { VpnS2sResizeComponent } from "./manage/vpn-s2s-resize/vpn-s2s-resize.component";
+import { PolicyService } from "src/app/shared/services/policy.service";
 
 const routes: Routes = [
   {
@@ -21,14 +24,17 @@ const routes: Routes = [
   {
     path: 'create',
     component: VpnS2sCreateComponent,
+    canMatch: [() => inject(PolicyService).hasPermission("order:Create")],
   },
   {
     path: 'extend/:vpcId',
     component: VpnS2sExtendComponent,
+    canMatch: [() => inject(PolicyService).hasPermission("order:Create")],
   },
   {
     path: 'resize/:vpcId',
     component: VpnS2sResizeComponent,
+    canMatch: [() => inject(PolicyService).hasPermission("order:Create")],
   },
   {
     path: 'ipsec-policies/create',
@@ -59,9 +65,18 @@ const routes: Routes = [
     component: CreateIkePoliciesComponent,
   },
   {
+    path: 'ike-policies/edit/:id',
+    component: EditIkePoliciesComponent,
+  },
+ 
+  {
     path: 'vpn-service/:id',
     component: DetailVpnServiceComponent,
-  }
+  },
+  {
+    path: 'ike-policies/:id',
+    component: DetailIkePoliciesComponent,
+  },
 ];
 
 @NgModule({

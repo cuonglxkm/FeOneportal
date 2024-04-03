@@ -3,27 +3,27 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-snapshot';
-import { IpsecPolicyDetail } from 'src/app/shared/models/ipsec-policy';
+import { IKEPolicyModel } from 'src/app/shared/models/vpns2s.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
+import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 
 
 @Component({
-  selector: 'one-portal-detail-ipsec-policies',
-  templateUrl: './detail-ipsec-policies.component.html',
-  styleUrls: ['./detail-ipsec-policies.component.less'],
+  selector: 'one-portal-detail-ike-policies',
+  templateUrl: './detail-ike-policies.component.html',
+  styleUrls: ['./detail-ike-policies.component.less'],
 })
-export class DetailIpsecPoliciesComponent implements OnInit{
+export class DetailIkePoliciesComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false
 
-  ipsecPolicy: IpsecPolicyDetail = new IpsecPolicyDetail();
+  ikePolicy: IKEPolicyModel = new IKEPolicyModel();
 
 
-  constructor(private ipsecPolicyService: IpsecPolicyService,
+  constructor(private ikePolicyService: IkePolicyService,
               private router: Router,
               private activatedRoute: ActivatedRoute
               ) {
@@ -41,20 +41,20 @@ export class DetailIpsecPoliciesComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage'])
   }
 
-  getIpsecPolicyById(id) {
+  getIkePolicyById(id) {
     this.isLoading = true
-    this.ipsecPolicyService.getIpsecPoliciesById(id,this.project,this.region).subscribe(data => {
-      this.ipsecPolicy = data
-      
+    this.ikePolicyService.getIkePolicyById(id,this.project,this.region).subscribe(data => {
+      this.ikePolicy = data
+      console.log(data);
       
       this.isLoading = false
     }, error => {
-      this.ipsecPolicy = null
+      this.ikePolicy = null
       this.isLoading = false
     })
   }
 
   ngOnInit() {
-    this.getIpsecPolicyById(this.activatedRoute.snapshot.paramMap.get('id'))
+    this.getIkePolicyById(this.activatedRoute.snapshot.paramMap.get('id'))
   }
 }

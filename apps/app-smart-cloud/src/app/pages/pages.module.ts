@@ -141,7 +141,7 @@ import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/b
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
 import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
-import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
 import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
 import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
 import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
@@ -174,7 +174,6 @@ import { ObjectStorageExtendComponent } from './object-storage/object-storage-ex
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { DashboardObjectStorageComponent } from './dashboard-object-storage/dashboard-object-storage.component';
 import { ChartComponent } from './dashboard-object-storage/chart/chart.component';
-import { IsPermissionPipe } from '../shared/pipes/is-permission.pipe';
 import { S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { TreeFolderComponent } from './bucket/bucket-detail/share/tree-folder.component';
 import { SafePipe } from '../../../../../libs/common-utils/src';
@@ -355,7 +354,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ObjectStorageExtendComponent,
     ObjectStorageEditComponent,
     ChartComponent,
-    IsPermissionPipe,
     S3KeyComponent,
     TreeFolderComponent,
     StopScheduleComponent,

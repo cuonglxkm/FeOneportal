@@ -48,7 +48,7 @@ export class DetailVpnConnectionComponent implements OnInit {
       .subscribe(
         (data) => {
           this.vpnConnection = data;
-          console.log(data);
+          
 
           this.isLoading = false;
         },

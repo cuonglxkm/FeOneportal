@@ -19,6 +19,7 @@ import { SecurityGroupSelectComponent } from './components/security-group-select
 import { PaymentSuccessComponent } from './components/payment-success/payment-success.component';
 import { PaymentFailedComponent } from './components/payment-failed/payment-failed.component';
 import { PaymentSummaryComponent } from './components/payment-summary/payment-summary.component';
+import { IsPermissionPipe } from './pipes/is-permission.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -66,6 +67,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...COMPONENTS,
     ...DIRECTIVES,
     PaymentSummaryComponent,
+    IsPermissionPipe,
   ],
   exports: [
     CommonModule,
@@ -82,6 +84,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
+    IsPermissionPipe
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
 })
