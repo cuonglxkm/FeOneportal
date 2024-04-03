@@ -45,7 +45,7 @@ export class DetailIpsecPoliciesComponent implements OnInit{
     this.isLoading = true
     this.ipsecPolicyService.getIpsecPoliciesById(id,this.project,this.region).subscribe(data => {
       this.ipsecPolicy = data
-      console.log(data);
+      
       
       this.isLoading = false
     }, error => {

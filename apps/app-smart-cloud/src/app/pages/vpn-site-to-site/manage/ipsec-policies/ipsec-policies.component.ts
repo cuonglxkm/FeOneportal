@@ -66,7 +66,6 @@ export class IpsecPoliciesComponent {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-        console.log('data', data)
       this.response = data
     })
   }
