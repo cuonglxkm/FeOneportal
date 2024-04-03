@@ -95,5 +95,18 @@ export class EndpointGroupService extends BaseService {
           return throwError(error);
         }))
   }
-
+  
+  listSubnetEndpointGroup(vpcid: number, region: number){
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions +
+      `/vpn-sitetosite/endpoint_groups/list_subnet/vpcId=${vpcid}&regionId=${region}`).pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
+  }
 }

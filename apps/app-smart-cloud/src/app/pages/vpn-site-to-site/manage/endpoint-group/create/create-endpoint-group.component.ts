@@ -18,6 +18,7 @@ import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.ser
 export class CreateEndpointGroupComponent implements OnInit {
     region = JSON.parse(localStorage.getItem('region')).regionId;
     project = JSON.parse(localStorage.getItem('projectId'));
+    listSubnets: string[] = [];
 
     type = [
         { label: 'Subnet(for local system)', value: 'subnet' },
@@ -29,10 +30,10 @@ export class CreateEndpointGroupComponent implements OnInit {
     formCreateEndpointGroup: FormCreateEndpointGroup = new FormCreateEndpointGroup();
     form: FormGroup<{
         name: FormControl<string>;
-        endpoints: FormControl<string[]>;
+        endpoints: FormControl<string>;
     }> = this.fb.group({
         name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-        endpoints: [[] as string[], Validators.required],
+        endpoints: ['', Validators.required],
     });
 
 
@@ -45,7 +46,7 @@ export class CreateEndpointGroupComponent implements OnInit {
             this.form.controls.name.value;
         this.formCreateEndpointGroup.description = "";
         this.formCreateEndpointGroup.type = this.selectedType;
-        this.formCreateEndpointGroup.endpoints = this.form.controls.endpoints.value;
+        this.formCreateEndpointGroup.endpoints = this.form.controls.endpoints.value.split(' ');
         return this.formCreateEndpointGroup;
     }
 
@@ -92,6 +93,13 @@ export class CreateEndpointGroupComponent implements OnInit {
                 );
         }
 
+    }
+
+    getListSubnet() {
+        this.endpointGroupService.listSubnetEndpointGroup(this.project, this.region)
+            .subscribe((data: string[]) => {
+                this.listSubnets = data;
+            });
     }
 
     onRegionChange(region: RegionModel) {

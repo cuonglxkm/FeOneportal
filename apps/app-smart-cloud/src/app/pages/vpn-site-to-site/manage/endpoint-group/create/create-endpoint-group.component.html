@@ -66,11 +66,29 @@
 
         <nz-form-item>
           <nz-form-control>
-            <nz-form-label *ngIf="selectedType == 'subnet'" nzFor="name">Subnet:</nz-form-label>
-            <nz-form-label *ngIf="selectedType == 'cidr'" nzFor="name">Cidr:</nz-form-label>
-
-            <input formControlName="endpoints" *ngIf="selectedType == 'subnet'" nz-input type="text" placeholder="Subnet(for local systems)" />
-            <input formControlName="endpoints" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />
+            <nz-form-label *ngIf="selectedType == 'subnet'">
+              <div>
+                <span nzFor="name">Local Systems Subnets </span>
+                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                    [nzPopoverContent]="'Local Subnet(s). Trường này hợp lệ và có ý nghĩa nếu Type là Subnet
+                    Đây là VLAN trong VPC.'"
+                    nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
+            <div *ngIf="selectedType == 'subnet'">
+              <label [checked]="false" nz-checkbox formControlName="endpoints" >Mã hóa Volume</label>
+            </div>
+            
+            <nz-form-label *ngIf="selectedType == 'cidr'">
+              <div *ngIf="selectedType == 'cidr'">
+                <span nzFor="name">External Systems CIDRs </span>
+                <span nz-icon nzType="question-circle" nzTheme="outline" nz-popover
+                    [nzPopoverContent]="'Remote peer subnet(s) với  mask(s) ở định dạng CIDR được phân tách bằng dấu phẩy nếu cần (ví dụ: 20.1.0.0/24, 21.1.0.0/24) trường này hợp lệ nếu Type là CIDR.
+                    Đây là danh sách các remote subnet cần quảng qua VPN Site to site.'"
+                    nzPopoverPlacement="bottom"></span>
+              </div>
+            </nz-form-label>
+            <input formControlName="endpoints" *ngIf="selectedType == 'cidr'" nz-input type="text" placeholder="Cidr(for external systems)" />         
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -86,11 +104,13 @@
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Type</h3>
-          <span>{{selectedType}}</span>
+          <span formControlName="endpoints" *ngIf="selectedType == 'subnet'">Subnet(for local systems)</span>
+          <span formControlName="endpoints" *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
         </div>
 
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">Type</h3>
+          <h3 formControlName="endpoints" *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
+          <h3 formControlName="endpoints" *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
           <span>{{form.value.endpoints}}</span>
         </div>
       </div>
