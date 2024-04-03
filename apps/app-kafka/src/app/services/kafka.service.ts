@@ -204,5 +204,8 @@ export class KafkaService extends BaseService {
     return this.http.post<BaseResponse<null>>(this.kafkaUrl + '/kafka/upgrade', json, {headers: this.getHeaders()})
   }
 
+  delete(serviceOrderCode: string): Observable<BaseResponse<null>> {
+    return this.http.delete<BaseResponse<null>>(this.kafkaUrl + `/kafka/delete/${serviceOrderCode}`);
+  }
 
 }

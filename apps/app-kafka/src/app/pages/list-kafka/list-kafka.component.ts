@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from '@delon/abc/loading';
 import { camelizeKeys } from 'humps';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription, finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaInfor } from 'src/app/core/models/kafka-infor.model';
@@ -49,6 +50,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     private kafkaService: KafkaService,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
+    private notification: NzNotificationService,
     // private utilService: UtilService,
   ) {
     this.keySearch = '';
@@ -62,6 +64,8 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    localStorage.removeItem('selectedTabIndex');
+
     this.kafkaService.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
       .pipe(
         finalize(() => {
@@ -196,11 +200,29 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     this.isInitModal = true;
     this.msgError = '';
     this.currentKafka = data;
+    this.serviceNameDelete = '';
   }
 
   handleOkDelete() {
     this.isVisibleDelete = false;
-    // this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.kafkaService.delete(this.currentKafka.serviceOrderCode)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
+      .subscribe(
+        (data) => {
+          if (data && data.code == 200) {
+            this.notification.success('Thành công', data.msg);
+            this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus)
+          }
+          else {
+            this.notification.error('Thất bại', data.msg);
+          }
+        }
+      );
   }
 
   checkServiceNameDel() {
