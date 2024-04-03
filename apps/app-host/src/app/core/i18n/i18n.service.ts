@@ -15,7 +15,7 @@ import {
 import { AlainConfigService } from '@delon/util/config';
 import { enUS as dfEn, zhCN as dfZhCn, zhTW as dfZhTw, } from 'date-fns/locale';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import { en_US as zorroEnUS, NzI18nService } from 'ng-zorro-antd/i18n';
+import { en_US as zorroEnUS, NzI18nService, vi_VN } from 'ng-zorro-antd/i18n';
 import { Observable } from 'rxjs';
 
 interface LangConfigData {
@@ -32,7 +32,7 @@ const LANGS: { [key: string]: LangConfigData } = {
   'vi-VI': {
     text: 'Vietnamese',
     ng: ngVi,
-    zorro: zorroEnUS,
+    zorro: vi_VN,
     date: dfEn,
     delon: delonEnUS,
     abbr: '🇬🇧'

@@ -39,6 +39,7 @@
   <nz-card style="border-radius: 8px">
     <h2 class="custom-title">Thông tin File System Snapshot</h2>
    <form nz-form nzLayout="vertical">
+    <nz-spin [nzSpinning]="isLoading" nzSize="large">
      <nz-row nzJustify="space-between" nzGutter="24">
        <nz-col nzSpan="12">
          <nz-form-item>
@@ -91,6 +92,7 @@
          <textarea nz-input rows="4" value="{{ fileSystemSnapshotDetail?.description }}" [disabled]="true" ></textarea>
        </nz-form-control>
      </nz-form-item>
+    </nz-spin>
    </form>
   </nz-card>
 </nz-content>

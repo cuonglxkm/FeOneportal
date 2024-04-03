@@ -21,22 +21,18 @@ import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 export class CreateFileSystemSnapshotComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
-  value: string;
 
+  value: string;
   pageSize: number = 10;
   pageIndex: number = 1;
-
   response: BaseResponse<FileSystemModel[]>;
-
   isLoading: boolean = false;
-
   isCheckBegin: boolean = false;
-
   customerId: number;
+  selectedFileSystemName: string;
 
-  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot =
-    new FormCreateFileSystemSnapShot();
-    selectedFileSystemName: string;
+  formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot = new FormCreateFileSystemSnapShot();
+
   form: FormGroup<{
     nameFileSystem: FormControl<number>;
     nameSnapshot: FormControl<string>
@@ -115,7 +111,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
     this.formCreateFileSystemSnapshot.scheduleId = 0
     return this.formCreateFileSystemSnapshot;
   }
-  // request = new CreateScheduleSnapshotDTO();
+  
   handleCreate() {
     this.isLoading = true;
     if (this.form.valid) {

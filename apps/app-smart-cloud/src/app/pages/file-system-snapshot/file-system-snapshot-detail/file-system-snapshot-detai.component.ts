@@ -47,10 +47,9 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
     this.isLoading = true
     this.fileSystemSnapshotService.getFileSystemSnapshotById(id).subscribe(data => {
       this.fileSystemSnapshotDetail = data
-      console.log(data);
       this.fileSystemId = data.shareId
-      this.isLoading = false
       this.getFileSystemById(data.shareId)
+      this.isLoading = false
     }, error => {
       this.fileSystemSnapshotDetail = null
       this.isLoading = false
@@ -58,15 +57,10 @@ export class FileSystemSnapshotDetailComponent implements OnInit{
   }
 
   getFileSystemById(id) {
-    this.isLoading = true
     this.fileSystemService.getFileSystemById(id, this.region).subscribe(data => {
-      this.fileSystem = data
-      console.log(data);
-      
-      this.isLoading = false
+      this.fileSystem = data     
     }, error => {
       this.fileSystem = null
-      this.isLoading = false
     })
   }
 

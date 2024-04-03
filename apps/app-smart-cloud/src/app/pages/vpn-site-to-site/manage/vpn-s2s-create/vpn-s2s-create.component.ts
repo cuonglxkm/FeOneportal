@@ -69,6 +69,8 @@ export class VpnS2sCreateComponent implements OnInit {
         if (data && data.length > 0) {
           this.offerDatas = [];
           data.forEach(item => {
+            console.log(item);
+            
             let bandwidth = item['characteristicValues'].find(x => x['charName'] == 'Bandwidth');
             this.offerDatas.push({
               'Id': item['id'],
