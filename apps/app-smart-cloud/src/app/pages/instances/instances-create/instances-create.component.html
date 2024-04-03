@@ -50,7 +50,7 @@
                       formControlName="name"
                       [(ngModel)]="instanceCreate.serviceName"
                       placeholder="Nhập tên máy ảo"
-                      maxlength="50"
+                      [maxlength]="50"
                       minlength="1"
                     />
                   </nz-col>
@@ -78,13 +78,8 @@
                   </nz-col>
                 </nz-row>
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập thông tin</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự
-                    đặc biệt</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

@@ -73,9 +73,6 @@ export class FileSystemSnapshotComponent {
     this.getData()
   }
 
-  showModalCreateIpFloating() {
-
-  }
 
   getData() {
     this.isLoading = true
@@ -89,15 +86,17 @@ export class FileSystemSnapshotComponent {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-        console.log('data', data)
       this.response = data
     })
   }
 
-  handleOkCreateFileSystemSnapShot() {
+  handleOkDeleteFileSystemSnapShot() {
     this.getData()
   }
 
+  handleOkEditFileSystemSnapShot(){
+    this.getData()
+  }
   ngOnInit() {
 
     let regionAndProject = getCurrentRegionAndProject();

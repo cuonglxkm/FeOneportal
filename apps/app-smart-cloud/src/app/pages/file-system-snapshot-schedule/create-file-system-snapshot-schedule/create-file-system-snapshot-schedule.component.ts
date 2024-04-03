@@ -8,25 +8,23 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
-import { ProjectService } from 'src/app/shared/services/project.service';
-import {
-  AppValidator,
-  BaseResponse,
-} from '../../../../../../../libs/common-utils/src';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
-import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
-import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import {
   FileSystemModel,
   FormSearchFileSystem,
 } from 'src/app/shared/models/file-system.model';
+import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
+import { ProjectModel } from 'src/app/shared/models/project.model';
+import { RegionModel } from 'src/app/shared/models/region.model';
+import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
+import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
+import { ProjectService } from 'src/app/shared/services/project.service';
+import {
+  BaseResponse
+} from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -36,10 +34,10 @@ import { FileSystemService } from 'src/app/shared/services/file-system.service';
 export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
+
   isLoading: boolean = false;
   customerId: number;
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
-  FileSystem: string[] = ['Apples', 'Nails', 'Bananas', 'Helicopters'];
   time: Date = new Date();
   nameSnapshot: string = '';
   snapshotRecord = 1;
@@ -55,8 +53,9 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
   pageIndex: number = 1;
   response: BaseResponse<FileSystemModel[]>;
   selectedFileSystemName: string[];
-  formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule =
-    new FormCreateFileSystemSsSchedule();
+
+  formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule =new FormCreateFileSystemSsSchedule();
+
   dateOptions: NzSelectOptionInterface[] = [
     { label: 'Hằng ngày', value: '1' },
     { label: 'Theo thứ', value: '2' },
@@ -173,7 +172,6 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
   }
 
   handleCreate() {
-
     this.isLoading = true;
     if (this.FileSystemSnapshotForm.valid) {
       this.formCreateFileSystemSsSchedule = this.getData();
@@ -335,7 +333,6 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
-    // private modalService: NzModalService,
     private fileSystemSnapshotScheduleService: FileSystemSnapshotScheduleService,
     private notification: NzNotificationService,
     private datepipe: DatePipe,

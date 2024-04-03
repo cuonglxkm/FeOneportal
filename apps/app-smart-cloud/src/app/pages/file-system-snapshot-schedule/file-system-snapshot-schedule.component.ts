@@ -67,9 +67,11 @@ export class FileSystemSnapshotScheduleComponent {
     if(value == undefined || value == ""){
       this.value = null
     }
+    
     this.value = value
     this.getData()
   }
+  
 
 
   getData() {
