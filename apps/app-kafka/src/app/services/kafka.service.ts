@@ -131,9 +131,11 @@ export class KafkaService extends BaseService {
     page: number,
     size: number,
     keySearch: string,
-    status:number
+    status:number,
+    regionId: string,
+    projectId: string
   ): Observable<BaseResponse<Pagination<KafkaInfor[]>>> {
-    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}`,{headers: this.getHeaders()});
+    return this.http.get<BaseResponse<Pagination<KafkaInfor[]>>>(this.kafkaUrl + `/kafka?page=${page}&size=${size}&keySearch=${keySearch.trim()}&status=${status==null?"":status}&regionId=${regionId}&projectId=${projectId}`,{headers: this.getHeaders()});
   }
 
   createKafkaService(req: KafkaCreateReq): Observable<BaseResponse<null>> {

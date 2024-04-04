@@ -32,9 +32,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   // infrastructure info
   regionId: number;
-  projectInfraId: number;
-  cloudProfileId: string;
-  vlanId: number;
+  projectId: number;
   
   isVisibleDelete = false;
   isErrorCheckDelete = false;
@@ -65,20 +63,8 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     localStorage.removeItem('selectedTabIndex');
-
-    this.kafkaService.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.isShowIntroductionPage = this.listOfKafka.length > 0 ? false : true;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe((data) => {
-        this.total = data?.data?.totals;
-        this.pageSize = data?.data?.size;
-        this.listOfKafka = camelizeKeys(data?.data?.results) as KafkaInfor[];
-      });
+    // Ẩn đi vì khi khởi tạo component, thay đổi cbx project sẽ gọi đến hàm getList. 
+    // this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus);
     
     this.getListStatus();
     // open websocket
@@ -122,23 +108,11 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.cloudProfileId = region.cloudId;
-
-    // this.getListService(this.regionId, this.cloudProfileId);
-
-    // this.myform.get('regionId').setValue(this.regionId);
-    // this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
   }
 
   onProjectChange(project: ProjectModel) {
-    this.projectInfraId = project.id;
-
-    // this.getVlanNetwork(this.projectInfraId);
-    // this.myform.get('projectInfraId').setValue(this.projectInfraId);
-
-    // handle reset select box of previous project
-    // this.myform.get('vpcNetwork').setValue(null);
-    // this.myform.get('subnet').setValue(null);
+    this.projectId = project?.id;
+    this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus);
   }
 
   ngOnDestroy() {
@@ -162,12 +136,13 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   
 
-  getListService(size: number, index: number, keySearch: string, status: number) {
+  getListService(index: number, size: number, keySearch: string, status: number) {
     this.loading = true;
-    this.kafkaService.getListService(index, size, keySearch, status)
+    this.kafkaService.getListService(index, size, keySearch, status, this.regionId.toString(), this.projectId.toString())
     .pipe(
       finalize(() => {
         this.loading = false;
+        this.isShowIntroductionPage = this.listOfKafka.length > 0 ? false : true;
         this.cdr.detectChanges();
       })
     )
@@ -179,15 +154,18 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   }
 
-  handleChange() {
-    this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus)
+  changePage(event: number) {
+    this.pageIndex = event;
+    this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus);
   }
 
-  onQueryParamsChange(event) {
-    console.log();
+  changeSize(event: number) {
+    this.pageSize = event;
+    this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus);
   }
-  onAllClusterChecked(event) {
-    console.log();
+
+  handleChange() {
+    this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus)
   }
 
   handleCancelDelete() {

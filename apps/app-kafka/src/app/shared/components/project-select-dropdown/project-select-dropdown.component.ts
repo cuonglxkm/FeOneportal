@@ -1,7 +1,7 @@
 /* eslint-disable @angular-eslint/component-selector */
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ProjectModel } from 'src/app/core/models/project.model'; 
-import { ProjectService } from 'src/app/services/project.service';
+import { ProjectService } from 'src/app/services/project.service'; 
 
 @Component({
   selector: 'project-select-dropdown',
@@ -14,8 +14,6 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   @Input() isDetail = false;
   @Input() regionId: number;
   @Output() valueChanged = new EventEmitter();
-  @Output() userChanged = new EventEmitter();
-
 
   listProject: ProjectModel[] = []
 
@@ -25,20 +23,16 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   projectChange(project: ProjectModel) {
     localStorage.setItem('projectId', project.id + "")
-    this.userChanged.emit(project);
+    this.valueChanged.emit(project);
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem('region') != null) {
-        this.regionId = JSON.parse(localStorage.getItem('region')).regionId;
-      // this.valueChanged.emit(this.selectedRegion)
-    }
-    // this.loadProjects();
+
+    this.loadProjects();
   }
 
   loadProjects() {
-    if (this.regionId == null)
-      return;
+    if (this.regionId == null) return;
     this.projectService.getByRegion(this.regionId).subscribe(data => {
       // console.log(data);
       this.listProject = data;

@@ -12,6 +12,8 @@ export class DetailComponent implements OnInit {
   selectedIndex = 0;
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
+  regionId = 3;
+  projectId = 1;
 
   constructor(
     private _activatedRoute: ActivatedRoute,

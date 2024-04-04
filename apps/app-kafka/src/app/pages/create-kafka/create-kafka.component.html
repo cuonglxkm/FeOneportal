@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Tạo mới Kafka'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo mới Kafka'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -8,6 +8,14 @@
         <a [routerLink]="['/app-kafka']">Kafka</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 

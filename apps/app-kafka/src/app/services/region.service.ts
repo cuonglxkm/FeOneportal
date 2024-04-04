@@ -10,7 +10,7 @@ export class RegionService extends BaseService {
   constructor(private http: HttpClient) {
     super();
   }
-
+  
 
   getAll() {
     return this.http.get<RegionModel[]>(this.baseUrl + this.ENDPOINT.provisions +  '/regions');

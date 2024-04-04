@@ -12,6 +12,8 @@ import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
+import { ProjectModel } from 'src/app/core/models/project.model';
+import { RegionModel } from 'src/app/core/models/region.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
@@ -59,6 +61,8 @@ export class CreateKafkaComponent implements OnInit {
   pricePerCpu = 100000;
   pricePerStorage = 150000;
 
+  regionId: number;
+  projectId: number;
 
   constructor(
     private fb: FormBuilder,
@@ -124,6 +128,15 @@ export class CreateKafkaComponent implements OnInit {
       )
   }
 
+  // catch event region change and reload data
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
+  }
+
   onSubmitPayment() {
 
     const kafka = this.myform.getRawValue();
@@ -133,6 +146,8 @@ export class CreateKafkaComponent implements OnInit {
     data.createdByUserId = userId;
     data.orderItems = [];
     kafka.offerId = 229;
+    kafka.regionId = this.regionId;
+    kafka.projectId = this.projectId;
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = 100000;

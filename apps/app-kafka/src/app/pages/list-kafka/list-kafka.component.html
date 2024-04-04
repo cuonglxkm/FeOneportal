@@ -4,9 +4,13 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">Trang chủ</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kafka']">Kafka</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item *ngIf="!isShowIntroductionPage">Danh sách Kafka</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
+  
   <!-- action -->
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -60,7 +64,8 @@
 
     <!-- table -->
     <nz-table #kafkaTable [nzData]="listOfKafka" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="loading">
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzPageSizeChange)="changeSize($event)"
+      (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }" [nzLoading]="loading">
       <thead>
         <tr>
           <th nzWidth="5%" nzAlign="center">STT</th>

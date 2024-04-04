@@ -1,5 +1,5 @@
 <ng-container *ngIf="itemDetail">
-    <page-header [breadcrumb]="breadcrumb">
+    <page-header [breadcrumb]="breadcrumb" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
                 <nz-breadcrumb-item>
@@ -12,6 +12,14 @@
                     <a [routerLink]="['/app-kafka']">Quản lý Kafka: <b>{{serviceOrderCode}}</b></a>
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
+        </ng-template>
+
+        <!-- action -->
+        <ng-template #action>
+            <div class="alain-custom-action text-right">
+                <region-select-dropdown [isDetail]="true"></region-select-dropdown>
+                <project-select-dropdown [regionId]="regionId" [isDetail]="true"></project-select-dropdown>
+            </div>
         </ng-template>
     
     </page-header>
