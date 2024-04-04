@@ -22,13 +22,12 @@ pipeline {
         }
 
         stage('Redeploy k8s') {
-             steps {
-                 script {
+            steps {
+                script {
                     sh 'kubectl -n vnptcloud  rollout restart deployment/app-host-deployment'
                     sh 'kubectl -n vnptcloud  rollout restart deployment/app-smartcloud-deployment'
-                 }
-             }
+                }
+            }
         }
-
     }
 }

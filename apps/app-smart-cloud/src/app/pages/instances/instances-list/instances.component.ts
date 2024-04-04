@@ -118,6 +118,16 @@ export class InstancesComponent implements OnInit {
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
+
+            case 'RESIZING':
+            case 'RESIZED':
+              var record = this.dataList[foundIndex];
+
+              record.status = data.status;
+
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
           }
         }
       }
