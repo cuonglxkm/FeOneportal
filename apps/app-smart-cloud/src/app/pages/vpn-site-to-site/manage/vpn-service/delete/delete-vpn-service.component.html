@@ -17,21 +17,22 @@
   (nzOnCancel)="handleCancel()"
 >
   <ng-template #modalTitle>
-    <span class="text-modal-title">Xác nhận xóa Snapshot + tên snapshot</span>
+    <span class="text-modal-title">Xóa VPN Service</span>
   </ng-template>
   <ng-template #modalContent>
-    <form
-      [formGroup]="validateForm"
-      nz-form
-      nzLayout="vertical"
-      
-    >
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm">
       <nz-form-item>
+        <nz-alert
+          nzType="warning"
+          nzDescription="Để xoá được VPN Services, quý khách lưu ý không được xoá VPN Services đang có kết nối (đang có VPN Connection)!"
+          nzShowIcon
+          style="margin-bottom: 10px"
+        >
+        </nz-alert>
         <nz-form-label>
           <div>
             <span
-              >Đế thực hiện xoá Lịch Snapshot + ({{scheduleName}}), vui lòng nhập
-              tên Lịch Snapshot để xác nhận.</span
+              >Đế thực hiện xoá VPN Service + ({{vpnServiceName}}), vui lòng nhập tên VPN Service để xác nhận.</span
             >
           </div>
         </nz-form-label>
@@ -40,15 +41,11 @@
             nz-input
             class="input-custom"
             formControlName="name"
-            [placeholder]="'Nhập tên lịch snapshot'"
+            [placeholder]="'Nhập tên IPsec Policies'"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Tên lịch FileSystem Snapshot không được để trống</ng-container
-            >
-            <ng-container *ngIf="control.hasError('nameMismatch')"
-              >Tên không trùng khớp</ng-container
-            >
+            <ng-container *ngIf="control.hasError('required')">Tên Ipsec Policy không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('nameMismatch')">Tên không trùng khớp</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -70,6 +67,7 @@
               [nzLoading]="isLoading"
               class="button-new"
               (click)="handleOk()"
+              [disabled]="validateForm.invalid"
             >
               Xác nhận
             </button>

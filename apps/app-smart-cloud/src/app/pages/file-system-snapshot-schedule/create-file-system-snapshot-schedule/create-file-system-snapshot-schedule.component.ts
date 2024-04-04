@@ -175,7 +175,6 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
     this.isLoading = true;
     if (this.FileSystemSnapshotForm.valid) {
       this.formCreateFileSystemSsSchedule = this.getData();
-      console.log(this.formCreateFileSystemSsSchedule);
       this.formCreateFileSystemSsSchedule.runtime = this.datepipe.transform(
         this.FileSystemSnapshotForm.controls.runtime.value,
         'yyyy-MM-ddTHH:mm:ss',
@@ -191,6 +190,7 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
               'Thành công',
               'Tạo mới lịch file system thành công'
             );
+            this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/list']);
           },
           (error) => {
             this.isLoading = false
@@ -255,10 +255,8 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
     this.formCreateFileSystemSsSchedule.intervalWeek =
       this.FileSystemSnapshotForm.controls.intervalWeek.value;
     this.formCreateFileSystemSsSchedule.dates =
-      this.FileSystemSnapshotForm.controls.dates.value;
+      this.FileSystemSnapshotForm.controls.dates.value.toString();
     this.formCreateFileSystemSsSchedule.duration = 1;
-    this.formCreateFileSystemSsSchedule.runtime =
-      this.FileSystemSnapshotForm.controls.runtime.value;
     this.formCreateFileSystemSsSchedule.intervalMonth =
       this.FileSystemSnapshotForm.controls.intervalMonth.value;
     this.formCreateFileSystemSsSchedule.maxSnapshot =
@@ -338,10 +336,10 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
     private datepipe: DatePipe,
     private projectService: ProjectService,
     private fileSystemService: FileSystemService
-  ) {}
-
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+  ) {
+    this.FileSystemSnapshotForm.get('daysOfWeek').valueChanges.subscribe((selectedDays: string[]) => {
+      this.listOfSelectedDate = selectedDays;
+    });
   }
-  request = new CreateScheduleSnapshotDTO();
+
 }

@@ -103,7 +103,10 @@
       </nz-tab>
       <nz-tab nzTitle="VPN Service">
         <ng-template nz-tab>
-          <one-portal-vpn-service></one-portal-vpn-service>
+          <one-portal-vpn-service
+          [region]="region"
+            [project]="project"
+          ></one-portal-vpn-service>
         </ng-template>
       </nz-tab>
       <nz-tab nzTitle="Endpoint Group">

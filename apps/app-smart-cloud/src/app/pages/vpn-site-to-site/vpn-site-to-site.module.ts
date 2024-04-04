@@ -31,6 +31,9 @@ import { DeleteIkePoliciesComponent } from './manage/ike-policies/delete/delete-
 import { DetailIkePoliciesComponent } from './manage/ike-policies/detail/detail-ike-policies.component';
 import { VpnS2sExtendComponent } from './manage/vpn-s2s-extend/vpn-s2s-extend.component';
 import { VpnS2sResizeComponent } from './manage/vpn-s2s-resize/vpn-s2s-resize.component';
+import { CreateVpnServiceComponent } from './manage/vpn-service/create/create-vpn-service.component';
+import { DeleteVpnServiceComponent } from './manage/vpn-service/delete/delete-vpn-service.component';
+import { EditVpnServiceComponent } from './manage/vpn-service/edit/edit-vpn-service.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +61,9 @@ import { VpnS2sResizeComponent } from './manage/vpn-s2s-resize/vpn-s2s-resize.co
     DetailVpnServiceComponent,
     VpnS2sExtendComponent,
     VpnS2sResizeComponent,
+    CreateVpnServiceComponent,
+    DeleteVpnServiceComponent,
+    EditVpnServiceComponent
   ],
   imports: [
     VpnSiteToSiteRoutingModule,
