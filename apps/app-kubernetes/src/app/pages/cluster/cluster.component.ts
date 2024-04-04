@@ -401,15 +401,7 @@ export class ClusterComponent implements OnInit {
   }
 
   onInputUsage(event: any) {
-    if (event) {
-      // is number
-      const numberReg = new RegExp('^[0-9]+$');
-      const rangeReg = new RegExp('([1-9]|[1-9][0-9]|100)');
-      const input = event.key;
-      if (!numberReg.test(input) || !rangeReg.test(input)) {
-        event.preventDefault();
-      }
-    }
+    console.log('commit 1');
   }
 
   // validator
