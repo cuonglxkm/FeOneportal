@@ -378,6 +378,7 @@
         name="name"
         nz-input
         [(ngModel)]="nameVerify"
+        (keyup.enter)="andleOkDelete()"
       />
     </nz-form-control>
   </ng-container>

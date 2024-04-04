@@ -69,10 +69,14 @@ export class AttachVolumeComponent implements AfterViewInit{
 
   getListVm() {
     this.isLoading = true
-    this.instancesService.search(1, 9999, this.region, this.project, '', '',
+    this.instancesService.search(1, 9999, this.region, this.project, '', 'KHOITAO',
       true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoading = false
-      this.listVm = data.records
+      data.records.forEach(item => {
+        if(item.taskState.includes("ACTIVE")) {
+          this.listVm?.push(item)
+        }
+      })
       console.log('listvm', this.listVm)
     })
   }
