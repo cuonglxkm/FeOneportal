@@ -17,13 +17,8 @@
   <!-- action -->
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -61,7 +56,8 @@
               <nz-form-control nzErrorTip="Phiên bản Kubernetes không để trống">
                 <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn phiên bản Kubernetes"
                   formControlName="kubernetesVersion" id="kubernetesVersion">
-                  <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion" [nzValue]="item.k8sVersion"></nz-option>
+                  <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion"
+                    [nzValue]="item.k8sVersion"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -82,6 +78,52 @@
             </ng-container>
           </ng-template>
         </nz-form-item>
+
+        <nz-card class="border-card">
+          <nz-tabset nzCentered>
+            <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="onChangeTab()">
+              <ng-template nz-tab>
+                <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
+                  <div *nguCarouselDef="let item;" class="item">
+                    <div class="pack-item" [ngClass]="{ 'choose': item===chooseItem}" (click)="onChoosePack(item)">
+                      <div class="item-header">
+                        <div class="item-name">
+                          <span>{{item.packName}}</span>
+                          <div class="item-price">
+                            <div class="price">
+                              <span>{{ item.price | customCurrency }}</span><br>
+                              <span class="unit-price">đ/tháng</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="item-body">
+                        <div>{{item.workerNode}} node</div>
+                        <div>{{item.cpu}}vCPU/node</div>
+                        <div>{{item.ram}}GB RAM/node</div>
+                        <div>{{item.rootStorage}}GB {{item.rootStorageType}}/node</div>
+                        <div>{{item.volumeStorage}}GB {{item.volumeType}} persistent</div>
+                      </div>
+                    </div>
+                  </div>
+                  <ul class="myPoint" NguCarouselPoint>
+                    <li *ngFor="let j of myCarousel.pointNumbers" [class.active]="j === myCarousel.activePoint"
+                      (click)="myCarousel.moveTo(j)"></li>
+                  </ul>
+                </ngu-carousel>
+
+
+              </ng-template>
+            </nz-tab>
+
+            <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="onChangeTab()">
+              <ng-template nz-tab>
+                Chưa có gì
+              </ng-template>
+            </nz-tab>
+          </nz-tabset>
+        </nz-card>
 
         <h3 class="mt-5">Cấu hình worker group</h3>
 
@@ -115,9 +157,10 @@
                   <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
                   <nz-form-control>
                     <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
-                      (ngModelChange)="onSelectWorkerType($event, i)">
+                      (ngModelChange)="onSelectWorkerType($event, i)" [nzDisabled]="isUsingPackConfig">
                       <nz-option *ngFor="let item of listOfWorkerType"
-                        nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName"></nz-option>
+                        nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
+                        [nzValue]="item.machineName"></nz-option>
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
@@ -125,9 +168,10 @@
                 <nz-form-item>
                   <nz-form-control>
                     <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
-                      class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
+                      class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch><label>Bật Auto Scaling worker</label>
                   </nz-form-control>
-                  <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối đa</small>
+                  <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối
+                    đa</small>
                 </nz-form-item>
 
                 <ng-container *ngIf="isAutoScaleAtIndex(i)">
@@ -170,7 +214,7 @@
                   <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
                   <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
                     <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
-                      (keypress)="isNumber($event)" />
+                      (keypress)="isNumber($event)" [nzDisabled]="isUsingPackConfig" />
                   </nz-form-control>
                   <ng-template #nodeNumberErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
@@ -185,8 +229,8 @@
                 <nz-form-item>
                   <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
                   <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                    <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng"
-                      formControlName="volumeStorage" id="volume" (keypress)="isNumber($event)" />
+                    <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
+                      id="volume" (keypress)="isNumber($event)" [nzDisabled]="isUsingPackConfig" />
                   </nz-form-control>
                   <ng-template #volumeStorageErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
@@ -200,9 +244,11 @@
 
                 <nz-form-item>
                   <nz-form-control>
-                    <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch><label>Bật Auto Healing</label>
+                    <nz-switch formControlName="autoHealing" class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch>
+                    <label>Bật Auto Healing</label>
                   </nz-form-control>
-                  <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá tải).</small>
+                  <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
+                    tải).</small>
                 </nz-form-item>
 
                 <ng-container *ngIf="isAutoScaleAtIndex(i)">
@@ -226,8 +272,8 @@
                 <div>
                   <!-- remove btn -->
                   <ng-container *ngIf="listFormWorkerGroup.length > 1">
-                    <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
-                      nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
+                    <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top" nz-tooltip
+                      class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
                       <span nz-icon nzType="delete"></span>
                     </button>
                   </ng-container>
@@ -237,14 +283,17 @@
           </ng-container>
         </div>
 
-        <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
-          <span nz-icon>
-            <svg viewBox="64 64 896 896" focusable="false">
-              <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" /><path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
-            </svg>
-          </span>
-          Thêm worker group
-        </button>
+        <ng-container *ngIf="!isUsingPackConfig">
+          <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
+            <span nz-icon>
+              <svg viewBox="64 64 896 896" focusable="false">
+                <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
+                <path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
+              </svg>
+            </span>
+            Thêm worker group
+          </button>
+        </ng-container>
 
       </nz-card>
 
@@ -266,13 +315,14 @@
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
-              <nz-form-control nzErrorTip="Mạng VPC không để trống" >
+              <nz-form-control nzErrorTip="Mạng VPC không để trống">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
                   class="w-90" (ngModelChange)="onSelectedVlan($event)">
-                  <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                  <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name"
+                    [nzValue]="item.id"></nz-option>
                 </nz-select>
-                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top"
-                  nz-tooltip (click)="refreshVPCNetwork()" class="borderless">
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
+                  (click)="refreshVPCNetwork()" class="borderless">
                   <span nz-icon class="icon-color">
                     <svg viewBox="64 64 896 896" focusable="false">
                       <path
@@ -282,7 +332,8 @@
                 </button>
                 <div class="small-description">
                   <small>Chọn một VPC cho kubernetes cluster của bạn.
-                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_balnk">Nhấp vào đây để quản lý các VPC của bạn</a>
+                    <a routerLink="/app-smart-cloud/vlan/network/list" target="_balnk">Nhấp vào đây để quản lý các VPC
+                      của bạn</a>
                   </small>
                 </div>
               </nz-form-control>
@@ -293,7 +344,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
               <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"/>
+                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR" />
               </nz-form-control>
               <ng-template #cidrErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -312,8 +363,8 @@
                   <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
                     [nzValue]="item.subnetAddressRequired"></nz-option>
                 </nz-select>
-                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top"
-                  nz-tooltip (click)="refreshSubnet()" class="borderless">
+                <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
+                  (click)="refreshSubnet()" class="borderless">
                   <span nz-icon class="icon-color">
                     <svg viewBox="64 64 896 896" focusable="false">
                       <path
@@ -340,7 +391,7 @@
               <nz-form-label nzRequired nzFor="volumeCloudSize">Quota (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
                 <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume"
-                (keypress)="isNumber($event)" id="volumeCloudSize" />
+                  (keypress)="isNumber($event)" id="volumeCloudSize" [disabled]="isUsingPackConfig" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -357,7 +408,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="volumeCloudType">Loại</nz-form-label>
               <nz-form-control>
-                <nz-radio-group formControlName="volumeCloudType">
+                <nz-radio-group formControlName="volumeCloudType" [nzDisabled]="isUsingPackConfig">
                   <label nz-radio nzValue="hdd">HDD</label>
                   <label nz-radio nzValue="sdd">SDD</label>
                 </nz-radio-group>
@@ -368,15 +419,15 @@
 
       </nz-card>
 
+      <!-- usage time -->
       <nz-card class="border-card">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
               <nz-form-control nzErrorTip="Thời gian sử dụng không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn thời gian sử dụng" formControlName="usageTime" id="usageTime" (ngModelChange)="onSelectUsageTime($event)">
-                  <nz-option *ngFor="let item of listOfUsageTime" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
-                </nz-select>
+                <input type="text" nz-input placeholder="Chọn thời gian sử dụng" id="usageTime" formControlName="usageTime"
+                (ngModelChange)="onSelectUsageTime($event)" (keypress)="onInputUsage($event)" />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -438,7 +489,8 @@
 
               <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
                 <div nz-col [nzSpan]="12">
-                  <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()" [disabled]="isSubmitting">
+                  <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()"
+                    [disabled]="isSubmitting">
                     <span nz-icon nzType="close" nzTheme="outline"></span>
                     Hủy
                   </button>

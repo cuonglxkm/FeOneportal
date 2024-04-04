@@ -171,3 +171,136 @@ label, span {
 ::-webkit-scrollbar-thumb:hover {
   background: #8d8;
 }
+
+[nz-carousel-content] {
+  text-align: center;
+  height: 260px;
+  line-height: 260px;
+  color: #fff;
+  overflow: hidden;
+}
+
+.carousel-div {
+  overflow:hidden;
+  -webkit-mask: linear-gradient(90deg,#0000,#000 6% 94%,#0000)
+}
+
+.item {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.pack-item {
+  min-height: 180px;
+  background-color: #ffffff;
+  background-size: cover !important;
+  border: 1px solid #E2E2E9;
+  border-radius: 4px;
+  padding: 1px;
+  width: 100%;
+  /* width: 220px; */
+}
+
+.item-header {
+  background-color: #E6F3FC;
+  border-bottom: 1px solid #E2E2E9;
+  text-align: center;
+  min-height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-name {
+  font-size: 18px;
+  color: #0066B3;
+  font-family: Inter;
+  font-weight: bolder;
+}
+
+.item-price {
+  border-top: 1px solid #E2E2E9;
+  width: 150px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0px 10px 0px;
+}
+
+.price {
+  width: 50%;
+  height: 100%;
+  color: #2B2D3B;
+  line-height: normal;
+  padding: 10px 0;
+}
+
+.item-body {
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  text-align: center;
+  min-height: 68px;
+  justify-content: center;
+  align-items: center;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  padding: 20px;
+}
+
+.choose .item-price,
+.choose .item-name,
+.choose .price,
+.choose .item-header,
+.choose .unit-price {
+  background-color: #0066B3 !important;
+  color: white !important;
+}
+
+.choose .item-body {
+  font-weight: bold;
+}
+
+.unit-price {
+  font-size: 14px;
+  color: #6C7093;
+  font-weight: normal;
+}
+
+.myPoint {
+  list-style-type: none;
+  text-align: center;
+  padding: 12px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.myPoint li {
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid #035DED;
+  padding: 4px;
+  margin: 0 3px;
+  transition-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  transition: 0.4s;
+}
+
+.myPoint li.active {
+  background: #035DED;
+  transform: scale(1.2);
+}
+
+.info-icon {
+  padding-left: 10px;
+}
+
+.price-card {
+  border: 1px solid #B2DEFF;
+  border-radius: 8px;
+}

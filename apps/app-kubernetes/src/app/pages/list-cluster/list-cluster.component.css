@@ -43,7 +43,7 @@ p {
 }
 
 .marleft-0 {
-  margin-left: 0;
+  margin-left: 0 !important;
 }
 
 .primary-color {

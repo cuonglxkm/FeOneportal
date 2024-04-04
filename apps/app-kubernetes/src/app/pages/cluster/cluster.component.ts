@@ -1,13 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { KubernetesConstant } from 'src/app/constants/kubernetes.constant';
 import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from 'src/app/model/cluster.model';
 import { K8sVersionModel } from 'src/app/model/k8s-version.model';
+import { PackModel } from 'src/app/model/pack.model';
 import { FormSearchNetwork, FormSearchSubnet } from 'src/app/model/vlan.model';
 import { VolumeTypeModel } from 'src/app/model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from 'src/app/model/vpc-network.model';
@@ -19,6 +21,7 @@ import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'one-portal-cluster',
   templateUrl: './cluster.component.html',
   styleUrls: ['./cluster.component.css'],
@@ -36,6 +39,7 @@ export class ClusterComponent implements OnInit {
   listOfWorkerType: WorkerTypeModel[];
   listOfVolumeType: VolumeTypeModel[];
   listOfSubnets: SubnetModel[];
+  listOfServicePack: PackModel[];
 
   listOfUsageTime = [
     { label: '3 tháng', value: 3 },
@@ -59,6 +63,20 @@ export class ClusterComponent implements OnInit {
   public DEFAULT_VOLUME_TYPE = KubernetesConstant.DEFAULT_VOLUME_TYPE;
   public DEFAULT_NETWORK_TYPE = KubernetesConstant.DEFAULT_NETWORK_TYPE;
 
+  carouselConfig: NguCarouselConfig = {
+    grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
+    load: 1,
+    speed: 250,
+    // interval: {timing: 4000, initialDelay: 4000},
+    loop: true,
+    touch: true,
+    velocity: 0.2,
+    point: {
+      visible: true
+    }
+  }
+  @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
+
   constructor(
     private fb: FormBuilder,
     private clusterService: ClusterService,
@@ -67,6 +85,7 @@ export class ClusterComponent implements OnInit {
     private vlanService: VlanService,
     private router: Router,
     private shareService: ShareService,
+    private cdr: ChangeDetectorRef,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
     this.listOfK8sVersion = [];
@@ -74,6 +93,7 @@ export class ClusterComponent implements OnInit {
     this.listOfVPCNetworks = [];
     this.listOfVolumeType = [];
     this.listOfWorkerType = [];
+    this.listOfServicePack = [];
     this.isSubmitting = false;
 
     this.getCurrentDate();
@@ -238,6 +258,18 @@ export class ClusterComponent implements OnInit {
     })
   }
 
+  getListPack(cloudProifileId: string) {
+    this.clusterService.getListPack(cloudProifileId)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfServicePack = r.data;
+        this.myCarousel.pointNumbers = Array.from({length: this.listOfServicePack.length}, (_, i) => i + 1);
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
   // catch event region change and reload data
   regionName: string;
   onRegionChange(region: RegionModel) {
@@ -248,6 +280,7 @@ export class ClusterComponent implements OnInit {
     this.getListK8sVersion(this.regionId, this.cloudProfileId);
     this.getListWorkerType(this.regionId, this.cloudProfileId);
     this.getListVolumeType(this.regionId, this.cloudProfileId);
+    this.getListPack(this.cloudProfileId);
 
     this.myform.get('regionId').setValue(this.regionId);
     this.myform.get('cloudProfileId').setValue(this.cloudProfileId);
@@ -296,7 +329,7 @@ export class ClusterComponent implements OnInit {
   onSelectUsageTime(event: any) {
     if (event) {
       let d = new Date();
-      d.setMonth(d.getMonth() + event);
+      d.setMonth(d.getMonth() + Number(event));
       this.expiryDate = d.getTime();
     }
   }
@@ -314,6 +347,67 @@ export class ClusterComponent implements OnInit {
       } else {
         delete this.listFormWorkerGroup.at(index).get('minimumNode').errors?.invalid;
         this.listFormWorkerGroup.at(index).get('minimumNode').updateValueAndValidity();
+      }
+    }
+  }
+
+  onChangeTab() {
+    this.chooseItem = null;
+    this.isUsingPackConfig = false;
+    this.clearFormWorker();
+    this.addWorkerGroup();
+
+    console.log({len: this.listFormWorkerGroup.length});
+  }
+
+  chooseItem: PackModel;
+  isUsingPackConfig: boolean = false;
+  onChoosePack(item: PackModel) {
+    this.chooseItem = item;
+    this.isUsingPackConfig = true;
+    console.log(this.chooseItem);
+
+    if (this.chooseItem) {
+      this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
+      this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
+
+      this.clearFormWorker();
+      const amountNode = this.chooseItem.workerNode;
+      const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
+      for (let i = 0; i < amountNode; i++) {
+        let wgf = this.fb.group({
+          workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+          nodeNumber: [this.chooseItem.workerNode],
+          volumeStorage: [this.chooseItem.rootStorage],
+          volumeType: [this.chooseItem.rootStorageType],
+          volumeTypeId: [null, [Validators.required]],
+          configType: [null, [Validators.required]],
+          configTypeId: [null, [Validators.required]],
+          autoScalingWorker: [false],
+          autoHealing: [true],
+          minimumNode: [null],
+          maximumNode: [null]
+        });
+
+        this.listFormWorkerGroup.push(wgf);
+      }
+    }
+  }
+
+  clearFormWorker() {
+    while (this.listFormWorkerGroup.length != 0) {
+      this.listFormWorkerGroup.removeAt(0);
+    }
+  }
+
+  onInputUsage(event: any) {
+    if (event) {
+      // is number
+      const numberReg = new RegExp('^[0-9]+$');
+      const rangeReg = new RegExp('([1-9]|[1-9][0-9]|100)');
+      const input = event.key;
+      if (!numberReg.test(input) || !rangeReg.test(input)) {
+        event.preventDefault();
       }
     }
   }

@@ -19,7 +19,7 @@ export class ClusterService extends BaseService {
   private progressSource = new Subject<any>();
   progressData = this.progressSource.asObservable();
 
-  // baseUrl = 'http://127.0.0.1:16003';
+  baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -102,8 +102,8 @@ export class ClusterService extends BaseService {
     return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`, { headers: this.getHeaders() });
   }
 
-  testCreateCluster(data) {
-    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-dto/create-cluster`, data, { headers: this.getHeaders() });
+  getListPack(cloudProfileId: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${cloudProfileId}/packs-service`, {headers: this.getHeaders()});
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {

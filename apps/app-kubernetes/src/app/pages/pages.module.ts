@@ -36,6 +36,8 @@ import { CheckUpgradeVersionPipe } from '../pipes/check-version.pipe';
 import { ClusterComponent } from './cluster/cluster.component';
 import { OverallComponent } from './overall/overall.component';
 import { Action2Label } from '../pipes/action2label.pipe';
+import { NguCarousel, NguCarouselDefDirective, NguCarouselNextDirective, NguCarouselPrevDirective, NguItemComponent, NguTileComponent } from '@ngu/carousel';
+import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -56,6 +58,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CheckUpgradeVersionPipe,
     LogsComponent,
     OverallComponent,
+    CustomCurrencyPipe,
 
   ],
   imports: [
@@ -86,6 +89,14 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     // Starting Angular 13
     AngJsoneditorModule,
     ClipboardModule,
+    NguCarousel,
+    NguCarouselDefDirective,
+    NguCarouselNextDirective,
+    NguCarouselPrevDirective,
+    NguItemComponent,
+    NguTileComponent,
+    NzImageModule,
+
   ],
 })
-export class PagesModule {}
+export class PagesModule { }
