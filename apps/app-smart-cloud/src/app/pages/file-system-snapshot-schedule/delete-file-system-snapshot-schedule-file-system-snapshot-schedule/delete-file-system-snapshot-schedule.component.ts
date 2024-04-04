@@ -1,19 +1,8 @@
-import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
-import { ProjectService } from 'src/app/shared/services/project.service';
-import { AppValidator } from '../../../../../../../libs/common-utils/src';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { getCurrentRegionAndProject } from '@shared';
-import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
-import { FormAction } from 'src/app/shared/models/schedule.model';
 
 
 @Component({
@@ -22,18 +11,17 @@ import { FormAction } from 'src/app/shared/models/schedule.model';
   styleUrls: ['./delete-file-system-snapshot-schedule.component.less'],
 })
 export class DeleteFileSystemSnapshotScheduleComponent{
-  @Input() idIpFloating: number
-  @Input() ip: string
+  @Input() scheduleId: number
+  @Input() scheduleName: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
   isVisible: boolean = false
   isLoading: boolean = false
-  formDelete: FormAction = new FormAction()
   validateForm: FormGroup<{
     name: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required]]
+    name: ['', [Validators.required, this.nameScheduleValidator.bind(this)]]
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -41,6 +29,14 @@ export class DeleteFileSystemSnapshotScheduleComponent{
               private fb: NonNullableFormBuilder,
               private fileSystemSnapshotSchedule: FileSystemSnapshotScheduleService
               ) {
+  }
+
+  nameScheduleValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.scheduleName) {
+      return { 'nameMismatch': true };
+    }
+    return null;
   }
 
   showModal(){
@@ -55,24 +51,17 @@ export class DeleteFileSystemSnapshotScheduleComponent{
 
   handleOk() {
     this.isLoading = true
-    if(this.validateForm.valid) {
-      // if(this.ip.includes(this.validateForm.controls.name.value)){
-        
-        this.fileSystemSnapshotSchedule.delete(3, 1).subscribe(data => {
-          if(data) {
+    if(this.validateForm.valid) {     
+        this.fileSystemSnapshotSchedule.delete(this.scheduleId).subscribe(data => {
             this.isVisible = false
             this.isLoading =  false
-            this.notification.success('Thành công', 'Xoá IP Floating thành công')
+            this.notification.success('Thành công', 'Xoá lịch FileSystem Snapshot thành công')
             this.onOk.emit(data)
-          }
         }, error => {
           this.isVisible = false
           this.isLoading =  false
-          this.notification.success('Thất bại', 'Xoá IP Floating thất bại')
+          this.notification.error('Thất bại', 'Xoá lịch FileSystem Snapshot thất bại')
         })
-      // }
     }
-  }
-
-  
+  } 
 }

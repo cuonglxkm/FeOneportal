@@ -1,22 +1,24 @@
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FileSystemModel, FormSearchFileSystem } from 'src/app/shared/models/file-system.model';
-import { FormCreateFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
+import { FileSystemSnapshotScheduleDetail, FormEditFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { CreateScheduleSnapshotDTO } from 'src/app/shared/models/snapshotvl.model';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 
-
+interface SelectedFileSystem {
+  id: number;
+  name: string;
+}
 @Component({
   selector: 'one-portal-edit-file-system-snapshot-schedule',
   templateUrl: './edit-file-system-snapshot-schedule.component.html',
@@ -29,24 +31,17 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
 
   isLoading: boolean = false;
   customerId: number;
-  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
   time: Date = new Date();
-  nameSnapshot: string = '';
-  snapshotRecord = 1;
-  numberOfWeekSelected: string = '';
-  daysOfWeekSelected: string = '';
-  months: number = 1;
   modeType: string = '0';
   listOfSelectedDate: string[] = [];
-  dateDone: number = 1;
-  isVisibleCreate: boolean = false;
   value: string;
   pageSize: number = 100;
   pageIndex: number = 1;
   response: BaseResponse<FileSystemModel[]>;
-  selectedFileSystemName: string[];
+  selectedFileSystemName: SelectedFileSystem[];
 
-  formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule =new FormCreateFileSystemSsSchedule();
+  formEditFileSystemSsSchedule: FormEditFileSystemSsSchedule =new FormEditFileSystemSsSchedule();
+  fileSystemSnapshotScheduleDetail: FileSystemSnapshotScheduleDetail = new FileSystemSnapshotScheduleDetail();
 
   dateOptions: NzSelectOptionInterface[] = [
     { label: 'Hằng ngày', value: '1' },
@@ -65,9 +60,9 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
     { label: 'Chủ nhật', value: '7' },
   ];
   numberOfWeek = [
-    { label: '1 Tuần', value: '1' },
-    { label: '2 Tuần', value: '2' },
-    { label: '3 Tuần', value: '3' },
+    { label: '1 Tuần', value: 1 },
+    { label: '2 Tuần', value: 2 },
+    { label: '3 Tuần', value: 3 },
   ];
 
   FileSystemSnapshotForm: FormGroup<{
@@ -95,9 +90,9 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
     mode: [this.dateOptions[0].value as string, Validators.required],
     dayOfWeek: ['' as string, [Validators.required]],
     daysOfWeek: [[] as string[], Validators.required],
-    intervalWeek: [null as number],
+    intervalWeek: [0 as number, Validators.required],
     intervalMonth: [
-      1 as number,
+      0 as number,
       [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)],
     ],
     maxSnapshot: [1 as number, [Validators.required, Validators.min(1)]],
@@ -105,17 +100,22 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
     dates: ['1' as string, [Validators.required]],
   });
 
-  updateSelectedFileSystems(selectedFileSystems: number[]): void {
-    this.selectedFileSystemName = [];
-    selectedFileSystems.forEach((selectedId) => {
-      const selectedOption = this.response.records.find(
-        (option) => option.id === selectedId
-      );
-      if (selectedOption) {
-        this.selectedFileSystemName.push(selectedOption.name);
-      }
-    });
-  }
+  // updateSelectedFileSystems(selectedFileSystems: number[]): void {
+  //   if (this.response && this.response.records) {
+  //     this.selectedFileSystemName = [];
+  //     selectedFileSystems.forEach((selectedId) => {
+  //       const selectedOption = this.response.records.find(
+  //         (option) => option.id === selectedId
+  //       );
+  //       if (selectedOption) {
+  //         this.selectedFileSystemName.push({
+  //           id: selectedOption.id,
+  //           name: selectedOption.name
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   snapshotMode = this.dateOptions[0].value;
   isNotSelectedDate(value: string): boolean {
@@ -139,9 +139,9 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-    console.log(this.region);
     this.getListFileSystem();
+    this.getScheduleById(this.activatedRoute.snapshot.paramMap.get('id'))
+    
   }
 
   regionChange(region: RegionModel) {
@@ -159,47 +159,43 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   projectChange(project: ProjectModel) {
     this.project = project?.id;
   }
-  handleSubmit(): void {
-    this.isVisibleCreate = true;
-  }
 
-  handleCreate() {
+
+  getScheduleById(id) {
     this.isLoading = true;
-    if (this.FileSystemSnapshotForm.valid) {
-      this.formCreateFileSystemSsSchedule = this.getData();
-      console.log(this.formCreateFileSystemSsSchedule);
-      this.formCreateFileSystemSsSchedule.runtime = this.datepipe.transform(
-        this.FileSystemSnapshotForm.controls.runtime.value,
-        'yyyy-MM-ddTHH:mm:ss',
-        'vi-VI'
+    this.fileSystemSnapshotScheduleService
+      .detail(id)
+      .subscribe(
+        (data) => {
+          this.fileSystemSnapshotScheduleDetail = data;
+          console.log(data);
+          const shareIds = data.items.map((item) => {
+            return item.itemId
+          })
+          
+          this.FileSystemSnapshotForm.controls.name.setValue(data.name);
+          this.FileSystemSnapshotForm.controls.listOfFileSystem.setValue(shareIds);
+          this.FileSystemSnapshotForm.controls.runtime.setValue(new Date(data.runtime));
+          this.FileSystemSnapshotForm.controls.mode.setValue(data.mode.toString());
+          this.FileSystemSnapshotForm.controls.daysOfWeek.setValue(data.daysOfWeek ? data.daysOfWeek.split(',') : [""]);
+          this.FileSystemSnapshotForm.controls.maxSnapshot.setValue(data.maxSnapshot);
+          this.FileSystemSnapshotForm.controls.description.setValue(data.description);
+          this.FileSystemSnapshotForm.controls.intervalMonth.setValue(data.mode === 4 ? data.interval : 0);
+          this.FileSystemSnapshotForm.controls.dates.setValue(data.dates.toString());
+          this.FileSystemSnapshotForm.controls.intervalWeek.setValue(data.mode === 3 ? data.interval : 0);
+          this.FileSystemSnapshotForm.controls.dayOfWeek.setValue(data.daysOfWeek ? data.daysOfWeek : "");
+
+          this.snapshotMode = data.mode.toString()
+          this.isLoading = false;
+        },
+        (error) => {
+          this.fileSystemSnapshotScheduleDetail = null;
+          this.isLoading = false;
+        }
       );
-      this.fileSystemSnapshotScheduleService
-        .create(this.formCreateFileSystemSsSchedule)
-        .subscribe(
-          (data) => {
-            this.isLoading = false
-            this.isVisibleCreate = false;
-            this.notification.success(
-              'Thành công',
-              'Tạo mới lịch file system thành công'
-            );
-          },
-          (error) => {
-            this.isLoading = false
-            this.isVisibleCreate = false;
-            this.notification.error(
-              'Thất bại',
-              'Tạo mới lịch file system thất bại'
-            );
-            console.log(error);
-          }
-        );
-    }
   }
 
-  handleCancel() {
-    this.isVisibleCreate = false;
-  }
+
 
   getListFileSystem() {
     this.isLoading = true;
@@ -210,13 +206,13 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
     formSearch.isCheckState = false;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
-
     this.fileSystemService
       .search(formSearch)
-
       .subscribe(
         (data) => {
           this.isLoading = false;
+          console.log(data);
+          
           this.response = data;
         },
         (error) => {
@@ -227,37 +223,38 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   }
 
   getData(): any {
-    this.formCreateFileSystemSsSchedule.customerId =
+    this.formEditFileSystemSsSchedule.scheduleId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
+    this.formEditFileSystemSsSchedule.customerId =
       this.tokenService.get()?.userId;
-    this.formCreateFileSystemSsSchedule.regionId = this.region;
-    this.formCreateFileSystemSsSchedule.projectId = this.project;
-    this.formCreateFileSystemSsSchedule.name =
+    this.formEditFileSystemSsSchedule.regionId = this.region;
+    this.formEditFileSystemSsSchedule.projectId = this.project;
+    this.formEditFileSystemSsSchedule.name =
       this.FileSystemSnapshotForm.controls.name.value;
-    this.formCreateFileSystemSsSchedule.description =
+    this.formEditFileSystemSsSchedule.description =
       this.FileSystemSnapshotForm.controls.description.value;
-    this.formCreateFileSystemSsSchedule.mode = parseInt(
+    this.formEditFileSystemSsSchedule.mode = parseInt(
       this.FileSystemSnapshotForm.controls.mode.value
     );
-    this.formCreateFileSystemSsSchedule.dayOfWeek =
+    this.formEditFileSystemSsSchedule.dayOfWeek =
       this.FileSystemSnapshotForm.controls.dayOfWeek.value;
-    this.formCreateFileSystemSsSchedule.daysOfWeek =
+    this.formEditFileSystemSsSchedule.daysOfWeek =
       this.FileSystemSnapshotForm.controls.daysOfWeek.value;
-    this.formCreateFileSystemSsSchedule.description =
+    this.formEditFileSystemSsSchedule.description =
       this.FileSystemSnapshotForm.controls.description.value;
-    this.formCreateFileSystemSsSchedule.intervalWeek =
+    this.formEditFileSystemSsSchedule.intervalWeek =
       this.FileSystemSnapshotForm.controls.intervalWeek.value;
-    this.formCreateFileSystemSsSchedule.dates =
-      this.FileSystemSnapshotForm.controls.dates.value;
-    this.formCreateFileSystemSsSchedule.duration = 1;
-    this.formCreateFileSystemSsSchedule.runtime =
+    this.formEditFileSystemSsSchedule.dates =
+      this.FileSystemSnapshotForm.controls.dates.value.toString();
+    this.formEditFileSystemSsSchedule.duration = 1;
+    this.formEditFileSystemSsSchedule.runtime =
       this.FileSystemSnapshotForm.controls.runtime.value;
-    this.formCreateFileSystemSsSchedule.intervalMonth =
+    this.formEditFileSystemSsSchedule.intervalMonth =
       this.FileSystemSnapshotForm.controls.intervalMonth.value;
-    this.formCreateFileSystemSsSchedule.maxSnapshot =
+    this.formEditFileSystemSsSchedule.maxSnapshot =
       this.FileSystemSnapshotForm.controls.maxSnapshot.value;
-    this.formCreateFileSystemSsSchedule.shareIds = this.FileSystemSnapshotForm.controls.listOfFileSystem.value;
+    this.formEditFileSystemSsSchedule.shareIds = this.FileSystemSnapshotForm.controls.listOfFileSystem.value;
 
-    return this.formCreateFileSystemSsSchedule;
+    return this.formEditFileSystemSsSchedule;
   }
 
   modeChange(value: string) {
@@ -329,13 +326,62 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
     private notification: NzNotificationService,
     private datepipe: DatePipe,
     private projectService: ProjectService,
-    private fileSystemService: FileSystemService
-  ) {}
-
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+    private fileSystemService: FileSystemService,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.FileSystemSnapshotForm.get('daysOfWeek').valueChanges.subscribe((selectedDays: string[]) => {
+      this.listOfSelectedDate = selectedDays;
+    });
+    this.FileSystemSnapshotForm.get('listOfFileSystem').valueChanges.subscribe((selectedFS: number[]) => {
+      if (this.response && this.response.records) {
+        this.selectedFileSystemName = selectedFS.map(selectedId => {
+          const selectedOption = this.response.records.find(option => option.id === selectedId);
+          if (selectedOption) {
+            return { id: selectedOption.id, name: selectedOption.name };
+          } else {
+            return null; 
+          }
+        }).filter(selectedFileSystem => selectedFileSystem !== null); 
+      }
+    });
   }
-  request = new CreateScheduleSnapshotDTO();
+
+  handleEdit() {
+    this.isLoading = true;
+    if (this.FileSystemSnapshotForm.valid) {
+      this.formEditFileSystemSsSchedule = this.getData();
+      console.log(this.formEditFileSystemSsSchedule);
+      this.formEditFileSystemSsSchedule.runtime = this.datepipe.transform(
+        this.FileSystemSnapshotForm.controls.runtime.value,
+        'yyyy-MM-ddTHH:mm:ss',
+        'vi-VI'
+      );
+
+      this.fileSystemSnapshotScheduleService
+        .edit(this.formEditFileSystemSsSchedule)
+        .subscribe(
+          (data) => {
+            this.isLoading = false
+
+            this.notification.success(
+              'Thành công',
+              'Chỉnh sửa lịch file system thành công'
+            );
+            this.router.navigate(['/app-smart-cloud/file-system-snapshot-schedule/list']);
+          },
+          (error) => {
+            this.isLoading = false
+
+            this.notification.error(
+              'Thất bại',
+              'Chỉnh sửa lịch file system thất bại'
+            );
+            console.log(error);
+          }
+        );
+    }
+  }
+
 
   
 }
