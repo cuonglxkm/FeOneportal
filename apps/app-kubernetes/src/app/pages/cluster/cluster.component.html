@@ -157,7 +157,7 @@
                   <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
                   <nz-form-control>
                     <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
-                      (ngModelChange)="onSelectWorkerType($event, i)" [nzDisabled]="isUsingPackConfig">
+                      (ngModelChange)="onSelectWorkerType($event, i)">
                       <nz-option *ngFor="let item of listOfWorkerType"
                         nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
                         [nzValue]="item.machineName"></nz-option>
@@ -168,7 +168,7 @@
                 <nz-form-item>
                   <nz-form-control>
                     <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
-                      class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch><label>Bật Auto Scaling worker</label>
+                      class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
                   </nz-form-control>
                   <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối
                     đa</small>
@@ -214,7 +214,7 @@
                   <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
                   <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
                     <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
-                      (keypress)="isNumber($event)" [nzDisabled]="isUsingPackConfig" />
+                      (keypress)="isNumber($event)" />
                   </nz-form-control>
                   <ng-template #nodeNumberErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
@@ -230,7 +230,7 @@
                   <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
                   <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
                     <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
-                      id="volume" (keypress)="isNumber($event)" [nzDisabled]="isUsingPackConfig" />
+                      id="volume" (keypress)="isNumber($event)" />
                   </nz-form-control>
                   <ng-template #volumeStorageErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
@@ -244,7 +244,7 @@
 
                 <nz-form-item>
                   <nz-form-control>
-                    <nz-switch formControlName="autoHealing" class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch>
+                    <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch>
                     <label>Bật Auto Healing</label>
                   </nz-form-control>
                   <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
@@ -271,7 +271,7 @@
 
                 <div>
                   <!-- remove btn -->
-                  <ng-container *ngIf="listFormWorkerGroup.length > 1">
+                  <ng-container *ngIf="listFormWorkerGroup.length > 1 && !isUsingPackConfig">
                     <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top" nz-tooltip
                       class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
                       <span nz-icon nzType="delete"></span>
@@ -391,7 +391,7 @@
               <nz-form-label nzRequired nzFor="volumeCloudSize">Quota (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
                 <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume"
-                  (keypress)="isNumber($event)" id="volumeCloudSize" [disabled]="isUsingPackConfig" />
+                  (keypress)="isNumber($event)" id="volumeCloudSize" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -408,7 +408,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="volumeCloudType">Loại</nz-form-label>
               <nz-form-control>
-                <nz-radio-group formControlName="volumeCloudType" [nzDisabled]="isUsingPackConfig">
+                <nz-radio-group formControlName="volumeCloudType">
                   <label nz-radio nzValue="hdd">HDD</label>
                   <label nz-radio nzValue="sdd">SDD</label>
                 </nz-radio-group>
@@ -425,10 +425,18 @@
           <div nz-col [nzSpan]="12">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
-              <nz-form-control nzErrorTip="Thời gian sử dụng không để trống">
+              <nz-form-control [nzErrorTip]="usageTimeErrorTpl">
                 <input type="text" nz-input placeholder="Chọn thời gian sử dụng" id="usageTime" formControlName="usageTime"
                 (ngModelChange)="onSelectUsageTime($event)" (keypress)="onInputUsage($event)" />
               </nz-form-control>
+              <ng-template #usageTimeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Thời gian sử dụng không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                  Thời gian sử dụng trong khoảng 1-100 tháng
+                </ng-container>
+              </ng-template>
             </nz-form-item>
           </div>
 

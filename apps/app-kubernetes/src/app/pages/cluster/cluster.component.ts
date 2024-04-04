@@ -121,7 +121,7 @@ export class ClusterComponent implements OnInit {
 
       // volume
       volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
-      usageTime: [3, [Validators.required]],
+      usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
       volumeCloudType: ['hdd', [Validators.required]],
     });
 
@@ -262,8 +262,14 @@ export class ClusterComponent implements OnInit {
     this.clusterService.getListPack(cloudProifileId)
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.listOfServicePack = r.data;
+        this.listOfServicePack = [];
+        r.data?.forEach(item => {
+          const p = new PackModel(item);
+          this.listOfServicePack.push(p);
+        });
+
         this.myCarousel.pointNumbers = Array.from({length: this.listOfServicePack.length}, (_, i) => i + 1);
+
       } else {
         this.notificationService.error("Thất bại", r.message);
       }
@@ -357,7 +363,6 @@ export class ClusterComponent implements OnInit {
     this.clearFormWorker();
     this.addWorkerGroup();
 
-    console.log({len: this.listFormWorkerGroup.length});
   }
 
   chooseItem: PackModel;
@@ -366,30 +371,39 @@ export class ClusterComponent implements OnInit {
     this.chooseItem = item;
     this.isUsingPackConfig = true;
     console.log(this.chooseItem);
-
     if (this.chooseItem) {
       this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
       this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
 
       this.clearFormWorker();
       const amountNode = this.chooseItem.workerNode;
-      const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
       for (let i = 0; i < amountNode; i++) {
+        const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
         let wgf = this.fb.group({
           workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
           nodeNumber: [this.chooseItem.workerNode],
           volumeStorage: [this.chooseItem.rootStorage],
           volumeType: [this.chooseItem.rootStorageType],
-          volumeTypeId: [null, [Validators.required]],
-          configType: [null, [Validators.required]],
-          configTypeId: [null, [Validators.required]],
+          volumeTypeId: [this.chooseItem.volumeTypeId],
+          configType: [this.chooseItem.machineType],
+          configTypeId: [this.chooseItem.machineTypeId],
           autoScalingWorker: [false],
           autoHealing: [true],
           minimumNode: [null],
           maximumNode: [null]
         });
 
+        wgf.disable();
+        wgf.get('workerGroupName').enable();
+
         this.listFormWorkerGroup.push(wgf);
+      }
+      if (this.isUsingPackConfig) {
+        this.myform.get('volumeCloudType').disable();
+        this.myform.get('volumeCloudSize').disable();
+      } else {
+        this.myform.get('volumeCloudType').enable();
+        this.myform.get('volumeCloudSize').enable();
       }
     }
   }
@@ -401,7 +415,14 @@ export class ClusterComponent implements OnInit {
   }
 
   onInputUsage(event: any) {
-    console.log('commit 1');
+    if (event) {
+      // is number
+      const numberReg = new RegExp('^[0-9]+$');
+      const input = event.key;
+      if (!numberReg.test(input)) {
+        event.preventDefault();
+      }
+    }
   }
 
   // validator
