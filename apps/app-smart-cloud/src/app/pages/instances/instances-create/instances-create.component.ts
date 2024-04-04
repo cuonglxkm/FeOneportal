@@ -95,8 +95,7 @@ export class InstancesCreateComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.max(50),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
       ],
     }),
   });
@@ -406,7 +405,15 @@ export class InstancesCreateComponent implements OnInit {
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(this.region, this.userId, 0, 9999, 1, false, '')
+      .getAllIPPublic(
+        this.projectId,
+        '',
+        this.userId,
+        this.region,
+        9999,
+        1,
+        false
+      )
       .subscribe((data: any) => {
         this.listIPPublic = data.records;
         console.log('list IP public', this.listIPPublic);
@@ -453,7 +460,7 @@ export class InstancesCreateComponent implements OnInit {
           e.description = '';
           e.characteristicValues.forEach((ch) => {
             if (ch.charOptionValues[0] == 'CPU') {
-              e.description += ch.charOptionValues[1] + ' VCPU / ';
+              e.description += ch.charOptionValues[1] + ' vCPU / ';
             }
             if (ch.charOptionValues[0] == 'RAM') {
               e.description += ch.charOptionValues[1] + ' GB RAM / ';
@@ -1037,6 +1044,17 @@ export class InstancesCreateComponent implements OnInit {
         this.configCustom.capacity == 0)
     ) {
       this.notification.error('', 'Cấu hình tùy chỉnh chưa hợp lệ');
+      return;
+    }
+    if (
+      this.isCustomconfig == true &&
+      (this.configCustom.vCPU / this.configCustom.ram <= 0.5 ||
+        this.configCustom.vCPU / this.configCustom.ram >= 1)
+    ) {
+      this.notification.error(
+        'Cấu hình chưa hợp lệ',
+        'Tỷ lệ CPU/RAM nằm trong khoảng 0.5 < CPU/RAM < 1'
+      );
       return;
     }
     this.dataService

@@ -22,6 +22,13 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
       imagePullSecrets:
         - name: regcred
 #          env:
@@ -37,7 +44,6 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      name: port1
-      nodePort: 30766
+      name: http
   selector:
     app: app-smartcloud

@@ -68,7 +68,7 @@
                      [placeholder]="'Nhập tên Volume'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
                 <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume
                   khác
@@ -361,7 +361,7 @@
           <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">IOPS</div>
-          <div style="margin-top: 10px" class="text-label">{{ volumeCreate.iops }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">

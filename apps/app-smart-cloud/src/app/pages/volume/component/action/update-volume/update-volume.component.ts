@@ -27,7 +27,7 @@ export class UpdateVolumeComponent {
     description: FormControl<string>
   }> = this.fb.group({
     nameVolume: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9]*$/),
+      Validators.pattern(/^[a-zA-Z0-9_]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]
   })
