@@ -141,29 +141,44 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
-    this.dataService
-      .resetpassword({
-        id: this.instancesId,
-        newPassword: this.resetPassword,
-      })
-      .subscribe({
+    if (this.autoCreate) {
+      this.dataService.autoCreatePass(this.instancesId).subscribe({
         next: (data: any) => {
-          if (data == true) {
-            this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-          } else {
-            this.notification.error(
-              '',
-              'Reset mật khẩu máy ảo không thành công'
-            );
-          }
+          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
         },
         error: (e) => {
+          console.log("reset pass", e)
           this.notification.error(
-            e.statusText,
+            e.error.detail,
             'Reset mật khẩu máy không thành công'
           );
         },
       });
+    } else {
+      this.dataService
+        .resetpassword({
+          id: this.instancesId,
+          newPassword: this.resetPassword,
+        })
+        .subscribe({
+          next: (data: any) => {
+            if (data == true) {
+              this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+            } else {
+              this.notification.error(
+                '',
+                'Reset mật khẩu máy ảo không thành công'
+              );
+            }
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Reset mật khẩu máy không thành công'
+            );
+          },
+        });
+    }
   }
 
   onInputChange(event: Event): void {

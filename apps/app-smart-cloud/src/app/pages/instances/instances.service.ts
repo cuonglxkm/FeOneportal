@@ -183,6 +183,15 @@ export class InstancesService extends BaseService {
     );
   }
 
+  autoCreatePass(id: number) {
+    let url_ = `/instances/${id}/change_password`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      '',
+      this.httpOptions
+    );
+  }
+
   rebuild(data: any) {
     let url_ = `/instances/rebuild`;
     url_ = url_.replace(/[?&]$/, '');

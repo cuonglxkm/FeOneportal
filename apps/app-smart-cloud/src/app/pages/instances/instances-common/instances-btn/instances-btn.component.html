@@ -294,7 +294,7 @@
       nz-button
       nzType="primary"
       (click)="handleOkResetPassword()"
-      [disabled]="formPass.invalid || !check"
+      [disabled]="autoCreate ? false : formPass.invalid || !check"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
