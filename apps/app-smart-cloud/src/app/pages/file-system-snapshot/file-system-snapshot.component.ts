@@ -32,6 +32,8 @@ export class FileSystemSnapshotComponent {
 
   isBegin: boolean = false
 
+  filteredData: any[];
+
   formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot()
 
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
@@ -65,12 +67,18 @@ export class FileSystemSnapshotComponent {
     this.getData();
   }
 
-  onInputChange(value){
-    if(value == undefined || value == ""){
-      this.value = null
+  onInputChange(value: string): void {
+    if (!value || value.trim() === "") { 
+      this.filteredData = this.response.records; 
+    } else {
+      this.filteredData = this.response.records.filter(item => 
+        item.name.toLowerCase().includes(value.toLowerCase())
+      ); 
     }
-    this.value = value
-    this.getData()
+    console.log(value);
+    
+    console.log(this.filteredData);
+    
   }
 
 
@@ -87,6 +95,7 @@ export class FileSystemSnapshotComponent {
       .subscribe(data => {
       this.isLoading = false
       this.response = data
+      this.filteredData = data.records
     })
   }
 

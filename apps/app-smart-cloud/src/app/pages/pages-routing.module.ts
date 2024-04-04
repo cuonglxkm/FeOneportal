@@ -546,6 +546,10 @@ const routes: Routes = [
     path:'object-storage/s3-key',
     component: S3KeyComponent
   },
+  {
+    path: 'snapshot/packages',
+    loadChildren: () => import('../pages/snapshot-package/packages-snapshot.module').then(m => m.PackageSnapshotModule)
+  },
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
