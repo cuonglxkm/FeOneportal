@@ -411,7 +411,7 @@ export class UpdatePortInstance {
   portSecurityEnanble: boolean;
 }
 
-export class IpCreate {
+export class  IpCreate {
   id: number;
   duration: number;
   ipAddress: any;

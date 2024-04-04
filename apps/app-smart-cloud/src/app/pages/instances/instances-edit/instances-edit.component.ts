@@ -480,18 +480,6 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  save(): void {
-    this.modalSrv.create({
-      nzTitle: 'Xác nhận thông tin thay đổi',
-      nzContent: 'Quý khách chắn chắn muốn thực hiện điều chỉnh máy ảo?',
-      nzOkText: 'Đồng ý',
-      nzCancelText: 'Hủy',
-      nzOnOk: () => {
-        this.readyEdit();
-      },
-    });
-  }
-
   instanceResizeInit() {
     this.instanceResize.description = null;
     this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
