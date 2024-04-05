@@ -2,12 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { NgModule , inject} from '@angular/core';
 import { V1Component } from './test/v1.component';
-import { SecurityGroupComponent } from './security-group/list-security-group/security-group.component';
-import { CreateSecurityGroupComponent } from './security-group/create-security-group/create-security-group.component';
-import { CreateInboundComponent } from './security-group/inbound/create/create-inbound.component';
-import { CreateOutboundComponent } from './security-group/outbound/create/create-outbound.component';
 import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
-import { BlankSecurityGroupComponent } from './security-group/blank-security-group/blank-security-group.component';
 import { SshKeyComponent } from './ssh-key/ssh-key.component';
 import { IpPublicComponent } from './ip-public/ip-public.component';
 import { CreateUpdateIpPublicComponent } from './ip-public/create-update-ip-public/create-update-ip-public.component';
@@ -107,7 +102,7 @@ import { ListFileSystemComponent } from './file-storage/file-system/list/list-fi
 import { CreateSubUserComponent } from './sub-user/action/create/create-sub-user.component';
 import { FileSystemSnapshotComponent } from "./file-system-snapshot/file-system-snapshot.component";
 import { CreateFileSystemSnapshotComponent } from "./file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component";
-import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl";
+import { FileSystemSnapshotDetailComponent } from "./file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component";
 import { FileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/file-system-snapshot-schedule.component";
 import { CreateFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component";
 import { EditFileSystemSnapshotScheduleComponent } from "./file-system-snapshot-schedule/edit-file-system-snapshot-schedule/edit-file-system-snapshot-schedule.component";
@@ -117,6 +112,7 @@ import { ObjectStorageCreateComponent } from './object-storage/object-storage-cr
 import { ObjectStorageEditComponent } from './object-storage/object-storage-edit/object-storage-edit.component';
 import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
+import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
 
 
 const routes: Routes = [
@@ -172,26 +168,6 @@ const routes: Routes = [
   {
     path: "ip-public/extend/:id",
     component: ExtendIpPublicComponent
-  },
-  {
-    path: 'security-group',
-    component: SecurityGroupComponent
-  },
-  {
-    path: 'blank-security-group',
-    component: BlankSecurityGroupComponent
-  },
-  {
-    path: 'create-security-group',
-    component: CreateSecurityGroupComponent
-  },
-  {
-    path: 'create-security-group-inbound',
-    component: CreateInboundComponent
-  },
-  {
-    path: 'create-security-group-outbound',
-    component: CreateOutboundComponent
   },
   {
     path: 'instance/:instanceId/allow-address-pair/:portId',
@@ -545,6 +521,14 @@ const routes: Routes = [
   {
     path:'object-storage/s3-key',
     component: S3KeyComponent
+  },
+  {
+    path: 'snapshot/packages',
+    loadChildren: () => import('../pages/snapshot-package/packages-snapshot.module').then(m => m.PackageSnapshotModule)
+  },
+  {
+    path: 'security-group/list',
+    component: ListSecurityGroupComponent
   },
   ]
 @NgModule({

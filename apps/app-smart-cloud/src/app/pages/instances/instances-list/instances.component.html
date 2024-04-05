@@ -143,6 +143,9 @@
         <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
           Đang hoạt động
         </td>
+        <td *ngIf="data.status == 'RESIZE'" style="color: #4fe414">
+          Đang điều chỉnh
+        </td>
         <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
           Chậm gia hạn
         </td>
@@ -153,7 +156,7 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILD' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
               data.taskState.toUpperCase() != 'RESIZE' &&
               data.taskState.toUpperCase() != 'ERROR'
             "
@@ -166,7 +169,7 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILD' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
               data.taskState.toUpperCase() != 'RESIZE' &&
               data.taskState.toUpperCase() != 'ERROR'
             "
@@ -179,7 +182,7 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILD' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
               data.taskState.toUpperCase() != 'RESIZE' &&
               data.taskState.toUpperCase() != 'ERROR'
             "
@@ -199,7 +202,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
                   data.taskState.toUpperCase() != 'RESIZE' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -214,7 +217,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
                   data.taskState.toUpperCase() != 'RESIZE' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -229,7 +232,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
                   data.taskState.toUpperCase() != 'RESIZE' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -243,7 +246,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
                   data.taskState.toUpperCase() != 'RESIZE' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -268,7 +271,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
                   data.taskState.toUpperCase() != 'RESIZE' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -293,7 +296,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
                   data.taskState.toUpperCase() != 'RESIZE' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -645,18 +648,20 @@
             nz-input
             formControlName="name"
             [(ngModel)]="updateInstances.name"
-            id="name"
+            (ngModelChange)="changeName($event)"
             placeholder="Nhập tên máy ảo"
-            maxlength="50"
-            minlength="1"
+            [maxlength]="50"
           />
+          <div *ngIf="isExistName" style="color: #ff4d4f">
+            Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác
+          </div>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
               >Vui lòng nhập thông tin</ng-container
             >
             <ng-container *ngIf="control.hasError('pattern')"
-              >Tên gồm 50 ký tự viết liền không dấu cách và không chứa ký tự đặc
-              biệt</ng-container
+              >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
+              _)</ng-container
             >
           </ng-template>
         </nz-form-control>

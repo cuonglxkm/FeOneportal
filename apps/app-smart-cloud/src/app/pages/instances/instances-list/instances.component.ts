@@ -7,7 +7,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
@@ -20,9 +19,9 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { NotificationService } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 
 class SearchParam {
   status: string = '';
@@ -112,6 +111,7 @@ export class InstancesComponent implements OnInit {
 
             case 'SHUTOFF':
             case 'START':
+            case 'REBOOT':  
               var record = this.dataList[foundIndex];
 
               record.taskState = data.taskState;
@@ -119,10 +119,31 @@ export class InstancesComponent implements OnInit {
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
+
+            case 'RESIZING':
+            case 'RESIZED':
+              var record = this.dataList[foundIndex];
+
+              if (data.status) {
+                record.status = data.status;
+              }
+              
+              if (data.taskState) {
+                record.taskState = data.taskState;
+              }
+
+              if (data.flavorName) {
+                record.flavorName = data.flavorName;
+              }
+              
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
           }
         }
       }
     });
+    this.checkExistName();
   }
 
   selectedChecked(e: any): void {
@@ -452,11 +473,7 @@ export class InstancesComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.max(50),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
-      ],
+      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
     }),
   });
   updateInstances: UpdateInstances = new UpdateInstances();
@@ -500,6 +517,37 @@ export class InstancesComponent implements OnInit {
 
   handleCancelEdit() {
     this.isVisibleEdit = false;
+  }
+
+  //Kiểm tra trùng tên máy ảo
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        if (this.updateInstances.name == this.instanceEdit.name) {
+          this.isExistName = false;
+          this.cdr.detectChanges();
+        } else {
+          this.dataService
+            .checkExistName(res, this.region)
+            .subscribe((data) => {
+              if (data == true) {
+                this.isExistName = true;
+              } else {
+                this.isExistName = false;
+              }
+              this.cdr.detectChanges();
+            });
+        }
+      });
   }
 
   handleOkEdit() {

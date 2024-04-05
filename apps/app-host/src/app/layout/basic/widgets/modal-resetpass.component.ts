@@ -11,7 +11,7 @@ import {
   UserModel,
 } from '../../../../../../../libs/common-utils/src';
 import { NzModalRef } from 'ng-zorro-antd/modal';
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../../../app-smart-cloud/src/environments/environment';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -88,6 +88,15 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
     </div>`,
 })
 export class ModalResetPassComponent implements OnInit {
+
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      user_root_id: this.tokenService.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private http: HttpClient,
@@ -155,6 +164,7 @@ export class ModalResetPassComponent implements OnInit {
     this.http
       .put(`${baseUrl}/users`, updatedUser, {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
+        headers: this.httpOptions.headers
       })
       .subscribe({
         next: (res) => {

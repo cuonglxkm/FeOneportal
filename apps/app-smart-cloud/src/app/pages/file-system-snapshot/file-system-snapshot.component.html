@@ -36,7 +36,7 @@
           </ng-template>
         </nz-col>
         <nz-col>
-            <button [routerLink]="['../create']" nz-button nzType="primary" nzSize="large">
+            <button [routerLink]="['/app-smart-cloud/file-system-snapshot/create']" nz-button nzType="primary" nzSize="large">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
                 <span class="button-text-primary">Tạo mới File System Snapshot</span>
               </button>
@@ -45,7 +45,7 @@
       </div>
       <nz-table #fixedTable
                 style="margin-top: 20px;"
-                [nzData]="response?.records"
+                [nzData]="filteredData"
                 [nzPageSize]="response?.pageSize"
                 (nzPageSizeChange)="onPageSizeChange($event)"
                 [nzPageIndex]="response?.currentPage"
@@ -65,21 +65,25 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>1</td>
+        <tr *ngFor="let data of fixedTable.data; index as i">
+          <td>{{i+1}}</td>
           <td>
-            snapshot01
+            <a [routerLink]="'/app-smart-cloud/file-system-snapshot/detail/' + data.id">{{data.name}}</a>
           </td>
-          <td>5</td>
-          <td>AVAILABLE</td>
-          <td>file-system-01</td>
-          <td>20/03/2024</td>
+          <td>{{data.size}}</td>
+          <td>{{data.status}}</td>
+          <td>{{data.shareName}}</td>
+          <td>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
           <td>
               <div class="d-flex gap-2 justify-content-center">
                 <one-portal-edit-file-system-snapshot [region]="region"
-              [project]="project" />
-              <one-portal-delete-file-system-snapshot [region]="region"
-              [project]="project" />
+              [project]="project" [data]="data" (onOk)="handleOkEditFileSystemSnapShot()" [filesystemsnapshotId]="data.id" />
+              <one-portal-delete-file-system-snapshot 
+              [region]="region"
+              [project]="project" [filesystemsnapshotId]="data.id" 
+              [filesystemsnapshotName]="data.name" 
+              (onOk)="handleOkDeleteFileSystemSnapShot()"
+              />
               </div>
           </td>
         </tr>

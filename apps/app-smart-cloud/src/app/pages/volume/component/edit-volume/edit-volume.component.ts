@@ -313,7 +313,7 @@ export class EditVolumeComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data
-      this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
+      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
     });
   }
 
@@ -330,7 +330,7 @@ export class EditVolumeComponent implements OnInit {
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien volume', result.data);
       this.orderItem = result.data
-      this.unitPrice = this.orderItem.orderItemPrices[0].unitPrice.amount
+      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
     });
   }
 

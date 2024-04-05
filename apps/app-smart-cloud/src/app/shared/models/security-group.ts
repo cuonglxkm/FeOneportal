@@ -10,9 +10,9 @@ export interface SecurityGroup {
 }
 
 export class SecurityGroupSearchCondition {
-  userId?: string | number
-  regionId?: string | number
-  projectId?: string | number
+  userId:  number
+  regionId:  number
+  projectId: number
   securityGroupId?: string | number
 }
 
@@ -21,6 +21,13 @@ export interface SecurityGroupCreateForm {
   description?: string;
 }
 
+export class FormCreateSG {
+  userId: number
+  name: string
+  description: string
+  regionId: number
+  projectId: number
+}
 export class ExecuteAttachOrDetach {
   securityGroupId: string
   instanceId: number
@@ -32,6 +39,14 @@ export class ExecuteAttachOrDetach {
 
 export class FormSearchSecurityGroupByInstance {
   instanceId: string
+  userId: number
+  regionId: number
+  projectId: number
+}
+
+
+export class FormDeleteSG {
+  id: string
   userId: number
   regionId: number
   projectId: number

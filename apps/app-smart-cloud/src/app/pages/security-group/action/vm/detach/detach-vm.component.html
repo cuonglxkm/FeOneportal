@@ -1,0 +1,25 @@
+<img src="assets/imgs/cancel.svg"
+     nzTheme="outline"
+     nz-popover
+     [nzPopoverContent]="'Gỡ Security group'"
+     nzPopoverPlacement="bottom"
+     (click)="showModal()"
+     style="margin-right: 3px; cursor: pointer"/>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()">
+  <div *nzModalTitle>
+    <p class="text-modal-title">Gỡ Security Group</p>
+  </div>
+  <div *nzModalContent>
+    <p class="text-label">Quý khách có thực sự muốn gỡ Security Group này khỏi máy ảo?</p>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy</button>
+    <button nz-button nzType="primary" (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

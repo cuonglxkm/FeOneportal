@@ -70,7 +70,10 @@ export class VpcCreateComponent {
   disableIpConnectInternet = false;
   loadingIpConnectInternet = false;
   selectIndexTab: any = 0;
-
+  vCPU = 1;
+  ram = 1;
+  hhd = 0;
+  ssd = 0;
   form = new FormGroup({
     name: new FormControl('', {validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),]}),
     description: new FormControl(''),
@@ -79,11 +82,11 @@ export class VpcCreateComponent {
     //tab 1
     ipType: new FormControl('', {validators: []}),
     //tab 2
-    vCPU: new FormControl(1, {validators: [Validators.required]}),
-    ram: new FormControl(1, {validators: [Validators.required]}),
-    hhd: new FormControl(0),
-    ssd: new FormControl(0),
-
+    // vCPU: new FormControl(1, {validators: [Validators.required]}),
+    // vCPU1: new FormControl(1, {validators: [Validators.required]}),
+    // ram: new FormControl(1, {validators: [Validators.required]}),
+    // hhd: new FormControl(0),
+    // ssd: new FormControl(0),
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -100,7 +103,7 @@ export class VpcCreateComponent {
     this.loadListIpConnectInternet();
   }
 
-  calculate() {
+  calculate(number: any) {
     let lstIp = this.form.controls['ipConnectInternet'].value.split("--");
     let ip = '';
     let ipName = '';
@@ -109,14 +112,12 @@ export class VpcCreateComponent {
     }
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let ipType = this.form.controls['ipType'].value;
-    let vCPU = this.form.controls['vCPU'].value;
-    let ram = this.form.controls['ram'].value;
 
     let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
     let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
     let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : (ipType == '2' ? this.offerFlavor.ipNumber : 0);
     if (ip != '') {
-      if ((this.selectIndexTab == 0 && ipType != '' && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && vCPU != 0 && ram != 0)) {
+      if ((this.selectIndexTab == 0 && ipType != '' && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
         let listString = lstIp[1].split(" ");
         if (listString.length == 3) {
           ipName = listString[2].trim();
@@ -124,10 +125,10 @@ export class VpcCreateComponent {
         this.loadingCalculate = true;
         const requestBody =
           {
-            quotavCpu: vCPU,
-            quotaRamInGb: ram,
-            quotaHddInGb: this.form.controls['hhd'].value,
-            quotaSSDInGb: this.form.controls['ssd'].value,
+            quotavCpu: this.vCPU,
+            quotaRamInGb: this.ram,
+            quotaHddInGb: this.hhd,
+            quotaSSDInGb: this.ssd,
             quotaBackupVolumeInGb: this.numberBackup,
             quotaSecurityGroupCount: this.numberSecurityGroup,
             // quotaKeypairCount: 0,// NON
@@ -185,13 +186,14 @@ export class VpcCreateComponent {
   onChangeConfigCustom() {
 
   }
-
-  onInputFlavors(event: any) {
+  selectPackge = '';
+  onInputFlavors(event: any,name: any) {
+    this.selectPackge = name;
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
-    this.calculate();
+    this.calculate(null);
   }
 
   initFlavors(): void {
@@ -238,7 +240,7 @@ export class VpcCreateComponent {
     const dateNow = new Date();
     dateNow.setMonth(dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value));
     this.expiredDate = dateNow;
-    this.calculate();
+    this.calculate(null);
   }
 
   backToList() {
@@ -258,8 +260,6 @@ export class VpcCreateComponent {
     }
     let numOfMonth = this.form.controls['numOfMonth'].value;
     let ipType = this.form.controls['ipType'].value;
-    let vCPU = this.form.controls['vCPU'].value;
-    let ram = this.form.controls['ram'].value;
 
     let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : (ipType == '0' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
     let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : (ipType == '1' && this.offerFlavor.ipNumber != undefined ? this.offerFlavor.ipNumber : 0);
@@ -267,10 +267,10 @@ export class VpcCreateComponent {
     const expiredDate = new Date();
     expiredDate.setMonth(expiredDate.getMonth() + Number(numOfMonth));
     const requestBody = {
-      quotavCpu: vCPU,
-      quotaRamInGb: ram,
-      quotaHddInGb: this.form.controls['hhd'].value,
-      quotaSSDInGb: this.form.controls['ssd'].value,
+      quotavCpu: this.vCPU,
+      quotaRamInGb: this.ram,
+      quotaHddInGb: this.hhd,
+      quotaSSDInGb: this.ssd,
       quotaBackupVolumeInGb: this.numberBackup,
       quotaSecurityGroupCount: this.numberSecurityGroup,
       // quotaKeypairCount: null,// NON
@@ -335,7 +335,7 @@ export class VpcCreateComponent {
       this.openIPType = true;
     }
 
-    this.calculate();
+    this.calculate(-1);
   }
 
   changeTab(event: any) {

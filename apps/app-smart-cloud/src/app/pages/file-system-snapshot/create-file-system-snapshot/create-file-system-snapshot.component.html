@@ -40,13 +40,24 @@
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
           <nz-form-control nzErrorTip="File System không đuợc để trống!">
-          <nz-form-label nzFor="name" nzRequired>Tên File System</nz-form-label>
+          <nz-form-label nzFor="name">
+            <div>
+              <span>Tên File System</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              <span nz-icon nzType="question-circle"
+                    nzTheme="outline"
+                    nz-popover
+                    [nzPopoverContent]="'Tên của File System.'"
+                    nzPopoverPlacement="bottom"></span>
+            </div>
+          </nz-form-label>
           <nz-select
             nzShowSearch
             nzAllowClear
             nzPlaceHolder="Chọn File System"
             formControlName="nameFileSystem"
             (ngModelChange)="updateSelectedFileSystems($event)"
+            class="input-select-custom"
           >
             <nz-option
               *ngFor="let data of response?.records"
@@ -58,13 +69,24 @@
         </nz-form-item>
         <nz-form-item>
           <nz-form-control [nzErrorTip]="nameErrorTpl">
-          <nz-form-label nzFor="name" nzRequired >Tên Snapshot</nz-form-label>
+          <nz-form-label nzFor="name">
+            <div>
+              <span>Tên Snapshot</span>
+              (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+              <span nz-icon nzType="question-circle"
+                    nzTheme="outline"
+                    nz-popover
+                    [nzPopoverContent]="'Tên của Snapshot.'"
+                    nzPopoverPlacement="bottom"></span>
+            </div>
+          </nz-form-label>
           <input
             nz-input
             type="text"
             required
             placeholder="Nhập tên Snapshot"
             formControlName="nameSnapshot"
+            class="input-custom"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Tên lịch snapshot không được để trống</ng-container>
@@ -94,6 +116,8 @@
         nzType="primary"
         style="border: none; width: 100%; display: flex; align-items: center; gap: 5px; justify-content: center;"
         nzSize="large"
+        [disabled]="form.invalid"
+        [nzLoading]="isLoading"
       >
         <img
           src="assets/imgs/wallet.svg"

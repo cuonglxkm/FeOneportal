@@ -25,8 +25,10 @@ export class EditVpnConnectionComponent implements OnInit {
 
   formEditVpnConnection: FormEditVpnConnection = new FormEditVpnConnection();
   vpnConnection: VpnConnectionDetail = new VpnConnectionDetail();
+  
   preSharedKeyVisible: boolean = false;
   isLoading: boolean = false
+
   form: FormGroup<{
     peerRemoteIp: FormControl<string>;
     peerId: FormControl<string>;
@@ -59,7 +61,7 @@ export class EditVpnConnectionComponent implements OnInit {
       .subscribe(
         (data) => {
           this.vpnConnection = data;
-          console.log(data);
+          
           this.form.controls.peerRemoteIp.setValue(data.peerRemoteIp);
           this.form.controls.peerId.setValue(data.peerId);
           this.form.controls.preSharedKey.setValue(data.preSharedKey);

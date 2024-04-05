@@ -55,6 +55,7 @@ export class IkePoliciesComponent {
   }
 
   onPageIndexChange(event) {
+    console.log("page index ike --- " , event)
     this.pageIndex = event;
     this.getData();
   }
@@ -72,7 +73,7 @@ export class IkePoliciesComponent {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-        console.log('data----', data)
+        console.log('data- IKE---', data)
       this.response = data
     })
   }

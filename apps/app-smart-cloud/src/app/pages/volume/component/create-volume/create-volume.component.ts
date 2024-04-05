@@ -328,12 +328,17 @@ export class CreateVolumeComponent implements OnInit {
         this.region,
         this.project,
         '',
-        '',
-        false,
+        'KHOITAO',
+        true,
         this.tokenService.get()?.userId
       )
       .subscribe((data) => {
-        this.listInstances = data.records;
+        data.records.forEach(item => {
+          if(item.taskState.includes('ACTIVE')) {
+            this.listInstances?.push(item);
+          }
+        })
+        // this.listInstances = data.records;
         this.cdr.detectChanges();
       });
   }
@@ -358,6 +363,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.volumeType = this.selectedValueRadio;
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
     this.volumeCreate.description = this.validateForm.get('description').value;
+    this.volumeCreate.iops = this.iops
     if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId =
         this.validateForm.controls.snapshot.value;
@@ -376,7 +382,6 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-    this.volumeCreate.iops = this.iops
     let currentDate = new Date();
     let lastDate = new Date();
     if (this.timeSelected == undefined || this.timeSelected == null) {
@@ -482,6 +487,7 @@ export class CreateVolumeComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     // this.customerId = this.tokenService.get()?.userId
+
     if (this.project && this.region) {
       this.loadProjects();
     }

@@ -163,7 +163,7 @@
           <nz-form-item style="margin-top: 10px; margin-bottom: 10px;">
             <nz-form-label nzFor="storage">
               <div class="label">
-                <span>Dung lượng bổ sung</span>
+                <span>Dung lượng tăng thêm</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
                 <span nz-icon nzType="question-circle"
                       nzTheme="outline"
@@ -182,7 +182,7 @@
                                (ngModelChange)="changeValueInput()"
                                [nzStep]="1" />
               <ng-template #storageErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Volume
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của Volume
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -190,10 +190,10 @@
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>
               <div>
-                <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  Đơn giá: {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} </span>
+                Đơn giá: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} </span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                  Đơn giá: 0 VND
+                   0 VND
                 </span>
               </div>
             </nz-form-label>
