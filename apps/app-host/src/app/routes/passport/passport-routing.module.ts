@@ -7,6 +7,7 @@ import { UserLoginComponent } from './login/login.component';
 import { UserRegisterComponent } from './register/register.component';
 import { UserRegisterResultComponent } from './register-result/register-result.component';
 import { LayoutPassportComponent } from '../../layout/passport/passport.component';
+import { UserOtpComponent } from './otp/otp.component';
 
 const routes: Routes = [
   // passport
@@ -18,6 +19,11 @@ const routes: Routes = [
         path: 'login',
         component: UserLoginComponent,
         data: { title: '登录', titleI18n: 'app.login.login' }
+      },
+      {
+        path: 'login-otp',
+        component: UserOtpComponent,
+        data: { title: '锁屏', titleI18n: 'app.login.forgot-password' }
       },
       {
         path: 'register',
@@ -36,7 +42,7 @@ const routes: Routes = [
       }
     ]
   },
-  { path: 'passport/callback/:type', component: CallbackComponent }
+  { path: 'passport/callback/:type', component: CallbackComponent },
 ];
 
 @NgModule({

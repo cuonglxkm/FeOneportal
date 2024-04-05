@@ -193,6 +193,7 @@ import { DetachVmComponent } from './security-group/action/vm/detach/detach-vm.c
 import { AttachVmComponent } from './security-group/action/vm/attach/attach-vm.component';
 import { FormRuleComponent } from './security-group/action/rule/form/form-rule.component';
 import { CreateOutboundComponent } from './security-group/action/rule/outbound/create/create-outbound.component';
+import { SecurityComponent } from './security/security.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -371,6 +372,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetachVmComponent,
     AttachVmComponent,
     CreateOutboundComponent,
+    SecurityComponent
   ],
   imports: [
     CommonModule,

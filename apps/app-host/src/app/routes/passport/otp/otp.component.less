@@ -1,0 +1,115 @@
+@import '@delon/theme/index';
+//@import '../../../../../../../node_modules/open-sans-fonts/open-sans.less';
+
+.ant-input-affix-wrapper {
+  // Input group
+  border-radius: 8px;
+}
+
+::ng-deep .ant-input {
+  border-radius: 4px;
+}
+
+
+
+  .text-title {
+    //styleName: Title/32px - SemiBold;
+    font-family: Inter;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: 0.1px;
+    text-align: left;
+    color: #2b2d3b;
+  }
+
+  .text-des {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.1px;
+    text-align: left;
+    color: #777777;
+  }
+
+  ::ng-deep {
+    h3 {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .submit {
+      width: 100%;
+    }
+
+    .login {
+      float: right;
+      line-height: @btn-height-lg;
+    }
+  }
+
+
+::ng-deep {
+  .register-password-cdk {
+    .success,
+    .warning,
+    .error {
+      transition: color 0.3s;
+    }
+
+    .success {
+      color: @success-color;
+    }
+
+    .warning {
+      color: @warning-color;
+    }
+
+    .error {
+      color: @error-color;
+    }
+
+    .progress-pass > .progress {
+      .ant-progress-bg {
+        background-color: @warning-color;
+      }
+    }
+  }
+
+  .ant-collapse-item {
+    font-weight: bold !important;
+  }
+
+  .ant-collapse-header {
+    padding-left: 0px !important;
+  }
+
+  .top-bot-border {
+    border-top: 1px dotted rgba(0, 0, 0, 0.3);
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.3);
+  }
+
+  .ant-form-item {
+    margin-bottom: 10px !important;
+  }
+
+  //.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+  //  display: inline-block;
+  //  margin-right: 4px;
+  //  color: #ff4d4f;
+  //  font-size: 14px;
+  //  font-family: SimSun, sans-serif;
+  //  line-height: 1;
+  //  content: '*';
+  //}
+  //
+  //.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  //  display: none;
+  //}
+
+  //.ant-form-item-label>label.ant-form-item-required::before{
+  //  content: none;
+  //  display: none;
+  //}
+}

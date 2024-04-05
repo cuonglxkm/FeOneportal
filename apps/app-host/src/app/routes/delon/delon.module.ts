@@ -10,7 +10,7 @@ import { CacheComponent } from './cache/cache.component';
 import { DelonRoutingModule } from './delon-routing.module';
 import { DownFileComponent } from './downfile/downfile.component';
 import { DelonFormComponent } from './form/form.component';
-import { GuardAdminComponent } from './guard/admin.component';
+
 import { GuardAuthComponent } from './guard/auth.component';
 import { GuardComponent } from './guard/guard.component';
 import { GuardLeaveComponent } from './guard/leave.component';
@@ -20,6 +20,7 @@ import { STDemoComponent } from './st/st.component';
 import { UtilComponent } from './util/util.component';
 import { XlsxComponent } from './xlsx/xlsx.component';
 import { ZipComponent } from './zip/zip.component';
+import { GuardAdminComponent } from './guard/admin.component';
 
 const COMPONENTS = [
   STDemoComponent,
