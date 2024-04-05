@@ -1,4 +1,5 @@
-<nz-tabset>
+<!-- Ẩn luồng ACL consumer group vì đã tạo quyền READ cho all consumer group khi tạo mới User-->
+<!-- <nz-tabset>
     <nz-tab nzTitle="ACLs của Topic">
         <ng-template nz-tab>
             <one-portal-acl-topic [listOfPrincipals]="listOfPrincipals" [serviceOrderCode]="serviceOrderCode"></one-portal-acl-topic>
@@ -9,4 +10,6 @@
             <one-portal-acl-consumer-group [listOfPrincipals]="listOfPrincipals" [serviceOrderCode]="serviceOrderCode"></one-portal-acl-consumer-group>
         </ng-template>
     </nz-tab>
-</nz-tabset>
+</nz-tabset> -->
+
+<one-portal-acl-topic [listOfPrincipals]="listOfPrincipals" [serviceOrderCode]="serviceOrderCode"></one-portal-acl-topic>
