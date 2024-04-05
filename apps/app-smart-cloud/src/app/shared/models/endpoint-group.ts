@@ -61,3 +61,8 @@ export class FormListSubnet{
     vpcId: number;
     regionId: number;
 }
+
+export class FormListSubnetResponse{
+    id: string;
+    cidr: string;
+}

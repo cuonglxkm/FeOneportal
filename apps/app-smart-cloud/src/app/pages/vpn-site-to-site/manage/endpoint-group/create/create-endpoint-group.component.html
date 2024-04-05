@@ -75,9 +75,14 @@
                     nzPopoverPlacement="bottom"></span>
               </div>
             </nz-form-label>
-            <div *ngIf="selectedType == 'subnet'">
-              <label [checked]="false" nz-checkbox formControlName="endpoints" >Mã hóa Volume</label>
-            </div>
+            <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+              <div *ngIf="selectedType == 'subnet'">
+                <div *ngFor="let item of listSubnets">
+                  <label [nzValue]="item.cidr" nz-checkbox formControlName="endpoints">{{ item.cidr }}</label>
+                </div>
+              </div>
+            </nz-checkbox-wrapper>
+            
             
             <nz-form-label *ngIf="selectedType == 'cidr'">
               <div *ngIf="selectedType == 'cidr'">
@@ -111,7 +116,10 @@
         <div style="margin-bottom: 20px">
           <h3 formControlName="endpoints" *ngIf="selectedType == 'subnet'" class="custom-subtitle">Local Systems Subnets</h3>
           <h3 formControlName="endpoints" *ngIf="selectedType == 'cidr'" class="custom-subtitle">External Systems CIDRs</h3>
-          <span>{{form.value.endpoints}}</span>
+          <span *ngIf="selectedType == 'cidr'">{{form.value.endpoints}}</span>
+          <div *ngIf="selectedType == 'subnet'">
+              <label formControlName="endpoints" >{{listCidrInfo}}</label>
+          </div>
         </div>
       </div>
       <button (click)="handleCreate()" nz-button nzType="primary"

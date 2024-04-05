@@ -98,7 +98,7 @@ export class EndpointGroupService extends BaseService {
   
   listSubnetEndpointGroup(vpcid: number, region: number){
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/endpoint_groups/list_subnet/vpcId=${vpcid}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/endpoint_groups/list_subnet?vpcId=${vpcid}&regionId=${region}`).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { FormCreateEndpointGroup } from 'src/app/shared/models/endpoint-group';
+import { FormCreateEndpointGroup, FormListSubnetResponse } from 'src/app/shared/models/endpoint-group';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
@@ -18,8 +18,9 @@ import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.ser
 export class CreateEndpointGroupComponent implements OnInit {
     region = JSON.parse(localStorage.getItem('region')).regionId;
     project = JSON.parse(localStorage.getItem('projectId'));
-    listSubnets: string[] = [];
-
+    listSubnets: FormListSubnetResponse[] = [];
+    subnetId = []
+    listCidrInfo = []
     type = [
         { label: 'Subnet(for local system)', value: 'subnet' },
         { label: 'Cidr(for external system)', value: 'cidr' },
@@ -46,7 +47,7 @@ export class CreateEndpointGroupComponent implements OnInit {
             this.form.controls.name.value;
         this.formCreateEndpointGroup.description = "";
         this.formCreateEndpointGroup.type = this.selectedType;
-        this.formCreateEndpointGroup.endpoints = this.form.controls.endpoints.value.split(' ');
+        this.formCreateEndpointGroup.endpoints = this.selectedType === "cidr" ? this.form.controls.endpoints.value.split(' ') : this.subnetId;
         return this.formCreateEndpointGroup;
     }
 
@@ -55,6 +56,7 @@ export class CreateEndpointGroupComponent implements OnInit {
         let regionAndProject = getCurrentRegionAndProject()
         this.region = regionAndProject.regionId
         this.project = regionAndProject.projectId
+        this.getListSubnet()  
     }
 
 
@@ -95,10 +97,19 @@ export class CreateEndpointGroupComponent implements OnInit {
 
     }
 
+    log(value: string[]): void {
+        this.listCidrInfo = value;
+      }
+
     getListSubnet() {
         this.endpointGroupService.listSubnetEndpointGroup(this.project, this.region)
-            .subscribe((data: string[]) => {
+            .subscribe((data: FormListSubnetResponse[]) => {
                 this.listSubnets = data;
+                const subnets = this.listSubnets.map((subnet) =>{
+                    console.log(subnet);
+                    this.subnetId.push(subnet.id)
+                })
+                
             });
     }
 
