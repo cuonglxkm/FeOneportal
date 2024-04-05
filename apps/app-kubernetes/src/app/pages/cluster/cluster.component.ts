@@ -109,6 +109,7 @@ export class ClusterComponent implements OnInit {
       regionId: [null, [Validators.required]],
       projectInfraId: [null, [Validators.required]],
       cloudProfileId: [null, [Validators.required]],
+      packId: [null],
 
       // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
@@ -124,9 +125,6 @@ export class ClusterComponent implements OnInit {
       usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
       volumeCloudType: ['hdd', [Validators.required]],
     });
-
-    // init worker group
-    this.addWorkerGroup();
 
     // display expiry time
     const usageTimeInit = this.myform.get('usageTime').value;
@@ -206,8 +204,8 @@ export class ClusterComponent implements OnInit {
 
           // for the first time the form is initialized,
           // if data is not already loaded, volumeTypeId will not fill value
-          const volumeType = this.listOfVolumeType.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
-          this.listFormWorkerGroup.at(0).get('volumeTypeId').setValue(volumeType.id);
+          // const volumeType = this.listOfVolumeType.find(item => item.volumeType === this.DEFAULT_VOLUME_TYPE);
+          // this.listFormWorkerGroup.at(0).get('volumeTypeId').setValue(volumeType.id);
         } else {
           this.notificationService.error("Thất bại", r.message);
         }
@@ -357,20 +355,28 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  onChangeTab() {
+  onSelectPackTab() {
+    this.chooseItem = null;
+    this.isUsingPackConfig = true;
+    this.clearFormWorker();
+  }
+
+  onSelectCustomPackTab() {
     this.chooseItem = null;
     this.isUsingPackConfig = false;
     this.clearFormWorker();
     this.addWorkerGroup();
-
+    this.myform.get('packId').setValue(null);
   }
 
   chooseItem: PackModel;
-  isUsingPackConfig: boolean = false;
+  isUsingPackConfig: boolean = true;
   onChoosePack(item: PackModel) {
     this.chooseItem = item;
     this.isUsingPackConfig = true;
-    console.log(this.chooseItem);
+    this.myform.get('packId').setValue(item.packId);
+    console.log({packId: this.myform.get('packId').value});
+
     if (this.chooseItem) {
       this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
       this.myform.get('volumeCloudType').setValue(this.volumeCloudType);

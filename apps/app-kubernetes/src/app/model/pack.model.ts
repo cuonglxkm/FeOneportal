@@ -1,14 +1,16 @@
 export class PackModel {
 
+  packId: number;
+  packName: string;
   workerNode: number;
 
   cpu: number;
   ram: number;
+  machineTypeId: number;
+  machineType: string;
 
   rootStorage: number;
   rootStorageType: string;
-  machineTypeId: number;
-  machineType: string;
 
   volumeStorage: number;
   volumeType: string;
@@ -18,6 +20,8 @@ export class PackModel {
 
   constructor(obj: any) {
     if (obj) {
+      this.packId = obj.pack_id;
+      this.packName = obj.pack_name;
       this.workerNode = obj.worker_node;
       this.cpu = obj.cpu;
       this.ram = obj.ram;

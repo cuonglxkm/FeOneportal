@@ -79,220 +79,218 @@
           </ng-template>
         </nz-form-item>
 
-        <nz-card class="border-card">
-          <nz-tabset nzCentered>
-            <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="onChangeTab()">
-              <ng-template nz-tab>
-                <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
-                  <div *nguCarouselDef="let item;" class="item">
-                    <div class="pack-item" [ngClass]="{ 'choose': item===chooseItem}" (click)="onChoosePack(item)">
-                      <div class="item-header">
-                        <div class="item-name">
-                          <span>{{item.packName}}</span>
-                          <div class="item-price">
-                            <div class="price">
-                              <span>{{ item.price | customCurrency }}</span><br>
-                              <span class="unit-price">đ/tháng</span>
-                            </div>
+        <nz-tabset nzCentered>
+          <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="onSelectPackTab()">
+            <ng-template nz-tab>
+              <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
+                <div *nguCarouselDef="let item;" class="item">
+                  <div class="pack-item" [ngClass]="{ 'choose': item===chooseItem}" (click)="onChoosePack(item)">
+                    <div class="item-header">
+                      <div class="item-name">
+                        <span>{{item.packName}}</span>
+                        <div class="item-price">
+                          <div class="price">
+                            <span>{{ item.price | customCurrency }}</span><br>
+                            <span class="unit-price">đ/tháng</span>
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <div class="item-body">
-                        <div>{{item.workerNode}} node</div>
-                        <div>{{item.cpu}}vCPU/node</div>
-                        <div>{{item.ram}}GB RAM/node</div>
-                        <div>{{item.rootStorage}}GB {{item.rootStorageType}}/node</div>
-                        <div>{{item.volumeStorage}}GB {{item.volumeType}} persistent</div>
-                      </div>
+                    <div class="item-body">
+                      <div>{{item.workerNode}} node</div>
+                      <div>{{item.cpu}}vCPU/node</div>
+                      <div>{{item.ram}}GB RAM/node</div>
+                      <div>{{item.rootStorage}}GB {{item.rootStorageType}}/node</div>
+                      <div>{{item.volumeStorage}}GB {{item.volumeType}} persistent</div>
                     </div>
                   </div>
-                  <ul class="myPoint" NguCarouselPoint>
-                    <li *ngFor="let j of myCarousel.pointNumbers" [class.active]="j === myCarousel.activePoint"
-                      (click)="myCarousel.moveTo(j)"></li>
-                  </ul>
-                </ngu-carousel>
+                </div>
+                <ul class="myPoint" NguCarouselPoint>
+                  <li *ngFor="let j of myCarousel.pointNumbers" [class.active]="j === myCarousel.activePoint"
+                    (click)="myCarousel.moveTo(j)"></li>
+                </ul>
+              </ngu-carousel>
 
+            </ng-template>
+          </nz-tab>
 
-              </ng-template>
-            </nz-tab>
+          <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="onSelectCustomPackTab()">
+            <ng-template nz-tab>
+            </ng-template>
+          </nz-tab>
+        </nz-tabset>
 
-            <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="onChangeTab()">
-              <ng-template nz-tab>
-                Chưa có gì
-              </ng-template>
-            </nz-tab>
-          </nz-tabset>
-        </nz-card>
+        <ng-container *ngIf="chooseItem != null || !isUsingPackConfig">
+          <h3 class="mt-5">Cấu hình worker group</h3>
 
-        <h3 class="mt-5">Cấu hình worker group</h3>
-
-        <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
-          <ng-container [formGroupName]="i">
-            <div nz-row [nzGutter]="16" class="group-border mb-5">
-              <div nz-col [nzSpan]="12">
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="workerGroupName">Tên nhóm worker</nz-form-label>
-                  <nz-form-control [nzErrorTip]="workerGroupNameErrorTpl">
-                    <input type="text" nz-input placeholder="Nhập tên nhóm worker" formControlName="workerGroupName"
-                      (ngModelChange)="checkDuplicate(i)" id="workerGroupName" />
-                  </nz-form-control>
-                  <ng-template #workerGroupNameErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                      Tên nhóm worker không để trống
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('duplicateName')">
-                      Tên nhóm worker đã tồn tại
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('maxlength')">
-                      Tên nhóm worker tối đa 16 ký tự
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('pattern')">
-                      Tên nhóm worker chỉ chứa các ký tự và số viết thường hoặc dấu gạch nối
-                    </ng-container>
-                  </ng-template>
-                </nz-form-item>
-
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
-                  <nz-form-control>
-                    <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
-                      (ngModelChange)="onSelectWorkerType($event, i)">
-                      <nz-option *ngFor="let item of listOfWorkerType"
-                        nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
-                        [nzValue]="item.machineName"></nz-option>
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
-
-                <nz-form-item>
-                  <nz-form-control>
-                    <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
-                      class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
-                  </nz-form-control>
-                  <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối
-                    đa</small>
-                </nz-form-item>
-
-                <ng-container *ngIf="isAutoScaleAtIndex(i)">
+          <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroup.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <div nz-row [nzGutter]="16" class="group-border mb-5">
+                <div nz-col [nzSpan]="12">
                   <nz-form-item>
-                    <nz-form-label nzRequired nzFor="nodes">Số node tối thiểu</nz-form-label>
-                    <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
-                      <input type="text" nz-input placeholder="Nhập số node tối thiểu" formControlName="minimumNode"
-                        (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                    <nz-form-label nzRequired nzFor="workerGroupName">Tên nhóm worker</nz-form-label>
+                    <nz-form-control [nzErrorTip]="workerGroupNameErrorTpl">
+                      <input type="text" nz-input placeholder="Nhập tên nhóm worker" formControlName="workerGroupName"
+                        (ngModelChange)="checkDuplicate(i)" id="workerGroupName" />
                     </nz-form-control>
-                    <ng-template #minimumNodeErrorTpl let-control>
+                    <ng-template #workerGroupNameErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
-                        Số node tối thiểu không để trống
+                        Tên nhóm worker không để trống
                       </ng-container>
-                      <ng-container *ngIf="control.hasError('invalid')">
-                        Số node tối thiểu không lớn hơn số node tối đa
+                      <ng-container *ngIf="control.hasError('duplicateName')">
+                        Tên nhóm worker đã tồn tại
                       </ng-container>
-                      <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                        Số node tối thiểu trong khoảng 1-10
+                      <ng-container *ngIf="control.hasError('maxlength')">
+                        Tên nhóm worker tối đa 16 ký tự
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">
+                        Tên nhóm worker chỉ chứa các ký tự và số viết thường hoặc dấu gạch nối
                       </ng-container>
                     </ng-template>
                   </nz-form-item>
-                </ng-container>
 
-                <nz-form-item>
-                  <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
-                  <nz-form-control>
-                    <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)">
-                      <ng-container *ngFor="let item of listOfVolumeType">
-                        <label nz-radio [nzValue]="item.volumeType" id="volumeType">
-                          {{item.volumeTypeName}}
-                        </label>
-                      </ng-container>
-                    </nz-radio-group>
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
-
-              <div nz-col [nzSpan]="12">
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
-                  <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
-                    <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
-                      (keypress)="isNumber($event)" />
-                  </nz-form-control>
-                  <ng-template #nodeNumberErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                      Số node không để trống
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Số node trong khoảng từ 1-10
-                    </ng-container>
-                  </ng-template>
-                </nz-form-item>
-
-                <nz-form-item>
-                  <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
-                  <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                    <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
-                      id="volume" (keypress)="isNumber($event)" />
-                  </nz-form-control>
-                  <ng-template #volumeStorageErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                      Dung lượng ổ cứng không để trống
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                      Dung lượng trong khoảng từ 20-1000 (GB)
-                    </ng-container>
-                  </ng-template>
-                </nz-form-item>
-
-                <nz-form-item>
-                  <nz-form-control>
-                    <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch>
-                    <label>Bật Auto Healing</label>
-                  </nz-form-control>
-                  <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
-                    tải).</small>
-                </nz-form-item>
-
-                <ng-container *ngIf="isAutoScaleAtIndex(i)">
                   <nz-form-item>
-                    <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
-                    <nz-form-control [nzErrorTip]="maximumNodeErrorTpl">
-                      <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
-                        (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                    <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
+                    <nz-form-control>
+                      <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
+                        (ngModelChange)="onSelectWorkerType($event, i)">
+                        <nz-option *ngFor="let item of listOfWorkerType"
+                          nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
+                          [nzValue]="item.machineName"></nz-option>
+                      </nz-select>
                     </nz-form-control>
-                    <ng-template #maximumNodeErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required')">
-                        Số node tối đa không để trống
-                      </ng-container>
-                      <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
-                        Số node tối đa trong khoảng từ 1-10
-                      </ng-container>
-                    </ng-template>
                   </nz-form-item>
-                </ng-container>
 
-                <div>
-                  <!-- remove btn -->
-                  <ng-container *ngIf="listFormWorkerGroup.length > 1 && !isUsingPackConfig">
-                    <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top" nz-tooltip
-                      class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
-                      <span nz-icon nzType="delete"></span>
-                    </button>
+                  <nz-form-item>
+                    <nz-form-control>
+                      <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
+                        class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
+                    </nz-form-control>
+                    <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối
+                      đa</small>
+                  </nz-form-item>
+
+                  <ng-container *ngIf="isAutoScaleAtIndex(i)">
+                    <nz-form-item>
+                      <nz-form-label nzRequired nzFor="nodes">Số node tối thiểu</nz-form-label>
+                      <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
+                        <input type="text" nz-input placeholder="Nhập số node tối thiểu" formControlName="minimumNode"
+                          (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                      </nz-form-control>
+                      <ng-template #minimumNodeErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">
+                          Số node tối thiểu không để trống
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('invalid')">
+                          Số node tối thiểu không lớn hơn số node tối đa
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                          Số node tối thiểu trong khoảng 1-10
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-item>
                   </ng-container>
+
+                  <nz-form-item>
+                    <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
+                    <nz-form-control>
+                      <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)">
+                        <ng-container *ngFor="let item of listOfVolumeType">
+                          <label nz-radio [nzValue]="item.volumeType" id="volumeType">
+                            {{item.volumeTypeName}}
+                          </label>
+                        </ng-container>
+                      </nz-radio-group>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+
+                <div nz-col [nzSpan]="12">
+                  <nz-form-item>
+                    <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
+                    <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
+                      <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
+                        (keypress)="isNumber($event)" />
+                    </nz-form-control>
+                    <ng-template #nodeNumberErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Số node không để trống
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                        Số node trong khoảng từ 1-10
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-item>
+
+                  <nz-form-item>
+                    <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
+                    <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
+                      <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
+                        id="volume" (keypress)="isNumber($event)" />
+                    </nz-form-control>
+                    <ng-template #volumeStorageErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Dung lượng ổ cứng không để trống
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                        Dung lượng trong khoảng từ 20-1000 (GB)
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-item>
+
+                  <nz-form-item>
+                    <nz-form-control>
+                      <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch>
+                      <label>Bật Auto Healing</label>
+                    </nz-form-control>
+                    <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
+                      tải).</small>
+                  </nz-form-item>
+
+                  <ng-container *ngIf="isAutoScaleAtIndex(i)">
+                    <nz-form-item>
+                      <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
+                      <nz-form-control [nzErrorTip]="maximumNodeErrorTpl">
+                        <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
+                          (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                      </nz-form-control>
+                      <ng-template #maximumNodeErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">
+                          Số node tối đa không để trống
+                        </ng-container>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                          Số node tối đa trong khoảng từ 1-10
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-item>
+                  </ng-container>
+
+                  <div>
+                    <!-- remove btn -->
+                    <ng-container *ngIf="listFormWorkerGroup.length > 1 && !isUsingPackConfig">
+                      <button nz-button nzType="text" nzTooltipTitle="Xóa nhóm worker" nzTooltipPlacement="top"
+                        nz-tooltip class="borderless delete-icon remove-btn" (click)="removeWorkerGroup(i)">
+                        <span nz-icon nzType="delete"></span>
+                      </button>
+                    </ng-container>
+                  </div>
                 </div>
               </div>
-            </div>
-          </ng-container>
-        </div>
+            </ng-container>
+          </div>
 
-        <ng-container *ngIf="!isUsingPackConfig">
-          <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
-            <span nz-icon>
-              <svg viewBox="64 64 896 896" focusable="false">
-                <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
-                <path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
-              </svg>
-            </span>
-            Thêm worker group
-          </button>
+          <ng-container *ngIf="!isUsingPackConfig">
+            <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
+              <span nz-icon>
+                <svg viewBox="64 64 896 896" focusable="false">
+                  <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
+                  <path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
+                </svg>
+              </span>
+              Thêm worker group
+            </button>
+          </ng-container>
         </ng-container>
 
       </nz-card>
@@ -426,8 +424,9 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="usageTime">Thời gian sử dụng - Tháng</nz-form-label>
               <nz-form-control [nzErrorTip]="usageTimeErrorTpl">
-                <input type="text" nz-input placeholder="Chọn thời gian sử dụng" id="usageTime" formControlName="usageTime"
-                (ngModelChange)="onSelectUsageTime($event)" (keypress)="onInputUsage($event)" />
+                <input type="text" nz-input placeholder="Chọn thời gian sử dụng" id="usageTime"
+                  formControlName="usageTime" (ngModelChange)="onSelectUsageTime($event)"
+                  (keypress)="onInputUsage($event)" />
               </nz-form-control>
               <ng-template #usageTimeErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
