@@ -229,7 +229,7 @@
           </nz-input-group>
           <ng-template #newpassErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập mật khẩu mới</ng-container
+              >Vui lòng nhập trường mật khẩu mới </ng-container
             >
             <ng-container *ngIf="control.hasError('pattern')"
               >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ
@@ -270,13 +270,13 @@
           </ng-template>
           <div *ngIf="!check">
             <span style="color: rgba(252, 16, 16, 1)"
-              >Mật khẩu không khớp!</span
+              >Mật khẩu không khớp nhau, vui lòng nhập lại</span
             >
           </div>
         </nz-form-control>
         <ng-template #passRepeatErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')"
-            >Vui lòng nhập lại mật khẩu mới</ng-container
+            >Vui lòng nhập trường xác nhận mật khẩu</ng-container
           >
         </ng-template></nz-form-item
       >

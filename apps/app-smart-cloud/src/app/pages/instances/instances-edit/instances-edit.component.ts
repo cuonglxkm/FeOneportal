@@ -336,11 +336,11 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  volumeUnitPrice = 0;
+  volumeUnitPrice = '0';
   volumeIntoMoney = 0;
-  ramUnitPrice = 0;
+  ramUnitPrice = '0';
   ramIntoMoney = 0;
-  cpuUnitPrice = 0;
+  cpuUnitPrice = '0';
   cpuIntoMoney = 0;
   getUnitPrice(volumeSize: number, ram: number, cpu: number) {
     let tempInstance: InstanceResize = new InstanceResize();
@@ -364,23 +364,26 @@ export class InstancesEditComponent implements OnInit {
     this.dataService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien/đơn giá', result);
       if (volumeSize != 0) {
-        this.volumeUnitPrice =
+        this.volumeUnitPrice = (
           Number.parseFloat(result.data.totalAmount.amount) /
-          this.configCustom.capacity;
+          this.configCustom.capacity
+        ).toFixed(0);
         this.volumeIntoMoney = Number.parseFloat(
           result.data.totalAmount.amount
         );
       }
       if (ram != 0) {
-        this.ramUnitPrice =
+        this.ramUnitPrice = (
           Number.parseFloat(result.data.totalAmount.amount) /
-          this.configCustom.ram;
+          this.configCustom.ram
+        ).toFixed(0);
         this.ramIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
       }
       if (cpu != 0) {
-        this.cpuUnitPrice =
+        this.cpuUnitPrice = (
           Number.parseFloat(result.data.totalAmount.amount) /
-          this.configCustom.vCPU;
+          this.configCustom.vCPU
+        ).toFixed(0);
         this.cpuIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
       }
       this.cdr.detectChanges();
@@ -411,7 +414,7 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.vCPU == 0) {
-          this.cpuUnitPrice = 0;
+          this.cpuUnitPrice = '0';
           this.cpuIntoMoney = 0;
           this.instanceResize.cpu = this.instancesModel.cpu;
         } else {
@@ -432,7 +435,7 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.ram == 0) {
-          this.ramUnitPrice = 0;
+          this.ramUnitPrice = '0';
           this.ramIntoMoney = 0;
           this.instanceResize.ram = this.instancesModel.ram;
         } else {
@@ -453,7 +456,7 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.capacity == 0) {
-          this.volumeUnitPrice = 0;
+          this.volumeUnitPrice = '0';
           this.volumeIntoMoney = 0;
           this.instanceResize.storage = this.instancesModel.storage;
         } else {

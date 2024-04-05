@@ -231,10 +231,12 @@
                     >
                       <ng-template #nzAvatarselectedHDDorSSD1>
                         <label
+                          [tabIndex]="0"
                           nz-radio
                           [ngModel]="activeBlockHDD"
                           [ngModelOptions]="{ standalone: true }"
                           (click)="initHDD()"
+                          (keyup.enter)="initHDD()"
                         ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD1>
@@ -292,10 +294,12 @@
                     >
                       <ng-template #nzAvatarselectedHDDorSSD2>
                         <label
+                          [tabIndex]="0"
                           nz-radio
                           [ngModel]="activeBlockSSD"
                           [ngModelOptions]="{ standalone: true }"
                           (click)="initSSD()"
+                          (keyup.enter)="initSSD()"
                         ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD2>
@@ -334,7 +338,11 @@
           ></nz-row>
         </nz-radio-group>
 
-        <nz-tabset nzCentered nzSize="large">
+        <nz-tabset
+          nzCentered
+          nzSize="large"
+          (keydown)="handleKeyboardEvent($event)"
+        >
           <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
             <ngu-carousel
               *ngIf="activeBlockHDD"
@@ -347,8 +355,13 @@
                 [@slider]="ani"
               >
                 <div
+                  [tabIndex]="0"
                   style="cursor: pointer"
                   (click)="
+                    onInputFlavors(item.id);
+                    selectElementInputFlavors('flavor_' + item.id)
+                  "
+                  (keyup.enter)="
                     onInputFlavors(item.id);
                     selectElementInputFlavors('flavor_' + item.id)
                   "
@@ -425,8 +438,13 @@
                 [@slider]="ani"
               >
                 <div
+                  [tabIndex]="0"
                   style="cursor: pointer"
                   (click)="
+                    onInputFlavors(item.id);
+                    selectElementInputFlavors('flavor_' + item.id)
+                  "
+                  (keyup.enter)="
                     onInputFlavors(item.id);
                     selectElementInputFlavors('flavor_' + item.id)
                   "
@@ -772,10 +790,12 @@
                 >
                   <ng-template #nzAvatarselectedPasswordOrSSHkey1>
                     <label
+                      [tabIndex]="0"
                       nz-radio
                       [ngModel]="activeBlockPassword"
                       [ngModelOptions]="{ standalone: true }"
                       (click)="initPassword()"
+                      (keyup.enter)="initPassword()"
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey1>
@@ -805,10 +825,12 @@
                 >
                   <ng-template #nzAvatarselectedPasswordOrSSHkey2>
                     <label
+                      [tabIndex]="0"
                       nz-radio
                       [ngModel]="activeBlockSSHKey"
                       [ngModelOptions]="{ standalone: true }"
                       (click)="initSSHkey()"
+                      (keyup.enter)="initSSHkey()"
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey2>
