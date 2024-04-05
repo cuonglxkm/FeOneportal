@@ -12,5 +12,8 @@ export class SubnetModel {
   id: number;
   subnetAddressRequired: string;
   subnetCloudId: string;
+  enableDhcp: boolean;
+  gatewayIp: string;
+  customerId: number;
 
 }

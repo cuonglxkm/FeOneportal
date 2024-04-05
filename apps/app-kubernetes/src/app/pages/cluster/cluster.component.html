@@ -358,8 +358,21 @@
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
               <nz-form-control nzErrorTip="Subnet không để trống" id="subnet-form">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90">
-                  <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
-                    [nzValue]="item.subnetAddressRequired"></nz-option>
+                  <ng-container *ngFor="let item of listOfSubnets">
+                    <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
+                      <nz-option [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired"></nz-option>
+                    </ng-container>
+                    <ng-template #disableSubnetTpl>
+                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
+                        <div nzTooltipTitle="Chưa mở DHCP" nzTooltipPlacement="bottom" nz-tooltip>
+                          {{item.subnetAddressRequired}}
+                        </div>
+                      </nz-option>
+                    </ng-template>
+                  </ng-container>
+
+                  <!-- <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
+                    [nzValue]="item.subnetAddressRequired" [nzDisabled]="!item.enableDhcp"></nz-option> -->
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
                   (click)="refreshSubnet()" class="borderless">
@@ -517,7 +530,7 @@
                         </svg>
                       </span>
                     </ng-template>
-                    Thanh toán
+                    Khởi tạo
                   </button>
                 </div>
               </div>

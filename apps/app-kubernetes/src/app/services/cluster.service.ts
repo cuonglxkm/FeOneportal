@@ -32,10 +32,12 @@ export class ClusterService extends BaseService {
   searchCluster(
     clusterName: string,
     serviceStatus: string,
+    cloudProfileId: string,
+    projectInfraId: number,
     pageIndex: number,
     pageSize: number
   ) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`, { headers: this.getHeaders() });
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&cloud_profile_id=${cloudProfileId}&project_infra_id=${projectInfraId}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`, { headers: this.getHeaders() });
   }
 
   searchLogs(

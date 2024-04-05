@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Danh sách cluster'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách cluster'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -9,6 +9,14 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Danh sách cluster</nz-breadcrumb-item>
     </nz-breadcrumb>
+  </ng-template>
+
+  <!-- action -->
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 

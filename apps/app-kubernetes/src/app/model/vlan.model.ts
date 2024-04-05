@@ -60,7 +60,7 @@ export class Subnet {
   name: string
   ipVersion: number
   gatewayId: string
-  enableDHCP: boolean
+  enableDhcp: boolean
   hnsNameServer: string
   cloudId: string
   status: string

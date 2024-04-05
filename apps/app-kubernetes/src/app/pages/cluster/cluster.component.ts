@@ -5,7 +5,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs';
+import { EMPTY, catchError, finalize, map } from 'rxjs';
 import { KubernetesConstant } from 'src/app/constants/kubernetes.constant';
 import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from 'src/app/model/cluster.model';
 import { K8sVersionModel } from 'src/app/model/k8s-version.model';
@@ -68,7 +68,7 @@ export class ClusterComponent implements OnInit {
     load: 1,
     speed: 250,
     // interval: {timing: 4000, initialDelay: 4000},
-    loop: true,
+    // loop: true,
     touch: true,
     velocity: 0.2,
     point: {
@@ -248,19 +248,25 @@ export class ClusterComponent implements OnInit {
     // clear subnet
     this.myform.get('subnet').setValue(null);
 
-    this.vlanService.getListSubnet(this.formSearchSubnet)
-    .subscribe((r: any) => {
-      if (r && r.records) {
-        this.listOfSubnets = r.records;
-      }
+    this.vlanService.getListSubnet(this.formSearchSubnet).pipe(
+      map(r => r.records),
+      catchError(response => {
+        console.error("fail to get list subnet: {}", response);
+        return EMPTY;
+      })
+    )
+    .subscribe((data: any) => {
+      this.listOfSubnets = data;
     })
   }
 
   getListPack(cloudProifileId: string) {
     this.clusterService.getListPack(cloudProifileId)
     .subscribe((r: any) => {
+      this.listOfServicePack = [];
+      this.myCarousel.reset();
+
       if (r && r.code == 200) {
-        this.listOfServicePack = [];
         r.data?.forEach(item => {
           const p = new PackModel(item);
           this.listOfServicePack.push(p);
@@ -317,6 +323,15 @@ export class ClusterComponent implements OnInit {
     this.listFormWorkerGroup.at(index).get('configTypeId').setValue(selectedWorkerType.id);
   }
 
+  onInputPodCidrAndSubnet() {
+    const cidrValue = this.myform.get('cidr').value;
+    const subnetValue = this.myform.get('subnet').value;
+    if (cidrValue && subnetValue) {
+
+    }
+
+  }
+
   onChangeAdvancedConfig(index: number) {
     const isAutoScaleWorker = this.isAutoScaleAtIndex(index);
     if (isAutoScaleWorker) {
@@ -367,6 +382,8 @@ export class ClusterComponent implements OnInit {
     this.clearFormWorker();
     this.addWorkerGroup();
     this.myform.get('packId').setValue(null);
+    this.myform.get('volumeCloudType').enable();
+    this.myform.get('volumeCloudSize').enable();
   }
 
   chooseItem: PackModel;
@@ -382,28 +399,28 @@ export class ClusterComponent implements OnInit {
       this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
 
       this.clearFormWorker();
-      const amountNode = this.chooseItem.workerNode;
-      for (let i = 0; i < amountNode; i++) {
-        const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
-        let wgf = this.fb.group({
-          workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
-          nodeNumber: [this.chooseItem.workerNode],
-          volumeStorage: [this.chooseItem.rootStorage],
-          volumeType: [this.chooseItem.rootStorageType],
-          volumeTypeId: [this.chooseItem.volumeTypeId],
-          configType: [this.chooseItem.machineType],
-          configTypeId: [this.chooseItem.machineTypeId],
-          autoScalingWorker: [false],
-          autoHealing: [true],
-          minimumNode: [null],
-          maximumNode: [null]
-        });
 
-        wgf.disable();
-        wgf.get('workerGroupName').enable();
+      // add worker group
+      const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
+      let wgf = this.fb.group({
+        workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+        nodeNumber: [this.chooseItem.workerNode],
+        volumeStorage: [this.chooseItem.rootStorage],
+        volumeType: [this.chooseItem.rootStorageType],
+        volumeTypeId: [this.chooseItem.volumeTypeId],
+        configType: [this.chooseItem.machineType],
+        configTypeId: [this.chooseItem.machineTypeId],
+        autoScalingWorker: [false],
+        autoHealing: [true],
+        minimumNode: [null],
+        maximumNode: [null]
+      });
 
-        this.listFormWorkerGroup.push(wgf);
-      }
+      wgf.disable();
+      wgf.get('workerGroupName').enable();
+
+      this.listFormWorkerGroup.push(wgf);
+
       if (this.isUsingPackConfig) {
         this.myform.get('volumeCloudType').disable();
         this.myform.get('volumeCloudSize').disable();
