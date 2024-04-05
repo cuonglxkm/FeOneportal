@@ -148,6 +148,7 @@ export class CreateKafkaComponent implements OnInit {
     kafka.offerId = 229;
     kafka.regionId = this.regionId;
     kafka.projectId = this.projectId;
+    kafka.vpcId = this.projectId;
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = 100000;
