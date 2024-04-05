@@ -111,6 +111,7 @@ export class InstancesComponent implements OnInit {
 
             case 'SHUTOFF':
             case 'START':
+            case 'REBOOT':  
               var record = this.dataList[foundIndex];
 
               record.taskState = data.taskState;
@@ -118,6 +119,26 @@ export class InstancesComponent implements OnInit {
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
               break;
+
+            case 'RESIZING':
+            case 'RESIZED':
+              var record = this.dataList[foundIndex];
+
+              if (data.status) {
+                record.status = data.status;
+              }
+              
+              if (data.taskState) {
+                record.taskState = data.taskState;
+              }
+
+              if (data.flavorName) {
+                record.flavorName = data.flavorName;
+              }
+              
+              this.dataList[foundIndex] = record;
+              this.cdr.detectChanges();
+            break;
           }
         }
       }

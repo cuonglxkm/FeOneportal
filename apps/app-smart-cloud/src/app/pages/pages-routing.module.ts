@@ -523,6 +523,10 @@ const routes: Routes = [
     component: S3KeyComponent
   },
   {
+    path: 'snapshot/packages',
+    loadChildren: () => import('../pages/snapshot-package/packages-snapshot.module').then(m => m.PackageSnapshotModule)
+  },
+  {
     path: 'security-group/list',
     component: ListSecurityGroupComponent
   },

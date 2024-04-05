@@ -15,6 +15,7 @@ import { DetailIkePoliciesComponent } from "./manage/ike-policies/detail/detail-
 import { VpnS2sExtendComponent } from "./manage/vpn-s2s-extend/vpn-s2s-extend.component";
 import { VpnS2sResizeComponent } from "./manage/vpn-s2s-resize/vpn-s2s-resize.component";
 import { PolicyService } from "src/app/shared/services/policy.service";
+import { CreateVpnServiceComponent } from "./manage/vpn-service/create/create-vpn-service.component";
 
 const routes: Routes = [
   {
@@ -65,10 +66,13 @@ const routes: Routes = [
     component: CreateIkePoliciesComponent,
   },
   {
+    path: 'vpn-service/create',
+    component: CreateVpnServiceComponent,
+  },
+  {
     path: 'ike-policies/edit/:id',
     component: EditIkePoliciesComponent,
   },
- 
   {
     path: 'vpn-service/:id',
     component: DetailVpnServiceComponent,

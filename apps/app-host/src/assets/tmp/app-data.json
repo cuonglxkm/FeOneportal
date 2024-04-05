@@ -105,6 +105,10 @@
                 {
                   "text": "Lịch Snapshot",
                   "link": "/app-smart-cloud/schedule/snapshot/list"
+                },
+                {
+                  "text": "Gói Snapshot",
+                  "link": "/app-smart-cloud/snapshot/packages"
                 }
               ]
             },

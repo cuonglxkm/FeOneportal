@@ -20,5 +20,14 @@ pipeline {
                 sh 'docker compose push'
             }
         }
+
+        stage('Redeploy k8s') {
+            steps {
+                script {
+                    sh 'kubectl -n vnptcloud  rollout restart deployment/app-host-deployment'
+                    sh 'kubectl -n vnptcloud  rollout restart deployment/app-smartcloud-deployment'
+                }
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ export class VpnSiteToSiteService extends BaseService {
   }
 
   getVpnSiteToSite(vpcId) {
-    return this.http.get<BaseResponse<VpnSiteToSiteDTO>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/byVpc/' + vpcId, {
+    return this.http.get<VpnSiteToSiteDTO>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/byVpc/' + vpcId, {
       headers: this.getHeaders(),
     })
   }
