@@ -9,7 +9,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -24,7 +24,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -38,7 +38,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -63,7 +63,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR'
       "
       nz-menu-item
@@ -229,8 +229,8 @@
           </nz-input-group>
           <ng-template #newpassErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập trường mật khẩu mới </ng-container
-            >
+              >Vui lòng nhập trường mật khẩu mới
+            </ng-container>
             <ng-container *ngIf="control.hasError('pattern')"
               >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ
               hoa, chữ thường và ký hiệu đặc biệt</ng-container

@@ -51,7 +51,6 @@ export class InstancesExtendComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private modalSrv: NzModalService,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService
   ) {}
@@ -65,6 +64,9 @@ export class InstancesExtendComponent implements OnInit {
       this.instancesModel = data;
       this.regionId = this.instancesModel.regionId;
       this.loading = false;
+      let expiredDate = new Date(this.instancesModel.expiredDate);
+      expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+      this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
       this.getListIpPublic();
       this.getTotalAmount();
       this.service
