@@ -32,7 +32,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 })
 export class InstancesExtendComponent implements OnInit {
   loading = true;
-  instancesModel: InstancesModel;
+  instancesModel: InstancesModel = new InstancesModel();
   listSecurityGroupModel: SecurityGroupModel[] = [];
   id: number;
   regionId: number;
@@ -212,6 +212,12 @@ export class InstancesExtendComponent implements OnInit {
   navigateToEdit() {
     this.router.navigate([
       '/app-smart-cloud/instances/instances-edit/' + this.id,
+    ]);
+  }
+
+  navigateToChangeImage() {
+    this.router.navigate([
+      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
     ]);
   }
 

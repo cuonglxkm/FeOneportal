@@ -1,0 +1,160 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Security Group'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/security-group">Danh sách Security Group</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+  <one-portal-create-security-group  [region]="region"
+                                     [project]="project"
+                                     nz-tooltip
+                                     nzTooltipTitle="Tạo mới Security Group"
+                                     nzTooltipPlacement="bottom"
+                                     (onOk)="handleOKCreateSG()"/>
+</page-header>
+<nz-content>
+  <ng-container [ngSwitch]="isBegin">
+    <ng-container *ngSwitchCase="false">
+      <nz-card>
+        <div style="display: flex; justify-content: space-between">
+          <div>
+            <span class="text-card-header">Danh sách Security Group</span>
+          </div>
+          <div class="label">
+            <span class="text-label">Security group: </span>
+            <nz-space [nzSize]="24">
+              <nz-select *nzSpaceItem
+                         nzShowSearch
+                         nzAllowClear
+                         nz-tooltip
+                         nzTooltipTitle="Chọn Security Group"
+                         nzTooltipPlacement="bottom"
+                         nzPlaceHolder="Select a security"
+                         [(ngModel)]="selectedSG"
+                         [nzLoading]="isLoadingSG"
+                         nzSize="large"
+                         (ngModelChange)="onSecurityGroupChange()" style="width: 250px; border-radius: 8px;">
+                <nz-option *ngFor="let item of listSG" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
+              </nz-select>
+              <div *nzSpaceItem>
+                <one-portal-delete-security-group *ngIf="!!selectedSG"
+                                                  [nameSG]="selectedSG.name"
+                                                  [id]="selectedSG.id"
+                                                  [region]="region"
+                                                  [project]="project"
+                                                  (onOk)="handleOKDeleteSG()" />
+              </div>
+            </nz-space>
+          </div>
+        </div>
+        <div style="margin-bottom: 16px; display: flex; gap: 40px; margin-top: 10px;">
+          <div class="text-value">Mô tả:</div>
+          <div *ngIf="selectedSG?.description && selectedSG?.description !== ''" class="text-label description-detail">
+            {{ selectedSG?.description }}
+          </div>
+        </div>
+        <one-portal-list-inbound [securityGroupId]="selectedSG?.id"
+                                 [regionId]="region"
+                                 [projectId]="project"/>
+
+        <one-portal-list-outbound [securityGroupId]="selectedSG?.id"
+                                  [regionId]="region"
+                                  [projectId]="project"/>
+        <nz-row>
+          <section class="code-box-meta markdown" style="border: 1px solid #e1edf8; border-radius: 8px">
+            <div style="
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e1edf8;
+          ">
+              <div class="code-box-title text-value">Quản lý Gán/Gỡ Security Group</div>
+            </div>
+            <div style="margin: 10px 15px">
+              <nz-table #basicTable
+                        [nzData]="listInstances || []"
+                        nzShowSizeChanger
+                        [nzScroll]="{ x: '1000px', y: '240px' }"
+                        [nzFrontPagination]="false"
+                        [nzTotal]="listInstances?.length || 0"
+                        (nzPageSizeChange)="onPageSizeChange($event)"
+                        (nzPageIndexChange)="onPageIndexChange($event)"
+                        [nzLoading]="isLoadingVm">
+                <thead>
+                <tr>
+                  <th nzAlign="center" class="text-th" nzLeft>Tên máy ảo</th>
+                  <th nzAlign="center" class="text-th" nzBreakWord>Trạng thái</th>
+                  <th nzAlign="center" class="text-th" nzBreakWord>
+                    Trạng thái tác vụ
+                  </th>
+                  <th nzAlign="center" class="text-th" nzBreakWord>IP LAN</th>
+                  <th nzAlign="center" class="text-th" nzBreakWord>IP Public</th>
+                  <th nzAlign="center" class="text-th" style="width: 216px" nzBreakWord>Thao tác
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                  <td nzAlign="center" nzLeft>{{ data.name }}</td>
+                  <td nzAlign="center" nzBreakWord>{{ data.status }}</td>
+                  <td nzAlign="center" nzBreakWord>{{ data.taskState }}</td>
+                  <td nzAlign="center" nzBreakWord>{{ data.ipPrivate }}</td>
+                  <td nzAlign="center" nzBreakWord>{{ data.ipPublic }}</td>
+                  <td nzAlign="center" nzBreakWord>
+                    <ng-container *ngIf="data?.securityGroupStr?.includes(selectedSG?.id);else elseBlock">
+                      <one-portal-attach-vm [idVm]="data.id"/>
+                    </ng-container>
+                    <ng-template #elseBlock>
+                      <one-portal-detach-vm [id]="data.id"/>
+                    </ng-template>
+                  </td>
+                </tr>
+                </tbody>
+              </nz-table>
+            </div>
+          </section>
+        </nz-row>
+      </nz-card>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <result>
+        <nz-row>
+          <nz-col class="text-center" style="width: 100%">
+            <img src="/assets/tmp/blank-security-group.png" alt="" />
+          </nz-col>
+        </nz-row>
+        <nz-row style="margin-top: 20px">
+          <nz-col class="text-center" style="width: 100%">
+            <span class="text-intro-title" style="color: #0066b3">SECURITY GROUP<br>Truy cập, bảo mật</span>
+          </nz-col>
+        </nz-row>
+        <nz-row style="margin-top: 20px">
+          <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều
+                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</span>
+          </nz-col>
+        </nz-row>
+        <button style="margin-top: 20px" nz-button [nzType]="'primary'" nzSize="large">
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+          Tạo mới Security Group
+        </button>
+      </result>
+    </ng-container>
+  </ng-container>
+</nz-content>

@@ -105,6 +105,10 @@
                 {
                   "text": "Lịch Snapshot",
                   "link": "/app-smart-cloud/schedule/snapshot/list"
+                },
+                {
+                  "text": "Gói Snapshot",
+                  "link": "/app-smart-cloud/snapshot/packages"
                 }
               ]
             },
@@ -186,7 +190,7 @@
             {
               "text": "Security Group",
               "icon": "anticon-profile",
-              "link": "/app-smart-cloud/security-group"
+              "link": "/app-smart-cloud/security-group/list"
             },
             {
               "key": "Object Storage",

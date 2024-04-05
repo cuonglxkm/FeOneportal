@@ -328,12 +328,17 @@ export class CreateVolumeComponent implements OnInit {
         this.region,
         this.project,
         '',
-        '',
-        false,
+        'KHOITAO',
+        true,
         this.tokenService.get()?.userId
       )
       .subscribe((data) => {
-        this.listInstances = data.records;
+        data.records.forEach(item => {
+          if(item.taskState.includes('ACTIVE')) {
+            this.listInstances?.push(item);
+          }
+        })
+        // this.listInstances = data.records;
         this.cdr.detectChanges();
       });
   }

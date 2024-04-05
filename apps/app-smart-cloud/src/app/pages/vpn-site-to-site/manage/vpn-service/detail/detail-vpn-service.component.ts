@@ -44,7 +44,6 @@ ngOnInit(): void {
   }
 
   getVpnServiceById(id) {
-    debugger
     this.isLoading = true
     this.vpnServiceService.getVpnServiceById(id,this.project,this.region).subscribe(data => {
       this.vpnService = data;

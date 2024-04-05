@@ -152,25 +152,26 @@ export class InstancesDetailComponent implements OnInit {
 
   GSCPU = [
     {
-      key: 'cpu',
-      name: 'CPU',
-    },
-    {
       key: 'ram',
       name: 'RAM',
     },
     {
-      key: 'network',
-      name: 'Network',
+      key: 'cpu',
+      name: 'vCPU',
     },
     {
       key: 'diskio',
-      name: 'Disk IOPS',
+      name: 'DiskIO',
     },
     {
-      key: 'diskrw',
-      name: 'Disk Read / Write',
+      key: 'network',
+      name: 'Network IO',
     },
+
+    // {
+    //   key: 'diskrw',
+    //   name: 'Disk Read / Write',
+    // },
   ];
   GSTIME = [
     {
@@ -184,6 +185,22 @@ export class InstancesDetailComponent implements OnInit {
     {
       key: 60,
       name: '1 giờ',
+    },
+    {
+      key: 1440,
+      name: '1 ngày'
+    },
+    {
+      key: 10080,
+      name: '1 tuần'
+    },
+    {
+      key: 302400,
+      name: '1 tháng'
+    },
+    {
+      key: 907200,
+      name: '3 tháng trước'
     },
   ];
 

@@ -179,6 +179,7 @@
                   [(ngModel)]="selectedLifetimeUnits"
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
+                  [disabled]="true"
                 >
                   <nz-option
                     *ngFor="let data of lifetimeUnits"

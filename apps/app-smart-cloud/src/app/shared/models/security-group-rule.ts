@@ -44,3 +44,10 @@ export class RuleSearchCondition {
   securityGroupId?: string
   direction?: 'ingress' | 'egress'
 }
+
+export class FormDeleteRule {
+  id: string
+  userId: number
+  regionId: number
+  projectId: number
+}

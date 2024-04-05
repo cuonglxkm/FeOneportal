@@ -49,7 +49,7 @@
         [nzXs]="24"
         [nzXXl]="12"
       >
-        <button nz-button nzType="primary" (click)="extendVpn()">
+        <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe)">
           <img
             style="padding-right: 10px; margin-top: -4px"
             src="assets/imgs/redo.svg"
@@ -66,8 +66,8 @@
           <img src="assets/imgs/dots.svg" alt="" />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="resizeVpn()">Điều chỉnh</li>
-              <li nz-menu-item (click)="modalDelete()">Xóa</li>
+              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe)">Điều chỉnh</li>
+              <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe)">Xóa</li>
             </ul>
           </nz-dropdown-menu>
         </button>
@@ -103,7 +103,10 @@
       </nz-tab>
       <nz-tab nzTitle="VPN Service">
         <ng-template nz-tab>
-          <one-portal-vpn-service></one-portal-vpn-service>
+          <one-portal-vpn-service
+          [region]="region"
+            [project]="project"
+          ></one-portal-vpn-service>
         </ng-template>
       </nz-tab>
       <nz-tab nzTitle="Endpoint Group">

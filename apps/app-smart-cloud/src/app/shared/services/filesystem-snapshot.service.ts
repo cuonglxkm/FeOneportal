@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { BehaviorSubject } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FormAction, FormCreateIp, FormSearchIpFloating, IpFloating } from '../models/ip-floating.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { head } from 'lodash';
-import { FormCreateFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
+import { FormCreateFileSystemSnapShot, FormDeleteFileSystemSnapshot, FormEditFileSystemSnapShot, FormSearchFileSystemSnapshot } from '../models/filesystem-snapshot';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class FileSystemSnapshotService extends BaseService {
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
+    private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     super();
   }
@@ -61,7 +63,49 @@ export class FileSystemSnapshotService extends BaseService {
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
+  getFileSystemSnapshotById(id: number){
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
+      `/file-storage/sharesnapshot/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 
+  edit(formEdit: FormEditFileSystemSnapShot) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot`,
+      Object.assign(formEdit)).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 
+  deleteFileSystemSnapshot(formDelete: FormDeleteFileSystemSnapshot) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?customerId=${formDelete.customerId}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 
 }
