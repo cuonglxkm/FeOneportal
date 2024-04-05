@@ -34,7 +34,7 @@ export class CreateEndpointGroupComponent implements OnInit {
     { label: 'Cidr(for external system)', value: 'cidr' },
   ];
 
-  selectedType = 'subnet';
+  selectedType = 'cidr';
   isLoading: boolean = false;
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
@@ -109,17 +109,13 @@ export class CreateEndpointGroupComponent implements OnInit {
 
   log(value: string[]): void {
     this.listCidrInfo = value;
-    // Clear the existing array to avoid duplicates
     this.subnetId = [];
 
-    // Iterate through the selected CIDRs
     for (const cidr of value) {
-      // Find the corresponding subnet
       const selectedSubnet = this.listSubnets.find(
         (subnet) => subnet.cidr === cidr
       );
 
-      // If the subnet is found, push its id into the array
       if (selectedSubnet) {
         this.subnetId.push(selectedSubnet.id);
       }

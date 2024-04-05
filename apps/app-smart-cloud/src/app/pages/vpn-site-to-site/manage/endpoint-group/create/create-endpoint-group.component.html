@@ -63,7 +63,6 @@
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-
         <nz-form-item>
           <nz-form-control>
             <nz-form-label *ngIf="selectedType == 'subnet'">
@@ -78,7 +77,7 @@
             <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
-                  <label [nzValue]="item.cidr" nz-checkbox formControlName="endpoints">{{ item.cidr }}</label>
+                  <div [ngModel]="false" [nzValue]="item.cidr" nz-checkbox formControlName="endpoints">{{ item.cidr }}</div>
                 </div>
               </div>
             </nz-checkbox-wrapper>
