@@ -38,9 +38,16 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   snapshotMode: string = 'Theo tuần';
   numberOfweek: string = '1 tuần'
   numberArchivedCopies = 1;
+  selectedValueRadio = 'normal';
 
   time: Date = new Date();
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+
+  validateForm: FormGroup<{
+    radio: FormControl<any>
+  }> = this.fb.group({
+    radio: [''],
+  })
 
   form: FormGroup<{
     name: FormControl<string>;
@@ -97,6 +104,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           this.isLoading = false;
         },
       });
+  }
+
+  onChangeStatus(){
+    console.log('Selected option changed:', this.selectedValueRadio)
   }
 
   constructor(

@@ -19,6 +19,7 @@ import { VpnS2sExtendComponent } from "./manage/vpn-s2s-extend/vpn-s2s-extend.co
 import { VpnS2sResizeComponent } from "./manage/vpn-s2s-resize/vpn-s2s-resize.component";
 import { PolicyService } from "src/app/shared/services/policy.service";
 import { CreateVpnServiceComponent } from "./manage/vpn-service/create/create-vpn-service.component";
+import { PermissionGuard } from "src/app/shared/guard/PermissionGuard";
 
 const routes: Routes = [
   {
@@ -28,17 +29,17 @@ const routes: Routes = [
   {
     path: 'create',
     component: VpnS2sCreateComponent,
-    canMatch: [() => inject(PolicyService).hasPermission("order:Create")],
+    canActivate: [PermissionGuard],
   },
   {
     path: 'extend/:vpcId',
     component: VpnS2sExtendComponent,
-    canMatch: [() => inject(PolicyService).hasPermission("order:Create")],
+     canActivate: [PermissionGuard],
   },
   {
     path: 'resize/:vpcId',
     component: VpnS2sResizeComponent,
-    canMatch: [() => inject(PolicyService).hasPermission("order:Create")],
+     canActivate: [PermissionGuard],
   },
   {
     path: 'ipsec-policies/create',

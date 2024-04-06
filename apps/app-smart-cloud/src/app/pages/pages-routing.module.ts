@@ -113,6 +113,7 @@ import { ObjectStorageEditComponent } from './object-storage/object-storage-edit
 import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
+import { SecurityComponent } from './security/security.component';
 
 
 const routes: Routes = [
@@ -530,6 +531,10 @@ const routes: Routes = [
     path: 'security-group/list',
     component: ListSecurityGroupComponent
   },
+  {
+    path: 'security',
+    component: SecurityComponent
+  }
   ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
