@@ -111,7 +111,8 @@
       </nz-tab>
       <nz-tab nzTitle="Endpoint Group">
         <ng-template nz-tab>
-          <one-portal-endpoint-group></one-portal-endpoint-group>
+          <one-portal-endpoint-group [region]="region"
+          [project]="project"></one-portal-endpoint-group>
         </ng-template>
       </nz-tab>
       <nz-tab nzTitle="VPN Connections">
