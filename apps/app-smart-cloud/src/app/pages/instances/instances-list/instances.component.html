@@ -157,7 +157,7 @@
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               data.taskState.toUpperCase() != 'REBUILDING' &&
-              data.taskState.toUpperCase() != 'RESIZE' &&
+              !data.taskState.toUpperCase().includes('RESIZE') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/create-backup.svg"
@@ -170,7 +170,7 @@
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               data.taskState.toUpperCase() != 'REBUILDING' &&
-              data.taskState.toUpperCase() != 'RESIZE' &&
+              !data.taskState.toUpperCase().includes('RESIZE') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/edit-2.svg"
@@ -183,7 +183,7 @@
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               data.taskState.toUpperCase() != 'REBUILDING' &&
-              data.taskState.toUpperCase() != 'RESIZE' &&
+              !data.taskState.toUpperCase().includes('RESIZE') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/calendar-tick.svg"
@@ -203,7 +203,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -218,7 +218,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -233,7 +233,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF'
@@ -247,7 +247,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF'
@@ -272,7 +272,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -297,7 +297,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
