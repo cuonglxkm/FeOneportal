@@ -41,7 +41,7 @@
 </form>
 </nz-card>
 
-<ng-container *ngIf="selectedValueRadio === 'normal'">
+<ng-container>
   <nz-card [nzBordered]="false" style="border-radius: 8px">
     <div style="margin-bottom: 20px" class="text-card-header">
       Thông tin lịch Snapshot
@@ -76,7 +76,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-row nzGutter="24">
-          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" *ngIf="selectedValueRadio === 'normal'">
             <nz-form-item>
               <nz-form-label
                 >Chọn Volume (<span class="text-red">*</span>)</nz-form-label
@@ -94,6 +94,28 @@
                 <nz-option
                   *ngFor="let item of volumeList"
                   [nzLabel]="item.label.toString()"
+                  [nzValue]="item.value"
+                ></nz-option>
+              </nz-select>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" *ngIf="selectedValueRadio === 'package'">
+            <nz-form-item>
+              <nz-form-label
+                >Chọn gói Snapshot (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-select
+                nzSize="default"
+                [nzShowSearch]="true"
+                id="snapshot"
+                [nzPlaceHolder]="'-Chọn gói Snapshot-'"
+                formControlName="snapshotPackageId"
+                style="width: 100%"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let item of snapshotPackageList"
+                  [nzLabel]="item.label"
                   [nzValue]="item.value"
                 ></nz-option>
               </nz-select>
@@ -220,7 +242,7 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="selectedValueRadio === 'package'">
+<!-- <ng-container *ngIf="selectedValueRadio === 'package'">
   <nz-card [nzBordered]="false" style="border-radius: 8px">
     <div style="margin-bottom: 20px" class="text-card-header">
       Thông tin lịch Snapshot
@@ -397,4 +419,4 @@
       Tạo mới
     </button>
   </div>
-</ng-container>
+</ng-container> -->

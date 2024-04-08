@@ -10,6 +10,10 @@ import {BaseResponse} from "../../../../../../../libs/common-utils/src";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {getCurrentRegionAndProject} from "@shared";
 import {ProjectService} from 'src/app/shared/services/project.service';
+import { FormSearchPackageSnapshot } from 'src/app/shared/models/package-snapshot.model';
+import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
+import { debounceTime } from 'rxjs';
+
 
 @Component({
   selector: 'one-portal-list-packages-snapshot',
@@ -20,7 +24,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  pageSize: number = 10
+  pageSize: number = 5
   pageIndex: number = 1
 
   isLoading: boolean = false
@@ -38,6 +42,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   isVisibleUpdate: boolean = false
   isLoadingUpdate: boolean = false
 
+  packageName: string
   selected: any = 'ALL'
 
   validateForm: FormGroup<{
@@ -56,8 +61,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   isCheckBegin: boolean = false
 
+  formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
+
   constructor(private router: Router,
-              private packageBackupService: PackageBackupService,
+              private packageSnapshotService: PackageSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
@@ -70,13 +77,12 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
-    this.getListPackageBackups(true)
+   
   }
 
   onInputChange(value: string) {
     this.value = value;
     console.log('input text: ', this.value)
-    this.getListPackageBackups(false)
   }
 
   navigateToCreate() {
@@ -85,12 +91,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   onPageSizeChange(value) {
     this.pageSize = value
-    this.getListPackageBackups(false)
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value
-    this.getListPackageBackups(false)
   }
 
   onChangeSelected(value) {
@@ -98,19 +102,24 @@ export class ListPackagesSnapshotComponent implements OnInit {
     if (this.selected === 'ALL') {
       this.selected = ''
     }
-    this.getListPackageBackups(false)
   }
 
-  getListPackageBackups(isBegin) {
+  getListPackageBackups() {
     this.isLoading = true
-
-    this.packageBackupService.search(this.value, this.selected, this.pageSize, this.pageIndex).subscribe(data => {
+    this.formSearchPackageSnapshot.projectId = this.project
+    this.formSearchPackageSnapshot.regionId = this.region
+    this.formSearchPackageSnapshot.packageName =this.value
+    this.formSearchPackageSnapshot.pageSize = this.pageSize
+    this.formSearchPackageSnapshot.currentPage = this.pageIndex
+    this.formSearchPackageSnapshot.status = this.selected
+    this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
       this.isLoading = false
+      console.log(data);
+      
       this.response = data
 
-      if (isBegin) {
-        this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
-      }
     }, error => {
       this.isLoading = false
       this.response = null
@@ -127,80 +136,80 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.valueDelete = value
   }
 
-  packageName: string
+  
 
-  showDelete(data: PackageBackupModel) {
-    this.isVisibleDelete = true
-    this.idBackupPackage = data.id
-    this.packageName = data.packageName
-    console.log('data select', data)
+  // showDelete(data: PackageBackupModel) {
+  //   this.isVisibleDelete = true
+  //   this.idBackupPackage = data.id
+  //   this.packageName = data.packageName
+  //   console.log('data select', data)
 
-    this.packageBackupService.getServiceInPackage(data.id).subscribe(data1 => {
-      this.serviceInPackage = data1
-      console.log(data1)
-    })
+  //   this.packageBackupService.getServiceInPackage(data.id).subscribe(data1 => {
+  //     this.serviceInPackage = data1
+  //     console.log(data1)
+  //   })
 
-  }
+  // }
 
-  serviceInPackage: ServiceInPackage = new ServiceInPackage()
+  // serviceInPackage: ServiceInPackage = new ServiceInPackage()
 
-  handleDeletedOk() {
-    this.isLoadingDelete = true
+  // handleDeletedOk() {
+  //   this.isLoadingDelete = true
 
-    if (this.valueDelete.includes(this.packageName)) {
-      this.packageBackupService.delete(this.idBackupPackage).subscribe(data => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        this.notification.success('Thành công', 'Xóa gói backup thành công')
-        this.getListPackageBackups(false)
-      }, error => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        console.log('error', error)
-        this.notification.error('Thất bại', 'Xóa gói backup thất bại')
-      })
-    } else {
-      this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
-    }
-  }
+  //   if (this.valueDelete.includes(this.packageName)) {
+  //     this.packageBackupService.delete(this.idBackupPackage).subscribe(data => {
+  //       this.isLoadingDelete = false
+  //       this.isVisibleDelete = false
+  //       this.notification.success('Thành công', 'Xóa gói backup thành công')
+  
+  //     }, error => {
+  //       this.isLoadingDelete = false
+  //       this.isVisibleDelete = false
+  //       console.log('error', error)
+  //       this.notification.error('Thất bại', 'Xóa gói backup thất bại')
+  //     })
+  //   } else {
+  //     this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
+  //   }
+  // }
 
-  handleDeleteCancel() {
-    this.isVisibleDelete = false
-  }
+  // handleDeleteCancel() {
+  //   this.isVisibleDelete = false
+  // }
 
-  showUpdate(data: PackageBackupModel) {
-    this.isVisibleUpdate = true
-    this.validateForm.controls.namePackage.setValue(data.packageName)
-    this.validateForm.controls.description.setValue(data.description)
-    this.idBackupPackage = data.id
-  }
+  // showUpdate(data: PackageBackupModel) {
+  //   this.isVisibleUpdate = true
+  //   this.validateForm.controls.namePackage.setValue(data.packageName)
+  //   this.validateForm.controls.description.setValue(data.description)
+  //   this.idBackupPackage = data.id
+  // }
 
-  formUpdate: FormUpdate = new FormUpdate()
-  idBackupPackage: number
+  // formUpdate: FormUpdate = new FormUpdate()
+  // idBackupPackage: number
 
-  handleUpdateOk() {
+  // handleUpdateOk() {
 
-    this.formUpdate.customerId = this.tokenService.get()?.userId
-    this.formUpdate.packageId = this.idBackupPackage
-    this.formUpdate.packageName = this.validateForm.controls.namePackage.value
-    this.formUpdate.description = this.validateForm.controls.description.value
+  //   this.formUpdate.customerId = this.tokenService.get()?.userId
+  //   this.formUpdate.packageId = this.idBackupPackage
+  //   this.formUpdate.packageName = this.validateForm.controls.namePackage.value
+  //   this.formUpdate.description = this.validateForm.controls.description.value
 
-    this.isLoadingUpdate = true
-    this.packageBackupService.update(this.formUpdate).subscribe(data => {
-      if (data == true) {
-        this.isLoadingUpdate = false
-        this.isVisibleUpdate = false
-        this.notification.success('Thành công', 'Cập nhật gói Backup thành công')
-        this.getListPackageBackups(false)
-      } else {
-        this.isLoadingUpdate = false
-        this.isVisibleUpdate = false
-        console.log('dâata update', data)
-        this.notification.error('Thất bại', 'Cập nhật gói Backup thất bại ')
-        this.getListPackageBackups(false)
-      }
-    })
-  }
+  //   this.isLoadingUpdate = true
+  //   this.packageBackupService.update(this.formUpdate).subscribe(data => {
+  //     if (data == true) {
+  //       this.isLoadingUpdate = false
+  //       this.isVisibleUpdate = false
+  //       this.notification.success('Thành công', 'Cập nhật gói Backup thành công')
+  
+  //     } else {
+  //       this.isLoadingUpdate = false
+  //       this.isVisibleUpdate = false
+  //       console.log('dâata update', data)
+  //       this.notification.error('Thất bại', 'Cập nhật gói Backup thất bại ')
+  
+  //     }
+  //   })
+  // }
 
   handleUpdateCancel() {
     this.isVisibleUpdate = false
@@ -212,5 +221,6 @@ export class ListPackagesSnapshotComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.getListPackageBackups()
   }
 }

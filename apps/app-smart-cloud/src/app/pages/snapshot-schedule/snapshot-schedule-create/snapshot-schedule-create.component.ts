@@ -16,6 +16,8 @@ import {
 } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { getCurrentRegionAndProject } from '@shared';
+import { FormSearchPackageSnapshot } from 'src/app/shared/models/package-snapshot.model';
+import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -30,7 +32,9 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   showWarningName: boolean;
   contentShowWarningName: string;
   volumeId: number;
+  snapshotPackageId: number;
   volumeList: NzSelectOptionInterface[] = [];
+  snapshotPackageList: NzSelectOptionInterface[] = [];
   userId: number;
   scheduleStartTime: string;
   dateStart: string;
@@ -43,6 +47,9 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   time: Date = new Date();
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 
+  formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
+
+
   validateForm: FormGroup<{
     radio: FormControl<any>
   }> = this.fb.group({
@@ -53,10 +60,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     name: FormControl<string>;
     volume: FormControl<number>;
     selectedDate: FormControl<string>;
+    snapshotPackageId: FormControl<number>;
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
     volume: [0, [Validators.required]],
     selectedDate: ['', [Validators.required]],
+    snapshotPackageId: [0 as number, [Validators.required]],
   });
 
   dateList: NzSelectOptionInterface[] = [
@@ -81,6 +90,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       ':' +
       now.getSeconds().toString();
     this.userId = this.tokenService.get()?.userId;
+    this.doGetListSnapshotPackage()
   }
 
   doGetListVolume() {
@@ -106,6 +116,27 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       });
   }
 
+  doGetListSnapshotPackage() {
+    this.snapshotPackageList = []
+    this.formSearchPackageSnapshot.projectId = this.project
+    this.formSearchPackageSnapshot.regionId = this.region
+    this.formSearchPackageSnapshot.packageName = ''
+    this.formSearchPackageSnapshot.pageSize = 100
+    this.formSearchPackageSnapshot.currentPage = 1
+    this.formSearchPackageSnapshot.status = 'all'
+    this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
+      .subscribe(data => {
+        console.log(data);
+        
+        data.records.forEach(data => {
+          this.snapshotPackageList.push({label: data.packageName, value: data.id});
+        })
+    }, error => {
+      this.isLoading = false
+      this.snapshotPackageList = null
+    })
+  }
+
   onChangeStatus(){
     console.log('Selected option changed:', this.selectedValueRadio)
   }
@@ -117,7 +148,8 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     private snapshotService: SnapshotVolumeService,
     private volumeService: VolumeService,
     private modalService: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private packageSnapshotService: PackageSnapshotService
   ) {}
 
   goBack() {

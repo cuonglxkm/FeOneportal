@@ -5,12 +5,14 @@ import { ListPackagesSnapshotComponent } from './list/list-packages-snapshot.com
 import { PackageSnapshotRoutingModule } from './packages-snapshot-routing.module';
 import { CommonModule } from '@angular/common';
 import { CreatePackageSnapshotComponent } from './create/create-package-snapshot.component';
+import { DetailSnapshotComponent } from './detail/detail-package-snapshot.component';
 
 
 @NgModule({
   declarations: [
     ListPackagesSnapshotComponent,
-    CreatePackageSnapshotComponent
+    CreatePackageSnapshotComponent,
+    DetailSnapshotComponent
   ],
   imports: [
     PackageSnapshotRoutingModule,

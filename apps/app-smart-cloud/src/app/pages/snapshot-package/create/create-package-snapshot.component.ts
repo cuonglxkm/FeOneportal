@@ -12,6 +12,7 @@ import {InstancesService} from "../../instances/instances.service";
 import {BackupPackageRequestModel, FormCreateBackupPackage} from 'src/app/shared/models/package-backup.model';
 import {ProjectService} from 'src/app/shared/services/project.service';
 import {getCurrentRegionAndProject} from "@shared";
+import { addDays } from 'date-fns';
 
 export class DateBackupPackage {
   createdDate: Date
@@ -45,6 +46,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   namePackage: string = ''
   storage: number = 1
+  orderItem: OrderItem = new OrderItem()
+  unitPrice = 0
+  dateString = new Date();
+  expiredDate: Date = addDays(this.dateString, 30);
 
   isLoading: boolean = false
 
@@ -58,8 +63,6 @@ export class CreatePackageSnapshotComponent implements OnInit {
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService) {
     this.validateForm.get('time').valueChanges.subscribe(data => {
-      this.backupPackageDate.expiredDate = new Date(new Date()
-        .setDate(this.backupPackageDate.createdDate.getDate() + data * 30))
       this.getTotalAmount()
     })
 
@@ -71,7 +74,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    this.router.navigate(['/app-smart-cloud/backup/packages'])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages'])
   }
 
   projectChanged(project: ProjectModel) {
@@ -79,18 +82,9 @@ export class CreatePackageSnapshotComponent implements OnInit {
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/backup/packages'])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages'])
   }
 
-
-  // submitForm() {
-  //   console.log(this.validateForm.getRawValue())
-  //   if (this.validateForm.valid) {
-  //     this.doCreate()
-  //   } else {
-  //     this.notification.warning('', 'Vui lòng nhập đầy đủ thông tin')
-  //   }
-  // }
 
   navigateToPaymentSummary() {
     this.getTotalAmount()
@@ -116,47 +110,9 @@ export class CreatePackageSnapshotComponent implements OnInit {
     }
   }
 
-  doCreate() {
-    this.isLoading = true
-    this.getTotalAmount()
-    let request: BackupPackageRequestModel = new BackupPackageRequestModel()
-    request.customerId = this.formCreateBackupPackage.customerId;
-    request.createdByUserId = this.formCreateBackupPackage.customerId;
-    request.note = 'tạo gói backup';
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.formCreateBackupPackage),
-        specificationType: 'backuppackage_create',
-        price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: this.validateForm.get('time').value
-      }
-    ]
-    console.log('request', request)
-    this.packageBackupService.createOrder(request).subscribe(data => {
-      if (data != undefined || data != null) {
-        //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
-        if (data.code == 200) {
-          this.isLoading = false;
-          this.notification.success('Thành công', 'Yêu cầu tạo gói backup thành công.')
-          this.router.navigate(['/app-smart-cloud/backup/packages']);
-        }
-        //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
-        else if (data.code == 310) {
-          this.isLoading = false;
-          // this.router.navigate([data.data]);
-          window.location.href = data.data;
-        }
-      } else {
-        this.isLoading = false;
-        this.notification.error('Thất bại', 'Yêu cầu tạo gói backup thất bại.' + data.message)
-      }
-    })
+  caculator(event) {
+    this.expiredDate = addDays(this.dateString, 30 * this.validateForm.get('time').value);
   }
-  //
-  // goBack() {
-  //   this.router.navigate(['/app-smart-cloud/backup/packages'])
-  // }
 
 
   formCreateBackupPackage: FormCreateBackupPackage = new FormCreateBackupPackage()
@@ -170,8 +126,8 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.formCreateBackupPackage.serviceType = 14
     this.formCreateBackupPackage.serviceInstanceId = 0;
     this.formCreateBackupPackage.customerId = this.tokenService.get()?.userId;
-    this.formCreateBackupPackage.createDate = this.backupPackageDate.createdDate
-    this.formCreateBackupPackage.expireDate = this.backupPackageDate.expiredDate
+    this.formCreateBackupPackage.createDate = this.dateString
+    this.formCreateBackupPackage.expireDate = this.expiredDate
     this.formCreateBackupPackage.saleDept = null
     this.formCreateBackupPackage.saleDeptCode = null
     this.formCreateBackupPackage.contactPersonEmail = null
@@ -196,8 +152,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.formCreateBackupPackage.actorEmail = this.tokenService.get()?.email;
   }
 
-  orderItem: OrderItem = new OrderItem()
-  unitPrice = 0
+
 
   getTotalAmount() {
     this.packageBackupInit()
