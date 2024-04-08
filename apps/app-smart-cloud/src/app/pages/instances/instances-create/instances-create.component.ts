@@ -41,6 +41,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Subject, debounceTime } from 'rxjs';
 import { addDays } from 'date-fns';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+  Port,
+} from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -99,7 +105,7 @@ export class InstancesCreateComponent implements OnInit {
       validators: [
         Validators.required,
         Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,}$/
         ),
       ],
     }),
@@ -139,7 +145,8 @@ export class InstancesCreateComponent implements OnInit {
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private vlanService: VlanService
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -483,6 +490,40 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
+  listVlanNetwork: NetWorkModel[] = [];
+  vlanNetwork: string;
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listVlanNetwork = data.records;
+        this.cdr.detectChanges();
+      });
+  }
+
+  listPort: Port[] = [];
+  port: string;
+  getListPort() {
+    this.dataService
+      .getListAllPortByNetwork(this.vlanNetwork, this.region)
+      .subscribe({
+        next: (data) => {
+          this.listPort = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Port không thành công'
+          );
+        },
+      });
+  }
+
   getAllSecurityGroup() {
     this.dataService
       .getAllSecurityGroup(
@@ -698,7 +739,7 @@ export class InstancesCreateComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,}$/
           ),
         ],
       })

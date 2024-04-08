@@ -80,34 +80,33 @@
   (nzOnCancel)="handleCancelDelete()"
 >
   <div *nzModalContent>
-    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-      <nz-alert
-        style="margin-bottom: 20px"
-        nzType="warning"
-        [nzDescription]="customTemplateMessageDelete"
-        nzShowIcon
-      ></nz-alert>
-      <span class="text-label">
-        Để thực hiện xóa máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
-        ảo để xác nhận.
-      </span>
-      <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
-        ><nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input
-            class="input-custom"
-            nz-input
-            formControlName="name"
-            [(ngModel)]="inputConfirm"
-            (keyup.enter)="handleOkDelete()"
-          />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập tên máy ảo</ng-container
-            >
-          </ng-template>
-        </nz-form-control></nz-form-item
-      >
-    </form>
+    <nz-alert
+      style="margin-bottom: 20px"
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <span class="text-label">
+      Để thực hiện xóa máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
+      ảo để xác nhận.
+    </span>
+    <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
+      ><nz-form-control>
+        <input
+          class="input-custom"
+          nz-input
+          [(ngModel)]="inputConfirm"
+          [ngModelOptions]="{ standalone: true }"
+          (keyup.enter)="handleOkDelete()"
+        />
+        <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
+          Vui lòng nhập đúng tên máy ảo
+        </div>
+        <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
+          Vui lòng nhập tên máy ảo
+        </div>
+      </nz-form-control></nz-form-item
+    >
   </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDelete()">
