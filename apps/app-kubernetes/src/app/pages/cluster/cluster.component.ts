@@ -19,6 +19,7 @@ import { ShareService } from '../../services/share.service';
 import { FormSearchNetwork, FormSearchSubnet } from '../../model/vlan.model';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
+import { overlapCidr } from "cidr-tools";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -104,7 +105,7 @@ export class ClusterComponent implements OnInit {
 
     this.myform = this.fb.group({
       clusterName: [null,
-        [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
+        [Validators.required, Validators.pattern(KubernetesConstant.CLUTERNAME_PATTERN), Validators.minLength(5), Validators.maxLength(50)]],
       kubernetesVersion: [null, [Validators.required]],
       regionId: [null, [Validators.required]],
       projectInfraId: [null, [Validators.required]],
@@ -114,7 +115,7 @@ export class ClusterComponent implements OnInit {
       // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
-      cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)([/][0-3][0-2]?|[/][1-2][0-9]|[/][0-9])?$')]],
+      cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern(KubernetesConstant.CIDR_PATTERN)]],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
       subnet: [null, [Validators.required]],
 
@@ -382,8 +383,8 @@ export class ClusterComponent implements OnInit {
     this.clearFormWorker();
     this.addWorkerGroup();
     this.myform.get('packId').setValue(null);
-    this.myform.get('volumeCloudType').enable();
-    this.myform.get('volumeCloudSize').enable();
+    // this.myform.get('volumeCloudType').enable();
+    // this.myform.get('volumeCloudSize').enable();
   }
 
   chooseItem: PackModel;
@@ -416,18 +417,18 @@ export class ClusterComponent implements OnInit {
         maximumNode: [null]
       });
 
-      wgf.disable();
-      wgf.get('workerGroupName').enable();
+      // wgf.disable();
+      // wgf.get('workerGroupName').enable();
 
       this.listFormWorkerGroup.push(wgf);
 
-      if (this.isUsingPackConfig) {
-        this.myform.get('volumeCloudType').disable();
-        this.myform.get('volumeCloudSize').disable();
-      } else {
-        this.myform.get('volumeCloudType').enable();
-        this.myform.get('volumeCloudSize').enable();
-      }
+      // if (this.isUsingPackConfig) {
+      //   this.myform.get('volumeCloudType').disable();
+      //   this.myform.get('volumeCloudSize').disable();
+      // } else {
+      //   this.myform.get('volumeCloudType').enable();
+      //   this.myform.get('volumeCloudSize').enable();
+      // }
     }
   }
 
@@ -444,6 +445,22 @@ export class ClusterComponent implements OnInit {
       const input = event.key;
       if (!numberReg.test(input)) {
         event.preventDefault();
+      }
+    }
+  }
+
+  checkOverLapseIP() {
+    let cidr = this.myform.get('cidr').value;
+    let subnet = this.myform.get('subnet').value;
+
+    const reg = new RegExp(KubernetesConstant.CIDR_PATTERN);
+    if (!reg.test(cidr)) return;
+
+    if (cidr && subnet) {
+      if (overlapCidr(cidr, subnet)) {
+        this.myform.get('cidr').setErrors({overlap: true});
+      } else {
+        delete this.myform.get('cidr').errors?.overlap;
       }
     }
   }

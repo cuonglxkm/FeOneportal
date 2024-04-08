@@ -154,7 +154,7 @@
                     <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
                     <nz-form-control>
                       <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
-                        (ngModelChange)="onSelectWorkerType($event, i)">
+                        (ngModelChange)="onSelectWorkerType($event, i)" [nzDisabled]="isUsingPackConfig">
                         <nz-option *ngFor="let item of listOfWorkerType"
                           nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
                           [nzValue]="item.machineName"></nz-option>
@@ -165,7 +165,7 @@
                   <nz-form-item>
                     <nz-form-control>
                       <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAdvancedConfig(i)"
-                        class="mr-3"></nz-switch><label>Bật Auto Scaling worker</label>
+                        class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch><label>Bật Auto Scaling worker</label>
                     </nz-form-control>
                     <small>Hỗ trợ tự động số lượng worker. Số lượng worker thuộc worker tối thiểu - số lượng worker tối
                       đa</small>
@@ -195,7 +195,7 @@
                   <nz-form-item>
                     <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
                     <nz-form-control>
-                      <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)">
+                      <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)" [nzDisabled]="isUsingPackConfig">
                         <ng-container *ngFor="let item of listOfVolumeType">
                           <label nz-radio [nzValue]="item.volumeType" id="volumeType">
                             {{item.volumeTypeName}}
@@ -211,7 +211,7 @@
                     <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
                     <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
                       <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
-                        (keypress)="isNumber($event)" />
+                        (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" />
                     </nz-form-control>
                     <ng-template #nodeNumberErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
@@ -227,7 +227,7 @@
                     <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
                     <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
                       <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
-                        id="volume" (keypress)="isNumber($event)" />
+                        id="volume" (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" />
                     </nz-form-control>
                     <ng-template #volumeStorageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
@@ -241,7 +241,7 @@
 
                   <nz-form-item>
                     <nz-form-control>
-                      <nz-switch formControlName="autoHealing" class="mr-3"></nz-switch>
+                      <nz-switch formControlName="autoHealing" class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch>
                       <label>Bật Auto Healing</label>
                     </nz-form-control>
                     <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
@@ -342,7 +342,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
               <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR" />
+                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR" (ngModelChange)="checkOverLapseIP()" />
               </nz-form-control>
               <ng-template #cidrErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -351,19 +351,22 @@
                 <ng-container *ngIf="control.hasError('pattern')">
                   Pod CIDR không đúng định dạng
                 </ng-container>
+                <ng-container *ngIf="control.hasError('overlap')">
+                  Pod CIDR trùng dải với subnet
+                </ng-container>
               </ng-template>
             </nz-form-item>
 
             <nz-form-item>
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
               <nz-form-control nzErrorTip="Subnet không để trống" id="subnet-form">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90" (ngModelChange)="checkOverLapseIP()">
                   <ng-container *ngFor="let item of listOfSubnets">
                     <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
                       <nz-option [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired"></nz-option>
                     </ng-container>
                     <ng-template #disableSubnetTpl>
-                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
+                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired">
                         <div nzTooltipTitle="Chưa mở DHCP" nzTooltipPlacement="bottom" nz-tooltip>
                           {{item.subnetAddressRequired}}
                         </div>
@@ -402,7 +405,7 @@
               <nz-form-label nzRequired nzFor="volumeCloudSize">Quota (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
                 <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume"
-                  (keypress)="isNumber($event)" id="volumeCloudSize" />
+                  (keypress)="isNumber($event)" id="volumeCloudSize" [readonly]="isUsingPackConfig" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -419,7 +422,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="volumeCloudType">Loại</nz-form-label>
               <nz-form-control>
-                <nz-radio-group formControlName="volumeCloudType">
+                <nz-radio-group formControlName="volumeCloudType" [nzDisabled]="isUsingPackConfig">
                   <label nz-radio nzValue="hdd">HDD</label>
                   <label nz-radio nzValue="sdd">SDD</label>
                 </nz-radio-group>
