@@ -49,7 +49,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
-    // private utilService: UtilService,
+    private utilService: UtilService,
   ) {
     this.keySearch = '';
     this.serviceStatus = null;
@@ -70,7 +70,6 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     // open websocket
     // this.openWS();
 
-    this.getFlux();
   }
 
   getListStatus() {
@@ -84,27 +83,6 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
       )
   }
 
-  getFlux(): void {
-
-    this.eventSource = this.kafkaService.getFlux() // khởi tạo kết nối flux
-    this.eventSource.onopen = (event) => {
-      console.log('open flux');
-    }
-
-    this.eventSource.onerror = err => {
-      console.error('error', err);
-      this.eventSource.close();
-    }
-
-    this.eventSource.onmessage = (event) => {
-      console.log('connected');
-      const res = JSON.parse(event.data);
-      if (res.status == AppConstants.NOTI_SUCCESS) {
-        this.getListService(1000, 1, '', -1);
-      }
-    };
-  }
-
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
@@ -116,23 +94,22 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.eventSource.close();
     // close websocket
-    // this.websocketService.disconnect();
+    this.websocketService.disconnect();
   }
 
   /**
    * Notification task
    */
-  // openWS() {
-  // // const ws_endpoint = this.utilService.parseWsEndpoint();
-  // console.log('ws_endpoint: ', ws_endpoint);
-  // this.websocketService = new ServiceActiveWebsocketService(
-  //   this,
-  //   ws_endpoint
-  // );
-  //   this.websocketService.connect();
-  // }
+  openWS() {
+  const ws_endpoint = this.utilService.parseWsEndpoint();
+  console.log('ws_endpoint: ', ws_endpoint);
+  this.websocketService = new ServiceActiveWebsocketService(
+    this,
+    ws_endpoint
+  );
+    this.websocketService.connect();
+  }
 
   
 
@@ -165,7 +142,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   }
 
   handleChange() {
-    this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus)
+    this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
   }
 
   handleCancelDelete() {

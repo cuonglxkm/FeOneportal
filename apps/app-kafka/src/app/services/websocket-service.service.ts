@@ -30,16 +30,16 @@ export class ServiceActiveWebsocketService {
         '/ws-topic/broadcast',
         (message) => {
           if (message.body) {
-            console.log('msg body: ' + message.body);
+            // console.log('msg body: ' + message.body);
             const mess = JSON.parse(message.body);
             if (mess.status == AppConstants.NOTI_SUCCESS) {
-              _this.listKafkaComponent.getListService(1000, 1, '', -1);
+              _this.listKafkaComponent.getListService(1, 1000, '', -1);
             }
           }
         }
       );
       _this.stompClient.subscribe('/errors', (message) => {
-        console.log('ListService - WS Error: ' + message);
+        console.log('ListKafkaService - WS Error: ' + message);
       });
     };
 
