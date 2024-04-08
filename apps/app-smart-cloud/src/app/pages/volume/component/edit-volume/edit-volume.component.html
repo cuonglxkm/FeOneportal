@@ -165,12 +165,9 @@
               <div class="label">
                 <span>Dung lượng tăng thêm</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
-                      nzPopoverPlacement="bottom">
-                </span>
+                <img nz-popover [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
+                     nzPopoverPlacement="bottom"
+                     src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">

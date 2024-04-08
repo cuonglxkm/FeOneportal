@@ -175,10 +175,6 @@
               "link": "/app-smart-cloud/vpc"
             },
             {
-              "text": "Load balancer SDN",
-              "link": "/app-smart-cloud/object"
-            },
-            {
               "text": "Khóa truy cập (Keypair)",
               "icon": "anticon-mail",
               "link": "/app-smart-cloud/ssh-key"
@@ -187,6 +183,11 @@
               "text": "Security Group",
               "icon": "anticon-profile",
               "link": "/app-smart-cloud/security-group/list"
+            },
+            {
+              "text": "Load Balancer SDN",
+              "link": "/app-smart-cloud/load-balancer/list",
+              "icon": "anticon-cluster"
             },
             {
               "key": "Object Storage",
