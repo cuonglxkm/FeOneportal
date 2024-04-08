@@ -1,0 +1,79 @@
+<span
+  style="color: #0066b3; margin-right: 10px; cursor: pointer"
+  nz-icon
+  nzType="delete"
+  nzTheme="outline"
+  nz-popover
+  [nzPopoverContent]="'Xóa'"
+  nzPopoverPlacement="bottom"
+  (click)="showModal()"
+></span>
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzCentered
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <span class="text-modal-title">Xóa Endpoint Group</span>
+  </ng-template>
+  <ng-template #modalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm">
+      <nz-form-item>
+        <nz-alert
+          nzType="warning"
+          nzDescription="Để xoá được Endpoint Group, quý khách lưu ý không được xoá Endpoint đang có kết nối (đang có VPN Connection)!"
+          nzShowIcon
+          style="margin-bottom: 10px"
+        >
+        </nz-alert>
+        <nz-form-label>
+          <div>
+            <span
+              >Đế thực hiện xoá Endpoint Group {{name}}, vui lòng nhập tên Endpoint Group để xác nhận.</span
+            >
+          </div>
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="nameErrorTpl">
+          <input
+            nz-input
+            class="input-custom"
+            formControlName="name"
+            [placeholder]="'Nhập tên Endpoint Group'"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Tên Endpoint Group không được để trống</ng-container>
+            <ng-container *ngIf="control.hasError('nameMismatch')">Tên không trùng khớp</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nzAlign="bottom" nzJustify="center">
+        <nz-space nzSize="middle">
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="default"
+            (click)="handleCancel()"
+            class="button-back"
+          >
+            Huỷ
+          </button>
+          <nz-form-control *nzSpaceItem>
+            <button
+              nz-button
+              nzType="primary"
+              [nzLoading]="isLoading"
+              class="button-new"
+              (click) = "handleOk()"
+              [disabled]="validateForm.invalid"
+            >
+              Xác nhận
+            </button>
+          </nz-form-control>
+        </nz-space>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>
