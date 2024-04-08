@@ -113,6 +113,7 @@ import { ObjectStorageEditComponent } from './object-storage/object-storage-edit
 import { PolicyService } from "../shared/services/policy.service";
 import {S3KeyComponent } from './object-storage/s3-key/s3-key.component';
 import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
+import { SecurityComponent } from './security/security.component';
 import { ListLoadBalancerComponent } from './load-balancer/list/list-load-balancer.component';
 import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-novpc.component';
 import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
@@ -527,6 +528,10 @@ const routes: Routes = [
     component: S3KeyComponent
   },
   {
+    path: 'snapshot/packages',
+    loadChildren: () => import('../pages/snapshot-package/packages-snapshot.module').then(m => m.PackageSnapshotModule)
+  },
+  {
     path: 'security-group/list',
     component: ListSecurityGroupComponent
   },
@@ -545,6 +550,10 @@ const routes: Routes = [
   {
     path: 'load-balancer/detail/:id',
     component: DetailLoadBalancerComponent
+  },
+  {
+    path: 'security',
+    component: SecurityComponent
   }
   ]
 @NgModule({

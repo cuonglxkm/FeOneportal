@@ -21,7 +21,7 @@ export class FileSystemSnapshotScheduleComponent {
 
   customerId: number
 
-  pageSize: number = 10
+  pageSize: number = 5
   pageIndex: number = 1
 
   value: string
@@ -71,6 +71,10 @@ export class FileSystemSnapshotScheduleComponent {
     this.value = value
     this.getData()
   }
+
+  handleDeleteSchedule(){
+    this.getData()
+  }
   
 
 
@@ -81,6 +85,7 @@ export class FileSystemSnapshotScheduleComponent {
     formSearchFileSystemSsSchedule.regionId = this.region
     formSearchFileSystemSsSchedule.pageSize = this.pageSize
     formSearchFileSystemSsSchedule.pageNumber = this.pageIndex
+    formSearchFileSystemSsSchedule.projectId = this.project
     this.fileSystemSnapshotScheduleService.getFileSystemSsSchedule(formSearchFileSystemSsSchedule)
       .pipe(debounceTime(500))
       .subscribe(data => {

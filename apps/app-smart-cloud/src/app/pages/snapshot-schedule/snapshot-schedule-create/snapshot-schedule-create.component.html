@@ -28,180 +28,373 @@
     </div>
   </ng-template>
 </page-header>
-
-<nz-card [nzBordered]="false" style="border-radius: 8px">
-  <div style="margin-bottom: 20px" class="text-card-header">
-    Thông tin lịch Snapshot
-  </div>
-  <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-    <nz-spin [nzSpinning]="isLoading" nzSize="large">
-      <nz-form-item>
-        <nz-form-label nzFor="name"
-          >Tên lịch Snapshot (<span class="text-red">*</span>)</nz-form-label
-        >
-        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input
-            class="input-custom"
-            nz-input
-            formControlName="name"
-            [(ngModel)]="request.name"
-            id="name"
-            placeholder="Nhập tên lịch Snapshot"
-            maxlength="64"
-            minlength="1"
-            (change)="request.name = request.name.trim()"
-          />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập tên lịch Snapshot
-            </ng-container>
-            <ng-container *ngIf="control.hasError('pattern')"
-              >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
-              a-z, 0-9
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-row nzGutter="24">
-        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-          <nz-form-item>
-            <nz-form-label
-              >Chọn Volume (<span class="text-red">*</span>)</nz-form-label
-            >
-            <nz-select
-              nzSize="default"
-              [nzShowSearch]="true"
-              formControlName="volume"
-              id="volume"
-              [nzPlaceHolder]="'-Chọn tên Volume-'"
-              [(ngModel)]="volumeId"
-              style="width: 100%"
-              nzSize="large"
-            >
-              <nz-option
-                *ngFor="let item of volumeList"
-                [nzLabel]="item.label.toString()"
-                [nzValue]="item.value"
-              ></nz-option>
-            </nz-select>
-          </nz-form-item>
-        </nz-col>
-        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-          <nz-form-item>
-            <nz-form-label>Chế độ Snapshot</nz-form-label>
-            <input
-              nz-input
-              disabled="true"
-              type="text"
-              [(ngModel)]="snapshotMode"
-              [ngModelOptions]="{ standalone: true }"
-              nzSize="large"
-            />
-          </nz-form-item>
-        </nz-col>
-      </nz-row>
-      <nz-row nzGutter="24">
-        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-          <nz-form-item
-            ><nz-form-label
-              >Chọn thời điểm thực hiện Snapshot (<span class="text-red">*</span
-              >)</nz-form-label
-            >
-            <nz-time-picker
-              style="width: 100%; border-radius: 4px"
-              [(ngModel)]="time"
-              [ngModelOptions]="{ standalone: true }"
-              [nzDefaultOpenValue]="defaultOpenValue"
-              nzSize="large"
-            ></nz-time-picker
-          ></nz-form-item>
-        </nz-col>
-        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-          <nz-form-item
-            ><nz-form-label>Số tuần</nz-form-label>
-            <input
-              nz-input
-              [(ngModel)]="numberOfweek"
-              [ngModelOptions]="{ standalone: true }"
-              disabled="true"
-              type="text"
-              nzSize="large"
-          /></nz-form-item>
-        </nz-col>
-      </nz-row>
-      <nz-row nzGutter="24">
-        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-          <nz-form-item
-            ><nz-form-label
-              >Chọn ngày (<span class="text-red">*</span>)</nz-form-label
-            >
-            <nz-select
-              nzSize="default"
-              [nzShowSearch]="true"
-              formControlName="selectedDate"
-              id="selectedDate"
-              [nzPlaceHolder]="'-Chọn ngày-'"
-              [(ngModel)]="dateStart"
-              style="width: 100%"
-              nzSize="large"
-            >
-              <nz-option
-                *ngFor="let item of dateList"
-                [nzLabel]="item.label.toString()"
-                [nzValue]="item.value"
-              ></nz-option> </nz-select
-          ></nz-form-item>
-        </nz-col>
-        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-          <nz-form-item
-            ><nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
-            <input
-              nz-input
-              disabled="true"
-              type="text"
-              [(ngModel)]="numberArchivedCopies"
-              [ngModelOptions]="{ standalone: true }"
-              nzSize="large"
-          /></nz-form-item>
-        </nz-col>
-      </nz-row>
-      <nz-form-item style="margin-bottom: 0px">
-        <nz-form-label>Mô tả</nz-form-label>
-        <nz-form-control>
-          <nz-textarea-count [nzMaxCharacterCount]="255">
-            <textarea
-              rows="4"
-              nz-input
-              [(ngModel)]="descSchedule"
-              [ngModelOptions]="{ standalone: true }"
-            ></textarea>
-          </nz-textarea-count>
-        </nz-form-control>
-      </nz-form-item>
-    </nz-spin>
-  </form>
+<nz-card style="border-radius: 8px">
+  <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+  <span class="text-card-header">Tạo lịch Snapshot</span>
+  <nz-row>
+      <nz-radio-group [(ngModel)]="selectedValueRadio" (ngModelChange)="onChangeStatus()"
+                      formControlName="radio">
+          <label nz-radio nzValue="normal" class="label">Theo VM</label>
+          <label nz-radio nzValue="package" class="label">Theo gói Snapshot</label>
+      </nz-radio-group>
+  </nz-row>
+</form>
 </nz-card>
 
-<div class="text-right">
-  <button nz-button (click)="goBack()">
-    <img
-      style="padding-right: 10px"
-      src="assets/imgs/arrow-left-2.svg"
-      alt=""
-    />
-    <span>Quay lại</span>
-  </button>
-  <button
-    nz-button
-    nzType="primary"
-    [disabled]="form.invalid"
-    (click)="create()"
-  >
-    <img
-      style="padding-right: 10px; margin-top: -4px"
-      src="assets/imgs/confirm.svg"
-      alt=""
-    />
-    Tạo mới
-  </button>
-</div>
+<ng-container *ngIf="selectedValueRadio === 'normal'">
+  <nz-card [nzBordered]="false" style="border-radius: 8px">
+    <div style="margin-bottom: 20px" class="text-card-header">
+      Thông tin lịch Snapshot
+    </div>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <nz-spin [nzSpinning]="isLoading" nzSize="large">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Tên lịch Snapshot (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input
+              class="input-custom"
+              nz-input
+              formControlName="name"
+              [(ngModel)]="request.name"
+              id="name"
+              placeholder="Nhập tên lịch Snapshot"
+              maxlength="64"
+              minlength="1"
+              (change)="request.name = request.name.trim()"
+            />
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập tên lịch Snapshot
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
+                a-z, 0-9
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-row nzGutter="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label
+                >Chọn Volume (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-select
+                nzSize="default"
+                [nzShowSearch]="true"
+                formControlName="volume"
+                id="volume"
+                [nzPlaceHolder]="'-Chọn tên Volume-'"
+                [(ngModel)]="volumeId"
+                style="width: 100%"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let item of volumeList"
+                  [nzLabel]="item.label.toString()"
+                  [nzValue]="item.value"
+                ></nz-option>
+              </nz-select>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label>Chế độ Snapshot</nz-form-label>
+              <input
+                nz-input
+                disabled="true"
+                type="text"
+                [(ngModel)]="snapshotMode"
+                [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
+              />
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label
+                >Chọn thời điểm thực hiện Snapshot (<span class="text-red">*</span
+                >)</nz-form-label
+              >
+              <nz-time-picker
+                style="width: 100%; border-radius: 4px"
+                [(ngModel)]="time"
+                [ngModelOptions]="{ standalone: true }"
+                [nzDefaultOpenValue]="defaultOpenValue"
+                nzSize="large"
+              ></nz-time-picker
+            ></nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label>Số tuần</nz-form-label>
+              <input
+                nz-input
+                [(ngModel)]="numberOfweek"
+                [ngModelOptions]="{ standalone: true }"
+                disabled="true"
+                type="text"
+                nzSize="large"
+            /></nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label
+                >Chọn ngày (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-select
+                nzSize="default"
+                [nzShowSearch]="true"
+                formControlName="selectedDate"
+                id="selectedDate"
+                [nzPlaceHolder]="'-Chọn ngày-'"
+                [(ngModel)]="dateStart"
+                style="width: 100%"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let item of dateList"
+                  [nzLabel]="item.label.toString()"
+                  [nzValue]="item.value"
+                ></nz-option> </nz-select
+            ></nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
+              <input
+                nz-input
+                disabled="true"
+                type="text"
+                [(ngModel)]="numberArchivedCopies"
+                [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
+            /></nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-form-item style="margin-bottom: 0px">
+          <nz-form-label>Mô tả</nz-form-label>
+          <nz-form-control>
+            <nz-textarea-count [nzMaxCharacterCount]="255">
+              <textarea
+                rows="4"
+                nz-input
+                [(ngModel)]="descSchedule"
+                [ngModelOptions]="{ standalone: true }"
+              ></textarea>
+            </nz-textarea-count>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-spin>
+    </form>
+  </nz-card>
+  
+  <div class="text-right">
+    <button nz-button (click)="goBack()">
+      <img
+        style="padding-right: 10px"
+        src="assets/imgs/arrow-left-2.svg"
+        alt=""
+      />
+      <span>Quay lại</span>
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="form.invalid"
+      (click)="create()"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Tạo mới
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="selectedValueRadio === 'package'">
+  <nz-card [nzBordered]="false" style="border-radius: 8px">
+    <div style="margin-bottom: 20px" class="text-card-header">
+      Thông tin lịch Snapshot
+    </div>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <nz-spin [nzSpinning]="isLoading" nzSize="large">
+        <nz-form-item>
+          <nz-form-label nzFor="name"
+            >Tên lịch Snapshot (<span class="text-red">*</span>)</nz-form-label
+          >
+          <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+            <input
+              class="input-custom"
+              nz-input
+              formControlName="name"
+              [(ngModel)]="request.name"
+              id="name"
+              placeholder="Nhập tên lịch Snapshot"
+              maxlength="64"
+              minlength="1"
+              (change)="request.name = request.name.trim()"
+            />
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng nhập tên lịch Snapshot
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')"
+                >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
+                a-z, 0-9
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-row nzGutter="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label
+                >Chọn gói Snapshot (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-select
+                nzSize="default"
+                [nzShowSearch]="true"
+                formControlName="volume"
+                id="volume"
+                [nzPlaceHolder]="'-Chọn tên Volume-'"
+                [(ngModel)]="volumeId"
+                style="width: 100%"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let item of volumeList"
+                  [nzLabel]="item.label.toString()"
+                  [nzValue]="item.value"
+                ></nz-option>
+              </nz-select>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item>
+              <nz-form-label>Chế độ Snapshot</nz-form-label>
+              <input
+                nz-input
+                disabled="true"
+                type="text"
+                [(ngModel)]="snapshotMode"
+                [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
+              />
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label
+                >Chọn thời điểm thực hiện Snapshot (<span class="text-red">*</span
+                >)</nz-form-label
+              >
+              <nz-time-picker
+                style="width: 100%; border-radius: 4px"
+                [(ngModel)]="time"
+                [ngModelOptions]="{ standalone: true }"
+                [nzDefaultOpenValue]="defaultOpenValue"
+                nzSize="large"
+              ></nz-time-picker
+            ></nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label>Số tuần</nz-form-label>
+              <input
+                nz-input
+                [(ngModel)]="numberOfweek"
+                [ngModelOptions]="{ standalone: true }"
+                disabled="true"
+                type="text"
+                nzSize="large"
+            /></nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="24">
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label
+                >Chọn ngày (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-select
+                nzSize="default"
+                [nzShowSearch]="true"
+                formControlName="selectedDate"
+                id="selectedDate"
+                [nzPlaceHolder]="'-Chọn ngày-'"
+                [(ngModel)]="dateStart"
+                style="width: 100%"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let item of dateList"
+                  [nzLabel]="item.label.toString()"
+                  [nzValue]="item.value"
+                ></nz-option> </nz-select
+            ></nz-form-item>
+          </nz-col>
+          <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-form-item
+              ><nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
+              <input
+                nz-input
+                disabled="true"
+                type="text"
+                [(ngModel)]="numberArchivedCopies"
+                [ngModelOptions]="{ standalone: true }"
+                nzSize="large"
+            /></nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-form-item style="margin-bottom: 0px">
+          <nz-form-label>Mô tả</nz-form-label>
+          <nz-form-control>
+            <nz-textarea-count [nzMaxCharacterCount]="255">
+              <textarea
+                rows="4"
+                nz-input
+                [(ngModel)]="descSchedule"
+                [ngModelOptions]="{ standalone: true }"
+              ></textarea>
+            </nz-textarea-count>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-spin>
+    </form>
+  </nz-card>
+  
+  <div class="text-right">
+    <button nz-button (click)="goBack()">
+      <img
+        style="padding-right: 10px"
+        src="assets/imgs/arrow-left-2.svg"
+        alt=""
+      />
+      <span>Quay lại</span>
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="form.invalid"
+      (click)="create()"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      Tạo mới
+    </button>
+  </div>
+</ng-container>

@@ -21,7 +21,8 @@ export class WelcomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    console.log('aaaaaaaaaaa');
+    
   }
 
   clickLogin() {

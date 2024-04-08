@@ -1,8 +1,8 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý VPC'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý dự án'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Quản lý VPC</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ip-public']">Quản lý dự án</a></nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -15,6 +15,9 @@
 <nz-card class="text-label">
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false>
+      <div style="margin-bottom: 20px">
+        <span class="text-card-header">Danh sách dự án</span>
+      </div>
       <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
@@ -25,7 +28,7 @@
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
-              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm"/>
+              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm theo tên"/>
             </nz-input-group>
             <ng-template #suffixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
@@ -37,7 +40,7 @@
              [nzXXl]="12">
           <button nz-button nzType="primary" (click)="createVpc()" nzSize="large">
             <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
-            <span class="button-text-primary">Tạo VPC</span>
+            <span class="button-text-primary">Tạo dự án</span>
           </button>
         </div>
       </div>
@@ -52,6 +55,7 @@
           <th>Ngày hết hạn</th>
           <th>Trạng thái</th>
           <th>Trạng thái tác vụ</th>
+          <th>Loại dự án</th>
           <th>Thao tác</th>
         </tr>
         </thead>
@@ -62,6 +66,7 @@
           <td (click)="viewDetail(item.id)">{{item.expireDate | date : "dd/MM/YYYY"}}</td>
           <td (click)="viewDetail(item.id)">{{item.resourceStatus}}</td>
           <td (click)="viewDetail(item.id)">{{item.serviceStatus}}</td>
+          <td (click)="viewDetail(item.id)">{{item.type == 'VPC' ? 'dự án VPC' : 'dự án thường'}}</td>
 <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
 <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
 <!--          <td *ngIf="item.status === 0">-</td>-->

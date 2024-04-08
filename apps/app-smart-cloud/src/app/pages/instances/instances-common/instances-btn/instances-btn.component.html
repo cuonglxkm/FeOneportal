@@ -8,8 +8,8 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -23,8 +23,8 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -37,8 +37,8 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -62,8 +62,8 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILD' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR'
       "
       nz-menu-item
@@ -77,7 +77,7 @@
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
   [nzTitle]="titleDeleteInstance"
-  (nzOnCancel)="handleCancel()"
+  (nzOnCancel)="handleCancelDelete()"
 >
   <div *nzModalContent>
     <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
@@ -88,7 +88,7 @@
         nzShowIcon
       ></nz-alert>
       <span class="text-label">
-        Để thực hiện xoá máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
+        Để thực hiện xóa máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
         ảo để xác nhận.
       </span>
       <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
@@ -98,6 +98,7 @@
             nz-input
             formControlName="name"
             [(ngModel)]="inputConfirm"
+            (keyup.enter)="handleOkDelete()"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
@@ -109,14 +110,14 @@
     </form>
   </div>
   <div *nzModalFooter>
-    <button nz-button (click)="handleCancel()">
+    <button nz-button (click)="handleCancelDelete()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOk()">
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -187,80 +188,100 @@
   nzTitle="Reset mật khẩu máy ảo"
   (nzOnCancel)="handleCancelResetPassword()"
 >
-  <ng-container *nzModalContent>
-    <nz-alert
-      nzType="warning"
-      [nzDescription]="customTemplateMessageResetPassword"
-      nzShowIcon
-    ></nz-alert>
-    <ng-template #customTemplateMessageResetPassword>
-      <div>
-        Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root Nếu
-        HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản Administrator
-      </div>
-    </ng-template>
-    <nz-form-item>
-      <label
-        class="text-label"
-        style="margin-top: 16px"
-        nz-checkbox
-        [(ngModel)]="autoCreate"
-        [ngModelOptions]="{ standalone: true }"
-        >Tự sinh</label
+  <div *nzModalContent>
+    <form nz-form [formGroup]="formPass" [nzLayout]="'vertical'">
+      <nz-alert
+        nzType="warning"
+        [nzDescription]="customTemplateMessageResetPassword"
+        nzShowIcon
+      ></nz-alert>
+      <ng-template #customTemplateMessageResetPassword>
+        <div>
+          Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root Nếu
+          HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản
+          Administrator
+        </div>
+      </ng-template>
+      <nz-form-item>
+        <label
+          class="text-label"
+          style="margin-top: 16px"
+          nz-checkbox
+          [(ngModel)]="autoCreate"
+          [ngModelOptions]="{ standalone: true }"
+          >Tự sinh</label
+        >
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="newpassErrorTpl">
+          <nz-form-label>Mật khẩu mới</nz-form-label>
+          <nz-input-group [nzSuffix]="suffixTemplate">
+            <input
+              class="input-custom"
+              [type]="passwordVisible ? 'text' : 'password'"
+              nz-input
+              formControlName="newpass"
+              placeholder=""
+              [(ngModel)]="resetPassword"
+              (input)="onInputChange($event)"
+              [disabled]="autoCreate"
+            />
+          </nz-input-group>
+          <ng-template #newpassErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Vui lòng nhập trường mật khẩu mới
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')"
+              >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ
+              hoa, chữ thường và ký hiệu đặc biệt</ng-container
+            >
+          </ng-template>
+          <ng-template #suffixTemplate>
+            <i
+              nz-icon
+              [nzType]="'eye'"
+              (click)="passwordVisible = !passwordVisible"
+            ></i>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item style="margin-bottom: 0px">
+        <nz-form-control [nzErrorTip]="passRepeatErrorTpl">
+          <nz-form-label>Xác nhận mật khẩu</nz-form-label>
+          <nz-input-group [nzSuffix]="suffixTemplateRepeat">
+            <input
+              class="input-custom"
+              [type]="passwordRepeatVisible ? 'text' : 'password'"
+              nz-input
+              formControlName="passRepeat"
+              placeholder=""
+              [(ngModel)]="resetPasswordRepeat"
+              (input)="onInputChange($event)"
+              [disabled]="autoCreate"
+            />
+          </nz-input-group>
+          <ng-template #suffixTemplateRepeat>
+            <i
+              nz-icon
+              [nzType]="'eye'"
+              (click)="passwordRepeatVisible = !passwordRepeatVisible"
+            ></i>
+          </ng-template>
+          <div *ngIf="!check">
+            <span style="color: rgba(252, 16, 16, 1)"
+              >Mật khẩu không khớp nhau, vui lòng nhập lại</span
+            >
+          </div>
+        </nz-form-control>
+        <ng-template #passRepeatErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Vui lòng nhập trường xác nhận mật khẩu</ng-container
+          >
+        </ng-template></nz-form-item
       >
-    </nz-form-item>
-    <span class="text-label">Mật khẩu mới</span>
-    <nz-form-control
-      style="margin-top: 5px; margin-bottom: 16px"
-      class="text-right"
-    >
-      <nz-input-group [nzSuffix]="suffixTemplate">
-        <input
-          class="input-custom"
-          [type]="passwordVisible ? 'text' : 'password'"
-          nz-input
-          name="resetPassword"
-          placeholder=""
-          [(ngModel)]="resetPassword"
-          [ngModelOptions]="{ standalone: true }"
-          [disabled]="autoCreate"
-        />
-      </nz-input-group>
-      <ng-template #suffixTemplate>
-        <i
-          nz-icon
-          [nzType]="'eye'"
-          (click)="passwordVisible = !passwordVisible"
-        ></i>
-      </ng-template>
-    </nz-form-control>
-    <span class="text-label">Xác nhận mật khẩu</span>
-    <nz-form-control style="margin-top: 5px" class="text-right">
-      <nz-input-group [nzSuffix]="suffixTemplateRepeat">
-        <input
-          class="input-custom"
-          [type]="passwordRepeatVisible ? 'text' : 'password'"
-          nz-input
-          name="resetPasswordRepeat"
-          placeholder=""
-          [(ngModel)]="resetPasswordRepeat"
-          [ngModelOptions]="{ standalone: true }"
-          (input)="onInputChange($event)"
-          [disabled]="autoCreate"
-        />
-      </nz-input-group>
-      <ng-template #suffixTemplateRepeat>
-        <i
-          nz-icon
-          [nzType]="'eye'"
-          (click)="passwordRepeatVisible = !passwordRepeatVisible"
-        ></i>
-      </ng-template>
-      <div *ngIf="check == false">
-        <span style="color: rgba(252, 16, 16, 1)">Mật khẩu không khớp!</span>
-      </div>
-    </nz-form-control>
-  </ng-container>
+    </form>
+  </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelResetPassword()">
       <img
@@ -269,7 +290,12 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkResetPassword()">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkResetPassword()"
+      [disabled]="autoCreate ? false : formPass.invalid || !check"
+    >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"

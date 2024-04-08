@@ -1,0 +1,33 @@
+<div class="ml-3">
+  <img src="../../../../assets/imgs/back.png" style="cursor: pointer;" routerLink="/passport/login" />
+</div>
+<div
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px);
+    width: 600px;
+    flex-direction: column;
+    margin: -70px auto 0 auto;
+  "
+>
+  <span class="text-title text-font mb-3 text-left" style="margin-left: -115px;">Nhập mã xác thực</span>
+  <span class="text-font text-des mb-5 text-left" style="margin-left: -12px;"
+    >Nhập mã xác thực 6 số đã được gửi đến email của bạn</span
+  >
+  <form nz-form class="mb-5">
+    <input nz-input placeholder="001200" class="mb-5" style="height: 50px"/>
+
+    <button nz-button nzType="primary" nzSize="large" class="submit">
+      Gửi lại mã xác thực
+    </button>
+  </form>
+  <span class="text-des text-font mb-5"
+    >Bạn chưa có tài khoản,
+    <a style="text-transform: uppercase; text-decoration: underline; color: #0066B3" routerLink="/passport/register">Đăng ký!</a></span
+  >
+  <span class="text-font text-des text-left"
+    >Điều khoản sử dụng</span
+  >
+</div>

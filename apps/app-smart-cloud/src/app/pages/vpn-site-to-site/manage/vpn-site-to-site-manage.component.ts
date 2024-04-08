@@ -22,7 +22,7 @@ export class VpnSiteToSiteManage {
 
   isBegin: boolean = false;
   isLoading: boolean = false
-  response: BaseResponse<VpnSiteToSiteDTO>
+  response: VpnSiteToSiteDTO
   isVisibleDelete: boolean = false;
 
   constructor(

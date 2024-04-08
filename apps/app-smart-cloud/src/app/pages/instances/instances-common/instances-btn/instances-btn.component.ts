@@ -60,24 +60,22 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [
-        Validators.required,
-      ],
+      validators: [Validators.required],
     }),
   });
   titleDeleteInstance: string = '';
   showModalDelete() {
     this.isVisibleDelete = true;
     this.inputConfirm = '';
-    this.titleDeleteInstance = 'Xoá máy ảo ' + this.instancesModel.name;
+    this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
   }
 
-  handleOk() {
+  handleOkDelete() {
     if (this.inputConfirm == this.instancesModel.name) {
+      this.isVisibleDelete = false;
       this.dataService.delete(this.instancesId).subscribe({
         next: (data: any) => {
-          this.isVisibleDelete = false;
-          this.valueChanged.emit('DELETE')
+          this.valueChanged.emit('DELETE');
           this.notification.success('', 'Xóa máy ảo thành công');
         },
         error: (e) => {
@@ -96,7 +94,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     }
   }
 
-  handleCancel() {
+  handleCancelDelete() {
     this.isVisibleDelete = false;
   }
 
@@ -107,6 +105,19 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     ]);
   }
 
+  formPass = new FormGroup({
+    newpass: new FormControl('', {
+      validators: [
+        Validators.required,
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+        ),
+      ],
+    }),
+    passRepeat: new FormControl('', {
+      validators: [Validators.required],
+    }),
+  });
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
   check = true;
@@ -114,10 +125,14 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   passwordVisible = false;
   passwordRepeatVisible = false;
   autoCreate: boolean = false;
-
   isVisibleResetPass = false;
   modalResetPassword() {
     this.isVisibleResetPass = true;
+    this.resetPassword = '';
+    this.resetPasswordRepeat = '';
+    this.check = true;
+    this.isOk = false;
+    this.autoCreate = false;
   }
 
   handleCancelResetPassword() {
@@ -125,42 +140,54 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   }
 
   handleOkResetPassword() {
-    if (this.resetPassword == this.resetPasswordRepeat && this.isOk) {
-      this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-      // this.dataService
-      //   .resetpassword({ id: this.instancesId, newPassword: this.resetPassword })
-      //   .subscribe(
-      //     (data: any) => {
-      //       console.log("reset password", data);
-      //       if (data == true) {
-      //         this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-      //       } else {
-      //         this.notification.error('', 'Reset mật khẩu không thành công');
-      //       }
-      //     },
-      //     () => {
-      //       this.notification.error('', 'Reset mật khẩu không thành công');
-      //     }
-      //   );
+    this.isVisibleResetPass = false;
+    if (this.autoCreate) {
+      this.dataService.autoCreatePass(this.instancesId).subscribe({
+        next: (data: any) => {
+          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+        },
+        error: (e) => {
+          console.log("reset pass", e)
+          this.notification.error(
+            e.error.detail,
+            'Reset mật khẩu máy không thành công'
+          );
+        },
+      });
     } else {
-      this.notification.error('', 'Reset mật khẩu không thành công');
+      this.dataService
+        .resetpassword({
+          id: this.instancesId,
+          newPassword: this.resetPassword,
+        })
+        .subscribe({
+          next: (data: any) => {
+            if (data == true) {
+              this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+            } else {
+              this.notification.error(
+                '',
+                'Reset mật khẩu máy ảo không thành công'
+              );
+            }
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Reset mật khẩu máy không thành công'
+            );
+          },
+        });
     }
   }
 
   onInputChange(event: Event): void {
     if (this.resetPassword == this.resetPasswordRepeat) {
       this.check = true;
+    } else if (this.resetPasswordRepeat == '') {
+      this.check = true;
     } else {
       this.check = false;
-      this.isOk = false;
-    }
-    if (
-      this.resetPassword == this.resetPasswordRepeat &&
-      this.resetPasswordRepeat != ''
-    ) {
-      this.isOk = true;
-    } else {
-      this.isOk = false;
     }
   }
 

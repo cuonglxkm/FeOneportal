@@ -1,0 +1,130 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Tính năng xác thực hai yếu tố'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tài khoản</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Bảo mật</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (valueChanged)="projectChange($event)"
+        (userChanged)="projectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card style="border-radius: 8px;">
+    <div class="pl-5 pr-5">
+      <nz-alert
+        nzBanner
+        nzMessage="Để tăng cường bảo mật, chúng tôi khuyến nghị cấu hình Xác thực 2 yếu tố để giúp bảo vệ tài khoản của Quý khách."
+        nzDescription="Tính năng xác thực hai yếu tố (2FA) là một biện pháp bảo mật mạnh mẽ được sử dụng để bảo vệ tài khoản trực tuyến. Thay vì chỉ sử dụng một phương tiện xác thực như mật khẩu, 2FA yêu cầu người dùng cung cấp thêm một yếu tố xác thực khác (OTP qua email) để chứng minh họ là chủ sở hữu của tài khoản. 
+       Điều này làm tăng cường đáng kể độ an toàn và bảo mật cho tài khoản, bởi vì người khác cần phải có cả hai yếu tố này để có thể truy cập trái phép."
+        nzCloseable
+      ></nz-alert>
+      <div class="d-flex gap-3 mt-8 align-items-center">
+        <span class="otp-text">Mã OTP xác nhận sẽ được gửi về Email: </span>
+        <input
+          nz-input
+          type="text"
+          required
+          placeholder="vanthe@vnpt.vn"
+          [disabled]="true"
+          class="input-custom"
+          style="width: 100%;"
+        />
+      </div>
+      <div class="d-flex mt-7 align-items-center gap-3 mb-4">
+        <nz-switch [ngModel]="toggleSwitch" (ngModelChange)="handleChangeSwitch($event)"></nz-switch>
+        <span class="fa-text">Bật tính năng xác thực hai yếu tố</span>
+      </div>
+      <span class="support">Hoặc đọc thêm về chính sách quyền riêng tư của chúng tôi <a href="#">tại đây</a></span>
+    </div>
+        <div class="d-flex justify-content-end gap-3 mt-5">
+          <button
+            nz-button
+            nzType="default"
+            class="button-back"
+          >
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+            Huỷ
+          </button>
+            <button
+              nz-button
+              nzType="primary"
+              class="button-new" 
+              (click)="handleSubmit()"
+            >
+            <span nz-icon nzType="check" nzTheme="outline"></span>
+              Cập nhật
+            </button>
+
+        </div>
+        
+  </nz-card>
+</nz-content>
+<nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Xác nhận bật/tắt xác thực hai yếu tố"
+          (nzOnCancel)="handleCancel()"
+          (nzOnOk)="handleUpdate()"
+          nzOkText="Xác nhận" nzCancelText="Hủy bỏ"
+          [nzOkLoading]="isLoading"
+          [nzFooter]="null"
+          >
+  <ng-container *nzModalContent>
+    <nz-alert
+        nzBanner
+        nzMessage="Vui lòng nhập mã xác thực 6 số đã được gửi tới email của bạn, khi xác nhận bật xác thực hai yếu tố, lần đăng nhập tiếp theo người dùng sẽ phải nhập mã OTP."
+        nzCloseable
+      ></nz-alert>
+      <form nz-form [formGroup]="form" class="mt-3">
+        <nz-form-item >
+          <nz-form-control>
+            <nz-form-label nzFor="name">
+              <div>
+                <span>Nhập mã xác thực 6 số </span>
+              </div>
+            </nz-form-label>
+          <input
+            nz-input
+            type="number"
+            required
+            placeholder="Nhập mã xác thực"
+            formControlName="otp"
+            class="input-custom"
+            style="width: 100%"
+          />
+        </nz-form-control>
+        </nz-form-item>
+        <div class="d-flex justify-content-end gap-3 mt-5">
+          <button
+            nz-button
+            nzType="default"
+            class="button-back"
+          >
+            Gửi lại mã
+          </button>
+            <button
+              nz-button
+              nzType="primary"
+              class="button-new" 
+              (click)="handleSubmit()"
+            >
+            <span nz-icon nzType="check" nzTheme="outline"></span>
+              Xác nhận
+            </button>
+
+        </div>
+      </form>
+  </ng-container>
+</nz-modal>

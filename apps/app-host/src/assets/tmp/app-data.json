@@ -72,7 +72,7 @@
             {
               "text": "Bảo mật",
               "icon": "anticon-dashboard",
-              "link": "/app-smart-cloud/action-history"
+              "link": "/app-smart-cloud/security"
             },
             {
               "text": "Lịch sử tác động",
@@ -105,6 +105,10 @@
                 {
                   "text": "Lịch Snapshot",
                   "link": "/app-smart-cloud/schedule/snapshot/list"
+                },
+                {
+                  "text": "Gói Snapshot",
+                  "link": "/app-smart-cloud/snapshot/packages"
                 }
               ]
             },
