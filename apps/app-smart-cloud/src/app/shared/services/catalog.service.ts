@@ -2,7 +2,7 @@ import {Inject, Injectable} from "@angular/core";
 import {BaseService} from "./base.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { Product } from '../models/catalog.model';
+import { OfferDetail, Product } from '../models/catalog.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +20,16 @@ export class CatalogService extends BaseService {
     if(regionId != undefined || regionId != null) param = param.append('regionId', regionId)
     if(unitOfMeasure != undefined || unitOfMeasure != null) param = param.append('unitOfMeasure', unitOfMeasure)
     if(unitOfMeasureProduct != undefined || unitOfMeasureProduct != null) param = param.append('unitOfMeasureProduct', unitOfMeasureProduct)
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs + '/offers', {
+    return this.http.get<OfferDetail[]>(this.baseUrl + this.ENDPOINT.catalogs + '/offers', {
       params: param
     })
   }
 
-  getProductId(uniqueName: string) {
-    return this.http.get<Product[]>(this.baseUrl + this.ENDPOINT.provisions + `products?uniqueName=${uniqueName}&containsSearch=true`)
+  getDetailOffer(id: number) {
+    return this.http.get<OfferDetail>(this.baseUrl + this.ENDPOINT.catalogs + `/offers/${id}`)
+  }
+
+  searchProduct(uniqueName: string) {
+    return this.http.get<Product[]>(this.baseUrl + this.ENDPOINT.catalogs + `/products?uniqueName=${uniqueName}&containsSearch=true`)
   }
 }
