@@ -17,7 +17,7 @@
       </div>
 
       <div class="mleft-16 w-20">
-        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="searchLogs()"
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType(); searchLogs()"
           [nzPlaceHolder]="'Loại resource'" class="w-100" nzSize="large">
           <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
             [nzValue]="rt.value"></nz-option>
@@ -25,8 +25,8 @@
       </div>
 
       <div class="mleft-16 w-20">
-        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="searchLogs()"
-          [nzPlaceHolder]="'Chọn nhóm worker'" class="w-100" nzSize="large">
+        <nz-select nzSize="default" nzAllowClear [(ngModel)]="resource" (ngModelChange)="searchLogs()"
+          [nzPlaceHolder]="'Chọn nhóm worker'" class="w-100" nzSize="large" [nzDisabled]="isDisableWorkerFilter">
           <nz-option *ngFor="let item of listOfWorkerGroupName" [nzLabel]="item"
             [nzValue]="item"></nz-option>
         </nz-select>

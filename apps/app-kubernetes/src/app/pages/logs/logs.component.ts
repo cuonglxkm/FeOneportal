@@ -29,7 +29,7 @@ export class LogsComponent implements OnInit {
   listOfLogs: LogModel[];
   listOfResourceType = [
     {name: 'Cluster', value: 'cluster'},
-    {name: 'Nhóm Worker', value: 'worker'}
+    {name: 'Nhóm worker', value: 'worker'}
   ];
   listOfWorkerGroupName: string[];
 
@@ -102,6 +102,11 @@ export class LogsComponent implements OnInit {
       this.fromDate = event[0] ? event[0].getTime() : null;
       this.toDate = event[1] ? event[1].getTime() : null;
     }
+  }
+
+  isDisableWorkerFilter: boolean = true;
+  onChangeResourceType() {
+    this.resourceType && this.resourceType == 'worker' ? this.isDisableWorkerFilter = false : this.isDisableWorkerFilter = true;
   }
 
 }
