@@ -6,19 +6,19 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EMPTY, catchError, finalize, map } from 'rxjs';
-import { KubernetesConstant } from 'src/app/constants/kubernetes.constant';
-import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from 'src/app/model/cluster.model';
-import { K8sVersionModel } from 'src/app/model/k8s-version.model';
-import { PackModel } from 'src/app/model/pack.model';
-import { FormSearchNetwork, FormSearchSubnet } from 'src/app/model/vlan.model';
-import { VolumeTypeModel } from 'src/app/model/volume-type.model';
-import { SubnetModel, VPCNetworkModel } from 'src/app/model/vpc-network.model';
-import { WorkerTypeModel } from 'src/app/model/worker-type.model';
-import { ClusterService } from 'src/app/services/cluster.service';
-import { ShareService } from 'src/app/services/share.service';
-import { VlanService } from 'src/app/services/vlan.service';
-import { ProjectModel } from 'src/app/shared/models/project.model';
-import { RegionModel } from 'src/app/shared/models/region.model';
+import { K8sVersionModel } from '../../model/k8s-version.model';
+import { SubnetModel, VPCNetworkModel } from '../../model/vpc-network.model';
+import { WorkerTypeModel } from '../../model/worker-type.model';
+import { VolumeTypeModel } from '../../model/volume-type.model';
+import { PackModel } from '../../model/pack.model';
+import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../../model/cluster.model';
+import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { ClusterService } from '../../services/cluster.service';
+import { VlanService } from '../../services/vlan.service';
+import { ShareService } from '../../services/share.service';
+import { FormSearchNetwork, FormSearchSubnet } from '../../model/vlan.model';
+import { RegionModel } from '../../shared/models/region.model';
+import { ProjectModel } from '../../shared/models/project.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

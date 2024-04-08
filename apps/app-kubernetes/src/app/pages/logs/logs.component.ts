@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, map } from 'rxjs';
-import { LogModel } from 'src/app/model/log.model';
-import { ClusterService } from 'src/app/services/cluster.service';
+import { LogModel } from '../../model/log.model';
+import { ClusterService } from '../../services/cluster.service';
 
 @Component({
   selector: 'one-portal-logs',

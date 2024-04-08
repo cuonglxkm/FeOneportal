@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { KubernetesCluster } from 'src/app/model/cluster.model';
-import { ClusterService } from 'src/app/services/cluster.service';
-import { VlanService } from 'src/app/services/vlan.service';
+import { KubernetesCluster } from '../../model/cluster.model';
+import { ClusterService } from '../../services/cluster.service';
+import { VlanService } from '../../services/vlan.service';
 
 @Component({
   selector: 'one-portal-overall',

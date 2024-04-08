@@ -4,14 +4,14 @@ import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EMPTY, Observable, Subscription, combineLatest, finalize } from 'rxjs';
 import { environment } from '@env/environment';
-import { KubernetesCluster } from 'src/app/model/cluster.model';
-import { ClusterStatus } from 'src/app/model/status.model';
-import { ClusterService } from 'src/app/services/cluster.service';
-import { NotificationWsService } from 'src/app/services/ws.service';
-import { KubernetesConstant } from 'src/app/constants/kubernetes.constant';
-import { NotificationConstant } from 'src/app/constants/notification.constant';
-import { RegionModel } from 'src/app/shared/models/region.model';
-import { ProjectModel } from 'src/app/shared/models/project.model';
+import { KubernetesCluster } from '../../model/cluster.model';
+import { ClusterStatus } from '../../model/status.model';
+import { ClusterService } from '../../services/cluster.service';
+import { NotificationWsService } from '../../services/ws.service';
+import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { RegionModel } from '../../shared/models/region.model';
+import { ProjectModel } from '../../shared/models/project.model';
+import { NotificationConstant } from '../../constants/notification.constant';
 
 @Component({
   selector: 'one-portal-app-kubernetes',
@@ -96,7 +96,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.total = 0;
 
     // init ws
-    // this.openWs();
+    this.openWs();
 
     this.getListStatus();
   }
@@ -217,13 +217,13 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.regionId = region.regionId;
     this.regionName = region.regionDisplayName;
     this.cloudProfileId = region.cloudId;
-    this.searchCluster();
+    if (this.regionId && this.projectInfraId) this.searchCluster();
   }
 
   projectInfraId: number;
   onProjectChange(project: ProjectModel) {
     this.projectInfraId = project.id;
-    this.searchCluster();
+    if (this.regionId && this.projectInfraId) this.searchCluster();
   }
 
   getListStatus() {
@@ -276,7 +276,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       this.pageIndex = event.pageIndex;
       this.pageSize = event.pageSize;
 
-      this.searchCluster();
+      if (this.regionId && this.projectInfraId) this.searchCluster();
     }
   }
 

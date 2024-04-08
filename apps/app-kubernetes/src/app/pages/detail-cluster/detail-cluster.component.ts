@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
-import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from 'src/app/model/cluster.model';
-import { K8sVersionModel } from 'src/app/model/k8s-version.model';
-import { VPCNetworkModel } from 'src/app/model/vpc-network.model';
-import { ClusterService } from 'src/app/services/cluster.service';
+import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../../model/cluster.model';
+import { K8sVersionModel } from '../../model/k8s-version.model';
+import { VPCNetworkModel } from '../../model/vpc-network.model';
+import { ClusterService } from '../../services/cluster.service';
 
 @Component({
   selector: 'one-portal-detail-cluster',

@@ -7,8 +7,8 @@ import {
   SecurityGroupSearchCondition
 } from "../models/security-group";
 import { catchError, Observable, throwError } from 'rxjs';
-import {BaseService} from "src/app/shared/services/base.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import { BaseService } from "./base.service";
 
 @Injectable({
     providedIn: 'root'
