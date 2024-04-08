@@ -699,7 +699,7 @@
       nz-button
       nzType="primary"
       (click)="handleOkEdit()"
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || isExistName"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"

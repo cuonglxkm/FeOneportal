@@ -675,6 +675,25 @@
                   />
                 </nz-select>
               </nz-form-control>
+              <nz-form-label style="margin-top: 20px"
+                >Chọn VLAN gắn vào máy ảo (<span class="text-red">*</span
+                >)</nz-form-label
+              >
+              <nz-form-control nzErrorTip="Chọn VLAN *">
+                <nz-select
+                  [nzShowSearch]="true"
+                  [(ngModel)]="vlanNetwork"
+                  (ngModelChange)="getListPort()"
+                  [ngModelOptions]="{ standalone: true }"
+                  nzSize="large"
+                >
+                  <nz-option
+                    *ngFor="let i of listVlanNetwork"
+                    [nzLabel]="i.name"
+                    [nzValue]="i.cloudId"
+                  />
+                </nz-select>
+              </nz-form-control>
             </nz-form-item>
             <div>
               <label
@@ -736,6 +755,23 @@
                     *ngFor="let i of listSecurityGroup"
                     [nzLabel]="i.name"
                     [nzValue]="i.name"
+                  />
+                </nz-select>
+              </nz-form-control>
+              <nz-form-label style="margin-top: 20px"
+                >Chọn Port (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-form-control>
+                <nz-select
+                  [nzShowSearch]="true"
+                  [(ngModel)]="port"
+                  [ngModelOptions]="{ standalone: true }"
+                  nzSize="large"
+                >
+                  <nz-option
+                    *ngFor="let i of listPort"
+                    [nzLabel]="i.macAddress"
+                    [nzValue]="i.macAddress"
                   />
                 </nz-select>
               </nz-form-control>
