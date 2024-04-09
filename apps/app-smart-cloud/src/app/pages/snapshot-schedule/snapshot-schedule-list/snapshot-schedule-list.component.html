@@ -131,7 +131,15 @@
         </td>
         <td>{{ data.volumeName }}</td>
         <td>{{ data.maxSnapshot }}</td>
-        <td>Theo tuần</td>
+        <td> {{
+          data.mode === 1
+            ? 'Hằng ngày'
+            : data.mode === 2
+            ? 'Theo thứ'
+            : data.mode === 3
+            ? 'Theo tuần'
+            : data.mode === 4 && 'Theo tháng'
+        }}</td>
         <td *ngIf="data.status == 'ACTIVE'" style="color: #52c41a">
           Đang hoạt động
         </td>

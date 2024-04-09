@@ -81,7 +81,7 @@ export class PaymentSummaryComponent implements OnInit {
         const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
@@ -89,7 +89,7 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = `Chỉnh sửa`;
             break;
           case 'instance_extend':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
@@ -144,6 +144,10 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'vpnsitetosite_resize':
             serviceItem.name = `Vpn Site To Site`;
+            serviceItem.type = 'Chỉnh sửa';
+            break;
+          case 'snapshotpackage_create':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
             serviceItem.type = 'Chỉnh sửa';
             break;
           default:

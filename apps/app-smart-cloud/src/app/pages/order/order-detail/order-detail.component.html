@@ -38,6 +38,7 @@
         ? data?.statusCode - 2
         : data?.statusCode - 1
     "
+    [nzStatus]="data?.statusCode === 5 ? 'error' : 'process'"
     style="width: 50%; margin: 0 auto"
 
   >
@@ -269,7 +270,7 @@
           </button>
           <button
             class="mt-3 ml-0"
-            *ngIf="data?.statusCode < 2 && titleStepFour != 'Gặp sự cố'"
+            *ngIf="data?.statusCode < 2 && titleStepFour != 'Sự cố'"
             nz-button
             style="width: 100%"
           >
@@ -284,7 +285,7 @@
             [routerLink]="'/app-smart-cloud/order/list'"
             *ngIf="
               (data?.statusCode != 4 && data?.statusCode < 2) ||
-              (data?.statusCode === 5 && titleStepFour != 'Gặp sự cố')
+              (data?.statusCode === 5 && titleStepFour != 'Sự cố')
             "
           >
             <span nz-icon nzType="left" nzTheme="outline"></span>

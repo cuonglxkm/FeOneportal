@@ -27,30 +27,8 @@ export class FormSearchPackageSnapshot{
     currentPage: number;
 }
 
-export class FormUpdatePackage {
-  id: number
-  sizeInGB: number
-  postResizeBackupPacketId: number
-  packageName: string
-  status: string
-  errorLog: string
-}
 
-export class PackageBackupExtend {
-  regionId: number
-  serviceName: string
-  customerId: number
-  vpcId: number
-  typeName: string
-  serviceType: number
-  actionType: number
-  serviceInstanceId: number
-  newExpireDate: Date
-  userEmail: string
-  actorEmail: string
-}
-
-export class BackupPackageRequestModel {
+export class SnapshotPackageRequestModel {
   customerId: number;
   createdByUserId: number;
   note: string;
@@ -67,26 +45,33 @@ export class BackupPackageRequestModel {
 
 }
 
-export class FormCreateBackupPackage {
+export class FormCreateSnapshotPackage {
   packageName: string
   description: string
   sizeInGB: number
-  vpcId:  string
-  oneSMEAddonId: null
-  serviceType: number
-  serviceInstanceId: number
+  type: string
   customerId: number
+  userEmail: string
+  actorEmail: string
+  projectId:number
+  vpcId:  string
+  regionId: number
+  serviceName: string
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
   createDate: Date
   expireDate: Date
+  createDateInContract: null
+  oneSMEAddonId: null
   saleDept: null
   saleDeptCode: null
   contactPersonEmail: null
   contactPersonPhone: null
   contactPersonName: null
-  note: string
-  createDateInContract: null
   am: null
   amManager: null
+  note: string
   isTrial: false
   offerId: null
   couponCode: null
@@ -94,62 +79,6 @@ export class FormCreateBackupPackage {
   dSubscriptionNumber: null
   dSubscriptionType: null
   oneSME_SubscriptionId: null
-  actionType: number
-  regionId: number
-  serviceName: string
   typeName: string
-  userEmail: string
-  actorEmail: string
 }
 
-export class BackupPackageResponseModel{
-  success: boolean;
-  code: number;
-  data: any;
-  message: any;
-  errorCode: any;
-}
-
-export class FormUpdateBackupPackageModel {
-  packageName: string
-  description: string
-  newSize: number
-  newOfferId: number
-  serviceType: number
-  actionType: number
-  serviceInstanceId: number
-  regionId: number
-  serviceName: string
-  customerId: number
-  vpcId: string
-  typeName: string
-  userEmail: string
-  actorEmail: string
-}
-
-export class FormExtendBackupPackageModel {
-  regionId: number
-  serviceName: string
-  customerId: number
-  vpcId: string
-  typeName: string
-  serviceType: number
-  actionType: number
-  serviceInstanceId: number
-  newExpireDate: Date
-  userEmail: string
-  actorEmail: string
-}
-
-export class FormUpdate {
-  customerId: number
-  packageId: number
-  packageName: string
-  description: string
-}
-
-export class ServiceInPackage {
-  instanceBackups: BackupVm[]
-  volumeBackups: VolumeDTO[]
-  backupSchedules: BackupSchedule[]
-}

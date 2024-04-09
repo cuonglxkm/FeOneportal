@@ -1,0 +1,283 @@
+{
+    "app": {
+      "name": "One portal",
+      "description": "One portal"
+    },
+    "user": {
+      "name": "Admin",
+      "avatar": "./assets/tmp/img/avatar.jpg",
+      "email": "cipchk@qq.com"
+    },
+    "menu": [
+      {
+        "text": "",
+        "group": true,
+        "hideInBreadcrumb": true,
+        "children": [
+          {
+            "text": "Dashboard",
+            "icon": "anticon-dashboard",
+            "link": "/app-smart-cloud/dashboard"
+          },
+          {
+            "text": "Account",
+            "icon": "anticon-team",
+            "children": [
+              {
+                "text": "Information",
+                "icon": "anticon-dashboard",
+                "link": "/profile"
+              },
+              {
+                "text": "Billing",
+                "icon": "anticon-dashboard",
+                "group": true,
+                "link": "/billing",
+                "children": [
+                  {
+                    "text": "Payment",
+                    "icon": "anticon-dashboard",
+                    "link": "/app-smart-cloud/billing/payments"
+                  },
+                  {
+                    "text": "Order",
+                    "icon": "anticon-dashboard",
+                    "link": "/app-smart-cloud/order/list"
+                  }
+                ]
+              },
+              {
+                "text": "IAM",
+                "group": true,
+                "link": "/app-smart-cloud/iam/dashboard",
+                "children": [
+                  {
+                    "text": "Dashboard",
+                    "link": "/app-smart-cloud/iam/dashboard"
+                  },
+                  {
+                    "text": "Users",
+                    "link": "/app-smart-cloud/users"
+                  },
+                  {
+                    "text": "Groups",
+                    "link": "/app-smart-cloud/iam/user-group"
+                  },
+                  {
+                    "text": "Policies",
+                    "link": "/app-smart-cloud/policy"
+                  }
+                ]
+              },
+              {
+                "text": "Security",
+                "icon": "anticon-dashboard",
+                "link": "/app-smart-cloud/security"
+              },
+              {
+                "text": "Action History",
+                "icon": "anticon-dashboard",
+                "link": "/app-smart-cloud/action-history"
+              }
+            ]
+          },
+          {
+            "text": "Infrastructure Services",
+            "icon": "anticon-cloud",
+            "children": [
+              {
+                "text": "Instances",
+                "icon": "anticon-laptop",
+                "link": "/app-smart-cloud/instances"
+              },
+              {
+                "text": "Block Storage",
+                "icon": "anticon-cloud",
+                "children": [
+                  {
+                    "text": "Volume",
+                    "link": "/app-smart-cloud/volumes"
+                  },
+                  {
+                    "text": "Snapshot Volume",
+                    "link": "/app-smart-cloud/snapshotvls"
+                  },
+                  {
+                    "text": "Snapshot Schedule",
+                    "link": "/app-smart-cloud/schedule/snapshot/list"
+                  },
+                  {
+                    "text": "Snapshot Package",
+                    "link": "/app-smart-cloud/snapshot/packages"
+                  }
+                ]
+              },
+              {
+                "text": "Backup",
+                "icon": "anticon-cloud",
+                "children": [
+                  {
+                    "text": "Backup VM",
+                    "icon": "anticon-dashboard",
+                    "link": "/app-smart-cloud/backup-vm"
+                  },
+                  {
+                    "text": "Backup Volume",
+                    "icon": "anticon-user",
+                    "link": "/app-smart-cloud/backup-volume"
+                  },
+                  {
+                    "text": "Backup Schedule",
+                    "icon": "anticon-calendar",
+                    "link": "/app-smart-cloud/schedule/backup/list"
+                  },
+                  {
+                    "text": "Backup Package",
+                    "icon": "anticon-calendar",
+                    "link": "/app-smart-cloud/backup/packages"
+                  }
+                ]
+              },
+              {
+                "text": "Networks",
+                "icon": "anticon-cloud",
+                "children": [
+                  {
+                    "text": "IP Public",
+                    "icon": "anticon-exception",
+                    "link": "/app-smart-cloud/ip-public"
+                  },
+                  {
+                    "text": "IP Floating",
+                    "link": "/app-smart-cloud/networks/ip-floating/list"
+                  },
+                  {
+                    "text": "IP WAN",
+                    "link": "/app-smart-cloud/networks/ip-wan/list"
+                  },
+                  {
+                    "text": "LAN Network (VLAN)",
+                    "link": "/app-smart-cloud/vlan/network/list"
+                  },
+                  {
+                    "text": "Router",
+                    "link": "/app-smart-cloud/network/router"
+                  },
+                  {
+                    "text": "Direct Connect",
+                    "link": "/app-smart-cloud/object"
+                  },
+                  {
+                    "text": "Network Topology",
+                    "link": "/app-smart-cloud/object"
+                  }
+                ]
+              },
+              {
+                "text": "VPC",
+                "icon": "anticon-profile",
+                "link": "/app-smart-cloud/vpc"
+              },
+              {
+                "text": "Load balancer SDN",
+                "link": "/app-smart-cloud/object"
+              },
+              {
+                "text": "Keypair",
+                "icon": "anticon-mail",
+                "link": "/app-smart-cloud/ssh-key"
+              },
+              {
+                "text": "Security Group",
+                "icon": "anticon-profile",
+                "link": "/app-smart-cloud/security-group/list"
+              },
+              {
+                "key": "Object Storage",
+                "text": "Object Storage",
+                "icon": "anticon-profile",
+                "children": [
+                  {
+                    "text": "Bucket",
+                    "link": "/app-smart-cloud/object-storage/bucket"
+                  },
+                  {
+                    "text": "Sub User",
+                    "link": "/app-smart-cloud/object-storage/sub-user/list"
+                  },
+                  {
+                    "text": "S3 Key",
+                    "link": "/app-smart-cloud/object"
+                  },
+                  {
+                    "text": "Statistic",
+                    "link": "/app-smart-cloud/object-storage/dashboard"
+                  }
+                ]
+              },
+              {
+                "key": "File Storage",
+                "text": "File Storage",
+                "icon": "anticon-profile",
+                "children": [
+                  {
+                    "text": "File System",
+                    "link": "/app-smart-cloud/file-storage/file-system/list"
+                  },
+                  {
+                    "text": "File System Snapshot",
+                    "link": "/app-smart-cloud/file-system-snapshot/list"
+                  },
+                  {
+                    "text": "Snapshot File System Schedule",
+                    "link": "/app-smart-cloud/file-system-snapshot-schedule/list"
+                  }
+                ]
+              },
+              {
+                "text": "VPN Site to Site",
+                "link": "/app-smart-cloud/vpn-site-to-site/manage",
+                "icon": "anticon-profile"
+              }
+            ]
+          },
+          {
+            "text": "Platform Services",
+            "icon": "anticon-edit",
+            "children": [
+              {
+                "text": "Kubernetes",
+                "icon": "anticon-team",
+                "link": "/app-kubernetes"
+              },
+              {
+                "text": "Kafka",
+                "icon": "anticon-team",
+                "link": "/app-kafka"
+              },
+              {
+                "text": "MongoDB Replicaset",
+                "icon": "anticon-team",
+                "link": "/app-mongodb-replicaset"
+              }
+            ]
+          },
+          {
+            "text": "Support",
+            "icon": "anticon-edit",
+            "children": [
+              {
+                "text": "User manual",
+                "icon": "anticon-team"
+              },
+              {
+                "text": "Contact Information",
+                "icon": "anticon-team"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  

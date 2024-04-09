@@ -36,11 +36,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   volumeList: NzSelectOptionInterface[] = [];
   snapshotPackageList: NzSelectOptionInterface[] = [];
   userId: number;
-  scheduleStartTime: string;
   dateStart: string;
   descSchedule: string = '';
-  snapshotMode: string = 'Theo tuần';
-  numberOfweek: string = '1 tuần'
+  listOfSelectedDate: string[] = [];
+  daysOfWeekSelected: string = '';
   numberArchivedCopies = 1;
   selectedValueRadio = 'normal';
 
@@ -48,7 +47,38 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
+  dateList: NzSelectOptionInterface[] = [
+    { label: 'Chủ nhật', value: '0' },
+    { label: 'Thứ hai', value: '1' },
+    { label: 'Thứ ba', value: '2' },
+    { label: 'Thứ tư', value: '3' },
+    { label: 'Thứ năm', value: '4' },
+    { label: 'Thứ sáu', value: '5' },
+    { label: 'Thứ bảy', value: '6' },
+  ];
 
+  dateOptions: NzSelectOptionInterface[] = [
+    { label: 'Hằng ngày', value: '1' },
+    { label: 'Theo thứ', value: '2' },
+    { label: 'Theo tuần', value: '3' },
+    { label: 'Theo tháng', value: '4' },
+  ];
+
+  daysOfWeek = [
+    { label: 'Thứ 2', value: '1' },
+    { label: 'Thứ 3', value: '2' },
+    { label: 'Thứ 4', value: '3' },
+    { label: 'Thứ 5', value: '4' },
+    { label: 'Thứ 6', value: '5' },
+    { label: 'Thứ 7', value: '6' },
+    { label: 'Chủ nhật', value: '7' },
+  ];
+
+  numberOfWeek = [
+    { label: '1 Tuần', value: '1' },
+    { label: '2 Tuần', value: '2' },
+    { label: '3 Tuần', value: '3' },
+  ];
 
   validateForm: FormGroup<{
     radio: FormControl<any>
@@ -61,34 +91,110 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     volume: FormControl<number>;
     selectedDate: FormControl<string>;
     snapshotPackageId: FormControl<number>;
+    mode: FormControl<string>;
+    daysOfWeek: FormControl<string[]>;
+    intervalMonth: FormControl<number>;
+    dates: FormControl<number>;
+    intervalWeek: FormControl<number>;
+    maxSnapshot: FormControl<number>;
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
     volume: [0, [Validators.required]],
     selectedDate: ['', [Validators.required]],
+    mode: [this.dateOptions[0].value as string, Validators.required],
     snapshotPackageId: [0 as number, [Validators.required]],
+    daysOfWeek: [[] as string[], Validators.required],
+    intervalMonth: [
+      1 as number,
+      [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)],
+    ],
+    dates: [1, [Validators.required]],
+    intervalWeek: [null as number],
+    maxSnapshot: [1, [Validators.required]]
   });
 
-  dateList: NzSelectOptionInterface[] = [
-    { label: 'Chủ nhật', value: '0' },
-    { label: 'Thứ hai', value: '1' },
-    { label: 'Thứ ba', value: '2' },
-    { label: 'Thứ tư', value: '3' },
-    { label: 'Thứ năm', value: '4' },
-    { label: 'Thứ sáu', value: '5' },
-    { label: 'Thứ bảy', value: '6' },
-  ];
+  
+  snapshotMode = this.dateOptions[0].value;
+
+  modeChange(value: string) {
+    this.form.controls.selectedDate.clearValidators();
+    this.form.controls.selectedDate.markAsPristine();
+    this.form.controls.selectedDate.reset();
+
+    this.form.controls.daysOfWeek.clearValidators();
+    this.form.controls.daysOfWeek.markAsPristine();
+    this.form.controls.daysOfWeek.reset();
+
+    this.form.controls.intervalWeek.clearValidators();
+    this.form.controls.intervalWeek.markAsPristine();
+    this.form.controls.intervalWeek.reset();
+
+    this.form.controls.intervalMonth.clearValidators();
+    this.form.controls.intervalMonth.markAsPristine();
+    this.form.controls.intervalMonth.reset();
+
+    this.form.controls.dates.clearValidators();
+    this.form.controls.dates.markAsPristine();
+    this.form.controls.dates.reset();
+    if (value === '1') {
+      this.form.controls.mode.setValue('1');
+    } else if (value === '2') {
+      this.form.controls.mode.setValue('2');
+      this.form.controls.daysOfWeek.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.daysOfWeek.markAsDirty();
+      this.form.controls.daysOfWeek.reset();
+    } else if (value === '3') {
+      this.form.controls.mode.setValue('3');
+
+      this.form.controls.selectedDate.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.selectedDate.markAsDirty();
+      this.form.controls.selectedDate.reset();
+
+      this.form.controls.intervalWeek.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.intervalWeek.markAsDirty();
+      this.form.controls.intervalWeek.reset();
+    } else if (value === '4') {
+      this.form.controls.mode.setValue('4');
+      this.form.controls.intervalMonth.setValidators([
+        Validators.required,
+        Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/),
+      ]);
+      this.form.controls.intervalMonth.markAsDirty();
+      this.form.controls.intervalMonth.reset();
+
+      this.form.controls.dates.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.dates.markAsDirty();
+      this.form.controls.dates.reset();
+    }
+  }
+
+  getDayLabelMulti(selectedValue: string): string {
+    const selectedDay = this.daysOfWeek.find(
+      (day) => day.value === selectedValue
+    );
+    return selectedDay ? selectedDay.label : '';
+  }
+
+  getDayLabel(selectedValue: string): string {
+    const selectedDay = this.daysOfWeek.find(
+      (day) => day.value === selectedValue
+    );
+    return selectedDay ? selectedDay.label : '';
+  }
 
   ngOnInit(): void {
     const now = new Date();
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    this.scheduleStartTime =
-      now.getHours().toString() +
-      ':' +
-      now.getUTCMinutes().toString() +
-      ':' +
-      now.getSeconds().toString();
     this.userId = this.tokenService.get()?.userId;
     this.doGetListSnapshotPackage()
   }
@@ -150,11 +256,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     private modalService: NzModalService,
     private notification: NzNotificationService,
     private packageSnapshotService: PackageSnapshotService
-  ) {}
-
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+  ) {
+    this.form.get('daysOfWeek').valueChanges.subscribe((selectedDays: string[]) => {
+      this.listOfSelectedDate = selectedDays;
+    });
   }
+
   request = new CreateScheduleSnapshotDTO();
   create() {
     const modal: NzModalRef = this.modalService.create({
@@ -171,17 +278,17 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           type: 'primary',
           onClick: () => {
             this.isLoading = true;
-            this.request.dayOfWeek = this.dateStart;
-            this.request.daysOfWeek = [];
+            this.request.dayOfWeek = this.form.controls.selectedDate.value;
+            this.request.daysOfWeek = this.form.controls.daysOfWeek.value;
             this.request.description = this.descSchedule;
-            this.request.intervalWeek = 1; // fix cứng số tuần  = 1;
-            this.request.mode = 3; //fix cứng chế độ = theo tuần ;
-            this.request.dates = 0;
+            this.request.intervalWeek = this.form.controls.intervalWeek.value; 
+            this.request.mode = parseInt(this.form.controls.mode.value); 
+            this.request.dates = this.form.controls.dates.value;
             this.request.duration = 0;
-            this.request.volumeId = this.volumeId;
+            this.request.volumeId = this.form.controls.volume.value;
             this.request.runtime = this.time.toISOString();
-            this.request.intervalMonth = 0;
-            this.request.maxBaxup = 1; // fix cứng số bản
+            this.request.intervalMonth = this.form.controls.intervalMonth.value;
+            this.request.maxBaxup = this.form.controls.maxSnapshot.value;
             this.request.snapshotPacketId = 0;
             this.request.customerId = this.userId;
             this.request.projectId = this.project;
