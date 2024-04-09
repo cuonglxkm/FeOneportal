@@ -88,7 +88,7 @@ export class CreateKafkaComponent implements OnInit {
       serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
-      description: [null, [Validators.maxLength(500), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
+      description: [null, [Validators.maxLength(500)]],
       vCpu: [null, [Validators.required]],
       ram: [null, [Validators.required]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
@@ -151,7 +151,7 @@ export class CreateKafkaComponent implements OnInit {
     kafka.vpcId = this.projectId;
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = 100000;
+    orderItem.price = (this.pricePerCpu * this.cpu + this.pricePerRam * this.ram + this.pricePerStorage * this.storage) * this.usageTime;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = AppConstants.KAKFA_CREATE_TYPE;
     orderItem.specification = JSON.stringify(kafka);
@@ -298,7 +298,9 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   setExpiryDate() {
-    this.expiryDate = new Date(this.createDate.getTime() + (this.usageTime * 30 * 24 * 60 * 60 * 1000));
+    const d = new Date();
+    d.setMonth(this.createDate.getMonth() + this.usageTime);
+    this.expiryDate = new Date(d.getTime());
   }
 
 }

@@ -140,13 +140,13 @@
                         </nz-tab>
                     </nz-tabset>
 
-                    <nz-form-item>
+                    <!-- <nz-form-item>
                         <nz-form-label [nzXs]="24" [nzSm]="24" nzRequired>Thời hạn sử dụng (tháng)</nz-form-label>
                         <nz-form-control [nzXs]="24" [nzSm]="5" nzErrorTip="Vui lòng nhập thời hạn sử dụng">
                             <input nz-input type="number" formControlName="usageTime" id="usageTime" autofocus
                                 nzSize="large" (change)="onChangeUsageTime()" />
                         </nz-form-control>
-                    </nz-form-item>
+                    </nz-form-item> -->
                 </nz-card>
 
             </form>
@@ -192,13 +192,13 @@
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="12">
                         <div class="label-price" style="margin-bottom: 10px;">Thời hạn sử dụng</div>
-                        <div class="label-quantity">- Ngày bắt đầu sử dụng: </div>
-                        <div class="label-quantity">- Ngày hết hạn: </div>
+                        <!-- <div class="label-quantity">- Ngày bắt đầu sử dụng: </div>
+                        <div class="label-quantity">- Ngày hết hạn: </div> -->
                     </div>
                     <div nz-col [nzSpan]="12">
                         <div class="value-usage-time" style="margin-bottom: 10px;">{{ usageTime }} tháng</div>
-                        <div class="unit-total" style="margin-bottom: 12px;">{{ itemDetail.createdDate | date : 'dd/MM/yyyy' }}</div>
-                        <div class="unit-total">{{ expiryDate | date : 'dd/MM/yyyy' }}</div>
+                        <!-- <div class="unit-total" style="margin-bottom: 12px;">{{ itemDetail.createdDate | date : 'dd/MM/yyyy' }}</div>
+                        <div class="unit-total">{{ expiryDate | date : 'dd/MM/yyyy' }}</div> -->
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>

@@ -69,7 +69,7 @@ export class EditKafkaComponent implements OnInit {
       serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
-      description: [null, [Validators.maxLength(500), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
+      description: [null, [Validators.maxLength(500)]],
     });
   }
 

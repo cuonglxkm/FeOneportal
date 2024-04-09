@@ -157,13 +157,28 @@
             </div>
           </nz-tab>
         </nz-tabset>
-
-        <nz-form-item>
-          <nz-form-label [nzXs]="24" [nzSm]="24" nzRequired>Thời hạn sử dụng (tháng)</nz-form-label>
-          <nz-form-control [nzXs]="24" [nzSm]="5" nzErrorTip="Vui lòng nhập thời hạn sử dụng">
-              <input nz-input type="number" formControlName="usageTime" id="usageTime" autofocus nzSize="large" (change)="onChangeUsageTime()" />
-          </nz-form-control>
-        </nz-form-item>
+      </nz-card>
+      
+      <nz-card class="border-card">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label [nzXs]="24" [nzSm]="24" nzRequired>Thời gian sử dụng - Tháng</nz-form-label>
+              <nz-form-control [nzXs]="24" [nzSm]="24" nzErrorTip="Vui lòng nhập thời gian sử dụng">
+                  <input nz-input type="number" formControlName="usageTime" id="usageTime" 
+                    placeholder="Nhập thời gian sử dụng" autofocus nzSize="large" (ngModelChange)="onChangeUsageTime()" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <div>
+              <p style="padding-top: 30px; margin-bottom: 0px;">Ngày bắt đầu sử dụng: {{createDate | date: 'dd/MM/yyyy'}}</p>
+              <ng-container *ngIf="expiryDate">
+                <p style="color: #ea3829;">Ngày hết hạn: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
       </nz-card>
 
       <nz-card class="border-card">
@@ -357,14 +372,14 @@
       <nz-divider class="divider-style"></nz-divider>
       <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
-              <div class="label-price" style="margin-bottom: 10px;">Thời hạn sử dụng</div>
-              <div class="label-quantity">- Ngày bắt đầu:</div>
-              <div class="label-quantity">- Ngày hết hạn:</div>
+              <div class="label-price" style="margin-bottom: 10px;">Thời gian sử dụng</div>
+              <!-- <div class="label-quantity">- Ngày bắt đầu:</div>
+              <div class="label-quantity">- Ngày hết hạn:</div> -->
           </div>
           <div nz-col [nzSpan]="12">
               <div class="value-usage-time" style="margin-bottom: 10px;">{{ usageTime }} tháng</div>
-              <div class="unit-total" style="margin-bottom: 12px;">{{ createDate | date : 'dd/MM/yyyy' }}</div>
-              <div class="unit-total">{{ expiryDate | date : 'dd/MM/yyyy' }}</div>
+              <!-- <div class="unit-total" style="margin-bottom: 12px;">{{ createDate | date : 'dd/MM/yyyy' }}</div>
+              <div class="unit-total">{{ expiryDate | date : 'dd/MM/yyyy' }}</div> -->
           </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
