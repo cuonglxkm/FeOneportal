@@ -39,8 +39,14 @@ class ConfigCustom {
   ram?: number = 0;
   capacity?: number = 0;
   iops?: string = '000';
-  priceHour?: string = '000';
-  priceMonth?: string = '000';
+}
+
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  GPUType: string;
 }
 
 @Component({
@@ -72,6 +78,7 @@ export class InstancesEditComponent implements OnInit {
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  configGPU: ConfigGPU = new ConfigGPU();
   isConfigPackage: boolean = true;
   cardHeight: string = '160px';
 
@@ -473,6 +480,28 @@ export class InstancesEditComponent implements OnInit {
         this.onChangeConfigCustom();
       });
   }
+
+  //#cấu hình GPU
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
+  }
+  //#End cấu hình GPU
 
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);

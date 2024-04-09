@@ -648,15 +648,15 @@
                       <nz-slider
                         [nzMin]="0"
                         [nzMax]="62"
-                        [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="changeVCPU($event)"
+                        [(ngModel)]="configGPU.CPU"
+                        (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="changeVCPU($event)"
+                        [(ngModel)]="configGPU.CPU"
+                        (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -682,15 +682,15 @@
                       <nz-slider
                         [nzMin]="0"
                         [nzMax]="62"
-                        [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="changeRam($event)"
+                        [(ngModel)]="configGPU.ram"
+                        (ngModelChange)="changeRamOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="changeRam($event)"
+                        [(ngModel)]="configGPU.ram"
+                        (ngModelChange)="changeRamOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="62"
@@ -717,15 +717,15 @@
                       <nz-slider
                         [nzMin]="0"
                         [nzMax]="1000"
-                        [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="changeCapacity($event)"
+                        [(ngModel)]="configGPU.storage"
+                        (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="changeCapacity($event)"
+                        [(ngModel)]="configGPU.storage"
+                        (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="1000"
@@ -751,15 +751,15 @@
                       <nz-slider
                         [nzMin]="0"
                         [nzMax]="1000"
-                        [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="changeCapacity($event)"
+                        [(ngModel)]="configGPU.GPU"
+                        (ngModelChange)="changeGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="changeCapacity($event)"
+                        [(ngModel)]="configGPU.GPU"
+                        (ngModelChange)="changeGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
                         [nzMax]="1000"
@@ -928,6 +928,7 @@
                     *ngFor="let i of listSecurityGroup"
                     [nzLabel]="i.name"
                     [nzValue]="i.name"
+                    [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"
                   />
                 </nz-select>
               </nz-form-control>

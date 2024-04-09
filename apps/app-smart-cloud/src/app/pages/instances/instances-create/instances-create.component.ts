@@ -540,6 +540,11 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
+        this.listSecurityGroup.forEach((e) => {
+          if (e.name.toUpperCase() == 'DEFAULT') {
+            this.selectedSecurityGroup.push(e.name);
+          }
+        });
         this.cdr.detectChanges();
       });
   }
@@ -728,6 +733,26 @@ export class InstancesCreateComponent implements OnInit {
           this.totalincludesVAT = 0;
         }
       });
+  }
+
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
   }
   //#endregion
 
