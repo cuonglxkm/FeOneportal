@@ -204,6 +204,7 @@ export class WorkerGroupReqDto {
       this.VolumeTypeId = obj.volumeTypeId;
       this.ConfigType = obj.configType;
       this.ConfigTypeId = obj.configTypeId;
+      this.NodeNumber = obj.nodeNumber;
     }
   }
 }

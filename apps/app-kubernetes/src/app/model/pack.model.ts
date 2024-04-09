@@ -31,6 +31,7 @@ export class PackModel {
       this.rootStorageType = obj.root_storage_type;
       this.volumeStorage = obj.volume_storage;
       this.volumeType = obj.volume_type;
+      this.volumeTypeId = obj.volume_type_id; 
       this.price = obj.price;
     }
   }

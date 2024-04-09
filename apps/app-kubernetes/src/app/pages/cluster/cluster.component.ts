@@ -393,7 +393,6 @@ export class ClusterComponent implements OnInit {
     this.chooseItem = item;
     this.isUsingPackConfig = true;
     this.myform.get('packId').setValue(item.packId);
-    console.log({packId: this.myform.get('packId').value});
 
     if (this.chooseItem) {
       this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
