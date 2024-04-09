@@ -154,6 +154,7 @@ export class WorkerGroupModel {
   workerGroupName: string;
   autoHealing: boolean;
   autoScaling: boolean;
+  nodeNumber: number;
   minimumNode: number;
   maximumNode: number;
   volumeType: string;
@@ -166,6 +167,7 @@ export class WorkerGroupModel {
       this.workerGroupName = obj.worker_name;
       this.autoHealing = obj.auto_healing;
       this.autoScaling = obj.auto_scaling;
+      this.nodeNumber = obj.node_number;
       this.minimumNode = obj.minimum_node;
       this.maximumNode = obj.maximum_node;
       this.volumeType = obj.volume_type;

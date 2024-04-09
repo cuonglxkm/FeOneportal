@@ -1,4 +1,12 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
+  <ng-container *ngIf="!isEditMode; else submitModeTpl">
+    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">Điều chỉnh</button>
+  </ng-container>
+  <ng-template #submitModeTpl>
+    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">Xác nhận</button>
+    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3">Hủy bỏ</button>
+  </ng-template>
+
   <!-- Thông tin chung -->
   <nz-card class="border-card">
     <h3>Thông tin chung</h3>
@@ -7,7 +15,21 @@
         <nz-table [nzTemplateMode]="true" nzBordered>
           <tbody>
             <tr>
-              <td class="w-50"><row-data [value]="detailCluster.clusterName" [label]="'Tên cluster'"></row-data></td>
+              <td class="w-50">
+                <div nz-row>
+                  <div nz-col [nzSpan]="8">
+                    Tên cluster
+                  </div>
+                  <div nz-col [nzSpan]="16" class="description-info">
+                    <ng-container *ngIf="!isEditMode; else editClusterNameTpl">
+                      {{detailCluster.clusterName}}
+                    </ng-container>
+                    <ng-template #editClusterNameTpl>
+                      <input type="text" nz-input [value]="upgradeClusterName" (input)="onEditClusterName($event.target.value)" />
+                    </ng-template>
+                  </div>
+                </div>
+              </td>
               <td class="w-50">
                 <div nz-row>
                   <div nz-col [nzSpan]="8">
@@ -110,6 +132,70 @@
     </div>
   </nz-card>
 
+  <!-- testing -->
+  <nz-card class="border-card">
+    <h3></h3>
+    <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroupUpgrade.controls; let i = index;">
+      <ng-container [formGroupName]="i">
+        <div nz-row>
+          <div nz-col [nzSpan]="24" class="detailtable">
+            <nz-table [nzTemplateMode]="true" nzBordered>
+              <tbody>
+                <tr>
+                  <td class="w-50">
+                    <div nz-row>
+                      <div nz-col [nzSpan]="8">Tên nhóm worker</div>
+                      <div nz-col [nzSpan]="16" class="description-info">
+                        <ng-container *ngIf="!isEditMode; else editWorkerGroupNameTpl">
+                          {{item.workerGroupName}}
+                        </ng-container>
+                        <ng-template #editWorkerGroupNameTpl>
+                          <input nz-input type="text" />
+                        </ng-template>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="w-50"><row-data [value]="item.minimumNode" [label]="'Tổng số node'"></row-data></td>
+                </tr>
+
+                <tr>
+                  <td class="w-50"><row-data value="{{item.cpu}} vCPU/{{item.ram}} GB" [label]="'Cấu hình'"></row-data></td>
+                  <td class="w-50"><row-data [value]="item.volumeSize" [label]="'Ổ cứng (GB)'"></row-data></td>
+                </tr>
+
+                <tr>
+                  <td class="w-50">
+                    <div nz-row>
+                      <div nz-col [nzSpan]="8">Auto scale</div>
+                      <div nz-col [nzSpan]="16" class="description-info">
+                        <ng-container *ngIf="item.autoScaling; else noScaleTpl">
+                          Min Node: {{item.minimumNode}} - Max Node: {{item.maximumNode}}
+                          <button nz-button nzType="text" (click)="handleChangeScaleNode(item)" class="action-icon borderless"
+                            nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="top" nz-tooltip>
+                            <span nz-icon nzType="edit" nzTheme="outline"></span>
+                          </button>
+                        </ng-container>
+                        <ng-template #noScaleTpl>
+                          Tắt
+                        </ng-template>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="w-50"><row-data [value]="item.autoHealing == true ? 'Bật' : 'Tắt'"
+                    [label]="'Auto healing'"></row-data></td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+          <ng-container *ngIf="i != (detailCluster.workerGroup.length - 1)">
+            <nz-divider nzDashed></nz-divider>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </nz-card>
+
   <!-- Thông tin worker group -->
   <nz-card class="border-card">
     <h3>Thông tin worker group</h3>
@@ -120,7 +206,19 @@
             <nz-table [nzTemplateMode]="true" nzBordered>
               <tbody>
                 <tr>
-                  <td class="w-50"><row-data [value]="item.workerGroupName" [label]="'Tên worker group'"></row-data></td>
+                  <td class="w-50">
+                    <div nz-row>
+                      <div nz-col [nzSpan]="8">Tên nhóm worker</div>
+                      <div nz-col [nzSpan]="16" class="description-info">
+                        <ng-container *ngIf="!isEditMode; else editWorkerGroupNameTpl">
+                          {{item.workerGroupName}}
+                        </ng-container>
+                        <ng-template #editWorkerGroupNameTpl>
+                          <input nz-input type="text" />
+                        </ng-template>
+                      </div>
+                    </div>
+                  </td>
                   <td class="w-50"><row-data [value]="item.minimumNode" [label]="'Tổng số node'"></row-data></td>
                 </tr>
 
@@ -199,8 +297,37 @@
         <nz-table [nzTemplateMode]="true" nzBordered>
           <tbody>
             <tr>
-              <td class="w-50"><row-data [value]="detailCluster.volumeCloudType == 'hdd' ? 'HDD' : 'SSD'" [label]="'Loại'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.volumeCloudSize" [label]="'Kích thước (GB)'"></row-data></td>
+              <td class="w-50">
+                <div nz-row>
+                  <div nz-col [nzSpan]="8">Loại</div>
+                  <div nz-col [nzSpan]="16" class="description-info">
+                    <ng-container *ngIf="!isEditMode; else editVolumeTypeTpl">
+                      {{detailCluster.volumeCloudType == 'hdd' ? 'HDD' : 'SSD'}}
+                    </ng-container>
+                    <ng-template #editVolumeTypeTpl>
+                      <nz-radio-group [(ngModel)]="upgradeVolumeType">
+                        <label nz-radio nzValue="hdd">HDD</label>
+                        <label nz-radio nzValue="sdd">SDD</label>
+                      </nz-radio-group>
+                    </ng-template>
+                  </div>
+                </div>
+              </td>
+
+              <td class="w-50">
+                <div nz-row>
+                  <div nz-col [nzSpan]="8">Quota (GB)</div>
+                  <div nz-col [nzSpan]="16" class="description-info">
+                    <ng-container *ngIf="!isEditMode; else editVolumeSizeTpl">
+                      {{detailCluster.volumeCloudSize}}
+                    </ng-container>
+                    <ng-template #editVolumeSizeTpl>
+                      <input type="text" nz-input [value]="upgradeVolumeCloudSize" (keypress)="isNumber($event)"
+                        (input)="onChangeVolumeSize($event.target.value)" />
+                    </ng-template>
+                  </div>
+                </div>
+              </td>
             </tr>
           </tbody>
         </nz-table>

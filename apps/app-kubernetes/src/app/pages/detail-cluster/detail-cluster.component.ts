@@ -7,6 +7,8 @@ import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '.
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { VPCNetworkModel } from '../../model/vpc-network.model';
 import { ClusterService } from '../../services/cluster.service';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { KubernetesConstant } from '../../constants/kubernetes.constant';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -32,20 +34,112 @@ export class DetailClusterComponent implements OnInit {
   // kubeconfig
   showModalKubeConfig: boolean;
 
+  // upgrade variable
+  isEditMode: boolean;
+  listFormWorkerGroupUpgrade: FormArray;
+  upgradeClusterName: string;
+  workerGroupConfig: any;
+  upgradeVolumeCloudSize: number;
+  upgradeVolumeType: string;
+
   constructor(
     private router: Router,
     private clusterService: ClusterService,
     private notificationService: NzNotificationService,
-    private clipboardService: ClipboardService
+    private clipboardService: ClipboardService,
+    private fb: FormBuilder
   ) {
     this.listOfK8sVersion = [];
     this.showModalKubeConfig = false;
     this.showModalUpgradeVersion = false;
     this.isUpgradingVersion = false;
+    this.isEditMode = false;
   }
 
   ngOnInit(): void {
+    this.listFormWorkerGroupUpgrade = this.fb.array([]);
+  }
 
+  onEditCluster() {
+    this.isEditMode = true;
+    this.initUpgradeData();
+  }
+
+  initUpgradeData() {
+    this.upgradeClusterName = this.detailCluster.clusterName;
+    this.upgradeVolumeType = this.detailCluster.volumeCloudType;
+    this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;
+
+    const wgs = this.detailCluster.workerGroup;
+    for (let i = 0; i < wgs.length; i++) {
+      const index = this.listFormWorkerGroupUpgrade ? this.listFormWorkerGroupUpgrade.length : 0;
+      const wg = this.fb.group({
+        workerGroupName: [wgs[i].workerGroupName,
+          [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+        nodeNumber: [wgs[i].nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
+        volumeStorage: [wgs[i].volumeSize, [Validators.required, Validators.min(20), Validators.max(1000)]],
+        volumeType: [wgs[i].volumeType, [Validators.required]],
+        volumeTypeId: [null, [Validators.required]],
+        configType: [null, [Validators.required]],
+        configTypeId: [null, [Validators.required]],
+        autoScalingWorker: [wgs[i].autoScaling, Validators.required],
+        autoHealing: [wgs[i].autoHealing, Validators.required],
+        minimumNode: [null],
+        maximumNode: [null]
+      });
+
+      this.listFormWorkerGroupUpgrade.push(wg);
+    }
+  }
+
+  // validate duplicate worker group name
+  validateUnique(index: number) {
+    return (control: AbstractControl) => {
+      if (control.value) {
+        const formArray = control.parent
+          ? (control.parent.parent as FormArray)
+          : null;
+        if (formArray) {
+          const attributes = formArray.value.map((x) => x.workerGroupName);
+          return attributes.indexOf(control.value) >= 0 && attributes.indexOf(control.value) < index
+            ? { duplicateName: true }
+            : null;
+        }
+      }
+    };
+  }
+
+  checkDuplicate(index: number) {
+    this.listFormWorkerGroupUpgrade.controls.forEach((x, i) => {
+      if (index != i)
+        (x as FormGroup).get('workerGroupName').updateValueAndValidity()
+    })
+  }
+
+  onCancelEdit() {
+    this.isEditMode = false;
+  }
+
+  onEditClusterName(value: string) {
+    console.log({value: value});
+  }
+
+  onChangeVolumeSize(value: string) {
+    console.log({value: value});
+  }
+
+  // 0: formGroup, 1: formArray
+  onValidateUpgradeInput(currentValue: number, upgradeValue: number,
+    control: string, type: number, index?: number) {
+
+  }
+
+  isNumber(event) {
+    const reg = new RegExp('^[0-9]+$');
+    const input = event.key;
+    if (!reg.test(input)) {
+      event.preventDefault();
+    }
   }
 
   getListVersion(regionId: number) {
