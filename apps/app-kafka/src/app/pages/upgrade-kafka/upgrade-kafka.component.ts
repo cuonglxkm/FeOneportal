@@ -167,6 +167,8 @@ export class UpgradeKafkaComponent implements OnInit {
     data.createdByUserId = userId;
     data.orderItems = [];
     kafka.newOfferId = 286;
+    kafka.serviceName = this.itemDetail.serviceName;
+    kafka.serviceOrderCode = this.itemDetail.serviceOrderCode;
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = 600000;
