@@ -366,16 +366,19 @@
 >
   <ng-container *nzModalContent>
     <span class="text-label">Danh sách VLAN</span>
-    <nz-form-control>
+    <nz-form-control style="margin-top: 5px">
       <nz-select
         [nzPlaceHolder]="'-- Chọn VLAN --'"
         [nzShowSearch]="true"
+        [(ngModel)]="instanceAction.networkId"
+        (ngModelChange)="changeVlanNetwork($event)"
+        [ngModelOptions]="{ standalone: true }"
         nzSize="large"
       >
         <nz-option
-          *ngFor="let i of listVLAN"
-          [nzLabel]="i.text"
-          [nzValue]="i.id"
+          *ngFor="let i of listVlanNetwork"
+          [nzLabel]="i.name"
+          [nzValue]="i.cloudId"
         />
       </nz-select>
     </nz-form-control>
@@ -395,32 +398,31 @@
     </div>
     <div *ngIf="isExpand">
       <span class="text-label">Danh sách Subnet</span>
-      <nz-form-control style="margin-bottom: 10px" class="text-right">
+      <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
         <nz-select
+          [nzLoading]="loadingSubnet"
           [nzPlaceHolder]="'-- Chọn Subnet --'"
           [nzShowSearch]="true"
+          [(ngModel)]="instanceAction.subnetId"
+          [ngModelOptions]="{ standalone: true }"
           nzSize="large"
         >
           <nz-option
             *ngFor="let i of listSubnet"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
+            [nzLabel]="i.name"
+            [nzValue]="i.subnetCloudId"
           />
         </nz-select>
       </nz-form-control>
       <span class="text-label">Địa chỉ IP</span>
-      <nz-form-control style="margin-bottom: 10px" class="text-right">
-        <nz-select
-          [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
-          [nzShowSearch]="true"
-          nzSize="large"
-        >
-          <nz-option
-            *ngFor="let i of listIPAddress"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
-          />
-        </nz-select>
+      <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
+        <input
+          class="input-custom"
+          nz-input
+          placeholder="Nhập địa chỉ IP"
+          [(ngModel)]="instanceAction.ipAddress"
+          [ngModelOptions]="{ standalone: true }"
+        />
       </nz-form-control>
     </div>
 
@@ -452,7 +454,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Gắn
+      Xác nhận
     </button>
   </div>
 </nz-modal>
@@ -476,15 +478,17 @@
       </div>
     </ng-template>
     <span class="text-label">Danh sách IP trên VLAN</span>
-    <nz-form-control>
+    <nz-form-control style="margin-top: 5px">
       <nz-select
         [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
         [nzShowSearch]="true"
+        [(ngModel)]="instanceAction.portId"
+        [ngModelOptions]="{ standalone: true }"
         nzSize="large"
       >
         <nz-option
-          *ngFor="let i of listIPAddressOnVLAN"
-          [nzLabel]="i.text"
+          *ngFor="let i of listOfPrivateNetwork"
+          [nzLabel]="i.fixedIPs[0]"
           [nzValue]="i.id"
         />
       </nz-select>
@@ -672,8 +676,8 @@
           <nz-select
             nzMode="multiple"
             nzPlaceHolder="Chọn Security Group"
-            [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="selectedSecurityGroup"
+            [ngModelOptions]="{ standalone: true }"
             nzSize="large"
             [nzShowSearch]="true"
           >

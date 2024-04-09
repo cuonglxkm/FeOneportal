@@ -284,22 +284,30 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  checkPermission: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
-    this.dataService.getById(instanceId, true).subscribe((data: any) => {
-      this.instancesModel = data;
-      this.instanceNameEdit = this.instancesModel.name;
-      if (
-        this.instancesModel.flavorId == 0 ||
-        this.instancesModel.flavorId == null
-      ) {
-        this.isConfigPackage = false;
-        this.isCustomconfig = true;
-      }
-      this.cdr.detectChanges();
-      this.selectedElementFlavor = this.instancesModel.flavorId;
-      this.region = this.instancesModel.regionId;
-      this.projectId = this.instancesModel.projectId;
-      this.initFlavors();
+    this.dataService.getById(instanceId, true).subscribe({
+      next: (data: any) => {
+        this.checkPermission = true;
+        this.instancesModel = data;
+        this.instanceNameEdit = this.instancesModel.name;
+        if (
+          this.instancesModel.flavorId == 0 ||
+          this.instancesModel.flavorId == null
+        ) {
+          this.isConfigPackage = false;
+          this.isCustomconfig = true;
+        }
+        this.cdr.detectChanges();
+        this.selectedElementFlavor = this.instancesModel.flavorId;
+        this.region = this.instancesModel.regionId;
+        this.projectId = this.instancesModel.projectId;
+        this.initFlavors();
+      },
+      error: (e) => {
+        this.checkPermission = false;
+        this.notification.error(e.error.detail, '');
+      },
     });
   }
 
@@ -351,7 +359,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newOfferId = 0;
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
-    tempInstance.vpcId = this.projectId;
+    tempInstance.projectId = this.projectId;
     tempInstance.regionId = this.region;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -521,8 +529,8 @@ export class InstancesEditComponent implements OnInit {
     // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = 'Điều chỉnh';
-    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.serviceName = this.instancesModel.name;
+    this.instanceResize.projectId = this.projectId;
   }
 
   readyEdit(): void {
