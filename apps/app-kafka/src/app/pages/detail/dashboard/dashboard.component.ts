@@ -131,10 +131,10 @@ export class DashboardComponent implements OnInit {
   ];
 
   resouceInstant = ['topic', 'offline_partition', 'message', 'partition']
-  byteInChartTitle = 'Producers';
-  byteOutChartTitle = 'Consumers';
+  byteInChartTitle = 'Thông lượng dữ liệu truyền vào (Byte/s)';
+  byteOutChartTitle = 'Thông lượng dữ liệu truyền ra (Byte/s)';
   messageRateChartTitle = 'Messages';
-  storageChartTitle = 'Storage';
+  storageChartTitle = 'Mức sử dụng Storage (GB) ';
 
   constructor(
     private dashBoardService: DashBoardService,
@@ -313,7 +313,7 @@ export class DashboardComponent implements OnInit {
         }
       ],
       chart: {
-        height: 250,
+        height: 400,
         type: "area",
         zoom: {
           enabled: false
@@ -341,7 +341,13 @@ export class DashboardComponent implements OnInit {
       },
       title: {
         text: chartTitle,
-        align: "center"
+        align: "center",
+        style: {
+          fontSize: "16px",
+          fontFamily: "Inter",
+          fontWeight: 600,
+          color: "#333333"
+        }
       },
       grid: {
         xaxis: {
@@ -404,7 +410,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteInData = res.data;
           if (this.byteInData) {
-            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Base Byte In (B/s)', this.byteInChartTitle);
+            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Byte/s', this.byteInChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -419,7 +425,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteOutData = res.data;
           if (this.byteOutData) {
-            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Base Byte Out (B/s)', this.byteOutChartTitle);
+            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Byte/s', this.byteOutChartTitle);
           }
         } else {
           this.unsubscribe$.next();
