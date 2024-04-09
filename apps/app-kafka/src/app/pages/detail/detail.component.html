@@ -24,7 +24,7 @@
     
     </page-header>
     
-    <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="setTransactionTabIndex($event)">
+    <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="setTransactionTabIndex($event)" nzSize="large">
         <nz-tab nzTitle="Dashboard">
             <ng-template nz-tab>
                 <one-portal-kafka-dashboard [serviceOrderCode]="serviceOrderCode"></one-portal-kafka-dashboard>

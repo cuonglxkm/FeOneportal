@@ -95,7 +95,8 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // close websocket
-    this.websocketService.disconnect();
+    // this.websocketService.disconnect();
+    console.log("");
   }
 
   /**

@@ -8,8 +8,10 @@ import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaUpgradeReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
+import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
@@ -158,8 +160,27 @@ export class UpgradeKafkaComponent implements OnInit {
 
   onSubmitPayment() {
     // handle payment
+    const kafka = this.myform.getRawValue();
+    const data: Order = new Order();
+    const userId = this.tokenService.get()?.userId;
+    data.customerId = userId;
+    data.createdByUserId = userId;
+    data.orderItems = [];
+    kafka.newOfferId = 286;
 
-    this.upgrade();
+    const orderItem: OrderItem = new OrderItem();
+    orderItem.price = 600000;
+    orderItem.orderItemQuantity = 1;
+    orderItem.specificationType = AppConstants.KAFKA_UPGRADE_TYPE;
+    orderItem.specification = JSON.stringify(kafka);
+    orderItem.serviceDuration = this.usageTime;
+
+    data.orderItems = [...data.orderItems, orderItem];
+
+    const returnPath = window.location.pathname;
+
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: data, path: returnPath}});
+    // this.upgrade();
   }
 
   upgrade() {

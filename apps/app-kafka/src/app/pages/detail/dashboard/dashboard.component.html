@@ -1,5 +1,5 @@
 <div nz-row nzGutter="16" class="general" *ngIf="isHealth !== null">
-    <ng-container *ngIf="isHealth === clusterHealth; else otherHealth">
+    <ng-container *ngIf="isHealth === clusterHealth || isHealth === clusterWarning; else otherHealth">
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-check div-status-cluster p-md">
                 <span class="text-health">Cluster</span>
@@ -9,7 +9,7 @@
     </ng-container>
     
     <ng-template #otherHealth>
-        <ng-container *ngIf="isHealth === clusterUnHealth; else warningHealth">
+        <ng-container *ngIf="isHealth === clusterUnHealth">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
                 <div nz-row nzType="flex" nzAlign="middle" class="div-unhealth div-status-cluster p-md" nz-tooltip
                     [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ef5350'" nzTooltipPlacement="bottom"
@@ -21,6 +21,7 @@
         </ng-container>
     </ng-template>
 
+    <!-- Tạm ẩn trạng thái warning 
     <ng-template #warningHealth>
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="div-warning div-status-cluster p-md" nz-tooltip
@@ -30,7 +31,7 @@
                 <label class="text-check">WARNING</label>
             </div>
         </div>
-    </ng-template>
+    </ng-template> -->
 
     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">

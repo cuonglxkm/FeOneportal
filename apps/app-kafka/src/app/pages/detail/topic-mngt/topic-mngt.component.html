@@ -1,25 +1,26 @@
 <!-- eslint-disable @angular-eslint/template/eqeqeq -->
 <nz-content>
-    <div class="breadcrumb">
-        <nz-breadcrumb vSeparator=">>">
-            <nz-breadcrumb-item>
-                Topic
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item>
-                <a (click)="Cancel()">Danh sách Topic</a>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==createNum">
-                Tạo mới Topic
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==detailNum">
-                Danh sách message Topic: {{topicDetail}}
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==editNum">
-                Cập nhật Topic: {{selectedTopic.topicName}}
-            </nz-breadcrumb-item>
-        </nz-breadcrumb>
-    </div>
     <div class="inner-content">
+        <div class="breadcrumb">
+            <nz-breadcrumb vSeparator=">>">
+                <nz-breadcrumb-item>
+                    Topic
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a (click)="Cancel()">Danh sách Topic</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==createNum">
+                    Tạo mới Topic
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==detailNum">
+                    Danh sách message Topic: {{topicDetail}}
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==editNum">
+                    Cập nhật Topic: {{selectedTopic.topicName}}
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+        </div>
+        
         <div *ngIf="control == listNum">
             <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
                 <div >
