@@ -148,7 +148,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
     if (this.autoCreate) {
-      this.dataService.autoCreatePass(this.instancesId).subscribe({
+      this.dataService.changePassword(this.instancesId, null).subscribe({
         next: (data: any) => {
           this.notification.success('', 'Reset mật khẩu máy ảo thành công');
         },
@@ -162,10 +162,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       });
     } else {
       this.dataService
-        .resetpassword({
-          id: this.instancesId,
-          newPassword: this.resetPassword,
-        })
+        .changePassword(this.instancesId, this.resetPassword)
         .subscribe({
           next: (data: any) => {
             if (data == true) {

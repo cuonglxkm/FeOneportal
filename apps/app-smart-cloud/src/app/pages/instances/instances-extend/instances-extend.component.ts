@@ -141,9 +141,9 @@ export class InstancesExtendComponent implements OnInit {
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = 'Gia hạn';
+    this.instanceExtend.serviceName = this.instancesModel.name;
     this.instanceExtend.customerId = this.customerId;
-    this.instanceExtend.vpcId = this.instancesModel.projectId;
+    this.instanceExtend.projectId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
       'SharedKernel.IntegrationEvents.InstanceExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.instanceExtend.serviceType = 1;

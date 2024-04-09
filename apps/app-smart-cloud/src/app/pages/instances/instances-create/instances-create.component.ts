@@ -56,8 +56,13 @@ class ConfigCustom {
   vCPU?: number = 0;
   ram?: number = 0;
   capacity?: number = 0;
-  priceHour?: string = '000';
-  priceMonth?: string = '000';
+}
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  GPUType: string;
 }
 class BlockStorage {
   id: number = 0;
@@ -96,6 +101,11 @@ export class InstancesCreateComponent implements OnInit {
     animation: 'lazy',
   };
 
+  listGPUType: any[] = [
+    { displayName: 'Nvidia A100' },
+    { displayName: 'Nvidia A30' },
+  ];
+
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -130,6 +140,7 @@ export class InstancesCreateComponent implements OnInit {
   offerFlavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  configGPU: ConfigGPU = new ConfigGPU();
   selectedSSHKeyName: string;
   selectedSnapshot: number;
   cardHeight: string = '160px';
@@ -447,24 +458,20 @@ export class InstancesCreateComponent implements OnInit {
 
   isCustomconfig = false;
   onClickConfigPackage() {
+    this.configCustom = new ConfigCustom();
+    this.volumeUnitPrice = 0;
+    this.volumeIntoMoney = 0;
+    this.ramUnitPrice = 0;
+    this.ramIntoMoney = 0;
+    this.cpuUnitPrice = 0;
+    this.cpuIntoMoney = 0;
     this.isCustomconfig = false;
-    this.resetInstanceConfig();
   }
 
   onClickCustomConfig() {
-    this.configCustom = new ConfigCustom();
-    this.resetInstanceConfig();
-    this.isCustomconfig = true;
-  }
-
-  resetInstanceConfig() {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalincludesVAT = 0;
-    this.instanceCreate.volumeSize = null;
-    this.instanceCreate.ram = null;
-    this.instanceCreate.cpu = null;
+    this.isCustomconfig = true;
   }
   //#endregion
 
@@ -533,6 +540,11 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
+        this.listSecurityGroup.forEach((e) => {
+          if (e.name.toUpperCase() == 'DEFAULT') {
+            this.selectedSecurityGroup.push(e.name);
+          }
+        });
         this.cdr.detectChanges();
       });
   }
@@ -616,7 +628,7 @@ export class InstancesCreateComponent implements OnInit {
     tempInstance.volumeSize = volumeSize;
     tempInstance.ram = ram;
     tempInstance.cpu = cpu;
-    tempInstance.vpcId = this.projectId;
+    tempInstance.projectId = this.projectId;
     tempInstance.regionId = this.region;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -721,6 +733,26 @@ export class InstancesCreateComponent implements OnInit {
           this.totalincludesVAT = 0;
         }
       });
+  }
+
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
   }
   //#endregion
 
@@ -1027,7 +1059,7 @@ export class InstancesCreateComponent implements OnInit {
       });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.vpcId = this.projectId;
+    this.instanceCreate.projectId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;

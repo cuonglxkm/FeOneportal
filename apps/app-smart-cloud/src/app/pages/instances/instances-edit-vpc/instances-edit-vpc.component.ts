@@ -147,7 +147,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.regionId = this.regionId;
     this.instanceResize.serviceName = null;
     this.instanceResize.customerId = this.userId;
-    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.projectId = this.projectId;
     this.instanceResize.userEmail = this.userEmail;
     this.instanceResize.actorEmail = this.userEmail;
   }

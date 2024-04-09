@@ -39,8 +39,14 @@ class ConfigCustom {
   ram?: number = 0;
   capacity?: number = 0;
   iops?: string = '000';
-  priceHour?: string = '000';
-  priceMonth?: string = '000';
+}
+
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  GPUType: string;
 }
 
 @Component({
@@ -72,6 +78,7 @@ export class InstancesEditComponent implements OnInit {
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  configGPU: ConfigGPU = new ConfigGPU();
   isConfigPackage: boolean = true;
   cardHeight: string = '160px';
 
@@ -284,22 +291,30 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  checkPermission: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
-    this.dataService.getById(instanceId, true).subscribe((data: any) => {
-      this.instancesModel = data;
-      this.instanceNameEdit = this.instancesModel.name;
-      if (
-        this.instancesModel.flavorId == 0 ||
-        this.instancesModel.flavorId == null
-      ) {
-        this.isConfigPackage = false;
-        this.isCustomconfig = true;
-      }
-      this.cdr.detectChanges();
-      this.selectedElementFlavor = this.instancesModel.flavorId;
-      this.region = this.instancesModel.regionId;
-      this.projectId = this.instancesModel.projectId;
-      this.initFlavors();
+    this.dataService.getById(instanceId, true).subscribe({
+      next: (data: any) => {
+        this.checkPermission = true;
+        this.instancesModel = data;
+        this.instanceNameEdit = this.instancesModel.name;
+        if (
+          this.instancesModel.flavorId == 0 ||
+          this.instancesModel.flavorId == null
+        ) {
+          this.isConfigPackage = false;
+          this.isCustomconfig = true;
+        }
+        this.cdr.detectChanges();
+        this.selectedElementFlavor = this.instancesModel.flavorId;
+        this.region = this.instancesModel.regionId;
+        this.projectId = this.instancesModel.projectId;
+        this.initFlavors();
+      },
+      error: (e) => {
+        this.checkPermission = false;
+        this.notification.error(e.error.detail, '');
+      },
     });
   }
 
@@ -351,7 +366,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newOfferId = 0;
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
-    tempInstance.vpcId = this.projectId;
+    tempInstance.projectId = this.projectId;
     tempInstance.regionId = this.region;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -466,6 +481,28 @@ export class InstancesEditComponent implements OnInit {
       });
   }
 
+  //#cấu hình GPU
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
+  }
+  //#End cấu hình GPU
+
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
@@ -521,8 +558,8 @@ export class InstancesEditComponent implements OnInit {
     // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = 'Điều chỉnh';
-    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.serviceName = this.instancesModel.name;
+    this.instanceResize.projectId = this.projectId;
   }
 
   readyEdit(): void {

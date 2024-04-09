@@ -86,7 +86,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'instance_resize':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = `Chỉnh sửa`;
+            serviceItem.type = `Điều chỉnh`;
             break;
           case 'instance_extend':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
