@@ -61,6 +61,11 @@ export class VpcUpdateComponent {
   activeLoadBalancer = false;
   activeFileStorage = false;
 
+  vCPU = 1;
+  ram = 1;
+  hhd = 0;
+  ssd = 0;
+
   total: any;
   totalAmount = 0;
   totalPayment = 0;
@@ -86,10 +91,10 @@ export class VpcUpdateComponent {
       disabled: true
     }, {validators: this.selectIndexTab === 0 ? [Validators.required] : []}),
     //tab 2
-    vCPU: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
-    ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
-    hhd: new FormControl(0),
-    ssd: new FormControl(0),
+    // vCPU: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
+    // ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
+    // hhd: new FormControl(0),
+    // ssd: new FormControl(0),
 
   });
 
@@ -109,19 +114,17 @@ export class VpcUpdateComponent {
   }
 
   calculate() {
-    let vCPU = this.form.controls['vCPU'].value;
-    let ram = this.form.controls['ram'].value;
     let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : this.data.quotaIpPublicCount;
     let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : this.data.quotaIpFloatingCount;
     let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : this.data.quotaIpv6Count;
-    if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && vCPU != 0 && ram != 0)) {
+    if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
       this.loadingCalculate = true;
       const requestBody =
         {
-          newQuotavCpu: vCPU,
-          newQuotaRamInGb: ram,
-          newQuotaHddInGb: this.form.controls['hhd'].value,
-          newQuotaSsdInGb: this.form.controls['ssd'].value,
+          newQuotavCpu: this.vCPU,
+          newQuotaRamInGb: this.ram,
+          newQuotaHddInGb: this.hhd,
+          newQuotaSsdInGb: this.ssd,
           newQuotaBackupVolumeInGb: this.numberBackup,
           newQuotaSecurityGroupCount: this.numberSecurityGroup,
           // newQuotaKeypairCount: 0,// NON
@@ -238,19 +241,17 @@ export class VpcUpdateComponent {
   }
 
   updateVpc() {
-    let vCPU = this.form.controls['vCPU'].value;
-    let ram = this.form.controls['ram'].value;
     let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : this.data.quotaIpPublicCount;
     let IPFloating = this.selectIndexTab == 1 ? this.numberIpFloating : this.data.quotaIpFloatingCount;
     let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : this.data.quotaIpv6Count;
-    if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && vCPU != 0 && ram != 0)) {
+    if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
       this.loadingCalculate = true;
       const requestBody =
         {
-          newQuotavCpu: vCPU,
-          newQuotaRamInGb: ram,
-          newQuotaHddInGb: this.form.controls['hhd'].value,
-          newQuotaSsdInGb: this.form.controls['ssd'].value,
+          newQuotavCpu: this.vCPU,
+          newQuotaRamInGb: this.ram,
+          newQuotaHddInGb: this.hhd,
+          newQuotaSsdInGb: this.ssd,
           newQuotaBackupVolumeInGb: this.numberBackup,
           newQuotaSecurityGroupCount: this.numberSecurityGroup,
           // newQuotaKeypairCount: 0,// NON

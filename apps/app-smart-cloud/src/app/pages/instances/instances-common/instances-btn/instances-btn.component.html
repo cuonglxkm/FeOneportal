@@ -9,7 +9,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -24,7 +24,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -38,7 +38,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
@@ -63,7 +63,7 @@
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        instancesModel.taskState.toUpperCase() != 'RESIZE' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR'
       "
       nz-menu-item
@@ -80,34 +80,33 @@
   (nzOnCancel)="handleCancelDelete()"
 >
   <div *nzModalContent>
-    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-      <nz-alert
-        style="margin-bottom: 20px"
-        nzType="warning"
-        [nzDescription]="customTemplateMessageDelete"
-        nzShowIcon
-      ></nz-alert>
-      <span class="text-label">
-        Để thực hiện xóa máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
-        ảo để xác nhận.
-      </span>
-      <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
-        ><nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input
-            class="input-custom"
-            nz-input
-            formControlName="name"
-            [(ngModel)]="inputConfirm"
-            (keyup.enter)="handleOkDelete()"
-          />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập tên máy ảo</ng-container
-            >
-          </ng-template>
-        </nz-form-control></nz-form-item
-      >
-    </form>
+    <nz-alert
+      style="margin-bottom: 20px"
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <span class="text-label">
+      Để thực hiện xóa máy ảo {{ instancesModel.name }}, vui lòng nhập tên máy
+      ảo để xác nhận.
+    </span>
+    <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
+      ><nz-form-control>
+        <input
+          class="input-custom"
+          nz-input
+          [(ngModel)]="inputConfirm"
+          [ngModelOptions]="{ standalone: true }"
+          (keyup.enter)="handleOkDelete()"
+        />
+        <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
+          Vui lòng nhập đúng tên máy ảo
+        </div>
+        <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
+          Vui lòng nhập tên máy ảo
+        </div>
+      </nz-form-control></nz-form-item
+    >
   </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDelete()">
@@ -117,7 +116,7 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOk()">
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -229,8 +228,8 @@
           </nz-input-group>
           <ng-template #newpassErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập mật khẩu mới</ng-container
-            >
+              >Vui lòng nhập trường mật khẩu mới
+            </ng-container>
             <ng-container *ngIf="control.hasError('pattern')"
               >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số, chữ
               hoa, chữ thường và ký hiệu đặc biệt</ng-container
@@ -270,13 +269,13 @@
           </ng-template>
           <div *ngIf="!check">
             <span style="color: rgba(252, 16, 16, 1)"
-              >Mật khẩu không khớp!</span
+              >Mật khẩu không khớp nhau, vui lòng nhập lại</span
             >
           </div>
         </nz-form-control>
         <ng-template #passRepeatErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')"
-            >Vui lòng nhập lại mật khẩu mới</ng-container
+            >Vui lòng nhập trường xác nhận mật khẩu</ng-container
           >
         </ng-template></nz-form-item
       >

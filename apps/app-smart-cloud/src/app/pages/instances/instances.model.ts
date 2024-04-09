@@ -35,21 +35,30 @@ export interface RulesInfo {
 }
 
 export class IPPublicModel {
+  id: number;
   ipAddress: string;
   portCloudId: string;
   customerId: number;
-  attachedVmId: null;
+  attachedVmId: number;
   region: number;
   regionText: string;
-  createDate: Date;
+  createDate: string;
   status: number;
   cloudIdentity: number;
   projectName: string;
   projectId: number;
   networkId: string;
-  iPv6Address: null;
-  serviceStatus: null;
-  id: number;
+  iPv6Address: string;
+  serviceStatus: string;
+  attachedVm: string;
+  expiredDate: string;
+  resourceStatus: string;
+  suspendType: string;
+  typeIP: string;
+  network: string;
+  fixedIpAddress: string;
+  loadbalancerId: number;
+  loadbalancerName: string;
 }
 
 export class Flavors {
@@ -411,7 +420,7 @@ export class UpdatePortInstance {
   portSecurityEnanble: boolean;
 }
 
-export class  IpCreate {
+export class IpCreate {
   id: number;
   duration: number;
   ipAddress: any;

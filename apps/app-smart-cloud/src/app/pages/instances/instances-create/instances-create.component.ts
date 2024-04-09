@@ -41,6 +41,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Subject, debounceTime } from 'rxjs';
 import { addDays } from 'date-fns';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+  Port,
+} from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
 
 interface InstancesForm {
   name: FormControl<string>;
@@ -99,7 +105,7 @@ export class InstancesCreateComponent implements OnInit {
       validators: [
         Validators.required,
         Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,}$/
         ),
       ],
     }),
@@ -139,7 +145,8 @@ export class InstancesCreateComponent implements OnInit {
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private vlanService: VlanService
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -164,6 +171,29 @@ export class InstancesCreateComponent implements OnInit {
         this.myCarouselImage.reset();
         this.myCarouselFlavor.reset();
       }, 100);
+    }
+  }
+
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
+
+      const tabs = document.querySelectorAll('.ant-tabs-tab'); // Lấy danh sách các tab
+      const activeTab = document.querySelector('.ant-tabs-tab-active'); // Lấy tab đang active
+
+      // Tìm index của tab đang active
+      let activeTabIndex = Array.prototype.indexOf.call(tabs, activeTab);
+
+      if (event.key === 'ArrowLeft') {
+        activeTabIndex -= 1; // Di chuyển tới tab trước đó
+      } else if (event.key === 'ArrowRight') {
+        activeTabIndex += 1; // Di chuyển tới tab tiếp theo
+      }
+
+      // Kiểm tra xem tab có hợp lệ không
+      if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+        (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
+      }
     }
   }
 
@@ -460,6 +490,40 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
+  listVlanNetwork: NetWorkModel[] = [];
+  vlanNetwork: string;
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listVlanNetwork = data.records;
+        this.cdr.detectChanges();
+      });
+  }
+
+  listPort: Port[] = [];
+  port: string;
+  getListPort() {
+    this.dataService
+      .getListAllPortByNetwork(this.vlanNetwork, this.region)
+      .subscribe({
+        next: (data) => {
+          this.listPort = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Port không thành công'
+          );
+        },
+      });
+  }
+
   getAllSecurityGroup() {
     this.dataService
       .getAllSecurityGroup(
@@ -675,7 +739,7 @@ export class InstancesCreateComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,}$/
           ),
         ],
       })

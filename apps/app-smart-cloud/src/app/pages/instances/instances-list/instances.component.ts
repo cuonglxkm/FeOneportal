@@ -388,16 +388,16 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Khởi động lại máy ảo thành công');
+          this.notification.success('', 'Yêu cầu khởi động lại máy ảo đã được gửi đi');
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          ('Khởi động lại máy ảo không thành công');
+          ('Yêu cầu khởi động lại máy ảo thất bại');
         }
       },
       error: (e) => {
-        this.notification.error('', 'Khởi động lại máy ảo không thành công');
+        this.notification.error('', 'Yêu cầu khởi động lại máy ảo thất bại');
       },
     });
   }
