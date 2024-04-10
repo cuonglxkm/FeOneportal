@@ -32,7 +32,6 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   constructor(
     private dataService: InstancesService,
-    private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     private route: Router,
     private notification: NzNotificationService,
@@ -57,13 +56,9 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     );
   }
 
-  form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-  });
   titleDeleteInstance: string = '';
+  checkInputConfirm: boolean = false;
+  checkInputEmpty: boolean = false;
   showModalDelete() {
     this.isVisibleDelete = true;
     this.inputConfirm = '';
@@ -72,30 +67,41 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
 
   handleOkDelete() {
     if (this.inputConfirm == this.instancesModel.name) {
+      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+      this.checkInputConfirm = false;
+      this.checkInputEmpty = false;
       this.isVisibleDelete = false;
-      this.dataService.delete(this.instancesId).subscribe({
-        next: (data: any) => {
-          this.valueChanged.emit('DELETE');
-          this.notification.success('', 'Xóa máy ảo thành công');
-        },
-        error: (e) => {
-          this.isVisibleDelete = false;
-          this.notification.error(e.statusText, 'Xóa máy ảo thất bại');
-        },
-      });
+      this.dataService
+        .delete(this.instancesId)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close();
+          })
+        )
+        .subscribe({
+          next: (data: any) => {
+            this.valueChanged.emit('DELETE');
+            this.notification.success('', 'Xóa máy ảo thành công');
+          },
+          error: (e) => {
+            this.isVisibleDelete = false;
+            this.notification.error(e.statusText, 'Xóa máy ảo thất bại');
+          },
+        });
     } else if (this.inputConfirm == '') {
-      this.notification.error('Vui lòng nhập tên máy ảo', '');
+      this.checkInputEmpty = true;
+      this.checkInputConfirm = false;
     } else {
-      this.isVisibleDelete = false;
-      this.notification.error(
-        'Vui lòng nhập đúng tên máy ảo',
-        'Xóa máy ảo thất bại'
-      );
+      this.checkInputEmpty = false;
+      this.checkInputConfirm = true;
     }
+    this.cdr.detectChanges();
   }
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+    this.checkInputConfirm = false;
+    this.checkInputEmpty = false;
   }
 
   continue(): void {
@@ -142,12 +148,12 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
     if (this.autoCreate) {
-      this.dataService.autoCreatePass(this.instancesId).subscribe({
+      this.dataService.changePassword(this.instancesId, null).subscribe({
         next: (data: any) => {
           this.notification.success('', 'Reset mật khẩu máy ảo thành công');
         },
         error: (e) => {
-          console.log("reset pass", e)
+          console.log('reset pass', e);
           this.notification.error(
             e.error.detail,
             'Reset mật khẩu máy không thành công'
@@ -156,10 +162,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       });
     } else {
       this.dataService
-        .resetpassword({
-          id: this.instancesId,
-          newPassword: this.resetPassword,
-        })
+        .changePassword(this.instancesId, this.resetPassword)
         .subscribe({
           next: (data: any) => {
             if (data == true) {

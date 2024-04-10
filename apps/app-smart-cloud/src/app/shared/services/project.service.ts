@@ -33,4 +33,10 @@ export class ProjectService extends BaseService {
       headers: this.getHeaders()
     });
   }
+
+  getProjectVpc(id) {
+    return this.http.get<SizeInCLoudProject>(this.baseUrl + this.ENDPOINT.provisions + `/projects/${id}`, {
+      headers: this.getHeaders()
+    })
+  }
 }

@@ -10,9 +10,12 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
+  InstanceAction,
   InstancesModel,
+  Network,
   SecurityGroupModel,
   UpdateInstances,
+  VlanSubnet,
 } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
@@ -22,6 +25,11 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NotificationService } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+} from 'src/app/shared/models/vlan.model';
+import { VlanService } from 'src/app/shared/services/vlan.service';
 
 class SearchParam {
   status: string = '';
@@ -50,14 +58,9 @@ export class InstancesComponent implements OnInit {
     { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
   ];
 
-  listVLAN: [{ id: ''; text: 'Chọn VLAN' }];
-  listSubnet: [{ id: ''; text: 'Chọn Subnet' }];
-  listIPAddress: [{ id: ''; text: 'Chọn địa chỉ IP' }];
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
 
   selectedOptionAction: string;
-  actionData: InstancesModel;
-
   region: number;
   projectId: number;
   project: ProjectModel;
@@ -71,7 +74,8 @@ export class InstancesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private vlanService: VlanService
   ) {}
 
   ngOnInit() {
@@ -80,6 +84,7 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
+    this.getListNetwork();
     this.getAllSecurityGroup();
     if (this.notificationService.connection == undefined) {
       this.notificationService.initiateSignalrConnection();
@@ -111,7 +116,7 @@ export class InstancesComponent implements OnInit {
 
             case 'SHUTOFF':
             case 'START':
-            case 'REBOOT':  
+            case 'REBOOT':
               var record = this.dataList[foundIndex];
 
               record.taskState = data.taskState;
@@ -127,7 +132,7 @@ export class InstancesComponent implements OnInit {
               if (data.status) {
                 record.status = data.status;
               }
-              
+
               if (data.taskState) {
                 record.taskState = data.taskState;
               }
@@ -135,20 +140,15 @@ export class InstancesComponent implements OnInit {
               if (data.flavorName) {
                 record.flavorName = data.flavorName;
               }
-              
+
               this.dataList[foundIndex] = record;
               this.cdr.detectChanges();
-            break;
+              break;
           }
         }
       }
     });
     this.checkExistName();
-  }
-
-  selectedChecked(e: any): void {
-    // @ts-ignore
-    this.checkedCashArray = [...e];
   }
 
   onRegionChange(region: RegionModel) {
@@ -260,47 +260,116 @@ export class InstancesComponent implements OnInit {
     }
   }
 
-  showHandleGanVLAN() {
+  listVlanNetwork: NetWorkModel[] = [];
+  getListNetwork(): void {
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageNumber = 0;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.vlanName = '';
+    this.vlanService
+      .getVlanNetworks(formSearchNetwork)
+      .subscribe((data: any) => {
+        this.listVlanNetwork = data.records;
+        this.cdr.detectChanges();
+      });
+  }
+
+  changeVlanNetwork(networkCloudId: string) {
+    this.getVlanSubnets(networkCloudId);
+  }
+
+  listSubnet: VlanSubnet[] = [];
+  loadingSubnet: boolean = false;
+  getVlanSubnets(networkCloudId: string): void {
+    this.loadingSubnet = true;
+    this.dataService
+      .getVlanSubnets(9999, 0, this.region, networkCloudId)
+      .pipe(
+        finalize(() => {
+          this.loadingSubnet = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listSubnet = data.records;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy danh sách Subnet không thành công'
+          );
+        },
+      });
+  }
+
+  instanceAction: InstanceAction = new InstanceAction();
+  showHandleGanVLAN(id: number) {
+    this.instanceAction = new InstanceAction();
+    this.instanceAction.id = id;
+    this.instanceAction.command = 'attachinterface';
     this.isVisibleGanVLAN = true;
   }
 
   handleCancelGanVLAN(): void {
-    this.actionData = null;
     this.isVisibleGanVLAN = false;
   }
 
   handleOkGanVLAN(): void {
-    this.notification.success('', 'Gắn VLAN thành công');
-    //this.actionData = null;
     this.isVisibleGanVLAN = false;
-    // var body = {};
-    // this.dataService.postAction(this.actionData.id, body).subscribe(
-    //   (data: any) => {
-    //     console.log(data);
-    //     if (data == true) {
-    //       this.notification.success('', 'Gắn VLAN thành công');
-    //     } else {
-    //       this.notification.error('', 'Gắn VLAN không thành công');
-    //     }
-    //   },
-    //   () => {
-    //     this.notification.error('', 'Gắn VLAN không thành công');
-    //   }
-    // );
+    this.dataService.postAction(this.instanceAction).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Gắn VLAN thành công');
+        } else {
+          this.notification.error('', 'Gắn VLAN không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error(e.statusText, 'Gắn VLAN không thành công');
+      },
+    });
   }
 
-  showHandleGoKhoiVLAN() {
+  listOfPrivateNetwork: Network[];
+  getListIpPublic(id: number) {
+    this.dataService
+      .getPortByInstance(id, this.region)
+      .subscribe((dataNetwork: any) => {
+        //list IP Lan
+        this.listOfPrivateNetwork = dataNetwork.filter(
+          (e: Network) => e.isExternal == false
+        );
+        this.cdr.detectChanges();
+      });
+  }
+
+  showHandleGoKhoiVLAN(id: number) {
+    this.instanceAction = new InstanceAction();
+    this.instanceAction.id = id;
+    this.instanceAction.command = 'detachinterface';
     this.isVisibleGoKhoiVLAN = true;
   }
 
   handleCancelGoKhoiVLAN(): void {
-    this.actionData = null;
     this.isVisibleGoKhoiVLAN = false;
   }
 
   handleOkGoKhoiVLAN(): void {
-    this.notification.success('', 'Gỡ khỏi VLAN thành công');
     this.isVisibleGoKhoiVLAN = false;
+    this.dataService.postAction(this.instanceAction).subscribe({
+      next: (data: any) => {
+        if (data == 'Thao tác thành công') {
+          this.notification.success('', 'Gỡ khỏi VLAN thành công');
+        } else {
+          this.notification.error('', 'Gỡ khỏi VLAN không thành công');
+        }
+      },
+      error: (e) => {
+        this.notification.error(e.statusText, 'Gỡ khỏi VLAN không thành công');
+      },
+    });
   }
 
   isExpand = false;
@@ -388,16 +457,19 @@ export class InstancesComponent implements OnInit {
     this.dataService.postAction(body).subscribe({
       next: (data) => {
         if (data == 'Thao tác thành công') {
-          this.notification.success('', 'Khởi động lại máy ảo thành công');
+          this.notification.success(
+            '',
+            'Yêu cầu khởi động lại máy ảo đã được gửi đi'
+          );
           setTimeout(() => {
             this.reloadTable();
           }, 1500);
         } else {
-          ('Khởi động lại máy ảo không thành công');
+          ('Yêu cầu khởi động lại máy ảo thất bại');
         }
       },
       error: (e) => {
-        this.notification.error('', 'Khởi động lại máy ảo không thành công');
+        this.notification.error('', 'Yêu cầu khởi động lại máy ảo thất bại');
       },
     });
   }

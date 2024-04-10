@@ -86,7 +86,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'instance_resize':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = `Chỉnh sửa`;
+            serviceItem.type = `Điều chỉnh`;
             break;
           case 'instance_extend':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
@@ -133,6 +133,11 @@ export class PaymentSummaryComponent implements OnInit {
             this.serviceType = 'kafka';
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
+            break;
+          case 'kafka_resize': 
+            this.serviceType = 'kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Nâng cấp';
             break;
           case 'vpnsitetosite_create':
             serviceItem.name = `Vpn Site To Site`;
