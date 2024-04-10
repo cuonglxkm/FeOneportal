@@ -45,6 +45,7 @@
                 <nz-row>
                   <nz-col nzSpan="12">
                     <input
+                      #nameInput
                       class="input-custom"
                       nz-input
                       formControlName="name"
@@ -66,6 +67,7 @@
                       (ngModelChange)="initSnapshot()"
                     ></nz-switch>
                     <label
+                      class="text-label"
                       nzFor="name"
                       style="text-align: right; padding-left: 1%"
                       >Tạo từ Snapshot
@@ -343,7 +345,7 @@
           nzSize="large"
           (keydown)="handleKeyboardEvent($event)"
         >
-          <nz-tab nzTitle="Gói cấu hình" (nzClick)="onClickConfigPackage()">
+          <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="onClickConfigPackage()">
             <ngu-carousel
               *ngIf="activeBlockHDD"
               #myCarouselFlavor
@@ -539,6 +541,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.capacity"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -573,6 +576,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.ram"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -608,6 +612,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.vCPU"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -656,6 +661,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.CPU"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -690,6 +696,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.ram"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeRamOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -725,6 +732,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.storage"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -759,6 +767,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.GPU"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -809,8 +818,8 @@
         <br />
         <nz-row nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <nz-form-item>
-              <nz-form-label
+            <nz-form-item
+              ><nz-form-label
                 >Chọn IP Public (<span class="text-red">*</span>)<img
                   style="margin-left: 10px"
                   nz-popover
@@ -848,7 +857,35 @@
                   />
                 </nz-select>
               </nz-form-control>
-              <nz-form-label style="margin-top: 20px"
+            </nz-form-item>
+          </nz-col>
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label>Chọn Security Group</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                  nzMode="multiple"
+                  nzPlaceHolder="Chọn Security Group"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="selectedSecurityGroup"
+                  [nzServerSearch]="true"
+                  nzSize="large"
+                >
+                  <nz-option
+                    *ngFor="let i of listSecurityGroup"
+                    [nzLabel]="i.name"
+                    [nzValue]="i.name"
+                    [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"
+                  />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="16">
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label
                 >Chọn VLAN gắn vào máy ảo (<span class="text-red">*</span
                 >)</nz-form-label
               >
@@ -868,6 +905,31 @@
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
+          </nz-col>
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
+            <nz-form-item>
+              <nz-form-label
+                >Chọn Port (<span class="text-red">*</span>)</nz-form-label
+              >
+              <nz-form-control>
+                <nz-select
+                  [nzShowSearch]="true"
+                  [(ngModel)]="port"
+                  [ngModelOptions]="{ standalone: true }"
+                  nzSize="large"
+                >
+                  <nz-option
+                    *ngFor="let i of listPort"
+                    [nzLabel]="i.macAddress"
+                    [nzValue]="i.macAddress"
+                  />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-row nzGutter="16">
+          <nz-col nzLg="12" nzMd="12" nzSm="24">
             <div>
               <label
                 *ngIf="hasOfferIpv6"
@@ -914,60 +976,26 @@
           </nz-col>
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item>
-              <nz-form-label>Chọn Security Group</nz-form-label>
-              <nz-form-control>
-                <nz-select
-                  nzMode="multiple"
-                  nzPlaceHolder="Chọn Security Group"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="selectedSecurityGroup"
-                  [nzServerSearch]="true"
-                  nzSize="large"
-                >
-                  <nz-option
-                    *ngFor="let i of listSecurityGroup"
-                    [nzLabel]="i.name"
-                    [nzValue]="i.name"
-                    [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"
-                  />
-                </nz-select>
-              </nz-form-control>
-              <nz-form-label style="margin-top: 20px"
-                >Chọn Port (<span class="text-red">*</span>)</nz-form-label
-              >
-              <nz-form-control>
-                <nz-select
-                  [nzShowSearch]="true"
-                  [(ngModel)]="port"
-                  [ngModelOptions]="{ standalone: true }"
-                  nzSize="large"
-                >
-                  <nz-option
-                    *ngFor="let i of listPort"
-                    [nzLabel]="i.macAddress"
-                    [nzValue]="i.macAddress"
-                  />
-                </nz-select>
-              </nz-form-control>
+              <div>
+                <nz-alert
+                  nzType="warning"
+                  [nzDescription]="nzDescriptionWarning3"
+                  nzShowIcon
+                ></nz-alert>
+                <ng-template #nzDescriptionWarning3>
+                  <div>
+                    Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần
+                    cấu hình Security Group trong mục
+                    <u
+                      style="cursor: pointer"
+                      [routerLink]="['/app-smart-cloud/security-group/list']"
+                      (keyup.enter)="navigateToSecurity()"
+                      >Truy cập và Bảo mật</u
+                    >
+                  </div>
+                </ng-template>
+              </div>
             </nz-form-item>
-            <div>
-              <nz-alert
-                nzType="warning"
-                [nzDescription]="nzDescriptionWarning3"
-                nzShowIcon
-              ></nz-alert>
-              <ng-template #nzDescriptionWarning3>
-                <div>
-                  Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
-                  hình Security Group trong mục
-                  <u
-                    style="cursor: pointer"
-                    [routerLink]="['/app-smart-cloud/security-group']"
-                    >Truy cập và Bảo mật</u
-                  >
-                </div>
-              </ng-template>
-            </div>
           </nz-col>
         </nz-row>
         <nz-row>
@@ -1071,7 +1099,7 @@
                       class="input-custom"
                       [type]="passwordVisible ? 'text' : 'password'"
                       nz-input
-                      placeholder="input password"
+                      placeholder="Nhập mật khẩu"
                       formControlName="passOrKeyFormControl"
                       [(ngModel)]="password"
                     />
@@ -1188,12 +1216,13 @@
                     [nzMax]="100"
                     [nzStep]="1"
                     [(ngModel)]="numberMonth"
+                    (keydown)="onKeyDown($event)"
                     (ngModelChange)="changeTime($event)"
                     [ngModelOptions]="{ standalone: true }"
                     nzSize="large"
                   ></nz-input-number>
                   <div
-                    class="text-custom-time"
+                    class="text-label"
                     style="
                       display: flex;
                       margin-left: 20px;
@@ -1277,6 +1306,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.capacity"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="
                           changeTotalAmountBlockStorage(data.id, $event);
                           externalVolume()
@@ -1393,6 +1423,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.amount"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="onInputIPv4($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"
@@ -1474,6 +1505,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="data.amount"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="onInputIPv6($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [id]="'amount_' + data.id"

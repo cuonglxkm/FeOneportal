@@ -215,6 +215,7 @@
                   [nzMax]="100"
                   [nzStep]="1"
                   [(ngModel)]="numberMonth"
+                  (keydown)="onKeyDown($event)"
                   (ngModelChange)="changeTime($event)"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
