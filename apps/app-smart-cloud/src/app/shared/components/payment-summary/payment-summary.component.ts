@@ -114,7 +114,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s`;
+            serviceItem.name = `k8s - ${specificationObj.clusterName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
@@ -149,6 +149,14 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'vpnsitetosite_resize':
             serviceItem.name = `Vpn Site To Site`;
+            serviceItem.type = 'Chỉnh sửa';
+            break;
+          case 'snapshotpackage_create':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
+            break;
+          case 'snapshotpackage_resize':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
             serviceItem.type = 'Chỉnh sửa';
             break;
           default:

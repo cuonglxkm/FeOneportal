@@ -98,24 +98,41 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let data of fixedTable.data, index as i">
+        <tr *ngFor="let data of fixedTable.data; index as i">
           <td>{{ i + 1 }}</td>
-          <td>{{data.name}}</td>
+          <td>{{ data.name }}</td>
           <td>file-system-01</td>
-          <td>{{data.maxSnapshot}}</td>
-          <td>{{data.mode === 1 ? 'Hằng ngày': data.mode === 2 ? 'Theo thứ' : data.mode === 3 ? 'Theo tuần' : data.mode === 4 && 'Theo tháng'}}</td>
-          <td [ngStyle]="{
-            color:
+          <td>{{ data.maxSnapshot }}</td>
+          <td>
+            {{
+              data.mode === 1
+                ? 'Hằng ngày'
+                : data.mode === 2
+                ? 'Theo thứ'
+                : data.mode === 3
+                ? 'Theo tuần'
+                : data.mode === 4 && 'Theo tháng'
+            }}
+          </td>
+          <td
+            [ngStyle]="{
+              color:
+                data.status === 'ACTIVE'
+                  ? '#0066B3'
+                  : data.status === 'DISABLED'
+                  ? '#EA3829'
+                  : ''
+            }"
+          >
+            {{
               data.status === 'ACTIVE'
-                ? '#0066B3'
-                : data.status === 'DISABLED'
-                ? '#EA3829'
-                : ''
-          }">{{data.status === 'ACTIVE' ? 'Đang hoạt động' : data.status === 'DISABLED' && 'Tạm ngưng'}}</td>
-          <td>{{data.nextRuntime | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                ? 'Đang hoạt động'
+                : data.status === 'DISABLED' ? 'Tạm ngưng' : data.status
+            }}
+          </td>
+          <td>{{ data.nextRuntime | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td>
             <div class="d-flex gap-2 justify-content-center align-items-center">
-              
               <span
                 style="color: #0066b3; margin-right: 10px; cursor: pointer"
                 nz-icon
@@ -130,7 +147,7 @@
                 [region]="region"
                 [project]="project"
               />
-              
+
               <one-portal-delete-file-system-snapshot-schedule
                 [region]="region"
                 [project]="project"
