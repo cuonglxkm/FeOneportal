@@ -316,10 +316,53 @@ export class DashboardComponent implements OnInit {
         height: 400,
         type: "area",
         zoom: {
-          enabled: false
+          enabled: true,
+          type: 'x',  
+          autoScaleYaxis: false,  
+          zoomedArea: {
+            fill: {
+              color: '#90CAF9',
+              opacity: 0.4
+            },
+            stroke: {
+              color: '#0D47A1',
+              opacity: 0.4,
+              width: 1
+            }
+          }
         },
         toolbar: {
-          show: false
+          show: true, 
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: []
+          },
+          export: {
+            csv: {
+              filename: undefined,
+              columnDelimiter: ',',
+              headerCategory: 'category',
+              headerValue: 'value',
+              dateFormatter(timestamp) {
+                return new Date(timestamp).toDateString()
+              }
+            },
+            svg: {
+              filename: undefined,
+            },
+            png: {
+              filename: undefined,
+            }
+          },
+          autoSelected: 'zoom' 
         }
       },
       dataLabels: {
@@ -327,7 +370,7 @@ export class DashboardComponent implements OnInit {
       },
       stroke: {
         curve: "smooth",
-        width: 2,
+        width: 1,
       },
       fill: {
         type: 'gradient',
@@ -372,7 +415,8 @@ export class DashboardComponent implements OnInit {
         },
         labels: {
           datetimeUTC: false,
-          format: "HH:mm:ss"
+          showDuplicates: false,
+          format: "HH:mm"
         }
       },
       yaxis: {

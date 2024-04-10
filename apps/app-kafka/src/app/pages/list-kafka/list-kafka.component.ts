@@ -68,7 +68,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     
     this.getListStatus();
     // open websocket
-    // this.openWS();
+    this.openWS();
 
   }
 
@@ -104,7 +104,6 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
    */
   openWS() {
   const ws_endpoint = this.utilService.parseWsEndpoint();
-  console.log('ws_endpoint: ', ws_endpoint);
   this.websocketService = new ServiceActiveWebsocketService(
     this,
     ws_endpoint

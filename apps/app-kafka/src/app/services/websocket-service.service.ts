@@ -44,9 +44,9 @@ export class ServiceActiveWebsocketService {
     };
 
     this.stompClient.onStompError = function (frame) {
-      console.log('ListService - WS Error');
-      console.log('Broker reported error: ' + frame.headers['message']);
-      console.log('Additional details: ' + frame.body);
+      // console.log('ListService - WS Error');
+      // console.log('Broker reported error: ' + frame.headers['message']);
+      // console.log('Additional details: ' + frame.body);
     };
 
     // Attempt to connect
