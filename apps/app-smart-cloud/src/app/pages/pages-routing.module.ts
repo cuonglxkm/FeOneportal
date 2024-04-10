@@ -148,7 +148,7 @@ const routes: Routes = [
     component: DetailVolumeComponent
   },
   {
-    path: 'volume/extend/:id',
+    path: 'volume/edit/:id',
     component: EditVolumeComponent
   },
   {

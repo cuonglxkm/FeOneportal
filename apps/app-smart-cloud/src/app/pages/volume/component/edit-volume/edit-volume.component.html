@@ -176,7 +176,7 @@
                                style="width: 100%; margin-left: 0;"
                                class="input-custom"
                                [nzMin]="volumeInfo?.sizeInGB"
-                               (ngModelChange)="changeValueInput()"
+                               (ngModelChange)="changeValueStorage($event)"
                                [nzStep]="1" />
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của Volume
@@ -188,9 +188,9 @@
             <nz-form-label>
               <div>
                 Đơn giá: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} </span>
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} /GB/Ngày</span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                   0 VND
+                   0 VND/GB/Ngày
                 </span>
               </div>
             </nz-form-label>
