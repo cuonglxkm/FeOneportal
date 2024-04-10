@@ -151,6 +151,7 @@ export class UpgradeVersionClusterDto {
 
 export class WorkerGroupModel {
 
+  id: number;
   workerGroupName: string;
   autoHealing: boolean;
   autoScaling: boolean;
@@ -166,6 +167,7 @@ export class WorkerGroupModel {
 
   constructor(obj) {
     if (obj) {
+      this.id = obj.id;
       this.workerGroupName = obj.worker_name;
       this.autoHealing = obj.auto_healing;
       this.autoScaling = obj.auto_scaling;
@@ -243,4 +245,13 @@ export class ProgressData {
       this.clusterName = obj.clusterName;
     }
   }
+}
+
+export class UpgradeWorkerGroupDto {
+
+  clusterName: string;
+  volumeCloudSize: number;
+  volumeCloudType: string;
+  workerGroup: WorkerGroupModel[];
+
 }

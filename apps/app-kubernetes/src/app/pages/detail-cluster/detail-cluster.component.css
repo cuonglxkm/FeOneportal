@@ -27,6 +27,18 @@ h3 {
   background-color: #f0f1f4;
 }
 
+.row-odd {
+  background-color: #f0f1f4;
+}
+
+.padbot-zero {
+  padding-bottom: 0 !important;
+}
+
+.padtop-5 {
+  padding-top: 5px;
+}
+
 .description-info {
   font-weight: 600;
 }

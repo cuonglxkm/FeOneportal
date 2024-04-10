@@ -11,6 +11,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { WorkerTypeModel } from '../../model/worker-type.model';
 import { VolumeTypeModel } from '../../model/volume-type.model';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -59,17 +60,19 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     private clusterService: ClusterService,
     private notificationService: NzNotificationService,
     private clipboardService: ClipboardService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private modalService: NzModalService
   ) {
     this.listOfK8sVersion = [];
     this.showModalKubeConfig = false;
     this.showModalUpgradeVersion = false;
     this.isUpgradingVersion = false;
     this.isEditMode = false;
+
+    this.listFormWorkerGroupUpgrade = this.fb.array([]);
   }
 
   ngOnInit(): void {
-    this.listFormWorkerGroupUpgrade = this.fb.array([]);
     this.upgradeForm = this.fb.group({
       workerGroup: this.listFormWorkerGroupUpgrade
     });
@@ -85,9 +88,20 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     }
   }
 
+  onConfirmUpgradeService() {
+    this.modalService.confirm({
+      nzTitle: `Nâng cấp cluster ${this.detailCluster.clusterName}`,
+      nzContent: 'Hệ thống sẽ bị gián đoạn trong quá trình nâng cấp. Bạn có muốn nâng cấp không?',
+      nzOkText: "Xác nhận",
+      nzCancelText: "Hủy bỏ",
+      nzOnOk: () => this.onSubmitUpgrade()
+    });
+  }
+
   isUpgrading: boolean = false;
   onSubmitUpgrade() {
     this.isUpgrading = true;
+
   }
 
   onEditCluster() {
@@ -100,7 +114,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   initUpgradeData() {
     this.upgradeClusterName = this.detailCluster.clusterName;
     this.upgradeVolumeType = this.detailCluster.volumeCloudType;
-    this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;    
+    this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;
   }
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {
@@ -116,6 +130,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       }
 
       const wg = this.fb.group({
+        id: [wgs[i].id],
         workerGroupName: [wgs[i].workerGroupName,
           [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
         nodeNumber: [nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
@@ -132,6 +147,29 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
       this.listFormWorkerGroupUpgrade.push(wg);
     }
+  }
+
+  addWorkerGroup(e?: MouseEvent): void {
+    if (e) {
+      e.preventDefault();
+    }
+
+    const index = this.listFormWorkerGroupUpgrade ? this.listFormWorkerGroupUpgrade.length : 0;
+    const wg = this.fb.group({
+      id: [null],
+      workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+      nodeNumber: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
+      volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      volumeType: [KubernetesConstant.DEFAULT_VOLUME_TYPE, [Validators.required]],
+      volumeTypeId: [null, [Validators.required]],
+      configType: [null, [Validators.required]],
+      configTypeId: [null, [Validators.required]],
+      autoScalingWorker: [false, Validators.required],
+      autoHealing: [false, Validators.required],
+      minimumNode: [null],
+      maximumNode: [null]
+    });
+    this.listFormWorkerGroupUpgrade.push(wg);
   }
 
   // validate duplicate worker group name
@@ -203,16 +241,53 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     console.log({value: value});
   }
 
-  // 0: formGroup, 1: formArray
-  onValidateUpgradeInput(currentValue: number, upgradeValue: number,
-    control: string, type: number, index?: number) {
-      switch(type) {
-        
+  onChangeNodeNumber(event: number, index: number) {
+    const idWorker = this.listFormWorkerGroupUpgrade.at(index).get('id').value;
+    if (idWorker) {
+      const oldWorkerInfo = this.listOfCurrentWorkerGroup.find(item => item.id == idWorker);
+      if (event && Number(event) < oldWorkerInfo.nodeNumber) {
+        this.listFormWorkerGroupUpgrade.at(index).get('nodeNumber').setErrors({invalid: true});
+      } else {
+        delete this.listFormWorkerGroupUpgrade.at(index).get('nodeNumber').errors?.invalid;
       }
+    }
   }
 
-  onChangeConfigType(event: string) {
-    console.log({event: event});
+  onChangeConfigType(event: string, index: number) {
+    const idWorker = this.listFormWorkerGroupUpgrade.at(index).get('id').value;
+    if (idWorker) {
+      const oldWorkerInfo = this.listOfCurrentWorkerGroup.find(item => item.id == idWorker);
+      const selectedConfig = this.listOfWorkerType.find(item => event == item.machineName);
+      if (selectedConfig.cpu < oldWorkerInfo.cpu || selectedConfig.ram < oldWorkerInfo.ram) {
+        this.listFormWorkerGroupUpgrade.at(index).get('configType').setErrors({invalid: true});
+        console.log(1);
+
+      } else {
+        delete this.listFormWorkerGroupUpgrade.at(index).get('configType').errors?.invalid;
+        console.log(2);
+
+      }
+    }
+  }
+
+  onChangeVolumeWorker(event: number, index: number) {
+    const idWorker = this.listFormWorkerGroupUpgrade.at(index).get('id').value;
+    // worker is existed and all parameters must be equal or greater than current
+    if (idWorker) {
+      const oldWorkerInfo = this.listOfCurrentWorkerGroup.find(item => item.id == idWorker);
+      if (event && Number(event) < oldWorkerInfo.volumeSize) {
+        this.listFormWorkerGroupUpgrade.at(index).get('volumeStorage').setErrors({invalid: true});
+      } else {
+        delete this.listFormWorkerGroupUpgrade.at(index).get('volumeStorage').errors?.invalid;
+      }
+    }
+  }
+
+  validateForm() {
+    for (const i in this.upgradeForm.controls) {
+      this.upgradeForm.controls[i].markAsDirty();
+      this.upgradeForm.controls[i].updateValueAndValidity();
+    }
   }
 
   isAutoScale: boolean;

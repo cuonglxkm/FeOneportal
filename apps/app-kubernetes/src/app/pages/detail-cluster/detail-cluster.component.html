@@ -6,12 +6,12 @@
     </button>
   </ng-container>
   <ng-template #submitModeTpl>
-    <button nz-button nzType="primary" (click)="onSubmitUpgrade()" class="mb-3" 
+    <button nz-button nzType="primary" (click)="onConfirmUpgradeService()" class="mb-3"
       [disabled]="isUpgrading || upgradeForm.invalid">
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Xác nhận
     </button>
-    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3" 
+    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3"
       [disabled]="isUpgrading">
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy bỏ
@@ -173,15 +173,16 @@
                       </div>
                     </td>
 
-                    <td class="w-50">
+                    <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8">Số node</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Số node</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editNodeNumberTpl">
                             {{'nodeNumber' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
                           <ng-template #editNodeNumberTpl>
-                            <input nz-input type="text" formControlName="nodeNumber" />
+                            <input nz-input type="text" formControlName="nodeNumber" (keypress)="isNumber($event)"
+                              (ngModeChange)="onChangeNodeNumber($event, i)" class="row-odd" />
                           </ng-template>
                         </div>
                       </div>
@@ -197,8 +198,8 @@
                             {{'cpu' | getValueInForm: listFormWorkerGroupUpgrade : i}}vCPU / {{'ram' | getValueInForm: listFormWorkerGroupUpgrade : i}}GB
                           </ng-container>
                           <ng-template #editConfigTypeTpl>
-                            <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình" 
-                              (ngModelChange)="onChangeConfigType($event)" class="w-100">
+                            <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình"
+                              (ngModelChange)="onChangeConfigType($event, i)" class="w-100">
                               <nz-option *ngFor="let item of listOfWorkerType"
                                 nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName">
                               </nz-option>
@@ -216,7 +217,23 @@
                             {{'volumeStorage' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
                           <ng-template #editWorkerVolumeSizeTpl>
-                            <input nz-input type="text" formControlName="volumeStorage" (keypress)="isNumber($event)" />
+                            <nz-form-item>
+                              <nz-form-control [nzErrorTip]="volumeErrorTpl">
+                                <input nz-input type="text" formControlName="volumeStorage"
+                                  (keypress)="isNumber($event)" (ngModelChange)="onChangeVolumeWorker($event, i)" />
+                              </nz-form-control>
+                              <ng-template #volumeErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">
+                                  Ổ cứng không để trống
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                                  Ổ cứng trong khoảng từ 20-1000 GB
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('invalid')">
+                                  Ổ cứng không nhỏ hơn số đang sử dụng
+                                </ng-container>
+                              </ng-template>
+                            </nz-form-item>
                           </ng-template>
                         </div>
                       </div>
@@ -299,12 +316,25 @@
                 </tbody>
               </nz-table>
             </div>
-            <ng-container *ngIf="i != (detailCluster.workerGroup.length - 1)">
+
+            <ng-container *ngIf="isEditMode">
               <nz-divider nzDashed></nz-divider>
             </ng-container>
           </div>
         </ng-container>
       </div>
+
+      <ng-container *ngIf="isEditMode">
+        <button nz-button nzType="default" class="border-button" (click)="addWorkerGroup()">
+          <span nz-icon>
+            <svg viewBox="64 64 896 896" focusable="false">
+              <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" />
+              <path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
+            </svg>
+          </span>
+          Thêm worker group
+        </button>
+      </ng-container>
     </form>
   </nz-card>
 
@@ -405,7 +435,7 @@
 
   <!-- Thông tin volume -->
   <nz-card class="border-card">
-    <h3>Thông tin volume</h3>
+    <h3>Thông tin volume persistent</h3>
     <div nz-row>
       <div nz-col [nzSpan]="24" class="detailtable">
         <nz-table [nzTemplateMode]="true" nzBordered>

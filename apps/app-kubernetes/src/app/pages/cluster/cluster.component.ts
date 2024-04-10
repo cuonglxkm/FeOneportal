@@ -594,7 +594,16 @@ export class ClusterComponent implements OnInit {
     }
   }
 
+  validateForm() {
+    for (const i in this.myform.controls) {
+      this.myform.controls[i].markAsDirty();
+      this.myform.controls[i].updateValueAndValidity();
+    }
+  }
+
   validateClusterInfo = () => {
+    this.validateForm();
+
     const cluster = this.myform.value;
     const networking: NetworkingModel = new NetworkingModel(null);
     networking.networkType = cluster.networkType;
