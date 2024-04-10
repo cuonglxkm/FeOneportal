@@ -28,7 +28,7 @@ export class IkePolicyService extends BaseService {
     })
   }
 
- 
+
 
   create(formCreate: IKEPolicyModel) {
     console.log("tao ike service: ", formCreate);
@@ -108,7 +108,7 @@ export class IkePolicyService extends BaseService {
   }
 
   edit(id: string, formEdit: IKEPolicyModel) {
-    console.log("data edit ike---", formEdit);
+    console.log("data extend ike---", formEdit);
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/update`,
       Object.assign(formEdit)).pipe(
       catchError((error: HttpErrorResponse) => {

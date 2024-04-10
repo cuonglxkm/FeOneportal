@@ -218,7 +218,7 @@ export class NewVirtualMachineComponent implements OnInit {
                 this.volumeCreate.instanceToAttachId = null;
                 this.volumeCreate.isMultiAttach = false;
                 this.volumeCreate.isEncryption = false;
-                this.volumeCreate.vpcId = this.project;
+                this.volumeCreate.projectId = this.project;
                 this.volumeCreate.oneSMEAddonId = null;
                 this.volumeCreate.serviceType = 2;
                 this.volumeCreate.serviceInstanceId = 0;

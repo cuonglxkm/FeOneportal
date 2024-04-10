@@ -9,7 +9,7 @@ import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
 
 @Component({
-  selector: 'one-portal-vlan-edit-subnet',
+  selector: 'one-portal-vlan-extend-subnet',
   templateUrl: './vlan-edit-subnet.component.html',
   styleUrls: ['./vlan-edit-subnet.component.less'],
 })
@@ -74,14 +74,12 @@ export class VlanEditSubnetComponent implements OnInit{
   ngOnInit() {
     this.idNetwork = Number.parseInt(this.route.snapshot.paramMap.get('id'))
     this.idSubnet = Number.parseInt(this.route.snapshot.paramMap.get('subnetId'))
+    console.log('id subnet', this.idSubnet)
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
 
-
-
     this.getSubnetById(this.idSubnet)
   }
 
-  protected readonly console = console;
 }

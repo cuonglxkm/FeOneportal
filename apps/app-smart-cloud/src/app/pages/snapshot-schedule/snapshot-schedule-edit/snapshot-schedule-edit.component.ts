@@ -26,7 +26,7 @@ import {
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'one-portal-snapshot-schedule-edit',
+  selector: 'one-portal-snapshot-schedule-extend',
   templateUrl: './snapshot-schedule-edit.component.html',
   styleUrls: ['./snapshot-schedule-edit.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,

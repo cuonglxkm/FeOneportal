@@ -377,7 +377,7 @@ export class CreateVolumeComponent implements OnInit {
       this.validateForm.controls.isMultiAttach.value;
     this.volumeCreate.isEncryption =
       this.validateForm.controls.isEncryption.value;
-    this.volumeCreate.vpcId = this.project.toString();
+    this.volumeCreate.projectId = this.project.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;

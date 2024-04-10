@@ -6,7 +6,11 @@ import { VlanService } from '../../../../shared/services/vlan.service';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormCreatePort, FormSearchSubnet, Subnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
-import { AppValidator, ipAddressValidator } from '../../../../../../../../libs/common-utils/src';
+import {
+  AppValidator,
+  ipAddressExistsValidator,
+  ipAddressValidator
+} from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-vlan-create-port',
@@ -17,6 +21,7 @@ export class VlanCreatePortComponent implements OnInit{
   @Input() region: number
   @Input() project: number
   @Input() networkId: number
+  @Input() networkCloudId: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -32,8 +37,13 @@ export class VlanCreatePortComponent implements OnInit{
 
   listSubnet: Subnet[] = []
   subnetAddress: string
+
+  subnetSelected: any;
+
   idSubnet: number
   isLoadingSubnet: boolean = false
+
+  ipPort: string[] = []
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -44,6 +54,20 @@ export class VlanCreatePortComponent implements OnInit{
 
   }
 
+  getPortByNetworId() {
+    this.vlanService.getPortByNetwork(this.networkCloudId, this.region, 9999, 1, null).subscribe(data => {
+      console.log('port', data.records)
+      // data?.records.forEach(item => {
+      //   if(this.ipPort.length <= 0) {
+      //     this.ipPort = [item.fixedIPs.toString()]
+      //   } else {
+      //     this.ipPort?.push(item.fixedIPs.toString())
+      //   }
+      //
+      //   // console.log(this.ipPort)
+      // })
+    })
+  }
   getSubnetByNetworkId() {
     this.isLoadingSubnet = true
     let formSearchSubnet = new FormSearchSubnet()
@@ -54,8 +78,10 @@ export class VlanCreatePortComponent implements OnInit{
     formSearchSubnet.pageNumber = 1
     formSearchSubnet.name = null
 
+
+
     this.vlanService.getSubnetByNetwork(formSearchSubnet).subscribe(data => {
-      console.log('data-subnet', data)
+      // console.log('data-subnet', data)
       this.listSubnet = data.records
 
       this.isLoadingSubnet = false
@@ -64,6 +90,10 @@ export class VlanCreatePortComponent implements OnInit{
 
   showModal(): void {
     this.isVisible = true;
+
+    this.getPortByNetwork()
+
+    console.log('port', this.ipPort)
   }
 
 
@@ -105,20 +135,35 @@ export class VlanCreatePortComponent implements OnInit{
 
   }
 
+  isIpInList(ip: string, ipList: string[]): boolean {
+    return ipList.includes(ip);
+  }
+
+  getPortByNetwork() {
+    this.vlanService.getPortByNetwork(this.networkCloudId, this.region, 9999, 1, null).subscribe(data => {
+      console.log('get all port', data.records)
+      data?.records?.forEach(item => {
+        this.ipPort?.push(item.fixedIPs.toString())
+      })
+    })
+  }
 
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.getSubnetByNetworkId()
+
+
+
 
     this.validateForm = this.fb.group({
       idSubnet: [0, [Validators.required]],
-      namePort: ['', [Validators.required,  Validators.maxLength(50)]],
-      ipAddress: ['', [Validators.required, ipAddressValidator(this.subnetAddress)]]
+      namePort: ['', [Validators.required,  Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
+      ipAddress: ['', [Validators.required, ipAddressValidator(this.subnetAddress), ipAddressExistsValidator(this.ipPort)]]
     });
 
-    this.getSubnetByNetworkId()
   }
 
 

@@ -18,7 +18,7 @@ import {ProjectService} from "../../../shared/services/project.service";
 import {getCurrentRegionAndProject} from "@shared";
 
 @Component({
-  selector: 'one-portal-edit-backup-package',
+  selector: 'one-portal-extend-backup-package',
   templateUrl: './edit-backup-package.component.html',
   styleUrls: ['./edit-backup-package.component.less'],
 })
