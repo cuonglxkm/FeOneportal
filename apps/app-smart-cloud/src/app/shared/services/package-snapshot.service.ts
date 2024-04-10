@@ -53,7 +53,7 @@ export class PackageSnapshotService extends BaseService {
       params = params.append('pageSize', formSearch.pageSize)
     }
     if (formSearch.currentPage != undefined || formSearch.currentPage != null) {
-      params = params.append('pageNumber', formSearch.currentPage)
+      params = params.append('currentPage', formSearch.currentPage)
     }
 
     return this.http.get<BaseResponse<PackageSnapshotModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/snapshots/packages', {
@@ -70,8 +70,8 @@ export class PackageSnapshotService extends BaseService {
   // }
 
   detail(id: number) {
-    return this.http.get<PackageBackupModel>(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}`).pipe(
+    return this.http.get<PackageSnapshotModel>(this.baseUrl + this.ENDPOINT.provisions
+      + `/snapshots/packages/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -85,7 +85,7 @@ export class PackageSnapshotService extends BaseService {
 
   delete(id: number) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}`).pipe(
+      + `/snapshots/packages/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

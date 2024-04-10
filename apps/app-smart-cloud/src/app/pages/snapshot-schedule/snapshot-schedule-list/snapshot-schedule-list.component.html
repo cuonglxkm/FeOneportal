@@ -143,6 +143,9 @@
         <td *ngIf="data.status == 'ACTIVE'" style="color: #52c41a">
           Đang hoạt động
         </td>
+        <td *ngIf="data.status == 'DISABLED'" style="color: red">
+          Tạm ngưng
+        </td>
         <td>{{ data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy' }}</td>
         <td nzRight>
           <button

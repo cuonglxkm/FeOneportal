@@ -6,7 +6,7 @@ import { getCurrentRegionAndProject } from "@shared";
 import { addDays } from 'date-fns';
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { BackupPackageRequestModel } from 'src/app/shared/models/package-backup.model';
-import { FormCreateSnapshotPackage } from 'src/app/shared/models/package-snapshot.model';
+import { FormCreateSnapshotPackage, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
 import { OrderItem } from "../../../shared/models/price";
 import { ProjectModel } from "../../../shared/models/project.model";
 import { RegionModel } from "../../../shared/models/region.model";
@@ -84,10 +84,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
   navigateToPaymentSummary() {
     this.getTotalAmount()
     if (this.validateForm.valid) {
-      let request: BackupPackageRequestModel = new BackupPackageRequestModel()
+      let request: SnapshotPackageRequestModel = new SnapshotPackageRequestModel()
       request.customerId = this.formCreateSnapshotPackage.customerId;
       request.createdByUserId = this.formCreateSnapshotPackage.customerId;
-      request.note = 'tạo gói backup';
+      request.note = 'create snapshot package';
       request.orderItems = [
         {
           orderItemQuantity: 1,
@@ -114,9 +114,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   packageBackupInit() {
     this.formCreateSnapshotPackage.packageName = this.validateForm.get('namePackage').value
-    this.formCreateSnapshotPackage.sizeInGB = this.validateForm.get('storage').value
+    this.formCreateSnapshotPackage.sizeInGB = this.validateForm.controls.storage.value
     this.formCreateSnapshotPackage.description = this.validateForm.get('description').value
     this.formCreateSnapshotPackage.projectId = this.project
+    this.formCreateSnapshotPackage.vpcId = this.project.toString()
     this.formCreateSnapshotPackage.oneSMEAddonId = null
     this.formCreateSnapshotPackage.serviceType = ServiceType.SNAPSHOT_PACKET
     this.formCreateSnapshotPackage.serviceInstanceId = 0;
@@ -145,6 +146,8 @@ export class CreatePackageSnapshotComponent implements OnInit {
       "SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null";
     this.formCreateSnapshotPackage.userEmail = this.tokenService.get()?.email;
     this.formCreateSnapshotPackage.actorEmail = this.tokenService.get()?.email;
+    this.formCreateSnapshotPackage.type = "HDD"
+    this.formCreateSnapshotPackage.offerId = 0
   }
 
 
@@ -173,6 +176,8 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.project = regionAndProject.projectId
     // this.customerId = this.tokenService.get()?.userId
     this.getTotalAmount()
+    console.log(this.tokenService.get());
+    
   }
 }
 

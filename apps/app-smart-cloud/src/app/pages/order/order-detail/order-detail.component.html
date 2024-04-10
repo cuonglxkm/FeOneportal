@@ -166,10 +166,10 @@
         <thead>
           <tr>
             <th>Dịch vụ</th>
-            <th>Đơn giá (VNĐ)</th>
+            <th>Đơn giá (VND)</th>
             <th>Thời hạn (Tháng)</th>
             <th>Số lượng</th>
-            <th>Số tiền (VNĐ)</th>
+            <th>Số tiền (VND)</th>
           </tr>
         </thead>
         <tbody>
@@ -195,9 +195,9 @@
             <td>Tổng tiền</td>
             <td style="text-align: right">
               <span class="price"
-                >{{ data?.amount?.amount | number : '1.0-0' }} VNĐ</span
+                >{{ data?.amount?.amount | number : '1.0-0' }} VND</span
               >
-              <span>VNĐ/tháng</span>
+              <span>VND/tháng</span>
             </td>
           </tr>
           <tr>
@@ -212,9 +212,9 @@
             <td>VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
-                >{{ data?.vat?.amount | number : '1.0-0' }} VNĐ</span
+                >{{ data?.vat?.amount | number : '1.0-0' }} VND</span
               >
-              <span>VNĐ/tháng</span>
+              <span>VND/tháng</span>
             </td>
           </tr>
           <tr>
@@ -241,7 +241,7 @@
                 border-radius: 0 8px 8px 0;
               "
             >
-              {{ data?.totalAmount?.amount | number : '1.0-0' }} VNĐ
+              {{ data?.totalAmount?.amount | number : '1.0-0' }} VND
             </td>
           </tr>
         </nz-table>

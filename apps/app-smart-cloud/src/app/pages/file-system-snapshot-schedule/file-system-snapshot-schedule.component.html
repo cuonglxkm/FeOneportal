@@ -127,7 +127,7 @@
             {{
               data.status === 'ACTIVE'
                 ? 'Đang hoạt động'
-                : data.status === 'DISABLED' && 'Tạm ngưng'
+                : data.status === 'DISABLED' ? 'Tạm ngưng' : data.status
             }}
           </td>
           <td>{{ data.nextRuntime | date : 'dd/MM/yyyy HH:mm:ss' }}</td>

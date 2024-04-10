@@ -73,7 +73,44 @@ export class FormCreateSnapshotPackage {
   amManager: null
   note: string
   isTrial: false
-  offerId: null
+  offerId: number
+  couponCode: null
+  dhsxkd_SubscriptionId: null
+  dSubscriptionNumber: null
+  dSubscriptionType: null
+  oneSME_SubscriptionId: null
+  typeName: string
+}
+
+export class FormUpdateSnapshotPackageModel{
+  packageName: string
+  description: string
+  size: number
+  type: string
+  customerId: number
+  userEmail: string
+  actorEmail: string
+  projectId:number
+  vpcId:  string
+  regionId: number
+  serviceName: string
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  createDate: Date
+  expireDate: Date
+  createDateInContract: null
+  oneSMEAddonId: null
+  saleDept: null
+  saleDeptCode: null
+  contactPersonEmail: null
+  contactPersonPhone: null
+  contactPersonName: null
+  am: null
+  amManager: null
+  note: string
+  isTrial: false
+  newOfferId: number
   couponCode: null
   dhsxkd_SubscriptionId: null
   dSubscriptionNumber: null

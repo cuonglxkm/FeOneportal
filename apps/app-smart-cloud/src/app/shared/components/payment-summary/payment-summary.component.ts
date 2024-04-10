@@ -114,7 +114,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s`;
+            serviceItem.name = `k8s - ${specificationObj.clusterName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
@@ -147,6 +147,10 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = 'Chỉnh sửa';
             break;
           case 'snapshotpackage_create':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
+            break;
+          case 'snapshotpackage_resize':
             serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
             serviceItem.type = 'Chỉnh sửa';
             break;
@@ -270,7 +274,13 @@ export class PaymentSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          window.location.href = data.data;
+          if (data.data.orderItems[0].orderId) {
+            this.router.navigateByUrl(
+              '/app-smart-cloud/order/detail/' + data.data.orderItems[0].orderId
+            );
+          } else {
+            window.location.href = data.data;
+          }
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');
