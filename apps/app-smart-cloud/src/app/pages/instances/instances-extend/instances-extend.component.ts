@@ -55,6 +55,23 @@ export class InstancesExtendComponent implements OnInit {
     private notification: NzNotificationService
   ) {}
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.customerId = this.tokenService.get()?.userId;
@@ -141,9 +158,9 @@ export class InstancesExtendComponent implements OnInit {
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = 'Gia hạn';
+    this.instanceExtend.serviceName = this.instancesModel.name;
     this.instanceExtend.customerId = this.customerId;
-    this.instanceExtend.vpcId = this.instancesModel.projectId;
+    this.instanceExtend.projectId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
       'SharedKernel.IntegrationEvents.InstanceExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.instanceExtend.serviceType = 1;

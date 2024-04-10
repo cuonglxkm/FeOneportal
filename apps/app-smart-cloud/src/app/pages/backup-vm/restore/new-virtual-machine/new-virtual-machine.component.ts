@@ -168,7 +168,7 @@ export class NewVirtualMachineComponent implements OnInit {
     this.instanceCreate.customerUsingMss = null;
     this.instanceCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceCreate.vpcId = JSON.stringify(this.project);
+    this.instanceCreate.projectId = JSON.stringify(this.project);
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;

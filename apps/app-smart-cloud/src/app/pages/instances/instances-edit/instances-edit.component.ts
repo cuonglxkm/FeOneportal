@@ -22,7 +22,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, of, Subject } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -39,8 +39,14 @@ class ConfigCustom {
   ram?: number = 0;
   capacity?: number = 0;
   iops?: string = '000';
-  priceHour?: string = '000';
-  priceMonth?: string = '000';
+}
+
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  GPUType: string;
 }
 
 @Component({
@@ -72,6 +78,7 @@ export class InstancesEditComponent implements OnInit {
   offerFlavor: OfferItem = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  configGPU: ConfigGPU = new ConfigGPU();
   isConfigPackage: boolean = true;
   cardHeight: string = '160px';
 
@@ -121,6 +128,46 @@ export class InstancesEditComponent implements OnInit {
       setTimeout(() => {
         this.myCarouselFlavor.reset();
       }, 100);
+    }
+  }
+
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
+
+      const tabs = document.querySelectorAll('.ant-tabs-tab'); // Lấy danh sách các tab
+      const activeTab = document.querySelector('.ant-tabs-tab-active'); // Lấy tab đang active
+
+      // Tìm index của tab đang active
+      let activeTabIndex = Array.prototype.indexOf.call(tabs, activeTab);
+
+      if (event.key === 'ArrowLeft') {
+        activeTabIndex -= 1; // Di chuyển tới tab trước đó
+      } else if (event.key === 'ArrowRight') {
+        activeTabIndex += 1; // Di chuyển tới tab tiếp theo
+      }
+
+      // Kiểm tra xem tab có hợp lệ không
+      if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
+        (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
+      }
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
   }
 
@@ -174,23 +221,20 @@ export class InstancesEditComponent implements OnInit {
 
   isCustomconfig = false;
   onClickConfigPackage() {
-    this.resetChangeConfig();
+    this.configCustom = new ConfigCustom();
     this.isCustomconfig = false;
+    this.volumeUnitPrice = '0';
+    this.volumeIntoMoney = 0;
+    this.ramUnitPrice = '0';
+    this.ramIntoMoney = 0;
+    this.cpuUnitPrice = '0';
+    this.cpuIntoMoney = 0;
   }
 
   onClickCustomConfig() {
-    this.resetChangeConfig();
-    this.isCustomconfig = true;
-  }
-
-  resetChangeConfig(): void {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalincludesVAT = 0;
-    this.instanceResize.cpu = null;
-    this.instanceResize.ram = null;
-    this.instanceResize.storage = null;
+    this.isCustomconfig = true;
   }
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
@@ -284,22 +328,30 @@ export class InstancesEditComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  checkPermission: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
-    this.dataService.getById(instanceId, true).subscribe((data: any) => {
-      this.instancesModel = data;
-      this.instanceNameEdit = this.instancesModel.name;
-      if (
-        this.instancesModel.flavorId == 0 ||
-        this.instancesModel.flavorId == null
-      ) {
-        this.isConfigPackage = false;
-        this.isCustomconfig = true;
-      }
-      this.cdr.detectChanges();
-      this.selectedElementFlavor = this.instancesModel.flavorId;
-      this.region = this.instancesModel.regionId;
-      this.projectId = this.instancesModel.projectId;
-      this.initFlavors();
+    this.dataService.getById(instanceId, true).subscribe({
+      next: (data: any) => {
+        this.checkPermission = true;
+        this.instancesModel = data;
+        this.instanceNameEdit = this.instancesModel.name;
+        if (
+          this.instancesModel.flavorId == 0 ||
+          this.instancesModel.flavorId == null
+        ) {
+          this.isConfigPackage = false;
+          this.isCustomconfig = true;
+        }
+        this.cdr.detectChanges();
+        this.selectedElementFlavor = this.instancesModel.flavorId;
+        this.region = this.instancesModel.regionId;
+        this.projectId = this.instancesModel.projectId;
+        this.initFlavors();
+      },
+      error: (e) => {
+        this.checkPermission = false;
+        this.notification.error(e.error.detail, '');
+      },
     });
   }
 
@@ -351,7 +403,7 @@ export class InstancesEditComponent implements OnInit {
     tempInstance.newOfferId = 0;
     tempInstance.newFlavorId = 0;
     tempInstance.serviceInstanceId = this.instancesModel.id;
-    tempInstance.vpcId = this.projectId;
+    tempInstance.projectId = this.projectId;
     tempInstance.regionId = this.region;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -466,6 +518,28 @@ export class InstancesEditComponent implements OnInit {
       });
   }
 
+  //#cấu hình GPU
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
+  }
+  //#End cấu hình GPU
+
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
   }
@@ -521,11 +595,24 @@ export class InstancesEditComponent implements OnInit {
     // this.instanceResize.actionType = 4;
     this.instanceResize.serviceInstanceId = this.instancesModel.id;
     this.instanceResize.regionId = this.region;
-    this.instanceResize.serviceName = 'Điều chỉnh';
-    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.serviceName = this.instancesModel.name;
+    this.instanceResize.projectId = this.projectId;
   }
 
   readyEdit(): void {
+    if (this.isCustomconfig == false && this.offerFlavor == null) {
+      this.notification.error('', 'Vui lòng chọn gói cấu hình');
+      return;
+    }
+    if (
+      this.isCustomconfig == true &&
+      this.configCustom.vCPU == 0 &&
+      this.configCustom.ram == 0 &&
+      this.configCustom.capacity == 0
+    ) {
+      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      return;
+    }
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
