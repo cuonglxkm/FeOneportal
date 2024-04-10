@@ -396,6 +396,11 @@ export class InstancesCreateComponent implements OnInit {
     if (this.offerFlavor != null) {
       this.getTotalAmount();
     }
+    if (this.isCustomconfig) {
+      this.changeCapacity(event);
+      this.changeRam(event);
+      this.changeVCPU(event);
+    }
     const filteredImages = this.listOfImageByImageType
       .get(imageTypeId)
       .filter((e) => e.id == event);
@@ -961,7 +966,12 @@ export class InstancesCreateComponent implements OnInit {
     this.externalIp(this.listOfDataIPv6, false);
   }
 
-  onInputIPv4(value: any) {
+  onInputIPv4(value: any, id: number) {
+    this.listOfDataIPv4.forEach((e) => {
+      if (e.id == id) {
+        e.amount = 1;
+      }
+    });
     this.changeTotalAmountIPv4(value);
     const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
@@ -977,7 +987,12 @@ export class InstancesCreateComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onInputIPv6(value: any) {
+  onInputIPv6(value: any, id: number) {
+    this.listOfDataIPv6.forEach((e) => {
+      if (e.id == id) {
+        e.amount = 1;
+      }
+    });
     this.changeTotalAmountIPv6(value);
     const filteredArrayHas = this.listOfDataIPv6.filter(
       (item) => item.ip == ''

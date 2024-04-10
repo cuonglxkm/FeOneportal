@@ -1,35 +1,38 @@
-<page-header>
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Trang chủ</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a
-        [routerLink]="[
-          '/app-smart-cloud/instances/instances-detail/' + this.id
-        ]"
-        >Chi tiết máy ảo</a
-      >
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Gia hạn máy ảo </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="regionId"
-      (userChanged)="onProjectChange($event)"
-    ></project-select-dropdown>
-  </div>
-  <div>
-    <nz-row style="margin-bottom: -10px">
-      <span class="text-page-header">Gia hạn máy ảo</span>
-    </nz-row>
-  </div>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Gia hạn máy ảo'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a
+          [routerLink]="[
+            '/app-smart-cloud/instances/instances-detail/' + this.id
+          ]"
+          >Chi tiết máy ảo</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Gia hạn máy ảo </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (userChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 
 <div>

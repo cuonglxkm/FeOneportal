@@ -110,7 +110,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     ]);
   }
 
-  formPass: FormGroup
+  formPass: FormGroup;
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
   check = true;
@@ -175,10 +175,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
             }
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              'Reset mật khẩu máy không thành công'
-            );
+            this.notification.error(e.statusText, e.error.detail);
           },
         });
     }
