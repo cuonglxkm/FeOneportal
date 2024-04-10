@@ -301,11 +301,11 @@ const routes: Routes = [
     component: CreateScheduleBackupComponent
   },
   {
-    path: 'schedule/backup/extend/vm/:id',
+    path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent
   },
   {
-    path: 'schedule/backup/extend/volume/:id',
+    path: 'schedule/backup/edit/volume/:id',
     component: EditScheduleBackupVolumeComponent
   },
   {
@@ -321,7 +321,7 @@ const routes: Routes = [
     component: SnapshotScheduleDetailComponent
   },
   {
-    path: 'schedule/snapshot/extend/:id',
+    path: 'schedule/snapshot/edit/:id',
     component: SnapshotScheduleEditComponent
   },
   {
@@ -365,7 +365,7 @@ const routes: Routes = [
     component: CreatePackageBackupComponent
   },
   {
-    path: 'backup/packages/extend/:id',
+    path: 'backup/packages/edit/:id',
     component: EditBackupPackageComponent
   },
   {
@@ -445,7 +445,7 @@ const routes: Routes = [
     component: DetailFileSystemComponent
   },
   {
-    path: 'file-storage/file-system/extend/:id',
+    path: 'file-storage/file-system/edit/:id',
     component: ResizeFileSystemComponent
   },
   {
@@ -489,7 +489,7 @@ const routes: Routes = [
     component: CreateFileSystemSnapshotScheduleComponent,
   },
   {
-    path: 'file-system-snapshot-schedule/extend/:id',
+    path: 'file-system-snapshot-schedule/edit/:id',
     component: EditFileSystemSnapshotScheduleComponent,
   },
   {
@@ -513,11 +513,11 @@ const routes: Routes = [
     component: ObjectStorageCreateComponent
   },
   {
-    path: 'object-storage/extend',
+    path: 'object-storage/edit',
     component: ObjectStorageEditComponent
   },
   {
-    path: 'object-storage/extend/:id',
+    path: 'object-storage/edit/:id',
     component: ObjectStorageEditComponent
   },
   {
