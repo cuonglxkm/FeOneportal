@@ -333,12 +333,12 @@ export class CreateVolumeComponent implements OnInit {
         this.tokenService.get()?.userId
       )
       .subscribe((data) => {
-        data.records.forEach(item => {
-          if(item.taskState.includes('ACTIVE')) {
-            this.listInstances?.push(item);
-          }
-        })
-        // this.listInstances = data.records;
+        // data.records.forEach(item => {
+        //   if(item.taskState.includes('ACTIVE')) {
+        //     this.listInstances?.push(item);
+        //   }
+        // })
+        this.listInstances = data.records;
         this.cdr.detectChanges();
       });
   }

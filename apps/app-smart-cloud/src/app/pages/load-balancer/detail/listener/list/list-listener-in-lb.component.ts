@@ -26,6 +26,9 @@ export class ListListenerInLbComponent implements OnInit{
     this.loadBalancerService.getListenerInLB(this.idLB).subscribe(data => {
       this.isLoading = false
       this.listListeners = data
+    }, error => {
+      this.isLoading = false
+      this.listListeners = null
     })
   }
 

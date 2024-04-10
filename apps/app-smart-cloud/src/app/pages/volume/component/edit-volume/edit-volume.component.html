@@ -63,11 +63,11 @@
               <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ listVMs }}</b></span>
               <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-label"><b>Không có máy ảo</b></span>
             </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleVolumeType">
-              <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>
-              </nz-descriptions-item>
+<!--            <nz-descriptions-item [nzTitle]="titleVolumeType">-->
+<!--              <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>-->
+<!--              </nz-descriptions-item>-->
           </nz-descriptions>
-          <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
+          <span class="text-label">Mô tả: {{ volumeInfo?.description }}</span>
           <ng-template #titleName>
             <span class="text-label">Tên Volume:</span>
           </ng-template>
