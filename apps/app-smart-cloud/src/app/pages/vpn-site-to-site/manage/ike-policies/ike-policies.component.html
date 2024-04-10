@@ -23,7 +23,7 @@
     </nz-col>
   </nz-row>
   </div>
-  <nz-table   
+  <nz-table
     #fixedTable
     style="margin-top: 20px"
     [nzData]="response?.records"
@@ -51,7 +51,7 @@
         [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/' + data.cloudId]"
         >{{ data.name }}</a></td>
 
-  
+
   <td>{{ data.authorizationAlgorithm }}</td>
   <td>{{ data.authorizationAlgorithm }}</td>
   <td>{{ data.encryptionAlgorithm }}</td>
@@ -64,7 +64,7 @@
                 nzType="edit"
                 nzTheme="outline"
                 [routerLink]="[
-                '/app-smart-cloud/vpn-site-to-site/ike-policies/edit/' + data.cloudId
+                '/app-smart-cloud/vpn-site-to-site/ike-policies/extend/' + data.cloudId
               ]"
                 [nzPopoverContent]="'Sửa'"
                 nz-popover

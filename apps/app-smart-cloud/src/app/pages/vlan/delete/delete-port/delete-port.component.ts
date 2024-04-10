@@ -35,16 +35,17 @@ export class DeletePortComponent {
   }
 
   handleOkDeletePort() {
+    this.isLoadingDeletePort = true
     this.vlanService.deletePort(this.id, this.region, this.project).subscribe(data => {
       console.log('delete', data)
       this.isVisibleDeletePort = false
       this.isLoadingDeletePort = false
-      this.notification.success('Thành công', 'Xoá Port thành công')
-      this.onOk.emit()
+      this.notification.success('Thành công', 'Yêu cầu xoá Port thành công')
+      setTimeout(() => {this.onOk.emit(data)}, 1500)
     }, error => {
       this.isVisibleDeletePort = false
       this.isLoadingDeletePort = false
-      this.notification.error('Thất bại', 'Xoá Port thất bại')
+      this.notification.error('Thất bại', 'Yêu cầu xoá Port thất bại')
     })
   }
 }

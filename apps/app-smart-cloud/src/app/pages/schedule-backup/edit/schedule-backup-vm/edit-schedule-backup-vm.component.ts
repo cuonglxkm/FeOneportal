@@ -10,7 +10,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DatePipe} from "@angular/common";
 
 @Component({
-    selector: 'one-portal-edit-schedule-backup-vm',
+    selector: 'one-portal-extend-schedule-backup-vm',
     templateUrl: './edit-schedule-backup-vm.component.html',
     styleUrls: ['./edit-schedule-backup-vm.component.less'],
 })

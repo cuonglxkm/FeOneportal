@@ -81,15 +81,15 @@ export class PaymentSummaryComponent implements OnInit {
         const specificationObj = JSON.parse(e.specification);
         switch (e.specificationType) {
           case 'instance_create':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'instance_resize':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = `Chỉnh sửa`;
+            serviceItem.type = `Điều chỉnh`;
             break;
           case 'instance_extend':
-            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
+            serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
             serviceItem.type = 'Gia hạn';
             break;
           case 'volume_create':
@@ -114,7 +114,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s`;
+            serviceItem.name = `k8s - ${specificationObj.clusterName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
@@ -134,6 +134,11 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
+          case 'kafka_resize':
+            this.serviceType = 'kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Nâng cấp';
+            break;
           case 'vpnsitetosite_create':
             serviceItem.name = `Vpn Site To Site`;
             serviceItem.type = 'Tạo mới';
@@ -144,6 +149,14 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'vpnsitetosite_resize':
             serviceItem.name = `Vpn Site To Site`;
+            serviceItem.type = 'Chỉnh sửa';
+            break;
+          case 'snapshotpackage_create':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Tạo mới';
+            break;
+          case 'snapshotpackage_resize':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
             serviceItem.type = 'Chỉnh sửa';
             break;
           default:
@@ -265,8 +278,14 @@ export class PaymentSummaryComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (data: any) => {
-          window.location.href = data.data;
+        next: (result: any) => {
+          if (result.code == 310) {
+            window.location.href = result.data;
+          } else if (result.code == 200) {
+            this.router.navigate([
+              `/app-smart-cloud/order/detail/${result.data.id}`,
+            ]);
+          }
         },
         error: (e) => {
           this.notification.error(e.statusText, 'Tạo order không thành công');

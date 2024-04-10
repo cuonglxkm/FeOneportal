@@ -157,12 +157,11 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeEdit.iops = 200
     // editVolumeDto.newOfferId = 0;
     this.volumeEdit.serviceName = this.volumeInfo?.name
-    this.volumeEdit.vpcId = this.volumeInfo.vpcId;
+    this.volumeEdit.projectId = this.volumeInfo.vpcId;
     this.volumeEdit.customerId = this.tokenService.get()?.userId;
     this.volumeEdit.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');
     const user = JSON.parse(userString);
-    1
     this.volumeEdit.actorEmail = user.email;
     this.volumeEdit.userEmail = user.email;
     this.volumeEdit.serviceType = 2;

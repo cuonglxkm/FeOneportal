@@ -183,8 +183,8 @@ export class InstancesService extends BaseService {
     );
   }
 
-  autoCreatePass(id: number) {
-    let url_ = `/instances/${id}/change_password`;
+  changePassword(id: number, newPassword: string) {
+    let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       '',
@@ -310,6 +310,20 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
       this.baseUrl + this.ENDPOINT.provisions + url_
+    );
+  }
+
+  getVlanSubnets(
+    pageSize: number,
+    pageNumber: number,
+    region: number,
+    networkCloudId: string
+  ) {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&networkCloudId=${networkCloudId}`,
+      this.httpOptions
     );
   }
 }

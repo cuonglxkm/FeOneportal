@@ -118,6 +118,7 @@ import { ListLoadBalancerComponent } from './load-balancer/list/list-load-balanc
 import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-novpc.component';
 import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
+import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
 
 
 const routes: Routes = [
@@ -147,7 +148,7 @@ const routes: Routes = [
     component: DetailVolumeComponent
   },
   {
-    path: 'volume/edit/:id',
+    path: 'volume/extend/:id',
     component: EditVolumeComponent
   },
   {
@@ -300,11 +301,11 @@ const routes: Routes = [
     component: CreateScheduleBackupComponent
   },
   {
-    path: 'schedule/backup/edit/vm/:id',
+    path: 'schedule/backup/extend/vm/:id',
     component: EditScheduleBackupVmComponent
   },
   {
-    path: 'schedule/backup/edit/volume/:id',
+    path: 'schedule/backup/extend/volume/:id',
     component: EditScheduleBackupVolumeComponent
   },
   {
@@ -320,7 +321,7 @@ const routes: Routes = [
     component: SnapshotScheduleDetailComponent
   },
   {
-    path: 'schedule/snapshot/edit/:id',
+    path: 'schedule/snapshot/extend/:id',
     component: SnapshotScheduleEditComponent
   },
   {
@@ -364,7 +365,7 @@ const routes: Routes = [
     component: CreatePackageBackupComponent
   },
   {
-    path: 'backup/packages/edit/:id',
+    path: 'backup/packages/extend/:id',
     component: EditBackupPackageComponent
   },
   {
@@ -419,6 +420,10 @@ const routes: Routes = [
     path: 'vlan/:id/network/edit/subnet/:subnetId',
     component: VlanEditSubnetComponent
   },
+  // {
+  //   path: 'vlan/:id/network/extend/subnet/:subnetId',
+  //   component: VlanEditSubnetComponent
+  // },
   {
     path:'networks/ip-floating/list',
     component: ListIpFloatingComponent
@@ -484,7 +489,7 @@ const routes: Routes = [
     component: CreateFileSystemSnapshotScheduleComponent,
   },
   {
-    path: 'file-system-snapshot-schedule/edit/:id',
+    path: 'file-system-snapshot-schedule/extend/:id',
     component: EditFileSystemSnapshotScheduleComponent,
   },
   {
@@ -512,7 +517,7 @@ const routes: Routes = [
     component: ObjectStorageEditComponent
   },
   {
-    path: 'object-storage/edit/:id',
+    path: 'object-storage/extend/:id',
     component: ObjectStorageEditComponent
   },
   {
@@ -554,6 +559,10 @@ const routes: Routes = [
   {
     path: 'security',
     component: SecurityComponent
+  },
+  {
+    path: 'load-balancer/update/vpc/:id',
+    component: EditLoadBalancerVpcComponent
   }
   ]
 @NgModule({

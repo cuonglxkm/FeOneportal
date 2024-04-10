@@ -6,7 +6,7 @@ import { FormDetailEndpointGroup, FormEditEndpointGroup } from 'src/app/shared/m
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 
 @Component({
-  selector: 'one-portal-edit-endpoint-group',
+  selector: 'one-portal-extend-endpoint-group',
   templateUrl: './edit-endpoint-group.component.html',
   styleUrls: ['./edit-endpoint-group.component.less'],
 })
@@ -55,7 +55,7 @@ export class EditEndpointGroupComponent{
         }
       );
   }
-  
+
   showModal(){
     this.isVisible = true
     this.getEndpointGroupById(this.id)
@@ -75,7 +75,7 @@ export class EditEndpointGroupComponent{
     formEdit.name = this.validateForm.controls.nameEndpointGroup.value
     formEdit.description = this.validateForm.controls.description.value
     console.log(formEdit);
-    
+
     if(this.validateForm.valid){
       this.endpointGroupService.editEndpoinGroup(formEdit).subscribe(data => {
         if(data) {
@@ -95,5 +95,5 @@ export class EditEndpointGroupComponent{
   ngOnInit(){
     this.getEndpointGroupById(this.id);
   }
-  
+
 }

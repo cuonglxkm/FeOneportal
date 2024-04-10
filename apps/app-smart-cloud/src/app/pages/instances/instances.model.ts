@@ -35,21 +35,30 @@ export interface RulesInfo {
 }
 
 export class IPPublicModel {
+  id: number;
   ipAddress: string;
   portCloudId: string;
   customerId: number;
-  attachedVmId: null;
+  attachedVmId: number;
   region: number;
   regionText: string;
-  createDate: Date;
+  createDate: string;
   status: number;
   cloudIdentity: number;
   projectName: string;
   projectId: number;
   networkId: string;
-  iPv6Address: null;
-  serviceStatus: null;
-  id: number;
+  iPv6Address: string;
+  serviceStatus: string;
+  attachedVm: string;
+  expiredDate: string;
+  resourceStatus: string;
+  suspendType: string;
+  typeIP: string;
+  network: string;
+  fixedIpAddress: string;
+  loadbalancerId: number;
+  loadbalancerName: string;
 }
 
 export class Flavors {
@@ -231,7 +240,7 @@ export class InstanceCreate {
   customerId: number;
   userEmail: any;
   actorEmail: any;
-  vpcId: any;
+  projectId: any;
   regionId: number;
   serviceName: any;
   serviceType: number;
@@ -266,7 +275,7 @@ export class VolumeCreate {
   instanceToAttachId: any;
   isMultiAttach: boolean;
   isEncryption: boolean;
-  vpcId: any;
+  projectId: any;
   oneSMEAddonId: any;
   serviceType: number;
   serviceInstanceId: number;
@@ -331,7 +340,7 @@ export class InstanceResize {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   userEmail: any;
   actorEmail: any;
 }
@@ -411,7 +420,7 @@ export class UpdatePortInstance {
   portSecurityEnanble: boolean;
 }
 
-export class  IpCreate {
+export class IpCreate {
   id: number;
   duration: number;
   ipAddress: any;
@@ -511,7 +520,7 @@ export class InstanceExtend {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   typeName: string;
   serviceType: number;
   actionType: number;
@@ -519,4 +528,41 @@ export class InstanceExtend {
   newExpireDate: string;
   userEmail: any;
   actorEmail: any;
+}
+
+export class InstanceAction {
+  command: string;
+  suspendType: string;
+  networkId: string;
+  portId: string;
+  subnetId: string;
+  ipAddress: string;
+  id: number;
+}
+
+export class VlanSubnet {
+  id: number;
+  name: string;
+  subnetCloudId: string;
+  ipVerison: number;
+  networkCloudId: string;
+  customerId: number;
+  mayAoGan: any;
+  networkId: number;
+  allocationPools: any;
+  hostRouters: any;
+  enableDhcp: boolean;
+  networkName: string;
+  gatewayIp: string;
+  cloudId: string;
+  vlanId: number;
+  adminState: boolean;
+  shared: boolean;
+  type: any;
+  subnetAddressRequired: string;
+  status: string;
+  vpcId: number;
+  region: any;
+  regionText: any;
+  subnets: any;
 }

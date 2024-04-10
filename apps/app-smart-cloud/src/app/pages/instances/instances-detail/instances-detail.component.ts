@@ -52,12 +52,14 @@ export class InstancesDetailComponent implements OnInit {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
   }
 
+  checkPermission: boolean = false;
   ngOnInit(): void {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
         this.dataService.getById(this.id, true).subscribe({
           next: (data: any) => {
+            this.checkPermission = true;
             this.instancesModel = data;
             this.loading = false;
             this.cloudId = this.instancesModel.cloudId;
@@ -78,6 +80,7 @@ export class InstancesDetailComponent implements OnInit {
             this.cdr.detectChanges();
           },
           error: (e) => {
+            this.checkPermission = false;
             this.notification.error(e.error.detail, '');
           },
         });
