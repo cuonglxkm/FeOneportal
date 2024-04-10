@@ -315,6 +315,7 @@
               [nzMin]="1"
               [nzMax]="remainingVolume"
               [(ngModel)]="instanceCreate.volumeSize"
+              (keydown)="onKeyDown($event)"
               [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
@@ -338,6 +339,7 @@
               [nzMin]="1"
               [nzMax]="remainingRAM"
               [(ngModel)]="instanceCreate.ram"
+              (keydown)="onKeyDown($event)"
               [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
@@ -361,6 +363,7 @@
               [nzMin]="1"
               [nzMax]="remainingVCPU"
               [(ngModel)]="instanceCreate.cpu"
+              (keydown)="onKeyDown($event)"
               [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
