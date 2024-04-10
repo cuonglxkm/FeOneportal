@@ -423,13 +423,15 @@ export class DashboardComponent implements OnInit {
         show: true,
         title: {
           text: yaxisTitle,
-          rotate: -90,
-          offsetX: 0,
-          offsetY: 0,
+          offsetX: 25,
+          offsetY: -175,
+          rotate: 0,
           style: {
-            fontSize: '12px',
+            fontSize: "14px",
+            fontFamily: "Inter",
             fontWeight: 600,
-          }
+            color: "#333333"
+            }
         },
         axisBorder: {
           show: true,
@@ -484,7 +486,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.messageRateData = res.data;
           if (this.messageRateData) {
-            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'Message rate/s', this.messageRateChartTitle);
+            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'rate/s', this.messageRateChartTitle);
           }
         } else {
           this.unsubscribe$.next();
