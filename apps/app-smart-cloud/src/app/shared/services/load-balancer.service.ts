@@ -150,4 +150,8 @@ export class LoadBalancerService extends BaseService{
     return this.http.get<m_LBSDNListener[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/lb-listeners?idLB=${idLB}`)
   }
 
+  checkIpAddress(subnetCloudId: string, vipAddress: string, reg) {
+
+  }
+
 }

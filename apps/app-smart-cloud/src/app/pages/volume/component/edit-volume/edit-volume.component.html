@@ -63,11 +63,11 @@
               <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ listVMs }}</b></span>
               <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-label"><b>Không có máy ảo</b></span>
             </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="titleVolumeType">
-              <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>
-              </nz-descriptions-item>
+<!--            <nz-descriptions-item [nzTitle]="titleVolumeType">-->
+<!--              <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>-->
+<!--              </nz-descriptions-item>-->
           </nz-descriptions>
-          <span class="text-label">Mô tả: <b>{{ volumeInfo?.description }}</b></span>
+          <span class="text-label">Mô tả: {{ volumeInfo?.description }}</span>
           <ng-template #titleName>
             <span class="text-label">Tên Volume:</span>
           </ng-template>
@@ -122,7 +122,7 @@
               <nz-col nzSpan="12">
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
                   <input nz-input class="input-custom"
-                         [value]="getMonthDifference(volumeInfo?.expirationDate, volumeInfo?.creationDate) + ' Tháng'"
+                         [value]="getMonthDifference(volumeInfo?.expirationDate, volumeInfo?.createDate) + ' Tháng'"
                          [disabled]="true" />
                   <ng-template #dateErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
@@ -139,7 +139,7 @@
                   <nz-form-label nzFor="now">
                     <div class="label">
                       <span>Ngày cấp dịch vụ: </span>
-                      <span>{{ volumeInfo?.creationDate | date: 'dd/MM/yyyy' }}</span>
+                      <span>{{ volumeInfo?.createDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
                   </nz-form-label>
                 </nz-form-item>
@@ -176,7 +176,7 @@
                                style="width: 100%; margin-left: 0;"
                                class="input-custom"
                                [nzMin]="volumeInfo?.sizeInGB"
-                               (ngModelChange)="changeValueInput()"
+                               (ngModelChange)="changeValueStorage($event)"
                                [nzStep]="1" />
               <ng-template #storageErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của Volume
@@ -188,9 +188,9 @@
             <nz-form-label>
               <div>
                 Đơn giá: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} </span>
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} /GB/Ngày</span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                   0 VND
+                   0 VND/GB/Ngày
                 </span>
               </div>
             </nz-form-label>
