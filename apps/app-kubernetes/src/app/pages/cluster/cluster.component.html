@@ -416,7 +416,7 @@
               <nz-form-label nzRequired nzFor="volumeCloudSize">Quota (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
                 <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume"
-                  (keypress)="isNumber($event)" id="volumeCloudSize" [readonly]="isUsingPackConfig" />
+                  (keypress)="isNumber($event)" id="volumeCloudSize" [readonly]="isUsingPackConfig && chooseItem != null" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -433,7 +433,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="volumeCloudType">Loại</nz-form-label>
               <nz-form-control>
-                <nz-radio-group formControlName="volumeCloudType" [nzDisabled]="isUsingPackConfig">
+                <nz-radio-group formControlName="volumeCloudType" [nzDisabled]="isUsingPackConfig && chooseItem != null">
                   <label nz-radio nzValue="hdd">HDD</label>
                   <label nz-radio nzValue="sdd">SDD</label>
                 </nz-radio-group>
@@ -494,7 +494,7 @@
                 </div>
 
                 <div nz-col [nzSpan]="12">
-                  <div class="price-style price-color mr-3">2.000.000 VNĐ</div>
+                  <div class="price-style price-color mr-3">20.000.000 VNĐ</div>
                   <div class="price-style unit-color mr-3">VNĐ/tháng</div>
                 </div>
               </div>
@@ -505,7 +505,7 @@
                 </div>
 
                 <div nz-col [nzSpan]="12">
-                  <div class="price-style price-color mt-3 mr-3">500.000 VNĐ</div>
+                  <div class="price-style price-color mt-3 mr-3">5.000.000 VNĐ</div>
                   <div class="price-style unit-color mr-3">VNĐ/tháng</div>
                 </div>
               </div>
@@ -516,7 +516,7 @@
                   <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
                 </div>
                 <div nz-col [nzSpan]="12">
-                  <div class="price-style total-color mt-3 mr-3">2.500.000 VNĐ</div>
+                  <div class="price-style total-color mt-3 mr-3">25.000.000 VNĐ</div>
                   <div class="price-style unit-color mr-3">VNĐ/tháng</div>
                 </div>
               </div>

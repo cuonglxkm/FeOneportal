@@ -52,6 +52,8 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   listOfWorkerType: WorkerTypeModel[];
   listOfVolumeType: VolumeTypeModel[];
 
+  listOfCurrentWorkerGroup: WorkerGroupModel[];
+
   constructor(
     private router: Router,
     private clusterService: ClusterService,
@@ -74,13 +76,18 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['detailCluster']) {
-      if (changes['detailCluster'].currentValue) {
-        this.detailCluster = changes['detailCluster'].currentValue;
-        this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
-        this.regionId = this.detailCluster.regionId;
-      }
+    if (changes['detailCluster']?.currentValue) {
+      this.detailCluster = changes['detailCluster'].currentValue;
+      this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
+      this.regionId = this.detailCluster.regionId;
+      this.listOfCurrentWorkerGroup = this.detailCluster.workerGroup;
+      this.initFormWorkerGroup(this.detailCluster.workerGroup);
     }
+  }
+
+  isUpgrading: boolean = false;
+  onSubmitUpgrade() {
+    this.isUpgrading = true;
   }
 
   onEditCluster() {
@@ -93,16 +100,25 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   initUpgradeData() {
     this.upgradeClusterName = this.detailCluster.clusterName;
     this.upgradeVolumeType = this.detailCluster.volumeCloudType;
-    this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;
+    this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;    
+  }
 
-    const wgs = this.detailCluster.workerGroup;
-    console.log(wgs);
+  initFormWorkerGroup(wgs: WorkerGroupModel[]) {
     for (let i = 0; i < wgs.length; i++) {
       const index = this.listFormWorkerGroupUpgrade ? this.listFormWorkerGroupUpgrade.length : 0;
+
+      const isAutoScale = wgs[i].autoScaling;
+      let nodeNumber: number;
+      if (isAutoScale) {
+        nodeNumber = wgs[i].nodeNumber;
+      } else {
+        nodeNumber = wgs[i].minimumNode;
+      }
+
       const wg = this.fb.group({
         workerGroupName: [wgs[i].workerGroupName,
           [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
-        nodeNumber: [wgs[i].nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
+        nodeNumber: [nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
         volumeStorage: [wgs[i].volumeSize, [Validators.required, Validators.min(20), Validators.max(1000)]],
         volumeType: [wgs[i].volumeType, [Validators.required]],
         volumeTypeId: [null, [Validators.required]],
@@ -168,6 +184,15 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
   onCancelEdit() {
     this.isEditMode = false;
+    this.clearFormWorker();
+    this.initFormWorkerGroup(this.listOfCurrentWorkerGroup);
+    console.log(this.listOfCurrentWorkerGroup);
+  }
+
+  clearFormWorker() {
+    while (this.listFormWorkerGroupUpgrade.length != 0) {
+      this.listFormWorkerGroupUpgrade.removeAt(0);
+    }
   }
 
   onEditClusterName(value: string) {
@@ -181,7 +206,22 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   // 0: formGroup, 1: formArray
   onValidateUpgradeInput(currentValue: number, upgradeValue: number,
     control: string, type: number, index?: number) {
+      switch(type) {
+        
+      }
+  }
 
+  onChangeConfigType(event: string) {
+    console.log({event: event});
+  }
+
+  isAutoScale: boolean;
+  onChangeAutoScale(event: any) {
+    this.isAutoScale = event;
+  }
+
+  isAutoScaleAtIndex(index: number) {
+    return this.listFormWorkerGroupUpgrade.at(index).get('autoScalingWorker').value;
   }
 
   isNumber(event) {

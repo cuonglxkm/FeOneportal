@@ -3,8 +3,10 @@
     <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">Điều chỉnh</button>
   </ng-container>
   <ng-template #submitModeTpl>
-    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">Xác nhận</button>
-    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3">Hủy bỏ</button>
+    <button nz-button nzType="primary" (click)="onSubmitUpgrade()" class="mb-3" 
+      [disabled]="isUpgrading || upgradeForm.invalid">Xác nhận</button>
+    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3" 
+      [disabled]="isUpgrading">Hủy bỏ</button>
   </ng-template>
 
   <!-- Thông tin chung -->
@@ -137,9 +139,9 @@
     </div>
   </nz-card>
 
-  <!-- testing -->
-  <nz-card class="border-card">
-    <h3></h3>
+  <!-- Thông tin worker group -->
+  <!-- <nz-card class="border-card">
+    <h3>Thông tin worker group</h3>
     <form nz-form [formGroup]="upgradeForm">
       <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroupUpgrade.controls; let i = index;">
         <ng-container [formGroupName]="i">
@@ -186,7 +188,8 @@
                             {{'configType' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
                           <ng-template #editConfigTypeTpl>
-                            <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình">
+                            <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình" 
+                              (ngModelChange)="onChangeConfigType($event)" class="w-100">
                               <nz-option *ngFor="let item of listOfWorkerType"
                                 nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName">
                               </nz-option>
@@ -217,13 +220,13 @@
                         <div nz-col [nzSpan]="8">Auto scale</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editScalingTpl">
-                            <ng-container
-                              *ngIf="('autoScaling' | getValueInForm: listFormWorkerGroupUpgrade : i) as autoScaling">
-                              {{autoHealing == true ? 'Bật' : 'Tắt'}}
+                            <ng-container *ngIf="('autoScalingWorker' | getValueInForm: listFormWorkerGroupUpgrade : i) as autoScalingWorker">
+                              {{autoScalingWorker == true ? 'Bật' : 'Tắt'}}
                             </ng-container>
                           </ng-container>
                           <ng-template #editScalingTpl>
-                            <nz-switch formControlName="autoScaling"></nz-switch>
+                            <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAutoScale($event)"
+                            nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
                           </ng-template>
                         </div>
                       </div>
@@ -239,12 +242,45 @@
                             </ng-container>
                           </ng-container>
                           <ng-template #editHealingTpl>
-                            <nz-switch formControlName="autoHealing"></nz-switch>
+                            <nz-switch formControlName="autoHealing"
+                            nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
                           </ng-template>
                         </div>
                       </div>
                     </td>
                   </tr>
+
+                  <ng-container *ngIf="isAutoScale">
+                    <tr>
+                      <td class="w-50">
+                        <div nz-row>
+                          <div nz-col [nzSpan]="8">Minimum node</div>
+                          <div nz-col [nzSpan]="16" class="description-info">
+                            <ng-container *ngIf="!isEditMode; else editMinimumNodeTpl">
+                              {{'minimumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                            </ng-container>
+                            <ng-template #editMinimumNodeTpl>
+                              <input nz-input type="text" formControlName="minimumNode" placeholder="Nhập số node tối thiểu" />
+                            </ng-template>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td class="w-50">
+                        <div nz-row>
+                          <div nz-col [nzSpan]="8">Maximum node</div>
+                          <div nz-col [nzSpan]="16" class="description-info">
+                            <ng-container *ngIf="!isEditMode; else editMaximumNodeTpl">
+                              {{'maximumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                            </ng-container>
+                            <ng-template #editMaximumNodeTpl>
+                              <input nz-input type="text" formControlName="maximumNode" placeholder="Nhập số node tối đa" />
+                            </ng-template>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
                 </tbody>
               </nz-table>
             </div>
@@ -255,9 +291,8 @@
         </ng-container>
       </div>
     </form>
-  </nz-card>
+  </nz-card> -->
 
-  <!-- Thông tin worker group -->
   <nz-card class="border-card">
     <h3>Thông tin worker group</h3>
     <ng-container *ngIf="detailCluster.workerGroup.length > 0; else workerlessTpl">
