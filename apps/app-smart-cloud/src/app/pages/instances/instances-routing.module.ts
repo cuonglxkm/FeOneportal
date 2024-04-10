@@ -33,19 +33,19 @@ const routes: Routes = [
     data: { title: 'Chi tiết máy ảo', key: 'instances-detail' },
   },
   {
-    path: 'instances-edit-info/:id',
+    path: 'instances-extend-info/:id',
     component: InstancesEditInfoComponent,
-    data: { title: 'Chỉnh sửa thông tin máy ảo', key: 'instances-edit-info' },
+    data: { title: 'Chỉnh sửa thông tin máy ảo', key: 'instances-extend-info' },
   },
   {
-    path: 'instances-edit/:id',
+    path: 'instances-extend/:id',
     component: InstancesEditComponent,
-    data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit' },
+    data: { title: 'Chỉnh sửa máy ảo', key: 'instances-extend' },
   },
   {
-    path: 'instances-edit-vpc/:id',
+    path: 'instances-extend-vpc/:id',
     component: InstancesEditVpcComponent,
-    data: { title: 'Chỉnh sửa máy ảo', key: 'instances-edit-vpc' },
+    data: { title: 'Chỉnh sửa máy ảo', key: 'instances-extend-vpc' },
   },
   {
     path: 'instances-console/:id',

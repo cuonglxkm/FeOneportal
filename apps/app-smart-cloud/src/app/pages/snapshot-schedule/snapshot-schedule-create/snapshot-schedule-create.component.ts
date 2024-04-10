@@ -16,6 +16,9 @@ import {
 } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { getCurrentRegionAndProject } from '@shared';
+import { FormSearchPackageSnapshot } from 'src/app/shared/models/package-snapshot.model';
+import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -39,10 +42,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   numberOfweek: string = '1 tuần'
   numberArchivedCopies = 1;
   selectedValueRadio = 'normal';
-
+  snapshotPackageList: NzSelectOptionInterface[] = []
   time: Date = new Date();
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
 
+
+  formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   validateForm: FormGroup<{
     radio: FormControl<any>
   }> = this.fb.group({
@@ -53,10 +58,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     name: FormControl<string>;
     volume: FormControl<number>;
     selectedDate: FormControl<string>;
+    snapshotPackage: FormControl<number>;
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
-    volume: [0, [Validators.required]],
+    volume: [null as number, [Validators.required]],
     selectedDate: ['', [Validators.required]],
+    snapshotPackage: [null as number, [Validators.required]],
   });
 
   dateList: NzSelectOptionInterface[] = [
@@ -74,13 +81,15 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    this.scheduleStartTime =
-      now.getHours().toString() +
-      ':' +
-      now.getUTCMinutes().toString() +
-      ':' +
-      now.getSeconds().toString();
     this.userId = this.tokenService.get()?.userId;
+    this.doGetListSnapshotPackage()
+  }
+
+  getDayLabel(selectedValue: string): any {
+    const selectedDay = this.dateList.find(
+      (day) => day.value === selectedValue
+    );
+    return selectedDay ? selectedDay.label : '';
   }
 
   doGetListVolume() {
@@ -106,8 +115,44 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       });
   }
 
+  doGetListSnapshotPackage() {
+    this.snapshotPackageList = []
+    this.formSearchPackageSnapshot.projectId = this.project
+    this.formSearchPackageSnapshot.regionId = this.region
+    this.formSearchPackageSnapshot.packageName = ''
+    this.formSearchPackageSnapshot.pageSize = 100
+    this.formSearchPackageSnapshot.currentPage = 1
+    this.formSearchPackageSnapshot.status = ''
+    this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
+      .subscribe(data => {
+        console.log(data);
+        
+        data.records.forEach(data => {
+          this.snapshotPackageList.push({label: data.packageName, value: data.id});
+        })
+    }, error => {
+      this.isLoading = false
+      this.snapshotPackageList = null
+    })
+  }
+
   onChangeStatus(){
     console.log('Selected option changed:', this.selectedValueRadio)
+    this.form.controls.volume.clearValidators();
+    this.form.controls.volume.markAsPristine();
+    this.form.controls.volume.reset();
+
+    this.form.controls.snapshotPackage.clearValidators();
+    this.form.controls.snapshotPackage.markAsPristine();
+    this.form.controls.snapshotPackage.reset();
+
+    if(this.selectedValueRadio === 'package'){
+      this.form.controls.snapshotPackage.setValidators([
+        Validators.required,
+      ]);
+      this.form.controls.snapshotPackage.markAsDirty();
+      this.form.controls.snapshotPackage.reset();
+    }
   }
 
   constructor(
@@ -117,12 +162,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     private snapshotService: SnapshotVolumeService,
     private volumeService: VolumeService,
     private modalService: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private packageSnapshotService: PackageSnapshotService,
+    private datepipe: DatePipe
   ) {}
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
-  }
+
   request = new CreateScheduleSnapshotDTO();
   create() {
     const modal: NzModalRef = this.modalService.create({
@@ -146,11 +191,15 @@ export class SnapshotScheduleCreateComponent implements OnInit {
             this.request.mode = 3; //fix cứng chế độ = theo tuần ;
             this.request.dates = 0;
             this.request.duration = 0;
-            this.request.volumeId = this.volumeId;
-            this.request.runtime = this.time.toISOString();
+            this.request.volumeId = this.form.controls.volume.value === null ? 0 : this.form.controls.volume.value;
+            this.request.runtime = this.datepipe.transform(
+              this.time,
+              'yyyy-MM-ddTHH:mm:ss',
+              'vi-VI'
+            );
             this.request.intervalMonth = 0;
             this.request.maxBaxup = 1; // fix cứng số bản
-            this.request.snapshotPacketId = 0;
+            this.request.snapshotPacketId = this.form.controls.snapshotPackage.value === null ? 0 : this.form.controls.snapshotPackage.value;
             this.request.customerId = this.userId;
             this.request.projectId = this.project;
             this.request.regionId = this.region;

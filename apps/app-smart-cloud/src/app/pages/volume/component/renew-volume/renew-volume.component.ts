@@ -117,7 +117,7 @@ export class RenewVolumeComponent implements OnInit {
     this.extendsDto.serviceInstanceId = this.volumeInfo?.id;
     this.extendsDto.regionId = this.volumeInfo?.regionId;
     this.extendsDto.serviceName = this.volumeInfo?.name;
-    this.extendsDto.vpcId = this.volumeInfo?.vpcId;
+    this.extendsDto.projectId = this.volumeInfo?.vpcId;
     this.extendsDto.customerId = this.tokenService?.get()?.userId;
     this.extendsDto.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');

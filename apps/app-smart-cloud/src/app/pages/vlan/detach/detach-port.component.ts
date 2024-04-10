@@ -3,6 +3,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { InstancesService } from '../../instances/instances.service';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'one-portal-detach-port',
@@ -36,16 +37,19 @@ export class DetachPortComponent {
   }
 
   handleOkDetachPort() {
-    this.vlanService.detachPort(this.id, this.region, this.project).subscribe(data => {
+    this.isLoadingDetach = true
+    this.vlanService.detachPort(this.id, this.region, this.project)
+      .pipe(debounceTime(1500))
+      .subscribe(data => {
       console.log('detach', data)
       this.isVisibleDetach = false
       this.isLoadingDetach = false
-      this.notification.success('Thành công', 'Gỡ port vào máy ảo thành công')
-      this.onOk.emit()
+      this.notification.success('Thành công', 'Yêu cầu gỡ port khỏi máy ảo thành công')
+      setTimeout(() => {this.onOk.emit(data)}, 2500)
     }, error => {
       this.isVisibleDetach = false
       this.isLoadingDetach = false
-      this.notification.error('Thất bại', 'Gỡ port vào máy ảo thất bại')
+      this.notification.error('Thất bại', 'Yêu cầu gỡ port khỏi máy ảo thất bại')
     })
   }
 }

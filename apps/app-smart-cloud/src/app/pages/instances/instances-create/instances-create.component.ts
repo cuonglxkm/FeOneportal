@@ -1134,7 +1134,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.instanceToAttachId = null;
     this.volumeCreate.isMultiAttach = blockStorage.multiattach;
     this.volumeCreate.isEncryption = blockStorage.encrypt;
-    this.volumeCreate.vpcId = this.projectId.toString();
+    this.volumeCreate.projectId = this.projectId.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;

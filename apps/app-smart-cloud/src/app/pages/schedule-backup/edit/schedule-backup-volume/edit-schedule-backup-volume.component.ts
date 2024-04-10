@@ -10,7 +10,7 @@ import {RegionModel} from "../../../../shared/models/region.model";
 import {ProjectModel} from "../../../../shared/models/project.model";
 
 @Component({
-  selector: 'one-portal-edit-schedule-backup-volume',
+  selector: 'one-portal-extend-schedule-backup-volume',
   templateUrl: './edit-schedule-backup-volume.component.html',
   styleUrls: ['./edit-schedule-backup-volume.component.less'],
 })

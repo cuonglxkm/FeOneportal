@@ -84,7 +84,7 @@
           </td>
           <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td nzAlign="center">
-            <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'edit/' + item.serviceOrderCode"
+            <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'extend/' + item.serviceOrderCode"
               nz-tooltip="Chỉnh sửa" class="img-edit" />
             <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px" [routerLink]="'upgrade/' + item.serviceOrderCode"
               nz-tooltip="Nâng cấp" />
@@ -109,8 +109,8 @@
         <!-- description -->
         <div class="mt-3 description-content">
           <span>
-            VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. 
-            Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub. 
+            VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây.
+            Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.
           </span>
         </div>
 

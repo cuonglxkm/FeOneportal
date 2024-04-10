@@ -47,6 +47,7 @@
             <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'</ng-container>
             <ng-container *ngIf="control.hasError('maxlength')">Tên network tối đa 50 ký tự</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Tên network không được chứa ký tự đặc biệt</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên vlan đã tồn tại. Vui lòng nhập tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -113,7 +114,9 @@
                  [placeholder]="'x.x.0.0/16'" />
           <ng-template #networkAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Địa chỉ không được phép để trống</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIp')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIPAddress')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
+<!--            <ng-container *ngIf="control.hasError('pattern')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>-->
+
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -180,16 +183,23 @@
               <span *nzSpaceItem nz-icon nzType="question-circle"
                     nzTheme="outline"
                     nz-popover
-                    [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ','"
+                    [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ', ' +
+                     '\nYêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24' +
+                     '\nIP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)'"
                     nzPopoverPlacement="bottom"></span>
             </nz-space>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">
           <nz-textarea-count [nzMaxCharacterCount]="100">
-            <textarea rows="4" formControlName="allocationPool" nz-input></textarea>
+            <textarea rows="4" formControlName="allocationPool" (ngModelChange)="onChangeInput($event)" nz-input></textarea>
           </nz-textarea-count>
           <ng-template #allocationPoolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('pattern')">Địa chỉ IP không hợp lệ</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">Địa chỉ IP không đúng định dạng, IP cách nhau bởi dấu (,).</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIpAddressRange')">Địa chỉ IP không hợp lệ.<br>
+              Yêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24.</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIpSequence')">Địa chỉ IP không hợp lệ, IP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)</ng-container>
+
+
           </ng-template>
         </nz-form-control>
       </nz-form-item>

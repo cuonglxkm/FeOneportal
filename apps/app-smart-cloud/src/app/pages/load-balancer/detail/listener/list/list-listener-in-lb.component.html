@@ -1,0 +1,39 @@
+<nz-table #fixedTable
+          style="margin-top: 20px;"
+          [nzShowPagination]="false"
+          [nzData]="listListeners || []"
+          [nzFrontPagination]="false"
+          [nzLoading]="isLoading">
+
+  <thead>
+  <tr>
+    <th>Tên Listener</th>
+    <th>Giao thức</th>
+    <th>Port</th>
+    <th>Hoạt động</th>
+    <th>Trạng thái</th>
+    <th>Hoạt động</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of fixedTable.data">
+    <td nzAlign="left">{{ data.name }}</td>
+    <td nzAlign="left">{{ data.protocol }}</td>
+    <td nzAlign="right">{{ data.port }}</td>
+    <td nzAlign="left">{{ data.status }}</td>
+    <td nzAlign="left">{{ data.status }}</td>
+    <td>
+      <span nz-icon
+            style="color: #0066B3; margin-right: 10px; cursor: pointer;"
+            nzType="edit" nzTheme="outline"
+            nz-popover
+            [nzPopoverContent]="'Chỉnh sửa'"
+            nzPopoverPlacement="bottom"></span>
+      <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
+            nzTheme="outline" nz-popover
+            [nzPopoverContent]="'Xóa'"
+            nzPopoverPlacement="bottom"></span>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

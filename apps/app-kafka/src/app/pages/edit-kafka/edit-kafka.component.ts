@@ -12,7 +12,7 @@ import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
 @Component({
-  selector: 'one-portal-edit-kafka',
+  selector: 'one-portal-extend-kafka',
   templateUrl: './edit-kafka.component.html',
   styleUrls: ['./edit-kafka.component.css'],
 })
@@ -73,7 +73,7 @@ export class EditKafkaComponent implements OnInit {
     });
   }
 
-  updateDataForm() {    
+  updateDataForm() {
     this.myform.controls.serviceName.setValue(this.itemDetail.serviceName);
     this.myform.controls.version.setValue(this.itemDetail.version);
     this.myform.controls.description.setValue(this.itemDetail.description);

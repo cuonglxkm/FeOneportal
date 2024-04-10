@@ -22,5 +22,5 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <one-portal-subnet-form *ngIf="!!subnet" [value]="subnet" (onSubmit)="handleEdit($event)"/>
+  <one-portal-subnet-form *ngIf="!!subnet" [value]="subnet" [idNetwork]="idNetwork" (onSubmit)="handleEdit($event)"/>
 </nz-content>
