@@ -32,7 +32,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 })
 export class InstancesExtendComponent implements OnInit {
   loading = true;
-  instancesModel: InstancesModel;
+  instancesModel: InstancesModel = new InstancesModel();
   listSecurityGroupModel: SecurityGroupModel[] = [];
   id: number;
   regionId: number;
@@ -51,7 +51,6 @@ export class InstancesExtendComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private modalSrv: NzModalService,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService
   ) {}
@@ -65,6 +64,9 @@ export class InstancesExtendComponent implements OnInit {
       this.instancesModel = data;
       this.regionId = this.instancesModel.regionId;
       this.loading = false;
+      let expiredDate = new Date(this.instancesModel.expiredDate);
+      expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+      this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
       this.getListIpPublic();
       this.getTotalAmount();
       this.service
@@ -139,9 +141,9 @@ export class InstancesExtendComponent implements OnInit {
 
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
-    this.instanceExtend.serviceName = 'Gia hạn';
+    this.instanceExtend.serviceName = this.instancesModel.name;
     this.instanceExtend.customerId = this.customerId;
-    this.instanceExtend.vpcId = this.instancesModel.projectId;
+    this.instanceExtend.projectId = this.instancesModel.projectId;
     this.instanceExtend.typeName =
       'SharedKernel.IntegrationEvents.InstanceExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.instanceExtend.serviceType = 1;
@@ -212,6 +214,12 @@ export class InstancesExtendComponent implements OnInit {
   navigateToEdit() {
     this.router.navigate([
       '/app-smart-cloud/instances/instances-edit/' + this.id,
+    ]);
+  }
+
+  navigateToChangeImage() {
+    this.router.navigate([
+      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
     ]);
   }
 

@@ -1,11 +1,11 @@
 import {Inject, Injectable} from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {
-  ExecuteAttachOrDetach,
+  ExecuteAttachOrDetach, FormCreateSG, FormDeleteSG,
   SecurityGroup,
   SecurityGroupCreateForm,
   SecurityGroupSearchCondition
-} from "../models/security-group";
+} from '../models/security-group';
 import { catchError, Observable, throwError } from 'rxjs';
 import {BaseService} from "src/app/shared/services/base.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -14,14 +14,12 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
     providedIn: 'root'
 })
 export class SecurityGroupService extends BaseService {
-
-
     constructor(public http: HttpClient,
                 @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
         super();
     }
 
-    search(condition: SecurityGroupSearchCondition): Observable<SecurityGroup[]> {
+    search(condition: SecurityGroupSearchCondition) {
         let params = new HttpParams();
         params = params.append('userId', condition.userId);
         params = params.append('projectId', condition.projectId);
@@ -29,8 +27,7 @@ export class SecurityGroupService extends BaseService {
 
         return this.http.get<SecurityGroup[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getall', {
             params: params
-        }).pipe(
-          catchError((error: HttpErrorResponse) => {
+        }).pipe(catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
             } else if (error.status === 404) {
@@ -41,11 +38,23 @@ export class SecurityGroupService extends BaseService {
           }))
     }
 
+    createSecurityGroup(form: FormCreateSG) {
+      return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form))
+        .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+    }
+
     create(form: SecurityGroupCreateForm, condition: SecurityGroupSearchCondition) {
         return this.http
             .post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form, condition))
-          .pipe(
-            catchError((error: HttpErrorResponse) => {
+          .pipe(catchError((error: HttpErrorResponse) => {
               if (error.status === 401) {
                 console.error('login');
               } else if (error.status === 404) {
@@ -69,6 +78,21 @@ export class SecurityGroupService extends BaseService {
             }
             return throwError(error);
           }))
+    }
+
+
+    deleteSG(form: FormDeleteSG) {
+      return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group', {
+        body: form
+      }).pipe(catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+        }))
     }
 
     attachOrDetach(form: ExecuteAttachOrDetach){

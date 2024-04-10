@@ -5,26 +5,16 @@ import { V1Component } from './test/v1.component';
 import { G2MiniBarModule } from '@delon/chart/mini-bar';
 import { PagesRoutingModule } from './pages-routing.module';
 import { SharedModule } from '@shared';
-import { SecurityGroupComponent } from './security-group/list-security-group/security-group.component';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { CreateSecurityGroupComponent } from './security-group/create-security-group/create-security-group.component';
-import { CreateInboundComponent } from './security-group/inbound/create/create-inbound.component';
 import { ListAllowAddressPairComponent } from './allow-address-pair/list/list-allow-address-pair.component';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { SearchOutline, SettingOutline } from '@ant-design/icons-angular/icons';
-import { DeleteSecurityGroupComponent } from './security-group/delete-security-group/delete-security-group.component';
-import { DeleteRuleComponent } from './security-group/delete-rule/delete-rule.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { InboundListComponent } from './security-group/inbound/list/inbound-list.component';
-import { ListOutboundComponent } from './security-group/outbound/list/list-outbound.component';
-import { CreateOutboundComponent } from './security-group/outbound/create/create-outbound.component';
 import { CreateAllowAddressPairComponent } from './allow-address-pair/create/create-allow-address-pair.component';
-import { BlankSecurityGroupComponent } from './security-group/blank-security-group/blank-security-group.component';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzImageModule } from 'ng-zorro-antd/image';
-import { FormRuleComponent } from './security-group/form-rule/form-rule.component';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { SshKeyComponent } from './ssh-key/ssh-key.component';
 import { DeleteAllowAddressPairComponent } from './allow-address-pair/delete/delete-allow-address-pair.component';
@@ -54,7 +44,6 @@ import { DeleteBackupVmComponent } from './backup-vm/delete/delete-backup-vm.com
 import { ActionHistoryComponent } from './action-history/action-history.component';
 import { DetailBackupVmComponent } from './backup-vm/detail/detail-backup-vm.component';
 import { CreateBackupVmComponent } from './backup-vm/create/create-backup-vm.component';
-import { AttachOrDetachComponent } from './security-group/vm/attach-or-detach/attach-or-detach.component';
 import { CurrentVirtualMachineComponent } from './backup-vm/restore/current-virtual-machine/current-virtual-machine.component';
 import { NewVirtualMachineComponent } from './backup-vm/restore/new-virtual-machine/new-virtual-machine.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -152,7 +141,7 @@ import { BucketPolicyComponent } from './bucket/bucket-configure/bucket-policy/b
 import { BucketCorsComponent } from './bucket/bucket-configure/bucket-cors/bucket-cors.component';
 import { BucketDetailComponent } from './bucket/bucket-detail/bucket-detail.component';
 import { FileSystemSnapshotComponent } from './file-system-snapshot/file-system-snapshot.component';
-import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.componentl';
+import { FileSystemSnapshotDetailComponent } from './file-system-snapshot/file-system-snapshot-detail/file-system-snapshot-detai.component';
 import { CreateFileSystemSnapshotComponent } from './file-system-snapshot/create-file-system-snapshot/create-file-system-snapshot.component';
 import { CreateFileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/create-file-system-snapshot-schedule/create-file-system-snapshot-schedule.component';
 import { FileSystemSnapshotScheduleComponent } from './file-system-snapshot-schedule/file-system-snapshot-schedule.component';
@@ -192,6 +181,23 @@ import { SafePipe } from '../../../../../libs/common-utils/src';
 import { StopScheduleComponent } from './schedule-backup/action/stop/stop-schedule.component';
 import { RestoreScheduleComponent } from './schedule-backup/action/restore/restore-schedule.component';
 import { ReplayScheduleComponent } from './schedule-backup/action/replay/replay-schedule.component';
+import { ListSecurityGroupComponent } from './security-group/list/list-security-group.component';
+import { CreateSecurityGroupComponent } from './security-group/action/sg/create/create-security-group.component';
+import { DeleteSecurityGroupComponent } from './security-group/action/sg/delete/delete-security-group.component';
+import { ListInboundComponent } from './security-group/rule/inbound/List-Inbound.component';
+import { DeleteInboundComponent } from './security-group/action/rule/inbound/delete/delete-inbound.component';
+import { CreateInboundComponent } from './security-group/action/rule/inbound/create/create-inbound.component';
+import { DeleteOutboundComponent } from './security-group/action/rule/outbound/delete/delete-outbound.component';
+import { ListOutboundComponent } from './security-group/rule/outbound/list-outbound.component';
+import { DetachVmComponent } from './security-group/action/vm/detach/detach-vm.component';
+import { AttachVmComponent } from './security-group/action/vm/attach/attach-vm.component';
+import { FormRuleComponent } from './security-group/action/rule/form/form-rule.component';
+import { CreateOutboundComponent } from './security-group/action/rule/outbound/create/create-outbound.component';
+import { SecurityComponent } from './security/security.component';
+import { ListLoadBalancerComponent } from './load-balancer/list/list-load-balancer.component';
+import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-novpc.component';
+import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
+import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -199,20 +205,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
   declarations: [
     UserProfileComponent,
     V1Component,
-    SecurityGroupComponent,
-    CreateSecurityGroupComponent,
-    CreateInboundComponent,
-    ListOutboundComponent,
-    CreateOutboundComponent,
     ListAllowAddressPairComponent,
-    DeleteSecurityGroupComponent,
-    DeleteSecurityGroupComponent,
-    DeleteRuleComponent,
-    InboundListComponent,
-    ListOutboundComponent,
     CreateAllowAddressPairComponent,
-    BlankSecurityGroupComponent,
-    FormRuleComponent,
     SshKeyComponent,
     VolumeComponent,
     PopupAddVolumeComponent,
@@ -240,7 +234,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateBackupVolumeComponent,
     ListBackupVolumeComponent,
     DetailBackupVolumeComponent,
-    AttachOrDetachComponent,
     CurrentVirtualMachineComponent,
     NewVirtualMachineComponent,
     IamDashboardComponent,
@@ -371,6 +364,23 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     StopScheduleComponent,
     RestoreScheduleComponent,
     ReplayScheduleComponent,
+    ListSecurityGroupComponent,
+    CreateSecurityGroupComponent,
+    DeleteSecurityGroupComponent,
+    ListInboundComponent,
+    DeleteInboundComponent,
+    CreateInboundComponent,
+    DeleteOutboundComponent,
+    ListOutboundComponent,
+    FormRuleComponent,
+    DetachVmComponent,
+    AttachVmComponent,
+    CreateOutboundComponent,
+    SecurityComponent,
+    ListLoadBalancerComponent,
+    CreateLbNovpcComponent,
+    CreateLbVpcComponent,
+    DetailLoadBalancerComponent,
   ],
   imports: [
     CommonModule,

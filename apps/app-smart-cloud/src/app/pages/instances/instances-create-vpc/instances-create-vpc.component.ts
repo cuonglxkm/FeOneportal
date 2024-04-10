@@ -80,11 +80,9 @@ export class InstancesCreateVpcComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.max(50),
-        Validators.pattern(/^[a-zA-Z0-9]+$/),
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
       ],
     }),
-    // items: new FormArray<FormGroup<InstancesForm>>([]),
   });
 
   //danh sách các biến của form model
@@ -511,7 +509,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.instanceCreate.vpcId = this.projectId;
+    this.instanceCreate.projectId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;

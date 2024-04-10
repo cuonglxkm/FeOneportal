@@ -7,11 +7,9 @@
           <div style="margin-top: 15px;">
             <span>Tên Volume</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
-                  nzPopoverPlacement="bottom"></span>
+            <img nz-popover [nzPopoverContent]="'Tên volume. Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt.'"
+                 nzPopoverPlacement="bottom"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -32,11 +30,10 @@
           <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
                      nzUnCheckedChildren="OFF"></nz-switch>
           <span style="margin-left: 10px; margin-top: 1px;">Tạo từ Snapshot</span>
-          <span nz-icon nzType="question-circle" style="margin-left: 5px; margin-top: 5px;"
-                nzTheme="outline"
-                nz-popover
-                [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
-                nzPopoverPlacement="bottom"></span>
+          <img style="margin-left: 10px"
+               nz-popover  [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
+               nzPopoverPlacement="bottom"
+               src="assets/imgs/pajamas_question.svg" alt="" />
         </div>
       </nz-form-item>
       <div *ngIf="isInitSnapshot === true">
@@ -70,11 +67,9 @@
           <div class="label">
             <span>Chọn loại volume</span>
             <span style="color: rgba(252, 16, 16, 1); "> *</span>
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
-                  nzPopoverPlacement="bottom"></span>
+            <img nz-popover [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
+                 nzPopoverPlacement="bottom"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
@@ -106,11 +101,9 @@
           <div style="margin-top: 15px;">
             <span>Dung lượng </span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Dung lượng Volume tối thiểu là 1'"
-                  nzPopoverPlacement="bottom"></span>
+            <img nz-popover [nzPopoverContent]="'Dung lượng Volume tối thiểu là 1'"
+                 nzPopoverPlacement="bottom"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
@@ -130,27 +123,21 @@
         </nz-form-label>
       </nz-form-item>
       <label nz-checkbox formControlName="isEncryption">Mã hóa Volume</label>
-      <span nz-icon nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="'Mã hóa volume để tăng tính bảo mật đọc, ghi cho volume'"
-            nzPopoverPlacement="bottom"></span>
+      <img nz-popover [nzPopoverContent]="'Mã hóa volume để tăng tính bảo mật đọc, ghi cho volume'"
+           nzPopoverPlacement="bottom"
+           src="assets/imgs/pajamas_question.svg" alt="" />
       <br>
       <label nz-checkbox style="margin-top: 10px;" formControlName="isMultiAttach">Gắn nhiều máy ảo</label>
-      <span nz-icon nzType="question-circle"
-            nzTheme="outline"
-            nz-popover
-            [nzPopoverContent]="'Volume có thể gắn đồng thời vào nhiều máy ảo khác nhau. Nếu chọn volume multi attach thì không thể chọn mã hóa volume'"
-            nzPopoverPlacement="bottom"></span>
+      <img nz-popover [nzPopoverContent]="'Volume có thể gắn đồng thời vào nhiều máy ảo khác nhau. Nếu chọn volume multi attach thì không thể chọn mã hóa volume'"
+           nzPopoverPlacement="bottom"
+           src="assets/imgs/pajamas_question.svg" alt="" />
       <nz-form-item style="margin-top: 10px;">
         <nz-form-label nzFor="instanceName">
           <div class="label">
             <span>Chọn máy ảo</span>
-            <span nz-icon nzType="question-circle" style="margin-left: 5px;"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
-                  nzPopoverPlacement="bottom"></span>
+            <img nz-popover [nzPopoverContent]="'Chọn máy ảo để gắn volume'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control>

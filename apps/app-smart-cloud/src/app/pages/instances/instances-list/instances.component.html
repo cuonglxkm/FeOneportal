@@ -143,6 +143,9 @@
         <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
           Đang hoạt động
         </td>
+        <td *ngIf="data.status == 'RESIZE'" style="color: #4fe414">
+          Đang điều chỉnh
+        </td>
         <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
           Chậm gia hạn
         </td>
@@ -153,8 +156,8 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILD' &&
-              data.taskState.toUpperCase() != 'RESIZE' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
+              !data.taskState.toUpperCase().includes('RESIZE') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/create-backup.svg"
@@ -166,8 +169,8 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILD' &&
-              data.taskState.toUpperCase() != 'RESIZE' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
+              !data.taskState.toUpperCase().includes('RESIZE') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/edit-2.svg"
@@ -179,8 +182,8 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILD' &&
-              data.taskState.toUpperCase() != 'RESIZE' &&
+              data.taskState.toUpperCase() != 'REBUILDING' &&
+              !data.taskState.toUpperCase().includes('RESIZE') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/calendar-tick.svg"
@@ -199,8 +202,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -214,8 +217,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -229,8 +232,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF'
@@ -243,8 +246,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF'
@@ -268,8 +271,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -293,8 +296,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILD' &&
-                  data.taskState.toUpperCase() != 'RESIZE' &&
+                  data.taskState.toUpperCase() != 'REBUILDING' &&
+                  !data.taskState.toUpperCase().includes('RESIZE') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -363,16 +366,19 @@
 >
   <ng-container *nzModalContent>
     <span class="text-label">Danh sách VLAN</span>
-    <nz-form-control>
+    <nz-form-control style="margin-top: 5px">
       <nz-select
         [nzPlaceHolder]="'-- Chọn VLAN --'"
         [nzShowSearch]="true"
+        [(ngModel)]="instanceAction.networkId"
+        (ngModelChange)="changeVlanNetwork($event)"
+        [ngModelOptions]="{ standalone: true }"
         nzSize="large"
       >
         <nz-option
-          *ngFor="let i of listVLAN"
-          [nzLabel]="i.text"
-          [nzValue]="i.id"
+          *ngFor="let i of listVlanNetwork"
+          [nzLabel]="i.name"
+          [nzValue]="i.cloudId"
         />
       </nz-select>
     </nz-form-control>
@@ -392,32 +398,31 @@
     </div>
     <div *ngIf="isExpand">
       <span class="text-label">Danh sách Subnet</span>
-      <nz-form-control style="margin-bottom: 10px" class="text-right">
+      <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
         <nz-select
+          [nzLoading]="loadingSubnet"
           [nzPlaceHolder]="'-- Chọn Subnet --'"
           [nzShowSearch]="true"
+          [(ngModel)]="instanceAction.subnetId"
+          [ngModelOptions]="{ standalone: true }"
           nzSize="large"
         >
           <nz-option
             *ngFor="let i of listSubnet"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
+            [nzLabel]="i.name"
+            [nzValue]="i.subnetCloudId"
           />
         </nz-select>
       </nz-form-control>
       <span class="text-label">Địa chỉ IP</span>
-      <nz-form-control style="margin-bottom: 10px" class="text-right">
-        <nz-select
-          [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
-          [nzShowSearch]="true"
-          nzSize="large"
-        >
-          <nz-option
-            *ngFor="let i of listIPAddress"
-            [nzLabel]="i.text"
-            [nzValue]="i.id"
-          />
-        </nz-select>
+      <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
+        <input
+          class="input-custom"
+          nz-input
+          placeholder="Nhập địa chỉ IP"
+          [(ngModel)]="instanceAction.ipAddress"
+          [ngModelOptions]="{ standalone: true }"
+        />
       </nz-form-control>
     </div>
 
@@ -449,7 +454,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Gắn
+      Xác nhận
     </button>
   </div>
 </nz-modal>
@@ -473,15 +478,17 @@
       </div>
     </ng-template>
     <span class="text-label">Danh sách IP trên VLAN</span>
-    <nz-form-control>
+    <nz-form-control style="margin-top: 5px">
       <nz-select
         [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
         [nzShowSearch]="true"
+        [(ngModel)]="instanceAction.portId"
+        [ngModelOptions]="{ standalone: true }"
         nzSize="large"
       >
         <nz-option
-          *ngFor="let i of listIPAddressOnVLAN"
-          [nzLabel]="i.text"
+          *ngFor="let i of listOfPrivateNetwork"
+          [nzLabel]="i.fixedIPs[0]"
           [nzValue]="i.id"
         />
       </nz-select>
@@ -501,7 +508,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Gỡ
+      Xác nhận
     </button>
   </div>
 </nz-modal>
@@ -645,18 +652,20 @@
             nz-input
             formControlName="name"
             [(ngModel)]="updateInstances.name"
-            id="name"
+            (ngModelChange)="changeName($event)"
             placeholder="Nhập tên máy ảo"
-            maxlength="50"
-            minlength="1"
+            [maxlength]="50"
           />
+          <div *ngIf="isExistName" style="color: #ff4d4f">
+            Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác
+          </div>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
               >Vui lòng nhập thông tin</ng-container
             >
             <ng-container *ngIf="control.hasError('pattern')"
-              >Tên gồm 50 ký tự viết liền không dấu cách và không chứa ký tự đặc
-              biệt</ng-container
+              >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
+              _)</ng-container
             >
           </ng-template>
         </nz-form-control>
@@ -667,8 +676,8 @@
           <nz-select
             nzMode="multiple"
             nzPlaceHolder="Chọn Security Group"
-            [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="selectedSecurityGroup"
+            [ngModelOptions]="{ standalone: true }"
             nzSize="large"
             [nzShowSearch]="true"
           >
@@ -694,7 +703,7 @@
       nz-button
       nzType="primary"
       (click)="handleOkEdit()"
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || isExistName"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"

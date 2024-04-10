@@ -10,7 +10,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormSearchIpsecPolicy, IpsecPolicyDTO } from 'src/app/shared/models/ipsec-policy';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 import { debounceTime } from 'rxjs';
-import { BaseResponse } from '../../../../../../../../../libs/common-utils/src';
+import { BaseResponse, ipAddressValidator } from '../../../../../../../../../libs/common-utils/src';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { FormCreateVpnConnection } from 'src/app/shared/models/vpn-connection';
 import { FormSearchIKEPolicy } from 'src/app/shared/models/vpns2s.model';
@@ -63,12 +63,8 @@ export class CreateVpnConnectionComponent implements OnInit{
     peerRemoteIp: FormControl<string>
     peerId: FormControl<string>,
     preSharedKey: FormControl<string>,
-  }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-    peerRemoteIp: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
-    peerId: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
-    preSharedKey: ['', [Validators.required]],
-  });
+  }> 
+
 
   constructor(
     private router: Router,
@@ -90,8 +86,7 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.formSearchIpsecPolicy.currentPage = 1
     this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
       .pipe(debounceTime(500))
-      .subscribe(data => {
-      console.log(data);        
+      .subscribe(data => {     
       data.records.forEach(ipsecPolicy => {
         this.ipsecPoliciesList.push({label: ipsecPolicy.name, value: ipsecPolicy.id});
       })
@@ -108,7 +103,7 @@ export class CreateVpnConnectionComponent implements OnInit{
     this.formSearchIkePolicy.searchValue = "kh"
     this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
       .subscribe(data => {
-        console.log(data);  
+          
       data.records.forEach(ikePolicy => {
         this.ikePoliciesList.push({label: ikePolicy.name, value: ikePolicy.cloudId});
       })
@@ -133,7 +128,7 @@ export class CreateVpnConnectionComponent implements OnInit{
 
     this.endpointGroupService.getListEndpointGroup(this.formSearchEnpointGroup)
       .subscribe(data => {
-        console.log(data);  
+          
       data.records.forEach(endPointGroup => {
         if (endPointGroup.type === 'subnet') {
           this.localEndpointGroupList.push({ label: endPointGroup.name, value: endPointGroup.id });
@@ -161,7 +156,7 @@ export class CreateVpnConnectionComponent implements OnInit{
 
     this.vpnServiceService.getVpnService(this.formSearchVpnService)
       .subscribe(data => {
-        console.log(data);  
+          
         data.records.forEach(vpnService => {
           this.vpnServiceList.push({label: vpnService.name, value: vpnService.id});
         })
@@ -178,6 +173,12 @@ export class CreateVpnConnectionComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.form = this.fb.group({
+      name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
+      peerRemoteIp: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
+      peerId: ['', [Validators.required, Validators.pattern(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)]],
+      preSharedKey: ['', [Validators.required]],
+    });
     this.getDataIpsecPolices()
     this.getDataIkePolices()
     this.getDataEndPointGroup()

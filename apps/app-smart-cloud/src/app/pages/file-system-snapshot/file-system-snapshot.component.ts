@@ -32,6 +32,8 @@ export class FileSystemSnapshotComponent {
 
   isBegin: boolean = false
 
+  filteredData: any[];
+
   formSearchFileSystemSnapshot: FormSearchFileSystemSnapshot = new FormSearchFileSystemSnapshot()
 
   constructor(private fileSystemSnapshotService: FileSystemSnapshotService,
@@ -65,17 +67,20 @@ export class FileSystemSnapshotComponent {
     this.getData();
   }
 
-  onInputChange(value){
-    if(value == undefined || value == ""){
-      this.value = null
+  onInputChange(value: string): void {
+    if (!value || value.trim() === "") { 
+      this.filteredData = this.response.records; 
+    } else {
+      this.filteredData = this.response.records.filter(item => 
+        item.name.toLowerCase().includes(value.toLowerCase())
+      ); 
     }
-    this.value = value
-    this.getData()
+    console.log(value);
+    
+    console.log(this.filteredData);
+    
   }
 
-  showModalCreateIpFloating() {
-
-  }
 
   getData() {
     this.isLoading = true
@@ -89,15 +94,18 @@ export class FileSystemSnapshotComponent {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-        console.log('data', data)
       this.response = data
+      this.filteredData = data.records
     })
   }
 
-  handleOkCreateFileSystemSnapShot() {
+  handleOkDeleteFileSystemSnapShot() {
     this.getData()
   }
 
+  handleOkEditFileSystemSnapShot(){
+    this.getData()
+  }
   ngOnInit() {
 
     let regionAndProject = getCurrentRegionAndProject();

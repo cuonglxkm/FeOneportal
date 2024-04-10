@@ -131,16 +131,20 @@
                     <nz-slider
                       [nzMin]="1"
                       [nzMax]="1000"
-                      formControlName="vCPU"
-                      (ngModelChange)="calculate()"
+                      [(ngModel)]="vCPU"
+                      (ngModelChange)="calculate(null)"
+                      [ngModelOptions]="{standalone: true}"
                     ></nz-slider>
                   </td>
                   <td width="20%">
-                    <nz-input-number formControlName="vCPU" (ngModelChange)="calculate()"
-                                     [nzMin]="1" [nzMax]="62" [nzStep]="1" nzSize="large"></nz-input-number>
+                    <nz-input-number [(ngModel)]="vCPU"
+                                     (ngModelChange)="calculate(null)"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [nzMin]="1" [nzMax]="1000" [nzStep]="1" nzSize="large"></nz-input-number>
                   </td>
                   <td width="20%">
-                    <div>2.000.000 VND</div>
+                    <div class="text-right">2.000.000 VND</div>
+                    <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
                   </td>
                 </tr>
                 <tr>
@@ -149,16 +153,20 @@
                     <nz-slider
                       [nzMin]="1"
                       [nzMax]="1000"
-                      formControlName="ram"
-                      (ngModelChange)="calculate()"
+                      [(ngModel)]="ram"
+                      (ngModelChange)="calculate(null)"
+                      [ngModelOptions]="{standalone: true}"
                     ></nz-slider>
                   </td>
                   <td width="20%">
-                    <nz-input-number formControlName="ram" (ngModelChange)="calculate()"
+                    <nz-input-number [(ngModel)]="ram"
+                                     (ngModelChange)="calculate(null)"
+                                     [ngModelOptions]="{standalone: true}"
                                      [nzMin]="1" [nzMax]="62" [nzStep]="1" nzSize="large"></nz-input-number>
                   </td>
                   <td width="20%">
-                    <div>2.000.000 VND</div>
+                    <div class="text-right">2.000.000 VND</div>
+                    <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
                   </td>
                 </tr>
                 <tr>
@@ -167,16 +175,20 @@
                     <nz-slider
                       [nzMin]="1"
                       [nzMax]="1000"
-                      formControlName="hhd"
-                      (ngModelChange)="calculate()"
+                      [(ngModel)]="hhd"
+                      [ngModelOptions]="{standalone: true}"
+                      (ngModelChange)="calculate(null)"
                     ></nz-slider>
                   </td>
                   <td width="20%">
-                    <nz-input-number formControlName="hhd" (ngModelChange)="calculate()"
+                    <nz-input-number [(ngModel)]="hhd"
+                                     (ngModelChange)="calculate(null)"
+                                     [ngModelOptions]="{standalone: true}"
                                      [nzMin]="1" [nzMax]="62" [nzStep]="1" nzSize="large"></nz-input-number>
                   </td>
                   <td width="20%">
-                    <div>2.000.000 VND</div>
+                    <div class="text-right">2.000.000 VND</div>
+                    <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
                   </td>
                 </tr>
                 <tr>
@@ -185,16 +197,20 @@
                     <nz-slider
                       [nzMin]="1"
                       [nzMax]="1000"
-                      formControlName="ssd"
-                      (ngModelChange)="calculate()"
+                      [(ngModel)]="ssd"
+                      (ngModelChange)="calculate(null)"
+                      [ngModelOptions]="{standalone: true}"
                     ></nz-slider>
                   </td>
                   <td width="20%">
-                    <nz-input-number formControlName="ssd" (ngModelChange)="calculate()"
+                    <nz-input-number [(ngModel)]="ssd"
+                                     [ngModelOptions]="{standalone: true}"
+                                     (ngModelChange)="calculate(null)"
                                      [nzMin]="1" [nzMax]="62" [nzStep]="1" nzSize="large"></nz-input-number>
                   </td>
                   <td width="20%">
-                    <div>2.000.000 VND</div>
+                    <div class="text-right">2.000.000 VND</div>
+                    <div class="text-right" style="opacity: 0.5;">100.000 VND</div>
                   </td>
                 </tr>
                 </tbody>
@@ -239,7 +255,7 @@
                 <nz-form-label>Số lượng Network</nz-form-label>
                 <nz-form-control>
                   <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                   [(ngModel)]="numberNetwork" (ngModelChange)="calculate()"
+                                   [(ngModel)]="numberNetwork" (ngModelChange)="calculate(null)"
                                    [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
@@ -264,7 +280,7 @@
                 <nz-form-label>Số lượng Router</nz-form-label>
                 <nz-form-control>
                   <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                   [(ngModel)]="numberRouter" (ngModelChange)="calculate()"
+                                   [(ngModel)]="numberRouter" (ngModelChange)="calculate(null)"
                                    [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
@@ -272,7 +288,7 @@
                 <nz-form-label>Số lượng Security Group</nz-form-label>
                 <nz-form-control>
                   <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                   [(ngModel)]="numberSecurityGroup" (ngModelChange)="calculate()"
+                                   [(ngModel)]="numberSecurityGroup" (ngModelChange)="calculate(null)"
                                    [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
@@ -287,7 +303,7 @@
                 <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                            style="width: 95%; margin-left: -1px;border-radius: 10px;"
                            nzPlaceHolder="--Chọn loại IP--"
-                           formControlName="ipType" (nzOpenChange)="calculate()">
+                           formControlName="ipType" (nzOpenChange)="calculate(null)">
                   <nz-option *ngFor="let i of listIpType" [nzLabel]="i.label"
                              [nzValue]="i.value" />
                 </nz-select>
@@ -303,7 +319,7 @@
                   <nz-form-label>Số lượng IP Floating</nz-form-label>
                   <nz-form-control>
                     <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                     [(ngModel)]="numberIpFloating" (ngModelChange)="calculate()"
+                                     [(ngModel)]="numberIpFloating" (ngModelChange)="calculate(null)"
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
@@ -311,7 +327,7 @@
                   <nz-form-label>Số lượng IP Public</nz-form-label>
                   <nz-form-control>
                     <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                     [(ngModel)]="numberIpPublic" (ngModelChange)="calculate()"
+                                     [(ngModel)]="numberIpPublic" (ngModelChange)="calculate(null)"
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
@@ -319,7 +335,7 @@
                   <nz-form-label>Số lượng IPv6</nz-form-label>
                   <nz-form-control>
                     <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                     [(ngModel)]="numberIpv6" (ngModelChange)="calculate()"
+                                     [(ngModel)]="numberIpv6" (ngModelChange)="calculate(null)"
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
@@ -372,7 +388,7 @@
                   <nz-form-label>Dung lượng Backup Volume/VM (GB)</nz-form-label>
                   <nz-form-control>
                     <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="20"
-                                     [(ngModel)]="numberBackup" (ngModelChange)="calculate()"
+                                     [(ngModel)]="numberBackup" (ngModelChange)="calculate(null)"
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
@@ -411,7 +427,7 @@
                   <nz-form-label>Số lượng Load Balancer</nz-form-label>
                   <nz-form-control>
                     <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                     [(ngModel)]="numberLoadBalancer" (ngModelChange)="calculate()"
+                                     [(ngModel)]="numberLoadBalancer" (ngModelChange)="calculate(null)"
                                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
@@ -424,7 +440,7 @@
                       <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                                  style="width: 90%; margin-left: -1px;border-radius: 10px;"
                                  nzPlaceHolder="--Chọn gói Load Balancer-"
-                                 formControlName="ipSubnet" (nzOpenChange)="calculate()">
+                                 formControlName="ipSubnet" (nzOpenChange)="calculate(null)">
                         <nz-option *ngFor="let i of listLoadBalancer" [nzLabel]="i.displayName"
                                    [nzValue]="i.networkId" />
                       </nz-select>
@@ -467,7 +483,7 @@
                   <nz-form-control>
                     <nz-row>
                       <nz-input-number style="width: 90%;margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                                       [(ngModel)]="numberFileSystem" (ngModelChange)="calculate()"
+                                       [(ngModel)]="numberFileSystem" (ngModelChange)="calculate(null)"
                                        [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                     </nz-row>
                   </nz-form-control>
@@ -479,7 +495,7 @@
                   <nz-form-control>
                     <nz-row>
                       <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
-                                       [(ngModel)]="numberFileScnapsshot" (ngModelChange)="calculate()"
+                                       [(ngModel)]="numberFileScnapsshot" (ngModelChange)="calculate(null)"
                                        [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                     </nz-row>
                   </nz-form-control>
@@ -517,20 +533,20 @@
         <div *ngIf="selectIndexTab == 1">
           <div class="text-value">Gói cấu hình tùy chọn</div>
           <nz-row style="display: flex;justify-content: space-between;">
-            <div style="margin-top: 10px" class="text-label">Số lượng vCPU</div>
-            <div style="margin-top: 10px" class="text-label">{{this.form.controls['vCPU'].value}}</div>
+            <div style="margin-top: 10px" class="text-label">Số lượng vCPU:</div>
+            <div style="margin-top: 10px" class="text-label">{{vCPU}}</div>
           </nz-row>
           <nz-row style="display: flex;justify-content: space-between;">
-            <div style="margin-top: 10px" class="text-label">Số lượng RAM</div>
-            <div style="margin-top: 10px" class="text-label">{{this.form.controls['ram'].value}}</div>
+            <div style="margin-top: 10px" class="text-label">Số lượng RAM:</div>
+            <div style="margin-top: 10px" class="text-label">{{ram}}</div>
           </nz-row>
           <nz-row style="display: flex;justify-content: space-between;">
-            <div style="margin-top: 10px" class="text-label">Số lượng HHD (GB)</div>
-            <div style="margin-top: 10px" class="text-label">{{this.form.controls['hhd'].value}}</div>
+            <div style="margin-top: 10px" class="text-label">Số lượng HHD:</div>
+            <div style="margin-top: 10px" class="text-label">{{hhd}}GB</div>
           </nz-row>
           <nz-row style="display: flex;justify-content: space-between;">
-            <div style="margin-top: 10px" class="text-label">Số lượng SSD (GB)</div>
-            <div style="margin-top: 10px" class="text-label">{{this.form.controls['ssd'].value}}</div>
+            <div style="margin-top: 10px" class="text-label">Số lượng SSD:</div>
+            <div style="margin-top: 10px" class="text-label">{{ssd}}GB</div>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         </div>
@@ -544,12 +560,16 @@
         <div class="text-value">Dịch vụ bổ sung</div>
 <!--        <div style="margin-top: 10px" class="text-label"></div>-->
         <nz-row style="display: flex;justify-content: space-between;">
-          <div style="margin-top: 10px" class="text-label">Số lượng Backup</div>
-          <div style="margin-top: 10px" class="text-label">{{numberBackup}}</div>
+          <div style="margin-top: 10px" class="text-label">Backup:</div>
+          <div style="margin-top: 10px" class="text-label">{{numberBackup}}GB</div>
         </nz-row>
         <nz-row style="display: flex;justify-content: space-between;">
-          <div style="margin-top: 10px" class="text-label">Số lượng File Storage</div>
+          <div style="margin-top: 10px" class="text-label">Load Balancer:</div>
           <div style="margin-top: 10px" class="text-label">{{numberFileSystem}}</div>
+        </nz-row>
+        <nz-row style="display: flex;justify-content: space-between;">
+          <div style="margin-top: 10px" class="text-label">File Storage:</div>
+          <div style="margin-top: 10px" class="text-label">{{numberFileSystem}}GB</div>
         </nz-row>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -574,7 +594,7 @@
             <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment || 0 }}VND</span>
+            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment || 0 }} VND</span>
           </nz-col>
         </nz-row>
         <nz-row>

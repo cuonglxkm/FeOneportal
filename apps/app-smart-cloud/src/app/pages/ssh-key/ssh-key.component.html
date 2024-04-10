@@ -20,19 +20,19 @@
 
     <div class="d-flex justify-content-between">
       <div *ngIf="!isBegin" nz-row class="mb-md">
-        <nz-input-group nzSize="large" nzSearch [nzAddOnAfter]="suffixButton">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến keypair" [nzPrefix]="prefixIconSearch" style="width: 350px"/>
-          <ng-template #suffixButton>
-            <button nz-button [nzType]="'primary'" nzSearch (click)="search(searchBox.value)">
-              <i nz-icon nzType="search"></i>
-              Tim kiếm
-            </button>
-          </ng-template>
+        <nz-input-group style="margin-right: 8px; width: 100%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
+                        nzSize="large">
+          <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm"/>
         </nz-input-group>
-        
+        <ng-template #suffixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
+               (click)="search(searchBox.value)"/>
+        </ng-template>
       </div>
-  
-      <button *ngIf="!isBegin" (click)="createKey()"  nz-button nzType="primary" ><i nz-icon nzType="plus"></i> Tạo mới SSH Key
+
+      <button *ngIf="!isBegin" (click)="createKey()"  nz-button nzType="primary">
+        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+        <span class="button-text-primary">Tạo mới SSH Key</span>
       </button>
     </div>
 
@@ -56,9 +56,15 @@
           <td (click)="detailKey(data)">{{ data.name }}</td>
           <td (click)="detailKey(data)">{{ data.fingerprint }}</td>
           <td>
-            <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">
-              <span nz-icon nzType="delete" [nzPopoverContent]="'Xóa'" nzTheme="outline"></span>
-            </button>
+<!--            <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">-->
+<!--              <span nz-icon nzType="delete" [nzPopoverContent]="'Xóa'" nzTheme="outline"></span>-->
+<!--            </button>-->
+            <span style="color: #0066B3"
+                  nz-tooltip
+                  nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                  nz-icon nzType="delete" nzTheme="outline"
+                  (click)="deleteKey(data)"
+            ></span>
           </td>
         </tr>
         <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xác nhận xóa SSH Key"

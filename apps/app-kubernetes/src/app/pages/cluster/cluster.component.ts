@@ -245,6 +245,8 @@ export class ClusterComponent implements OnInit {
     this.formSearchSubnet.pageNumber = 0;
     this.formSearchSubnet.networkId = this.vlanId;
     this.formSearchSubnet.region = this.regionId;
+    this.formSearchSubnet.vpcId = this.projectInfraId;
+    this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
 
     // clear subnet
     this.myform.get('subnet').setValue(null);
@@ -286,7 +288,8 @@ export class ClusterComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.regionName = region.regionDisplayName;
-    this.cloudProfileId = region.cloudId;
+    // this.cloudProfileId = region.cloudId;
+    this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
 
     this.getListK8sVersion(this.regionId, this.cloudProfileId);
     this.getListWorkerType(this.regionId, this.cloudProfileId);
@@ -606,7 +609,9 @@ export class ClusterComponent implements OnInit {
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
     // console.log({data: data});
     // console.log({cluster: cluster});
+    this.isSubmitting = true;
     this.clusterService.validateClusterInfo(data)
+    .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.onSubmitOrder(cluster);

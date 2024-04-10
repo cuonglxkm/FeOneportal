@@ -6,18 +6,16 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  BlockStorageAttachments,
   InstancesModel,
   Network,
   SecurityGroupModel,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { G2TimelineData } from '@delon/chart/timeline';
 import { RegionModel } from 'src/app/shared/models/region.model';
-import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -38,7 +36,7 @@ export class InstancesDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
     private route: Router,
-    public message: NzMessageService
+    private notification: NzNotificationService
   ) {}
 
   formatTimestamp(timestamp: number): string {
@@ -54,29 +52,37 @@ export class InstancesDetailComponent implements OnInit {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
   }
 
+  checkPermission: boolean = false;
   ngOnInit(): void {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService.getById(this.id, true).subscribe((data: any) => {
-          this.instancesModel = data;
-          this.loading = false;
-          this.cloudId = this.instancesModel.cloudId;
-          this.regionId = this.instancesModel.regionId;
-          this.getListIpPublic();
-          this.getMonitorData();
-          this.dataService
-            .getAllSecurityGroupByInstance(
-              this.cloudId,
-              this.regionId,
-              this.instancesModel.customerId,
-              this.instancesModel.projectId
-            )
-            .subscribe((datasg: any) => {
-              this.listSecurityGroupModel = datasg;
-              this.cdr.detectChanges();
-            });
-          this.cdr.detectChanges();
+        this.dataService.getById(this.id, true).subscribe({
+          next: (data: any) => {
+            this.checkPermission = true;
+            this.instancesModel = data;
+            this.loading = false;
+            this.cloudId = this.instancesModel.cloudId;
+            this.regionId = this.instancesModel.regionId;
+            this.getListIpPublic();
+            this.getMonitorData();
+            this.dataService
+              .getAllSecurityGroupByInstance(
+                this.cloudId,
+                this.regionId,
+                this.instancesModel.customerId,
+                this.instancesModel.projectId
+              )
+              .subscribe((datasg: any) => {
+                this.listSecurityGroupModel = datasg;
+                this.cdr.detectChanges();
+              });
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.checkPermission = false;
+            this.notification.error(e.error.detail, '');
+          },
         });
       }
     });
@@ -152,25 +158,26 @@ export class InstancesDetailComponent implements OnInit {
 
   GSCPU = [
     {
-      key: 'cpu',
-      name: 'CPU',
-    },
-    {
       key: 'ram',
       name: 'RAM',
     },
     {
-      key: 'network',
-      name: 'Network',
+      key: 'cpu',
+      name: 'vCPU',
     },
     {
       key: 'diskio',
-      name: 'Disk IOPS',
+      name: 'DiskIO',
     },
     {
-      key: 'diskrw',
-      name: 'Disk Read / Write',
+      key: 'network',
+      name: 'Network IO',
     },
+
+    // {
+    //   key: 'diskrw',
+    //   name: 'Disk Read / Write',
+    // },
   ];
   GSTIME = [
     {
@@ -184,6 +191,22 @@ export class InstancesDetailComponent implements OnInit {
     {
       key: 60,
       name: '1 giờ',
+    },
+    {
+      key: 1440,
+      name: '1 ngày',
+    },
+    {
+      key: 10080,
+      name: '1 tuần',
+    },
+    {
+      key: 302400,
+      name: '1 tháng',
+    },
+    {
+      key: 907200,
+      name: '3 tháng trước',
     },
   ];
 

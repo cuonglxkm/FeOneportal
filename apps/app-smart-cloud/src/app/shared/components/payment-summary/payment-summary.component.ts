@@ -86,7 +86,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'instance_resize':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}`;
-            serviceItem.type = `Chỉnh sửa`;
+            serviceItem.type = `Điều chỉnh`;
             break;
           case 'instance_extend':
             serviceItem.name = `Máy ảo - ${specificationObj.serviceName}` ;
@@ -114,7 +114,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_create':
             this.serviceType = 'k8s';
-            serviceItem.name = `k8s`;
+            serviceItem.name = `K8s - ${specificationObj.clusterName}`;
             serviceItem.type = 'Tạo mới';
             break;
           case 'objectstorage_create':
@@ -131,8 +131,13 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'kafka_create':
             this.serviceType = 'kafka';
-            serviceItem.name = 'Kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
+            break;
+          case 'kafka_resize': 
+            this.serviceType = 'kafka';
+            serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
+            serviceItem.type = 'Nâng cấp';
             break;
           case 'vpnsitetosite_create':
             serviceItem.name = `Vpn Site To Site`;

@@ -49,6 +49,8 @@ export class CloudProject {
   quotaLoadBalancerSDNCount: number
   quotaShareInGb: number
   quotaShareSnapshotInGb: number
+  offerId: number
+  offerIdLBSDN: number
   resourceStatus: string
   publicNetworkId: string
   publicNetworkAddress: string

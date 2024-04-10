@@ -26,8 +26,18 @@ import { DetailVpnConnectionComponent } from './manage/vpn-connection/detail/det
 import { CreateIkePoliciesComponent } from './manage/ike-policies/create/create-ike-policies.component';
 import { VpnS2sCreateComponent } from './manage/vpn-s2s-create/vpn-s2s-create.component';
 import { DetailVpnServiceComponent } from './manage/vpn-service/detail/detail-vpn-service.component';
+import { EditIkePoliciesComponent } from './manage/ike-policies/edit/edit-ike-policies.component';
+import { DeleteIkePoliciesComponent } from './manage/ike-policies/delete/delete-ike-policies.component';
+import { DetailIkePoliciesComponent } from './manage/ike-policies/detail/detail-ike-policies.component';
 import { VpnS2sExtendComponent } from './manage/vpn-s2s-extend/vpn-s2s-extend.component';
 import { VpnS2sResizeComponent } from './manage/vpn-s2s-resize/vpn-s2s-resize.component';
+import { CreateVpnServiceComponent } from './manage/vpn-service/create/create-vpn-service.component';
+import { DeleteVpnServiceComponent } from './manage/vpn-service/delete/delete-vpn-service.component';
+import { EditVpnServiceComponent } from './manage/vpn-service/edit/edit-vpn-service.component';
+import { CreateEndpointGroupComponent } from './manage/endpoint-group/create/create-endpoint-group.component';
+import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/detail-endpoint-group.component';
+import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/delete-endpoint-group.component';
+import { EditEndpointGroupComponent } from './manage/endpoint-group/edit/edit-endpoint-group.component';
 
 @NgModule({
   declarations: [
@@ -47,10 +57,22 @@ import { VpnS2sResizeComponent } from './manage/vpn-s2s-resize/vpn-s2s-resize.co
     DeleteVpnConnectionComponent,
     DetailVpnConnectionComponent,
     CreateIkePoliciesComponent,
+    EditIkePoliciesComponent,
+    DetailVpnServiceComponent,
+    DeleteIkePoliciesComponent,
+    DetailIkePoliciesComponent,
     VpnS2sCreateComponent,
     DetailVpnServiceComponent,
     VpnS2sExtendComponent,
     VpnS2sResizeComponent,
+    CreateVpnServiceComponent,
+    DeleteVpnServiceComponent,
+    EditVpnServiceComponent,
+    DetailVpnServiceComponent,
+    CreateEndpointGroupComponent,
+    DetailEndpointGroupComponent,
+    DeleteEndpointGroupComponent,
+    EditEndpointGroupComponent
   ],
   imports: [
     VpnSiteToSiteRoutingModule,

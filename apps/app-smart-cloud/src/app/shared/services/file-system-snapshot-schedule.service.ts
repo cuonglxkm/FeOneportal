@@ -10,7 +10,7 @@ import {
 } from "../models/schedule.model";
 import {BaseResponse} from "../../../../../../libs/common-utils/src";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import { FormCreateFileSystemSsSchedule, FormSearchFileSystemSsSchedule } from "../models/filesystem-snapshot-schedule";
+import { FileSystemSnapshotScheduleDetail, FormCreateFileSystemSsSchedule, FormEditFileSystemSsSchedule, FormSearchFileSystemSsSchedule } from "../models/filesystem-snapshot-schedule";
 import { catchError, throwError } from "rxjs";
 
 @Injectable({
@@ -46,6 +46,9 @@ export class FileSystemSnapshotScheduleService extends BaseService {
     if(formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
+    if(formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
+    }
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/schedulesharesnapshot',{
       params: params
     }).pipe(catchError((error: HttpErrorResponse) => {
@@ -59,18 +62,17 @@ export class FileSystemSnapshotScheduleService extends BaseService {
       }))
   }
 
-  detail(customerId: number, id: number) {
-    return this.http.get<BackupSchedule>(this.baseUrl + this.ENDPOINT.provisions +
-        `/backups/schedules/${id}?customerId=${customerId}`, {headers: this.getHeaders()})
+  detail(id: number) {
+    return this.http.get<FileSystemSnapshotScheduleDetail>(this.baseUrl + this.ENDPOINT.provisions +
+        `/file-storage/schedulesharesnapshot/${id}`, {headers: this.getHeaders()})
   }
 
 
-  delete(customerId:number, scheduleId:number) {
+  delete(id:number) {
     return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions +
-        `/file-storage/schedulesharesnapshot`, 
+        `/file-storage/schedulesharesnapshot/${id}`, 
           {
             headers: this.getHeaders(),
-            body: JSON.stringify({customerId, scheduleId})
           }
       ).pipe(
         catchError((error: HttpErrorResponse) => {
@@ -90,8 +92,8 @@ export class FileSystemSnapshotScheduleService extends BaseService {
         Object.assign(formCreate), {headers: this.getHeaders()})
   }
 
-  edit(formEdit: FormEditSchedule) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules',
+  edit(formEdit: FormEditFileSystemSsSchedule) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/schedulesharesnapshot',
          Object.assign(formEdit), {headers: this.getHeaders()})
   }
 

@@ -31,6 +31,13 @@ import {enUS as dateLang} from "date-fns/locale";
 import { default as ngLang } from '@angular/common/locales/en';
 
 
+const customLanguagePack = {
+  ...vi_VN,
+    Empty: {
+      description: "Không có dữ liệu"
+    }
+  
+}
 
 
 const LANG = {
@@ -51,7 +58,7 @@ const LANG_PROVIDES = [
 
 const I18NSERVICE_PROVIDES = [
   { provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false },
-  { provide: NZ_I18N, useValue: vi_VN }
+  { provide: NZ_I18N, useValue: customLanguagePack }
 ];
 
 const INTERCEPTOR_PROVIDES = [
@@ -107,7 +114,7 @@ const APPINIT_PROVIDES = [
     // ...GLOBAL_THIRD_MODULES,
     ...FORM_MODULES
   ],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
+  providers: [ ...INTERCEPTOR_PROVIDES, ...I18NSERVICE_PROVIDES, ...APPINIT_PROVIDES, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

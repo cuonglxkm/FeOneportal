@@ -258,10 +258,12 @@
   </div>
 </nz-card>
 <one-portal-blockstorage-detail
+  *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
 ></one-portal-blockstorage-detail>
 <one-portal-network-detail
+  *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
 ></one-portal-network-detail>

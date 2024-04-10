@@ -105,7 +105,8 @@
 
                 <ng-template #ortherStatusTpl>
                   <div class="flex-style">
-                    <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
+                    <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1" 
+                      [nzStatus]="item.serviceStatus == 11 ? 'exception' : ''"></nz-progress>
                     <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{status.status}}</span>
                   </div>
                 </ng-template>

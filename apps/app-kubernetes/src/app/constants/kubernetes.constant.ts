@@ -6,9 +6,11 @@ export class KubernetesConstant {
 
   public static CLUSTER_CREATE_TYPE = 'k8s_create';
 
-  public static DEFAULT_VOLUME_TYPE = "standard";
+  public static DEFAULT_VOLUME_TYPE = "ceph_ssd";
 
   public static DEFAULT_NETWORK_TYPE = "calico";
+
+  public static OPENSTACK_LABEL = "openstack";
 
   // action type
   public static CREATE_ACTION = "create";

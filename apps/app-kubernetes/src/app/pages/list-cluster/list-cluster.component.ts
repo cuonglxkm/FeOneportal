@@ -216,7 +216,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.regionName = region.regionDisplayName;
-    this.cloudProfileId = region.cloudId;
+    // this.cloudProfileId = region.cloudId;
+    this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
     if (this.regionId && this.projectInfraId) this.searchCluster();
   }
 

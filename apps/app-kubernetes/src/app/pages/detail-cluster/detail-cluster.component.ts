@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -9,13 +9,15 @@ import { VPCNetworkModel } from '../../model/vpc-network.model';
 import { ClusterService } from '../../services/cluster.service';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { WorkerTypeModel } from '../../model/worker-type.model';
+import { VolumeTypeModel } from '../../model/volume-type.model';
 
 @Component({
   selector: 'one-portal-detail-cluster',
   templateUrl: './detail-cluster.component.html',
   styleUrls: ['./detail-cluster.component.css'],
 })
-export class DetailClusterComponent implements OnInit {
+export class DetailClusterComponent implements OnInit, OnChanges {
 
   @Input('detailCluster') detailCluster: KubernetesCluster;
   @Input('vpcNetwork') vpcNetwork: string;
@@ -27,6 +29,8 @@ export class DetailClusterComponent implements OnInit {
   showModalUpgradeVersion: boolean;
   isUpgradingVersion: boolean;
   upgradeVersionCluster: string;
+
+  upgradeForm: FormGroup;
 
   listOfK8sVersion: K8sVersionModel[];
   listOfVPCNetworks: VPCNetworkModel[];
@@ -41,6 +45,12 @@ export class DetailClusterComponent implements OnInit {
   workerGroupConfig: any;
   upgradeVolumeCloudSize: number;
   upgradeVolumeType: string;
+
+  cloudProfileId: string;
+  regionId: number;
+
+  listOfWorkerType: WorkerTypeModel[];
+  listOfVolumeType: VolumeTypeModel[];
 
   constructor(
     private router: Router,
@@ -58,11 +68,26 @@ export class DetailClusterComponent implements OnInit {
 
   ngOnInit(): void {
     this.listFormWorkerGroupUpgrade = this.fb.array([]);
+    this.upgradeForm = this.fb.group({
+      workerGroup: this.listFormWorkerGroupUpgrade
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['detailCluster']) {
+      if (changes['detailCluster'].currentValue) {
+        this.detailCluster = changes['detailCluster'].currentValue;
+        this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
+        this.regionId = this.detailCluster.regionId;
+      }
+    }
   }
 
   onEditCluster() {
     this.isEditMode = true;
     this.initUpgradeData();
+    this.getListWorkerType(this.regionId, this.cloudProfileId);
+    this.getListVolumeType(this.regionId, this.cloudProfileId);
   }
 
   initUpgradeData() {
@@ -71,6 +96,7 @@ export class DetailClusterComponent implements OnInit {
     this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;
 
     const wgs = this.detailCluster.workerGroup;
+    console.log(wgs);
     for (let i = 0; i < wgs.length; i++) {
       const index = this.listFormWorkerGroupUpgrade ? this.listFormWorkerGroupUpgrade.length : 0;
       const wg = this.fb.group({
@@ -114,6 +140,30 @@ export class DetailClusterComponent implements OnInit {
       if (index != i)
         (x as FormGroup).get('workerGroupName').updateValueAndValidity()
     })
+  }
+
+  getListWorkerType(regionId: number,cloudProfileName: string) {
+    this.listOfWorkerType = [];
+    this.clusterService.getListWorkerTypes(regionId, cloudProfileName)
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.listOfWorkerType = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      })
+  }
+
+  getListVolumeType(regionId: number,cloudProfileName: string) {
+    this.listOfVolumeType = [];
+    this.clusterService.getListVolumeTypes(regionId, cloudProfileName)
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.listOfVolumeType = r.data;
+        } else {
+          this.notificationService.error("Thất bại", r.message);
+        }
+      });
   }
 
   onCancelEdit() {
@@ -227,6 +277,10 @@ export class DetailClusterComponent implements OnInit {
           this.notificationService.error("Thất bại", r.message);
         }
       });
+  }
+
+  get workerGroupName() {
+    return null;
   }
 
   back2list() {

@@ -195,7 +195,8 @@
                   <nz-form-item>
                     <nz-form-label nzFor="volumeType">Loại ổ cứng</nz-form-label>
                     <nz-form-control>
-                      <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)" [nzDisabled]="isUsingPackConfig">
+                      <nz-radio-group formControlName="volumeType" (ngModelChange)="onSelectVolumeType($event, i)"
+                        [nzDisabled]="isUsingPackConfig">
                         <ng-container *ngFor="let item of listOfVolumeType">
                           <label nz-radio [nzValue]="item.volumeType" id="volumeType">
                             {{item.volumeTypeName}}
@@ -241,7 +242,8 @@
 
                   <nz-form-item>
                     <nz-form-control>
-                      <nz-switch formControlName="autoHealing" class="mr-3" [nzDisabled]="isUsingPackConfig"></nz-switch>
+                      <nz-switch formControlName="autoHealing" class="mr-3"
+                        [nzDisabled]="isUsingPackConfig"></nz-switch>
                       <label>Bật Auto Healing</label>
                     </nz-form-control>
                     <small>Sản sinh ra các worker khi nó gặp sự cố (Tắt nguồn, sự cố mạng, hệ điều hành bị treo, quá
@@ -301,17 +303,6 @@
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="networkType">Loại network</nz-form-label>
-              <nz-form-control nzErrorTip="Loại network không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn loại network" formControlName="networkType"
-                  id="networkType">
-                  <nz-option nzLabel="Calico" nzValue="calico"></nz-option>
-                  <nz-option nzLabel="Cilium" nzValue="cilium"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
               <nz-form-control nzErrorTip="Mạng VPC không để trống">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
@@ -340,33 +331,18 @@
 
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
-              <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR" (ngModelChange)="checkOverLapseIP()" />
-              </nz-form-control>
-              <ng-template #cidrErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">
-                  Pod CIDR không để trống
-                </ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">
-                  Pod CIDR không đúng định dạng
-                </ng-container>
-                <ng-container *ngIf="control.hasError('overlap')">
-                  Pod CIDR trùng dải với subnet
-                </ng-container>
-              </ng-template>
-            </nz-form-item>
-
-            <nz-form-item>
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
-              <nz-form-control nzErrorTip="Subnet không để trống" id="subnet-form">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90" (ngModelChange)="checkOverLapseIP()">
+              <nz-form-control nzErrorTip="Subnet không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90"
+                  (ngModelChange)="checkOverLapseIP()">
                   <ng-container *ngFor="let item of listOfSubnets">
                     <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
-                      <nz-option [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired"></nz-option>
+                      <nz-option [nzLabel]="item.subnetAddressRequired"
+                        [nzValue]="item.subnetAddressRequired"></nz-option>
                     </ng-container>
                     <ng-template #disableSubnetTpl>
-                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired" [nzValue]="item.subnetAddressRequired">
+                      <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired"
+                        [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
                         <div nzTooltipTitle="Chưa mở DHCP" nzTooltipPlacement="bottom" nz-tooltip>
                           {{item.subnetAddressRequired}}
                         </div>
@@ -374,8 +350,6 @@
                     </ng-template>
                   </ng-container>
 
-                  <!-- <nz-option *ngFor="let item of listOfSubnets" [nzLabel]="item.subnetAddressRequired"
-                    [nzValue]="item.subnetAddressRequired" [nzDisabled]="!item.enableDhcp"></nz-option> -->
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
                   (click)="refreshSubnet()" class="borderless">
@@ -393,6 +367,43 @@
             </nz-form-item>
           </div>
         </div>
+
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="networkType">Loại network</nz-form-label>
+              <nz-form-control nzErrorTip="Loại network không để trống">
+                <nz-select nzShowSearch nzPlaceHolder="Chọn loại network" formControlName="networkType"
+                  id="networkType">
+                  <nz-option nzLabel="Calico" nzValue="calico"></nz-option>
+                  <nz-option nzLabel="Cilium" nzValue="cilium"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
+              <nz-form-control [nzErrorTip]="cidrErrorTpl">
+                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
+                  (ngModelChange)="checkOverLapseIP()" />
+              </nz-form-control>
+              <ng-template #cidrErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Pod CIDR không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">
+                  Pod CIDR không đúng định dạng
+                </ng-container>
+                <ng-container *ngIf="control.hasError('overlap')">
+                  Pod CIDR trùng dải với subnet
+                </ng-container>
+              </ng-template>
+            </nz-form-item>
+          </div>
+        </div>
+
 
       </nz-card>
 
@@ -574,7 +585,7 @@
             </div>
 
             <nz-divider class="divider-style"></nz-divider>
-            <h3>Cấu hình nâng cao</h3>
+            <h3>Cấu hình worker group</h3>
 
             <div class="scroll scrollbar">
               <ng-container *ngFor="let control of listFormWorkerGroup.controls; let i = index;">

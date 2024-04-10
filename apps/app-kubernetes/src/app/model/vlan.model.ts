@@ -53,6 +53,7 @@ export class FormSearchSubnet {
   vlanName: string
   customerId: number
   networkId: number;
+  vpcId: number;
 }
 
 export class Subnet {

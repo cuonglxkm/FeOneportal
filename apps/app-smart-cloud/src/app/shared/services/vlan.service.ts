@@ -315,4 +315,18 @@ export class VlanService extends BaseService {
         return throwError(error);
       }))
   }
+
+  getListVlanSubnets(pageSize: number, pageNumber: number, region: number) {
+    return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions
+      + `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
 }

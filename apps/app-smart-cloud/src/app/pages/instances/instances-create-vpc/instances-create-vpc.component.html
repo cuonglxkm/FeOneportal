@@ -45,8 +45,7 @@
                   [(ngModel)]="instanceCreate.serviceName"
                   id="name"
                   placeholder="Nhập tên máy ảo"
-                  maxlength="50"
-                  minlength="1"
+                  [maxlength]="50"
                   (change)="
                     instanceCreate.serviceName =
                       instanceCreate.serviceName.trim()
@@ -71,8 +70,7 @@
                 >Vui lòng nhập thông tin</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
-                >Tên gồm 50 ký tự viết liền không dấu và không chứa ký tự
-                đặc biệt</ng-container
+                >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)</ng-container
               >
             </ng-template>
           </nz-form-control>

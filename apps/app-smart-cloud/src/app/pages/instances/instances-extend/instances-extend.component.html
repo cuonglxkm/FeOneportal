@@ -39,7 +39,6 @@
         style="border-radius: 8px"
         [nzBordered]="false"
         [nzLoading]="loading"
-        *ngIf="instancesModel"
       >
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin máy ảo</span>
@@ -212,7 +211,7 @@
               <nz-form-label>Số tháng cần gia hạn thêm</nz-form-label>
               <nz-form-control>
                 <nz-input-number
-                  [nzMin]="0"
+                  [nzMin]="1"
                   [nzMax]="100"
                   [nzStep]="1"
                   [(ngModel)]="numberMonth"
@@ -265,10 +264,11 @@
           {{ instancesModel.ram }} GB RAM
         </div>
         <div style="margin-top: 10px" class="text-label">
-          {{ instancesModel.storage }} GB Root Disk (<span>{{
-            instancesModel.volumeType | uppercase
-          }}</span
-          >)
+          {{ instancesModel.storage }} GB Root Disk (<span
+            *ngIf="instancesModel.volumeType == 0"
+            >HDD</span
+          >
+          <span *ngIf="instancesModel.volumeType == 1">SSD</span>)
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
