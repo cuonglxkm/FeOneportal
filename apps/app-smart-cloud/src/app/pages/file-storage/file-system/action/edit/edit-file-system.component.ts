@@ -7,7 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'one-portal-edit-file-system',
+  selector: 'one-portal-extend-file-system',
   templateUrl: './edit-file-system.component.html',
   styleUrls: ['./edit-file-system.component.less'],
 })

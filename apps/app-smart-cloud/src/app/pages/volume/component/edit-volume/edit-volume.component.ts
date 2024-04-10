@@ -1,56 +1,53 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {NzSelectOptionInterface} from "ng-zorro-antd/select";
-import {EditSizeVolumeModel, EditTextVolumeModel, GetAllVmModel} from "../../../../shared/models/volume.model";
-import {EditSizeMemoryVolumeDTO, PriceVolumeDto, VmDto} from "../../../../shared/dto/volume.dto";
-import {VolumeService} from "../../../../shared/services/volume.service";
-import {NzMessageService} from "ng-zorro-antd/message";
-import {VolumeDTO} from "../../../../shared/dto/volume.dto";
-import {ActivatedRoute, Router} from "@angular/router";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {RegionModel} from "../../../../shared/models/region.model";
-import {ProjectModel} from "../../../../shared/models/project.model";
-import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {DataPayment, InstancesModel, ItemPayment, VolumeCreate} from "../../../instances/instances.model";
-import {InstancesService} from "../../../instances/instances.service";
-import {OrderItem} from "../../../../shared/models/price";
-import {ProjectService} from "../../../../shared/services/project.service";
+import { Component, Inject, OnInit } from '@angular/core';
+import { EditSizeVolumeModel } from '../../../../shared/models/volume.model';
+import { EditSizeMemoryVolumeDTO, VolumeDTO } from '../../../../shared/dto/volume.dto';
+import { VolumeService } from '../../../../shared/services/volume.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { RegionModel } from '../../../../shared/models/region.model';
+import { ProjectModel } from '../../../../shared/models/project.model';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { DataPayment, InstancesModel, ItemPayment } from '../../../instances/instances.model';
+import { InstancesService } from '../../../instances/instances.service';
+import { OrderItem } from '../../../../shared/models/price';
+import { ProjectService } from '../../../../shared/services/project.service';
 import { now } from 'lodash';
 
 @Component({
-  selector: 'app-edit-volume',
+  selector: 'app-extend-volume',
   templateUrl: './edit-volume.component.html',
-  styleUrls: ['./edit-volume.component.less'],
+  styleUrls: ['./edit-volume.component.less']
 })
 export class EditVolumeComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
   volumeInfo: VolumeDTO;
-  oldSize: number
-  expiryTime: any
+  oldSize: number;
+  expiryTime: any;
   validateForm: FormGroup<{
     name: FormControl<string>
     description: FormControl<string>
     storage: FormControl<number>
     radio: FormControl<any>
   }> = this.fb.group({
-    name: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(700)],
     storage: [1, [Validators.required]],
     radio: ['']
   });
 
-  nameList: string[] = []
+  nameList: string[] = [];
 
-  volumeId: number
+  volumeId: number;
 
-  isLoading = false
+  isLoading = false;
 
-  iops: number
+  iops: number;
 
   selectedValueRadio = 'ssd';
 
-  isVisibleConfirmEdit: boolean = false
+  isVisibleConfirmEdit: boolean = false;
 
   volumeStatus: Map<String, string>;
 
@@ -73,8 +70,8 @@ export class EditVolumeComponent implements OnInit {
     this.volumeStatus.set('SUSPENDED', 'TẠM NGƯNG');
 
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
-      if(value <= 40) return (this.iops = 400);
-      this.iops = value * 10
+      if (value <= 40) return (this.iops = 400);
+      this.iops = value * 10;
     });
   }
 
@@ -82,7 +79,7 @@ export class EditVolumeComponent implements OnInit {
     const value = control.value;
     // Check if the input name is already in the list
     if (this.nameList && this.nameList.includes(value)) {
-      return {duplicateName: true}; // Duplicate name found
+      return { duplicateName: true }; // Duplicate name found
     } else {
       return null; // Name is unique
     }
@@ -93,63 +90,42 @@ export class EditVolumeComponent implements OnInit {
     // this.projectService.getByRegion(this.region).subscribe(data => {
     //   if (data.length){
     //     localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/volumes'])
+    this.router.navigate(['/app-smart-cloud/volumes']);
     //   }
     // });
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id
+    this.project = project.id;
     // this.router.navigate(['/app-smart-cloud/volumes'])
     // this.getListVolumes()
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/volumes'])
+    this.router.navigate(['/app-smart-cloud/volumes']);
     //
   }
+
   getListVolumes() {
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region,
-        9999, 1, null, null)
-        .subscribe(data => {
-          data.records.forEach(item => {
-            if(this.nameList.length > 0) {
-              this.nameList.push(item.name)
-            } else {
-              this.nameList = [item.name]
-            }
-          })
-        }, error => {
-          this.nameList = []
-        })
+      9999, 1, null, null)
+      .subscribe(data => {
+        data.records.forEach(item => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      }, error => {
+        this.nameList = [];
+      });
   }
 
-  showModalConfirmEdit(){
-    this.isVisibleConfirmEdit = true
-  }
-
-  handleCancel() {
-    this.isVisibleConfirmEdit = false
-
-  }
-
-  handleOk() {
-    this.submitForm()
-    this.isVisibleConfirmEdit = false
-  }
-  submitForm() {
-    console.log(this.validateForm.getRawValue())
-    console.log(this.validateForm.valid)
-    if(this.validateForm.valid){
-      this.nameList = []
-      this.doEditSizeVolume()
-    }
-  }
-
-  navigateToPaymentSummary(){
-    if(this.validateForm.valid){
-      this.nameList = []
-      this.getTotalAmount()
+  navigateToPaymentSummary() {
+    if (this.validateForm.valid) {
+      this.nameList = [];
+      this.getTotalAmount();
       let request = new EditSizeVolumeModel();
       request.customerId = this.volumeEdit.customerId;
       request.createdByUserId = this.volumeEdit.customerId;
@@ -162,10 +138,10 @@ export class EditVolumeComponent implements OnInit {
           price: this.orderItem?.totalAmount.amount,
           serviceDuration: this.expiryTime
         }
-      ]
-      var returnPath: string = '/app-smart-cloud/volume/edit/'+this.volumeId
-      console.log('request', request)
-      this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+      ];
+      var returnPath: string = '/app-smart-cloud/volume/extend/' + this.volumeId;
+      console.log('request', request);
+      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
     }
   }
 
@@ -180,17 +156,18 @@ export class EditVolumeComponent implements OnInit {
     const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
     return diffMonths;
   }
+
   goBack(): void {
-    this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId])
+    this.router.navigate(['/app-smart-cloud/volume/detail/' + this.volumeId]);
   }
 
   ngOnInit() {
-    this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'))
+    this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     this.dateEdit = new Date();
-    if(this.volumeId != undefined || this.volumeId != null) {
-      console.log('id', this.volumeId)
-      this.getVolumeById(this.volumeId)
-      this.getTotalAmountFirst()
+    if (this.volumeId != undefined || this.volumeId != null) {
+      console.log('id', this.volumeId);
+      this.getVolumeById(this.volumeId);
+      this.getTotalAmountFirst();
     }
 
 
@@ -207,37 +184,39 @@ export class EditVolumeComponent implements OnInit {
 
   }
 
-  instance: InstancesModel = new InstancesModel()
+  instance: InstancesModel = new InstancesModel();
 
   getInstanceById(id) {
     this.instanceService.getInstanceById(id).subscribe(data => {
-      this.instance = data
-    })
+      this.instance = data;
+    });
   }
-  array: string[] = []
-   getVolumeById(idVolume: number) {
+
+  array: string[] = [];
+
+  getVolumeById(idVolume: number) {
     this.volumeService.getVolumeById(idVolume).subscribe(data => {
       if (data !== undefined && data != null) {
         this.volumeInfo = data;
         this.oldSize = data.sizeInGB;
-        this.validateForm.controls.name.setValue(data.name)
-        this.validateForm.controls.storage.setValue(data.sizeInGB)
-        this.validateForm.controls.description.setValue(data.description)
-        this.selectedValueRadio = data.volumeType
-        this.validateForm.controls.radio.setValue(data.volumeType)
+        this.validateForm.controls.name.setValue(data.name);
+        this.validateForm.controls.storage.setValue(data.sizeInGB);
+        this.validateForm.controls.description.setValue(data.description);
+        this.selectedValueRadio = data.volumeType;
+        this.validateForm.controls.radio.setValue(data.volumeType);
 
-        this.iops = this.volumeInfo?.iops
+        this.iops = this.volumeInfo?.iops;
 
-        if(this.volumeInfo?.instanceId != null) {
-          this.getInstanceById(this.volumeInfo?.instanceId)
+        if (this.volumeInfo?.instanceId != null) {
+          this.getInstanceById(this.volumeInfo?.instanceId);
         }
-        console.log('volumesInfo', this.volumeInfo.attachedInstances)
-        if(data?.attachedInstances != null) {
+        console.log('volumesInfo', this.volumeInfo.attachedInstances);
+        if (data?.attachedInstances != null) {
           this.volumeInfo?.attachedInstances?.forEach(item => {
-            this.listVMs += item.instanceName.toString()
-          })
+            this.listVMs += item.instanceName.toString();
+          });
         }
-        this.getTotalAmount()
+        this.getTotalAmount();
 
         //Thoi gian su dung
         const createDate = new Date(this.volumeInfo?.creationDate);
@@ -245,28 +224,30 @@ export class EditVolumeComponent implements OnInit {
         this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
 
       } else {
-        this.volumeInfo = null
+        this.volumeInfo = null;
       }
-    })
+    });
   }
+
   //
   changeVolumeType(value) {
-    this.selectedValueRadio = value
+    this.selectedValueRadio = value;
     // this.notification.warning('', 'Không thể thay đổi loại Volume.')
   }
 
   volumeEdit: EditSizeMemoryVolumeDTO = new EditSizeMemoryVolumeDTO();
+
   volumeInit() {
-    this.volumeEdit.serviceInstanceId = this.volumeInfo?.id
-    this.volumeEdit.newDescription = this.validateForm.controls.description.value
+    this.volumeEdit.serviceInstanceId = this.volumeInfo?.id;
+    this.volumeEdit.newDescription = this.validateForm.controls.description.value;
     this.volumeEdit.regionId = this.volumeInfo?.regionId;
-    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB
-    this.volumeEdit.iops = this.iops
+    this.volumeEdit.newSize = this.validateForm.controls.storage.value + this.volumeInfo?.sizeInGB;
+    this.volumeEdit.iops = this.iops;
     // editVolumeDto.newOfferId = 0;
-    this.volumeEdit.serviceName = this.validateForm.controls.name.value
-    this.volumeEdit.vpcId = this.volumeInfo.vpcId;
+    this.volumeEdit.serviceName = this.validateForm.controls.name.value;
+    this.volumeEdit.projectId = this.volumeInfo.vpcId;
     this.volumeEdit.customerId = this.tokenService.get()?.userId;
-    this.volumeEdit.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
+    this.volumeEdit.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
     const user = JSON.parse(userString);
     this.volumeEdit.actorEmail = user.email;
@@ -275,26 +256,26 @@ export class EditVolumeComponent implements OnInit {
     this.volumeEdit.actionType = 4; //resize
   }
 
-  orderItem: OrderItem = new OrderItem()
-  unitPrice = 0
+  orderItem: OrderItem = new OrderItem();
+  unitPrice = 0;
 
   changeValueInput() {
-    console.log('total amount')
-    this.getTotalAmount()
+    console.log('total amount');
+    this.getTotalAmount();
   }
 
-  getTotalAmountFirst(){
+  getTotalAmountFirst() {
     const volumeResize = new EditSizeMemoryVolumeDTO();
-    volumeResize.serviceInstanceId = this.volumeInfo?.id
-    volumeResize.newDescription = this.volumeInfo?.description
+    volumeResize.serviceInstanceId = this.volumeInfo?.id;
+    volumeResize.newDescription = this.volumeInfo?.description;
     volumeResize.regionId = this.volumeInfo?.regionId;
-    volumeResize.newSize = 0
-    volumeResize.iops = this.iops
+    volumeResize.newSize = 0;
+    volumeResize.iops = this.iops;
     // editVolumeDto.newOfferId = 0;
-    volumeResize.serviceName = this.volumeInfo?.name
-    volumeResize.vpcId = this.volumeInfo?.vpcId;
+    volumeResize.serviceName = this.volumeInfo?.name;
+    volumeResize.projectId = this.volumeInfo?.vpcId;
     volumeResize.customerId = this.tokenService.get()?.userId;
-    volumeResize.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
+    volumeResize.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
     const user = JSON.parse(userString);
     volumeResize.actorEmail = user.email;
@@ -312,13 +293,13 @@ export class EditVolumeComponent implements OnInit {
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien volume', result.data);
-      this.orderItem = result.data
-      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
+      this.orderItem = result.data;
+      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
     });
   }
 
   getTotalAmount() {
-    this.volumeInit()
+    this.volumeInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.volumeEdit);
@@ -329,13 +310,13 @@ export class EditVolumeComponent implements OnInit {
     dataPayment.projectId = this.project;
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien volume', result.data);
-      this.orderItem = result.data
-      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount
+      this.orderItem = result.data;
+      this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
     });
   }
 
   doEditSizeVolume() {
-    this.getTotalAmount()
+    this.getTotalAmount();
     let request = new EditSizeVolumeModel();
     request.customerId = this.volumeEdit.customerId;
     request.createdByUserId = this.volumeEdit.customerId;
@@ -348,12 +329,12 @@ export class EditVolumeComponent implements OnInit {
         price: this.orderItem?.orderItemPrices[0]?.unitPrice.amount,
         serviceDuration: this.expiryTime
       }
-    ]
-    console.log('request', request)
-    console.log('price', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
-    var returnPath: string = '/app-smart-cloud/volume/detail/'+this.volumeId;
+    ];
+    console.log('request', request);
+    console.log('price', this.orderItem?.orderItemPrices[0]?.unitPrice.amount);
+    var returnPath: string = '/app-smart-cloud/volume/detail/' + this.volumeId;
     this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: request, path: returnPath },
+      state: { data: request, path: returnPath }
     });
     // this.isLoading = true
     // this.volumeService.editSizeVolume(request).subscribe(data => {

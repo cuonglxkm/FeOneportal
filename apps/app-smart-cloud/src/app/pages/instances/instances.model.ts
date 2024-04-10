@@ -266,7 +266,7 @@ export class VolumeCreate {
   instanceToAttachId: any;
   isMultiAttach: boolean;
   isEncryption: boolean;
-  vpcId: any;
+  projectId: any;
   oneSMEAddonId: any;
   serviceType: number;
   serviceInstanceId: number;

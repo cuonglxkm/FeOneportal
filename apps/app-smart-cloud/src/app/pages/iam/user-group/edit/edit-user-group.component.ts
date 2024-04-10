@@ -6,7 +6,7 @@ import {FormUserGroup, UserGroupModel} from "../../../../shared/models/user-grou
 import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
-  selector: 'one-portal-edit-user-group',
+  selector: 'one-portal-extend-user-group',
   templateUrl: './edit-user-group.component.html',
   styleUrls: ['./edit-user-group.component.less'],
 })

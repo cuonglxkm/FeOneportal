@@ -17,7 +17,7 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 
 @Component({
-  selector: 'one-portal-edit-ike-policies',
+  selector: 'one-portal-extend-ike-policies',
   templateUrl: './edit-ike-policies.component.html',
   styleUrls: ['./edit-ike-policies.component.less'],
 })
@@ -32,7 +32,7 @@ export class EditIkePoliciesComponent implements OnInit {
     { label: 'sha512', value: 'sha512' },
   ];
 
-  
+
   ikeVersion = [
     { label: 'v1', value: 'v1' },
     { label: 'v2', value: 'v2' },
@@ -52,7 +52,7 @@ export class EditIkePoliciesComponent implements OnInit {
     { label: 'group14 ', value: 'group14' },
   ];
 
- 
+
   phase1Negotiation = [
     { label: 'main', value: 'main' },
     { label: 'aggressive', value: 'aggressive' }

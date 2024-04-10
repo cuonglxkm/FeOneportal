@@ -128,11 +128,11 @@ export class FormCreateLoadBalancer {
   name: string
   isFloatingIP: boolean
   flavorId: string
-  ipPublicId: string
+  ipPublicId: number
   customerId: number
   userEmail: string
   actorEmail: string
-  vpcId: string
+  projectId: string
   regionId: number
   serviceName: string
   serviceType: number
@@ -174,6 +174,41 @@ export class FormCreate {
       serviceDuration: number
     }
   ]
+}
+
+export class FormUpdateLBVpc {
+  id: number
+  customerId: number
+  name: string
+  description: string
+  offerId: number
+}
+
+export class IPBySubnet {
+  id: number
+  ipAddress: string
+  portCloudId: string
+  customerId: number
+  attachedVmId: number
+  region: number
+  regionText: string
+  createDate: Date
+  status: number
+  cloudIdentity: number
+  projectName: string
+  projectId: number
+  networkId: string
+  iPv6Address: string
+  serviceStatus: string
+  attachedVm: string
+  expiredDate: Date
+  resourceStatus: string
+  suspendType: string
+  typeIP: string
+  network: string
+  fixedIpAddress: string
+  loadbalancerId: number
+  loadbalancerName: string
 }
 
 

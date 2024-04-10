@@ -22,6 +22,7 @@
           <ng-container *ngIf="control.hasError('required')">Tên subnet không được để trống</ng-container>
           <ng-container *ngIf="control.hasError('maxlength')">Tên subnet tối đa 50 ký tự</ng-container>
           <ng-container *ngIf="control.hasError('pattern')">Tên subnet không được chứa ký tự đặc biệt</ng-container>
+          <ng-container *ngIf="control.hasError('duplicateName')">Tên subnet đã tồn tại vui lòng nhập tên khác</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -65,7 +66,8 @@
         />
         <ng-template #networkAddressErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Địa chỉ không được phép để trống</ng-container>
-          <ng-container *ngIf="control.hasError('invalidIp')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
+          <ng-container *ngIf="control.hasError('invalidIPAddress')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>
+<!--          <ng-container *ngIf="control.hasError('pattern')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>-->
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -91,7 +93,21 @@
             </label>
           </div>
           <div nz-col nzSpan="12">
-            <label nz-checkbox formControlName="enableDhcp">
+            <label *ngIf="value" nz-checkbox formControlName="enableDhcp" [disabled]="true" >
+              <nz-space [nzSize]="4" nzAlign="center">
+                <span *nzSpaceItem class="text-value">DHCP</span>
+                <span *nzSpaceItem nz-icon nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      class="text-value"
+                      [nzPopoverContent]="'DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo ' +
+                                        'Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP ' +
+                                        'Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP ' +
+                                        'Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP'"
+                      nzPopoverPlacement="bottom"></span>
+              </nz-space>
+            </label>
+            <label *ngIf="!value" nz-checkbox formControlName="enableDhcp" >
               <nz-space [nzSize]="4" nzAlign="center">
                 <span *nzSpaceItem class="text-value">DHCP</span>
                 <span *nzSpaceItem nz-icon nzType="question-circle"
@@ -132,14 +148,22 @@
           <span *nzSpaceItem nz-icon nzType="question-circle"
                 nzTheme="outline"
                 nz-popover
-                [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ','"
+                [nzPopoverContent]="'Điền 1 IP bắt đầu và 1 IP kết thúc của dải mạng cách nhau bởi dấu '+ ', ' +
+                     '\nYêu cầu chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24' +
+                     '\nIP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)'"
                 nzPopoverPlacement="bottom"></span>
         </nz-space>
       </nz-form-label>
-      <nz-form-control>
+      <nz-form-control nzDisableAutoTips [nzErrorTip]="allocationPoolErrorTpl">
         <nz-textarea-count [nzMaxCharacterCount]="100">
-          <textarea rows="4" formControlName="allocationPool" (ngModelChange)="formatIPAddresses()" nz-input></textarea>
+          <textarea rows="4" formControlName="allocationPool" (ngModelChange)="onChangeInput($event)" nz-input></textarea>
         </nz-textarea-count>
+        <ng-template #allocationPoolErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('invalidIpAddressFormat')">Địa chỉ IP không đúng định dạng, IP cách nhau bởi dấu (,).</ng-container>
+          <ng-container *ngIf="control.hasError('invalidIpAddressRange')">Địa chỉ IP không hợp lệ. Yêu cầu chọn các dải
+            trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24.</ng-container>
+          <ng-container *ngIf="control.hasError('invalidIpSequence')">Địa chỉ IP không hợp lệ, IP sau lớn hơn IP trước (ví dụ: 172.16.0.2, 172.16.0.3)</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
 <!--    <div *ngIf="!subnets.length" nz-row style="border: 1px solid #0074CC; padding: 16px; border-radius: 4px; cursor: pointer; margin-bottom: 24px" (click)="addRow()">-->
@@ -210,7 +234,7 @@
       <nz-form-control *nzSpaceItem>
         <button nz-button nzType="primary" [disabled]="!validateForm.valid"
                 class="button-ok">
-          <span nz-icon nzType="check" nzTheme="outline" ></span>Xác nhận</button>
+          <span nz-icon nzType="check" nzTheme="outline" ></span>Tạo mới</button>
       </nz-form-control>
     </nz-space>
   </nz-form-item>

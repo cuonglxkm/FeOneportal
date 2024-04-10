@@ -115,13 +115,13 @@
           <td>{{data.nextRuntime | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
           <td>
             <div class="d-flex gap-2 justify-content-center align-items-center">
-              
+
               <span
                 style="color: #0066b3; margin-right: 10px; cursor: pointer"
                 nz-icon
                 nzType="edit"
                 nzTheme="outline"
-                [routerLink]="['../edit/' + data.id]"
+                [routerLink]="['../extend/' + data.id]"
                 [nzPopoverContent]="'Sửa'"
                 nz-popover
                 nzPopoverPlacement="bottom"
@@ -130,7 +130,7 @@
                 [region]="region"
                 [project]="project"
               />
-              
+
               <one-portal-delete-file-system-snapshot-schedule
                 [region]="region"
                 [project]="project"
