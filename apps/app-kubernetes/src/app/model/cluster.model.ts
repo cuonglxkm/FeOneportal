@@ -158,7 +158,9 @@ export class WorkerGroupModel {
   minimumNode: number;
   maximumNode: number;
   volumeType: string;
+  volumeTypeName: string;
   volumeSize: number;
+  machineTypeName: string;
   ram: number;
   cpu: number;
 
@@ -172,6 +174,8 @@ export class WorkerGroupModel {
       this.maximumNode = obj.maximum_node;
       this.volumeType = obj.volume_type;
       this.volumeSize = obj.volume_size;
+      this.machineTypeName = obj.machine_type_name;
+      this.volumeTypeName = obj.volume_type_name;
       this.ram = obj.ram;
       this.cpu = obj.cpu;
     }

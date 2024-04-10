@@ -1,12 +1,21 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
   <ng-container *ngIf="!isEditMode; else submitModeTpl">
-    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">Điều chỉnh</button>
+    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">
+      <span nz-icon nzType="edit" nzTheme="outline"></span>
+      Điều chỉnh
+    </button>
   </ng-container>
   <ng-template #submitModeTpl>
     <button nz-button nzType="primary" (click)="onSubmitUpgrade()" class="mb-3" 
-      [disabled]="isUpgrading || upgradeForm.invalid">Xác nhận</button>
+      [disabled]="isUpgrading || upgradeForm.invalid">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Xác nhận
+    </button>
     <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3" 
-      [disabled]="isUpgrading">Hủy bỏ</button>
+      [disabled]="isUpgrading">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      Hủy bỏ
+    </button>
   </ng-template>
 
   <!-- Thông tin chung -->
@@ -140,7 +149,7 @@
   </nz-card>
 
   <!-- Thông tin worker group -->
-  <!-- <nz-card class="border-card">
+  <nz-card class="border-card">
     <h3>Thông tin worker group</h3>
     <form nz-form [formGroup]="upgradeForm">
       <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroupUpgrade.controls; let i = index;">
@@ -185,7 +194,7 @@
                         <div nz-col [nzSpan]="8">Cấu hình</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editConfigTypeTpl">
-                            {{'configType' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                            {{'cpu' | getValueInForm: listFormWorkerGroupUpgrade : i}}vCPU / {{'ram' | getValueInForm: listFormWorkerGroupUpgrade : i}}GB
                           </ng-container>
                           <ng-template #editConfigTypeTpl>
                             <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình" 
@@ -220,9 +229,12 @@
                         <div nz-col [nzSpan]="8">Auto scale</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editScalingTpl">
-                            <ng-container *ngIf="('autoScalingWorker' | getValueInForm: listFormWorkerGroupUpgrade : i) as autoScalingWorker">
-                              {{autoScalingWorker == true ? 'Bật' : 'Tắt'}}
+                            <ng-container *ngIf="('autoScalingWorker' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoScaleTpl">
+                              Bật
                             </ng-container>
+                            <ng-template #offAutoScaleTpl>
+                              Tắt
+                            </ng-template>
                           </ng-container>
                           <ng-template #editScalingTpl>
                             <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAutoScale($event)"
@@ -237,9 +249,12 @@
                         <div nz-col [nzSpan]="8">Auto healing</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editHealingTpl">
-                            <ng-container *ngIf="('autoHealing' | getValueInForm: listFormWorkerGroupUpgrade : i) as autoHealing">
-                              {{autoHealing == true ? 'Bật' : 'Tắt'}}
+                            <ng-container *ngIf="('autoHealing' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoHealingTpl">
+                              Bật
                             </ng-container>
+                            <ng-template #offAutoHealingTpl>
+                              Tắt
+                            </ng-template>
                           </ng-container>
                           <ng-template #editHealingTpl>
                             <nz-switch formControlName="autoHealing"
@@ -291,9 +306,9 @@
         </ng-container>
       </div>
     </form>
-  </nz-card> -->
+  </nz-card>
 
-  <nz-card class="border-card">
+  <!-- <nz-card class="border-card">
     <h3>Thông tin worker group</h3>
     <ng-container *ngIf="detailCluster.workerGroup.length > 0; else workerlessTpl">
       <ng-container *ngFor="let item of detailCluster.workerGroup; let i=index;">
@@ -363,7 +378,7 @@
         </ng-template>
       </nz-empty>
     </ng-template>
-  </nz-card>
+  </nz-card> -->
 
   <!-- Thông tin network -->
   <nz-card class="border-card">

@@ -121,13 +121,13 @@ export class DetailClusterComponent implements OnInit, OnChanges {
         nodeNumber: [nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
         volumeStorage: [wgs[i].volumeSize, [Validators.required, Validators.min(20), Validators.max(1000)]],
         volumeType: [wgs[i].volumeType, [Validators.required]],
-        volumeTypeId: [null, [Validators.required]],
-        configType: [null, [Validators.required]],
-        configTypeId: [null, [Validators.required]],
+        configType: [wgs[i].machineTypeName, [Validators.required]],
         autoScalingWorker: [wgs[i].autoScaling, Validators.required],
         autoHealing: [wgs[i].autoHealing, Validators.required],
         minimumNode: [null],
-        maximumNode: [null]
+        maximumNode: [null],
+        ram: [wgs[i].ram],
+        cpu: [wgs[i].cpu]
       });
 
       this.listFormWorkerGroupUpgrade.push(wg);
