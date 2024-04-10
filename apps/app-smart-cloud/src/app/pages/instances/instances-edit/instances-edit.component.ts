@@ -22,7 +22,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../instances.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, of, Subject } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -181,23 +181,20 @@ export class InstancesEditComponent implements OnInit {
 
   isCustomconfig = false;
   onClickConfigPackage() {
-    this.resetChangeConfig();
+    this.configCustom = new ConfigCustom();
     this.isCustomconfig = false;
+    this.volumeUnitPrice = '0';
+    this.volumeIntoMoney = 0;
+    this.ramUnitPrice = '0';
+    this.ramIntoMoney = 0;
+    this.cpuUnitPrice = '0';
+    this.cpuIntoMoney = 0;
   }
 
   onClickCustomConfig() {
-    this.resetChangeConfig();
-    this.isCustomconfig = true;
-  }
-
-  resetChangeConfig(): void {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalincludesVAT = 0;
-    this.instanceResize.cpu = null;
-    this.instanceResize.ram = null;
-    this.instanceResize.storage = null;
+    this.isCustomconfig = true;
   }
 
   //#region Gói cấu hình/ Cấu hình tùy chỉnh
@@ -563,6 +560,19 @@ export class InstancesEditComponent implements OnInit {
   }
 
   readyEdit(): void {
+    if (this.isCustomconfig == false && this.offerFlavor == null) {
+      this.notification.error('', 'Vui lòng chọn gói cấu hình');
+      return;
+    }
+    if (
+      this.isCustomconfig == true &&
+      this.configCustom.vCPU == 0 &&
+      this.configCustom.ram == 0 &&
+      this.configCustom.capacity == 0
+    ) {
+      this.notification.error('', 'Cấu hình tùy chọn chưa hợp lệ');
+      return;
+    }
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();

@@ -66,6 +66,7 @@
                       (ngModelChange)="initSnapshot()"
                     ></nz-switch>
                     <label
+                      class="text-label"
                       nzFor="name"
                       style="text-align: right; padding-left: 1%"
                       >Tạo từ Snapshot
@@ -962,7 +963,7 @@
                   hình Security Group trong mục
                   <u
                     style="cursor: pointer"
-                    [routerLink]="['/app-smart-cloud/security-group']"
+                    [routerLink]="['/app-smart-cloud/security-group/list']"
                     >Truy cập và Bảo mật</u
                   >
                 </div>
@@ -1071,7 +1072,7 @@
                       class="input-custom"
                       [type]="passwordVisible ? 'text' : 'password'"
                       nz-input
-                      placeholder="input password"
+                      placeholder="Nhập mật khẩu"
                       formControlName="passOrKeyFormControl"
                       [(ngModel)]="password"
                     />
@@ -1193,7 +1194,7 @@
                     nzSize="large"
                   ></nz-input-number>
                   <div
-                    class="text-custom-time"
+                    class="text-label"
                     style="
                       display: flex;
                       margin-left: 20px;
