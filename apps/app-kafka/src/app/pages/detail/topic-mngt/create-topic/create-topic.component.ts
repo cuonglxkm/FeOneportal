@@ -346,32 +346,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               this.loadingSrv.close();
               if (data && data.code == 200) {
-                this.notification.success(
-                  'Thông báo',
-                  (this.mode == this.createNumber ? 'Tạo mới ' : 'Cập nhật ') + 'thành công',
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#dff6dd',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.success('Thành công', data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(
-                  (this.mode == this.createNumber ? 'Tạo mới ' : 'Cập nhật ') + 'thất bại',
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#fed9cc',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );
@@ -405,39 +383,14 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               if (data && data.code == 200) {
                 this.loadingSrv.close();
-                this.notification.success(
-                  'Thông báo',
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#dff6dd',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.success('Thành công', data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(
-                  data.error_msg,
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#fed9cc',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );
       }
-    }
-    else {
-
     }
   }
 
@@ -486,32 +439,10 @@ export class CreateTopicComponent implements OnInit {
         .subscribe(
           (data: any) => {
             if (data && data.code == 200) {
-              this.notification.success(
-                'Thông báo',
-                data.msg,
-                {
-                  nzPlacement: 'bottomRight',
-                  nzStyle: {
-                    backgroundColor: '#dff6dd',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }
-                },
-              );
+              this.notification.success('Thành công', data.msg);
               this.cancelForm();
             } else {
-              this.notification.error(
-                data.error_msg,
-                data.msg,
-                {
-                  nzPlacement: 'bottomRight',
-                  nzStyle: {
-                    backgroundColor: '#fed9cc',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }
-                },
-              );
+              this.notification.error('Thất bại', data.msg);
             }
             this.loadingSrv.close();
           }

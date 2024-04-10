@@ -188,33 +188,11 @@ export class TopicMngtComponent implements OnInit {
         }))
         .subscribe((r: any) => {
           if (r && r.code == 200) {
-            this.notification.success(
-              'Thông báo',
-              r.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#dff6dd',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.success('Thành công', 'Test producer thành công');
             this.control = this.listNum;
             this.handleCloseProduceModal();
           } else {
-            this.notification.error(
-              "Test producer thất bại",
-              r.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.error('Thất bại', 'Test producer thất bại');
           }
         })
     }
@@ -248,31 +226,9 @@ export class TopicMngtComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success(
-              'Thông báo',
-              data.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#dff6dd',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.success('Thành công', data.msg);
           } else {
-            this.notification.error(
-              'Thông báo',
-              data.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.error('Thất bại', data.msg);
           }
           this.isDelVisible = false;
         }
@@ -292,31 +248,9 @@ export class TopicMngtComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success(
-              'Thông báo',
-              data.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#dff6dd',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.success('Thành công', data.msg);
           } else {
-            this.notification.error(
-              "Xoá Topic thất bại",
-              data.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.error('Thất bại', data.msg);
           }
           this.getList();
           this.isDelVisible = false;
@@ -333,31 +267,9 @@ export class TopicMngtComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success(
-              'Thông báo',
-              "Đồng bộ message thành công",
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#dff6dd',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.success('Thành công', data.msg);
           } else {
-            this.notification.error(
-              "Đồng bộ message thất bại",
-              data.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.error('Thất bại', data.msg);
           }
           this.getList();
         }
