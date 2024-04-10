@@ -1,5 +1,5 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="title">
+             [title]="'Chi tiết Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -26,47 +26,35 @@
     </div>
 
   </ng-template>
-  <ng-template #title>
-    <nz-row>
-      <nz-col nzSpan="8">
-        <!--          <span nz-icon-->
-        <!--                nzType="arrow-left"-->
-        <!--                nzTheme="outline"-->
-        <!--                [routerLink]="'/app-smart-cloud/volumes'"-->
-        <!--                style="margin-right: 10px;"></span>-->
-        Chi tiết Volume
-      </nz-col>
-    </nz-row>
-    <div *ngIf="!volumeInfo?.bootable">
-      <div *ngIf="typeVPC == 0" style="display: flex">
-        <div style="margin-right: 8px;">
-          <div nz-col nzSpan="4">
-            <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
-                    nz-button
-                    nzType="primary">
-              <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
-            </button>
-          </div>
-        </div>
+  <div *ngIf="!volumeInfo?.bootable">
+    <div *ngIf="typeVPC == 0" style="display: flex">
+      <div style="margin-right: 8px;">
         <div nz-col nzSpan="4">
-          <button class="button-cancel"
-                  (click)="navigateEditVolume(volumeInfo.id)"
-                  nz-button nzType="default">
-            <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
+          <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
+                  nz-button
+                  nzType="primary">
+            <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
           </button>
         </div>
       </div>
-      <div *ngIf="typeVPC == 1" style="display: flex">
-        <div nz-col nzSpan="4">
-          <button class="button-cancel"
-                  (click)="navigateToResizeVPC(volumeInfo.id)"
-                  nz-button nzType="default">
-            <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
-          </button>
-        </div>
+      <div nz-col nzSpan="4">
+        <button class="button-cancel"
+                (click)="navigateEditVolume(volumeInfo.id)"
+                nz-button nzType="default">
+          <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
+        </button>
       </div>
     </div>
-  </ng-template>
+    <div *ngIf="typeVPC == 1" style="display: flex">
+      <div nz-col nzSpan="4">
+        <button class="button-cancel"
+                (click)="navigateToResizeVPC(volumeInfo.id)"
+                nz-button nzType="default">
+          <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
+        </button>
+      </div>
+    </div>
+  </div>
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="isLoading">
