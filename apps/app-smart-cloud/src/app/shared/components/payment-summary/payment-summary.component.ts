@@ -134,7 +134,7 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Tạo mới';
             break;
-          case 'kafka_resize': 
+          case 'kafka_resize':
             this.serviceType = 'kafka';
             serviceItem.name = `Kafka - ${specificationObj.serviceName}`;
             serviceItem.type = 'Nâng cấp';
@@ -278,13 +278,13 @@ export class PaymentSummaryComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (data: any) => {
-          if (data.data.orderItems[0].orderId) {
-            this.router.navigateByUrl(
-              '/app-smart-cloud/order/detail/' + data.data.orderItems[0].orderId
-            );
-          } else {
-            window.location.href = data.data;
+        next: (result: any) => {
+          if (result.code == 310) {
+            window.location.href = result.data;
+          } else if (result.code == 200) {
+            this.router.navigate([
+              `/app-smart-cloud/order/detail/${result.data.id}`,
+            ]);
           }
         },
         error: (e) => {

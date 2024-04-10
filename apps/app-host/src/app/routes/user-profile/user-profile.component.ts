@@ -31,7 +31,6 @@ export class UserProfileComponent implements OnInit {
 
   form = new FormGroup({
     name: new FormControl('', {
-      nonNullable: true,
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
@@ -99,27 +98,29 @@ export class UserProfileComponent implements OnInit {
     let email = this.tokenService.get()['email'];
 
     const baseUrl = environment['baseUrl'];
-    this.http.get<UserModel>(`${baseUrl}/users/${email}`, {
-      headers: this.httpOptions.headers
-    }).subscribe(
-      (res) => {
-        this.userModel = res;
+    this.http
+      .get<UserModel>(`${baseUrl}/users/${email}`, {
+        headers: this.httpOptions.headers,
+      })
+      .subscribe(
+        (res) => {
+          this.userModel = res;
 
-        this.form.patchValue({
-          name: res.name,
-          surname: res.familyName,
-          email: res.email,
-          phone: res.phoneNumber,
-          customer_code: res.userCode,
-          contract_code: res.contractCode,
-          province: res.province,
-          address: res.address,
-        });
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+          this.form.patchValue({
+            name: res.name,
+            surname: res.familyName,
+            email: res.email,
+            phone: res.phoneNumber,
+            customer_code: res.userCode,
+            contract_code: res.contractCode,
+            province: res.province,
+            address: res.address,
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   }
 
   updateProfile() {
@@ -135,10 +136,20 @@ export class UserProfileComponent implements OnInit {
       birthDay: this.userModel.birthday,
     };
 
+    if (
+      updatedUser.firstName == ' ' ||
+      updatedUser.lastName == ' ' ||
+      updatedUser.phoneNumber == ' ' ||
+      updatedUser.address == ' ' ||
+      updatedUser.province == ' '
+    ) {
+      this.notification.error('', 'Vui lòng nhập đầy đủ thông tin');
+      return;
+    }
     this.http
       .put(`${baseUrl}/users`, updatedUser, {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
-        headers: this.httpOptions.headers
+        headers: this.httpOptions.headers,
       })
       .subscribe({
         next: (res) => {

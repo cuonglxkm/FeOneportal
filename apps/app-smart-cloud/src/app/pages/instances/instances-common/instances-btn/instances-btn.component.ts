@@ -9,7 +9,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesModel } from '../../instances.model';
@@ -111,19 +110,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     ]);
   }
 
-  formPass = new FormGroup({
-    newpass: new FormControl('', {
-      validators: [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
-        ),
-      ],
-    }),
-    passRepeat: new FormControl('', {
-      validators: [Validators.required],
-    }),
-  });
+  formPass: FormGroup
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
   check = true;
@@ -136,6 +123,19 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     this.isVisibleResetPass = true;
     this.resetPassword = '';
     this.resetPasswordRepeat = '';
+    this.formPass = new FormGroup({
+      newpass: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+          ),
+        ],
+      }),
+      passRepeat: new FormControl('', {
+        validators: [Validators.required],
+      }),
+    });
     this.check = true;
     this.isOk = false;
     this.autoCreate = false;
