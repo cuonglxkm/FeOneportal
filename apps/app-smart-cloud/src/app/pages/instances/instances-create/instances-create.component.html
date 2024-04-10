@@ -1410,7 +1410,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv4($event)"
+                        (ngModelChange)="onInputIPv4($event, data.id)"
                         nzSize="large"
                       >
                         <nz-option
@@ -1492,7 +1492,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
                         [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv6($event)"
+                        (ngModelChange)="onInputIPv6($$event, data.id)"
                         nzSize="large"
                       >
                         <nz-option
