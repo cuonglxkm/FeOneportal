@@ -7,7 +7,7 @@ import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 
 
 @Component({
-  selector: 'one-portal-extend-vpn-service',
+  selector: 'one-portal-edit-vpn-service',
   templateUrl: './edit-vpn-service.component.html',
   styleUrls: ['./edit-vpn-service.component.less'],
 })

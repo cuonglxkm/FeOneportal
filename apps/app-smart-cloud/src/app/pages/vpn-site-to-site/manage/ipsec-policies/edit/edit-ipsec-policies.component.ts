@@ -18,7 +18,7 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 
 @Component({
-  selector: 'one-portal-extend-ipsec-policies',
+  selector: 'one-portal-edit-ipsec-policies',
   templateUrl: './edit-ipsec-policies.component.html',
   styleUrls: ['./edit-ipsec-policies.component.less'],
 })
