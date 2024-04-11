@@ -50,7 +50,7 @@ class ConfigGPU {
 }
 
 @Component({
-  selector: 'one-portal-instances-extend',
+  selector: 'one-portal-instances-edit',
   templateUrl: './instances-edit.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
