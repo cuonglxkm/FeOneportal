@@ -160,7 +160,7 @@ export class ResizeSnapshotPackageComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(this.formUpdateSnapshotPackageModel),
           specificationType: 'snapshotpackage_resize',
-          price: this.orderItem?.totalPayment?.amount,
+          price: 0,
           serviceDuration: 0  
         }
       ]

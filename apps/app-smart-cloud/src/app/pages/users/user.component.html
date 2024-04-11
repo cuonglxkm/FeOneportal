@@ -1,9 +1,9 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'Danh sách Users'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Users </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>

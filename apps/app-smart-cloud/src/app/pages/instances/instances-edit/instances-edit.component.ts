@@ -304,6 +304,9 @@ export class InstancesEditComponent implements OnInit {
           });
         });
         this.listOfferFlavors = this.listOfferFlavors.filter((e) => e != null);
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
         console.log('list offer flavor chỉnh sửa', this.listOfferFlavors);
         this.cdr.detectChanges();
       });

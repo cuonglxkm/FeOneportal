@@ -1,9 +1,9 @@
 <page-header [breadcrumb]="breadcrumb" [title]="'Khởi tạo User'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/users']">Users</a>
       </nz-breadcrumb-item>
@@ -172,9 +172,9 @@
     </ng-template>
     <nz-row nzGutter="16" style="margin-top: 10px">
       <nz-col nzLg="24" nzMd="12" nzSm="24">
-        <div
-          >Để thực hiện tạo mới User, vui lòng chọn "<b>Đồng ý</b>" để xác nhận.</div
-        >
+        <div>
+          Để thực hiện tạo mới User, vui lòng chọn "<b>Đồng ý</b>" để xác nhận.
+        </div>
       </nz-col>
     </nz-row>
   </ng-container>

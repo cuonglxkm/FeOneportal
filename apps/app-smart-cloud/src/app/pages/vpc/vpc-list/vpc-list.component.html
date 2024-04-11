@@ -28,18 +28,19 @@
             </nz-select>
             <nz-input-group style="margin-right: 8px; width: 40%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
                             nzSize="large">
-              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm theo tên"/>
+              <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input
+                     placeholder="Tìm kiếm theo tên" />
             </nz-input-group>
             <ng-template #suffixIconSearch>
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
-                   (click)="search(searchBox.value)"/>
+                   (click)="search(searchBox.value)" />
             </ng-template>
           </div>
         </div>
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
           <button nz-button nzType="primary" (click)="createVpc()" nzSize="large">
-            <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
+            <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
             <span class="button-text-primary">Tạo dự án</span>
           </button>
         </div>
@@ -50,7 +51,7 @@
                 (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>
         <tr>
-          <th>Tên VPC</th>
+          <th>Tên dự án</th>
           <th>Ngày khởi tạo</th>
           <th>Ngày hết hạn</th>
           <th>Trạng thái</th>
@@ -61,16 +62,16 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of listOfData">
-          <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{item.displayName}}</td>
-          <td (click)="viewDetail(item.id)">{{item.createDate | date : "dd/MM/YYYY"}}</td>
-          <td (click)="viewDetail(item.id)">{{item.expireDate | date : "dd/MM/YYYY"}}</td>
-          <td (click)="viewDetail(item.id)">{{item.resourceStatus}}</td>
-          <td (click)="viewDetail(item.id)">{{item.serviceStatus}}</td>
-          <td (click)="viewDetail(item.id)">{{item.type == 'VPC' ? 'dự án VPC' : 'dự án thường'}}</td>
-<!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
-<!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
-<!--          <td *ngIf="item.status === 0">-</td>-->
-<!--          <td *ngIf="item.status === 2">IN-USE</td>-->
+          <td (click)="viewDetail(item.id)" style="color: #0D67B0">{{ item.displayName }}</td>
+          <td (click)="viewDetail(item.id)">{{ item.createDate | date : "dd/MM/YYYY" }}</td>
+          <td (click)="viewDetail(item.id)">{{ item.expireDate | date : "dd/MM/YYYY" }}</td>
+          <td (click)="viewDetail(item.id)">{{ item.resourceStatus }}</td>
+          <td (click)="viewDetail(item.id)">{{ item.serviceStatus }}</td>
+          <td (click)="viewDetail(item.id)">{{ item.type == 'VPC' ? 'dự án VPC' : 'dự án thường' }}</td>
+          <!--          <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: forestgreen">Đang hoạt động</td>-->
+          <!--          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>-->
+          <!--          <td *ngIf="item.status === 0">-</td>-->
+          <!--          <td *ngIf="item.status === 2">IN-USE</td>-->
           <td>
             <div>
               <!----Chỉnh sửa----->
@@ -80,8 +81,8 @@
                     nz-icon
                     nzType="edit"
                     nzTheme="outline"
-                    (click)="edit(item.id)"
-                    ></span>
+                    (click)="edit(item)"
+              ></span>
               <!----Xóa---->
               <span style="color: #0066B3"
                     nz-tooltip
@@ -99,35 +100,77 @@
       <nz-result [nzIcon]="customIcon" [nzTitle]="titleCustom"
                  [nzSubTitle]="desCustom">
         <ng-template #titleCustom>
-          <p class="text-intro-title">VPC</p>
-          <p class="text-intro-title">Đám mây riêng ảo</p>
+          <p class="text-intro-title">Quản lý dự án</p>
         </ng-template>
         <ng-template #desCustom>
-          <p class="text-intro-desc">Dịch vụ đám mây riêng ảo (Virtual Private Cloud) - VPC cung cấp trọn gói hạ tầng tính toán,lưu tữ và network cho phép khách hàng tự thiết lập trung tâm dữ liệu ảo trên VNPT Cloud</p>
+          <p class="text-intro-desc" style="opacity: 0.5">Khách hàng có thể khởi tạo một dự án thường hoặc dự án VPC -
+            cung cấp trọn gói hạ tầng tính toán, lưu trữ và network cho phép Khách hàng tự thiết lập trung tâm dữ liệu
+            ảo hóa trên VNPT Cloud.</p>
         </ng-template>
         <ng-template #customIcon>
           <img src="assets/imgs/VPC-init.png" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
-          <button (click)="createVpc()" nz-button nzSize="large" nzType="primary">
-            <img style="padding-right: 10px;" src="assets/imgs/cloud-plus-bold.svg" alt=""/>Khởi tạo VPC</button>
+          <button (click)="createVpc()" nz-button nzSize="large" nzType="primary" style="margin-bottom: 20px;">
+            <img style="padding-right: 10px;" src="assets/imgs/cloud-plus-bold.svg" alt="" />Khởi tạo VPC
+          </button>
+          <p class="text-intro-desc" style="opacity: 0.5">Hoặc đọc thêm về quản lý dự án <a href="#" style="color: #0074cc;" (click)="redirectTo()">tại đây</a></p>
         </div>
       </nz-result>
     </ng-container>
   </ng-container>
 </nz-card>
 
-<!--Xóa-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa VPC" (nzOnCancel)="handleCancel()"
-          (nzOnOk)="openIpDelete()" nzOkText="Đồng ý" [nzOkDisabled]="disableDelete"
+<!--Xóa VPC-->
+<nz-modal [(nzVisible)]="isVisibleDeleteVPC" nzTitle="Xóa dự án VPC" (nzOnCancel)="handleCancel()"
+          (nzOnOk)="openIpDelete()" nzOkText="Xác nhận " [nzOkDisabled]="disableDelete"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
-              nzDescription="Bạn đang thực hiện xóa VPC [name VPC].Việc thực hiện xóa VPC đồng thời cũng sẽ xóa các dữ liệu bên trong VPC,
-               có thể ảnh hưởng trực tiếp tới dịch vụ bên trong VPC. Hành động này không thể được hoàn tác"
+              nzDescription="Bạn đang thực hiện xoá dự án {{itemDelete.displayName}}.Hành động này không thể được hoàn tác"
               nzShowIcon style="margin-bottom: 10px;"></nz-alert>
-    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Để thực hiện xóa VPC, vui lòng nhập tên VPC để xác nhận.</div>
-    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="Basic usage" [(ngModel)]="nameDelete" (ngModelChange)="confirmNameDelete($event)" type="text" />
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Đế thực hiện xoá dự án , vui lòng nhập tên dự án để
+      xác nhận.
+    </div>
+    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
+           (ngModelChange)="confirmNameDelete($event)" type="text" />
   </ng-container>
 </nz-modal>
+
+<!--Xóa VPC-->
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa dự án" (nzOnCancel)="handleCancel()"
+          (nzOnOk)="openIpDelete()" nzOkText="Xác nhận " [nzOkDisabled]="disableDelete"
+          nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <ng-container *nzModalContent>
+    <nz-alert class="ant-alert-warning-custom" nzType="warning"
+              nzDescription="Bạn đang thực hiện xoá dự án VPC  {{itemDelete.displayName}}.Việc thực hiện xoá dự án VPC  đồng thời cũng sẽ xóa các dữ liệu bên trong dự án VPC,
+              có thể ảnh hưởng trực tiếp tới các dịch vụ bên trong dự án VPC.Hành động này không thể được hoàn tác"
+              nzShowIcon style="margin-bottom: 10px;"></nz-alert>
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 35px">Đế thực hiện xoá dự án VPC, vui lòng nhập tên dự án VPC để
+      xác nhận.
+    </div>
+    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
+           (ngModelChange)="confirmNameDelete($event)" type="text" />
+  </ng-container>
+</nz-modal>
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <!--Chỉnh normal-->
+  <nz-modal [(nzVisible)]="isVisibleEditNormal" nzTitle="Chỉnh sửa dự án thường" (nzOnCancel)="handleCancel()"
+            (nzOnOk)="updateVpc()" nzOkText="Xác nhận " [nzOkDisabled]="form.invalid"
+            nzCancelText="Hủy" [nzStyle]="modalStyle">
+    <ng-container *nzModalContent>
+      <div class="text-label" style="margin-bottom: 10px;">
+        Tên dự án(<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự" src="assets/imgs/pajamas_question.svg" alt="" />
+        <input nz-input placeholder="Nhập tên VPC" style="width: 100%"
+               formControlName="name">
+      </div>
+      <div class="text-label">
+        Mô tả
+        <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+                  formControlName="description"></textarea>
+      </div>
+    </ng-container>
+  </nz-modal>
+</form>
+
 

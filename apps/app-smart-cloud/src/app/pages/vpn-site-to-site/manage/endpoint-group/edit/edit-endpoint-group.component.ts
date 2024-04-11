@@ -6,7 +6,7 @@ import { FormDetailEndpointGroup, FormEditEndpointGroup } from 'src/app/shared/m
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 
 @Component({
-  selector: 'one-portal-extend-endpoint-group',
+  selector: 'one-portal-edit-endpoint-group',
   templateUrl: './edit-endpoint-group.component.html',
   styleUrls: ['./edit-endpoint-group.component.less'],
 })

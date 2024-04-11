@@ -78,14 +78,7 @@ export class FileSystemSnapshotScheduleDetail {
   customerId: number;
   regionId: number;
   projectId: number;
-  items: [
-    {
-      id: number;
-      itemId: number;
-      itemType: number;
-      scheduleId: number
-    }
-  ]
+  items: number[]
 }
 
 export class FormEditFileSystemSsSchedule{

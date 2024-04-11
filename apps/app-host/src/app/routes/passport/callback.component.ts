@@ -73,6 +73,7 @@ export class CallbackComponent implements OnInit {
       .set('code', this.code)
       .set('redirect_uri', environment['sso'].callback);
 
+    
     let baseUrl = environment['baseUrl'];
     this.httpClient
       .post<TokenResponse>(this.url + '/connect/token', params.toString(), {

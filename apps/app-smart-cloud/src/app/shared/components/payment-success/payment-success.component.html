@@ -1,9 +1,9 @@
 <page-header [breadcrumb]="breadcrumb" [title]="false">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item> Billing </nz-breadcrumb-item>
       <nz-breadcrumb-item> Thanh toán </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -23,7 +23,8 @@
     >
     <br />
     <span>Mã thanh toán: </span><span>{{ paymentCode }}</span>
-    <span> - Tổng tiền: </span><span>{{ payment.totalAmount | number: '1.0-0'}} VND</span> <br />
+    <span> - Tổng tiền: </span
+    ><span>{{ payment.totalAmount | number : '1.0-0' }} VND</span> <br />
     <span> Kiểu thanh toán: Online</span>
   </div>
 </nz-card>

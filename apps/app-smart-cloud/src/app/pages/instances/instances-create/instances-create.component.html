@@ -1,13 +1,17 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo máy ảo'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.instances.create' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo máy ảo</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.instances.create' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>

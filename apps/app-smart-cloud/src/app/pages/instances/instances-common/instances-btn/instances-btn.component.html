@@ -64,7 +64,8 @@
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
-        instancesModel.taskState.toUpperCase() != 'ERROR'
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        !instancesModel.imageName.toUpperCase().includes('CIRROS')
       "
       nz-menu-item
       (click)="modalResetPassword()"
