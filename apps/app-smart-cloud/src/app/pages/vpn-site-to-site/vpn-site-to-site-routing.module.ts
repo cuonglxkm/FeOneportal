@@ -46,7 +46,7 @@ const routes: Routes = [
     component: CreateIpsecPoliciesComponent,
   },
   {
-    path: 'ipsec-policies/extend/:id',
+    path: 'ipsec-policies/edit/:id',
     component: EditIpsecPoliciesComponent,
   },
   {
@@ -58,7 +58,7 @@ const routes: Routes = [
     component: CreateVpnConnectionComponent,
   },
   {
-    path: 'vpn-connection/extend/:id',
+    path: 'vpn-connection/edit/:id',
     component: EditVpnConnectionComponent,
   },
   {
@@ -74,7 +74,7 @@ const routes: Routes = [
     component: CreateVpnServiceComponent,
   },
   {
-    path: 'ike-policies/extend/:id',
+    path: 'ike-policies/edit/:id',
     component: EditIkePoliciesComponent,
   },
   {

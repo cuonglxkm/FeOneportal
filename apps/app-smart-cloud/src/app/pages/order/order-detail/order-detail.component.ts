@@ -22,7 +22,7 @@ export class OrderDetailComponent {
   projectId: any;
   data: OrderDTOSonch;
   currentStep = 1;
-  titleStepFour = 'test thôi';
+  titleStepFour: string = 'Đã cài đặt';
 
   constructor(
     private router: Router,
