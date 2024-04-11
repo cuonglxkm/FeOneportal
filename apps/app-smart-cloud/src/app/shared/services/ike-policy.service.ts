@@ -93,9 +93,7 @@ export class IkePolicyService extends BaseService {
 
   deleteIkePolicy(formDelete: FormDeleteIKEPolicy) {
     console.log("form Delete",formDelete)
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.cloudId}`,
-    Object.assign(formDelete))
-    .pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ikepolicy/${formDelete.cloudId}?vpcId=${formDelete.projectId}&regionId=${formDelete.regionId}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
