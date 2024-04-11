@@ -13,6 +13,7 @@ import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
 import { ProjectService } from '../../../../shared/services/project.service';
 import { now } from 'lodash';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-extend-volume',
@@ -170,6 +171,7 @@ export class EditVolumeComponent implements OnInit {
       this.getTotalAmountFirst();
     }
 
+    this.changeValueInput()
 
     // const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
     // this.getVolumeById(idVolume);
@@ -258,10 +260,18 @@ export class EditVolumeComponent implements OnInit {
 
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
+  dataSubjectStorage: Subject<any> = new Subject<any>();
 
   changeValueInput() {
-    console.log('total amount');
-    this.getTotalAmount();
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        console.log('total amount');
+        this.getTotalAmount()
+      })
+  }
+
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value);
   }
 
   getTotalAmountFirst() {
@@ -355,5 +365,4 @@ export class EditVolumeComponent implements OnInit {
     // );
   }
 
-  protected readonly now = now;
 }

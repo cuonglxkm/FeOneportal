@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="title">
+             [title]="'Tạo mới Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
@@ -160,7 +160,7 @@
                   <nz-input-number formControlName="storage"
                                    class="input-custom"
                                    id="storage"
-                                   (ngModelChange)="changeValueInput()"
+                                   (ngModelChange)="changeValueStorage($event)"
                                    [nzMin]="1" [nzStep]="1"></nz-input-number>
                 </td>
                 <td nzAlign="right">{{ iops }}</td>

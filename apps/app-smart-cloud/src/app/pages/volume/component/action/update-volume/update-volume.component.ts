@@ -28,7 +28,8 @@ export class UpdateVolumeComponent {
   }> = this.fb.group({
     nameVolume: [null as string, [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      Validators.maxLength(70)]],
+      Validators.maxLength(70),
+    this.duplicateNameValidator.bind(this)]],
     description: [null as string, [Validators.maxLength(255)]]
   })
 
@@ -37,10 +38,51 @@ export class UpdateVolumeComponent {
               private volumeService: VolumeService,
               private fb: NonNullableFormBuilder){
   }
+  nameList: string[] = [];
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListVolumes() {
+    this.volumeService
+      .getVolumes(
+        this.tokenService.get()?.userId,
+        this.project,
+        this.region,
+        9999,
+        1,
+        null,
+        null
+      )
+      .subscribe(
+        (data) => {
+          data.records.forEach((item) => {
+            if (this.nameList.length > 0) {
+              this.nameList.push(item.name);
+            } else {
+              this.nameList = [item.name];
+            }
+          });
+          this.nameList = this.nameList.filter(item => item !==  this.validateForm.get('nameVolume').getRawValue());
+        },
+        (error) => {
+          this.nameList = null;
+        }
+      );
+  }
 
   showModal() {
     this.isVisible = true
+    this.getListVolumes()
     this.validateForm.get('nameVolume').setValue(this.volume.name)
+    console.log('name list', this.nameList)
+
     this.validateForm.get('description').setValue(this.volume.description)
   }
 
