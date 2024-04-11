@@ -190,7 +190,7 @@ export class VpcUpdateComponent {
       .subscribe(
         data => {
           this.instancesService
-            .getListOffersByProductId('155')
+            .getListOffersByProductId('155', this.regionId)
             .pipe(finalize(() => {
               this.offerFlavor = this.listOfferFlavors.find(
                 (flavor) => flavor.id === this.data.offerId
