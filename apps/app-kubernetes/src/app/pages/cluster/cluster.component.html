@@ -34,7 +34,7 @@
               <nz-form-label nzRequired>Tên Cluster</nz-form-label>
               <nz-form-control [nzErrorTip]="clusterErrorTpl">
                 <input nz-input type="text" placeholder="Nhập tên cluster" formControlName="clusterName"
-                  id="clusterName" autofocus />
+                  id="clusterName" autofocus nzSize="large" />
               </nz-form-control>
               <ng-template #clusterErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -54,7 +54,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="kubernetesVersion" nzLabelWrap>Phiên bản Kubernetes</nz-form-label>
               <nz-form-control nzErrorTip="Phiên bản Kubernetes không để trống">
-                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn phiên bản Kubernetes"
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn phiên bản Kubernetes" nzSize="large"
                   formControlName="kubernetesVersion" id="kubernetesVersion">
                   <nz-option *ngFor="let item of listOfK8sVersion" [nzLabel]="item.k8sVersion"
                     [nzValue]="item.k8sVersion"></nz-option>
@@ -67,7 +67,7 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="24">Mô tả</nz-form-label>
           <nz-form-control [nzErrorTip]="descriptionErrorTpl">
-            <textarea formControlName="description" nz-input rows="3" placeholder="Mô tả dịch vụ"></textarea>
+            <textarea formControlName="description" nz-input rows="3" placeholder="Mô tả dịch vụ" nzSize="large"></textarea>
           </nz-form-control>
           <ng-template #descriptionErrorTpl let-control>
             <ng-container *ngIf="control.hasError('maxlength')">
@@ -80,7 +80,7 @@
         </nz-form-item>
 
         <nz-tabset nzCentered>
-          <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="onSelectPackTab()">
+          <nz-tab [nzTitle]="titleDefaultPack" (nzClick)="onSelectPackTab()">
             <ng-template nz-tab>
               <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
                 <div *nguCarouselDef="let item;" class="item">
@@ -114,10 +114,18 @@
             </ng-template>
           </nz-tab>
 
-          <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="onSelectCustomPackTab()">
+          <ng-template #titleDefaultPack>
+            <span>Gói cấu hình sẵn</span>
+          </ng-template>
+
+          <nz-tab [nzTitle]="titleCustomizePack" (nzClick)="onSelectCustomPackTab()">
             <ng-template nz-tab>
             </ng-template>
           </nz-tab>
+
+          <ng-template #titleCustomizePack>
+            <span>Cấu hình tùy chọn</span>
+          </ng-template>
         </nz-tabset>
 
         <ng-container *ngIf="chooseItem != null || !isUsingPackConfig">
@@ -131,7 +139,8 @@
                     <nz-form-label nzRequired nzFor="workerGroupName">Tên nhóm worker</nz-form-label>
                     <nz-form-control [nzErrorTip]="workerGroupNameErrorTpl">
                       <input type="text" nz-input placeholder="Nhập tên nhóm worker" formControlName="workerGroupName"
-                        (ngModelChange)="checkDuplicate(i)" id="workerGroupName" />
+                        (ngModelChange)="checkDuplicate(i)" id="workerGroupName" nzSize="large"
+                        [readonly]="isUsingPackConfig" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #workerGroupNameErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
@@ -153,7 +162,7 @@
                     <nz-form-label nzRequired nzFor="configType">Cấu hình</nz-form-label>
                     <nz-form-control>
                       <nz-select nzShowSearch nzPlaceHolder="Chọn cấu hình" formControlName="configType" id="configType"
-                        (ngModelChange)="onSelectWorkerType($event, i)" [nzDisabled]="isUsingPackConfig">
+                        (ngModelChange)="onSelectWorkerType($event, i)" [nzDisabled]="isUsingPackConfig" nzSize="large">
                         <nz-option *ngFor="let item of listOfWorkerType"
                           nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
                           [nzValue]="item.machineName"></nz-option>
@@ -175,7 +184,7 @@
                       <nz-form-label nzRequired nzFor="nodes">Số node tối thiểu</nz-form-label>
                       <nz-form-control [nzErrorTip]="minimumNodeErrorTpl">
                         <input type="text" nz-input placeholder="Nhập số node tối thiểu" formControlName="minimumNode"
-                          (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                          (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" nzSize="large" />
                       </nz-form-control>
                       <ng-template #minimumNodeErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">
@@ -211,7 +220,7 @@
                     <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
                     <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
                       <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
-                        (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" />
+                        (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #nodeNumberErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
@@ -227,7 +236,7 @@
                     <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
                     <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
                       <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
-                        id="volume" (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" />
+                        id="volume" (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #volumeStorageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
@@ -254,7 +263,7 @@
                       <nz-form-label nzRequired nzFor="nodes">Số node tối đa</nz-form-label>
                       <nz-form-control [nzErrorTip]="maximumNodeErrorTpl">
                         <input type="text" nz-input placeholder="Nhập số node tối đa" formControlName="maximumNode"
-                          (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" />
+                          (keypress)="isNumber($event)" (ngModelChange)="onChangeNodeValue(i)" nzSize="large" />
                       </nz-form-control>
                       <ng-template #maximumNodeErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">
@@ -304,7 +313,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="vpcNetwork">Mạng VPC</nz-form-label>
               <nz-form-control nzErrorTip="Mạng VPC không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork"
+                <nz-select nzShowSearch nzPlaceHolder="Chọn mạng VPC" formControlName="vpcNetwork" id="vpcNetwork" nzSize="large"
                   class="w-90" (ngModelChange)="onSelectedVlan($event)">
                   <nz-option *ngFor="let item of listOfVPCNetworks" [nzLabel]="item.name"
                     [nzValue]="item.id"></nz-option>
@@ -332,7 +341,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
               <nz-form-control nzErrorTip="Subnet không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90"
+                <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90" nzSize="large"
                   (ngModelChange)="checkOverLapseIP()">
                   <ng-container *ngFor="let item of listOfSubnets">
                     <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
@@ -372,7 +381,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="networkType">Loại network</nz-form-label>
               <nz-form-control nzErrorTip="Loại network không để trống">
-                <nz-select nzShowSearch nzPlaceHolder="Chọn loại network" formControlName="networkType"
+                <nz-select nzShowSearch nzPlaceHolder="Chọn loại network" formControlName="networkType" nzSize="large"
                   id="networkType">
                   <nz-option nzLabel="Calico" nzValue="calico"></nz-option>
                   <nz-option nzLabel="Cilium" nzValue="cilium"></nz-option>
@@ -385,7 +394,7 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
               <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <nz-input-group [nzSuffix]="suffixRange" class="w-100">
+                <nz-input-group [nzSuffix]="suffixRange" class="w-100" nzSize="large">
                   <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
                     (ngModelChange)="onValidateIP($event); checkOverLapseIP();" />
                 </nz-input-group>
@@ -420,8 +429,8 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="volumeCloudSize">Quota (GB)</nz-form-label>
               <nz-form-control [nzErrorTip]="volumeCloudErrorTpl">
-                <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume"
-                  (keypress)="isNumber($event)" id="volumeCloudSize" [readonly]="isUsingPackConfig && chooseItem != null" />
+                <input type="text" nz-input formControlName="volumeCloudSize" placeholder="Nhập quota volume" nzSize="large"
+                  (keypress)="isNumber($event)" id="volumeCloudSize" [readonly]="isUsingPackConfig && chooseItem != null" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
               </nz-form-control>
               <ng-template #volumeCloudErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -458,7 +467,7 @@
               <nz-form-control [nzErrorTip]="usageTimeErrorTpl">
                 <input type="text" nz-input placeholder="Chọn thời gian sử dụng" id="usageTime"
                   formControlName="usageTime" (ngModelChange)="onSelectUsageTime($event)"
-                  (keypress)="onInputUsage($event)" />
+                  (keypress)="onInputUsage($event)" nzSize="large" />
               </nz-form-control>
               <ng-template #usageTimeErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -499,7 +508,7 @@
                 </div>
 
                 <div nz-col [nzSpan]="12">
-                  <div class="price-style price-color mr-3">20.000.000 VNĐ</div>
+                  <div class="price-style price-color mr-3">{{(workerPrice ? workerPrice: 0) | number: '1.0-0'}} VNĐ</div>
                   <div class="price-style unit-color mr-3">VNĐ/tháng</div>
                 </div>
               </div>
@@ -510,7 +519,7 @@
                 </div>
 
                 <div nz-col [nzSpan]="12">
-                  <div class="price-style price-color mt-3 mr-3">5.000.000 VNĐ</div>
+                  <div class="price-style price-color mt-3 mr-3">{{(volumePrice ? volumePrice: 0) | number: '1.0-0'}} VNĐ</div>
                   <div class="price-style unit-color mr-3">VNĐ/tháng</div>
                 </div>
               </div>
@@ -521,7 +530,7 @@
                   <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
                 </div>
                 <div nz-col [nzSpan]="12">
-                  <div class="price-style total-color mt-3 mr-3">25.000.000 VNĐ</div>
+                  <div class="price-style total-color mt-3 mr-3">{{(totalPrice? totalPrice: 0) | number: '1.0-0'}} VNĐ</div>
                   <div class="price-style unit-color mr-3">VNĐ/tháng</div>
                 </div>
               </div>

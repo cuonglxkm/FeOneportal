@@ -49,6 +49,13 @@ export class ClusterComponent implements OnInit {
     { label: '12 tháng', value: 12 }
   ];
 
+  listOfPrice = [
+    {pack: 1, worker: 4000000, volume: 3300000, all: 7300000},
+    {pack: 2, worker: 5000000, volume: 3300000, all: 8300000},
+    {pack: 3, worker: 6600000, volume: 3300000, all: 9900000},
+    {pack: 4, worker: 8200000, volume: 3300000, all: 11500000},
+  ];
+
   // order data
   orderData: KubernetesCluster;
 
@@ -391,10 +398,11 @@ export class ClusterComponent implements OnInit {
     this.clearFormWorker();
     this.addWorkerGroup();
     this.myform.get('packId').setValue(null);
-    // this.myform.get('volumeCloudType').enable();
-    // this.myform.get('volumeCloudSize').enable();
   }
 
+  workerPrice: number;
+  volumePrice: number;
+  totalPrice: number;
   chooseItem: PackModel;
   isUsingPackConfig: boolean = true;
   onChoosePack(item: PackModel) {
@@ -411,7 +419,7 @@ export class ClusterComponent implements OnInit {
       // add worker group
       const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
       let wgf = this.fb.group({
-        workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+        workerGroupName: [KubernetesConstant.DEFAULT_WORKER_NAME, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
         nodeNumber: [this.chooseItem.workerNode],
         volumeStorage: [this.chooseItem.rootStorage],
         volumeType: [this.chooseItem.rootStorageType],
@@ -424,19 +432,15 @@ export class ClusterComponent implements OnInit {
         maximumNode: [null]
       });
 
-      // wgf.disable();
-      // wgf.get('workerGroupName').enable();
-
       this.listFormWorkerGroup.push(wgf);
 
-      // if (this.isUsingPackConfig) {
-      //   this.myform.get('volumeCloudType').disable();
-      //   this.myform.get('volumeCloudSize').disable();
-      // } else {
-      //   this.myform.get('volumeCloudType').enable();
-      //   this.myform.get('volumeCloudSize').enable();
-      // }
     }
+
+    // get price (fake)
+    const itemPack = this.listOfPrice.find(pack =>  pack.pack == item.packId);
+    this.workerPrice = itemPack.worker;
+    this.volumePrice = itemPack.volume;
+    this.totalPrice = itemPack.all;
   }
 
   clearFormWorker() {
@@ -653,8 +657,8 @@ export class ClusterComponent implements OnInit {
     data.orderItems = [];
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = 25000000;       // fix test
-    orderItem.orderItemQuantity = 1;  // fix test
+    orderItem.price = this.totalPrice;       // fix test
+    orderItem.orderItemQuantity = 1;         // fix test
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
     orderItem.serviceDuration = this.usageTime;

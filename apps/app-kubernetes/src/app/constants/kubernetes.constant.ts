@@ -10,6 +10,8 @@ export class KubernetesConstant {
 
   public static DEFAULT_NETWORK_TYPE = "calico";
 
+  public static DEFAULT_WORKER_NAME = "default";
+
   public static OPENSTACK_LABEL = "openstack";
 
   // action type

@@ -83,6 +83,10 @@ export class ClusterService extends BaseService {
     });
   }
 
+  getListPriceOfService() {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-price`, {headers: this.getHeaders()});
+  }
+
   getKubeConfig(serviceOrderCode: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-kubeconfig/${serviceOrderCode}`,
     {headers: this.getHeaders()});
