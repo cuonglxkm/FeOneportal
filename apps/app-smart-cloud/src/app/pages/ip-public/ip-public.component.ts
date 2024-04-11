@@ -131,6 +131,7 @@ export class IpPublicComponent implements OnInit {
     this.isVisibleDelete = false;
     this.instanceSelected = '';
     this.isSelected = false;
+    this.nameDelete = '';
   }
 
   openIpMounted(event: any, item: any) {
@@ -186,7 +187,10 @@ export class IpPublicComponent implements OnInit {
   openIpDelete() {
     this.loading = true;
     this.service.remove(this.id)
-      .pipe(finalize(() => {this.getData(true);}))
+      .pipe(finalize(() => {
+        this.getData(true);
+        this.nameDelete = '';
+      }))
       .subscribe(
       {
         next: post => {

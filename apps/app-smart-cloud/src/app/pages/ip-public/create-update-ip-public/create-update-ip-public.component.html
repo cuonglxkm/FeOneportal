@@ -105,16 +105,14 @@
           <span class="text-card-header">Chi phí ước tính</span>
         </div>
         <div class="text-value">Dải IP</div>
-        <div style="margin-top: 10px" class="text-label">{{ipName}}</div>
+        <div style="margin-top: 10px" class="text-label">{{ ipName }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div class="text-value">Gắn vào máy ảo</div>
-        <div style="margin-top: 10px" class="text-label">{{VMName}}</div>
+        <div style="margin-top: 10px" class="text-label">{{ VMName }}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div *ngIf="checkIpv6 !== null">
-          <div class="text-value">Loại IP</div>
-          <div style="margin-top: 10px" class="text-label">{{checkIpv6 == true ? 'IPv6' : 'IPv4'}}</div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        </div>
+        <div class="text-value">Loại IP</div>
+        <div style="margin-top: 10px" class="text-label">{{ checkIpv6 == true ? 'IPv6' : 'IPv4' }}</div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
             <span class="text-value"> Chi phí {{ this.form.controls['numOfMonth'].value || 0 }} tháng </span>
@@ -126,11 +124,11 @@
             </span>
           </nz-col>
         </nz-row>
-<!--        <nz-row style="margin-bottom: 10px">-->
-<!--          <nz-col style="width: 100%" class="text-right">-->
-<!--            <span class="text-label"> VND/tháng </span>-->
-<!--          </nz-col>-->
-<!--        </nz-row>-->
+        <!--        <nz-row style="margin-bottom: 10px">-->
+        <!--          <nz-col style="width: 100%" class="text-right">-->
+        <!--            <span class="text-label"> VND/tháng </span>-->
+        <!--          </nz-col>-->
+        <!--        </nz-row>-->
         <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
@@ -147,7 +145,8 @@
         </nz-row>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [disabled]="form.invalid">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
+                    [disabled]="form.invalid">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span [style.color]="form.invalid ? 'gray' : 'white'">Khởi tạo</span>
             </button>
