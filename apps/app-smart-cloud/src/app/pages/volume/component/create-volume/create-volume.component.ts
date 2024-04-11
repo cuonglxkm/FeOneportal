@@ -145,9 +145,9 @@ export class CreateVolumeComponent implements OnInit {
     snapshot: [null as number, []],
     radio: [''],
     instanceId: [null as number],
-    time: [1, Validators.required],
+    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, Validators.required],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     isEncryption: [false],
     isMultiAttach: [false],
   });
@@ -322,16 +322,7 @@ export class CreateVolumeComponent implements OnInit {
   //get danh sách máy ảo
   getListInstance() {
     this.instanceService
-      .search(
-        1,
-        9999,
-        this.region,
-        this.project,
-        '',
-        'KHOITAO',
-        true,
-        this.tokenService.get()?.userId
-      )
+      .search(1, 9999, this.region, this.project, '', 'KHOITAO', true, this.tokenService.get()?.userId)
       .subscribe((data) => {
         // data.records.forEach(item => {
         //   if(item.taskState.includes('ACTIVE')) {
@@ -339,6 +330,8 @@ export class CreateVolumeComponent implements OnInit {
         //   }
         // })
         this.listInstances = data.records;
+        this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE')
+        console.log('list instance', this.listInstances)
         this.cdr.detectChanges();
       });
   }

@@ -113,7 +113,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     radio: [''],
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
-    storage: [1, Validators.required],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     isEncryption: [false],
     isMultiAttach: [false]
   });
