@@ -4,6 +4,7 @@ export class VPCNetworkModel {
   name: string;
   subnetAddressRequired: string;
   vpcId: number;
+  cloudId: string;
 
 }
 

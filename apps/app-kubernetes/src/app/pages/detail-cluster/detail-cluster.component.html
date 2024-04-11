@@ -167,7 +167,7 @@
                             {{'workerGroupName' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
                           <ng-template #editWorkerGroupNameTpl>
-                            <input nz-input type="text" formControlName="workerGroupName" class="row-odd" />
+                            <input nz-input type="text" formControlName="workerGroupName" />
                           </ng-template>
                         </div>
                       </div>
@@ -182,7 +182,7 @@
                           </ng-container>
                           <ng-template #editNodeNumberTpl>
                             <input nz-input type="text" formControlName="nodeNumber" (keypress)="isNumber($event)"
-                              (ngModeChange)="onChangeNodeNumber($event, i)" class="row-odd" />
+                              (ngModeChange)="onChangeNodeNumber($event, i)" />
                           </ng-template>
                         </div>
                       </div>

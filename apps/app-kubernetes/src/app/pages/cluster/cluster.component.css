@@ -110,6 +110,10 @@ textarea,
   border-radius: 10px;
 }
 
+::ng-deep .alain-default__content nz-input-group {
+  width: 100%;
+}
+
 .remove-btn {
   position: relative;
   float: right;

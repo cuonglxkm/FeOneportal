@@ -115,7 +115,7 @@ export class ClusterComponent implements OnInit {
       // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
       vpcNetwork: [null, Validators.required],
-      cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern(KubernetesConstant.CIDR_PATTERN)]],
+      cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern(KubernetesConstant.IPV4_PATTERN)]],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
       subnet: [null, [Validators.required]],
 
@@ -311,9 +311,14 @@ export class ClusterComponent implements OnInit {
 
   }
 
+  vlanCloudId: string;
   onSelectedVlan(vlanId: number) {
     this.vlanId = vlanId;
-    if (this.vlanId) this.getSubnetByVlanNetwork();
+    if (this.vlanId) {
+      this.getSubnetByVlanNetwork();
+      let vlan = this.listOfVPCNetworks.find(item => item.id == vlanId);
+      this.vlanCloudId = vlan.cloudId;
+    }
   }
 
   onSelectVolumeType(volumeType: string, index: number) {
@@ -467,6 +472,16 @@ export class ClusterComponent implements OnInit {
     }
   }
 
+  onValidateIP(ip: string) {
+    let tmp: string[] = ip?.split('.');
+    if (ip && (tmp[2] != '0' || tmp[3] != '0')) {
+      this.myform.get('cidr').setErrors({invalid: true});
+      return;
+    } else {
+      delete this.myform.get('cidr').errors?.invalid;
+    }
+  }
+
   // validator
   addValidateMaximumNode(index: number) {
     this.listFormWorkerGroup.at(index).get('maximumNode').setValidators([Validators.required, Validators.min(1), Validators.max(10)]);
@@ -609,7 +624,7 @@ export class ClusterComponent implements OnInit {
     networking.networkType = cluster.networkType;
     networking.vpcNetworkId = cluster.vpcNetwork;
     networking.cidr = cluster.cidr;
-    networking.subnet = cluster.subnet;
+    networking.subnet = cluster.subnet + '@' + this.vlanCloudId;
 
     cluster.networking = networking;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;

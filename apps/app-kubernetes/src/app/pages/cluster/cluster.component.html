@@ -98,9 +98,9 @@
                     </div>
 
                     <div class="item-body">
-                      {{item.cpu}}vCPU / 
-                      {{item.ram}}GB RAM / 
-                      {{item.rootStorage}}GB {{item.rootStorageType}} / 
+                      {{item.cpu}}vCPU /
+                      {{item.ram}}GB RAM /
+                      {{item.rootStorage}}GB {{item.rootStorageType}} /
                       {{item.volumeStorage}}GB {{item.volumeType}} persistent
                     </div>
                   </div>
@@ -385,8 +385,11 @@
             <nz-form-item>
               <nz-form-label nzRequired nzFor="cidr">Pod CIDR</nz-form-label>
               <nz-form-control [nzErrorTip]="cidrErrorTpl">
-                <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
-                  (ngModelChange)="checkOverLapseIP()" />
+                <nz-input-group [nzSuffix]="suffixRange" class="w-100">
+                  <input type="text" nz-input formControlName="cidr" placeholder="Nhập Pod CIDR"
+                    (ngModelChange)="onValidateIP($event); checkOverLapseIP();" />
+                </nz-input-group>
+                <ng-template #suffixRange>/16</ng-template>
               </nz-form-control>
               <ng-template #cidrErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -397,6 +400,9 @@
                 </ng-container>
                 <ng-container *ngIf="control.hasError('overlap')">
                   Pod CIDR trùng dải với subnet
+                </ng-container>
+                <ng-container *ngIf="control.hasError('invalid')">
+                  Pod CIDR không hợp lệ
                 </ng-container>
               </ng-template>
             </nz-form-item>

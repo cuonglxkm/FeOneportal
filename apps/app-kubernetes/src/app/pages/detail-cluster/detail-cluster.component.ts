@@ -101,7 +101,9 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   isUpgrading: boolean = false;
   onSubmitUpgrade() {
     this.isUpgrading = true;
-
+    const data = this.upgradeForm.value;
+    console.log({data: data});
+    this.isUpgrading = false;
   }
 
   onEditCluster() {

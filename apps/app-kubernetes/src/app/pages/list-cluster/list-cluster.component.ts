@@ -174,7 +174,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       this.eventSources.push(source);
       source.onmessage = event => {
         this.zone.run(() => {
-          let data: number = +event.data;
+          let data: number = Number(event.data);
           observable.next(data);
 
           if (data == 100) {          // complete
@@ -218,7 +218,6 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.regionName = region.regionDisplayName;
     // this.cloudProfileId = region.cloudId;
     this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
-    if (this.regionId && this.projectInfraId) this.searchCluster();
   }
 
   projectInfraId: number;
