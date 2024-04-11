@@ -31,5 +31,17 @@
   "form.account.city" : "Tỉnh/Thành Phố",
   "form.account.address" : "Địa chỉ chi tiết",
   "app.button.cancel" : "Hủy",
-  "app.button.edit" : "Cập nhật"
+  "app.button.edit" : "Cập nhật",
+  "app.button.create" : "Khởi tạo",
+  "app.button.resize" : "Điều chỉnh",
+  "app.button.extend" : "Gia hạn",
+  "app.breadcrumb.home" : "Trang chủ",
+  "app.instances" : "Máy ảo",
+  "app.instances.list" : "Danh sách máy ảo",
+  "app.instances.create" : "Khởi tạo máy ảo",
+  "app.instances.edit" : "Điều chỉnh máy ảo",
+  "app.instances.detail" : "Chi tiết máy ảo",
+  "app.instances.extend" : "Gia hạn máy ảo",
+  "app.instances.console" : "Console máy ảo",
+  "app.button.instance.create" : "Tạo mới máy ảo"
 }
