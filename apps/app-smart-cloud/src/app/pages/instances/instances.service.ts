@@ -9,6 +9,7 @@ import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
+import { OfferDetail } from '../../shared/models/catalog.model';
 
 @Injectable({
   providedIn: 'root',
@@ -282,9 +283,9 @@ export class InstancesService extends BaseService {
       );
   }
 
-  getListOffersByProductId(productId: string): Observable<any> {
-    return this.http.get<any>(
-      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}`
+  getListOffersByProductId(productId: string, regionId: string): Observable<OfferDetail[]> {
+    return this.http.get<OfferDetail[]>(
+      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}&regionId=${regionId}`
     );
   }
 

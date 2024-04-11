@@ -7,7 +7,7 @@ export class LoadBalancerModel {
   cloudIdentityId: number
   connectionLimit: number
   description: string
-  internetFacing: true
+  internetFacing: boolean
   ipAddress: string
   projectId: number
   projectName: string
@@ -27,6 +27,7 @@ export class LoadBalancerModel {
   isFloatingIP: true
   floatingIPAddress: string
   ipVIP: string
+  offerName: string
 }
 
 export class m_LBSDNListener {
@@ -176,7 +177,7 @@ export class FormCreate {
   ]
 }
 
-export class FormUpdateLBVpc {
+export class FormUpdateLB {
   id: number
   customerId: number
   name: string

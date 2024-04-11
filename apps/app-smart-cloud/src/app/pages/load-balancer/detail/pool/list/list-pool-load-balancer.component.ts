@@ -16,6 +16,9 @@ export class ListPoolLoadBalancerComponent implements OnInit{
   constructor(private loadBalancerService: LoadBalancerService) {
   }
 
+  getListPool() {
+
+  }
   ngOnInit() {
   }
 }

@@ -48,13 +48,9 @@
                      [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc
-                  biệt (trừ _)
-                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Load
-                  Balancer khác
-                </ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

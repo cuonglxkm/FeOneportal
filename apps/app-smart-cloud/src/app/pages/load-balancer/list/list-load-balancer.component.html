@@ -90,7 +90,7 @@
                 <a [routerLink]="'/app-smart-cloud/load-balancer/detail/' + data.id">{{ data.name }}</a>
               </span>
             </td>
-            <td nzBreakWord>{{ data.ipVIP }}</td>
+            <td nzBreakWord>{{ data.ipAddress }}</td>
             <td nzBreakWord>{{ data.floatingIPAddress }}</td>
             <td nzBreakWord>{{ data.provisioningStatus }}</td>
             <td nzBreakWord>
@@ -123,7 +123,7 @@
                         nzPopoverPlacement="bottom" (click)="navigateToUpdateVpc(data.id)"></span>
                 </span>
                 <span *ngIf="typeVPC == 0">
-                  <one-portal-update-load-balancer-normal [loadBalancerId]="data.id" [region]="region" [project]="project" (onOk)="handleUpdateNoVpcOk()" />
+                  <one-portal-update-load-balancer-normal [loadBalancer]="data" [region]="region" [project]="project" (onOk)="handleUpdateNoVpcOk()" />
                 </span>
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>

@@ -170,7 +170,7 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
           this.fileSystemSnapshotScheduleDetail = data;
           console.log(data);
           const shareIds = data.items.map((item) => {
-            return item.itemId
+            return item
           })
 
           this.FileSystemSnapshotForm.controls.name.setValue(data.name);

@@ -205,6 +205,9 @@ import { UpdateLoadBalancerNormalComponent } from './load-balancer/normal/update
 import { DeleteLoadBalancerComponent } from './load-balancer/delete/delete-load-balancer.component';
 import { ListListenerInLbComponent } from './load-balancer/detail/listener/list/list-listener-in-lb.component';
 import { ListPoolLoadBalancerComponent } from './load-balancer/detail/pool/list/list-pool-load-balancer.component';
+import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
+import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
+import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -395,6 +398,10 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeleteLoadBalancerComponent,
     ListListenerInLbComponent,
     ListPoolLoadBalancerComponent,
+    ListenerCreateComponent,
+    ListenerDetailComponent,
+    ListenerUpdateComponent,
+    ListenerUpdateComponent,
   ],
   imports: [
     CommonModule,

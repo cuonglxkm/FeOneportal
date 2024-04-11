@@ -119,6 +119,9 @@ import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-
 import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
 import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
+import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
+import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
+import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
 
 
@@ -556,6 +559,18 @@ const routes: Routes = [
   {
     path: 'load-balancer/detail/:id',
     component: DetailLoadBalancerComponent
+  },
+  {
+    path: 'load-balancer/listener/create',
+    component: ListenerCreateComponent
+  },
+  {
+    path: 'load-balancer/listener/detail/:id',
+    component: ListenerDetailComponent
+  },
+  {
+    path: 'load-balancer/listener/update',
+    component: ListenerUpdateComponent
   },
   {
     path: 'security',

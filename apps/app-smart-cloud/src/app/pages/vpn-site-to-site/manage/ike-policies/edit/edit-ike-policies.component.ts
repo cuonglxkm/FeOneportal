@@ -17,7 +17,7 @@ import { RegionModel } from 'src/app/shared/models/region.model';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 
 @Component({
-  selector: 'one-portal-extend-ike-policies',
+  selector: 'one-portal-edit-ike-policies',
   templateUrl: './edit-ike-policies.component.html',
   styleUrls: ['./edit-ike-policies.component.less'],
 })

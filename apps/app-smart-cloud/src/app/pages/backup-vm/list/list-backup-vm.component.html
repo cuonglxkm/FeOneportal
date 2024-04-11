@@ -64,12 +64,12 @@
         <nz-table #fixedTable
                   style="margin-top: 20px;"
                   [nzScroll]="{ x: '100%', y: '55vh' }"
-                  [nzData]="collection.records"
+                  [nzData]="collection?.records"
                   nzShowSizeChanger
                   [nzFrontPagination]="false"
-                  [nzTotal]="collection.totalCount"
-                  [nzPageSize]="collection.pageSize"
-                  [nzPageIndex]="collection.currentPage"
+                  [nzTotal]="collection?.totalCount"
+                  [nzPageSize]="collection?.pageSize"
+                  [nzPageIndex]="collection?.currentPage"
                   [nzLoading]="isLoading"
                   (nzQueryParams)="onQueryParamsChange($event)"
         >

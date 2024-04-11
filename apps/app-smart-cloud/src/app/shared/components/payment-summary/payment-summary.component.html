@@ -18,24 +18,24 @@
       <nz-row>
         <div nz-col nzSpan="24">
           <nz-row style="height: 50px">
-            <span class="fw-600" nz-col nzSpan="4">Tên khách hàng:</span>
-            <span nz-col nzSpan="20">{{ userModel.name || '' }}</span>
+            <span class="fw-600 text-16" nz-col nzSpan="4">Tên khách hàng:</span>
+            <span nz-col nzSpan="20" class="text-16">{{ userModel.name || '' }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" nz-col nzSpan="4">Số điện thoại:</span>
-            <span nz-col nzSpan="20">{{
+            <span class="fw-600 text-16" nz-col nzSpan="4">Số điện thoại:</span>
+            <span nz-col nzSpan="20" class="text-16">{{
               userModel.phoneNumber === '' ? '-' : userModel.phoneNumber
             }}</span>
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" nz-col nzSpan="4">Email:</span>
-            <span nz-col nzSpan="20">
+            <span class="fw-600 text-16" nz-col nzSpan="4">Email:</span>
+            <span nz-col nzSpan="20" class="text-16">
               {{ userModel.email === '' ? '-' : userModel.email }}</span
             >
           </nz-row>
           <nz-row style="height: 50px">
-            <span class="fw-600" nz-col nzSpan="4">Địa chỉ:</span>
-            <span nz-col nzSpan="20">{{
+            <span class="fw-600 text-16" nz-col nzSpan="4">Địa chỉ:</span>
+            <span nz-col nzSpan="20" class="text-16">{{
               userModel.address === '' ? '-' : userModel.address
             }}</span>
           </nz-row>
@@ -83,7 +83,7 @@
       <div>
         <nz-table>
           <tr style="margin-bottom: 5px">
-            <td>Tổng tiền</td>
+            <td class="text-16">Tổng tiền</td>
             <td style="text-align: right">
               <span class="price"
                 >{{ totalAmount | number : '1.0-0' }} VND</span
@@ -99,7 +99,7 @@
             <td></td>
           </tr>
           <tr style="margin-bottom: 5px">
-            <td>VAT(10%)</td>
+            <td class="text-16">VAT(10%)</td>
             <td style="text-align: right">
               <span class="price"
                 >{{
@@ -120,11 +120,11 @@
           <tr>
             <td style="display: flex; align-items: center">
               <img alt="" src="assets/imgs/ticket-discount.png" />
-              <span>Khuyến mãi:</span>
+              <span class="text-16">Khuyến mãi:</span>
             </td>
             <td style="text-align: right">
               <span style="margin-right: 10px">{{ order.couponCode }}</span>
-              <a (click)="showModal()">Chọn hoặc nhập mã</a>
+              <a class="text-16" (click)="showModal()">Chọn hoặc nhập mã</a>
             </td>
           </tr>
           <tr style="height: 10px">
@@ -144,7 +144,7 @@
               <span style="display: block; font-size: 16px; font-weight: 600"
                 >Tổng thanh toán</span
               >
-              <span>( Đã bao gồm 10% VAT)</span>
+              <span class="text-16">( Đã bao gồm 10% VAT)</span>
             </td>
             <td
               style="
@@ -153,6 +153,7 @@
                 font-weight: 600;
                 padding: 10px;
                 border-radius: 0 8px 8px 0;
+                font-size: 16px;
               "
             >
               {{
@@ -169,7 +170,9 @@
             nz-checkbox
             [(ngModel)]="acceptTerm"
             [ngModelOptions]="{ standalone: true }"
+            class="text-16"
             >Đồng ý với <a>Điều khoản đăng ký dịch vụ</a></label
+            
           >
         </div>
         <div style="margin-top: 10px">
