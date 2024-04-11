@@ -61,13 +61,4 @@ export class ActionHistoryComponent implements OnInit {
     this.toDate = this.dateRange[1].toISOString().substring(0, 10);
     this.getData();
   }
-  onRegionChange(region: RegionModel) {
-    this.regionId = region.regionId;
-    // this.getSshKeys();
-  }
-
-  projectChange(project: ProjectModel) {
-    this.projectId = project.id;
-    // this.getSshKeys();
-  }
 }

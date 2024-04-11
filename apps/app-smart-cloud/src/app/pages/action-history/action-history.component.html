@@ -1,6 +1,5 @@
 <page-header
   [breadcrumb]="breadcrumb"
-  [action]="action"
   [title]="'Lịch sử thao tác'"
 >
   <ng-template #breadcrumb>
@@ -10,17 +9,6 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Action History</nz-breadcrumb-item>
     </nz-breadcrumb>
-  </ng-template>
-  <ng-template #action>
-    <div class="alain-custom-action text-right">
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="regionId"
-        (valueChanged)="projectChange($event)"
-      ></project-select-dropdown>
-    </div>
   </ng-template>
 </page-header>
 
@@ -85,7 +73,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of listOfActionHistory">
-        <td>{{ item.eventID }}</td>
+        <td>{{ item.eventId }}</td>
         <td>{{ item.eventName }}</td>
         <td>{{ item.resourceType }}</td>
         <td>{{ item.resourceName }}</td>
