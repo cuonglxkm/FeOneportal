@@ -20,12 +20,10 @@
           <input nz-input
                  class="input-custom"
                  formControlName="nameVolume"
-                 [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
+                 [placeholder]="'Nhập tên gói'" [maxLength]="50" appAutofocus/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
-              dấu tiếng Việt (trừ _)
-            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
             <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên khác</ng-container>
 

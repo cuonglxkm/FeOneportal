@@ -1,15 +1,27 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
+import { NzInputGroupComponent } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'one-portal-delete-volume',
   templateUrl: './delete-volume.component.html',
   styleUrls: ['./delete-volume.component.less'],
 })
-export class DeleteVolumeComponent {
+export class DeleteVolumeComponent{
   @Input() region: number
   @Input() project: number
   @Input() volumeId: number
@@ -25,10 +37,11 @@ export class DeleteVolumeComponent {
 
   @ViewChild('okButton') okButton: ElementRef;
 
-
   constructor(private notification: NzNotificationService,
               private volumeService: VolumeService) {
   }
+
+
 
   focusOkButton(event: KeyboardEvent): void {
     if (event.key === 'Enter') {

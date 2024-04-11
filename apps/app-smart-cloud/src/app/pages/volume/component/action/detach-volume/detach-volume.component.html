@@ -1,7 +1,6 @@
 <img src="assets/imgs/cancel.svg"
-     [class.disabled]="!isMultiple && instanceInVolume.length <= 0"
      (click)="showModal()"
-     nzTheme="outline" nz-popover
+      nz-popover
       [nzPopoverContent]="'Gỡ Volume'"
       nzPopoverPlacement="bottom"
      style="margin-right: 3px; cursor: pointer"/>

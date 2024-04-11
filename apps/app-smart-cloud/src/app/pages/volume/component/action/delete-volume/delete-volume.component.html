@@ -13,13 +13,13 @@
     </nz-alert>
     <div style="margin-top: 10px;">
       <span class="text-label">Để thực hiện xóa Volume {{ volumeName }}, vui lòng nhập tên Volume để xác nhận</span>
-      <input nz-input
+      <input nz-input appAutofocus
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
              (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInputChange($event)"
-             [placeholder]="'Nhập tên Volume'"/>
+             [placeholder]="'Nhập tên Volume'" />
       <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Volume</span>
     </div>
   </div>
