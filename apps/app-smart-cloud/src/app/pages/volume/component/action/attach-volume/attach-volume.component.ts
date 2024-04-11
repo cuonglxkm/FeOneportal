@@ -72,12 +72,7 @@ export class AttachVolumeComponent implements AfterViewInit{
       true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoading = false
       this.listVm = data.records
-
-      this.listVm?.forEach(item => {
-        if(item?.taskState === 'ACTIVE') {
-          this.listVm2?.push(item)
-        }
-      })
+      this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE')
     })
   }
 

@@ -35,7 +35,7 @@ export class RenewVolumeComponent implements OnInit {
   validateForm: FormGroup<{
     time: FormControl<number>
   }> = this.fb.group({
-    time: [1, Validators.required]
+    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
   isLoading: boolean = false;

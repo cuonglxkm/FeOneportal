@@ -114,6 +114,7 @@
                            [nzMin]="1" [nzStep]="1"></nz-input-number>
           <ng-template #storageErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số nguyên dương</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
