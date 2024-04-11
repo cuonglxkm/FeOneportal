@@ -2,7 +2,12 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { Subnet } from '../../../../shared/models/vlan.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
-import { FormCreate, FormCreateLoadBalancer, IPBySubnet } from '../../../../shared/models/load-balancer.model';
+import {
+  FormCreate,
+  FormCreateLoadBalancer,
+  FormSearchListBalancer,
+  IPBySubnet
+} from '../../../../shared/models/load-balancer.model';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
@@ -23,7 +28,7 @@ export class CreateLbVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  nameList: string[];
+  nameList: string[] = [];
   selectedValueRadio = 'true';
   listSubnets: Subnet[];
 
@@ -72,6 +77,20 @@ export class CreateLbVpcComponent implements OnInit {
               private projectService: ProjectService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
+  }
+
+  getListLoadBalancer() {
+    let formSearchLB = new FormSearchListBalancer()
+    formSearchLB.regionId = this.region
+    formSearchLB.currentPage = 1
+    formSearchLB.pageSize = 9999
+    formSearchLB.vpcId = this.project
+    formSearchLB.isCheckState = true
+    this.loadBalancerService.search(formSearchLB).subscribe(data => {
+      data?.records?.forEach(item => {
+        this.nameList?.push(item?.name)
+      })
+    })
   }
 
   isIpInSubnet(ipAddress: string, subnet: string): boolean {
@@ -293,6 +312,7 @@ export class CreateLbVpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    this.getIpBySubnet()
+    this.getIpBySubnet();
+    this.getListLoadBalancer();
   }
 }
