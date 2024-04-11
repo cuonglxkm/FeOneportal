@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
   resouceInstant = ['topic', 'offline_partition', 'message', 'partition']
   byteInChartTitle = 'Thông lượng dữ liệu truyền vào (Byte/s)';
   byteOutChartTitle = 'Thông lượng dữ liệu truyền ra (Byte/s)';
-  messageRateChartTitle = 'Messages';
+  messageRateChartTitle = 'Messages (rate/s)';
   storageChartTitle = 'Mức sử dụng Storage (GB) ';
 
   constructor(
@@ -314,7 +314,7 @@ export class DashboardComponent implements OnInit {
       ],
       chart: {
         height: 360,
-        type: "area",
+        type: "line",
         zoom: {
           enabled: true,
           type: 'x',  
@@ -369,22 +369,22 @@ export class DashboardComponent implements OnInit {
         enabled: false
       },
       stroke: {
-        curve: "smooth",
-        width: 1,
+        curve: "straight",
+        width: 3,
       },
       fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          inverseColors: false,
-          opacityFrom: 0.5,
-          opacityTo: 0,
-          // stops: [0, 90, 100]
-        },
+        // type: 'gradient',
+        // gradient: {
+        //   shadeIntensity: 1,
+        //   inverseColors: false,
+        //   opacityFrom: 0.5,
+        //   opacityTo: 0,
+        //   // stops: [0, 90, 100]
+        // },
       },
       title: {
         text: chartTitle,
-        align: "center",
+        align: "left",
         style: {
           fontSize: "16px",
           fontFamily: "Inter",
@@ -407,12 +407,12 @@ export class DashboardComponent implements OnInit {
       xaxis: {
         type: "datetime",
         categories: chartData.time,
-        axisBorder: {
-          show: true,
-          color: '#1a1a1a',
-          offsetX: 1,
-          offsetY: 0
-        },
+        // axisBorder: {
+        //   show: true,
+        //   color: '#1a1a1a',
+        //   offsetX: 1,
+        //   offsetY: 0
+        // },
         labels: {
           datetimeUTC: false,
           showDuplicates: false,
@@ -421,24 +421,24 @@ export class DashboardComponent implements OnInit {
       },
       yaxis: {
         show: true,
-        title: {
-          text: yaxisTitle,
-          offsetX: 25,
-          offsetY: -175,
-          rotate: 0,
-          style: {
-            fontSize: "14px",
-            fontFamily: "Inter",
-            fontWeight: 600,
-            color: "#333333"
-          }
-        },
-        axisBorder: {
-          show: true,
-          color: '#1a1a1a',
-          offsetX: 1,
-          offsetY: 0
-        },
+        // title: {
+        //   text: yaxisTitle,
+        //   offsetX: 25,
+        //   offsetY: -150,
+        //   rotate: 0,
+        //   style: {
+        //     fontSize: "12px",
+        //     fontFamily: "Inter",
+        //     fontWeight: 600,
+        //     color: "#333333"
+        //   }
+        // },
+        // axisBorder: {
+        //   show: true,
+        //   color: '#1a1a1a',
+        //   offsetX: 1,
+        //   offsetY: 0
+        // },
       },
       tooltip: {
         x: {
