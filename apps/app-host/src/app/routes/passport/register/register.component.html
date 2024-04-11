@@ -191,7 +191,7 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <button [disabled]="form.invalid" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
+    <button [disabled]="form.invalid || this.form.controls['agreement'].value != true" nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading" class="submit">
       {{ 'app.register.register' | i18n }}
     </button>
 
