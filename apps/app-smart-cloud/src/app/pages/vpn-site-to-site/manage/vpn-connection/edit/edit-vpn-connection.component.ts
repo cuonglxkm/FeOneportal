@@ -15,7 +15,7 @@ import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/model
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 
 @Component({
-  selector: 'one-portal-extend-vpn-connection',
+  selector: 'one-portal-edit-vpn-connection',
   templateUrl: './edit-vpn-connection.component.html',
   styleUrls: ['./edit-vpn-connection.component.less'],
 })

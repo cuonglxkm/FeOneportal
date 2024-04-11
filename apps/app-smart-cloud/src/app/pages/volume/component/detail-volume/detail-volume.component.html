@@ -41,7 +41,7 @@
         <button class="button-cancel"
                 (click)="navigateEditVolume(volumeInfo.id)"
                 nz-button nzType="default">
-          <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
+          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
         </button>
       </div>
     </div>
@@ -50,7 +50,7 @@
         <button class="button-cancel"
                 (click)="navigateToResizeVPC(volumeInfo.id)"
                 nz-button nzType="default">
-          <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
+          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
         </button>
       </div>
     </div>
@@ -110,9 +110,9 @@
     <ng-template #titleVolumeType>
       <span class="text-label">Kiểu Volume:</span>
     </ng-template>
-    <div style="margin-top: 15px;">
-      <b class="text-label">Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>
-    </div>
+<!--    <div style="margin-top: 15px;">-->
+<!--      <b class="text-label">Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>-->
+<!--    </div>-->
     <div style="display: flex; margin-bottom: 15px;">
       <div style="margin-top: 15px;">
         <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled >Mã hóa Volume</label>

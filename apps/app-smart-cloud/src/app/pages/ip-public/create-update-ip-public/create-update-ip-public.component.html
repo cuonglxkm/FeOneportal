@@ -110,9 +110,11 @@
         <div class="text-value">Gắn vào máy ảo</div>
         <div style="margin-top: 10px" class="text-label">{{VMName}}</div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Loại IP</div>
-        <div style="margin-top: 10px" class="text-label">{{checkIpv6 == true ? 'IPv6' : 'IPv4'}}</div>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div *ngIf="checkIpv6 !== null">
+          <div class="text-value">Loại IP</div>
+          <div style="margin-top: 10px" class="text-label">{{checkIpv6 == true ? 'IPv6' : 'IPv4'}}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        </div>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
             <span class="text-value"> Chi phí {{ this.form.controls['numOfMonth'].value || 0 }} tháng </span>
@@ -140,7 +142,7 @@
             <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }}VND</span>
+            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
           </nz-col>
         </nz-row>
         <nz-row>

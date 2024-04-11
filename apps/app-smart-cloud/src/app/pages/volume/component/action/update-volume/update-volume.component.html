@@ -18,6 +18,7 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
+                 class="input-custom"
                  formControlName="nameVolume"
                  [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
           <ng-template #nameErrorTpl let-control>
@@ -39,6 +40,7 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
                     <textarea nz-input
+                              class="input-custom"
                               formControlName="description"
                               [placeholder]="'Nhập mô tả'"
                               [maxLength]="255"

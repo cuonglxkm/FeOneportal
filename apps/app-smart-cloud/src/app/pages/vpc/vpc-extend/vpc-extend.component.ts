@@ -15,7 +15,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class VpcExtendComponent {
   regionId: any;
-  listOfData = [];
+  listOfData = [{}];
   data: VpcModel;
   dataTotal: TotalVpcResource;
   percentCpu: number = 0;
@@ -32,6 +32,7 @@ export class VpcExtendComponent {
   });
   today = new Date();
   expiredDate = new Date();
+  loading = true;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
@@ -52,7 +53,9 @@ export class VpcExtendComponent {
   }
 
   private getData(id: any) {
+    this.loading = true;
     this.service.getDetail(id)
+      .pipe(finalize(() => {this.loading = false;}))
       .subscribe(
         data => {
           this.data = data;
@@ -71,6 +74,7 @@ export class VpcExtendComponent {
   }
 
   private pushTable() {
+    this.listOfData = [];
     let total = this.dataTotal.cloudProject;
     let used = this.dataTotal.cloudProjectResourceUsed;
     this.listOfData.push({name : "CPU (vCPU)",total: total.quotavCpu + " vCPU",used:used.cpu + " vCPU",remain: (total.quotavCpu - used.cpu) + " vCPU"});

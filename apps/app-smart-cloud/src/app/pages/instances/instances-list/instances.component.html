@@ -1,14 +1,14 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Danh sách máy ảo'"
+  [title]="'app.instances.list' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
-      <nz-breadcrumb-item> Quản lý máy ảo </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.instances' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -95,7 +95,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        Tạo mới máy ảo
+        {{ 'app.button.instance.create' | i18n }}
       </button>
     </div>
   </div>

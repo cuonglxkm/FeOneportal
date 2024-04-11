@@ -614,9 +614,9 @@ export class InstancesCreateComponent implements OnInit {
             }
           });
         });
-        this.myCarouselFlavor.dataSource = this.listOfferFlavors;
-        this.myCarouselFlavor.load = this.listOfferFlavors.length;
-        this.myCarouselFlavor.reset();
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
         console.log('list flavor check', this.listOfferFlavors);
         this.cdr.detectChanges();
       });

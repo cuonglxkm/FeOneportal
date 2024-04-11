@@ -26,7 +26,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
-  selector: 'one-portal-instances-extend-info',
+  selector: 'one-portal-instances-edit-info',
   templateUrl: './instances-edit-info.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
