@@ -26,22 +26,6 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <ng-template #title>
-    <div nz-row nzJustify="space-between">
-      <nz-row>
-        <!--        <nz-col>-->
-        <!--          <span nz-icon-->
-        <!--                nzType="arrow-left"-->
-        <!--                nzTheme="outline"-->
-        <!--                [routerLink]="'/app-smart-cloud/volumes'"-->
-        <!--                style="margin-right: 10px;"></span>-->
-        <!--        </nz-col>-->
-        <nz-col>
-          <div>Tạo mới Volume</div>
-        </nz-col>
-      </nz-row>
-    </div>
-  </ng-template>
 </page-header>
 <nz-content *ngIf="typeVPC == 0">
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
@@ -78,7 +62,7 @@
             <div style="display: flex;">
               <nz-switch formControlName="isSnapshot" (ngModelChange)="onSwitchSnapshot()" nzCheckedChildren="ON"
                          nzUnCheckedChildren="OFF"></nz-switch>
-              <span style="margin-left: 10px; margin-top: 1px;">Tạo từ Snapshot</span>
+              <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Tạo từ Snapshot</span>
               <img style="margin-left: 10px"
                    nz-popover  [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
                    nzPopoverPlacement="bottom"
@@ -130,16 +114,17 @@
                   <div nz-radio nzValue="hdd"
                        [ngStyle]="{'background-color': selectedValueRadio === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
                        style="padding: 10px;border: thin; border-radius: 5px;">
-                    <h3><b>HDD</b></h3>
-                    Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                    công việc chuyên sâu thông lượng
+                    <span class="text-value">HDD</span><br>
+                    <span class="text-label">Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
+                    công việc chuyên sâu thông lượng</span>
                   </div>
                   <div nz-radio nzValue="ssd"
                        [ngStyle]="{'background-color': selectedValueRadio === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
                        style="padding: 10px;border: thin; border-radius: 5px;">
-                    <h3><b>SSD</b></h3>
-                    Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                    công việc chuyên sâu thông lượng
+                    <span class="text-value">SSD</span><br>
+                    <span class="text-label">Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
+                    công việc chuyên sâu thông lượng</span>
+
                   </div>
                 </div>
               </nz-radio-group>
@@ -157,11 +142,19 @@
               <tbody>
               <tr>
                 <td>
-                  <nz-input-number formControlName="storage"
-                                   class="input-custom"
-                                   id="storage"
-                                   (ngModelChange)="changeValueStorage($event)"
-                                   [nzMin]="1" [nzStep]="1"></nz-input-number>
+                  <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
+                    <nz-input-number formControlName="storage"
+                                     class="input-custom"
+                                     id="storage"
+                                     (ngModelChange)="changeValueStorage($event)"
+                                     [nzMin]="1" [nzStep]="1"></nz-input-number>
+                    <ng-template #storageErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số nguyên dương</ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số nguyên dương</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+
+
                 </td>
                 <td nzAlign="right">{{ iops }}</td>
                 <td nzAlign="right">{{ unitPrice | number }}</td>
@@ -213,7 +206,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
+              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
@@ -243,12 +236,10 @@
                     nzMax="100"
                     nzStep="1" />
                   <ng-template #dateErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
-                    </ng-container>
-                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
-                    </ng-container>
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+                    <ng-container *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+<!--                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>-->
+<!--                    <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>-->
                   </ng-template>
                 </nz-form-control>
               </nz-col>
@@ -263,7 +254,7 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-form-label>
+            <nz-form-label style="margin-top: 15px;">
               <div class="label" style="color: red;">
                 <span>Ngày hết hạn: </span>
                 <span

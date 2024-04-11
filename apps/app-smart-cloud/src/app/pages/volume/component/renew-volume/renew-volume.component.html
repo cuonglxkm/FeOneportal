@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="title">
+             [title]="'Gia hạn Volume'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -36,25 +36,11 @@
 <!--      </div>-->
 <!--    </div>-->
   </ng-template>
-  <ng-template #title>
-    <nz-row>
-      <nz-col nzSpan="8">
-<!--          <span nz-icon-->
-<!--                nzType="arrow-left"-->
-<!--                nzTheme="outline"-->
-<!--                [routerLink]="'/app-smart-cloud/volume/detail/' + idVolume"-->
-<!--                style="margin-right: 10px;"></span>-->
-        Gia hạn Volume
-      </nz-col>
-    </nz-row>
-    <div>
-      <button class="button-cancel"
-              (click)="navigateEditVolume(volumeInfo.id)"
-              nz-button nzType="default">
-        <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
-      </button>
-    </div>
-  </ng-template>
+  <button class="button-cancel"
+          (click)="navigateEditVolume(volumeInfo.id)"
+          nz-button nzType="default">
+    <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+  </button>
 </page-header>
 <nz-content>
   <form nz-form [formGroup]="validateForm" (ngSubmit)="showModalConfirmRenew()" nzLayout="vertical">
@@ -154,17 +140,10 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
-            <nz-input-number
-              style="width:100%; margin-left: 0;"
-              class="input-custom"
-              formControlName="time"
-              nzMin="1"
-              nzMax="100"
-              nzStep="1"/>
+            <nz-input-number style="width:100%; margin-left: 0;" class="input-custom" formControlName="time" nzMin="1" nzMax="100" nzStep="1"/>
             <ng-template #dateErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-              <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-              <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
+              <ng-container *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
