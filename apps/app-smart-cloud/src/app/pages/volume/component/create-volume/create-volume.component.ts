@@ -124,7 +124,8 @@ export class CreateVolumeComponent implements OnInit {
     tax: 0,
   };
 
-  selectedValueRadio = 'hdd';
+  selectedValueHDD = true;
+  selectedValueSSD = false
 
   validateForm: FormGroup<{
     name: FormControl<string>;
@@ -190,10 +191,10 @@ export class CreateVolumeComponent implements OnInit {
     private catalogService: CatalogService,
     private projectService: ProjectService
   ) {
-    this.validateForm.get('radio').valueChanges.subscribe((value) => {
-        this.selectedValueRadio = value
-        this.getTotalAmount()
-    })
+    // this.validateForm.get('radio').valueChanges.subscribe((value) => {
+    //     this.selectedValueRadio = value
+    //     this.getTotalAmount()
+    // })
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
       this.validateForm.get('instanceId').reset();
@@ -303,19 +304,42 @@ export class CreateVolumeComponent implements OnInit {
     this.snapshotSelected = value;
   }
 
-  onChangeStatus() {
-    console.log('Selected option changed:', this.selectedValueRadio);
+  onChangeStatusSSD() {
+    this.selectedValueSSD = true
+    this.selectedValueHDD = false
+
+    console.log('Selected option changed ssd:', this.selectedValueSSD);
     // this.iops = this.validateForm.get('storage').value * 10
-    if(this.selectedValueRadio == 'hdd') {
-      this.iops = 300
-    }
-    if(this.selectedValueRadio == 'ssd') {
+    // if(this.selectedValueRadio == 'hdd') {
+    //   this.iops = 300
+    // }
+    if(this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd'
       if(this.validateForm.get('storage').value <= 40) {
         this.iops = 400
       } else {
         this.iops = this.validateForm.get('storage').value * 10
       }
     }
+
+  }
+
+  onChangeStatusHDD() {
+    this.selectedValueHDD = true
+    this.selectedValueSSD = false
+    console.log('Selected option changed hdd:', this.selectedValueHDD);
+    // this.iops = this.validateForm.get('storage').value * 10
+    if(this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd'
+      this.iops = 300
+    }
+    // if(this.selectedValueRadio == 'ssd') {
+    //   if(this.validateForm.get('storage').value <= 40) {
+    //     this.iops = 400
+    //   } else {
+    //     this.iops = this.validateForm.get('storage').value * 10
+    //   }
+    // }
 
   }
 
@@ -353,7 +377,13 @@ export class CreateVolumeComponent implements OnInit {
   volumeCreate: VolumeCreate = new VolumeCreate();
 
   volumeInit() {
-    this.volumeCreate.volumeType = this.selectedValueRadio;
+    if(this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd'
+    }
+    if(this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd'
+    }
+    console.log('volumeType', this.volumeCreate.volumeType)
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
     this.volumeCreate.description = this.validateForm.get('description').value;
     this.volumeCreate.iops = this.iops

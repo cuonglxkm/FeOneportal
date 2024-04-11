@@ -166,6 +166,7 @@
               <nz-input-number formControlName="storage"
                                id="storage"
                                style="width: 100%; margin-left: 0;"
+                               appAutofocus
                                class="input-custom"
                                [nzMin]="volumeInfo?.sizeInGB"
                                (ngModelChange)="changeValueStorage($event)"
