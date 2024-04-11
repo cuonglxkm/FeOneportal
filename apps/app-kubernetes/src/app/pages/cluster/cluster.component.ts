@@ -50,10 +50,10 @@ export class ClusterComponent implements OnInit {
   ];
 
   listOfPrice = [
-    {pack: 1, worker: 4000000, volume: 3300000, all: 7300000},
-    {pack: 2, worker: 5000000, volume: 3300000, all: 8300000},
-    {pack: 3, worker: 6600000, volume: 3300000, all: 9900000},
-    {pack: 4, worker: 8200000, volume: 3300000, all: 11500000},
+    {pack: 1, offerId: 296, worker: 4000000, volume: 3300000, all: 7300000},
+    {pack: 2, offerId: 297, worker: 5000000, volume: 3300000, all: 8300000},
+    {pack: 3, offerId: 298, worker: 6600000, volume: 3300000, all: 9900000},
+    {pack: 4, offerId: 299, worker: 8200000, volume: 3300000, all: 11500000},
   ];
 
   // order data
@@ -403,6 +403,7 @@ export class ClusterComponent implements OnInit {
   workerPrice: number;
   volumePrice: number;
   totalPrice: number;
+  offerId: number;
   chooseItem: PackModel;
   isUsingPackConfig: boolean = true;
   onChoosePack(item: PackModel) {
@@ -441,6 +442,7 @@ export class ClusterComponent implements OnInit {
     this.workerPrice = itemPack.worker;
     this.volumePrice = itemPack.volume;
     this.totalPrice = itemPack.all;
+    this.offerId = itemPack.offerId;
   }
 
   clearFormWorker() {
@@ -632,7 +634,7 @@ export class ClusterComponent implements OnInit {
 
     cluster.networking = networking;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
-    cluster.offerId = 200;            // temporary, get from order pack
+    cluster.offerId = this.offerId;            // temporary, get from order pack
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
     // console.log({data: data});
