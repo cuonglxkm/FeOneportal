@@ -169,7 +169,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
         (data) => {
           if (data && data.code == 200) {
             this.notification.success('Thành công', data.msg);
-            this.getListService(this.pageSize, this.pageIndex, this.keySearch, this.serviceStatus)
+            this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
           }
           else {
             this.notification.error('Thất bại', data.msg);
