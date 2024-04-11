@@ -48,13 +48,9 @@
                      [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc
-                  biệt (trừ _)
-                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Load
-                  Balancer khác
-                </ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -128,6 +124,7 @@
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
                   <input nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress" [placeholder]="'Nhập địa chỉ ip'" />
                   <span *ngIf="!isInput" style="color: #ff4d4f;">Địa chỉ IP phải nằm trong dải Subnet. Trường hợp Khách hàng không nhập địa chỉ IP, hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng.</span>
+                  <span *ngIf="isAvailable" style="color: #ff4d4f;">Địa chỉ IP đã tồn tại vui lòng chọn địa chỉ khác</span>
                   <ng-template #ipAddressErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x</ng-container>
                   </ng-template>
@@ -232,7 +229,7 @@
                   <nz-form-label nzFor="now">
                     <div class="label">
                       <span>Thời gian bắt đầu sử dụng: </span>
-<!--                      <span>{{ date | date: 'dd/MM/yyyy' }}</span>-->
+                      <span *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
                     </div>
                   </nz-form-label>
                 </nz-form-item>
@@ -241,8 +238,7 @@
             <nz-form-label>
               <div class="label" style="color: red;">
                 <span>Ngày hết hạn: </span>
-<!--                <span-->
-<!--                  *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>-->
+                <span *ngIf="orderItem?.orderItemPrices?.length > 0">{{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
               </div>
             </nz-form-label>
           </nz-form-item>

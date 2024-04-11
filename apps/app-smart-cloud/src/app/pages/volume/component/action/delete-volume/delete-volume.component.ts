@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'one-portal-delete-volume',
@@ -22,8 +23,18 @@ export class DeleteVolumeComponent {
   value: string
   isInput: boolean = false
 
+  @ViewChild('okButton') okButton: ElementRef;
+
+
   constructor(private notification: NzNotificationService,
               private volumeService: VolumeService) {
+  }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOk()
+    }
   }
 
   showModal() {
@@ -69,6 +80,15 @@ export class DeleteVolumeComponent {
       this.isLoading = false
     }
   }
+
+  // ngAfterViewInit(): void {
+  //   // Khi modal được mở, thiết lập focus vào nút OK
+  //   this.modal.afterOpen.subscribe(() => {
+  //     if (this.okButton) {
+  //       this.okButton.nativeElement.focus();
+  //     }
+  //   });
+  // }
 
 }
 
