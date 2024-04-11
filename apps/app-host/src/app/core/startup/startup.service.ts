@@ -37,7 +37,6 @@ export class StartupService {
   }
 
   load(): Observable<void> {
-
     const defaultLang = this.i18n.defaultLang;
     console.log(defaultLang);
     
