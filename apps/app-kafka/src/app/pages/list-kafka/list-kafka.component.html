@@ -30,7 +30,7 @@
     <!-- filter -->
     <div class="filter-div" nz-row>
       <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4">
-        <nz-select nzSize="default" nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
+        <nz-select nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
           [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfStatusKafka" [nzValue]="item.id"
             [nzLabel]="item.statusName"></nz-option>
@@ -69,11 +69,11 @@
       <thead>
         <tr>
           <th nzWidth="5%" nzAlign="center">STT</th>
-          <th nzWidth="15%">Tên Kafka</th>
+          <th nzWidth="13%">Tên Kafka</th>
           <th nzWidth="10%">Phiên bản</th>
-          <th nzWidth="15%">Trạng thái</th>
+          <th nzWidth="12%">Trạng thái</th>
           <th nzWidth="15%">Endpoint</th>
-          <th nzWidth="15%">Gói dịch vụ</th>
+          <th nzWidth="20%">Gói dịch vụ</th>
           <th nzWidth="15%">Thời gian tạo</th>
           <th nzWidth="10%" nzAlign="center">Thao tác</th>
         </tr>
@@ -96,8 +96,8 @@
             </ng-container>
           </td>
           <td>
-            <ng-container *ngIf="item.servicePackName">{{ item.servicePackName}} / </ng-container>
-            {{ item.cpu }} vCPU / {{ item.ram}} RAM
+            <ng-container *ngIf="item.servicePackName">{{ item.servicePackName}} / <br></ng-container>
+            {{ item.cpu }} vCPU / {{ item.ram}} RAM / {{ item.storage }} GB Storage
           </td>
           <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td nzAlign="center">

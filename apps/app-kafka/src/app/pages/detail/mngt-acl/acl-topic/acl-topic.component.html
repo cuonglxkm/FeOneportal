@@ -100,7 +100,7 @@
                 <nz-form-item>
                     <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
-                        <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large"
+                        <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large" [nzShowArrow]="true"
                             id="principal" formControlName="principal" [nzDisabled]="isEdit">
                             <nz-option *ngFor="let item of listOfPrincipals" [nzLabel]="item.username"
                                 [nzValue]="item.username"></nz-option>
@@ -123,7 +123,7 @@
                         <ng-container *ngIf="tabTopicValue===topicExtract; else prefixedBlock">
                             <nz-form-control nzErrorTip="Vui lòng chọn topic">
                                 <nz-select nzMode="multiple" nzPlaceHolder="Chọn Topic" [nzDisabled]="isEdit" nzSize="large"
-                                    [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="topic">
+                                    [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="topic" [nzShowArrow]="true">
                                     <ng-container *ngFor="let item of listOfTopic">
                                         <nz-option *ngIf="!isLoadingTopic" [nzLabel]="item.topicName"
                                             [nzValue]="item.topicName"></nz-option>

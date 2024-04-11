@@ -313,7 +313,7 @@ export class DashboardComponent implements OnInit {
         }
       ],
       chart: {
-        height: 400,
+        height: 360,
         type: "area",
         zoom: {
           enabled: true,
@@ -431,7 +431,7 @@ export class DashboardComponent implements OnInit {
             fontFamily: "Inter",
             fontWeight: 600,
             color: "#333333"
-            }
+          }
         },
         axisBorder: {
           show: true,

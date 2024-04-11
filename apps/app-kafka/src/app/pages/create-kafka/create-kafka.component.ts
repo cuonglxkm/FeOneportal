@@ -287,7 +287,7 @@ export class CreateKafkaComponent implements OnInit {
     this.myform.controls['numPartitions'].updateValueAndValidity();
     this.myform.controls['defaultReplicationFactor'].updateValueAndValidity();
     this.myform.controls['minInsyncReplicas'].updateValueAndValidity();
-    this.myform.controls['offsetoffsetTopicReplicationFactor'].updateValueAndValidity();
+    this.myform.controls['offsetTopicReplicationFactor'].updateValueAndValidity();
     this.myform.controls['logRetentionHours'].updateValueAndValidity();
     this.myform.controls['logSegmentBytes'].updateValueAndValidity();
   }

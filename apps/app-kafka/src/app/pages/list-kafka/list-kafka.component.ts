@@ -52,7 +52,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     private utilService: UtilService,
   ) {
     this.keySearch = '';
-    this.serviceStatus = null;
+    this.serviceStatus = -1;
     this.pageIndex = 1;
     this.pageSize = 10;
     this.total = 1;
@@ -65,7 +65,6 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     localStorage.removeItem('selectedTabIndex');
     // Ẩn đi vì khi khởi tạo component, thay đổi cbx project sẽ gọi đến hàm getList. 
     // this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus);
-    
     this.getListStatus();
     // open websocket
     this.openWS();
@@ -95,8 +94,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // close websocket
-    // this.websocketService.disconnect();
-    console.log("");
+    this.websocketService.disconnect();
   }
 
   /**
@@ -119,7 +117,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
     .pipe(
       finalize(() => {
         this.loading = false;
-        this.isShowIntroductionPage = this.listOfKafka.length > 0 ? false : true;
+        this.isShowIntroductionPage = (this.listOfKafka.length == 0 && (keySearch == '' || keySearch == null) && (status == -1 || status == null)) ? true : false;
         this.cdr.detectChanges();
       })
     )
