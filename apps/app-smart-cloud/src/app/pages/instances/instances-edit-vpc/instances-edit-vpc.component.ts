@@ -25,7 +25,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
 
 @Component({
-  selector: 'one-portal-instances-create-vpc',
+  selector: 'one-portal-instances-edit-vpc',
   templateUrl: './instances-edit-vpc.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
