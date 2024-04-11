@@ -623,7 +623,7 @@ export class ClusterComponent implements OnInit {
     const networking: NetworkingModel = new NetworkingModel(null);
     networking.networkType = cluster.networkType;
     networking.vpcNetworkId = cluster.vpcNetwork;
-    networking.cidr = cluster.cidr;
+    networking.cidr = cluster.cidr + '/16';
     networking.subnet = cluster.subnet + '@' + this.vlanCloudId;
 
     cluster.networking = networking;
