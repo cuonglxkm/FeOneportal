@@ -46,14 +46,14 @@ export class OverallComponent implements OnInit {
 
   yamlString: string;
   getKubeConfig(serviceOrderCode: string) {
-    // this.clusterService.getKubeConfig(serviceOrderCode)
-    //   .subscribe((r: any) => {
-    //     if (r && r.code == 200) {
-    //       this.yamlString = r.data;
-    //     } else {
-    //       this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
-    //     }
-    //   });
+    this.clusterService.getKubeConfig(serviceOrderCode)
+      .subscribe((r: any) => {
+        if (r && r.code == 200) {
+          this.yamlString = r.data;
+        } else {
+          this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+        }
+      });
   }
 
   vpcNetwork: string;
