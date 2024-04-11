@@ -43,6 +43,7 @@ export class AttachPortComponent {
   handleCancelAttach() {
     this.isVisibleAttach = false
     this.isLoadingAttach = false
+    this.instanceSelected = null
     this.onCancel.emit()
   }
 
@@ -59,6 +60,7 @@ export class AttachPortComponent {
     }, error => {
       this.isVisibleAttach = false
       this.isLoadingAttach = false
+      this.instanceSelected = null
       this.notification.error('Thất bại', 'Gắn port vào máy ảo thất bại')
     })
   }

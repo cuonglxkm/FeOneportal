@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject} from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {RegionModel} from "../../../shared/models/region.model";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {InstancesService} from "../../instances/instances.service";
@@ -14,9 +14,11 @@ import {finalize} from "rxjs";
   templateUrl: './vpc-detail.component.html',
   styleUrls: ['./vpc-detail.component.less'],
 })
-export class VpcDetailComponent {
+export class VpcDetailComponent implements OnInit{
   regionId: any;
-  listOfData = [];
+  listOfData = [
+    {}
+  ];
   data: VpcModel;
   dataTotal: TotalVpcResource;
   percentCpu: number = 0;
@@ -25,6 +27,7 @@ export class VpcDetailComponent {
   percentSSD: number = 0;
   percentIPFloating: number = 0;
   percentBackup: number = 0;
+  loading = true;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
@@ -45,6 +48,7 @@ export class VpcDetailComponent {
   }
 
   private getData(id: any) {
+    this.loading = true;
     this.service.getDetail(id)
       .subscribe(
       data => {
@@ -64,6 +68,7 @@ export class VpcDetailComponent {
   }
 
   private pushTable() {
+    this.listOfData = [];
     let total = this.dataTotal.cloudProject;
     let used = this.dataTotal.cloudProjectResourceUsed;
     this.listOfData.splice(0,1)
@@ -87,6 +92,7 @@ export class VpcDetailComponent {
     this.percentSSD = (used.ssd/total.quotaSSDInGb)*100;
     this.percentIPFloating = 23;
     this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
+    this.loading = false;
   }
 
   edit() {

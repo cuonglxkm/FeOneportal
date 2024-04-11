@@ -9,6 +9,7 @@ import { Flavors, InstancesModel } from './instances.model';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
+import { OfferDetail } from '../../shared/models/catalog.model';
 
 @Injectable({
   providedIn: 'root',
@@ -183,8 +184,8 @@ export class InstancesService extends BaseService {
     );
   }
 
-  autoCreatePass(id: number) {
-    let url_ = `/instances/${id}/change_password`;
+  changePassword(id: number, newPassword: string) {
+    let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       '',
@@ -282,9 +283,9 @@ export class InstancesService extends BaseService {
       );
   }
 
-  getListOffersByProductId(productId: string): Observable<any> {
-    return this.http.get<any>(
-      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}`
+  getListOffersByProductId(productId: string, regionId: string): Observable<OfferDetail[]> {
+    return this.http.get<OfferDetail[]>(
+      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}&regionId=${regionId}`
     );
   }
 
@@ -310,6 +311,20 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
       this.baseUrl + this.ENDPOINT.provisions + url_
+    );
+  }
+
+  getVlanSubnets(
+    pageSize: number,
+    pageNumber: number,
+    region: number,
+    networkCloudId: string
+  ) {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&networkCloudId=${networkCloudId}`,
+      this.httpOptions
     );
   }
 }

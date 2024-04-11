@@ -1,26 +1,33 @@
-<page-header>
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Trang chủ</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Chi tiết máy ảo </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="regionId"
-      (userChanged)="userChangeProject()"
-    ></project-select-dropdown>
-  </div>
-  <nz-row style="margin-bottom: -10px">
-    <span class="text-page-header" style="width: 50%">Chi tiết máy ảo</span>
-  </nz-row>
-  <nz-row style="margin-top: 20px">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.instances.detail' | i18n"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{ 'app.instances.detail' | i18n }} </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (userChanged)="userChangeProject()"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+  <nz-row>
     <div class="non-pointer" style="width: 100%">
       <button
         nz-button
@@ -258,10 +265,12 @@
   </div>
 </nz-card>
 <one-portal-blockstorage-detail
+  *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
 ></one-portal-blockstorage-detail>
 <one-portal-network-detail
+  *ngIf="checkPermission"
   [instancesId]="id"
   [isDetail]="true"
 ></one-portal-network-detail>

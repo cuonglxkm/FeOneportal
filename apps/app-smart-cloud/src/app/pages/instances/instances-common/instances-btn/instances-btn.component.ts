@@ -9,7 +9,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { InstancesService } from '../../instances.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesModel } from '../../instances.model';
@@ -111,19 +110,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     ]);
   }
 
-  formPass = new FormGroup({
-    newpass: new FormControl('', {
-      validators: [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
-        ),
-      ],
-    }),
-    passRepeat: new FormControl('', {
-      validators: [Validators.required],
-    }),
-  });
+  formPass: FormGroup;
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
   check = true;
@@ -136,6 +123,19 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     this.isVisibleResetPass = true;
     this.resetPassword = '';
     this.resetPasswordRepeat = '';
+    this.formPass = new FormGroup({
+      newpass: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{12,}$/
+          ),
+        ],
+      }),
+      passRepeat: new FormControl('', {
+        validators: [Validators.required],
+      }),
+    });
     this.check = true;
     this.isOk = false;
     this.autoCreate = false;
@@ -148,7 +148,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
     if (this.autoCreate) {
-      this.dataService.autoCreatePass(this.instancesId).subscribe({
+      this.dataService.changePassword(this.instancesId, null).subscribe({
         next: (data: any) => {
           this.notification.success('', 'Reset mật khẩu máy ảo thành công');
         },
@@ -162,10 +162,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       });
     } else {
       this.dataService
-        .resetpassword({
-          id: this.instancesId,
-          newPassword: this.resetPassword,
-        })
+        .changePassword(this.instancesId, this.resetPassword)
         .subscribe({
           next: (data: any) => {
             if (data == true) {
@@ -178,10 +175,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
             }
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              'Reset mật khẩu máy không thành công'
-            );
+            this.notification.error(e.statusText, e.error.detail);
           },
         });
     }

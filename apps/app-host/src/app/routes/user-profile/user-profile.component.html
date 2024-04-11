@@ -1,8 +1,8 @@
-<page-header [title]="'Thông tin tài khoản'" />
+<page-header [title]="'menu.account.center' | i18n" />
 
 <nz-card>
   <div class="text-card-header" style="margin-bottom: 20px">
-    Cập nhật thông tin tài khoản
+    {{'form.account.information' | i18n}}
   </div>
   <form
     nz-form
@@ -13,7 +13,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Họ (<span class="text-red">*</span>)</nz-form-label>
+          <nz-form-label>{{"form.account.surname" | i18n}} (<span class="text-red">*</span>)</nz-form-label>
           <nz-form-control
             nzErrorTip="Họ không được để trống và chứa kí tự đặc biệt!"
           >
@@ -29,7 +29,7 @@
       </nz-col>
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Tên (<span class="text-red">*</span>)</nz-form-label>
+          <nz-form-label>{{"form.account.name" | i18n}} (<span class="text-red">*</span>)</nz-form-label>
           <nz-form-control
             nzErrorTip="Tên không được để trống và chứa kí tự đặc biệt!"
           >
@@ -58,7 +58,7 @@
       <nz-col nzLg="6" nzMd="6" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >Số điện thoại (<span class="text-red">*</span>)</nz-form-label
+            >{{"form.account.phone" | i18n}} (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzErrorTip="Số điện thoại không hợp lệ!">
             <input
@@ -75,7 +75,7 @@
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Mã khách hàng</nz-form-label>
+          <nz-form-label>{{"form.account.guestCode" | i18n}}</nz-form-label>
           <nz-form-control nzErrorTip="Mã khách hàng">
             <input
               [disabled]="true"
@@ -90,7 +90,7 @@
 
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label>Mã hợp đồng</nz-form-label>
+          <nz-form-label>{{"form.account.contractCode" | i18n}}</nz-form-label>
           <nz-form-control nzErrorTip="Mã hợp đồng">
             <input
               nz-input
@@ -107,7 +107,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >Tỉnh/Thành phố (<span class="text-red">*</span>)</nz-form-label
+            >{{"form.account.city" | i18n}} (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control nzErrorTip="Tỉnh/Thành phố">
             <input
@@ -123,7 +123,7 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label
-            >Địa chỉ chi tiết (<span class="text-red">*</span>)</nz-form-label
+            >{{"form.account.address" | i18n}} (<span class="text-red">*</span>)</nz-form-label
           >
           <nz-form-control
             nzErrorTip="Địa chỉ không được để trống và chứa kí tự đặc biệt!"
@@ -148,7 +148,7 @@
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/cancel.svg"
               alt=""
-            />Hủy
+            />{{"app.button.cancel" | i18n}}
           </button>
           <button nz-button [nzType]="'primary'" [disabled]="form.invalid">
             <img
@@ -156,7 +156,7 @@
               src="assets/imgs/confirm.svg"
               alt=""
             />
-            Cập nhật
+            {{"app.button.edit" | i18n}}
           </button>
         </div>
       </div>

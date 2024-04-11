@@ -32,7 +32,7 @@ export class EditIkePoliciesComponent implements OnInit {
     { label: 'sha512', value: 'sha512' },
   ];
 
-  
+
   ikeVersion = [
     { label: 'v1', value: 'v1' },
     { label: 'v2', value: 'v2' },
@@ -52,7 +52,7 @@ export class EditIkePoliciesComponent implements OnInit {
     { label: 'group14 ', value: 'group14' },
   ];
 
- 
+
   phase1Negotiation = [
     { label: 'main', value: 'main' },
     { label: 'aggressive', value: 'aggressive' }

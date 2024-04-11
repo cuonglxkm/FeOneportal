@@ -1,13 +1,17 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Tạo máy ảo'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.instances.create' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+        <a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo máy ảo</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.instances.create' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -70,7 +74,8 @@
                 >Vui lòng nhập thông tin</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
-                >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)</ng-container
+                >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
+                _)</ng-container
               >
             </ng-template>
           </nz-form-control>
@@ -315,6 +320,7 @@
               [nzMin]="1"
               [nzMax]="remainingVolume"
               [(ngModel)]="instanceCreate.volumeSize"
+              (keydown)="onKeyDown($event)"
               [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
@@ -338,6 +344,7 @@
               [nzMin]="1"
               [nzMax]="remainingRAM"
               [(ngModel)]="instanceCreate.ram"
+              (keydown)="onKeyDown($event)"
               [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
@@ -361,6 +368,7 @@
               [nzMin]="1"
               [nzMax]="remainingVCPU"
               [(ngModel)]="instanceCreate.cpu"
+              (keydown)="onKeyDown($event)"
               [ngModelOptions]="{ standalone: true }"
             ></nz-input-number>
           </div>
@@ -584,7 +592,7 @@
                   class="input-custom"
                   [type]="passwordVisible ? 'text' : 'password'"
                   nz-input
-                  placeholder="input password"
+                  placeholder="Nhập mật khẩu"
                   [(ngModel)]="password"
                   [ngModelOptions]="{ standalone: true }"
                 />

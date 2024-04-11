@@ -5,7 +5,7 @@ import { VlanService } from '../../../../shared/services/vlan.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
-  selector: 'one-portal-vlan-edit',
+  selector: 'one-portal-vlan-extend',
   templateUrl: './vlan-edit.component.html',
   styleUrls: ['./vlan-edit.component.less'],
 })

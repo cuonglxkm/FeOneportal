@@ -45,7 +45,7 @@ export class Contract {
 
 export class CreateScheduleSnapshotDTO {
   dayOfWeek: string;
-  daysOfWeek: [];
+  daysOfWeek: string[];
   description: string;
   intervalWeek: number;
   mode: number;

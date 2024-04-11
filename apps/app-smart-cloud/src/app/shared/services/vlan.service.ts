@@ -316,9 +316,9 @@ export class VlanService extends BaseService {
       }))
   }
 
-  getListVlanSubnets(pageSize: number, pageNumber: number, region: number) {
+  getListVlanSubnets(pageSize: number, pageNumber: number, region: number, projectId: number) {
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions
-      + `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}`)
+      + `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&vpcId=${projectId}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

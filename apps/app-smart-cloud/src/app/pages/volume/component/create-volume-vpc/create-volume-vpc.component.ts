@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -112,7 +113,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     radio: [''],
     instanceId: [null as number],
     description: ['', Validators.maxLength(700)],
-    storage: [1, Validators.required],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     isEncryption: [false],
     isMultiAttach: [false]
   });
@@ -162,12 +163,26 @@ export class CreateVolumeVpcComponent implements OnInit {
     });
   }
 
+  dataSubjectStorage: Subject<any> = new Subject<any>();
+  changeValueInput() {
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        console.log('total amount');
+        // this.getTotalAmount()
+      })
+  }
+
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value)
+  }
+
   ngOnInit() {
 
     if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
     this.iops = this.validateForm.controls.storage.value * 10
 
     this.getListInstance();
+    this.changeValueInput()
   }
 
   duplicateNameValidator(control) {
@@ -257,7 +272,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.instanceToAttachId = this.validateForm.controls.instanceId.value;
     this.volumeCreate.isMultiAttach = this.validateForm.controls.isMultiAttach.value;
     this.volumeCreate.isEncryption = this.validateForm.controls.isEncryption.value;
-    this.volumeCreate.vpcId = this.project.toString();
+    this.volumeCreate.projectId = this.project.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;

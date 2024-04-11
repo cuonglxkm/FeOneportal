@@ -100,7 +100,9 @@ export class CreateVpnConnectionComponent implements OnInit{
   getDataIkePolices() {
     this.formSearchIkePolicy.projectId = this.project
     this.formSearchIkePolicy.regionId = this.region
-    this.formSearchIkePolicy.searchValue = "kh"
+    this.formSearchIkePolicy.searchValue = ""
+    this.formSearchIkePolicy.pageNumber = 1
+    this.formSearchIkePolicy.pageSize = 1000
     this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
       .subscribe(data => {
           

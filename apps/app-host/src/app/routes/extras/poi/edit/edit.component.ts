@@ -4,7 +4,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'app-extras-poi-edit',
+  selector: 'app-extras-poi-extend',
   templateUrl: './edit.component.html'
 })
 export class ExtrasPoiEditComponent implements OnInit {

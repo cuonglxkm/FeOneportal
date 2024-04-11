@@ -134,7 +134,7 @@ export class DetailVolumeComponent implements OnInit {
     extendsDto.serviceInstanceId = this.volumeInfo.id;
     extendsDto.regionId = this.volumeInfo.regionId;
     extendsDto.serviceName = this.volumeInfo.name;
-    extendsDto.vpcId = this.volumeInfo.vpcId;
+    extendsDto.projectId = this.volumeInfo.vpcId;
     extendsDto.customerId = this.tokenService.get()?.userId;
     extendsDto.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.VolumeResizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
     const userString = localStorage.getItem('user');

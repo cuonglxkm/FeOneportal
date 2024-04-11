@@ -25,7 +25,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
 
 @Component({
-  selector: 'one-portal-instances-create-vpc',
+  selector: 'one-portal-instances-edit-vpc',
   templateUrl: './instances-edit-vpc.component.html',
   styleUrls: ['../instances-list/instances.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -147,7 +147,7 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.regionId = this.regionId;
     this.instanceResize.serviceName = null;
     this.instanceResize.customerId = this.userId;
-    this.instanceResize.vpcId = this.projectId;
+    this.instanceResize.projectId = this.projectId;
     this.instanceResize.userEmail = this.userEmail;
     this.instanceResize.actorEmail = this.userEmail;
   }

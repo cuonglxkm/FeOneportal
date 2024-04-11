@@ -1,0 +1,93 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Chỉnh sửa Load Balancer'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Load Balancer
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/create">Chỉnh sửa Load Balancer</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Thông tin Load Balancer</span>
+        <form nz-form nzLayout="vertical" [formGroup]="validateForm">
+          <nz-form-item style="margin-top: 15px;">
+            <nz-form-label>
+              <span>Tên Load Balancer (<span style="color: red">*</span>)</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+              <input nz-input
+                     class="input-custom"
+                     formControlName="name"
+                     [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" [value]="validateForm.controls.nameLoadBalancer.getRawValue()"/>
+              <ng-template #nameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông số cấu hình</span>
+        </div>
+        <div style="margin-top: 10px" class="text-value">Tên Load Balancer</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.nameLoadBalancer.getRawValue() }}
+        </div>
+        <div style="margin-top: 10px" class="text-value">Sử dụng</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span *ngIf="loadBalancer?.internetFacing == true">Internet Facing</span>
+          <span *ngIf="loadBalancer?.internetFacing == false">Internal</span>
+        </div>
+        <div style="margin-top: 10px" class="text-value">Subnet</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span class="text-label">{{ loadBalancer.subnetAddress }}</span>
+        </div>
+        <div style="margin-top: 10px" class="text-value">IP Address</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span class="text-label">{{ loadBalancer.ipAddress }}</span>
+        </div>
+        <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
+        <div style="margin-top: 10px" class="text-label">
+          <span class="text-label">{{ loadBalancer.offerName }}</span>
+        </div>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid">
+              <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Chỉnh sửa</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

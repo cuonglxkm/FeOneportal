@@ -198,6 +198,16 @@ import { ListLoadBalancerComponent } from './load-balancer/list/list-load-balanc
 import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-novpc.component';
 import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
+import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
+import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
+import { ResizeLoadBalancerNormalComponent } from './load-balancer/normal/resize/resize-load-balancer-normal.component';
+import { UpdateLoadBalancerNormalComponent } from './load-balancer/normal/update/update-load-balancer-normal.component';
+import { DeleteLoadBalancerComponent } from './load-balancer/delete/delete-load-balancer.component';
+import { ListListenerInLbComponent } from './load-balancer/detail/listener/list/list-listener-in-lb.component';
+import { ListPoolLoadBalancerComponent } from './load-balancer/detail/pool/list/list-pool-load-balancer.component';
+import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
+import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
+import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -381,6 +391,17 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateLbNovpcComponent,
     CreateLbVpcComponent,
     DetailLoadBalancerComponent,
+    EditLoadBalancerVpcComponent,
+    ExtendLoadBalancerNormalComponent,
+    ResizeLoadBalancerNormalComponent,
+    UpdateLoadBalancerNormalComponent,
+    DeleteLoadBalancerComponent,
+    ListListenerInLbComponent,
+    ListPoolLoadBalancerComponent,
+    ListenerCreateComponent,
+    ListenerDetailComponent,
+    ListenerUpdateComponent,
+    ListenerUpdateComponent,
   ],
   imports: [
     CommonModule,

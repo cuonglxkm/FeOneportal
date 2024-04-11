@@ -22,5 +22,5 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <one-portal-subnet-form (onSubmit)="handleCreate($event)"/>
+  <one-portal-subnet-form [idNetwork]="idNetwork" [region]="region" (onSubmit)="handleCreate($event)"/>
 </nz-content>

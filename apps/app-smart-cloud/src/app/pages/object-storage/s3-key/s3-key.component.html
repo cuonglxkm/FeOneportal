@@ -47,9 +47,6 @@
     <tr *ngFor="let item of listOfS3Key">
       <td>{{count}}</td>
       <td>
-        <!--        <nz-row nzJustify="space-between">-->
-        <!--         -->
-        <!--        </nz-row>-->
         {{item.accessKey}}
         <span style="color: #0066B3; margin-left: 10px;" nz-icon nzType="copy" nzTheme="outline"
               (click)="copyText(item.accessKey)"></span>

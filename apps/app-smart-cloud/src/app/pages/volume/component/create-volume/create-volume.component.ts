@@ -145,9 +145,9 @@ export class CreateVolumeComponent implements OnInit {
     snapshot: [null as number, []],
     radio: [''],
     instanceId: [null as number],
-    time: [1, Validators.required],
+    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     description: ['', Validators.maxLength(700)],
-    storage: [1, Validators.required],
+    storage: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
     isEncryption: [false],
     isMultiAttach: [false],
   });
@@ -322,23 +322,16 @@ export class CreateVolumeComponent implements OnInit {
   //get danh sách máy ảo
   getListInstance() {
     this.instanceService
-      .search(
-        1,
-        9999,
-        this.region,
-        this.project,
-        '',
-        'KHOITAO',
-        true,
-        this.tokenService.get()?.userId
-      )
+      .search(1, 9999, this.region, this.project, '', 'KHOITAO', true, this.tokenService.get()?.userId)
       .subscribe((data) => {
-        data.records.forEach(item => {
-          if(item.taskState.includes('ACTIVE')) {
-            this.listInstances?.push(item);
-          }
-        })
-        // this.listInstances = data.records;
+        // data.records.forEach(item => {
+        //   if(item.taskState.includes('ACTIVE')) {
+        //     this.listInstances?.push(item);
+        //   }
+        // })
+        this.listInstances = data.records;
+        this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE')
+        console.log('list instance', this.listInstances)
         this.cdr.detectChanges();
       });
   }
@@ -377,7 +370,7 @@ export class CreateVolumeComponent implements OnInit {
       this.validateForm.controls.isMultiAttach.value;
     this.volumeCreate.isEncryption =
       this.validateForm.controls.isEncryption.value;
-    this.volumeCreate.vpcId = this.project.toString();
+    this.volumeCreate.projectId = this.project.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
@@ -423,9 +416,18 @@ export class CreateVolumeComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
 
+
+
   changeValueInput() {
-    console.log('total amount');
-    this.getTotalAmount()
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        console.log('total amount');
+        this.getTotalAmount()
+      })
+  }
+
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value)
   }
 
   navigateToPaymentSummary() {
@@ -491,6 +493,8 @@ export class CreateVolumeComponent implements OnInit {
     if (this.project && this.region) {
       this.loadProjects();
     }
+
+    this.changeValueInput()
 
     this.getListSnapshot();
     this.getListInstance();

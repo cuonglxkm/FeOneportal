@@ -51,7 +51,6 @@ export class AttachVolumeComponent implements AfterViewInit{
   showModal() {
     this.isVisible = true
     this.getListVm()
-
   }
 
   handleCancel() {
@@ -66,18 +65,14 @@ export class AttachVolumeComponent implements AfterViewInit{
   handleOk() {
     this.addVolumeToVm()
   }
-
+  listVm2: any
   getListVm() {
     this.isLoading = true
     this.instancesService.search(1, 9999, this.region, this.project, '', 'KHOITAO',
       true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoading = false
-      data.records.forEach(item => {
-        if(item.taskState.includes("ACTIVE")) {
-          this.listVm?.push(item)
-        }
-      })
-      console.log('listvm', this.listVm)
+      this.listVm = data.records
+      this.listVm = this.listVm.filter(item => item.taskState === 'ACTIVE')
     })
   }
 

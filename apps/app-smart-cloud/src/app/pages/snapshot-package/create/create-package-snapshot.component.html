@@ -1,26 +1,26 @@
-<page-header [breadcrumb]="breadcrumb"
-             [action]="action"
-             [title]="title">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="title">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item> Dịch vụ hạ tầng </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        <a routerLink="/app-smart-cloud/snapshot/packages">Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/Snapshot/packages">Snapshot</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/Snapshot/packages">Tạo gói Snapshot</a>
+        Tạo gói Snapshot
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               (userChanged)="userChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="regionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (valueChanged)="projectChanged($event)"
+        (userChanged)="userChanged($event)"
+        [regionId]="region"
+      ></project-select-dropdown>
     </div>
   </ng-template>
   <ng-template #title>
@@ -48,28 +48,40 @@
           <span class="text-card-header">Thông tin của gói Snapshot</span>
           <nz-form-item>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
+              <div style="margin-top: 15px">
                 <span>Tên gói Snapshot</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'"
-                      nzPopoverPlacement="bottom"></span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                <span
+                  nz-icon
+                  nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="
+                    'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'
+                  "
+                  nzPopoverPlacement="bottom"
+                ></span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-              <input nz-input
-                     class="input-custom"
-                     formControlName="namePackage"
-                     [(ngModel)]="namePackage"
-                     [placeholder]="'Nhập tên gói'" [maxLength]="70" />
+              <input
+                nz-input
+                class="input-custom"
+                formControlName="namePackage"
+                [(ngModel)]="namePackage"
+                [placeholder]="'Nhập tên gói'"
+                [maxLength]="70"
+              />
               <ng-template #nameErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Snapshot</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng
-                  Việt
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập tên gói Snapshot</ng-container
+                >
+                <ng-container *ngIf="control.hasError('pattern')"
+                  >Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt
                 </ng-container>
-                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')"
+                  >Tối đa 70 ký tự</ng-container
+                >
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -77,24 +89,30 @@
             <nz-form-label nzFor="storage">
               <div class="label">
                 <span>Dung lượng gói Snapshot</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Dung lượng mặc định tối thiểu là 1, chưa giới hạn dung lượng tối đa'"
-                      nzPopoverPlacement="bottom"></span>
+                (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                <span
+                  nz-icon
+                  nzType="question-circle"
+                  nzTheme="outline"
+                  nz-popover
+                  [nzPopoverContent]="
+                    'Dung lượng mặc định tối thiểu là 1, chưa giới hạn dung lượng tối đa'
+                  "
+                  nzPopoverPlacement="bottom"
+                ></span>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
-              <nz-input-number formControlName="storage"
-                               id="storage"
-                               nzSize="large"
-                               style="width: 100%; margin-left: 0;"
-                               [ngModel]="storage"
-                               [nzMin]="1"
-                               [nzStep]="1" />
+              <nz-input-number
+                formControlName="storage"
+                nzSize="large"
+                style="width: 100%; margin-left: 0"
+                [nzMin]="1"
+                [nzStep]="1"
+              />
               <ng-template #storageErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Snapshot
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập dung lượng của gói Snapshot
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -105,16 +123,23 @@
                 <span>Mô tả</span>
               </div>
             </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-          <textarea nz-input
-                    formControlName="description"
-                    id="description"
-                    [placeholder]="'Nhập mô tả'"
-                    [maxLength]="255"
-                    [nzAutosize]="{ minRows: 3, maxRows: 5 }">
-          </textarea>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="descriptionErrorTpl"
+            >
+              <textarea
+                nz-input
+                formControlName="description"
+                id="description"
+                [placeholder]="'Nhập mô tả'"
+                [maxLength]="255"
+                [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+              >
+              </textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')"
+                  >Cho phép nhập tối đa 255 kí tự</ng-container
+                >
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -124,35 +149,40 @@
                 <nz-form-label nzFor="time">
                   <div class="label">
                     <span>Thời gian sử dụng</span>
-                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - Tháng
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Mỗi tháng tương đương 30 ngày.'"
-                          nzPopoverPlacement="bottom"></span>
+                    (<span style="color: rgba(252, 16, 16, 1)">*</span>) - Tháng
+                    <span
+                      nz-icon
+                      nzType="question-circle"
+                      nzTheme="outline"
+                      nz-popover
+                      [nzPopoverContent]="'Mỗi tháng tương đương 30 ngày.'"
+                      nzPopoverPlacement="bottom"
+                    ></span>
                   </div>
                 </nz-form-label>
                 <nz-form-control>
-                  <nz-input-number formControlName="time"
-                                   id="time"
-                                   nzSize="large"
-                                   style="width: 100%; margin-left: 0;"
-                                   [nzMin]="1"
-                                   [nzMax]="100"
-                                   [nzStep]="1" />
+                  <nz-input-number
+                    formControlName="time"
+                    nzSize="large"
+                    style="width: 100%; margin-left: 0"
+                    [nzMin]="1"
+                    [nzMax]="100"
+                    (ngModelChange)="caculator($event)"
+                    [nzStep]="1"
+                  />
                 </nz-form-control>
               </nz-form-item>
             </nz-col>
-            <nz-col nzSpan="8" class="create-date">
-              <span
-                *ngIf="orderItem?.orderItemPrices?.length > 0">Ngày khởi tạo: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
+            <nz-col nzSpan="8" class="create-date align-self-center">
+              <span>Ngày khởi tạo: {{ dateString | date : 'dd/MM/yyyy' }}</span>
             </nz-col>
           </nz-row>
           <nz-form-item>
             <nz-form-label nzFor="time">
               <div class="label">
-                <span style="color: rgba(252, 16, 16, 1);"
-                      *ngIf="orderItem?.orderItemPrices?.length > 0">Ngày hết hạn: {{ orderItem?.orderItemPrices[0]?.expiredDate | date: 'dd/MM/yyyy' }}</span>
+                <span style="color: rgba(252, 16, 16, 1)"
+                  >Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</span
+                >
               </div>
             </nz-form-label>
           </nz-form-item>
@@ -195,37 +225,56 @@
         <!--        </nz-card>-->
         <nz-card class="right-form">
           <div class="right-title">
-                <span class="text-card-header">Chi phí ước tính</span>
+            <span class="text-card-header">Chi phí ước tính</span>
           </div>
-          
+
           <nz-row class="right-form-content-month" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value">
-                Chi phí gói Snapshot 1 tháng
-              </span>
+              <span class="text-value"> Chi phí gói Snapshot </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value month-money" nzAlign="right">
-                <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
-                nzAlign="right">0 VNĐ</span>
-          <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
-                nzAlign="right">
-            {{ orderItem?.orderItemPrices[0].unitPrice.amount | number }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
-          </span>
+                <span
+                  *ngIf="orderItem?.orderItemPrices?.length <= 0"
+                  class="text-value"
+                  style="color: #0066b3"
+                  nzAlign="right"
+                  >0 VNĐ</span
+                >
+                <span
+                  *ngIf="orderItem?.orderItemPrices?.length > 0"
+                  class="text-value"
+                  style="color: #0066b3"
+                  nzAlign="right"
+                >
+                  {{ orderItem?.orderItemPrices[0].unitPrice.amount | number }}
+                  {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+                </span>
               </span>
             </nz-col>
           </nz-row>
-          <nz-row class="right-form-content-total" nzGutter="16" >
+          <nz-row class="right-form-content-total" nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-label">Tổng thanh toán</span><br />
               <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value vat-money" nzAlign="right">
-                <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
-                  {{ orderItem?.totalPayment?.amount | number }} {{ orderItem?.totalPayment?.currency }}
+                <span
+                  *ngIf="orderItem != undefined"
+                  class="text-value"
+                  style="color: #ea3829"
+                  nzAlign="right"
+                >
+                  {{ orderItem?.totalPayment?.amount | number }}
+                  {{ orderItem?.totalPayment?.currency }}
                 </span>
-                <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                <span
+                  *ngIf="orderItem == undefined"
+                  class="text-value"
+                  style="color: #ea3829"
+                  nzAlign="right"
+                >
                   0 VND
                 </span>
               </span>
@@ -238,7 +287,8 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
-                [disabled]="!validateForm.valid" (click)="navigateToPaymentSummary()"
+                [disabled]="!validateForm.valid"
+                (click)="navigateToPaymentSummary()"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 Khởi tạo
@@ -249,5 +299,4 @@
       </nz-col>
     </nz-row>
   </form>
-
 </nz-content>

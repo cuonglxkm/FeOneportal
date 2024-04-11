@@ -1,1 +1,129 @@
-<p>detail-load-balancer works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Xem chi tiết Load Balancer'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Thông tin chi tiết Load Balancer</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-card>
+    <span class="text-card-header">Thông tin Load Balancer</span>
+    <form nz-form nzLayout="vertical">
+      <nz-row nzGutter="24" nzJustify="space-between">
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Tên LoadBalancer</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.name" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>VIP Address</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.ipAddress" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Mô tả</span>
+            </nz-form-label>
+            <nz-form-control>
+              <textarea nz-input class="input-custom" [value]="loadBalancer.description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" [disabled]="true"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Floating IP</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.floatingIPAddress" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Ngày cấp dịch vụ</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.createDate | date: 'dd/MM/yyyy'" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Ngày kết thúc</span>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.expiredDate | date: 'dd/MM/yyyy'" [disabled]="true"/>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </form>
+  </nz-card>
+  <nz-card>
+    <nz-tabset>
+      <ng-template #titleListener>
+        <span class="text-label">Listener</span>
+      </ng-template>
+      <ng-template #titlePool>
+        <span class="text-label">Pool</span>
+      </ng-template>
+      <nz-tab [nzTitle]="titleListener">
+        <nz-row nzJustify="space-between">
+          <nz-col>
+            <span class="text-card-header">Danh sách Listener</span>
+          </nz-col>
+          <nz-col>
+            <button nz-button nzType="primary" nzSize="large">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+              <span class="button-text-primary">Tạo mới Listener</span>
+            </button>
+          </nz-col>
+        </nz-row>
+        <one-portal-list-listener-in-lb [idLB]="idLoadBalancer" />
+
+      </nz-tab>
+      <nz-tab [nzTitle]="titlePool" >
+        <nz-row nzJustify="space-between">
+          <nz-col>
+            <span class="text-card-header">Danh sách Pool</span>
+          </nz-col>
+          <nz-col>
+            <button nz-button nzType="primary" nzSize="large">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+              <span class="button-text-primary">Tạo mới Pool</span>
+            </button>
+          </nz-col>
+        </nz-row>
+        <one-portal-list-pool-load-balancer [idLB]="idLoadBalancer"/>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+</nz-content>

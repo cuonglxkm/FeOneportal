@@ -240,7 +240,7 @@ export class InstanceCreate {
   customerId: number;
   userEmail: any;
   actorEmail: any;
-  vpcId: any;
+  projectId: any;
   regionId: number;
   serviceName: any;
   serviceType: number;
@@ -275,7 +275,7 @@ export class VolumeCreate {
   instanceToAttachId: any;
   isMultiAttach: boolean;
   isEncryption: boolean;
-  vpcId: any;
+  projectId: any;
   oneSMEAddonId: any;
   serviceType: number;
   serviceInstanceId: number;
@@ -340,7 +340,7 @@ export class InstanceResize {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   userEmail: any;
   actorEmail: any;
 }
@@ -520,7 +520,7 @@ export class InstanceExtend {
   regionId: number;
   serviceName: any;
   customerId: number;
-  vpcId: any;
+  projectId: any;
   typeName: string;
   serviceType: number;
   actionType: number;
@@ -528,4 +528,41 @@ export class InstanceExtend {
   newExpireDate: string;
   userEmail: any;
   actorEmail: any;
+}
+
+export class InstanceAction {
+  command: string;
+  suspendType: string;
+  networkId: string;
+  portId: string;
+  subnetId: string;
+  ipAddress: string;
+  id: number;
+}
+
+export class VlanSubnet {
+  id: number;
+  name: string;
+  subnetCloudId: string;
+  ipVerison: number;
+  networkCloudId: string;
+  customerId: number;
+  mayAoGan: any;
+  networkId: number;
+  allocationPools: any;
+  hostRouters: any;
+  enableDhcp: boolean;
+  networkName: string;
+  gatewayIp: string;
+  cloudId: string;
+  vlanId: number;
+  adminState: boolean;
+  shared: boolean;
+  type: any;
+  subnetAddressRequired: string;
+  status: string;
+  vpcId: number;
+  region: any;
+  regionText: any;
+  subnets: any;
 }

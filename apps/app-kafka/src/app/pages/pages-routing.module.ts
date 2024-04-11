@@ -17,7 +17,7 @@ const routes: Routes = [
     component: CreateKafkaComponent
   },
   {
-    path: 'edit/:id',
+    path: 'extend/:id',
     component: EditKafkaComponent
   },
   {

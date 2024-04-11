@@ -26,7 +26,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  
+
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },
     { label: 'sha256', value: 'sha256' },
@@ -71,7 +71,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
   formEditIpsecPolicy: FormEditIpsecPolicy = new FormEditIpsecPolicy();
   ipsecPolicy: IpsecPolicyDetail = new IpsecPolicyDetail();
 
-  
+
   form: FormGroup<{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>;
@@ -95,7 +95,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
       .subscribe(
         (data) => {
           this.ipsecPolicy = data;
-          
+
           this.selectedAuthorizationAlgorithm =
             this.ipsecPolicy.authorizationAlgorithm;
           this.selectedEncryptionMode = this.ipsecPolicy.encapsulationMode;

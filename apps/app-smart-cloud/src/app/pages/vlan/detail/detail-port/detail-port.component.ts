@@ -69,7 +69,9 @@ export class DetailPortComponent implements OnInit{
   }
 
   handleOkDeletePort() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {
+      this.getVlanByNetworkId()}, 1500)
+
   }
 
   handleOkCreatePort() {
@@ -77,7 +79,9 @@ export class DetailPortComponent implements OnInit{
   }
 
   getVlanByNetworkId() {
-    this.vlanService.getVlanByNetworkId(this.idNetwork).subscribe(data => {
+    this.vlanService.getVlanByNetworkId(this.idNetwork)
+      .pipe(debounceTime(1500))
+      .subscribe(data => {
       this.networkName = data.name
       this.networkCloudId = data.cloudId
       this.getPortByNetwork(data.cloudId)

@@ -56,8 +56,13 @@ class ConfigCustom {
   vCPU?: number = 0;
   ram?: number = 0;
   capacity?: number = 0;
-  priceHour?: string = '000';
-  priceMonth?: string = '000';
+}
+class ConfigGPU {
+  CPU: number = 0;
+  ram: number = 0;
+  storage: number = 0;
+  GPU: number = 0;
+  GPUType: string;
 }
 class BlockStorage {
   id: number = 0;
@@ -96,6 +101,11 @@ export class InstancesCreateComponent implements OnInit {
     animation: 'lazy',
   };
 
+  listGPUType: any[] = [
+    { displayName: 'Nvidia A100' },
+    { displayName: 'Nvidia A30' },
+  ];
+
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -130,6 +140,7 @@ export class InstancesCreateComponent implements OnInit {
   offerFlavor: any = null;
   flavorCloud: any;
   configCustom: ConfigCustom = new ConfigCustom(); //cấu hình tùy chỉnh
+  configGPU: ConfigGPU = new ConfigGPU();
   selectedSSHKeyName: string;
   selectedSnapshot: number;
   cardHeight: string = '160px';
@@ -149,6 +160,7 @@ export class InstancesCreateComponent implements OnInit {
     private vlanService: VlanService
   ) {}
 
+  @ViewChild('nameInput') firstInput: ElementRef;
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
   reloadCarousel: boolean = false;
@@ -160,6 +172,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.firstInput.nativeElement.focus();
     this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
   }
 
@@ -194,6 +207,23 @@ export class InstancesCreateComponent implements OnInit {
       if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
         (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
       }
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
   }
 
@@ -366,6 +396,11 @@ export class InstancesCreateComponent implements OnInit {
     if (this.offerFlavor != null) {
       this.getTotalAmount();
     }
+    if (this.isCustomconfig) {
+      this.changeCapacity(event);
+      this.changeRam(event);
+      this.changeVCPU(event);
+    }
     const filteredImages = this.listOfImageByImageType
       .get(imageTypeId)
       .filter((e) => e.id == event);
@@ -447,24 +482,20 @@ export class InstancesCreateComponent implements OnInit {
 
   isCustomconfig = false;
   onClickConfigPackage() {
+    this.configCustom = new ConfigCustom();
+    this.volumeUnitPrice = 0;
+    this.volumeIntoMoney = 0;
+    this.ramUnitPrice = 0;
+    this.ramIntoMoney = 0;
+    this.cpuUnitPrice = 0;
+    this.cpuIntoMoney = 0;
     this.isCustomconfig = false;
-    this.resetInstanceConfig();
   }
 
   onClickCustomConfig() {
-    this.configCustom = new ConfigCustom();
-    this.resetInstanceConfig();
-    this.isCustomconfig = true;
-  }
-
-  resetInstanceConfig() {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
-    this.totalAmount = 0;
-    this.totalincludesVAT = 0;
-    this.instanceCreate.volumeSize = null;
-    this.instanceCreate.ram = null;
-    this.instanceCreate.cpu = null;
+    this.isCustomconfig = true;
   }
   //#endregion
 
@@ -533,6 +564,11 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.listSecurityGroup = data;
+        this.listSecurityGroup.forEach((e) => {
+          if (e.name.toUpperCase() == 'DEFAULT') {
+            this.selectedSecurityGroup.push(e.name);
+          }
+        });
         this.cdr.detectChanges();
       });
   }
@@ -578,9 +614,9 @@ export class InstancesCreateComponent implements OnInit {
             }
           });
         });
-        this.myCarouselFlavor.dataSource = this.listOfferFlavors;
-        this.myCarouselFlavor.load = this.listOfferFlavors.length;
-        this.myCarouselFlavor.reset();
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
         console.log('list flavor check', this.listOfferFlavors);
         this.cdr.detectChanges();
       });
@@ -616,7 +652,7 @@ export class InstancesCreateComponent implements OnInit {
     tempInstance.volumeSize = volumeSize;
     tempInstance.ram = ram;
     tempInstance.cpu = cpu;
-    tempInstance.vpcId = this.projectId;
+    tempInstance.projectId = this.projectId;
     tempInstance.regionId = this.region;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
@@ -721,6 +757,26 @@ export class InstancesCreateComponent implements OnInit {
           this.totalincludesVAT = 0;
         }
       });
+  }
+
+  dataSubjectCpuGpu: Subject<any> = new Subject<any>();
+  changeCpuOfGpu(value: number) {
+    this.dataSubjectCpuGpu.next(value);
+  }
+
+  dataSubjectRamGpu: Subject<any> = new Subject<any>();
+  changeRamOfGpu(value: number) {
+    this.dataSubjectRamGpu.next(value);
+  }
+
+  dataSubjectStorageGpu: Subject<any> = new Subject<any>();
+  changeStorageOfGpu(value: number) {
+    this.dataSubjectStorageGpu.next(value);
+  }
+
+  dataSubjectGpu: Subject<any> = new Subject<any>();
+  changeGpu(value: number) {
+    this.dataSubjectGpu.next(value);
   }
   //#endregion
 
@@ -910,7 +966,12 @@ export class InstancesCreateComponent implements OnInit {
     this.externalIp(this.listOfDataIPv6, false);
   }
 
-  onInputIPv4(value: any) {
+  onInputIPv4(value: any, id: number) {
+    this.listOfDataIPv4.forEach((e) => {
+      if (e.id == id) {
+        e.amount = 1;
+      }
+    });
     this.changeTotalAmountIPv4(value);
     const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
@@ -926,7 +987,12 @@ export class InstancesCreateComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onInputIPv6(value: any) {
+  onInputIPv6(value: any, id: number) {
+    this.listOfDataIPv6.forEach((e) => {
+      if (e.id == id) {
+        e.amount = 1;
+      }
+    });
     this.changeTotalAmountIPv6(value);
     const filteredArrayHas = this.listOfDataIPv6.filter(
       (item) => item.ip == ''
@@ -1027,7 +1093,7 @@ export class InstancesCreateComponent implements OnInit {
       });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.vpcId = this.projectId;
+    this.instanceCreate.projectId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;
     this.instanceCreate.serviceInstanceId = 0;
@@ -1068,7 +1134,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.instanceToAttachId = null;
     this.volumeCreate.isMultiAttach = blockStorage.multiattach;
     this.volumeCreate.isEncryption = blockStorage.encrypt;
-    this.volumeCreate.vpcId = this.projectId.toString();
+    this.volumeCreate.projectId = this.projectId.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
@@ -1444,5 +1510,9 @@ export class InstancesCreateComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  navigateToSecurity(): void {
+    this.router.navigate(['/app-smart-cloud/security-group/list']);
   }
 }

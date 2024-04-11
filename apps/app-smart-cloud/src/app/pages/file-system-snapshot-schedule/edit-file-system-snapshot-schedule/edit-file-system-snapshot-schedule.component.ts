@@ -20,12 +20,12 @@ interface SelectedFileSystem {
   name: string;
 }
 @Component({
-  selector: 'one-portal-edit-file-system-snapshot-schedule',
+  selector: 'one-portal-extend-file-system-snapshot-schedule',
   templateUrl: './edit-file-system-snapshot-schedule.component.html',
   styleUrls: ['./edit-file-system-snapshot-schedule.component.less'],
 })
 export class EditFileSystemSnapshotScheduleComponent implements OnInit{
-  
+
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -135,13 +135,13 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
     return selectedDay ? selectedDay.label : '';
   }
 
-  
+
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.getListFileSystem();
     this.getScheduleById(this.activatedRoute.snapshot.paramMap.get('id'))
-    
+
   }
 
   regionChange(region: RegionModel) {
@@ -170,9 +170,9 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
           this.fileSystemSnapshotScheduleDetail = data;
           console.log(data);
           const shareIds = data.items.map((item) => {
-            return item.itemId
+            return item
           })
-          
+
           this.FileSystemSnapshotForm.controls.name.setValue(data.name);
           this.FileSystemSnapshotForm.controls.listOfFileSystem.setValue(shareIds);
           this.FileSystemSnapshotForm.controls.runtime.setValue(new Date(data.runtime));
@@ -212,7 +212,7 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
         (data) => {
           this.isLoading = false;
           console.log(data);
-          
+
           this.response = data;
         },
         (error) => {
@@ -339,9 +339,9 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
           if (selectedOption) {
             return { id: selectedOption.id, name: selectedOption.name };
           } else {
-            return null; 
+            return null;
           }
-        }).filter(selectedFileSystem => selectedFileSystem !== null); 
+        }).filter(selectedFileSystem => selectedFileSystem !== null);
       }
     });
   }
@@ -383,5 +383,5 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   }
 
 
-  
+
 }

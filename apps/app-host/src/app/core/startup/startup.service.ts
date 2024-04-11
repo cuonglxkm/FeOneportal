@@ -37,13 +37,15 @@ export class StartupService {
   }
 
   load(): Observable<void> {
-
     const defaultLang = this.i18n.defaultLang;
+    console.log(defaultLang);
+    
     const baseUrl = environment['baseUrl'];
 
     return zip(
       this.i18n.loadLangData(defaultLang),
-      this.httpClient.get('assets/tmp/app-data.json'),
+      
+      defaultLang !== 'vi-VI' ? this.httpClient.get('assets/tmp/app-data-en.json') : this.httpClient.get('assets/tmp/app-data.json'),
       // localStorage.getItem('_token')
       //   ? this.httpClient.get(baseUrl + '/provisions/object-storage/userinfo')
       //   : of(null)
@@ -60,7 +62,8 @@ export class StartupService {
         ]) => {
           // setting language data
           this.i18n.use(defaultLang, langData);
-
+          console.log(appData);
+          
           this.settingService.setApp({
             name: 'One Portal',
             description: 'One Portal',

@@ -1,9 +1,9 @@
 <page-header [breadcrumb]="breadcrumb" title="Tạo mới Object Storage">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item
-        ><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item
         ><a [routerLink]="['/app-smart-cloud/object-storage']"
           >Object Storage</a

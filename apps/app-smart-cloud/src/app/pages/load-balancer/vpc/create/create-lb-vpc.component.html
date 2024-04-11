@@ -48,13 +48,9 @@
                      [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc
-                  biệt (trừ _)
-                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Load
-                  Balancer khác
-                </ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -115,7 +111,7 @@
                              [nzPlaceHolder]="'Chọn dải Subnet'"
                              nzAllowClear>
                     <nz-option *ngFor="let index of listSubnets"
-                               [nzValue]="index.id"
+                               [nzValue]="index.cloudId"
                                [nzLabel]="index.name + '(' + index.subnetAddressRequired + ')'"></nz-option>
                   </nz-select>
                 </nz-form-control>
@@ -133,7 +129,8 @@
                        src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="ipAddressErrorTpl">
-                  <input nz-input class="input-custom" formControlName="ipAddress" [placeholder]="'Nhập địa chỉ ip'" />
+                  <input nz-input class="input-custom" (ngModelChange)="onInput($event)" formControlName="ipAddress" [placeholder]="'Nhập địa chỉ ip'" />
+                  <span *ngIf="!isInput" style="color: #ff4d4f;">Địa chỉ IP phải nằm trong dải Subnet. Trường hợp Khách hàng không nhập địa chỉ IP, hệ thống sẽ tự động cấp địa chỉ IP cho Khách hàng.</span>
                   <ng-template #ipAddressErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x</ng-container>
                   </ng-template>
@@ -146,8 +143,8 @@
               <span>Chọn IP Floating (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-select [nzPlaceHolder]="'Chọn dải IP'" nzAllowClear formControlName="ipFloating" nzSize="large">
-                <nz-option></nz-option>
+              <nz-select [nzPlaceHolder]="'Chọn dải IP'" (ngModelChange)="selectedIp($event)"  nzAllowClear formControlName="ipFloating" nzSize="large">
+                <nz-option *ngFor="let index of ipFloating" [nzValue]="index.id" [nzLabel]="index.ipAddress"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -239,7 +236,9 @@
           <div style="margin-top: 10px" class="text-value">IP Address</div>
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
           <div style="margin-top: 10px" class="text-value" *ngIf="selectedValueRadio == 'true'">IP Public</div>
-          <div style="margin-top: 10px" class="text-label"  *ngIf="selectedValueRadio == 'true'"></div>
+          <div style="margin-top: 10px" class="text-label"  *ngIf="selectedValueRadio == 'true'" >
+            <span #selectedValueIpFloating></span>
+          </div>
           <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
           <div style="margin-top: 10px" class="text-label">
             <span #selectedValueOffer></span>

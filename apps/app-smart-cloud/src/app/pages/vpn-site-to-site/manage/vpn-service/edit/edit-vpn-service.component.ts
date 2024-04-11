@@ -57,9 +57,9 @@ export class EditVpnServiceComponent{
     formEdit.regionId = this.region
     formEdit.projectId = this.project
     formEdit.customerId = this.tokenService.get()?.userId
-    
+
     console.log(formEdit);
-    
+
     if(this.validateForm.valid) {
         this.vpnServiceService.edit(formEdit).subscribe(data => {
           if(data) {
@@ -78,11 +78,11 @@ export class EditVpnServiceComponent{
             this.isLoading =  false
             this.notification.error('Thất bại', 'Chỉnh sửa Vpn Service thất bại')
           }
-          
+
         })
-      
+
     }
   }
 
-  
+
 }

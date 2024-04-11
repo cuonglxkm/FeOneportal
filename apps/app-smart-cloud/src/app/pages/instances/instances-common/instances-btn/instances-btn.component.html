@@ -64,7 +64,8 @@
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
-        instancesModel.taskState.toUpperCase() != 'ERROR'
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        !instancesModel.imageName.toUpperCase().includes('CIRROS')
       "
       nz-menu-item
       (click)="modalResetPassword()"
@@ -196,7 +197,7 @@
       ></nz-alert>
       <ng-template #customTemplateMessageResetPassword>
         <div>
-          Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root Nếu
+          Nếu HĐH là Linux, hệ thống sẽ đặt lại mật khẩu cho tài khoản root. Nếu
           HĐH là Windows, hệ thống sẽ đặt lại mật khẩu cho tài khoản
           Administrator
         </div>

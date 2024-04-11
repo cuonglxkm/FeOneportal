@@ -20,6 +20,7 @@ export enum ServiceType {
     K8s = 19,
     VPNSiteToSites = 20,
     Kafka = 21,
+    SNAPSHOT_PACKET = 22,
     OTHER = 100
 }
 

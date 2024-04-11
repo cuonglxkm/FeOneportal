@@ -70,6 +70,14 @@ export class ListLoadBalancerComponent implements OnInit{
     }
   }
 
+  handleUpdateNoVpcOk() {
+    this.search(false)
+  }
+
+  navigateToUpdateVpc(id) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/update/vpc/'+id])
+  }
+
   search(isBegin) {
     this.isLoading = true
     let formSearch = new FormSearchListBalancer()
@@ -90,6 +98,10 @@ export class ListLoadBalancerComponent implements OnInit{
       this.isLoading = false
       this.response = null
     })
+  }
+
+  handleDeleteOk() {
+    this.search(true)
   }
 
   ngOnInit(): void {
