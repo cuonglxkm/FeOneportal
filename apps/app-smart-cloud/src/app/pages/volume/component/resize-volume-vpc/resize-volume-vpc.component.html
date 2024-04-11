@@ -137,6 +137,7 @@
                            id="storage"
                            class="input-custom"
                            style="width: 100%;"
+                           nzAutoFocus
                            [nzMin]="volumeInfo?.sizeInGB"
                            [nzStep]="1"/>
           <ng-template #storageErrorTpl let-control>
@@ -156,7 +157,7 @@
             <nz-modal [(nzVisible)]="isVisibleConfirm" nzTitle="Xác nhận thay đổi Volume" nzTabScrollList="true"
                       (nzOnCancel)="handleCancelResize()" nzCentered>
               <div *nzModalTitle>
-                <p class="text-h5"><b>Xác nhận thay đổi Volume</b></p>
+                <span class="text-modal-title">Xác nhận thay đổi Volume</span>
               </div>
               <div *nzModalContent>
 

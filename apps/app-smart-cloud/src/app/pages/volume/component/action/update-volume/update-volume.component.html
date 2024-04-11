@@ -18,6 +18,7 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
+                 #volumeName
                  class="input-custom"
                  formControlName="nameVolume"
                  [placeholder]="'Nhập tên gói'" [maxLength]="50" appAutofocus/>

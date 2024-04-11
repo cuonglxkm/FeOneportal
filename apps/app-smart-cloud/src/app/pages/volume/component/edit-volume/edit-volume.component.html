@@ -164,9 +164,8 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
               <nz-input-number formControlName="storage"
-                               id="storage"
                                style="width: 100%; margin-left: 0;"
-                               appAutofocus
+                               nzAutoFocus
                                class="input-custom"
                                [nzMin]="volumeInfo?.sizeInGB"
                                (ngModelChange)="changeValueStorage($event)"

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
@@ -11,12 +11,15 @@ import { EditTextVolumeModel } from '../../../../../shared/models/volume.model';
   templateUrl: './update-volume.component.html',
   styleUrls: ['./update-volume.component.less'],
 })
-export class UpdateVolumeComponent {
+export class UpdateVolumeComponent implements AfterViewChecked{
   @Input() region: number
   @Input() project: number
   @Input() volume: VolumeDTO
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
+
+  @ViewChild('volumeName')
+  public input!: ElementRef<HTMLElement>;
 
   isLoading: boolean = false
   isVisible: boolean = false
@@ -112,5 +115,13 @@ export class UpdateVolumeComponent {
       this.notification.error('Thất bại', 'Cập nhật thông tin Volume thất bại')
     })
     this.isVisible = false
+  }
+
+  public ngAfterViewChecked(): void {
+    if (this.input) {
+      setTimeout(() => this.input.nativeElement.focus(), 0);
+    }
+
+    // (() => this.input.nativeElement.focus(), 1000);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   AfterViewInit,
   Component,
   ElementRef,
@@ -21,7 +22,7 @@ import { NzInputGroupComponent } from 'ng-zorro-antd/input';
   templateUrl: './delete-volume.component.html',
   styleUrls: ['./delete-volume.component.less'],
 })
-export class DeleteVolumeComponent{
+export class DeleteVolumeComponent implements AfterViewChecked {
   @Input() region: number
   @Input() project: number
   @Input() volumeId: number
@@ -35,7 +36,8 @@ export class DeleteVolumeComponent{
   value: string
   isInput: boolean = false
 
-  @ViewChild('okButton') okButton: ElementRef;
+  @ViewChild('volumeName')
+  public input!: ElementRef<HTMLElement>;
 
   constructor(private notification: NzNotificationService,
               private volumeService: VolumeService) {
@@ -94,14 +96,13 @@ export class DeleteVolumeComponent{
     }
   }
 
-  // ngAfterViewInit(): void {
-  //   // Khi modal được mở, thiết lập focus vào nút OK
-  //   this.modal.afterOpen.subscribe(() => {
-  //     if (this.okButton) {
-  //       this.okButton.nativeElement.focus();
-  //     }
-  //   });
-  // }
+  public ngAfterViewChecked(): void {
+    if (this.input) {
+      setTimeout(() => this.input.nativeElement.focus(), 0);
+    }
+
+    // (() => this.input.nativeElement.focus(), 1000);
+  }
 
 }
 
