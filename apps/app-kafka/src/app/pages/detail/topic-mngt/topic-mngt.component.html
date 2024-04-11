@@ -106,8 +106,8 @@
         <nz-table #basicTable nzShowPagination="false" [nzData]="configInfo | keyvalue" [nzPageSize]="50" [nzScroll]>
             <thead>
               <tr >
-                <th style="background-color: white;">Key</th>
-                <th style="background-color: white;">Value</th>
+                <th style="background-color: white;">Cấu hình</th>
+                <th style="background-color: white;">Giá trị</th>
               </tr>
             </thead>
             <tbody>
@@ -161,7 +161,7 @@
             <nz-form-item>
                 <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
-                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
+                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" nzPlaceHolder="Chọn một Topic">
                         <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
                     </nz-select>
                 </nz-form-control>
