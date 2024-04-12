@@ -179,11 +179,10 @@ export class TopicMngtComponent implements OnInit {
       let data = this.produceForm.value;
       this.topicService.testProduce(data)
         .pipe(finalize(() => {
-          this.loadingSrv.close();
-          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
           setTimeout(() => {
-            this.handleSyncTopic(this.serviceOrderCode);
-          }, 6000);
+            this.loadingSrv.close();
+            this.getList();
+          }, 5000);
           
         }))
         .subscribe((r: any) => {

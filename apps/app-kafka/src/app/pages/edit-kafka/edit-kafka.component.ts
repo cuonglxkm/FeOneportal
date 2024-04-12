@@ -77,6 +77,7 @@ export class EditKafkaComponent implements OnInit {
     this.myform.controls.serviceName.setValue(this.itemDetail.serviceName);
     this.myform.controls.version.setValue(this.itemDetail.version);
     this.myform.controls.description.setValue(this.itemDetail.description);
+    this.myform.controls.serviceName.disable();
   }
 
   getListVersion() {

@@ -60,7 +60,7 @@
                         <td [nzAlign]="'center'">{{ data.partitions }}</td>
                         <td [nzAlign]="'center'">{{ data.replicas }}</td>
                         <td [nzAlign]="'center'">{{ data.sumMessage }}</td>
-                        <td [nzAlign]="'center'">{{ data.sizeTopic }}</td>
+                        <td [nzAlign]="'center'">{{ data.size.value }} {{ data.size.unit }}</td>
                         <td [nzAlign]="'center'">{{ data.outOfSync != null ? data.outOfSync : 0 }}</td>
                         <td [nzAlign]="'center'" >
                             
