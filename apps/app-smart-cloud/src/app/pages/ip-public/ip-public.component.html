@@ -123,7 +123,7 @@
 
 <!--Gỡ-->
 <nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ IP Public" (nzOnCancel)="handleCancel()" (nzOnOk)="openIpRemove()"
-          nzOkText="Đồng ý"
+          nzOkText="Xác nhận"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
 <!--    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>-->
@@ -135,7 +135,7 @@
 
 <!--Xóa-->
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa IP Public {{ipAddressDelete}}" (nzOnCancel)="handleCancel()"
-          (nzOnOk)="openIpDelete()" nzOkText="Đồng ý" [nzOkDisabled]="disableDelete"
+          (nzOnOk)="openIpDelete()" nzOkText="Xác nhận" [nzOkDisabled]="disableDelete"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
 <!--    <b style="display: flex; justify-content: center;">Quý khách chắc chắn muốn thực hiện xóa Ip Public?</b>-->
