@@ -13,7 +13,7 @@
     </nz-alert>
     <div style="margin-top: 10px;">
       <span class="text-label">Để thực hiện xóa Volume {{ volumeName }}, vui lòng nhập tên Volume để xác nhận</span>
-      <input nz-input appAutofocus
+      <input nz-input #volumeInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"

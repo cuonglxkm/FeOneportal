@@ -20,7 +20,8 @@
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
+          <input #loadBalancerName
+                 nz-input
                  class="input-custom"
                  formControlName="nameLoadBalancer"
                  [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />

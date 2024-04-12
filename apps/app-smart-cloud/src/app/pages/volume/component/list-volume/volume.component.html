@@ -145,7 +145,7 @@
                                           [isMultiple]="data.isMultiAttach"
                                           [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkDetachVm()"/>
-                <span style="color: #0066B3; margin-right: 10px;margin-left: 10px; cursor: pointer;" nz-icon nzType="calendar"
+                <span *ngIf="data.serviceStatus != 'ERROR'" style="color: #0066B3; margin-right: 10px;margin-left: 10px; cursor: pointer;" nz-icon nzType="calendar"
                       nzTheme="outline" nz-popover
                       [nzPopoverContent]="'Tạo Backup'"
                       nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(data.id, data.creationDate, data.expirationDate, data.name)"></span>
@@ -154,7 +154,7 @@
                                           [volumeId]="data.id"
                                           [volumeName]="data.name"
                                           (onOk)="handleOkDelete()"/>
-                <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                <span *ngIf="data.serviceStatus != 'ERROR'" style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
                       [nzDropdownMenu]="opMenu"></span>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
@@ -317,7 +317,7 @@
                                             [isMultiple]="i.isMultiAttach"
                                             [instanceInVolume]="i.attachedInstances"
                                             (onOk)="handleOkDetachVm()"/>
-                  <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
+                  <span *ngIf="i.serviceStatus != 'ERROR'" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
                         nzTheme="outline" nz-popover
                         [nzPopoverContent]="'Tạo Backup'"
                         nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(i.id, i.creationDate, i.expirationDate, i.name)"></span>
@@ -325,7 +325,7 @@
                                             [project]="project"
                                             [volumeId]="i.id"
                                             (onOk)="handleOkDelete()"/>
-                  <span style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                  <span *ngIf="i.serviceStatus != 'ERROR'" style="color: #0066B3;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
                         [nzDropdownMenu]="opMenu"></span>
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>

@@ -36,6 +36,10 @@
           <nz-form-item style="margin-top: 15px;">
             <nz-form-label>
               <span>Tên Load Balancer (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'Tên Load Balancer không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
               <input nz-input
