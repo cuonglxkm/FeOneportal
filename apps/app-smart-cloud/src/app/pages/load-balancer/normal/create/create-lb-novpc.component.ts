@@ -10,7 +10,7 @@ import { Subnet } from '../../../../shared/models/vlan.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
 import {
-  FormCreate,
+  FormOrder,
   FormCreateLoadBalancer,
   FormSearchListBalancer,
   IPBySubnet
@@ -321,7 +321,7 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
-    let request: FormCreate = new FormCreate();
+    let request: FormOrder = new FormOrder();
     request.customerId = this.formCreateLoadBalancer.customerId;
     request.createdByUserId = this.formCreateLoadBalancer.customerId;
     request.note = 'tạo Load Balancer';

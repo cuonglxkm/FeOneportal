@@ -3,7 +3,7 @@ import { Subnet } from '../../../../shared/models/vlan.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
 import {
-  FormCreate,
+  FormOrder,
   FormCreateLoadBalancer,
   FormSearchListBalancer,
   IPBySubnet
@@ -271,7 +271,7 @@ export class CreateLbVpcComponent implements OnInit {
 
   doCreateLoadBalancerVpc() {
     this.loadBalancerInit();
-    let request: FormCreate = new FormCreate();
+    let request: FormOrder = new FormOrder();
     request.customerId = this.formCreateLoadBalancer.customerId;
     request.createdByUserId = this.formCreateLoadBalancer.customerId;
     request.note = 'tạo Load Balancer';

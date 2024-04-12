@@ -200,7 +200,6 @@ import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.c
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
 import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
 import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
-import { ResizeLoadBalancerNormalComponent } from './load-balancer/normal/resize/resize-load-balancer-normal.component';
 import { UpdateLoadBalancerNormalComponent } from './load-balancer/normal/update/update-load-balancer-normal.component';
 import { DeleteLoadBalancerComponent } from './load-balancer/delete/delete-load-balancer.component';
 import { ListListenerInLbComponent } from './load-balancer/detail/listener/list/list-listener-in-lb.component';
@@ -209,6 +208,8 @@ import { ListenerCreateComponent } from './load-balancer/listener/create/listene
 import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
 import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
+import { EllipsisModule } from '@delon/abc/ellipsis';
+import { AutofocusDirective } from './volume/autofocus-directive.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -394,7 +395,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetailLoadBalancerComponent,
     EditLoadBalancerVpcComponent,
     ExtendLoadBalancerNormalComponent,
-    ResizeLoadBalancerNormalComponent,
     UpdateLoadBalancerNormalComponent,
     DeleteLoadBalancerComponent,
     ListListenerInLbComponent,
@@ -434,7 +434,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AngJsoneditorModule,
     ClipboardModule,
     SafePipe,
+    EllipsisModule,
+    AutofocusDirective
     // ChartModule,
-  ],
+  ]
 })
 export class PagesModule {}

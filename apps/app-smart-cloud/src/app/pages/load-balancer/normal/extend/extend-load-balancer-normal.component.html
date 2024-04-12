@@ -1,1 +1,105 @@
-<p>extend-load-balancer-normal works!</p>
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Gia hạn Load Balancer'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Load Balancer
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/create">Gia hạn Load Balancer</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <form nz-form nzLayout="vertical">
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin Load Balancer</span>
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Tên Load Balancer (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="'Tên Load Balancer không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.name" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Gói dịch vụ (<span style="color: red">*</span>)</span>
+              <img nz-popover
+                   [nzPopoverContent]="titleTooltip"
+                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                   src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #titleTooltip>
+                <div style="display: block;">
+                  <span><b>Max Connection:</b> Tổng số kết nối tối đa trên 1 giây </span><br>
+                  <span><b>Active Connection:</b> Tổng số kết nối hoạt động tối đa trong 1 giây</span><br>
+                  <span><b>Data transfer:</b> Dữ liệu được chuyển giao dưới dạng các bit và byte trên một phương tiện kỹ thuật số hoặc analog,<br>
+                  và quá trình này cho phép truyền thông kỹ thuật số hoặc analog và chuyển động của nó giữa các thiết bị</span><br>
+                </div>
+              </ng-template>
+            </nz-form-label>
+            <nz-form-control>
+              <input nz-input class="input-custom" [value]="loadBalancer.offerName" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
+        <nz-card style="border-radius: 8px;">
+          <span class="text-card-header">Thông tin gia hạn</span>
+          <nz-row style="margin-top: 20px;">
+            <nz-col nzSpan="12">
+              <span class="text-label">Ngày cấp dịch vụ: {{ loadBalancer.createDate | date:'dd/MM/yyyy' }}</span>
+            </nz-col>
+            <nz-col nzSpan="12">
+              <span class="text-label">Ngày hết hạn: {{ loadBalancer.expiredDate | date:'dd/MM/yyyy' }} </span>
+            </nz-col>
+          </nz-row>
+          <nz-form-item>
+            <nz-form-label>
+              <span class="text-label">Số tháng cần gia hạn thêm</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+              <nz-input-number style="width:100%; margin-left: 0;" nzAutoFocus class="input-custom"
+                               formControlName="time"
+                               nzMin="1" nzMax="100" nzStep="1" />
+              <ng-template #dateErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                </ng-container>
+                <ng-container *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('pattern')">
+                  Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-card>
+      </form>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Chi phí ước tính</span>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

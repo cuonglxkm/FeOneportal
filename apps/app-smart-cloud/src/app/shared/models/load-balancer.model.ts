@@ -161,7 +161,7 @@ export class FormCreateLoadBalancer {
   typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.LoadbalancerCreateSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null"
 }
 
-export class FormCreate {
+export class FormOrder {
   customerId: number
   createdByUserId: number
   note: string
@@ -223,6 +223,22 @@ export class PoolDetail {
   healthMonitorId: string;
   protocol: string;
   sessionPersistence: boolean;
+}
+
+
+export class FormExtendLoadBalancer {
+  regionId: number
+  serviceName: string
+  customerId: number
+  projectId: number
+  vpcId: number
+  typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.LoadBalancerExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  newExpireDate: Date
+  userEmail: string
+  actorEmail: string
 }
 
 

@@ -3,7 +3,7 @@ import { BaseService } from './base.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import {
-  FormCreate,
+  FormOrder,
   FormSearchListBalancer,
   FormUpdateLB,
   IPBySubnet,
@@ -73,7 +73,7 @@ export class LoadBalancerService extends BaseService {
     );
   }
 
-  createLoadBalancer(formCreate: FormCreate) {
+  createLoadBalancer(formCreate: FormOrder) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders, formCreate).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
