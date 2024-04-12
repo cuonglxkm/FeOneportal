@@ -74,6 +74,10 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.upgradeForm = this.fb.group({
+      clusterName: [null,
+        [Validators.required, Validators.pattern(KubernetesConstant.CLUTERNAME_PATTERN), Validators.minLength(5), Validators.maxLength(50)]],
+      volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      volumeCloudType: [null, [Validators.required]],
       workerGroup: this.listFormWorkerGroupUpgrade
     });
   }
@@ -91,7 +95,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   onConfirmUpgradeService() {
     this.modalService.confirm({
       nzTitle: `Nâng cấp cluster ${this.detailCluster.clusterName}`,
-      nzContent: 'Hệ thống sẽ bị gián đoạn trong quá trình nâng cấp. Bạn có muốn nâng cấp không?',
+      nzContent: `Hệ thống sẽ bị gián đoạn trong quá trình nâng cấp.<br>Bạn có muốn nâng cấp không?`,
       nzOkText: "Xác nhận",
       nzCancelText: "Hủy bỏ",
       nzOnOk: () => this.onSubmitUpgrade()
@@ -121,8 +125,6 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {
     for (let i = 0; i < wgs.length; i++) {
-      const index = this.listFormWorkerGroupUpgrade ? this.listFormWorkerGroupUpgrade.length : 0;
-
       const isAutoScale = wgs[i].autoScaling;
       let nodeNumber: number;
       if (isAutoScale) {
@@ -134,7 +136,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       const wg = this.fb.group({
         id: [wgs[i].id],
         workerGroupName: [wgs[i].workerGroupName,
-          [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+          [Validators.required, Validators.maxLength(16), this.validateUnique(i), Validators.pattern(KubernetesConstant.WORKERNAME_PATTERN)]],
         nodeNumber: [nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
         volumeStorage: [wgs[i].volumeSize, [Validators.required, Validators.min(20), Validators.max(1000)]],
         volumeType: [wgs[i].volumeType, [Validators.required]],
@@ -149,6 +151,11 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
       this.listFormWorkerGroupUpgrade.push(wg);
     }
+
+    // init other info
+    this.upgradeForm.get('clusterName').setValue(this.detailCluster.clusterName);
+    this.upgradeForm.get('volumeCloudSize').setValue(this.detailCluster.volumeCloudSize);
+    this.upgradeForm.get('volumeCloudType').setValue(this.detailCluster.volumeCloudType);
   }
 
   addWorkerGroup(e?: MouseEvent): void {
@@ -159,7 +166,8 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     const index = this.listFormWorkerGroupUpgrade ? this.listFormWorkerGroupUpgrade.length : 0;
     const wg = this.fb.group({
       id: [null],
-      workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+      workerGroupName: [null,
+        [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern(KubernetesConstant.WORKERNAME_PATTERN)]],
       nodeNumber: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
       volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       volumeType: [KubernetesConstant.DEFAULT_VOLUME_TYPE, [Validators.required]],
@@ -169,7 +177,9 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       autoScalingWorker: [false, Validators.required],
       autoHealing: [false, Validators.required],
       minimumNode: [null],
-      maximumNode: [null]
+      maximumNode: [null],
+      ram: [null],
+      cpu: [null]
     });
     this.listFormWorkerGroupUpgrade.push(wg);
   }
@@ -235,14 +245,6 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     }
   }
 
-  onEditClusterName(value: string) {
-    console.log({value: value});
-  }
-
-  onChangeVolumeSize(value: string) {
-    console.log({value: value});
-  }
-
   onChangeNodeNumber(event: number, index: number) {
     const idWorker = this.listFormWorkerGroupUpgrade.at(index).get('id').value;
     if (idWorker) {
@@ -262,12 +264,8 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       const selectedConfig = this.listOfWorkerType.find(item => event == item.machineName);
       if (selectedConfig.cpu < oldWorkerInfo.cpu || selectedConfig.ram < oldWorkerInfo.ram) {
         this.listFormWorkerGroupUpgrade.at(index).get('configType').setErrors({invalid: true});
-        console.log(1);
-
       } else {
         delete this.listFormWorkerGroupUpgrade.at(index).get('configType').errors?.invalid;
-        console.log(2);
-
       }
     }
   }

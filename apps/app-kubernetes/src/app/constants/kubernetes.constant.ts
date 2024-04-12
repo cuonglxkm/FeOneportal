@@ -14,6 +14,8 @@ export class KubernetesConstant {
 
   public static OPENSTACK_LABEL = "openstack";
 
+  public static INPROGRESS_STATUS = [1,6,7];
+
   // action type
   public static CREATE_ACTION = "create";
 
@@ -27,5 +29,7 @@ export class KubernetesConstant {
   public static IPV4_PATTERN = '^(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}$';
 
   public static CLUTERNAME_PATTERN = '^[a-zA-Z0-9_-]*$';
+
+  public static WORKERNAME_PATTERN = '^[a-z0-9-_]*$';
 
 }

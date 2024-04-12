@@ -1,6 +1,6 @@
 <ng-container *ngIf="detailCluster; else loadingTpl">
   <ng-container *ngIf="!isEditMode; else submitModeTpl">
-    <button nz-button nzType="primary" (click)="onEditCluster()" class="mb-3">
+    <button nz-button nzType="default" (click)="onEditCluster()" class="mb-3">
       <span nz-icon nzType="edit" nzTheme="outline"></span>
       Điều chỉnh
     </button>
@@ -11,147 +11,159 @@
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Xác nhận
     </button>
-    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3"
-      [disabled]="isUpgrading">
+    <button nz-button nzType="primary" nzDanger (click)="onCancelEdit()" class="mb-3" [disabled]="isUpgrading">
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy bỏ
     </button>
   </ng-template>
 
-  <!-- Thông tin chung -->
-  <nz-card class="border-card">
-    <h3>Thông tin chung</h3>
-    <div nz-row>
-      <div nz-col [nzSpan]="24" class="detailtable">
-        <nz-table [nzTemplateMode]="true" nzBordered>
-          <tbody>
-            <tr>
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">
-                    Tên cluster
-                  </div>
-                  <div nz-col [nzSpan]="16" class="description-info">
-                    <ng-container *ngIf="!isEditMode; else editClusterNameTpl">
-                      {{detailCluster.clusterName}}
-                    </ng-container>
-                    <ng-template #editClusterNameTpl>
-                      <input type="text" nz-input [value]="upgradeClusterName"
-                        (input)="onEditClusterName($event.target.value)" />
-                    </ng-template>
-                  </div>
-                </div>
-              </td>
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">
-                    Phiên bản Kubernetes
-                  </div>
-                  <div nz-col [nzSpan]="16" class="description-info">
-                    {{detailCluster.currentVersion}}
-                    <button nz-button nzType="text" (click)="handleShowModalUpgradeVersion()"
-                      class="action-icon borderless" nzTooltipTitle="Nâng cấp" nzTooltipPlacement="top" nz-tooltip>
-                      <span nz-icon>
-                        <svg viewBox="64 64 896 896" focusable="false">
-                          <path
-                            d="M868 545.5L536.1 163a31.96 31.96 0 00-48.3 0L156 545.5a7.97 7.97 0 006 13.2h81c4.6 0 9-2 12.1-5.5L474 300.9V864c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V300.9l218.9 252.3c3 3.5 7.4 5.5 12.1 5.5h81c6.8 0 10.5-8 6-13.2z" />
-                        </svg>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <!-- <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'API Endpoint'"></row-data></td> -->
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">
-                    API Endpoint
-                  </div>
-                  <div nz-col [nzSpan]="16" class="description-info">
-                    <ng-container *ngIf="detailCluster.apiEndpoint?.length <= 30; else truncateEndpointTpl">
-                      {{detailCluster.apiEndpoint}}
-                    </ng-container>
-                    <ng-template #truncateEndpointTpl>
-                      <span nz-popover nzPopoverTitle="API Endpoint" [nzPopoverContent]="apiEnpointTpl"
-                        nzPopoverPlacement="bottom">
-                        {{detailCluster.apiEndpoint | truncateLabel}}
-                      </span>
-
-                      <ng-template #apiEnpointTpl>
-                        <div style="width: fit-content">{{detailCluster.apiEndpoint}}</div>
+  <form nz-form [formGroup]="upgradeForm">
+    <!-- Thông tin chung -->
+    <nz-card class="border-card">
+      <h3>Thông tin chung</h3>
+      <div nz-row>
+        <div nz-col [nzSpan]="24" class="detailtable">
+          <nz-table [nzTemplateMode]="true" nzBordered>
+            <tbody>
+              <tr>
+                <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Tên cluster</div>
+                    <div nz-col [nzSpan]="16" class="description-info">
+                      <ng-container *ngIf="!isEditMode; else editClusterNameTpl">
+                        {{detailCluster.clusterName}}
+                      </ng-container>
+                      <ng-template #editClusterNameTpl>
+                        <nz-form-item>
+                          <nz-form-control [nzErrorTip]="errorClusterNameTpl">
+                            <input type="text" nz-input formControlName="clusterName" placeholder="Nhập tên cluster" />
+                          </nz-form-control>
+                          <ng-template #errorClusterNameTpl>
+                            <ng-container *ngIf="control.hasError('required')">
+                              <div>Tên cluster không để trống</div>
+                            </ng-container>
+                            <ng-container *ngIf="control.hasError('minlength') || control.hasError('maxlength')">
+                              <div>Tên cluster trong khoảng từ 5-50 ký tự</div>
+                            </ng-container>
+                            <ng-container *ngIf="control.hasError('pattern')">
+                              <div>Tên cluster chỉ bao gồm các chữ thường, chữ hoa, số và các ký tự _-</div>
+                            </ng-container>
+                          </ng-template>
+                        </nz-form-item>
                       </ng-template>
-                    </ng-template>
-
-                    <button nz-button nzType="text" (click)="handleCopyAPIEndpoint()" class="action-icon borderless"
-                      nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
-                      <span nz-icon nzType="copy" nzTheme="outline"></span>
-                    </button>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="w-50"><row-data [value]="detailCluster.orderCode" [label]="'Mã đơn hàng'"></row-data></td>
-            </tr>
-
-            <tr>
-              <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
-                  [label]="'Ngày khởi tạo'"></row-data></td>
-              <td class="w-50"><row-data
-                  [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
-                  [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
-            </tr>
-
-            <tr>
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">Trạng thái</div>
-                  <div nz-col [nzSpan]="16">
-                    <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
-                      <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
-                    </ng-container>
+                </td>
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">
+                      Phiên bản Kubernetes
+                    </div>
+                    <div nz-col [nzSpan]="16" class="description-info">
+                      {{detailCluster.currentVersion}}
+                      <button nz-button nzType="text" (click)="handleShowModalUpgradeVersion()"
+                        class="action-icon borderless" nzTooltipTitle="Nâng cấp" nzTooltipPlacement="top" nz-tooltip>
+                        <span nz-icon>
+                          <svg viewBox="64 64 896 896" focusable="false">
+                            <path
+                              d="M868 545.5L536.1 163a31.96 31.96 0 00-48.3 0L156 545.5a7.97 7.97 0 006 13.2h81c4.6 0 9-2 12.1-5.5L474 300.9V864c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V300.9l218.9 252.3c3 3.5 7.4 5.5 12.1 5.5h81c6.8 0 10.5-8 6-13.2z" />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="w-50"><row-data [value]="detailCluster.description" [label]="'Mô tả'"></row-data></td>
-            </tr>
+                </td>
+              </tr>
 
-            <tr>
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">Cấu hình</div>
-                  <div nz-col [nzSpan]="16">
-                    <span class="description-info">
-                      <a (click)="handleViewKubeConfig()">{{detailCluster.clusterName}}.Kubeconfig</a>
-                    </span>
-                    <button nz-button nzType="text" (click)="handleDownloadKubeConfig()" class="action-icon borderless"
-                      nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip>
-                      <span nz-icon class="primary-color">
-                        <svg viewBox="64 64 896 896" focusable="false">
-                          <path
-                            d="M505.7 661a8 8 0 0012.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z" />
-                        </svg>
+              <tr>
+                <!-- <td class="w-50"><row-data [value]="detailCluster.apiEndpoint" [label]="'API Endpoint'"></row-data></td> -->
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">
+                      API Endpoint
+                    </div>
+                    <div nz-col [nzSpan]="16" class="description-info">
+                      <ng-container *ngIf="detailCluster.apiEndpoint?.length <= 30; else truncateEndpointTpl">
+                        {{detailCluster.apiEndpoint}}
+                      </ng-container>
+                      <ng-template #truncateEndpointTpl>
+                        <span nz-popover nzPopoverTitle="API Endpoint" [nzPopoverContent]="apiEnpointTpl"
+                          nzPopoverPlacement="bottom">
+                          {{detailCluster.apiEndpoint | truncateLabel}}
+                        </span>
+
+                        <ng-template #apiEnpointTpl>
+                          <div style="width: fit-content">{{detailCluster.apiEndpoint}}</div>
+                        </ng-template>
+                      </ng-template>
+
+                      <button nz-button nzType="text" (click)="handleCopyAPIEndpoint()" class="action-icon borderless"
+                        nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
+                        <span nz-icon nzType="copy" nzTheme="outline"></span>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+                <td class="w-50"><row-data [value]="detailCluster.orderCode" [label]="'Mã đơn hàng'"></row-data></td>
+              </tr>
+
+              <tr>
+                <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
+                    [label]="'Ngày khởi tạo'"></row-data></td>
+                <td class="w-50"><row-data
+                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                    [label]="'Ngày hết hạn'" [type]="'danger'"></row-data></td>
+              </tr>
+
+              <tr>
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">Trạng thái</div>
+                    <div nz-col [nzSpan]="16">
+                      <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
+                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{status.status}}</span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+                <td class="w-50"><row-data [value]="detailCluster.description" [label]="'Mô tả'"></row-data></td>
+              </tr>
+
+              <tr>
+                <td class="w-50">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8">Cấu hình</div>
+                    <div nz-col [nzSpan]="16">
+                      <span class="description-info">
+                        <a (click)="handleViewKubeConfig()">{{detailCluster.clusterName}}.Kubeconfig</a>
                       </span>
-                    </button>
-                    <button nz-button nzType="text" (click)="handleSyncClusterInfo()" class="action-icon borderless"
-                      nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip (click)="handleCopyKubeConfig()">
-                      <span nz-icon nzType="copy" nzTheme="outline"></span>
-                    </button>
+                      <button nz-button nzType="text" (click)="handleDownloadKubeConfig()"
+                        class="action-icon borderless" nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top"
+                        nz-tooltip>
+                        <span nz-icon class="primary-color">
+                          <svg viewBox="64 64 896 896" focusable="false">
+                            <path
+                              d="M505.7 661a8 8 0 0012.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z" />
+                          </svg>
+                        </span>
+                      </button>
+                      <button nz-button nzType="text" (click)="handleSyncClusterInfo()" class="action-icon borderless"
+                        nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip (click)="handleCopyKubeConfig()">
+                        <span nz-icon nzType="copy" nzTheme="outline"></span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </nz-table>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
       </div>
-    </div>
-  </nz-card>
+    </nz-card>
 
-  <!-- Thông tin worker group -->
-  <nz-card class="border-card">
-    <h3>Thông tin worker group</h3>
-    <form nz-form [formGroup]="upgradeForm">
+    <!-- Thông tin worker group -->
+    <nz-card class="border-card">
+      <h3>Thông tin worker group</h3>
       <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroupUpgrade.controls; let i = index;">
         <ng-container [formGroupName]="i">
           <div nz-row>
@@ -159,15 +171,34 @@
               <nz-table [nzTemplateMode]="true" nzBordered>
                 <tbody>
                   <tr>
-                    <td class="w-50">
+                    <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8">Tên nhóm worker</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Tên nhóm worker</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editWorkerGroupNameTpl">
                             {{'workerGroupName' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
                           <ng-template #editWorkerGroupNameTpl>
-                            <input nz-input type="text" formControlName="workerGroupName" />
+                            <nz-form-item>
+                              <nz-form-control [nzErrorTip]="errorWorkerNameTpl">
+                                <input nz-input type="text" formControlName="workerGroupName"
+                                  placeholder="Nhập tên nhóm worker" />
+                              </nz-form-control>
+                              <ng-template #errorWorkerNameTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">
+                                  Tên nhóm worker không để trống
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('duplicateName')">
+                                  Tên nhóm worker đã tồn tại
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('maxlength')">
+                                  Tên nhóm worker tối đa 16 ký tự
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('pattern')">
+                                  Tên nhóm worker chỉ chứa các ký tự và số viết thường hoặc dấu gạch nối
+                                </ng-container>
+                              </ng-template>
+                            </nz-form-item>
                           </ng-template>
                         </div>
                       </div>
@@ -181,8 +212,20 @@
                             {{'nodeNumber' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
                           <ng-template #editNodeNumberTpl>
-                            <input nz-input type="text" formControlName="nodeNumber" (keypress)="isNumber($event)"
-                              (ngModeChange)="onChangeNodeNumber($event, i)" />
+                            <nz-form-item>
+                              <nz-form-control [nzErrorTip]="errorNodeNumberTpl">
+                                <input nz-input type="text" formControlName="nodeNumber" (keypress)="isNumber($event)"
+                                  (ngModeChange)="onChangeNodeNumber($event, i)" />
+                              </nz-form-control>
+                              <ng-template #errorNodeNumberTpl>
+                                <ng-container *ngIf="control.hasError('required')">
+                                  Số node không để trống
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                                  Số node trong khoảng từ 1-10
+                                </ng-container>
+                              </ng-template>
+                            </nz-form-item>
                           </ng-template>
                         </div>
                       </div>
@@ -190,28 +233,34 @@
                   </tr>
 
                   <tr>
-                    <td class="w-50">
+                    <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8">Cấu hình</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Cấu hình</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editConfigTypeTpl">
-                            {{'cpu' | getValueInForm: listFormWorkerGroupUpgrade : i}}vCPU / {{'ram' | getValueInForm: listFormWorkerGroupUpgrade : i}}GB
+                            {{'cpu' | getValueInForm: listFormWorkerGroupUpgrade : i}}vCPU / {{'ram' | getValueInForm:
+                            listFormWorkerGroupUpgrade : i}}GB
                           </ng-container>
                           <ng-template #editConfigTypeTpl>
-                            <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình"
-                              (ngModelChange)="onChangeConfigType($event, i)" class="w-100">
-                              <nz-option *ngFor="let item of listOfWorkerType"
-                                nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)" [nzValue]="item.machineName">
-                              </nz-option>
-                            </nz-select>
+                            <nz-form-item>
+                              <nz-form-control [nzErrorTip]="errorConfigError">
+                                <nz-select formControlName="configType" nzShowSearch nzPlaceHolder="Chọn cấu hình"
+                                  (ngModelChange)="onChangeConfigType($event, i)" class="w-100">
+                                  <nz-option *ngFor="let item of listOfWorkerType"
+                                    nzLabel="{{item.machineName}} ({{item.cpu}} CPU - {{item.ram}} GB RAM)"
+                                    [nzValue]="item.machineName">
+                                  </nz-option>
+                                </nz-select>
+                              </nz-form-control>
+                            </nz-form-item>
                           </ng-template>
                         </div>
                       </div>
                     </td>
 
-                    <td class="w-50">
+                    <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8">Ổ cứng (GB)</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Ổ cứng (GB)</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editWorkerVolumeSizeTpl">
                             {{'volumeStorage' | getValueInForm: listFormWorkerGroupUpgrade : i}}
@@ -246,7 +295,8 @@
                         <div nz-col [nzSpan]="8">Auto scale</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editScalingTpl">
-                            <ng-container *ngIf="('autoScalingWorker' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoScaleTpl">
+                            <ng-container
+                              *ngIf="('autoScalingWorker' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoScaleTpl">
                               Bật
                             </ng-container>
                             <ng-template #offAutoScaleTpl>
@@ -255,7 +305,7 @@
                           </ng-container>
                           <ng-template #editScalingTpl>
                             <nz-switch formControlName="autoScalingWorker" (ngModelChange)="onChangeAutoScale($event)"
-                            nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
+                              nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
                           </ng-template>
                         </div>
                       </div>
@@ -266,7 +316,8 @@
                         <div nz-col [nzSpan]="8">Auto healing</div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editHealingTpl">
-                            <ng-container *ngIf="('autoHealing' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoHealingTpl">
+                            <ng-container
+                              *ngIf="('autoHealing' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoHealingTpl">
                               Bật
                             </ng-container>
                             <ng-template #offAutoHealingTpl>
@@ -274,8 +325,8 @@
                             </ng-template>
                           </ng-container>
                           <ng-template #editHealingTpl>
-                            <nz-switch formControlName="autoHealing"
-                            nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
+                            <nz-switch formControlName="autoHealing" nzCheckedChildren="Bật"
+                              nzUnCheckedChildren="Tắt"></nz-switch>
                           </ng-template>
                         </div>
                       </div>
@@ -284,29 +335,58 @@
 
                   <ng-container *ngIf="isAutoScale">
                     <tr>
-                      <td class="w-50">
+                      <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                         <div nz-row>
-                          <div nz-col [nzSpan]="8">Minimum node</div>
+                          <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Minimum node</div>
                           <div nz-col [nzSpan]="16" class="description-info">
                             <ng-container *ngIf="!isEditMode; else editMinimumNodeTpl">
                               {{'minimumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                             </ng-container>
                             <ng-template #editMinimumNodeTpl>
-                              <input nz-input type="text" formControlName="minimumNode" placeholder="Nhập số node tối thiểu" />
+                              <nz-form-item>
+                                <nz-form-control [nzErrorTip]="errorMinimumNodeTpl">
+                                  <input nz-input type="text" formControlName="minimumNode"
+                                    placeholder="Nhập số node tối thiểu" />
+                                </nz-form-control>
+                                <ng-template #errorMinimumNodeTpl>
+                                  <ng-container *ngIf="control.hasError('required')">
+                                    Số node tối thiểu không để trống
+                                  </ng-container>
+                                  <ng-container *ngIf="control.hasError('invalid')">
+                                    Số node tối thiểu không lớn hơn số node tối đa
+                                  </ng-container>
+                                  <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                                    Số node tối thiểu trong khoảng 1-10
+                                  </ng-container>
+                                </ng-template>
+                              </nz-form-item>
                             </ng-template>
                           </div>
                         </div>
                       </td>
 
-                      <td class="w-50">
+                      <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                         <div nz-row>
-                          <div nz-col [nzSpan]="8">Maximum node</div>
+                          <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Maximum node</div>
                           <div nz-col [nzSpan]="16" class="description-info">
                             <ng-container *ngIf="!isEditMode; else editMaximumNodeTpl">
                               {{'maximumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                             </ng-container>
                             <ng-template #editMaximumNodeTpl>
-                              <input nz-input type="text" formControlName="maximumNode" placeholder="Nhập số node tối đa" />
+                              <nz-form-item>
+                                <nz-form-control [nzErrorTip]="errorMaximumNodeTpl">
+                                  <input nz-input type="text" formControlName="maximumNode"
+                                    placeholder="Nhập số node tối đa" />
+                                </nz-form-control>
+                                <ng-template #errorMaximumNodeTpl>
+                                  <ng-container *ngIf="control.hasError('required')">
+                                    Số node tối đa không để trống
+                                  </ng-container>
+                                  <ng-container *ngIf="control.hasError('min') || control.hasError('max')">
+                                    Số node tối đa trong khoảng từ 1-10
+                                  </ng-container>
+                                </ng-template>
+                              </nz-form-item>
                             </ng-template>
                           </div>
                         </div>
@@ -335,149 +415,93 @@
           Thêm worker group
         </button>
       </ng-container>
-    </form>
-  </nz-card>
+    </nz-card>
 
-  <!-- <nz-card class="border-card">
-    <h3>Thông tin worker group</h3>
-    <ng-container *ngIf="detailCluster.workerGroup.length > 0; else workerlessTpl">
-      <ng-container *ngFor="let item of detailCluster.workerGroup; let i=index;">
-        <div nz-row>
-          <div nz-col [nzSpan]="24" class="detailtable">
-            <nz-table [nzTemplateMode]="true" nzBordered>
-              <tbody>
-                <tr>
-                  <td class="w-50">
-                    <div nz-row>
-                      <div nz-col [nzSpan]="8">Tên nhóm worker</div>
-                      <div nz-col [nzSpan]="16" class="description-info">
-                        <ng-container *ngIf="!isEditMode; else editWorkerGroupNameTpl">
-                          {{item.workerGroupName}}
-                        </ng-container>
-                        <ng-template #editWorkerGroupNameTpl>
-                          <input nz-input type="text" />
-                        </ng-template>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="w-50"><row-data [value]="item.minimumNode" [label]="'Tổng số node'"></row-data></td>
-                </tr>
+    <!-- Thông tin network -->
+    <nz-card class="border-card">
+      <h3>Thông tin network</h3>
+      <div nz-row>
+        <div nz-col [nzSpan]="24" class="detailtable">
+          <nz-table [nzTemplateMode]="true" nzBordered>
+            <tbody>
+              <tr>
+                <td class="w-50"><row-data [value]="detailCluster.networkType | network2label"
+                    [label]="'Loại network'"></row-data></td>
+                <td class="w-50"><row-data [value]="detailCluster.cidr" [label]="'Pod CIDR'"></row-data></td>
+              </tr>
 
-                <tr>
-                  <td class="w-50"><row-data value="{{item.cpu}} vCPU/{{item.ram}} GB" [label]="'Cấu hình'"></row-data>
-                  </td>
-                  <td class="w-50"><row-data [value]="item.volumeSize" [label]="'Ổ cứng (GB)'"></row-data></td>
-                </tr>
-
-                <tr>
-                  <td class="w-50">
-                    <div nz-row>
-                      <div nz-col [nzSpan]="8">Auto scale</div>
-                      <div nz-col [nzSpan]="16" class="description-info">
-                        <ng-container *ngIf="item.autoScaling; else noScaleTpl">
-                          Min Node: {{item.minimumNode}} - Max Node: {{item.maximumNode}}
-                          <button nz-button nzType="text" (click)="handleChangeScaleNode(item)"
-                            class="action-icon borderless" nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="top"
-                            nz-tooltip>
-                            <span nz-icon nzType="edit" nzTheme="outline"></span>
-                          </button>
-                        </ng-container>
-                        <ng-template #noScaleTpl>
-                          Tắt
-                        </ng-template>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td class="w-50"><row-data [value]="item.autoHealing == true ? 'Bật' : 'Tắt'"
-                      [label]="'Auto healing'"></row-data></td>
-                </tr>
-              </tbody>
-            </nz-table>
-          </div>
-          <ng-container *ngIf="i != (detailCluster.workerGroup.length - 1)">
-            <nz-divider nzDashed></nz-divider>
-          </ng-container>
+              <tr>
+                <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
+                <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
+              </tr>
+            </tbody>
+          </nz-table>
         </div>
-      </ng-container>
-    </ng-container>
-    <ng-template #workerlessTpl>
-      <nz-empty [nzNotFoundContent]="contentTpl">
-        <ng-template #contentTpl>
-          Không có thông tin nhóm worker
-        </ng-template>
-      </nz-empty>
-    </ng-template>
-  </nz-card> -->
-
-  <!-- Thông tin network -->
-  <nz-card class="border-card">
-    <h3>Thông tin network</h3>
-    <div nz-row>
-      <div nz-col [nzSpan]="24" class="detailtable">
-        <nz-table [nzTemplateMode]="true" nzBordered>
-          <tbody>
-            <tr>
-              <td class="w-50"><row-data [value]="detailCluster.networkType | network2label"
-                  [label]="'Loại network'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.cidr" [label]="'Pod CIDR'"></row-data></td>
-            </tr>
-
-            <tr>
-              <td class="w-50"><row-data [value]="vpcNetwork" [label]="'Mạng VPC'"></row-data></td>
-              <td class="w-50"><row-data [value]="detailCluster.subnet" [label]="'Subnet'"></row-data></td>
-            </tr>
-          </tbody>
-        </nz-table>
       </div>
-    </div>
-  </nz-card>
+    </nz-card>
 
-  <!-- Thông tin volume -->
-  <nz-card class="border-card">
-    <h3>Thông tin volume persistent</h3>
-    <div nz-row>
-      <div nz-col [nzSpan]="24" class="detailtable">
-        <nz-table [nzTemplateMode]="true" nzBordered>
-          <tbody>
-            <tr>
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">Loại</div>
-                  <div nz-col [nzSpan]="16" class="description-info">
-                    <ng-container *ngIf="!isEditMode; else editVolumeTypeTpl">
-                      {{detailCluster.volumeCloudType == 'hdd' ? 'HDD' : 'SSD'}}
-                    </ng-container>
-                    <ng-template #editVolumeTypeTpl>
-                      <nz-radio-group [(ngModel)]="upgradeVolumeType">
-                        <label nz-radio nzValue="hdd">HDD</label>
-                        <label nz-radio nzValue="sdd">SDD</label>
-                      </nz-radio-group>
-                    </ng-template>
+    <!-- Thông tin volume -->
+    <nz-card class="border-card">
+      <h3>Thông tin volume persistent</h3>
+      <div nz-row>
+        <div nz-col [nzSpan]="24" class="detailtable">
+          <nz-table [nzTemplateMode]="true" nzBordered>
+            <tbody>
+              <tr>
+                <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Loại</div>
+                    <div nz-col [nzSpan]="16" class="description-info">
+                      <ng-container *ngIf="!isEditMode; else editVolumeTypeTpl">
+                        {{detailCluster.volumeCloudType == 'hdd' ? 'HDD' : 'SSD'}}
+                      </ng-container>
+                      <ng-template #editVolumeTypeTpl>
+                        <nz-form-item>
+                          <nz-form-control>
+                            <nz-radio-group formControlName="volumeCloudType">
+                              <label nz-radio nzValue="hdd">HDD</label>
+                              <label nz-radio nzValue="sdd">SDD</label>
+                            </nz-radio-group>
+                          </nz-form-control>
+                        </nz-form-item>
+                      </ng-template>
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
 
-              <td class="w-50">
-                <div nz-row>
-                  <div nz-col [nzSpan]="8">Quota (GB)</div>
-                  <div nz-col [nzSpan]="16" class="description-info">
-                    <ng-container *ngIf="!isEditMode; else editVolumeSizeTpl">
-                      {{detailCluster.volumeCloudSize}}
-                    </ng-container>
-                    <ng-template #editVolumeSizeTpl>
-                      <input type="text" nz-input [value]="upgradeVolumeCloudSize" (keypress)="isNumber($event)"
-                        (input)="onChangeVolumeSize($event.target.value)" />
-                    </ng-template>
+                <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
+                  <div nz-row>
+                    <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Quota (GB)</div>
+                    <div nz-col [nzSpan]="16" class="description-info">
+                      <ng-container *ngIf="!isEditMode; else editVolumeSizeTpl">
+                        {{detailCluster.volumeCloudSize}}
+                      </ng-container>
+                      <ng-template #editVolumeSizeTpl>
+                        <nz-form-item>
+                          <nz-form-control [nzErrorTip]="errorVolumeSizeTpl">
+                            <input type="text" nz-input formControlName="volumeCloudSize" (keypress)="isNumber($event)"
+                              (ngModelChange)="onChangeVolumeSize($event)" />
+                          </nz-form-control>
+                          <ng-template #errorVolumeSizeTpl let-control>
+                            <ng-container *ngIf="control.hasError('required')">
+                              Quota volume không để trống
+                            </ng-container>
+                            <ng-container *ngIf="control.hasError('max') || control.hasError('min')">
+                              Quota trong khoảng từ 20-1000 (GB)
+                            </ng-container>
+                          </ng-template>
+                        </nz-form-item>
+                      </ng-template>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </nz-table>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
       </div>
-    </div>
-  </nz-card>
+    </nz-card>
+  </form>
 
 </ng-container>
 

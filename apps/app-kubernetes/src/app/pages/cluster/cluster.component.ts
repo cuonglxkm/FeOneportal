@@ -146,7 +146,7 @@ export class ClusterComponent implements OnInit {
 
     const index = this.listFormWorkerGroup ? this.listFormWorkerGroup.length : 0;
     const wg = this.fb.group({
-      workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern('^[a-z0-9-_]*$')]],
+      workerGroupName: [null, [Validators.required, Validators.maxLength(16), this.validateUnique(index), Validators.pattern(KubernetesConstant.WORKERNAME_PATTERN)]],
       nodeNumber: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
       volumeStorage: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
       volumeType: [this.DEFAULT_VOLUME_TYPE, [Validators.required]],

@@ -105,11 +105,13 @@
 
                 <ng-template #ortherStatusTpl>
                   <div class="flex-style">
-                    <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1" 
+                    <nz-progress [nzPercent]="listOfProgress[i]" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"
                       [nzStatus]="item.serviceStatus == 11 ? 'exception' : ''"></nz-progress>
                     <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{status.status}}</span>
                   </div>
                 </ng-template>
+
+                <pre>{{listOfProgress[i]}}</pre>
 
               </ng-container>
             </td>
@@ -125,10 +127,12 @@
                   </svg>
                 </span>
               </button>
-              <button nz-button nzType="text" nzTooltipTitle="Xóa cluster" nzTooltipPlacement="top" nz-tooltip
-                (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0">
-                <span nz-icon [nzType]="'delete'" class="delete-color"></span>
-              </button>
+              <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">
+                <button nz-button nzType="text" nzTooltipTitle="Xóa cluster" nzTooltipPlacement="top" nz-tooltip
+                  (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0" [disabled]="progressing == 2">
+                  <span nz-icon [nzType]="'delete'" [ngClass]="{'delete-color': progressing != 2}"></span>
+                </button>
+              </ng-container>
             </td>
           </tr>
         </tbody>

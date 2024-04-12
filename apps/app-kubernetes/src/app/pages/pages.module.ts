@@ -39,6 +39,7 @@ import { Action2Label } from '../pipes/action2label.pipe';
 import { NguCarousel, NguCarouselDefDirective, NguCarouselNextDirective, NguCarouselPrevDirective, NguItemComponent, NguTileComponent } from '@ngu/carousel';
 import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe';
 import { GetWorkerGroupValue } from '../pipes/worker-group-value.pipe';
+import { CheckStatusPipe } from '../pipes/check-status.pipe';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -61,6 +62,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     OverallComponent,
     CustomCurrencyPipe,
     GetWorkerGroupValue,
+    CheckStatusPipe,
 
   ],
   imports: [

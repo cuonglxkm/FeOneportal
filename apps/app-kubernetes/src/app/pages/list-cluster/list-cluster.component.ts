@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angula
 import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, Observable, Subscription, combineLatest, finalize } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, defaultIfEmpty, finalize } from 'rxjs';
 import { environment } from '@env/environment';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { ClusterStatus } from '../../model/status.model';
@@ -124,6 +124,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
+        this.listOfClusters.reverse();
+        this.listOfInProgressStatus.reverse();
 
         // check list cluster is empty with all status?
         if ((this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) && (k == '')) {
@@ -147,11 +149,11 @@ export class ListClusterComponent implements OnInit, OnDestroy {
                 progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
                 break;
               default:
-                progressObs = EMPTY;
+                progressObs = new Observable().pipe(defaultIfEmpty(0));
             }
 
           } else {
-            progressObs = EMPTY;
+            progressObs = new Observable().pipe(defaultIfEmpty(0));
           }
           progress.push(progressObs);
         }
@@ -162,7 +164,7 @@ export class ListClusterComponent implements OnInit, OnDestroy {
           // console.log({combine: data});
           this.listOfProgress = data;
           this.ref.detectChanges();
-          // console.log({ progress: this.listOfProgress });
+          console.log({ progress: this.listOfProgress });
         });
       }
     });
