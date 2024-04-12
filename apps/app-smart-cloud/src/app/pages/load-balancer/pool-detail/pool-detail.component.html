@@ -1,0 +1,77 @@
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Thông tin User'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
+          >Chi tiết User</a
+        >
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="regionId"
+        (valueChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+
+<nz-card style="border-radius: 4px" [nzBordered]="false">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin chính của User</span>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="8">
+      <label class="lable-custom">Tên của User</label>
+      <br />
+      <input
+        style="border-radius: 8px; width: 90%"
+        nz-input
+        [(ngModel)]="poolDetail.name"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </div>
+    <div nz-col nzSpan="8">
+      <label class="lable-custom">Email</label>
+      <br />
+      <input
+        style="border-radius: 8px; width: 90%"
+        nz-input
+        [(ngModel)]="poolDetail.lb_algorithm"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </div>
+    <div nz-col nzSpan="8">
+      <label class="lable-custom">Thời gian khởi tạo</label>
+      <br />
+      <input
+        style="border-radius: 8px; width: 90%"
+        nz-input
+        [(ngModel)]="poolDetail.protocol"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </div>
+  </div>
+</nz-card>
+

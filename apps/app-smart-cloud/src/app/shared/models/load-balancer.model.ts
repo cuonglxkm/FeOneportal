@@ -212,4 +212,17 @@ export class IPBySubnet {
   loadbalancerName: string
 }
 
+export class PoolDetail {
+  poolId: string;
+  name: string;
+  description: string;
+  adminStateUp: boolean;
+  lb_algorithm: string;
+  cookie_name: string;
+  type: string;
+  healthMonitorId: string;
+  protocol: string;
+  sessionPersistence: boolean;
+}
+
 
