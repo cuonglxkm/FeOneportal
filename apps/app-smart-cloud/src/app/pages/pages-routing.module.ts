@@ -123,6 +123,7 @@ import { ListenerCreateComponent } from './load-balancer/listener/create/listene
 import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
 import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
 
 
 const routes: Routes = [
@@ -579,6 +580,10 @@ const routes: Routes = [
   {
     path: 'load-balancer/update/vpc/:id',
     component: EditLoadBalancerVpcComponent
+  },
+  {
+    path: 'load-balancer/extend/normal/:id',
+    component: ExtendLoadBalancerNormalComponent
   }
   ]
 @NgModule({

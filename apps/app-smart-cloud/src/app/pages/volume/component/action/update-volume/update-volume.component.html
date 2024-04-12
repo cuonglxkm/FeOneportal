@@ -17,11 +17,11 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
-                 #volumeName
+          <input nz-input #volumeInputName
                  class="input-custom"
                  formControlName="nameVolume"
-                 [placeholder]="'Nhập tên gói'" [maxLength]="50" appAutofocus/>
+                 [placeholder]="'Nhập tên Volume'" [maxLength]="50"
+                 (keydown.enter)="focusOkButton($event)"/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)</ng-container>
@@ -38,7 +38,7 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                    <textarea nz-input
+                    <textarea nz-input [tabIndex]="0"
                               class="input-custom"
                               formControlName="description"
                               [placeholder]="'Nhập mô tả'"

@@ -125,6 +125,15 @@
                 <span *ngIf="typeVPC == 0">
                   <one-portal-update-load-balancer-normal [loadBalancer]="data" [region]="region" [project]="project" (onOk)="handleUpdateNoVpcOk()" />
                 </span>
+                <span *ngIf="typeVPC == 0"
+                      nz-icon
+                      nzType="arrows-alt"
+                      nzTheme="outline"
+                      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
+                      nz-popover
+                      [nzPopoverContent]="'Điều chỉnh'"
+                      nzPopoverPlacement="bottom"
+                      (click)="navigateToExtend(data.id)"></span>
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>
               </span>

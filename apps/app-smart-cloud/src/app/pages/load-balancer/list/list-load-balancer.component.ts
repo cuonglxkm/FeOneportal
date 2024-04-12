@@ -78,6 +78,10 @@ export class ListLoadBalancerComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/load-balancer/update/vpc/'+id])
   }
 
+  navigateToExtend(id) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/'+id])
+  }
+
   search(isBegin) {
     this.isLoading = true
     let formSearch = new FormSearchListBalancer()
