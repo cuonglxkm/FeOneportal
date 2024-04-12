@@ -241,4 +241,51 @@ export class FormExtendLoadBalancer {
   actorEmail: string
 }
 
+export class MemberOfPool {
+  id: string;
+  customerId: number;
+  regionId: number;
+  vpcId: number;
+  name: string;
+  ipAddress: string;
+  port: number;
+  weight: number;
+  poolId: string;
+  backup: boolean;
+  subnetId: string;
+}
+
+export class HealthCreate {
+  name: string;
+  delay: number;
+  maxRetries: number;
+  type: string;
+  timeout: number;
+  adminStateUp: boolean;
+  poolId: string;
+  expectedCodes: string;
+  httpMethod: string;;
+  urlPath: string;
+  maxRetriesDown: number;
+  customerId: number;
+  projectId: number;
+  regionId: number;
+}
+
+export class HealthUpdate {
+  id: string;
+  name: string;
+  delay: number;
+  maxRetries: number;
+  timeout: number;
+  adminStateUp: boolean;
+  expectedCodes: string;
+  httpMethod: string;
+  urlPath: string;
+  maxRetriesDown: number;
+  customerId: number;
+  projectId: number;
+  regionId: number;
+}
+
 

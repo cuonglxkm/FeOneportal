@@ -124,6 +124,7 @@ import { ListenerDetailComponent } from './load-balancer/listener/detail/listene
 import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
 import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
+import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
 
 
 const routes: Routes = [
@@ -584,6 +585,10 @@ const routes: Routes = [
   {
     path: 'load-balancer/extend/normal/:id',
     component: ExtendLoadBalancerNormalComponent
+  },
+  {
+    path: 'load-balancer/pool-detail',
+    component: PoolDetailComponent
   }
   ]
 @NgModule({

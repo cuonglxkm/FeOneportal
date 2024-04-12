@@ -158,6 +158,8 @@
   "form.account.city": "Province/City",
   "form.account.address": "Address",
   "app.input.name": "Enter name",
+  "app.input.code": "Enter code",
+  "app.input.url": "Enter url",
   "app.button.cancel": "Cancel",
   "app.button.edit": "Update",
   "app.button.create": "Create",
@@ -188,5 +190,7 @@
   "app.choose.vlan.instance": "Choose VLAN for Instance",
   "app.choose.port": "Choose port",
   "app.use.lan.network": "Use LAN Network",
-  "app.access.method.instance": "Access Method for Instance"
+  "app.access.method.instance": "Access Method for Instance",
+  "app.health.monitor.name": "Health Monitor name",
+  "app.health.monitor.type": "Check type"
 }
