@@ -49,6 +49,8 @@ export class DashboardComponent implements OnInit {
   public chartStorage: Partial<ChartOptions>;
   public chartProducers: Partial<ChartOptions>;
   public chartConsumers: Partial<ChartOptions>;
+  public chartCpu: Partial<ChartOptions>;
+  public chartRam: Partial<ChartOptions>;
 
   // Tạo Subject để đánh dấu khi có lỗi
   private unsubscribe$ = new Subject<void>();
@@ -59,15 +61,19 @@ export class DashboardComponent implements OnInit {
   byteOutData: ChartData = new ChartData();
   messageRateData: ChartData = new ChartData();
   storageData: ChartData = new ChartData();
+  cpuData: ChartData = new ChartData();
+  ramData: ChartData = new ChartData();
 
   statisticsNumber: DashboardGeneral = new DashboardGeneral();
   previousTimeMins = 5;
   numPoints = 15;
 
-  messageRateQuery = 'msg_rate';
+  messageRateQuery = 'msg';
   byteInQuery = 'byte_in';
   byteOutQuery = 'byte_out';
-  storageQuery = 'storage';
+  storageQuery = 'msg';
+  ramQuery = 'msg';
+  cpuQuery= 'msg';
 
   isHealth: number = null;
   isHealthMsg = 'Test';
@@ -131,10 +137,12 @@ export class DashboardComponent implements OnInit {
   ];
 
   resouceInstant = ['topic', 'offline_partition', 'message', 'partition']
-  byteInChartTitle = 'Thông lượng dữ liệu truyền vào (Byte/s)';
-  byteOutChartTitle = 'Thông lượng dữ liệu truyền ra (Byte/s)';
-  messageRateChartTitle = 'Messages (rate/s)';
-  storageChartTitle = 'Mức sử dụng Storage (GB) ';
+  byteInChartTitle = 'Thông lượng dữ liệu truyền vào';
+  byteOutChartTitle = 'Thông lượng dữ liệu truyền ra';
+  messageRateChartTitle = 'Tổng số Message';
+  storageChartTitle = 'Mức sử dụng Storage';
+  ramChartTitle = 'Mức sử dụng RAM';
+  cpuChartTitle = 'Mức sử dụng CPU';
 
   constructor(
     private dashBoardService: DashBoardService,
@@ -149,6 +157,8 @@ export class DashboardComponent implements OnInit {
     this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
     this.getMessageRateChart(this.serviceOrderCode, this.previousTimeMins, this.messageRateQuery, this.numPoints);
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
+    this.getCpuChart(this.serviceOrderCode, this.previousTimeMins, this.cpuQuery, this.numPoints);
+    this.getRamChart(this.serviceOrderCode, this.previousTimeMins, this.ramQuery, this.numPoints);
   }
 
   getStatisticNumber() {
@@ -208,6 +218,8 @@ export class DashboardComponent implements OnInit {
     this.getByteInChart(this.serviceOrderCode, this.previousTimeMins, this.byteInQuery, this.numPoints);
     this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
+    this.getCpuChart(this.serviceOrderCode, this.previousTimeMins, this.cpuQuery, this.numPoints);
+    this.getRamChart(this.serviceOrderCode, this.previousTimeMins, this.ramQuery, this.numPoints);
   }
 
   getCheckHealthChart(serviceOrderCode: string, fromTime: number, toTime: number) {
@@ -383,7 +395,7 @@ export class DashboardComponent implements OnInit {
         // },
       },
       title: {
-        text: chartTitle,
+        text: chartTitle + ' (' + yaxisTitle + ')',
         align: "left",
         style: {
           fontSize: "16px",
@@ -456,7 +468,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteInData = res.data;
           if (this.byteInData) {
-            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Byte/s', this.byteInChartTitle);
+            this.chartProducers = this.setDataChart(this.byteInData, this.byteInData.unit, this.byteInData.unit, this.byteInChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -471,7 +483,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteOutData = res.data;
           if (this.byteOutData) {
-            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Byte/s', this.byteOutChartTitle);
+            this.chartConsumers = this.setDataChart(this.byteOutData, this.byteOutData.unit, this.byteOutData.unit, this.byteOutChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -486,7 +498,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.messageRateData = res.data;
           if (this.messageRateData) {
-            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'rate/s', this.messageRateChartTitle);
+            this.chartMessage = this.setDataChart(this.messageRateData, this.messageRateData.unit, this.messageRateData.unit, this.messageRateChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -502,6 +514,36 @@ export class DashboardComponent implements OnInit {
           this.storageData = res.data;
           if (this.storageData) {
             this.chartStorage = this.setDataChart(this.storageData, this.unitStorage, this.unitStorage, this.storageChartTitle)
+          }
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  getCpuChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
+    this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res) => {
+        if (res.code && res.code == 200) {
+          this.cpuData = res.data;
+          if (this.cpuData) {
+            this.chartCpu = this.setDataChart(this.cpuData, '%', '%', this.cpuChartTitle)
+          }
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  getRamChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
+    this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res) => {
+        if (res.code && res.code == 200) {
+          this.ramData = res.data;
+          if (this.ramData) {
+            this.chartRam = this.setDataChart(this.ramData, 'GB', 'GB', this.ramChartTitle)
           }
         } else {
           this.unsubscribe$.next();

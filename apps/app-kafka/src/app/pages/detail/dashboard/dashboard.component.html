@@ -92,14 +92,39 @@
                         </nz-select>
                     </div>
                 </div>
-                <!-- Giám sát Producers -->
                 <div nz-row style="margin-bottom: 30px; margin-top: 35px;">
+                    <!-- Mức sử dụng CPU -->
+                    <div nz-col nzXs="24" nzMd="11">
+                        <div id="chart-cpu">
+                            <apx-chart *ngIf="chartCpu && chartCpu.series" [series]="chartCpu.series"
+                                [chart]="chartCpu.chart" [xaxis]="chartCpu.xaxis" [yaxis]="chartCpu.yaxis"
+                                [dataLabels]="chartCpu.dataLabels" [fill]="chartCpu.fill" [grid]="chartCpu.grid"
+                                [stroke]="chartCpu.stroke" [title]="chartCpu.title" [tooltip]="chartCpu.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>
+                    <div nz-col nzXs="0" nzMd="2"></div>
+                    <!-- Giám sát Producers -->
                     <div nz-col nzXs="24" nzMd="11">
                         <div id="chart-producers">
                             <apx-chart *ngIf="chartProducers && chartProducers.series" [series]="chartProducers.series"
                                 [chart]="chartProducers.chart" [xaxis]="chartProducers.xaxis" [yaxis]="chartProducers.yaxis"
                                 [dataLabels]="chartProducers.dataLabels" [fill]="chartProducers.fill" [grid]="chartProducers.grid"
                                 [stroke]="chartProducers.stroke" [title]="chartProducers.title" [tooltip]="chartProducers.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div nz-row style="margin-bottom: 30px; margin-top: 35px;">
+                    <!-- Mức sử dụng RAM -->
+                    <div nz-col nzXs="24" nzMd="11">
+                        <div id="chart-ram">
+                            <apx-chart *ngIf="chartRam && chartRam.series" [series]="chartRam.series"
+                                [chart]="chartRam.chart" [xaxis]="chartRam.xaxis" [yaxis]="chartRam.yaxis"
+                                [dataLabels]="chartRam.dataLabels" [fill]="chartRam.fill" [grid]="chartRam.grid"
+                                [stroke]="chartRam.stroke" [title]="chartRam.title" [tooltip]="chartRam.tooltip">
                             </apx-chart>
                         </div>
                     </div>
@@ -116,25 +141,8 @@
                     </div>
                 </div>
                 <div nz-row>
-                    <!-- Giám sát Messages -->
-                    <div nz-col nzXs="24" nzMd="11">
-                        <div style="min-height: 40px; width: 100%;"></div>
-                        <div id="chart-message">
-                            <apx-chart *ngIf="chartMessage && chartMessage.series" [series]="chartMessage.series"
-                                [chart]="chartMessage.chart" [xaxis]="chartMessage.xaxis" [yaxis]="chartMessage.yaxis"
-                                [dataLabels]="chartMessage.dataLabels" [fill]="chartMessage.fill" [grid]="chartMessage.grid"
-                                [stroke]="chartMessage.stroke" [title]="chartMessage.title" [tooltip]="chartMessage.tooltip">
-                            </apx-chart>
-                        </div>
-                    </div>
-                    <div nz-col nzXs="0" nzMd="2"></div>
                     <!-- Giám sát Storage -->
                     <div nz-col nzXs="24" nzMd="11">
-                        <div style="min-height: 40px; text-align: right;">
-                            <nz-select id="cbx-unit" [(ngModel)]="unitStorage" (ngModelChange)="onChangeUnitStorage()" nzSize="large">
-                                <nz-option *ngFor="let unit of listUnit" [nzLabel]="unit.label" [nzValue]="unit.value"></nz-option>
-                            </nz-select>
-                        </div>
                         <div id="chart-storage">
                             <apx-chart *ngIf="chartStorage && chartStorage.series" [series]="chartStorage.series"
                                 [chart]="chartStorage.chart" [xaxis]="chartStorage.xaxis" [yaxis]="chartStorage.yaxis"
@@ -143,6 +151,17 @@
                             </apx-chart>
                         </div>
                     </div>
+                    <div nz-col nzXs="0" nzMd="2"></div>
+                    <!-- Giám sát Messages -->
+                    <div nz-col nzXs="24" nzMd="11">
+                        <div id="chart-message">
+                            <apx-chart *ngIf="chartMessage && chartMessage.series" [series]="chartMessage.series"
+                                [chart]="chartMessage.chart" [xaxis]="chartMessage.xaxis" [yaxis]="chartMessage.yaxis"
+                                [dataLabels]="chartMessage.dataLabels" [fill]="chartMessage.fill" [grid]="chartMessage.grid"
+                                [stroke]="chartMessage.stroke" [title]="chartMessage.title" [tooltip]="chartMessage.tooltip">
+                            </apx-chart>
+                        </div>
+                    </div>    
                 </div>
             </nz-card>
         </div>
