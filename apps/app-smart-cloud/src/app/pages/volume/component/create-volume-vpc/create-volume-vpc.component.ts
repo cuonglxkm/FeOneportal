@@ -176,6 +176,47 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.dataSubjectStorage.next(value)
   }
 
+
+  onChangeStatusSSD() {
+    this.selectedValueSSD = true
+    this.selectedValueHDD = false
+
+    console.log('Selected option changed ssd:', this.selectedValueSSD);
+    // this.iops = this.validateForm.get('storage').value * 10
+    // if(this.selectedValueRadio == 'hdd') {
+    //   this.iops = 300
+    // }
+    if(this.selectedValueSSD) {
+      this.volumeCreate.volumeType = 'ssd'
+      if(this.validateForm.get('storage').value <= 40) {
+        this.iops = 400
+      } else {
+        this.iops = this.validateForm.get('storage').value * 10
+      }
+    }
+
+  }
+  selectedValueHDD = true;
+  selectedValueSSD = false
+
+  onChangeStatusHDD() {
+    this.selectedValueHDD = true
+    this.selectedValueSSD = false
+    console.log('Selected option changed hdd:', this.selectedValueHDD);
+    // this.iops = this.validateForm.get('storage').value * 10
+    if(this.selectedValueHDD) {
+      this.volumeCreate.volumeType = 'hdd'
+      this.iops = 300
+    }
+    // if(this.selectedValueRadio == 'ssd') {
+    //   if(this.validateForm.get('storage').value <= 40) {
+    //     this.iops = 400
+    //   } else {
+    //     this.iops = this.validateForm.get('storage').value * 10
+    //   }
+    // }
+
+  }
   ngOnInit() {
 
     if(this.validateForm.controls.storage.value <= 40) return (this.iops = 400);
