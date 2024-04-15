@@ -1,4 +1,13 @@
-import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormSearchListBalancer, FormUpdateLB, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
@@ -9,7 +18,7 @@ import { LoadBalancerService } from '../../../../shared/services/load-balancer.s
   templateUrl: './update-load-balancer-normal.component.html',
   styleUrls: ['./update-load-balancer-normal.component.less'],
 })
-export class UpdateLoadBalancerNormalComponent{
+export class UpdateLoadBalancerNormalComponent implements AfterViewInit{
   // @Input() loadBalancerId: number
   @Input() region: number
   @Input() project: number
@@ -33,12 +42,18 @@ export class UpdateLoadBalancerNormalComponent{
 
   nameList: string[] = [];
 
-  @ViewChild('loadBalancerName')
-  public input!: ElementRef<HTMLElement>;
+  @ViewChild('loadBalancerInputName') loadBalancerInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private loadBalancerService: LoadBalancerService) {
+  }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOk();
+    }
   }
 
 
@@ -73,6 +88,8 @@ export class UpdateLoadBalancerNormalComponent{
     this.getListLoadBalancer()
     this.validateForm.get('nameLoadBalancer').setValue(this.loadBalancer?.name)
     this.validateForm.get('description').setValue(this.loadBalancer?.description)
+
+    setTimeout(() => {this.loadBalancerInputName?.nativeElement.focus()}, 1000)
   }
 
   handleCancel() {
@@ -100,6 +117,10 @@ export class UpdateLoadBalancerNormalComponent{
       this.notification.error('Thất bại', 'Cập nhật thông tin Load Balancer thất bại')
     })
 
+  }
+
+  ngAfterViewInit() {
+    this.loadBalancerInputName?.nativeElement.focus();
   }
 
 }

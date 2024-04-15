@@ -28,6 +28,7 @@ export class LoadBalancerModel {
   floatingIPAddress: string
   ipVIP: string
   offerName: string
+  subnetName: string
 }
 
 export class m_LBSDNListener {
@@ -241,6 +242,49 @@ export class FormExtendLoadBalancer {
   actorEmail: string
 }
 
+export class Pool {
+  loadbalancerCloudId: string
+  listener_id: string
+  name: string
+  description: string
+  algorithm: string
+  sessionPersistence: true
+  provisioningStatus: string
+  operatingStatus: string
+  protocol: string
+  id: string
+  tag: string[]
+  healthmonitor_id: string
+}
+
+export class FormCreateL7Policy {
+  action: string
+  adminStateUp: boolean
+  description: string
+  listenerId: string
+  regionId: number
+  vpcId: number
+  name: string
+  position: number
+  projectId: string
+  redirectHttpCode: number
+  redirectPoolId: string
+  redirectUrl: string
+  customerId: number
+}
+
+export class FormUpdatePool {
+  poolId: string
+  name: string
+  description: string
+  adminStateUp: true
+  lb_algorithm: string
+  session: boolean
+  customerId: number
+  vpcId: number
+  regionId: number
+}
+
 export class MemberOfPool {
   id: string;
   customerId: number;
@@ -290,7 +334,7 @@ export class HealthCreate {
   adminStateUp: boolean;
   poolId: string;
   expectedCodes: string;
-  httpMethod: string;;
+  httpMethod: string;
   urlPath: string;
   maxRetriesDown: number;
   customerId: number;

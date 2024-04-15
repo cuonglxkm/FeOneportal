@@ -116,10 +116,7 @@
             <span class="text-card-header">Danh sách Pool</span>
           </nz-col>
           <nz-col>
-            <button nz-button nzType="primary" nzSize="large">
-              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
-              <span class="button-text-primary">Tạo mới Pool</span>
-            </button>
+            <one-portal-create-pool-in-lb [region]="region" [project]="project" (onOk)="handleCreatePoolOk()"/>
           </nz-col>
         </nz-row>
         <one-portal-list-pool-load-balancer [idLB]="idLoadBalancer"/>

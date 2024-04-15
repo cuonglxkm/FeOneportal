@@ -1,1 +1,42 @@
-<p>list-pool-load-balancer works!</p>
+<nz-table #fixedTable
+          style="margin-top: 20px;"
+          [nzShowPagination]="false"
+          [nzData]="poolList || []"
+          [nzFrontPagination]="false"
+          [nzLoading]="isLoading">
+
+  <thead>
+  <tr>
+    <th>Tên Pool</th>
+    <th>Giao thức</th>
+    <th>Thuật toán</th>
+    <th>Trạng thái</th>
+    <th>Trạng thái tác vụ</th>
+    <th>Hoạt động</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of fixedTable.data">
+    <td nzAlign="left">{{ data.name }}</td>
+    <td nzAlign="left">{{ data.protocol }}</td>
+    <td nzAlign="left">{{ data.algorithm }}</td>
+    <td nzAlign="left">{{ data.operatingStatus }}</td>
+    <td nzAlign="left">{{ data.provisioningStatus }}</td>
+    <td>
+      <one-portal-edit-pool-in-lb [region]="region"
+                                  [project]="project"
+                                  [poolId]="data.id"
+                                  [loadBlancerId]="idLB"
+                                  [listenerId]="data.listener_id"
+                                  (onOk)="handleEditOk()" />
+      <one-portal-delete-pool-in-lb [region]="region"
+                                    [project]="project"
+                                    [poolId]="data.id"
+                                    [loadBlancerId]="idLB"
+                                    [listenerId]="data.listener_id"
+                                    [namePool]="data.name"
+                                    (onOk)="handleDeleteOk()"/>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

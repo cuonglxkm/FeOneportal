@@ -1,0 +1,90 @@
+<button nz-button nzType="primary" nzSize="large" (click)="showModal()">
+  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+  <span class="button-text-primary">Tạo mới Pool</span>
+</button>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Tạo mới Pool</span>
+  </div>
+  <div *nzModalContent >
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label>
+          <span>Tên Pool (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="'Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự (trừ _)'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="namePoolErrorTpl">
+          <input #poolInputName nz-input formControlName="namePool" class="input-custom"
+                 [placeholder]="'Nhập tên Pool'" />
+          <ng-template #namePoolErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Pool</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc
+              biệt, tối đa 50 ký tự (trừ _)
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>Thuật toán (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="''"
+               nzPopoverPlacement="bottom" style="margin-left: 5px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="algorithmErrorTpl">
+          <nz-select formControlName="algorithm" nzSize="large" [nzPlaceHolder]="'Chọn thuật toán'">
+            <nz-option *ngFor="let option of algorithms" [nzValue]="option.value.toUpperCase()"
+                       [nzLabel]="option.label.toUpperCase()"></nz-option>
+          </nz-select>
+          <ng-template #algorithmErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng chọn thuật toán</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>Thuật toán (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="'.'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
+          <nz-select formControlName="algorithm" nzSize="large" [nzPlaceHolder]="'Chọn thuật toán'">
+            <nz-option *ngFor="let option of protocols" [nzValue]="option.value.toUpperCase()"
+                       [nzLabel]="option.label.toUpperCase()"></nz-option>
+          </nz-select>
+          <ng-template #protocolErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng chọn thuật toán</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <span class="text-label">Sticky Session </span>
+          <img nz-popover
+               [nzPopoverContent]="'Là phương pháp phân luồng của bản tin gửi về member. Các bản tin được đánh dấu chung 1' +
+                ' session sẽ được gửi chung về server. Nó liên quan tới phương pháp đánh dấu session'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+          <label nz-checkbox formControlName="session" (ngModelChange)="sessionChange($event)"></label>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

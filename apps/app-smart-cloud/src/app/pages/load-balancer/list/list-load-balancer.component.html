@@ -94,46 +94,36 @@
             <td nzBreakWord>{{ data.floatingIPAddress }}</td>
             <td nzBreakWord>{{ data.provisioningStatus }}</td>
             <td nzBreakWord>
-              <span *ngIf="data.status === 'KHOITAO'">{{ loadBalancerStatus?.get(data.status) }}</span>
-              <span *ngIf="data.status === 'HUY'">{{ loadBalancerStatus?.get(data.status) }}</span>
+              <span style="color: #0066B3" *ngIf="data.status === 'KHOITAO'">{{ loadBalancerStatus?.get(data.status) }}</span>
+              <span style="color: #FF3333" *ngIf="data.status === 'HUY'">{{ loadBalancerStatus?.get(data.status) }}</span>
             </td>
             <td nzBreakWord>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
             <td  nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord></td>
             <td nzBreakWord>
               <span *ngIf="data.operatingStatus === 'ERROR'">
-                <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-                      nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'Xóa'"
-                      nzPopoverPlacement="bottom"></span>
+                <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
+                                                 [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>
               </span>
               <span *ngIf="data.operatingStatus === 'ONLINE'">
-                <span nz-icon
-                      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-                      nzType="plus" nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Tạo Listener'"
-                      nzPopoverPlacement="bottom"></span>
+                <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/add.svg"
+                     nz-popover
+                     [nzPopoverContent]="'Tạo Listener'"
+                     nzPopoverPlacement="bottom"/>
                 <span *ngIf="typeVPC == 1">
-                  <span nz-icon
-                        style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-                        nzType="edit" nzTheme="outline"
-                        nz-popover
-                        [nzPopoverContent]="'Chỉnh sửa'"
-                        nzPopoverPlacement="bottom" (click)="navigateToUpdateVpc(data.id)"></span>
+                  <img nz-popover src="assets/imgs/edit-2.svg"
+                       alt=""
+                       nzPopoverPlacement="bottom"
+                       (click)="navigateToUpdateVpc(data.id)"
+                       style="cursor: pointer; margin-right: 16px"
+                       [nzPopoverContent]="'Chỉnh sửa'" />
                 </span>
                 <span *ngIf="typeVPC == 0">
                   <one-portal-update-load-balancer-normal [loadBalancer]="data" [region]="region" [project]="project" (onOk)="handleUpdateNoVpcOk()" />
                 </span>
-                <span *ngIf="typeVPC == 0"
-                      nz-icon
-                      nzType="arrows-alt"
-                      nzTheme="outline"
-                      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-                      nz-popover
-                      [nzPopoverContent]="'Điều chỉnh'"
-                      nzPopoverPlacement="bottom"
-                      (click)="navigateToExtend(data.id)"></span>
+                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
+                     nz-popover nzPopoverContent="Gia hạn Load Balancer" nzPopoverPlacement="bottom"
+                     (click)="navigateToExtend(data.id)"/>
                 <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                  [nameLoadBalancer]="data.name" [region]="region" [project]="project" (onOk)="handleDeleteOk()"/>
               </span>
