@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import {
   FormCreateL7Policy,
-  FormOrder, FormPoolDetail,
+  FormOrder,
   FormSearchListBalancer,
   FormUpdateLB, FormUpdatePool,
   IPBySubnet,
@@ -197,21 +197,6 @@ export class LoadBalancerService extends BaseService {
 
   createL7Policy(formCreateL7: FormCreateL7Policy) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7policy', Object.assign(formCreateL7))
-      .pipe(catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-          // Redirect to login page or show unauthorized message
-          this.router.navigate(['/passport/login']);
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }));
-  }
-
-  getPoolById(idPool: string, lbId: number) {
-    return this.http.get<FormPoolDetail>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}?lbId=${lbId}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

@@ -273,19 +273,6 @@ export class FormCreateL7Policy {
   customerId: number
 }
 
-export class FormPoolDetail {
-  poolId: string
-  name: string
-  description: string
-  adminStateUp: boolean
-  lb_algorithm: string
-  cookie_name: string
-  type: string
-  healthMonitorId: string
-  protocol: string
-  sessionPersistence: boolean
-}
-
 export class FormUpdatePool {
   poolId: string
   name: string

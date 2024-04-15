@@ -4,24 +4,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormPoolDetail, FormUpdatePool, Pool } from '../../../../../shared/models/load-balancer.model';
+import { FormUpdatePool, PoolDetail } from '../../../../../shared/models/load-balancer.model';
 
 @Component({
   selector: 'one-portal-edit-pool-in-lb',
   templateUrl: './edit-pool-in-lb.component.html',
-  styleUrls: ['./edit-pool-in-lb.component.less'],
+  styleUrls: ['./edit-pool-in-lb.component.less']
 })
-export class EditPoolInLbComponent implements AfterViewInit{
-  @Input() region: number
-  @Input() project: number
-  @Input() poolId: string
-  @Input() loadBlancerId: number
-  @Input() listenerId: string
-  @Output() onOk = new EventEmitter()
-  @Output() onCancel = new EventEmitter()
+export class EditPoolInLbComponent implements AfterViewInit {
+  @Input() region: number;
+  @Input() project: number;
+  @Input() poolId: string;
+  @Input() loadBlancerId: number;
+  @Input() listenerId: string;
+  @Output() onOk = new EventEmitter();
+  @Output() onCancel = new EventEmitter();
 
-  isVisible: boolean = false
-  isLoading: boolean = false
+  isVisible: boolean = false;
+  isLoading: boolean = false;
 
   validateForm: FormGroup<{
     namePool: FormControl<string>
@@ -37,13 +37,13 @@ export class EditPoolInLbComponent implements AfterViewInit{
 
   nameList: string[] = [];
 
-  pool: FormPoolDetail = new FormPoolDetail();
+  pool: PoolDetail = new PoolDetail();
 
   algorithms = [
-    {value: 'Roud_Robin', label: 'Roud_Robin'},
-    {value: 'Least_Connection', label: 'Least_Connection'},
-    {value: 'Source_IP', label: 'Source_IP'}
-  ]
+    { value: 'Roud_Robin', label: 'Roud_Robin' },
+    { value: 'Least_Connection', label: 'Least_Connection' },
+    { value: 'Source_IP', label: 'Source_IP' }
+  ];
 
   @ViewChild('poolInputName') poolInputName!: ElementRef<HTMLInputElement>;
 
@@ -73,19 +73,21 @@ export class EditPoolInLbComponent implements AfterViewInit{
   }
 
   showModal() {
-    this.isVisible = true
+    this.isVisible = true;
     this.getDetailPool();
-    setTimeout(() => {this.poolInputName?.nativeElement.focus()}, 1000)
+    setTimeout(() => {
+      this.poolInputName?.nativeElement.focus();
+    }, 1000);
   }
 
   getDetailPool() {
-    this.loadBalancerService.getPoolById(this.poolId, this.loadBlancerId).subscribe(data => {
-      this.pool = data
+    this.loadBalancerService.getPoolDetail(this.poolId, this.loadBlancerId).subscribe(data => {
+      this.pool = data;
 
-      this.validateForm.controls.namePool.setValue(data.name)
-      this.validateForm.controls.algorithm.setValue(data.lb_algorithm)
-      this.validateForm.controls.session.setValue(data.sessionPersistence)
-    })
+      this.validateForm.controls.namePool.setValue(data.name);
+      this.validateForm.controls.algorithm.setValue(data.lb_algorithm);
+      this.validateForm.controls.session.setValue(data.sessionPersistence);
+    });
   }
 
   handleCancel() {
@@ -95,27 +97,27 @@ export class EditPoolInLbComponent implements AfterViewInit{
   }
 
   handleOk() {
-    if(this.validateForm.valid) {
-      let formUpdate = new FormUpdatePool()
-      formUpdate.poolId = this.poolId
-      formUpdate.session = this.validateForm.controls.session.value
+    if (this.validateForm.valid) {
+      let formUpdate = new FormUpdatePool();
+      formUpdate.poolId = this.poolId;
+      formUpdate.session = this.validateForm.controls.session.value;
       this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe(data => {
-        if(data) {
-          this.isVisible = false
-          this.isLoading = false
-          this.notification.success('Thành công', 'Cập nhật Pool thành công')
+        if (data) {
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.success('Thành công', 'Cập nhật Pool thành công');
         } else {
-          this.isVisible = false
-          this.isLoading = false
-          this.notification.error('Thất bại', 'Cập nhật Pool thất bại')
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
         }
-        this.onOk.emit(data)
+        this.onOk.emit(data);
       }, error => {
-        this.isVisible = false
-        this.isLoading = false
-        this.notification.error('Thất bại', 'Cập nhật Pool thất bại')
-        this.onOk.emit(error)
-      })
+        this.isVisible = false;
+        this.isLoading = false;
+        this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
+        this.onOk.emit(error);
+      });
     }
 
   }
