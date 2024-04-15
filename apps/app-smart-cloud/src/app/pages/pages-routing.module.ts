@@ -124,6 +124,8 @@ import { ListenerDetailComponent } from './load-balancer/listener/detail/listene
 import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
 import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
+import { CreateL7PolicyComponent } from './load-balancer/listener/L7-policy/create/create-l7-policy.component';
+import { DetailL7PolicyComponent } from './load-balancer/listener/L7-policy/detail/detail-l7-policy.component';
 
 
 const routes: Routes = [
@@ -584,6 +586,14 @@ const routes: Routes = [
   {
     path: 'load-balancer/extend/normal/:id',
     component: ExtendLoadBalancerNormalComponent
+  },
+  {
+    path: 'load-balancer/:idLoadBalancer/listener/:idListener/create/l7-policy',
+    component: CreateL7PolicyComponent
+  },
+  {
+    path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/:idL7',
+    component: DetailL7PolicyComponent
   }
   ]
 @NgModule({

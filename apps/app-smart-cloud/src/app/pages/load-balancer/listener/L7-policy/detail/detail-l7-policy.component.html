@@ -1,0 +1,44 @@
+<page-header [breadcrumb]="breadcrumb"
+             [action]="action"
+             [title]="'Chi tiết L7 Policy'" xmlns="http://www.w3.org/1999/html">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Dịch vụ hạ tầng
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">Chi tiết Listener</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết L7 Policy</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Thông tin L7 policy</span>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Thông tin cấu hình</span>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

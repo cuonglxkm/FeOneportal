@@ -1,17 +1,19 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
+import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 
 @Component({
-  selector: 'one-portal-delete-load-balancer',
-  templateUrl: './delete-load-balancer.component.html',
-  styleUrls: ['./delete-load-balancer.component.less'],
+  selector: 'one-portal-delete-pool-in-lb',
+  templateUrl: './delete-pool-in-lb.component.html',
+  styleUrls: ['./delete-pool-in-lb.component.less'],
 })
-export class DeleteLoadBalancerComponent implements AfterViewInit{
-  @Input() idLoadBalancer: number
-  @Input() nameLoadBalancer: string
+export class DeletePoolInLbComponent implements AfterViewInit{
   @Input() region: number
   @Input() project: number
+  @Input() poolId: string
+  @Input() loadBlancerId: number
+  @Input() listenerId: string
+  @Input() namePool: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 
@@ -19,12 +21,17 @@ export class DeleteLoadBalancerComponent implements AfterViewInit{
   isLoading: boolean = false
 
   value: string
+
   isInput: boolean = false
 
-  @ViewChild('loadBalancerInputName') loadBalancerInputName!: ElementRef<HTMLInputElement>;
+  @ViewChild('poolInputName') poolInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private notification: NzNotificationService,
               private loadBalancerService: LoadBalancerService) {
+  }
+
+  onInput(value) {
+    this.value = value
   }
 
   focusOkButton(event: KeyboardEvent): void {
@@ -34,13 +41,9 @@ export class DeleteLoadBalancerComponent implements AfterViewInit{
     }
   }
 
-  onInput(value) {
-    this.value = value
-  }
-
   showModal() {
     this.isVisible = true
-    setTimeout(() => {this.loadBalancerInputName?.nativeElement.focus()}, 1000)
+    setTimeout(() => {this.poolInputName?.nativeElement.focus()}, 1000)
   }
 
   handleCancel() {
@@ -53,34 +56,33 @@ export class DeleteLoadBalancerComponent implements AfterViewInit{
 
   handleOk() {
     this.isLoading = true
-    if (this.value == this.nameLoadBalancer) {
+    if (this.value == this.namePool) {
       this.isInput = false
-      this.loadBalancerService.deleteLoadBalancer(this.idLoadBalancer).subscribe(data => {
+      this.loadBalancerService.deletePool(this.poolId, this.region, this.project).subscribe(data => {
         if (data) {
           this.isLoading = false
           this.isVisible = false
-          this.notification.success('Thành công', 'Xóa Load Balancer thành công')
+          this.notification.success('Thành công', 'Xóa Pool thành công')
           this.onOk.emit(data)
         } else {
           console.log('data', data)
           this.isLoading = false
           this.isVisible = false
-          this.notification.error('Thất bại', 'Xóa Load Balancer thất bại')
+          this.notification.error('Thất bại', 'Xóa Pool thất bại')
         }
       }, error => {
         console.log('error', error)
         this.isLoading = false
         this.isVisible = false
-        this.notification.error('Thất bại', 'Xóa Load Balancer thất bại')
+        this.notification.error('Thất bại', 'Xóa Pool thất bại')
       })
     } else {
       this.isInput = true
       this.isLoading = false
     }
   }
-
   ngAfterViewInit() {
-    this.loadBalancerInputName?.nativeElement.focus();
+    this.poolInputName?.nativeElement.focus();
   }
 
 }

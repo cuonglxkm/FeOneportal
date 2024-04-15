@@ -3,12 +3,13 @@ import { BaseService } from './base.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, throwError } from 'rxjs';
 import {
-  FormOrder,
+  FormCreateL7Policy,
+  FormOrder, FormPoolDetail,
   FormSearchListBalancer,
-  FormUpdateLB,
+  FormUpdateLB, FormUpdatePool,
   IPBySubnet,
   LoadBalancerModel,
-  m_LBSDNListener
+  m_LBSDNListener, Pool
 } from '../models/load-balancer.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { catchError } from 'rxjs/internal/operators/catchError';
@@ -166,6 +167,81 @@ export class LoadBalancerService extends BaseService {
   checkIpAddress(subnetCloudId: string, vipAddress: string, regionId: number, vpcId: number) {
     return this.http.get<boolean>(this.baseUrl +
       this.ENDPOINT.provisions + `/loadbalancer/checkvipaddress?subnetCloudId=${subnetCloudId}&vipAddress=${vipAddress}&regionId=${regionId}&vpcId=${vpcId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  getListPoolInLB(lbId: number) {
+    return this.http.get<Pool[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/lb_listpool?lbId=${lbId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  createL7Policy(formCreateL7: FormCreateL7Policy) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7policy', Object.assign(formCreateL7))
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  getPoolById(idPool: string, lbId: number) {
+    return this.http.get<FormPoolDetail>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}?lbId=${lbId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  updatePool(idPool: string, formUpdate: FormUpdatePool) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}`, Object.assign(formUpdate))
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
+
+  deletePool(idPool: string, regionId: number, vpcId: number) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}?regionId=${regionId}&vpcId=${vpcId}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

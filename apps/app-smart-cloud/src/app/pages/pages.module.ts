@@ -209,6 +209,12 @@ import { ListenerDetailComponent } from './load-balancer/listener/detail/listene
 import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { EllipsisModule } from '@delon/abc/ellipsis';
 import { AutofocusDirective } from './volume/autofocus-directive.component';
+import { CreateL7PolicyComponent } from './load-balancer/listener/L7-policy/create/create-l7-policy.component';
+import { DetailL7PolicyComponent } from './load-balancer/listener/L7-policy/detail/detail-l7-policy.component';
+import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/edit-l7-policy.component';
+import { CreatePoolInLbComponent } from './load-balancer/detail/pool/create/create-pool-in-lb.component';
+import { EditPoolInLbComponent } from './load-balancer/detail/pool/edit/edit-pool-in-lb.component';
+import { DeletePoolInLbComponent } from './load-balancer/detail/pool/delete/delete-pool-in-lb.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -402,6 +408,12 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListenerDetailComponent,
     ListenerUpdateComponent,
     ListenerUpdateComponent,
+    CreateL7PolicyComponent,
+    DetailL7PolicyComponent,
+    EditL7PolicyComponent,
+    CreatePoolInLbComponent,
+    EditPoolInLbComponent,
+    DeletePoolInLbComponent,
   ],
   imports: [
     CommonModule,
@@ -433,8 +445,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ClipboardModule,
     SafePipe,
     EllipsisModule,
-    AutofocusDirective
+    AutofocusDirective,
     // ChartModule,
-  ]
+  ],
 })
 export class PagesModule {}

@@ -42,6 +42,10 @@ export class DetailLoadBalancerComponent implements OnInit{
     })
   }
 
+  handleCreatePoolOk() {
+    window.location.reload();
+  }
+
   ngOnInit() {
     this.idLoadBalancer = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
 

@@ -62,6 +62,7 @@ export class ListLoadBalancerComponent implements OnInit{
   }
 
   navigateToCreate(typeVpc) {
+    console.log(typeVpc)
     if(typeVpc === 1) {
       this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc'])
     }
@@ -112,6 +113,9 @@ export class ListLoadBalancerComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if(!this.region || !this.project) {
+      this.isLoading = true
+    }
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
   }

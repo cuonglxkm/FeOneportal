@@ -17,8 +17,11 @@ export class ListListenerInLbComponent implements OnInit{
   listListeners: m_LBSDNListener[] = []
 
   isLoading: boolean = false
-
+  listenerStatus: Map<String, string>;
   constructor(private loadBalancerService: LoadBalancerService) {
+    this.listenerStatus = new Map<String, string>();
+    this.listenerStatus.set('KHOITAO', 'Đang hoạt động');
+    this.listenerStatus.set('ERROR', 'Tạm dừng');
   }
 
   getListListenerInLB() {

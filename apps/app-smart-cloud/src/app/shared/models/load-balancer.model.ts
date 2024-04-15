@@ -28,6 +28,7 @@ export class LoadBalancerModel {
   floatingIPAddress: string
   ipVIP: string
   offerName: string
+  subnetName: string
 }
 
 export class m_LBSDNListener {
@@ -226,6 +227,62 @@ export class FormExtendLoadBalancer {
   newExpireDate: Date
   userEmail: string
   actorEmail: string
+}
+
+export class Pool {
+  loadbalancerCloudId: string
+  listener_id: string
+  name: string
+  description: string
+  algorithm: string
+  sessionPersistence: true
+  provisioningStatus: string
+  operatingStatus: string
+  protocol: string
+  id: string
+  tag: string[]
+  healthmonitor_id: string
+}
+
+export class FormCreateL7Policy {
+  action: string
+  adminStateUp: boolean
+  description: string
+  listenerId: string
+  regionId: number
+  vpcId: number
+  name: string
+  position: number
+  projectId: string
+  redirectHttpCode: number
+  redirectPoolId: string
+  redirectUrl: string
+  customerId: number
+}
+
+export class FormPoolDetail {
+  poolId: string
+  name: string
+  description: string
+  adminStateUp: boolean
+  lb_algorithm: string
+  cookie_name: string
+  type: string
+  healthMonitorId: string
+  protocol: string
+  sessionPersistence: boolean
+}
+
+export class FormUpdatePool {
+  poolId: string
+  name: string
+  description: string
+  adminStateUp: true
+  lb_algorithm: string
+  session: boolean
+  customerId: number
+  vpcId: number
+  regionId: number
 }
 
 
