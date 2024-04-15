@@ -122,6 +122,15 @@ export class CreateL7PolicyComponent implements OnInit {
     }
   }
 
+  getListL7Policy() {
+    this.loadBalancerService.getListL7Policy(this.region, this.project, this.idListener).subscribe(data => {
+      data?.forEach(item => {
+        this.nameList?.push(item.name)
+      })
+
+    })
+  }
+
   getListPool() {
     this.loadBalancerService.getListPoolInLB(this.idLoadBalancer).subscribe(data => {
       this.listPool = data
@@ -167,6 +176,7 @@ export class CreateL7PolicyComponent implements OnInit {
     this.project = regionAndProject.projectId
 
     this.getListPool()
+    this.getListL7Policy()
   }
 
 }
