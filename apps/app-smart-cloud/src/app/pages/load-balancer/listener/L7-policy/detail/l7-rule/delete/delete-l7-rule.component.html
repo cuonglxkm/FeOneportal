@@ -1,0 +1,30 @@
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'Xóa'"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xác nhận xóa L7 Rule</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzMessage]="'Bạn đang thực hiện xóa L7 Rule'">
+    </nz-alert>
+    <div style="margin-top: 10px;">
+      <span class="text-label" (keydown.enter)="focusOkButton($event)">Bạn hãy thực hiện nhấn <b>Xác nhận</b> để xoá L7 Rule.</span>
+    </div>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

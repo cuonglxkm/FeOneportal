@@ -14,7 +14,8 @@
         <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">Chi tiết Listener</a>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">Chi tiết
+          Listener</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Chi tiết L7 Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -29,17 +30,107 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-row nzGutter="24">
-    <nz-col nzSpan="16">
-      <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin L7 policy</span>
-        <
-      </nz-card>
-    </nz-col>
-    <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px;">
-        <span class="text-card-header">Thông tin cấu hình</span>
-      </nz-card>
-    </nz-col>
-  </nz-row>
+  <nz-card style="border-radius: 8px;">
+    <span class="text-card-header">Thông tin L7 policy</span>
+    <form nz-form nzLayout="vertical">
+      <nz-row nzGutter="24">
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Tên L7 Policy</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="l7Policy?.name" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Hành động thực thi</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="l7Policy?.action" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Mô tả</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <textarea nz-input class="input-custom"
+                        [value]="l7Policy?.description"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+                        [disabled]="true"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span>Độ ưu tiên</span>
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips>
+              <input nz-input class="input-custom" [value]="l7Policy?.position" [disabled]="true" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <div style="display: flex;">
+              <span style="margin-right: 15px;">Trạng thái</span>
+              <nz-switch [ngModel]="l7Policy?.adminStateUp" [ngModelOptions]="{standalone: true}" [nzDisabled]="true"></nz-switch>
+            </div>
+
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </form>
+  </nz-card>
+  <nz-card style="border-radius: 8px;">
+    <span class="text-card-header">Thông tin L7 Rule</span>
+    <img nz-popover
+         [nzPopoverContent]="'L7 Rule là một phép thử logic đơn giản, trả về giá trị true hoặc false.  L7 Rule phải luôn được kết hợp với L7 policy'"
+         nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+         src="assets/imgs/pajamas_question.svg" alt="" />
+    <nz-row nzJustify="space-between">
+      <nz-col></nz-col>
+      <nz-col>
+        <one-portal-create-l7-rule [region]="region" [project]="project" [l7policyId]="idL7Policy" (onOk)="handleCreateL7Rule()"/>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixedTable
+              style="margin-top: 20px;"
+              [nzShowPagination]="false"
+              [nzData]="l7RuleList || []"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoadingL7Rule">
+
+      <thead>
+      <tr>
+        <th>Tiêu chí</th>
+        <th>Điều kiện</th>
+        <th>Key</th>
+        <th>Giá trị</th>
+        <th>Đảo chiều cơ chế</th>
+        <th>Trạng thái hoạt động</th>
+        <th>Trạng thái cung cấp</th>
+        <th>Hoạt động</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzAlign="left">{{ data.type }}</td>
+        <td nzAlign="left">{{ data.compareType }}</td>
+        <td nzAlign="right">{{ data.key }}</td>
+        <td nzAlign="right">{{ data.value }}</td>
+        <td nzAlign="left" [ngSwitch]="data.invert">
+          <span *ngSwitchCase="false">FALSE</span>
+          <span *ngSwitchCase="true">TRUE</span>
+        </td>
+        <td nzAlign="left">{{ data.operatingStatus }}</td>
+        <td nzAlign="left">{{ data.provisioningStatus }}</td>
+        <td>
+          <one-portal-delete-l7-rule [region]="region" [project]="project" [idL7Policy]="idL7Policy" [idL7Rule]="data.id" [nameRule]="data.type" (onOk)="handleDeleteL7Rule()"/>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
 </nz-content>
