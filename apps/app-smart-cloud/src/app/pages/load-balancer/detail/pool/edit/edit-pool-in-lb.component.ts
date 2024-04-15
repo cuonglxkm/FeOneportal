@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Pool } from '../../../../../shared/models/load-balancer.model';
+import { FormPoolDetail, FormUpdatePool, Pool } from '../../../../../shared/models/load-balancer.model';
 
 @Component({
   selector: 'one-portal-edit-pool-in-lb',
@@ -37,7 +37,13 @@ export class EditPoolInLbComponent implements AfterViewInit{
 
   nameList: string[] = [];
 
-  pool: Pool = new Pool();
+  pool: FormPoolDetail = new FormPoolDetail();
+
+  algorithms = [
+    {value: 'Roud_Robin', label: 'Roud_Robin'},
+    {value: 'Least_Connection', label: 'Least_Connection'},
+    {value: 'Source_IP', label: 'Source_IP'}
+  ]
 
   @ViewChild('poolInputName') poolInputName!: ElementRef<HTMLInputElement>;
 
@@ -68,7 +74,18 @@ export class EditPoolInLbComponent implements AfterViewInit{
 
   showModal() {
     this.isVisible = true
+    this.getDetailPool();
     setTimeout(() => {this.poolInputName?.nativeElement.focus()}, 1000)
+  }
+
+  getDetailPool() {
+    this.loadBalancerService.getPoolById(this.poolId, this.loadBlancerId).subscribe(data => {
+      this.pool = data
+
+      this.validateForm.controls.namePool.setValue(data.name)
+      this.validateForm.controls.algorithm.setValue(data.lb_algorithm)
+      this.validateForm.controls.session.setValue(data.sessionPersistence)
+    })
   }
 
   handleCancel() {
@@ -78,6 +95,28 @@ export class EditPoolInLbComponent implements AfterViewInit{
   }
 
   handleOk() {
+    if(this.validateForm.valid) {
+      let formUpdate = new FormUpdatePool()
+      formUpdate.poolId = this.poolId
+      formUpdate.session = this.validateForm.controls.session.value
+      this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe(data => {
+        if(data) {
+          this.isVisible = false
+          this.isLoading = false
+          this.notification.success('Thành công', 'Cập nhật Pool thành công')
+        } else {
+          this.isVisible = false
+          this.isLoading = false
+          this.notification.error('Thất bại', 'Cập nhật Pool thất bại')
+        }
+        this.onOk.emit(data)
+      }, error => {
+        this.isVisible = false
+        this.isLoading = false
+        this.notification.error('Thất bại', 'Cập nhật Pool thất bại')
+        this.onOk.emit(error)
+      })
+    }
 
   }
 
