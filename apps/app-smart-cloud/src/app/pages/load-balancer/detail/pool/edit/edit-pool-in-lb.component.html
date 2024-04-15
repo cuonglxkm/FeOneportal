@@ -46,8 +46,8 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="algorithmErrorTpl">
           <nz-select formControlName="algorithm" nzSize="large" [nzPlaceHolder]="'Chọn thuật toán'">
-            <nz-option *ngFor="let option of algorithms" [nzValue]="option.value.toUpperCase()"
-                       [nzLabel]="option.label.toUpperCase()"></nz-option>
+<!--            <nz-option *ngFor="let option of algorithms" [nzValue]="option.value.toUpperCase()"-->
+<!--                       [nzLabel]="option.label.toUpperCase()"></nz-option>-->
           </nz-select>
           <ng-template #algorithmErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng chọn thuật toán</ng-container>
