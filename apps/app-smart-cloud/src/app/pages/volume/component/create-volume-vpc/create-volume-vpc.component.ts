@@ -130,7 +130,7 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   date: Date;
 
-  iops: number;
+  iops: number = 300;
 
   nameList: string[] = [];
 
