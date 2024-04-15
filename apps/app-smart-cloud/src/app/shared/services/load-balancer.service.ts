@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import {
   FormOrder,
   FormSearchListBalancer,
@@ -179,4 +179,92 @@ export class LoadBalancerService extends BaseService {
       }));
   }
 
+  getPoolDetail(id: string, lbId: number): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/loadbalancer/pool/${id}?lbId=${lbId}`
+    );
+  }
+
+  getListHealth(
+    regionId: number,
+    projectId: number,
+    poolId: string,
+    pageSize: number,
+    currentPage: number
+  ): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/loadbalancer/listHealth?regionId=${regionId}&projectId=${projectId}&poolId=${poolId}&pageSize=${pageSize}&currentPage=${currentPage}`
+    );
+  }
+
+  createHealth(data: any): Observable<any> {
+    let url_ = `/loadbalancer/createHealth`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
+  }
+
+  updateHealth(data: any): Observable<any> {
+    let url_ = `/loadbalancer/updateHealth`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
+  }
+
+  deleteHealth(
+    id: string,
+    regionId: number,
+    projectId: number
+  ): Observable<boolean> {
+    let url_ = `/loadbalancer/deleteHealth?id=${id}&regionId=${regionId}&projectId=${projectId}`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
+  }
+
+  getListMember(
+    poolId: string,
+    regionId: number,
+    vpcId: number
+  ): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/loadbalancer/listmember?poolId=${poolId}&regionId=${regionId}&vpcId=${vpcId}`
+    );
+  }
+
+  createMember(data: any): Observable<any> {
+    let url_ = `/loadbalancer/member`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
+  }
+
+  updateMember(data: any): Observable<any> {
+    let url_ = `/loadbalancer/member`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
+  }
+
+  deleteMember(
+    id: string,
+    poolid: string,
+    regionId: number,
+    vpcId: number
+  ): Observable<boolean> {
+    let url_ = `/loadbalancer/member/${id}?poolid=${poolid}&regionId=${regionId}&vpcId=${vpcId}`;
+    return this.http.delete<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_
+    );
+  }
 }

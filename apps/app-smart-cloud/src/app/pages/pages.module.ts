@@ -207,6 +207,7 @@ import { ListPoolLoadBalancerComponent } from './load-balancer/detail/pool/list/
 import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
 import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
 import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
+import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
 import { EllipsisModule } from '@delon/abc/ellipsis';
 import { AutofocusDirective } from './volume/autofocus-directive.component';
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
@@ -402,6 +403,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     ListenerDetailComponent,
     ListenerUpdateComponent,
     ListenerUpdateComponent,
+    PoolDetailComponent,
   ],
   imports: [
     CommonModule,
