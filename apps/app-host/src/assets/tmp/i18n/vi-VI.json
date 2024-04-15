@@ -36,6 +36,8 @@
   "form.account.address": "Địa chỉ chi tiết",
   "app.passwork": "Password",
   "app.input.name": "Nhập tên",
+  "app.input.code": "Nhập code",
+  "app.input.url": "Nhập url",
   "app.button.cancel": "Hủy",
   "app.button.edit": "Cập nhật",
   "app.button.create": "Khởi tạo",
@@ -65,5 +67,7 @@
   "app.choose.vlan.instance": "Chọn VLAN gắn vào máy ảo",
   "app.choose.port": "Chọn port",
   "app.use.lan.network": "Sử dụng mạng LAN",
-  "app.access.method.instance": "Phương thức truy cập máy ảo"
+  "app.access.method.instance": "Phương thức truy cập máy ảo",
+  "app.health.monitor.name": "Tên Health Monitor",
+  "app.health.monitor.type": "Loại kiểm tra"
 }
