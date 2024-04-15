@@ -4,8 +4,12 @@ import { ProjectModel } from '../../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { FormSearchListBalancer, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
+import { FormSearchListBalancer, FormUpdateLB, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
+import { OfferDetail } from '../../../../shared/models/catalog.model';
+import { ProjectService } from '../../../../shared/services/project.service';
+import { CatalogService } from '../../../../shared/services/catalog.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-vpc',
@@ -28,14 +32,33 @@ export class EditLoadBalancerVpcComponent implements OnInit{
       this.duplicateNameValidator.bind(this)]],
     description: [null as string, [Validators.maxLength(255)]]
   })
+  offerDetail: OfferDetail = new OfferDetail();
 
   nameList: string[] = [];
   loadBalancer: LoadBalancerModel = new LoadBalancerModel();
+  productId: number;
+  flavorId: string;
+  isLoading: boolean = false
 
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private activatedRoute: ActivatedRoute,
-              private loadBalancerService: LoadBalancerService) {
+              private loadBalancerService: LoadBalancerService,
+              private projectService: ProjectService,
+              private catalogService: CatalogService,
+              private notification: NzNotificationService) {
+  }
+
+  searchProduct() {
+    this.projectService.getProjectVpc(this.project).subscribe(data => {
+      this.productId = data.cloudProject.offerIdLBSDN;
+      this.catalogService.getDetailOffer(this.productId).subscribe(data2 => {
+        this.offerDetail = data2;
+        console.log('value', this.offerDetail);
+        this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
+      });
+
+    });
   }
 
   duplicateNameValidator(control) {
@@ -80,7 +103,30 @@ export class EditLoadBalancerVpcComponent implements OnInit{
   getLoadBalancerById() {
     this.loadBalancerService.getLoadBalancerById(this.loadBalancerId, true).subscribe(data => {
       this.loadBalancer = data
+
+      this.validateForm.controls.nameLoadBalancer.setValue(this.loadBalancer?.name)
+      this.validateForm.controls.description.setValue(this.loadBalancer?.description)
     })
+  }
+
+  submitForm() {
+    if(this.validateForm.valid) {
+      this.isLoading = true
+      let formUpload = new FormUpdateLB()
+      formUpload.id = this.loadBalancer.id
+      formUpload.name = this.validateForm.controls.nameLoadBalancer.value
+      formUpload.description = this.validateForm.controls.description.value
+      formUpload.customerId = this.loadBalancer.customerId
+      formUpload.offerId = this.loadBalancer.offerId
+      this.loadBalancerService.updateLoadBalancer(formUpload).subscribe(data => {
+        this.isLoading = false
+        this.router.navigate(['/app-smart-cloud/load-balancer/list'])
+        this.notification.success('Thành công', 'Cập nhật thông tin Load Balancer thành công')
+      }, error => {
+        this.isLoading = false
+        this.notification.error('Thất bại', 'Cập nhật thông tin Load Balancer thất bại')
+      })
+    }
   }
 
   ngOnInit() {
@@ -89,10 +135,10 @@ export class EditLoadBalancerVpcComponent implements OnInit{
     this.project = regionAndProject.projectId;
 
     this.loadBalancerId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-
-    this.getListLoadBalancer()
     this.getLoadBalancerById()
-    this.validateForm.controls.nameLoadBalancer.setValue(this.loadBalancer.name)
-    this.validateForm.controls.description.setValue(this.loadBalancer.description)
+    this.searchProduct();
+    this.getListLoadBalancer()
+
+
   }
 }
