@@ -149,11 +149,11 @@ export class ListClusterComponent implements OnInit, OnDestroy {
                 progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
                 break;
               default:
-                progressObs = new Observable().pipe(defaultIfEmpty(0));
+                progressObs = new Observable(obs => obs.complete()).pipe(defaultIfEmpty(0));
             }
 
           } else {
-            progressObs = new Observable().pipe(defaultIfEmpty(0));
+            progressObs = new Observable(obs => obs.complete()).pipe(defaultIfEmpty(0));
           }
           progress.push(progressObs);
         }

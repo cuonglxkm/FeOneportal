@@ -83,7 +83,7 @@ export class ClusterService extends BaseService {
     });
   }
 
-  getListPriceOfService() {
+  getListPriceItem() {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-price`, {headers: this.getHeaders()});
   }
 

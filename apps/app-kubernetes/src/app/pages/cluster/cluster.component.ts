@@ -11,7 +11,7 @@ import { SubnetModel, VPCNetworkModel } from '../../model/vpc-network.model';
 import { WorkerTypeModel } from '../../model/worker-type.model';
 import { VolumeTypeModel } from '../../model/volume-type.model';
 import { PackModel } from '../../model/pack.model';
-import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../../model/cluster.model';
+import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem, WorkerGroupModel } from '../../model/cluster.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { ClusterService } from '../../services/cluster.service';
 import { VlanService } from '../../services/vlan.service';
@@ -20,6 +20,7 @@ import { FormSearchNetwork, FormSearchSubnet } from '../../model/vlan.model';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { overlapCidr } from "cidr-tools";
+import { PriceModel } from '../../model/price.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +42,7 @@ export class ClusterComponent implements OnInit {
   listOfVolumeType: VolumeTypeModel[];
   listOfSubnets: SubnetModel[];
   listOfServicePack: PackModel[];
+  listOfPriceItem: PriceModel[];
 
   listOfUsageTime = [
     { label: '3 tháng', value: 3 },
@@ -105,6 +107,7 @@ export class ClusterComponent implements OnInit {
     this.isSubmitting = false;
 
     this.getCurrentDate();
+    this.getListPriceItem();
   }
 
   ngOnInit(): void {
@@ -129,9 +132,9 @@ export class ClusterComponent implements OnInit {
       workerGroup: this.listFormWorkerGroup,
 
       // volume
-      volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      // volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      // volumeCloudType: ['hdd', [Validators.required]],
       usageTime: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
-      volumeCloudType: ['hdd', [Validators.required]],
     });
 
     // display expiry time
@@ -156,7 +159,9 @@ export class ClusterComponent implements OnInit {
       autoScalingWorker: [false, Validators.required],
       autoHealing: [false, Validators.required],
       minimumNode: [null],
-      maximumNode: [null]
+      maximumNode: [null],
+      cpu: [null],
+      ram: [null]
     });
     this.listFormWorkerGroup.push(wg);
 
@@ -290,6 +295,63 @@ export class ClusterComponent implements OnInit {
     });
   }
 
+  getListPriceItem() {
+    this.clusterService.getListPriceItem()
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.listOfPriceItem = r.data;
+        this.initPrice();
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  priceOfCpu: number;
+  priceOfRam: number;
+  priceOfSsd: number;
+  priceOfHdd: number;
+  initPrice() {
+    this.listOfPriceItem.forEach(data => {
+      switch (data.item) {
+        case 'cpu':
+          this.priceOfCpu = data.price;
+          break;
+        case 'ram':
+          this.priceOfRam = data.price;
+          break;
+        case 'storage_ssd':
+          this.priceOfSsd = data.price;
+          break;
+        case 'storage_hdd':
+          this.priceOfHdd = data.price;
+          break;
+      }
+    });
+  }
+
+  onCalculatePrice() {
+    this.totalPrice = 0;
+    const wg = this.myform.get('workerGroup').value;
+    for (let i = 0; i < wg.length; i++) {
+      const cpu = wg[i].cpu;
+      const ram = wg[i].ram;
+      const storage = wg[i].volumeStorage;
+      const autoScale = wg[i].autoScalingWorker;
+      let nodeNumber: number;
+      if (autoScale) {
+        // TODO: ...
+
+      } else {
+        nodeNumber = wg[i].nodeNumber;
+      }
+
+      this.workerPrice = nodeNumber * (this.priceOfCpu * cpu + this.priceOfRam * ram);
+      this.volumePrice = nodeNumber * this.priceOfSsd * storage;
+      this.totalPrice += (this.workerPrice + this.volumePrice);
+    }
+  }
+
   // catch event region change and reload data
   regionName: string;
   onRegionChange(region: RegionModel) {
@@ -337,6 +399,11 @@ export class ClusterComponent implements OnInit {
   onSelectWorkerType(machineName: string, index: number) {
     const selectedWorkerType = this.listOfWorkerType.find(item => item.machineName === machineName);
     this.listFormWorkerGroup.at(index).get('configTypeId').setValue(selectedWorkerType.id);
+    this.listFormWorkerGroup.at(index).get('cpu').setValue(selectedWorkerType.cpu);
+    this.listFormWorkerGroup.at(index).get('ram').setValue(selectedWorkerType.ram);
+
+    // calcalate price
+    this.onCalculatePrice();
   }
 
   onInputPodCidrAndSubnet() {
@@ -412,8 +479,8 @@ export class ClusterComponent implements OnInit {
     this.myform.get('packId').setValue(item.packId);
 
     if (this.chooseItem) {
-      this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
-      this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
+      // this.myform.get('volumeCloudSize').setValue(this.chooseItem.volumeStorage);
+      // this.myform.get('volumeCloudType').setValue(this.volumeCloudType);
 
       this.clearFormWorker();
 
@@ -449,6 +516,10 @@ export class ClusterComponent implements OnInit {
     while (this.listFormWorkerGroup.length != 0) {
       this.listFormWorkerGroup.removeAt(0);
     }
+
+    this.workerPrice = 0;
+    this.volumePrice = 0;
+    this.totalPrice = 0;
   }
 
   onInputUsage(event: any) {
@@ -560,13 +631,13 @@ export class ClusterComponent implements OnInit {
     return this.myform.get('subnet').value;
   }
 
-  get volumeCloudSize() {
-    return this.myform.get('volumeCloudSize').value;
-  }
+  // get volumeCloudSize() {
+  //   return this.myform.get('volumeCloudSize').value;
+  // }
 
-  get volumeCloudType() {
-    return this.myform.get('volumeCloudType').value;
-  }
+  // get volumeCloudType() {
+  //   return this.myform.get('volumeCloudType').value;
+  // }
 
   get usageTime() {
     return this.myform.get('usageTime').value;

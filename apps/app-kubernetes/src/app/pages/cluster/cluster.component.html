@@ -219,7 +219,7 @@
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="nodes">Số node</nz-form-label>
                     <nz-form-control [nzErrorTip]="nodeNumberErrorTpl">
-                      <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber"
+                      <input type="text" nz-input placeholder="Nhập số node" formControlName="nodeNumber" (ngModeChange)="onCalculatePrice()"
                         (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #nodeNumberErrorTpl let-control>
@@ -235,7 +235,7 @@
                   <nz-form-item>
                     <nz-form-label nzRequired nzFor="volume">Ổ cứng (GB)</nz-form-label>
                     <nz-form-control [nzErrorTip]="volumeStorageErrorTpl">
-                      <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage"
+                      <input type="text" nz-input placeHolder="Nhập dung lượng ổ cứng" formControlName="volumeStorage" (ngModelChange)="onCalculatePrice()"
                         id="volume" (keypress)="isNumber($event)" [readonly]="isUsingPackConfig" nzSize="large" [ngClass]="{'default-pack': isUsingPackConfig==true}" />
                     </nz-form-control>
                     <ng-template #volumeStorageErrorTpl let-control>
@@ -422,7 +422,7 @@
       </nz-card>
 
       <!-- volume -->
-      <nz-card class="border-card">
+      <!-- <nz-card class="border-card">
         <h3>Cấu hình persistent volume</h3>
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
@@ -456,7 +456,7 @@
           </div>
         </div>
 
-      </nz-card>
+      </nz-card> -->
 
       <!-- usage time -->
       <nz-card class="border-card">
@@ -711,7 +711,7 @@
             </div>
 
             <nz-divider class="divider-style"></nz-divider>
-            <h3>Cấu hình volume</h3>
+            <!-- <h3>Cấu hình volume</h3>
             <div nz-row [nzGutter]="8">
               <div nz-col [nzSpan]="12">
                 <div class="ml-3"><label>Kích thước (GB)</label></div>
@@ -727,7 +727,7 @@
               <div nz-col [nzSpan]="12">
                 <div class="price-style mt-3 mr-3">{{volumeCloudType == 'hdd' ? 'HDD' : 'SSD'}}</div>
               </div>
-            </div>
+            </div> -->
             <div nz-row [nzGutter]="8">
               <div nz-col [nzSpan]="12">
                 <div class="mt-3 ml-3"><label>Thời gian sử dụng (tháng)</label></div>
