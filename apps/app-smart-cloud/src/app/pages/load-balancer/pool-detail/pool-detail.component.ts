@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@delon/abc/loading';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
@@ -14,7 +16,9 @@ import {
   HealthCreate,
   HealthUpdate,
   m_LBSDNHealthMonitor,
+  MemberCreateOfPool,
   MemberOfPool,
+  MemberUpdateOfPool,
   PoolDetail,
 } from 'src/app/shared/models/load-balancer.model';
 import { LoadBalancerService } from 'src/app/shared/services/load-balancer.service';
@@ -53,24 +57,22 @@ export class PoolDetailComponent implements OnInit {
   }
 
   constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: LoadBalancerService,
     private cdr: ChangeDetectorRef,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     public notification: NzNotificationService,
     private loadingSrv: LoadingService
   ) {}
 
   ngOnInit(): void {
+    this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
       .getPoolDetail(this.id, this.lbId)
-      .pipe(
-        finalize(() => {
-          this.loadingSrv.close();
-        })
-      )
       .subscribe({
         next: (data: any) => {
           this.poolDetail = data;
@@ -98,7 +100,11 @@ export class PoolDetailComponent implements OnInit {
         this.pageSizeHealth,
         this.currentPageHealth
       )
-      .pipe(finalize(() => (this.loadingHealth = false)))
+      .pipe(
+        finalize(() => {
+          this.loadingHealth = false;
+        })
+      )
       .subscribe({
         next: (data: any) => {
           this.listHealth = data.records;
@@ -113,6 +119,12 @@ export class PoolDetailComponent implements OnInit {
       });
   }
 
+  listCheckedMethod: any[] = [
+    { displayName: 'HTTP' },
+    { displayName: 'HTTPS' },
+    { displayName: 'TCP' },
+  ];
+
   listMethod: any[] = [
     { displayName: 'GET' },
     { displayName: 'POST' },
@@ -121,25 +133,28 @@ export class PoolDetailComponent implements OnInit {
   ];
 
   isVisibleHealth: boolean = false;
+  titleModalHealth: string;
   isCreate: boolean;
-  healthUpdate: HealthUpdate = new HealthUpdate();
   healthForm: any;
   form: FormGroup;
-  modalCeateHealth(checkCreate: boolean, data: m_LBSDNHealthMonitor) {
+  modalHealth(checkCreate: boolean, data: m_LBSDNHealthMonitor) {
     if (checkCreate) {
       this.healthForm = new HealthCreate();
       this.healthForm.type = 'HTTP';
       this.isCreate = true;
+      this.titleModalHealth = 'Tạo mới Health Monitor';
     } else {
       this.healthForm = data;
+      this.isCreate = false;
+      this.titleModalHealth = 'Chỉnh sửa Health Monitor';
     }
     this.isVisibleHealth = true;
     this.form = new FormGroup({
       name: new FormControl('', {
-        validators: [
-          Validators.required,
-          Validators.pattern(/^[a-zA-Z0-9_]*$/),
-        ],
+        validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/)],
+      }),
+      checkMethod: new FormControl('', {
+        validators: [Validators.required],
       }),
       maxRetriesDown: new FormControl('', {
         validators: [Validators.required],
@@ -162,13 +177,163 @@ export class PoolDetailComponent implements OnInit {
     });
   }
 
-  handleOkCreateHealth() {
+  handleOkHealth() {
     this.isVisibleHealth = false;
-    this.notification.success('', 'Tạo mới Health Monitor thành công');
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    if (this.isCreate) {
+      this.healthForm.poolId = this.id;
+      this.healthForm.customerId = this.tokenService.get()?.userId;
+      this.healthForm.projectId = this.projectId;
+      this.healthForm.regionId = this.regionId;
+      this.service
+        .createHealth(this.healthForm)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.notification.success('', 'Tạo mới Health Monitor thành công');
+            this.getListHealth();
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Tạo mới Health Monitor không thành công'
+            );
+          },
+        });
+    } else {
+      let healthUpdate: HealthUpdate = new HealthUpdate();
+      healthUpdate.id = this.healthForm.id;
+      healthUpdate.name = this.healthForm.name;
+      healthUpdate.delay = this.healthForm.delay;
+      healthUpdate.maxRetries = this.healthForm.maxRetries;
+      healthUpdate.timeout = this.healthForm.timeout;
+      healthUpdate.adminStateUp = true;
+      healthUpdate.expectedCodes = this.healthForm.expectedCodes;
+      healthUpdate.httpMethod = this.healthForm.httpMethod;
+      healthUpdate.urlPath = this.healthForm.urlPath;
+      healthUpdate.maxRetriesDown = this.healthForm.maxRetriesDown;
+      healthUpdate.customerId = this.tokenService.get()?.userId;
+      healthUpdate.projectId = this.projectId;
+      healthUpdate.regionId = this.regionId;
+      this.service
+        .updateHealth(healthUpdate)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.notification.success('', 'Cập nhật Health Monitor thành công');
+            this.getListHealth();
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Cập nhật Health Monitor không thành công'
+            );
+          },
+        });
+    }
   }
 
-  handleCancelCreateHealth() {
+  handleCancelHealth() {
     this.isVisibleHealth = false;
+  }
+
+  isVisibleDelete: boolean = false;
+  titleDelete: string = '';
+  typeDelete: string;
+  dataDelete: any;
+  inputConfirm: string = '';
+  checkInputConfirm: boolean = false;
+  checkInputEmpty: boolean = false;
+  showModalDelete(isDeletedHealth: boolean, data: any) {
+    this.isVisibleDelete = true;
+    this.inputConfirm = '';
+    if (isDeletedHealth) {
+      this.titleDelete = 'Xác nhận xóa Health Monitor' + data.name;
+      this.typeDelete = 'Health Monitor';
+      this.dataDelete = data;
+    } else {
+      this.titleDelete = 'Xác nhận xóa Member' + data.name;
+      this.typeDelete = 'Member';
+      this.dataDelete = data;
+    }
+  }
+
+  handleOkDelete() {
+    if (this.inputConfirm == this.dataDelete.name) {
+      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+      this.checkInputConfirm = false;
+      this.checkInputEmpty = false;
+      this.isVisibleDelete = false;
+      if (this.typeDelete == 'Health Monitor') {
+        this.service
+          .deleteHealth(this.dataDelete.id, this.regionId, this.projectId)
+          .pipe(
+            finalize(() => {
+              this.loadingSrv.close();
+            })
+          )
+          .subscribe({
+            next: (data: any) => {
+              this.getListHealth();
+              this.notification.success('', 'Xóa Health Monitor thành công');
+            },
+            error: (e) => {
+              this.isVisibleDelete = false;
+              this.notification.error(
+                e.statusText,
+                'Xóa Health Monitor không thành công'
+              );
+            },
+          });
+      } else {
+        this.service
+          .deleteMember(
+            this.dataDelete.id,
+            this.id,
+            this.regionId,
+            this.projectId
+          )
+          .pipe(
+            finalize(() => {
+              this.loadingSrv.close();
+            })
+          )
+          .subscribe({
+            next: (data: any) => {
+              this.getListMember();
+              this.notification.success('', 'Xóa Member thành công');
+            },
+            error: (e) => {
+              this.isVisibleDelete = false;
+              this.notification.error(
+                e.statusText,
+                'Xóa Member không thành công'
+              );
+            },
+          });
+      }
+    } else if (this.inputConfirm == '') {
+      this.checkInputEmpty = true;
+      this.checkInputConfirm = false;
+    } else {
+      this.checkInputEmpty = false;
+      this.checkInputConfirm = true;
+    }
+    this.cdr.detectChanges();
+  }
+
+  handleCancelDelete() {
+    this.isVisibleDelete = false;
+    this.checkInputConfirm = false;
+    this.checkInputEmpty = false;
   }
 
   loadingMember: boolean = true;
@@ -177,7 +342,11 @@ export class PoolDetailComponent implements OnInit {
     this.loadingMember = true;
     this.service
       .getListMember(this.poolDetail.poolId, this.regionId, this.projectId)
-      .pipe(finalize(() => (this.loadingMember = false)))
+      .pipe(
+        finalize(() => {
+          this.loadingMember = false;
+        })
+      )
       .subscribe({
         next: (data: any) => {
           this.listMember = data;
@@ -191,5 +360,99 @@ export class PoolDetailComponent implements OnInit {
       });
   }
 
-  modalCreateMember() {}
+  isVisibleMember: boolean = false;
+  titleModalMember: string;
+  memberForm: any;
+  formMember: FormGroup;
+  ipAddress: string;
+  protocol_port: number;
+  subnetId: string;
+  modalMember(checkCreate: boolean, data: MemberOfPool) {
+    if (checkCreate) {
+      this.memberForm = new MemberCreateOfPool();
+      this.memberForm.address = this.ipAddress;
+      this.memberForm.protocol_port = this.protocol_port;
+      this.memberForm.poolId = this.id;
+      this.memberForm.subnetId = this.subnetId;
+      this.memberForm.customerId = this.tokenService.get()?.userId;
+      this.memberForm.regionId = this.regionId;
+      this.memberForm.vpcId = this.projectId;
+      this.isCreate = true;
+      this.titleModalMember = 'Tạo mới Member';
+    } else {
+      this.memberForm = data;
+      this.isCreate = false;
+      this.titleModalMember = 'Chỉnh sửa Member';
+    }
+    this.isVisibleMember = true;
+    this.formMember = new FormGroup({
+      name: new FormControl('', {
+        validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/)],
+      }),
+      weight: new FormControl('', {
+        validators: [Validators.required],
+      }),
+    });
+  }
+
+  handleOkMember() {
+    this.isVisibleMember = false;
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    if (this.isCreate) {
+      this.service
+        .createMember(this.memberForm)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.notification.success('', 'Tạo mới Member thành công');
+            this.getListMember();
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Tạo mới Member không thành công'
+            );
+          },
+        });
+    } else {
+      let memberUpdate: MemberUpdateOfPool = new MemberUpdateOfPool();
+      memberUpdate.memberId = this.memberForm.id;
+      memberUpdate.customerId = this.tokenService.get()?.userId;
+      memberUpdate.regionId = this.regionId;
+      memberUpdate.vpcId = this.projectId;
+      memberUpdate.name = this.memberForm.name;
+      memberUpdate.address = this.memberForm.ipAddress;
+      memberUpdate.protocol_port = this.memberForm.port;
+      memberUpdate.weight = this.memberForm.weight;
+      memberUpdate.poolId = this.id;
+      memberUpdate.backup = this.memberForm.backup;
+      this.service
+        .updateMember(memberUpdate)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.notification.success('', 'Cập nhật Member thành công');
+            this.getListMember();
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              'Cập nhật Member không thành công'
+            );
+          },
+        });
+    }
+  }
+
+  handleCancelMember() {
+    this.isVisibleMember = false;
+  }
 }

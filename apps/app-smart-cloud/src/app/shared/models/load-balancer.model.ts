@@ -255,6 +255,32 @@ export class MemberOfPool {
   subnetId: string;
 }
 
+export class MemberCreateOfPool {
+  customerId: number
+  regionId: number
+  vpcId: number
+  name: string
+  address: string
+  protocol_port: number
+  weight: number
+  poolId: string
+  backup: boolean
+  subnetId: string
+}
+
+export class MemberUpdateOfPool {
+  memberId: string
+  customerId: number
+  regionId: number
+  vpcId: number
+  name: string
+  address: string
+  protocol_port: number
+  weight: number
+  poolId: string
+  backup: boolean
+}
+
 export class HealthCreate {
   name: string;
   delay: number;
