@@ -257,6 +257,19 @@ export class Pool {
   healthmonitor_id: string
 }
 
+export class CreatePool {
+  listener_id: string
+  name: string
+  description: string
+  algorithm: string
+  sessionPersistence: boolean
+  protocol: string
+  customerId: number
+  regionId: number
+  vpcId: number
+  loadbalancer_id: string
+}
+
 export class FormCreateL7Policy {
   action: string
   adminStateUp: boolean

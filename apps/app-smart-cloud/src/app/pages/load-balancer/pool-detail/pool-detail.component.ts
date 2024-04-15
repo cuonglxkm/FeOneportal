@@ -15,6 +15,7 @@ import { finalize } from 'rxjs';
 import {
   HealthCreate,
   HealthUpdate,
+  LoadBalancerModel,
   m_LBSDNHealthMonitor,
   MemberCreateOfPool,
   MemberOfPool,
@@ -31,7 +32,6 @@ import { LoadBalancerService } from 'src/app/shared/services/load-balancer.servi
 })
 export class PoolDetailComponent implements OnInit {
   id: string;
-  lbId: number;
   regionId: number;
   projectId: number;
   pageSizeHealth: number = 10;
@@ -66,26 +66,33 @@ export class PoolDetailComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  idLB: number;
+  loadBalancer: LoadBalancerModel = new LoadBalancerModel()
   ngOnInit(): void {
+    let state = this.router.getCurrentNavigation().extras.state;
+    if (state) {
+      this.idLB = state.idLB;
+    }
+    this.service.getLoadBalancerById(this.idLB, true).subscribe(data => {
+      this.loadBalancer = data
+    })
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.service
-      .getPoolDetail(this.id, this.lbId)
-      .subscribe({
-        next: (data: any) => {
-          this.poolDetail = data;
-          this.getListHealth();
-          this.getListMember();
-        },
-        error: (e) => {
-          this.notification.error(
-            e.statusText,
-            'Lấy chi tiết Pool không thành công'
-          );
-        },
-      });
+    this.service.getPoolDetail(this.id, this.idLB).subscribe({
+      next: (data: any) => {
+        this.poolDetail = data;
+        this.getListHealth();
+        this.getListMember();
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          'Lấy chi tiết Pool không thành công'
+        );
+      },
+    });
   }
 
   loadingHealth: boolean = true;
@@ -366,14 +373,13 @@ export class PoolDetailComponent implements OnInit {
   formMember: FormGroup;
   ipAddress: string;
   protocol_port: number;
-  subnetId: string;
   modalMember(checkCreate: boolean, data: MemberOfPool) {
     if (checkCreate) {
       this.memberForm = new MemberCreateOfPool();
       this.memberForm.address = this.ipAddress;
       this.memberForm.protocol_port = this.protocol_port;
       this.memberForm.poolId = this.id;
-      this.memberForm.subnetId = this.subnetId;
+      this.memberForm.subnetId = this.loadBalancer.subnetId;
       this.memberForm.customerId = this.tokenService.get()?.userId;
       this.memberForm.regionId = this.regionId;
       this.memberForm.vpcId = this.projectId;

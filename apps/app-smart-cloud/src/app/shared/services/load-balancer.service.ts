@@ -210,6 +210,14 @@ export class LoadBalancerService extends BaseService {
       }));
   }
 
+  createPool(data: any): Observable<any> {
+    let url_ = `/loadbalancer/pool`;
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      data
+    );
+  }
+
   updatePool(idPool: string, formUpdate: FormUpdatePool) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}`, Object.assign(formUpdate))
       .pipe(catchError((error: HttpErrorResponse) => {

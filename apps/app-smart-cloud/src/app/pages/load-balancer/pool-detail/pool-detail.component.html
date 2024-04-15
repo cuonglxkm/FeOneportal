@@ -569,7 +569,7 @@
           <input
             class="input-custom"
             nz-input
-            [(ngModel)]="memberForm.subnetId"
+            (ngModel)="loadBalancer.subnetAddress"
             [ngModelOptions]="{ standalone: true }"
             [disabled]="true"
           />
