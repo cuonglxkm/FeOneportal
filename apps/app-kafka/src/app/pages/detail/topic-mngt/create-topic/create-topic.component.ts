@@ -68,7 +68,7 @@ export class CreateTopicComponent implements OnInit {
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      name_tp: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(255), Validators.pattern(/^[\-a-zA-Z0-9]+$/)]],
+      name_tp: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(255), Validators.pattern(/^[-a-zA-Z0-9]+$/)]],
       partition: [3, [Validators.required, Validators.max(100), Validators.min(1), Validators.pattern(/^\d+$/)]],
       rep_fac: [3, [Validators.required, Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/)]],
       max_mess: [null],
@@ -119,13 +119,12 @@ export class CreateTopicComponent implements OnInit {
   }
 
   addValidateCustomConfig(configs: string) {
-    console.log('addValidateCustomConfig');
     
-    let jsonObject = JSON.parse(configs);
+    const jsonObject = JSON.parse(configs);
     this.listConfigLabel.forEach(element => {
       const { name, value, fullname } = element;
       let valueDB = jsonObject[fullname] == null ? value : jsonObject[fullname];
-      let validators = [];
+      const validators = [];
       switch (name) {
         case 'lead_rep':
         case 'foll_repl':
@@ -178,7 +177,6 @@ export class CreateTopicComponent implements OnInit {
           validators.push(Validators.min(0), Validators.max(9007199254740991), Validators.pattern(/^\d+$/))
           break;
       }
-      console.log(name,' : ',valueDB ,' : ',value);
       
       this.validateForm.get(name).setValue(valueDB ? valueDB : value);
       this.validateForm.get(name).setValidators(validators);
@@ -206,7 +204,7 @@ export class CreateTopicComponent implements OnInit {
   addValidateConfig() {
     this.listConfigLabel.forEach(element => {
       const { name, value } = element;
-      let validators = [];
+      const validators = [];
       switch (name) {
         case 'min_clean':
           validators.push(Validators.min(0), Validators.max(1), Validators.pattern(/^\d*(\.\d+)?$/), this.dotValidator)
@@ -269,16 +267,12 @@ export class CreateTopicComponent implements OnInit {
     })
   }
 
-  onSearch(event) {
-
-  }
-
   cancelForm() {
     this.cancelEvent.emit();
   }
 
   submitForm() {
-
+    console.log();
   }
 
   onKeyDown(event: KeyboardEvent): void {
@@ -292,7 +286,7 @@ export class CreateTopicComponent implements OnInit {
 
   onKeyDownIgnore(event: KeyboardEvent): void {
     const keyCode = event.key;
-    const isNumberOrBackspace = /[\-0-9]|Backspace/.test(keyCode);
+    const isNumberOrBackspace = /[-0-9]|Backspace/.test(keyCode);
     const isArrowKeyOrTab = /^Arrow(Up|Down|Left|Right)$/.test(keyCode) || keyCode === 'Tab';
     if (!isNumberOrBackspace && !isArrowKeyOrTab) {
       event.preventDefault();
@@ -301,7 +295,7 @@ export class CreateTopicComponent implements OnInit {
 
   onKeyDownDot(event: KeyboardEvent) {
     const keyCode = event.key;
-    const isNumberOrBackspace = /[\.0-9]|Backspace/.test(keyCode);
+    const isNumberOrBackspace = /[.0-9]|Backspace/.test(keyCode);
     const isArrowKeyOrTab = /^Arrow(Up|Down|Left|Right)$/.test(keyCode) || keyCode === 'Tab';
     if (!isNumberOrBackspace && !isArrowKeyOrTab) {
       event.preventDefault();
@@ -336,7 +330,7 @@ export class CreateTopicComponent implements OnInit {
     }
     if (!this.validateForm.invalid) {
       this.loadingSrv.open({ type: "spin", text: "Loading..." });
-      let json = {};
+      const json = {};
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
       const replicationFactorNum = Number(this.validateForm.get("rep_fac").value);
@@ -404,7 +398,7 @@ export class CreateTopicComponent implements OnInit {
     }
     if (!this.validateForm.invalid) {
       let i = 0;
-      let json = {};
+      const json = {};
       const topicName = this.validateForm.get("name_tp").value;
       this.listConfigLabel
         .filter(element => element.name !== "typeTime" && element.name !== "re_hours")

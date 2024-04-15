@@ -140,6 +140,7 @@ export class ListKafkaComponent implements OnInit, OnDestroy {
   }
 
   handleChange() {
+    this.pageIndex = 1;
     this.getListService(this.pageIndex, this.pageSize, this.keySearch, this.serviceStatus)
   }
 
