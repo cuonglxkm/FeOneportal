@@ -216,6 +216,9 @@ import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/e
 import { CreatePoolInLbComponent } from './load-balancer/detail/pool/create/create-pool-in-lb.component';
 import { EditPoolInLbComponent } from './load-balancer/detail/pool/edit/edit-pool-in-lb.component';
 import { DeletePoolInLbComponent } from './load-balancer/detail/pool/delete/delete-pool-in-lb.component';
+import { CreateL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/create/create-l7-rule.component';
+import { DeleteL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/delete/delete-l7-rule.component';
+
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -416,6 +419,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreatePoolInLbComponent,
     EditPoolInLbComponent,
     DeletePoolInLbComponent,
+    CreateL7RuleComponent,
+    DeleteL7RuleComponent,
   ],
   imports: [
     CommonModule,
