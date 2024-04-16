@@ -3,8 +3,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -77,7 +77,7 @@
             <td>{{ data.status }}</td>
             <td>{{ data.type }}</td>
             <td>{{ data.protocol }}</td>
-            <td>{{ data.size }}</td>
+            <td>{{ data.size }} GB</td>
             <td>
               <div>
                 <one-portal-edit-file-system [region]="region"
@@ -94,6 +94,7 @@
                     <one-portal-delete-file-system [region]="region"
                                                    [project]="project"
                                                    [fileSystemId]="data.id"
+                                                   [fileSystemName]="data.name"
                                                    (onOk)="handleOkDelete()" />
                   </ul>
                 </nz-dropdown-menu>

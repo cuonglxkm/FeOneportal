@@ -454,7 +454,7 @@ const routes: Routes = [
     component: DetailFileSystemComponent
   },
   {
-    path: 'file-storage/file-system/edit/:id',
+    path: 'file-storage/file-system/resize/:id',
     component: ResizeFileSystemComponent
   },
   {
