@@ -17,12 +17,12 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown
-        [regionId]="region"
-        (userChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
+      (valueChanged)="onRegionChange($event)"
+    ></region-select-dropdown>
+    <project-select-dropdown
+      [regionId]="regionId"
+      (valueChanged)="onProjectChange($event)"
+    ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -67,9 +67,9 @@
           <ng-container *ngFor="let item of listOfRouterInteface">
             <tr>
               <td>
-                <a>{{ item.name }}</a>
+                <a>{{ item.subnetCIDR }}</a>
               </td>
-              <td>{{ item.networkAddress }}</td>
+              <td>{{ item.ipAddress }}</td>
               <td>
                 <img
                   src="assets/imgs/trash.svg"
@@ -153,12 +153,13 @@
   nzTitle="Tạo mới Router Interface"
   (nzOnCancel)="handleCancelCreateInterface()"
 >
+<form nz-form [formGroup]="formRouterInterface">
   <ng-container *nzModalContent>
     <div class="text-label">
       Chọn Subnet (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
+        nz-tooltip="Các subnet hiển thị ở đây yêu cầu phải có gateway thì mới add routerinterface"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -167,17 +168,17 @@
       style="width: 100%; margin-bottom: 16px; margin-top: 5px"
       [nzPlaceHolder]="'-- Chọn Subnet --'"
       [nzShowSearch]="true"
-      [(ngModel)]="routerInterfaceCreate.subnetId"
+      formControlName="subnetId"
       nzSize="large"
     >
       <nz-option
         *ngFor="let p of listSubnet"
-        [nzValue]="p.subnetCloudId"
-        [nzLabel]="p.name"
+        [nzValue]="p.id"
+        [nzLabel]="p.networkAddress === '' ? p.name : p.name + ' (' + p.networkAddress + ')'"
       />
     </nz-select>
-    <div class="text-label">
-      IP của Router Interdace (<span class="text-red">*</span>)
+    <!-- <div class="text-label">
+      IP của Router Interface (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="message-question"
@@ -190,9 +191,36 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="routerInterfaceCreate.ipAddress"
-      [ngModelOptions]="{ standalone: true }"
+      formControlName="ipAdress"
+    /> -->
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="ipErrorTpl">
+      <nz-form-label nzFor="name">
+        <div>
+          <span>IP của Router Interface</span>
+          (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+          <img
+        style="padding-right: 10px; margin-top: -4px"
+        nz-tooltip="Địa chỉ IP Là địa chỉ bất kỳ của subnet vừa chọn và chưa được sử dụng"
+        src="assets/imgs/message-question.svg"
+        alt=""
+      />
+        </div>
+      </nz-form-label>
+      <input
+      style="margin-top: 5px"
+      class="input-custom"
+      nz-input
+      placeholder=""
+      formControlName="ipAddress"
     />
+      <ng-template #ipErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Địa chỉ IP không được để trống</ng-container>
+        <ng-container *ngIf="control.hasError('invalidSubnetIP')">Địa chỉ IP sai định dạng</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">Địa chỉ IP sai định dạng</ng-container>
+      </ng-template>
+    </nz-form-control>
+    </nz-form-item>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelCreateInterface()">
@@ -202,14 +230,16 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateInterface()">
+    <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [nzLoading]="isLoadingRouterInterface">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
+
       />Xác nhận
     </button>
   </div>
+</form>
 </nz-modal>
 
 <nz-modal
@@ -217,12 +247,13 @@
   nzTitle="Tạo mới Static Router"
   (nzOnCancel)="handleCancelCreateStatic()"
 >
+<form nz-form [formGroup]="formRouterStatic">
   <ng-container *nzModalContent>
     <div class="text-label">
       Dải Subnet đích (CIDR) (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
+        nz-tooltip="Destination CIDR, điểm đích muốn đến, hiểu đơn giản là muốn tới địa điểm này, thì phải đi qua đường IP ở NextHop"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -232,14 +263,13 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="staticRouterCreate.destinationCIDR"
-      [ngModelOptions]="{ standalone: true }"
+      formControlName="destinationCIDR"
     />
     <div class="text-label">
       Next Hop (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
+        nz-tooltip="Là địa chỉ nằm trong dải Subnet đã được chọn bên phần Router Interface"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -249,8 +279,7 @@
       class="input-custom"
       nz-input
       placeholder=""
-      [(ngModel)]="staticRouterCreate.nextHop"
-      [ngModelOptions]="{ standalone: true }"
+      formControlName="nextHop"
     />
   </ng-container>
   <div *nzModalFooter>
@@ -261,14 +290,16 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreateStatic()">
-      <img
+    <button nz-button nzType="primary" (click)="handleOkCreateStatic()" [nzLoading]="isLoadingRouterStatic">
+      <img 
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
+        
       />Xác nhận
     </button>
   </div>
+</form>
 </nz-modal>
 
 <nz-modal
