@@ -40,7 +40,7 @@ export class ListPoolLoadBalancerComponent implements OnInit {
   detaiPool(id: string) {
     this.router.navigate([
       '/app-smart-cloud/load-balancer/pool-detail/' + id,
-      { state: { idLB: this.idLB } },
+      { idLB: this.idLB },
     ]);
   }
 
