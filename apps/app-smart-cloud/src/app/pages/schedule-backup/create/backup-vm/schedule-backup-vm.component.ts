@@ -291,7 +291,6 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   selectInstanceChange(value) {
-    // this.instanceSelected = value
     this.getVolumeInstanceAttachment(value);
   }
 
