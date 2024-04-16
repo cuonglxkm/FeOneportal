@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegionModel } from '../../../shared/models/region.model';
 import { ProjectModel } from '../../../shared/models/project.model';
@@ -7,6 +7,10 @@ import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { ClipboardService } from 'ngx-clipboard';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { LoadingService } from '@delon/abc/loading';
+import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -30,8 +34,36 @@ export class ListSubUserComponent implements OnInit {
 
   constructor(private router: Router,
               private subUserService: SubUserService,
+              private objectSevice: ObjectStorageService,
+              private cdr: ChangeDetectorRef,
+              private loadingSrv: LoadingService,
+              private notification: NzNotificationService,
               private clipboardService: ClipboardService) {
     this.rowCount = this.response?.records.reduce((count, data) => count + data.keys.length, 0);
+  }
+
+  hasOS: boolean = undefined;
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUserInfo()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hasOS = true;
+          } else {
+            this.hasOS = false;
+          }
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Object Strorage không thành công'
+          );
+        },
+      });
   }
 
   onInputChange(value) {
@@ -102,5 +134,6 @@ export class ListSubUserComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.hasObjectStorage();
   }
 }

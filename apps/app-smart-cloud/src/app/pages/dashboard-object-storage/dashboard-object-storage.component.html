@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action"
+<page-header *ngIf="hasOS" [breadcrumb]="breadcrumb" [action]="action"
              [title]="'Thống kê dịch vụ Object Storage'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -17,7 +17,7 @@
     </div>
   </ng-template>
 </page-header>
-<nz-content>
+<nz-content *ngIf="hasOS">
   <nz-card>
     <nz-row nzJustify="end">
       <nz-col nzSpan="8" style="flex:none;">
@@ -42,3 +42,6 @@
 <!--    <one-portal-chart-summary />-->
   </nz-card>
 </nz-content>
+
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>

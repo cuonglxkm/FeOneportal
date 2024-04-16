@@ -256,6 +256,19 @@ export class Pool {
   healthmonitor_id: string;
 }
 
+export class CreatePool {
+  listener_id: string
+  name: string
+  description: string
+  algorithm: string
+  sessionPersistence: boolean
+  protocol: string
+  customerId: number
+  regionId: number
+  vpcId: number
+  loadbalancer_id: string
+}
+
 export class FormCreateL7Policy {
   action: string;
   adminStateUp: boolean;
@@ -296,6 +309,32 @@ export class MemberOfPool {
   poolId: string;
   backup: boolean;
   subnetId: string;
+}
+
+export class MemberCreateOfPool {
+  customerId: number
+  regionId: number
+  vpcId: number
+  name: string
+  address: string
+  protocol_port: number
+  weight: number
+  poolId: string
+  backup: boolean
+  subnetId: string
+}
+
+export class MemberUpdateOfPool {
+  memberId: string
+  customerId: number
+  regionId: number
+  vpcId: number
+  name: string
+  address: string
+  protocol_port: number
+  weight: number
+  poolId: string
+  backup: boolean
 }
 
 export class HealthCreate {

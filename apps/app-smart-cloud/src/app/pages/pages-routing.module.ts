@@ -590,7 +590,7 @@ const routes: Routes = [
     component: ExtendLoadBalancerNormalComponent
   },
   {
-    path: 'load-balancer/pool-detail',
+    path: 'load-balancer/pool-detail/:id',
     component: PoolDetailComponent
   },
   {
