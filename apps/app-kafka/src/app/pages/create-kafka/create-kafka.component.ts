@@ -64,6 +64,8 @@ export class CreateKafkaComponent implements OnInit {
   regionId: number;
   projectId: number;
 
+  isVisibleCancle = false;
+
   constructor(
     private fb: FormBuilder,
     private modalService: NzModalService,
@@ -226,17 +228,16 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   onCancelCreate() {
-    this.modalService.create({
-      nzTitle: 'Xác nhận hủy tạo mới Kafka',
-      nzContent: '<h3>Bạn có chắc chắn muốn ngừng tạo mới dịch vụ Kafka?'
-        + '<br> <i>Lưu ý: Các thông tin đã nhập sẽ không được lưu lại.</i></h3>',
-      nzBodyStyle: { textAlign: 'center' },
-      nzOkText: 'Xác nhận',
-      nzOkType: 'primary',
-      nzOkDanger: false,
-      nzOnOk: () => this.navigateToList(),
-      nzCancelText: 'Hủy'
-    });
+    this.isVisibleCancle = true;
+  }
+
+  handleCancelPopup() {
+    this.isVisibleCancle = false;
+  }
+
+  handleOkCancle() {
+    this.isVisibleCancle = false;
+    this.navigateToList()
   }
   
   navigateToList() {

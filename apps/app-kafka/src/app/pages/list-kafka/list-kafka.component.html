@@ -1,13 +1,13 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]=" !isShowIntroductionPage ? 'Danh sách Kafka' : ''">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]=" !isShowIntroductionPage ? ('app.kafka.list' | i18n) : ''">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-kafka']">Kafka</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item *ngIf="!isShowIntroductionPage">Danh sách Kafka</nz-breadcrumb-item>
+      <nz-breadcrumb-item *ngIf="!isShowIntroductionPage">{{ 'app.kafka.list' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   
@@ -31,7 +31,7 @@
     <div class="filter-div" nz-row>
       <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4">
         <nz-select nzAllowClear [(ngModel)]="serviceStatus" (ngModelChange)="handleChange()"
-          [nzPlaceHolder]="'Trạng thái dịch vụ'" class="w-100" nzSize="large">
+          [nzPlaceHolder]="'app.service.status' | i18n" class="w-100" nzSize="large">
           <nz-option *ngFor="let item of listOfStatusKafka" [nzValue]="item.id"
             [nzLabel]="item.statusName"></nz-option>
         </nz-select>
@@ -40,10 +40,10 @@
       <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6" class="search-filter">
         <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
           <input [(ngModel)]="keySearch" (keyup.enter)="handleChange()" type="text" nz-input
-            placeholder="Tìm kiếm tên dịch vụ" />
+            [placeholder]="'app.service.search' | i18n" />
         </nz-input-group>
         <ng-template #prefixButton>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
         </ng-template>
       </div>
 
@@ -57,7 +57,7 @@
         <button nz-button nzType="primary" routerLink="create" class="btn-create">
           <span nz-icon nzType="plus" nzTheme="outline" style="font-size: 20px; vertical-align: middle;">
           </span>
-          Tạo mới Kafka
+          {{ 'app.service.create' | i18n }}
         </button>
       </div>
     </div>
@@ -68,14 +68,14 @@
       (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }" [nzLoading]="loading">
       <thead>
         <tr>
-          <th nzWidth="5%" nzAlign="center">STT</th>
-          <th nzWidth="13%">Tên Kafka</th>
-          <th nzWidth="10%">Phiên bản</th>
-          <th nzWidth="12%">Trạng thái</th>
+          <th nzWidth="5%" nzAlign="center">{{ 'app.service.order-number' | i18n }}</th>
+          <th nzWidth="13%">{{ 'app.kafka.name' | i18n }}</th>
+          <th nzWidth="10%">{{ 'app.text.version' | i18n }}</th>
+          <th nzWidth="12%">{{ 'app.text.status' | i18n }}</th>
           <th nzWidth="15%">Endpoint</th>
-          <th nzWidth="20%">Gói dịch vụ</th>
-          <th nzWidth="15%">Thời gian tạo</th>
-          <th nzWidth="10%" nzAlign="center">Thao tác</th>
+          <th nzWidth="20%">{{ 'app.text.package' | i18n }}</th>
+          <th nzWidth="15%">{{ 'app.text.creation-time' | i18n }}</th>
+          <th nzWidth="10%" nzAlign="center">{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
@@ -102,10 +102,10 @@
           <td>{{ item.createdDate | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
           <td nzAlign="center">
             <img src="assets/imgs/edit-kafka.svg" alt="" style="cursor: pointer; margin-right: 16px;" [routerLink]="'extend/' + item.serviceOrderCode"
-              nz-tooltip="Chỉnh sửa" class="img-edit" />
+              [nz-tooltip]="'app.text.edit' | i18n" class="img-edit" />
             <img src="assets/imgs/upgrade.svg" alt="" style="cursor: pointer; margin-right: 16px" [routerLink]="'upgrade/' + item.serviceOrderCode"
-              nz-tooltip="Nâng cấp" />
-            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa" (click)="showDeleteConfirm(item)" />
+              [nz-tooltip]="'app.text.upgrade' | i18n" />
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" [nz-tooltip]="'app.text.delete' | i18n" (click)="showDeleteConfirm(item)" />
           </td>
         </tr>
       </tbody>
@@ -113,22 +113,22 @@
     <!-- Modal Detele -->
     <nz-modal
       [(nzVisible)]="isVisibleDelete"
-      nzTitle="Xóa dịch vụ Kafka"
+      [nzTitle]="'app.kafka.delete-title' | i18n"
       (nzOnCancel)="handleCancelDelete()"
       nzKeyboard="false"
       nzMaskClosable="false"
     >
       <div *nzModalContent>
-        <h3 style="text-align: center;">Bạn có chắc chắn muốn xoá dịch vụ Kafka <b>{{ currentKafka.serviceName }}</b> không ? <br>
-            Để xác nhận xóa, nhập tên dịch vụ vào ô dưới đây.
+        <h3 style="text-align: center;">{{ 'app.kafka.delete-content-1' | i18n }} <br> <b>{{ currentKafka.serviceName }}</b> ? <br>
+          {{ 'app.kafka.delete-content-2' | i18n }}
         </h3>
         <div style="justify-content: center;display: flex;">
           <div nz-col nzSpan="16" style="min-height: 65px; margin-top: 15px;">
             <nz-input-group nzSize="large" [nzSuffix]="prefixTemplate" [ngClass]="{ 'err-service': isErrorCheckDelete }">
               <input  nzSize="large" type="text" style="border-radius: 8px;"
-              nz-input [(ngModel)]="serviceNameDelete" (ngModelChange)="checkServiceNameDel()" placeholder="Nhập tên dịch vụ" />
+              nz-input [(ngModel)]="serviceNameDelete" (ngModelChange)="checkServiceNameDel()" [placeholder]="'app.kafka.name-placeholder' | i18n" />
             </nz-input-group>
-            <div class="err-msg">{{msgError}}</div>
+            <!-- <div class="err-msg">{{msgError}}</div> -->
             <ng-template #prefixTemplate >
               <span nz-icon *ngIf="isErrorCheckDelete" style="font-size: 20px;" nzType="exclamation-circle" nzTheme="twotone" [nzTwotoneColor]="'#ff4d4f'"></span>
               <span nz-icon *ngIf="!isErrorCheckDelete && !isInitModal" style="font-size: 20px;" nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
@@ -142,14 +142,14 @@
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/cancel.svg"
                 alt=""
-            />Hủy
+            />{{ 'app.button.cancel' | i18n }}
         </button>
         <button nz-button nzType="primary" (click)="handleOkDelete()" [disabled]="isErrorCheckDelete || isInitModal">
             <img
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/confirm.svg"
                 alt=""
-            />Xác nhận
+            />{{ 'app.button.confirm' | i18n }}
         </button>
       </div>  
     </nz-modal>
@@ -167,14 +167,13 @@
 
         <div class="mt-3 description-content">
           <span>
-            VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây.
-            Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.
+            {{ 'app.kafka.intro-text' | i18n }}
           </span>
         </div>
 
         <div class="mleft-16 mtop-15">
           <button nz-button nzType="primary" routerLink="create" class="border-button">
-            Khởi tạo Kafka Cluster
+            {{ 'app.kafka.init' | i18n }}
           </button>
         </div>
       </div>
