@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { SubUser } from '../../shared/models/sub-user.model';
 import { Router } from '@angular/router';
@@ -9,6 +9,9 @@ import { ObjectStorageService } from '../../shared/services/object-storage.servi
 import { Summary, UserInfoObjectStorage } from '../../shared/models/object-storage.model';
 import { BucketService } from '../../shared/services/bucket.service';
 import { BucketModel } from '../../shared/models/bucket.model';
+import { LoadingService } from '@delon/abc/loading';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-dashboard-object-storage',
@@ -49,8 +52,35 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   constructor(private router: Router,
               private objectStorageService: ObjectStorageService,
+              private cdr: ChangeDetectorRef,
+              private loadingSrv: LoadingService,
+              private notification: NzNotificationService,
               private bucketService: BucketService) {
   }
+
+  hasOS: boolean = undefined;
+  hasObjectStorage() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectStorageService
+      .getUserInfo()
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hasOS = true;
+          } else {
+            this.hasOS = false;
+          }
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Object Strorage không thành công'
+          );
+        },
+      });
+  } 
 
   onBucketChange(value) {
     this.bucketSelected = value;
@@ -83,6 +113,7 @@ export class DashboardObjectStorageComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.hasObjectStorage();
 
     this.bucketService.getListBucket(1, 9999, '').subscribe(data => {
       this.bucketList = data.records;
