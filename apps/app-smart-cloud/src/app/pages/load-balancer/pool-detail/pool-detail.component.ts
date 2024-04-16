@@ -76,6 +76,7 @@ export class PoolDetailComponent implements OnInit {
       this.loadBalancer = data
     })
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    console.log("id pool", this.id)
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
@@ -102,7 +103,7 @@ export class PoolDetailComponent implements OnInit {
       .getListHealth(
         this.regionId,
         this.projectId,
-        this.poolDetail.poolId,
+        this.id,
         this.pageSizeHealth,
         this.currentPageHealth
       )
@@ -347,10 +348,11 @@ export class PoolDetailComponent implements OnInit {
   getListMember() {
     this.loadingMember = true;
     this.service
-      .getListMember(this.poolDetail.poolId, this.regionId, this.projectId)
+      .getListMember(this.id, this.regionId, this.projectId)
       .pipe(
         finalize(() => {
           this.loadingMember = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({

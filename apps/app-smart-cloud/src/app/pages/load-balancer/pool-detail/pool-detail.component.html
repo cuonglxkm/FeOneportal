@@ -1,16 +1,14 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Thông tin User'">
+<page-header [breadcrumb]="breadcrumb" [title]="'Thông tin Pool'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+        <a>Pool</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
-          >Chi tiết User</a
-        >
+        <a>Chi tiết Pool</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -569,7 +567,7 @@
           <input
             class="input-custom"
             nz-input
-            (ngModel)="loadBalancer.subnetAddress"
+            (ngModel)="(loadBalancer.subnetAddress)"
             [ngModelOptions]="{ standalone: true }"
             [disabled]="true"
           />
