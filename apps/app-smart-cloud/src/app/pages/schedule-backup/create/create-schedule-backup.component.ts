@@ -57,7 +57,6 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
   instanceId: number
 
-  instanceId: number
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.instanceId = params['instanceId'];
