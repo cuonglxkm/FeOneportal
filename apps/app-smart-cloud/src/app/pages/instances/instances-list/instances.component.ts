@@ -689,4 +689,10 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/instance/' + id + '/create-backup-vm',
     ]);
   }
+  createBackupSchedule(id: number) {
+    this.router.navigate([
+      '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
+    ]);
+  }
 }
