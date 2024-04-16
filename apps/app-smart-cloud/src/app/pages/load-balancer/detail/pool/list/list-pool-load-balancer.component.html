@@ -17,7 +17,13 @@
   </thead>
   <tbody>
   <tr *ngFor="let data of fixedTable.data">
-    <td nzAlign="left">{{ data.name }}</td>
+    <td nzAlign="left"><a
+      nz-tooltip
+      nzTooltipTitle="Xem chi tiết"
+      nzTooltipPlacement="bottom"
+      (click)="detaiPool(data.id)"
+      >{{ data.name }}</a>
+    </td>
     <td nzAlign="left">{{ data.protocol }}</td>
     <td nzAlign="left">{{ data.algorithm }}</td>
     <td nzAlign="left">{{ data.operatingStatus }}</td>

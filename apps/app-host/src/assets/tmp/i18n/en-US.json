@@ -192,5 +192,6 @@
   "app.use.lan.network": "Use LAN Network",
   "app.access.method.instance": "Access Method for Instance",
   "app.health.monitor.name": "Health Monitor name",
-  "app.health.monitor.type": "Check type"
+  "app.health.monitor.method": "Check Method",
+  "app.member.name": "Member name"
 }

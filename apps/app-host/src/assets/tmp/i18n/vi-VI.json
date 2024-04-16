@@ -69,5 +69,6 @@
   "app.use.lan.network": "Sử dụng mạng LAN",
   "app.access.method.instance": "Phương thức truy cập máy ảo",
   "app.health.monitor.name": "Tên Health Monitor",
-  "app.health.monitor.type": "Loại kiểm tra"
+  "app.health.monitor.method": "Phương pháp kiểm tra",
+  "app.member.name": "Tên Member"
 }
