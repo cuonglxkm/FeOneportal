@@ -10,13 +10,13 @@ import { Subnet } from '../../../../shared/models/vlan.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
 import {
-  FormOrder,
   FormCreateLoadBalancer,
+  FormOrder,
   FormSearchListBalancer,
   IPBySubnet
 } from '../../../../shared/models/load-balancer.model';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { OrderItem } from '../../../../shared/models/price';
 
@@ -30,8 +30,8 @@ export class CreateLbNovpcComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   nameList: string[] = [];
-  enableInternetFacing: boolean = true
-  enableInternal: boolean = false
+  enableInternetFacing: boolean = true;
+  enableInternal: boolean = false;
 
   listSubnets: Subnet[];
 
@@ -101,17 +101,17 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   getListLoadBalancer() {
-    let formSearchLB = new FormSearchListBalancer()
-    formSearchLB.regionId = this.region
-    formSearchLB.currentPage = 1
-    formSearchLB.pageSize = 9999
-    formSearchLB.vpcId = this.project
-    formSearchLB.isCheckState = true
+    let formSearchLB = new FormSearchListBalancer();
+    formSearchLB.regionId = this.region;
+    formSearchLB.currentPage = 1;
+    formSearchLB.pageSize = 9999;
+    formSearchLB.vpcId = this.project;
+    formSearchLB.isCheckState = true;
     this.loadBalancerService.search(formSearchLB).subscribe(data => {
       data?.records?.forEach(item => {
-        this.nameList?.push(item?.name)
-      })
-    })
+        this.nameList?.push(item?.name);
+      });
+    });
   }
 
   selectedIp(value) {
@@ -136,26 +136,26 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   onChangeStatusInternetFacing() {
-    this.enableInternetFacing = true
-    this.enableInternal = false
-    if(this.enableInternetFacing) {
-      this.validateForm.controls.ipFloating.setValidators(Validators.required)
+    this.enableInternetFacing = true;
+    this.enableInternal = false;
+    if (this.enableInternetFacing) {
+      this.validateForm.controls.ipFloating.setValidators(Validators.required);
     }
-    if(this.enableInternal) {
-      this.validateForm.controls.ipFloating.clearValidators()
-      this.validateForm.controls.ipFloating.updateValueAndValidity()
+    if (this.enableInternal) {
+      this.validateForm.controls.ipFloating.clearValidators();
+      this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
   }
 
   onChangeStatusInternal() {
-    this.enableInternetFacing = false
-    this.enableInternal = true
-    if(this.enableInternetFacing) {
-      this.validateForm.controls.ipFloating.setValidators(Validators.required)
+    this.enableInternetFacing = false;
+    this.enableInternal = true;
+    if (this.enableInternetFacing) {
+      this.validateForm.controls.ipFloating.setValidators(Validators.required);
     }
-    if(this.enableInternal) {
-      this.validateForm.controls.ipFloating.clearValidators()
-      this.validateForm.controls.ipFloating.updateValueAndValidity()
+    if (this.enableInternal) {
+      this.validateForm.controls.ipFloating.clearValidators();
+      this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
   }
 
