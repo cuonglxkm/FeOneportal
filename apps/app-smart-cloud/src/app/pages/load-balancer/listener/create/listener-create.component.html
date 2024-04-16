@@ -1,0 +1,414 @@
+<!--<page-header [breadcrumb]="breadcrumb" [title]="'Tạo mới Listener'">-->
+<!--  <ng-template #breadcrumb>-->
+<!--    <nz-breadcrumb>-->
+<!--      <nz-breadcrumb-item>-->
+<!--        <a [routerLink]="['/']">Trang chủ</a>-->
+<!--      </nz-breadcrumb-item>-->
+<!--      <nz-breadcrumb-item>-->
+<!--        <a [routerLink]="['/app-smart-cloud/load-balancer/list']">Load Balancer</a>-->
+<!--      </nz-breadcrumb-item>-->
+<!--      <nz-breadcrumb-item>-->
+<!--        <a [routerLink]="[]">Tạo mới Listener</a>-->
+<!--      </nz-breadcrumb-item>-->
+<!--    </nz-breadcrumb>-->
+<!--  </ng-template>-->
+<!--</page-header>-->
+<!--<nz-card>-->
+<!--  <nz-steps [nzCurrent]="step" style="width: 60%; margin: 0 auto;">-->
+<!--    <nz-step nzTitle="Listener" [nzIcon]="step1"></nz-step>-->
+<!--    <nz-step nzTitle="Pool" [nzIcon]="step2"></nz-step>-->
+<!--    <nz-step nzTitle="Pool Member" [nzIcon]="step3"></nz-step>-->
+<!--    <nz-step nzTitle="Kết thúc" [nzIcon]="step4"></nz-step>-->
+<!--  </nz-steps>-->
+<!--  <ng-template #step1>-->
+<!--    <img src="assets/imgs/listener-done.svg" />-->
+<!--  </ng-template>-->
+<!--  <ng-template #step2>-->
+<!--    <img *ngIf="step >= 1" src="assets/imgs/pool-done.svg" />-->
+<!--    <img *ngIf="step < 1" src="assets/imgs/pool.svg" />-->
+<!--  </ng-template>-->
+<!--  <ng-template #step3>-->
+<!--    <img *ngIf="step >= 2" src="assets/imgs/pool member-done.svg" />-->
+<!--    <img *ngIf="step < 2" src="assets/imgs/pool member.svg" />-->
+<!--  </ng-template>-->
+<!--  <ng-template #step4>-->
+<!--    <img *ngIf="step >= 3" src="assets/imgs/final-done.svg" />-->
+<!--    <img *ngIf="step < 3" src="assets/imgs/final.svg" />-->
+<!--  </ng-template>-->
+<!--</nz-card>-->
+<!--<nz-content>-->
+<!--  <form nz-form [formGroup]="validateForm" nzLayout="vertical">-->
+<!--    &lt;!&ndash;CARD LISTENER&ndash;&gt;-->
+<!--    <nz-card *ngIf="step == 0">-->
+<!--      <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Listener</div>-->
+<!--      <nz-form-item>-->
+<!--        <nz-form-label>-->
+<!--          <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--        </nz-form-label>-->
+<!--        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">-->
+<!--          <input nz-input-->
+<!--                 class="input-custom"-->
+<!--                 formControlName="name"-->
+<!--                 [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--          <ng-template #nameErrorTpl let-control>-->
+<!--            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>-->
+<!--            <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc-->
+<!--              biệt (trừ _)-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>-->
+<!--            <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Load-->
+<!--              Balancer khác-->
+<!--            </ng-container>-->
+<!--          </ng-template>-->
+<!--        </nz-form-control>-->
+<!--      </nz-form-item>-->
+
+<!--      <nz-row>-->
+<!--        <nz-col nzSpan="16">-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label>-->
+<!--              <span>Giao thức (<span style="color: red;">*</span>) </span>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control nzDisableAutoTips>-->
+<!--              <nz-radio-group [(ngModel)]="radioValue" [ngModelOptions]="{standalone: true}" nzSize="large">-->
+<!--                <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>-->
+<!--                <label nz-radio nzValue="TCP">TCP</label>-->
+<!--                <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>-->
+<!--              </nz-radio-group>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </nz-col>-->
+<!--        <nz-col nzSpan="8">-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label>-->
+<!--              <span>Port (<span style="color: red;">*</span>) </span>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control nzDisableAutoTips>-->
+<!--              <nz-input-number formControlName="name" [nzMin]="0" [nzStep]="1"-->
+<!--                               style="margin-left: -2px;"></nz-input-number>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </nz-col>-->
+<!--      </nz-row>-->
+
+<!--      <nz-row>-->
+<!--        <nz-col nzSpan="6">-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label>-->
+<!--              <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control nzDisableAutoTips>-->
+<!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="name" [nzMin]="0"-->
+<!--                               [nzStep]="1"></nz-input-number>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </nz-col>-->
+<!--        <nz-col nzSpan="6">-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label>-->
+<!--              <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control nzDisableAutoTips>-->
+<!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="name" [nzMin]="0"-->
+<!--                               [nzStep]="1"></nz-input-number>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </nz-col>-->
+<!--        <nz-col nzSpan="6">-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label>-->
+<!--              <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control nzDisableAutoTips>-->
+<!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="name" [nzMin]="0"-->
+<!--                               [nzStep]="1"></nz-input-number>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </nz-col>-->
+<!--        <nz-col nzSpan="6">-->
+<!--          <nz-form-item>-->
+<!--            <nz-form-label>-->
+<!--              <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>-->
+<!--            </nz-form-label>-->
+<!--            <nz-form-control nzDisableAutoTips>-->
+<!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="name" [nzMin]="0"-->
+<!--                               [nzStep]="1"></nz-input-number>-->
+<!--            </nz-form-control>-->
+<!--          </nz-form-item>-->
+<!--        </nz-col>-->
+<!--      </nz-row>-->
+
+
+<!--      <nz-form-item>-->
+<!--        <nz-form-label>-->
+<!--          <span>Mô tả</span>-->
+<!--        </nz-form-label>-->
+<!--        <nz-form-control nzDisableAutoTips>-->
+<!--          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"-->
+<!--                    formControlName="description"></textarea>-->
+<!--        </nz-form-control>-->
+<!--      </nz-form-item>-->
+
+<!--      <div class="text-right"-->
+<!--           style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">-->
+<!--        <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"-->
+<!--                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>-->
+<!--        </button>-->
+<!--        <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"-->
+<!--                style="border: none;margin-left: 30px;">Tiếp tục-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </nz-card>-->
+
+<!--    &lt;!&ndash;CARD POOL&ndash;&gt;-->
+<!--    <div *ngIf="step == 1">-->
+<!--      <nz-card>-->
+<!--        <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Pool</div>-->
+<!--        <nz-form-item>-->
+<!--          <nz-form-label>-->
+<!--            <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--          </nz-form-label>-->
+<!--          <nz-form-control nzDisableAutoTips>-->
+<!--            <input nz-input-->
+<!--                   class="input-custom"-->
+<!--                   formControlName="name"-->
+<!--                   [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--          </nz-form-control>-->
+<!--        </nz-form-item>-->
+<!--        <nz-form-item>-->
+<!--          <nz-form-label>-->
+<!--            <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--          </nz-form-label>-->
+<!--          <nz-form-control nzDisableAutoTips>-->
+<!--            <input nz-input-->
+<!--                   class="input-custom"-->
+<!--                   formControlName="name"-->
+<!--                   [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--          </nz-form-control>-->
+<!--        </nz-form-item>-->
+<!--        <nz-row>-->
+<!--          <nz-col nzSpan="10">-->
+<!--            <span class="text-label">Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--            <label nz-checkbox [(ngModel)]="checkedSession" [ngModelOptions]="{standalone: true}"></label>-->
+<!--          </nz-col>-->
+<!--          <nz-col nzSpan="14">-->
+<!--            <span class="text-label">Tên Load Balancer</span>-->
+<!--            <input nz-input style="width: 30%" disabled="true"-->
+<!--                   [ngModel]="sessionFix" [ngModelOptions]="{standalone: true}" />-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+
+<!--      </nz-card>-->
+<!--      <nz-card>-->
+<!--        <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Health Monitor</div>-->
+<!--        <nz-form-item>-->
+<!--          <nz-form-label>-->
+<!--            <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--          </nz-form-label>-->
+<!--          <nz-form-control nzDisableAutoTips>-->
+<!--            <input nz-input-->
+<!--                   class="input-custom"-->
+<!--                   formControlName="name"-->
+<!--                   [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--          </nz-form-control>-->
+<!--        </nz-form-item>-->
+
+<!--        <nz-row>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips>-->
+<!--                <input nz-input style="width: 90%"-->
+<!--                       class="input-custom"-->
+<!--                       formControlName="name"-->
+<!--                       [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips>-->
+<!--                <input nz-input-->
+<!--                       class="input-custom"-->
+<!--                       formControlName="name"-->
+<!--                       [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+<!--        <nz-row>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips>-->
+<!--                <input nz-input style="width: 90%"-->
+<!--                       class="input-custom"-->
+<!--                       formControlName="name"-->
+<!--                       [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips>-->
+<!--                <input nz-input-->
+<!--                       class="input-custom"-->
+<!--                       formControlName="name"-->
+<!--                       [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+<!--        <nz-row>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips>-->
+<!--                <input nz-input style="width: 90%"-->
+<!--                       class="input-custom"-->
+<!--                       formControlName="name"-->
+<!--                       [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--          <nz-col nzSpan="12">-->
+<!--            <nz-form-item>-->
+<!--              <nz-form-label>-->
+<!--                <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--              </nz-form-label>-->
+<!--              <nz-form-control nzDisableAutoTips>-->
+<!--                <input nz-input-->
+<!--                       class="input-custom"-->
+<!--                       formControlName="name"-->
+<!--                       [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--              </nz-form-control>-->
+<!--            </nz-form-item>-->
+<!--          </nz-col>-->
+<!--        </nz-row>-->
+<!--        <nz-form-item>-->
+<!--          <nz-form-label>-->
+<!--            <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--          </nz-form-label>-->
+<!--          <nz-form-control nzDisableAutoTips>-->
+<!--            <input nz-input-->
+<!--                   class="input-custom"-->
+<!--                   formControlName="name"-->
+<!--                   [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--          </nz-form-control>-->
+<!--        </nz-form-item>-->
+<!--        <nz-form-item>-->
+<!--          <nz-form-label>-->
+<!--            <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>-->
+<!--          </nz-form-label>-->
+<!--          <nz-form-control nzDisableAutoTips>-->
+<!--            <input nz-input-->
+<!--                   class="input-custom"-->
+<!--                   formControlName="name"-->
+<!--                   [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />-->
+<!--          </nz-form-control>-->
+<!--        </nz-form-item>-->
+<!--        <div class="text-right"-->
+<!--             style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">-->
+<!--          <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"-->
+<!--                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>-->
+<!--          </button>-->
+<!--          <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"-->
+<!--                  style="border: none;margin-left: 30px;">Tiếp tục-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </nz-card>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash;CARD POOL NUMBER&ndash;&gt;-->
+<!--    <nz-card *ngIf="step == 2">-->
+<!--      <div class="text-card-header" style="margin-bottom: 15px;">Thông tin pool</div>-->
+<!--      <div class="text-right"-->
+<!--           style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">-->
+<!--        <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"-->
+<!--                style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>-->
+<!--        </button>-->
+<!--        <button [disabled]="checkDisable() == true" nzSize="large" (click)="nextStep()" nz-button nzType="primary"-->
+<!--                style="border: none;margin-left: 30px;">Tiếp tục-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </nz-card>-->
+
+<!--    &lt;!&ndash;CARD COMPLETE&ndash;&gt;-->
+<!--    <div *ngIf="step == 3">-->
+<!--      <nz-row nzGutter="24" class="card-container">-->
+<!--        <nz-col nzSpan="8">-->
+<!--          <nz-card style="height: 200px;">-->
+<!--            <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Listener</div>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--          </nz-card>-->
+<!--        </nz-col>-->
+<!--        <nz-col nzSpan="8">-->
+<!--          <nz-card style="height: 200px;">-->
+<!--            <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Health Monitor</div>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--          </nz-card>-->
+<!--        </nz-col>-->
+<!--        <nz-col nzSpan="8">-->
+<!--          <nz-card style="height: 200px;">-->
+<!--            <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Pool</div>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-row>-->
+<!--              <nz-col nzSpan="9" class="text-label">aaa</nz-col>-->
+<!--              <nz-col nzSpan="15" class="text-label">aaa</nz-col>-->
+<!--            </nz-row>-->
+<!--          </nz-card>-->
+<!--        </nz-col>-->
+<!--      </nz-row>-->
+<!--      <nz-card>-->
+<!--        <div class="text-card-header" style="margin-bottom: 15px;">Thông tin Pool Member</div>-->
+<!--        <div class="text-right"-->
+<!--             style="display: flex;align-items: center;justify-content: flex-end;height: 100%;margin-top: 80px;">-->
+<!--          <button (click)="priviousStep()" nzSize="large" nz-button nzType="primary"-->
+<!--                  style="border-color: #0066B3;background-color: white;"><span style="color:#0066B3">Quay lại</span>-->
+<!--          </button>-->
+<!--          <button [disabled]="checkDisable() == true" nzSize="large" (click)="createListener()" nz-button-->
+<!--                  nzType="primary" style="border: none;margin-left: 30px;">Hoàn tất-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </nz-card>-->
+<!--    </div>-->
+<!--  </form>-->
+<!--</nz-content>-->
+

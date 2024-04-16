@@ -200,11 +200,25 @@ import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.c
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
 import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
 import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
-import { ResizeLoadBalancerNormalComponent } from './load-balancer/normal/resize/resize-load-balancer-normal.component';
 import { UpdateLoadBalancerNormalComponent } from './load-balancer/normal/update/update-load-balancer-normal.component';
 import { DeleteLoadBalancerComponent } from './load-balancer/delete/delete-load-balancer.component';
 import { ListListenerInLbComponent } from './load-balancer/detail/listener/list/list-listener-in-lb.component';
 import { ListPoolLoadBalancerComponent } from './load-balancer/detail/pool/list/list-pool-load-balancer.component';
+import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
+import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
+import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
+import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
+import { EllipsisModule } from '@delon/abc/ellipsis';
+import { AutofocusDirective } from './volume/autofocus-directive.component';
+import { CreateL7PolicyComponent } from './load-balancer/listener/L7-policy/create/create-l7-policy.component';
+import { DetailL7PolicyComponent } from './load-balancer/listener/L7-policy/detail/detail-l7-policy.component';
+import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/edit-l7-policy.component';
+import { CreatePoolInLbComponent } from './load-balancer/detail/pool/create/create-pool-in-lb.component';
+import { EditPoolInLbComponent } from './load-balancer/detail/pool/edit/edit-pool-in-lb.component';
+import { DeletePoolInLbComponent } from './load-balancer/detail/pool/delete/delete-pool-in-lb.component';
+import { CreateL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/create/create-l7-rule.component';
+import { DeleteL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/delete/delete-l7-rule.component';
+
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
 @NgModule({
@@ -390,11 +404,23 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetailLoadBalancerComponent,
     EditLoadBalancerVpcComponent,
     ExtendLoadBalancerNormalComponent,
-    ResizeLoadBalancerNormalComponent,
     UpdateLoadBalancerNormalComponent,
     DeleteLoadBalancerComponent,
     ListListenerInLbComponent,
     ListPoolLoadBalancerComponent,
+    ListenerCreateComponent,
+    ListenerDetailComponent,
+    ListenerUpdateComponent,
+    ListenerUpdateComponent,
+    PoolDetailComponent,
+    CreateL7PolicyComponent,
+    DetailL7PolicyComponent,
+    EditL7PolicyComponent,
+    CreatePoolInLbComponent,
+    EditPoolInLbComponent,
+    DeletePoolInLbComponent,
+    CreateL7RuleComponent,
+    DeleteL7RuleComponent,
   ],
   imports: [
     CommonModule,
@@ -425,6 +451,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     AngJsoneditorModule,
     ClipboardModule,
     SafePipe,
+    EllipsisModule,
+    AutofocusDirective,
     // ChartModule,
   ],
 })

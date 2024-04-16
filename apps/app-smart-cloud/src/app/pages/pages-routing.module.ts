@@ -119,7 +119,15 @@ import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-
 import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
 import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
+import { ListenerCreateComponent } from './load-balancer/listener/create/listener-create.component';
+import { ListenerDetailComponent } from './load-balancer/listener/detail/listener-detail.component';
+import { ListenerUpdateComponent } from './load-balancer/listener/update/listener-update.component';
 import { ObjectStorageExtendComponent } from './object-storage/object-storage-extend/object-storage-extend.component';
+import { ExtendLoadBalancerNormalComponent } from './load-balancer/normal/extend/extend-load-balancer-normal.component';
+import { CreateL7PolicyComponent } from './load-balancer/listener/L7-policy/create/create-l7-policy.component';
+import { DetailL7PolicyComponent } from './load-balancer/listener/L7-policy/detail/detail-l7-policy.component';
+import { PoolDetailComponent } from './load-balancer/pool-detail/pool-detail.component';
+import { EditL7PolicyComponent } from './load-balancer/listener/L7-policy/edit/edit-l7-policy.component';
 
 
 const routes: Routes = [
@@ -446,7 +454,7 @@ const routes: Routes = [
     component: DetailFileSystemComponent
   },
   {
-    path: 'file-storage/file-system/edit/:id',
+    path: 'file-storage/file-system/resize/:id',
     component: ResizeFileSystemComponent
   },
   {
@@ -558,12 +566,44 @@ const routes: Routes = [
     component: DetailLoadBalancerComponent
   },
   {
+    path: 'load-balancer/listener/create',
+    component: ListenerCreateComponent
+  },
+  {
+    path: 'load-balancer/listener/detail/:id',
+    component: ListenerDetailComponent
+  },
+  {
+    path: 'load-balancer/listener/update',
+    component: ListenerUpdateComponent
+  },
+  {
     path: 'security',
     component: SecurityComponent
   },
   {
     path: 'load-balancer/update/vpc/:id',
     component: EditLoadBalancerVpcComponent
+  },
+  {
+    path: 'load-balancer/extend/normal/:id',
+    component: ExtendLoadBalancerNormalComponent
+  },
+  {
+    path: 'load-balancer/pool-detail/:id',
+    component: PoolDetailComponent
+  },
+  {
+    path: 'load-balancer/:idLoadBalancer/listener/:idListener/create/l7-policy',
+    component: CreateL7PolicyComponent
+  },
+  {
+    path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/:idL7',
+    component: DetailL7PolicyComponent
+  },
+  {
+    path: 'load-balancer/:idLoadBalancer/listener/:idListener/l7-policy/edit/:idL7',
+    component: EditL7PolicyComponent
   }
   ]
 @NgModule({

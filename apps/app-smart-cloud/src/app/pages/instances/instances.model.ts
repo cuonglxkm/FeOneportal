@@ -236,6 +236,8 @@ export class InstanceCreate {
   ram: number;
   cpu: number;
   volumeType: any;
+  gpuType: any;
+  gpuCount: any;
   typeName: string;
   customerId: number;
   userEmail: any;

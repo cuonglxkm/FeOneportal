@@ -42,19 +42,15 @@
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-              <input nz-input
+              <input nz-input appAutofocus
                      class="input-custom"
                      formControlName="name"
                      [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc
-                  biệt (trừ _)
-                </ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Load
-                  Balancer khác
-                </ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -63,34 +59,32 @@
               <span>Sử dụng (<span style="color: red;">*</span>)</span>
             </nz-form-label>
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
-              <nz-radio-group style="width: 100%;" formControlName="radio" [(ngModel)]="selectedValueRadio"
-                              (ngModelChange)="onChangeStatus()">
+              <nz-radio-group style="width: 100%;" formControlName="radio">
                 <nz-row>
                   <nz-col nzSpan="12">
-                    <label nz-radio nzValue="true">
-                      <nz-space [nzSize]="4">
-                        <span *nzSpaceItem class="text-value">Internet Facing</span>
-                        <span *nzSpaceItem>
-                          <img nz-popover
-                               [nzPopoverContent]="'Sử dụng địa chỉ IP public. Do đó Load balancer có thể định tuyến các yêu cầu từ khách hàng qua internet'"
-                               nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                               src="assets/imgs/pajamas_question.svg" alt="" />
-                        </span>
-                      </nz-space>
+                    <label [tabIndex]="0" nz-radio class="custom-tabindex"
+                           [ngModel]="enableInternetFacing"
+                           [ngModelOptions]="{ standalone: true }"
+                           (click)="onChangeStatusInternetFacing()"
+                           (keyup.enter)="onChangeStatusInternetFacing()">
+                      Internet Facing
+                      <img nz-popover
+                           [nzPopoverContent]="'Sử dụng địa chỉ IP public. Do đó Load balancer có thể định tuyến các yêu cầu từ khách hàng qua internet'"
+                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </label>
                   </nz-col>
                   <nz-col nzSpan="12">
-                    <label nz-radio nzValue="false">
-                      <nz-space [nzSize]="4">
-                        <span *nzSpaceItem class="text-value">Internal</span>
-                        <span *nzSpaceItem>
-                          <img nz-popover
-                               [nzPopoverContent]="'Sử dụng địa chỉ IP private. Do đó Load balancer chỉ có thể định tuyến ' +
-                               'các yêu cầu từ các máy khách có quyền truy cập vào VPC cho bộ cân bằng tải'"
-                               nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                               src="assets/imgs/pajamas_question.svg" alt="" />
-                        </span>
-                      </nz-space>
+                    <label [tabIndex]="0" nz-radio class="custom-tabindex"
+                           [ngModel]="enableInternal"
+                           [ngModelOptions]="{ standalone: true }"
+                           (click)="onChangeStatusInternal()"
+                           (keyup.enter)="onChangeStatusInternal()">Internal
+                      <img nz-popover
+                           [nzPopoverContent]="'Sử dụng địa chỉ IP private. Do đó Load balancer chỉ có thể định tuyến ' +
+                                               'các yêu cầu từ các máy khách có quyền truy cập vào VPC cho bộ cân bằng tải'"
+                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </label>
                   </nz-col>
                 </nz-row>
@@ -142,7 +136,7 @@
               </nz-form-item>
             </nz-col>
           </nz-row>
-          <nz-form-item *ngIf="selectedValueRadio == 'true'">
+          <nz-form-item *ngIf="enableInternetFacing">
             <nz-form-label>
               <span>Chọn IP Floating (<span style="color: red;">*</span>)</span>
             </nz-form-label>
@@ -228,25 +222,31 @@
           <div style="margin-top: 10px" class="text-label">
             {{ validateForm.controls.name.getRawValue() }}
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">Sử dụng</div>
           <div style="margin-top: 10px" class="text-label">
-            <span *ngIf="selectedValueRadio == 'true'">Internet Facing</span>
-            <span *ngIf="selectedValueRadio == 'false'">Internal</span>
+            <span *ngIf="enableInternetFacing">Internet Facing</span>
+            <span *ngIf="enableInternal">Internal</span>
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">Subnet</div>
           <div style="margin-top: 10px" class="text-label">
             <span #selectedValueSpan></span>
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">IP Address</div>
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
-          <div style="margin-top: 10px" class="text-value" *ngIf="selectedValueRadio == 'true'">IP Public</div>
-          <div style="margin-top: 10px" class="text-label"  *ngIf="selectedValueRadio == 'true'" >
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Public</div>
+          <div style="margin-top: 10px" class="text-label"  *ngIf="enableInternetFacing" >
             <span #selectedValueIpFloating></span>
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">Gói dịch vụ</div>
           <div style="margin-top: 10px" class="text-label">
-            <span #selectedValueOffer></span>
+            <span>{{ offerDetail?.offerName }}</span>
           </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="doCreateLoadBalancerVpc()">

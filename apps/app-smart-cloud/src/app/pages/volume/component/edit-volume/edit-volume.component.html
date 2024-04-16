@@ -14,6 +14,9 @@
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/volume/detail/{{volumeId}}">Chi tiết Volume</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>Điều chỉnh dung lượng Volume</nz-breadcrumb-item>
     </nz-breadcrumb>
     <div class="alain-custom-action text-right">
@@ -59,7 +62,7 @@
 <!--              <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>-->
 <!--              </nz-descriptions-item>-->
           </nz-descriptions>
-          <span class="text-label">Mô tả: {{ volumeInfo?.description }}</span>
+<!--          <span class="text-label">Mô tả: {{ volumeInfo?.description }}</span>-->
           <ng-template #titleName>
             <span class="text-label">Tên Volume:</span>
           </ng-template>
@@ -76,7 +79,7 @@
             <span class="text-label">Trạng thái Volume:</span>
           </ng-template>
           <ng-template #titleAttachInstance>
-            <span class="text-label">Gán vào máy ảo:</span>
+            <span class="text-label">Gắn vào máy ảo:</span>
           </ng-template>
           <ng-template #titleVolumeType>
             <span class="text-label">Kiểu Volume:</span>
@@ -93,7 +96,7 @@
           <div style="margin-top: 15px;">
             <nz-descriptions>
               <nz-descriptions-item [nzTitle]="titleDescription">
-                <span class="text-label"><b>{{ volumeInfo?.description }}</b></span>
+                <span class="text-label">{{ volumeInfo?.description }}</span>
               </nz-descriptions-item>
             </nz-descriptions>
           </div>
@@ -149,7 +152,7 @@
           <span class="text-card-header">Thông tin điều chỉnh</span>
           <nz-alert nzBanner
                     style="margin-top: 20px;"
-                    [nzMessage]="'Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
+                    [nzMessage]="'Khi thực hiện tăng dung lượng Volume, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn.'"
                     nzShowIcon>
           </nz-alert>
           <nz-form-item style="margin-top: 10px; margin-bottom: 10px;">
@@ -157,15 +160,15 @@
               <div class="label">
                 <span>Dung lượng tăng thêm</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>) - GB
-                <img nz-popover [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
+                <img nz-popover [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày điều chỉnh cho tới ngày hết hạn.'"
                      nzPopoverPlacement="bottom"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
               <nz-input-number formControlName="storage"
-                               id="storage"
                                style="width: 100%; margin-left: 0;"
+                               nzAutoFocus
                                class="input-custom"
                                [nzMin]="volumeInfo?.sizeInGB"
                                (ngModelChange)="changeValueStorage($event)"
@@ -180,7 +183,7 @@
             <nz-form-label>
               <div>
                 Đơn giá: <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }} /GB/Ngày</span>
+                   {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.amount | number:'1.0-0' }} {{ orderItem?.orderItemPrices[0]?.unitPricePerDay.currency }}/GB/Ngày</span>
                 <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
                    0 VND/GB/Ngày
                 </span>

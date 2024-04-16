@@ -1,0 +1,707 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'Thông tin User'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users']">Users</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/users/detail/' + userName]"
+          >Chi tiết User</a
+        >
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-card style="border-radius: 4px" [nzBordered]="false">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">Thông tin chi tiết Pool</span>
+  </div>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="12">
+      <span class="text-label">Tên pool</span>
+      <br />
+      <input
+        style="border-radius: 8px"
+        nz-input
+        [(ngModel)]="poolDetail.name"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </nz-col>
+    <nz-col nzSpan="12">
+      <span class="text-label">Phương pháp đánh dấu Session</span>
+      <br />
+      <input
+        style="border-radius: 8px"
+        nz-input
+        [(ngModel)]="poolDetail.type"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </nz-col>
+  </nz-row>
+  <nz-row style="margin-top: 20px" nzGutter="24">
+    <nz-col nzSpan="12">
+      <span class="text-label">Thuật toán</span>
+      <br />
+      <input
+        style="border-radius: 8px"
+        nz-input
+        [(ngModel)]="poolDetail.lb_algorithm"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </nz-col>
+    <nz-col nzSpan="12">
+      <span class="text-label">Giao thức</span>
+      <br />
+      <input
+        style="border-radius: 8px"
+        nz-input
+        [(ngModel)]="poolDetail.protocol"
+        disabled="true"
+        type="text"
+        nzSize="large"
+      />
+    </nz-col>
+  </nz-row>
+</nz-card>
+<nz-card style="border-radius: 4px" [nzBordered]="false">
+  <nz-tabset nzSize="large">
+    <nz-tab nzTitle="Health Monitors">
+      <div nz-row [nzGutter]="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <span class="text-card-header">Danh sách Health Monitor</span>
+        </div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <button
+            *ngIf="listHealth.length == 0"
+            nz-button
+            nzType="primary"
+            (click)="modalHealth(true, null)"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span>Tạo mới Health Monitor</span>
+          </button>
+        </div>
+      </div>
+      <nz-table
+        style="margin-top: 10px"
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '300px' }"
+        [nzFrontPagination]="false"
+        [nzTotal]="totalHealth"
+        [nzData]="listHealth"
+        (nzPageIndexChange)="getListHealth()"
+        (nzPageSizeChange)="getListHealth()"
+        [nzLoading]="loadingHealth"
+      >
+        <thead>
+          <tr>
+            <th>Tên Health Monitor</th>
+            <th>Loại kiểm tra</th>
+            <th>Phương thức</th>
+            <th>Trạng thái hoạt động</th>
+            <th>Trạng thái cung cấp</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of listHealth; let i = index">
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.type }}</td>
+              <td>{{ item.httpMethod }}</td>
+              <td>{{ item.operating_status }}</td>
+              <td>{{ item.provisioning_status }}</td>
+              <td>
+                <img
+                  src="assets/imgs/edit-2.svg"
+                  alt=""
+                  (click)="modalHealth(false, item)"
+                  style="cursor: pointer; margin-right: 16px"
+                  nz-tooltip="Chỉnh sửa"
+                />
+                <img
+                  src="assets/imgs/trash.svg"
+                  alt=""
+                  (click)="modalDeleteHealth(data)"
+                  style="cursor: pointer"
+                  nz-tooltip="Xoá"
+                />
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="Members">
+      <div nz-row [nzGutter]="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <span class="text-card-header">Danh sách Member</span>
+        </div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <button nz-button nzType="primary" (click)="modalMember(true, null)">
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span>Tạo mới Member</span>
+          </button>
+        </div>
+      </div>
+      <nz-table
+        style="margin-top: 10px"
+        #rowSelectionTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '100%', y: '250px' }"
+        [nzFrontPagination]="false"
+        [nzData]="listMember"
+        (nzPageIndexChange)="getListMember()"
+        (nzPageSizeChange)="getListMember()"
+        [nzLoading]="loadingMember"
+      >
+        <thead>
+          <tr>
+            <th>Tên Member</th>
+            <th>IP Address</th>
+            <th>Port</th>
+            <th>Weight</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of listMember; let i = index">
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.ipAddress }}</td>
+              <td>{{ item.port }}</td>
+              <td>{{ item.weight }}</td>
+              <td>{{ item.status }}</td>
+              <td>
+                <img
+                  src="assets/imgs/edit-2.svg"
+                  alt=""
+                  (click)="modalEditMember(data)"
+                  style="cursor: pointer; margin-right: 16px"
+                  nz-tooltip="Chỉnh sửa"
+                />
+                <img
+                  src="assets/imgs/trash.svg"
+                  alt=""
+                  (click)="modalDeleteMember(data)"
+                  style="cursor: pointer"
+                  nz-tooltip="Xoá"
+                />
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+
+<nz-modal
+  nzWidth="70%"
+  [(nzVisible)]="isVisibleHealth"
+  [nzTitle]="titleModalHealth"
+  (nzOnCancel)="handleCancelHealth()"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              {{ 'app.health.monitor.name' | i18n }} (<span class="text-red"
+                >*</span
+              >)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+              <input
+                #nameInput
+                class="input-custom"
+                nz-input
+                formControlName="name"
+                [(ngModel)]="healthForm.name"
+                [placeholder]="'app.input.name' | i18n"
+                [maxlength]="50"
+              />
+              <ng-template #nameErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin</ng-container
+                >
+                <ng-container *ngIf="control.hasError('pattern')"
+                  >Tên Health Monitor chỉ gồm ký tự chữ cái và số, không bao gồm
+                  dấu cách</ng-container
+                >
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label
+              >{{ 'app.health.monitor.method' | i18n }} (<span class="text-red"
+                >*</span
+              >)</nz-form-label
+            >
+            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+              <nz-select
+                [nzPlaceHolder]="'--Chọn phương thức--'"
+                [nzShowSearch]="true"
+                formControlName="checkMethod"
+                [(ngModel)]="healthForm.type"
+                [disabled]="!isCreate"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let i of listCheckedMethod"
+                  [nzLabel]="i.displayName"
+                  [nzValue]="i.displayName"
+                />
+              </nz-select>
+            </nz-form-control>
+            <ng-template #gpuErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng chọn phương thức</ng-container
+              >
+            </ng-template>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label>
+              Max Retries Down (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="maxRetriesDownErrorTpl"
+            >
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.maxRetriesDown"
+                (keydown)="onKeyDown($event)"
+                formControlName="maxRetriesDown"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #maxRetriesDownErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Delay (sec) (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="delayErrorTpl">
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.delay"
+                (keydown)="onKeyDown($event)"
+                formControlName="delay"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #delayErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Max Retries(<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="maxRetriesErrorTpl"
+            >
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.maxRetries"
+                (keydown)="onKeyDown($event)"
+                formControlName="maxRetries"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #maxRetriesErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label>
+              Timeout (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="timeoutErrorTpl">
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="healthForm.timeout"
+                (keydown)="onKeyDown($event)"
+                formControlName="timeout"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #timeoutErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label
+              >HTTP Method (<span class="text-red">*</span>)</nz-form-label
+            >
+            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+              <nz-select
+                [nzPlaceHolder]="'--Chọn phương thức--'"
+                [nzShowSearch]="true"
+                formControlName="httpMethod"
+                [(ngModel)]="healthForm.httpMethod"
+                nzSize="large"
+              >
+                <nz-option
+                  *ngFor="let i of listMethod"
+                  [nzLabel]="i.displayName"
+                  [nzValue]="i.displayName"
+                />
+              </nz-select>
+            </nz-form-control>
+            <ng-template #gpuErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Vui lòng chọn phương thức</ng-container
+              >
+            </ng-template>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Expected Codes (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control
+              nzDisableAutoTips
+              [nzErrorTip]="expectedCodeErrorTpl"
+            >
+              <input
+                class="input-custom"
+                nz-input
+                formControlName="expectedCode"
+                [(ngModel)]="healthForm.expectedCode"
+                [placeholder]="'app.input.code' | i18n"
+                [maxlength]="3"
+              />
+              <ng-template #expectedCodeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label> Path </nz-form-label>
+            <nz-form-control>
+              <input
+                class="input-custom"
+                nz-input
+                [(ngModel)]="healthForm.urlPath"
+                [ngModelOptions]="{ standalone: true }"
+                [placeholder]="'app.input.url' | i18n"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelHealth()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkHealth()"
+      [disabled]="form.invalid"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleMember"
+  [nzTitle]="titleModalMember"
+  (nzOnCancel)="handleCancelMember()"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="formMember" [nzLayout]="'vertical'">
+      <nz-form-item>
+        <nz-form-label>
+          {{ 'app.member.name' | i18n }} (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input
+            class="input-custom"
+            nz-input
+            formControlName="name"
+            [(ngModel)]="memberForm.name"
+            [placeholder]="'app.input.name' | i18n"
+            [maxlength]="50"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')"
+              >Vui lòng nhập thông tin</ng-container
+            >
+            <ng-container *ngIf="control.hasError('pattern')"
+              >Tên Member chỉ gồm ký tự chữ cái và số, không bao gồm dấu
+              cách</ng-container
+            >
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          IP Adress (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            class="input-custom"
+            nz-input
+            [(ngModel)]="isCreate ? memberForm.address : memberForm.ipAddress"
+            [ngModelOptions]="{ standalone: true }"
+            [disabled]="true"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          Subnet (<span class="text-red">*</span>)
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            class="input-custom"
+            nz-input
+            (ngModel)="loadBalancer.subnetAddress"
+            [ngModelOptions]="{ standalone: true }"
+            [disabled]="true"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <div style="display: flex">
+        <div style="flex: 1; margin-right: 24px">
+          <nz-form-item>
+            <nz-form-label>
+              Port (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control>
+              <input
+                class="input-custom"
+                nz-input
+                [(ngModel)]="
+                  isCreate ? memberForm.protocol_port : memberForm.port
+                "
+                [ngModelOptions]="{ standalone: true }"
+                [disabled]="true"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div style="flex: 1">
+          <nz-form-item>
+            <nz-form-label>
+              Weight (<span class="text-red">*</span>)
+            </nz-form-label>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="weightErrorTpl">
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [(ngModel)]="memberForm.weight"
+                (keydown)="onKeyDown($event)"
+                formControlName="weight"
+                [nzMin]="1"
+                [nzMax]="100"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
+              <ng-template #weightErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')"
+                  >Vui lòng nhập thông tin
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <span class="text-label">Backup</span>
+      <nz-switch
+        style="margin-left: 20px"
+        nzSize="small"
+        [(ngModel)]="memberForm.backup"
+        [ngModelOptions]="{ standalone: true }"
+      ></nz-switch>
+    </form>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelMember()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkMember()"
+      [disabled]="formMember.invalid"
+    >
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleDelete"
+  [nzTitle]="titleDelete"
+  (nzOnCancel)="handleCancelDelete()"
+>
+  <div *nzModalContent>
+    <nz-alert
+      style="margin-bottom: 20px"
+      nzType="warning"
+      [nzDescription]="customTemplateMessageDelete"
+      nzShowIcon
+    ></nz-alert>
+    <span class="text-label">
+      Để thực hiện xóa {{ typeDelete }} {{ instancesModel.name }}, vui lòng nhập
+      tên {{ typeDelete }} để xác nhận.
+    </span>
+    <nz-form-item style="margin-top: 5px; margin-bottom: -10px"
+      ><nz-form-control>
+        <input
+          class="input-custom"
+          nz-input
+          [(ngModel)]="inputConfirm"
+          [ngModelOptions]="{ standalone: true }"
+          (keyup.enter)="handleOkDelete()"
+        />
+        <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
+          Vui lòng nhập đúng tên {{ typeDelete }}
+        </div>
+        <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
+          Vui lòng nhập tên {{ typeDelete }}
+        </div>
+      </nz-form-control></nz-form-item
+    >
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="handleOkDelete()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>
+<ng-template #customTemplateMessageDelete>
+  <div>Bạn đang thực hiện xóa {{ typeDelete }}</div>
+</ng-template>

@@ -51,7 +51,6 @@
           <th>Địa chỉ IP</th>
           <th>Ngày khởi tạo</th>
           <th>Ngày hết hạn</th>
-          <!--          <th>Loại IP</th>-->
           <th>Máy ảo</th>
           <th>Trạng thái IP Public</th>
           <th>Trạng thái tác vụ</th>
@@ -69,18 +68,19 @@
           <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>
           <td *ngIf="item.status === 0">-</td>
           <td *ngIf="item.status === 2">IN-USE</td>
+          <td *ngIf="item.status === 3">ERROR</td>
           <td>
             <div>
               <!----Gắn----->
-              <img *ngIf="item.status != 2" style="padding-right: 10px;" src="assets/imgs/add.svg"
+              <img *ngIf="item.status != 2 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/add.svg"
                    nz-tooltip nzTooltipTitle="Gắn IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gắn Ip Pulbic', item)"/>
               <!---Gỡ------>
-              <img *ngIf="item.status == 2" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
+              <img *ngIf="item.status == 2 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
                    nz-tooltip nzTooltipTitle="Gỡ IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gỡ Ip Pulbic', item)"/>
               <!---Gia Han------>
-              <img *ngIf="projectType != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+              <img *ngIf="projectType != 1 && item.status != 3" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                    nz-tooltip nzTooltipTitle="Gia hạn IP Pulbic" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia Hạn Ip Pulbic', item)"/>
               <!----Xóa---->
@@ -123,7 +123,7 @@
 
 <!--Gỡ-->
 <nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ IP Public" (nzOnCancel)="handleCancel()" (nzOnOk)="openIpRemove()"
-          nzOkText="Đồng ý"
+          nzOkText="Xác nhận"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
 <!--    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>-->
@@ -135,7 +135,7 @@
 
 <!--Xóa-->
 <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa IP Public {{ipAddressDelete}}" (nzOnCancel)="handleCancel()"
-          (nzOnOk)="openIpDelete()" nzOkText="Đồng ý" [nzOkDisabled]="disableDelete"
+          (nzOnOk)="openIpDelete()" nzOkText="Xác nhận" [nzOkDisabled]="disableDelete"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
 <!--    <b style="display: flex; justify-content: center;">Quý khách chắc chắn muốn thực hiện xóa Ip Public?</b>-->

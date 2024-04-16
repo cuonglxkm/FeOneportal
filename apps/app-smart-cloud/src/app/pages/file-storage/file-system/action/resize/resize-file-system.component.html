@@ -28,8 +28,13 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>Tên File System</span>
-                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                  <span>Tên File System (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'Tên của File System cần tạo, các ký tự chữ thường a-z, ' +
+                       'chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, ' +
+                        'tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
                   <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem.name"  [disabled]="true" />
@@ -37,8 +42,14 @@
               </nz-form-item>
               <nz-form-item>
                 <nz-form-label>
-                  <span>Giao thức</span>
-                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                  <span>Giao thức (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'Giao thức NFS (Network File System) là một giao thức mạng được sử dụng ' +
+                           'để chia sẻ tập tin và thư mục qua mạng giữa các hệ thống máy tính khác nhau. ' +
+                            'Nó cho phép một máy tính (được gọi là máy chủ NFS) chia sẻ tài nguyên file hệ thống của ' +
+                             'nó với các máy tính khác (được gọi là máy khách NFS) trong mạng'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
                   <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem.shareProto"  [disabled]="true" />
@@ -48,8 +59,11 @@
             <nz-col nzSpan="12">
               <nz-form-item>
                 <nz-form-label>
-                  <span>Loại File System</span>
-                  (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
+                  <span>Loại File System (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                  <img nz-popover
+                       [nzPopoverContent]="'mặc định là generic_share_type'"
+                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                       src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control>
                   <input nz-input style="width: 100%" class="input-custom" [value]="fileSystem.type" [disabled]="true" />
@@ -58,17 +72,15 @@
               <nz-form-item>
                 <nz-form-label nzFor="storage">
                   <div>
-                    <span>Dung lượng (GB) </span>
-                    (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                    <span nz-icon nzType="question-circle"
-                          nzTheme="outline"
-                          nz-popover
-                          [nzPopoverContent]="'Tối thiểu là 1'"
-                          nzPopoverPlacement="bottom"></span>
+                    <span>Dung lượng (GB) (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                    <img nz-popover
+                         [nzPopoverContent]="'Tối thiểu là 1'"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
                   </div>
                 </nz-form-label>
                 <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
-                  <nz-input-number style="width: 100%;"
+                  <nz-input-number style="width: 100%;; margin-left: 0;"
                                    formControlName="storage"
                                    class="input-custom"
                                    [ngModel]="storage"
@@ -82,10 +94,12 @@
               <nz-form-item>
                 <nz-form-label>
                   <div>
-                    <span>Dung lượng File System của quý khách</span>
-                    <span style="color: rgba(252, 16, 16, 1); "> *</span>
-                  </div><br>
-                  <span>{{ quotaShareInGb }}</span>
+                    <div>
+                      <span>Dung lượng File System của quý khách (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+                    </div>
+                    <span>{{ quotaShareInGb }} (GB)</span>
+                  </div>
+
                 </nz-form-label>
               </nz-form-item>
             </nz-col>
@@ -109,47 +123,34 @@
       <nz-col nzSpan="8">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông số cấu hình</span>
-          <div style="margin-left: 20px;">
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-value">
-              Tên File System
-            </span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-              <span class="text-label">{{ fileSystem.name }}</span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-value">
-              Loại File System
-            </span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-label">{{ fileSystem.type }}</span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-value">
-              Giao thức
-            </span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-label">{{ fileSystem.shareProto }}</span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-            <span class="text-value">
-              Dung lượng
-            </span>
-            </nz-row>
-            <nz-row style="margin-bottom: 10px; margin-top: 10px;" nzGutter="16">
-              <span class="text-label" [innerText]="storage"></span>
-            </nz-row>
+          <div style="margin-top: 10px" class="text-value">Tên File System</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ fileSystem?.name }}
           </div>
-          <nz-form-item nzAlign="bottom" nzJustify="end">
-            <nz-form-control>
-              <button nz-button nzType="primary"
-                      class="button-ok">
-                <span nz-icon nzType="edit" nzTheme="outline"></span>Điều chỉnh</button>
-            </nz-form-control>
-          </nz-form-item>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Loại File System</div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ fileSystem?.type }}
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Giao thức</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ fileSystem?.shareProto }}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Dung lượng</div>
+          <div style="margin-top: 10px" class="text-label">
+            <span class="text-label">{{ validateForm.controls.storage.value }} GB</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row>
+            <nz-col style="width: 100%">
+              <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="!validateForm.valid" (click)="doResizeFileSystem()">
+                <i nz-icon [nzType]="'edit'"  style="margin-right: 5px; padding-bottom: 5px;"></i>
+                <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Điều chỉnh</span>
+              </button>
+            </nz-col>
+          </nz-row>
         </nz-card>
       </nz-col>
     </nz-row>

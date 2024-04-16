@@ -1,9 +1,9 @@
-<page-header [breadcrumb]="breadcrumb" [extra]="extra" [content]="content" [action]="action" [title]="'Chi tiết VPC'">
+<page-header [breadcrumb]="breadcrumb" [extra]="extra" [content]="content" [action]="action" [title]="'Chi tiết dự án'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpc']">Quản lý VPC</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chi tiết VPC</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpc']">Quản lý dự án</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết dự án</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -12,12 +12,12 @@
     </div>
   </ng-template>
   <ng-template #extra>
-    <button nz-button nzType="primary" (click)="extend()" nzSize="large">
+    <button *ngIf="data?.type == 'VPC'" nz-button nzType="primary" (click)="extend()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt=""/>
       <span class="button-text-primary">Gia hạn</span>
     </button>
-    <button nz-button nzType="primary" (click)="edit()" nzSize="large">
-      <img style="padding-right: 10px;" src="assets/imgs/edit-2.svg" alt=""/>
+    <button *ngIf="data?.type == 'VPC'" nz-button nzType="primary" (click)="edit()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt=""/>
       <span class="button-text-primary">Chỉnh sửa</span>
     </button>
   </ng-template>
@@ -27,23 +27,31 @@
 </page-header>
 <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin VPC</span>
+    <span class="text-card-header">Thông tin dự án</span>
   </div>
   <div nz-row>
-    <div nz-col nzSpan="5">Tên VPC:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">{{data.displayName}}</div>
-    <div nz-col nzSpan="5">Gói Load Balancer:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">NONE</div>
+    <div style="font-weight: bold;margin-right: 20px">Loại dự án:</div>
+    <div>{{data?.type == 'VPC' ? 'Dự án VPC' : 'Dự án thường'}}</div>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="5">Tên dự án:</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">{{data?.displayName}}</div>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="5" >Gói Load Balancer:</div>
+    <div nz-col nzSpan="7"  style="font-weight: bold;">NONE</div>
   </div>
   <div nz-row>
     <div nz-col nzSpan="5">Mô tả:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">{{data.description}}</div>
-    <div nz-col nzSpan="5">Ngày cấp dịch vụ:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">{{data.createDate}}</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">{{data?.description}}</div>
+<!--    <div nz-col nzSpan="5" *ngIf="data?.type == 'VPC'">Ngày cấp dịch vụ:</div>-->
+<!--    <div nz-col nzSpan="7" *ngIf="data?.type == 'VPC'" style="font-weight: bold;">{{data?.createDate}}</div>-->
   </div>
   <div nz-row>
-    <div nz-col nzSpan="5">Ngày hết hạn:</div>
-    <div nz-col nzSpan="7" style="font-weight: bold;">{{data.expireDate}}</div>
+<!--    <div nz-col nzSpan="5" *ngIf="data?.type == 'VPC'">Ngày hết hạn:</div>-->
+<!--    <div nz-col nzSpan="7" *ngIf="data?.type == 'VPC'" style="font-weight: bold;">{{data?.expireDate}}</div>-->
+    <div nz-col nzSpan="5">Gói VPN site to site:</div>
+    <div nz-col nzSpan="7" style="font-weight: bold;">NONE</div>
   </div>
 </nz-card>
 <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
@@ -58,7 +66,7 @@
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentIPFloating nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">IP FLOATING</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180" [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div>
   </nz-row>
-  <nz-table [nzData]="listOfData">
+  <nz-table [nzData]="listOfData" [nzLoading]="loading" [nzFrontPagination]="false">
     <thead>
     <tr>
       <th>Tên tài nguyên</th>

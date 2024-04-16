@@ -2,7 +2,12 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { Subnet } from '../../../../shared/models/vlan.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { OfferDetail, Product } from '../../../../shared/models/catalog.model';
-import { FormCreate, FormCreateLoadBalancer, IPBySubnet } from '../../../../shared/models/load-balancer.model';
+import {
+  FormOrder,
+  FormCreateLoadBalancer,
+  FormSearchListBalancer,
+  IPBySubnet
+} from '../../../../shared/models/load-balancer.model';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VlanService } from '../../../../shared/services/vlan.service';
@@ -23,8 +28,9 @@ export class CreateLbVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  nameList: string[];
-  selectedValueRadio = 'true';
+  nameList: string[] = [];
+  enableInternetFacing: boolean = true
+  enableInternal: boolean = false
   listSubnets: Subnet[];
 
   validateForm: FormGroup<{
@@ -72,6 +78,20 @@ export class CreateLbVpcComponent implements OnInit {
               private projectService: ProjectService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
+  }
+
+  getListLoadBalancer() {
+    let formSearchLB = new FormSearchListBalancer()
+    formSearchLB.regionId = this.region
+    formSearchLB.currentPage = 1
+    formSearchLB.pageSize = 9999
+    formSearchLB.vpcId = this.project
+    formSearchLB.isCheckState = true
+    this.loadBalancerService.search(formSearchLB).subscribe(data => {
+      data?.records?.forEach(item => {
+        this.nameList?.push(item?.name)
+      })
+    })
   }
 
   isIpInSubnet(ipAddress: string, subnet: string): boolean {
@@ -159,14 +179,27 @@ export class CreateLbVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 
-  onChangeStatus() {
-    console.log(this.selectedValueRadio);
-    if (this.selectedValueRadio == 'false') {
-      this.validateForm.controls.ipFloating.clearValidators();
-      this.validateForm.controls.ipFloating.updateValueAndValidity();
+  onChangeStatusInternetFacing() {
+    this.enableInternetFacing = true
+    this.enableInternal = false
+    if(this.enableInternetFacing) {
+      this.validateForm.controls.ipFloating.setValidators(Validators.required)
     }
-    if (this.selectedValueRadio == 'true') {
-      this.validateForm.controls.ipFloating.setValidators(Validators.required);
+    if(this.enableInternal) {
+      this.validateForm.controls.ipFloating.clearValidators()
+      this.validateForm.controls.ipFloating.updateValueAndValidity()
+    }
+  }
+
+  onChangeStatusInternal() {
+    this.enableInternetFacing = false
+    this.enableInternal = true
+    if(this.enableInternetFacing) {
+      this.validateForm.controls.ipFloating.setValidators(Validators.required)
+    }
+    if(this.enableInternal) {
+      this.validateForm.controls.ipFloating.clearValidators()
+      this.validateForm.controls.ipFloating.updateValueAndValidity()
     }
   }
 
@@ -211,13 +244,13 @@ export class CreateLbVpcComponent implements OnInit {
 
     this.formCreateLoadBalancer.description = this.validateForm.controls.description.value;
     this.formCreateLoadBalancer.name = this.validateForm.controls.name.value;
-    if (this.selectedValueRadio == 'true') {
+    if (this.enableInternetFacing) {
       this.formCreateLoadBalancer.isFloatingIP = true;
-      this.formCreateLoadBalancer.ipPublicId = this.validateForm.controls.ipFloating.value
+      this.formCreateLoadBalancer.ipPublicId = this.validateForm.controls.ipFloating.value;
     }
-    if (this.selectedValueRadio == 'false') {
+    if (this.enableInternal) {
       this.formCreateLoadBalancer.isFloatingIP = false;
-      this.formCreateLoadBalancer.ipPublicId = null
+      this.formCreateLoadBalancer.ipPublicId = null;
     }
     this.formCreateLoadBalancer.flavorId = this.flavorId;
     // this.formCreateLoadBalancer.flavorId = '9e911d92-5607-4109-ad64-a5565cc76fa6';
@@ -252,7 +285,7 @@ export class CreateLbVpcComponent implements OnInit {
 
   doCreateLoadBalancerVpc() {
     this.loadBalancerInit();
-    let request: FormCreate = new FormCreate();
+    let request: FormOrder = new FormOrder();
     request.customerId = this.formCreateLoadBalancer.customerId;
     request.createdByUserId = this.formCreateLoadBalancer.customerId;
     request.note = 'tạo Load Balancer';
@@ -293,6 +326,7 @@ export class CreateLbVpcComponent implements OnInit {
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
-    this.getIpBySubnet()
+    this.getIpBySubnet();
+    this.getListLoadBalancer();
   }
 }

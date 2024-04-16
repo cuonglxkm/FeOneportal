@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Quản lý S3 Key'">
+<page-header *ngIf="hasOS" [breadcrumb]="breadcrumb" [title]="'Quản lý S3 Key'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item><a [routerLink]="['/']">Trang chủ</a></nz-breadcrumb-item>
@@ -7,7 +7,7 @@
   </ng-template>
 </page-header>
 
-<nz-card class="text-label" title="ok">
+<nz-card *ngIf="hasOS" class="text-label" title="ok">
   <div style="margin-bottom: 20px;" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
     <div class="text-left p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
          [nzXXl]="12">
@@ -47,9 +47,6 @@
     <tr *ngFor="let item of listOfS3Key">
       <td>{{count}}</td>
       <td>
-        <!--        <nz-row nzJustify="space-between">-->
-        <!--         -->
-        <!--        </nz-row>-->
         {{item.accessKey}}
         <span style="color: #0066B3; margin-left: 10px;" nz-icon nzType="copy" nzTheme="outline"
               (click)="copyText(item.accessKey)"></span>
@@ -78,6 +75,9 @@
     </tbody>
   </nz-table>
 </nz-card>
+
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>
 
 <!--Tạo mới-->
 <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới S3 Key" (nzOnCancel)="isVisibleCreate = false"

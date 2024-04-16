@@ -1,7 +1,11 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"
-      nzTheme="outline" nz-popover
-      [nzPopoverContent]="'Xóa'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'Xóa'"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
+<!--<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="delete"-->
+<!--      nzTheme="outline" nz-popover-->
+<!--      [nzPopoverContent]="'Xóa'"-->
+<!--      nzPopoverPlacement="bottom" (click)="showModal()"></span>-->
 <nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
@@ -14,10 +18,11 @@
     </nz-alert>
     <div style="margin-top: 10px;">
       <span class="text-label">Đế thực hiện xoá Blancer {{ nameLoadBalancer }}, vui lòng nhập tên Balancer để xác nhận.</span>
-      <input nz-input
+      <input nz-input #loadBalancerInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInput($event)"
              [placeholder]="'Nhập tên LoadBalancer'"/>
       <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên LoadBalancer</span>

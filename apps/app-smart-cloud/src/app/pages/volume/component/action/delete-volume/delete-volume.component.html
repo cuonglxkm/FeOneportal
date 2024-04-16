@@ -2,8 +2,7 @@
       nzTheme="outline" nz-popover
       [nzPopoverContent]="'Xóa'"
       nzPopoverPlacement="bottom" (click)="showModal()"></span>
-<nz-modal [(nzVisible)]="isVisible"
-          (nzOnCancel)="handleCancel()" nzMask="false">
+<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
     <span class="text-modal-title">Xóa Volume {{ volumeName }}</span>
   </div>
@@ -14,12 +13,13 @@
     </nz-alert>
     <div style="margin-top: 10px;">
       <span class="text-label">Để thực hiện xóa Volume {{ volumeName }}, vui lòng nhập tên Volume để xác nhận</span>
-      <input nz-input
+      <input nz-input #volumeInputName
              style="margin-top: 10px;"
              class="input-custom"
              [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInputChange($event)"
-             [placeholder]="'Nhập tên Volume'"/>
+             [placeholder]="'Nhập tên Volume'" />
       <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Volume</span>
     </div>
   </div>
@@ -27,10 +27,10 @@
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
       <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
     </button>
-    <button nz-button nzType="primary"
+    <button #okButton nz-button nzType="primary"
             (click)="handleOk()"
             [nzLoading]="isLoading"
-            class="button-ok">
+            class="button-ok" >
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
     </button>
   </div>

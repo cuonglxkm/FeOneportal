@@ -1,23 +1,59 @@
-<span nz-icon
-      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-      nzType="edit" nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Chỉnh sửa'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<img nz-popover src="assets/imgs/edit-2.svg" alt=""
+     nzPopoverPlacement="bottom"
+     (click)="showModal()"
+     style="cursor: pointer; margin-right: 16px"
+     [nzPopoverContent]="'Chỉnh sửa'" />
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
     <span class="text-modal-title">Chỉnh sửa thông tin LoadBalancer</span>
   </div>
   <div *nzModalContent>
-
-
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label>
+          <span>Tên Load Balancer (<span style="color: red">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="'Tên Load Balancer không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt, tối đa 50 ký tự'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+          <input #loadBalancerInputName
+                 nz-input
+                 class="input-custom"
+                 formControlName="nameLoadBalancer"
+                 (keydown.enter)="focusOkButton($event)"
+                 [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt (trừ _)</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Load Balancer đã tồn tại, vui lòng nhập tên Load Balancer khác</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>Mô tả</span>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+          <ng-template #descriptionErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
       <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
     </button>
-    <button nz-button nzType="primary"
+    <button nz-button
+            nzType="primary"
+            [disabled]="!validateForm.valid"
             (click)="handleOk()"
             [nzLoading]="isLoading"
             class="button-ok">

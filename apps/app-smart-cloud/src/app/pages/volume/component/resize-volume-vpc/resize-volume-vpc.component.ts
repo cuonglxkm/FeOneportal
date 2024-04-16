@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {EditSizeMemoryVolumeDTO, VolumeDTO} from "../../../../shared/dto/volume.dto";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {RegionModel} from "../../../../shared/models/region.model";
@@ -11,6 +11,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {InstancesService} from "../../../instances/instances.service";
 import {ProjectService} from "../../../../shared/services/project.service";
+import { NzInputGroupComponent } from 'ng-zorro-antd/input';
+import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -56,6 +58,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   isLoadingConfirm: boolean = false
 
   sizeInCloudProject: SizeInCLoudProject = new SizeInCLoudProject()
+
 
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -226,6 +229,5 @@ export class ResizeVolumeVpcComponent implements OnInit {
         this.sizeInCloudProject = data
       })
     }
-
   }
 }

@@ -44,13 +44,15 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-              <input nz-input
+              <input nz-input appAutofocus
                      class="input-custom"
                      formControlName="name"
                      [placeholder]="'Nhập tên Volume'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Volume</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _)</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt
+                  (trừ _)
+                </ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
                 <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Volume
                   khác
@@ -64,7 +66,7 @@
                          nzUnCheckedChildren="OFF"></nz-switch>
               <span style="margin-left: 10px; margin-top: 1px;" class="text-label">Tạo từ Snapshot</span>
               <img style="margin-left: 10px"
-                   nz-popover  [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
+                   nz-popover [nzPopoverContent]="'Quý khách có thể tạo volume mới hoặc tạo từ một bản snapshot'"
                    nzPopoverPlacement="bottom"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </div>
@@ -100,33 +102,73 @@
               <div class="label">
                 <span>Chọn loại volume</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <img nz-popover [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
+                <img nz-popover
+                     [nzPopoverContent]="'Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau'"
                      nzPopoverPlacement="bottom"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-radio-group [(ngModel)]="selectedValueRadio"
-                              (ngModelChange)="onChangeStatus()"
-                              formControlName="radio"
+              <nz-radio-group formControlName="radio"
                               [disabled]="isInitSnapshot">
-                <div style="display: flex;">
-                  <div nz-radio nzValue="hdd"
-                       [ngStyle]="{'background-color': selectedValueRadio === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
-                       style="padding: 10px;border: thin; border-radius: 5px;">
-                    <span class="text-value">HDD</span><br>
-                    <span class="text-label">Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                    công việc chuyên sâu thông lượng</span>
-                  </div>
-                  <div nz-radio nzValue="ssd"
-                       [ngStyle]="{'background-color': selectedValueRadio === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
-                       style="padding: 10px;border: thin; border-radius: 5px;">
-                    <span class="text-value">SSD</span><br>
-                    <span class="text-label">Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                    công việc chuyên sâu thông lượng</span>
-
-                  </div>
-                </div>
+                <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
+                        style="margin-top: 10px"><nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                  <nz-card style="border-radius: 4px">
+                    <nz-row nzGutter="16">
+                      <nz-col nzSpan="20">
+                        <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD1"
+                                      [nzTitle]="nzTitleselectedHDDorSSD1"
+                                      [nzDescription]="nzDescriptionselectedHDDorSSD1">
+                          <ng-template #nzAvatarselectedHDDorSSD1>
+                            <label [tabIndex]="0" nz-radio
+                                   [ngModel]="selectedValueHDD"
+                                   [ngModelOptions]="{ standalone: true }"
+                                   (click)="onChangeStatusHDD()"
+                                   (keyup.enter)="onChangeStatusHDD()"></label>
+                          </ng-template>
+                          <ng-template #nzTitleselectedHDDorSSD1>
+                            <b>HDD</b>
+                          </ng-template>
+                          <ng-template #nzDescriptionselectedHDDorSSD1>
+                            <span class="text-label">
+                              Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
+                              lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
+                              chuyên sâu thông<br>
+                              lượng
+                            </span>
+                          </ng-template>
+                        </nz-card-meta></nz-col>
+                    </nz-row>
+                  </nz-card>
+                </nz-col>
+                  <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                    <nz-card style="border-radius: 4px">
+                      <nz-row nzGutter="16">
+                        <nz-col nzSpan="20">
+                          <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD2"
+                                        [nzTitle]="nzTitleselectedHDDorSSD2"
+                                        [nzDescription]="nzDescriptionselectedHDDorSSD2">
+                          <ng-template #nzAvatarselectedHDDorSSD2>
+                            <label [tabIndex]="0" nz-radio
+                                   [ngModel]="selectedValueSSD"
+                                   [ngModelOptions]="{ standalone: true }"
+                                   (click)="onChangeStatusSSD()"
+                                   (keyup.enter)="onChangeStatusSSD()"></label>
+                          </ng-template>
+                          <ng-template #nzTitleselectedHDDorSSD2><b>SSD</b></ng-template>
+                          <ng-template #nzDescriptionselectedHDDorSSD2>
+                            <span class="text-label">Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
+                              lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
+                              chuyên sâu thông<br>
+                              lượng
+                            </span>
+                          </ng-template>
+                        </nz-card-meta>
+                        </nz-col>
+                      </nz-row>
+                    </nz-card>
+                  </nz-col>
+                </nz-row>
               </nz-radio-group>
             </nz-form-control>
           </nz-form-item>
@@ -171,7 +213,8 @@
           <br>
           <label *ngIf="typeMultiple == true" nz-checkbox style="margin-top: 10px;" formControlName="isMultiAttach">Gắn
             nhiều máy ảo
-            <img nz-popover [nzPopoverContent]="'Volume có thể gắn đồng thời vào nhiều máy ảo khác nhau. Nếu chọn volume multi attach thì không thể chọn mã hóa volume'"
+            <img nz-popover
+                 [nzPopoverContent]="'Volume có thể gắn đồng thời vào nhiều máy ảo khác nhau. Nếu chọn volume multi attach thì không thể chọn mã hóa volume'"
                  nzPopoverPlacement="bottom" style="margin-left: 5px;"
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </label>
@@ -206,8 +249,10 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
-                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                                                    <textarea nz-input class="input-custom"
+                                                              formControlName="description"
+                                                              [placeholder]="'Nhập nội dung'" [maxLength]="255"
+                                                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
               </ng-template>
@@ -236,10 +281,14 @@
                     nzMax="100"
                     nzStep="1" />
                   <ng-template #dateErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-                    <ng-container *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>
-<!--                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>-->
-<!--                    <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>-->
+                    <ng-container *ngIf="control.hasError('required')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    </ng-container>
+                    <ng-container
+                      *ngIf="control.hasError('max') || control.hasError('min') || control.hasError('min') || control.hasError('pattern')">
+                      Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100
+                    </ng-container>
+                    <!--                    <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>-->
+                    <!--                    <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số lớn hơn 0 và nhỏ hơn 100</ng-container>-->
                   </ng-template>
                 </nz-form-control>
               </nz-col>
@@ -381,7 +430,7 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
                       [disabled]="validateForm.invalid">
-                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
               </button>
             </nz-col>

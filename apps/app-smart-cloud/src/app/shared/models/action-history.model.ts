@@ -1,5 +1,5 @@
 export class ActionHistoryModel {
-  eventLogID: number;
+  eventId: number;
   userName: string;
   summary: string;
   createdTime: string;

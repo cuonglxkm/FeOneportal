@@ -1,0 +1,98 @@
+<button nz-button nzType="primary" nzSize="large" (click)="showModal()">
+  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+  <span class="button-text-primary">Tạo mới L7 Rule</span>
+</button>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Tạo mới L7 Rule</span>
+  </div>
+  <div *nzModalContent>
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label>
+          <span>Đảo chiều cơ chế (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="'Đảo ngược kết quả so sánh của L7 Rule'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+          <nz-switch formControlName="invert"></nz-switch>
+        </nz-form-label>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>Tiêu chí (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="''"
+               nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
+           <nz-select formControlName="type" nzSize="large" [nzPlaceHolder]="'Chọn tiêu chí'" (ngModelChange)="onChangeSelected()">
+             <nz-option *ngFor="let option of types" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+           </nz-select>
+          <ng-template #typeErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="['HEADER', 'COOKIE'].includes(validateForm.controls.type.value)">
+        <nz-form-label>
+          <span>Key (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="'Key sử dụng để so sánh. Ví dụ: tên của cookie để đánh giá'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="keyErrorTpl">
+          <input nz-input class="input-custom" formControlName="key" />
+          <ng-template #keyErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>Điều kiện (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="''"
+               nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="compareTypeErrorTpl">
+          <nz-select formControlName="compareType" nzSize="large" [nzPlaceHolder]="'Chọn điều kiện'" >
+            <nz-option *ngFor="let option of compareTypes" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+          </nz-select>
+          <ng-template #compareTypeErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>Giá trị (<span style="color: red;">*</span>)</span>
+          <img nz-popover
+               [nzPopoverContent]="'Giá trị dùng để thực hiện so sánh. Ví dụ: loại tệp để so sánh'"
+               nzPopoverPlacement="bottom" style="margin-left: 5px; margin-bottom: 5px; margin-right: 10px;"
+               src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="valueErrorTpl">
+          <input #l7RuleInputName nz-input class="input-custom" formControlName="value" (keydown.enter)="focusOkButton($event)" />
+          <ng-template #valueErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>

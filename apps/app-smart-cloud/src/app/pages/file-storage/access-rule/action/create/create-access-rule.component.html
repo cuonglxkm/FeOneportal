@@ -1,5 +1,5 @@
 <button nz-button nzType="primary" nzSize="large" (click)="showModalCreate()" style="margin-left: 10px;">
-  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
   <span class="button-text-primary">Thêm Access Rule</span>
 </button>
 <nz-modal [(nzVisible)]="isVisible"
@@ -16,15 +16,13 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Access Level</span>
-            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Mức độ cho phép truy cập vào tài nguyên.\n'+
-'Read-only (chỉ đọc)\n'+
-'Read-write (đọc và ghi)'"
-                  nzPopoverPlacement="bottom"></span>
+            <span>Access Level (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover
+                 [nzPopoverContent]="'Mức độ cho phép truy cập vào tài nguyên.\n'+
+                                      'Read-only (chỉ đọc)\n'+
+                                      'Read-write (đọc và ghi)'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control>
@@ -39,14 +37,12 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>Access To</span>
-            (<span style="color: rgba(252, 16, 16, 1);">*</span>)
-            <span nz-icon nzType="question-circle"
-                  nzTheme="outline"
-                  nz-popover
-                  [nzPopoverContent]="'Địa chỉ IP cụ thể (địa chỉ IP của Instance) ' +
+            <span>Access To (<span style="color: rgba(252, 16, 16, 1);">*</span>)</span>
+            <img nz-popover
+                 [nzPopoverContent]="'Địa chỉ IP cụ thể (địa chỉ IP của Instance) ' +
                    'hoặc CIDR được quyền truy cập tới Filesystem này'"
-                  nzPopoverPlacement="bottom"></span>
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="accessToErrorTpl">
@@ -61,9 +57,13 @@
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
         <nz-space nzSize="middle">
-          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">Quay lại</button>
+          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">
+            <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+          </button>
           <nz-form-control *nzSpaceItem>
-            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" [disabled]="!validateForm.valid">Tạo mới</button>
+            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new"
+                    [disabled]="!validateForm.valid"><span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+            </button>
           </nz-form-control>
         </nz-space>
       </nz-form-item>
