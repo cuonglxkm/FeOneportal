@@ -1,8 +1,8 @@
 <li nz-menu-item (click)="showModal()">Xoá</li>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Xác nhận xóa File System ?"
+<nz-modal [(nzVisible)]="isVisible"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Xác nhận xóa File System ?</span>
+    <span class="text-modal-title">Xác nhận xóa File System {{ fileSystemName }}</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
@@ -11,7 +11,15 @@
 'Để xóa được File System, quý khách lưu ý cần phải xóa hết các Snapshot của các File System đó'">
     </nz-alert>
     <div>
-      <span class="text-label">Quý khách có chắc chắn thực hiện xóa File System không?</span>
+      <span class="text-label">Đế thực hiện xoá File System {{ fileSystemName }}, vui lòng nhập tên File System để xác nhận.</span>
+      <input nz-input #fileSystemInputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInput($event)"
+             [placeholder]="'Nhập tên File System'"/>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên File System</span>
     </div>
 
   </div>

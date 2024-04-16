@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Quản lý Bucket'">
+<page-header *ngIf="hasOS" [breadcrumb]="breadcrumb" [title]="'Quản lý Bucket'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item
@@ -8,7 +8,7 @@
     </nz-breadcrumb>
   </ng-template>
 </page-header>
-<nz-card style="border-radius: 4px" [nzBordered]="false">
+<nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
   <nz-row style="margin-bottom: 20px" nzGutter="24">
     <div
       nz-col
@@ -54,7 +54,7 @@
   <div style="margin-bottom: 10px" class="text-label">Ngày khởi tạo:</div>
   <div style="margin-bottom: 10px" class="text-label">Ngày hết hạn:</div>
 </nz-card>
-<nz-card style="border-radius: 4px" [nzBordered]="false">
+<nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
   <div nz-row [nzGutter]="24">
     <div
       nz-col
@@ -178,6 +178,8 @@
     </tbody>
   </nz-table>
 </nz-card>
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteBucket"

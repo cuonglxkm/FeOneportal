@@ -82,11 +82,11 @@ export class ListAccessRuleComponent implements OnInit{
   }
 
   handleCreateOk() {
-    this.getListAccessRule(true)
+    this.getListAccessRule(false)
   }
 
   handleDeleteOk() {
-    this.getListAccessRule(true)
+    setTimeout(() => {this.getListAccessRule(true)}, 1500)
   }
 
   ngOnInit() {

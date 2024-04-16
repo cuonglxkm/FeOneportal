@@ -1,9 +1,8 @@
-<span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
-      nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Chỉnh sửa'"
-      (click)="showModalEditVlan()"
-      nzPopoverPlacement="bottom"></span>
+<img nz-popover src="assets/imgs/edit-2.svg" alt=""
+     nzPopoverPlacement="bottom"
+     (click)="showModalEditVlan()"
+     style="cursor: pointer; margin-right: 16px"
+     [nzPopoverContent]="'Chỉnh sửa'" />
 <nz-modal [(nzVisible)]="isVisibleEditVlan" nzTitle="Chỉnh sửa"
           (nzOnCancel)="handleCancelEditVlan()" nzMask="false">
   <div *nzModalTitle>
@@ -19,13 +18,18 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameNetworkErrorTpl">
-          <input nz-input class="input-custom" formControlName="nameNetwork" />
+          <input #vlanNetworkInputName
+                 nz-input
+                 class="input-custom"
+                 formControlName="nameNetwork"
+                 (keydown.enter)="focusOkButton($event)"/>
         </nz-form-control>
         <ng-template #nameNetworkErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Tên network không được bỏ trống</ng-container>
           <ng-container *ngIf="control.hasError('startsWith')">Tên network phải bắt đầu bằng tiền tố 'vlan_'</ng-container>
           <ng-container *ngIf="control.hasError('maxlength')">Tên network tối đa 50 ký tự</ng-container>
           <ng-container *ngIf="control.hasError('pattern')">Tên network không được chứa ký tự đặc biệt</ng-container>
+          <ng-container *ngIf="control.hasError('duplicateName')">Tên network đã tồn tại, vui lòng nhập tên khác</ng-container>
         </ng-template>
       </nz-form-item>
     </form>

@@ -30,6 +30,8 @@ import {
   NetWorkModel,
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 class SearchParam {
   status: string = '';
@@ -70,6 +72,7 @@ export class InstancesComponent implements OnInit {
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -684,6 +687,13 @@ export class InstancesComponent implements OnInit {
     // this.dataService.setSelectedObjectId(id)
     this.router.navigate([
       '/app-smart-cloud/instance/' + id + '/create-backup-vm',
+    ]);
+  }
+
+  createBackupSchedule(id: number) {
+    this.router.navigate([
+      '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
     ]);
   }
 }
