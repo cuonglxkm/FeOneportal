@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action"
+<page-header *ngIf="hasOS" [breadcrumb]="breadcrumb" [action]="action"
              [title]="'Quản lý Sub-User'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -16,7 +16,7 @@
     </div>
   </ng-template>
 </page-header>
-<nz-content>
+<nz-content *ngIf="hasOS">
   <nz-card style="border-radius: 8px;">
     <nz-row nzJustify="space-between">
       <nz-col [nzSpan]="8">
@@ -101,3 +101,6 @@
     </nz-table>
   </nz-card>
 </nz-content>
+
+<div *ngIf="hasOS == undefined || hasOS == null"></div>
+<one-portal-object-storage *ngIf="hasOS == false"></one-portal-object-storage>
