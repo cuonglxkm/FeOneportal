@@ -7,64 +7,78 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { CreatePool } from 'src/app/shared/models/load-balancer.model';
 
 @Component({
   selector: 'one-portal-create-pool-in-lb',
   templateUrl: './create-pool-in-lb.component.html',
   styleUrls: ['./create-pool-in-lb.component.less'],
 })
-export class CreatePoolInLbComponent implements AfterViewInit, OnInit{
-  @Input() region: number
-  @Input() project: number
-  @Output() onOk = new EventEmitter()
-  @Output() onCancel = new EventEmitter()
+export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
+  @Input() region: number;
+  @Input() project: number;
+  @Input() loadbalancerId: string;
+  @Output() onOk = new EventEmitter();
+  @Output() onCancel = new EventEmitter();
 
-  isVisible: boolean = false
-  isLoading: boolean = false
+  isVisible: boolean = false;
+  isLoading: boolean = false;
 
   validateForm: FormGroup<{
-    namePool: FormControl<string>
-    algorithm: FormControl<string>
-    protocol: FormControl<string>
-    session: FormControl<boolean>
+    namePool: FormControl<string>;
+    algorithm: FormControl<string>;
+    protocol: FormControl<string>;
+    session: FormControl<boolean>;
   }> = this.fb.group({
-    namePool: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      this.duplicateNameValidator.bind(this), Validators.maxLength(50)]],
+    namePool: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9_]*$/),
+        this.duplicateNameValidator.bind(this),
+        Validators.maxLength(50),
+      ],
+    ],
     algorithm: ['', [Validators.required]],
     protocol: ['', [Validators.required]],
-    session: [false]
+    session: [false],
   });
 
   nameList: string[] = [];
 
   algorithms = [
-    {value: 'Roud_Robin', label: 'Roud_Robin'},
-    {value: 'Least_Connection', label: 'Least_Connection'},
-    {value: 'Source_IP', label: 'Source_IP'}
-  ]
+    { value: 'Roud_Robin', label: 'Roud_Robin' },
+    { value: 'Least_Connection', label: 'Least_Connection' },
+    { value: 'Source_IP', label: 'Source_IP' },
+  ];
 
   protocols = [
-    {value: 'HTTP', label: 'HTTP'},
-    {value: 'HTTPS', label: 'HTTPS'},
-    {value: 'TCP', label: 'TCP'}
-  ]
+    { value: 'HTTP', label: 'HTTP' },
+    { value: 'HTTPS', label: 'HTTPS' },
+    { value: 'TCP', label: 'TCP' },
+  ];
 
   @ViewChild('poolInputName') poolInputName!: ElementRef<HTMLInputElement>;
-  constructor(private activatedRoute: ActivatedRoute,
-              private router: Router,
-              private fb: NonNullableFormBuilder,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private loadBalancerService: LoadBalancerService,
-              private notification: NzNotificationService) {
-  }
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private fb: NonNullableFormBuilder,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private loadBalancerService: LoadBalancerService,
+    private notification: NzNotificationService
+  ) {}
 
   focusOkButton(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
@@ -83,13 +97,12 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit{
     }
   }
 
-  sessionChange(value) {
-
-  }
-
+  createPool = new CreatePool();
   showModal() {
-    this.isVisible = true
-    setTimeout(() => {this.poolInputName?.nativeElement.focus()}, 1000)
+    this.isVisible = true;
+    setTimeout(() => {
+      this.poolInputName?.nativeElement.focus();
+    }, 1000);
   }
 
   handleCancel() {
@@ -99,15 +112,34 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit{
   }
 
   handleOk() {
-
+    this.createPool.customerId = this.tokenService.get()?.userId;
+    this.createPool.regionId = this.region;
+    this.createPool.vpcId = this.project;
+    this.createPool.loadbalancer_id = this.loadbalancerId;
+    this.loadBalancerService.createPool(this.createPool).subscribe({next: (data) => {
+      if (data) {
+        this.isVisible = false;
+        this.isLoading = false;
+        this.notification.success('Thành công', 'Cập nhật Pool thành công');
+      } else {
+        this.isVisible = false;
+        this.isLoading = false;
+        this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
+      }
+      this.onOk.emit(data);
+    },
+    error: (error) => {
+      this.isVisible = false;
+      this.isLoading = false;
+      this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
+      this.onOk.emit(error);
+    }}
+    );
   }
 
-  getListPool() {
+  getListPool() {}
 
-  }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.poolInputName?.nativeElement.focus();

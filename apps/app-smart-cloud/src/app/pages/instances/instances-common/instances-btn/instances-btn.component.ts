@@ -148,7 +148,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleOkResetPassword() {
     this.isVisibleResetPass = false;
     if (this.autoCreate) {
-      this.dataService.changePassword(this.instancesId, null).subscribe({
+      this.dataService.changePassword(this.instancesId, '').subscribe({
         next: (data: any) => {
           this.notification.success('', 'Reset mật khẩu máy ảo thành công');
         },

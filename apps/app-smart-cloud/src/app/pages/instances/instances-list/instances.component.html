@@ -670,25 +670,6 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Chọn Security Group</nz-form-label>
-        <nz-form-control>
-          <nz-select
-            nzMode="multiple"
-            nzPlaceHolder="Chọn Security Group"
-            [(ngModel)]="selectedSecurityGroup"
-            [ngModelOptions]="{ standalone: true }"
-            nzSize="large"
-            [nzShowSearch]="true"
-          >
-            <nz-option
-              *ngFor="let i of listSecurityGroup"
-              [nzLabel]="i.name"
-              [nzValue]="i.id"
-            />
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
     </form>
   </ng-container>
   <div *nzModalFooter>

@@ -102,8 +102,8 @@ export class InstancesCreateComponent implements OnInit {
   };
 
   listGPUType: any[] = [
-    { displayName: 'Nvidia A100' },
-    { displayName: 'Nvidia A30' },
+    { type: 'a30', displayName: 'Nvidia A30' },
+    { type: 'a100', displayName: 'Nvidia A100' },
   ];
 
   form = new FormGroup({
@@ -1093,6 +1093,8 @@ export class InstancesCreateComponent implements OnInit {
       });
     }
     this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
+    this.instanceCreate.gpuType = this.configGPU.GPUType;
+    this.instanceCreate.gpuCount = this.configGPU.GPU;
     this.instanceCreate.projectId = this.projectId;
     this.instanceCreate.oneSMEAddonId = null;
     this.instanceCreate.serviceType = 1;

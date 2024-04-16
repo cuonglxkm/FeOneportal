@@ -98,7 +98,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'volume_resize':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
-            serviceItem.type = 'Chỉnh sửa';
+            serviceItem.type = 'Điều chỉnh';
             break;
           case 'volume_extend':
             serviceItem.name = `Volume - ${specificationObj.serviceName}`;
@@ -123,7 +123,7 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'objectstorage_resize':
             serviceItem.name = `Object Storage`;
-            serviceItem.type = 'Chỉnh sửa';
+            serviceItem.type = 'Điều chỉnh';
             break;
           case 'objectstorage_extend':
             serviceItem.name = `Object Storage`;
@@ -166,7 +166,7 @@ export class PaymentSummaryComponent implements OnInit {
         serviceItem.price = e.price;
         serviceItem.duration = e.serviceDuration;
         serviceItem.amount = e.orderItemQuantity;
-        if (serviceItem.type == 'Chỉnh sửa') {
+        if (serviceItem.type == 'Điều chỉnh') {
           serviceItem.currency = e.price;
         } else {
           serviceItem.currency = e.price * e.serviceDuration;
