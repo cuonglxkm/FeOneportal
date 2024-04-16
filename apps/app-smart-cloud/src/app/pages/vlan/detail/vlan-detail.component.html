@@ -4,12 +4,11 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        VLAN
-      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>VLAN</nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/vlan/network/list">Danh sách Network</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết Network</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -27,8 +26,11 @@
       <nz-tab nzTitle="Subnet">
         <one-portal-detail-subnet [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
-      <nz-tab nzTitle="Port">
-        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork"/>
+      <nz-tab *ngIf="networkName.includes('pri_network')" nzTitle="Port" [nzDisabled]="true">
+        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork" />
+      </nz-tab>
+      <nz-tab *ngIf="!networkName.includes('pri_network')" nzTitle="Port">
+        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
     </nz-tabset>
   </nz-card>

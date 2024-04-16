@@ -61,11 +61,12 @@ export class DetailPortComponent implements OnInit{
   }
 
   handleOkAttach() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 1000)
   }
 
   handleOkDetach() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 1000)
+
   }
 
   handleOkDeletePort() {
@@ -75,7 +76,7 @@ export class DetailPortComponent implements OnInit{
   }
 
   handleOkCreatePort() {
-    this.getVlanByNetworkId()
+    setTimeout(() => {this.getVlanByNetworkId()}, 1000)
   }
 
   getVlanByNetworkId() {

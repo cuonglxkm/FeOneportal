@@ -71,12 +71,14 @@
         <td>{{data.status}}</td>
         <td>
           <div *ngIf="data.name.includes('pri_network')">
-            <span style="margin-right: 10px; color: #E6E6E6; cursor: not-allowed;"
-                  nz-icon nzType="edit"
-                  nzTheme="outline"></span>
-            <span style="margin-right: 20px; color: #E6E6E6;cursor: not-allowed;"
-                  nz-icon nzType="delete"
-                  nzTheme="outline"></span>
+            <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+                 nzPopoverPlacement="bottom"
+                 style="cursor: pointer; margin-right: 16px; opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+                 [nzPopoverContent]="'Chỉnh sửa'" disabled="true"/>
+            <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+                 nz-popover
+                 [nzPopoverContent]="'Xóa'"
+                 nzPopoverPlacement="bottom" disabled="true"/>
           </div>
           <div *ngIf="!data.name.includes('pri_network')">
             <one-portal-vlan-edit [region]="region"
