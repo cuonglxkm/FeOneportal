@@ -1,9 +1,8 @@
-<span nz-icon
-      style="color: #0066B3; margin-right: 10px; cursor: pointer;"
-      nzType="edit" nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Chỉnh sửa'"
-      nzPopoverPlacement="bottom" (click)="showModal()"></span>
+<img nz-popover src="assets/imgs/edit-2.svg" alt=""
+     nzPopoverPlacement="bottom"
+     (click)="showModal()"
+     style="cursor: pointer; margin-right: 16px"
+     [nzPopoverContent]="'Chỉnh sửa'" />
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa"
           (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
@@ -20,9 +19,11 @@
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
+          <input #loadBalancerInputName
+                 nz-input
                  class="input-custom"
                  formControlName="nameLoadBalancer"
+                 (keydown.enter)="focusOkButton($event)"
                  [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>

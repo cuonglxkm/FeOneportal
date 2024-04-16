@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
 
@@ -7,7 +7,7 @@ import { LoadBalancerService } from '../../../shared/services/load-balancer.serv
   templateUrl: './delete-load-balancer.component.html',
   styleUrls: ['./delete-load-balancer.component.less'],
 })
-export class DeleteLoadBalancerComponent {
+export class DeleteLoadBalancerComponent implements AfterViewInit{
   @Input() idLoadBalancer: number
   @Input() nameLoadBalancer: string
   @Input() region: number
@@ -21,8 +21,17 @@ export class DeleteLoadBalancerComponent {
   value: string
   isInput: boolean = false
 
+  @ViewChild('loadBalancerInputName') loadBalancerInputName!: ElementRef<HTMLInputElement>;
+
   constructor(private notification: NzNotificationService,
               private loadBalancerService: LoadBalancerService) {
+  }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOk();
+    }
   }
 
   onInput(value) {
@@ -31,6 +40,7 @@ export class DeleteLoadBalancerComponent {
 
   showModal() {
     this.isVisible = true
+    setTimeout(() => {this.loadBalancerInputName?.nativeElement.focus()}, 1000)
   }
 
   handleCancel() {
@@ -67,6 +77,10 @@ export class DeleteLoadBalancerComponent {
       this.isInput = true
       this.isLoading = false
     }
+  }
+
+  ngAfterViewInit() {
+    this.loadBalancerInputName?.nativeElement.focus();
   }
 
 }

@@ -13,7 +13,7 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
+          <input nz-input appAutofocus
                  class="input-custom"
                  formControlName="name"
                  [placeholder]="'Nhập tên Volume'" [maxLength]="70"/>
@@ -73,26 +73,66 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips>
-          <nz-radio-group [(ngModel)]="selectedValueRadio"
-                          (ngModelChange)="onChangeStatus()"
-                          formControlName="radio"
+          <nz-radio-group formControlName="radio"
                           [disabled]="isInitSnapshot">
-            <div style="display: flex;">
-              <div nz-radio nzValue="hdd"
-                   [ngStyle]="{'background-color': selectedValueRadio === 'hdd' ? '#e6f7ff' : '#fcfcfc'}"
-                   style="padding: 10px;border: thin; border-radius: 5px;">
-                <h3><b>HDD</b></h3>
-                Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                công việc chuyên sâu thông lượng
-              </div>
-              <div nz-radio nzValue="ssd"
-                   [ngStyle]="{'background-color': selectedValueRadio === 'ssd' ? '#e6f7ff' : '#fcfcfc'}"
-                   style="padding: 10px;border: thin; border-radius: 5px;">
-                <h3><b>SSD</b></h3>
-                Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng
-                công việc chuyên sâu thông lượng
-              </div>
-            </div>
+            <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
+                    style="margin-top: 10px"><nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+              <nz-card style="border-radius: 4px">
+                <nz-row nzGutter="16">
+                  <nz-col nzSpan="20">
+                    <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD1"
+                                  [nzTitle]="nzTitleselectedHDDorSSD1"
+                                  [nzDescription]="nzDescriptionselectedHDDorSSD1">
+                      <ng-template #nzAvatarselectedHDDorSSD1>
+                        <label [tabIndex]="0" nz-radio
+                               [ngModel]="selectedValueHDD"
+                               [ngModelOptions]="{ standalone: true }"
+                               (click)="onChangeStatusHDD()"
+                               (keyup.enter)="onChangeStatusHDD()"></label>
+                      </ng-template>
+                      <ng-template #nzTitleselectedHDDorSSD1>
+                        <b>HDD</b>
+                      </ng-template>
+                      <ng-template #nzDescriptionselectedHDDorSSD1>
+                            <span class="text-label">
+                              Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
+                              lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
+                              chuyên sâu thông<br>
+                              lượng
+                            </span>
+                      </ng-template>
+                    </nz-card-meta></nz-col>
+                </nz-row>
+              </nz-card>
+            </nz-col>
+              <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                <nz-card style="border-radius: 4px">
+                  <nz-row nzGutter="16">
+                    <nz-col nzSpan="20">
+                      <nz-card-meta [nzAvatar]="nzAvatarselectedHDDorSSD2"
+                                    [nzTitle]="nzTitleselectedHDDorSSD2"
+                                    [nzDescription]="nzDescriptionselectedHDDorSSD2">
+                        <ng-template #nzAvatarselectedHDDorSSD2>
+                          <label [tabIndex]="0" nz-radio
+                                 [ngModel]="selectedValueSSD"
+                                 [ngModelOptions]="{ standalone: true }"
+                                 (click)="onChangeStatusSSD()"
+                                 (keyup.enter)="onChangeStatusSSD()"></label>
+                        </ng-template>
+                        <ng-template #nzTitleselectedHDDorSSD2><b>SSD</b></ng-template>
+                        <ng-template #nzDescriptionselectedHDDorSSD2>
+                            <span class="text-label">Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
+                              lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
+                              chuyên sâu thông<br>
+                              lượng
+                            </span>
+                        </ng-template>
+                      </nz-card-meta>
+                    </nz-col>
+                  </nz-row>
+                </nz-card>
+              </nz-col>
+            </nz-row>
           </nz-radio-group>
         </nz-form-control>
       </nz-form-item>

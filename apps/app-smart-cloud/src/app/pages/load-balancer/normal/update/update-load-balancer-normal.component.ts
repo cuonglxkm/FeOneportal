@@ -1,7 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormSearchListBalancer, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
+import { FormSearchListBalancer, FormUpdateLB, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 
 @Component({
@@ -9,7 +18,7 @@ import { LoadBalancerService } from '../../../../shared/services/load-balancer.s
   templateUrl: './update-load-balancer-normal.component.html',
   styleUrls: ['./update-load-balancer-normal.component.less'],
 })
-export class UpdateLoadBalancerNormalComponent {
+export class UpdateLoadBalancerNormalComponent implements AfterViewInit{
   // @Input() loadBalancerId: number
   @Input() region: number
   @Input() project: number
@@ -33,10 +42,20 @@ export class UpdateLoadBalancerNormalComponent {
 
   nameList: string[] = [];
 
+  @ViewChild('loadBalancerInputName') loadBalancerInputName!: ElementRef<HTMLInputElement>;
+
   constructor(private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
               private loadBalancerService: LoadBalancerService) {
   }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOk();
+    }
+  }
+
 
   duplicateNameValidator(control) {
     const value = control.value;
@@ -69,6 +88,8 @@ export class UpdateLoadBalancerNormalComponent {
     this.getListLoadBalancer()
     this.validateForm.get('nameLoadBalancer').setValue(this.loadBalancer?.name)
     this.validateForm.get('description').setValue(this.loadBalancer?.description)
+
+    setTimeout(() => {this.loadBalancerInputName?.nativeElement.focus()}, 1000)
   }
 
   handleCancel() {
@@ -78,8 +99,28 @@ export class UpdateLoadBalancerNormalComponent {
   }
 
   handleOk() {
+    this.isLoading = true
+    let formUpload = new FormUpdateLB()
+    formUpload.id = this.loadBalancer.id
+    formUpload.name = this.validateForm.controls.nameLoadBalancer.value
+    formUpload.description = this.validateForm.controls.description.value
+    formUpload.customerId = this.loadBalancer.customerId
+    formUpload.offerId = this.loadBalancer.offerId
+    this.loadBalancerService.updateLoadBalancer(formUpload).subscribe(data => {
+      this.isLoading = false
+      this.isVisible = false
+      this.notification.success('Thành công', 'Cập nhật thông tin Load Balancer thành công')
+      this.onOk.emit(data)
+    }, error => {
+      this.isLoading = false
+      this.isVisible = false
+      this.notification.error('Thất bại', 'Cập nhật thông tin Load Balancer thất bại')
+    })
 
   }
 
+  ngAfterViewInit() {
+    this.loadBalancerInputName?.nativeElement.focus();
+  }
 
 }
