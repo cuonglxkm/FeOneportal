@@ -42,15 +42,14 @@
     <td>{{ data.subnetAddressRequired }}</td>
     <td>{{ data.gatewayIp }}</td>
     <td *ngIf="!networkName?.includes('pri_network')">
-              <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="edit"
-                    nzTheme="outline"
-                    (click)="navigateToEditSubnet(data.id)"
-                    nz-popover
-                    [nzPopoverContent]="'Chỉnh sửa'"
-                    nzPopoverPlacement="bottom"></span>
+      <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+           nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
+           style="cursor: pointer; margin-right: 16px;"
+           [nzPopoverContent]="'Chỉnh sửa'" disabled="true"/>
       <one-portal-delete-subnet [region]="region"
                                 [project]="project"
                                 [id]="data.id"
+                                [nameSubnet]="data.name"
                                 (onOk)="handleOkDeleteSubnet()" />
     </td>
   </tr>
