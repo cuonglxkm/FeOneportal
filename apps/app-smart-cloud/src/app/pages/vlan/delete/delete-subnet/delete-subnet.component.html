@@ -1,17 +1,22 @@
-<span style="color: #0066B3; margin-right: 20px; cursor: pointer;"
-      (click)="showModalDeleteSubnet()"
-      nz-popover
-      [nzPopoverContent]="'Xóa'"
-      nzPopoverPlacement="bottom"
-      nz-icon nzType="delete" nzTheme="outline"></span>
-<nz-modal [(nzVisible)]="isVisibleDeleteSubnet" nzTitle="Xóa Subnet"
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'Xóa'"
+     nzPopoverPlacement="bottom" (click)="showModalDeleteSubnet()"/>
+<nz-modal [(nzVisible)]="isVisibleDeleteSubnet"
           (nzOnCancel)="handleCancelDeleteSubnet()" nzCentered>
   <div *nzModalTitle>
-    <span class="text-modal-title">Xóa</span>
+    <span class="text-modal-title">Xóa Subnet {{ nameSubnet }}</span>
   </div>
   <div *nzModalContent>
-    <span>Đế thực hiện xoá Subnet + tên subnet, vui lòng nhập tên Subnetđể xác nhận.</span>
-    <input nz-input [(ngModel)]="value" (ngModelChange)="onInputChange($event)" type="text"/>
+    <span class="text-label">Đế thực hiện xoá Subnet {{ nameSubnet }}, vui lòng nhập tên Subnet để xác nhận.</span>
+    <input #subnetInputName
+           nz-input
+           class="input-custom"
+           [(ngModel)]="value"
+           (ngModelChange)="onInputChange($event)"
+           (keydown.enter)="focusOkButton($event)"
+           [placeholder]="'Nhập tên Network'"/>
+    <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên subnet</span>
   </div>
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancelDeleteSubnet()" class="button-cancel">Hủy</button>
