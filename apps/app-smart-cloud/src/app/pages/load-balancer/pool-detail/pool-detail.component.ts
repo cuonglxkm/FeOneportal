@@ -69,10 +69,9 @@ export class PoolDetailComponent implements OnInit {
   idLB: number;
   loadBalancer: LoadBalancerModel = new LoadBalancerModel()
   ngOnInit(): void {
-    let state = this.router.getCurrentNavigation().extras.state;
-    if (state) {
-      this.idLB = state.idLB;
-    }
+    this.activatedRoute.params.subscribe(params => {
+      this.idLB = params['idLB'];
+    });
     this.service.getLoadBalancerById(this.idLB, true).subscribe(data => {
       this.loadBalancer = data
     })
