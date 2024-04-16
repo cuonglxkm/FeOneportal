@@ -20,6 +20,7 @@ import { DatePipe } from '@angular/common';
 export class ScheduleBackupVmComponent implements OnInit {
   @Input() region: number;
   @Input() project: number;
+  @Input() instanceId: number;
 
   isLoading: boolean = false;
   validateForm: FormGroup<{
@@ -290,7 +291,6 @@ export class ScheduleBackupVmComponent implements OnInit {
   }
 
   selectInstanceChange(value) {
-    // this.instanceSelected = value
     this.getVolumeInstanceAttachment(value);
   }
 

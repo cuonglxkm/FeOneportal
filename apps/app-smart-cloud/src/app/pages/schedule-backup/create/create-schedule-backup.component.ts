@@ -57,7 +57,11 @@ export class CreateScheduleBackupComponent implements OnInit{
     console.log('Selected option changed:', this.selectedValueRadio);
   }
 
+  instanceId: number
   ngOnInit(): void {
+    this.activatedRoute.params.subscribe(params => {
+      this.instanceId = params['instanceId'];
+    });
     this.activatedRoute.queryParams.subscribe(data => {
       console.log(data['idVolume'])
       this.selectedValueRadio = data['type']
