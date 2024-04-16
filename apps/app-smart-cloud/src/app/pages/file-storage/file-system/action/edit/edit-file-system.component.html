@@ -1,36 +1,38 @@
-<span style="color: #0066B3;"
-      class="more"
-      nz-icon nzType="edit"
-      nzTheme="outline"
-      nz-popover
-      [nzPopoverContent]="'Chỉnh sửa'"
-      nzPopoverPlacement="bottom"
-      (click)="showModal()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa thông tin Volume"
+<img nz-popover src="assets/imgs/edit-2.svg" alt=""
+     nzPopoverPlacement="bottom"
+     (click)="showModal()"
+     style="cursor: pointer;"
+     [nzPopoverContent]="'Chỉnh sửa'" />
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa thông tin File System"
           (nzOnCancel)="handleCancel()" nzMark="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Chỉnh sửa thông tin Volume</span>
+    <span class="text-modal-title">Chỉnh sửa thông tin File System</span>
   </div>
   <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label nzFor="nameFileSystem">
           <div style="margin-top: 15px;">
-            <span>Tên File System</span>
-            (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            <span nz-icon nzType="question-circle" nzTheme="outline"></span>
+            <span>Tên File System (<span style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+            <img nz-popover
+                 [nzPopoverContent]="'Tên của File System cần tạo, các ký tự chữ thường a-z, ' +
+                       'chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, ' +
+                        'tối thiểu 1 ký tự và tối đa 255 ký tự. Tên các File System không trùng nhau'"
+                 nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
+          <input #fileSystemInputName nz-input
+                 class="input-custom"
                  formControlName="nameFileSystem"
-                 [placeholder]="'Nhập tên file system'" [maxLength]="70"/>
+                 (keydown.enter)="focusOkButton($event)"
+                 [placeholder]="'Nhập tên file system'" [maxLength]="50"/>
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên file system</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách,
-              dấu tiếng Việt
-            </ng-container>
-            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ -, _, và khoảng cách)</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên File System đã tồn tại. Vui lòng nhập tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -59,7 +61,7 @@
       <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
     </button>
     <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
-            [nzLoading]="isLoadingUpdate"
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
     </button>

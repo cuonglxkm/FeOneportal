@@ -8,9 +8,6 @@
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Load Balancer
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/load-balancer/list">Quản lý Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
@@ -321,23 +318,18 @@
             </span>
             </nz-col>
           </nz-row>
-          <nz-row
-            style="
+          <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
             padding: 16px 0 16px 0;
             border-radius: 8px;
-          "
-            nzGutter="16"
-          >
+          " nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-label">Tổng thanh toán</span><br />
               <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
-              0 VND
-            </span>
+              <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
               <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
               {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
             </span>
