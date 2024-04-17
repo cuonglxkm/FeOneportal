@@ -1,11 +1,11 @@
 <nz-card id="kafka-config">
     <fieldset class="custom-legend">
-        <legend>Thông tin cấu hình Kafka Cluster</legend>
+        <legend>{{ 'kafka.overview.config' | i18n }}</legend>
         <div class="table-info">
             <nz-table #basicTable nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">
                 <tbody>
                     <tr>
-                        <td class="config-label">Tên Kafka Cluster</td>
+                        <td class="config-label">{{ 'app.kafka.name' | i18n }}</td>
                         <td><b>{{itemDetail.serviceName}}</b></td>
                     </tr>
                     <tr>
@@ -31,7 +31,7 @@
 </nz-card>
 <nz-card id="endpoint-config">
     <fieldset class="custom-legend mb-5">
-        <legend>Thông tin cấu hình Endpoint</legend>
+        <legend>{{ 'kafka.overview.enpoint' | i18n }}</legend>
         <div class="copy-btn">
             <button nz-button nzType="default" nzTooltipTitle="Copy" nzTooltipPlacement="top" nz-tooltip class="btn-copy"
                 (click)="handleCopy()">
@@ -67,7 +67,7 @@
 </nz-card>
 <nz-card id="brokers-config">
     <fieldset class="custom-legend mb-5">
-        <legend>Thông tin cấu hình Brokers</legend>
+        <legend>{{ 'kafka.overview.brokers' | i18n }}</legend>
         <div class="table-info">
             <ng-container *ngIf="brokerConfigs">
                 <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzData]="['']">

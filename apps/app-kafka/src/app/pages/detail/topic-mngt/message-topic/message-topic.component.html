@@ -11,7 +11,7 @@
             </nz-range-picker> -->
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4" style="margin-right: 20px;">
                 <nz-select nzAllowClear [(ngModel)]="listOfSelectedValue" (ngModelChange)="onChangePartitions($event)" nzMode="multiple" [nzShowArrow]="true"
-                    [nzPlaceHolder]="'Chọn partitions'" class="w-100" nzSize="large">
+                    [nzPlaceHolder]="'kafka.topic.message-partition' | i18n" class="w-100" nzSize="large">
                     <nz-option *ngFor="let item of partitions" 
                         [nzValue]="item" [nzLabel]="item">
                     </nz-option>
@@ -19,7 +19,7 @@
             </div>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6">
                 <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"
-                    nzSize="large" nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']">
+                    nzSize="large" nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['kafka.topic.message-start-date' | i18n, 'kafka.topic.message-end-date' | i18n]">
                 </nz-range-picker>
             </div>
         </div>

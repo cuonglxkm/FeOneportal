@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from "ng-zorro-antd/notification";
+import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
 import { TopicService } from 'src/app/services/kafka-topic.service';
 
@@ -57,6 +58,8 @@ export class CreateTopicComponent implements OnInit {
   errMessPartition: string;
   errMessRep: string;
 
+  notiSuccessText = 'Thành công';
+  notiFailedText = 'Thất bại';
 
   constructor(
     private topicKafkaService: TopicService,
@@ -116,6 +119,15 @@ export class CreateTopicComponent implements OnInit {
         this.addValidateCustomConfig(this.data.configs);
       }
     }
+
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+  }
+
+  changeLangData() {
+    this.notiSuccessText = 'Success';
+    this.notiFailedText = 'Failed';
   }
 
   addValidateCustomConfig(configs: string) {
@@ -340,10 +352,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               this.loadingSrv.close();
               if (data && data.code == 200) {
-                this.notification.success('Thành công', data.msg);
+                this.notification.success(this.notiSuccessText, data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error('Thất bại', data.msg);
+                this.notification.error(this.notiFailedText, data.msg);
               }
             }
           );
@@ -377,10 +389,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               if (data && data.code == 200) {
                 this.loadingSrv.close();
-                this.notification.success('Thành công', data.msg);
+                this.notification.success(this.notiSuccessText, data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error('Thất bại', data.msg);
+                this.notification.error(this.notiFailedText, data.msg);
               }
             }
           );
@@ -433,10 +445,10 @@ export class CreateTopicComponent implements OnInit {
         .subscribe(
           (data: any) => {
             if (data && data.code == 200) {
-              this.notification.success('Thành công', data.msg);
+              this.notification.success(this.notiSuccessText, data.msg);
               this.cancelForm();
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.notiFailedText, data.msg);
             }
             this.loadingSrv.close();
           }
