@@ -11,7 +11,7 @@ import { LoadBalancerModel } from '../../../shared/models/load-balancer.model';
   templateUrl: './detail-load-balancer.component.html',
   styleUrls: ['./detail-load-balancer.component.less'],
 })
-export class DetailLoadBalancerComponent implements OnInit{  
+export class DetailLoadBalancerComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -54,5 +54,9 @@ export class DetailLoadBalancerComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.getLoadBalancerById()
+  }
+
+  loadToCreateListener() {
+    this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/create'])
   }
 }

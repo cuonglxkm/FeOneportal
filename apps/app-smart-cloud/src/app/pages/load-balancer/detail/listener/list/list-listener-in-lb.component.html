@@ -32,7 +32,7 @@
            alt=""
            nzPopoverPlacement="bottom"
            style="cursor: pointer; margin-right: 16px"
-           [nzPopoverContent]="'Chỉnh sửa'" />
+           [nzPopoverContent]="'Chỉnh sửa'" [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/update/' + data.id"/>
       <img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
            nz-popover
            [nzPopoverContent]="'Xóa'"
