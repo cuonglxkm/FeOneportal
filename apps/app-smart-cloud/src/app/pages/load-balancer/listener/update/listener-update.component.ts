@@ -8,6 +8,7 @@ import { ipAddressValidator } from '../create/listener-create.component';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
 import { da } from 'date-fns/locale';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'one-portal-listener-update',
@@ -49,6 +50,9 @@ export class ListenerUpdateComponent implements OnInit {
     {value:'LEAST_CONNECTIONS',name:'Least connections'},
     {value:'SOURCE_IP',name:'source ip'},
   ];
+  loadingDetail = true;
+  loadingL7 = true;
+  loadingPool = true;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -95,7 +99,11 @@ export class ListenerUpdateComponent implements OnInit {
   }
 
   private getData() {
-    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'),this.activatedRoute.snapshot.paramMap.get('lbId')).subscribe(
+    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'),this.activatedRoute.snapshot.paramMap.get('lbId'))
+      .pipe(finalize(() => {
+        this.loadingDetail = false;
+      }))
+      .subscribe(
       data => {
         this.validateForm.controls['listenerName'].setValue(data.name);
         this.validateForm.controls['port'].setValue(data.port);
@@ -112,7 +120,11 @@ export class ListenerUpdateComponent implements OnInit {
   }
 
   private getL7Policy(id: string) {
-    this.service.getL7Policy(id, this.regionId, this.projectId).subscribe(
+    this.service.getL7Policy(id, this.regionId, this.projectId)
+      .pipe(finalize(()=>{
+        this.loadingL7 = false;
+      }))
+      .subscribe(
       data => {
         this.listL7 = data;
       }
@@ -120,7 +132,10 @@ export class ListenerUpdateComponent implements OnInit {
   }
 
   private getPool(id: string) {
-    this.service.getPool(id, this.regionId).subscribe(
+    this.service.getPool(id, this.regionId)
+      .pipe(finalize(()=>{
+        this.loadingPool = false;
+      })).subscribe(
       data => {
         this.listPool = data.records;
       }
