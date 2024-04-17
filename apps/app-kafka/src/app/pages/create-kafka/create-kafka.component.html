@@ -223,9 +223,12 @@
               <nz-form-control [nzErrorTip]="defaultReplicationFactorTpl">
                   <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' default.replication.factor' "
                       formControlName="defaultReplicationFactor" (keypress)="isNumber($event)" 
-                      id="defaultReplicationFactor" (ngModelChange)="onChangeReplicationFactorAndMinInsync();" />
+                      id="defaultReplicationFactor" (ngModelChange)="onChangeDefaultReplicationFactor();" />
               </nz-form-control>
               <ng-template #defaultReplicationFactorTpl let-control>
+                  <ng-container *ngIf="control.hasError('invalidvalue')">
+                    {{ 'validation.kafka.replicationFactor-invalid' | i18n }}
+                  </ng-container>
                   <ng-container *ngIf="control.hasError('required')">
                     {{ 'validation.kafka-required-1' | i18n }} default.replication.factor {{ 'validation.kafka-required-2' | i18n }}
                   </ng-container>

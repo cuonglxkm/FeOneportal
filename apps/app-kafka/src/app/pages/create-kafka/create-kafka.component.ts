@@ -207,8 +207,24 @@ export class CreateKafkaComponent implements OnInit {
 
   }
 
+  onChangeDefaultReplicationFactor() {
+    const replicationFactor = this.myform.controls['defaultReplicationFactor'];
+    const minInsync = this.myform.controls['minInsyncReplicas'];
+    if (replicationFactor.value != null && minInsync.value != null) {
+      if (minInsync.value > replicationFactor.value) {
+        replicationFactor.setErrors({'invalidvalue': true})
+      }
+    }
+  }
+
   onChangeReplicationFactorAndMinInsync() {
-    console.log("");
+    const replicationFactor = this.myform.controls['defaultReplicationFactor'];
+    const minInsync = this.myform.controls['minInsyncReplicas'];
+    if (replicationFactor.value != null && minInsync.value != null) {
+      if (minInsync.value > replicationFactor.value) {
+        minInsync.setErrors({'invalidvalue': true})
+      }
+    }
   }
   
   handleChoosePack(item: ServicePack) {

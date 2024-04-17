@@ -1,16 +1,15 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
+import { camelizeKeys } from 'humps';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from "ng-zorro-antd/notification";
-import { throwError } from 'rxjs';
-import { catchError, filter, finalize, map } from 'rxjs/operators';
+import { filter, finalize, map } from 'rxjs/operators';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaTopic } from '../../../core/models/kafka-topic.model';
 import { TopicService } from '../../../services/kafka-topic.service';
-import { camelizeKeys } from 'humps';
 @Component({
   selector: 'one-portal-topic-mngt',
   templateUrl: './topic-mngt.component.html',
@@ -53,6 +52,9 @@ export class TopicMngtComponent implements OnInit {
 
   produceForm: FormGroup;
 
+  notiSuccessText = 'Thành công';
+  notiFailedText = 'Thất bại';
+
   constructor(
     private fb: FormBuilder,
     private topicService: TopicService,
@@ -74,6 +76,15 @@ export class TopicMngtComponent implements OnInit {
       configs: [""],
       groupId: [""]
     });
+
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+  }
+
+  changeLangData() {
+    this.notiSuccessText = 'Success';
+    this.notiFailedText = 'Failed';
   }
 
   Cancel() {
@@ -187,11 +198,11 @@ export class TopicMngtComponent implements OnInit {
         }))
         .subscribe((r: any) => {
           if (r && r.code == 200) {
-            this.notification.success('Thành công', 'Test producer thành công');
+            this.notification.success(this.notiSuccessText, r.msg);
             this.control = this.listNum;
             this.handleCloseProduceModal();
           } else {
-            this.notification.error('Thất bại', 'Test producer thất bại');
+            this.notification.error(this.notiFailedText, r.msg);
           }
         })
     }
@@ -225,9 +236,9 @@ export class TopicMngtComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.notiSuccessText, data.msg);
           } else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.notiFailedText, data.msg);
           }
           this.isDelVisible = false;
         }
@@ -247,9 +258,9 @@ export class TopicMngtComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.notiSuccessText, data.msg);
           } else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.notiFailedText, data.msg);
           }
           this.getList();
           this.isDelVisible = false;
@@ -266,9 +277,9 @@ export class TopicMngtComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.notiSuccessText, data.msg);
           } else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.notiFailedText, data.msg);
           }
           this.getList();
         }
