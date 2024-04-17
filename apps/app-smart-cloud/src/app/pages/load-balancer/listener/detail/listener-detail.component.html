@@ -1,1 +1,228 @@
-<p>listener-detail works!</p>
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chỉnh sửa Listener'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/load-balancer/list']">Load Balancer</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="[]">Chi tiết Listener</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="onRegionChange($event)" isDetail="true"></region-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)" isDetail="true"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+  <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loadingDetail">
+    <div class="text-card-header" style="margin-bottom: 15px;">Thông tin chi tiết Listener</div>
+    <nz-form-item>
+      <nz-form-label>
+        <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>
+      </nz-form-label>
+      <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+        <input nz-input [disabled]="true"
+               class="input-custom"
+               formControlName="listenerName"
+               [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc
+            biệt (trừ _)
+          </ng-container>
+          <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+          <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên Load
+            Balancer khác
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-row>
+      <nz-col nzSpan="16">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Giao thức (<span style="color: red;">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
+              <label nz-radio nzValue="HTTP">TERMINATED_HTTPS</label>
+              <label nz-radio nzValue="TCP">TCP</label>
+              <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Port (<span style="color: red;">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [disabled]="true" nzSize="large" formControlName="port" [nzMin]="0" [nzStep]="1" [nzDisabled]="true"
+                             style="margin-left: -2px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+    <nz-row>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Client timeout (ms)</span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [disabled]="true" style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
+                             [nzStep]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Member</span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [disabled]="true" style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
+                             [nzStep]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Connection</span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <nz-input-number [disabled]="true" style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
+                             [nzStep]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>
+            <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>
+          </nz-form-label>
+          <nz-form-control nzDisableAutoTips>
+            <input nz-input
+                   class="input-custom"
+                   formControlName="allowCIRR"
+                   [placeholder]="" [maxLength]="50" />
+            <!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="" [nzMin]="0"-->
+            <!--                               [nzStep]="1"></nz-input-number>-->
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+
+    <nz-form-item>
+      <nz-form-label>
+        <span>Mô tả</span>
+      </nz-form-label>
+      <nz-form-control nzDisableAutoTips>
+          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+                    formControlName="description"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+    <nz-tabset>
+      <nz-tab nzTitle="Pool">
+        <div class="text-card-header" style="margin-bottom: 30px;">Danh sách Pool</div>
+        <nz-table [nzData]="listPool" [nzShowPagination]="false" [nzLoading]="loadingPool">
+          <thead>
+          <tr>
+            <th>Tên Pool</th>
+            <th>Giao thức</th>
+            <th>Thuật toán</th>
+            <th>Trạng thái hoạt động</th>
+            <th>Trạng thái cung cấp</th>
+            <th>Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of listPool">
+            <td>{{ item.name }}</td>
+            <td>{{ item.protocol }}</td>
+            <td>{{ item.algorithm }}</td>
+            <td>ONLINE</td>
+            <td>ACTIVE</td>
+            <td>
+              <!----Chỉnh sửa----->
+              <span style="color: #0066B3; margin-right: 10px;"
+                    nz-tooltip
+                    nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
+                    nz-icon
+                    nzType="edit"
+                    nzTheme="outline"
+              ></span>
+              <!----Xóa---->
+              <span style="color: #0066B3"
+                    nz-tooltip
+                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                    nz-icon nzType="delete" nzTheme="outline"
+              ></span>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+      <nz-tab nzTitle="L7 Policy">
+        <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
+          <div class="text-card-header">Danh sách L7 Policy</div>
+          <button nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">
+            <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
+            <span class="button-text-primary">Tạo mới L7 policy</span>
+          </button>
+        </nz-row>
+        <nz-table [nzData]="listL7" [nzShowPagination]="false" [nzLoading]="loadingL7">
+          <thead>
+          <tr>
+            <th>Tên L7 policy</th>
+            <th>Độ ưu tiên </th>
+            <th>Hành động</th>
+            <th>Trạng thái hoạt động</th>
+            <th>Trạng thái cung cấp</th>
+            <th>Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of listL7">
+            <td [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/l7-policy/'+ item.id" style="color: #0D67B1">{{ item.name }}</td>
+            <td>{{ item.position }}</td>
+            <td>{{ item.action }}</td>
+            <td>{{ item.operatingStatus }}</td>
+            <td>{{ item.provisioningStatus }}</td>
+            <td>
+              <!----Chỉnh sửa----->
+              <span style="color: #0066B3; margin-right: 10px;"
+                    nz-tooltip
+                    nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom"
+                    nz-icon
+                    nzType="edit"
+                    nzTheme="outline"
+                    [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/l7-policy/edit/'+ item.id"
+              ></span>
+              <!----Xóa---->
+              <span style="color: #0066B3"
+                    nz-tooltip
+                    nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
+                    nz-icon nzType="delete" nzTheme="outline"
+              ></span>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+</form>
