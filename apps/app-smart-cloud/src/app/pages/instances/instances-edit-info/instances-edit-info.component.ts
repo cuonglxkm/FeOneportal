@@ -119,7 +119,6 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
@@ -129,9 +128,9 @@ export class InstancesEditInfoComponent implements OnInit {
     this.router.paramMap.subscribe((param) => {
       if (param.get('id') != null) {
         this.id = parseInt(param.get('id'));
-        this.dataService
-          .getById(this.id, true)
-          .subscribe((dataInstance: any) => {
+        this.dataService.getById(this.id, true).subscribe({
+          next: (dataInstance: any) => {
+            this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
             this.instancesModel = dataInstance;
 
             if (this.instancesModel.securityGroupStr != null) {
@@ -156,7 +155,12 @@ export class InstancesEditInfoComponent implements OnInit {
                 this.cdr.detectChanges();
               });
             this.cdr.detectChanges();
-          });
+          },
+          error: (e) => {
+            this.notification.error(e.error.detail, '');
+            this.returnPage();
+          },
+        });
       }
     });
     this.cdr.detectChanges();

@@ -51,8 +51,7 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        (instancesModel.taskState.toUpperCase() == 'SHUTOFF' ||
-          instancesModel.taskState.toUpperCase() == 'POWERING-OFF')
+        instancesModel.taskState.toUpperCase() == 'SHUTOFF'
       "
       nz-menu-item
       (click)="showModalStart()"
@@ -250,11 +249,16 @@
             >
           </ng-template>
           <ng-template #suffixTemplate>
-            <i
-              nz-icon
-              [nzType]="'eye'"
+            <img
+              style="margin-top: -4px"
+              [src]="
+                passwordVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
               (click)="passwordVisible = !passwordVisible"
-            ></i>
+            />
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -275,11 +279,16 @@
             />
           </nz-input-group>
           <ng-template #suffixTemplateRepeat>
-            <i
-              nz-icon
-              [nzType]="'eye'"
+            <img
+              style="margin-top: -4px"
+              [src]="
+                passwordRepeatVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
               (click)="passwordRepeatVisible = !passwordRepeatVisible"
-            ></i>
+            />
           </ng-template>
           <div *ngIf="!check">
             <span style="color: rgba(252, 16, 16, 1)"

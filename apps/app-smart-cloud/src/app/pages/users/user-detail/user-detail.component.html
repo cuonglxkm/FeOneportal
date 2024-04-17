@@ -35,44 +35,58 @@
   <div style="margin-bottom: 20px">
     <span class="text-card-header">Thông tin chính của User</span>
   </div>
-  <div nz-row>
-    <div nz-col nzSpan="8">
-      <label class="lable-custom">Tên của User</label>
-      <br />
-      <input
-        style="border-radius: 8px; width: 90%"
-        nz-input
-        [(ngModel)]="user.userName"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
+  <form nz-form nzLayout="vertical">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Tên của User </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px; width: 90%"
+              nz-input
+              [(ngModel)]="user.userName"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Email </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px; width: 90%"
+              nz-input
+              [(ngModel)]="user.email"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Thời gian khởi tạo </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px; width: 90%"
+              nz-input
+              [(ngModel)]="createdDate"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
     </div>
-    <div nz-col nzSpan="8">
-      <label class="lable-custom">Email</label>
-      <br />
-      <input
-        style="border-radius: 8px; width: 90%"
-        nz-input
-        [(ngModel)]="user.email"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </div>
-    <div nz-col nzSpan="8">
-      <label class="lable-custom">Thời gian khởi tạo</label>
-      <br />
-      <input
-        style="border-radius: 8px; width: 90%"
-        nz-input
-        [(ngModel)]="createdDate"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </div>
-  </div>
+  </form>
 </nz-card>
 
 <nz-card style="border-radius: 4px" [nzBordered]="false">
