@@ -31,7 +31,8 @@
     </form>
     <div *ngIf="selectedValueRadio === 'VM'">
         <one-portal-schedule-backup-vm [region]="region"
-                                        [project]="project" [instanceId]="instanceId"/>
+                                        [project]="project"
+                                        [instanceId]="instanceId"/>
     </div>
     <div *ngIf="selectedValueRadio === 'VOLUME'" >
         <one-portal-schedule-backup-volume [region]="region"

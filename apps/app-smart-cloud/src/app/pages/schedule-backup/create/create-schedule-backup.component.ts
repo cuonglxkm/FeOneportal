@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, NonNullableFormBuilder} from "@angular/forms";
-import {Location} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
-import {RegionModel} from "../../../shared/models/region.model";
-import {ProjectModel} from "../../../shared/models/project.model";
-import {getCurrentRegionAndProject} from "@shared";
-import {ProjectService} from "../../../shared/services/project.service";
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RegionModel } from '../../../shared/models/region.model';
+import { ProjectModel } from '../../../shared/models/project.model';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-create-schedule-backup',
   templateUrl: './create-schedule-backup.component.html',
-  styleUrls: ['./create-schedule-backup.component.less'],
+  styleUrls: ['./create-schedule-backup.component.less']
 })
-export class CreateScheduleBackupComponent implements OnInit{
+export class CreateScheduleBackupComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -21,12 +20,12 @@ export class CreateScheduleBackupComponent implements OnInit{
   validateForm: FormGroup<{
     radio: FormControl<any>
   }> = this.fb.group({
-    radio: [''],
-  })
+    radio: ['']
+  });
 
-  id: number
+  id: number;
 
-  backupVmId: number
+  backupVmId: number;
 
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
@@ -36,17 +35,17 @@ export class CreateScheduleBackupComponent implements OnInit{
 
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+    this.region = region.regionId;
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
 
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project
+    this.project = project;
   }
 
   goBack() {
@@ -56,23 +55,23 @@ export class CreateScheduleBackupComponent implements OnInit{
   onChangeStatus() {
     console.log('Selected option changed:', this.selectedValueRadio);
   }
-
   instanceId: number
+
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.instanceId = params['instanceId'];
     });
     this.activatedRoute.queryParams.subscribe(data => {
-      console.log(data['idVolume'])
-      this.selectedValueRadio = data['type']
-      this.id = data['idVolume']
-      if(data['type'] == null || data['type'] == undefined) {
-        this.selectedValueRadio = 'VM'
+      console.log(data['idVolume']);
+      this.selectedValueRadio = data['type'];
+      this.id = data['idVolume'];
+      if (data['type'] == null || data['type'] == undefined) {
+        this.selectedValueRadio = 'VM';
       }
-    })
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+    });
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
   }
 
 
