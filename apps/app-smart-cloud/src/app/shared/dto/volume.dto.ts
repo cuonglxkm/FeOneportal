@@ -91,7 +91,7 @@ export class EditSizeMemoryVolumeDTO{
   regionId: number;
   serviceName: string;
   customerId: number;
-  vpcId: number;
+  projectId: number;
   typeName: string;
   userEmail: string;
   actorEmail:string;
@@ -102,7 +102,7 @@ export class ExtendVolumeDTO{
   regionId: number;
   serviceName: string;
   customerId: number;
-  vpcId: number;
+  projectId: number;
   typeName:  string;
   serviceType: number;
   actionType: number;

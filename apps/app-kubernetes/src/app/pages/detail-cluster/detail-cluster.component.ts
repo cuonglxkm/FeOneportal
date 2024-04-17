@@ -22,7 +22,8 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
   @Input('detailCluster') detailCluster: KubernetesCluster;
   @Input('vpcNetwork') vpcNetwork: string;
-  @Input("yamlString") yamlString: string;
+  @Input('yamlString') yamlString: string;
+  @Input('sshKeyString') sshKeyString: string;
 
   serviceOrderCode: string;
 
@@ -332,7 +333,28 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     this.upgradeVersionCluster = null;
   }
 
-  handleSyncClusterInfo() { }
+  // for ssh key
+  handleCopySSHKey() {
+    this.clipboardService.copy(this.sshKeyString);
+    this.notificationService.success("Đã sao chép", null);
+  }
+
+  handleDownloadSSHkey() {
+    const blob = new Blob([this.sshKeyString], { type: 'application/x-pem-file' });
+    const url = window.URL.createObjectURL(blob);
+
+    // create a ele to download
+    var dlink = document.createElement("a");
+    dlink.download = 'k8s-' + this.detailCluster.clusterName + '.ssh_keypair';
+    dlink.href = url;
+    dlink.onclick = function (e) {
+      // revokeObjectURL needs a delay to work properly
+      setTimeout(function () {
+        window.URL.revokeObjectURL(url);
+      }, 1500);
+    };
+    dlink.click(); dlink.remove();
+  }
 
   // for kubeconfig
   handleViewKubeConfig() {
@@ -354,7 +376,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   }
 
   handleDownloadKubeConfig() {
-    const blob = new Blob([this.yamlString], { type: 'text/yaml' })
+    const blob = new Blob([this.yamlString], { type: 'text/yaml' });
     const url = window.URL.createObjectURL(blob);
 
     // create a ele to download

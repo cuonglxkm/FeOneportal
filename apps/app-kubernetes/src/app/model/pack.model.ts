@@ -11,6 +11,7 @@ export class PackModel {
 
   rootStorage: number;
   rootStorageType: string;
+  rootStorageName: string;
 
   volumeStorage: number;
   volumeType: string;
@@ -31,7 +32,8 @@ export class PackModel {
       this.rootStorageType = obj.root_storage_type;
       this.volumeStorage = obj.volume_storage;
       this.volumeType = obj.volume_type;
-      this.volumeTypeId = obj.volume_type_id; 
+      this.volumeTypeId = obj.volume_type_id;
+      this.rootStorageName = obj.root_storage_name;
       this.price = obj.price;
     }
   }

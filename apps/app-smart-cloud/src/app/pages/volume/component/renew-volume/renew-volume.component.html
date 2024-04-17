@@ -28,10 +28,10 @@
     </div>
 <!--    <div>-->
 <!--      <div nz-col nzSpan="4">-->
-<!--        <button class="button-edit" style="background-color: #061178"-->
+<!--        <button class="button-extend" style="background-color: #061178"-->
 <!--                (click)="navigateEditVolume(volumeInfo.id)"-->
 <!--                nz-button nzType="primary">-->
-<!--          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh-->
+<!--          <i nz-icon [nzType]="'extend'"></i>Điều chỉnh-->
 <!--        </button>-->
 <!--      </div>-->
 <!--    </div>-->
@@ -51,7 +51,7 @@
       <button class="button-cancel"
               (click)="navigateEditVolume(volumeInfo.id)"
               nz-button nzType="default">
-        <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+        <i nz-icon [nzType]="'extend'"></i>Điều chỉnh
       </button>
     </div>
   </ng-template>
@@ -87,9 +87,9 @@
             <span *ngIf="volumeInfo?.attachedInstances?.length > 0" class="text-label"><b>{{ listVMs }}</b></span>
             <span *ngIf="volumeInfo?.attachedInstances?.length <= 0" class="text-label"><b>Không có máy ảo</b></span>
           </nz-descriptions-item>
-          <nz-descriptions-item [nzTitle]="titleVolumeType">
-            <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>
-          </nz-descriptions-item>
+<!--          <nz-descriptions-item [nzTitle]="titleVolumeType">-->
+<!--            <span class="text-label"><b>{{ volumeInfo?.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b></span>-->
+<!--          </nz-descriptions-item>-->
         </nz-descriptions>
 
         <ng-template #titleName>
@@ -126,7 +126,7 @@
         <div style="margin-top: 15px;">
           <nz-descriptions>
             <nz-descriptions-item [nzTitle]="titleDescription">
-              <span class="text-label"><b>{{ volumeInfo?.description }}</b></span>
+              <span class="text-label">{{ volumeInfo?.description }}</span>
             </nz-descriptions-item>
           </nz-descriptions>
         </div>

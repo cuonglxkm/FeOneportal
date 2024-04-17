@@ -16,6 +16,8 @@ export class KubernetesConstant {
 
   public static INPROGRESS_STATUS = [1,6,7];
 
+  public static CIDR_CHECK = "100.64.0.0/16";
+
   // action type
   public static CREATE_ACTION = "create";
 

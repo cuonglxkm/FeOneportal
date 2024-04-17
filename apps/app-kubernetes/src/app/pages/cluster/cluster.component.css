@@ -46,7 +46,11 @@ input,
 textarea,
 .border-card,
 .border-button {
-  border-radius: 10px;
+  border-radius: 8px;
+}
+
+small {
+  font-size: 14px;
 }
 
 .price-style {
@@ -75,7 +79,7 @@ textarea,
 
 .price-panel {
   background-color: #cce9ff;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .total-color {
@@ -107,7 +111,7 @@ textarea,
 }
 
 ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 ::ng-deep .alain-default__content nz-input-group {
@@ -157,7 +161,7 @@ label, span {
 
 .group-border {
   border: 1px dashed #0066b3;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 24px 8px 0px 8px;
   margin-left: 0px !important;
   margin-right: 0px !important;

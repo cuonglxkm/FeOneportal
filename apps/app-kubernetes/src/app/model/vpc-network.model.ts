@@ -13,8 +13,10 @@ export class SubnetModel {
   id: number;
   subnetAddressRequired: string;
   subnetCloudId: string;
+  networkCloudId: string;
   enableDhcp: boolean;
   gatewayIp: string;
   customerId: number;
+
 
 }

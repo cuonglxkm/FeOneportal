@@ -118,6 +118,7 @@ import { ListLoadBalancerComponent } from './load-balancer/list/list-load-balanc
 import { CreateLbNovpcComponent } from './load-balancer/normal/create/create-lb-novpc.component';
 import { CreateLbVpcComponent } from './load-balancer/vpc/create/create-lb-vpc.component';
 import { DetailLoadBalancerComponent } from './load-balancer/detail/detail-load-balancer.component';
+import { EditLoadBalancerVpcComponent } from './load-balancer/vpc/edit/edit-load-balancer-vpc.component';
 
 
 const routes: Routes = [
@@ -419,6 +420,10 @@ const routes: Routes = [
     path: 'vlan/:id/network/edit/subnet/:subnetId',
     component: VlanEditSubnetComponent
   },
+  // {
+  //   path: 'vlan/:id/network/extend/subnet/:subnetId',
+  //   component: VlanEditSubnetComponent
+  // },
   {
     path:'networks/ip-floating/list',
     component: ListIpFloatingComponent
@@ -440,7 +445,7 @@ const routes: Routes = [
     component: DetailFileSystemComponent
   },
   {
-    path: 'file-storage/file-system/extend/:id',
+    path: 'file-storage/file-system/edit/:id',
     component: ResizeFileSystemComponent
   },
   {
@@ -508,7 +513,7 @@ const routes: Routes = [
     component: ObjectStorageCreateComponent
   },
   {
-    path: 'object-storage/extend',
+    path: 'object-storage/edit',
     component: ObjectStorageEditComponent
   },
   {
@@ -554,6 +559,10 @@ const routes: Routes = [
   {
     path: 'security',
     component: SecurityComponent
+  },
+  {
+    path: 'load-balancer/update/vpc/:id',
+    component: EditLoadBalancerVpcComponent
   }
   ]
 @NgModule({

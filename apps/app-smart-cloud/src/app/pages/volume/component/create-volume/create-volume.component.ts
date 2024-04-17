@@ -333,12 +333,12 @@ export class CreateVolumeComponent implements OnInit {
         this.tokenService.get()?.userId
       )
       .subscribe((data) => {
-        data.records.forEach(item => {
-          if(item.taskState.includes('ACTIVE')) {
-            this.listInstances?.push(item);
-          }
-        })
-        // this.listInstances = data.records;
+        // data.records.forEach(item => {
+        //   if(item.taskState.includes('ACTIVE')) {
+        //     this.listInstances?.push(item);
+        //   }
+        // })
+        this.listInstances = data.records;
         this.cdr.detectChanges();
       });
   }
@@ -377,7 +377,7 @@ export class CreateVolumeComponent implements OnInit {
       this.validateForm.controls.isMultiAttach.value;
     this.volumeCreate.isEncryption =
       this.validateForm.controls.isEncryption.value;
-    this.volumeCreate.vpcId = this.project.toString();
+    this.volumeCreate.projectId = this.project.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
@@ -423,9 +423,18 @@ export class CreateVolumeComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
 
+
+
   changeValueInput() {
-    console.log('total amount');
-    this.getTotalAmount()
+    this.dataSubjectStorage.pipe(debounceTime(500))
+      .subscribe((res) => {
+        console.log('total amount');
+        this.getTotalAmount()
+      })
+  }
+
+  changeValueStorage(value) {
+    this.dataSubjectStorage.next(value)
   }
 
   navigateToPaymentSummary() {
@@ -491,6 +500,8 @@ export class CreateVolumeComponent implements OnInit {
     if (this.project && this.region) {
       this.loadProjects();
     }
+
+    this.changeValueInput()
 
     this.getListSnapshot();
     this.getListInstance();

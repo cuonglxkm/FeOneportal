@@ -3,24 +3,24 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
+import { overlapCidr } from "cidr-tools";
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EMPTY, catchError, finalize, map } from 'rxjs';
+import { KubernetesConstant } from '../../constants/kubernetes.constant';
+import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../../model/cluster.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
+import { PackModel } from '../../model/pack.model';
+import { PriceModel } from '../../model/price.model';
+import { FormSearchNetwork, FormSearchSubnet } from '../../model/vlan.model';
+import { VolumeTypeModel } from '../../model/volume-type.model';
 import { SubnetModel, VPCNetworkModel } from '../../model/vpc-network.model';
 import { WorkerTypeModel } from '../../model/worker-type.model';
-import { VolumeTypeModel } from '../../model/volume-type.model';
-import { PackModel } from '../../model/pack.model';
-import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem, WorkerGroupModel } from '../../model/cluster.model';
-import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { ClusterService } from '../../services/cluster.service';
-import { VlanService } from '../../services/vlan.service';
 import { ShareService } from '../../services/share.service';
-import { FormSearchNetwork, FormSearchSubnet } from '../../model/vlan.model';
-import { RegionModel } from '../../shared/models/region.model';
+import { VlanService } from '../../services/vlan.service';
 import { ProjectModel } from '../../shared/models/project.model';
-import { overlapCidr } from "cidr-tools";
-import { PriceModel } from '../../model/price.model';
+import { RegionModel } from '../../shared/models/region.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -121,6 +121,7 @@ export class ClusterComponent implements OnInit {
       projectInfraId: [null, [Validators.required]],
       cloudProfileId: [null, [Validators.required]],
       packId: [null],
+      tenant: [null],
 
       // network
       networkType: [this.DEFAULT_NETWORK_TYPE, Validators.required],
@@ -128,6 +129,9 @@ export class ClusterComponent implements OnInit {
       cidr: [this.DEFAULT_CIDR, [Validators.required, Validators.pattern(KubernetesConstant.IPV4_PATTERN)]],
       description: [null, [Validators.maxLength(255), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
       subnet: [null, [Validators.required]],
+      subnetId: [null, [Validators.required]],
+      networkCloudId: [null, [Validators.required]],
+      subnetCloudId: [null, [Validators.required]],
 
       workerGroup: this.listFormWorkerGroup,
 
@@ -295,6 +299,14 @@ export class ClusterComponent implements OnInit {
     });
   }
 
+  subnetAndCidr: Map<string, Array<string>>;
+  getSubnetAndCidrUsed(projectInfraId: number) {
+    this.clusterService.getSubnetAndCidrUsed(projectInfraId)
+    .subscribe((r: any) => {
+      this.subnetAndCidr = r.data;
+    });
+  }
+
   getListPriceItem() {
     this.clusterService.getListPriceItem()
     .subscribe((r: any) => {
@@ -372,7 +384,9 @@ export class ClusterComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.projectInfraId = project.id;
     this.getVlanNetwork(this.projectInfraId);
+    this.getSubnetAndCidrUsed(this.projectInfraId);
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
+    this.myform.get('tenant').setValue(project.projectName);
 
     // handle reset select box of previous project
     this.myform.get('vpcNetwork').setValue(null);
@@ -387,6 +401,23 @@ export class ClusterComponent implements OnInit {
       this.getSubnetByVlanNetwork();
       let vlan = this.listOfVPCNetworks.find(item => item.id == vlanId);
       this.vlanCloudId = vlan.cloudId;
+    }
+  }
+
+  subnetAddress: string;
+  onSelectSubnet(subnetId: number) {
+    // check subnet
+    const subnet = this.listOfSubnets.find(item => item.id == subnetId);
+    if (subnet != null && this.subnetAndCidr != null) {
+      
+    }
+
+    // set data
+    this.myform.get('subnetId').setValue(subnetId);
+    if (subnet) {
+      this.subnetAddress = subnet.subnetAddressRequired;
+      this.myform.get('networkCloudId').setValue(subnet.networkCloudId);
+      this.myform.get('subnetCloudId').setValue(subnet.subnetCloudId);
     }
   }
 
@@ -535,7 +566,7 @@ export class ClusterComponent implements OnInit {
 
   checkOverLapseIP() {
     let cidr = this.myform.get('cidr').value;
-    let subnet = this.myform.get('subnet').value;
+    let subnet = this.subnetAddress;
 
     const reg = new RegExp(KubernetesConstant.CIDR_PATTERN);
     if (!reg.test(cidr)) return;
@@ -545,6 +576,12 @@ export class ClusterComponent implements OnInit {
         this.myform.get('cidr').setErrors({overlap: true});
       } else {
         delete this.myform.get('cidr').errors?.overlap;
+      }
+
+      if (overlapCidr(cidr, KubernetesConstant.CIDR_CHECK)) {
+        this.myform.get('cidr').setErrors({cidr_used: true});
+      } else {
+        delete this.myform.get('cidr').errors?.cidr_used;
       }
     }
   }
@@ -701,11 +738,15 @@ export class ClusterComponent implements OnInit {
     networking.networkType = cluster.networkType;
     networking.vpcNetworkId = cluster.vpcNetwork;
     networking.cidr = cluster.cidr + '/16';
-    networking.subnet = cluster.subnet + '@' + this.vlanCloudId;
+    networking.subnet = this.subnetAddress + '@' + this.vlanCloudId;
+    networking.subnetId = cluster.subnetId;
+    networking.subnetCloudId = cluster.subnetCloudId;
+    networking.networkCloudId = cluster.networkCloudId;
 
     cluster.networking = networking;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
-    cluster.offerId = this.offerId;            // temporary, get from order pack
+    cluster.offerId = this.offerId;
+    cluster.cloudProfileId = 'openstack-disable-snat';
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
     // console.log({data: data});
@@ -726,11 +767,11 @@ export class ClusterComponent implements OnInit {
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
     data.customerId = userId;
-    data.createdByUserId = userId;    // fix test
+    data.createdByUserId = userId;
     data.orderItems = [];
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = this.totalPrice;       // fix test
+    orderItem.price = this.totalPrice;
     orderItem.orderItemQuantity = 1;         // fix test
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);

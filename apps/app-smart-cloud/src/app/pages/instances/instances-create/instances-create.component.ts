@@ -160,6 +160,7 @@ export class InstancesCreateComponent implements OnInit {
     private vlanService: VlanService
   ) {}
 
+  @ViewChild('nameInput') firstInput: ElementRef;
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
   reloadCarousel: boolean = false;
@@ -171,6 +172,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.firstInput.nativeElement.focus();
     this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
   }
 
@@ -205,6 +207,23 @@ export class InstancesCreateComponent implements OnInit {
       if (activeTabIndex >= 0 && activeTabIndex < tabs.length) {
         (tabs[activeTabIndex] as HTMLElement).click(); // Kích hoạt tab mới
       }
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
   }
 
@@ -376,6 +395,11 @@ export class InstancesCreateComponent implements OnInit {
     }
     if (this.offerFlavor != null) {
       this.getTotalAmount();
+    }
+    if (this.isCustomconfig) {
+      this.changeCapacity(event);
+      this.changeRam(event);
+      this.changeVCPU(event);
     }
     const filteredImages = this.listOfImageByImageType
       .get(imageTypeId)
@@ -942,7 +966,12 @@ export class InstancesCreateComponent implements OnInit {
     this.externalIp(this.listOfDataIPv6, false);
   }
 
-  onInputIPv4(value: any) {
+  onInputIPv4(value: any, id: number) {
+    this.listOfDataIPv4.forEach((e) => {
+      if (e.id == id) {
+        e.amount = 1;
+      }
+    });
     this.changeTotalAmountIPv4(value);
     const filteredArrayHas = this.listOfDataIPv4.filter(
       (item) => item.ip == ''
@@ -958,7 +987,12 @@ export class InstancesCreateComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onInputIPv6(value: any) {
+  onInputIPv6(value: any, id: number) {
+    this.listOfDataIPv6.forEach((e) => {
+      if (e.id == id) {
+        e.amount = 1;
+      }
+    });
     this.changeTotalAmountIPv6(value);
     const filteredArrayHas = this.listOfDataIPv6.filter(
       (item) => item.ip == ''
@@ -1100,7 +1134,7 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.instanceToAttachId = null;
     this.volumeCreate.isMultiAttach = blockStorage.multiattach;
     this.volumeCreate.isEncryption = blockStorage.encrypt;
-    this.volumeCreate.vpcId = this.projectId.toString();
+    this.volumeCreate.projectId = this.projectId.toString();
     this.volumeCreate.oneSMEAddonId = null;
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
@@ -1476,5 +1510,9 @@ export class InstancesCreateComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  navigateToSecurity(): void {
+    this.router.navigate(['/app-smart-cloud/security-group/list']);
   }
 }

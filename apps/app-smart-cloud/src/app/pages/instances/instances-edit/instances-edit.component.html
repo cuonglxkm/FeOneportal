@@ -1,44 +1,47 @@
-<page-header>
-  <nz-breadcrumb style="float: left">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">Trang chủ</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> Điều chỉnh máy ảo </nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <div class="text-right">
-    <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (userChanged)="onProjectChange($event)"
-    ></project-select-dropdown>
-  </div>
-  <div>
-    <nz-row style="margin-bottom: -10px">
-      <div class="page-header-custom">Điều chỉnh máy ảo</div>
-    </nz-row>
-    <nz-row style="margin-top: 20px">
-      <div style="width: 100%" class="non-pointer">
-        <button nz-button nzType="primary" (click)="navigateToCreate()">
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/add-circle.svg"
-            alt=""
-          />Tạo mới máy ảo
-        </button>
-        <one-portal-instances-btn
-          [instancesId]="id"
-          (valueChanged)="onReloadInstanceDetail()"
-          style="margin-left: 8px"
-        >
-        </one-portal-instances-btn>
-      </div>
-    </nz-row>
-  </div>
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'Điều chỉnh máy ảo'"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/instances']">Quản lý máy ảo</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item> Điều chỉnh máy ảo </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        [regionId]="region"
+        (userChanged)="onProjectChange($event)"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
+  <nz-row>
+    <div style="width: 100%" class="non-pointer">
+      <button nz-button nzType="primary" (click)="navigateToCreate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/add-circle.svg"
+          alt=""
+        />Tạo mới máy ảo
+      </button>
+      <one-portal-instances-btn
+        [instancesId]="id"
+        (valueChanged)="onReloadInstanceDetail()"
+        style="margin-left: 8px"
+      >
+      </one-portal-instances-btn>
+    </div>
+  </nz-row>
 </page-header>
 
 <form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
@@ -241,10 +244,14 @@
             <span *ngIf="instancesModel.volumeType == 1">SSD</span>
           </span>
         </div>
-        <nz-tabset nzCentered nzSize="large">
+        <nz-tabset
+          nzCentered
+          nzSize="large"
+          (keydown)="handleKeyboardEvent($event)"
+        >
           <nz-tab
             *ngIf="isConfigPackage"
-            nzTitle="Gói cấu hình"
+            nzTitle="Gói cấu hình sẵn"
             (nzClick)="onClickConfigPackage()"
           >
             <ngu-carousel
@@ -257,8 +264,13 @@
                 [@slider]="ani"
               >
                 <div
+                  [tabIndex]="0"
                   style="cursor: pointer"
                   (click)="
+                    onInputFlavors(item.id);
+                    selectElementInputFlavors('flavor_' + item.id)
+                  "
+                  (keyup.enter)="
                     onInputFlavors(item.id);
                     selectElementInputFlavors('flavor_' + item.id)
                   "
@@ -325,10 +337,7 @@
               </ul>
             </ngu-carousel>
           </nz-tab>
-          <nz-tab
-            nzTitle="Cấu hình tuỳ chỉnh"
-            (nzClick)="onClickCustomConfig()"
-          >
+          <nz-tab nzTitle="Cấu hình tuỳ chọn" (nzClick)="onClickCustomConfig()">
             <div class="ant-table">
               <table>
                 <thead class="ant-table-thead">
@@ -356,6 +365,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.capacity"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -390,6 +400,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.ram"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeRam($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -425,6 +436,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configCustom.vCPU"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeVCPU($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -473,6 +485,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.CPU"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -507,6 +520,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.ram"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeRamOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -542,6 +556,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.storage"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"
@@ -576,6 +591,7 @@
                     <td>
                       <nz-input-number
                         [(ngModel)]="configGPU.GPU"
+                        (keydown)="onKeyDown($event)"
                         (ngModelChange)="changeGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                         [nzMin]="0"

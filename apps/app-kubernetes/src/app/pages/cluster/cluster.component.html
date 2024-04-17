@@ -40,8 +40,11 @@
                 <ng-container *ngIf="control.hasError('required')">
                   <div>Tên cluster không để trống</div>
                 </ng-container>
-                <ng-container *ngIf="control.hasError('minlength') || control.hasError('maxlength')">
-                  <div>Tên cluster trong khoảng từ 5-50 ký tự</div>
+                <ng-container *ngIf="control.hasError('minlength')">
+                  <div>Tên cluster tối thiểu 5 ký tự</div>
+                </ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                  <div>Tên cluster tối đa 50 ký tự</div>
                 </ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">
                   <div>Tên cluster chỉ bao gồm các chữ thường, chữ hoa, số và các ký tự _-</div>
@@ -71,7 +74,7 @@
           </nz-form-control>
           <ng-template #descriptionErrorTpl let-control>
             <ng-container *ngIf="control.hasError('maxlength')">
-              <div>Mô tả không quá 255 ký tự</div>
+              <div>Mô tả tối đa 255 ký tự</div>
             </ng-container>
             <ng-container *ngIf="control.hasError('pattern')">
               <div>Mô tả chỉ cho phép chữ thường, chữ hoa, số và các ký tự @_-,.</div>
@@ -100,7 +103,7 @@
                     <div class="item-body">
                       {{item.cpu}}vCPU /
                       {{item.ram}}GB RAM /
-                      {{item.rootStorage}}GB {{item.rootStorageType}} /
+                      {{item.rootStorage}}GB {{item.rootStorageName}} /
                       {{item.volumeStorage}}GB {{item.volumeType}} persistent
                     </div>
                   </div>
@@ -342,11 +345,11 @@
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
               <nz-form-control nzErrorTip="Subnet không để trống">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90" nzSize="large"
-                  (ngModelChange)="checkOverLapseIP()">
+                  (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event)">
                   <ng-container *ngFor="let item of listOfSubnets">
                     <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
                       <nz-option [nzLabel]="item.subnetAddressRequired"
-                        [nzValue]="item.subnetAddressRequired"></nz-option>
+                        [nzValue]="item.id"></nz-option>
                     </ng-container>
                     <ng-template #disableSubnetTpl>
                       <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired"
@@ -412,6 +415,9 @@
                 </ng-container>
                 <ng-container *ngIf="control.hasError('invalid')">
                   Pod CIDR không hợp lệ
+                </ng-container>
+                <ng-container *ngIf="control.hasError('cidr_used')">
+                  Pod CIDR đã được sử dụng
                 </ng-container>
               </ng-template>
             </nz-form-item>

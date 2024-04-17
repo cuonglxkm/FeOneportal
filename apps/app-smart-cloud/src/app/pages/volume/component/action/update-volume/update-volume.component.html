@@ -26,6 +26,8 @@
               dấu tiếng Việt (trừ _)
             </ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Volume đã tồn tại, vui lòng nhập tên khác</ng-container>
+
           </ng-template>
         </nz-form-control>
       </nz-form-item>

@@ -71,6 +71,7 @@ export class CreateClusterReqDto {
   CloudProfileId: string;
   ProviderType: string;
   RegionId: string;
+  Tenant: string;
 
   Networking: NetworkReqDto;
   WorkerGroup: WorkerGroupReqDto[];
@@ -89,6 +90,7 @@ export class CreateClusterReqDto {
       this.CloudProfileId = obj.cloudProfileId;
       this.ProviderType = obj.providerType;
       this.RegionId = obj.regionId;
+      this.Tenant = obj.tenant;
 
       this.Networking = new NetworkReqDto(obj.networking);
 
@@ -112,12 +114,18 @@ export class NetworkReqDto {
   VpcNetworkId: number;
   Cidr: string;
   Subnet: string;
+  SubnetId: string;
+  NetworkCloudId: string;
+  SubnetCloudId: string;
 
   constructor(obj: any) {
     this.NetworkType = obj.networkType;
     this.VpcNetworkId = obj.vpcNetworkId;
     this.Cidr = obj.cidr;
     this.Subnet = obj.subnet;
+    this.SubnetId = obj.subnetId;
+    this.NetworkCloudId = obj.networkCloudId;
+    this.SubnetCloudId = obj.subnetCloudId;
   }
 }
 
@@ -127,6 +135,9 @@ export class NetworkingModel {
   vpcNetworkId: number;
   cidr: string;
   subnet: string;
+  subnetId: string;
+  networkCloudId: string;
+  subnetCloudId: string;
 
   constructor(obj) {
     if (obj) {
@@ -134,6 +145,9 @@ export class NetworkingModel {
       this.vpcNetworkId = obj.vpcNetworkId;
       this.cidr = obj.podsCidr;
       this.subnet = obj.subnet;
+      this.subnetId = obj.subnetId;
+      this.networkCloudId = obj.networkCloudId;
+      this.subnetCloudId = obj.subnetCloudId;
     }
   }
 

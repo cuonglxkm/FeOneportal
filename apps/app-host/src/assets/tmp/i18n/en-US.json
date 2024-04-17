@@ -149,5 +149,15 @@
   "validation.title.required": "Please enter a title",
   "validation.date.required": "Please select the start and end date",
   "validation.goal.required": "Please enter a description of the goal",
-  "validation.standard.required": "Please enter a metric"
+  "validation.standard.required": "Please enter a metric",
+  "form.account.information" : "Account Information",
+  "form.account.surname" : "Surname",
+  "form.account.name" : "Name",
+  "form.account.phone" : "Phone Number",
+  "form.account.guestCode" : "Guest Code",
+  "form.account.contractCode" : "Contract Code",
+  "form.account.city" : "Province/City",
+  "form.account.address" : "Address",
+  "app.button.cancel" : "Cancel",
+  "app.button.edit" : "Update"
 }

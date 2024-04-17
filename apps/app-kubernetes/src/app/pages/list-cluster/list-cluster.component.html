@@ -76,11 +76,11 @@
         [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
         <thead>
           <tr>
-            <th class="header-table">STT</th>
-            <th class="header-table">Tên cluster</th>
-            <th class="header-table">Phiên bản</th>
-            <th class="header-table">Trạng thái dịch vụ</th>
-            <th class="header-table">API Endpoint</th>
+            <th class="center-align header-table">STT</th>
+            <th class="center-align header-table">Tên cluster</th>
+            <th class="center-align header-table">Phiên bản</th>
+            <th class="center-align header-table">Trạng thái dịch vụ</th>
+            <th class="center-align header-table">API Endpoint</th>
             <th class="center-align header-table">Tổng số node</th>
             <th class="center-align header-table">Ngày tạo</th>
             <th class="center-align header-table">Thao tác</th>
@@ -88,7 +88,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of clusterTable.data; let i = index;">
-            <td>{{ getIndexOfCluster(item.id) }}</td>
+            <td class="right-align">{{ getIndexOfCluster(item.id) }}</td>
             <td>
               <a routerLink={{item.serviceOrderCode}}>{{ item.clusterName }}</a>
             </td>
@@ -120,15 +120,21 @@
               <button nz-button nzType="text" nzTooltipTitle="Tải file cấu hình" nzTooltipPlacement="top" nz-tooltip
                 (click)="handleDownloadKubeConfig(item)" class="borderless">
                 <span nz-icon class="primary-color">
-                  <svg viewBox="64 64 896 896" focusable="false">
-                    <path d="M505.7 661a8 8 0 0012.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z" />
-                  </svg>
+                  <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 17.2V20.8C1 21.4365 1.25286 22.047 1.70294 22.4971C2.15303 22.9472 2.76348 23.2 3.4 23.2H20.2C20.8365 23.2 21.447 22.9472 21.8971 22.4971C22.3471 22.047 22.6 21.4365 22.6 20.8V17.2M7 11.2L11.8 16M11.8 16L16.6 11.2M11.8 16V4" stroke="#0066B3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </span>
               </button>
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">
                 <button nz-button nzType="text" nzTooltipTitle="Xóa cluster" nzTooltipPlacement="top" nz-tooltip
                   (click)="showModalConfirmDeleteCluster(item)" class="borderless marleft-0" [disabled]="progressing == 2">
-                  <span nz-icon [nzType]="'delete'" [ngClass]="{'delete-color': progressing != 2}"></span>
+                  <span nz-icon [ngClass]="{'delete-color': progressing != 2}">
+                    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19.325 9.66797C19.325 9.66797 18.782 16.403 18.467 19.24C18.317 20.595 17.48 21.389 16.109 21.414C13.5 21.461 10.888 21.464 8.28003 21.409C6.96103 21.382 6.13803 20.578 5.99103 19.247C5.67403 16.385 5.13403 9.66797 5.13403 9.66797" stroke="#EA3829" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M20.7082 6.43945H3.75024" stroke="#EA3829" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M17.4406 6.43968C16.6556 6.43968 15.9796 5.88468 15.8256 5.11568L15.5826 3.89968C15.4326 3.33868 14.9246 2.95068 14.3456 2.95068H10.1126C9.53358 2.95068 9.02558 3.33868 8.87558 3.89968L8.63258 5.11568C8.47858 5.88468 7.80258 6.43968 7.01758 6.43968" stroke="#EA3829" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
                 </button>
               </ng-container>
             </td>
@@ -145,7 +151,7 @@
       <div class="align-center">
         <!-- image -->
         <div>
-          <img src="/assets/imgs/k8s-cluster.jpg" alt="" />
+          <img src="/assets/imgs/k8s-cluster.png" alt="" />
         </div>
 
         <h3 class="mt-5 description-title">VNPT Kubernetes Service</h3>
@@ -162,7 +168,10 @@
         <!-- create btn -->
         <div class="mt-5">
           <button nz-button nzType="primary" nzSize="large" routerLink="create" class="border-button bg-button">
-            <span class="padleft-24 padright-24">Tạo mới Kubernetes</span>
+            <span class="padleft-24 padright-24">
+              <img style="padding-right: 10px;" src="assets/imgs/cloud-plus-bold.svg" alt=""/>
+              Tạo mới Kubernetes
+            </span>
           </button>
         </div>
 

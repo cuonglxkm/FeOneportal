@@ -19,7 +19,7 @@ export class ClusterService extends BaseService {
   private progressSource = new Subject<any>();
   progressData = this.progressSource.asObservable();
 
-  // baseUrl = 'http://127.0.0.1:16003';
+  baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -52,7 +52,7 @@ export class ClusterService extends BaseService {
     serviceOrderCode: string
   ) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-logs?user_action=${userAction || ''}&operation=${operation || ''}&resource=${resource || ''}&resource_type=${resourceType || ''}&from_date=${fromDate || ''}&to_date=${toDate || ''}&service_order_code=${serviceOrderCode}&page=${pageIndex || 1}&size=${pageSize || 10}`,
-    {headers: this.getHeaders()});
+      { headers: this.getHeaders() });
   }
 
   createNewCluster(data) {
@@ -61,7 +61,7 @@ export class ClusterService extends BaseService {
 
   validateClusterInfo(data: any) {
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/validate-cluster`, data,
-    {headers: this.getHeaders()});
+      { headers: this.getHeaders() });
   }
 
   getDetailCluster(serviceOrderCode: string) {
@@ -84,16 +84,24 @@ export class ClusterService extends BaseService {
   }
 
   getListPriceItem() {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-price`, {headers: this.getHeaders()});
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-price`, { headers: this.getHeaders() });
   }
 
   getKubeConfig(serviceOrderCode: string) {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-kubeconfig/${serviceOrderCode}`,
-    {headers: this.getHeaders()});
+      { headers: this.getHeaders() });
+  }
+
+  getSSHKey(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/ssh-key/${serviceOrderCode}`, { headers: this.getHeaders() });
+  }
+
+  getSubnetAndCidrUsed(projectInfraId: number) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/subnet-cidr-used/${projectInfraId}`, { headers: this.getHeaders() });
   }
 
   getWorkerGroupOfCluster(serviceOrderCode: string) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${serviceOrderCode}/workers-name`, {headers: this.getHeaders()});
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${serviceOrderCode}/workers-name`, { headers: this.getHeaders() });
   }
 
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {
@@ -109,7 +117,7 @@ export class ClusterService extends BaseService {
   }
 
   getListPack(cloudProfileId: string) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${cloudProfileId}/packs-service`, {headers: this.getHeaders()});
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${cloudProfileId}/packs-service`, { headers: this.getHeaders() });
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {

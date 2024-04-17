@@ -26,6 +26,7 @@ export class OverallComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.serviceOrderCode = params['id'];
       this.getDetailCluster(this.serviceOrderCode);
+      this.getSSHKey(this.serviceOrderCode);
     });
   }
 
@@ -54,6 +55,18 @@ export class OverallComponent implements OnInit {
           this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
         }
       });
+  }
+
+  sshKeyString: string;
+  getSSHKey(serviceOrderCode: string) {
+    this.clusterService.getSSHKey(serviceOrderCode)
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.sshKeyString = r.data;
+      } else {
+        this.notificationService.error("Thất bại", "Có lỗi xảy ra trong quá trình tải xuống. Vui lòng thử lại sau");
+      }
+    });
   }
 
   vpcNetwork: string;

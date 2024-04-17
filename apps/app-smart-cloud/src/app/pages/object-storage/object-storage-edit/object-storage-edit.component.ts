@@ -17,7 +17,7 @@ import { DataPayment, ItemPayment, Order, OrderItem } from '../../instances/inst
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
 @Component({
-  selector: 'one-portal-object-storage-edit',
+  selector: 'one-portal-object-storage-extend',
   templateUrl: './object-storage-edit.component.html',
   styleUrls: ['./object-storage-edit.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
