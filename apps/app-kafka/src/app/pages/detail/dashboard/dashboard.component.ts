@@ -49,6 +49,8 @@ export class DashboardComponent implements OnInit {
   public chartStorage: Partial<ChartOptions>;
   public chartProducers: Partial<ChartOptions>;
   public chartConsumers: Partial<ChartOptions>;
+  public chartCpu: Partial<ChartOptions>;
+  public chartRam: Partial<ChartOptions>;
 
   // Tạo Subject để đánh dấu khi có lỗi
   private unsubscribe$ = new Subject<void>();
@@ -59,15 +61,19 @@ export class DashboardComponent implements OnInit {
   byteOutData: ChartData = new ChartData();
   messageRateData: ChartData = new ChartData();
   storageData: ChartData = new ChartData();
+  cpuData: ChartData = new ChartData();
+  ramData: ChartData = new ChartData();
 
   statisticsNumber: DashboardGeneral = new DashboardGeneral();
   previousTimeMins = 5;
   numPoints = 15;
 
-  messageRateQuery = 'msg_rate';
+  messageRateQuery = 'msg';
   byteInQuery = 'byte_in';
   byteOutQuery = 'byte_out';
-  storageQuery = 'storage';
+  storageQuery = 'msg';
+  ramQuery = 'msg';
+  cpuQuery= 'msg';
 
   isHealth: number = null;
   isHealthMsg = 'Test';
@@ -131,10 +137,12 @@ export class DashboardComponent implements OnInit {
   ];
 
   resouceInstant = ['topic', 'offline_partition', 'message', 'partition']
-  byteInChartTitle = 'Producers';
-  byteOutChartTitle = 'Consumers';
-  messageRateChartTitle = 'Messages';
-  storageChartTitle = 'Storage';
+  byteInChartTitle = 'Thông lượng dữ liệu truyền vào';
+  byteOutChartTitle = 'Thông lượng dữ liệu truyền ra';
+  messageRateChartTitle = 'Tổng số Message';
+  storageChartTitle = 'Mức sử dụng Storage';
+  ramChartTitle = 'Mức sử dụng RAM';
+  cpuChartTitle = 'Mức sử dụng CPU';
 
   constructor(
     private dashBoardService: DashBoardService,
@@ -149,6 +157,8 @@ export class DashboardComponent implements OnInit {
     this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
     this.getMessageRateChart(this.serviceOrderCode, this.previousTimeMins, this.messageRateQuery, this.numPoints);
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
+    this.getCpuChart(this.serviceOrderCode, this.previousTimeMins, this.cpuQuery, this.numPoints);
+    this.getRamChart(this.serviceOrderCode, this.previousTimeMins, this.ramQuery, this.numPoints);
   }
 
   getStatisticNumber() {
@@ -208,6 +218,8 @@ export class DashboardComponent implements OnInit {
     this.getByteInChart(this.serviceOrderCode, this.previousTimeMins, this.byteInQuery, this.numPoints);
     this.getByteOutChart(this.serviceOrderCode, this.previousTimeMins, this.byteOutQuery, this.numPoints);
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
+    this.getCpuChart(this.serviceOrderCode, this.previousTimeMins, this.cpuQuery, this.numPoints);
+    this.getRamChart(this.serviceOrderCode, this.previousTimeMins, this.ramQuery, this.numPoints);
   }
 
   getCheckHealthChart(serviceOrderCode: string, fromTime: number, toTime: number) {
@@ -313,35 +325,84 @@ export class DashboardComponent implements OnInit {
         }
       ],
       chart: {
-        height: 250,
-        type: "area",
+        height: 360,
+        type: "line",
         zoom: {
-          enabled: false
+          enabled: true,
+          type: 'x',  
+          autoScaleYaxis: false,  
+          zoomedArea: {
+            fill: {
+              color: '#90CAF9',
+              opacity: 0.4
+            },
+            stroke: {
+              color: '#0D47A1',
+              opacity: 0.4,
+              width: 1
+            }
+          }
         },
         toolbar: {
-          show: false
+          show: true, 
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: []
+          },
+          export: {
+            csv: {
+              filename: undefined,
+              columnDelimiter: ',',
+              headerCategory: 'category',
+              headerValue: 'value',
+              dateFormatter(timestamp) {
+                return new Date(timestamp).toDateString()
+              }
+            },
+            svg: {
+              filename: undefined,
+            },
+            png: {
+              filename: undefined,
+            }
+          },
+          autoSelected: 'zoom' 
         }
       },
       dataLabels: {
         enabled: false
       },
       stroke: {
-        curve: "smooth",
-        width: 2,
+        curve: "straight",
+        width: 3,
       },
       fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          inverseColors: false,
-          opacityFrom: 0.5,
-          opacityTo: 0,
-          // stops: [0, 90, 100]
-        },
+        // type: 'gradient',
+        // gradient: {
+        //   shadeIntensity: 1,
+        //   inverseColors: false,
+        //   opacityFrom: 0.5,
+        //   opacityTo: 0,
+        //   // stops: [0, 90, 100]
+        // },
       },
       title: {
-        text: chartTitle,
-        align: "center"
+        text: chartTitle + ' (' + yaxisTitle + ')',
+        align: "left",
+        style: {
+          fontSize: "16px",
+          fontFamily: "Inter",
+          fontWeight: 600,
+          color: "#333333"
+        }
       },
       grid: {
         xaxis: {
@@ -358,35 +419,38 @@ export class DashboardComponent implements OnInit {
       xaxis: {
         type: "datetime",
         categories: chartData.time,
-        axisBorder: {
-          show: true,
-          color: '#1a1a1a',
-          offsetX: 1,
-          offsetY: 0
-        },
+        // axisBorder: {
+        //   show: true,
+        //   color: '#1a1a1a',
+        //   offsetX: 1,
+        //   offsetY: 0
+        // },
         labels: {
           datetimeUTC: false,
-          format: "HH:mm:ss"
+          showDuplicates: false,
+          format: "HH:mm"
         }
       },
       yaxis: {
         show: true,
-        title: {
-          text: yaxisTitle,
-          rotate: -90,
-          offsetX: 0,
-          offsetY: 0,
-          style: {
-            fontSize: '12px',
-            fontWeight: 600,
-          }
-        },
-        axisBorder: {
-          show: true,
-          color: '#1a1a1a',
-          offsetX: 1,
-          offsetY: 0
-        },
+        // title: {
+        //   text: yaxisTitle,
+        //   offsetX: 25,
+        //   offsetY: -150,
+        //   rotate: 0,
+        //   style: {
+        //     fontSize: "12px",
+        //     fontFamily: "Inter",
+        //     fontWeight: 600,
+        //     color: "#333333"
+        //   }
+        // },
+        // axisBorder: {
+        //   show: true,
+        //   color: '#1a1a1a',
+        //   offsetX: 1,
+        //   offsetY: 0
+        // },
       },
       tooltip: {
         x: {
@@ -404,7 +468,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteInData = res.data;
           if (this.byteInData) {
-            this.chartProducers = this.setDataChart(this.byteInData, 'Byte', 'Base Byte In (B/s)', this.byteInChartTitle);
+            this.chartProducers = this.setDataChart(this.byteInData, this.byteInData.unit, this.byteInData.unit, this.byteInChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -419,7 +483,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.byteOutData = res.data;
           if (this.byteOutData) {
-            this.chartConsumers = this.setDataChart(this.byteOutData, 'Byte', 'Base Byte Out (B/s)', this.byteOutChartTitle);
+            this.chartConsumers = this.setDataChart(this.byteOutData, this.byteOutData.unit, this.byteOutData.unit, this.byteOutChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -434,7 +498,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.messageRateData = res.data;
           if (this.messageRateData) {
-            this.chartMessage = this.setDataChart(this.messageRateData, 'Message', 'Message rate/s', this.messageRateChartTitle);
+            this.chartMessage = this.setDataChart(this.messageRateData, this.messageRateData.unit, this.messageRateData.unit, this.messageRateChartTitle);
           }
         } else {
           this.unsubscribe$.next();
@@ -450,6 +514,36 @@ export class DashboardComponent implements OnInit {
           this.storageData = res.data;
           if (this.storageData) {
             this.chartStorage = this.setDataChart(this.storageData, this.unitStorage, this.unitStorage, this.storageChartTitle)
+          }
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  getCpuChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
+    this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res) => {
+        if (res.code && res.code == 200) {
+          this.cpuData = res.data;
+          if (this.cpuData) {
+            this.chartCpu = this.setDataChart(this.cpuData, '%', '%', this.cpuChartTitle)
+          }
+        } else {
+          this.unsubscribe$.next();
+        }
+      });
+  }
+
+  getRamChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
+    this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((res) => {
+        if (res.code && res.code == 200) {
+          this.ramData = res.data;
+          if (this.ramData) {
+            this.chartRam = this.setDataChart(this.ramData, 'GB', 'GB', this.ramChartTitle)
           }
         } else {
           this.unsubscribe$.next();

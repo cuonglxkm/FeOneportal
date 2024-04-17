@@ -71,8 +71,8 @@ nz-select {
 
 ::ng-deep .resource-name .ant-btn,
 .metric .ant-btn {
-    height: 32px;
-    font-size: 14px;
+    height: 40px;
+    font-size: 16px;
     border-color: #d9d9d9;
     color: rgba(0, 0, 0, 0.85);
 }
@@ -80,4 +80,20 @@ nz-select {
 ::ng-deep .resource-type .ant-select .ant-select-selector,
 ::ng-deep .interval-div .ant-select .ant-select-selector {
     border-radius: 8px;
+}
+
+.resource-type {
+    font-size: 16px;
+}
+
+.resource-name {
+    font-size: 16px;
+}
+
+.metric {
+    font-size: 16px;
+}
+
+.interval-div {
+    font-size: 16px;
 }

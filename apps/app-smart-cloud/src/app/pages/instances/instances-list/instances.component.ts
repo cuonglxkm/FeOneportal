@@ -267,6 +267,7 @@ export class InstancesComponent implements OnInit {
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
+    formSearchNetwork.project = this.projectId;
     formSearchNetwork.pageNumber = 0;
     formSearchNetwork.pageSize = 9999;
     formSearchNetwork.vlanName = '';
@@ -687,6 +688,13 @@ export class InstancesComponent implements OnInit {
     // this.dataService.setSelectedObjectId(id)
     this.router.navigate([
       '/app-smart-cloud/instance/' + id + '/create-backup-vm',
+    ]);
+  }
+
+  createBackupSchedule(id: number) {
+    this.router.navigate([
+      '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
     ]);
   }
 }

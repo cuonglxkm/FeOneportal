@@ -30,6 +30,7 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
   @Input() region: number;
   @Input() project: number;
   @Input() loadbalancerId: string;
+  @Input() listenerId: string;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
@@ -115,26 +116,31 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
     this.createPool.customerId = this.tokenService.get()?.userId;
     this.createPool.regionId = this.region;
     this.createPool.vpcId = this.project;
-    this.createPool.loadbalancer_id = this.loadbalancerId;
-    this.loadBalancerService.createPool(this.createPool).subscribe({next: (data) => {
-      if (data) {
-        this.isVisible = false;
-        this.isLoading = false;
-        this.notification.success('Thành công', 'Cập nhật Pool thành công');
-      } else {
+    this.createPool.loadbalancer_id = this.loadbalancerId.toString();
+    if (this.listenerId) {
+      this.createPool.listener_id = this.listenerId.toString();
+    } else {
+      this.createPool.listener_id = '';
+    }
+    this.loadBalancerService.createPool(this.createPool).subscribe({
+      next: (data) => {
+        if (data) {
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.success('Thành công', 'Cập nhật Pool thành công');
+        } else {
+          this.isVisible = false;
+          this.isLoading = false;
+          this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
+        }
+        this.onOk.emit(data);
+      },
+      error: (error) => {
         this.isVisible = false;
         this.isLoading = false;
         this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
-      }
-      this.onOk.emit(data);
-    },
-    error: (error) => {
-      this.isVisible = false;
-      this.isLoading = false;
-      this.notification.error('Thất bại', 'Cập nhật Pool thất bại');
-      this.onOk.emit(error);
-    }}
-    );
+      },
+    });
   }
 
   getListPool() {}

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -27,6 +29,10 @@ export class TopicMngtComponent implements OnInit {
   control: number;
   selectedTopic: KafkaTopic;
   topicDetail: string;
+
+  new:boolean = true;
+  delTopic: string;
+  err_mess: string;
 
   deleteInfor: KafkaTopic;
   deleteType: string = '';
@@ -173,185 +179,114 @@ export class TopicMngtComponent implements OnInit {
       let data = this.produceForm.value;
       this.topicService.testProduce(data)
         .pipe(finalize(() => {
-          this.loadingSrv.close();
-          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
           setTimeout(() => {
-            this.handleSyncTopic(this.serviceOrderCode);
-          }, 6000);
+            this.loadingSrv.close();
+            this.getList();
+          }, 5000);
           
         }))
         .subscribe((r: any) => {
           if (r && r.code == 200) {
-            this.notification.success(
-              'Thông báo',
-              r.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#dff6dd',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.success('Thành công', 'Test producer thành công');
             this.control = this.listNum;
             this.handleCloseProduceModal();
           } else {
-            this.notification.error(
-              "Test producer thất bại",
-              r.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.error('Thất bại', 'Test producer thất bại');
           }
         })
     }
   }
 
-  showConfirm(info: KafkaTopic,type:string){
+  showConfirm(info: KafkaTopic, type: string) {
+    this.err_mess = '';
+    this.delTopic = '';
+    this.new = true;
     this.isDelVisible = true;
     this.deleteInfor = info;
     this.deleteType = type;
   }
 
-  handleCloseDelete(){
+  handleCloseDelete() {
     this.isDelVisible = false;
+
   }
 
   handleDeleteMessages(data: KafkaTopic) {
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
-        this.topicService.deleteMessages(data.topicName, this.serviceOrderCode)
-        .pipe(finalize(() => {
-          this.loadingSrv.close();
-          this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
+    this.topicService.deleteMessages(data.topicName, this.serviceOrderCode)
+      .pipe(finalize(() => {
+        this.loadingSrv.close();
+        this.loadingSrv.open({ type: "spin", text: "Đang đồng bộ message..." });
 
-          setTimeout(() => {
-            this.handleSyncTopic(this.serviceOrderCode);
-          }, 6000);
-        }))
-        .subscribe(
-          (data: any) => {
-            if (data && data.code == 200) {
-              this.notification.success(
-                'Thông báo',
-                data.msg,
-                {
-                  nzPlacement: 'bottomRight',
-                  nzStyle: {
-                    backgroundColor: '#dff6dd',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }
-                },
-              );
-            } else {
-              this.notification.error(
-                'Thông báo',
-                data.msg,
-                {
-                  nzPlacement: 'bottomRight',
-                  nzStyle: {
-                    backgroundColor: '#fed9cc',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }
-                },
-              );
-            }
-            this.isDelVisible = false;
-          }
-        );
-    
-  }
-
-  handleDeleteTopic(data: KafkaTopic) {
-    
-    this.loadingSrv.open({ type: "spin", text: "Loading..." });
-        this.topicService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
-        .pipe(finalize(() => {
-          this.loadingSrv.close();
-        }))
-          .subscribe(
-            (data: any) => {
-              if (data && data.code == 200) {
-                this.notification.success(
-                  'Thông báo',
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#dff6dd',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
-              } else {
-                this.notification.error(
-                  "Xoá Topic thất bại",
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#fed9cc',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
-              }
-              this.getList();
-              this.isDelVisible = false;
-            }
-          );
-  }
-
-  handleSyncTopic(serviceOrderCode:string){
-
-    this.topicService.syncTopic(serviceOrderCode)
-    .pipe(finalize(() => {
-      this.loadingSrv.close();
-    }))
+        setTimeout(() => {
+          this.handleSyncTopic(this.serviceOrderCode);
+        }, 6000);
+      }))
       .subscribe(
         (data: any) => {
           if (data && data.code == 200) {
-            this.notification.success(
-              'Thông báo',
-              "Đồng bộ message thành công",
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#dff6dd',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.success('Thành công', data.msg);
           } else {
-            this.notification.error(
-              "Đồng bộ message thất bại",
-              data.msg,
-              {
-                nzPlacement: 'bottomRight',
-                nzStyle: {
-                  backgroundColor: '#fed9cc',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                }
-              },
-            );
+            this.notification.error('Thất bại', data.msg);
+          }
+          this.isDelVisible = false;
+        }
+      );
+
+  }
+
+  handleDeleteTopic(data: KafkaTopic) {
+    this.checkName()
+    if(this.err_mess!=='')
+    return
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.topicService.deleteTopicKafka(data.topicName, this.serviceOrderCode)
+      .pipe(finalize(() => {
+        this.loadingSrv.close();
+      }))
+      .subscribe(
+        (data: any) => {
+          if (data && data.code == 200) {
+            this.notification.success('Thành công', data.msg);
+          } else {
+            this.notification.error('Thất bại', data.msg);
+          }
+          this.getList();
+          this.isDelVisible = false;
+        }
+      );
+  }
+
+  handleSyncTopic(serviceOrderCode: string) {
+
+    this.topicService.syncTopic(serviceOrderCode)
+      .pipe(finalize(() => {
+        this.loadingSrv.close();
+      }))
+      .subscribe(
+        (data: any) => {
+          if (data && data.code == 200) {
+            this.notification.success('Thành công', data.msg);
+          } else {
+            this.notification.error('Thất bại', data.msg);
           }
           this.getList();
         }
       );
   }
 
+  checkName() {
+    this.new= false
+    this.err_mess = "";
+    if (this.delTopic.length === 0) {
+      this.err_mess = "Tên topic không được để trống";
+    } else
+      if (this.delTopic !== this.deleteInfor.topicName) {
+        this.err_mess = "Tên topic nhập chưa đúng";
+      }
+
+
+  }
 }
 export function validateFormBeforeSubmit(formGroup: FormGroup) {
   const noWhitespaceInHeadAndTailPattern = /^[^\s]+(\s+[^\s]+)*$/;

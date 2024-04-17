@@ -188,7 +188,9 @@
             "
             src="assets/imgs/calendar-tick.svg"
             alt=""
+            (click)="createBackupSchedule(data.id)"
             style="cursor: pointer; margin-right: 16px"
+            (click)="createBackupSchedule(data.id)"
             nz-tooltip="Tạo lịch Backup"
           />
           <img
@@ -210,7 +212,7 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED'
                 "
                 nz-menu-item
-                (click)="showHandleGanVLAN()"
+                (click)="showHandleGanVLAN(data.id)"
               >
                 Gắn vào VLAN
               </li>

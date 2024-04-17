@@ -40,7 +40,8 @@
                             <td>{{ data.resourceName }}
                             </td>
                             <td nzAlign="center">
-                                <nz-tag class="tag-prefix">{{ data.patternType }}</nz-tag>
+                                {{ data.patternType }}
+                                <!-- <nz-tag class="tag-prefix">{{ data.patternType }}</nz-tag> -->
                             </td>
                             <td nzAlign="center">{{ data.permissionGroupName }}</td>
                             <td nzAlign="center">{{ data.host }}</td>
@@ -49,7 +50,7 @@
                             </td>
                             <td nzAlign="center">{{ data.createdDate | date : 'dd/MM/yyyy HH:mm' }}</td>
                             <td nzAlign="center">
-                                <img src="assets/imgs/edit-2.svg" alt="" style="cursor: pointer;" (click)="updateACLTopic(data)"
+                                <img src="assets/imgs/edit-kafka.svg" alt="" style="cursor: pointer;" (click)="updateACLTopic(data)"
                                 nz-tooltip="Cập nhật" class="img-edit"/>
 
                                 <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" (click)="showDeleteConfirm(data)" 
@@ -99,7 +100,7 @@
                 <nz-form-item>
                     <nz-form-label [nzSpan]="4" nzRequired nzFor="principal" class="lbl-form">Tài khoản</nz-form-label>
                     <nz-form-control [nzSpan]="8" nzErrorTip="Vui lòng chọn tài khoản">
-                        <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large"
+                        <nz-select nzMode="multiple" nzPlaceHolder="Tài khoản" [nzMaxTagPlaceholder]="tagPlaceHolder" nzSize="large" [nzShowArrow]="true"
                             id="principal" formControlName="principal" [nzDisabled]="isEdit">
                             <nz-option *ngFor="let item of listOfPrincipals" [nzLabel]="item.username"
                                 [nzValue]="item.username"></nz-option>
@@ -122,7 +123,7 @@
                         <ng-container *ngIf="tabTopicValue===topicExtract; else prefixedBlock">
                             <nz-form-control nzErrorTip="Vui lòng chọn topic">
                                 <nz-select nzMode="multiple" nzPlaceHolder="Chọn Topic" [nzDisabled]="isEdit" nzSize="large"
-                                    [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="topic">
+                                    [nzMaxTagPlaceholder]="topicPlaceHolder" formControlName="topic" [nzShowArrow]="true">
                                     <ng-container *ngFor="let item of listOfTopic">
                                         <nz-option *ngIf="!isLoadingTopic" [nzLabel]="item.topicName"
                                             [nzValue]="item.topicName"></nz-option>

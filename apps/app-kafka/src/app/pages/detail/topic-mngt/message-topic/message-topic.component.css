@@ -55,9 +55,22 @@ nz-table.tbl-acl th {
   margin: 15px;
 }
 
-::ng-deep .search {
+.search {
   border-radius: 8px;
   width: 300px;
   height: 40px;
-  padding-bottom: 3px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.filters nz-input-group,
+::ng-deep .filters .ant-select-selector,
+.filters nz-range-picker {
+  border-radius: 8px !important;
+}
+
+.filters {
+  margin-bottom: 20px;
 }

@@ -141,7 +141,7 @@ export class CreateNetworkComponent implements OnInit {
     gateway: FormControl<string>
     allocationPool: FormControl<string>
   }> = this.fb.group({
-    nameNetwork: ['', [Validators.required,
+    nameNetwork: ['vlan_', [Validators.required,
       AppValidator.startsWithValidator('vlan_'),
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
@@ -152,7 +152,7 @@ export class CreateNetworkComponent implements OnInit {
     networkAddress: ['', [Validators.required,
       ipAddressValidator()]],
     disableGatewayIp: [false],
-    dhcp: [false],
+    dhcp: [true],
     gateway: [''],
     allocationPool: [null as string, []]
   });
@@ -228,9 +228,7 @@ export class CreateNetworkComponent implements OnInit {
     }
   }
 
-  isInPurchasedSubnet(ipAddress: string): boolean {
-    return false;
-  }
+
 
   nameList: string[] = [];
 
@@ -255,6 +253,10 @@ export class CreateNetworkComponent implements OnInit {
     } else {
       return null; // Name is unique
     }
+  }
+
+  reset() {
+    this.validateForm.reset()
   }
 
   ngOnInit() {

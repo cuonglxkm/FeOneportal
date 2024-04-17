@@ -104,7 +104,9 @@ export class TopicService extends BaseService {
   }
 
   getListKafkaSystem() {
-    const headers = new HttpHeaders().set('usercode', 'bbvk0bs1th0');
+    let token:string =  localStorage.getItem("_token");
+    const jsonObject = JSON.parse(token);
+    const headers = new HttpHeaders().set('usercode', jsonObject.userId);
     return this.http
       .get(`${this.topicUrl}/kafka-system-by-user`, { headers })
       .pipe(

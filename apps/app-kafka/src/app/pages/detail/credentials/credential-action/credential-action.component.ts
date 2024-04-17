@@ -84,8 +84,8 @@ export class CreateCredentialComponent implements OnDestroy {
 
     this.pwdTplString =
       this.activatedTab !== this.showCreateCredential
-        ? 'mật khẩu mới'
-        : 'mật khẩu';
+        ? 'Mật khẩu mới'
+        : 'Mật khẩu';
     this.confirmTplString = (() => {
       switch (this.activatedTab) {
         case this.showCreateCredential:
@@ -252,6 +252,10 @@ export class CreateCredentialComponent implements OnDestroy {
     } else if (usernameControl.hasError('pattern')) {
       this.usernameError =
         'Tên tài khoản chỉ bao gồm chữ cái thường, chữ hoa hoặc chữ số';
+    } else if (usernameControl.value == 'admin') {
+      usernameControl.setErrors({'not-allowed': true});
+      this.usernameError = 
+        'Tên tài khoản không được phép đặt là admin';
     }
   }
 

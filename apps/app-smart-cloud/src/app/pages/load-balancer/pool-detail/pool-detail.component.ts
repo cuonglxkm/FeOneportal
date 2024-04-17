@@ -69,14 +69,14 @@ export class PoolDetailComponent implements OnInit {
   idLB: number;
   loadBalancer: LoadBalancerModel = new LoadBalancerModel()
   ngOnInit(): void {
-    let state = this.router.getCurrentNavigation().extras.state;
-    if (state) {
-      this.idLB = state.idLB;
-    }
+    this.activatedRoute.params.subscribe(params => {
+      this.idLB = params['idLB'];
+    });
     this.service.getLoadBalancerById(this.idLB, true).subscribe(data => {
       this.loadBalancer = data
     })
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    console.log("id pool", this.id)
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
@@ -103,7 +103,7 @@ export class PoolDetailComponent implements OnInit {
       .getListHealth(
         this.regionId,
         this.projectId,
-        this.poolDetail.poolId,
+        this.id,
         this.pageSizeHealth,
         this.currentPageHealth
       )
@@ -348,10 +348,11 @@ export class PoolDetailComponent implements OnInit {
   getListMember() {
     this.loadingMember = true;
     this.service
-      .getListMember(this.poolDetail.poolId, this.regionId, this.projectId)
+      .getListMember(this.id, this.regionId, this.projectId)
       .pipe(
         finalize(() => {
           this.loadingMember = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({

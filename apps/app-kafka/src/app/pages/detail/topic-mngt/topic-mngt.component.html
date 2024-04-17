@@ -1,24 +1,26 @@
+<!-- eslint-disable @angular-eslint/template/eqeqeq -->
 <nz-content>
-    <div class="breadcrumb">
-        <nz-breadcrumb vSeparator=">>">
-            <nz-breadcrumb-item>
-                Topic
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item>
-                <a (click)="Cancel()">Danh sách Topic</a>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==createNum">
-                Tạo mới Topic
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==detailNum">
-                Danh sách message Topic: {{topicDetail}}
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="control==editNum">
-                Cập nhật Topic: {{selectedTopic.topicName}}
-            </nz-breadcrumb-item>
-        </nz-breadcrumb>
-    </div>
     <div class="inner-content">
+        <div class="breadcrumb">
+            <nz-breadcrumb vSeparator=">>">
+                <nz-breadcrumb-item>
+                    Topic
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                    <a (click)="Cancel()">Danh sách Topic</a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==createNum">
+                    Tạo mới Topic
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==detailNum">
+                    Danh sách message Topic: {{topicDetail}}
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="control==editNum">
+                    Cập nhật Topic: {{selectedTopic.topicName}}
+                </nz-breadcrumb-item>
+            </nz-breadcrumb>
+        </div>
+        
         <div *ngIf="control == listNum">
             <div class="filter" style="display: flex; align-items: center; margin-bottom: 20px;">
                 <div >
@@ -34,7 +36,7 @@
                         <span class="create-icon" nz-icon nzType="plus" nzTheme="outline"></span>
                         Tạo mới
                     </button>
-                    <button  nz-button nzType="primary" (click)="testProduce()" nzDanger>Test Producer</button>
+                    <button  nz-button nzType="primary" (click)="testProduce()">Test Producer</button>
                 </div>
             </div>
             <nz-table id="topic" [nzScroll]="{x:'1100px'}" [nzData]="listTopic" [nzLoading]="loading" #basicTable nzShowPagination nzShowSizeChanger class="tbl-acl" [nzTotal]="total" 
@@ -58,9 +60,9 @@
                         <td [nzAlign]="'center'">{{ data.partitions }}</td>
                         <td [nzAlign]="'center'">{{ data.replicas }}</td>
                         <td [nzAlign]="'center'">{{ data.sumMessage }}</td>
-                        <td [nzAlign]="'center'">{{ data.sizeTopic }}</td>
+                        <td [nzAlign]="'center'">{{ data.size.value }} {{ data.size.unit }}</td>
                         <td [nzAlign]="'center'">{{ data.outOfSync != null ? data.outOfSync : 0 }}</td>
-                        <td [nzAlign]="'center'" style="display: flex;flex-wrap: nowrap;">
+                        <td [nzAlign]="'center'" >
                             
                             <span class="mg-right" 
                             nz-icon  nz-tooltip="Thông tin chi tiết"
@@ -76,7 +78,7 @@
                             <span class="mg-right"
                            (click)="updateTopicForm(data)"
                             [nz-tooltip]="'Cập nhật'" nz-icon >
-                            <img class="img" src="assets/imgs/edit-2.svg" alt="" />
+                            <img class="img" src="assets/imgs/edit-kafka.svg" alt="" />
                             </span> 
 
                             <span nz-popover (click)="showConfirm(data,'Topic')"
@@ -104,8 +106,8 @@
         <nz-table #basicTable nzShowPagination="false" [nzData]="configInfo | keyvalue" [nzPageSize]="50" [nzScroll]>
             <thead>
               <tr >
-                <th style="background-color: white;">Key</th>
-                <th style="background-color: white;">Value</th>
+                <th style="background-color: white;">Cấu hình</th>
+                <th style="background-color: white;">Giá trị</th>
               </tr>
             </thead>
             <tbody>
@@ -118,9 +120,24 @@
     </ng-container>
 </nz-modal>
 <nz-modal class="fixBtn" [(nzVisible)]="isDelVisible" [nzTitle]="'Xoá '+ deleteType" (nzOnCancel)="handleCloseDelete()">
-    <ng-container *nzModalContent >
+    <ng-container *nzModalContent style="padding-bottom: 0px;">
         <ng-container *ngIf="deleteType=='Topic'; else contentMessage" >
-           <h3 class="question"> Bạn có chắc chắn muốn xóa Topic <b>{{ deleteInfor.topicName }}</b> này không ?</h3>
+           <h3 class="question"> Bạn có chắc chắn muốn xóa Topic <b>{{ deleteInfor.topicName }}</b> này không? <br>
+            Vui lòng nhập tên Topic cần xóa.</h3>
+            <div style="justify-content: center;display: flex;">
+                <div nz-col nzSpan="12">
+                    <nz-input-group nzSize="large" [nzSuffix]="prefixTemplate" [ngClass]="{ 'err-name': err_mess!=='' }">
+                    <input  nzSize="large" type="text" style="border-radius: 8px;"
+                    nz-input [(ngModel)]="delTopic" (ngModelChange)="checkName()" placeholder="Nhập tên topic" />
+                    </nz-input-group>
+                    <div class="error-del">{{err_mess}}</div>
+                    <ng-template #prefixTemplate >
+                        <span nz-icon *ngIf="err_mess!==''" style="font-size: 20px;" nzType="exclamation-circle" nzTheme="twotone" [nzTwotoneColor]="'#ff4d4f'"></span>
+                        <span nz-icon *ngIf="err_mess==='' && !new" style="font-size: 20px;" nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'"></span>
+                    </ng-template>
+                    
+                </div>
+            </div>
         </ng-container>
         <ng-template #contentMessage>
             <h3 class="question"> Bạn có chắc chắn muốn xóa tất cả các message của Topic <b>{{ deleteInfor.topicName }}</b> không ? </h3>
@@ -131,7 +148,7 @@
             style="padding-right: 10px;margin-top: -4px"
             src="assets/imgs/cancel.svg"
             alt=""/>Hủy</button>
-        <button nz-button nzType="primary" class="btn-accept" (click)="deleteType=='Topic'?handleDeleteTopic(deleteInfor):handleDeleteMessages(deleteInfor)" >
+        <button [disabled]="err_mess!==''" nz-button nzType="primary" class="btn-accept" (click)="deleteType=='Topic'?handleDeleteTopic(deleteInfor):handleDeleteMessages(deleteInfor)" >
             <img
                     style="padding-right: 10px; margin-top: -4px"
                     src="assets/imgs/confirm.svg"
@@ -139,12 +156,12 @@
     </div>
 </nz-modal>
 <nz-modal class="fixBtn" [(nzVisible)]="isVisible" nzTitle="Test Producer" (nzOnCancel)="handleCloseProduceModal()">
-    <ng-container *nzModalContent>
+    <ng-container *nzModalContent >
         <form nz-form [formGroup]="produceForm" [nzLayout]="'vertical'" (ngSubmit)="submitModalForm()">
             <nz-form-item>
                 <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired vFor="Topic">Topic</nz-form-label>
                 <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Hãy chọn Topic">
-                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" vPlaceHolder="Chọn một Topic">
+                    <nz-select nzSize="large" nzShowSearch [(ngModel)]="singleValue" formControlName="topicName" nzPlaceHolder="Chọn một Topic">
                         <nz-option *ngFor="let item of listTopicTestProducer" [nzLabel]="item.topicName" [nzValue]="item.topicName"></nz-option>
                     </nz-select>
                 </nz-form-control>

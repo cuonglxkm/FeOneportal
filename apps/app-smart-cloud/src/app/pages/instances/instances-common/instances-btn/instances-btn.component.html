@@ -65,12 +65,25 @@
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
+        instancesModel.imageName.toUpperCase().includes('CIRROS')
+      "
+      nz-menu-item
+      [nzDisabled]="true"
+    >
+      Đổi mật khẩu
+    </li>
+    <li
+      *ngIf="
+        instancesModel.status.toUpperCase() == 'KHOITAO' &&
+        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
+        !instancesModel.taskState.toUpperCase().includes('RESIZE') &&
+        instancesModel.taskState.toUpperCase() != 'ERROR' &&
         !instancesModel.imageName.toUpperCase().includes('CIRROS')
       "
       nz-menu-item
       (click)="modalResetPassword()"
     >
-      Reset Password
+      Đổi mật khẩu
     </li>
     <li nz-menu-item style="color: red" (click)="showModalDelete()">Xóa</li>
   </ul>
@@ -185,7 +198,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleResetPass"
-  nzTitle="Reset mật khẩu máy ảo"
+  nzTitle="Đổi mật khẩu máy ảo"
   (nzOnCancel)="handleCancelResetPassword()"
 >
   <div *nzModalContent>
