@@ -68,7 +68,7 @@ export class CreateTopicComponent implements OnInit {
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      name_tp: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(255), Validators.pattern(/^[\-a-zA-Z0-9]+$/)]],
+      name_tp: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(255), Validators.pattern(/^[-a-zA-Z0-9]+$/)]],
       partition: [3, [Validators.required, Validators.max(100), Validators.min(1), Validators.pattern(/^\d+$/)]],
       rep_fac: [3, [Validators.required, Validators.min(1), Validators.max(3), Validators.pattern(/^\d+$/)]],
       max_mess: [null],
@@ -119,11 +119,12 @@ export class CreateTopicComponent implements OnInit {
   }
 
   addValidateCustomConfig(configs: string) {
-    let jsonObject = JSON.parse(configs);
+    
+    const jsonObject = JSON.parse(configs);
     this.listConfigLabel.forEach(element => {
       const { name, value, fullname } = element;
-      let valueDB = jsonObject[fullname]
-      let validators = [];
+      let valueDB = jsonObject[fullname] == null ? value : jsonObject[fullname];
+      const validators = [];
       switch (name) {
         case 'lead_rep':
         case 'foll_repl':
@@ -176,6 +177,7 @@ export class CreateTopicComponent implements OnInit {
           validators.push(Validators.min(0), Validators.max(9007199254740991), Validators.pattern(/^\d+$/))
           break;
       }
+      
       this.validateForm.get(name).setValue(valueDB ? valueDB : value);
       this.validateForm.get(name).setValidators(validators);
       this.validateForm.get(name).updateValueAndValidity();
@@ -202,7 +204,7 @@ export class CreateTopicComponent implements OnInit {
   addValidateConfig() {
     this.listConfigLabel.forEach(element => {
       const { name, value } = element;
-      let validators = [];
+      const validators = [];
       switch (name) {
         case 'min_clean':
           validators.push(Validators.min(0), Validators.max(1), Validators.pattern(/^\d*(\.\d+)?$/), this.dotValidator)
@@ -265,16 +267,12 @@ export class CreateTopicComponent implements OnInit {
     })
   }
 
-  onSearch(event) {
-
-  }
-
   cancelForm() {
     this.cancelEvent.emit();
   }
 
   submitForm() {
-
+    console.log();
   }
 
   onKeyDown(event: KeyboardEvent): void {
@@ -288,7 +286,7 @@ export class CreateTopicComponent implements OnInit {
 
   onKeyDownIgnore(event: KeyboardEvent): void {
     const keyCode = event.key;
-    const isNumberOrBackspace = /[\-0-9]|Backspace/.test(keyCode);
+    const isNumberOrBackspace = /[-0-9]|Backspace/.test(keyCode);
     const isArrowKeyOrTab = /^Arrow(Up|Down|Left|Right)$/.test(keyCode) || keyCode === 'Tab';
     if (!isNumberOrBackspace && !isArrowKeyOrTab) {
       event.preventDefault();
@@ -297,7 +295,7 @@ export class CreateTopicComponent implements OnInit {
 
   onKeyDownDot(event: KeyboardEvent) {
     const keyCode = event.key;
-    const isNumberOrBackspace = /[\.0-9]|Backspace/.test(keyCode);
+    const isNumberOrBackspace = /[.0-9]|Backspace/.test(keyCode);
     const isArrowKeyOrTab = /^Arrow(Up|Down|Left|Right)$/.test(keyCode) || keyCode === 'Tab';
     if (!isNumberOrBackspace && !isArrowKeyOrTab) {
       event.preventDefault();
@@ -332,7 +330,7 @@ export class CreateTopicComponent implements OnInit {
     }
     if (!this.validateForm.invalid) {
       this.loadingSrv.open({ type: "spin", text: "Loading..." });
-      let json = {};
+      const json = {};
       const topicName = this.validateForm.get("name_tp").value;
       const partitionNum = Number(this.validateForm.get("partition").value);
       const replicationFactorNum = Number(this.validateForm.get("rep_fac").value);
@@ -342,32 +340,10 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               this.loadingSrv.close();
               if (data && data.code == 200) {
-                this.notification.success(
-                  'Thông báo',
-                  (this.mode == this.createNumber ? 'Tạo mới ' : 'Cập nhật ') + 'thành công',
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#dff6dd',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.success('Thành công', data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(
-                  (this.mode == this.createNumber ? 'Tạo mới ' : 'Cập nhật ') + 'thất bại',
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#fed9cc',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );
@@ -377,7 +353,7 @@ export class CreateTopicComponent implements OnInit {
           .filter(element => element.name !== "typeTime" && element.name !== "re_hours")
           .forEach(element => {
             const { name, value, type, fullname } = element;
-            if (this.validateForm.get(name).value != "" && this.validateForm.get(name).value != null)
+            if (this.validateForm.get(name).value != "" || this.validateForm.get(name).value != null)
               switch (name) {
                 case 'lead_rep':
                 case 'foll_repl':
@@ -390,7 +366,8 @@ export class CreateTopicComponent implements OnInit {
                   else
                     json[fullname] = this.validateForm.get(name).value;
                   break;
-              } else {
+              }
+            else {
               json[fullname] = value;
             }
           })
@@ -400,39 +377,14 @@ export class CreateTopicComponent implements OnInit {
             (data: any) => {
               if (data && data.code == 200) {
                 this.loadingSrv.close();
-                this.notification.success(
-                  'Thông báo',
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#dff6dd',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.success('Thành công', data.msg);
                 this.cancelForm();
               } else {
-                this.notification.error(
-                  data.error_msg,
-                  data.msg,
-                  {
-                    nzPlacement: 'bottomRight',
-                    nzStyle: {
-                      backgroundColor: '#fed9cc',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    }
-                  },
-                );
+                this.notification.error('Thất bại', data.msg);
               }
             }
           );
       }
-    }
-    else {
-
     }
   }
 
@@ -446,13 +398,24 @@ export class CreateTopicComponent implements OnInit {
     }
     if (!this.validateForm.invalid) {
       let i = 0;
-      let json = {};
+      const json = {};
       const topicName = this.validateForm.get("name_tp").value;
       this.listConfigLabel
         .filter(element => element.name !== "typeTime" && element.name !== "re_hours")
         .forEach(element => {
           const { name, value, fullname } = element;
-          if (this.validateForm.get(name).value != "")
+          if (this.validateForm.get(name).value === "" || this.validateForm.get(name).value === null){
+            switch (name) {
+              case 'lead_rep':
+              case 'foll_repl':
+                json[fullname] = (value == "none") ? "" : "*"
+                break;
+              default:
+                json[fullname] = value;
+                break;
+              }
+          }
+          else {
             switch (name) {
               case 'lead_rep':
               case 'foll_repl':
@@ -462,38 +425,18 @@ export class CreateTopicComponent implements OnInit {
                 json[fullname] = this.validateForm.get(name).value;
                 break;
             }
+          }
+
           i++;
         })
       this.topicKafkaService.updateTopic(topicName, this.serviceOrderCode, json)
         .subscribe(
           (data: any) => {
             if (data && data.code == 200) {
-              this.notification.success(
-                'Thông báo',
-                data.msg,
-                {
-                  nzPlacement: 'bottomRight',
-                  nzStyle: {
-                    backgroundColor: '#dff6dd',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }
-                },
-              );
+              this.notification.success('Thành công', data.msg);
               this.cancelForm();
             } else {
-              this.notification.error(
-                data.error_msg,
-                data.msg,
-                {
-                  nzPlacement: 'bottomRight',
-                  nzStyle: {
-                    backgroundColor: '#fed9cc',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }
-                },
-              );
+              this.notification.error('Thất bại', data.msg);
             }
             this.loadingSrv.close();
           }

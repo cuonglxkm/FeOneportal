@@ -114,9 +114,7 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 }
 
 .async {
-    font-style: italic;
-    font-size: 13px;
-    float: right;
+    font-size: 14px;
 }
 
 .time-async {
@@ -132,6 +130,7 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
     border-radius: 8px;
     width: 300px;
     height: 40px;
+    margin-bottom: 15px;
 }
 
 ::ng-deep .ant-pagination-item-active {
@@ -151,4 +150,10 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 nz-tag {
     border-radius: 3px;
     font-size: 14px;
+}
+
+.btn-sync {
+    width: 40px;
+    border-color: #E2E2E9;
+    color: #989BB3;
 }

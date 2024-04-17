@@ -13,7 +13,8 @@ export abstract class BaseService {
     acls: '/acls',
     stats: '/stats',
     consumerGroups: '/consumer-groups',
-    configs: '/configs'
+    configs: '/configs',
+    provisions: '/provisions'
   }
   protected baseUrl: string;
 

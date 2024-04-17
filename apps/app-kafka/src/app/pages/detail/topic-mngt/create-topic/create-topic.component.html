@@ -1,15 +1,13 @@
+<!-- eslint-disable @angular-eslint/template/eqeqeq -->
 <h2  *ngIf="mode == createNumber"><b>Tạo mới Topic</b></h2>
 <h2 *ngIf="mode == updateNumber"><b>Cập nhật Topic</b></h2>
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
     <div nz-row>
         <nz-form-item nz-col nzSpan="12">
             <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="20" nzRequired nzFor="name_tp">Tên Topic
-                <i class="tip" nz-icon [nzType]="'info-circle'"
-                    nzTooltipTitle="Chỉ dùng các ký tự chữ cái thường, chữ hoa, hoặc số. Tối đa 255 ký tự."
-                    nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
             </nz-form-label>
-            <nz-form-control nz-form-label [nzSpan]="20" [nzErrorTip]="nameErrorTpl">
-                <input nz-input name="name_tp" formControlName="name_tp" type="text" id="name_tp"
+            <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="nameErrorTpl">
+                <input  nz-input name="name_tp" nzSize="large" formControlName="name_tp" type="text" id="name_tp"
                     placeholder="Nhập tên Topic">
                 <ng-template #nameErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">

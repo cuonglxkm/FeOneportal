@@ -163,15 +163,20 @@ export class SshKeyComponent implements OnInit {
       .subscribe({
       next: post => {
         this.loadSshKeys(true);
-        this.notification.success('Thành công', 'Tạo mới thành công keypair')
+        this.notification.success('Thành công', 'Tạo mới thành công keypair');
+        form.resetForm();
       },
       error: e => {
-        this.loadSshKeys(true);
-        this.notification.error('Thất bại', 'Tạo mới thất bại keypair')
+        if(e && e.error && e.error.detail && e.error.detail !== `Key pair '${namePrivate}' already exists.`) {
+          this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng. vui lòng nhập tên khác.`);
+        }
+        else {
+          this.isVisibleCreate = false;
+          form.resetForm();
+          this.notification.error('Thất bại', 'Tạo mới thất bại keypair');
+        }
       },
     });
-    this.isVisibleCreate = false;
-    form.resetForm();
   }
 
   onTabchange(event: any, form: any) {

@@ -156,7 +156,8 @@ export class ListPackagesSnapshotComponent implements OnInit {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa gói snapshot thành công')
-  
+        this.valueDelete = ''
+        this.getListPackageSnapshot()
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false

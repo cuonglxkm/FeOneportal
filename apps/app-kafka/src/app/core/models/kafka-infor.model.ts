@@ -26,6 +26,7 @@ export interface KafkaDetail {
     ram: number;
     cpu: number;
     storage: number;
+    usageTime: number;
     description: string;
     
 }

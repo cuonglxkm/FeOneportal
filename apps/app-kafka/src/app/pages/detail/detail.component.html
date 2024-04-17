@@ -1,5 +1,5 @@
 <ng-container *ngIf="itemDetail">
-    <page-header [breadcrumb]="breadcrumb">
+    <page-header [breadcrumb]="breadcrumb" [action]="action">
         <ng-template #breadcrumb>
             <nz-breadcrumb>
                 <nz-breadcrumb-item>
@@ -9,14 +9,22 @@
                     <a [routerLink]="['/app-kafka']">Danh sách Kafka</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    <a [routerLink]="['/app-kafka']">Quản lý Kafka: <b>{{serviceOrderCode}}</b></a>
+                    Quản lý Kafka: <b>{{serviceOrderCode}}</b>
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
+        </ng-template>
+
+        <!-- action -->
+        <ng-template #action>
+            <div class="alain-custom-action text-right">
+                <region-select-dropdown [isDetail]="true"></region-select-dropdown>
+                <project-select-dropdown [regionId]="regionId" [isDetail]="true"></project-select-dropdown>
+            </div>
         </ng-template>
     
     </page-header>
     
-    <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="setTransactionTabIndex($event)">
+    <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="setTransactionTabIndex($event)" nzSize="large">
         <nz-tab nzTitle="Dashboard">
             <ng-template nz-tab>
                 <one-portal-kafka-dashboard [serviceOrderCode]="serviceOrderCode"></one-portal-kafka-dashboard>
@@ -27,17 +35,17 @@
                 <one-portal-summary-service [serviceOrderCode]="serviceOrderCode" [itemDetail]="itemDetail"></one-portal-summary-service>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Topic">
+        <nz-tab nzTitle="Quản lý Topic">
             <ng-template nz-tab>
                 <one-portal-topic-mngt [serviceOrderCode]="serviceOrderCode"></one-portal-topic-mngt>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Consumer Group">
+        <nz-tab nzTitle="Quản lý Consumer Group">
             <ng-template nz-tab>
                 <one-portal-consumer-group [serviceOrderCode]="serviceOrderCode"></one-portal-consumer-group>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Tài khoản">
+        <nz-tab nzTitle="Quản lý Tài khoản">
             <ng-template nz-tab>
                 <one-portal-credentials [serviceOrderCode]="serviceOrderCode"></one-portal-credentials>
             </ng-template>

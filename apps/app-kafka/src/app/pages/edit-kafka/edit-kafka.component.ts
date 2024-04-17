@@ -23,7 +23,7 @@ export class EditKafkaComponent implements OnInit {
   listOfKafkaVersion: KafkaVersion[] = [];
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
-  kafkaUpdateDto: KafkaUpdateReq = new KafkaUpdateReq();
+  kafkaUpdateDto: KafkaUpdateReq;
 
   constructor(
     private fb: FormBuilder,
@@ -69,7 +69,7 @@ export class EditKafkaComponent implements OnInit {
       serviceName: [null,
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
-      description: [null, [Validators.maxLength(500), Validators.pattern('^[a-zA-Z0-9@,-_\\s]*$')]],
+      description: [null, [Validators.maxLength(500)]],
     });
   }
 
@@ -77,6 +77,7 @@ export class EditKafkaComponent implements OnInit {
     this.myform.controls.serviceName.setValue(this.itemDetail.serviceName);
     this.myform.controls.version.setValue(this.itemDetail.version);
     this.myform.controls.description.setValue(this.itemDetail.description);
+    this.myform.controls.serviceName.disable();
   }
 
   getListVersion() {
@@ -95,10 +96,12 @@ export class EditKafkaComponent implements OnInit {
   }
 
   updateKafka() {
-    this.kafkaUpdateDto.serviceOrderCode = this.itemDetail.serviceOrderCode;
-    this.kafkaUpdateDto.serviceName = this.myform.get('serviceName').value;
-    this.kafkaUpdateDto.version = this.myform.get('version').value;
-    this.kafkaUpdateDto.description= this.myform.get('description').value;
+    this.kafkaUpdateDto = {
+      serviceOrderCode: this.itemDetail.serviceOrderCode,
+      serviceName: this.myform.get('serviceName').value,
+      version: this.myform.get('version').value,
+      description: this.myform.get('description').value,
+    }
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.kafkaService.update(this.kafkaUpdateDto)

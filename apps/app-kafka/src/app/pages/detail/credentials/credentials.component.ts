@@ -35,7 +35,13 @@ export class CredentialsComponent implements OnInit {
   titleOtp: string;
   keyCheckOtp: string;
   inputOtpCode: string;
+
+  // Check delete
   isVisibleDelete = false;
+  isErrorCheckDelete = false;
+  isInitModal = true;
+  msgError = '';
+  userNameDelete: string;
 
   constructor(
     private kafkaCredentialService: KafkaCredentialsService,
@@ -63,7 +69,24 @@ export class CredentialsComponent implements OnInit {
 
   deleteUser(data: KafkaCredential) {
     this.isVisibleDelete = true;
+    this.isErrorCheckDelete = false;
+    this.isInitModal = true;
+    this.msgError = '';
     this.currentUserName = data.username;
+  }
+
+  checkUserNameDel() {
+    this.isInitModal = false;
+    if (this.userNameDelete.length == 0) {
+      this.isErrorCheckDelete = true;
+      this.msgError = 'Vui lòng nhập tên tài khoản';
+    } else if (this.userNameDelete != this.currentUserName) {
+      this.isErrorCheckDelete = true;
+      this.msgError = 'Tên tài khoản nhập chưa đúng';
+    } else {
+      this.isErrorCheckDelete = false;
+      this.msgError = '';
+    }
   }
 
   handleCancelDelete() {
