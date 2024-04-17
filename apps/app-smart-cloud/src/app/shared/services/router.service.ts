@@ -156,10 +156,10 @@ export class RouterService extends BaseService {
     );
   }
 
-  createStaticRouter(StaticRouter: StaticRouter): Observable<any> {
+  createStaticRouter(data: any): Observable<any> {
     let url_ = `/route_static`;
     return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_ + `?routerId=${StaticRouter.routerId}&destinationCIDR=${StaticRouter.destinationCIDR}&nextHop=${StaticRouter.nextHop}&regionId=${StaticRouter.regionId}&vpcId=${StaticRouter.vpcId}`,
+      this.baseUrl + this.ENDPOINT.provisions + url_,data,
       this.httpOptions
     );
   }

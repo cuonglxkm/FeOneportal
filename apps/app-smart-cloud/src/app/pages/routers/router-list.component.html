@@ -237,6 +237,7 @@
           [(ngModel)]="routerCreate.networkId"
           nzSize="large"
         >
+          <nz-option nzLabel="-- Chọn Network --" [nzValue]="" />
           <nz-option
             *ngFor="let p of listNetwork"
             [nzValue]="p.cloudId"

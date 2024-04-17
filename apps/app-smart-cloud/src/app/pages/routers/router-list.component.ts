@@ -189,7 +189,7 @@ export class RouterListComponent implements OnInit {
     this.dataService
       .getListNetwork(this.region, this.projectId)
       .subscribe((data: any) => {
-        this.listNetwork = [{ cloudId: '', name: '-- Chọn network --', subnetAddressRequired: '' }, ...data];
+        this.listNetwork = data;
         this.cdr.detectChanges();
       });
   }
