@@ -18,58 +18,76 @@
   <div style="margin-bottom: 20px">
     <span class="text-card-header">Thông tin chi tiết Pool</span>
   </div>
-  <nz-row nzGutter="24">
-    <nz-col nzSpan="12">
-      <span class="text-label">Tên pool</span>
-      <br />
-      <input
-        style="border-radius: 8px"
-        nz-input
-        [(ngModel)]="poolDetail.name"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </nz-col>
-    <nz-col nzSpan="12">
-      <span class="text-label">Phương pháp đánh dấu Session</span>
-      <br />
-      <input
-        style="border-radius: 8px"
-        nz-input
-        [(ngModel)]="poolDetail.type"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </nz-col>
-  </nz-row>
-  <nz-row style="margin-top: 20px" nzGutter="24">
-    <nz-col nzSpan="12">
-      <span class="text-label">Thuật toán</span>
-      <br />
-      <input
-        style="border-radius: 8px"
-        nz-input
-        [(ngModel)]="poolDetail.lb_algorithm"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </nz-col>
-    <nz-col nzSpan="12">
-      <span class="text-label">Giao thức</span>
-      <br />
-      <input
-        style="border-radius: 8px"
-        nz-input
-        [(ngModel)]="poolDetail.protocol"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </nz-col>
-  </nz-row>
+  <form nz-form nzLayout="vertical">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Tên pool </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.name"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Phương pháp đánh dấu Session </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.type"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row style="margin-top: 20px" nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Thuật toán </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.lb_algorithm"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item style="margin-top: 20px">
+          <nz-form-label> Giao thức </nz-form-label>
+          <nz-form-control>
+            <input
+              style="border-radius: 8px"
+              nz-input
+              [(ngModel)]="poolDetail.protocol"
+              [ngModelOptions]="{ standalone: true }"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </form>
 </nz-card>
 <nz-card style="border-radius: 4px" [nzBordered]="false">
   <nz-tabset nzSize="large">
