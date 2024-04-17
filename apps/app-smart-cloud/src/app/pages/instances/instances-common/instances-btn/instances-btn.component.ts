@@ -121,6 +121,8 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   isVisibleResetPass = false;
   modalResetPassword() {
     this.isVisibleResetPass = true;
+    this.passwordVisible = false;
+    this.passwordRepeatVisible = false;
     this.resetPassword = '';
     this.resetPasswordRepeat = '';
     this.formPass = new FormGroup({
@@ -150,13 +152,13 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     if (this.autoCreate) {
       this.dataService.changePassword(this.instancesId, '').subscribe({
         next: (data: any) => {
-          this.notification.success('', 'Reset mật khẩu máy ảo thành công');
+          this.notification.success('', 'Đổi mật khẩu máy ảo thành công');
         },
         error: (e) => {
           console.log('reset pass', e);
           this.notification.error(
             e.error.detail,
-            'Reset mật khẩu máy không thành công'
+            'Đổi mật khẩu máy không thành công'
           );
         },
       });
@@ -165,14 +167,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
         .changePassword(this.instancesId, this.resetPassword)
         .subscribe({
           next: (data: any) => {
-            if (data == true) {
-              this.notification.success('', 'Reset mật khẩu máy ảo thành công');
-            } else {
-              this.notification.error(
-                '',
-                'Reset mật khẩu máy ảo không thành công'
-              );
-            }
+            this.notification.success('', 'Đổi mật khẩu máy ảo thành công');
           },
           error: (e) => {
             this.notification.error(e.statusText, e.error.detail);

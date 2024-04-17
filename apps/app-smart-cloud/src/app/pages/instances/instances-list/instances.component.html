@@ -262,8 +262,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  (data.taskState.toUpperCase() == 'SHUTOFF' ||
-                    data.taskState.toUpperCase() == 'POWERING-OFF')
+                  data.taskState.toUpperCase() == 'SHUTOFF'
                 "
                 nz-menu-item
                 (click)="showModalStart(data.id)"

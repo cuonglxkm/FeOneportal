@@ -354,6 +354,7 @@ export class InstancesEditComponent implements OnInit {
       error: (e) => {
         this.checkPermission = false;
         this.notification.error(e.error.detail, '');
+        this.returnPage();
       },
     });
   }
