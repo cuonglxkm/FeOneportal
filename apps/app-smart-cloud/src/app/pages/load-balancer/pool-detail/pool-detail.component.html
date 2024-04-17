@@ -545,6 +545,7 @@
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input
+            #memberInput
             class="input-custom"
             nz-input
             formControlName="name"
@@ -573,7 +574,7 @@
             nz-input
             [(ngModel)]="isCreate ? memberForm.address : memberForm.ipAddress"
             [ngModelOptions]="{ standalone: true }"
-            [disabled]="true"
+            [disabled]="!isCreate"
           />
         </nz-form-control>
       </nz-form-item>

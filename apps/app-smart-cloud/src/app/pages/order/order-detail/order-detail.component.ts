@@ -87,6 +87,8 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
+            console.log(data);
+            
           },
           error: (e) => {
             this.notification.error('Thất bại', 'Lấy dữ liệu thất bại');

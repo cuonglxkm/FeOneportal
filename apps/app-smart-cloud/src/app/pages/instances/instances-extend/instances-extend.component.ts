@@ -73,32 +73,38 @@ export class InstancesExtendComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.customerId = this.tokenService.get()?.userId;
     this.email = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.service.getById(this.id, true).subscribe((data) => {
-      this.instancesModel = data;
-      this.regionId = this.instancesModel.regionId;
-      this.loading = false;
-      let expiredDate = new Date(this.instancesModel.expiredDate);
-      expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-      this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-      this.getListIpPublic();
-      this.getTotalAmount();
-      this.service
-        .getAllSecurityGroupByInstance(
-          this.instancesModel.cloudId,
-          this.regionId,
-          this.instancesModel.customerId,
-          this.instancesModel.projectId
-        )
-        .pipe(finalize(() => this.loadingSrv.close()))
-        .subscribe((datasg: any) => {
-          this.listSecurityGroupModel = datasg;
-          this.cdr.detectChanges();
-        });
-      this.cdr.detectChanges();
+    this.service.getById(this.id, true).subscribe({
+      next: (data) => {
+        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+        this.instancesModel = data;
+        this.regionId = this.instancesModel.regionId;
+        this.loading = false;
+        let expiredDate = new Date(this.instancesModel.expiredDate);
+        expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+        this.getListIpPublic();
+        this.getTotalAmount();
+        this.service
+          .getAllSecurityGroupByInstance(
+            this.instancesModel.cloudId,
+            this.regionId,
+            this.instancesModel.customerId,
+            this.instancesModel.projectId
+          )
+          .pipe(finalize(() => this.loadingSrv.close()))
+          .subscribe((datasg: any) => {
+            this.listSecurityGroupModel = datasg;
+            this.cdr.detectChanges();
+          });
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.notification.error(e.error.detail, '');
+        this.router.navigate(['/app-smart-cloud/instances']);
+      },
     });
     this.onChangeTime();
   }

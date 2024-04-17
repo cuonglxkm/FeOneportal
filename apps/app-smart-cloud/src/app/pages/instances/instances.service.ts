@@ -186,11 +186,10 @@ export class InstancesService extends BaseService {
 
   changePassword(id: number, newPassword: string) {
     let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
-    return this.http.post<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      '',
-      this.httpOptions
-    );
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + url_, '', {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   rebuild(data: any) {
@@ -283,9 +282,14 @@ export class InstancesService extends BaseService {
       );
   }
 
-  getListOffersByProductId(productId: string, regionId: string): Observable<OfferDetail[]> {
+  getListOffersByProductId(
+    productId: string,
+    regionId: string
+  ): Observable<OfferDetail[]> {
     return this.http.get<OfferDetail[]>(
-      `${this.baseUrl + this.ENDPOINT.catalogs}/offers?productId=${productId}&regionId=${regionId}`
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}&regionId=${regionId}`
     );
   }
 

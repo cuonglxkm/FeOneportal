@@ -1136,11 +1136,16 @@
                     />
                   </nz-input-group>
                   <ng-template #suffixTemplate>
-                    <i
-                      nz-icon
-                      [nzType]="'eye'"
+                    <img
+                      style="margin-top: -4px"
+                      [src]="
+                        passwordVisible
+                          ? 'assets/imgs/eye-close.svg'
+                          : 'assets/imgs/eye1.svg'
+                      "
+                      alt=""
                       (click)="passwordVisible = !passwordVisible"
-                    ></i>
+                    />
                   </ng-template>
                 </nz-form-control>
                 <ng-template #passwordErrorTpl let-control>

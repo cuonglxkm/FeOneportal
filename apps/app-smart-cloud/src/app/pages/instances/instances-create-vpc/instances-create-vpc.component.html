@@ -1,4 +1,8 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.instances.create' | i18n">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.instances.create' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -598,11 +602,16 @@
                 />
               </nz-input-group>
               <ng-template #suffixTemplate>
-                <i
-                  nz-icon
-                  [nzType]="'eye'"
+                <img
+                  style="margin-top: -4px"
+                  [src]="
+                    passwordVisible
+                      ? 'assets/imgs/eye-close.svg'
+                      : 'assets/imgs/eye1.svg'
+                  "
+                  alt=""
                   (click)="passwordVisible = !passwordVisible"
-                ></i>
+                />
               </ng-template>
             </nz-form-control>
           </nz-form-item>

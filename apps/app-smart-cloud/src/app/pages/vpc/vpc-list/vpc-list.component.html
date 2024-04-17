@@ -122,9 +122,7 @@
 </nz-card>
 
 <!--Xóa VPC-->
-<nz-modal [(nzVisible)]="isVisibleDeleteVPC" nzTitle="Xóa dự án VPC" (nzOnCancel)="handleCancel()"
-          (nzOnOk)="openIpDelete()" nzOkText="Xác nhận " [nzOkDisabled]="disableDelete"
-          nzCancelText="Hủy" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleDeleteVPC" nzTitle="Xóa dự án VPC" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
               nzDescription="Bạn đang thực hiện xoá dự án {{itemDelete.displayName}}.Hành động này không thể được hoàn tác"
@@ -135,12 +133,18 @@
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancel()">
+      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="openIpDelete()" [disabled]="disableDelete">
+      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />Xác nhận
+    </button>
+  </div>
 </nz-modal>
 
-<!--Xóa VPC-->
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa dự án" (nzOnCancel)="handleCancel()"
-          (nzOnOk)="openIpDelete()" nzOkText="Xác nhận " [nzOkDisabled]="disableDelete"
-          nzCancelText="Hủy" [nzStyle]="modalStyle">
+<!--Xóa thường-->
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa dự án" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert class="ant-alert-warning-custom" nzType="warning"
               nzDescription="Bạn đang thực hiện xoá dự án VPC  {{itemDelete.displayName}}.Việc thực hiện xoá dự án VPC  đồng thời cũng sẽ xóa các dữ liệu bên trong dự án VPC,
@@ -152,12 +156,19 @@
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{itemDelete.displayName}}" [(ngModel)]="nameDelete"
            (ngModelChange)="confirmNameDelete($event)" type="text" />
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancel()">
+      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="openIpDelete()" [disabled]="disableDelete">
+      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />Xác nhận
+    </button>
+  </div>
 </nz-modal>
+
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <!--Chỉnh normal-->
-  <nz-modal [(nzVisible)]="isVisibleEditNormal" nzTitle="Chỉnh sửa dự án thường" (nzOnCancel)="handleCancel()"
-            (nzOnOk)="updateVpc()" nzOkText="Xác nhận " [nzOkDisabled]="form.invalid"
-            nzCancelText="Hủy" [nzStyle]="modalStyle">
+  <nz-modal [(nzVisible)]="isVisibleEditNormal" nzTitle="Chỉnh sửa dự án thường" [nzStyle]="modalStyle">
     <ng-container *nzModalContent>
       <div class="text-label" style="margin-bottom: 10px;">
         Tên dự án(<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự" src="assets/imgs/pajamas_question.svg" alt="" />
@@ -170,6 +181,14 @@
                   formControlName="description"></textarea>
       </div>
     </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancel()">
+        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+      </button>
+      <button nz-button nzType="primary" (click)="updateVpc()" [disabled]="form.invalid">
+        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />Xác nhận
+      </button>
+    </div>
   </nz-modal>
 </form>
 
