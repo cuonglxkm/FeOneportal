@@ -115,6 +115,7 @@ export class VpcListComponent {
     this.isVisibleDelete = false;
     this.isVisibleDeleteVPC = false;
     this.isVisibleEditNormal = false;
+    this.disableDelete = true;
   }
 
   openIpDelete() {
@@ -123,6 +124,7 @@ export class VpcListComponent {
         this.getData(true);
         this.isVisibleDelete = false;
         this.isVisibleDeleteVPC = false;
+        this.disableDelete = true;
       }))
       .subscribe(
         {
