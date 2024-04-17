@@ -193,7 +193,7 @@ export class ClusterComponent implements OnInit {
           // select latest version of kubernetes
           const len = this.listOfK8sVersion?.length;
           const latestVersion: K8sVersionModel = this.listOfK8sVersion?.[len - 1];
-          this.myform.get('kubernetesVersion').setValue(latestVersion.k8sVersion);
+          this.myform.get('kubernetesVersion').setValue(latestVersion?.k8sVersion);
         } else {
           this.notificationService.error("Thất bại", r.message);
         }
@@ -299,11 +299,11 @@ export class ClusterComponent implements OnInit {
     });
   }
 
-  subnetAndCidr: Map<string, Array<string>>;
-  getSubnetAndCidrUsed(projectInfraId: number) {
-    this.clusterService.getSubnetAndCidrUsed(projectInfraId)
+  subnetByNetwork: Map<string, Array<string>>;
+  getSubnetAndCidrUsed(projectInfraId: number, networkId: number) {
+    this.clusterService.getSubnetByNamespaceAndNetwork(projectInfraId, networkId)
     .subscribe((r: any) => {
-      this.subnetAndCidr = r.data;
+      this.subnetByNetwork = r.data;
     });
   }
 
@@ -384,7 +384,7 @@ export class ClusterComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.projectInfraId = project.id;
     this.getVlanNetwork(this.projectInfraId);
-    this.getSubnetAndCidrUsed(this.projectInfraId);
+
     this.myform.get('projectInfraId').setValue(this.projectInfraId);
     this.myform.get('tenant').setValue(project.projectName);
 
@@ -408,14 +408,19 @@ export class ClusterComponent implements OnInit {
   onSelectSubnet(subnetId: number) {
     // check subnet
     const subnet = this.listOfSubnets.find(item => item.id == subnetId);
-    if (subnet != null && this.subnetAndCidr != null) {
-      
-    }
+    if (subnet != null) {
+      const selectedVpcNetworkId = this.myform.get('vpcNetwork').value;
 
-    // set data
-    this.myform.get('subnetId').setValue(subnetId);
-    if (subnet) {
       this.subnetAddress = subnet.subnetAddressRequired;
+      if (this.subnetByNetwork != null) {
+        let usedSubnetArray: string[] = this.subnetByNetwork.get(selectedVpcNetworkId);
+
+        if (!usedSubnetArray) {
+
+        }
+
+      }
+      this.myform.get('subnetId').setValue(subnetId);
       this.myform.get('networkCloudId').setValue(subnet.networkCloudId);
       this.myform.get('subnetCloudId').setValue(subnet.subnetCloudId);
     }

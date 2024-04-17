@@ -96,8 +96,9 @@ export class ClusterService extends BaseService {
     return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/ssh-key/${serviceOrderCode}`, { headers: this.getHeaders() });
   }
 
-  getSubnetAndCidrUsed(projectInfraId: number) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/subnet-cidr-used/${projectInfraId}`, { headers: this.getHeaders() });
+  getSubnetByNamespaceAndNetwork(projectInfraId: number, networkId: number) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/subnet-by-network-namespace?projectInfraId=${projectInfraId}&networkId=${networkId}`,
+    { headers: this.getHeaders() });
   }
 
   getWorkerGroupOfCluster(serviceOrderCode: string) {
