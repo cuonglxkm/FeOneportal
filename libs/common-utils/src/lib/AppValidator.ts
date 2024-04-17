@@ -351,5 +351,29 @@ export function ipAddressExistsValidator(ipAddresses: string[]): ValidatorFn {
     }
     return null;
   };
+  
 }
+
+
+export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const ipAddress = control.value;
+    if (!ipAddress) {
+      return null; 
+    }
+    
+    const networkPart = subnetIP.split('.').slice(0, 3).join('.');
+    if (!ipAddress.startsWith(networkPart)) {
+      return { 'invalidSubnetIP': true }; 
+    }
+    
+    const lastNumber = parseInt(ipAddress.split('.')[3], 10);
+    if (lastNumber < 2 || lastNumber > 254) {
+      return { 'invalidLastNumber': true }; 
+    }
+    
+    return null;
+  };
+}
+
 

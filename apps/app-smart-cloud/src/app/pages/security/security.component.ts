@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from '../../shared/models/project.model';
 import { RegionModel } from '../../shared/models/region.model';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-security',
@@ -17,6 +18,7 @@ export class SecurityComponent implements OnInit {
   isLoading: boolean = false
   isVisibleUpdate: boolean = false
 
+  email:string = ''
 
   form: FormGroup<{
     otp: FormControl<string>;
@@ -26,6 +28,7 @@ export class SecurityComponent implements OnInit {
 
   constructor(
     private fb: NonNullableFormBuilder,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) {}
 
   onRegionChange(region: RegionModel) {
@@ -41,6 +44,9 @@ export class SecurityComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.email = this.tokenService.get().email
+    
   }
 
   // clickSwitch(): void {
