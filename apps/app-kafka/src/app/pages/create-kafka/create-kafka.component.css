@@ -43,6 +43,8 @@ textarea,
   float: right;
   font-size: 14px;
   margin-right: 12px;
+  text-align: right;
+  width: 100%;
 }
 
 .border-card ::ng-deep .ant-tabs-tab {
@@ -91,12 +93,10 @@ textarea,
 
 ::ng-deep .form-new .ant-select:not(.ant-select-customize-input) .ant-select-selector {
   border-radius: 8px;
-  min-height: 40px;
 }
 
 ::ng-deep .form-new .ant-input {
   border-radius: 8px !important;
-  min-height: 40px;
 }
 
 .remove-btn {
@@ -161,6 +161,7 @@ textarea,
   border-radius: 4px;
   padding: 1px;
   width: 100%;
+  cursor: pointer;
 }
 
 .item-header {
@@ -268,7 +269,30 @@ textarea,
 }
 
 .other-config {
-  width: 100%;
   font-size: 16px;
   margin-bottom: 10px;
+}
+
+.label-usage-time {
+  width: 100%;
+  margin: 5px 0px 0px 15px;
+}
+
+.value-usage-time {
+  color: #4C4F67;
+  font-weight: 600;
+  width: 100%;
+  font-size: 16px;
+  text-align: right;
+  float: right;
+  margin: 12px 12px 0 0;
+}
+
+.customize-config {
+  display: flex;
+  justify-content: space-between;
+}
+
+.config-suffix ::ng-deep .ant-input-suffix {
+  color: #989BB3;;
 }

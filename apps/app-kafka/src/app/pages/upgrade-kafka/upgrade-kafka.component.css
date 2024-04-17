@@ -8,11 +8,6 @@ h3 {
     /* min-height: 40px; */
 }
 
-.border-card ::ng-deep .ant-tabs-tab {
-    font-size: 16px;
-    font-weight: 600;
-}
-
 .carousel-div {
     overflow: hidden;
     -webkit-mask: linear-gradient(90deg, #0000, #000 6% 94%, #0000)
@@ -23,6 +18,10 @@ h3 {
     box-sizing: border-box;
 }
 
+.pack-item-disable {
+    pointer-events: none;
+}
+
 .pack-item {
     min-height: 180px;
     background-color: #ffffff;
@@ -31,6 +30,11 @@ h3 {
     border-radius: 4px;
     padding: 1px;
     width: 100%;
+    cursor: pointer;
+}
+
+.item-header-disable {
+    background-color: #F0F1F4 !important;
 }
 
 .item-header {
@@ -41,6 +45,10 @@ h3 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.item-name-disable {
+    color: #989BB3 !important;
 }
 
 .item-name {
@@ -166,11 +174,17 @@ h3 {
     float: right;
     font-size: 14px;
     margin-right: 12px;
+    text-align: right;
+    width: 100%;
 }
 
 .border-card ::ng-deep .ant-tabs-tab {
     font-size: 16px;
     font-weight: 600;
+}
+
+.border-card {
+    border-radius: 8px;
 }
 
 .divider-style {
@@ -207,4 +221,14 @@ h3 {
 
 .config-suffix ::ng-deep .ant-input-suffix {
     color: #989BB3;;
+}
+
+.value-usage-time {
+    color: #4C4F67;
+    font-weight: 600;
+    width: 100%;
+    font-size: 16px;
+    text-align: right;
+    float: right;
+    margin: 12px 12px 0 0;
 }

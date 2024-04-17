@@ -239,7 +239,12 @@ export class AclTopicComponent implements OnInit {
   handleOkDelete() {
     this.isVisibleDelete = false;
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
-    this.aclKafkaService.deleteAcl(this.currentAclTopic).pipe()
+    this.aclKafkaService.deleteAcl(this.currentAclTopic)
+      .pipe(
+        finalize(() => {
+          this.loadingSrv.close();
+        })
+      )
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
@@ -250,7 +255,6 @@ export class AclTopicComponent implements OnInit {
           else {
             this.notification.error('Thất bại', data.msg);
           }
-          this.loadingSrv.close();
         }
       );
   }

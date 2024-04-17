@@ -1,22 +1,32 @@
 <div>
     <div style="margin-right: auto;margin-bottom: 5px;">
-        <div nz-flex style="justify-content: center;">
-            <nz-select style="margin-right: 10px;" nzSize="large" class="search" nzMode="multiple"
+        <div nz-row class="filters">
+            <!-- <nz-select style="margin-right: 10px;" class="search" nzSize="large" nzMode="multiple" [nzShowArrow]="true"
                 (ngModelChange)="onChangePartitions($event)" nzPlaceHolder="Chọn partitions"
                 [(ngModel)]="listOfSelectedValue">
                 <nz-option *ngFor="let item of partitions" [nzLabel]="item" [nzValue]="item"></nz-option>
             </nz-select>
-            <nz-range-picker [nzSuffixIcon]="icon" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']" class="search" [nzShowTime]="true" [(ngModel)]="date"
-                (ngModelChange)="onChangeDate($event)"></nz-range-picker>
-            <ng-template #icon >
-                <img style="pointer-events: all !important;height: 24px;width: 24px;" src="assets/imgs/calendar-outline.svg" alt=""/>
-            </ng-template>
+            <nz-range-picker [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']" class="search" [nzShowTime]="true" [(ngModel)]="date"
+                (ngModelChange)="onChangeDate($event)" nzSize="large">
+            </nz-range-picker> -->
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="4" [nzXl]="4" style="margin-right: 20px;">
+                <nz-select nzAllowClear [(ngModel)]="listOfSelectedValue" (ngModelChange)="onChangePartitions($event)" nzMode="multiple" [nzShowArrow]="true"
+                    [nzPlaceHolder]="'Chọn partitions'" class="w-100" nzSize="large">
+                    <nz-option *ngFor="let item of partitions" 
+                        [nzValue]="item" [nzLabel]="item">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="6" [nzLg]="6" [nzXl]="6">
+                <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChangeDate($event)"
+                    nzSize="large" nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']">
+                </nz-range-picker>
+            </div>
         </div>
     </div>
 
 
-    <nz-table #virtualTable [nzBordered]="true" [nzData]="messages" [nzFrontPagination]="true" 
-        [nzShowPagination]="true" nzTableLayout="fixed">
+    <nz-table #virtualTable [nzBordered]="true" [nzData]="messages" [nzFrontPagination]="false" nzTableLayout="fixed">
         <thead>
             <tr>
                 <th>Offset</th>
