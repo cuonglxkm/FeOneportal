@@ -21,6 +21,9 @@ import { ChartData } from '../../../core/models/chart-data.model';
 import { DashboardGeneral } from '../../../core/models/dashboard-general.model';
 import { HealthCheckModel } from '../../../core/models/health-check.model';
 import { DashBoardService } from '../../../services/dashboard.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from 'src/app/core/i18n/i18n.service';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -72,8 +75,8 @@ export class DashboardComponent implements OnInit {
   byteInQuery = 'byte_in';
   byteOutQuery = 'byte_out';
   storageQuery = 'msg';
-  ramQuery = 'msg';
-  cpuQuery= 'msg';
+  ramQuery = 'memory';
+  cpuQuery= 'cpu';
 
   isHealth: number = null;
   isHealthMsg = 'Test';
@@ -146,7 +149,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashBoardService: DashBoardService,
-    @Inject(DOCUMENT) private doc: NzSafeAny
+    @Inject(DOCUMENT) private doc: NzSafeAny,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) { }
 
   ngOnInit(): void {
@@ -159,6 +163,55 @@ export class DashboardComponent implements OnInit {
     this.getStorageChart(this.serviceOrderCode, this.previousTimeMins, this.storageQuery, this.numPoints, this.unitStorage);
     this.getCpuChart(this.serviceOrderCode, this.previousTimeMins, this.cpuQuery, this.numPoints);
     this.getRamChart(this.serviceOrderCode, this.previousTimeMins, this.ramQuery, this.numPoints);
+    
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+    
+  }
+
+  changeLangData() {
+      this.byteInChartTitle = 'Incoming Data Throughput';
+      this.byteOutChartTitle = 'Outgoing Data Throughput';
+      this.messageRateChartTitle = 'Total Messages';
+      this.storageChartTitle = 'Storage Usage';
+      this.ramChartTitle = 'RAM Usage';
+      this.cpuChartTitle = 'CPU Usage';
+
+      this.listRangeTime = [
+        {
+          value: 5,
+          label: '5 minutes ago'
+        },
+        {
+          value: 15,
+          label: '15 minutes ago'
+        },
+        {
+          value: 30,
+          label: '30 minutes ago'
+        },
+        {
+          value: 60,
+          label: '1 hour ago'
+        },
+        {
+          value: 240,
+          label: '4 hours ago'
+        },
+        {
+          value: 480,
+          label: '8 hours ago'
+        },
+        {
+          value: 720,
+          label: '12 hours ago'
+        },
+        {
+          value: 1440,
+          label: '24 hours ago'
+        }
+      ];
   }
 
   getStatisticNumber() {
@@ -249,10 +302,6 @@ export class DashboardComponent implements OnInit {
           name: "UnHealth",
           data: this.healthCheckData.unHealth
         },
-        {
-          name: "Warning",
-          data: this.healthCheckData.warning
-        },
         // Trường hợp không lấy được data prometheus về DB portal
         {
           name: "",
@@ -269,7 +318,7 @@ export class DashboardComponent implements OnInit {
           show: false
         }
       },
-      colors: ['#06BC62', '#F74132', '#FFA42E'],
+      colors: ['#06BC62', '#F74132'],
       dataLabels: {
         enabled: false
       },
@@ -543,7 +592,7 @@ export class DashboardComponent implements OnInit {
         if (res.code && res.code == 200) {
           this.ramData = res.data;
           if (this.ramData) {
-            this.chartRam = this.setDataChart(this.ramData, 'GB', 'GB', this.ramChartTitle)
+            this.chartRam = this.setDataChart(this.ramData, '%', '%', this.ramChartTitle)
           }
         } else {
           this.unsubscribe$.next();
