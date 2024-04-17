@@ -178,7 +178,7 @@ export class IpPublicComponent implements OnInit {
         },
         error: e => {
           if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
-            this.notification.warning('Cảnh báo', `Máy ảo {${this.instanceName}} cần tối thiểu 1 IP Public. Vui lòng không thực hiện thao tác này!`);
+            this.notification.warning('Cảnh báo', `Máy ảo ${this.instanceName} cần tối thiểu 1 IP Public. Vui lòng không thực hiện thao tác này!`);
           } else {
             this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
           }
