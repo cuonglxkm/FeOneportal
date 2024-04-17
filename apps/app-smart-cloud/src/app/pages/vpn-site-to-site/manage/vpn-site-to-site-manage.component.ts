@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from 'src/app/shared/models/project.model';
 import { RegionModel } from 'src/app/shared/models/region.model';
@@ -8,6 +8,7 @@ import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.s
 import { debounceTime } from 'rxjs';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { IpsecPoliciesComponent } from './ipsec-policies/ipsec-policies.component';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -17,8 +18,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 export class VpnSiteToSiteManage {
   region = JSON.parse(localStorage.getItem('region')).regionId;
-  project = JSON.parse(localStorage.getItem('projectId'));
-
+  project = JSON.parse(localStorage.getItem('projectId'));  
 
   isBegin: boolean = false;
   isLoading: boolean = false

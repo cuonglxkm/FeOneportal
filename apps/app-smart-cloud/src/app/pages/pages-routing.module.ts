@@ -581,15 +581,15 @@ const routes: Routes = [
     component: DetailLoadBalancerComponent
   },
   {
-    path: 'load-balancer/listener/create',
+    path: 'load-balancer/:lbId/listener/create',
     component: ListenerCreateComponent
   },
   {
-    path: 'load-balancer/listener/detail/:id',
+    path: 'load-balancer/:lbId/listener/detail/:id',
     component: ListenerDetailComponent
   },
   {
-    path: 'load-balancer/listener/update',
+    path: 'load-balancer/:lbId/listener/update/:id',
     component: ListenerUpdateComponent
   },
   {

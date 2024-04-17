@@ -120,6 +120,8 @@ export class ConsumerGroupComponent implements OnInit {
   isVisibleDelete = false;
   currentConsumerGroup: KafkaConsumerGroup;
 
+  isAllowSync = true;
+
   constructor(
     private consumerGroupKafkaService: ConsumerGroupKafkaService,
     private modal: NzModalService,
@@ -236,5 +238,9 @@ export class ConsumerGroupComponent implements OnInit {
           this.syncInfo = res.data;
         }
       });
+  }
+
+  handleSync() {
+    this.isAllowSync = false;
   }
 }

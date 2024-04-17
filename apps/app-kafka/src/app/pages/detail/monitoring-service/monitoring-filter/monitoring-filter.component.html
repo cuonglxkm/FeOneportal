@@ -1,7 +1,7 @@
-<div class="display-option mt-5 mb-5" *ngIf="dataLoaded">
+<div class="display-option mb-5" *ngIf="dataLoaded">
     <div class="w-20 resource-type">
         <label class="mr-3" for="resource">Resource</label>
-        <nz-select id="resource" [(ngModel)]="resourceType" nzPlaceHolder="Chọn resource"
+        <nz-select id="resource" [(ngModel)]="resourceType" nzPlaceHolder="Chọn resource" nzSize="large"
             (ngModelChange)="onChangeResource()">
             <nz-option nzValue="topic" nzLabel="Topic"></nz-option>
             <nz-option nzValue="cg" nzLabel="Consumer Group"></nz-option>
@@ -36,14 +36,14 @@
             <nz-dropdown-menu #menuResource="nzDropdownMenu">
                 <ul nz-menu class="resource-drop">
                     <li nz-menu-item class="input-search">
-                        <nz-input-group [nzPrefix]="prefixTemplateResource" [nzSuffix]="inputClearTpl">
+                        <nz-input-group nzSize="large">
                             <input type="text" nz-input placeholder="Nhập tìm kiếm" [(ngModel)]="resourceKeyword"
                                 (ngModelChange)="onSearchResource()" />
                         </nz-input-group>
-                        <ng-template #prefixTemplateResource><i nz-icon nzType="Search"></i></ng-template>
+                        <!-- <ng-template #prefixTemplateResource><i nz-icon nzType="Search"></i></ng-template>
                         <ng-template #inputClearTpl><i nz-icon class="oneui-input-clear-icon" nzType="StatusErrorFull"
                                 *ngIf="resourceKeyword"
-                                (click)="resourceKeyword = ''; onSearchResource()"></i></ng-template>
+                                (click)="resourceKeyword = ''; onSearchResource()"></i></ng-template> -->
                     </li>
                     <ng-container *ngFor="let item of listOfResourceData">
                         <li nz-menu-item>
@@ -116,7 +116,7 @@
     <div class="ml-5 w-20 interval-div">
         <label class="mr-3" for="interval">Interval</label>
         <nz-select id="interval" [(ngModel)]="intervalSelected" vPlaceHolder="Chọn interval"
-            (ngModelChange)="onChangeInput()">
+            (ngModelChange)="onChangeInput()" nzSize="large">
             <nz-option *ngFor="let item of listRangeTime" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
     </div>

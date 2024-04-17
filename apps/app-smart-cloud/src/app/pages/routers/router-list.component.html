@@ -121,7 +121,7 @@
             nz-tooltip
             nzTooltipTitle="Xem chi tiết"
             nzTooltipPlacement="bottom"
-            [routerLink]="'/app-smart-cloud/network/router/detail/' + data.id"
+            [routerLink]="'/app-smart-cloud/network/router/detail/' + data.cloudId"
             >{{ data.routerName }}</a
           >
         </td>
@@ -208,7 +208,7 @@
       Tên Router (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
+        nz-tooltip="Tối đa 50 ký tự, không có khoảng trắng và dấu tiếng việt"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -225,7 +225,7 @@
       >Chọn Network
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="message-question"
+        nz-tooltip="Để tạo router dịch vụ Direct connect, cần chọn dải network direct connect SmartCloud đã cung cấp."
         src="assets/imgs/message-question.svg"
         alt=""
     /></span>
@@ -237,10 +237,11 @@
           [(ngModel)]="routerCreate.networkId"
           nzSize="large"
         >
+          <nz-option nzLabel="-- Chọn Network --" [nzValue]="" />
           <nz-option
             *ngFor="let p of listNetwork"
             [nzValue]="p.cloudId"
-            [nzLabel]="p.name"
+            [nzLabel]="p.subnetAddressRequired === '' ? p.name : p.name + ' (' + p.subnetAddressRequired + ')'"
           />
         </nz-select>
       </nz-input-group>

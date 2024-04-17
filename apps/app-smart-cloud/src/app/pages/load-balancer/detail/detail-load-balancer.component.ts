@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RegionModel } from '../../../shared/models/region.model';
 import { ProjectModel } from '../../../shared/models/project.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -42,8 +42,9 @@ export class DetailLoadBalancerComponent implements OnInit{
     })
   }
 
+  checkCreate: boolean = false;
   handleCreatePoolOk() {
-    window.location.reload();
+    this.checkCreate = !this.checkCreate
   }
 
   ngOnInit() {
@@ -53,5 +54,9 @@ export class DetailLoadBalancerComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.getLoadBalancerById()
+  }
+
+  loadToCreateListener() {
+    this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/create'])
   }
 }

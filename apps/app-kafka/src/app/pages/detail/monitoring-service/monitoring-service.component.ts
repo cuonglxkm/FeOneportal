@@ -143,7 +143,7 @@ export class MonitoringServiceComponent implements OnInit {
       let chartOption: Partial<ChartOptions> = null;
       chartOption = {
         chart: {
-          height: 250,
+          height: 360,
           type: "line",
           zoom: {
             enabled: false
@@ -198,8 +198,10 @@ export class MonitoringServiceComponent implements OnInit {
         text: titleChart[0]?.label,
         align: 'center',
         style: {
-          fontFamily: 'Times New Roman',
-          fontSize: "15"
+          fontSize: "16px",
+          fontFamily: "Inter",
+          fontWeight: 600,
+          color: "#333333"
         }
       };
 
@@ -236,9 +238,10 @@ export class MonitoringServiceComponent implements OnInit {
           offsetX: 0,
           offsetY: 0,
           style: {
-            fontFamily: 'Times New Roman',
-            fontSize: '13px',
+            fontSize: "14px",
+            fontFamily: "Inter",
             fontWeight: 600,
+            color: "#333333"
           }
         },
         axisBorder: {

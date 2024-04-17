@@ -39,5 +39,6 @@ export class AppConstants {
   static NOTI_SUCCESS = 1;
 
   public static KAKFA_CREATE_TYPE = 'kafka_create';
+  public static KAFKA_UPGRADE_TYPE = 'kafka_resize';
   
 }

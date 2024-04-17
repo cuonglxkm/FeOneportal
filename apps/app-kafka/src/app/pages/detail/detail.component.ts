@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { camelizeKeys } from 'humps';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { KafkaService } from 'src/app/services/kafka.service';
 
@@ -12,6 +13,8 @@ export class DetailComponent implements OnInit {
   selectedIndex = 0;
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
+  regionId = 3;
+  projectId = 1;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -45,7 +48,7 @@ export class DetailComponent implements OnInit {
     .subscribe(
       res => {
         if (res && res.code == 200) {
-          this.itemDetail = res.data;
+          this.itemDetail = camelizeKeys(res.data) as KafkaDetail;
         }
       }
     )

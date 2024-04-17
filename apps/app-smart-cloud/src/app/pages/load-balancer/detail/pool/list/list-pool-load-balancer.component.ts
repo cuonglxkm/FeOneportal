@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { Pool } from '../../../../../shared/models/load-balancer.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,8 +9,10 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
   templateUrl: './list-pool-load-balancer.component.html',
   styleUrls: ['./list-pool-load-balancer.component.less'],
 })
-export class ListPoolLoadBalancerComponent implements OnInit {
+export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
   @Input() idLB: number;
+  @Input() checkCreate: boolean;
+
   region = JSON.parse(localStorage.getItem('region')).regionId;
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -27,6 +29,13 @@ export class ListPoolLoadBalancerComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("goi lai list pool")
+    if (changes.checkCreate) {
+      this.getListPool();
+    }
+  }
 
   onPageSizeChange(value) {
     this.pageSize = value

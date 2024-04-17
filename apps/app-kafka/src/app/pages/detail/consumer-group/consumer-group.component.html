@@ -14,36 +14,42 @@
                             </nz-breadcrumb-item>
                         </nz-breadcrumb>
                     </div>
-                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
-                        <div style="margin-right: auto;">
-                            <nz-input-group [nzPrefix]="prefixIconButton" class="search">
-                                <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
-                                    [(ngModel)]="searchText" />
-                            </nz-input-group>
-                            <ng-template #prefixIconButton>
-                                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
-                            </ng-template>
+                    <div style="align-items: center; margin-bottom: 10px;">
+                        <div nz-row>
+                            <div nz-col>
+                                <nz-input-group [nzPrefix]="prefixIconButton" class="search">
+                                    <input type="text" nz-input placeholder="Tìm kiếm" (keyup.enter)="onSearch()"
+                                        [(ngModel)]="searchText" />
+                                </nz-input-group>
+                                <ng-template #prefixIconButton>
+                                    <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                                </ng-template>    
+                            </div>
+                            <div nz-col style="padding: 0 10px;">
+                                <button nz-button nzType="default" class="btn-sync" nz-tooltip (click)="handleSync()" [disabled]="!isAllowSync">
+                                    <span nz-icon nzType="sync" nzTheme="outline"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="async">Dữ liệu được đồng bộ lúc: 
+                            <span class="time-async">{{syncInfo.group}}</span>
                         </div>
                     </div>
                 </div>
+
                 <div>
-
-                    <div class="async">Dữ liệu được đồng bộ lúc: <span class="time-async">{{syncInfo.group}}</span>
-                    </div>
-
                     <nz-table id="groups" #basicTable [nzData]="listConsumerGroup" nzShowSizeChanger
                         [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="pageIndex" [nzPageSize]="pageSize" 
                         (nzPageSizeChange)="changeSize($event)" (nzPageIndexChange)="changePage($event)" [nzScroll]="{ x: '1100px' }">
                         <thead>
                             <tr>
                                 <th nzWidth="6%" nzAlign="center">STT</th>
-                                <th nzWidth="39%">ID Consumer Group</th>
-                                <th nzWidth="12%" nzAlign="center">Số lượng thành viên</th>
+                                <th nzWidth="40%">ID Consumer Group</th>
+                                <th nzWidth="14%" nzAlign="center">Số lượng thành viên</th>
                                 <th nzWidth="10%" nzAlign="center">Số lượng Topic</th>
-                                <th nzWidth="8%" nzAlign="center">Overall lag</th>
+                                <th nzWidth="10%" nzAlign="center">Overall lag</th>
                                 <th nzWidth="10%" nzAlign="center">Coordinator ID</th>
-                                <th nzWidth="8%" nzAlign="center">Trạng thái</th>
-                                <th nzWidth="7%" nzAlign="center">Thao tác</th>
+                                <th nzWidth="10%" nzAlign="center">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,12 +90,12 @@
                                     <ng-template #inActive>
                                         <nz-tag [nzColor]="'#9d9d7b'" nz-tooltip
                                             [nzTooltipTitle]="contentOfState.inActive" [nzTooltipColor]="'#9d9d7b'"
-                                            nzTooltipPlacement="rightTop">INACTIVE</nz-tag>
+                                            nzTooltipPlacement="rightTop">DEAD</nz-tag>
                                     </ng-template>
                                 </td>
-                                <td nzAlign="center">
+                                <!-- <td nzAlign="center">
                                     <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer;" nz-tooltip="Xóa" (click)="showDeleteConfirm(data)"/>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </nz-table>
@@ -167,7 +173,7 @@
                                 </ng-container>
                             </ng-template>
                             <ng-template #inActive>
-                                <nz-tag [nzColor]="'#9d9d7b'">INACTIVE</nz-tag>
+                                <nz-tag [nzColor]="'#9d9d7b'">DEAD</nz-tag>
                             </ng-template>
                         </div>
                     </div>
