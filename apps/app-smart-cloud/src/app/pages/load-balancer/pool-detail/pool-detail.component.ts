@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,6 +40,9 @@ export class PoolDetailComponent implements OnInit {
   currentPageHealth: number = 1;
   totalHealth: number;
   poolDetail: PoolDetail = new PoolDetail();
+
+  @ViewChild('nameInput') healthInput: ElementRef;
+  @ViewChild('memberInput') memberInput: ElementRef;
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -150,6 +155,9 @@ export class PoolDetailComponent implements OnInit {
       this.healthForm.type = 'HTTP';
       this.isCreate = true;
       this.titleModalHealth = 'Tạo mới Health Monitor';
+      setTimeout(() => {
+        this.healthInput.nativeElement.focus();
+      }, 300);
     } else {
       this.healthForm = data;
       this.isCreate = false;
@@ -386,6 +394,9 @@ export class PoolDetailComponent implements OnInit {
       this.memberForm.vpcId = this.projectId;
       this.isCreate = true;
       this.titleModalMember = 'Tạo mới Member';
+      setTimeout(() => {
+        this.memberInput.nativeElement.focus();
+      }, 300);
     } else {
       this.memberForm = data;
       this.isCreate = false;

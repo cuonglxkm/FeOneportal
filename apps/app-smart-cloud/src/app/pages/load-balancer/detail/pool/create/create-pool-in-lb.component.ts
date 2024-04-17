@@ -26,38 +26,19 @@ import { CreatePool } from 'src/app/shared/models/load-balancer.model';
   templateUrl: './create-pool-in-lb.component.html',
   styleUrls: ['./create-pool-in-lb.component.less'],
 })
-export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
+export class CreatePoolInLbComponent{
   @Input() region: number;
   @Input() project: number;
-  @Input() loadbalancerId: string;
-  @Input() listenerId: string;
+  @Input() loadbalancerId: number;
+  @Input() listenerId: number;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
   isVisible: boolean = false;
   isLoading: boolean = false;
-
-  validateForm: FormGroup<{
-    namePool: FormControl<string>;
-    algorithm: FormControl<string>;
-    protocol: FormControl<string>;
-    session: FormControl<boolean>;
-  }> = this.fb.group({
-    namePool: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9_]*$/),
-        this.duplicateNameValidator.bind(this),
-        Validators.maxLength(50),
-      ],
-    ],
-    algorithm: ['', [Validators.required]],
-    protocol: ['', [Validators.required]],
-    session: [false],
-  });
-
   nameList: string[] = [];
+
+  validateForm: FormGroup;
 
   algorithms = [
     { value: 'Roud_Robin', label: 'Roud_Robin' },
@@ -75,7 +56,6 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private loadBalancerService: LoadBalancerService,
     private notification: NzNotificationService
@@ -100,10 +80,8 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
 
   createPool = new CreatePool();
   showModal() {
-    this.isVisible = true;
-    setTimeout(() => {
-      this.poolInputName?.nativeElement.focus();
-    }, 1000);
+    this.createPool = new CreatePool()
+    this.getListPool();
   }
 
   handleCancel() {
@@ -143,11 +121,33 @@ export class CreatePoolInLbComponent implements AfterViewInit, OnInit {
     });
   }
 
-  getListPool() {}
-
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    this.poolInputName?.nativeElement.focus();
+  getListPool() {
+    this.loadBalancerService
+      .getListPoolInLB(this.loadbalancerId)
+      .subscribe((data) => {
+        data.forEach((e) => {
+          this.nameList.push(e.name);
+        });
+        this.isVisible = true;
+        this.validateForm = new FormGroup({
+          namePool: new FormControl('', {
+            validators: [
+              Validators.required,
+              Validators.pattern(/^[a-zA-Z0-9_]*$/),
+              this.duplicateNameValidator.bind(this),
+              Validators.maxLength(50),
+            ],
+          }),
+          algorithm: new FormControl('', {
+            validators: [Validators.required],
+          }),
+          protocol: new FormControl('', {
+            validators: [Validators.required],
+          }),
+        });
+        setTimeout(() => {
+          this.poolInputName?.nativeElement.focus();
+        }, 300);
+      });
   }
 }
