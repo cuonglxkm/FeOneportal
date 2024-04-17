@@ -116,10 +116,10 @@
             <span class="text-card-header">Danh sách Pool</span>
           </nz-col>
           <nz-col>
-            <one-portal-create-pool-in-lb [region]="region" [project]="project" (onOk)="handleCreatePoolOk()"/>
+            <one-portal-create-pool-in-lb [region]="region" [project]="project" [loadbalancerId]="idLoadBalancer" (onOk)="handleCreatePoolOk()"/>
           </nz-col>
         </nz-row>
-        <one-portal-list-pool-load-balancer [idLB]="idLoadBalancer"/>
+        <one-portal-list-pool-load-balancer [checkCreate]="checkCreate" [idLB]="idLoadBalancer"/>
       </nz-tab>
     </nz-tabset>
   </nz-card>

@@ -590,6 +590,9 @@ export class InstancesEditComponent implements OnInit {
         }
       });
     }
+    this.instanceResize.gpuType = this.configGPU.GPUType;
+    this.instanceResize.gpuCount =
+      this.instancesModel.gpuCount + this.configGPU.GPU;
     this.instanceResize.addBtqt = 0;
     this.instanceResize.addBttn = 0;
     // this.instanceResize.typeName =

@@ -526,6 +526,7 @@ export class InstancesCreateComponent implements OnInit {
   getListNetwork(): void {
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
+    formSearchNetwork.project = this.projectId;
     formSearchNetwork.pageNumber = 0;
     formSearchNetwork.pageSize = 9999;
     formSearchNetwork.vlanName = '';
