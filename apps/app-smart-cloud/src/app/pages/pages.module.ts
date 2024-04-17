@@ -152,10 +152,10 @@ import { DetachWanComponent } from './wan/action/detach-wan/detach-wan.component
 import { CreateWanComponent } from './wan/create/create-wan.component';
 import { AttachWanComponent } from './wan/action/attach-wan/attach-wan.component';
 import { CreateFileSystemComponent } from './file-storage/file-system/action/create/create-file-system.component';
-import { DetailFileSystemComponent } from './file-storage/file-system/action/detail/detail-file-system.component';
+import { DetailFileSystemComponent } from './file-storage/file-system/detail/detail-file-system.component';
 import { ResizeFileSystemComponent } from './file-storage/file-system/action/resize/resize-file-system.component';
 import { DeleteFileSystemComponent } from './file-storage/file-system/action/delete/delete-file-system.component';
-import { EditFileSystemComponent } from './file-storage/file-system/action/edit/edit-file-system.component';
+import { EditFileSystemComponent } from './file-storage/file-system/edit/edit-file-system.component';
 import { ListAccessRuleComponent } from './file-storage/access-rule/list/list-access-rule.component';
 import { CreateAccessRuleComponent } from './file-storage/access-rule/action/create/create-access-rule.component';
 import { DeleteAccessRuleComponent } from './file-storage/access-rule/action/delete/delete-access-rule.component';
@@ -218,6 +218,9 @@ import { EditPoolInLbComponent } from './load-balancer/detail/pool/edit/edit-poo
 import { DeletePoolInLbComponent } from './load-balancer/detail/pool/delete/delete-pool-in-lb.component';
 import { CreateL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/create/create-l7-rule.component';
 import { DeleteL7RuleComponent } from './load-balancer/listener/L7-policy/detail/l7-rule/delete/delete-l7-rule.component';
+import { CreateFileStorageNormalComponent } from './file-storage/action/create-normal/create-file-storage-normal.component';
+import { ExtendFileStorageNormalComponent } from './file-storage/action/extend-normal/extend-file-storage-normal.component';
+import { ResizeFileStorageNormalComponent } from './file-storage/action/resize-normal/resize-file-storage-normal.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -421,6 +424,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DeletePoolInLbComponent,
     CreateL7RuleComponent,
     DeleteL7RuleComponent,
+    CreateFileStorageNormalComponent,
+    ExtendFileStorageNormalComponent,
+    ResizeFileStorageNormalComponent,
   ],
   imports: [
     CommonModule,

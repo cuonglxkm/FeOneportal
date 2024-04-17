@@ -21,6 +21,26 @@
   <ng-container [ngSwitch]="isCheckBegin">
     <ng-container *ngSwitchCase="false">
       <nz-card style="border-radius: 8px;">
+        <div>
+          <span class="text-card-header">Thông tin File Storage</span>
+        </div>
+        <form nz-form nzLayout="vertical">
+          <nz-form-item style="margin-top: 20px;">
+            <nz-form-label>
+              <span *ngIf="projectInfo?.cloudProject?.type.includes('VPC')">Loại dự án: <b>Dự án VPC</b></span>
+              <span *ngIf="!projectInfo?.cloudProject?.type.includes('VPC')">Loại dự án: <b>Dự án thường</b></span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>
+              <span>Dung lượng File System đã dùng: <b>{{ projectInfo?.cloudProjectResourceUsed?.quotaShareInGb }} GB /
+                {{ projectInfo?.cloudProject?.quotaShareInGb }} GB</b></span>
+            </nz-form-label>
+          </nz-form-item>
+        </form>
+
+      </nz-card>
+      <nz-card style="border-radius: 8px;">
         <nz-row nzJustify="space-between">
           <nz-col [nzSpan]="8">
             <span class="text-card-header">Danh sách File System</span>
@@ -39,7 +59,7 @@
               <ng-template #prefixIconSearch>
                 <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
               </ng-template>
-              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
+              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem(typeVpc)">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
                 <span class="button-text-primary">Tạo File System</span>
               </button>
@@ -48,7 +68,7 @@
         </nz-row>
         <nz-table #fixTable
                   style="margin-top: 24px;"
-                  nzShowPagination
+                  nzShowSizeChanger
                   [nzData]="response?.records"
                   [nzPageSize]="response?.pageSize"
                   (nzPageSizeChange)="onPageSizeChange($event)"
@@ -126,7 +146,7 @@
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  routerLink="/app-smart-cloud/file-storage/file-system/create" nzSize="large">
+                  (click)="navigateToCreateFileSystem(typeVpc)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             Tạo mới File Storage
           </button>

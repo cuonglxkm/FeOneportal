@@ -1,9 +1,14 @@
 <nz-table #fixedTable
           style="margin-top: 20px;"
-          [nzShowPagination]="false"
-          [nzData]="listListeners || []"
+          nzShowPagination
+          [nzData]="currentPageData || []"
           [nzFrontPagination]="false"
-          [nzLoading]="isLoading">
+          [nzLoading]="isLoading"
+          [nzTotal]="listListeners.length"
+          [nzPageSize]="5"
+          [nzPageIndex]="pageIndex"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+          (nzPageIndexChange)="onPageIndexChange($event)">
 
   <thead>
   <tr>
