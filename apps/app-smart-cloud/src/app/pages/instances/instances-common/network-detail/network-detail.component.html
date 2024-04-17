@@ -14,7 +14,7 @@
           <th>MAC Address</th>
           <th>FixedIPs</th>
           <th>Status</th>
-          <th *ngIf="isDetail">Thao tác</th>
+          <th *ngIf="isDetail" nzAlign="center">Thao tác</th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
@@ -31,21 +31,16 @@
           <td style="color: #52c41a">
             {{ data.status }}
           </td>
-          <td *ngIf="isDetail">
-            <button
-              nz-button
-              [nzType]="'primary'"
+          <td *ngIf="isDetail" nzAlign="center">
+            <img
               nz-dropdown
               [nzDropdownMenu]="opMenu"
-            >
-              <span>Chỉnh sửa</span> <i nz-icon nzType="down"></i>
-            </button>
+              src="assets/imgs/edit-square.svg"
+              alt=""
+            />
             <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li
-                  nz-menu-item
-                  (click)="editPort(modalContentEditPort, data.id)"
-                >
+                <li nz-menu-item (click)="showModalEditPort(data)">
                   Chỉnh sửa
                 </li>
                 <li
@@ -57,7 +52,7 @@
                       data.id
                   ]"
                 >
-                  Quản lý Address Pair
+                  Address Pair
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -67,31 +62,72 @@
     </nz-table>
   </div>
 </nz-card>
-
-<ng-template #modalContentEditPort>
-  <nz-form-item>
-    <label>Port Security <span style="color: red">*</span></label>
-    <input
-      nz-input
-      type="checkbox"
-      checked
-      style="width: 15px; margin-left: 15px"
-    />
-  </nz-form-item>
-  <nz-form-item>
-    <label>Port Security Groups <span style="color: red">*</span></label>
-    <nz-select
-      style="width: 65%; margin-left: 15px"
-      nzMode="multiple"
-      nzPlaceHolder="Chọn Security Group"
-      [ngModelOptions]="{ standalone: true }"
-      [(ngModel)]="selectedSecurityGroup"
+<nz-modal
+  [(nzVisible)]="isVisibleEditPort"
+  nzTitle="Chỉnh sửa Port"
+  (nzOnCancel)="handleCancelEditPort()"
+>
+  <div *nzModalContent>
+    <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+      <nz-form-item>
+        <label
+          class="text-label"
+          nz-checkbox
+          [(ngModel)]="portSecurity"
+          [ngModelOptions]="{ standalone: true }"
+          >Port Security</label
+        >
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label
+          >{{ 'app.choose.security.group' | i18n }}(<span class="text-red"
+            >*</span
+          >)
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips [nzErrorTip]="SGErrorTpl">
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Chọn Security Group"
+            formControlName="securityGroups"
+            [(ngModel)]="listSGselected"
+            [nzServerSearch]="true"
+            nzSize="large"
+            [nzDisabled]="!portSecurity"
+          >
+            <nz-option
+              *ngFor="let i of listSecurityGroup"
+              [nzLabel]="i.name"
+              [nzValue]="i.id"
+            />
+          </nz-select>
+        </nz-form-control>
+        <ng-template #SGErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Vui lòng chọn Security Group
+          </ng-container>
+        </ng-template>
+      </nz-form-item>
+    </form>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelEditPort()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />Hủy
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkEditPort()"
+      [disabled]="form.invalid"
     >
-      <nz-option
-        *ngFor="let i of listSecurityGroup"
-        [nzLabel]="i.name"
-        [nzValue]="i.id"
-      />
-    </nz-select>
-  </nz-form-item>
-</ng-template>
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />Xác nhận
+    </button>
+  </div>
+</nz-modal>

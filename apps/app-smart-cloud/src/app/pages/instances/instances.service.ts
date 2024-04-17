@@ -250,10 +250,10 @@ export class InstancesService extends BaseService {
 
   updatePortVM(data: any) {
     let url_ = `/instances/updateport`;
-    return this.http.put<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
-    );
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + url_, data, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 
   getListOffers(regionId: number, unitOfMeasure: string): Observable<any> {

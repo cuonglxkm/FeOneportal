@@ -280,6 +280,9 @@ export class InstancesComponent implements OnInit {
   }
 
   changeVlanNetwork(networkCloudId: string) {
+    this.listSubnet = [];
+    this.instanceAction.subnetId = null;
+    this.instanceAction.ipAddress = null;
     this.getVlanSubnets(networkCloudId);
   }
 
