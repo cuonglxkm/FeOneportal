@@ -3,13 +3,13 @@
         <ng-template #breadcrumb>
             <nz-breadcrumb>
                 <nz-breadcrumb-item>
-                    <a [routerLink]="['/']">Trang chủ</a>
+                    <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    <a [routerLink]="['/app-kafka']">Danh sách Kafka</a>
+                    <a [routerLink]="['/app-kafka']">{{ 'app.kafka.list' | i18n }}</a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item>
-                    Quản lý Kafka: <b>{{serviceOrderCode}}</b>
+                    {{ 'kafka.detail.manage' | i18n }} Kafka: <b>{{serviceOrderCode}}</b>
                 </nz-breadcrumb-item>
             </nz-breadcrumb>
         </ng-template>
@@ -30,27 +30,27 @@
                 <one-portal-kafka-dashboard [serviceOrderCode]="serviceOrderCode"></one-portal-kafka-dashboard>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Tổng quan">
+        <nz-tab [nzTitle]="'kafka.detail.general' | i18n">
             <ng-template nz-tab>
                 <one-portal-summary-service [serviceOrderCode]="serviceOrderCode" [itemDetail]="itemDetail"></one-portal-summary-service>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Quản lý Topic">
+        <nz-tab [nzTitle]="'kafka.detail.topic' | i18n">
             <ng-template nz-tab>
                 <one-portal-topic-mngt [serviceOrderCode]="serviceOrderCode"></one-portal-topic-mngt>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Quản lý Consumer Group">
+        <nz-tab [nzTitle]="'kafka.detail.consumer-group' | i18n">
             <ng-template nz-tab>
                 <one-portal-consumer-group [serviceOrderCode]="serviceOrderCode"></one-portal-consumer-group>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Quản lý Tài khoản">
+        <nz-tab [nzTitle]="'kafka.detail.user' | i18n">
             <ng-template nz-tab>
                 <one-portal-credentials [serviceOrderCode]="serviceOrderCode"></one-portal-credentials>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Phân quyền (ACLs)">
+        <nz-tab [nzTitle]="'kafka.detail.acl' | i18n">
             <ng-template nz-tab>
                 <one-portal-mngt-acl [serviceOrderCode]="serviceOrderCode"></one-portal-mngt-acl>
             </ng-template>
@@ -60,7 +60,7 @@
                <one-portal-monitoring-service [serviceOrderCode]="serviceOrderCode"></one-portal-monitoring-service>
             </ng-template>
         </nz-tab>
-        <nz-tab nzTitle="Nhật ký truy cập">
+        <nz-tab [nzTitle]="'kafka.detail.log' | i18n">
             <ng-template nz-tab>
                 <one-portal-access-log [serviceOrderCode]="serviceOrderCode"></one-portal-access-log>
             </ng-template>

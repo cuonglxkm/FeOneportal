@@ -41,6 +41,7 @@ export class IpPublicComponent implements OnInit {
   loadingAtt = true;
   disableAtt = true;
   id: any;
+  instanceName: any;
 
   statusData = [
     {name: 'Tất cả trạng thái', value: ''},
@@ -136,6 +137,7 @@ export class IpPublicComponent implements OnInit {
 
   openIpMounted(event: any, item: any) {
       this.id = item.id;
+      this.instanceName = item.attachedVm;
       if (event === 'Gắn Ip Pulbic') {
         this.instancService.search(1, 999, this.regionId, this.projectId, '', '',true, this.tokenService.get()?.userId)
           .pipe(finalize(() => {
@@ -175,7 +177,11 @@ export class IpPublicComponent implements OnInit {
           this.notification.success('Thành công', 'Gỡ thành công IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
+          if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
+            this.notification.warning('Cảnh báo', `Máy ảo ${this.instanceName} cần tối thiểu 1 IP Public. Vui lòng không thực hiện thao tác này!`);
+          } else {
+            this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
+          }
         },
       }
     )
@@ -197,7 +203,11 @@ export class IpPublicComponent implements OnInit {
           this.notification.success('Thành công', 'Xóa thành công IP Public')
         },
         error: e => {
-          this.notification.error('Thất bại', 'Xóa thất bại IP Public')
+          if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
+            this.notification.warning('Cảnh báo', `Máy ảo ${this.instanceName} cần tối thiểu 1 IP Public. Vui lòng không thực hiện thao tác này!`);
+          } else {
+            this.notification.error('Thất bại', 'Xóa thất bại IP Public')
+          }
         },
       }
     )
