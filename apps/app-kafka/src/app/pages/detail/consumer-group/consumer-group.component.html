@@ -26,8 +26,8 @@
                                 </ng-template>    
                             </div>
                             <div nz-col style="padding: 0 10px;">
-                                <button nz-button nzType="default" class="btn-sync" nz-tooltip (click)="handleSync()" [disabled]="!isAllowSync">
-                                    <span nz-icon nzType="sync" nzTheme="outline"></span>
+                                <button id="btn-refresh" nz-button nzType="default" (click)="handleSync()" [disabled]="!isAllowSync">
+                                    <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
                                 </button>
                             </div>
                         </div>
