@@ -5,13 +5,13 @@ import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
 import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../../model/cluster.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
-import { VPCNetworkModel } from '../../model/vpc-network.model';
 import { ClusterService } from '../../services/cluster.service';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { WorkerTypeModel } from '../../model/worker-type.model';
 import { VolumeTypeModel } from '../../model/volume-type.model';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NetWorkModel } from '../../model/vlan.model';
 
 @Component({
   selector: 'one-portal-detail-cluster',
@@ -35,7 +35,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   upgradeForm: FormGroup;
 
   listOfK8sVersion: K8sVersionModel[];
-  listOfVPCNetworks: VPCNetworkModel[];
+  listOfVPCNetworks: NetWorkModel[];
 
   // kubeconfig
   showModalKubeConfig: boolean;

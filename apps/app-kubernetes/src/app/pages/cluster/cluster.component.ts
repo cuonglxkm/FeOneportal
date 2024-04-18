@@ -6,15 +6,14 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { overlapCidr } from "cidr-tools";
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, catchError, finalize, map } from 'rxjs';
+import { EMPTY, catchError, finalize, forkJoin, map } from 'rxjs';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../../model/cluster.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { PackModel } from '../../model/pack.model';
 import { PriceModel } from '../../model/price.model';
-import { FormSearchNetwork, FormSearchSubnet } from '../../model/vlan.model';
+import { FormSearchNetwork, FormSearchSubnet, NetWorkModel, Subnet } from '../../model/vlan.model';
 import { VolumeTypeModel } from '../../model/volume-type.model';
-import { SubnetModel, VPCNetworkModel } from '../../model/vpc-network.model';
 import { WorkerTypeModel } from '../../model/worker-type.model';
 import { ClusterService } from '../../services/cluster.service';
 import { ShareService } from '../../services/share.service';
@@ -37,10 +36,10 @@ export class ClusterComponent implements OnInit {
   isSubmitting: boolean;
 
   listOfK8sVersion: K8sVersionModel[];
-  listOfVPCNetworks: VPCNetworkModel[];
+  listOfVPCNetworks: NetWorkModel[];
   listOfWorkerType: WorkerTypeModel[];
   listOfVolumeType: VolumeTypeModel[];
-  listOfSubnets: SubnetModel[];
+  listOfSubnets: Subnet[];
   listOfServicePack: PackModel[];
   listOfPriceItem: PriceModel[];
 
@@ -255,7 +254,6 @@ export class ClusterComponent implements OnInit {
     }
   }
 
-  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
   getSubnetByVlanNetwork() {
     this.formSearchSubnet.pageSize = 1000;
     this.formSearchSubnet.pageNumber = 0;
@@ -263,9 +261,6 @@ export class ClusterComponent implements OnInit {
     this.formSearchSubnet.region = this.regionId;
     this.formSearchSubnet.vpcId = this.projectInfraId;
     this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
-
-    // clear subnet
-    this.myform.get('subnet').setValue(null);
 
     this.vlanService.getListSubnet(this.formSearchSubnet).pipe(
       map(r => r.records),
@@ -276,7 +271,7 @@ export class ClusterComponent implements OnInit {
     )
     .subscribe((data: any) => {
       this.listOfSubnets = data;
-    })
+    });
   }
 
   getListPack(cloudProifileId: string) {
@@ -299,11 +294,11 @@ export class ClusterComponent implements OnInit {
     });
   }
 
-  subnetByNetwork: Map<string, Array<string>>;
+  listSubnetByNetwork: string[];
   getSubnetAndCidrUsed(projectInfraId: number, networkId: number) {
     this.clusterService.getSubnetByNamespaceAndNetwork(projectInfraId, networkId)
     .subscribe((r: any) => {
-      this.subnetByNetwork = r.data;
+      this.listSubnetByNetwork = r.data;
     });
   }
 
@@ -395,12 +390,30 @@ export class ClusterComponent implements OnInit {
   }
 
   vlanCloudId: string;
+  formSearchSubnet: FormSearchSubnet = new FormSearchSubnet();
   onSelectedVlan(vlanId: number) {
     this.vlanId = vlanId;
     if (this.vlanId) {
-      this.getSubnetByVlanNetwork();
+      // this.getSubnetByVlanNetwork();
       let vlan = this.listOfVPCNetworks.find(item => item.id == vlanId);
       this.vlanCloudId = vlan.cloudId;
+
+      this.formSearchSubnet.pageSize = 1000;
+      this.formSearchSubnet.pageNumber = 0;
+      this.formSearchSubnet.networkId = this.vlanId;
+      this.formSearchSubnet.region = this.regionId;
+      this.formSearchSubnet.vpcId = this.projectInfraId;
+      this.formSearchSubnet.customerId = this.tokenService.get()?.userId;
+      let subnetObs = this.vlanService.getListSubnet(this.formSearchSubnet);
+      let subnetUsedObs = this.clusterService.getSubnetByNamespaceAndNetwork(this.projectInfraId, vlanId);
+
+      // clear subnet
+      this.myform.get('subnet').setValue(null);
+
+      forkJoin({subnetObs, subnetUsedObs}).subscribe(data => {
+        this.listOfSubnets = data['subnetObs'].records;
+        this.listSubnetByNetwork = data['subnetUsedObs'].data;
+      });
     }
   }
 
@@ -412,13 +425,13 @@ export class ClusterComponent implements OnInit {
       const selectedVpcNetworkId = this.myform.get('vpcNetwork').value;
 
       this.subnetAddress = subnet.subnetAddressRequired;
-      if (this.subnetByNetwork != null) {
-        let usedSubnetArray: string[] = this.subnetByNetwork.get(selectedVpcNetworkId);
-
-        if (!usedSubnetArray) {
-
+      if (this.listSubnetByNetwork != null) {
+        if (!this.listSubnetByNetwork.includes(this.subnetAddress)) {
+          this.myform.get('subnet').setErrors({usedSubnet: true});
+          return;
+        } else {
+          delete this.myform.get('subnet').errors?.usedSubnet;
         }
-
       }
       this.myform.get('subnetId').setValue(subnetId);
       this.myform.get('networkCloudId').setValue(subnet.networkCloudId);
@@ -666,11 +679,13 @@ export class ClusterComponent implements OnInit {
   }
 
   get cidr() {
-    return this.myform.get('cidr').value;
+    return this.myform.get('cidr').value + '/16';
   }
 
   get subnet() {
-    return this.myform.get('subnet').value;
+    const subnetId = this.myform.get('subnet').value;
+    let subnet = this.listOfSubnets.find(item => item.id == subnetId);
+    return subnet?.subnetAddressRequired;
   }
 
   // get volumeCloudSize() {
@@ -763,7 +778,9 @@ export class ClusterComponent implements OnInit {
       if (r && r.code == 200) {
         this.onSubmitOrder(cluster);
       } else {
+        this.isSubmitting = false;
         this.notificationService.error("Thất bại", r.message);
+        this.cdr.detectChanges();
       }
     });
   }

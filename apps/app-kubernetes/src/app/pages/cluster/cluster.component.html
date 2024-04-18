@@ -343,7 +343,7 @@
           <div nz-col [nzSpan]="12">
             <nz-form-item>
               <nz-form-label nzRequired nzFor="subnet">Subnet</nz-form-label>
-              <nz-form-control nzErrorTip="Subnet không để trống">
+              <nz-form-control [nzErrorTip]="errorSubnetTpl">
                 <nz-select nzShowSearch nzPlaceHolder="Chọn subnet" formControlName="subnet" id="subnet" class="w-90" nzSize="large"
                   (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event)">
                   <ng-container *ngFor="let item of listOfSubnets">
@@ -360,7 +360,6 @@
                       </nz-option>
                     </ng-template>
                   </ng-container>
-
                 </nz-select>
                 <button nz-button nzType="text" nzTooltipTitle="Làm mới" nzTooltipPlacement="top" nz-tooltip
                   (click)="refreshSubnet()" class="borderless">
@@ -375,6 +374,14 @@
                   <small>Lựa chọn subnet cho cluster này</small>
                 </div>
               </nz-form-control>
+              <ng-template #errorSubnetTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Subnet không để trống
+                </ng-container>
+                <ng-container *ngIf="control.hasError('usedSubnet')">
+                  Subnet đã được sử dụng
+                </ng-container>
+              </ng-template>
             </nz-form-item>
           </div>
         </div>
@@ -502,7 +509,7 @@
 
   <!-- payment -->
   <div nz-col [nzSpan]="8" class="gutter-row">
-    <nz-affix [nzOffsetTop]="48">
+    <nz-affix [nzOffsetTop]="72">
       <nz-card class="border-card">
         <nz-tabset>
           <!-- tab into money -->
@@ -510,7 +517,7 @@
             <div>
               <div nz-row [nzGutter]="8">
                 <div nz-col [nzSpan]="12">
-                  <div class="ml-3"><label>Chi phí worker</label></div>
+                  <div class="ml-3"><label class="weight-600">Chi phí worker</label></div>
                 </div>
 
                 <div nz-col [nzSpan]="12">
@@ -519,9 +526,11 @@
                 </div>
               </div>
 
+              <nz-divider class="divider-style"></nz-divider>
+
               <div nz-row [nzGutter]="8">
                 <div nz-col [nzSpan]="12">
-                  <div class="mt-3 ml-3"><label>Chi phí volume</label></div>
+                  <div class="mt-3 ml-3"><label class="weight-600">Chi phí volume</label></div>
                 </div>
 
                 <div nz-col [nzSpan]="12">
@@ -532,7 +541,7 @@
 
               <div nz-row [nzGutter]="8" class="mt-5 price-panel">
                 <div nz-col [nzSpan]="12">
-                  <div class="mt-3 ml-3"><label>Thành tiền</label></div>
+                  <div class="mt-3 ml-3"><label class="weight-600">Thành tiền</label></div>
                   <div class="mt-1 ml-3 mb-3 unit-color"><i>(Đã bao gồm 10% VAT)</i></div>
                 </div>
                 <div nz-col [nzSpan]="12">
@@ -552,19 +561,20 @@
 
                 <div nz-col [nzSpan]="12">
                   <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()"
-                    [disabled]="myform.invalid || isSubmitting">
+                    [disabled]="myform.invalid || isSubmitting || !chooseItem">
                     <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                       <span nz-icon [nzType]="'loading'"></span>
                     </ng-container>
                     <ng-template #paymentIconTpl>
                       <span nz-icon>
-                        <svg viewBox="64 64 896 896" focusable="false">
-                          <path
-                            d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-32 464H528V448h320v128zm-268-64a40 40 0 1080 0 40 40 0 10-80 0z" />
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18.3334 9.99992V14.1666C18.3334 16.6666 16.6667 18.3333 14.1667 18.3333H5.83341C3.33341 18.3333 1.66675 16.6666 1.66675 14.1666V9.99992C1.66675 7.73325 3.03341 6.14992 5.15841 5.88325C5.37508 5.84992 5.60008 5.83325 5.83341 5.83325H14.1667C14.3834 5.83325 14.5917 5.84158 14.7917 5.87491C16.9417 6.12491 18.3334 7.71659 18.3334 9.99992Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M14.7928 5.87508C14.5928 5.84175 14.3844 5.83342 14.1678 5.83342H5.83442C5.60109 5.83342 5.37609 5.85009 5.15942 5.88342C5.27609 5.65009 5.44276 5.43342 5.64276 5.23342L8.35109 2.51675C9.49276 1.38341 11.3428 1.38341 12.4844 2.51675L13.9428 3.99176C14.4761 4.51676 14.7594 5.18341 14.7928 5.87508Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M18.3334 10.4167H15.8334C14.9167 10.4167 14.1667 11.1667 14.1667 12.0834C14.1667 13.0001 14.9167 13.7501 15.8334 13.7501H18.3334" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                       </span>
                     </ng-template>
-                    Khởi tạo
+                    <span>Khởi tạo</span>
                   </button>
                 </div>
               </div>
