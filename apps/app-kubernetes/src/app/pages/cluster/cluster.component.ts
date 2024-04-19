@@ -721,14 +721,13 @@ export class ClusterComponent implements OnInit {
     this.getSubnetByVlanNetwork();
   }
 
-  onCancelCreate() {
-    this.modalService.confirm({
-      nzTitle: `<b>Đang tiến hành thanh toán</b>`,
-      nzContent: `<p>Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.</p> <p>Bạn có chắc chắn muốn thoát khỏi trang này?</p>`,
-      nzOkText: `Rời trang`,
-      nzCancelText: `Ở lại trang`,
-      nzOnOk: () => this.back2list()
-    });
+  showModalCancelCreate: boolean = false;
+  handleShowModalCancelCreate() {
+    this.showModalCancelCreate = true;
+  }
+
+  handleCancelModalCancelCreate() {
+    this.showModalCancelCreate = false;
   }
 
   back2list() {

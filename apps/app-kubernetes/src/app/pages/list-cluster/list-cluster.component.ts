@@ -99,6 +99,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
     this.openWs();
 
     this.getListStatus();
+
+    window.onbeforeunload = () => this.ngOnDestroy();
   }
 
   searchCluster() {

@@ -552,7 +552,7 @@
 
               <div nz-row class="mt-5" [nzGutter]="16" nzJustify="center">
                 <div nz-col [nzSpan]="12">
-                  <button nz-button nzType="default" nzBlock class="border-button" (click)="onCancelCreate()"
+                  <button nz-button nzType="default" nzBlock class="border-button" (click)="handleShowModalCancelCreate()"
                     [disabled]="isSubmitting">
                     <span nz-icon nzType="close" nzTheme="outline"></span>
                     Hủy
@@ -763,3 +763,32 @@
     </nz-affix>
   </div>
 </div>
+
+
+<!-- modal cancel create -->
+<nz-modal [(nzVisible)]="showModalCancelCreate" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancelModalCancelCreate()">
+  <ng-template #modalTitle>Đang tiến hành thanh toán</ng-template>
+
+  <ng-template #modalContent>
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="cancelWarning" nzShowIcon></nz-alert>
+    <ng-template #cancelWarning>
+      <div class="warning-description">Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.</div>
+      <div class="delete-color warning-description mt-1">Bạn có chắc chắn muốn thoát khỏi trang này?</div>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancelModalCancelCreate()" [disabled]="isSubmitDelete">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      Hủy
+    </button>
+    <button nz-button nzType="primary" (click)="back2list()"
+      [nzLoading]="isDeleting" [disabled]="isWrongName" [nzLoading]="isSubmitDelete">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Xác nhận
+    </button>
+  </ng-template>
+</nz-modal>

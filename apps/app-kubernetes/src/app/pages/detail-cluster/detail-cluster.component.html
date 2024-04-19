@@ -10,7 +10,7 @@
       <span nz-icon nzType="close" nzTheme="outline"></span>
       Hủy bỏ
     </button>
-    <button nz-button nzType="primary" (click)="onConfirmUpgradeService()" class="mb-3"
+    <button nz-button nzType="primary" (click)="handleShowModalUpgradeWorker()" class="mb-3"
       [disabled]="isUpgrading || upgradeForm.invalid">
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Xác nhận
@@ -632,9 +632,15 @@
     </ng-template>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()">Hủy bỏ</button>
+    <button nz-button nzType="default" (click)="handleCancelModalUpgradeWorker()">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+      Hủy bỏ
+    </button>
     <button nz-button nzType="primary" (click)="onSubmitUpgradeWorker()" [nzLoading]="isUpgradingWorker"
-      [disabled]="upgradeForm.invalid">Xác nhận</button>
+      [disabled]="upgradeForm.invalid">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Xác nhận
+    </button>
   </div>
 </nz-modal>
 
