@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
-import { KubernetesCluster, UpgradeVersionClusterDto, WorkerGroupModel } from '../../model/cluster.model';
+import { KubernetesCluster, UpgradeVersionClusterDto, UpgradeWorkerGroupDto, WorkerGroupModel } from '../../model/cluster.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { ClusterService } from '../../services/cluster.service';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -29,7 +29,9 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
   // for uprgade
   showModalUpgradeVersion: boolean;
+  showModalUpgradeWorker: boolean;
   isUpgradingVersion: boolean;
+  isUpgradingWorker: boolean;
   upgradeVersionCluster: string;
 
   upgradeForm: FormGroup;
@@ -43,10 +45,9 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   // upgrade variable
   isEditMode: boolean;
   listFormWorkerGroupUpgrade: FormArray;
-  upgradeClusterName: string;
   workerGroupConfig: any;
-  upgradeVolumeCloudSize: number;
-  upgradeVolumeType: string;
+  // upgradeVolumeCloudSize: number;
+  // upgradeVolumeType: string;
 
   cloudProfileId: string;
   regionId: number;
@@ -75,10 +76,11 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.upgradeForm = this.fb.group({
+      serviceOrderCode: [null],
       clusterName: [null,
         [Validators.required, Validators.pattern(KubernetesConstant.CLUTERNAME_PATTERN), Validators.minLength(5), Validators.maxLength(50)]],
-      volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
-      volumeCloudType: [null, [Validators.required]],
+      // volumeCloudSize: [null, [Validators.required, Validators.min(20), Validators.max(1000)]],
+      // volumeCloudType: [null, [Validators.required]],
       workerGroup: this.listFormWorkerGroupUpgrade
     });
   }
@@ -89,39 +91,15 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
       this.regionId = this.detailCluster.regionId;
       this.listOfCurrentWorkerGroup = this.detailCluster.workerGroup;
+      this.upgradeForm.get('serviceOrderCode').setValue(this.detailCluster.serviceOrderCode);
       this.initFormWorkerGroup(this.detailCluster.workerGroup);
     }
   }
 
-  onConfirmUpgradeService() {
-    this.modalService.confirm({
-      nzTitle: `Nâng cấp cluster ${this.detailCluster.clusterName}`,
-      nzContent: `Hệ thống sẽ bị gián đoạn trong quá trình nâng cấp.<br>Bạn có muốn nâng cấp không?`,
-      nzOkText: "Xác nhận",
-      nzCancelText: "Hủy bỏ",
-      nzOnOk: () => this.onSubmitUpgrade()
-    });
-  }
-
-  isUpgrading: boolean = false;
-  onSubmitUpgrade() {
-    this.isUpgrading = true;
-    const data = this.upgradeForm.value;
-    console.log({data: data});
-    this.isUpgrading = false;
-  }
-
   onEditCluster() {
     this.isEditMode = true;
-    this.initUpgradeData();
     this.getListWorkerType(this.regionId, this.cloudProfileId);
     this.getListVolumeType(this.regionId, this.cloudProfileId);
-  }
-
-  initUpgradeData() {
-    this.upgradeClusterName = this.detailCluster.clusterName;
-    this.upgradeVolumeType = this.detailCluster.volumeCloudType;
-    this.upgradeVolumeCloudSize = this.detailCluster.volumeCloudSize;
   }
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {
@@ -140,8 +118,11 @@ export class DetailClusterComponent implements OnInit, OnChanges {
           [Validators.required, Validators.maxLength(16), this.validateUnique(i), Validators.pattern(KubernetesConstant.WORKERNAME_PATTERN)]],
         nodeNumber: [nodeNumber, [Validators.required, Validators.min(1), Validators.max(10)]],
         volumeStorage: [wgs[i].volumeSize, [Validators.required, Validators.min(20), Validators.max(1000)]],
-        volumeType: [wgs[i].volumeType, [Validators.required]],
+        volumeType: [wgs[i].volumeType],
+        volumeTypeName: [wgs[i].volumeTypeName],
+        volumeTypeId: [wgs[i].volumeTypeId, [Validators.required]],
         configType: [wgs[i].machineTypeName, [Validators.required]],
+        configTypeId: [wgs[i].machineTypeId, [Validators.required]],
         autoScalingWorker: [wgs[i].autoScaling, Validators.required],
         autoHealing: [wgs[i].autoHealing, Validators.required],
         minimumNode: [null],
@@ -155,8 +136,8 @@ export class DetailClusterComponent implements OnInit, OnChanges {
 
     // init other info
     this.upgradeForm.get('clusterName').setValue(this.detailCluster.clusterName);
-    this.upgradeForm.get('volumeCloudSize').setValue(this.detailCluster.volumeCloudSize);
-    this.upgradeForm.get('volumeCloudType').setValue(this.detailCluster.volumeCloudType);
+    // this.upgradeForm.get('volumeCloudSize').setValue(this.detailCluster.volumeCloudSize);
+    // this.upgradeForm.get('volumeCloudType').setValue(this.detailCluster.volumeCloudType);
   }
 
   addWorkerGroup(e?: MouseEvent): void {
@@ -176,13 +157,19 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
       autoScalingWorker: [false, Validators.required],
-      autoHealing: [false, Validators.required],
+      autoHealing: [true, Validators.required],
       minimumNode: [null],
       maximumNode: [null],
       ram: [null],
       cpu: [null]
     });
     this.listFormWorkerGroupUpgrade.push(wg);
+
+    // fill volumeTypeId by default value when add new worker group
+    const volumeType = this.listOfVolumeType?.find(item => item.volumeType === KubernetesConstant.DEFAULT_VOLUME_TYPE);
+    if (volumeType) {
+      this.listFormWorkerGroupUpgrade.at(index).get('volumeTypeId').setValue(volumeType.id);
+    }
   }
 
   // validate duplicate worker group name
@@ -233,6 +220,16 @@ export class DetailClusterComponent implements OnInit, OnChanges {
       });
   }
 
+  onSelectVolumeType(volumeType: string, index: number) {
+    const selectedVolumeType = this.listOfVolumeType.find(item => item.volumeType === volumeType);
+    this.listFormWorkerGroupUpgrade.at(index).get('volumeTypeId').setValue(selectedVolumeType.id);
+  }
+
+  onSelectWorkerType(machineName: string, index: number) {
+    const selectedWorkerType = this.listOfWorkerType.find(item => item.machineName === machineName);
+    this.listFormWorkerGroupUpgrade.at(index).get('configTypeId').setValue(selectedWorkerType.id);
+  }
+
   onCancelEdit() {
     this.isEditMode = false;
     this.clearFormWorker();
@@ -258,17 +255,22 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     }
   }
 
-  onChangeConfigType(event: string, index: number) {
+  onChangeConfigType(machineName: string, index: number) {
+    // check resource is not downgrade compare to old config
     const idWorker = this.listFormWorkerGroupUpgrade.at(index).get('id').value;
+    const selectedConfig = this.listOfWorkerType.find(item => machineName == item.machineName);
     if (idWorker) {
       const oldWorkerInfo = this.listOfCurrentWorkerGroup.find(item => item.id == idWorker);
-      const selectedConfig = this.listOfWorkerType.find(item => event == item.machineName);
       if (selectedConfig.cpu < oldWorkerInfo.cpu || selectedConfig.ram < oldWorkerInfo.ram) {
         this.listFormWorkerGroupUpgrade.at(index).get('configType').setErrors({invalid: true});
       } else {
         delete this.listFormWorkerGroupUpgrade.at(index).get('configType').errors?.invalid;
       }
     }
+
+    this.listFormWorkerGroupUpgrade.at(index).get('configTypeId').setValue(selectedConfig.id);
+    this.listFormWorkerGroupUpgrade.at(index).get('ram').setValue(selectedConfig.ram);
+    this.listFormWorkerGroupUpgrade.at(index).get('cpu').setValue(selectedConfig.cpu);
   }
 
   onChangeVolumeWorker(event: number, index: number) {
@@ -392,6 +394,33 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     dlink.click(); dlink.remove();
   }
 
+  // upgrade worker
+  handleShowModalUpgradeWorker() {
+    this.showModalUpgradeWorker = true;
+  }
+
+  handleCancelModalUpgradeWorker() {
+    this.showModalUpgradeWorker = false;
+  }
+
+  onSubmitUpgradeWorker() {
+    this.isUpgradingWorker = true;
+    const formValue = this.upgradeForm.value;
+    const data = new UpgradeWorkerGroupDto(formValue);
+
+    this.clusterService.upgradeWorkerCluster(data)
+    .pipe(finalize(() => this.isUpgradingWorker = false))
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.notificationService.success("Thành công", r.messgae);
+        this.back2list();
+      } else {
+        this.notificationService.error("Thất bại", r.message);
+      }
+    });
+  }
+
+  // upgrade version
   handleUpgadeVersionCluster() {
     this.isUpgradingVersion = true;
 
@@ -442,10 +471,8 @@ export class DetailClusterComponent implements OnInit, OnChanges {
         {{value}}
       </ng-container>
       <ng-template #truncateValueTpl>
-        <div nz-popover
-          [nzPopoverTitle]="label"
-          [nzPopoverContent]="contentTpl"
-          nzPopoverPlacement="bottom">
+        <div [nzTooltipTitle]="contenTpl"
+          nzTooltipPlacement="bottom" nz-tooltip>
           {{value | truncateLabel}}
         </div>
 

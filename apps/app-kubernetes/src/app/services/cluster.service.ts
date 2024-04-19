@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Inject, Injectable, NgZone } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { Observable, Subject } from "rxjs";
-import { UpgradeVersionClusterDto } from "../model/cluster.model";
+import { UpgradeVersionClusterDto, UpgradeWorkerGroupDto } from "../model/cluster.model";
 import { BaseService } from "../shared/services/base.service";
 
 @Injectable({
@@ -19,7 +19,7 @@ export class ClusterService extends BaseService {
   private progressSource = new Subject<any>();
   progressData = this.progressSource.asObservable();
 
-  baseUrl = 'http://127.0.0.1:16003';
+  // baseUrl = 'http://127.0.0.1:16003';
 
   private getHeaders() {
     return new HttpHeaders({
@@ -107,6 +107,10 @@ export class ClusterService extends BaseService {
 
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {
     return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/upgrade-version`, data, { headers: this.getHeaders() });
+  }
+
+  upgradeWorkerCluster(data: UpgradeWorkerGroupDto) {
+    return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/upgrade-cluster`, data, { headers: this.getHeaders() });
   }
 
   getListStatus() {

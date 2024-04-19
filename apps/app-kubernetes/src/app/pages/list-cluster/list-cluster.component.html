@@ -197,10 +197,16 @@
   <ng-template #modalTitle>Xác nhận xóa Cluster {{selectedCluster.clusterName}}</ng-template>
 
   <ng-template #modalContent>
-    <p>Điều này là không thể hoàn tác. Chúng tôi sẽ xóa hoàn toàn cụm Cluster của bạn và tất cả các tài nguyên liên quan.</p>
-    <p class="delete-color"><b>Tất cả các node sẽ bị xoá và không thể khôi phục</b></p>
-    <p>Nhập `<b class="delete-color">{{selectedCluster.clusterName}}</b>` trong hộp văn bản dưới đây để xác nhận xóa cụm cluster này</p>
-    <input type="text" nz-input [(ngModel)]="deleteClusterName" placeholder="Nhập tên cluster để xác nhận xóa" (ngModelChange)="onInputDeleteCluster($event)" autofocus />
+    <nz-alert
+      nzType="warning"
+      [nzDescription]="deleteWarning" nzShowIcon></nz-alert>
+    <ng-template #deleteWarning>
+      <div class="warning-description">Điều này là không thể hoàn tác. Chúng tôi sẽ xóa hoàn toàn cụm Cluster của bạn và tất cả các tài nguyên liên quan.</div>
+      <div class="delete-color warning-description mt-1"><b>Tất cả các node sẽ bị xoá và không thể khôi phục.</b></div>
+      <div class="warning-description mt-1">Nhập `<b class="delete-color">{{selectedCluster.clusterName}}</b>` trong hộp văn bản dưới đây để xác nhận xóa cụm cluster này.</div>
+    </ng-template>
+    <input type="text" nz-input [(ngModel)]="deleteClusterName" placeholder="Nhập tên cluster để xác nhận xóa" nzSize="large" class="mt-3"
+      (ngModelChange)="onInputDeleteCluster($event)" autofocus />
   </ng-template>
 
   <ng-template #modalFooter>

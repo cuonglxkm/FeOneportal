@@ -160,7 +160,7 @@ export class ClusterComponent implements OnInit {
       configType: [null, [Validators.required]],
       configTypeId: [null, [Validators.required]],
       autoScalingWorker: [false, Validators.required],
-      autoHealing: [false, Validators.required],
+      autoHealing: [true, Validators.required],
       minimumNode: [null],
       maximumNode: [null],
       cpu: [null],
