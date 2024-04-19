@@ -425,7 +425,7 @@ export class ClusterComponent implements OnInit {
       const selectedVpcNetworkId = this.myform.get('vpcNetwork').value;
 
       this.subnetAddress = subnet.subnetAddressRequired;
-      if (this.listSubnetByNetwork != null) {
+      if (this.listSubnetByNetwork && this.listSubnetByNetwork.length > 0) {
         if (!this.listSubnetByNetwork.includes(this.subnetAddress)) {
           this.myform.get('subnet').setErrors({usedSubnet: true});
           return;
