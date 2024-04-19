@@ -221,7 +221,7 @@
   "app.service.include": "Including",
   "app.service.exclude": "Excluding",
   
-  "app.kafka.name": "Kafka name",
+  "app.kafka.name": "Kafka Cluster name",
   "app.kafka.version": "Kafka version",
   "app.kafka.name-placeholder": "Please enter the service name",
   "app.kafka.version-placeholder": "Select Kafka version",
@@ -358,7 +358,7 @@
   "app.text.version": "Version",
   "app.text.status": "Status",
   "app.text.package": "Service package",
-  "app.text.creation-time": "Creation time",
+  "app.text.creation-time": "Initialization date",
   "app.text.created-date": "Created date",
   "app.text.operation": "Operation",
   "app.text.edit": "Edit",

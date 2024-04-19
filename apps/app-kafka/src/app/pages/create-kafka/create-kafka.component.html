@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.service.create' | i18n ">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.kafka.init' | i18n ">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -158,28 +158,6 @@
           </nz-tab>
         </nz-tabset>
       </nz-card>
-      
-      <nz-card class="border-card">
-        <div nz-row [nzGutter]="16">
-          <div nz-col [nzSpan]="12">
-            <nz-form-item>
-              <nz-form-label [nzXs]="24" [nzSm]="24" nzRequired>{{ 'app.service.duration' | i18n }}</nz-form-label>
-              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
-                  <input nz-input type="number" formControlName="usageTime" id="usageTime" 
-                    [placeholder]="'app.service.duration-placeholder' | i18n" autofocus nzSize="large" (ngModelChange)="onChangeUsageTime()" />
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div nz-col [nzSpan]="12">
-            <div>
-              <p style="padding-top: 30px; margin-bottom: 0px;">{{ 'app.service.start-date' | i18n }}: {{createDate | date: 'dd/MM/yyyy'}}</p>
-              <ng-container *ngIf="expiryDate">
-                <p style="color: #ea3829;">{{ 'app.service.expiration-date' | i18n }}: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
-              </ng-container>
-            </div>
-          </div>
-        </div>
-      </nz-card>
 
       <nz-card class="border-card">
         <h3><b>{{ 'app.service.broker-config' | i18n }}</b></h3>
@@ -331,6 +309,28 @@
               </ng-template>
           </nz-form-item>
         </ng-container>
+      </nz-card>
+
+      <nz-card class="border-card">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label [nzXs]="24" [nzSm]="24" nzRequired>{{ 'app.service.duration' | i18n }}</nz-form-label>
+              <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
+                  <input nz-input type="number" formControlName="usageTime" id="usageTime" 
+                    [placeholder]="'app.service.duration-placeholder' | i18n" autofocus nzSize="large" (ngModelChange)="onChangeUsageTime()" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <div>
+              <p style="padding-top: 30px; margin-bottom: 0px;">{{ 'app.text.creation-time' | i18n }}: {{createDate | date: 'dd/MM/yyyy'}}</p>
+              <ng-container *ngIf="expiryDate">
+                <p style="color: #ea3829;">{{ 'app.service.expiration-date' | i18n }}: {{expiryDate | date: 'dd/MM/yyyy'}}</p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
       </nz-card>
 
     </form>
