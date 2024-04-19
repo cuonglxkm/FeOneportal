@@ -199,6 +199,12 @@
   "kafka.log.content": "Nội dung",
   "kafka.log.time": "Thời gian",
 
+  "kafka.cg.list": "Danh sách Consumer Group",
+  "kafka.cg.sync-time": "Dữ liệu được đồng bộ lúc",
+  "kafka.cg.consumer": "Số lượng thành viên",
+  "kafka.cg.topic": "Số lượng topic",
+  "kafka.cg.topic-search": "Tìm kiếm theo tên topic",
+
   "tooltip.kakfa.topic.max-message-bytes": "Kích thước tối đa của 1 message",
   "tooltip.kakfa.topic.cleanup-policy": "Chính sách dọn dẹp",
   "tooltip.kakfa.topic.min-insync-replicas": "Số lượng thành viên đang được đồng bộ dữ liệu (bao gồm cả leader)",

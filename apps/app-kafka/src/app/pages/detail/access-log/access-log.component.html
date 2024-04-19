@@ -11,7 +11,7 @@
                             (ngModelChange)="getAccessLogs()" />
                     </nz-input-group>
                     <ng-template #prefixTplUser>
-                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
                     </ng-template>
                 </div>
                 <div class="filter-option" nz-col [nzSpan]="4">
@@ -20,7 +20,7 @@
                             (ngModelChange)="getAccessLogs()" />
                     </nz-input-group>
                     <ng-template #prefixTplResource>
-                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
                     </ng-template>
                 </div>
                 <div class="filter-option" nz-col [nzSpan]="4">

@@ -322,6 +322,12 @@
   "kafka.log.content": "Content",
   "kafka.log.time": "Time",
 
+  "kafka.cg.list": "List of Consumer Groups",
+  "kafka.cg.sync-time": "Sync time",
+  "kafka.cg.consumer": "Consumer count",
+  "kafka.cg.topic": "Topic count",
+  "kafka.cg.topic-search": "Search by topic",
+
   "tooltip.kakfa.topic.max-message-bytes": "The maximum size of one message",
   "tooltip.kakfa.topic.cleanup-policy": "Cleanup Policy",
   "tooltip.kakfa.topic.min-insync-replicas": "The number of in-sync replicas (including the leader) currently being synchronized",

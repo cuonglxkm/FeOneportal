@@ -115,6 +115,7 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 
 .async {
     font-size: 14px;
+    font-style: italic;
 }
 
 .time-async {
