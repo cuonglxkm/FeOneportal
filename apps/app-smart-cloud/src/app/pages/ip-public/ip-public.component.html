@@ -122,12 +122,12 @@
 </nz-modal>
 
 <!--Gỡ-->
-<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ IP Public" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleRemove" nzTitle="Gỡ IP Public" [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
 <!--    <div style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</div>-->
     <b style="display: flex; justify-content: center;">Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?</b>
     <br>
-    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Đồng ý</i>
+    <i style="display: flex; justify-content: center;">Vui lòng cân nhắc kỹ trước khi click nút Xác nhận</i>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
