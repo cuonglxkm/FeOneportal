@@ -40,7 +40,6 @@
         style="width: 20%"
         [(ngModel)]="searchParam.status"
         [ngModelOptions]="{ standalone: true }"
-        [nzPlaceHolder]="'Trạng thái máy ảo'"
         [nzShowSearch]="false"
         (ngModelChange)="doSearch()"
         nzSize="large"
@@ -59,7 +58,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [placeholder]="'app.placeholder.search' | i18n"
           [(ngModel)]="searchParam.name"
           (keyup.enter)="doSearch()"
         />
@@ -69,7 +68,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          [nz-tooltip]="'app.button.search' | i18n"
           (click)="doSearch()"
         />
       </ng-template>
@@ -307,7 +306,7 @@
                 nz-menu-item
                 (click)="openConsole(data.id)"
               >
-                Truy cập
+                {{ 'app.access' | i18n }}
               </li>
             </ul>
           </nz-dropdown-menu>

@@ -180,6 +180,14 @@
   "app.task.status": "Task Status",
   "app.ip.lan": "LAN IP",
   "app.ip.public": "Public IP",
+  "app.access": "Access",
+  "app.status.all": "All statuses",
+  "app.status.suspended": "Chậm gia hạn, vi phạm điều khoản",
+  "app.reboot": "Reboot",
+  "app.create.backup": "Create Backup",
+  "app.create.backup.schedule": "Create Backup Schedule",
+  "app.shutdown.instance": "Shutdown Instance",
+  "app.start.instance": "Start Instance",
 
   "app.input.name": "Enter name",
   "app.input.password": "Enter password",
@@ -213,6 +221,9 @@
   "app.instances.OS": "Operating system",
   "app.instances.keypair.label": "Choose an available keypair or",
   "app.instances.status": "Intance status",
+
+  "app.attach.to.vlan": "Attach to VLAN",
+  "app.detach.from.vlan": "Detach from VLAN",
 
   "app.alert.password": "Password setting rules: The length of an online-used password must be at least 12 characters, utilizing a combination of digits, uppercase letters, lowercase letters, and special symbols.",
   "app.alert.security.group": "To set up access mechanisms to the virtual machine, you need to configure the Security Group in the",
@@ -256,6 +267,7 @@
   "app.ssd.intro.text": "The better choice for data analysis workload or gaming",
   "app.password.intro.text": "Convenient for users",
   "app.keypair.intro.text": "Enhances security during login",
+  "app.placeholder.search": "Search for name",
 
   "app.volume.type": "Volume type",
   "app.volume.name": "Volume name",

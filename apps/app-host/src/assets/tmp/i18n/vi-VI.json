@@ -58,6 +58,14 @@
   "app.task.status": "Trạng thái tác vụ",
   "app.ip.lan": "IP LAN",
   "app.ip.public": "IP Public",
+  "app.access": "Truy cập",
+  "app.status.all": "Tất cả trạng thái",
+  "app.status.suspended": "Chậm gia hạn, vi phạm điều khoản",
+  "app.reboot": "Khởi động lại",
+  "app.create.backup": "Tạo Backup",
+  "app.create.backup.schedule": "Tạo lịch Backup",
+  "app.shutdown.instance": "Tắt máy ảo",
+  "app.start.instance": "Bật máy ảo",
 
   "app.input.name": "Nhập tên",
   "app.input.password": "Nhập mật khẩu",
@@ -92,6 +100,9 @@
   "app.instances.OS": "Hệ điều hành",
   "app.instances.keypair.label": "Lựa chọn keypair có sẵn hoặc",
   "app.instances.status": "Trạng thái máy ảo",
+
+  "app.attach.to.vlan": "Gắn vào VLAN",
+  "app.detach.from.vlan": "Gỡ khỏi VLAN",
 
   "app.alert.password": "Quy tắc đặt mật khẩu: Độ dài của một mật khẩu được sử dụng trực tuyến cần phải chứa tối thiểu là 12 ký tự, sử dụng hỗn hợp bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc biệt.",
   "app.alert.security.group": "Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu hình Security Group trong mục",
@@ -135,6 +146,7 @@
   "app.ssd.intro.text": "Lựa chọn tốt hơn cho khối lượng công việc phân tích dữ liệu hoặc chơi game",
   "app.password.intro.text": "Thuận tiện cho người dùng",
   "app.keypair.intro.text": "Tăng tính bảo mật khi đăng nhập",
+  "app.placeholder.search": "Tìm kiếm tên",
 
   "app.kafka.intro-text": "VNPT Message Streaming for Kafka là nền tảng phân phối dữ liệu cho các hệ thống qua đám mây. Kafka cung cấp khả năng xử lý nhanh, ổn định, chịu lỗi cao cho các hệ thống dạng Pub/Sub.",
   "app.kafka.init": "Khởi tạo Kafka Cluster",
