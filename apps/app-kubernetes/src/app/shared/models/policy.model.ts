@@ -1,3 +1,5 @@
+import {BaseResponse} from "../../../../../../libs/common-utils/src";
+
 export interface PolicyModel {
   id: any;
   name: any;

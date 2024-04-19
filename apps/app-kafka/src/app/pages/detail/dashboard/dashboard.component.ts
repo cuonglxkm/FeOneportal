@@ -512,7 +512,7 @@ export class DashboardComponent implements OnInit {
 
   getByteInChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.byteInData = res.data;
@@ -527,7 +527,7 @@ export class DashboardComponent implements OnInit {
 
   getByteOutChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.byteOutData = res.data;
@@ -542,7 +542,7 @@ export class DashboardComponent implements OnInit {
 
   getMessageRateChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.messageRateData = res.data;
@@ -557,7 +557,7 @@ export class DashboardComponent implements OnInit {
 
   getStorageChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number, unit: string) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, unit)
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.storageData = res.data;
@@ -572,7 +572,7 @@ export class DashboardComponent implements OnInit {
 
   getCpuChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.cpuData = res.data;
@@ -587,7 +587,7 @@ export class DashboardComponent implements OnInit {
 
   getRamChart(serviceOrderCode: string, previousTimeMins: number, metricType: string, numPoints: number) {
     this.dashBoardService.getDataChart(serviceOrderCode, previousTimeMins, metricType, numPoints, '')
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res) => {
         if (res.code && res.code == 200) {
           this.ramData = res.data;

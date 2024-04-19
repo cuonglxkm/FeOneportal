@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "one-portal",
   "sourceRoot": "apps/app-kubernetes/src",
-  "tags": ["app-kubernetes"],
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
@@ -19,7 +19,10 @@
           "apps/app-kubernetes/src/favicon.ico",
           "apps/app-kubernetes/src/assets"
         ],
-        "styles": ["apps/app-kubernetes/src/styles.less"],
+        "styles": ["apps/app-kubernetes/src/styles.less",
+          "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+          "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css"
+        ],
         "scripts": [],
         "customWebpackConfig": {
           "path": "apps/app-kubernetes/webpack.config.ts"
@@ -35,7 +38,7 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "1mb",
+              "maximumWarning": "500kb",
               "maximumError": "5mb"
             },
             {
@@ -80,16 +83,6 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "browserTarget": "app-kubernetes:build"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/app-kubernetes/**/*.ts",
-          "apps/app-kubernetes/**/*.html"
-        ]
       }
     },
     "serve-static": {

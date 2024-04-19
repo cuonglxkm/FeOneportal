@@ -88,6 +88,7 @@ export class ListenerDetailComponent implements OnInit{
           this.validateForm.controls['connection'].setValue(data.timeoutMemberConnect);
           this.validateForm.controls['allowCIRR'].setValue(data.allowedCidrs[0]);
           this.validateForm.controls['description'].setValue(data.description);
+          this.description = data.description;
           this.protocolListener = data.protocol;
           this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
           this.getL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -117,4 +118,5 @@ export class ListenerDetailComponent implements OnInit{
       }
     )
   }
+  description: any;
 }

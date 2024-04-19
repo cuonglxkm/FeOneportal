@@ -18,8 +18,8 @@ import {getCurrentRegionAndProject} from "@shared";
   styleUrls: ['./ip-public.component.less'],
 })
 export class IpPublicComponent implements OnInit {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
-  projectId = JSON.parse(localStorage.getItem('projectId'));
+  regionId: number;
+  projectId: number;
   projectType = 0;
   listOfIp: IpPublicModel[] = [];
   checkEmpty: IpPublicModel[] = [];

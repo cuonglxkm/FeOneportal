@@ -1,40 +1,37 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'SSH Key'">
+             [title]="'Khóa truy cập (Keypair)'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-      <nz-breadcrumb-item> SSH Key</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Khóa truy cập (Keypair)</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)"
+                               (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
-
-
 </page-header>
-
 <nz-card>
-
-    <div class="d-flex justify-content-between">
-      <div *ngIf="!isBegin" nz-row class="mb-md">
-        <nz-input-group style="margin-right: 8px; width: 100%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
-                        nzSize="large">
-          <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm"/>
-        </nz-input-group>
-        <ng-template #suffixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
-               (click)="search(searchBox.value)"/>
-        </ng-template>
-      </div>
-
-      <button *ngIf="!isBegin" (click)="createKey()"  nz-button nzType="primary">
-        <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
-        <span class="button-text-primary">Tạo mới SSH Key</span>
-      </button>
+  <div class="d-flex justify-content-between">
+    <div *ngIf="!isBegin" nz-row class="mb-md">
+      <nz-input-group style="margin-right: 8px; width: 100%;border-radius: 8px" [nzPrefix]="suffixIconSearch"
+                      nzSize="large">
+        <input #searchBox (keyup.enter)="search(searchBox.value)" name="name" nz-input placeholder="Tìm kiếm" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
+             (click)="search(searchBox.value)" />
+      </ng-template>
     </div>
+
+    <button *ngIf="!isBegin" (click)="createKey()" nz-button nzType="primary">
+      <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
+      <span class="button-text-primary">Tạo mới Keypair</span>
+    </button>
+  </div>
 
   <ng-container [ngSwitch]="isBegin">
     <ng-container *ngSwitchCase=false><!--  màn khởi tạo-->
@@ -46,8 +43,8 @@
                 (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
         <thead>
         <tr>
-          <th>Tên keypair</th>
-          <th>Finger print</th>
+          <th>Tên Keypair</th>
+          <th>Finger Print</th>
           <th>Thao tác</th>
         </tr>
         </thead>
@@ -56,9 +53,6 @@
           <td (click)="detailKey(data)">{{ data.name }}</td>
           <td (click)="detailKey(data)">{{ data.fingerprint }}</td>
           <td>
-<!--            <button (click)="deleteKey(data)" nz-button nzType="primary" nzDanger style="border-radius: 13%">-->
-<!--              <span nz-icon nzType="delete" [nzPopoverContent]="'Xóa'" nzTheme="outline"></span>-->
-<!--            </button>-->
             <span style="color: #0066B3"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
@@ -67,12 +61,20 @@
             ></span>
           </td>
         </tr>
-        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xác nhận xóa SSH Key"
-                  (nzOnCancel)="handleCancel(null)"
-                  (nzOnOk)="handleDelete(data.id)">
+        <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa Keypair {{nameDelete}}"
+                  (nzOnCancel)="handleCancel(null)">
           <ng-container *nzModalContent>
-            <h3 style="font-weight: normal;">Quý khách có chắc chắn muốn xóa SSH Key?</h3>
+            <div class="text-label" style="margin-bottom: 3px; margin-top: 10px"> Đế thực hiện xoá Keypair {{nameDelete}}, vui lòng nhập tên Keypair để xác nhận.</div>
+            <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{nameDelete}}" [(ngModel)]="nameDeleteInput"  [ngModelOptions]="{ standalone: true }" type="text" />
           </ng-container>
+          <div *nzModalFooter>
+            <button nz-button (click)="handleCancel(null)">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+            </button>
+            <button nz-button nzType="primary" (click)="handleDelete(data.id)" [disabled]="nameDeleteInput !== nameDelete">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />Xác nhận
+            </button>
+          </div>
         </nz-modal>
         </tbody>
       </nz-table>
@@ -80,97 +82,59 @@
     <ng-container *ngSwitchDefault>
       <nz-card>
         <nz-row nzJustify="center" style="margin-top: 30px;">
-            <img src="assets/imgs/ssh-key.png" width="400" height="300" alt="blank-security-group">
+          <img src="assets/imgs/ssh-key.png" width="400" height="300" alt="blank-security-group">
         </nz-row>
         <nz-row nzJustify="center" style="margin-top: 40px">
-            <div class="text-title">
-                <h1 style="font-size: 32px; color: #0066B3; text-align: center; margin-bottom: 0;"><b>SSH KEY</b></h1>
-                <h1 style="font-size: 32px; color: #0066B3;"><b>Ổ Khóa truy cập dịch vụ</b></h1>
-            </div>
+          <div class="text-title">
+            <h1 style="font-size: 32px; color: #0066B3; text-align: center; margin-bottom: 0;"><b>SSH KEY</b></h1>
+            <h1 style="font-size: 32px; color: #0066B3;"><b>Ổ Khóa truy cập dịch vụ</b></h1>
+          </div>
         </nz-row>
         <nz-row nzJustify="center">
-            <div class="text-subtitle" style="margin-top: 5px; max-width: 710px; text-wrap: normal; color: #6C757D">Dịch vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối</div>
+          <div class="text-subtitle" style="margin-top: 5px; max-width: 710px; text-wrap: normal; color: #6C757D">Dịch
+            vụ hỗ trợ người dùng xác thực dịch vụ một cách bảo mật, an toàn tuyệt đối
+          </div>
         </nz-row>
         <nz-row nzJustify="center" style="margin: 50px 0 20px 0">
-            <button (click)="createKey()" style="text-align: center" nz-button nzType="primary">Khởi tạo SSH Key</button>
+          <button (click)="createKey()" style="text-align: center" nz-button nzType="primary">Khởi tạo SSH Key</button>
         </nz-row>
-    </nz-card>
+      </nz-card>
     </ng-container>
   </ng-container>
 
   <!-- tạo mới -->
   <nz-form-control>
     <form #myForm="ngForm" nz-form [formGroup]="form" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
-      <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới Keypair" [nzOkDisabled]="form.invalid"
-                (nzOnCancel)="handleCancel(myForm)"
-                (nzOnOk)="handleCreate(myForm)" [nzStyle]="modalStyle" nzOkText="Xác nhận"
-                nzCancelText="Hủy bỏ">
+      <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo mới Keypair" (nzOnCancel)="handleCancel(myForm)">
         <ng-container *nzModalContent>
           <nz-tabset (nzSelectedIndexChange)="onTabchange($event, myForm)">
-            <nz-tab nzTitle="Tạo SSH Key mới">
-              <div class="mb-5 mt-5 pt-3 pb-3" style="
-              border-style: solid;
-              border-width: 1px;
-              border-color: #0493fa;
-              background-color: #d6eeff;
-            ">
-                <Space>
-                <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
-                      style="color: blue"></span>
-                  Private key sẽ được gửi vào email khách hàng đăng ký tài khoản.
-                  Quý khách lưu ý giữ private key này an toàn bảo mật cho server.
-                </Space>
-              </div>
-              <h4>
-                Tên key pair
-                <span nz-typography nzType="danger" style="color: red">*</span>
-              </h4>
-              <nz-input-group>
-                <nz-form-item>
-                  <nz-form-control
-                    nzErrorTip="Tên keypair không được chứa ký tự đặc biệt, chữ cái phải trong bảng tiếng anh">
-                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Vui lòng nhập thông tin"
-                              maxlength="20" formControlName="keypair_name_1"></textarea>
-                  </nz-form-control>
-                </nz-form-item>
-              </nz-input-group>
+            <nz-tab nzTitle="Tạo mới">
+              <nz-alert nzType="warning" nzMessage="Private key sẽ được gửi vào email khách hàng đăng ký tài khoản.
+                  Quý khách lưu ý giữ private key này an toàn bảo mật cho server." nzShowIcon></nz-alert>
+              <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Tên Keypair (<span class="text-red">*</span>)
+                <img
+                  style="margin-left: 4px"
+                  nz-tooltip="Không bao gồm ký tự đặc biệt, dấu cách, tiếng việt, không quá 50 ký tự (trừ_)"
+                  src="assets/imgs/pajamas_question.svg"
+                /></div>
+              <input nz-input nzSize="large" placeholder="Vui lòng nhập thông tin" formControlName="keypair_name_1" type="text" maxlength="20"/>
             </nz-tab>
-            <nz-tab nzTitle="Nhập key có sẵn">
-              <div class="mb-5 mt-5 pt-3 pb-3" style="
-              border-style: solid;
-              border-color: #0493fa;
-              background-color: #d6eeff;
-              border-width: 1px;
-            ">
-                <Space>
-                <span class="mt-2 mb-2 ml-3 mr-1" nz-icon nzType="info-circle" nzTheme="fill"
-                      style="color: blue"></span>
-                  Chức năng được dùng khi quý khách đã có sẵn cặp SSH key.Vui lòng nhập Public Key để tạo vào tài khoản
-                  của quý khách.
-                </Space>
-              </div>
-              <h4>
-                Tên key pair
-                <span nz-typography nzType="danger" style="color: red">*</span>
-              </h4>
-              <nz-input-group>
-                <nz-form-item>
-                  <nz-form-control
-                    nzErrorTip="Tên keypair không được chứa ký tự đặc biệt, chữ cái phải trong bảng tiếng anh">
-                    <textarea nz-input [nzAutosize]="{ minRows: 1 }" placeholder="Vui lòng nhập thông tin"
-                              maxlength="20" formControlName="keypair_name_2"></textarea>
-                  </nz-form-control>
-                </nz-form-item>
-              </nz-input-group>
-              <h4 style="padding-top: 20px">
-                Tên Public Key
-                <span nz-typography nzType="danger" style="color: red">*</span>
-              </h4>
+            <nz-tab nzTitle="Nhập KEY có sẵn">
+              <nz-alert nzType="warning" nzMessage="Chức năng được dùng khi quý khách đã có sẵn cặp SSH key.Vui lòng nhập Public Key để tạo vào tài khoản
+                  của quý khách." nzShowIcon></nz-alert>
+              <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Tên Keypair (<span class="text-red">*</span>)
+                <img
+                  style="margin-left: 4px"
+                  nz-tooltip="Không bao gồm ký tự đặc biệt, dấu cách, tiếng việt, không quá 50 ký tự (trừ_)"
+                  src="assets/imgs/pajamas_question.svg"
+                /></div>
+              <input nz-input nzSize="large" placeholder="Vui lòng nhập thông tin" formControlName="keypair_name_2" type="text" maxlength="20"/>
+              <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Public Key (<span class="text-red">*</span>)</div>
               <nz-input-group>
                 <nz-form-item>
                   <nz-form-control
                     nzErrorTip="Trường dữ liệu không thể bỏ trống">
-                    <textarea formControlName="public_key" nz-input [nzAutosize]="{ minRows: 3 }"
+                    <textarea nzSize="large" formControlName="public_key" nz-input [nzAutosize]="{ minRows: 3 }"
                               placeholder="Nhập public key"></textarea>
                   </nz-form-control>
                 </nz-form-item>
@@ -178,19 +142,27 @@
             </nz-tab>
           </nz-tabset>
         </ng-container>
+        <div *nzModalFooter>
+          <button nz-button (click)="handleCancel(myForm)">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />Hủy
+          </button>
+          <button nz-button nzType="primary" (click)="handleCreate(myForm)" [disabled]="form.invalid">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />Xác nhận
+          </button>
+        </div>
       </nz-modal>
     </form>
   </nz-form-control>
 
   <!-- chi tiết  -->
-  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Key pair" (nzOnCancel)="handleCancel(null)"
+  <nz-modal [(nzVisible)]="isVisibleDetail" nzTitle="Chi tiết Keypair" (nzOnCancel)="handleCancel(null)"
             [nzOkText]="null"
             nzCancelText="Quay lại" [nzStyle]="modalStyle">
     <ng-container *nzModalContent>
-      <h4>Tên key pair:</h4>
-      <p>{{ data.name }}</p>
-      <h4>Public key:</h4>
-      <p>{{ data.publicKey }}</p>
+      <div class="text-label" style="font-weight: bold;">Tên Keypair:</div>
+      <p class="text-label">{{ data.name }}</p>
+      <h4 class="text-label"  style="font-weight: bold;">Public key:</h4>
+      <p class="text-label">{{ data.publicKey }}</p>
     </ng-container>
   </nz-modal>
 </nz-card>

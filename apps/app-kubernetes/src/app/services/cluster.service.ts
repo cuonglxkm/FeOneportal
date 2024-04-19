@@ -32,14 +32,36 @@ export class ClusterService extends BaseService {
   searchCluster(
     clusterName: string,
     serviceStatus: string,
+    cloudProfileId: string,
+    projectInfraId: number,
     pageIndex: number,
     pageSize: number
   ) {
-    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`, { headers: this.getHeaders() });
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-cluster?cluster_name=${clusterName}&cloud_profile_id=${cloudProfileId}&project_infra_id=${projectInfraId}&service_status=${serviceStatus}&page=${pageIndex}&size=${pageSize}`, { headers: this.getHeaders() });
+  }
+
+  searchLogs(
+    userAction: string,
+    operation: string,
+    resource: string,
+    resourceType: string,
+    fromDate: number,
+    toDate: number,
+    pageIndex: number,
+    pageSize: number,
+    serviceOrderCode: string
+  ) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/search-logs?user_action=${userAction || ''}&operation=${operation || ''}&resource=${resource || ''}&resource_type=${resourceType || ''}&from_date=${fromDate || ''}&to_date=${toDate || ''}&service_order_code=${serviceOrderCode}&page=${pageIndex || 1}&size=${pageSize || 10}`,
+      { headers: this.getHeaders() });
   }
 
   createNewCluster(data) {
     return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/create-cluster`, data, { headers: this.getHeaders() });
+  }
+
+  validateClusterInfo(data: any) {
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/validate-cluster`, data,
+      { headers: this.getHeaders() });
   }
 
   getDetailCluster(serviceOrderCode: string) {
@@ -61,14 +83,26 @@ export class ClusterService extends BaseService {
     });
   }
 
-  observableTest() {
-    return new Observable<string>(obs => {
-      const es = new EventSource(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/test`);
-      es.addEventListener('message', (evt) => {
-        obs.next(evt.data);
-      });
-      return () => es.close();
-    });
+  getListPriceItem() {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/list-price`, { headers: this.getHeaders() });
+  }
+
+  getKubeConfig(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-kubeconfig/${serviceOrderCode}`,
+      { headers: this.getHeaders() });
+  }
+
+  getSSHKey(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/ssh-key/${serviceOrderCode}`, { headers: this.getHeaders() });
+  }
+
+  getSubnetByNamespaceAndNetwork(projectInfraId: number, networkId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/subnet-by-network-namespace?projectInfraId=${projectInfraId}&networkId=${networkId}`,
+    { headers: this.getHeaders() });
+  }
+
+  getWorkerGroupOfCluster(serviceOrderCode: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${serviceOrderCode}/workers-name`, { headers: this.getHeaders() });
   }
 
   upgradeVersionCluster(data: UpgradeVersionClusterDto) {
@@ -83,8 +117,8 @@ export class ClusterService extends BaseService {
     return this.http.delete(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/delete-cluster/${clusterId}`, { headers: this.getHeaders() });
   }
 
-  testCreateCluster(data) {
-    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/get-dto/create-cluster`, data, { headers: this.getHeaders() });
+  getListPack(cloudProfileId: string) {
+    return this.http.get(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/${cloudProfileId}/packs-service`, { headers: this.getHeaders() });
   }
 
   getListK8sVersion(regionId: number, cloudProfileName: string) {
