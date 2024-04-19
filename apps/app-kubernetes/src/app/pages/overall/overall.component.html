@@ -1,0 +1,45 @@
+<page-header [breadcrumb]="breadcrumb">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">Trang chủ</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Container</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-kubernetes']">Danh sách cluster</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Quản lý Cluster: <ng-container *ngIf="detailCluster"><b>{{detailCluster.clusterName}}</b></ng-container>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-tabset>
+  <nz-tab [nzTitle]="detailTitleTpl">
+    <ng-template nz-tab>
+      <one-portal-detail-cluster
+        [detailCluster]="detailCluster"
+        [vpcNetwork]="vpcNetwork"
+        [yamlString]="yamlString"
+        [sshKeyString]="sshKeyString"
+      ></one-portal-detail-cluster>
+    </ng-template>
+  </nz-tab>
+  <ng-template #detailTitleTpl>
+    <label>Chi tiết dịch vụ</label>
+  </ng-template>
+
+  <nz-tab [nzTitle]="logTitleTpl">
+    <ng-template nz-tab>
+      <one-portal-logs
+        [serviceOrderCode]="detailCluster.serviceOrderCode"
+      ></one-portal-logs>
+    </ng-template>
+  </nz-tab>
+  <ng-template #logTitleTpl>
+    <label>Nhật ký thao tác</label>
+  </ng-template>
+</nz-tabset>

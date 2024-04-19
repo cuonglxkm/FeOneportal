@@ -55,7 +55,7 @@ export  class SnapshotVolumeDto{
   totalCount: number;
   projectName: string;
   projectId: number;
-  fromRootVolume: true;
+  fromRootVolume: boolean;
   note: string;
   scheduleId: number
 
