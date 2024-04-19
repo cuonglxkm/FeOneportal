@@ -6,6 +6,7 @@ import { KafkaConsumerGroup, KafkaConsumerGroupDetail, KafkaConsumerGroupTopic }
 import { Pagination } from '../core/models/pagination.model';
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
+import Base from '@antv/g2/lib/base';
 
 @Injectable({
     providedIn: 'root'
@@ -63,6 +64,10 @@ export class ConsumerGroupKafkaService extends BaseService {
             }
         }
         return this.http.delete<BaseResponse<null>>(this.consumerGroupUrl, json);
+    }
+
+    sync(serviceOrderCode: string): Observable<BaseResponse<null>> {
+        return this.http.post<BaseResponse<null>>(`${this.consumerGroupUrl}/sync/serviceOrderCode=${serviceOrderCode}`, {});
     }
 
 }

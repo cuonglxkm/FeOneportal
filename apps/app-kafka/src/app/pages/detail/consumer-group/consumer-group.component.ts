@@ -242,5 +242,18 @@ export class ConsumerGroupComponent implements OnInit {
 
   handleSync() {
     this.isAllowSync = false;
+    this.loadingSrv.open({ type: "spin", text: "Loading..." });
+    this.consumerGroupKafkaService.sync(this.serviceOrderCode)
+      .pipe(
+        finalize(() => this.loadingSrv.close())
+      )
+      .subscribe((res) => {
+        if (res && res.code == 200) {
+          this.notification.success('Thành công', res.msg);
+            this.getListConsumerGroup(this.pageIndex, this.pageSize, '', this.serviceOrderCode);
+        } else {
+          this.notification.error('Thất bại', res.msg);
+        }
+      })
   }
 }
