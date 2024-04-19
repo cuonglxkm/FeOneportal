@@ -766,7 +766,7 @@ export class ClusterComponent implements OnInit {
     cluster.networking = networking;
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.offerId = this.offerId;
-    cluster.cloudProfileId = 'openstack-disable-snat';
+    cluster.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
     // console.log({data: data});
