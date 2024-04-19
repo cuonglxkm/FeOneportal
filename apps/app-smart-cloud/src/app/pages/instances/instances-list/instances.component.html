@@ -115,13 +115,13 @@
   >
     <thead>
       <tr>
-        <th nzLeft>Tên máy ảo</th>
-        <th>Gói cấu hình</th>
-        <th>Trạng thái máy ảo</th>
-        <th>Trạng thái tác vụ</th>
-        <th>IP LAN</th>
-        <th>IP Public</th>
-        <th nzRight>Thao tác</th>
+        <th nzLeft>{{ 'app.instances.name' | i18n }}</th>
+        <th>{{ 'app.text.package' | i18n }}</th>
+        <th>{{ 'app.instances.status' | i18n }}</th>
+        <th>{{ 'app.task.status' | i18n }}</th>
+        <th>{{ 'app.ip.lan' | i18n }}</th>
+        <th>{{ 'app.ip.public' | i18n }}</th>
+        <th nzRight>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -141,13 +141,13 @@
           {{ data.flavorName | slice : 3 }}
         </td>
         <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
-          Đang hoạt động
+          {{ 'app.status.running' | i18n }}
         </td>
         <td *ngIf="data.status == 'RESIZE'" style="color: #4fe414">
-          Đang điều chỉnh
+          {{ 'app.status.upgrade' | i18n }}
         </td>
         <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
-          Chậm gia hạn
+          {{ 'app.status.not-renew' | i18n }}
         </td>
         <td nzBreakWord>{{ data.taskState }}</td>
         <td nzBreakWord>{{ data.ipPrivate }}</td>
@@ -177,7 +177,7 @@
             alt=""
             (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Chỉnh sửa"
+            [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
             *ngIf="
