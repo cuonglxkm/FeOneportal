@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chỉnh sửa Listener'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chi tiết Listener'">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -27,10 +27,10 @@
         <span>Tên Load Balancer (<span style="color: red;">*</span>) </span>
       </nz-form-label>
       <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-        <input nz-input [disabled]="true"
-               class="input-custom"
-               formControlName="listenerName"
-               [placeholder]="'Nhập tên Load Balancer'" [maxLength]="50" />
+        <nz-input-number [nzDisabled]="true"
+                         class="input-custom"
+               formControlName="listenerName"  style="margin-left: -2px;width: 100%"
+               />
         <ng-template #nameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Load Balancer</ng-container>
           <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc
@@ -65,7 +65,7 @@
             <span>Port (<span style="color: red;">*</span>) </span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <nz-input-number [disabled]="true" nzSize="large" formControlName="port" [nzMin]="0" [nzStep]="1" [nzDisabled]="true"
+            <nz-input-number nzSize="large" formControlName="port" [nzMin]="0" [nzStep]="1" [nzDisabled]="true"
                              style="margin-left: -2px;"></nz-input-number>
           </nz-form-control>
         </nz-form-item>
@@ -79,7 +79,7 @@
             <span>Client timeout (ms)</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <nz-input-number [disabled]="true" style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
+            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
                              [nzStep]="1"></nz-input-number>
           </nz-form-control>
         </nz-form-item>
@@ -90,7 +90,7 @@
             <span>Member</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <nz-input-number [disabled]="true" style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
+            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
                              [nzStep]="1"></nz-input-number>
           </nz-form-control>
         </nz-form-item>
@@ -101,7 +101,7 @@
             <span>Connection</span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <nz-input-number [disabled]="true" style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
+            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
                              [nzStep]="1"></nz-input-number>
           </nz-form-control>
         </nz-form-item>
@@ -112,10 +112,10 @@
             <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <input nz-input
+            <nz-input-number
                    class="input-custom"
                    formControlName="allowCIRR"
-                   [placeholder]="" [maxLength]="50" />
+                   [nzDisabled]="true" style="margin-left: -2px;width: 90%"/>
             <!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="" [nzMin]="0"-->
             <!--                               [nzStep]="1"></nz-input-number>-->
           </nz-form-control>
@@ -129,8 +129,8 @@
         <span>Mô tả</span>
       </nz-form-label>
       <nz-form-control nzDisableAutoTips>
-          <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
-                    formControlName="description"></textarea>
+          <textarea nz-input [disabled]="true" [nzAutosize]="{ minRows: 3 }" placeholder="Nhập mô tả" style="width: 100%"
+                    [ngModel]="description" [ngModelOptions]="{standalone : true}"></textarea>
       </nz-form-control>
     </nz-form-item>
   </nz-card>
