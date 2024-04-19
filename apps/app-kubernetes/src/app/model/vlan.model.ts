@@ -4,7 +4,7 @@ export class NetWorkModel {
   address: string
   routerExternal: string
   vpcName: string
-  id: 3537
+  id: number;
   cloudId: string
   name: string
   vlanId: string
@@ -53,19 +53,21 @@ export class FormSearchSubnet {
   vlanName: string
   customerId: number
   networkId: number;
+  vpcId: number;
 }
 
 export class Subnet {
   id: number
   name: string
   ipVersion: number
-  gatewayId: string
-  enableDHCP: boolean
-  hnsNameServer: string
+  gatewayIp: string
+  enableDhcp: boolean
   cloudId: string
   status: string
   networkId: number
   networkCloudId: string
   allocationPools: string
   hostRouters: string
+  subnetAddressRequired: string;
+  subnetCloudId: string;
 }

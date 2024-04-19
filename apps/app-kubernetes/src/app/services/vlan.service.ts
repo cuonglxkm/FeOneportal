@@ -16,6 +16,8 @@ export class VlanService extends BaseService {
     super();
   }
 
+  baseUrl: string = "https://api.onsmartcloud.com";
+
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -89,6 +91,9 @@ export class VlanService extends BaseService {
     }
     if (formSearchSubnet.networkId != undefined || formSearchSubnet.networkId != null) {
       params = params.append('networkId', formSearchSubnet.networkId);
+    }
+    if (formSearchSubnet.vpcId != undefined || formSearchSubnet.vpcId != null) {
+      params = params.append('vpcId', formSearchSubnet.vpcId);
     }
     return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
       headers: this.getHeaders(),

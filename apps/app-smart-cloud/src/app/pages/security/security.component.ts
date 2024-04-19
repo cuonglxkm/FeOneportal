@@ -4,6 +4,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel } from '../../shared/models/project.model';
 import { RegionModel } from '../../shared/models/region.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { SecurityService } from 'src/app/shared/services/security.service';
+import { FormEnable2FA } from 'src/app/shared/models/security.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-security',
@@ -19,6 +22,7 @@ export class SecurityComponent implements OnInit {
   isVisibleUpdate: boolean = false
 
   email:string = ''
+  authenticatorKey:string = ''
 
   form: FormGroup<{
     otp: FormControl<string>;
@@ -27,6 +31,8 @@ export class SecurityComponent implements OnInit {
   });
 
   constructor(
+    private service: SecurityService,
+    private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) {}
@@ -54,9 +60,22 @@ export class SecurityComponent implements OnInit {
   // }
 
   handleSubmit(): void {
-    this.isVisibleUpdate = true;
-    console.log(this.toggleSwitch);
-    
+    let formeEnable2FA = new FormEnable2FA();
+    formeEnable2FA.code = this.form.controls.otp.value.toString();
+    this.service.enable2fa(formeEnable2FA).subscribe(data => {
+      if (data.success == true) {
+        this.isVisibleUpdate = false
+        this.notification.success("Thành công", "Đăng nhập với xác thực hai yếu tố đã được bật");
+      }
+      else
+      {
+        this.notification.error("Thất bại", "Mã xác thực không chính xác");
+      }
+    }, error => {
+      this.isVisibleUpdate = false;
+      this.toggleSwitch = false;
+      this.notification.error("Thất bại", "Thao tác thất bại");
+    })
   }
 
   handleCancel(){
@@ -65,7 +84,17 @@ export class SecurityComponent implements OnInit {
 
   handleChangeSwitch(event){
     this.toggleSwitch = event
+    if (this.toggleSwitch == true) {
+      this.service.authenticatorKey().subscribe((data: any) => {
+        this.authenticatorKey = data.key;
+        this.isVisibleUpdate = true;
+      }, error => {
+        this.toggleSwitch = false;
+        this.notification.error("Thất bại", "Thao tác thất bại")
+      });
+    }
     
+    console.log(this.toggleSwitch);
   }
 
   handleUpdate(){

@@ -1,5 +1,6 @@
 export class NotificationConstant {
 
+  public static WS_ENDPOINT = "/ws-endpoint";
   public static WS_BROADCAST_TOPIC = "/ws-topic/broadcast";
   public static WS_SPECIFIC_TOPIC = "/ws-topic/specific";
 

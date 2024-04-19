@@ -167,7 +167,7 @@ export class SshKeyComponent implements OnInit {
         form.resetForm();
       },
       error: e => {
-        if(e && e.error && e.error.detail && e.error.detail !== `Key pair '${namePrivate}' already exists.`) {
+        if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
           this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng. vui lòng nhập tên khác.`);
         }
         else {
