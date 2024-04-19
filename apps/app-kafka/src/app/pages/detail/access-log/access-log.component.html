@@ -1,31 +1,31 @@
 <nz-card>
-    <nz-affix [nzOffsetTop]="60">
-        <div nz-row class="affix-filter">
-            <div nz-col [nzSpan]="4">
-                <h3><b>Lịch sử thao tác</b></h3>
-            </div>
-            <div class="filters" nz-col [nzSpan]="19" [nzOffset]="1">
-                <div class="filter-option" nz-col [nzSpan]="5">
+    <div class="filters" nz-row>
+        <div nz-col [nzSpan]="3">
+            <h3>{{ 'kafka.detail.log' | i18n }}</h3>
+        </div>
+        <div nz-col [nzSpan]="21"> 
+            <div nz-row style="justify-content: space-between;">
+                <div class="filter-option" nz-col [nzSpan]="4">
                     <nz-input-group [nzPrefix]="prefixTplUser" nzSize="large">
-                        <input type="text" nz-input placeholder="Nhập tên người dùng" [(ngModel)]="userSearch"
+                        <input type="text" nz-input [placeholder]="'kafka.log.user-tooltip' | i18n" [(ngModel)]="userSearch"
                             (ngModelChange)="getAccessLogs()" />
                     </nz-input-group>
                     <ng-template #prefixTplUser>
-                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
                     </ng-template>
                 </div>
-                <div class="filter-option" nz-col [nzSpan]="5">
+                <div class="filter-option" nz-col [nzSpan]="4">
                     <nz-input-group [nzPrefix]="prefixTplResource" nzSize="large">
-                        <input type="text" nz-input placeholder="Nhập tên Resource" [(ngModel)]="resourceSearch"
+                        <input type="text" nz-input [placeholder]="'kafka.log.resource-tooltip' | i18n" [(ngModel)]="resourceSearch"
                             (ngModelChange)="getAccessLogs()" />
                     </nz-input-group>
                     <ng-template #prefixTplResource>
-                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+                        <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.service.search-text' | i18n" />
                     </ng-template>
                 </div>
                 <div class="filter-option" nz-col [nzSpan]="4">
                     <nz-select class="w-100" [(ngModel)]="resourceTypeSearch" (ngModelChange)="getAccessLogs()" nzSize="large"
-                        nzPlaceHolder="Loại Resource" nzShowSearch nzAllowClear>
+                        [nzPlaceHolder]="'kafka.log.resource-type-tooltip' | i18n" nzShowSearch nzAllowClear>
                         <nz-option nzValue="TOPIC" nzLabel="Topic"></nz-option>
                         <nz-option nzValue="CONSUMER_GROUP" nzLabel="Consumer Group"></nz-option>
                         <nz-option nzValue="BROKER" nzLabel="Broker"></nz-option>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="filter-option" nz-col [nzSpan]="4">
                     <nz-select class="w-100" [(ngModel)]="operationSearch" (ngModelChange)="getAccessLogs()" nzSize="large"
-                        nzPlaceHolder="Thao tác" nzShowSearch nzAllowClear>
+                        [nzPlaceHolder]="'app.text.operation' | i18n" nzShowSearch nzAllowClear>
                         <nz-option nzValue="CREATE" nzLabel="Tạo bản ghi"></nz-option>
                         <nz-option nzValue="UPDATE" nzLabel="Cập nhật bản ghi"></nz-option>
                         <nz-option nzValue="DELETE" nzLabel="Xóa bản ghi"></nz-option>
@@ -44,25 +44,28 @@
                 </div>
                 <div class="filter-option" nz-col [nzSpan]="6">
                     <nz-range-picker [(ngModel)]="dateSearch" (ngModelChange)="onDateChange($event); getAccessLogs()" nzSize="large"
-                        nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['Ngày bắt đầu', 'Ngày kết thúc']"></nz-range-picker>
+                        nzFormat="dd/MM/yyyy" [nzPlaceHolder]="['kafka.topic.message-start-date' | i18n, 'kafka.topic.message-end-date' | i18n]"></nz-range-picker>
                 </div>
             </div>
         </div>
-    </nz-affix>
+    </div>
+    <div class="note">
+        {{ 'kafka.log.note' | i18n }}
+    </div>
     <div class="table">
-        <nz-table id="access-logs" #logTable [nzData]="accessLogs" [nzShowPagination]="false" 
+        <nz-table id="access-logs" #logTable [nzData]="accessLogs" nzShowPagination [nzFrontPagination]="false" nzShowSizeChanger
             [nzTotal]="total" [nzPageSize]="size" (nzQueryParams)="onQueryParamsChange($event)"
             [nzPageIndex]="page" [nzScroll]="{ x: '1100px' }">
     
             <thead>
                 <tr>
-                    <th nzWidth="6%" class="affix-header" nzAlign="center"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">STT</div></nz-affix></th>
-                    <th nzWidth="14%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Tên người dùng</div></nz-affix></th>
-                    <th nzWidth="15%" class="affix-header"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Tên Resource</div></nz-affix></th>
-                    <th nzWidth="10%" class="affix-header" nzAlign="center"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Loại Resource</div></nz-affix></th>
-                    <th nzWidth="10%" class="affix-header" nzAlign="center"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thao tác</div></nz-affix></th>
-                    <th nzWidth="33%" class="affix-header" nzAlign="center"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Nội dung</div></nz-affix></th>
-                    <th nzWidth="12%" class="affix-header" nzAlign="center"> <nz-affix [nzOffsetTop]="126"><div class="affix-bar">Thời gian</div></nz-affix></th>
+                    <th nzWidth="6%" nzAlign="center">{{ 'app.service.order-number' | i18n }}</th>
+                    <th nzWidth="15%">{{ 'kafka.log.username' | i18n }}</th>
+                    <th nzWidth="15%">{{ 'kafka.log.resource' | i18n }}</th>
+                    <th nzWidth="10%">{{ 'kafka.log.resource-type' | i18n }}</th>
+                    <th nzWidth="10%">{{ 'app.text.operation' | i18n }}</th>
+                    <th nzWidth="32%">{{ 'kafka.log.content' | i18n }}</th>
+                    <th nzWidth="12%">{{ 'kafka.log.time' | i18n }}</th>
                 </tr>
             </thead>
             
@@ -71,29 +74,12 @@
                     <td nzAlign="center">{{ i + 1 }}</td>
                     <td>{{ item.userAction }}</td>
                     <td nzEllipsis nz-tooltip [nzTooltipTitle]="item.resource">{{item.resource}}</td>
-                    <td nzAlign="center">{{ item.resourceType }}</td>
-                    <td nzAlign="center">{{ operations[item.operation] }}</td>
-                    <td nzEllipsis nz-tooltip [nzTooltipTitle]="item.note" nzAlign="center">{{ item.note }}</td>
-                    <td nzAlign="center">{{ item.opTime | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ resourceType[item.resourceType] }}</td>
+                    <td>{{ operations[item.operation] }}</td>
+                    <td nzEllipsis nz-tooltip [nzTooltipTitle]="item.note">{{ item.note }}</td>
+                    <td>{{ item.opTime | date: 'dd/MM/yyyy HH:mm' }}</td>
                 </tr>
             </tbody>
         </nz-table>
-        <ng-container *ngIf="isEndOfPage">
-            <div class="spin-style">
-                <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="isEndOfList">
-            <div class="mt-5 mb-5 description-end">
-                Đã tải hết các nội dung
-            </div>
-        </ng-container>
     </div>
-    
-    <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
-        <button nzType="text" nz-button aria-pressed="true" (click)="scrollToTop()" class="btn2top">
-            <img width="32" height="32" src="https://img.icons8.com/color/48/circled-up-2--v1.png" alt="circled-up-2--v1"/>
-        </button>
-    </div>
-
 </nz-card>
