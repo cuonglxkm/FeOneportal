@@ -1,9 +1,14 @@
 <nz-table #fixedTable
           style="margin-top: 20px;"
-          [nzShowPagination]="false"
-          [nzData]="poolList || []"
+          nzShowPagination
+          [nzData]="currentPageData || []"
           [nzFrontPagination]="false"
-          [nzLoading]="isLoading">
+          [nzLoading]="isLoading"
+          [nzTotal]="poolList.length"
+          [nzPageSize]="pageSize"
+          [nzPageIndex]="pageIndex"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+          (nzPageIndexChange)="onPageIndexChange($event)">
 
   <thead>
   <tr>
@@ -17,12 +22,9 @@
   </thead>
   <tbody>
   <tr *ngFor="let data of fixedTable.data">
-    <td nzAlign="left"><a
-      nz-tooltip
-      nzTooltipTitle="Xem chi tiết"
-      nzTooltipPlacement="bottom"
-      (click)="detaiPool(data.id)"
-      >{{ data.name }}</a>
+    <td nzAlign="left">
+      <a nz-tooltip nzTooltipTitle="Xem chi tiết" nzTooltipPlacement="bottom"
+         (click)="detailPool(data.id)">{{ data.name }}</a>
     </td>
     <td nzAlign="left">{{ data.protocol }}</td>
     <td nzAlign="left">{{ data.algorithm }}</td>
@@ -41,7 +43,7 @@
                                     [loadBlancerId]="idLB"
                                     [listenerId]="data.listener_id"
                                     [namePool]="data.name"
-                                    (onOk)="handleDeleteOk()"/>
+                                    (onOk)="handleDeleteOk()" />
     </td>
   </tr>
   </tbody>

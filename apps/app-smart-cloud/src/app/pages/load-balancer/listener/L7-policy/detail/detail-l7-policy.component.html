@@ -97,10 +97,15 @@
     </nz-row>
     <nz-table #fixedTable
               style="margin-top: 20px;"
-              [nzShowPagination]="false"
+              nzShowPagination
               [nzData]="l7RuleList || []"
               [nzFrontPagination]="false"
-              [nzLoading]="isLoadingL7Rule">
+              [nzLoading]="isLoadingL7Rule"
+              [nzTotal]="l7RuleList.length"
+              [nzPageSize]="pageSize"
+              [nzPageIndex]="pageIndex"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              (nzPageIndexChange)="onPageIndexChange($event)">
 
       <thead>
       <tr>

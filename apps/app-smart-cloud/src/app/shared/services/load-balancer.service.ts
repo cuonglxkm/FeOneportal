@@ -420,4 +420,19 @@ export class LoadBalancerService extends BaseService {
         return throwError(error);
       }));
   }
+
+  deleteL7Policy(idL7Policy: string, regionId: number, vpcId: number) {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}?regionId=${regionId}&vpcId=${vpcId}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+          // Redirect to login page or show unauthorized message
+          this.router.navigate(['/passport/login']);
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }));
+  }
 }

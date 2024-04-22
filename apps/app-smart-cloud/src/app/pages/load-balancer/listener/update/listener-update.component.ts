@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListenerService } from '../../../../shared/services/listener.service';
@@ -8,6 +8,8 @@ import { ipAddressValidator } from '../create/listener-create.component';
 import { RegionModel } from '../../../../shared/models/region.model';
 import { ProjectModel } from '../../../../shared/models/project.model';
 import { da } from 'date-fns/locale';
+import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
+import { L7Policy } from '../../../../shared/models/load-balancer.model';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -15,13 +17,13 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './listener-update.component.html',
   styleUrls: ['./listener-update.component.less'],
 })
-export class ListenerUpdateComponent implements OnInit {
+export class ListenerUpdateComponent implements OnInit, OnChanges {
   regionId = JSON.parse(localStorage.getItem('region')).regionId;
   projectId = JSON.parse(localStorage.getItem('projectId'));
   idListener: any;
   idLb: any;
   listPool: any;
-  listL7: any;
+  listL7: L7Policy[];
   validateForm: FormGroup<{
     listenerName: FormControl<string>
     port: FormControl<number>
@@ -50,6 +52,13 @@ export class ListenerUpdateComponent implements OnInit {
     {value:'LEAST_CONNECTIONS',name:'Least connections'},
     {value:'SOURCE_IP',name:'source ip'},
   ];
+
+  currentPageData: L7Policy[]
+  pageSize: number = 5
+  pageIndex: number = 1
+
+  isLoading: boolean = false
+
   loadingDetail = true;
   loadingL7 = true;
   loadingPool = true;
@@ -58,13 +67,30 @@ export class ListenerUpdateComponent implements OnInit {
               private service: ListenerService,
               private notification: NzNotificationService,
               private activatedRoute: ActivatedRoute,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private loadBalancerService: LoadBalancerService) {
   }
 
   ngOnInit(): void {
     this.getData();
     this.idListener = this.activatedRoute.snapshot.paramMap.get('id');
     this.idLb = this.activatedRoute.snapshot.paramMap.get('lbId');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("goi lai list L7 Policy")
+    if (changes.checkCreate) {
+      this.getListL7Policy(this.idListener)
+    }
+  }
+  onPageSizeChange(value) {
+    this.pageSize = value
+    this.getListL7Policy(this.idListener)
+  }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value
+    this.getListL7Policy(this.idListener)
   }
 
   updateListener() {
@@ -114,21 +140,25 @@ export class ListenerUpdateComponent implements OnInit {
         this.validateForm.controls['description'].setValue(data.description);
         this.protocolListener = data.protocol;
         this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
-        this.getL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
+        this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
       }
     )
   }
 
-  private getL7Policy(id: string) {
-    this.service.getL7Policy(id, this.regionId, this.projectId)
-      .pipe(finalize(()=>{
-        this.loadingL7 = false;
-      }))
-      .subscribe(
+  private getListL7Policy(id: string) {
+    this.isLoading = true
+    this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id).subscribe(
       data => {
+        this.isLoading = false
         this.listL7 = data;
-      }
-    )
+        const startIndex = (this.pageIndex - 1) * this.pageSize;
+        const endIndex = this.pageIndex * this.pageSize;
+
+        this.currentPageData = this.listL7.slice(startIndex, endIndex);
+      }, error => {
+        this.isLoading = false
+        this.listL7 = null
+      })
   }
 
   private getPool(id: string) {
@@ -140,5 +170,9 @@ export class ListenerUpdateComponent implements OnInit {
         this.listPool = data.records;
       }
     )
+  }
+
+  handleDeleteL7PolicyOk() {
+    setTimeout(() => {this.getListL7Policy(this.idListener)}, 1500)
   }
 }

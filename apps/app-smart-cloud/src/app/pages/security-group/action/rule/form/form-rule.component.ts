@@ -232,11 +232,18 @@ export class FormRuleComponent implements OnInit {
         this.validateForm = this.fb.group({
             rule: ['', [Validators.required]],
             portType: 'Port' as 'Port' | 'PortRange',
-            portRangeMin: [null as number | string | null, [Validators.required, Validators.min(1), AppValidator.validateNumber]],
-            portRangeMax: [null as number | string | null, [Validators.required, AppValidator.validateNumber, this.validatePortRange]],
+            portRangeMin: [null as number | string | null,
+              [Validators.required, Validators.min(1),
+                Validators.pattern('^[1-9][0-9]{0,4}$'),
+                AppValidator.validateNumber]],
+            portRangeMax: [null as number | string | null,
+              [Validators.required,
+                Validators.pattern(/^[1-9][0-9]{0,4}$/),
+                this.validatePortRange.bind(this),
+                Validators.max(65535)]],
             remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
             remoteIpPrefix: [null as null | string | number, [Validators.required, AppValidator.ipWithCIDRValidator,
-                Validators.pattern(/^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/)]],
+                Validators.pattern('^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/(?:[0-9]|[12][0-9]|3[0-2])$')]],
             etherType: [null as null | string],
             protocol: [null as null | string],
             securityGroupId: [null as null | string]
@@ -248,6 +255,8 @@ export class FormRuleComponent implements OnInit {
             return {required: true};
         } else if (control.value < this.validateForm.controls.portRangeMin.value) {
             return {invalidPortRange: true};
+        } else if (control.value > 65535) {
+          return {invalidPortRange: true};
         }
         return null;
     };

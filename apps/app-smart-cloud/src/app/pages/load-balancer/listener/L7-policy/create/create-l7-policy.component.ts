@@ -61,7 +61,7 @@ export class CreateL7PolicyComponent implements OnInit {
     pool: [''],
     status: [false, [Validators.required]],
     description: [''],
-    url: ['', [urlValidator()]]
+    url: ['']
   });
 
   status: any = false
@@ -116,6 +116,7 @@ export class CreateL7PolicyComponent implements OnInit {
 
     if(this.validateForm.controls.action.value == 'REDIRECT_TO_URL') {
       this.validateForm.controls.url.setValidators(Validators.required);
+      this.validateForm.controls.url.setValidators(urlValidator());
     } else {
       this.validateForm.controls.url.clearValidators();
       this.validateForm.controls.url.updateValueAndValidity();

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RegionModel } from '../../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../../shared/models/project.model';
-import { FileSystemService } from '../../../../../shared/services/file-system.service';
-import { FileSystemDetail } from '../../../../../shared/models/file-system.model';
+import { RegionModel } from '../../../../shared/models/region.model';
+import { ProjectModel } from '../../../../shared/models/project.model';
+import { FileSystemService } from '../../../../shared/services/file-system.service';
+import { FileSystemDetail } from '../../../../shared/models/file-system.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
