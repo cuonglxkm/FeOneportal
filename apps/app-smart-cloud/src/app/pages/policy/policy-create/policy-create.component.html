@@ -174,8 +174,8 @@
       <nz-card>
         <h2>Thông tin của Permissions được xác định trong Policy</h2>
         <hr style="opacity: 0.5px; margin-bottom: 25px">
-        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px" [nzSuffix]="suffixIconSearch" nzSize="large">
-          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..."/>
+        <nz-input-group style="margin-right: 8px; width: 40%; margin-bottom: 10px" [nzSuffix]="suffixIconSearch" nzSize="large" >
+          <input #searchBox type="text" nz-input placeholder="Tìm kiến tên..." (keyup.enter)="search(searchBox.value, true)"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" (click)="search(searchBox.value, true)"/>

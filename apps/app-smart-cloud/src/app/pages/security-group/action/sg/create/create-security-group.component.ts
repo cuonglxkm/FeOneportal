@@ -105,6 +105,8 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
         this.isLoading = false
         this.notification.success("Thành công", "Tạo mới Security Group thành công")
         this.onOk.emit()
+        this.nameList = []
+        this.validateForm.reset()
       }, error => {
         this.isVisible = false
         this.isLoading = false

@@ -21,6 +21,10 @@
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin VPC</span>
         </div>
+        <div nz-row>
+          <div style="font-weight: bold;margin-right: 20px">Loại dự án:</div>
+          <div>{{data?.type == 'VPC' ? 'Dự án VPC' : 'Dự án thường'}}</div>
+        </div>
         <nz-form-item>
           <nz-form-label nzRequired>Tên VPC</nz-form-label>
           <nz-form-control>
@@ -35,7 +39,7 @@
                     formControlName="description"></textarea>
           </nz-form-control>
         </nz-form-item>
-        <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)">
+        <nz-tabset nzCentered nzSize="large" (nzSelectChange)="changeTab($event)" [(ngModel)]="selectIndexTab">
           <nz-tab nzTitle="Gói cấu hình sẵn">
             <ngu-carousel #myCarouselFlavor
                           [inputs]="carouselTileConfig"
@@ -542,7 +546,7 @@
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         </div>
-        <!--        Gói cấu tùy chọn-->
+        <!--        Gói cấu co san-->
         <div *ngIf="selectIndexTab == 0">
           <div class="text-value">Gói cấu hình sẵn</div>
           <div style="margin-top: 10px" class="text-label">{{selectPackge}}</div>

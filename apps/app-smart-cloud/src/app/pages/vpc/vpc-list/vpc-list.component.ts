@@ -1,12 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { RegionModel } from '../../../shared/models/region.model';
-import { IpPublicModel } from '../../../shared/models/ip-public.model';
 import { VpcModel } from '../../../shared/models/vpc.model';
 import { finalize } from 'rxjs/operators';
-import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { InstancesService } from '../../instances/instances.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { getCurrentRegionAndProject } from '@shared';
@@ -17,8 +14,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   templateUrl: './vpc-list.component.html',
   styleUrls: ['./vpc-list.component.less']
 })
-export class VpcListComponent {
-  regionId = JSON.parse(localStorage.getItem('region')).regionId;
+export class VpcListComponent implements OnInit{
+  regionId: any;
   isBegin: Boolean = false;
   size = 10;
   index: number = 1;
