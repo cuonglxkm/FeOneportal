@@ -412,7 +412,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
     .pipe(finalize(() => this.isUpgradingWorker = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
-        this.notificationService.success("Thành công", r.messgae);
+        this.notificationService.success("Thành công", r.message);
         this.back2list();
       } else {
         this.notificationService.error("Thất bại", r.message);
