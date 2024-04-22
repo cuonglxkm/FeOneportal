@@ -31,7 +31,7 @@
         <div nz-row [nzGutter]="24">
           <div nz-col [nzSpan]="12">
             <nz-form-item class="mt-4">
-              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>{{ 'app.kafka.name' | i18n }}</nz-form-label>
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.name' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="kafkaErrorTpl">
                 <nz-input-group class="w-100" nzSize="large">
                   <input nz-input type="text" [placeholder]="'app.kafka.name-placeholder' | i18n" formControlName="serviceName" id="serviceName"
@@ -54,7 +54,7 @@
 
           <div nz-col [nzSpan]="12">
             <nz-form-item class="mt-4">
-              <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>{{ 'app.kafka.version' | i18n}}</nz-form-label>
+              <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.version' | i18n}} (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="'validation.service.version-required' | i18n">
                 <nz-select formControlName="version" *ngFor="let data of listOfKafkaVersion" [nzPlaceHolder]="'app.kafka.version-placeholder' | i18n" nzSize="large">
                   <nz-option [nzValue]="data.helmVersion" [nzLabel]="data.apacheKafkaVersion"></nz-option>
@@ -65,7 +65,7 @@
         </div>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="24" [nzXs]="24"> {{ 'app.service.description' | i18n }}</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon> {{ 'app.service.description' | i18n }}</nz-form-label>
           <nz-form-control nzErrorTip="">
             <nz-textarea-count [nzMaxCharacterCount]="500">
               <textarea formControlName="description" nz-input [placeholder]="'app.service.description' | i18n" 
@@ -113,7 +113,7 @@
             <div nz-row class="customize-config">
               <div nz-col [nzSpan]="5">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>{{ 'app.kafka.broker' | i18n }}</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>{{ 'app.kafka.broker' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="'validation.kafka.broker-required' | i18n">
                     <input nz-input type="number" formControlName="broker" id="broker" autofocus nzSize="large" />
                   </nz-form-control>
@@ -122,7 +122,7 @@
 
               <div nz-col [nzSpan]="5">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>vCPU</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="('validation.kafka-required-1' | i18n) + ' VCPU ' + ('validation.kafka-required-2' | i18n)">
                     <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus nzSize="large" />
                   </nz-form-control>
@@ -131,7 +131,7 @@
 
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>RAM</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="('validation.kafka-required-1' | i18n) + ' Ram ' + ('validation.kafka-required-2' | i18n)">
                     <nz-input-group nzSuffix="(GB)" nzSize="large">
                       <input nz-input type="number" formControlName="ram" id="ram"
@@ -143,7 +143,7 @@
   
               <div nz-col [nzSpan]="5" class="config-suffix">
                 <nz-form-item>
-                  <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired>Storage</nz-form-label>
+                  <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="('validation.kafka-required-1' | i18n) + ' Storage ' + ('validation.kafka-required-2' | i18n)">
                     <nz-input-group nzSuffix="(GB)" nzSize="large">
                       <input nz-input type="number" formControlName="storage" id="storage"
@@ -168,12 +168,14 @@
 
         <ng-container *ngIf="showCustomConfig">
           <nz-form-item>
-            <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="numPartitions" nzRequired>
-                num.partitions
-                <div class="info-icon" 
-                    [nzTooltipTitle]="'tooltip.kafka.numPartitions' | i18n" nzTooltipPlacement="rightTop" nz-tooltip>
-                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                </div>
+            <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="numPartitions" nzNoColon>
+                num.partitions (<span class="text-red">*</span>)
+                <img
+                  style="margin-left: 10px"
+                  [nzTooltipTitle]="'tooltip.kafka.numPartitions' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
             </nz-form-label>
             <nz-form-control [nzErrorTip]="numPartitionsErrorTpl">
                 <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' num.partitions' " 
@@ -191,12 +193,14 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="defaultReplicationFactor" nzRequired>
-                  default.replication.factor
-                  <div class="info-icon" 
-                      [nzTooltipTitle]="'tooltip.kafka.replicationFactor' | i18n" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="defaultReplicationFactor" nzNoColon>
+                  default.replication.factor (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.replicationFactor' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="defaultReplicationFactorTpl">
                   <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' default.replication.factor' "
@@ -217,12 +221,14 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="minInsyncReplicas" nzRequired>
-                  min.insync.replicas
-                  <div class="info-icon" 
-                    [nzTooltipTitle]="'tooltip.kafka.minInsyncReplicas' | i18n" nzTooltipPlacement="rightTop" nz-tooltip>
-                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="minInsyncReplicas" nzNoColon>
+                  min.insync.replicas (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.minInsyncReplicas' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="minInsyncReplicasTpl">
                   <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' min.insync.replicas' "
@@ -243,12 +249,14 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="offsetTopicReplicationFactor" nzRequired>
-                  offset.topic.replication.factor
-                  <div class="info-icon" 
-                      [nzTooltipTitle]="'tooltip.kafka.offsetTopicReplica' | i18n" nzTooltipPlacement="rightTop" nz-tooltip>
-                      <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="offsetTopicReplicationFactor" nzNoColon>
+                  offset.topic.replication.factor (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.offsetTopicReplica' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="offsetTopicReplicationFactorTpl">
                   <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' offset.topic.replication.factor' " 
@@ -265,12 +273,14 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logRetentionHours" nzRequired>
-                  log.retention.hours
-                  <div class="info-icon" 
-                    [nzTooltipTitle]="'tooltip.kafka.logRetentionHours' | i18n" nzTooltipPlacement="rightTop" nz-tooltip>
-                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logRetentionHours" nzNoColon>
+                  log.retention.hours (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.logRetentionHours' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="logRetentionHoursTpl">
                   <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' log.retention.hours' " 
@@ -288,12 +298,14 @@
           </nz-form-item>
 
           <nz-form-item>
-              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logSegmentBytes" nzRequired>
-                  log.segment.bytes
-                  <div class="info-icon" 
-                    [nzTooltipTitle]="'tooltip.kafka.logSegmentBytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip>
-                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>
-                  </div>
+              <nz-form-label [nzSm]="10" [nzXs]="24" nzFor="logSegmentBytes" nzNoColon>
+                  log.segment.bytes (<span class="text-red">*</span>)
+                  <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'tooltip.kafka.logSegmentBytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="logSegmentBytesTpl">
                   <input type="number" nz-input [placeholder]="('app.service.custom-config-placeholder' | i18n) + ' log.segment.bytes' " 
@@ -315,7 +327,7 @@
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label [nzXs]="24" [nzSm]="24" nzRequired>{{ 'app.service.duration' | i18n }}</nz-form-label>
+              <nz-form-label [nzXs]="24" [nzSm]="24" nzNoColon>{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzXs]="24" [nzSm]="24" [nzErrorTip]="'validation.kafka.duration-required' | i18n">
                   <input nz-input type="number" formControlName="usageTime" id="usageTime" 
                     [placeholder]="'app.service.duration-placeholder' | i18n" autofocus nzSize="large" (ngModelChange)="onChangeUsageTime()" />

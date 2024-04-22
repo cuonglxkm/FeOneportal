@@ -4,7 +4,7 @@
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
     <div nz-row>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="20" nzRequired nzFor="name_tp">{{ 'kakfa.topic.name' | i18n }}
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="20" nzFor="name_tp" nzNoColon>{{ 'kakfa.topic.name' | i18n }} (<span class="text-red">*</span>)
             </nz-form-label>
             <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="nameErrorTpl">
                 <input  nz-input name="name_tp" nzSize="large" formControlName="name_tp" type="text" id="name_tp"
@@ -25,9 +25,13 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzRequired>{{ 'kafka.topic.partition' | i18n }}
-                <i class="tip" nz-icon [nzType]="'exclamation-circle'" [nzTooltipTitle]="'kafka.topic.partition-tooltip' | i18n"
-                    nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzNoColon>{{ 'kafka.topic.partition' | i18n }} (<span class="text-red">*</span>)
+                <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'kafka.topic.partition-tooltip' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                />
             </nz-form-label>
             <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="partitionErrTpl">
                 <input nz-input nzSize="large" name="partition" formControlName="partition" type="text" id="partition"
@@ -45,10 +49,13 @@
     </div>
     <div nz-row>
         <nz-form-item nz-col nzSpan="12">
-            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzFor="rep_fac" nzRequired>{{ 'kafka.topic.replica' | i18n }}
-                <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                    [nzTooltipTitle]="'kafka.topic.replica-tooltip' | i18n"
-                    nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+            <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="23" nzFor="rep_fac" nzNoColon>{{ 'kafka.topic.replica' | i18n }} (<span class="text-red">*</span>)
+                <img
+                    style="margin-left: 10px"
+                    [nzTooltipTitle]="'kafka.topic.replica-tooltip' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                />
             </nz-form-label>
             <nz-form-control nz-form-label [nzSpan]="23" [nzErrorTip]="replicaErrTpl">
                 <input nz-input nzSize="large" type="text" name="rep_fac" id="rep_fac" formControlName="rep_fac"
@@ -77,9 +84,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="minSync">min.insync.replicas
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-insync-replicas' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-insync-replicas' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Min.insync.replica là số nguyên nằm trong khoảng 1 đến 3">
@@ -90,9 +100,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="deleteRet">delete.retention.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.delete-retention' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.delete-retention' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Delete.retention.ms là số nguyên dương nằm trong khoảng 0 đến 864.000.000">
@@ -103,9 +116,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="reten_bytes">retention.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.retention-bytes' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.retention-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Retention.bytes là số nguyên nằm trong khoảng -1 đến 100.000.000.000 bytes(≈100 GB)">
@@ -117,9 +133,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segment_ms">segment.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-ms' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-ms' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Segment.ms là số nguyên dương nằm trong khoảng 1 đến 6.048.000.000">
@@ -130,9 +149,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="mess_time_type">message.timestamp.type
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-timestamp' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-timestamp' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="mess_time_type">
@@ -144,9 +166,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segment">segment.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-bytes' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Segment.bytes là số nguyên dương nằm trong khoảng 14 đến 2.147.483.647 bytes">
@@ -158,9 +183,12 @@
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
                         nzFor="mess_down_enable">message.downconversion.enable
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-downconversion' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-downconversion' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="mess_down_enable">
@@ -172,9 +200,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="comp_type">compression.type
-                        <i class="tip" [nzTheme]="'fill'" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.compression-type' | i18n" nzTooltipPlacement="rightTop"
-                            nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.compression-type' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="comp_type">
@@ -190,9 +221,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segm_jitt">segment.jitter.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-jitter' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-jitter' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Segment.jitter.ms là số nguyên nằm trong khoảng từ 0 đến 9.007.199.254.740.991">
@@ -204,9 +238,12 @@
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
                         nzFor="foll_repl">follower.replication.throttled.replicas
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.follower-replication' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.follower-replication' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-form-control nz-form-label>
@@ -220,9 +257,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="mess_format">message.format.version
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-format' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-format' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="mess_format" nzShowSearch>
@@ -235,9 +275,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="preallocate ">preallocate
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.preallocate' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.preallocate' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="preallocate">
@@ -249,9 +292,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="index_inter">index.interval.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.index-interval' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.index-interval' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Index.interval.bytes là số nguyên dương nằm trong khoảng 0 đến 2.147.483.647 bytes">
@@ -265,8 +311,12 @@
             <div nz-col nzSpan="12">
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="policy">cleanup.policy
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'" [nzTooltipTitle]="'tooltip.kakfa.topic.cleanup-policy' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.cleanup-policy' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="policy">
@@ -279,9 +329,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="retention_ms">retention.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.retention-ms' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.retention-ms' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Retention.ms là số nguyên nằm trong khoảng -1 đến 9.007.199.254.740.991">
@@ -292,9 +345,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="max_mess">max.message.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.max-message-bytes' | i18n" nzTooltipPlacement="rightTop"
-                            [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.max-message-bytes' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Kích thước tin nhắn tối đa trong khoảng 1 - 100.000.000 byte">
@@ -305,9 +361,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="min_compac">min.compaction.lag.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-compaction' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-compaction' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Min.compaction.lag.ms là số nguyên dương nằm trong khoảng 0 đến 1.800.000">
@@ -319,9 +378,12 @@
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
                         nzFor="mess_time_diff">message.timestamp.difference.max.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-timestamp-difference' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.message-timestamp-difference' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Message.timestamp.difference.max.ms là số nguyên dương nằm trong khoảng 0 đến 9.007.199.254.740.991">
@@ -332,9 +394,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="max_comp">max.compaction.lag.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.max-compaction-lag' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.max-compaction-lag' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Max.compaction.lag.ms là số nguyên dương nằm trong khoảng 1 đến 9.007.199.254.740.991">
@@ -346,9 +411,12 @@
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12"
                         nzFor="lead_rep">leader.replication.throttled.replicas
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.leader-replication' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.leader-replication' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-form-control nz-form-label>
@@ -362,9 +430,12 @@
                 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="unclean_leader">unclean.leader.election.enable
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.unclean-leader' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.unclean-leader' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23">
                         <nz-select nzSize="large" formControlName="unclean_leader">
@@ -376,9 +447,12 @@
                 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="flush_ms">flush.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.flush' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.flush' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Flush.ms là số nguyên dương nằm trong khoảng 0 đến 9.007.199.254.740.991">
@@ -389,9 +463,12 @@
                 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="flush_mess">flush.messages
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.flush-messages' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.flush-messages' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Flush.messages là số nguyên dương nằm trong khoảng 1 đến 9.007.199.254.740.991">
@@ -402,9 +479,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="file_delete">file.delete.delay.ms
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.file-delete' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.file-delete' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="File.delete.delay.ms là số nguyên dương nằm trong khoảng 0 đến 6.000.000">
@@ -415,9 +495,12 @@
             
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="min_clean">min.cleanable.dirty.ratio
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-cleanable' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.min-cleanable' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Min.cleanable.dirty.ratio là số nằm trong khoảng 0 đến 1 ">
@@ -428,9 +511,12 @@
 
                 <nz-form-item>
                     <nz-form-label [nzLabelAlign]="'left'" [nzSpan]="12" nzFor="segm_index">segment.index.bytes
-                        <i class="tip" nz-icon [nzType]="'exclamation-circle'"
-                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-index' | i18n"
-                            nzTooltipPlacement="rightTop" [nzTheme]="'fill'" nz-tooltip></i>
+                        <img
+                            style="margin-left: 10px"
+                            [nzTooltipTitle]="'tooltip.kakfa.topic.segment-index' | i18n" nzTooltipPlacement="rightTop" nz-tooltip
+                            src="assets/imgs/pajamas_question.svg"
+                            alt=""
+                        />
                     </nz-form-label>
                     <nz-form-control nz-form-label [nzSpan]="23"
                         nzErrorTip="Segment.index.bytes là số nguyên dương nằm trong khoảng 4 đến 2.147.483.647">

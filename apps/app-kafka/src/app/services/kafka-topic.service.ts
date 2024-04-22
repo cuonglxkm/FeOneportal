@@ -104,7 +104,7 @@ export class TopicService extends BaseService {
   }
 
   getListKafkaSystem() {
-    let token:string =  localStorage.getItem("_token");
+    const token =  localStorage.getItem("_token");
     const jsonObject = JSON.parse(token);
     const headers = new HttpHeaders().set('usercode', jsonObject.userId);
     return this.http
@@ -142,9 +142,12 @@ export class TopicService extends BaseService {
     return eventSource;
   }
 
-  syncTopic(serviceOrderCode: string) {
-    return this.http.get(
-      `${this.topicUrl}/syncTopic?serviceOrderCode=${serviceOrderCode}`
-    );
+  sync(serviceOrderCode: string): Observable<BaseResponse<null>> {
+    return this.http.post<BaseResponse<null>>(`${this.topicUrl}/sync/serviceOrderCode=${serviceOrderCode}`, {});
   }
+
+  syncTopicPartition(serviceOrderCode: string): Observable<BaseResponse<null>> {
+    return this.http.post<BaseResponse<null>>(`${this.topicUrl}/sync-topic-partition/serviceOrderCode=${serviceOrderCode}`, {});
+  }
+
 }
