@@ -110,7 +110,8 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error("Thất bại", "Tạo mới Security Group thất bại")
+        this.notification.error("Thất bại", error.error.detail)
+        this.validateForm.reset()
       })
     }
   }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SecurityGroupService } from '../../../../../shared/services/security-group.service';
@@ -10,7 +10,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   templateUrl: './delete-security-group.component.html',
   styleUrls: ['./delete-security-group.component.less']
 })
-export class DeleteSecurityGroupComponent {
+export class DeleteSecurityGroupComponent implements AfterViewInit{
   @Input() idSG: string;
   @Input() nameSG: string;
   @Input() region: number;
@@ -25,17 +25,30 @@ export class DeleteSecurityGroupComponent {
 
   value: string;
 
+  @ViewChild('sgInputName') sgInputName!: ElementRef<HTMLInputElement>;
+
   constructor(
     private securityGroupService: SecurityGroupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService) {}
 
+  ngAfterViewInit(): void {
+    this.sgInputName?.nativeElement.focus()
+    }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOk();
+    }
+  }
   onChangeInput(value) {
     this.value = value
   }
   showModal(): void {
     this.isVisible = true;
     console.log(this.idSG)
+    setTimeout(() => {this.sgInputName?.nativeElement.focus()}, 1000)
   }
 
   handleCancel(): void {
@@ -69,7 +82,7 @@ export class DeleteSecurityGroupComponent {
           this.isVisible = false;
           this.isLoading = false;
           this.value = null
-          this.notification.error('Thất bại', `Xóa Security Group thất bại`);
+          this.notification.error('Thất bại', `Xóa Security Group thất bại, ` + error.error.detail);
         })
     } else {
       this.isInput = true

@@ -49,7 +49,7 @@ export class DetachVmComponent {
       this.notification.success('Thành công', 'Gỡ Security Group vào máy ảo thành công')
       this.onOk.emit()
     }, error => {
-      this.notification.error('Thất bại', 'Gỡ Security Group vào máy ảo thất bại')
+      this.notification.error('Thất bại', 'Gỡ Security Group vào máy ảo thất bại, ' + error.error.detail)
     })
   }
 }

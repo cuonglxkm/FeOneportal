@@ -12,7 +12,8 @@
   </div>
   <div *nzModalContent>
     <span class="text-label">Đế thực hiện xoá Security Group {{ nameSG }}, vui lòng nhập tên Security Group để xác nhận.</span>
-    <input nz-input
+    <input nz-input #sgInputName
+           (keydown.enter)="focusOkButton($event)"
            class="input-custom"
            style="margin-top: 10px;"
            [ngModel]="value"

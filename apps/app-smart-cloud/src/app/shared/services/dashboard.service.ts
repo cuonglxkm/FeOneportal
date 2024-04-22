@@ -31,7 +31,7 @@ export class DashboardService extends BaseService {
   }
 
   getSubscriptionsNearExpire(pageSize: number, pageIndex: number) {
-    return this.http.get<SubscriptionsNearExpire>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`)
+    return this.http.get<SubscriptionsNearExpire[]>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -46,7 +46,7 @@ export class DashboardService extends BaseService {
   }
 
   paymentCostUse(pageSize: number, pageIndex: number) {
-    return this.http.get<PaymentCostUse>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`)
+    return this.http.get<PaymentCostUse[]>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
