@@ -132,7 +132,7 @@
             (nzCheckedChange)="onAllChecked($event)" nzLeft></th>
         <th nzLeft>Tên Group</th>
         <th nzBreakWord>Số lượng users</th>
-        <th nzBreakWord>Group Parent</th>
+        <!-- <th nzBreakWord>Group Parent</th> -->
         <th nzBreakWord>Thời gian tạo</th>
       </tr>
       </thead>
@@ -149,7 +149,7 @@
         </td>
         <td nzBreakWord>{{data.userOfGroup}}</td>
         <td *ngIf="data.parent === null" nzBreakWord></td>
-        <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td>
+        <!-- <td *ngIf="data.parent !== null" nzBreakWord>{{ data.parent }}</td> -->
         <td>{{data.createdDate | date: 'dd/MM/yyyy - HH:mm:ss'}}</td>
       </tr>
       </tbody>

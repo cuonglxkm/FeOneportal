@@ -20,32 +20,33 @@
 <nz-content>
   <nz-card nzTitle="Thông tin chính của Group" [nzLoading]="loading">
     <form nz-form nzLayout="vertical">
-      <nz-row nzJustify="space-between">
-        <nz-col nzSpan="7">
-          <nz-form-item>
-            <nz-form-label>
-              <div>
-                <span>Tên của Group</span>
-              </div>
-            </nz-form-label>
-            <nz-form-control>
-              <input style="border-radius: 4px;" nz-input [value]="groupModel?.name" disabled="true"/>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
-        <nz-col nzSpan="7">
-          <nz-form-item>
-            <nz-form-label>
-              <div>
-                <span>Thời gian khởi tạo</span>
-              </div>
-            </nz-form-label>
-            <nz-form-control>
-              <input style="border-radius: 4px;" nz-input
-                     value="{{groupModel?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}} " disabled="true"/>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
+      <nz-col nzSpan="7">
+        <nz-form-item>
+          <nz-form-label>
+            <div>
+              <span>Tên của Group</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control>
+            <input style="border-radius: 4px;" nz-input [value]="groupModel?.name" disabled="true"/>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzSpan="7">
+        <nz-form-item>
+          <nz-form-label>
+            <div>
+              <span>Thời gian khởi tạo</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control>
+            <input style="border-radius: 4px;" nz-input
+                   value="{{groupModel?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}} " disabled="true"/>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <!-- <nz-row nzJustify="space-between">
+        
         <nz-col nzSpan="7">
           <nz-form-item>
             <nz-form-label>
@@ -58,7 +59,7 @@
             </nz-form-control>
           </nz-form-item>
         </nz-col>
-      </nz-row>
+      </nz-row> -->
     </form>
   </nz-card>
   <nz-card nzTitle="Thông tin bổ sung">
