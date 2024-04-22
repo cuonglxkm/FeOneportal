@@ -108,7 +108,7 @@ export class CreateUserComponent implements OnInit {
   create() {
     this.userGroupService.detail(this.nameGroup).subscribe(data => {
       this.formCreate.groupName = this.nameGroup
-      this.formCreate.parentName = data.parent
+      //this.formCreate.parentName = data.parent
       this.formCreate.policyNames = data.policies
       this.formCreate.users = Array.from(this.setOfCheckedId)
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {

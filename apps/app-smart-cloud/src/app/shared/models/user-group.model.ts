@@ -1,6 +1,6 @@
 export interface UserGroupModel {
     name: string
-    parent: string
+    //parent: string
     policies: string[]
     groupUsers: string[]
     userOfGroup: number
@@ -19,7 +19,7 @@ export class FormDeleteUserGroups {
 
 export class FormUserGroup {
     groupName: string
-    parentName: string
+    //parentName: string
     policyNames: string[]
     users: string[]
 }
