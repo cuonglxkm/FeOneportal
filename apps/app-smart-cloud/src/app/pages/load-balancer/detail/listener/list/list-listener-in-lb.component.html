@@ -22,7 +22,7 @@
   </thead>
   <tbody>
   <tr *ngFor="let data of fixedTable.data">
-    <td nzAlign="left">{{ data.name }}</td>
+    <td nzAlign="left" [routerLink]="'/app-smart-cloud/load-balancer/'+ idLB +'/listener/detail/' + data.id">{{ data.name }}</td>
     <td nzAlign="left">{{ data.protocol }}</td>
     <td nzAlign="right">{{ data.port }}</td>
     <td nzAlign="left">
