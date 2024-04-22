@@ -28,11 +28,10 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="protocolErrorTpl">
-          <nz-input-number style="margin-left: 0; width: 100%;" [nzMin]="-1" [nzStep]="1" [nzMax]="255"
+          <nz-input-number style="margin-left: 0; width: 100%;"  [nzStep]="1"
                            formControlName="protocol" id="protocol" class="input-custom" />
-
           <ng-template #protocolErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required') || control.hasError('integerInRange') || control.hasError('invalidNumber') || control.hasError('outOfRange') || control.hasError('portMismatch')">
+            <ng-container *ngIf="control.hasError('required') ||  control.hasError('invalidIntegerInRange') || control.hasError('pattern') || control.hasError('invalidNumber')">
               Vui lòng nhập số nguyên nằm trong khoảng -1 - 255
             </ng-container>
           </ng-template>
@@ -46,11 +45,10 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="codeErrorTpl">
-          <nz-input-number style="margin-left: 0; width: 100%;" [nzMin]="-1" [nzStep]="1" [nzMax]="255" formControlName="code" id="code" class="input-custom" />
+          <nz-input-number style="margin-left: 0; width: 100%;"  [nzStep]="1" formControlName="code" id="code" class="input-custom" />
           <ng-template #codeErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required') || control.hasError('portMismatch') || control.hasError('integerInRange') ">
+            <ng-container *ngIf="control.hasError('required') || control.hasError('invalidIntegerInRange') || control.hasError('pattern')">
               Vui lòng nhập số nguyên trong khoảng -1 - 255</ng-container>
-
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -62,9 +60,9 @@
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="typeErrorTpl">
-          <nz-input-number style="margin-left: 0; width: 100%;" [nzMin]="-1" [nzStep]="1" [nzMax]="255" formControlName="type" id="type" class="input-custom" />
+          <nz-input-number style="margin-left: 0; width: 100%;" [nzStep]="1" formControlName="type" id="type" class="input-custom" />
           <ng-template #typeErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required') || control.hasError('portMismatch') || control.hasError('integerInRange') ">
+            <ng-container *ngIf="control.hasError('required') || control.hasError('invalidIntegerInRange') || control.hasError('pattern') || control.hasError('portMismatch')">
               Vui lòng nhập số nguyên trong khoảng -1 - 255 và Type lớn hơn hoặc bằng Code</ng-container>
           </ng-template>
         </nz-form-control>
@@ -101,7 +99,7 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="portErrorTpl">
             <nz-input-number style="margin-left: 0; width: 100%;"
                              formControlName="portRangeMin"
-                             [nzMin]="1" [nzStep]="1" [nzMax]="65535"
+                              [nzStep]="1"
                              id="port"
                              class="input-custom"
                              (change)="portChange($event.target['value'])" />
@@ -123,10 +121,10 @@
             <nz-input-number style="margin-left: 0; width: 100%;"
                              class="input-custom"
                              formControlName="portRangeMin"
-                             [nzMin]="1" [nzStep]="1" [nzMax]="65535"
+                             [nzStep]="1"
                              id="portRangeMin" (ngModelChange)="updatePortRangeValidator()" />
             <ng-template #portRangeMinErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required') || control.hasError('portMismatch') || control.hasError('pattern') ">
+              <ng-container *ngIf="control.hasError('required') || control.hasError('invalidNumber') || control.hasError('pattern') ">
                 Vui lòng nhập số nguyên trong khoảng 1 - 65535
               </ng-container>
             </ng-template>
@@ -142,10 +140,10 @@
           <nz-form-control nzDisableAutoTips [nzErrorTip]="portRangeMaxErrorTpl">
             <nz-input-number style="margin-left: 0; width: 100%;"
                              class="input-custom"
-                             [nzMin]="1" [nzStep]="1" [nzMax]="65535"
+                              [nzStep]="1"
                              formControlName="portRangeMax" />
             <ng-template #portRangeMaxErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required') || control.hasError('pattern') || control.hasError('portMismatch') ">
+              <ng-container *ngIf="control.hasError('required') || control.hasError('pattern') || control.hasError('invalidNumber') || control.hasError('portMismatch')">
                 Vui lòng nhập số nguyên trong khoảng 1 - 65535 và phải lớn hơn hoặc bằng From Port
               </ng-container>
             </ng-template>
@@ -241,7 +239,7 @@
       </button>
       <nz-form-control *nzSpaceItem>
         <button nz-button nzType="primary" [nzLoading]="isLoading"
-                class="button-create" [disabled]="!validateForm.valid" (click)="doCreate()">
+                class="button-create" [disabled]="validateForm.invalid" (click)="doCreate()">
           <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
         </button>
       </nz-form-control>
