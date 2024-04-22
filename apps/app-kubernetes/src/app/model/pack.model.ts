@@ -1,6 +1,7 @@
 export class PackModel {
 
   packId: number;
+  offerId: number;
   packName: string;
   workerNode: number;
 
