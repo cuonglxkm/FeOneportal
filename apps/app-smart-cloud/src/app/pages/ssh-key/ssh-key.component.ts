@@ -92,10 +92,11 @@ export class SshKeyComponent implements OnInit {
     this.searchKey = search;
     this.loadSshKeys(false);
   }
-
+  nameDelete = '';
   //DELETE
   deleteKey(key: SshKey) {
     this.data = key;
+    this.nameDelete = key.name;
     console.log("delete" + key)
     this.showModal()
   }
@@ -133,7 +134,7 @@ export class SshKeyComponent implements OnInit {
     this.isVisibleDelete = false;
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
-    form.resetForm();
+    form?.resetForm();
   }
 
   indexTab: number = 0;
@@ -164,15 +165,15 @@ export class SshKeyComponent implements OnInit {
       next: post => {
         this.loadSshKeys(true);
         this.notification.success('Thành công', 'Tạo mới thành công keypair');
-        form.resetForm();
+        form?.resetForm();
       },
       error: e => {
-        if(e && e.error && e.error.detail && e.error.detail !== `Key pair '${namePrivate}' already exists.`) {
+        if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
           this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng. vui lòng nhập tên khác.`);
         }
         else {
           this.isVisibleCreate = false;
-          form.resetForm();
+          form?.resetForm();
           this.notification.error('Thất bại', 'Tạo mới thất bại keypair');
         }
       },
@@ -191,7 +192,7 @@ export class SshKeyComponent implements OnInit {
       this.form.get('public_key').enable();
     }
 
-    form.resetForm();
+    form?.resetForm();
   }
 
   form = new FormGroup({
@@ -199,6 +200,7 @@ export class SshKeyComponent implements OnInit {
     keypair_name_2: new FormControl('', {validators: [Validators.required, AppValidator.validKeypairName]}),
     public_key: new FormControl('', {validators: [Validators.required]}),
   });
+  nameDeleteInput = '';
 
   submitForm(): void {
     console.log("submitForm")

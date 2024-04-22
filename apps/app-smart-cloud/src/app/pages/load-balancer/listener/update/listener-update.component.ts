@@ -10,6 +10,7 @@ import { ProjectModel } from '../../../../shared/models/project.model';
 import { da } from 'date-fns/locale';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { L7Policy } from '../../../../shared/models/load-balancer.model';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'one-portal-listener-update',
@@ -58,6 +59,9 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   isLoading: boolean = false
 
+  loadingDetail = true;
+  loadingL7 = true;
+  loadingPool = true;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -121,7 +125,11 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   private getData() {
-    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'),this.activatedRoute.snapshot.paramMap.get('lbId')).subscribe(
+    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'),this.activatedRoute.snapshot.paramMap.get('lbId'))
+      .pipe(finalize(() => {
+        this.loadingDetail = false;
+      }))
+      .subscribe(
       data => {
         this.validateForm.controls['listenerName'].setValue(data.name);
         this.validateForm.controls['port'].setValue(data.port);
@@ -139,7 +147,11 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   private getListL7Policy(id: string) {
     this.isLoading = true
-    this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id).subscribe(
+    this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id)
+      .pipe(finalize(()=>{
+        this.loadingL7 = false;
+      }))
+      .subscribe(
       data => {
         this.isLoading = false
         this.listL7 = data;
@@ -154,7 +166,10 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   private getPool(id: string) {
-    this.service.getPool(id, this.regionId).subscribe(
+    this.service.getPool(id, this.regionId)
+      .pipe(finalize(()=>{
+        this.loadingPool = false;
+      })).subscribe(
       data => {
         this.listPool = data.records;
       }

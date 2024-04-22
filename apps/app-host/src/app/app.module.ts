@@ -41,7 +41,7 @@ const customLanguagePack = {
 
 
 const LANG = {
-  abbr: 'zh',
+  abbr: 'en',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,

@@ -4,7 +4,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import {
   AbstractControl,
@@ -17,7 +17,8 @@ import {
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
-import { filter, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 import {
   ChangePasswordKafkaCredential,
   CreateKafkaCredentialData,
@@ -31,7 +32,7 @@ import { KafkaCredentialsService } from 'src/app/services/kafka-credentials.serv
   templateUrl: './credential-action.component.html',
   styleUrls: ['./credential-action.component.css'],
 })
-export class CreateCredentialComponent implements OnDestroy {
+export class CreateCredentialComponent implements OnInit, OnDestroy {
   @Input() serviceOrderCode: string;
   @Output() closeFormEvent = new EventEmitter();
 
@@ -53,7 +54,6 @@ export class CreateCredentialComponent implements OnDestroy {
   tabSubcription: Subscription;
 
   pwdTplString: string;
-  confirmTplString: string;
 
   validateForm: FormGroup<{
     username: FormControl<string>;
@@ -61,6 +61,9 @@ export class CreateCredentialComponent implements OnDestroy {
     password: FormControl<string>;
     checkPassword: FormControl<string>;
   }>;
+
+  passwordText = 'Mật khẩu';
+  newPasswordText = 'Mật khẩu mới';
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -82,23 +85,25 @@ export class CreateCredentialComponent implements OnDestroy {
       }
     );
 
-    this.pwdTplString =
-      this.activatedTab !== this.showCreateCredential
-        ? 'Mật khẩu mới'
-        : 'Mật khẩu';
-    this.confirmTplString = (() => {
-      switch (this.activatedTab) {
-        case this.showCreateCredential:
-          return 'Tạo mới';
-        case this.showUpdatePassword:
-          return 'Cập nhật';
-        case this.showForgotPassword:
-          return 'Xác nhận';
-        default:
-          return null;
-      }
-    })();
+    
+  }
 
+  ngOnInit(): void {
+    this.initForm();
+
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+
+    this.pwdTplString = this.activatedTab !== this.showCreateCredential ? this.newPasswordText : this.passwordText;
+  }
+
+  changeLangData() {
+    this.passwordText = 'Password';
+    this.newPasswordText = 'New password';
+  }
+
+  initForm() {
     this.validateForm = this.fb.group({
       username: [
         {

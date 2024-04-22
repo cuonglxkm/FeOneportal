@@ -47,6 +47,7 @@
               >Tên không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt,
               tối đa 50 ký tự (trừ _)
             </ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Pool đã tồn tại, vui lòng nhập tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -130,8 +131,8 @@
           />
           <label
             nz-checkbox
-            formControlName="session"
             [(ngModel)]="createPool.sessionPersistence"
+            [ngModelOptions]="{ standalone: true }"
           ></label>
         </nz-form-control>
       </nz-form-item>

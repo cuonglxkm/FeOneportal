@@ -115,6 +115,7 @@ nz-table#topic-tbl ::ng-deep .ant-table-row-expand-icon-expanded {
 
 .async {
     font-size: 14px;
+    font-style: italic;
 }
 
 .time-async {
@@ -152,8 +153,15 @@ nz-tag {
     font-size: 14px;
 }
 
-.btn-sync {
+#btn-refresh {
     width: 40px;
-    border-color: #E2E2E9;
-    color: #989BB3;
+    border-color: #d9d9d9;
+    margin-right: 16px;
+    position: relative;
+}
+
+#img-refresh {
+    position: absolute;
+    top: 6px;
+    right: 7px
 }

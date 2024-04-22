@@ -9,3 +9,18 @@ export function yuan(value: number | string, digits: number = 2): string {
   }
   return `&yen ${value}`;
 }
+
+
+export function getCurrentRegionAndProject() {
+
+  let regionId = null;
+  let projectId = null;
+  if (localStorage.getItem('region') != null) {
+    regionId = JSON.parse(localStorage.getItem('region')).regionId;
+  }
+  if (localStorage.getItem('projectId') != null) {
+    projectId = JSON.parse(localStorage.getItem('projectId'));
+  }
+
+  return {regionId, projectId};
+}

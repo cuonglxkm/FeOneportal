@@ -11,6 +11,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from "@delon/abc/loading";
 import { KafkaTopic } from 'src/app/core/models/kafka-topic.model';
 import { finalize } from 'rxjs';
+import { AppConstants } from 'src/app/core/constants/app-constant';
 
 @Component({
   selector: 'one-portal-acl-topic',
@@ -66,6 +67,9 @@ export class AclTopicComponent implements OnInit {
   isVisibleDelete = false;
   currentAclTopic: AclDeleteModel;
 
+  notiSuccessText = 'Thành công';
+  notiFailedText = 'Thất bại';
+
   constructor(
     private fb: NonNullableFormBuilder,
     private aclKafkaService: AclKafkaService,
@@ -80,6 +84,15 @@ export class AclTopicComponent implements OnInit {
     this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
     this.getListTopic();
     this.initForm();
+
+    if (localStorage.getItem('locale') == AppConstants.LOCALE_EN) {
+      this.changeLangData();
+    }
+  }
+
+  changeLangData() {
+    this.notiSuccessText = 'Success';
+    this.notiFailedText = 'Failed';
   }
 
   initForm() {
@@ -180,11 +193,11 @@ export class AclTopicComponent implements OnInit {
         .subscribe(
           (data) => {
             if (data && data.code == 200) {
-              this.notification.success('Thành công', data.msg);
+              this.notification.success(this.notiSuccessText, data.msg);
               this.showForm = this.idListForm;
               this.getListAcl(1, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
             } else {
-              this.notification.error('Thất bại', data.msg);
+              this.notification.error(this.notiFailedText, data.msg);
             }
           }
         );
@@ -248,12 +261,12 @@ export class AclTopicComponent implements OnInit {
       .subscribe(
         (data) => {
           if (data && data.code == 200) {
-            this.notification.success('Thành công', data.msg);
+            this.notification.success(this.notiSuccessText, data.msg);
             this.showForm = this.idListForm;
             this.getListAcl(this.pageIndex, this.pageSize, '', this.serviceOrderCode, this.resourceTypeTopic);
           }
           else {
-            this.notification.error('Thất bại', data.msg);
+            this.notification.error(this.notiFailedText, data.msg);
           }
         }
       );

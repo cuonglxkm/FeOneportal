@@ -47,7 +47,7 @@
             <span nz-icon nzType="close" nzTheme="outline"></span>HỦY
           </button>
           <nz-form-control *nzSpaceItem>
-            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" [disabled]="!validateForm.valid">
+            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" [disabled]="!validateForm.valid" (click)="handleOk()">
               <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
             </button>
           </nz-form-control>

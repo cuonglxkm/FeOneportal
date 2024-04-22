@@ -40,5 +40,8 @@ export class AppConstants {
 
   public static KAKFA_CREATE_TYPE = 'kafka_create';
   public static KAFKA_UPGRADE_TYPE = 'kafka_resize';
+
+  public static LOCALE_EN = 'en-US';
+  public static LOCALE_VI = 'vi-VI';
   
 }

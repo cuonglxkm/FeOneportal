@@ -22,40 +22,28 @@
             </ng-container>
         </ng-template>
     
-        <!-- Tạm ẩn trạng thái warning 
-        <ng-template #warningHealth>
-            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="4" class="mb-md">
-                <div nz-row nzType="flex" nzAlign="middle" class="div-warning div-status-cluster p-md" nz-tooltip
-                    [nzTooltipTitle]="isHealthMsg" [nzTooltipColor]="'#ffa31a'" nzTooltipPlacement="bottom"
-                    nzTooltipOverlayClassName="tooltip-health">
-                    <span class="text-health">Cluster</span>
-                    <label class="text-check">WARNING</label>
-                </div>
-            </div>
-        </ng-template> -->
-    
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
                 <div class="sum-value">{{ statisticsNumber.topic }}</div>
-                <label class="text-nowrap mb0 sum-lbl">Tổng số topic</label>
+                <label class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-topic' | i18n }}</label>
             </div>
         </div>
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
                 <div class="sum-value">{{statisticsNumber.partition}}</div>
-                <p class="text-nowrap mb0 sum-lbl">Tổng số partition</p>
+                <p class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-partition' | i18n }}</p>
             </div>
         </div>
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
                 <div class="sum-value">{{statisticsNumber.message}}</div>
-                <p class="text-nowrap mb0 sum-lbl">Tổng số message</p>
+                <p class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-message' | i18n }}</p>
             </div>
         </div>
         <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="5" class="mb-md">
             <div nz-row nzType="flex" nzAlign="middle" class="sum-info p-md">
                 <div class="sum-value" [style.color]="getOffParColor()">{{statisticsNumber.offline_partition}}</div>
-                <p class="text-nowrap mb0 sum-lbl">Tổng số partition offline</p>
+                <p class="text-nowrap mb0 sum-lbl">{{ 'kafka.dashboard.info-partition-offline' | i18n }}</p>
             </div>
         </div>
     </div>
@@ -82,7 +70,7 @@
         <div nz-col nzXs="24" nzMd="24">
             <nz-card [nzBordered]="false">
                 <div class="title-card" style="width: 100%; margin-bottom: 20px;">
-                    <span>Biểu đồ giám sát</span>
+                    <span>{{ 'kafka.dashboard.chart' | i18n }}</span>
                     <div class="stats-chart">
                         <button id="btn-refresh" nz-button nzType="default" (click)="getInfo4Chart()">
                             <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />

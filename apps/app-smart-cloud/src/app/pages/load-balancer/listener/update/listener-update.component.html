@@ -22,7 +22,7 @@
 <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
-      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loadingDetail">
         <div class="text-card-header" style="margin-bottom: 15px;">Thông tin chi tiết Listener</div>
         <nz-form-item>
           <nz-form-label>
@@ -140,7 +140,7 @@
         <nz-tabset>
           <nz-tab nzTitle="Pool">
             <div class="text-card-header" style="margin-bottom: 30px;">Danh sách Pool</div>
-            <nz-table [nzData]="listPool" [nzShowPagination]="false">
+            <nz-table [nzData]="listPool" [nzShowPagination]="false" [nzLoading]="loadingPool">
               <thead>
               <tr>
                 <th>Tên Pool</th>
@@ -232,7 +232,7 @@
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
-      <nz-card style="border-radius: 8px">
+      <nz-card style="border-radius: 8px" [nzLoading]="loadingDetail">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Thông tin cấu hình</span>
         </div>
