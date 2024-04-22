@@ -86,7 +86,7 @@ export class DetailClusterComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['detailCluster']?.currentValue) {
+    if (changes['detailCluster']?.currentValue && this.upgradeForm) {
       this.detailCluster = changes['detailCluster'].currentValue;
       this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
       this.regionId = this.detailCluster.regionId;

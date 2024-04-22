@@ -18,6 +18,8 @@
 </page-header>
 
 <nz-tabset>
+
+  <!-- detail tab -->
   <nz-tab [nzTitle]="detailTitleTpl">
     <ng-template nz-tab>
       <one-portal-detail-cluster
@@ -32,6 +34,27 @@
     <label>Chi tiết dịch vụ</label>
   </ng-template>
 
+  <!-- instance tab -->
+  <nz-tab [nzTitle]="instanceTitleTpl">
+    <ng-template nz-tab>
+      <cluster-instances></cluster-instances>
+    </ng-template>
+  </nz-tab>
+  <ng-template #instanceTitleTpl>
+    <label>Instance</label>
+  </ng-template>
+
+  <!-- security group tab -->
+  <nz-tab [nzTitle]="sgTitleTpl">
+    <ng-template nz-tab>
+      <security-group></security-group>
+    </ng-template>
+  </nz-tab>
+  <ng-template #sgTitleTpl>
+    <label>Security Group</label>
+  </ng-template>
+
+  <!-- log tab -->
   <nz-tab [nzTitle]="logTitleTpl">
     <ng-template nz-tab>
       <one-portal-logs

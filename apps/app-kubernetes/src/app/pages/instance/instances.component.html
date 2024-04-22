@@ -1,0 +1,43 @@
+<nz-content>
+  <nz-card class="border-card">
+    <!-- filter -->
+    <div class="flex-style mb-5">
+      <div class="w-30">
+        <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
+          <input type="text" nz-input placeholder="Tìm kiếm theo tên node/worker group" [(ngModel)]="keySearch"
+            (ngModelChange)="this.changeKeySearch.next($event)" />
+        </nz-input-group>
+        <ng-template #prefixButton>
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+        </ng-template>
+      </div>
+
+      <button nz-button nzType="text" nzTooltipTitle="Đông bộ" nzTooltipPlacement="top" nz-tooltip
+        (click)="syncInstances()" class="borderless">
+        <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
+      </button>
+    </div>
+
+    <!-- table -->
+    <nz-table #instanceTable [nzData]="listOfInstances" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+      <thead>
+        <tr>
+          <th class="align-center header-table">STT</th>
+          <th class="align-center header-table">Tên node</th>
+          <th class="align-center header-table">Tên nhóm worker</th>
+          <th class="align-center header-table">Trạng thái</th>
+          <th class="align-center header-table">IP Private</th>
+          <th class="align-center header-table">vCpu</th>
+          <th class="align-center header-table">Ram</th>
+          <th class="align-center header-table">Storage (GB)</th>
+          <th class="align-center header-table">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of instanceTable.data; let i = index;">
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>

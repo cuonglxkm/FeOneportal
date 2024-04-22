@@ -141,6 +141,10 @@ span {
   font-size: 16px;
 }
 
+label {
+  cursor: pointer;
+}
+
 .weight-600 {
   font-weight: 600;
 }
