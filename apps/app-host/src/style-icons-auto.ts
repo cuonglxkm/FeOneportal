@@ -67,7 +67,8 @@ import {
   StopOutline,
   PauseCircleOutline,
   PlayCircleOutline,
-  ClusterOutline
+  ClusterOutline,
+  DashOutline
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS_AUTO = [
@@ -134,5 +135,6 @@ export const ICONS_AUTO = [
   StopOutline,
   PauseCircleOutline,
   PlayCircleOutline,
-  ClusterOutline
+  ClusterOutline,
+  DashOutline
 ];

@@ -54,8 +54,12 @@ export class ListFileSystemComponent implements OnInit {
     this.project = project?.id;
     this.typeVpc = project?.type
     this.getListFileSystem(true);
+    this.getProject();
   }
 
+  navigateToExtendFileSystem(id) {
+    this.router.navigate(['/app-smart-cloud/file-storage/'+id+'/extend'])
+  }
   navigateToCreateFileSystem(typeVpc) {
     //in vpc
     if(typeVpc == 1) {

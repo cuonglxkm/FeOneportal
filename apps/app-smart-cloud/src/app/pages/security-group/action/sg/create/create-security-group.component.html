@@ -19,15 +19,17 @@
           (<span style="color: rgba(252, 16, 16, 1)">*</span>)
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-          <input nz-input
+          <input nz-input #sgInputName
                  class="input-custom"
                  formControlName="name"
                  placeholder="Tên Security Group"
+                 (keydown.enter)="focusOkButton($event)"
                  [maxlength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin </ng-container>
             <ng-container *ngIf="control.hasError('startsWith')">Tên phải bắt đầu bằng SG_ </ng-container>
             <ng-container *ngIf="control.hasError('pattern')"> Không nhập ký tự đặc biệt, khoảng trắng, dấu tiếng Việt (trừ _)</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')"> Tên SG đã tồn tại, vui lòng nhập tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

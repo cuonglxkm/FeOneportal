@@ -44,7 +44,7 @@ export class EditL7PolicyComponent implements OnInit {
     pool: [''],
     status: [false, [Validators.required]],
     description: [''],
-    url: ['', [urlValidator()]]
+    url: ['']
   });
 
   nameList: string[] = [];
@@ -63,6 +63,13 @@ export class EditL7PolicyComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private loadBalancerService: LoadBalancerService,
               private notification: NzNotificationService) {
+  }
+
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.doUpdateL7Policy();
+    }
   }
 
   duplicateNameValidator(control) {
@@ -106,10 +113,15 @@ export class EditL7PolicyComponent implements OnInit {
       if(!['REDIRECT_TO_POOL'].includes(this.validateForm.controls.action.value)){
         this.validateForm.controls.pool.clearValidators();
         this.validateForm.controls.pool.updateValueAndValidity();
+      } else {
+        this.validateForm.controls.pool.setValidators(Validators.required)
+        this.validateForm.controls.pool.setValidators(urlValidator())
       }
       if(!['REDIRECT_TO_URL'].includes(this.validateForm.controls.action.value)){
         this.validateForm.controls.url.clearValidators();
         this.validateForm.controls.url.updateValueAndValidity();
+      } else {
+        this.validateForm.controls.pool.setValidators(Validators.required)
       }
       this.validateForm.controls.url.setValue(this.l7Policy.redirectUrl)
       this.validateForm.controls.prioritize.setValue(this.l7Policy.position)
@@ -132,13 +144,16 @@ export class EditL7PolicyComponent implements OnInit {
     } else {
       this.validateForm.controls.pool.clearValidators();
       this.validateForm.controls.pool.updateValueAndValidity();
+      this.validateForm.controls.url.reset()
     }
 
     if(this.validateForm.controls.action.value === 'REDIRECT_TO_URL') {
       this.validateForm.controls.url.setValidators(Validators.required);
+      this.validateForm.controls.url.setValidators(urlValidator())
     } else {
       this.validateForm.controls.url.clearValidators();
       this.validateForm.controls.url.updateValueAndValidity();
+      this.validateForm.controls.url.reset()
     }
   }
 
@@ -147,7 +162,7 @@ export class EditL7PolicyComponent implements OnInit {
     this.loadBalancerService.getListL7Policy(this.region, this.project, this.idListener).subscribe(data => {
       data?.forEach(item => {
         this.nameList?.push(item.name)
-        this.nameList = this.nameList.filter(item => item !== this.validateForm.controls.nameL7.value);
+        this.nameList = this.nameList.filter(item => !item.includes(this.validateForm.get('nameL7').value));
       })
 
     })
@@ -177,7 +192,7 @@ export class EditL7PolicyComponent implements OnInit {
         this.isLoading = false
         this.notification.success('Thành công', 'Cập nhật L7 Policy thành công')
         //navigate detail listener
-        this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/' + this.idListener])
+        this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/detail' + this.idListener])
       }, error => {
         this.isLoading = false
         this.notification.error('Thất bại', 'Cập nhật L7 Policy thất bại')
@@ -195,6 +210,7 @@ export class EditL7PolicyComponent implements OnInit {
     this.project = regionAndProject.projectId
 
     this.getL7PolicyDetail()
+
     this.getListL7Policy()
     this.getListPool()
   }

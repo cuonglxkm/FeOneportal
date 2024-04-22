@@ -49,6 +49,7 @@
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
             <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
             <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
+
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -64,6 +65,7 @@
           <ng-template #typeErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
             <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+
             <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
           </ng-template>
         </nz-form-control>
@@ -104,6 +106,8 @@
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
               <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
               <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
+              <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số khác. Port max = 65535</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Nhập số trong khoảng 1 - 65535</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -173,7 +177,7 @@
             <input nz-input class="input-custom" formControlName="remoteIpPrefix" id="remoteIpPrefix"/>
             <ng-template #remoteIpErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x/x</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x/x (subnet max = 32)</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>

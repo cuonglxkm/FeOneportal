@@ -221,6 +221,8 @@ import { DeleteL7RuleComponent } from './load-balancer/listener/L7-policy/detail
 import { CreateFileStorageNormalComponent } from './file-storage/action/create-normal/create-file-storage-normal.component';
 import { ExtendFileStorageNormalComponent } from './file-storage/action/extend-normal/extend-file-storage-normal.component';
 import { ResizeFileStorageNormalComponent } from './file-storage/action/resize-normal/resize-file-storage-normal.component';
+import { DeleteL7PolicyComponent } from './load-balancer/listener/L7-policy/delete/delete-l7-policy.component';
+import { CancelFileStorageNormalComponent } from './file-storage/action/cancel/cancel-file-storage-normal.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -427,6 +429,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     CreateFileStorageNormalComponent,
     ExtendFileStorageNormalComponent,
     ResizeFileStorageNormalComponent,
+    DeleteL7PolicyComponent,
+    CancelFileStorageNormalComponent,
   ],
   imports: [
     CommonModule,

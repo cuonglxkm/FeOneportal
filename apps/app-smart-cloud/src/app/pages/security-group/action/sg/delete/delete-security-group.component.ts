@@ -27,7 +27,6 @@ export class DeleteSecurityGroupComponent {
 
   constructor(
     private securityGroupService: SecurityGroupService,
-    private message: NzMessageService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService) {}
 
@@ -36,30 +35,36 @@ export class DeleteSecurityGroupComponent {
   }
   showModal(): void {
     this.isVisible = true;
+    console.log(this.idSG)
   }
 
   handleCancel(): void {
     this.isVisible = false;
-    this.onCancel.emit();
+    this.isInput = false
+    this.value = null
+    this.onCancel.emit()
   }
 
 
   handleOk(): void {
     this.isLoading = true;
-    if(this.value.includes(this.nameSG)) {
+    if(this.value?.includes(this.nameSG)) {
       this.isInput = false;
       let formDeleteSG = new FormDeleteSG()
       formDeleteSG.id = this.idSG
       formDeleteSG.userId = this.tokenService.get()?.userId
       formDeleteSG.regionId = this.region
       formDeleteSG.projectId = this.project
-      this.securityGroupService.deleteSG(formDeleteSG)
-        .subscribe((data) => {
+
+
+      this.securityGroupService.deleteSG(formDeleteSG).subscribe((data) => {
           this.isLoading = false;
           this.isVisible = false;
+          this.isInput = false
           this.notification.success('Thành công', `Xóa Security Group thành công`);
           this.onOk.emit();
         }, error => {
+          this.isInput = false
           this.isVisible = false;
           this.isLoading = false;
           this.notification.error('Thất bại', `Xóa Security Group thất bại`);

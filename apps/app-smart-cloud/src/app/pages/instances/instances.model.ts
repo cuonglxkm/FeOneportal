@@ -174,7 +174,7 @@ export class InstancesModel {
   status: string;
   taskState: string;
   rootStatus: string;
-  securityGroupStr: string;
+  securityGroups: string;
   computeHost: any;
   id: number;
 }

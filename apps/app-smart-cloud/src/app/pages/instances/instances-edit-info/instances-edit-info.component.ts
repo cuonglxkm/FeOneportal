@@ -134,9 +134,9 @@ export class InstancesEditInfoComponent implements OnInit {
           .subscribe((dataInstance: any) => {
             this.instancesModel = dataInstance;
 
-            if (this.instancesModel.securityGroupStr != null) {
+            if (this.instancesModel.securityGroups != null) {
               let SGSet = new Set<string>(
-                this.instancesModel.securityGroupStr.split(',')
+                this.instancesModel.securityGroups.split(',')
               );
               this.securityGroupStr = Array.from(SGSet).join(', ');
             }
