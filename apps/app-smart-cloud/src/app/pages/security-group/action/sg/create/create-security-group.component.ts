@@ -91,6 +91,7 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
     this.onCancel.emit()
   }
   handleOk() {
+    this.isLoading = true
     if(this.validateForm.valid) {
       let formCreateSG = new FormCreateSG()
       formCreateSG.userId = this.tokenService.get()?.userId
