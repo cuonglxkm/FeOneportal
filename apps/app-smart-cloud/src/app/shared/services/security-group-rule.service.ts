@@ -22,7 +22,7 @@ export class SecurityGroupRuleService extends BaseService {
     }
 
     create(form: SecurityGroupRuleCreateForm) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form))
+        return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form))
           .pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {

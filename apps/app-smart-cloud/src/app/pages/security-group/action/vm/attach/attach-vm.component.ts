@@ -52,7 +52,7 @@ export class AttachVmComponent {
     }, error => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error('Thất bại', 'Gắn Security Group vào máy ảo thất bại')
+      this.notification.error('Thất bại', 'Gắn Security Group vào máy ảo thất bại, ' + error.error.detail)
     })
   }
 }

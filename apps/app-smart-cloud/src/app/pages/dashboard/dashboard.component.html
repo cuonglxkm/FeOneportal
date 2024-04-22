@@ -1,5 +1,78 @@
 <nz-content>
-  <nz-card style="border-radius: 8px;">
+  <nz-row [nzGutter]="6" style="padding-top: 24px;">
+    <nz-col [nzSpan]="6">
+      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
+        <div class="ant-card-body" style="text-align: center;">
+          <div style="gap: 20px;">
+            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceCount }}</span><br>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">Dịch vụ</span>
+          </div>
+        </div>
 
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="6">
+      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
+        <div class="ant-card-body" style="text-align: center;">
+          <div style="gap: 20px;">
+            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceActiveCount }}</span><br>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">Đang hoạt động</span>
+          </div>
+        </div>
+
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="6">
+      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
+        <div class="ant-card-body" style="text-align: center;">
+          <div style="gap: 20px;">
+            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceNearExpireCount }}</span><br>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">Sắp hết hạn</span>
+          </div>
+        </div>
+
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="6">
+      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
+        <div class="ant-card-body" style="text-align: center;">
+          <div style="gap: 20px;">
+            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceExpireCount }}</span><br>
+            <span class="text-body-card-dashboard" style="margin-top: 50px;">Hết hạn</span>
+          </div>
+        </div>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+  <nz-card style="border-radius: 8px; margin-top: 24px;">
+    <span class="text-card-header">Dịch vụ sắp hết hạn</span>
+    <nz-table #fixTableNearExpire
+              nzShowPagination
+              [nzData]="listSubscriptionsNearExpire || null"
+              [nzTotal]="listSubscriptionsNearExpire?.length"
+              [nzPageSize]="pageSize"
+              [nzPageIndex]="pageIndex"
+              (nzPageSizeChange)="onPageSizeNearExpireChange($event)"
+              (nzPageIndexChange)="onPageIndexNearExpireChange($event)">
+      <thead>
+      <tr>
+        <th>Tên dịch vụ</th>
+        <th>Loại dịch vụ</th>
+        <th>Ngày khởi tạo</th>
+        <th>Ngày hết hạn</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixTableNearExpire.data">
+        <td>{{ data.serviceName }}</td>
+        <td>{{ data.serviceType }}</td>
+        <td>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ data.status }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
   </nz-card>
 </nz-content>
