@@ -63,10 +63,12 @@ export class DeleteSecurityGroupComponent {
           this.isInput = false
           this.notification.success('Thành công', `Xóa Security Group thành công`);
           this.onOk.emit();
+          this.value = null
         }, error => {
           this.isInput = false
           this.isVisible = false;
           this.isLoading = false;
+          this.value = null
           this.notification.error('Thất bại', `Xóa Security Group thất bại`);
         })
     } else {
