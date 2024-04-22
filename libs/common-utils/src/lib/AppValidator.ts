@@ -197,11 +197,15 @@ export class AppValidator {
   }
 
   static validateProtocol(control: { value: string }): { [key: string]: boolean } | null {
-    const numericValue = parseFloat(control.value);
-    if (numericValue < 0 || numericValue > 255) {
-      return { outOfRange: true };
-    }
-    return null;
+
+      const value = parseInt(control.value, 10);
+
+      // Check if the value is an integer and within the range -1 to 255
+      if (isNaN(value) || value < -1 || value > 255) {
+        return { invalidIntegerInRange: true }; // Return validation error if not within the range
+      }
+
+      return null; // Return null if validation succeeds
   }
 
   static validProtocol(): ValidatorFn { // validate input protocol

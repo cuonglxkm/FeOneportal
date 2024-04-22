@@ -84,22 +84,22 @@ export class FormRuleComponent implements OnInit {
     remoteType: FormControl<'CIDR' | 'SecurityGroup'>;
     remoteIpPrefix: FormControl<string>;
     etherType: FormControl<string>;
-    protocol: FormControl<any>;
+    protocol: FormControl<number>;
     securityGroupId: FormControl<string>;
   }> = this.fb.group({
     rule: ['', [Validators.required]],
     portType: 'Port' as 'Port' | 'PortRange',
     portRangeMin: [1, [Validators.pattern(/^[1-9]*$/)]],
     portRangeMax: [1, [Validators.pattern(/^[1-9]*$/), AppValidator.portValidator('portRangeMin')]],
-    type: [-1, [AppValidator.integerInRange()]],
-    code: [-1, [AppValidator.integerInRange()]],
+    type: [-1 ],
+    code: [-1],
     remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
     remoteIpPrefix: ['', [AppValidator.ipWithCIDRValidator,
         this.duplicatePrefixInboundValidator.bind(this),
         Validators.pattern('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[0-9]|[12][0-9])$')]],
-    etherType: [null as null | string],
-    protocol: [-1, [AppValidator.integerInRange()]],
-    securityGroupId: [null as null | string]
+    etherType: [''],
+    protocol: [-1],
+    securityGroupId: ['']
   });
 
   constructor(private fb: NonNullableFormBuilder,
@@ -109,6 +109,7 @@ export class FormRuleComponent implements OnInit {
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
               private router: Router) {
+    this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
   }
 
   duplicatePrefixInboundValidator(control) {
@@ -135,18 +136,23 @@ export class FormRuleComponent implements OnInit {
     this.validateForm.controls.protocol.reset();
 
     if (type === 'other-IPv4') {
-      this.validateForm.controls.protocol.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validateProtocol]);
+
+      this.validateForm.controls.protocol.setValidators([Validators.required, AppValidator.validateProtocol,
+        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/)]);
       this.validateForm.controls.protocol.markAsDirty();
       this.validateForm.controls.protocol.reset();
     }
 
     if (type === 'icmp-IPv4') {
-      this.validateForm.controls.type.setValidators([Validators.required, AppValidator.portValidator('code')])
+
+      this.validateForm.controls.type.setValidators([Validators.required, AppValidator.validateProtocol,
+        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/), AppValidator.portValidator('code')])
       // this.validateForm.controls.type.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
       this.validateForm.controls.type.markAsDirty();
       this.validateForm.controls.type.reset();
 
-      this.validateForm.controls.code.setValidators([Validators.required])
+      this.validateForm.controls.code.setValidators([Validators.required, AppValidator.validateProtocol,
+        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/)])
       // this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
       this.validateForm.controls.code.markAsDirty();
       this.validateForm.controls.code.reset();
@@ -162,6 +168,9 @@ export class FormRuleComponent implements OnInit {
       this.validateForm.controls.portRangeMax.reset();
     }
 
+
+    // this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
+
     this.validateForm.controls.protocol.updateValueAndValidity();
     this.validateForm.controls.portRangeMin.updateValueAndValidity();
     this.validateForm.controls.portRangeMax.updateValueAndValidity();
@@ -171,10 +180,13 @@ export class FormRuleComponent implements OnInit {
   remoteTypeChange(type: 'CIDR' | 'SecurityGroup'): void {
     this.remoteType = type;
     if (this.remoteType == 'CIDR') {
-      this.validateForm.controls.remoteIpPrefix.reset();
       this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
+      this.validateForm.controls.remoteIpPrefix.reset();
 
       this.validateForm.controls.securityGroupId.clearValidators()
+      this.validateForm.controls.securityGroupId.updateValueAndValidity()
+
+      this.validateForm.controls.etherType.clearValidators()
       this.validateForm.controls.securityGroupId.updateValueAndValidity()
     }
     if (this.remoteType == 'SecurityGroup') {
@@ -288,6 +300,7 @@ export class FormRuleComponent implements OnInit {
         }
       );
     } else {
+      console.log('abc', this.validateForm)
       console.log('invalid', this.validateForm.getRawValue())
     }
   }
