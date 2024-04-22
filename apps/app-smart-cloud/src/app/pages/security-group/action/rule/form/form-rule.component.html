@@ -180,6 +180,7 @@
             <ng-template #remoteIpErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x/x (subnet max = 32)</ng-container>
+              <ng-container *ngIf="control.hasError('duplicatePrefix')">Prefix IP đã tồn tại vui lòng chọn dải khác</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -193,7 +194,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzErrorTip="Không được để trống!">
-              <nz-select
+              <nz-select nzSize="large"
                 id="securityGroupId"
                 formControlName="securityGroupId"
                 nzPlaceHolder="Chọn Security Group">
@@ -210,7 +211,7 @@
             </div>
           </nz-form-label>
           <nz-form-control nzErrorTip="Chọn Enther Type">
-            <nz-select
+            <nz-select nzSize="large"
               id="etherType"
               formControlName="etherType"
               nzPlaceHolder="Chọn Enther Type">
