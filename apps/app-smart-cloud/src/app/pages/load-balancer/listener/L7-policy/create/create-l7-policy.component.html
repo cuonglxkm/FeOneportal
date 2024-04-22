@@ -14,7 +14,7 @@
         <a routerLink="/app-smart-cloud/load-balancer/detail/{{ idLoadBalancer }}">Chi tiết Load Balancer</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/{{ idListener }}">Chi tiết Listener</a>
+        <a routerLink="/app-smart-cloud/load-balancer/{{ idLoadBalancer }}/listener/detail/{{ idListener }}">Chi tiết Listener</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>Tạo mới L7 Policy</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -42,8 +42,13 @@
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
-            <nz-form-control nzDisableAutoTips>
-              <input nz-input class="input-custom" formControlName="nameL7" [placeholder]="'Tên L7 policy'" appAutofocus/>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameL7ErrorTpl">
+              <input nz-input class="input-custom" formControlName="nameL7" [maxlength]="50" [placeholder]="'Tên L7 policy'" appAutofocus/>
+              <ng-template #nameL7ErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên L7 Policy</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Không nhập ký tự đặc biệt, dấu Tiếng Việt, khoảng trắng (trừ _)</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên L7 Policy đã tồn tại, vui lòng nhập tên khác</ng-container>
+              </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
@@ -167,7 +172,7 @@
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="submitForm()">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" [disabled]="validateForm.invalid" (click)="submitForm()" [nzLoading]="isLoading">
               <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;"/>
               <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
             </button>

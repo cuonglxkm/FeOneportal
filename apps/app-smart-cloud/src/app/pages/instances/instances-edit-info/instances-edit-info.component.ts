@@ -133,9 +133,9 @@ export class InstancesEditInfoComponent implements OnInit {
             this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
             this.instancesModel = dataInstance;
 
-            if (this.instancesModel.securityGroupStr != null) {
+            if (this.instancesModel.securityGroups != null) {
               let SGSet = new Set<string>(
-                this.instancesModel.securityGroupStr.split(',')
+                this.instancesModel.securityGroups.split(',')
               );
               this.securityGroupStr = Array.from(SGSet).join(', ');
             }

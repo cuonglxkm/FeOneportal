@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 export class AppValidator {
   // @ts-ignore
@@ -188,8 +188,9 @@ export class AppValidator {
   }
 
   static validateNumber(control: { value: string }): { [key: string]: boolean } | null {
-    const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
-    if (!isNumber && !!control.value) {
+    const isIntegerInRange = /^(-1|[0-9]|[1-9][0-9]?|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(control.value);
+    // const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
+    if (!isIntegerInRange && !!control.value) {
       return { invalidNumber: true };
     }
     return null;
@@ -197,7 +198,7 @@ export class AppValidator {
 
   static validateProtocol(control: { value: string }): { [key: string]: boolean } | null {
     const numericValue = parseFloat(control.value);
-    if (numericValue < 1 || numericValue > 255) {
+    if (numericValue < 0 || numericValue > 255) {
       return { outOfRange: true };
     }
     return null;
@@ -235,6 +236,44 @@ export class AppValidator {
       return null;
     };
   }
+  static portValidator(fromPortControlName: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const fromPortControl = control.parent?.get(fromPortControlName);
+
+      if (!fromPortControl) {
+        return null; // If "from" port control is not found, return null
+      }
+
+      const fromPort = parseInt(fromPortControl.value, 10);
+      const toPort = parseInt(control.value, 10);
+
+      if (isNaN(fromPort) || isNaN(toPort)) {
+        return null; // If either "from" or "to" port is not a number, return null
+      }
+
+      if (toPort >= fromPort) {
+        return null; // If "to" port is greater than or equal to "from" port, return null (valid)
+      } else {
+        return { portMismatch: true }; // Otherwise, return validation error
+      }
+    };
+  }
+
+  static integerInRange(min: number = -1, max: number = 255): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (Validators.required(control) !== null) {
+        return null; // Nếu giá trị không bắt buộc, không thực hiện kiểm tra
+      }
+
+      const value = parseInt(control.value, 10);
+      if (isNaN(value) || value < min || value > max) {
+        return { integerInRange: { valid: false } };
+      }
+
+      return null;
+    };
+  }
+
 
   // static validRangeValidator(): ValidatorFn {
   //   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -351,7 +390,7 @@ export function ipAddressExistsValidator(ipAddresses: string[]): ValidatorFn {
     }
     return null;
   };
-  
+
 }
 
 
@@ -359,19 +398,19 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddress = control.value;
     if (!ipAddress) {
-      return null; 
+      return null;
     }
-    
+
     const networkPart = subnetIP.split('.').slice(0, 3).join('.');
     if (!ipAddress.startsWith(networkPart)) {
-      return { 'invalidSubnetIP': true }; 
+      return { 'invalidSubnetIP': true };
     }
-    
+
     const lastNumber = parseInt(ipAddress.split('.')[3], 10);
     if (lastNumber < 2 || lastNumber > 254) {
-      return { 'invalidLastNumber': true }; 
+      return { 'invalidLastNumber': true };
     }
-    
+
     return null;
   };
 }

@@ -5,7 +5,8 @@
       <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
       <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -22,10 +23,68 @@
     <ng-container *ngSwitchCase="false">
       <nz-card style="border-radius: 8px;">
         <nz-row nzJustify="space-between">
+          <nz-col nzSpan="16">
+            <div>
+              <span class="text-card-header">Thông tin File Storage</span>
+            </div>
+          </nz-col>
+          <nz-col nzSpan="8" style="flex: none;" *ngIf="typeVpc == 0">
+            <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToExtendFileSystem(7)">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/redo.svg" alt="" />
+              <span class="button-text-primary">Gia hạn</span>
+            </button>
+            <button nz-button nz-dropdown [nzDropdownMenu]="opMenu">
+              <span style="margin-right: 4px">Thêm</span
+              ><img src="assets/imgs/arrow-down.svg" alt="" />
+            </button>
+            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item>Điều chỉnh</li>
+                <one-portal-cancel-file-storage-normal [region]="region" [project]="project" />
+              </ul>
+            </nz-dropdown-menu>
+          </nz-col>
+        </nz-row>
+
+        <form nz-form nzLayout="vertical">
+          <nz-form-item style="margin-top: 20px;margin-bottom: 0;">
+            <nz-form-label>
+              <span *ngIf="projectInfo?.cloudProject?.type.includes('VPC')">Loại dự án: <b>Dự án VPC</b></span>
+              <span *ngIf="!projectInfo?.cloudProject?.type.includes('VPC')">Loại dự án: <b>Dự án thường</b></span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Dung lượng File System đã dùng: <b>{{ projectInfo?.cloudProjectResourceUsed?.quotaShareInGb }} GB /
+                {{ projectInfo?.cloudProject?.quotaShareInGb }} GB</b></span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Dung lượng File System Snapshot đã dùng: <b>{{ projectInfo?.cloudProjectResourceUsed?.quotaShareSnapshotInGb }}
+                GB /
+                {{ projectInfo?.cloudProject?.quotaShareSnapshotInGb }} GB</b></span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Ngày khởi tạo: </span>
+            </nz-form-label>
+          </nz-form-item>
+          <nz-form-item style="margin-bottom: 0;">
+            <nz-form-label>
+              <span>Ngày hết hạn theo dự án VPC: </span>
+            </nz-form-label>
+          </nz-form-item>
+        </form>
+
+      </nz-card>
+      <nz-card style="border-radius: 8px;">
+        <nz-row nzJustify="space-between">
           <nz-col [nzSpan]="8">
             <span class="text-card-header">Danh sách File System</span>
           </nz-col>
-          <nz-col [nzSpan]="16"  style="flex:none;">
+          <nz-col [nzSpan]="16" style="flex:none;">
             <div>
               <nz-input-group [nzPrefix]="prefixIconSearch"
                               nzSize="large"
@@ -34,13 +93,14 @@
                        nz-input
                        placeholder="Tìm kiếm"
                        [(ngModel)]="value"
-                       (input)="onInputChange($event.target['value'])"/>
+                       (input)="onInputChange($event.target['value'])" />
               </nz-input-group>
               <ng-template #prefixIconSearch>
-                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
+                <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
               </ng-template>
-              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateFileSystem()">
-                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt=""/>
+              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large"
+                      (click)="navigateToCreateFileSystem(typeVpc)">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
                 <span class="button-text-primary">Tạo File System</span>
               </button>
             </div>
@@ -48,7 +108,7 @@
         </nz-row>
         <nz-table #fixTable
                   style="margin-top: 24px;"
-                  nzShowPagination
+                  nzShowSizeChanger
                   [nzData]="response?.records"
                   [nzPageSize]="response?.pageSize"
                   (nzPageSizeChange)="onPageSizeChange($event)"
@@ -83,14 +143,20 @@
                 <one-portal-edit-file-system [region]="region"
                                              [project]="project"
                                              [fileSystemId]="data.id"
-                                             (onOk)="handleOkEdit()"/>
-                <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more" nzTheme="outline" nz-dropdown
+                                             (onOk)="handleOkEdit()" />
+                <span style="color: #0066B3; margin-left: 15px; cursor: pointer;" class="more" nz-icon nzType="more"
+                      nzTheme="outline" nz-dropdown
                       [nzDropdownMenu]="opMenu"></span>
-                <nz-dropdown-menu #opMenu="nzDropdownMenu" >
+                <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item>Tạo Snapshot</li>
-                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">Điều chỉnh dung lượng</li>
-                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">Quản lý Access Rule</li>
+                    <li nz-menu-item [routerLink]="'/app-smart-cloud/file-storage/file-system/resize/' + data.id">Điều
+                      chỉnh dung lượng
+                    </li>
+                    <li nz-menu-item
+                        [routerLink]="'/app-smart-cloud/file-storage/file-system/' + data.cloudId + '/access-rule/list'">
+                      Quản lý Access Rule
+                    </li>
                     <one-portal-delete-file-system [region]="region"
                                                    [project]="project"
                                                    [fileSystemId]="data.id"
@@ -126,7 +192,7 @@
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'"
-                  routerLink="/app-smart-cloud/file-storage/file-system/create" nzSize="large">
+                  (click)="navigateToCreateFileSystem(typeVpc)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             Tạo mới File Storage
           </button>

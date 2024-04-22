@@ -53,7 +53,7 @@ export class DetailUserGroupComponent {
 
   groupName: string
 
-  parentGroup: string
+  //parentGroup: string
 
   expandSet = new Set<string>();
 
@@ -253,7 +253,7 @@ export class DetailUserGroupComponent {
       .subscribe(data => {
         this.groupModel = data
         this.loading = false
-        this.parentGroup = this.groupModel.parent
+        //this.parentGroup = this.groupModel.parent
       })
     //get policy
     this.getPoliciesByGroupName()

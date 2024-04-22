@@ -5,8 +5,8 @@ import {
   FileSystemDetail,
   FormEditFileSystem,
   FormSearchFileSystem
-} from '../../../../../shared/models/file-system.model';
-import { FileSystemService } from '../../../../../shared/services/file-system.service';
+} from '../../../../shared/models/file-system.model';
+import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 

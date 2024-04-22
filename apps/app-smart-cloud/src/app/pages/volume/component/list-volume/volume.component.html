@@ -75,7 +75,8 @@
         </nz-row>
         <nz-table #fixedTable
                   style="margin-top: 20px;"
-                  nzShowPagination
+
+                  nzShowSizeChanger
                   [nzData]="response?.records || []"
                   [nzPageSize]="response?.pageSize"
                   (nzPageSizeChange)="onPageSizeChange($event)"

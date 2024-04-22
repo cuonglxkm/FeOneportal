@@ -1,0 +1,166 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action"
+             [title]="'Khởi tạo File Storage'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/list'">File System
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/file-storage/file-system/create'">Khởi tạo File Storage
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
+                               [regionId]="region"></project-select-dropdown>
+    </div>
+  </ng-template>
+</page-header>
+<nz-content>
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Thông tin File Storage</span>
+        <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+          <div class="ant-table" style="margin-top: 20px;">
+            <table>
+              <thead class="ant-table-thead">
+              <tr>
+                <th>Tài nguyên</th>
+                <th>Số lượng</th>
+                <th>Thành tiền/Đơn giá</th>
+              </tr>
+              </thead>
+              <tbody class="ant-table-tbody">
+              <tr>
+                <td style="width: 50%">
+                  <nz-form-label style="margin-left: -12px; margin-top: 10px;">Dung lượng File System (<span
+                    class="text-red">*</span>) - GB
+                  </nz-form-label>
+                  <nz-slider [nzMin]="1" [nzMax]="1000"
+                             formControlName="storageFileSystem"
+                             [(ngModel)]="storageFileSystem"
+                             (ngModelChange)="changeStorageFileSystem($event)"></nz-slider>
+
+                </td>
+                <td>
+                  <nz-input-number (keydown)="onKeyDown($event)"
+                                   formControlName="storageFileSystem"
+                                   [(ngModel)]="storageFileSystem"
+                                   (ngModelChange)="changeStorageFileSystem($event)"
+                                   [nzMin]="1" [nzMax]="1000" [nzStep]="1" nzSize="large"></nz-input-number>
+                </td>
+                <td> VND</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-form-label style="margin-left: -12px; margin-top: 10px;">Dung lượng File System Snapshot (<span
+                    class="text-red">*</span>) - GB
+                  </nz-form-label>
+                  <nz-slider [nzMin]="1" [nzMax]="1000"
+                             formControlName="storageFileSystemSnapshot"
+                             [(ngModel)]="storageFileSystemSnapshot"
+                             (ngModelChange)="changeStorageFileSystemSnapshot($event)"></nz-slider>
+                </td>
+                <td>
+                  <nz-input-number (keydown)="onKeyDown($event)"
+                                   formControlName="storageFileSystemSnapshot"
+                                   [(ngModel)]="storageFileSystemSnapshot"
+                                   (ngModelChange)="changeStorageFileSystemSnapshot($event)"
+                                   [nzMin]="1" [nzMax]="1000" [nzStep]="1" nzSize="large"></nz-input-number>
+                </td>
+                <td> VND</td>
+              </tr>
+              </tbody>
+            </table>
+            <nz-form-item style="margin-top: 20px;">
+              <nz-form-label>
+                <span>Thời gian sử dụng (<span style="color: red;">*</span>) - Tháng</span>
+              </nz-form-label>
+              <nz-row nzGutter="24">
+                <nz-col nzSpan="12">
+                  <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
+                    <nz-input-number (keydown)="onKeyDown($event)"
+                                     formControlName="time"
+                                     [nzMin]="1" [nzStep]="1" nzSize="large"
+                                     style="margin-left: 0; width: 100%;"></nz-input-number>
+                    <ng-template #timeErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thời gian</ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số nguyên dương</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-form-label>
+                    <span>Ngày cấp dịch vụ: </span>
+                  </nz-form-label>
+                </nz-col>
+              </nz-row>
+            </nz-form-item>
+            <nz-form-label>
+              <span>Ngày hết hạn:</span>
+            </nz-form-label>
+          </div>
+        </form>
+      </nz-card>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-card style="border-radius: 8px;">
+        <span class="text-card-header">Chi phí ước tính</span>
+        <div style="margin-top: 10px" class="text-value">Dung lượng File System</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.storageFileSystem.value }} GB
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <div style="margin-top: 10px" class="text-value">Dung lượng File System Snapshot</div>
+        <div style="margin-top: 10px" class="text-label">
+          {{ validateForm.controls.storageFileSystemSnapshot.value }} GB
+        </div>
+        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+        <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value"> Chi phí 1 tháng </span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span *ngIf="orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+                  nzAlign="right">0 VND</span>
+            <span *ngIf="orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                  nzAlign="right">
+              {{ orderItem?.orderItemPrices[0].unitPrice.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0].unitPrice.currency }}
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-label">Tổng thanh toán</span><br>
+            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span *ngIf="!orderItem" class="text-value" style="color: #ea3829" nzAlign="right">0 VND</span>
+            <span *ngIf="orderItem" class="text-value" style="color: #ea3829" nzAlign="right">
+              {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                    [disabled]="validateForm.invalid">
+              <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+              <span [style.color]="validateForm.invalid ? 'gray' : 'white'">Khởi tạo</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-content>

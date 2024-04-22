@@ -14,7 +14,7 @@ export class EditUserGroupComponent {
   @Input() isVisible: boolean
   @Input() isLoading: boolean
   @Input() groupNameCurrent: string
-  @Input() parent: string
+  //@Input() parent: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
   @Output() groupNameNew: string
@@ -58,7 +58,7 @@ export class EditUserGroupComponent {
     this.isLoading = true
     if (this.validateForm.valid) {
       this.form.groupName = this.validateForm.value.groupName
-      this.form.parentName = this.parent
+      //this.form.parentName = this.parent
       this.userGroupService.createOrEdit(this.form).subscribe(data => {
         this.userGroup = data
         this.isLoading = false

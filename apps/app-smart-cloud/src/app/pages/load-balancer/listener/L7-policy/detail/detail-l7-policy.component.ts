@@ -29,6 +29,11 @@ export class DetailL7PolicyComponent implements OnInit{
   l7RuleList: L7Rule[] = []
   isLoadingL7Rule: boolean = false
 
+  pageSize: number = 5
+  pageIndex: number = 1
+
+  currentPageData: any
+
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -52,6 +57,16 @@ export class DetailL7PolicyComponent implements OnInit{
     // this.router.navigate(['/app-smart-cloud/load-balancer/list'])
   }
 
+  onPageSizeChange(value) {
+    this.pageSize = value
+    this.getL7RuleList()
+  }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value
+    this.getL7RuleList()
+  }
+
   getL7PolicyDetail() {
     this.isLoading = true
     this.loadBalancerService.getDetailL7Policy(this.idL7Policy, this.region, this.project).subscribe(data => {
@@ -65,6 +80,10 @@ export class DetailL7PolicyComponent implements OnInit{
     this.loadBalancerService.getListL7Rule(this.region, this.project, this.idL7Policy).subscribe(data => {
       this.isLoadingL7Rule = false
       this.l7RuleList = data
+      const startIndex = (this.pageIndex - 1) * this.pageSize;
+      const endIndex = this.pageIndex * this.pageSize;
+
+      this.currentPageData = this.l7RuleList.slice(startIndex, endIndex);
     }, error => {
       this.isLoadingL7Rule = false
       this.l7RuleList = null

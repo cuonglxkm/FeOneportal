@@ -75,6 +75,7 @@ export class CloudProjectResourceUsed {
   loadBalancerSdnCount: number
   ipv6Count: number
   quotaShareSnapshotInGb: number
+  quotaShareInGb: number
 }
 
 export class SizeInCLoudProject {
