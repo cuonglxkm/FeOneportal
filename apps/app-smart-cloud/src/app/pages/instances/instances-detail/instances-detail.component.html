@@ -13,7 +13,9 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> {{ 'app.instances.detail' | i18n }} </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.instances.detail' | i18n }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -35,11 +37,11 @@
         (click)="activeGSCard()"
         *ngIf="!activeGS"
       >
-        <i nz-icon nzType="eye"></i> <span>Giám sát</span>
+        <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
       <button nz-button [nzType]="'primary'" (click)="navigateToEdit()">
         <i nz-icon nzType="edit"></i>
-        <span>Điều chỉnh</span>
+        <span>{{ 'app.button.resize' | i18n }}</span>
       </button>
       <one-portal-instances-btn
         [instancesId]="id"
@@ -55,7 +57,7 @@
   <div style="margin-bottom: 20px">
     <nz-row nzGutter="16">
       <nz-col nzSpan="8">
-        <span class="text-card-header">Giám sát</span>
+        <span class="text-card-header">{{ 'app.monitor' | i18n }}</span>
       </nz-col>
       <nz-col class="text-right" nzSpan="16">
         <nz-select
@@ -106,14 +108,14 @@
   *ngIf="instancesModel"
 >
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">Thông tin máy ảo</span>
+    <span class="text-card-header">{{ 'app.instances.info' | i18n }}</span>
   </div>
   <div class="customRow">
     <nz-row>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Tên máy ảo:</span
+            >{{ 'app.instances.name' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
             instancesModel.name || ''
@@ -122,12 +124,14 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">Hệ điều hành:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.instances.OS' | i18n }}:</span
+          >
           <span class="text-value-detail"
             >{{ instancesModel.imageName }}
             <img
               style="cursor: pointer; margin-left: 10px"
-              nz-tooltip="Thay đổi"
+              [nz-tooltip]="'app.change' | i18n"
               src="assets/imgs/refresh.svg"
               alt=""
               (click)="navigateToChangeImage()"
@@ -138,7 +142,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Gói cấu hình:</span
+            >{{ 'app.configuration.package' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
             instancesModel.flavorName | slice : 3
@@ -148,7 +152,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label" style="width: 35%"
-            >Truy cập và bảo mật:</span
+            >{{ 'app.alert.access.security' | i18n }}:</span
           >
           <span
             class="text-value-detail"
@@ -162,7 +166,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Trạng thái tác vụ:</span
+            >{{ 'app.task.status' | i18n }}:</span
           >
           <span
             *ngIf="instancesModel.taskState == 'SHUTOFF'"
@@ -192,7 +196,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">IP Public:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.ip.public' | i18n }}:</span
+          >
           <span class="text-value-detail">{{ listIPPublicStr }}</span>
         </nz-row></nz-col
       >
@@ -201,7 +207,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Loại ổ cứng:</span
+            >{{ 'app.hard.drive.type' | i18n }}:</span
           >
           <span
             *ngIf="instancesModel.volumeType == 0"
@@ -217,7 +223,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">IP LAN:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.ip.lan' | i18n }}:</span
+          >
           <span class="text-value-detail">{{ listIPLanStr }}</span>
         </nz-row></nz-col
       >
@@ -226,7 +234,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Băng thông trong nước:</span
+            >{{ 'app.domestic.bandwidth' | i18n }}:</span
           >
           <span class="text-value-detail customSpan"
             >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
@@ -235,7 +243,9 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">Băng thông quốc tế:</span>
+          <span class="text-label" style="width: 35%"
+            >{{ 'app.international.bandwidth' | i18n }}:</span
+          >
           <span class="text-value-detail"
             >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
           >
@@ -246,7 +256,7 @@
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
           <span class="text-label customSpan" style="width: 35%"
-            >Ngày khởi tạo:</span
+            >{{ 'app.service.creation-date' | i18n }}:</span
           >
           <span class="text-value-detail customSpan">{{
             instancesModel.createdDate | date : 'dd/MM/yyyy'
@@ -255,7 +265,7 @@
       </nz-col>
       <nz-col nzSpan="12">
         <nz-row style="padding: 12px 0 12px 0">
-          <span class="text-label" style="width: 35%">Ngày hết hạn:</span>
+          <span class="text-label" style="width: 35%">{{ 'app.service.expiration-date' | i18n }}:</span>
           <span class="text-value-detail"
             >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
           </span>

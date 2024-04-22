@@ -63,7 +63,8 @@
           </nz-col>
           <nz-col nzSpan="12">
             <div style="margin-left: 20px" class="text-label">
-              Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+              {{ 'app.service.expiration-date' | i18n }}:
+              {{ expiredDate | date : 'dd/MM/yyyy' }}
             </div>
           </nz-col>
         </nz-row>
@@ -155,7 +156,7 @@
               (click)="extend()"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              Gia hạn
+              {{ 'app.button.extend' | i18n }}
             </button>
           </nz-col>
         </nz-row>

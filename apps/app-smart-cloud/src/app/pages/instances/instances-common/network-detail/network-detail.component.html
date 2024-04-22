@@ -10,11 +10,13 @@
     >
       <thead>
         <tr>
-          <th>Tên Network</th>
+          <th>{{ 'app.network.name' | i18n }}</th>
           <th>MAC Address</th>
           <th>FixedIPs</th>
           <th>Status</th>
-          <th *ngIf="isDetail" nzAlign="center">Thao tác</th>
+          <th *ngIf="isDetail" nzAlign="center">
+            {{ 'app.text.operation' | i18n }}
+          </th>
         </tr>
       </thead>
       <tbody class="ant-table-tbody">
@@ -41,7 +43,7 @@
             <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="showModalEditPort(data)">
-                  Chỉnh sửa
+                  {{ 'app.text.edit' | i18n }}
                 </li>
                 <li
                   nz-menu-item
@@ -64,7 +66,7 @@
 </nz-card>
 <nz-modal
   [(nzVisible)]="isVisibleEditPort"
-  nzTitle="Chỉnh sửa Port"
+  [nzTitle]="'app.edit.port' | i18n"
   (nzOnCancel)="handleCancelEditPort()"
 >
   <div *nzModalContent>
@@ -87,7 +89,9 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="SGErrorTpl">
           <nz-select
             nzMode="multiple"
-            nzPlaceHolder="Chọn Security Group"
+            [nzPlaceHolder]="
+              '-- ' + ('app.choose.security.group' | i18n) + ' --'
+            "
             formControlName="securityGroups"
             [(ngModel)]="listSGselected"
             [nzServerSearch]="true"
@@ -103,7 +107,7 @@
         </nz-form-control>
         <ng-template #SGErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')"
-            >Vui lòng chọn Security Group
+            >{{ 'validation.security.group.required' | i18n }}
           </ng-container>
         </ng-template>
       </nz-form-item>
@@ -115,7 +119,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button
       nz-button
@@ -127,7 +131,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
