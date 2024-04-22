@@ -34,7 +34,7 @@
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/add-circle.svg"
           alt=""
-        />Tạo mới máy ảo
+        />{{ 'app.button.instance.create' | i18n }}
       </button>
       <one-portal-instances-btn
         [instancesId]="id"
@@ -46,7 +46,7 @@
   </nz-row>
 </page-header>
 
-<form nz-form [nzLayout]="'vertical'" *ngIf="instancesModel">
+<div>
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card
@@ -56,14 +56,16 @@
         *ngIf="instancesModel"
       >
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông tin máy ảo</span>
+          <span class="text-card-header">{{
+            'app.instances.info' | i18n
+          }}</span>
         </div>
         <div class="customRow">
           <nz-row>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                  >Tên máy ảo:</span
+                  >{{ 'app.instances.name' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
                   instancesModel.name || ''
@@ -72,12 +74,14 @@
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
-                <span class="text-label" style="width: 35%">Hệ điều hành:</span>
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.instances.OS' | i18n }}:</span
+                >
                 <span class="text-value-detail"
                   >{{ instancesModel.imageName }}
                   <img
                     style="cursor: pointer; margin-left: 10px"
-                    nz-tooltip="Thay đổi"
+                    [nz-tooltip]="'app.change' | i18n"
                     src="assets/imgs/refresh.svg"
                     alt=""
                     (click)="navigateToChangeImage()"
@@ -88,7 +92,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                  >Gói cấu hình:</span
+                  >{{ 'app.configuration.package' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
                   instancesModel.flavorName | slice : 3
@@ -98,7 +102,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                  >Truy cập và bảo mật:</span
+                  >{{ 'app.alert.access.security' | i18n }}:</span
                 >
                 <span
                   class="text-value-detail"
@@ -112,7 +116,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                  >Trạng thái tác vụ:</span
+                  >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
                   *ngIf="instancesModel.taskState == 'SHUTOFF'"
@@ -142,7 +146,9 @@
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
-                <span class="text-label" style="width: 35%">IP Public:</span>
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.ip.public' | i18n }}:</span
+                >
                 <span class="text-value-detail">{{ listIPPublicStr }}</span>
               </nz-row></nz-col
             >
@@ -151,7 +157,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                  >Loại ổ cứng:</span
+                  >{{ 'app.hard.drive.type' | i18n }}:</span
                 >
                 <span
                   *ngIf="instancesModel.volumeType == 0"
@@ -167,7 +173,9 @@
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
-                <span class="text-label" style="width: 35%">IP LAN:</span>
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.ip.lan' | i18n }}:</span
+                >
                 <span class="text-value-detail">{{ listIPLanStr }}</span>
               </nz-row></nz-col
             >
@@ -176,7 +184,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                  >Băng thông trong nước:</span
+                  >{{ 'app.domestic.bandwidth' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan"
                   >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
@@ -186,7 +194,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                  >Băng thông quốc tế:</span
+                  >{{ 'app.international.bandwidth' | i18n }}:</span
                 >
                 <span class="text-value-detail"
                   >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
@@ -198,7 +206,7 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                  >Ngày khởi tạo:</span
+                  >{{ 'app.service.creation-date' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
                   instancesModel.createdDate | date : 'dd/MM/yyyy'
@@ -207,7 +215,9 @@
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
-                <span class="text-label" style="width: 35%">Ngày hết hạn:</span>
+                <span class="text-label" style="width: 35%"
+                  >{{ 'app.service.expiration-date' | i18n }}:</span
+                >
                 <span class="text-value-detail"
                   >{{ instancesModel.expiredDate | date : 'dd/MM/yyyy' }}
                 </span>
@@ -226,442 +236,455 @@
         [instancesId]="id"
         [isDetail]="false"
       ></one-portal-network-detail>
-      <nz-card style="border-radius: 8px" [nzBordered]="false">
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông tin điều chỉnh</span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <span class="text-label"
-            >Cấu hình hiện tại: {{ instancesModel.cpu }} vCPU,
-            {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
-            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
-          </span>
-        </div>
-        <div style="margin-bottom: 20px">
-          <span class="text-label"
-            >Cấu hình điều chỉnh: {{ instanceResize.cpu }} vCPU,
-            {{ instanceResize.ram }}GB RAM, {{ instanceResize.storage }}GB
-            <span *ngIf="instancesModel.volumeType == 0">HDD</span>
-            <span *ngIf="instancesModel.volumeType == 1">SSD</span>
-          </span>
-        </div>
-        <nz-tabset
-          nzCentered
-          nzSize="large"
-          (keydown)="handleKeyboardEvent($event)"
-        >
-          <nz-tab
-            *ngIf="isConfigPackage"
-            nzTitle="Gói cấu hình sẵn"
-            (nzClick)="onClickConfigPackage()"
+      <form nz-form [nzLayout]="'vertical'">
+        <nz-card style="border-radius: 8px" [nzBordered]="false">
+          <div style="margin-bottom: 20px">
+            <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <span class="text-label"
+              >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
+              {{ instancesModel.ram }}GB RAM, {{ instancesModel.storage }}GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <div style="margin-bottom: 20px">
+            <span class="text-label"
+              >{{ 'app.adjust.config' | i18n }}: {{ instanceResize.cpu }} vCPU,
+              {{ instanceResize.ram }}GB RAM, {{ instanceResize.storage }}GB
+              <span *ngIf="instancesModel.volumeType == 0">HDD</span>
+              <span *ngIf="instancesModel.volumeType == 1">SSD</span>
+            </span>
+          </div>
+          <nz-tabset
+            nzCentered
+            nzSize="large"
+            (keydown)="handleKeyboardEvent($event)"
           >
-            <ngu-carousel
-              #myCarouselFlavor
-              [inputs]="carouselTileConfig"
-              [dataSource]="listOfferFlavors"
+            <nz-tab
+              *ngIf="isConfigPackage"
+              [nzTitle]="'app.Preconfigured.Package' | i18n"
+              (nzClick)="onClickConfigPackage()"
             >
-              <ngu-tile
-                *nguCarouselDef="let item; index as i; let ani = animate"
-                [@slider]="ani"
+              <ngu-carousel
+                #myCarouselFlavor
+                [inputs]="carouselTileConfig"
+                [dataSource]="listOfferFlavors"
               >
-                <div
-                  [tabIndex]="0"
-                  style="cursor: pointer"
-                  (click)="
-                    onInputFlavors(item.id);
-                    selectElementInputFlavors('flavor_' + item.id)
-                  "
-                  (keyup.enter)="
-                    onInputFlavors(item.id);
-                    selectElementInputFlavors('flavor_' + item.id)
-                  "
-                  [id]="'flavor_' + item.id"
+                <ngu-tile
+                  *nguCarouselDef="let item; index as i; let ani = animate"
+                  [@slider]="ani"
                 >
-                  <nz-row>
-                    <nz-col
-                      style="padding-bottom: 5px"
-                      class="newClassFlavor text-center"
-                      [class.initialClassFlavor]="
-                        selectedElementFlavor === 'flavor_' + item.id
-                      "
-                    >
-                      <div>
-                        <span
-                          class="nameFlavor"
-                          [class.initialNameFlavor]="
-                            selectedElementFlavor === 'flavor_' + item.id
-                          "
-                          >{{ item.offerName | slice : 3 : -4 }}</span
-                        >
-                        <div style="margin-top: -16px">
-                          <img
-                            style="width: 100px"
-                            [src]="
+                  <div
+                    [tabIndex]="0"
+                    style="cursor: pointer"
+                    (click)="
+                      onInputFlavors(item.id);
+                      selectElementInputFlavors('flavor_' + item.id)
+                    "
+                    (keyup.enter)="
+                      onInputFlavors(item.id);
+                      selectElementInputFlavors('flavor_' + item.id)
+                    "
+                    [id]="'flavor_' + item.id"
+                  >
+                    <nz-row>
+                      <nz-col
+                        style="padding-bottom: 5px"
+                        class="newClassFlavor text-center"
+                        [class.initialClassFlavor]="
+                          selectedElementFlavor === 'flavor_' + item.id
+                        "
+                      >
+                        <div>
+                          <span
+                            class="nameFlavor"
+                            [class.initialNameFlavor]="
                               selectedElementFlavor === 'flavor_' + item.id
-                                ? 'assets/imgs/line2.svg'
-                                : 'assets/imgs/line.svg'
                             "
-                            alt=""
-                          />
+                            >{{ item.offerName | slice : 3 : -4 }}</span
+                          >
+                          <div style="margin-top: -16px">
+                            <img
+                              style="width: 100px"
+                              [src]="
+                                selectedElementFlavor === 'flavor_' + item.id
+                                  ? 'assets/imgs/line2.svg'
+                                  : 'assets/imgs/line.svg'
+                              "
+                              alt=""
+                            />
+                          </div>
+                          <span class="priceFlavor">{{
+                            item.price.fixedPrice.amount | number
+                          }}</span
+                          ><span> VND/{{ 'app.month' | i18n }}</span>
                         </div>
-                        <span class="priceFlavor">{{
-                          item.price.fixedPrice.amount | number
-                        }}</span
-                        ><span> đ/tháng</span>
-                      </div>
-                    </nz-col>
-                  </nz-row>
-                  <nz-row>
-                    <nz-col
-                      style="width: 100%; padding-top: 5px"
-                      [class.flavor-footer-active]="
-                        selectedElementFlavor === 'flavor_' + item.id
-                      "
-                      [class.flavor-footer]="
-                        selectedElementFlavor != 'flavor_' + item.id
-                      "
-                    >
-                      <div>
-                        <p>{{ item.description }}</p>
-                      </div>
-                    </nz-col>
-                  </nz-row>
-                </div>
-              </ngu-tile>
+                      </nz-col>
+                    </nz-row>
+                    <nz-row>
+                      <nz-col
+                        style="width: 100%; padding-top: 5px"
+                        [class.flavor-footer-active]="
+                          selectedElementFlavor === 'flavor_' + item.id
+                        "
+                        [class.flavor-footer]="
+                          selectedElementFlavor != 'flavor_' + item.id
+                        "
+                      >
+                        <div>
+                          <p>{{ item.description }}</p>
+                        </div>
+                      </nz-col>
+                    </nz-row>
+                  </div>
+                </ngu-tile>
 
-              <ul class="myPoint" NguCarouselPoint>
-                <li
-                  *ngFor="let i of myCarouselFlavor.pointNumbers"
-                  [class.active]="i === myCarouselFlavor.activePoint"
-                  (click)="myCarouselFlavor.moveTo(i)"
-                ></li>
-              </ul>
-            </ngu-carousel>
-          </nz-tab>
-          <nz-tab nzTitle="Cấu hình tuỳ chọn" (nzClick)="onClickCustomConfig()">
-            <div class="ant-table">
-              <table>
-                <thead class="ant-table-thead">
-                  <tr>
-                    <th>Tài nguyên</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền/Đơn giá</th>
-                  </tr>
-                </thead>
-                <tbody class="ant-table-tbody">
-                  <tr>
-                    <td style="width: 50%">
-                      <nz-form-label style="margin-left: -12px"
-                        >Dung lượng (<span class="text-red">*</span>) -
-                        GB</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [(ngModel)]="configCustom.capacity"
-                        (ngModelChange)="changeCapacity($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configCustom.capacity"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeCapacity($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <nz-form-label style="margin-left: -12px"
-                        >RAM (<span class="text-red">*</span>) -
-                        GB</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [(ngModel)]="configCustom.ram"
-                        (ngModelChange)="changeRam($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configCustom.ram"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeRam($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
+                <ul class="myPoint" NguCarouselPoint>
+                  <li
+                    *ngFor="let i of myCarouselFlavor.pointNumbers"
+                    [class.active]="i === myCarouselFlavor.activePoint"
+                    (click)="myCarouselFlavor.moveTo(i)"
+                  ></li>
+                </ul>
+              </ngu-carousel>
+            </nz-tab>
+            <nz-tab
+              [nzTitle]="'app.custom.configuration' | i18n"
+              (nzClick)="onClickCustomConfig()"
+            >
+              <div class="ant-table">
+                <table>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th>{{ 'app.resource' | i18n }}</th>
+                      <th>{{ 'app.amount' | i18n }}</th>
+                      <th>{{ 'app.money.price' | i18n }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.capacity' | i18n }} (<span class="text-red"
+                            >*</span
+                          >) - GB</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="1000"
+                          [(ngModel)]="configCustom.capacity"
+                          (ngModelChange)="changeCapacity($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configCustom.capacity"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeCapacity($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="1000"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ volumeIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ volumeUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [(ngModel)]="configCustom.ram"
+                          (ngModelChange)="changeRam($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configCustom.ram"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeRam($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
 
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ ramIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ ramUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <nz-form-label style="margin-left: -12px"
-                        >CPU (<span class="text-red">*</span>) -
-                        vCPU</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [(ngModel)]="configCustom.vCPU"
-                        (ngModelChange)="changeVCPU($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configCustom.vCPU"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeVCPU($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ cpuUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </nz-tab>
-          <nz-tab nzTitle="Cấu hình GPU">
-            <div class="ant-table">
-              <table>
-                <thead class="ant-table-thead">
-                  <tr>
-                    <th>Tài nguyên</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền/Đơn giá</th>
-                  </tr>
-                </thead>
-                <tbody class="ant-table-tbody">
-                  <tr>
-                    <td>
-                      <nz-form-label style="margin-left: -12px"
-                        >CPUs (<span class="text-red">*</span>)</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [(ngModel)]="configGPU.CPU"
-                        (ngModelChange)="changeCpuOfGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configGPU.CPU"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeCpuOfGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ cpuUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <nz-form-label style="margin-left: -12px"
-                        >RAM (<span class="text-red">*</span>) -
-                        GB</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [(ngModel)]="configGPU.ram"
-                        (ngModelChange)="changeRamOfGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configGPU.ram"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeRamOfGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ ramIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ ramUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >CPU (<span class="text-red">*</span>) -
+                          vCPU</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [(ngModel)]="configCustom.vCPU"
+                          (ngModelChange)="changeVCPU($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configCustom.vCPU"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeVCPU($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ cpuIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ cpuUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </nz-tab>
+            <nz-tab [nzTitle]="'app.gpu.configuration' | i18n">
+              <div class="ant-table">
+                <table>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th>{{ 'app.resource' | i18n }}</th>
+                      <th>{{ 'app.amount' | i18n }}</th>
+                      <th>{{ 'app.money.price' | i18n }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >CPUs (<span class="text-red">*</span>)</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [(ngModel)]="configGPU.CPU"
+                          (ngModelChange)="changeCpuOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configGPU.CPU"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeCpuOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ cpuIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ cpuUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label style="margin-left: -12px"
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [(ngModel)]="configGPU.ram"
+                          (ngModelChange)="changeRamOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configGPU.ram"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeRamOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
 
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ ramIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ ramUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 50%">
-                      <nz-form-label style="margin-left: -12px"
-                        >Dung lượng SSD(<span class="text-red">*</span>) -
-                        GB</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [(ngModel)]="configGPU.storage"
-                        (ngModelChange)="changeStorageOfGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configGPU.storage"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeStorageOfGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 50%">
-                      <nz-form-label style="margin-left: -12px"
-                        >Số lượng GPU (<span class="text-red">*</span
-                        >)</nz-form-label
-                      >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [(ngModel)]="configGPU.GPU"
-                        (ngModelChange)="changeGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="configGPU.GPU"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="1000"
-                        [nzStep]="1"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td nzAlign="right">
-                      <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} VND </label
-                      ><br />
-                      <label class="text-custom-price">
-                        {{ volumeUnitPrice | number }} VND
-                      </label>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-              <nz-form-label
-                >GPU Type (<span class="text-red">*</span>)</nz-form-label
-              >
-              <nz-form-control [nzErrorTip]="gpuErrorTpl">
-                <nz-select
-                  [nzPlaceHolder]="'--Chọn GPU Type--'"
-                  [nzShowSearch]="true"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="configGPU.GPUType"
-                  nzSize="large"
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ ramIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ ramUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.ssd.capacity' | i18n }} (<span
+                            class="text-red"
+                            >*</span
+                          >) - GB</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="1000"
+                          [(ngModel)]="configGPU.storage"
+                          (ngModelChange)="changeStorageOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configGPU.storage"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeStorageOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="1000"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ volumeIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ volumeUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label style="margin-left: -12px"
+                          >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
+                            >*</span
+                          >)</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="1000"
+                          [(ngModel)]="configGPU.GPU"
+                          (ngModelChange)="changeGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configGPU.GPU"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="1000"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ volumeIntoMoney | number }} VND </label
+                        ><br />
+                        <label class="text-custom-price">
+                          {{ volumeUnitPrice | number }} VND
+                        </label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
+                <nz-form-label
+                  >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
+                    >*</span
+                  >)</nz-form-label
                 >
-                  <nz-option
-                    *ngFor="let i of listGPUType"
-                    [nzLabel]="i.displayName"
-                    [nzValue]="i.displayName"
-                  />
-                </nz-select>
-              </nz-form-control>
-              <ng-template #gpuErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')"
-                  >Vui lòng chọn GPU Type</ng-container
-                >
-              </ng-template>
-            </nz-form-item>
-          </nz-tab>
-        </nz-tabset>
-        <div style="margin-top: 20px" class="text-label">
-          Ngày điều chỉnh: {{ today | date : 'dd/MM/yyyy' }}
-        </div>
-      </nz-card>
+                <nz-form-control [nzErrorTip]="gpuErrorTpl">
+                  <nz-select
+                    [nzPlaceHolder]="
+                      '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                    "
+                    [nzShowSearch]="true"
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="configGPU.GPUType"
+                    nzSize="large"
+                  >
+                    <nz-option
+                      *ngFor="let i of listGPUType"
+                      [nzLabel]="i.displayName"
+                      [nzValue]="i.displayName"
+                    />
+                  </nz-select>
+                </nz-form-control>
+                <ng-template #gpuErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')"
+                    >Vui lòng chọn GPU Type
+                  </ng-container>
+                </ng-template>
+              </nz-form-item>
+            </nz-tab>
+          </nz-tabset>
+          <div style="margin-top: 20px" class="text-label">
+            {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
+          </div>
+        </nz-card>
+      </form>
     </nz-col>
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">Chi phí ước tính</span>
         </div>
-        <div class="text-value">Tên máy ảo</div>
+        <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ instancesModel.name }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Hệ điều hành</div>
+        <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
           {{ instancesModel.imageName }}
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <div class="text-value">Gói dịch vụ</div>
+        <div class="text-value">{{ 'app.text.package' | i18n }}</div>
         <div
           *ngIf="instanceResize.cpu"
           style="margin-top: 10px"
@@ -697,8 +720,11 @@
           nzGutter="16"
         >
           <nz-col nzSpan="16">
-            <span class="text-label">Tổng thanh toán</span><br />
-            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+            ><br />
+            <span class="text-note-italicized"
+              >({{ 'app.include.vat' | i18n }})</span
+            >
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
@@ -718,13 +744,13 @@
               [disabled]="totalAmount == 0"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              <span [style.color]="totalAmount == 0 ? 'gray' : 'white'"
-                >Điều chỉnh</span
-              >
+              <span [style.color]="totalAmount == 0 ? 'gray' : 'white'">{{
+                'app.button.resize' | i18n
+              }}</span>
             </button>
           </nz-col>
         </nz-row>
       </nz-card>
     </nz-col>
   </nz-row>
-</form>
+</div>

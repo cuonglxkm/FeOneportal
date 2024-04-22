@@ -128,7 +128,7 @@
         <td nzLeft>
           <a
             nz-tooltip
-            nzTooltipTitle="Xem chi tiết"
+            [nzTooltipTitle]="'app.view.detail' | i18n"
             nzTooltipPlacement="bottom"
             [routerLink]="
               '/app-smart-cloud/instances/instances-detail/' + data.id
@@ -142,7 +142,7 @@
         <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
           {{ 'app.status.running' | i18n }}
         </td>
-        <td *ngIf="data.status == 'RESIZE'" style="color: #4fe414">
+        <td *ngIf="data.status == 'RESIZING'" style="color: #4fe414">
           {{ 'app.status.upgrade' | i18n }}
         </td>
         <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
@@ -156,20 +156,20 @@
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZE') &&
+              !data.taskState.toUpperCase().includes('RESIZING') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/create-backup.svg"
             alt=""
             (click)="navigateToCreateBackup(data.id)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Tạo Backup"
+            [nz-tooltip]="'app.create.backup' | i18n"
           />
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZE') &&
+              !data.taskState.toUpperCase().includes('RESIZING') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/edit-2.svg"
@@ -182,7 +182,7 @@
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZE') &&
+              !data.taskState.toUpperCase().includes('RESIZING') &&
               data.taskState.toUpperCase() != 'ERROR'
             "
             src="assets/imgs/calendar-tick.svg"
@@ -190,7 +190,7 @@
             (click)="createBackupSchedule(data.id)"
             style="cursor: pointer; margin-right: 16px"
             (click)="createBackupSchedule(data.id)"
-            nz-tooltip="Tạo lịch Backup"
+            [nz-tooltip]="'app.create.backup.schedule' | i18n"
           />
           <img
             nz-dropdown
@@ -204,7 +204,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZE') &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -213,13 +213,13 @@
                 nz-menu-item
                 (click)="showHandleGanVLAN(data.id)"
               >
-                Gắn vào VLAN
+                {{ 'app.attach.to.vlan' | i18n }}
               </li>
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZE') &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -228,13 +228,13 @@
                 nz-menu-item
                 (click)="showHandleGoKhoiVLAN()"
               >
-                Gỡ khỏi VLAN
+                {{ 'app.detach.from.vlan' | i18n }}
               </li>
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZE') &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF'
@@ -242,13 +242,13 @@
                 nz-menu-item
                 (click)="showModalRestart(data.id)"
               >
-                Khởi động lại
+                {{ 'app.reboot' | i18n }}
               </li>
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZE') &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF'
@@ -256,7 +256,7 @@
                 nz-menu-item
                 (click)="showModalShutdown(data.id)"
               >
-                Tắt máy ảo
+                {{ 'app.shutdown.instance' | i18n }}
               </li>
               <li
                 *ngIf="
@@ -266,13 +266,13 @@
                 nz-menu-item
                 (click)="showModalStart(data.id)"
               >
-                Bật máy ảo
+                {{ 'app.start.instance' | i18n }}
               </li>
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZE') &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -297,7 +297,7 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZE') &&
+                  !data.taskState.toUpperCase().includes('RESIZING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -353,7 +353,7 @@
           src="assets/imgs/cloud-plus-bold.svg"
           alt=""
         />
-        Tạo mới máy ảo
+        {{ 'app.button.instance.create' | i18n }}
       </button>
     </result>
   </nz-card>
@@ -361,14 +361,14 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleGanVLAN"
-  nzTitle="Gắn VLAN"
+  [nzTitle]="'app.attach.to.vlan' | i18n"
   (nzOnCancel)="handleCancelGanVLAN()"
 >
   <ng-container *nzModalContent>
-    <span class="text-label">Danh sách VLAN</span>
+    <span class="text-label">{{ 'app.list.vlan' | i18n }}</span>
     <nz-form-control style="margin-top: 5px">
       <nz-select
-        [nzPlaceHolder]="'-- Chọn VLAN --'"
+        [nzPlaceHolder]="'app.choose.vlan' | i18n"
         [nzShowSearch]="true"
         [(ngModel)]="instanceAction.networkId"
         (ngModelChange)="changeVlanNetwork($event)"
@@ -384,7 +384,7 @@
     </nz-form-control>
     <div style="margin-top: 10px; margin-bottom: 5px">
       <a (click)="clickIPAddress()"
-        ><span style="color: #0066b3">Nhập IP Address</span>
+        ><span style="color: #0066b3">{{ 'app.input.ip.address' | i18n }}</span>
         <img
           style="padding-right: 10px"
           [src]="
@@ -397,11 +397,11 @@
       </a>
     </div>
     <div *ngIf="isExpand">
-      <span class="text-label">Danh sách Subnet</span>
+      <span class="text-label">{{ 'app.list.subnet' | i18n }}</span>
       <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
         <nz-select
           [nzLoading]="loadingSubnet"
-          [nzPlaceHolder]="'-- Chọn Subnet --'"
+          [nzPlaceHolder]="'-- ' + ('app.choose.subnet' | i18n) + ' --'"
           [nzShowSearch]="true"
           [(ngModel)]="instanceAction.subnetId"
           [ngModelOptions]="{ standalone: true }"
@@ -414,12 +414,12 @@
           />
         </nz-select>
       </nz-form-control>
-      <span class="text-label">Địa chỉ IP</span>
+      <span class="text-label">{{ 'app.ip.address' | i18n }}</span>
       <nz-form-control style="margin-bottom: 10px; margin-top: 5px">
         <input
           class="input-custom"
           nz-input
-          placeholder="Nhập địa chỉ IP"
+          [placeholder]="'app.input.ip.address' | i18n"
           [(ngModel)]="instanceAction.ipAddress"
           [ngModelOptions]="{ standalone: true }"
         />
@@ -433,10 +433,7 @@
     ></nz-alert>
     <ng-template #customTemplateDescriptionGanVLAN>
       <div>
-        Trong trường hợp 1 Network của quý khách có nhiều Subnet, quý khách cần
-        lựa chọn Subnet và điền IP muốn gán cho máy ảo. Khi quý khách nhạp IP
-        vui lòng chọn IP chưa được sử dụng bởi máy ảo nào và IP này thuộc dải IP
-        được cấu hình trong Subnet tương ứng
+        {{ 'app.alert.attach.to.vlan' | i18n }}
       </div>
     </ng-template>
   </ng-container>
@@ -446,7 +443,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkGanVLAN()">
       <img
@@ -454,7 +451,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
@@ -473,14 +470,13 @@
     ></nz-alert>
     <ng-template #customTemplateDescriptionGoVLAN>
       <div>
-        Mỗi kết nối từ máy ảo với VLAN tương ứng với 1 IP được cấp, lựa chọn IP
-        từ danh sách dưới đây để thực hiện gỡ kết nối máy ảo khỏi VLAN
+        {{ 'app.alert.detach.from.vlan' | i18n }}
       </div>
     </ng-template>
-    <span class="text-label">Danh sách IP trên VLAN</span>
+    <span class="text-label">{{ 'app.list.ip.of.vlan' | i18n }}</span>
     <nz-form-control style="margin-top: 5px">
       <nz-select
-        [nzPlaceHolder]="'-- Chọn địa chỉ IP --'"
+        [nzPlaceHolder]="'-- ' + ('app.choose.ip.address' | i18n) + ' --'"
         [nzShowSearch]="true"
         [(ngModel)]="instanceAction.portId"
         [ngModelOptions]="{ standalone: true }"
@@ -500,7 +496,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkGoKhoiVLAN()">
       <img
@@ -508,42 +504,42 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleShutdown"
-  nzTitle="Tắt máy ảo"
+  [nzTitle]="'app.shutdown.instance' | i18n"
   (nzOnCancel)="handleCancelShutdown()"
 >
-  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện tắt máy ảo?</div>
+  <div *nzModalContent>{{ 'app.alert.shutdown.instance' | i18n }}</div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelShutdown()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkShutdown()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleRestart"
-  nzTitle="Khởi động lại máy ảo"
+  [nzTitle]="'app.reboot.instance' | i18n"
   (nzOnCancel)="handleCancelRestart()"
 >
   <div *nzModalContent>
-    Quý khách chắc chắn muốn thực hiện khởi động lại máy ảo?
+    {{ 'app.alert.reboot.instance' | i18n }}
   </div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelRestart()">
@@ -551,100 +547,101 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkRestart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleRescue"
-  nzTitle="RESCUE máy ảo"
+  [nzTitle]="'app.rescue.instance' | i18n"
   (nzOnCancel)="handleCancelRescue()"
 >
-  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện RESCUE máy ảo?</div>
+  <div *nzModalContent>{{ 'app.alert.rescue.instance' | i18n }}</div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelRescue()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkRescue()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleUnRescue"
-  nzTitle="UNRESCUE máy ảo"
+  [nzTitle]="'app.unrescue.instance' | i18n"
   (nzOnCancel)="handleCancelUnRescue()"
 >
-  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện UNRESCUE máy ảo?</div>
+  <div *nzModalContent>{{ 'app.alert.unrescue.instance' | i18n }}</div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelUnRescue()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkUnRescue()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleStart"
-  nzTitle="Bật máy ảo"
+  [nzTitle]="'app.start.instance' | i18n"
   (nzOnCancel)="handleCancelStart()"
 >
-  <div *nzModalContent>Quý khách chắn chắn muốn thực hiện bật máy ảo?</div>
+  <div *nzModalContent>{{ 'app.alert.start.instance' | i18n }}</div>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelStart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOkStart()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleEdit"
-  nzTitle="Chỉnh sửa thông tin máy ảo"
+  [nzTitle]="'app.edit.instance' | i18n"
   (nzOnCancel)="handleCancelEdit()"
 >
   <ng-container *nzModalContent>
     <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
       <nz-form-item>
         <nz-form-label nzFor="name"
-          >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
+          >{{ 'app.instances.name' | i18n }} (<span class="text-red">*</span
+          >)</nz-form-label
         >
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input
@@ -653,20 +650,19 @@
             formControlName="name"
             [(ngModel)]="updateInstances.name"
             (ngModelChange)="changeName($event)"
-            placeholder="Nhập tên máy ảo"
+            [placeholder]="'app.input.name' | i18n"
             [maxlength]="50"
           />
           <div *ngIf="isExistName" style="color: #ff4d4f">
-            Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác
+            {{ 'validation.exist.instance.name' | i18n }}
           </div>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập thông tin</ng-container
-            >
-            <ng-container *ngIf="control.hasError('pattern')"
-              >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
-              _)</ng-container
-            >
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.info.required' | i18n
+            }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{
+              'validation.name.pattern' | i18n
+            }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -678,7 +674,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{ 'app.button.cancel' | i18n }}
     </button>
     <button
       nz-button
@@ -690,7 +686,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

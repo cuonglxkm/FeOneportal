@@ -81,6 +81,7 @@ export class InstancesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log("current language", this.i18n.currentLang)
     this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;

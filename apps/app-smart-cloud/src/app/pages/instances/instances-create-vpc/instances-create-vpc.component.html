@@ -34,13 +34,13 @@
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false">
     <div style="margin-bottom: 20px">
-      <span class="text-card-header">Thông tin máy ảo</span>
+      <span class="text-card-header">{{ 'app.instances.info' | i18n }}</span>
     </div>
     <nz-row nzGutter="16">
       <nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Tên máy ảo (<span class="text-red">*</span>)</nz-form-label
+            >{{ 'app.instances.name' | i18n }} (<span class="text-red">*</span>)</nz-form-label
           >
 
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -111,7 +111,7 @@
     </div>
     <div style="margin-left: -10px" *ngIf="!isSnapshot">
       <nz-form-label style="margin-left: 10px"
-        >Hệ điều hành (<span class="text-red">*</span>)</nz-form-label
+        >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span>)</nz-form-label
       >
       <ngu-carousel
         #myCarouselImage
@@ -461,7 +461,7 @@
             <div>
               Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần cấu
               hình Security Group <br />
-              trong mục <u><a>Truy cập và Bảo mật</a></u>
+              trong mục <u><a>{{ 'app.alert.access.security' | i18n }}</a></u>
             </div>
           </ng-template>
         </div>

@@ -79,7 +79,7 @@
           </nz-form-control>
         </nz-form-item>
         <div class="text-label" style="margin-top: -24px">
-          Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+          {{ 'app.service.expiration-date' | i18n }}: {{ expiredDate | date : 'dd/MM/yyyy' }}
         </div>
       </nz-card>
     </nz-col>
