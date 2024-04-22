@@ -131,8 +131,6 @@ export class FormRuleComponent implements OnInit {
     portChange(value: string) {
         if (this.portType === 'Port') {
             this.validateForm.controls.portRangeMax.setValue(value)
-          this.validateForm.controls.portRangeMax.setValidators(Validators.pattern(/^[1-9][0-9]{0,4}$/))
-          this.validateForm.controls.portRangeMax.setValidators(Validators.max(65535))
         }
     }
 
@@ -234,8 +232,15 @@ export class FormRuleComponent implements OnInit {
         this.validateForm = this.fb.group({
             rule: ['', [Validators.required]],
             portType: 'Port' as 'Port' | 'PortRange',
-            portRangeMin: [null as number | string | null, [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]*$/), AppValidator.validateNumber]],
-            portRangeMax: [null as number | string | null, [Validators.required,  Validators.pattern(/^[0-9]*$/), this.validatePortRange, AppValidator.validateNumber]],
+            portRangeMin: [null as number | string | null,
+              [Validators.required, Validators.min(1),
+                Validators.pattern('^[1-9][0-9]{0,4}$'),
+                AppValidator.validateNumber]],
+            portRangeMax: [null as number | string | null,
+              [Validators.required,
+                Validators.pattern(/^[1-9][0-9]{0,4}$/),
+                this.validatePortRange.bind(this),
+                Validators.max(65535)]],
             remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
             remoteIpPrefix: [null as null | string | number, [Validators.required, AppValidator.ipWithCIDRValidator,
                 Validators.pattern('^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/(?:[0-9]|[12][0-9]|3[0-2])$')]],
@@ -250,6 +255,8 @@ export class FormRuleComponent implements OnInit {
             return {required: true};
         } else if (control.value < this.validateForm.controls.portRangeMin.value) {
             return {invalidPortRange: true};
+        } else if (control.value > 65535) {
+          return {invalidPortRange: true};
         }
         return null;
     };

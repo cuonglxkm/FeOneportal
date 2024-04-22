@@ -147,11 +147,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   private getListL7Policy(id: string) {
     this.isLoading = true
-    this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id)
-      .pipe(finalize(()=>{
-        this.loadingL7 = false;
-      }))
-      .subscribe(
+    this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id).subscribe(
       data => {
         this.isLoading = false
         this.listL7 = data;
@@ -178,6 +174,5 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   handleDeleteL7PolicyOk() {
     setTimeout(() => {this.getListL7Policy(this.idListener)}, 1500)
-
   }
 }

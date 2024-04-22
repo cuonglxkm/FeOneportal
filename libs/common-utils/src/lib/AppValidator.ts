@@ -188,8 +188,9 @@ export class AppValidator {
   }
 
   static validateNumber(control: { value: string }): { [key: string]: boolean } | null {
-    const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
-    if (!isNumber && !!control.value) {
+    const isIntegerInRange = /^(-1|[0-9]|[1-9][0-9]?|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(control.value);
+    // const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
+    if (!isIntegerInRange && !!control.value) {
       return { invalidNumber: true };
     }
     return null;
@@ -351,7 +352,7 @@ export function ipAddressExistsValidator(ipAddresses: string[]): ValidatorFn {
     }
     return null;
   };
-  
+
 }
 
 
@@ -359,19 +360,19 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddress = control.value;
     if (!ipAddress) {
-      return null; 
+      return null;
     }
-    
+
     const networkPart = subnetIP.split('.').slice(0, 3).join('.');
     if (!ipAddress.startsWith(networkPart)) {
-      return { 'invalidSubnetIP': true }; 
+      return { 'invalidSubnetIP': true };
     }
-    
+
     const lastNumber = parseInt(ipAddress.split('.')[3], 10);
     if (lastNumber < 2 || lastNumber > 254) {
-      return { 'invalidLastNumber': true }; 
+      return { 'invalidLastNumber': true };
     }
-    
+
     return null;
   };
 }

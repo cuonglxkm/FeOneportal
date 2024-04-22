@@ -31,7 +31,7 @@
           <input nz-input formControlName="protocol" id="protocol" class="input-custom"/>
           <ng-template #protocolErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số nguyên</ng-container>
             <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng 1 - 255</ng-container>
           </ng-template>
         </nz-form-control>
@@ -47,7 +47,7 @@
           <input nz-input formControlName="portRangeMin" id="code" class="input-custom"/>
           <ng-template #codeErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số nguyên</ng-container>
             <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
 
           </ng-template>
@@ -64,7 +64,7 @@
           <input nz-input formControlName="portRangeMax" id="type" class="input-custom"/>
           <ng-template #typeErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+            <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số nguyên</ng-container>
 
             <ng-container *ngIf="control.hasError('outOfRange')">Vui lòng nhập số nằm trong khoảng -1 - 255</ng-container>
           </ng-template>
@@ -104,7 +104,7 @@
                    (change)="portChange($event.target['value'])"/>
             <ng-template #portErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số nguyên</ng-container>
               <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
               <ng-container *ngIf="control.hasError('max')">Vui lòng nhập số khác. Port max = 65535</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">Nhập số trong khoảng 1 - 65535</ng-container>
@@ -122,8 +122,9 @@
             <input nz-input class="input-custom" formControlName="portRangeMin" id="portRangeMin" (ngModelChange)="updatePortRangeValidator()"/>
             <ng-template #portRangeMinErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
+              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số nguyên</ng-container>
               <ng-container *ngIf="control.hasError('min')">Vui lòng nhập số lớn hơn hoặc bằng 1</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số nguyên trong khoảng 1 - 65535</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -135,11 +136,12 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="portRangeMaxErrorTpl">
-            <input nz-input class="input-custom" formControlName="portRangeMax" id="portRangeMax"/>
+            <input nz-input class="input-custom" formControlName="portRangeMax"/>
             <ng-template #portRangeMaxErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>
-              <ng-container *ngIf="control.hasError('invalidPortRange')">Vui lòng nhập số lớn hơn hoặc bằng From Port</ng-container>
+<!--              <ng-container *ngIf="control.hasError('invalidNumber')">Vui lòng nhập số</ng-container>-->
+              <ng-container *ngIf="control.hasError('invalidPortRange')">Vui lòng nhập số lớn hơn và không quá 65535 hoặc bằng From Port</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập số lớn hơn From Port và không quá 65535</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
