@@ -187,6 +187,18 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     }
   }
 
+  changeAutoCreate() {
+    this.resetPassword = '';
+    this.resetPasswordRepeat = '';
+    if (this.autoCreate) {
+      this.formPass.get('newpass').disable();
+      this.formPass.get('passRepeat').disable();
+    } else {
+      this.formPass.get('newpass').enable();
+      this.formPass.get('passRepeat').enable();
+    }
+  }
+
   onInputChange(event: Event): void {
     if (this.resetPassword == this.resetPasswordRepeat) {
       this.check = true;

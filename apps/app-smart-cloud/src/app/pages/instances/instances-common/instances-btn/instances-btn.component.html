@@ -220,6 +220,7 @@
           style="margin-top: 16px"
           nz-checkbox
           [(ngModel)]="autoCreate"
+          (ngModelChange)="changeAutoCreate()"
           [ngModelOptions]="{ standalone: true }"
           >{{ 'app.auto.generated' | i18n }}</label
         >
@@ -236,7 +237,6 @@
               placeholder=""
               [(ngModel)]="resetPassword"
               (input)="onInputChange($event)"
-              [disabled]="autoCreate"
             />
           </nz-input-group>
           <ng-template #newpassErrorTpl let-control>
@@ -276,7 +276,7 @@
               placeholder=""
               [(ngModel)]="resetPasswordRepeat"
               (input)="onInputChange($event)"
-              [disabled]="autoCreate"
+              [attr.disabled]="autoCreate"
             />
           </nz-input-group>
           <ng-template #suffixTemplateRepeat>
