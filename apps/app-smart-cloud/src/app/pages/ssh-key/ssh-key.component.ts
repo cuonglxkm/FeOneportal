@@ -173,7 +173,7 @@ export class SshKeyComponent implements OnInit {
       },
       error: e => {
         if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
-          this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng,vui lòng nhập tên khác.`);
+          this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng, vui lòng nhập tên khác.`);
         }
         else {
           this.isVisibleCreate = false;
