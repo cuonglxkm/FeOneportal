@@ -54,10 +54,9 @@ export class InstancesComponent implements OnInit {
   total = 1;
   loading = true;
   filterStatus = [
-    { text: 'Tất cả trạng thái', value: '' },
-    { text: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { text: 'Đang hoạt động', value: 'KHOITAO' },
-    { text: 'Chậm gia hạn, vi phạm điều khoản', value: 'TAMNGUNG' },
+    { text: this.i18n.fanyi('app.status.all'), value: '' },
+    { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
 
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
@@ -82,6 +81,7 @@ export class InstancesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log("current language", this.i18n.currentLang)
     this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
