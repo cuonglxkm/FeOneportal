@@ -65,7 +65,7 @@ export class KubernetesCluster {
 export class CreateClusterReqDto {
 
   ClusterName: string;
-  ProjectInfraId: string;
+  ProjectId: string;
   KubernetesVersion: string;
   Description: string;
   CloudProfileId: string;
@@ -85,7 +85,7 @@ export class CreateClusterReqDto {
   constructor(obj: any) {
     if (obj) {
       this.ClusterName = obj.clusterName;
-      this.ProjectInfraId = obj.projectInfraId;
+      this.ProjectId = obj.projectId;
       this.KubernetesVersion = obj.kubernetesVersion;
       this.Description = obj.description;
       this.CloudProfileId = obj.cloudProfileId;

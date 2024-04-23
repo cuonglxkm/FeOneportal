@@ -751,23 +751,23 @@ export class ClusterComponent implements OnInit {
     cluster.offerId = this.offerId;
     cluster.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
 
-    this.onSubmitOrder(cluster);
+    // this.onSubmitOrder(cluster);
 
-    // const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
-    // // console.log({data: data});
-    // // console.log({cluster: cluster});
-    // this.isSubmitting = true;
-    // this.clusterService.validateClusterInfo(data)
-    // .pipe(finalize(() => this.isSubmitting = false))
-    // .subscribe((r: any) => {
-    //   if (r && r.code == 200) {
-    //     this.onSubmitOrder(cluster);
-    //   } else {
-    //     this.isSubmitting = false;
-    //     this.notificationService.error("Thất bại", r.message);
-    //     this.cdr.detectChanges();
-    //   }
-    // });
+    const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
+    // console.log({data: data});
+    // console.log({cluster: cluster});
+    this.isSubmitting = true;
+    this.clusterService.validateClusterInfo(data)
+    .pipe(finalize(() => this.isSubmitting = false))
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.onSubmitOrder(cluster);
+      } else {
+        this.isSubmitting = false;
+        this.notificationService.error("Thất bại", r.message);
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   onSubmitOrder = (cluster) => {

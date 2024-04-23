@@ -4,6 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { KubernetesCluster } from '../../model/cluster.model';
 import { ClusterService } from '../../services/cluster.service';
 import { VlanService } from '../../services/vlan.service';
+import { RegionModel } from '../../shared/models/region.model';
 
 @Component({
   selector: 'one-portal-overall',
@@ -28,6 +29,11 @@ export class OverallComponent implements OnInit {
       this.getDetailCluster(this.serviceOrderCode);
       this.getSSHKey(this.serviceOrderCode);
     });
+  }
+
+  regionId: number;
+  onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   getDetailCluster(serviceOrderCode: string) {
