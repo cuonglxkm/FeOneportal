@@ -282,7 +282,7 @@ export class CreateKafkaComponent implements OnInit {
       if (minInsync.value > replicationFactor.value) {
         replicationFactor.setErrors({'invalidvalue': true})
       } else {
-        minInsync.setErrors(null)
+        minInsync.setErrors(null);
       }
     }
   }
@@ -294,7 +294,7 @@ export class CreateKafkaComponent implements OnInit {
       if (minInsync.value > replicationFactor.value) {
         minInsync.setErrors({'invalidvalue': true})
       } else {
-        replicationFactor.setErrors(null)
+        replicationFactor.setErrors(null);
       }
     }
   }

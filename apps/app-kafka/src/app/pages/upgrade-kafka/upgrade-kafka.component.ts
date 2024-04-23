@@ -43,7 +43,6 @@ export class UpgradeKafkaComponent implements OnInit {
 
   listOfServicePack: ServicePack[] = [];
   @ViewChild('myCarousel') myCarousel: NguCarousel<any>;
-  usageTime = 1;
   itemDetail: KafkaDetail;
   serviceOrderCode: string;
   kafkaUpgradeDto: KafkaUpgradeReq;
@@ -131,8 +130,7 @@ export class UpgradeKafkaComponent implements OnInit {
       vCpu: [null, [Validators.required, Validators.pattern("^[0-9]*$")]],
       ram: [null, [Validators.required, Validators.pattern("^[0-9]*$")]],
       storage: [null, [Validators.required, Validators.min(1), Validators.max(1024), Validators.pattern("^[0-9]*$")]],
-      broker: [3, [Validators.required]],
-      usageTime: [1, [Validators.required, Validators.pattern("^[0-9]*$")]]
+      broker: [3, [Validators.required]]
     });
   }
 
@@ -289,6 +287,7 @@ export class UpgradeKafkaComponent implements OnInit {
     kafka.currentStorage = this.initStorage;
     kafka.serviceName = this.itemDetail.serviceName;
     kafka.serviceOrderCode = this.itemDetail.serviceOrderCode;
+    kafka.regionId = this.regionId;
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = this.upgradeAmount == 0 ? 0 : this.upgradeAmount - this.remainAmount;
@@ -314,7 +313,6 @@ export class UpgradeKafkaComponent implements OnInit {
     this.kafkaUpgradeDto.cpu = dto.get('vCpu').value;
     this.kafkaUpgradeDto.ram = dto.get('ram').value;
     this.kafkaUpgradeDto.storage = dto.get('storage').value;
-    this.kafkaUpgradeDto.usageTime = this.usageTime;
 
     this.loadingSrv.open({ type: "spin", text: "Loading..." });
     this.kafkaService.upgrade(this.kafkaUpgradeDto)
