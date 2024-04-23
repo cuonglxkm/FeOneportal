@@ -2,8 +2,11 @@ import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@ang
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ClipboardService } from 'ngx-clipboard';
 import { finalize } from 'rxjs';
-import SecurityGroupRule, { SecurityGroup, SecurityGroupSearchCondition } from '../../model/security-group.model';
+import SecurityGroupRule, { SecurityGroup, SecurityGroupData, SecurityGroupSearchCondition } from '../../model/security-group.model';
 import { SecurityGroupService } from '../../services/security-group.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ShareService } from '../../services/share.service';
+import { KubernetesCluster } from '../../model/cluster.model';
 
 @Component({
   selector: 'security-group',
@@ -14,7 +17,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
 
   @Input('regionId') regionId: number;
   @Input('projectId') projectId: number;
-  @Input('securityGroupName') securityGroupName: string;
+  @Input('detailCluster') detailCluster: KubernetesCluster;
 
   isLoadingSG: boolean;
   listOfSG: SecurityGroup[];
@@ -26,6 +29,8 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
     private clipboardService: ClipboardService,
     private securityGroupService: SecurityGroupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notificationService: NzNotificationService,
+    private shareService: ShareService
   ) {}
 
   ngOnInit(): void {
@@ -44,15 +49,16 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
       this.regionId = changes['regionId'].currentValue;
     }
 
-    if (changes['securityGroupName']?.currentValue) {
-      this.securityGroupName = changes['securityGroupName']?.currentValue;
+    if (changes['detailCluster']?.currentValue) {
+      this.detailCluster = changes['detailCluster']?.currentValue;
     }
 
     if (this.projectId && this.regionId) this.getListSG();
   }
 
   handleCopyIDGroup() {
-    this.clipboardService.copy('123');
+    this.clipboardService.copy(this.selectedSG.id);
+    this.notificationService.success("Đã sao chép", null);
   }
 
   getListSG() {
@@ -67,13 +73,20 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
       this.listOfSG = data;
 
       data.forEach(item => {
-        if(item.name.includes(this.securityGroupName)) {
+        if(item.name.includes(this.detailCluster.securityGroupName)) {
           this.selectedSG = item;
         }
       })
 
-      this.listOfInbound = this.selectedSG.rulesInfo.filter(value => value.direction === 'ingress');
-      this.listOfOutbound = this.selectedSG.rulesInfo.filter(value => value.direction === 'egress');
+      this.listOfInbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'ingress');
+      this.listOfOutbound = this.selectedSG?.rulesInfo.filter(value => value.direction === 'egress');
+
+      let sgData = new SecurityGroupData();
+      sgData.projectId = this.projectId;
+      sgData.regionId = this.regionId;
+      sgData.detailCluster = this.detailCluster;
+      sgData.securityGroupId = this.selectedSG.id;
+      this.shareService.emitSGData(sgData);
     });
   }
 

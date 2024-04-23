@@ -1,3 +1,5 @@
+import { KubernetesCluster } from "./cluster.model";
+
 export class SecurityGroupSearchCondition {
   userId: number;
   regionId: number;
@@ -39,6 +41,8 @@ export class CreateSGReqDto {
 export class SecurityGroupData {
   regionId: number;
   projectId: number;
-  securityGroupName: string;
+  detailCluster: KubernetesCluster;
   securityGroupId: string;
+  listOfInbound: SecurityGroupRule[];
+  listOfOutbound: SecurityGroupRule[];
 }

@@ -1,1 +1,38 @@
-<p>outbound works!</p>
+<div style="position: relative; float: right;">
+  <button nz-button nzType="primary" (click)="showModalCreateSG()" class="mb-5">
+    <span nz-icon nzType="plus" nzTheme="outline"></span>
+    Thêm mới
+  </button>
+</div>
+<nz-table #ruleTable [nzData]="listOfOutbound" nzShowSizeChanger
+  [nzFrontPagination]="false" [nzTotal]="total"
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+  (nzQueryParams)="onQueryParamsChange($event)">
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>IP Version</th>
+      <th>Protocol</th>
+      <th>PortRange</th>
+      <th>Remote IP Prefix</th>
+      <th>Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let item of ruleTable.data; let i = index;">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{item.remoteIp}}</td>
+        <td>{{item.protocol}}</td>
+        <td>{{item.portRange}}</td>
+        <td>{{item.remoteIpPrefix}}</td>
+        <td>
+          <button nz-button nzType="text" nzTooltipTitle="Xóa rule" nzTooltipPlacement="top" nz-tooltip
+            (click)="showModalConfirmDeleteRule(item)" class="borderless">
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-top: 0; width: fit-content;" />
+          </button>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

@@ -1,8 +1,10 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { SecurityGroupService } from '../../../services/security-group.service';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
-import SecurityGroupRule from '../../../model/security-group.model';
+import SecurityGroupRule, { SecurityGroupData } from '../../../model/security-group.model';
+import { SecurityGroupService } from '../../../services/security-group.service';
+import { ShareService } from '../../../services/share.service';
+import Pagination from '../../../shared/models/pagination';
 import { RuleSearchCondition } from '../../../shared/models/security-group-rule';
 
 @Component({
@@ -10,10 +12,9 @@ import { RuleSearchCondition } from '../../../shared/models/security-group-rule'
   templateUrl: './inbound.component.html',
   styleUrls: ['./inbound.component.css'],
 })
-export class InboundComponent implements OnInit, OnChanges {
+export class InboundComponent implements OnInit {
 
-  @Input('listOfInbound') listOfInbound: SecurityGroupRule[];
-
+  listOfInbound: SecurityGroupRule[];
   pageIndex: number;
   pageSize: number;
   total: number;
@@ -22,66 +23,70 @@ export class InboundComponent implements OnInit, OnChanges {
   isShowModalCreateInbound: boolean;
   isShowModalDeleteRule: boolean;
 
+  collection: Pagination<SecurityGroupRule>;
+  regionId: number;
+  projectId: number;
+  securityGroupId: string;
+
   constructor(
     private sgService: SecurityGroupService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
-  ) {
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private shareService: ShareService
+  ) {}
+
+  ngOnInit(): void {
+    this.listOfInbound = [];
     this.isLoadingInbound = false;
     this.isShowModalCreateInbound = false;
     this.isShowModalDeleteRule = false;
     this.total = 0;
     this.pageIndex = 1;
-    this.pageSize = 3;
+    this.pageSize = 5;
+
+    this.shareService.$securityGroupData.subscribe((sgData: SecurityGroupData) => {
+      this.projectId = sgData.projectId;
+      this.regionId = sgData.regionId;
+      this.securityGroupId = sgData.securityGroupId;
+
+      this.getRuleInbound();
+    });
   }
-
-  ngOnInit(): void {
-
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['listOfInbound']?.currentValue) {
-      this.listOfInbound = changes['listOfInbound']?.currentValue;
-      this.total = this.listOfInbound.length;
-    }
-  }
-
-  condition = new RuleSearchCondition();
-  // getRuleInbound() {
-  //   this.condition.direction = 'ingress';
-  //   this.condition.userId = this.tokenService.get()?.userId;
-  //   this.condition.projectId = this.projectId;
-  //   this.condition.regionId = this.regionId;
-  //   this.condition.pageSize = this.pageSize;
-  //   this.condition.pageNumber = this.pageIndex;
-  //   this.condition.securityGroupId = this.securityGroupId;
-  //   this.isLoadingInbound = true;
-
-  //   if (!this.condition.securityGroupId) {
-  //     this.collection = {
-  //       previousPage: 0,
-  //       records: [],
-  //       currentPage: 1,
-  //       totalCount: 0,
-  //       pageSize: 5
-  //     }
-  //     this.isLoadingInbound = false;
-  //     return;
-  //   }
-
-  //   this.sgService.searchRule(this.condition)
-  //     .pipe(finalize(() => this.isLoadingInbound = false))
-  //     .subscribe((data) => {
-  //       this.collection = data;
-  //     });
-  // }
 
   onQueryParamsChange(event: any) {
     if (event) {
       this.pageIndex = event.pageIndex;
       this.pageSize = event.pageSize;
 
-      // this.getRuleInbound();
+      this.getRuleInbound();
     }
+  }
+
+  condition = new RuleSearchCondition();
+  getRuleInbound() {
+    this.condition.direction = 'ingress';
+    this.condition.userId = this.tokenService.get()?.userId;
+    this.condition.projectId = this.projectId;
+    this.condition.regionId = this.regionId;
+    this.condition.pageSize = this.pageSize;
+    this.condition.pageNumber = this.pageIndex;
+    this.condition.securityGroupId = this.securityGroupId;
+    this.isLoadingInbound = true;
+
+    if (!this.condition.securityGroupId) {
+      this.listOfInbound = [];
+      this.isLoadingInbound = false;
+      return;
+    }
+
+    this.sgService.searchRule(this.condition)
+      .pipe(finalize(() => this.isLoadingInbound = false))
+      .subscribe({next: (data: any) => {
+        this.listOfInbound = data.records;
+        this.total = data.totalCount;
+      }, error: (err) => {
+        this.listOfInbound = [];
+        console.error('fail to get inbound rule: ', err);
+      }});
   }
 
   showModalCreateSG() {

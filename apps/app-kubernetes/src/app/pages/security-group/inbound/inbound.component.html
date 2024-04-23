@@ -4,9 +4,9 @@
     Thêm mới
   </button>
 </div>
-<nz-table #clusterTable [nzData]="listOfInbound" nzShowSizeChanger 
+<nz-table #ruleTable [nzData]="listOfInbound" nzShowSizeChanger
   [nzFrontPagination]="false" [nzTotal]="total"
-  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" 
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
   (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
     <tr>
@@ -19,7 +19,7 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let item of listOfInbound; let i = index;">
+    <ng-container *ngFor="let item of ruleTable.data; let i = index;">
       <tr>
         <td>{{ i + 1 }}</td>
         <td>{{item.remoteIp}}</td>

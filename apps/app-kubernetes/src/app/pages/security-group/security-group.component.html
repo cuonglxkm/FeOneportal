@@ -1,13 +1,13 @@
 <nz-content>
   <nz-card class="border-card">
-    <h3>Cấu hình security-group-1</h3>
+    <h3>Cấu hình security group {{detailCluster?.clusterName}}</h3>
 
     <nz-table [nzTemplateMode]="true">
       <tbody>
         <tr>
-          <td class="w-30">ID:</td>
+          <td class="w-20">ID:</td>
           <td>
-            abc
+            {{selectedSG?.id}}
             <button nz-button nzType="text" (click)="handleCopyIDGroup()" class="action-icon borderless"
               nzTooltipTitle="Sao chép" nzTooltipPlacement="top" nz-tooltip>
               <span nz-icon>
@@ -20,16 +20,12 @@
           </td>
         </tr>
         <tr>
-          <td class="w-40">Tên</td>
-          <td>sg1</td>
+          <td class="w-20">Tên</td>
+          <td>{{detailCluster?.securityGroupName}}</td>
         </tr>
         <tr>
-          <td class="w-40">Trạng thái:</td>
-          <td>Đang hoạt động</td>
-        </tr>
-        <tr>
-          <td class="w-40">Ngày tạo:</td>
-          <td>23/4/2024</td>
+          <td class="w-20">Ngày tạo:</td>
+          <td>{{detailCluster?.createdDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
         </tr>
       </tbody>
     </nz-table>

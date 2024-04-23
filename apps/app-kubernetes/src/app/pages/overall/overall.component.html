@@ -29,8 +29,8 @@
   <!-- security group tab -->
   <nz-tab [nzTitle]="sgTitleTpl">
     <ng-template nz-tab>
-      <security-group [regionId]="regionId" [projectId]="projectId" 
-        [securityGroupName]="detailCluster?.securityGroupName"></security-group>
+      <security-group [regionId]="regionId" [projectId]="projectId"
+        [detailCluster]="detailCluster"></security-group>
     </ng-template>
   </nz-tab>
   <ng-template #sgTitleTpl>
@@ -62,7 +62,7 @@
     <label>Instance</label>
   </ng-template>
 
-  
+
 
   <!-- log tab -->
   <nz-tab [nzTitle]="logTitleTpl">

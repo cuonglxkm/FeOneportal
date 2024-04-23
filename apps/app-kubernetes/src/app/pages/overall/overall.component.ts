@@ -6,6 +6,7 @@ import { ClusterService } from '../../services/cluster.service';
 import { VlanService } from '../../services/vlan.service';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'one-portal-overall',

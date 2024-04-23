@@ -107,14 +107,17 @@ export class ListClusterComponent implements OnInit, OnDestroy {
       if (r && r.code == 200) {
         this.listOfClusters = [];
         let progress: Array<Observable<any>> = [];
+        let listOfClusterInProgress = [];
 
         r.data?.content.forEach(item => {
           const cluster: KubernetesCluster = new KubernetesCluster(item);
           this.listOfClusters.push(cluster);
+
+          // get cluster is in-progress (initialing, deleting, upgrading,...)
+          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) listOfClusterInProgress.push(cluster);
         });
         this.total = r.data.total;
         this.listOfClusters.reverse();
-        this.listOfInProgressStatus.reverse();
 
         // check list cluster is empty with all status?
         if ((this.serviceStatus == '' || this.serviceStatus == null || this.serviceStatus == undefined) && (k == '')) {
@@ -122,28 +125,30 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         }
 
         // case user refresh page and have mulitple cluster and is in-progress
-        for (let i = 0; i < this.listOfClusters.length; i++) {
-          let cluster: KubernetesCluster = this.listOfClusters[i];
+        if (listOfClusterInProgress.length > 0) {
+          for (let i = 0; i < this.listOfClusters.length; i++) {
+            let cluster: KubernetesCluster = this.listOfClusters[i];
 
-          let progressObs: Observable<any>;
-          if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
+            let progressObs: Observable<any>;
+            if (this.listOfInProgressStatus.includes(cluster.serviceStatus)) {
 
-            switch (cluster.serviceStatus) {
-              case 1: // initialing
-              case 6: // upgrading
-                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
-                break;
-              case 7: // deleting
-                progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
-                break;
-              default:
-                progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
+              switch (cluster.serviceStatus) {
+                case 1: // initialing
+                case 6: // upgrading
+                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.CREATE_ACTION);
+                  break;
+                case 7: // deleting
+                  progressObs = this.viewProgressCluster(cluster.namespace, cluster.clusterName, KubernetesConstant.DELETE_ACTION);
+                  break;
+                default:
+                  progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
+              }
+
+            } else {
+              progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
             }
-
-          } else {
-            progressObs = new Observable(_ => _.complete()).pipe(defaultIfEmpty(0));
+            progress.push(progressObs);
           }
-          progress.push(progressObs);
         }
 
         this.unsubscribeObs(this.eventSources);
