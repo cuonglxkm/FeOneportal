@@ -26,10 +26,7 @@
       <nz-tab nzTitle="Subnet">
         <one-portal-detail-subnet [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
-      <nz-tab *ngIf="networkName.includes('pri_network')" nzTitle="Port" [nzDisabled]="true">
-        <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork" />
-      </nz-tab>
-      <nz-tab *ngIf="!networkName.includes('pri_network')" nzTitle="Port">
+      <nz-tab  nzTitle="Port">
         <one-portal-detail-port [region]="region" [project]="project" [idNetwork]="idNetwork" />
       </nz-tab>
     </nz-tabset>

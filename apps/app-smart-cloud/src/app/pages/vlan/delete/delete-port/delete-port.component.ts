@@ -50,7 +50,7 @@ export class DeletePortComponent {
       }, error => {
         this.isVisibleDeletePort = false
         this.isLoadingDeletePort = false
-        this.notification.error('Thất bại', 'Yêu cầu xoá Port thất bại')
+        this.notification.error('Thất bại', 'Yêu cầu xoá Port thất bại. ', error.error.detail)
       })
     } else {
       this.noti = true

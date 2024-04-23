@@ -69,7 +69,7 @@ export class DeleteVlanComponent implements AfterViewInit {
       }, error => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
-        this.notification.error('Thất bại', 'Xoá Network thất bại')
+        this.notification.error('Thất bại', 'Xoá Network thất bại. ', error.error.detail)
         this.value = null
         this.onOk.emit()
       })

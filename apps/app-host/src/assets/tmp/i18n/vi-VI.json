@@ -150,6 +150,8 @@
   "app.button.choose.version": "Chọn phiên bản",
 
   "app.breadcrumb.home": "Trang chủ",
+  "app.breadcrumb.infrastructure.service": "Dịch vụ hạ tầng",
+  "app.breadcrumb.block.storage": "Block Storage",
 
   "app.instances": "Máy ảo",
   "app.instances.list": "Danh sách máy ảo",
@@ -677,6 +679,8 @@
   "app.status.deleting": "Đang xóa",
   "app.status.init-failed": "Khởi tạo thất bại",
   "app.status.delete-failed": "Xóa thất bại",
+  "app.status.suspend": "Tạm dừng",
+  "app.status.error": "Lỗi",
 
   "validation.service.name-required": "Tên dịch vụ không được để trống",
   "validation.service.name-length": "Tên dịch vụ trong khoảng từ 5-50 ký tự",
@@ -708,5 +712,47 @@
   "tooltip.kafka.logRetentionHours": "Cấu hình đặc tả thời gian giữ lại (retention) cho các log của partition trong Kafka; cấu hình này xác định bao lâu dữ liệu log sẽ được giữ lại trước khi bị xóa. Giá trị -1 là không giới hạn",
   "validation.kafka.logRetentionHours-length": "Giá trị log.retention.hours là số nguyên trong khoảng -1 đến 2.147.483.647",
   "tooltip.kafka.logSegmentBytes": "Cấu hình quy định kích thước tối đa của mỗi segment trong log của 1 partition; log trong Kafka được chia thành các segment để quản lý và xóa dữ liệu hiệu quả",
-  "validation.kafka.logSegmentBytes-length": "Giá trị log.segment.bytes là số nguyên dương nằm trong khoảng 1 đến 10.737.418.240 (10GB)"
+  "validation.kafka.logSegmentBytes-length": "Giá trị log.segment.bytes là số nguyên dương nằm trong khoảng 1 đến 10.737.418.240 (10GB)",
+
+
+
+  "volume.title": "Danh sách Volume",
+  "volume.title.detail": "Chi tiết Volume",
+  "volume.detail.title": "Thông tin Volume",
+
+  "volume.title.breadcrumb.list": "Quản lý Volume",
+
+  "volume.table.title.name.volume": "Tên Volume",
+  "volume.table.title.type.volume":"Loại Volume",
+  "volume.table.title.storage": "Dung lượng",
+  "volume.table.title.iops": "IOPS",
+  "volume.table.title.status.volume": "Trạng thái Volume",
+  "volume.table.title.task.status": "Trạng thái tác vụ",
+  "volume.table.title.ínstance": "Máy ảo",
+  "volume.table.title.action": "Thao tác",
+  "volume.table.title.attach.instance": "Gắn vào máy ảo",
+  "volume.table.title.description": "Mô tả",
+  "volume.table.title.create.date": "Ngày khởi tạo",
+  "volume.table.title.expire.date": "Ngày hết hạn",
+
+  "volume.button.create": "Tạo mới Volume",
+  "volume.button.renew": "Gia hạn",
+  "volume.button.extend": "Điều chỉnh",
+
+  "volume.menu.create.schedule.backup": "Tạo lịch Backup",
+  "volume.menu.create.schedule.snapshot": "Tạo lịch Snapshot",
+  "volume.menu.update.volume": "Chỉnh sửa",
+
+  "volume.placeholder.filter.status": "Tất cả trạng thái",
+  "volume.placeholder.filter.name": "Tìm kiếm tên...",
+
+  "volume.tooltip.title.filter.status": "Tìm kiếm theo trạng thái",
+  "volume.tooltip.title.filter.img": "Tìm kiếm",
+  "volume.tooltip.content.create.backup": "Tạo Backup",
+
+  "volume.intro.title": "Volume",
+  "volume.intro.title2": "Lưu trữ ổ đĩa máy chủ",
+  "volume.intro.subtitle": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều\n                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng."
+
+
 }
