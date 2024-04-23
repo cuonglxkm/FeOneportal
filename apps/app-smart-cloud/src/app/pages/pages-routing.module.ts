@@ -176,7 +176,7 @@ const routes: Routes = [
     component: EditVolumeComponent
   },
   {
-    path: 'ssh-key',
+    path: 'keypair',
     component: SshKeyComponent
   },
   {
