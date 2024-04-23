@@ -195,7 +195,7 @@
   "app.view.detail": "View detail",
   "app.view.json.detail": "View JSON detail",
   "app.total.payment": "Total payment",
-  "app.include.vat": "Includes 10% VAT",
+  "app.include.vat": "Includes {{vat}}% VAT",
   "app.ssd.capacity": "SSD capacity",
   "app.gpu.number": "Number of GPUs",
   "app.task.status": "Task Status",
