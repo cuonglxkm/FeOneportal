@@ -171,6 +171,9 @@ export class SshKeyComponent implements OnInit {
         if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
           this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng. vui lòng nhập tên khác.`);
         }
+        else if (e && e.error && e.error.detail && e.error.detail === `Keypair data is invalid: failed to generate fingerprint`) {
+          this.notification.warning('Cảnh báo', `Public Key không đúng định dạng. Vui lòng nhập Public Key khác.`);
+        }
         else {
           this.isVisibleCreate = false;
           form?.resetForm();
