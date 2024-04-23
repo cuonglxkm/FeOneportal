@@ -5,12 +5,12 @@ import { LoadingService } from '@delon/abc/loading';
 import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { camelizeKeys } from 'humps';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaCreateReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaVersion } from 'src/app/core/models/kafka-version.model';
+import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ProjectModel } from 'src/app/core/models/project.model';
 import { RegionModel } from 'src/app/core/models/region.model';
@@ -27,7 +27,7 @@ export class CreateKafkaComponent implements OnInit {
 
   myform: FormGroup;
 
-  chooseitem: ServicePack;
+  chooseitem: OfferKafka;
 
   carouselConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 4, all: 0 },
@@ -54,21 +54,23 @@ export class CreateKafkaComponent implements OnInit {
   usageTime = 1;
   createDate: Date;
   expiryDate: Date;
-  ram = 1;
-  cpu = 1;
-  storage = 1;
-  pricePerRam = 200000;
-  pricePerCpu = 100000;
-  pricePerStorage = 150000;
+  ram = 0;
+  cpu = 0;
+  storage = 0;
+  unitPrice = {
+    ram: 240000,
+    cpu: 105000,
+    storage: 8500
+  }
 
   regionId: number;
   projectId: number;
 
   isVisibleCancle = false;
+  listOfferKafka: OfferKafka[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private modalService: NzModalService,
     private router: Router,
     private loadingSrv: LoadingService,
     private kafkaService: KafkaService,
@@ -78,11 +80,11 @@ export class CreateKafkaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getListPackage();
     this.getListVersion();
     this.initForm();
     this.createDate = new Date();
     this.setExpiryDate();
+    this.getUnitPrice();
   }
 
   initForm() {
@@ -91,9 +93,9 @@ export class CreateKafkaComponent implements OnInit {
         [Validators.required, Validators.pattern("^[a-zA-Z0-9_-]*$"), Validators.minLength(5), Validators.maxLength(50)]],
       version: [null],
       description: [null, [Validators.maxLength(500)]],
-      vCpu: [null, [Validators.required]],
-      ram: [null, [Validators.required]],
-      storage: [null, [Validators.required, Validators.min(1), Validators.max(1024)]],
+      vCpu: [0, [Validators.required]],
+      ram: [0, [Validators.required]],
+      storage: [0, [Validators.required, Validators.min(1), Validators.max(1024)]],
       broker: [3, [Validators.required]],
       usageTime: [1, [Validators.required]],
       configType: [0, [Validators.required]],
@@ -119,6 +121,70 @@ export class CreateKafkaComponent implements OnInit {
     )
   }
 
+  getUnitPrice() {
+    const unitMap = {
+      'cpu': 'cpu',
+      'ram': 'ram',
+      'storage': 'storage_ssd'
+    };
+    this.kafkaService.getUnitPrice()
+    .subscribe(
+      res => {
+        if (res && res.code == 200) {
+          res.data.forEach(e => {
+            const map = unitMap[e.item];
+            if (map) {
+              this.unitPrice[map] = e.price;
+            }
+          })
+        }
+      }
+    )
+  }
+
+  getListOffers() {
+    this.listOfferKafka = [];
+    const characteristicMap = {
+      'cpu': 'cpu',
+      'ram': 'ram',
+      'storage': 'storage'
+    };
+    this.kafkaService.getListOffers(this.regionId, 'kafka')
+    .subscribe(
+      (data) => {
+        data.forEach(offer => {
+          const offerKafka = new OfferKafka();
+          offerKafka.id = offer.id;
+          offerKafka.offerName = offer.offerName;
+          offerKafka.price = offer.price;
+          offerKafka.broker = 3;
+          offer.characteristicValues.forEach(item => {
+            const characteristic = characteristicMap[item.charName];
+            if (characteristic) {
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+            }
+          });
+          this.listOfferKafka.push(offerKafka);
+        });
+        this.listOfferKafka = this.listOfferKafka.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
+      }
+    )
+  }
+
+  onChangeCpu(event: number) {
+    this.cpu = event;  
+  }
+
+  onChangeRam(event: number) {
+    this.ram = event;
+  }
+
+  onChangeStorage(event: number) {
+    this.storage = event;
+  }
+
   getListVersion() {
     this.kafkaService.getListVersion()
       .subscribe(
@@ -133,6 +199,7 @@ export class CreateKafkaComponent implements OnInit {
   // catch event region change and reload data
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    this.getListOffers();
   }
 
   onProjectChange(project: ProjectModel) {
@@ -147,13 +214,14 @@ export class CreateKafkaComponent implements OnInit {
     data.customerId = userId;
     data.createdByUserId = userId;
     data.orderItems = [];
-    kafka.offerId = 229;
+    kafka.offerId = this.chooseitem != null ? this.chooseitem.id : 0;
     kafka.regionId = this.regionId;
     kafka.projectId = this.projectId;
     kafka.vpcId = this.projectId;
+    kafka.offerName = this.chooseitem != null ? this.chooseitem.offerName : '';
 
     const orderItem: OrderItem = new OrderItem();
-    orderItem.price = (this.pricePerCpu * this.cpu + this.pricePerRam * this.ram + this.pricePerStorage * this.storage) * this.usageTime;
+    orderItem.price = (this.unitPrice.cpu * this.cpu + this.unitPrice.ram * this.ram + this.unitPrice.storage * this.storage) * this.usageTime;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = AppConstants.KAKFA_CREATE_TYPE;
     orderItem.specification = JSON.stringify(kafka);
@@ -213,6 +281,8 @@ export class CreateKafkaComponent implements OnInit {
     if (replicationFactor.value != null && minInsync.value != null) {
       if (minInsync.value > replicationFactor.value) {
         replicationFactor.setErrors({'invalidvalue': true})
+      } else {
+        minInsync.setErrors(null)
       }
     }
   }
@@ -223,13 +293,14 @@ export class CreateKafkaComponent implements OnInit {
     if (replicationFactor.value != null && minInsync.value != null) {
       if (minInsync.value > replicationFactor.value) {
         minInsync.setErrors({'invalidvalue': true})
+      } else {
+        replicationFactor.setErrors(null)
       }
     }
   }
   
-  handleChoosePack(item: ServicePack) {
+  handleChoosePack(item: OfferKafka) {
     this.chooseitem = item;
-    this.servicePackCode = item.servicePackCode;
     this.myform.get('vCpu').setValue(item.cpu);
     this.myform.get('ram').setValue(item.ram);
     this.myform.get('storage').setValue(item.storage);

@@ -28,6 +28,10 @@ export interface KafkaDetail {
     storage: number;
     usageTime: number;
     description: string;
+    regionId: string;
+    projectId: string;
+    offerId: number;
+    offerName: string;
     
 }
 

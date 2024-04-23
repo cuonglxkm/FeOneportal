@@ -81,16 +81,16 @@
         <nz-tabset nzCentered>
           <nz-tab [nzTitle]="'app.Preconfigured.Package' | i18n" (nzClick)="clicktab()">
             <ng-template nz-tab>
-              <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack" class="carousel-div">
+              <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfferKafka" class="carousel-div">
                 <div *nguCarouselDef="let item;" class="item">
                   <div class="pack-item" [ngClass]="{ 'choose': item===chooseitem}" (click)="handleChoosePack(item)">
                     <div class="item-header">
                       <div class="item-name">
-                        <span>{{item.servicePackName}}</span>
+                        <span>{{item.offerName}}</span>
                         <div class="item-price">
                           <div class="price">
-                            <span>{{ item.price | number: '1.0-0' }}</span><br>
-                            <span class="unit-price">đ/tháng</span>
+                            <span>{{ item.price.fixedPrice.amount | number: '1.0-0' }}</span><br>
+                            <span class="unit-price">{{ item.price.fixedPrice.currency}}/tháng</span>
                           </div>
                         </div>
                       </div>
@@ -124,7 +124,7 @@
                 <nz-form-item>
                   <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="('validation.kafka-required-1' | i18n) + ' VCPU ' + ('validation.kafka-required-2' | i18n)">
-                    <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus nzSize="large" />
+                    <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus nzSize="large" (ngModelChange)="onChangeCpu($event)"/>
                   </nz-form-control>
                 </nz-form-item>
               </div>
@@ -135,7 +135,7 @@
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="('validation.kafka-required-1' | i18n) + ' Ram ' + ('validation.kafka-required-2' | i18n)">
                     <nz-input-group nzSuffix="(GB)" nzSize="large">
                       <input nz-input type="number" formControlName="ram" id="ram"
-                          autofocus />
+                          autofocus (ngModelChange)="onChangeRam($event)" />
                     </nz-input-group>
                   </nz-form-control>
                 </nz-form-item>
@@ -147,7 +147,7 @@
                   <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="('validation.kafka-required-1' | i18n) + ' Storage ' + ('validation.kafka-required-2' | i18n)">
                     <nz-input-group nzSuffix="(GB)" nzSize="large">
                       <input nz-input type="number" formControlName="storage" id="storage"
-                          autofocus />
+                          autofocus (ngModelChange)="onChangeStorage($event)" />
                     </nz-input-group>
                   </nz-form-control>
                 </nz-form-item>
@@ -355,10 +355,9 @@
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-cpu' | i18n }}</div>
-          <!-- <div class="label-quantity">{{pricePerCpu | number: '1.0-0'}} đồng x {{cpu}} vCPU</div> -->
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ pricePerCpu * cpu | number: '1.0-0'}} VNĐ</div>
+          <div class="value-price">{{ this.unitPrice.cpu * cpu | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
@@ -366,10 +365,9 @@
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-ram' | i18n }} </div>
-          <!-- <div class="label-quantity">{{pricePerRam | number: '1.0-0'}} đồng x {{ram}} GB</div> -->
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ pricePerRam * ram | number: '1.0-0'}} VNĐ</div>
+          <div class="value-price">{{ this.unitPrice.ram * ram | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
@@ -377,35 +375,20 @@
       <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
           <div class="label-price"> {{ 'app.kafka.cost-storage' | i18n }}</div>
-          <!-- <div class="label-quantity">{{pricePerStorage | number: '1.0-0'}} đồng x {{storage}} GB</div> -->
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price">{{ pricePerStorage * storage | number: '1.0-0'}} VNĐ</div>
+          <div class="value-price">{{ this.unitPrice.storage * storage | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>
       <nz-divider class="divider-style"></nz-divider>
-      <!-- <div nz-row [nzGutter]="8">
-          <div nz-col [nzSpan]="12">
-              <div class="label-price" style="margin-bottom: 10px;">Thời gian sử dụng</div>
-              <div class="label-quantity">- Ngày bắt đầu:</div>
-              <div class="label-quantity">- Ngày hết hạn:</div>
-          </div>
-          <div nz-col [nzSpan]="12">
-              <div class="value-usage-time" style="margin-bottom: 10px;">{{ usageTime }} tháng</div>
-              <div class="unit-total" style="margin-bottom: 12px;">{{ createDate | date : 'dd/MM/yyyy' }}</div>
-              <div class="unit-total">{{ expiryDate | date : 'dd/MM/yyyy' }}</div>
-          </div>
-      </div>
-      <nz-divider class="divider-style"></nz-divider> -->
-
       <div nz-row [nzGutter]="8" class="mt-5 price-panel">
         <div nz-col [nzSpan]="12">
           <div class="label-price">{{ 'app.service.price-title' | i18n }}</div>
           <div class="label-quantity"><i>({{ 'app.service.include' | i18n }} 10% VAT)</i></div>
         </div>
         <div nz-col [nzSpan]="12">
-          <div class="value-price total-price">{{ (pricePerCpu * cpu + pricePerRam * ram + pricePerStorage * storage) * usageTime * 1.1 | number: '1.0-0'}} VNĐ</div>
+          <div class="value-price total-price">{{ (this.unitPrice.cpu * cpu + this.unitPrice.ram * ram + this.unitPrice.storage * storage) * usageTime * 1.1 | number: '1.0-0'}} VNĐ</div>
           <div class="unit-total">VNĐ/tháng</div>
         </div>
       </div>

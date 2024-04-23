@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
 import { AppConstants } from 'src/app/core/constants/app-constant';
 import { KafkaUpgradeReq } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
+import { OfferKafka } from 'src/app/core/models/offer.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { ServicePack } from 'src/app/core/models/service-pack.model';
 import { KafkaService } from 'src/app/services/kafka.service';
@@ -55,6 +56,14 @@ export class UpgradeKafkaComponent implements OnInit {
   pricePerRam = 200000;
   pricePerCpu = 100000;
   pricePerStorage = 150000;
+  listOfferKafka: OfferKafka[] = [];
+  unitPrice = {
+    ram: 240000,
+    cpu: 105000,
+    storage: 8500
+  }
+  regionId: number;
+  projectId: number;
 
   constructor(
     private fb: FormBuilder,
@@ -93,6 +102,8 @@ export class UpgradeKafkaComponent implements OnInit {
             this.ram = this.itemDetail.ram;
             this.cpu = this.itemDetail.cpu;
             this.storage = this.itemDetail.storage;
+            this.regionId = Number.parseInt(this.itemDetail.regionId);
+            this.projectId = Number.parseInt(this.itemDetail.projectId);
             // phát sự kiện để render lại 
             this.cdr.markForCheck();
           } else {
@@ -131,6 +142,60 @@ export class UpgradeKafkaComponent implements OnInit {
         }
       )
   }
+
+  getUnitPrice() {
+    const unitMap = {
+      'cpu': 'cpu',
+      'ram': 'ram',
+      'storage': 'storage_ssd'
+    };
+    this.kafkaService.getUnitPrice()
+    .subscribe(
+      res => {
+        if (res && res.code == 200) {
+          res.data.forEach(e => {
+            const map = unitMap[e.item];
+            if (map) {
+              this.unitPrice[map] = e.price;
+            }
+          })
+        }
+      }
+    )
+  }
+
+  getListOffers() {
+    this.listOfferKafka = [];
+    const characteristicMap = {
+      'cpu': 'cpu',
+      'ram': 'ram',
+      'storage': 'storage'
+    };
+    this.kafkaService.getListOffers(this.regionId, 'kafka')
+    .subscribe(
+      (data) => {
+        data.forEach(offer => {
+          const offerKafka = new OfferKafka();
+          offerKafka.id = offer.id;
+          offerKafka.offerName = offer.offerName;
+          offerKafka.price = offer.price;
+          offerKafka.broker = 3;
+          offer.characteristicValues.forEach(item => {
+            const characteristic = characteristicMap[item.charName];
+            if (characteristic) {
+              offerKafka[characteristic] = Number.parseInt(item.charOptionValues[0]);
+            }
+          });
+          this.listOfferKafka.push(offerKafka);
+        });
+        this.listOfferKafka = this.listOfferKafka.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
+      }
+    )
+  }
+
+  
 
   backToList() {
     this.router.navigate(['/app-kafka']);
