@@ -1,4 +1,7 @@
-<page-header [breadcrumb]="breadcrumb" title="Điều chỉnh Object Storage">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [title]="'app.object.storage.resize' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
@@ -9,7 +12,9 @@
           >Object Storage</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Điều chỉnh Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
+        'app.object.storage.resize' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
 </page-header>
@@ -19,11 +24,14 @@
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px" [nzBordered]="false">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông tin Object Storage</span>
+          <span class="text-card-header">{{
+            'app.object.storage.info' | i18n
+          }}</span>
         </div>
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Dung lượng - GB (<span class="text-red">*</span>)</nz-form-label
+            >{{ 'app.capacity' | i18n }} - GB (<span class="text-red">*</span
+            >)</nz-form-label
           >
           <nz-form-control>
             <nz-input-number
@@ -36,7 +44,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label nzFor="name">Ghi chú</nz-form-label>
+          <nz-form-label nzFor="name">{{ 'app.note' | i18n }}</nz-form-label>
           <nz-form-control>
             <nz-textarea-count [nzMaxCharacterCount]="250">
               <textarea
@@ -52,9 +60,9 @@
         </nz-form-item>
         <nz-form-item style="margin-top: -24px">
           <nz-form-label
-            >Thời hạn sử dụng (<span class="text-red">*</span>) -
-            Tháng</nz-form-label
-          >
+            >{{ 'app.service.duration' | i18n }} (<span class="text-red">*</span
+            >)
+          </nz-form-label>
           <nz-form-control>
             <nz-row>
               <nz-input-number
@@ -67,16 +75,19 @@
                 class="text-label"
                 style="display: flex; margin-left: 20px; align-items: center"
               >
-                Ngày cấp dịch vụ: {{ today | date : 'dd/MM/yyyy' }}
+                {{ 'app.service.start.date' | i18n }}:
+                {{ today | date : 'dd/MM/yyyy' }}
               </div>
             </nz-row>
           </nz-form-control>
         </nz-form-item>
-        <div class="text-label" style="margin-top: -24px">{{ 'app.service.expiration-date' | i18n }}:</div>
+        <div class="text-label" style="margin-top: -24px">
+          {{ 'app.service.expiration-date' | i18n }}:
+        </div>
       </nz-card>
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Thông tin điều chỉnh</span>
+          <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
         </div>
         <nz-alert
           style="margin-bottom: 20px"
@@ -86,13 +97,13 @@
         ></nz-alert>
         <ng-template #nzDescriptionWarning3>
           <div>
-            Khi thực hiện tăng dung lượng Object Storage, chi phí mới sẽ được
-            tính từ ngày điều chỉnh cho tới ngày hết hạn
+            {{ 'app.alert.resize.object.storage' | i18n }}
           </div>
         </ng-template>
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >Dung lượng tăng thêm - GB (<span class="text-red">*</span
+            >{{ 'app.additional.capacity' | i18n }} - GB (<span class="text-red"
+              >*</span
             >)</nz-form-label
           >
           <nz-form-control>
@@ -108,38 +119,21 @@
           </nz-form-control>
         </nz-form-item>
         <div style="margin-top: 20px" class="text-label">
-          Ngày điều chỉnh: {{ today | date : 'dd/MM/yyyy' }}
+          {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
         </div>
       </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
-          <span class="text-card-header">Chi phí ước tính</span>
+          <span class="text-card-header">{{
+            'app.estimated.cost' | i18n
+          }}</span>
         </div>
         <div style="margin-bottom: 10px">
-          <span class="text-value"> Dung lượng </span><br />
+          <span class="text-value"> {{ 'app.capacity' | i18n }} </span><br />
           <span class="text-label">{{ objectStorageCreate.quota }} GB</span>
         </div>
-        <nz-row
-          style="
-            margin-bottom: 10px;
-            border-top: 2px solid #f0f0f0;
-            padding-top: 10px;
-          "
-          nzGutter="16"
-        >
-          <nz-col nzSpan="16">
-            <span class="text-value">
-              Chi phí <span>{{ numberMonth }}</span> tháng
-            </span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount | number }} VND
-            </span>
-          </nz-col>
-        </nz-row>
         <nz-row
           style="
             margin-bottom: 20px;
@@ -150,8 +144,11 @@
           nzGutter="16"
         >
           <nz-col nzSpan="16">
-            <span class="text-label">Tổng thanh toán</span><br />
-            <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+            ><br />
+            <span class="text-note-italicized"
+              >({{ 'app.include.vat' | i18n }})</span
+            >
           </nz-col>
           <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #ea3829" nzAlign="right">
@@ -170,7 +167,7 @@
               (click)="update()"
             >
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              Khởi tạo
+              {{ 'app.button.resize' | i18n }}
             </button>
           </nz-col>
         </nz-row>

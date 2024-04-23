@@ -169,7 +169,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
           console.log('reset pass', e);
           this.notification.error(
             e.error.detail,
-            'Đổi mật khẩu máy không thành công'
+            'Đổi mật khẩu máy ảo không thành công'
           );
         },
       });

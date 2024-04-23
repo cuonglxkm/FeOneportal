@@ -81,7 +81,7 @@ export class InstancesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("current language", this.i18n.currentLang)
+    console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -329,6 +329,7 @@ export class InstancesComponent implements OnInit {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Gắn VLAN thành công');
+          this.reloadTable();
         } else {
           this.notification.error('', 'Gắn VLAN không thành công');
         }
@@ -369,6 +370,7 @@ export class InstancesComponent implements OnInit {
       next: (data: any) => {
         if (data == 'Thao tác thành công') {
           this.notification.success('', 'Gỡ khỏi VLAN thành công');
+          this.reloadTable();
         } else {
           this.notification.error('', 'Gỡ khỏi VLAN không thành công');
         }
