@@ -94,9 +94,7 @@ export class FormRuleComponent implements OnInit {
     type: [-1 ],
     code: [-1],
     remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
-    remoteIpPrefix: ['', [AppValidator.ipWithCIDRValidator,
-        this.duplicatePrefixInboundValidator.bind(this),
-        Validators.pattern('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[0-9]|[12][0-9])$')]],
+    remoteIpPrefix: ['', [AppValidator.ipWithCIDRValidator]],
     etherType: [''],
     protocol: [-1],
     securityGroupId: ['']
@@ -109,16 +107,13 @@ export class FormRuleComponent implements OnInit {
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
               private router: Router) {
-    this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
+    this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
   }
 
-  duplicatePrefixInboundValidator(control) {
-    const value = control.value;
-    // Check if the input name is already in the list
-    if (this.prefixIp && this.prefixIp.includes(value)) {
-      return { duplicatePrefix: true }; // Duplicate name found
-    } else {
-      return null; // Name is unique
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.doCreate();
     }
   }
 
@@ -180,7 +175,8 @@ export class FormRuleComponent implements OnInit {
   remoteTypeChange(type: 'CIDR' | 'SecurityGroup'): void {
     this.remoteType = type;
     if (this.remoteType == 'CIDR') {
-      this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
+      this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required,
+        AppValidator.ipWithCIDRValidator])
       this.validateForm.controls.remoteIpPrefix.reset();
 
       this.validateForm.controls.securityGroupId.clearValidators()

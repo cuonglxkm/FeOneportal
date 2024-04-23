@@ -102,7 +102,7 @@
                               [nzStep]="1"
                              id="port"
                              class="input-custom"
-                             (change)="portChange($event.target['value'])" />
+                             (change)="portChange($event.target['value'])" nzAutoFocus (keydown.enter)="focusOkButton($event)"/>
             <ng-template #portErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required') || control.hasError('invalidNumber') || control.hasError('pattern') ">
                 Vui lòng nhập số nguyên trong khoảng 1 - 65535
@@ -122,7 +122,7 @@
                              class="input-custom"
                              formControlName="portRangeMin"
                              [nzStep]="1"
-                             id="portRangeMin" (ngModelChange)="updatePortRangeValidator()" />
+                             id="portRangeMin" nzAutoFocus (ngModelChange)="updatePortRangeValidator()" />
             <ng-template #portRangeMinErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required') || control.hasError('invalidNumber') || control.hasError('pattern') ">
                 Vui lòng nhập số nguyên trong khoảng 1 - 65535
@@ -180,13 +180,10 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="remoteIpErrorTpl">
-            <input nz-input class="input-custom" formControlName="remoteIpPrefix" id="remoteIpPrefix" />
+            <input nz-input class="input-custom" formControlName="remoteIpPrefix" (keydown.enter)="focusOkButton($event)"/>
             <ng-template #remoteIpErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">Vui lòng nhập đúng định dạng IP x.x.x.x/x (subnet max =
-                32)
-              </ng-container>
-              <ng-container *ngIf="control.hasError('duplicatePrefix')">Prefix IP đã tồn tại vui lòng chọn dải khác
+              <ng-container *ngIf="control.hasError('required') || control.hasError('invalidIp') || control.hasError('invalidSubnetMask')">
+                Vui lòng nhập đúng định dạng IP x.x.x.x/x (subnet max = 32)
               </ng-container>
             </ng-template>
           </nz-form-control>
