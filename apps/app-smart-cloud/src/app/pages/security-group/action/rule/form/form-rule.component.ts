@@ -1,15 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { SecurityGroup, SecurityGroupSearchCondition } from 'src/app/shared/models/security-group';
 import { SecurityGroupRuleCreateForm } from 'src/app/shared/models/security-group-rule';
@@ -29,6 +18,20 @@ import { Router } from '@angular/router';
 import { AppValidator } from '../../../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs/operators';
 
+export function integerInRangeValidator(min: number, max: number): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (value === null || value === undefined || isNaN(value)) {
+      return { 'invalid': true };
+    }
+    console.log('value', value)
+    const intValue = parseInt(value, 10);
+    if (intValue < min || intValue > max || intValue <= 0) {
+      return { 'outOfRange': true };
+    }
+    return null;
+  };
+}
 @Component({
   selector: 'one-portal-form-rule',
   templateUrl: './form-rule.component.html'
@@ -89,8 +92,8 @@ export class FormRuleComponent implements OnInit {
   }> = this.fb.group({
     rule: ['', [Validators.required]],
     portType: 'Port' as 'Port' | 'PortRange',
-    portRangeMin: [1, [Validators.pattern(/^[1-9]*$/)]],
-    portRangeMax: [1, [Validators.pattern(/^[1-9]*$/), AppValidator.portValidator('portRangeMin')]],
+    portRangeMin: [1],
+    portRangeMax: [1],
     type: [-1 ],
     code: [-1],
     remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
@@ -108,6 +111,8 @@ export class FormRuleComponent implements OnInit {
               private cdr: ChangeDetectorRef,
               private router: Router) {
     this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
+    this.validateForm.controls.portRangeMin.setValidators([Validators.required, integerInRangeValidator(1, 65535)])
+    this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
   }
 
   focusOkButton(event: KeyboardEvent): void {
@@ -142,23 +147,23 @@ export class FormRuleComponent implements OnInit {
 
       this.validateForm.controls.type.setValidators([Validators.required, AppValidator.validateProtocol,
         Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/), AppValidator.portValidator('code')])
-      // this.validateForm.controls.type.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
+
       this.validateForm.controls.type.markAsDirty();
       this.validateForm.controls.type.reset();
 
       this.validateForm.controls.code.setValidators([Validators.required, AppValidator.validateProtocol,
         Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/)])
-      // this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
+
       this.validateForm.controls.code.markAsDirty();
       this.validateForm.controls.code.reset();
     }
 
     if (type === 'tcp-IPv4' || type === 'udp-IPv4') {
-      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.min(1), AppValidator.validateNumber]);
+      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.min(1), integerInRangeValidator(1, 65535)]);
       this.validateForm.controls.portRangeMin.markAsDirty();
       this.validateForm.controls.portRangeMin.reset();
 
-      this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.portValidator('portRangeMin')]);
+      this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')]);
       this.validateForm.controls.portRangeMax.markAsDirty();
       this.validateForm.controls.portRangeMax.reset();
     }
@@ -223,6 +228,7 @@ export class FormRuleComponent implements OnInit {
     this.validateForm.controls.portRangeMin.updateValueAndValidity();
     this.validateForm.controls.portRangeMax.updateValueAndValidity();
     this.portType = type;
+
   }
 
   portChange(value) {

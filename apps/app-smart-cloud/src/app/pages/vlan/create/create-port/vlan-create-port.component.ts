@@ -128,7 +128,7 @@ export class VlanCreatePortComponent implements OnInit{
       }, error => {
         this.isLoading = false
         this.isVisible = false
-        this.notification.error('Thất bại', 'Tạo Port thất bại')
+        this.notification.error('Thất bại', 'Tạo Port thất bại. ', error.error.detail)
         this.validateForm.reset()
       })
     }

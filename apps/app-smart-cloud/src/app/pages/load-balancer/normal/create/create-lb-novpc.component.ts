@@ -73,6 +73,10 @@ export class CreateLbNovpcComponent implements OnInit {
 
   isAvailable: boolean = false;
 
+  @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
+  @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
+  @ViewChild('selectedValueIpFloating') selectedValueIpFloating?: ElementRef;
+
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -114,18 +118,19 @@ export class CreateLbNovpcComponent implements OnInit {
     });
   }
 
+
   selectedIp(value) {
-    const selectedOption = this.ipFloating?.find(option => option.id === value);
-    this.selectedValueIpFloating.nativeElement.innerText = selectedOption.ipAddress;
+    const selectedOption = this.ipFloating?.find(option => option.id === value)
+    if(selectedOption) {
+      this.selectedValueIpFloating.nativeElement.innerText = selectedOption?.ipAddress
+    }
+
   }
 
-  @ViewChild('selectedValueSpan') selectedValueSpan: ElementRef;
-  @ViewChild('selectedValueOffer') selectedValueOffer: ElementRef;
-  @ViewChild('selectedValueIpFloating') selectedValueIpFloating: ElementRef;
+
 
   updateValue(value): void {
-    console.log('value', value);
-    const selectedOption = this.listSubnets.find(option => option.id === value);
+    const selectedOption = this.listSubnets?.find(option => option.cloudId === value);
     if (selectedOption) {
       this.selectedValueSpan.nativeElement.innerText = selectedOption.name + '(' + selectedOption.subnetAddressRequired + ')';
     }
@@ -243,7 +248,6 @@ export class CreateLbNovpcComponent implements OnInit {
       this.offerDetail = data;
       console.log('value', this.offerDetail);
       this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
-
       this.getTotalAmount();
     });
   }
@@ -255,6 +259,8 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   loadBalancerInit() {
+    console.log('init', this.formCreateLoadBalancer)
+    console.log('valid form', this.validateForm)
     this.formCreateLoadBalancer.duration = this.validateForm.controls.time.value;
     if (this.validateForm.controls.ipAddress.value == undefined || this.validateForm.controls.ipAddress.value == '') {
       this.formCreateLoadBalancer.ipAddress = null;
@@ -336,6 +342,7 @@ export class CreateLbNovpcComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
+    this.loadBalancerInit()
     let request: FormOrder = new FormOrder();
     request.customerId = this.formCreateLoadBalancer.customerId;
     request.createdByUserId = this.formCreateLoadBalancer.customerId;
