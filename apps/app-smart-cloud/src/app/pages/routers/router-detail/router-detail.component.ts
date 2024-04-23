@@ -28,6 +28,8 @@ import { RouterService } from 'src/app/shared/services/router.service';
 import { ipAddressValidatorRouter } from '../../../../../../../libs/common-utils/src';
 import { RegionModel } from 'src/app/shared/models/region.model';
 import { ProjectModel } from 'src/app/shared/models/project.model';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-router-detail',
@@ -66,7 +68,8 @@ export class RouterDetailComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {
     this.formRouterInterface = this.fb.group({
       subnetId: ['', Validators.required],
@@ -124,7 +127,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy danh sách Router Interface không thành công'
+            this.i18n.fanyi('app.router.note30')
           );
         },
       });
@@ -147,7 +150,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy danh sách Router Static không thành công'
+            this.i18n.fanyi('app.router.note31')
           );
         },
       });
@@ -181,7 +184,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Lấy danh sách Subnet không thành công'
+            this.i18n.fanyi('app.router.note32')
           );
           this.isLoadingSubnet = false;
         },
@@ -212,25 +215,25 @@ export class RouterDetailComponent implements OnInit {
     this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
       (data) => {
         this.isLoadingRouterInterface = false;
-        this.notification.success('Thành công', 'Tạo mới Router Interface thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note33'));
         this.isVisibleCreateInterface = false;
         this.getRouterInterfaces();
       },
-      (error) => {      
-        this.isLoadingRouterInterface = false; 
+      (error) => {
+        this.isLoadingRouterInterface = false;
         console.log(error);
-        
+
         this.cdr.detectChanges();
         if (error.error.detail.includes('allocated in subnet')) {
-          this.notification.error('Thất bại', 'Địa chỉ IP đã tồn tại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note34'));
         } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
-          this.notification.error('Thất bại', 'Subnet không được cho phép sử dụng');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note35'));
         }else if (error.status === 400) {
-          this.notification.error('Thất bại', 'Vui lòng chọn Subnet');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note36'));
         } else {
           this.notification.error(
-            'Thất bại',
-            'Tạo mới Router không thành công'
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.router.note37')
           );
         }
       },
@@ -261,14 +264,14 @@ export class RouterDetailComponent implements OnInit {
     this.service.createStaticRouter(this.staticRouterCreate).subscribe({
       next: (data) => {
         this.isLoadingRouterStatic = false;
-        this.notification.success('Thành công', 'Tạo mới Static Router thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note38'));
         this.isVisibleCreateStatic = false;
         this.getRouterStatic();
       },
       error: (error) => {
         this.isLoadingRouterStatic = false;
         this.cdr.detectChanges();
-        this.notification.error('Thất bại', 'Tạo mới Router không thành công');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note39'));
       },
     });
   }
@@ -291,13 +294,13 @@ export class RouterDetailComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.notification.success('Thành công', 'Xóa Router Interface thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note40'));
           this.getRouterInterfaces();
         },
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Xóa Router Interface không thành công'
+            this.i18n.fanyi('app.router.note41')
           );
         },
       });
@@ -326,7 +329,7 @@ export class RouterDetailComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          this.notification.success('Thành công', 'Xóa Static Router thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note42'));
           setTimeout(() => {
             this.getRouterStatic();
           }, 1500);
@@ -334,7 +337,7 @@ export class RouterDetailComponent implements OnInit {
         error: (e) => {
           this.notification.error(
             e.statusText,
-            'Xóa Static Router không thành công'
+            this.i18n.fanyi('app.router.note42')
           );
         },
       });
