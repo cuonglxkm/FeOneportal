@@ -724,39 +724,36 @@ export class BucketDetailComponent implements OnInit {
 
   uploadSingleFile(item) {
     let data = {
-      customerId: 3,
       bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
       key: item.name,
       expiryTime: addDays(this.date, 1),
-      awsAccessKey: '1ISW11XYDRQR5D81IO3F',
-      awsSecretKey: 'ksFcZG7CB1PDdH5XPpsz5qCTimeXsC6OrpB7A6AA',
-      urlOrigin: 'https://s3.onsmartcloud.com/',
+      urlOrigin: 'http://localhost:4200',
     };
     console.log(item.originFileObj);
-    this.service.getSignedUrl(data).subscribe(
-      (responseData) => {
-        const presignedUrl = responseData.trim();
-        const req = new HttpRequest('PUT', presignedUrl, item, {
-          reportProgress: true,
-          responseType: 'text',
-          headers: new HttpHeaders().set('Content-Type', item.type),
+    this.service.getSignedUrl(data).subscribe({
+      next: (responseData) => {
+        const presignedUrl = responseData.url.replace("\\", "");
+        const headers = new HttpHeaders({
+          'Content-Type': item.originFileObj.type, 
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+          Authorization: ""
+        });
+        headers.delete("Authorization");
+        this.http.put(presignedUrl, item.originFileObj, {headers : headers})
+          .subscribe({
+            next: (response) => {
+              console.log(response);
+            },
+            error : (error) => {
+              console.error('There was an error!', error);
+            }
         });
       },
-      (error) => {
-        const presignedUrl = error.error.text;
-        const headers = {
-          'Content-Type': item.type,
-        };
-        this.http.put(presignedUrl, item.originFileObj, { headers })
-          .subscribe(
-            (response) => {
-              console.log(item.name + 'video uploaded successfully');
-            },
-            (error) => {
-              console.error('There was an error!', error);
-            });
+      error : (error) => {
+        console.error('There was an error!', error);
       }
-    );
+    });
   }
 
   uploadAllFile() {
