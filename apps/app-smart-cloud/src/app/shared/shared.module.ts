@@ -20,6 +20,7 @@ import { PaymentSuccessComponent } from './components/payment-success/payment-su
 import { PaymentFailedComponent } from './components/payment-failed/payment-failed.component';
 import { PaymentSummaryComponent } from './components/payment-summary/payment-summary.component';
 import { IsPermissionPipe } from './pipes/is-permission.pipe';
+import { ShareUsersComboboxComponent } from './components/share-users-combobox/share-users-combobox.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -43,6 +44,7 @@ const COMPONENTS: Array<Type<any>> = [
   SecurityGroupSelectComponent,
   PaymentSuccessComponent,
   PaymentFailedComponent,
+  ShareUsersComboboxComponent,
 ];
 const DIRECTIVES: Array<Type<any>> = [];
 
