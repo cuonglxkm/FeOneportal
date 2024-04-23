@@ -98,4 +98,8 @@ export class ObjectObjectStorageService extends BaseService {
   restoreObject(data: { bucketName: string; versionId: string; key: string }) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.httpOptions);
   }
+
+  getSignedUrl(data: any) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GeneratePreSignedForUpload', data, this.httpOptions);
+  }
 }

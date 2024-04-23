@@ -1,9 +1,9 @@
 <page-header [breadcrumb]="breadcrumb"
-             [title]="'Thông tin Group'">
+             [title]="'app.group-detail.groupInfo' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">IAM</a>
@@ -18,13 +18,13 @@
   </ng-template>
 </page-header>
 <nz-content>
-  <nz-card nzTitle="Thông tin chính của Group" [nzLoading]="loading">
+  <nz-card [nzTitle]="'app.group-detail.mainInfo' | i18n" [nzLoading]="loading">
     <form nz-form nzLayout="vertical">
       <nz-col nzSpan="7">
         <nz-form-item>
           <nz-form-label>
             <div>
-              <span>Tên của Group</span>
+              <span>{{ 'app.create-user-groups.nameGroup' | i18n }}</span>
             </div>
           </nz-form-label>
           <nz-form-control>
@@ -36,7 +36,7 @@
         <nz-form-item>
           <nz-form-label>
             <div>
-              <span>Thời gian khởi tạo</span>
+              <span>{{ 'app.users.createDate' | i18n }}</span>
             </div>
           </nz-form-label>
           <nz-form-control>
@@ -62,7 +62,7 @@
       </nz-row> -->
     </form>
   </nz-card>
-  <nz-card nzTitle="Thông tin bổ sung">
+  <nz-card [nzTitle]="'app.group-detail.additionalInformation' | i18n">
     <nz-tabset>
       <ng-template #user>
         <div>Users</div>
@@ -71,7 +71,7 @@
       <nz-tab [nzTitle]="user">
         <nz-row nzJustify="space-between" style="margin-bottom: 15px;">
           <nz-col>
-            <div><b>Users trong Group ({{filteredUsers?.length}})</b></div>
+            <div><b>{{ 'app.group-detail.userInGroup' | i18n }} ({{filteredUsers?.length}})</b></div>
           </nz-col>
           <nz-col>
             <nz-input-group
@@ -83,7 +83,7 @@
               <input
                 name="name"
                 nz-input
-                placeholder="Tìm kiếm tên, thời gian tạo ..."
+                [placeholder]="'app.users.search' | i18n"
               />
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -91,7 +91,7 @@
                 src="assets/imgs/search.svg"
                 alt=""
                 style="cursor: pointer"
-                nz-tooltip="Tìm kiếm"
+                [nz-tooltip]="'app.users.search' | i18n"
               />
             </ng-template>
             <button
@@ -121,7 +121,7 @@
                 src="assets/imgs/add-circle.svg"
                 alt=""
               />
-              <span class="button-text-primary">Thêm mới</span>
+              <span class="button-text-primary">{{ 'app.button.createNew' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -142,9 +142,9 @@
               nzLabel="Select all"
               (nzCheckedChange)="onAllCheckedUser($event)"
             ></th>
-            <th>Name</th>
+            <th>{{ 'app.create-user-groups.name' | i18n }}</th>
             <th>Group</th>
-            <th>Thời gian tạo</th>
+            <th>{{ 'app.users.createDate' | i18n }}</th>
           </tr>
           </thead>
           <tbody>
@@ -170,8 +170,8 @@
               <nz-select [(ngModel)]="selectedValue"
                          nzSize="large"
                          (ngModelChange)="onChange($event)"
-                         nzPlaceHolder="Tất cả các loại"
-                         nzTooltipTitle="Tìm kiếm theo loại"
+                         [nzPlaceHolder]="'app.group-detail.allTypes' | i18n"
+                         [nzTooltipTitle]="'app.group-detail.searchByType' | i18n"
                          nzTooltipPlacement="bottom"
                          nz-tooltip>
                 <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
@@ -188,7 +188,7 @@
               <input
                 name="name"
                 nz-input
-                placeholder="Tìm kiếm tên, thời gian tạo ..."
+                [placeholder]="'app.users.search' | i18n"
               />
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -196,7 +196,7 @@
                 src="assets/imgs/search.svg"
                 alt=""
                 style="cursor: pointer"
-                nz-tooltip="Tìm kiếm"
+                [nz-tooltip]="'app.button.search' | i18n"
               />
             </ng-template>
           </nz-space>
@@ -205,7 +205,7 @@
               style="border: none;"
               nz-button
               nzSize="large"
-              nz-tooltip nzTooltipTitle="Làm mới" nzTooltipPlacement="bottom"
+              nz-tooltip [nzTooltipTitle]="'app.button.create' | i18n" nzTooltipPlacement="bottom"
               (click)="getPoliciesByGroupName()"
             >
               <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt=""/>
@@ -215,7 +215,7 @@
               nz-button
               nzSize="large"
               nz-tooltip
-              nzTooltipTitle="Xóa Policy"
+              [nzTooltipTitle]="'app.group-detail.deletePolicy' | i18n"
               nzTooltipPlacement="bottom"
               (click)="removePolicy()"
             >
@@ -234,7 +234,7 @@
               nzType="primary"
               nzSize="large"
               nz-tooltip
-              nzTooltipTitle="Gán thêm Policy cho Group"
+              [nzTooltipTitle]="'app.group-detail.tooltip.assignPolicy' | i18n"
               nzTooltipPlacement="bottom"
               (click)="navigateToAttachPolicy()"
             >
@@ -243,14 +243,14 @@
                 src="assets/imgs/add-circle.svg"
                 alt=""
               />
-              <span class="button-text-primary">Thêm mới</span>
+              <span class="button-text-primary">{{ 'app.button.createNew' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
         <div style="margin-bottom: 8px; margin-top: 8px">Policies
           <span>({{responsePolicies?.totalCount}})</span>
           <br/>
-          <span style="color: #00000040;">Có thể đính kèm tối đa 10 policies</span>
+          <span style="color: #00000040;">{{ 'app.group-detail.policies.alert' | i18n }}</span>
         </div>
 
         <nz-table
@@ -273,8 +273,8 @@
               nzLabel="Select all"
               (nzCheckedChange)="onAllCheckedPolicy($event)"
             ></th>
-            <th>Name</th>
-            <th>Type</th>
+            <th>{{ 'app.create-user-groups.name' | i18n }}</th>
+            <th>{{ 'app.create-user.type' | i18n }}</th>
           </tr>
           </thead>
           <tbody *ngFor="let data of rowSelectionTable2.data">
@@ -298,7 +298,7 @@
               <div class="json-viewer-bg">
                 <button nz-button
                         style="z-index: 1;position: absolute; right: 20px; top: 21px;"
-                        [routerLink]="'/app-smart-cloud/policy/update/' +  data.name">Chỉnh sửa
+                        [routerLink]="'/app-smart-cloud/policy/update/' +  data.name">{{ 'app.button.edit' | i18n }}
                 </button>
                 <ngx-json-viewer [json]="data" style="position: relative;"></ngx-json-viewer>
               </div>
@@ -315,7 +315,7 @@
                 style="color: #0066B3"
                 (click)="goBack()"
                 nzSize="default">
-          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline" style="margin-right: 10px;"></span>Quay lại</span>
+          <span class="button-text-default"><span nz-icon nzType="left" nzTheme="outline" style="margin-right: 10px;"></span>{{ 'app.button.back' | i18n }}</span>
         </button>
       </nz-space>
     </nz-form-item>

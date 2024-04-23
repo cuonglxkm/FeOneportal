@@ -30,7 +30,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
   isCheckBegin: boolean = false;
   customerId: number;
   selectedFileSystemName: string;
-
+  
   formCreateFileSystemSnapshot: FormCreateFileSystemSnapShot = new FormCreateFileSystemSnapShot();
 
   form: FormGroup<{
@@ -75,6 +75,8 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
         this.response = null;
       });
   }  
+
+
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject()
@@ -130,11 +132,14 @@ export class CreateFileSystemSnapshotComponent implements OnInit{
           },
           (error) => {
             this.isLoading = false
-            this.notification.error(
-              'Thất bại',
-              'Tạo mới file system snapshot thất bại'
-            );
-            console.log(error);
+            if (error.status === 500) {
+              this.notification.error('Thất bại', 'Chỉ có thể tạo khi trạng thái của file system là Khởi tạo');
+            }else{
+              this.notification.error(
+                'Thất bại',
+                'Tạo mới file system snapshot thất bại'
+              );
+            }
           }
         );
     }

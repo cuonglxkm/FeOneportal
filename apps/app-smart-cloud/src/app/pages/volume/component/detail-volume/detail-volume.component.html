@@ -1,20 +1,20 @@
 <page-header [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Chi tiết Volume'" xmlns="http://www.w3.org/1999/html">
+             [title]="'volume.title.detail' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Block Storage
+        {{ 'app.breadcrumb.block.storage' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Quản lý Volume</a>
+        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title.breadcrumb.list' | i18n}}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chi tiết Volume</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'volume.title.detail' | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -33,7 +33,7 @@
           <button class="button-fee" (click)="navigateToRenew(volumeInfo.id)"
                   nz-button
                   nzType="primary">
-            <span nz-icon nzType="schedule" nzTheme="outline"></span>Gia hạn
+            <span nz-icon nzType="schedule" nzTheme="outline"></span>{{ 'volume.button.renew' | i18n }}
           </button>
         </div>
       </div>
@@ -41,7 +41,7 @@
         <button class="button-cancel"
                 (click)="navigateEditVolume(volumeInfo.id)"
                 nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+          <i nz-icon [nzType]="'edit'"></i>{{ 'volume.button.extend' | i18n }}
         </button>
       </div>
     </div>
@@ -50,7 +50,7 @@
         <button class="button-cancel"
                 (click)="navigateToResizeVPC(volumeInfo.id)"
                 nz-button nzType="default">
-          <i nz-icon [nzType]="'edit'"></i>Điều chỉnh
+          <i nz-icon [nzType]="'edit'"></i>{{ 'volume.button.extend' | i18n }}
         </button>
       </div>
     </div>
@@ -58,7 +58,7 @@
 </page-header>
 <nz-content>
   <nz-card [nzLoading]="isLoading">
-    <span class="text-card-header">Thông tin Volume</span>
+    <span class="text-card-header">{{ 'volume.detail.title' | i18n }}</span>
     <nz-descriptions [nzColumn]="2" nzBordered style="margin-top: 20px;">
       <nz-descriptions-item [nzTitle]="titleName" class="text-label">
         <span class="text-label"><b>{{ volumeInfo?.name }}</b></span>
@@ -90,26 +90,26 @@
 
     </nz-descriptions>
     <ng-template #titleName>
-      <span class="text-label">Tên Volume:</span>
+      <span class="text-label">{{ 'volume.table.title.name.volume' | i18n }}:</span>
     </ng-template>
     <ng-template #titleType>
-      <span class="text-label">Loại Volume:</span>
+      <span class="text-label">{{ 'volume.table.title.type.volume' | i18n}}:</span>
     </ng-template>
     <ng-template #titleStorage>
-      <span class="text-label">Dung lượng:</span>
+      <span class="text-label">{{ 'volume.table.title.storage' | i18n}}:</span>
     </ng-template>
     <ng-template #titleIOPS>
-      <span class="text-label">IOPS:</span>
+      <span class="text-label">{{ 'volume.table.title.iops' | i18n}}:</span>
     </ng-template>
     <ng-template #titleStatus>
-      <span class="text-label">Trạng thái Volume:</span>
+      <span class="text-label">{{ 'volume.table.title.status.volume' | i18n}}:</span>
     </ng-template>
     <ng-template #titleAttachInstance>
       <span class="text-label">Gắn vào máy ảo:</span>
     </ng-template>
-    <ng-template #titleVolumeType>
-      <span class="text-label">Kiểu Volume:</span>
-    </ng-template>
+<!--    <ng-template #titleVolumeType>-->
+<!--      <span class="text-label">Kiểu Volume:</span>-->
+<!--    </ng-template>-->
 <!--    <div style="margin-top: 15px;">-->
 <!--      <b class="text-label">Kiểu Volume: {{ volumeInfo.bootable ? 'Volume root' : 'Volume gắn thêm' }}</b>-->
 <!--    </div>-->
@@ -122,7 +122,7 @@
       </div>
     </div>
     <ng-template #titleDescription>
-      <span class="text-label">Mô tả:</span>
+      <span class="text-label">{{ 'volume.table.title.description' | i18n }}:</span>
     </ng-template>
     <nz-descriptions>
       <nz-descriptions-item [nzTitle]="titleDescription">
@@ -136,10 +136,10 @@
         <span style="color: rgba(235, 20, 20, 0.85)" class="text-label"><b>{{ volumeInfo?.expirationDate | date:'dd/MM/yyyy' }}</b></span>
       </nz-descriptions-item>
       <ng-template #titleCreateDate>
-        <span class="text-label">Ngày khởi tạo:</span>
+        <span class="text-label">{{ 'volume.table.title.create.date' | i18n }}:</span>
       </ng-template>
       <ng-template #titleExpireDate>
-        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">Ngày hết hạn:</span>
+        <span style="color: rgba(235, 20, 20, 0.85)" class="text-label">{{ 'volume.table.title.expire.date' | i18n }}:</span>
       </ng-template>
 
     </nz-descriptions>

@@ -49,7 +49,7 @@ export class DetachPortComponent {
     }, error => {
       this.isVisibleDetach = false
       this.isLoadingDetach = false
-      this.notification.error('Thất bại', 'Yêu cầu gỡ port khỏi máy ảo thất bại')
+      this.notification.error('Thất bại', 'Yêu cầu gỡ port khỏi máy ảo thất bại. ', error.error.detail)
     })
   }
 }

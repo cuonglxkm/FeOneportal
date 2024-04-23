@@ -260,7 +260,7 @@
               <span>Mô tả</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
+              <textarea nz-input class="input-custom" formControlName="description" [placeholder]="'Nhập nội dung'" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
@@ -294,7 +294,7 @@
           <div style="margin-top: 10px" class="text-label">{{ validateForm.controls.ipAddress.value }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value" *ngIf="enableInternetFacing">IP Public</div>
-          <div style="margin-top: 10px" class="text-label" *ngIf="enableInternal">
+          <div style="margin-top: 10px" class="text-label" *ngIf="enableInternetFacing">
             <span #selectedValueIpFloating></span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>

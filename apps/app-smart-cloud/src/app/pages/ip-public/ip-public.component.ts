@@ -7,10 +7,11 @@ import {IpPublicModel} from "../../shared/models/ip-public.model";
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {InstancesService} from "../instances/instances.service";
-import {NzMessageService} from "ng-zorro-antd/message";
 import {finalize} from "rxjs/operators";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {getCurrentRegionAndProject} from "@shared";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../app-host/src/app/core';
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -44,9 +45,9 @@ export class IpPublicComponent implements OnInit {
   instanceName: any;
 
   statusData = [
-    {name: 'Tất cả trạng thái', value: ''},
-    {name: 'Đang hoạt động', value: 'KHOITAO'},
-    {name: 'Chậm gia hạn', value: 'TAMNGUNG'}];
+    {name: this.i18n.fanyi('app.status.all'), value: ''},
+    {name: this.i18n.fanyi('app.status.running'), value: 'KHOITAO'},
+    {name: this.i18n.fanyi('app.status.low-renew'), value: 'TAMNGUNG'}];
   actionData = ['Gắn Ip Pulbic', 'Gỡ Ip Pulbic', 'Xóa'];
   disableDelete = true;
   ipAddressDelete = '';
@@ -54,7 +55,8 @@ export class IpPublicComponent implements OnInit {
   constructor(private service: IpPublicService, private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancService: InstancesService,
-              private notification: NzNotificationService,) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
 
   }
 
@@ -174,13 +176,14 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Gỡ thành công IP Public')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.detach.success') + ' IP Public')
         },
         error: e => {
           if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
-            this.notification.warning('Cảnh báo', `Máy ảo ${this.instanceName} cần tối thiểu 1 IP Public. Vui lòng không thực hiện thao tác này!`);
+            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
+              + this.i18n.fanyi('app.ip.public.attach.warning'));
           } else {
-            this.notification.error('Thất bại', 'Gỡ thất bại IP Public')
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.detach.fail') +' IP Public')
           }
         },
       }
@@ -200,13 +203,14 @@ export class IpPublicComponent implements OnInit {
       .subscribe(
       {
         next: post => {
-          this.notification.success('Thành công', 'Xóa thành công IP Public')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.success') + ' IP Public')
         },
         error: e => {
           if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
-            this.notification.warning('Cảnh báo', `Máy ảo ${this.instanceName} cần tối thiểu 1 IP Public. Vui lòng không thực hiện thao tác này!`);
+            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
+              + this.i18n.fanyi('app.ip.public.attach.warning'));
           } else {
-            this.notification.error('Thất bại', 'Xóa thất bại IP Public')
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.delete.fail') +' IP Public')
           }
         },
       }
@@ -234,10 +238,10 @@ export class IpPublicComponent implements OnInit {
         .subscribe(
           {
             next: post => {
-              this.notification.success('Thành công', 'Gắn thành công IP Public')
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.attach.success') + ' IP Public')
             },
             error: e => {
-              this.notification.error('Thất bại', 'Gắn thất bại IP Public')
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.attach.fail') + ' IP Public')
             },
           }
         )

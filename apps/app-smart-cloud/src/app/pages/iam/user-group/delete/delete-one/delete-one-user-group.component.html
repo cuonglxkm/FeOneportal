@@ -1,22 +1,20 @@
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Xóa User Groups"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
-    <div class="text-h5"><b>Xóa User Groups</b></div>
+    <div class="text-h5"><b>{{ 'app.user-group.deleteOne.title' | i18n }}</b></div>
   </div>
   <div *nzModalContent>
     <nz-alert nzShowIcon
-              nzType="warning" nzDescription="Bạn đang thực hiện xoá Groups {{ nameGroup[0].name }}
-Việc thực hiện xoá Groups sẽ khiến tất cả người dùng trong nhóm này bị mất quyền (Permission của nhóm).
-Hành động này không thể được hoàn tác"></nz-alert>
-    <p class="text-p" style="margin-top: 5px"><b>Đế thực hiện xoá Group, vui lòng nhập tên Group để xác nhận.</b></p>
+              nzType="warning" [nzDescription]="('app.user-group.deleteOne.des' | i18n) + ' ' +  nameGroup[0].name + '. ' + ('app.user-group.deleteOne.des2' | i18n)"></nz-alert>
+    <p class="text-p" style="margin-top: 5px"><b>{{ 'app.user-group.deleteOne.confirm' | i18n }}</b></p>
     <input nz-input [(ngModel)]="value" (ngModelChange)="onInputChange()" type="text"/>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">{{ 'app.button.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="handleOk()"
             [nzLoading]="isLoading"
-            class="button-ok">Đồng ý
+            class="button-ok">{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
 </nz-modal>

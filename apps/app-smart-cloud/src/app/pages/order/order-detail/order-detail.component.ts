@@ -10,6 +10,8 @@ import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NotificationService } from '../../../../../../../libs/common-utils/src';
 import {getCurrentRegionAndProject} from "@shared";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -22,15 +24,16 @@ export class OrderDetailComponent {
   projectId: any;
   data: OrderDTOSonch;
   currentStep = 1;
-  titleStepFour: string = 'Đã cài đặt';
-
+  titleStepFour: string = this.i18n.fanyi("app.order.status.Installed");;
+  serviceName: string
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private service: OrderService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit() {
@@ -45,21 +48,27 @@ export class OrderDetailComponent {
         .pipe(
           finalize(() => {
             if (this.data.statusCode == 4) {
-              this.titleStepFour = 'Thành công';
+              this.titleStepFour = this.i18n.fanyi("app.order.status.Success");
             } else if (this.data.statusCode == 5) {
               if (this.data.invoiceCode != '') {
-                this.titleStepFour = 'Sự cố';
+                this.titleStepFour = this.i18n.fanyi("app.order.status.Trouble");
               } else {
                 this.titleStepFour = '';
               }
             } else {
-              this.titleStepFour = 'Đã cài đặt';
+              this.titleStepFour = this.i18n.fanyi("app.order.status.Installed");
             }
           })
         )
         .subscribe({
           next: (data) => {
             this.data = data;
+            data?.orderItems?.forEach((item) => {
+              this.serviceName = item.serviceName.split('-')[0]
+              if(this.serviceName.includes('Máy ảo')){
+                this.serviceName = 'VM'
+              }
+            })
           },
           error: (e) => {
             this.notification.error('Thất bại', 'Lấy dữ liệu thất bại');
@@ -72,15 +81,15 @@ export class OrderDetailComponent {
         .pipe(
           finalize(() => {
             if (this.data.statusCode == 4) {
-              this.titleStepFour = 'Thành công';
+              this.titleStepFour = this.i18n.fanyi("app.order.status.Success");
             } else if (this.data.statusCode == 5) {
               if (this.data.invoiceCode != '') {
-                this.titleStepFour = 'Sự cố';
+                this.titleStepFour = this.i18n.fanyi("app.order.status.Trouble");;
               } else {
                 this.titleStepFour = '';
               }
             } else {
-              this.titleStepFour = 'Đã cài đặt';
+              this.titleStepFour = this.i18n.fanyi("app.order.status.Installed");
             }
           })
         )
