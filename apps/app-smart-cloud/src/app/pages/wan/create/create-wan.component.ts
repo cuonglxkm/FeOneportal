@@ -5,6 +5,8 @@ import { FormCreate, FormSearchWan, Wan } from '../../../shared/models/wan.model
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-create-wan',
@@ -35,6 +37,7 @@ export class CreateWanComponent {
   constructor(private fb: NonNullableFormBuilder,
               private wanService: WanService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService) {
   }
 
@@ -78,18 +81,18 @@ export class CreateWanComponent {
       if(data) {
         this.isVisible = false
         this.isLoading = false
-        this.notification.success('Thành công', 'Cấp phát IP WAN thành công')
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.wan.note11'))
         this.onOk.emit(data)
         this.validateForm.reset()
       } else {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error('Thất bại', 'Cấp phát IP WAN thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note12'))
       }
     }, error => {
       this.isVisible = false
       this.isLoading = false
-      this.notification.error('Thất bại', 'Cấp phát IP WAN thất bại')
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note12'))
     })
   }
 

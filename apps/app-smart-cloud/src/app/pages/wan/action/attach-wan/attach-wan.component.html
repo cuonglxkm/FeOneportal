@@ -1,27 +1,27 @@
 <span style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="plus"
       nzTheme="outline"
       nz-popover
-      [nzPopoverContent]="'Gắn IP Wan'"
+      nzPopoverContent="{{'app.wan.note13' | i18n}}"
       nzPopoverPlacement="bottom" (click)="showModalAttachWan()"></span>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Gắn IP WAN"
+<nz-modal [(nzVisible)]="isVisible" nzTitle="{{'app.wan.note13' | i18n}}"
           (nzOnCancel)="handleCancelAttach()" nzMask="false">
   <div *nzModalTitle>
-    <span class="text-modal-title">Gắn IP WAN</span>
+    <span class="text-modal-title">{{'app.wan.note13' | i18n}}</span>
   </div>
   <div *nzModalContent>
     <nz-alert nzType="warning"
-              nzDescription="Bạn đang thực hiện gắn IP WAN vào máy ảo"
+              nzDescription="{{'app.wan.note14' | i18n}}"
               nzShowIcon
               style="margin-bottom: 24px;">
     </nz-alert>
     <nz-form-item>
       <nz-form-label>
         <div>
-          <span>Địa chỉ IP: </span>
+          <span>{{'app.ip.address' | i18n}}: </span>
         </div>
       </nz-form-label>
       <nz-form-control>
-        <nz-select nzPlaceHolder="Chọn Máy ảo" [(ngModel)]="instanceSelected" (ngModelChange)="onChange($event)">
+        <nz-select nzPlaceHolder="{{'app.wan.note15' | i18n}}" [(ngModel)]="instanceSelected" (ngModelChange)="onChange($event)">
           <nz-option *ngFor="let item of listVm" [nzValue]="item.id"
                      nzLabel="{{item.name}}"></nz-option>
         </nz-select>
@@ -30,13 +30,13 @@
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancelAttach()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary"
             (click)="submitForm()"
             [nzLoading]="isLoading"
             class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>

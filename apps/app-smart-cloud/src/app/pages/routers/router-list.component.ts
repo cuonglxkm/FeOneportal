@@ -26,6 +26,8 @@ import {
   NetWorkModel,
 } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -74,7 +76,8 @@ export class RouterListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private vlanService: VlanService
+    private vlanService: VlanService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
   ) {}
 
   ngOnInit() {
@@ -162,7 +165,7 @@ export class RouterListComponent implements OnInit {
             this.activeCreate = true;
             this.notification.error(
               e.statusText,
-              'Lấy danh sách Router không thành công'
+              this.i18n.fanyi('app.router.note9')
             );
           },
         });
@@ -217,16 +220,16 @@ export class RouterListComponent implements OnInit {
       next: (data) => {
         this.isLoadingCreateRouter = false
         this.isVisibleCreate = false;
-        this.notification.success('Thành công', 'Tạo mới Router thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note10'));
         this.getDataList();
       },
       error: (error) => {
         this.isLoadingCreateRouter = false
         this.cdr.detectChanges()
         if(error.status === 500){
-          this.notification.error('Thất bại', 'Vượt quá quota Router, đã sử dụng 1/0 Router, cần cấp thêm 2 Router')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note11'))
         }else{
-          this.notification.error('Thất bại', 'Tạo mới Router không thành công')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note12'))
         }
       },
     });
@@ -255,12 +258,12 @@ export class RouterListComponent implements OnInit {
     this.isVisibleEdit = false;
     this.dataService.updateRouter(this.routerUpdate).subscribe({
       next: (data) => {
-        this.notification.success('', 'Chỉnh sửa Router thành công');
+        this.notification.success(this.i18n.fanyi('status.success'), this.i18n.fanyi('app.router.note13'));
       },
       error: (e) => {
         this.notification.error(
           e.statusText,
-          'Chỉnh sửa Router không thành công'
+          this.i18n.fanyi('app.router.note14')
         );
       },
     });
@@ -288,18 +291,18 @@ export class RouterListComponent implements OnInit {
         .subscribe({
           next: (data) => {
             console.log(data);
-            this.notification.success('', 'Xóa Router thành công');
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.router.note15'));
             this.reloadTable();
           },
           error: (e) => {
             this.notification.error(
               e.statusText,
-              'Xóa Router không thành công'
+              this.i18n.fanyi('app.router.note16')
             );
           },
         });
     } else {
-      this.notification.error('', 'Xóa Router không thành công');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.router.note16'));
     }
   }
 }
