@@ -1,5 +1,5 @@
 <nz-card style="border-radius: 4px" [nzBordered]="false">
-  <span class="titlecard-custom">Chọn kiểu gán Permissions cho User</span>
+  <span class="titlecard-custom">{{ 'app.create-user.selectPermission' | i18n }}</span>
   <nz-radio-group style="width: 100%; display: inline-flex">
     <nz-row [nzGutter]="24" style="margin-top: 10px">
       <nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24">
@@ -26,13 +26,11 @@
               />
             </ng-template>
             <ng-template #nzTitleselected1>
-              <b>Thêm User vào Group</b>
+              <b>{{ 'app.create-user.addUserToGroup.title' | i18n }}</b>
             </ng-template>
             <ng-template #nzDescriptionselected1>
               <ellipsis class="text-custom"
-                >Thêm người dùng vào nhóm hiện có hoặc tạo nhóm mới. Nên sử dụng
-                nhóm để quản lý quyền của người dùng theo chức năng công
-                việc.</ellipsis
+                >{{ 'app.create-user.addUserToGroup.des' | i18n }}</ellipsis
               >
             </ng-template>
           </nz-card-meta>
@@ -62,12 +60,11 @@
               />
             </ng-template>
             <ng-template #nzTitleselected2>
-              <b>Sao chép Policies </b>
+              <b>{{ 'app.create-user.copyPolicies.title' | i18n }}</b>
             </ng-template>
             <ng-template #nzDescriptionselected2>
               <ellipsis class="text-custom">
-                Sao chép tất cả tư cách thành viên nhóm, policies được quản lý
-                đỉnh kèm từ người dùng hiện có.</ellipsis
+                {{ 'app.create-user.copyPolicies.des' | i18n }}</ellipsis
               >
             </ng-template>
           </nz-card-meta>
@@ -97,12 +94,11 @@
               />
             </ng-template>
             <ng-template #nzTitleselected3>
-              <b>Đính kèm Policies trực tiếp</b>
+              <b>{{ 'app.create-user.attachPolicies.title' | i18n }}</b>
             </ng-template>
             <ng-template #nzDescriptionselected3>
               <ellipsis class="text-custom">
-                Đính kèm policies được quản lý trực tiếp cho người
-                dùng.</ellipsis
+                {{ 'app.create-user.attachPolicies.des' | i18n }}</ellipsis
               >
             </ng-template>
           </nz-card-meta>
@@ -131,7 +127,7 @@
       [nzXs]="24"
       [nzXXl]="8"
     >
-      <span class="text-card-header">Thông tin Groups</span>
+      <span class="text-card-header">{{ 'app.create-user.groupInformation' | i18n }}</span>
     </div>
     <div
       class="text-right p-0 m-b-0"
@@ -151,7 +147,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [placeholder]="'app.users.search' | i18n"
           [(ngModel)]="searchParam"
         />
       </nz-input-group>
@@ -177,7 +173,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        <span>Tạo mới</span>
+        <span> {{ 'app.users.button.create' | i18n }}</span>
       </button>
     </div>
   </div>
@@ -205,10 +201,10 @@
           (nzCheckedChange)="onAllCheckedGroup($event)"
           nzLeft
         ></th>
-        <th>Tên Group</th>
-        <th>Số lượng User</th>
-        <th>Attached policies</th>
-        <th>Thời gian tạo</th>
+        <th>{{ 'app.create-user.nameGroup' | i18n }}</th>
+        <th>{{ 'app.create-user.numberOfUser' | i18n }}</th>
+        <th>{{ 'app.create-user.attachedPolicies' | i18n }}</th>
+        <th>{{ 'app.create-user.createDate' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -275,7 +271,7 @@
       [nzXs]="24"
       [nzXXl]="12"
     >
-      <span class="text-card-header">Thông tin Users</span>
+      <span class="text-card-header">{{ 'app.create-user.userInformation' | i18n }}</span>
     </div>
     <div
       class="text-right p-0 m-b-0"
@@ -295,7 +291,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm tên, thời gian tạo ..."
+          [placeholder]="'app.users.search' | i18n "
           [(ngModel)]="searchParam"
         />
       </nz-input-group>
@@ -341,10 +337,10 @@
           (nzCheckedChange)="onAllCheckedUser($event)"
           nzLeft
         ></th>
-        <th>Tên User</th>
+        <th>{{ 'app.create-user.nameUser' | i18n }}</th>
         <th>Groups</th>
-        <th>Attached policies</th>
-        <th>Thời gian tạo</th>
+        <th>{{ 'app.create-user.attachedPolicies' | i18n }}</th>
+        <th>{{ 'app.create-user.createDate' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -415,7 +411,7 @@
         [nzXs]="24"
         [nzXXl]="8"
       >
-        <span class="text-card-header">Thông tin Permissions policies</span>
+        <span class="text-card-header">{{ 'app.create-user.permissionPoliciesInformation' | i18n }}</span>
       </div>
       <div
         class="text-right p-0 m-b-0"
@@ -435,7 +431,7 @@
           <input
             name="name"
             nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [placeholder]="'app.users.search' | i18n "
             [(ngModel)]="searchParam"
           />
         </nz-input-group>
@@ -490,9 +486,9 @@
           (nzCheckedChange)="onAllCheckedPolicy($event)"
           nzLeft
         ></th>
-        <th>Tên Policy</th>
-        <th>Type</th>
-        <th>Attached entities</th>
+        <th>{{ 'app.create-user.namePolicy' | i18n }}</th>
+        <th>{{ 'app.create-user.type' | i18n }}</th>
+        <th>{{ 'app.create-user.attachedEntities' | i18n }}</th>
       </tr>
     </thead>
     <tbody>

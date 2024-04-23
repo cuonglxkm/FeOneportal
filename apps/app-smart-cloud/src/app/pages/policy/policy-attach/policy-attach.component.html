@@ -1,6 +1,6 @@
 <one-portal-header
-  title="Attach Policy"
-  [path]="['Home', 'IAM', 'Policies', 'Attach policy' ]"
+  [title]="'app.breadcrumb.attach-policy' | i18n"
+  [path]="['app.breadcrumb.home' | i18n , 'IAM', 'Policies', 'app.breadcrumb.attach-policy' | i18n ]"
   [regionId]="region"
   (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
@@ -8,19 +8,17 @@
 
 <nz-content class="content">
 
-  <nz-card class="content-header" nzTitle="Thực hiện gắn policy">
-    <p style="opacity: 0.5;">Để xác định permissions cho (người dùng - Users, nhóm người dùng - Groups), hãy đính kèm
-      policy cho các đối tượng
-      đó.</p>
+  <nz-card class="content-header" [nzTitle]="'app.breadcrumb.attach-policy.title' | i18n">
+    <p style="opacity: 0.5;">{{'app.breadcrumb.attach-policy.des' | i18n}}</p>
   </nz-card>
 
-  <nz-card class="content-body" nzTitle="Thông tin thực tế(IAM Entities) (3)">
-    <p style="opacity: 0.5;">Thực thể là các đối tượng IAM như Users, Groups.</p>
+  <nz-card class="content-body" [nzTitle]="'app.breadcrumb.attach-policy.iamEntities' | i18n">
+    <p style="opacity: 0.5;">{{'app.breadcrumb.attach-policy.iamEntities.des' | i18n}}</p>
     <div style="display: flex; justify-content: space-between;">
       <div class="text-left">
-        <nz-form-label [nzFor]="'volumeStatus'"><b>Loại Entities</b></nz-form-label>
+        <nz-form-label [nzFor]="'volumeStatus'"><b>{{'app.breadcrumb.attach-policy.iamEntities.type' | i18n}}</b></nz-form-label>
         <nz-select nzSize="large"
-                   [nzPlaceHolder]="'Tất cả các loại'"
+                   [nzPlaceHolder]="'app.group-detail.allTypes' | i18n"
                    [nzOptions]="optionsEntities"
                    [(ngModel)]="typeSearch"
                    (ngModelChange)="searchEntities()"
@@ -31,10 +29,10 @@
       <div class="text-right">
         <nz-input-group style="margin-left: 15px;margin-right: 8px; width: 250px; margin-bottom: 10px"
                         [nzSuffix]="suffixIconSearch" nzSize="large">
-          <input #searchBox [(ngModel)]="entitiesNameSearch" type="text" nz-input placeholder="Tìm kiến tên..."/>
+          <input #searchBox [(ngModel)]="entitiesNameSearch" type="text" nz-input [placeholder]="'app.users.search' | i18n"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"
+          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
                (click)="searchEntities()"/>
         </ng-template>
         <button class="button-custom" nz-button style="color: var(--Primary-1, #0066b3)" (click)="reload()" nzSize="large">
@@ -42,7 +40,7 @@
         </button>
       </div>
     </div>
-    <p><i style="opacity: 0.5;">Có thể chọn sang loại Entity khác để thực hiện gắn Policy</i></p>
+    <p><i style="opacity: 0.5;">{{'app.breadcrumb.attach-policy.iamEntities.option' | i18n}}</i></p>
     <nz-table
       class="table-data"
       #rowSelectionTable
@@ -63,8 +61,8 @@
           [nzIndeterminate]="indeterminate"
           (nzCheckedChange)="onAllChecked($event)"
         ></th>
-        <th>Entity Name</th>
-        <th>Entity Type</th>
+        <th>{{'app.breadcrumb.attach-policy.iamEntities.name' | i18n}}</th>
+        <th>{{'app.breadcrumb.attach-policy.iamEntities.type' | i18n}}</th>
       </tr>
       </thead>
       <tbody>
@@ -86,12 +84,12 @@
             background-color: white;
           ">
         <img style="padding-right: 10px;" src="assets/imgs/arrow-left-2.svg" alt=""/>
-        <span class="button-text-primary" style="color:#0066B3">Quay lại</span>
+        <span class="button-text-primary" style="color:#0066B3">{{'app.button.back' | i18n}}</span>
       </button>
       <button [disabled]="setOfCheckedId.size === 0" nzSize="large" (click)="attachPolicy()" nz-button nzType="primary"
               style="
             border: none;
-          "><img style="margin-top: -4px; margin-right: 10px;" src="assets/imgs/attach.png" alt=""/>Attach Policy
+          "><img style="margin-top: -4px; margin-right: 10px;" src="assets/imgs/attach.png" alt=""/>{{'app.button.attach-policy' | i18n}}
       </button>
 
     </div>

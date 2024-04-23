@@ -72,16 +72,17 @@ export class DetailSnapshotComponent implements OnInit{
     });
   }
   ngOnInit() {
-    this.idPackageBackup = Number.parseInt(this.route.snapshot.paramMap.get('id'))
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
-    // this.customerId = this.tokenService.get()?.userId
+    const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    const { regionId, projectId } = getCurrentRegionAndProject();
+    this.region = regionId;
+    this.project = projectId;
     if (this.project && this.region) {
-      this.loadProjects()
+      this.loadProjects();
     }
-    if(this.idPackageBackup != null) {
-      this.getDetailPackageBackup(this.idPackageBackup)
+    if (id) {
+      this.getDetailPackageBackup(id);
     }
   }
 }
+
+

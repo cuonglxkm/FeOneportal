@@ -1,6 +1,6 @@
 <one-portal-header
-  title="Thông tin Policy"
-  [path]="['Home', 'IAM', 'Policies', 'Detail policy' ]"
+  [title]="'app.detail-policy.policyInfo' | i18n"
+  [path]="['app.breadcrumb.home' | i18n, 'IAM', 'Policies', 'app.breadcrumb.detail-policy' | i18n ]"
   [regionId]="region"
   (onProjectChanged)="projectChanged($event)" (onRegionChanged)="regionChanged($event)"
 />
@@ -8,26 +8,26 @@
 <nz-spin [nzSpinning]="isLoadingPolicyInfo" nzSize="large">
   <nz-content>
 
-    <nz-card nzTitle="Thông tin chính của Policy">
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Tên Policy</b></nz-form-label>
+    <nz-card [nzTitle]="'app.detail-policy.policyMainInfo' | i18n">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>{{ 'app.create-user.namePolicy' | i18n }}</b></nz-form-label>
       <br>
       <p style="opacity: 0.5;">{{policyInfo.name}}</p>
       <br>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Type</b></nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>{{ 'app.create-user.type' | i18n }}</b></nz-form-label>
       <br>
       <p style="opacity: 0.5;">{{policyInfo.type}}</p>
       <br>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Thời gian khởi tạo</b></nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>{{ 'app.users.createDate' | i18n }}</b></nz-form-label>
       <br>
       <p style="opacity: 0.5;">16/12/2023 12:12:12(fix)</p>
       <br>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>Chỉnh sửa lần cuối </b></nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired><b>{{ 'app.detail-policy.lastEdit' | i18n }} </b></nz-form-label>
       <br>
       <p style="opacity: 0.5;">16/12/2023 12:12:12(fix)</p>
       <br>
     </nz-card>
 
-    <nz-card nzTitle="Thông tin bổ sung">
+    <nz-card [nzTitle]="'app.user-detail.additionalInformation' | i18n ">
       <nz-tabset [(nzSelectedIndex)]="tabPolicyIndex">
         <nz-tab nzTitle="Permissions policies">
 
@@ -36,7 +36,7 @@
           >
             <div style="display: inline-block; margin-right: auto;">
               <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-                <input type="text" [(ngModel)]="permissionNameSearh" nz-input placeholder="Tìm kiếm tên, thời gian tạo..."
+                <input type="text" [(ngModel)]="permissionNameSearh" nz-input [placeholder]="'app.placeholder.search' | i18n"
                        style="width: 300px;"/>
               </nz-input-group>
               <ng-template #suffixButton>
@@ -89,7 +89,7 @@
             <thead>
             <tr>
               <th>Permission</th>
-              <th>Mô tả</th>
+              <th>{{'app.service.description' | i18n }}</th>
             </tr>
             </thead>
             <tbody>
@@ -102,7 +102,7 @@
 
         </nz-tab>
 
-        <nz-tab nzTitle="Entities attached">
+        <nz-tab [nzTitle]="'app.detail-policy.entitiesAttach' | i18n">
           <div
             class="row"
           >
@@ -119,9 +119,9 @@
 <!--            </div>-->
 
             <div style="display: inline-block; margin-right: auto;">
-              <nz-form-label [nzFor]="'volumeStatus'"><b>Loại Entities</b></nz-form-label>
+              <nz-form-label [nzFor]="'volumeStatus'"><b>{{'app.breadcrumb.attach-policy.iamEntities.type' | i18n}}</b></nz-form-label>
               <nz-select nzSize="default"
-                         [nzPlaceHolder]="'Tất cả các loại'"
+                         [nzPlaceHolder]="'app.group-detail.allTypes' | i18n"
                          [nzOptions]="optionsEntities"
                          [(ngModel)]="entitiesTypeSearch"
                          (ngModelChange)="searchEntities()"
@@ -130,12 +130,12 @@
               </nz-select>
 
               <nz-input-group nzSearch nzSize="default" [nzAddOnAfter]="suffixButton">
-                <input type="text" [(ngModel)]="entitiesNameSearch" nz-input placeholder="Tìm kiếm theo tên"
+                <input type="text" [(ngModel)]="entitiesNameSearch" nz-input [placeholder]="'app.placeholder.search' | i18n"
                        style="width: 300px; margin-left: 30px;"/>
               </nz-input-group>
               <ng-template #suffixButton>
                 <button nz-button nzType="primary" nzSize="default" (click)="searchEntities()" nzSearch><i nz-icon
-                                                                                                           [nzType]="'search'"></i>Search
+                                                                                                           [nzType]="'search'"></i>{{'app.button.search' | i18n}}
                 </button>
               </ng-template>
             </div>
@@ -172,8 +172,8 @@
           >
             <thead>
             <tr>
-              <th>Entity Name</th>
-              <th>Entity Type</th>
+              <th>{{'app.breadcrumb.attach-policy.iamEntities.name' | i18n}}</th>
+              <th>{{'app.breadcrumb.attach-policy.iamEntities.type' | i18n}}</th>
             </tr>
             </thead>
             <tbody>
