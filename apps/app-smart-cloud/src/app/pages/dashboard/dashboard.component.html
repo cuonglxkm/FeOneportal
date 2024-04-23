@@ -44,14 +44,62 @@
       </nz-card>
     </nz-col>
   </nz-row>
-  <nz-card style="border-radius: 8px; margin-top: 24px;">
+  <nz-card style="border-radius: 8px; margin-top: 15px;">
+    <span class="text-card-header">Chi phí và sử dụng</span>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="8">
+
+      </nz-col>
+      <nz-col nzSpan="16">
+        <nz-table>
+          <nz-table #fixTablePaymentCost
+                    nzShowPagination
+                    style="margin-top: 25px;"
+                    [nzData]="listPaymentCostUse?.records"
+                    [nzFrontPagination]="false"
+                    [nzTotal]="listPaymentCostUse?.totalCount"
+                    [nzPageSize]="listPaymentCostUse?.pageSize"
+                    [nzPageIndex]="listPaymentCostUse?.currentPage"
+                    [nzLoading]="isLoadingPaymentCost"
+                    (nzPageSizeChange)="onPageSizeCostChange($event)"
+                    (nzPageIndexChange)="onPageIndexCostChange($event)">
+            <thead>
+            <tr>
+              <th>Mã thanh toán</th>
+              <th>Dịch vụ</th>
+              <th>Tổng tiền (VND)</th>
+              <th>Ngày khởi tạo</th>
+              <th>Trạng thái</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of fixTablePaymentCost.data">
+              <td><a (click)="navigateToDetailPayment(data.id, data.paymentCode)">{{ data.paymentCode }}</a></td>
+              <td>{{ data.serviceTypeName }}</td>
+              <td nzAlign="right">{{ data.totalAmount | number}}</td>
+              <td>{{ data.createdDate | date: 'dd/MM/yyyy' }}</td>
+              <td>
+                <span *ngIf="data.status === 'PAID'" style="color: #008D47;">Đã thanh toán</span>
+                <span *ngIf="data.status !== 'PAID'" style="color: #EB1414;">Chưa thanh toán</span>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </nz-table>
+      </nz-col>
+    </nz-row>
+  </nz-card>
+  <nz-card style="border-radius: 8px; margin-top: 25px;">
     <span class="text-card-header">Dịch vụ sắp hết hạn</span>
     <nz-table #fixTableNearExpire
               nzShowPagination
-              [nzData]="listSubscriptionsNearExpire || null"
-              [nzTotal]="listSubscriptionsNearExpire?.length"
-              [nzPageSize]="pageSize"
-              [nzPageIndex]="pageIndex"
+              style="margin-top: 25px;"
+              [nzData]="listSubscriptionsNearExpire?.records"
+              [nzFrontPagination]="false"
+              [nzTotal]="listSubscriptionsNearExpire?.totalCount"
+              [nzPageSize]="listSubscriptionsNearExpire?.pageSize"
+              [nzPageIndex]="listSubscriptionsNearExpire?.currentPage"
+              [nzLoading]="isLoadingNearExpire"
               (nzPageSizeChange)="onPageSizeNearExpireChange($event)"
               (nzPageIndexChange)="onPageIndexNearExpireChange($event)">
       <thead>
@@ -67,10 +115,15 @@
       <tbody>
       <tr *ngFor="let data of fixTableNearExpire.data">
         <td>{{ data.serviceName }}</td>
-        <td>{{ data.serviceType }}</td>
+        <td>{{ data.serviceTypeName }}</td>
         <td>{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
         <td>{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ data.status }}</td>
+        <td style="color: #EB1414;">{{ data.status }}</td>
+        <td>
+          <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
+               nz-popover [nzPopoverContent]="'Gia hạn'"
+               nzPopoverPlacement="bottom" alt=""/>
+        </td>
       </tr>
       </tbody>
     </nz-table>
