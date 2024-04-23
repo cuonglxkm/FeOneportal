@@ -21,6 +21,7 @@ export interface KafkaDetail {
     updatedUser: string;
     createdDate: Date;
     updatedDate: Date;
+    expiryDate: Date;
     version: string;
     servicePackCode: string;
     ram: number;

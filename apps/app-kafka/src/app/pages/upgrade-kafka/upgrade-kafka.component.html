@@ -33,11 +33,11 @@
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="5">Ngày khởi tạo:</div>
-                    <div>22/05/2024</div>
+                    <div>{{ itemDetail.createdDate | date: 'dd/MM/yyyy' }}</div>
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="5">Ngày hết hạn:</div>
-                    <div style="color: #ea3829">22/06/2024</div>
+                    <div style="color: #ea3829">{{ itemDetail.expiryDate | date: 'dd/MM/yyyy' }}</div>
                 </div>
                 <div nz-row>
                     <div nz-col [nzSpan]="5">Cấu hình gói dịch vụ:</div>
@@ -72,18 +72,18 @@
                     <nz-tabset nzCentered style="margin-top: 15px;">
                         <nz-tab nzTitle="Gói cấu hình sẵn" (nzClick)="clicktab()">
                             <ng-template nz-tab>
-                                <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfServicePack"
+                                <ngu-carousel #myCarousel [inputs]="carouselConfig" [dataSource]="listOfferKafka"
                                     class="carousel-div">
                                     <div *nguCarouselDef="let item;" class="item">
-                                        <div class="pack-item" [ngClass]="{ 'choose': item===chooseitem, 'pack-item-disable': item.storage < storage }"
+                                        <div class="pack-item" [ngClass]="{ 'choose': item===chooseitem, 'pack-item-disable': (item.ram < initRam || item.cpu < initCpu || item.storage < initStorage) }"
                                             (click)="handleChoosePack(item)">
-                                            <div class="item-header" [ngClass]="{'item-header-disable': item.storage < storage }">
-                                                <div class="item-name"  [ngClass]="{'item-name-disable': item.storage < storage }">
-                                                    <span>{{item.servicePackName}}</span>
+                                            <div class="item-header" [ngClass]="{'item-header-disable': (item.ram < initRam || item.cpu < initCpu || item.storage < initStorage) }">
+                                                <div class="item-name"  [ngClass]="{'item-name-disable': (item.ram < initRam || item.cpu < initCpu || item.storage < initStorage) }">
+                                                    <span>{{item.offerName}}</span>
                                                     <div class="item-price">
                                                         <div class="price">
-                                                            <span>{{ item.price | number: '1.0-0' }}</span><br>
-                                                            <span class="unit-price">đ/tháng</span>
+                                                            <span>{{ item.price.fixedPrice.amount | number: '1.0-0' }}</span><br>
+                                                            <span class="unit-price">VNĐ/tháng</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -105,7 +105,7 @@
                             </ng-template>
                         </nz-tab>
 
-                        <nz-tab nzTitle="Cấu hình tùy chọn">
+                        <nz-tab nzTitle="Cấu hình tùy chọn" (nzClick)="clicktab()">
                             <div nz-row class="customize-config">
                                 <div nz-col [nzSpan]="5">
                                     <nz-form-item>
@@ -121,23 +121,38 @@
                                 <div nz-col [nzSpan]="5">
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>vCPU (<span class="text-red">*</span>)</nz-form-label>
-                                        <nz-form-control [nzSm]="24" [nzXs]="24"
-                                            nzErrorTip="Vui lòng nhập giá trị vCpu">
-                                            <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="cpuErrTpl">
+                                            <input nz-input type="number" formControlName="vCpu" id="vCpu" autofocus (ngModelChange)="onChangeCpu($event)"
                                                 nzSize="large" />
                                         </nz-form-control>
+                                        <ng-template #cpuErrTpl let-control>
+                                            <ng-container *ngIf="control.hasError('required')">
+                                                Giá trị không được để trống
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('invalid')">
+                                                Giá trị phải cao hơn mức hiện tại sử dụng
+                                            </ng-container>
+                                        </ng-template>
                                     </nz-form-item>
                                 </div>
 
                                 <div nz-col [nzSpan]="5" class="config-suffix">
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>RAM (<span class="text-red">*</span>)</nz-form-label>
-                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Vui lòng nhập giá trị Ram">
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="ramErrTpl">
                                             <nz-input-group nzSuffix="(GB)" nzSize="large">
-                                                <input nz-input type="number" formControlName="ram" id="ram"
+                                                <input nz-input type="number" formControlName="ram" id="ram" (ngModelChange)="onChangeRam($event)"
                                                     autofocus />
                                             </nz-input-group>
                                         </nz-form-control>
+                                        <ng-template #ramErrTpl let-control>
+                                            <ng-container *ngIf="control.hasError('required')">
+                                                Giá trị không được để trống
+                                            </ng-container>
+                                            <ng-container *ngIf="control.hasError('invalid')">
+                                                Giá trị phải cao hơn mức hiện tại sử dụng
+                                            </ng-container>
+                                        </ng-template>
                                     </nz-form-item>
                                 </div>
 
@@ -146,12 +161,15 @@
                                         <nz-form-label [nzSm]="24" [nzXs]="24" nzNoColon>Storage (<span class="text-red">*</span>)</nz-form-label>
                                         <nz-form-control [nzSm]="24" [nzXs]="24" [nzErrorTip]="storageErrorTpl">
                                             <nz-input-group nzSuffix="(GB)" nzSize="large">
-                                                <input nz-input type="number" formControlName="storage" id="storage"
+                                                <input nz-input type="number" formControlName="storage" id="storage" (ngModelChange)="onChangeStorage($event)"
                                                     autofocus />
                                             </nz-input-group>
                                             <ng-template #storageErrorTpl let-control>
                                                 <ng-container *ngIf="control.hasError('required')">
-                                                    Vui lòng nhập giá trị Storage
+                                                    Giá trị không được để trống
+                                                </ng-container>
+                                                <ng-container *ngIf="control.hasError('invalid')">
+                                                    Giá trị phải cao hơn mức hiện tại sử dụng
                                                 </ng-container>
                                                 <ng-container *ngIf="control.hasError('min')">
                                                     Vui lòng nhập giá trị Storage lớn hơn hoặc bằng {{storage}}
@@ -178,7 +196,7 @@
                         <div class="label-price">Chi phí nâng cấp</div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price">{{ pricePerCpu * cpu | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price">{{ upgradeAmount | number: '1.0-0'}} VNĐ</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
@@ -187,7 +205,7 @@
                         <div class="label-price" style="margin-bottom: 10px;">Trừ đi mức còn lại của chu kỳ trước</div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price" >{{ pricePerCpu * cpu | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price" >{{ remainAmount | number: '1.0-0'}} VNĐ</div>
                     </div>
                 </div>
                 <nz-divider class="divider-style"></nz-divider>
@@ -198,7 +216,7 @@
                         <div class="label-quantity"><i>(Đã bao gồm 10% VAT)</i></div>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <div class="value-price total-price">{{ (pricePerCpu * cpu + pricePerRam * ram + pricePerStorage * storage) * usageTime * 1.1 | number: '1.0-0'}} VNĐ</div>
+                        <div class="value-price total-price"> {{upgradeAmount === 0 ? 0 : (upgradeAmount - remainAmount) * 1.1 | number: '1.0-0'}} VNĐ</div>
                     </div>
                 </div>
 
@@ -211,7 +229,7 @@
                     </div>
 
                     <div nz-col [nzSpan]="12">
-                        <button nz-button nzType="primary" nzBlock [disabled]="myform.invalid"
+                        <button nz-button nzType="primary" nzBlock [disabled]="myform.invalid || upgradeAmount === 0"
                             (click)="onSubmitPayment()">
                             <img style="padding-right: 10px; margin-top: -4px; height: 20px;"
                                 src="assets/imgs/upgrade-white.svg" alt="" />
