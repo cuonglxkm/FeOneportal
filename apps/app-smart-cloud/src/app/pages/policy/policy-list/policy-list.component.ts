@@ -10,6 +10,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {finalize} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
@@ -35,20 +37,21 @@ export class PolicyListComponent {
   public optionJsonEditor: JsonEditorOptions;
 
   listPolicyType =[
-    {label:"Tất cả loại policy",value :"0"},
+    {label: this.i18n.fanyi("app.policies.allTypePolicy"),value :"0"},
     {label:"Portal managed",value :"1"},
     {label:"Customer managed",value :"2"}
   ];
 
   listAction =[
-    {label:"Attach",value :"0"},
-    {label:"Detach",value :"1"},
+    {label:this.i18n.fanyi("app.policies.attach"),value :"0"},
+    {label:this.i18n.fanyi("app.policies.detach"),value :"1"},
   ];
 
   constructor(private service: PolicyService,private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService,) {
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = "view";
   }

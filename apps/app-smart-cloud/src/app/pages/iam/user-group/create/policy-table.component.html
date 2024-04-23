@@ -1,7 +1,7 @@
 <nz-card>
   <nz-row nzJustify="space-between" nzAlign="middle" style="margin-bottom: 16px">
     <nz-col>
-      <div style="font-size: 20px; font-weight: 600">Thiết lập Policies (Optional) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
+      <div style="font-size: 20px; font-weight: 600">{{ 'app.create-user-groups.policiesConfig' | i18n }} ({{ 'app.create-user-groups.optional' | i18n }}) ({{listOfSelected?.length}}/{{listPolicies?.length}})</div>
     </nz-col>
     <nz-col>
       <nz-space>
@@ -16,7 +16,7 @@
           <input
             name="name"
             nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [placeholder]="'app.users.search' | i18n"
           />
         </nz-input-group>
         <ng-template #prefixIconSearch>
@@ -59,9 +59,9 @@
                 nzLabel="Select all"
                 nzWidth="40px"
                 (nzCheckedChange)="onAllChecked($event)"></th>
-            <th>Tên Policy</th>
-            <th>Type</th>
-            <th>Mô tả</th>
+            <th>{{ 'app.create-user.namePolicy' | i18n }}</th>
+            <th>{{ 'app.create-user.type' | i18n }}</th>
+            <th>{{ 'app.service.description' | i18n }}</th>
         </tr>
         </thead>
         <tbody>
@@ -95,7 +95,7 @@
                                     nzSize="default"
                                     style="cursor: pointer;"
                                     [routerLink]="'/app-smart-cloud/policy/update/' +  data.name"
-                                    class="button-cancel">Chỉnh sửa
+                                    class="button-cancel">{{ 'app.button.edit' | i18n }}
                             </button>
                         </nz-row>
                     </nz-row>

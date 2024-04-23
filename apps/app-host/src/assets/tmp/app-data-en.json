@@ -185,7 +185,7 @@
               {
                 "text": "Keypair",
                 "icon": "anticon-mail",
-                "link": "/app-smart-cloud/ssh-key"
+                "link": "/app-smart-cloud/keypair"
               },
               {
                 "text": "Security Group",
@@ -280,4 +280,3 @@
       }
     ]
   }
-  

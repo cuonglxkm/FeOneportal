@@ -1,15 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { SecurityGroup, SecurityGroupSearchCondition } from 'src/app/shared/models/security-group';
 import { SecurityGroupRuleCreateForm } from 'src/app/shared/models/security-group-rule';
@@ -29,6 +18,20 @@ import { Router } from '@angular/router';
 import { AppValidator } from '../../../../../../../../../libs/common-utils/src';
 import { finalize } from 'rxjs/operators';
 
+export function integerInRangeValidator(min: number, max: number): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (value === null || value === undefined || isNaN(value)) {
+      return { 'invalid': true };
+    }
+    console.log('value', value)
+    const intValue = parseInt(value, 10);
+    if (intValue < min || intValue > max || intValue <= 0) {
+      return { 'outOfRange': true };
+    }
+    return null;
+  };
+}
 @Component({
   selector: 'one-portal-form-rule',
   templateUrl: './form-rule.component.html'
@@ -84,22 +87,20 @@ export class FormRuleComponent implements OnInit {
     remoteType: FormControl<'CIDR' | 'SecurityGroup'>;
     remoteIpPrefix: FormControl<string>;
     etherType: FormControl<string>;
-    protocol: FormControl<any>;
+    protocol: FormControl<number>;
     securityGroupId: FormControl<string>;
   }> = this.fb.group({
     rule: ['', [Validators.required]],
     portType: 'Port' as 'Port' | 'PortRange',
-    portRangeMin: [1, [Validators.pattern(/^[1-9]*$/)]],
-    portRangeMax: [1, [Validators.pattern(/^[1-9]*$/), AppValidator.portValidator('portRangeMin')]],
-    type: [-1, [AppValidator.integerInRange()]],
-    code: [-1, [AppValidator.integerInRange()]],
+    portRangeMin: [1],
+    portRangeMax: [1],
+    type: [-1 ],
+    code: [-1],
     remoteType: 'CIDR' as 'CIDR' | 'SecurityGroup',
-    remoteIpPrefix: ['', [AppValidator.ipWithCIDRValidator,
-        this.duplicatePrefixInboundValidator.bind(this),
-        Validators.pattern('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[0-9]|[12][0-9])$')]],
-    etherType: [null as null | string],
-    protocol: [-1, [AppValidator.integerInRange()]],
-    securityGroupId: [null as null | string]
+    remoteIpPrefix: ['', [AppValidator.ipWithCIDRValidator]],
+    etherType: [''],
+    protocol: [-1],
+    securityGroupId: ['']
   });
 
   constructor(private fb: NonNullableFormBuilder,
@@ -109,15 +110,15 @@ export class FormRuleComponent implements OnInit {
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
               private router: Router) {
+    this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required, AppValidator.ipWithCIDRValidator])
+    this.validateForm.controls.portRangeMin.setValidators([Validators.required, integerInRangeValidator(1, 65535)])
+    this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')])
   }
 
-  duplicatePrefixInboundValidator(control) {
-    const value = control.value;
-    // Check if the input name is already in the list
-    if (this.prefixIp && this.prefixIp.includes(value)) {
-      return { duplicatePrefix: true }; // Duplicate name found
-    } else {
-      return null; // Name is unique
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.doCreate();
     }
   }
 
@@ -135,32 +136,40 @@ export class FormRuleComponent implements OnInit {
     this.validateForm.controls.protocol.reset();
 
     if (type === 'other-IPv4') {
-      this.validateForm.controls.protocol.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validateProtocol]);
+
+      this.validateForm.controls.protocol.setValidators([Validators.required, AppValidator.validateProtocol,
+        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/)]);
       this.validateForm.controls.protocol.markAsDirty();
       this.validateForm.controls.protocol.reset();
     }
 
     if (type === 'icmp-IPv4') {
-      this.validateForm.controls.type.setValidators([Validators.required, AppValidator.portValidator('code')])
-      // this.validateForm.controls.type.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
+
+      this.validateForm.controls.type.setValidators([Validators.required, AppValidator.validateProtocol,
+        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/), AppValidator.portValidator('code')])
+
       this.validateForm.controls.type.markAsDirty();
       this.validateForm.controls.type.reset();
 
-      this.validateForm.controls.code.setValidators([Validators.required])
-      // this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.validCodeAndType]);
+      this.validateForm.controls.code.setValidators([Validators.required, AppValidator.validateProtocol,
+        Validators.pattern(/^-?([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$/)])
+
       this.validateForm.controls.code.markAsDirty();
       this.validateForm.controls.code.reset();
     }
 
     if (type === 'tcp-IPv4' || type === 'udp-IPv4') {
-      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.min(1), AppValidator.validateNumber]);
+      this.validateForm.controls.portRangeMin.setValidators([Validators.required, Validators.min(1), integerInRangeValidator(1, 65535)]);
       this.validateForm.controls.portRangeMin.markAsDirty();
       this.validateForm.controls.portRangeMin.reset();
 
-      this.validateForm.controls.portRangeMax.setValidators([Validators.required, AppValidator.validateNumber, AppValidator.portValidator('portRangeMin')]);
+      this.validateForm.controls.portRangeMax.setValidators([Validators.required, integerInRangeValidator(1, 65535), AppValidator.portValidator('portRangeMin')]);
       this.validateForm.controls.portRangeMax.markAsDirty();
       this.validateForm.controls.portRangeMax.reset();
     }
+
+
+    // this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
 
     this.validateForm.controls.protocol.updateValueAndValidity();
     this.validateForm.controls.portRangeMin.updateValueAndValidity();
@@ -171,10 +180,14 @@ export class FormRuleComponent implements OnInit {
   remoteTypeChange(type: 'CIDR' | 'SecurityGroup'): void {
     this.remoteType = type;
     if (this.remoteType == 'CIDR') {
+      this.validateForm.controls.remoteIpPrefix.setValidators([Validators.required,
+        AppValidator.ipWithCIDRValidator])
       this.validateForm.controls.remoteIpPrefix.reset();
-      this.validateForm.controls.remoteIpPrefix.setValidators(Validators.required)
 
       this.validateForm.controls.securityGroupId.clearValidators()
+      this.validateForm.controls.securityGroupId.updateValueAndValidity()
+
+      this.validateForm.controls.etherType.clearValidators()
       this.validateForm.controls.securityGroupId.updateValueAndValidity()
     }
     if (this.remoteType == 'SecurityGroup') {
@@ -215,6 +228,7 @@ export class FormRuleComponent implements OnInit {
     this.validateForm.controls.portRangeMin.updateValueAndValidity();
     this.validateForm.controls.portRangeMax.updateValueAndValidity();
     this.portType = type;
+
   }
 
   portChange(value) {
@@ -288,6 +302,7 @@ export class FormRuleComponent implements OnInit {
         }
       );
     } else {
+      console.log('abc', this.validateForm)
       console.log('invalid', this.validateForm.getRawValue())
     }
   }

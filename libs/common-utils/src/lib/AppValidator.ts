@@ -167,16 +167,26 @@ export class AppValidator {
     return null;
   }
 
-  static ipWithCIDRValidator(): ValidatorFn { //validate input ip
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const ipAddress = control.value;
-      if (!ipAddress) {
-        return null;
-      }
-      const ipRegex = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/;
+  static ipWithCIDRValidator(control: { value: string }): { [key: string]: boolean } | null { //validate input ip
+    const ipAddress = control.value;
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/;
 
-      return ipRegex.test(ipAddress) ? null : { 'invalidIP': true };
-    };
+    // Kiểm tra xem địa chỉ IP có đúng định dạng không
+    if (!ipRegex.test(ipAddress)) {
+      return { invalidIp: true }; // Trả về một object có thuộc tính invalidIp để chỉ ra lỗi
+    }
+
+    // Tách địa chỉ IP và subnet mask
+    const [ip, subnetMask] = ipAddress.split('/');
+
+    // Kiểm tra xem subnet mask có vượt quá 32 không
+    if (parseInt(subnetMask, 10) > 32) {
+      return { invalidSubnetMask: true }; // Trả về một object có thuộc tính invalidSubnetMask để chỉ ra lỗi
+    }
+    console.log('ip', ipAddress)
+    console.log('regex', ipRegex)
+
+    return null; // Trả về nếu địa chỉ IP hợp lệ và subnet mask không vượt quá 32
   }
 
   static validCodeAndType(control: { value: string }): { [key: string]: boolean } | null {
@@ -197,11 +207,15 @@ export class AppValidator {
   }
 
   static validateProtocol(control: { value: string }): { [key: string]: boolean } | null {
-    const numericValue = parseFloat(control.value);
-    if (numericValue < 0 || numericValue > 255) {
-      return { outOfRange: true };
+
+    const value = parseInt(control.value, 10);
+
+    // Check if the value is an integer and within the range -1 to 255
+    if (isNaN(value) || value < -1 || value > 255) {
+      return { invalidIntegerInRange: true }; // Return validation error if not within the range
     }
-    return null;
+
+    return null; // Return null if validation succeeds
   }
 
   static validProtocol(): ValidatorFn { // validate input protocol
@@ -236,6 +250,7 @@ export class AppValidator {
       return null;
     };
   }
+
   static portValidator(fromPortControlName: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const fromPortControl = control.parent?.get(fromPortControlName);
@@ -413,6 +428,8 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
 
     return null;
   };
+
 }
+
 
 

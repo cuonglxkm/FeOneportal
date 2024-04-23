@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { PaymentCostUse, SubscriptionsDashboard, SubscriptionsNearExpire } from '../models/dashboard.model';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class DashboardService extends BaseService {
   }
 
   getSubscriptionsNearExpire(pageSize: number, pageIndex: number) {
-    return this.http.get<SubscriptionsNearExpire[]>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`)
+    return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -46,7 +47,7 @@ export class DashboardService extends BaseService {
   }
 
   paymentCostUse(pageSize: number, pageIndex: number) {
-    return this.http.get<PaymentCostUse[]>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`)
+    return this.http.get<BaseResponse<PaymentCostUse[]>>(this.baseUrl + this.ENDPOINT.payments + `/cost-use?pageSize=${pageSize}&pageNumber=${pageIndex}`)
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

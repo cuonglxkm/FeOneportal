@@ -3,9 +3,9 @@ import {Component} from '@angular/core';
 @Component({
   selector: 'app-popup-detach-policy',
   template: `
-      <nz-alert nzType="warning" nzShowIcon nzMessage="Bạn đang thực hiện Detach policy"></nz-alert>
+      <nz-alert nzType="warning" nzShowIcon [nzMessage]="'app.detach-policy.confirm' | i18n "></nz-alert>
       <br>
-      <p><b>Để thực hiện Detach Policy, vui lòng chọn "Đồng ý". để thực hiện</b></p>
+      <p><b>{{ 'app.detach-policy.confirm.des' | i18n }}</b></p>
   `
 })
 export class PopupDetachPolicyComponent {
