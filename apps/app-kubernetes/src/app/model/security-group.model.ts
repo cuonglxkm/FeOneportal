@@ -35,3 +35,10 @@ export class CreateSGReqDto {
   regionId: number;
   projectId: number;
 }
+
+export class SecurityGroupData {
+  regionId: number;
+  projectId: number;
+  securityGroupName: string;
+  securityGroupId: string;
+}

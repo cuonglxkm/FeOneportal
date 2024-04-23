@@ -19,6 +19,7 @@ export class KubernetesCluster {
   vpcNetworkId: number;
   volumeCloudType: string;
   volumeCloudSize: number;
+  securityGroupName: string;
   usageTime: number;
   totalNode: number;
   createdDate: Date;
@@ -41,6 +42,7 @@ export class KubernetesCluster {
     this.networkType = obj.network_type;
     this.cidr = obj.cidr;
     this.subnet = obj.subnet;
+    this.securityGroupName = obj.security_group_name;
     this.vpcNetworkId = obj.vpc_network_id;
     this.volumeCloudSize = obj.volume_cloud_size;
     this.volumeCloudType = obj.volume_cloud_type;

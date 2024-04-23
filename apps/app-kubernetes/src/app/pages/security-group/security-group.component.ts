@@ -14,6 +14,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
 
   @Input('regionId') regionId: number;
   @Input('projectId') projectId: number;
+  @Input('securityGroupName') securityGroupName: string;
 
   isLoadingSG: boolean;
   listOfSG: SecurityGroup[];
@@ -43,6 +44,10 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
       this.regionId = changes['regionId'].currentValue;
     }
 
+    if (changes['securityGroupName']?.currentValue) {
+      this.securityGroupName = changes['securityGroupName']?.currentValue;
+    }
+
     if (this.projectId && this.regionId) this.getListSG();
   }
 
@@ -62,7 +67,7 @@ export class SecurityGroupComponent implements OnInit, OnChanges {
       this.listOfSG = data;
 
       data.forEach(item => {
-        if(item.name.includes("default")) {
+        if(item.name.includes(this.securityGroupName)) {
           this.selectedSG = item;
         }
       })

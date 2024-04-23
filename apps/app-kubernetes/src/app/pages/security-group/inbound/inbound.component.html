@@ -4,8 +4,10 @@
     Thêm mới
   </button>
 </div>
-<nz-table #clusterTable [nzData]="listOfInbound" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
-  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+<nz-table #clusterTable [nzData]="listOfInbound" nzShowSizeChanger 
+  [nzFrontPagination]="false" [nzTotal]="total"
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" 
+  (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
     <tr>
       <th>STT</th>
@@ -16,4 +18,21 @@
       <th>Thao tác</th>
     </tr>
   </thead>
+  <tbody>
+    <ng-container *ngFor="let item of listOfInbound; let i = index;">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{item.remoteIp}}</td>
+        <td>{{item.protocol}}</td>
+        <td>{{item.portRange}}</td>
+        <td>{{item.remoteIpPrefix}}</td>
+        <td>
+          <button nz-button nzType="text" nzTooltipTitle="Xóa rule" nzTooltipPlacement="top" nz-tooltip
+            (click)="showModalConfirmDeleteRule(item)" class="borderless">
+            <img src="assets/imgs/trash1.svg" alt="" style="cursor: pointer; margin-top: 0; width: fit-content;" />
+          </button>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
 </nz-table>

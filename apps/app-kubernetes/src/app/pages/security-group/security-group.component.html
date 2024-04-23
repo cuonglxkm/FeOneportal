@@ -5,7 +5,7 @@
     <nz-table [nzTemplateMode]="true">
       <tbody>
         <tr>
-          <td class="w-40">ID:</td>
+          <td class="w-30">ID:</td>
           <td>
             abc
             <button nz-button nzType="text" (click)="handleCopyIDGroup()" class="action-icon borderless"
@@ -37,14 +37,14 @@
     <div class="mt-5">
       <nz-tabset>
         <nz-tab [nzTitle]="inboundTitleTpl">
-          <one-portal-inbound></one-portal-inbound>
+          <one-portal-inbound [listOfInbound]="listOfInbound"></one-portal-inbound>
         </nz-tab>
         <ng-template #inboundTitleTpl>
           <label>Inbound</label>
         </ng-template>
 
         <nz-tab [nzTitle]="outboundTitleTpl">
-          <one-portal-outbound></one-portal-outbound>
+          <one-portal-outbound [listOfOutbound]="listOfOutbound"></one-portal-outbound>
         </nz-tab>
         <ng-template #outboundTitleTpl>
           <label>Outbound</label>

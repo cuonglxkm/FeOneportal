@@ -3,6 +3,7 @@ import { Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { CreateSGReqDto, SecurityGroup, SecurityGroupSearchCondition } from "../model/security-group.model";
 import { BaseService } from "../shared/services/base.service";
+import { RuleSearchCondition } from "../shared/models/security-group-rule";
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,19 @@ export class SecurityGroupService extends BaseService {
     params = params.append('regionId', condition.regionId);
 
     return this.http.get<SecurityGroup[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getall', { params: params });
+  }
+
+  searchRule(condition: RuleSearchCondition) {
+    let params = new HttpParams();
+    params = params.append('userId', condition.userId);
+    params = params.append('projectId', condition.projectId);
+    params = params.append('regionId', condition.regionId);
+    params = params.append('pageSize', condition.pageSize);
+    params = params.append('pageNumber', condition.pageNumber);
+    params = params.append('securityGroupId', condition.securityGroupId);
+    params = params.append('direction', condition.direction);
+
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', { params: params });
   }
 
   createSecurityGroup(form: CreateSGReqDto) {

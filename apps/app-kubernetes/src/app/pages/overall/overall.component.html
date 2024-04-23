@@ -26,6 +26,17 @@
 </page-header>
 
 <nz-tabset>
+  <!-- security group tab -->
+  <nz-tab [nzTitle]="sgTitleTpl">
+    <ng-template nz-tab>
+      <security-group [regionId]="regionId" [projectId]="projectId" 
+        [securityGroupName]="detailCluster?.securityGroupName"></security-group>
+    </ng-template>
+  </nz-tab>
+  <ng-template #sgTitleTpl>
+    <label>Security Group</label>
+  </ng-template>
+
   <!-- detail tab -->
   <nz-tab [nzTitle]="detailTitleTpl">
     <ng-template nz-tab>
@@ -51,15 +62,7 @@
     <label>Instance</label>
   </ng-template>
 
-  <!-- security group tab -->
-  <nz-tab [nzTitle]="sgTitleTpl">
-    <ng-template nz-tab>
-      <security-group [regionId]="regionId" [projectId]="projectId"></security-group>
-    </ng-template>
-  </nz-tab>
-  <ng-template #sgTitleTpl>
-    <label>Security Group</label>
-  </ng-template>
+  
 
   <!-- log tab -->
   <nz-tab [nzTitle]="logTitleTpl">
