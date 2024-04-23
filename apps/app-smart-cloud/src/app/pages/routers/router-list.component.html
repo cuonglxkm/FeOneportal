@@ -263,11 +263,12 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()">
+    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isLoadingCreateRouter">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
+        *ngIf="isLoadingCreateRouter === false"
       />Xác nhận
     </button>
   </div>
@@ -337,11 +338,12 @@
         alt=""
       />Hủy
     </button>
-    <button nz-button nzType="primary" (click)="handleOkEdit()">
+    <button nz-button nzType="primary" (click)="handleOkEdit()" >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
+        
       />Xác nhận
     </button>
   </div>

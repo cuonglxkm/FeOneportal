@@ -223,6 +223,7 @@ import { ExtendFileStorageNormalComponent } from './file-storage/action/extend-n
 import { ResizeFileStorageNormalComponent } from './file-storage/action/resize-normal/resize-file-storage-normal.component';
 import { DeleteL7PolicyComponent } from './load-balancer/listener/L7-policy/delete/delete-l7-policy.component';
 import { CancelFileStorageNormalComponent } from './file-storage/action/cancel/cancel-file-storage-normal.component';
+import { HttpClientModule } from '@angular/common/http';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -464,6 +465,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     EllipsisModule,
     AutofocusDirective,
     // ChartModule,
+    HttpClientModule
   ],
 })
 export class PagesModule {}

@@ -84,11 +84,11 @@ export class PaymentSuccessComponent implements OnInit {
           .getOrderBycode(this.payment.orderNumber)
           .subscribe((result) => {
             this.orderId = result.id;
-            setTimeout(() => {
-              this.router.navigate([
-                `/app-smart-cloud/order/detail/${this.orderId}`,
-              ]);
-            }, 5000);
+            // setTimeout(() => {
+            //   this.router.navigate([
+            //     `/app-smart-cloud/order/detail/${this.orderId}`,
+            //   ]);
+            // }, 5000);
           });
       });
   }
