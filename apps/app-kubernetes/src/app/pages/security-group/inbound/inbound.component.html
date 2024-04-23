@@ -1,0 +1,19 @@
+<div style="position: relative; float: right;">
+  <button nz-button nzType="primary" (click)="showModalCreateSG()" class="mb-5">
+    <span nz-icon nzType="plus" nzTheme="outline"></span>
+    Thêm mới
+  </button>
+</div>
+<nz-table #clusterTable [nzData]="listOfInbound" nzShowSizeChanger [nzFrontPagination]="false" [nzTotal]="total"
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>IP Version</th>
+      <th>Protocol</th>
+      <th>PortRange</th>
+      <th>Remote IP Prefix</th>
+      <th>Thao tác</th>
+    </tr>
+  </thead>
+</nz-table>

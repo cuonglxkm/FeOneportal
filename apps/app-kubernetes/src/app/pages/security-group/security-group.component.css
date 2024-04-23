@@ -18,12 +18,13 @@
   background-color: #E2EEFC;
 }
 
-p {
+p, label {
   font-size: 16px;
 }
 
 h3 {
   font-size: 20px;
+  font-weight: 600;
 }
 
 small {
@@ -34,8 +35,8 @@ small {
   width: 100%;
 }
 
-.w-30 {
-  width: 30%;
+.w-40 {
+  width: 40%;
 }
 
 .w-20 {

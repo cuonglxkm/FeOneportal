@@ -49,6 +49,8 @@ import { GetWorkerGroupValue } from '../pipes/worker-group-value.pipe';
 import { CheckStatusPipe } from '../pipes/check-status.pipe';
 import { InstancesComponent } from './instance/instances.component';
 import { SecurityGroupComponent } from './security-group/security-group.component';
+import { InboundComponent } from './security-group/inbound/inbound.component';
+import { OutboundComponent } from './security-group/outbound/outbound.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -75,6 +77,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     InstancesComponent,
     SecurityGroupComponent,
 
+    InboundComponent,
+    OutboundComponent,
   ],
   imports: [
     CommonModule,

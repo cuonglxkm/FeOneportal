@@ -551,7 +551,7 @@
 
                 <div nz-col [nzSpan]="12">
                   <button nz-button nzType="primary" nzBlock class="border-button" (click)="validateClusterInfo()"
-                    [disabled]="myform.invalid || isSubmitting || !chooseItem">
+                    [disabled]="myform.invalid || isSubmitting || (isUsingPackConfig && !chooseItem)">
                     <ng-container *ngIf="isSubmitting; else paymentIconTpl">
                       <span nz-icon [nzType]="'loading'"></span>
                     </ng-container>

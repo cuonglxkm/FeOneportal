@@ -20,13 +20,12 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown (valueChanged)="onRegionChange($event)" [isDetail]="true"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" [isDetail]="true"></project-select-dropdown>
+      <project-select-dropdown [regionId]="regionId" (valueChanged)="onProjectChange($event)" [isDetail]="true"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 
 <nz-tabset>
-
   <!-- detail tab -->
   <nz-tab [nzTitle]="detailTitleTpl">
     <ng-template nz-tab>
@@ -55,7 +54,7 @@
   <!-- security group tab -->
   <nz-tab [nzTitle]="sgTitleTpl">
     <ng-template nz-tab>
-      <security-group></security-group>
+      <security-group [regionId]="regionId" [projectId]="projectId"></security-group>
     </ng-template>
   </nz-tab>
   <ng-template #sgTitleTpl>

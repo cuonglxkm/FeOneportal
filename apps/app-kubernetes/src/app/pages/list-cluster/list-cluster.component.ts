@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { messageCallbackType } from '@stomp/stompjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -51,6 +51,16 @@ export class ListClusterComponent implements OnInit, OnDestroy {
   ];
 
   baseUrl = environment['baseUrl'];
+
+  @HostListener('window:unload', [ '$event' ])
+  unloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHandler(event) {
+    this.ngOnDestroy();
+  }
 
   constructor(
     private clusterService: ClusterService,
