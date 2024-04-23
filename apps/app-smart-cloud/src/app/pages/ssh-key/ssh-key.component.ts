@@ -135,6 +135,7 @@ export class SshKeyComponent implements OnInit {
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
     form?.resetForm();
+    this.nameDeleteInput = '';
   }
 
   indexTab: number = 0;
@@ -160,7 +161,10 @@ export class SshKeyComponent implements OnInit {
     }
 
     this.sshKeyService.createSshKey(ax)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.isVisibleCreate = false;
+      }))
       .subscribe({
       next: post => {
         this.loadSshKeys(true);
@@ -169,7 +173,7 @@ export class SshKeyComponent implements OnInit {
       },
       error: e => {
         if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
-          this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng. vui lòng nhập tên khác.`);
+          this.notification.warning('Cảnh báo', `Tên keypair '${namePrivate}' đã được sử dụng, vui lòng nhập tên khác.`);
         }
         else {
           this.isVisibleCreate = false;
@@ -228,4 +232,6 @@ export class SshKeyComponent implements OnInit {
     this.size = 10;
     this.index = 0;
   }
+
+  fontSize = 16;
 }
