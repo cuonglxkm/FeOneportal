@@ -46,8 +46,8 @@ export class RouterDetailComponent implements OnInit {
   loading: boolean = true;
   isLoadingRouterInterface: boolean = false;
   isLoadingRouterStatic: boolean = false;
-  isLoadingSubnet: boolean = true;
-  disableSubnet: boolean = true;
+  isLoadingSubnet: boolean = false
+  disableSubnet: boolean = true
 
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
@@ -156,8 +156,16 @@ export class RouterDetailComponent implements OnInit {
   listSubnet: Subnet[] = [];
 
   getListSubnet() {
+    this.isLoadingSubnet = true
     this.service
       .getListSubnet(this.routerId, this.regionId, this.vpcId)
+      .pipe(
+        finalize(() => {
+          this.isLoadingSubnet= false;
+          this.disableSubnet= false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (data) => {
           if (data) {
@@ -201,17 +209,24 @@ export class RouterDetailComponent implements OnInit {
     this.routerInterfaceCreate.ipAddress =
       this.formRouterInterface.controls.ipAddress.value;
     this.routerInterfaceCreate.networkCustomer = '';
-    this.service.createRouterInterface(this.routerInterfaceCreate).subscribe({
-      next: (data) => {
+    this.service.createRouterInterface(this.routerInterfaceCreate).subscribe(
+      (data) => {
         this.isLoadingRouterInterface = false;
-        this.notification.success('', 'Tạo mới Router Interface thành công');
+        this.notification.success('Thành công', 'Tạo mới Router Interface thành công');
         this.isVisibleCreateInterface = false;
         this.getRouterInterfaces();
       },
-      error: (error) => {
-        this.isLoadingRouterInterface = false;
-        if (error.status === 500) {
+      (error) => {      
+        this.isLoadingRouterInterface = false; 
+        console.log(error);
+        
+        this.cdr.detectChanges();
+        if (error.error.detail.includes('allocated in subnet')) {
           this.notification.error('Thất bại', 'Địa chỉ IP đã tồn tại');
+        } else if (error.error.detail === '(rule:create_port and (rule:create_port:fixed_ips and (rule:create_port:fixed_ips:subnet_id and rule:create_port:fixed_ips:ip_address))) is disallowed by policy') {
+          this.notification.error('Thất bại', 'Subnet không được cho phép sử dụng');
+        }else if (error.status === 400) {
+          this.notification.error('Thất bại', 'Vui lòng chọn Subnet');
         } else {
           this.notification.error(
             'Thất bại',
@@ -219,8 +234,9 @@ export class RouterDetailComponent implements OnInit {
           );
         }
       },
-    });
+    );
   }
+
 
   isVisibleCreateStatic = false;
   staticRouterCreate: StaticRouter = new StaticRouter();
@@ -245,12 +261,13 @@ export class RouterDetailComponent implements OnInit {
     this.service.createStaticRouter(this.staticRouterCreate).subscribe({
       next: (data) => {
         this.isLoadingRouterStatic = false;
-        this.notification.success('', 'Tạo mới Static Router thành công');
+        this.notification.success('Thành công', 'Tạo mới Static Router thành công');
         this.isVisibleCreateStatic = false;
         this.getRouterStatic();
       },
       error: (error) => {
         this.isLoadingRouterStatic = false;
+        this.cdr.detectChanges();
         this.notification.error('Thất bại', 'Tạo mới Router không thành công');
       },
     });
@@ -274,7 +291,7 @@ export class RouterDetailComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.notification.success('', 'Xóa Router Interface thành công');
+          this.notification.success('Thành công', 'Xóa Router Interface thành công');
           this.getRouterInterfaces();
         },
         error: (e) => {
@@ -309,7 +326,7 @@ export class RouterDetailComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          this.notification.success('', 'Xóa Static Router thành công');
+          this.notification.success('Thành công', 'Xóa Static Router thành công');
           setTimeout(() => {
             this.getRouterStatic();
           }, 1500);

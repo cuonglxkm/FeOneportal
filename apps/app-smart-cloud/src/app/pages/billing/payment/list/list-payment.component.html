@@ -1,13 +1,13 @@
 <page-header [extra]="extra" [content]="content" [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Danh sách thanh toán'">
+             [title]="'app.payment.title' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{"app.breadcrumb.home" | i18n}}</nz-breadcrumb-item>
       <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/billing/payments']"
         >Billing</a
       > </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-       Thanh toán
+       {{"app.payment.payment" | i18n}}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -23,13 +23,15 @@
       <div *nzSpaceItem>
         <nz-select [(ngModel)]="selectedValue"
                    (ngModelChange)="onChange($event)"
-                   nzPlaceHolder="Trạng thái">
+                   [nzPlaceHolder]="'app.payment.status' | i18n"
+                   style="width: 150px"
+                   >
           <nz-option *ngFor="let item of status" [nzValue]="item.value"
                      [nzLabel]="item.label"></nz-option>
         </nz-select>
       </div>
       <div *nzSpaceItem>
-        <nz-range-picker [nzPlaceHolder]="['Từ ngày', 'Đến ngày']"
+        <nz-range-picker 
                          [(ngModel)]="dateRange"
                          (ngModelChange)="onDateRangeChange($event)"
                          [nzDisabledDate]="disabledDate"
@@ -39,7 +41,7 @@
         <nz-input-group nzSearch [nzPrefix]="prefixIconSearch">
           <input style="width: 380px" [(ngModel)]="value" (input)="onInputChange($event.target['value'])"
                  type="text" nz-input
-                 placeholder="Tìm kiếm mã thanh toán, mã đơn hàng"/>
+                 [placeholder]="'app.payment.searchPlaceHolder' | i18n"/>
         </nz-input-group>
         <ng-template #prefixIconSearch>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm"/>
@@ -50,7 +52,7 @@
   <ng-template #extra>
     <button class="d-flex align-items-center gap-3" nz-button nzSize="default" style="cursor: pointer; margin-left: 5px" (click)="downloadMany()" [disabled]="!downloadList.length">
       <img [ngStyle]="{'filter': !downloadList.length ? 'invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)' : ''}" alt="" src="assets/imgs/download.svg" />
-      <span>Download</span>
+      <span>{{"app.payment.download" | i18n}}</span>
     </button>
   </ng-template>
 </page-header>
@@ -73,12 +75,12 @@
             [nzIndeterminate]="indeterminate"
             (nzCheckedChange)="onAllChecked($event)"
             nzLeft></th>
-        <th nzLeft>Mã thanh toán</th>
-        <th>Mã đơn hàng</th>
-        <th>Tổng tiền (VND)</th>
-        <th>Ngày tạo</th>
-        <th>Trạng thái</th>
-        <th>Download hóa đơn</th>
+        <th nzLeft>{{"app.payment.paymentCode" | i18n}}</th>
+        <th>{{"app.payment.orderCode" | i18n}}</th>
+        <th>{{"app.payment.totalPrice" | i18n}}</th>
+        <th>{{"app.payment.createDate" | i18n}}</th>
+        <th>{{"app.payment.status" | i18n}}</th>
+        <th>{{"app.payment.downloadInvoice" | i18n}}</th>
       </tr>
       </thead>
       <tbody>
@@ -90,10 +92,10 @@
         <td nzBreakWord>{{data.amount | number}}</td>
         <td nzBreakWord>{{data.createdDate | date: 'dd/MM/yyyy'}}</td>
         <td *ngIf="data.paymentLatestStatus === 'PAID'" class="paid" nzBreakWord>
-          Đã thanh toán
+          {{"app.payment.status.paid" | i18n}}
         </td>
         <td *ngIf="data.paymentLatestStatus != 'PAID'" class="not" nzBreakWord>
-          Chưa thanh toán
+          {{"app.payment.status.unpaid" | i18n}}
         </td>
         <td *ngIf="data.paymentLatestStatus === 'PAID'" (click)="serviceDownload(data.invoiceIssuedId)"
             style="cursor: pointer; text-align: center;" nzBreakWord>

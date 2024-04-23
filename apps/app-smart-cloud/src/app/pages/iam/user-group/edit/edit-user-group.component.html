@@ -1,16 +1,16 @@
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Chỉnh sửa User Group"
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]=" 'app.user-group.edit' | i18n "
           (nzOnCancel)="handleCancel()" nzCentered>
     <div *nzModalTitle>
-        <p class="text-h5"><b>Chỉnh sửa User Group</b></p>
+        <p class="text-h5"><b>{{ 'app.user-group.edit' | i18n }}</b></p>
     </div>
     <div *nzModalContent>
         <nz-alert nzBanner
-                  nzMessage="Việc thay đổi tên của Group sẽ thay đổi định danh của Group trên hệ thống, bạn vẫn muốn thực hiện thay đổi thông tin ?"></nz-alert>
+                  [nzMessage]="'app.user-group.edit.alert' | i18n"></nz-alert>
         <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
             <nz-form-item>
                 <nz-form-label nzFor="groupName">
                     <div class="label">
-                        <span>Tên của Group</span>
+                        <span>{{ 'app.create-user.nameGroup' | i18n }}</span>
                         <span style="color: rgba(252, 16, 16, 1); "> *</span>
                     </div>
                 </nz-form-label>
@@ -18,7 +18,7 @@
                     <input nz-input formControlName="groupName" id="groupName" [maxlength]="128"/>
                     <div style=" margin-top: 5px;">
                         <span [ngStyle]="{'color': validateForm.controls.groupName.touched && validateForm.controls.groupName.invalid ? 'rgba(252, 16, 16, 1)' : '#00000040'}">
-                            Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.
+                            {{ 'app.user-group.edit.validation' | i18n }}
                         </span>
                     </div>
                 </nz-form-control>
@@ -26,12 +26,12 @@
         </form>
     </div>
     <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">Hủy</button>
+        <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">{{ 'app.button.cancel' | i18n }}</button>
         <button nz-button nzType="primary"
                 [disabled]="!validateForm.valid"
                 [nzLoading]="isLoading"
                 class="button-ok"
-                (click)="submitForm()">Đồng ý
+                (click)="submitForm()">{{ 'app.button.agree' | i18n }}
         </button>
 
     </div>

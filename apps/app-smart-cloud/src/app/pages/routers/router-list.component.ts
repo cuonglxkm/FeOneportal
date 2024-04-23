@@ -66,7 +66,7 @@ export class RouterListComponent implements OnInit {
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
   formListRouter: FormSearchRouter = new FormSearchRouter()
-
+  isLoadingCreateRouter: boolean = false
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -207,17 +207,22 @@ export class RouterListComponent implements OnInit {
   }
 
   handleOkCreate() {
-    this.isVisibleCreate = false;
+
+    this.isLoadingCreateRouter = true
     this.routerCreate.adminState = this.isTrigger;
     this.routerCreate.customerId = this.tokenService.get()?.userId;
     this.routerCreate.regionId = this.region;
     this.routerCreate.projectId = this.projectId;
     this.dataService.createRouter(this.routerCreate).subscribe({
       next: (data) => {
-        this.notification.success('', 'Tạo mới Router thành công');
-        this.getListNetwork();
+        this.isLoadingCreateRouter = false
+        this.isVisibleCreate = false;
+        this.notification.success('Thành công', 'Tạo mới Router thành công');
+        this.getDataList();
       },
       error: (error) => {
+        this.isLoadingCreateRouter = false
+        this.cdr.detectChanges()
         if(error.status === 500){
           this.notification.error('Thất bại', 'Vượt quá quota Router, đã sử dụng 1/0 Router, cần cấp thêm 2 Router')
         }else{
@@ -277,7 +282,6 @@ export class RouterListComponent implements OnInit {
 
   handleOkDelete() {
     this.isVisibleDelete = false;
-    this.notification.success('', 'Xóa Router thành công');
     if (this.nameVerify == this.nameRouterDelete) {
       this.dataService
         .deleteRouter(this.cloudId, this.region, this.projectId)
