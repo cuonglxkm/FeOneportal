@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { SecurityGroupSearchCondition } from '../../../../../../shared/models/security-group';
 
 @Component({
@@ -6,7 +6,7 @@ import { SecurityGroupSearchCondition } from '../../../../../../shared/models/se
   templateUrl: './create-inbound.component.html',
   styleUrls: ['./create-inbound.component.less'],
 })
-export class CreateInboundComponent {
+export class CreateInboundComponent{
   @Input() disabled?: boolean
   @Input() condition: SecurityGroupSearchCondition
   @Output() onOk = new EventEmitter()
@@ -14,6 +14,10 @@ export class CreateInboundComponent {
 
   isVisible: boolean = false;
   isLoading: boolean = false
+
+
+
+
 
   showModal(): void {
     this.isVisible = true;

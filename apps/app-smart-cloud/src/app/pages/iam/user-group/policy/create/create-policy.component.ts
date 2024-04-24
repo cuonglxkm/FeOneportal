@@ -175,7 +175,7 @@ export class CreatePolicyComponent implements OnInit {
 
   create() {
     this.formCreate.groupName = this.nameGroup
-    this.formCreate.parentName = this.userGroup.parent
+    //this.formCreate.parentName = this.userGroup.parent
 
     this.formCreate.policyNames = Array.from(this.setOfCheckedId)
     if (this.formCreate.policyNames?.length > 10) {

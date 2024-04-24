@@ -47,7 +47,7 @@
                   >*</span
                 >)<img
                   style="margin-left: 10px"
-                  nz-tooltip="Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)"
+                  [nz-tooltip]="'app.tooltip.instance.name' | i18n"
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
               /></nz-form-label>
@@ -84,23 +84,24 @@
                       >{{ 'app.instances.from.snapshot' | i18n }}
                       <img
                         style="margin-left: 10px"
-                        nz-tooltip="Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó."
+                        [nz-tooltip]="
+                          'app.tooltip.instances.from.snapshot' | i18n
+                        "
                         src="assets/imgs/pajamas_question.svg"
                         alt=""
                     /></label>
                   </nz-col>
                 </nz-row>
                 <div *ngIf="isExistName" style="color: #ff4d4f">
-                  Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác
+                  {{ 'validation.exist.instance.name' | i18n }}
                 </div>
                 <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập thông tin</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ
-                    _)</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'validation.info.required' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'validation.name.pattern' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -115,7 +116,7 @@
             >
             <nz-form-control nzErrorTip="Vui lòng Chọn Snapshot">
               <nz-select
-                [nzPlaceHolder]="'--Chọn Snapshot--'"
+                [nzPlaceHolder]="'-- ' + ('app.choose.snapshot' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 [(ngModel)]="selectedSnapshot"
                 [ngModelOptions]="{ standalone: true }"
@@ -135,7 +136,7 @@
             >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span
             >)<img
               style="margin-left: 10px"
-              nz-tooltip="Hệ điều hành sử dụng để khởi tạo máy ảo."
+              [nz-tooltip]="'app.tooltip.instance.OS' | i18n"
               src="assets/imgs/pajamas_question.svg"
               alt=""
           /></nz-form-label>
@@ -211,7 +212,7 @@
               >*</span
             >)<img
               style="margin-left: 10px"
-              nz-tooltip="Loại volume, đối với từng loại mức IOPS và các tính năng sẽ khác nhau."
+              [nz-tooltip]="'app.tooltip.volume.type' | i18n"
               src="assets/imgs/pajamas_question.svg"
               alt=""
           /></nz-form-label>
@@ -262,9 +263,7 @@
                       </ng-template>
                       <ng-template #nzDescriptionselectedHDDorSSD1>
                         <ellipsis class="text-custom">
-                          Lựa chọn tốt hơn nếu bạn đang đối phó với các bản sao
-                          lưu dữ liệu, lưu trữ dữ liệu hoặc khối lượng công việc
-                          chuyên sâu thông lượng
+                          {{ 'app.hdd.intro.text' | i18n }}
                         </ellipsis>
                       </ng-template>
                     </nz-card-meta></nz-col
@@ -324,9 +323,8 @@
                         <b>SSD</b>
                       </ng-template>
                       <ng-template #nzDescriptionselectedHDDorSSD2>
-                        <ellipsis class="text-custom"
-                          >Lựa chọn tốt hơn cho khối lượng công việc phân tích
-                          dữ liệu hoặc chơi game
+                        <ellipsis class="text-custom">
+                          {{ 'app.ssd.intro.text' | i18n }}
                         </ellipsis>
                       </ng-template>
                     </nz-card-meta>
@@ -418,7 +416,7 @@
                         <span class="priceFlavor">{{
                           item.price.fixedPrice.amount | number
                         }}</span
-                        ><span> VND/tháng</span>
+                        ><span> VND/{{ 'app.month' | i18n }}</span>
                       </div>
                     </nz-col>
                   </nz-row>
@@ -540,17 +538,18 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>Tài nguyên</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền/Đơn giá</th>
+                    <th>{{'app.resource' | i18n }}</th>
+                    <th>{{'app.amount' | i18n }}</th>
+                    <th>{{'app.money.price' | i18n }}</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr>
                     <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >Dung lượng (<span class="text-red">*</span>) -
-                        GB</nz-form-label
+                        >{{ 'app.capacity' | i18n }} (<span class="text-red"
+                          >*</span
+                        >) - GB</nz-form-label
                       >
                       <nz-slider
                         [nzMin]="0"
@@ -661,9 +660,9 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>Tài nguyên</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền/Đơn giá</th>
+                    <th>{{'app.resource' | i18n }}</th>
+                    <th>{{'app.amount' | i18n }}</th>
+                    <th>{{'app.money.price' | i18n }}</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
@@ -740,8 +739,9 @@
                   <tr>
                     <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >Dung lượng SSD(<span class="text-red">*</span>) -
-                        GB</nz-form-label
+                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
+                          >*</span
+                        >) - GB</nz-form-label
                       >
                       <nz-slider
                         [nzMin]="0"
@@ -775,7 +775,8 @@
                   <tr>
                     <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >Số lượng GPU (<span class="text-red">*</span
+                        >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
+                          >*</span
                         >)</nz-form-label
                       >
                       <nz-slider
@@ -812,11 +813,15 @@
             </div>
             <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
               <nz-form-label
-                >GPU Type (<span class="text-red">*</span>)</nz-form-label
+                >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
+                  >*</span
+                >)</nz-form-label
               >
               <nz-form-control [nzErrorTip]="gpuErrorTpl">
                 <nz-select
-                  [nzPlaceHolder]="'--Chọn GPU Type--'"
+                  [nzPlaceHolder]="
+                    '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                  "
                   [nzShowSearch]="true"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="configGPU.GPUType"
@@ -851,29 +856,29 @@
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
                 /><ng-template #contentTemplateIPPublic>
-                  <div>
-                    Máy ảo tạo ra sẽ có thêm một card mạng<br />
-                    tương ứng với địa chỉ IP khách hàng lựa<br />
-                    chọn. Trường hợp muốn sử dụng IP Floating,<br />
-                    vụi lòng truy cập
-                    <a
-                      [routerLink]="[
-                        '/app-smart-cloud/networks/ip-floating/list'
-                      ]"
-                      >IP Floating</a
-                    >
-                  </div>
+                  <span
+                    [innerHTML]="'app.tooltip.instance.ip.public' | i18n"
+                  ></span>
+                  <a
+                    [routerLink]="[
+                      '/app-smart-cloud/networks/ip-floating/list'
+                    ]"
+                    >{{ 'app.ip.floating' | i18n }}</a
+                  >
                 </ng-template></nz-form-label
               >
               <nz-form-control>
                 <nz-select
-                  [nzPlaceHolder]="'Mặc định'"
+                  [nzPlaceHolder]="'menu.dashboard.v1' | i18n"
                   [nzShowSearch]="true"
                   [(ngModel)]="ipPublicValue"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
                 >
-                  <nz-option nzLabel="Mặc định" [nzValue]="0" />
+                  <nz-option
+                    [nzLabel]="'menu.dashboard.v1' | i18n"
+                    [nzValue]="0"
+                  />
                   <nz-option
                     *ngFor="let i of listIPPublic"
                     [nzLabel]="i.ipAddress || i.networkId"
@@ -997,7 +1002,7 @@
                 >{{ 'app.use.lan.network' | i18n
                 }}<img
                   style="margin-left: 10px"
-                  nz-tooltip="Khi sử dụng mạng LAN, máy ảo sẽ được trang bị thêm 01 IP LAN."
+                  [nz-tooltip]="'app.tooltip.use.lan.network' | i18n"
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
               /></label>
@@ -1013,13 +1018,12 @@
                 ></nz-alert>
                 <ng-template #nzDescriptionWarning3>
                   <div>
-                    Để thiết lập các cơ chế truy cập vào máy ảo, Quý khách cần
-                    cấu hình Security Group trong mục
+                    {{ 'app.alert.security.group' | i18n }}
                     <u
                       style="cursor: pointer"
                       [routerLink]="['/app-smart-cloud/security-group/list']"
                       (keyup.enter)="navigateToSecurity()"
-                      >Truy cập và Bảo mật</u
+                      >{{ 'app.alert.access.security' | i18n }}</u
                     >
                   </div>
                 </ng-template>
@@ -1033,7 +1037,7 @@
               >*</span
             >)<img
               style="margin-left: 10px"
-              nz-tooltip="Có thể sử dụng mật khẩu hoặc keypair để truy cập vào máy ảo."
+              [nz-tooltip]="'app.tooltip.access.method.instance' | i18n"
               src="assets/imgs/pajamas_question.svg"
               alt=""
           /></nz-form-label>
@@ -1068,11 +1072,11 @@
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey1>
-                    <b>Mật khẩu</b>
+                    <b>{{ 'app.password' | i18n }} </b>
                   </ng-template>
                   <ng-template #nzDescriptionselectedPasswordOrSSHkey1>
                     <ellipsis class="text-custom">
-                      Thuận tiện cho người dùng</ellipsis
+                      {{ 'app.password.intro.text' | i18n }}</ellipsis
                     >
                   </ng-template>
                 </nz-card-meta>
@@ -1103,11 +1107,11 @@
                     ></label>
                   </ng-template>
                   <ng-template #nzTitleselectedPasswordOrSSHkey2>
-                    <b>SSH key</b>
+                    <b>Keypair</b>
                   </ng-template>
                   <ng-template #nzDescriptionselectedPasswordOrSSHkey2>
                     <ellipsis class="text-custom">
-                      Tăng tính bảo mật khi đăng nhập</ellipsis
+                      {{ 'app.keypair.intro.text' | i18n }}</ellipsis
                     >
                   </ng-template>
                 </nz-card-meta>
@@ -1118,7 +1122,9 @@
             <nz-col nzSpan="24">
               <nz-form-item>
                 <nz-form-label nzFor="name"
-                  >Mật khẩu truy cập máy ảo (<span class="text-red">*</span
+                  >{{ 'app.label.instance.password' | i18n }} (<span
+                    class="text-red"
+                    >*</span
                   >)</nz-form-label
                 >
                 <nz-form-control [nzErrorTip]="passwordErrorTpl">
@@ -1130,7 +1136,7 @@
                       class="input-custom"
                       [type]="passwordVisible ? 'text' : 'password'"
                       nz-input
-                      placeholder="Nhập mật khẩu"
+                      [placeholder]="'app.input.password' | i18n"
                       formControlName="passOrKeyFormControl"
                       [(ngModel)]="password"
                     />
@@ -1149,13 +1155,12 @@
                   </ng-template>
                 </nz-form-control>
                 <ng-template #passwordErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập mật khẩu</ng-container
-                  >
-                  <ng-container *ngIf="control.hasError('pattern')"
-                    >Mật khẩu phải chứa tối thiểu 12 ký tự, bao gồm các chữ số,
-                    chữ hoa, chữ thường và ký hiệu đặc biệt</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'validation.instance.password.required' | i18n
+                  }}</ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{
+                    'validation.password.pattern' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-item>
             </nz-col>
@@ -1168,10 +1173,7 @@
               ></nz-alert>
               <ng-template #nzDescriptionWarning06>
                 <div>
-                  Quy tắc đặt mật khẩu: Độ dài của một mật khẩu được sử dụng
-                  trực tuyến cần phải chứa tối thiểu là 12 ký tự, sử dụng hỗn
-                  hợp bao gồm các chữ số, chữ hoa, chữ thường và ký hiệu đặc
-                  biệt.
+                  {{ 'app.alert.password' | i18n }}
                 </div>
               </ng-template>
             </nz-col>
@@ -1180,12 +1182,16 @@
             <nz-col nzSpan="24">
               <nz-form-item>
                 <nz-form-label
-                  >Chọn SSH key (<span class="text-red">*</span>)</nz-form-label
+                  >{{ 'app.choose.keypair' | i18n }} (<span class="text-red"
+                    >*</span
+                  >)</nz-form-label
                 >
                 <nz-form-control [nzErrorTip]="keypairErrorTpl">
                   <nz-select
                     *ngIf="activeBlockSSHKey"
-                    [nzPlaceHolder]="'--Chọn SSH key--'"
+                    [nzPlaceHolder]="
+                      '-- ' + ('app.choose.keypair' | i18n) + ' --'
+                    "
                     [nzShowSearch]="true"
                     formControlName="passOrKeyFormControl"
                     [(ngModel)]="selectedSSHKeyName"
@@ -1199,15 +1205,17 @@
                   </nz-select>
                 </nz-form-control>
                 <ng-template #keypairErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng chọn SSH key</ng-container
-                  >
+                  <ng-container *ngIf="control.hasError('required')">{{
+                    'validation.choose.keypair' | i18n
+                  }}</ng-container>
                 </ng-template>
               </nz-form-item>
             </nz-col>
             <nz-form-label style="margin-bottom: 20px">
-              Lựa chọn keypair có sẵn hoặc&nbsp;
-              <a [routerLink]="['/app-smart-cloud/ssh-key']">Tạo mới</a>
+              {{ 'app.instances.keypair.label' | i18n }}&nbsp;
+              <a [routerLink]="['/app-smart-cloud/keypair']">{{
+                'app.label.create' | i18n
+              }}</a>
             </nz-form-label>
             <nz-col nzSpan="24">
               <nz-alert
@@ -1217,17 +1225,14 @@
               ></nz-alert>
               <ng-template #nzDescriptionWarning07>
                 <div>
-                  Chúng tôi khuyến cáo sử dụng SSH Key để đảm an toàn bảo mật
-                  cho máy chủ của quý khách. Thông tin hướng dẫn sử dụng về SSH
-                  key cho máy chủ có thể xem
+                  {{ 'app.alert.keypair' | i18n }}
                   <a
                     href="https://docs.smartcloud.vn/index.php/knowledge-base/su-dung-keypair/"
                     target="_blank"
-                    >tại đây</a
-                  >.
+                    >{{ 'app.here' | i18n }}
+                  </a>
                   <br />
-                  Mật khẩu đăng nhập vào máy chủ sẽ được tạo tự động và gửi vào
-                  email của quý khách khi máy chủ được tạo thành công
+                  {{ 'app.alert.keypair.next' | i18n }}
                 </div>
               </ng-template>
             </nz-col>
@@ -1238,7 +1243,9 @@
           <nz-col nzSpan="24">
             <nz-form-item style="margin-bottom: 5px">
               <nz-form-label
-                >Thời hạn sử dụng (<span class="text-red">*</span>) - Tháng<img
+                >{{ 'app.service.duration' | i18n }} (<span class="text-red"
+                  >*</span
+                >)<img
                   style="margin-left: 10px"
                   nz-tooltip="Thời gian khách hàng mua máy ảo để sử dụng, tính theo tháng."
                   src="assets/imgs/pajamas_question.svg"
@@ -1265,7 +1272,8 @@
                       align-items: center;
                     "
                   >
-                    Thời gian bắt đầu sử dụng: {{ today | date : 'dd/MM/yyyy' }}
+                    {{ 'app.service.start-date' | i18n }}:
+                    {{ today | date : 'dd/MM/yyyy' }}
                   </div>
                 </nz-row>
               </nz-form-control>
@@ -1273,7 +1281,8 @@
           </nz-col>
         </nz-row>
         <div style="color: #eb1414; margin-top: 20px" class="text-label">
-          Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}
+          {{ 'app.service.expiration-date' | i18n }}:
+          {{ expiredDate | date : 'dd/MM/yyyy' }}
         </div>
       </nz-card>
 
@@ -1292,7 +1301,7 @@
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add.svg"
               alt=""
-            />Bổ sung Volume
+            />{{ 'app.button.add.volume' | i18n }}
           </button>
         </div>
         <div *ngIf="activeBlockStorage">
@@ -1301,20 +1310,19 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>Loại Volume</th>
-                    <th>Tên Volume</th>
-                    <th>Dung lượng (GB)</th>
-                    <th>Mã hóa</th>
+                    <th>{{ 'app.volume.type' | i18n }}</th>
+                    <th>{{ 'app.volume.name' | i18n }}</th>
+                    <th>{{ 'app.capacity' | i18n }} (GB)</th>
+                    <th>{{ 'app.encrypt' | i18n }}</th>
                     <th>Multi Attach</th>
-                    <th>Giá theo tháng (VND)</th>
-                    <th></th>
+                    <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr *ngFor="let data of listOfDataBlockStorage">
                     <td>
                       <nz-select
-                        nzPlaceHolder="Thêm ổ cứng"
+                        [nzPlaceHolder]="'app.choose' | i18n"
                         name="inputBlockStorage"
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.type"
@@ -1399,9 +1407,7 @@
           style="margin-left: -22px"
           class="ant-alert-warning-custom"
           nzType="warning"
-          nzDescription="Với các ứng dụng cần lưu trữ lớn, quý khách nên sử dụng ổ cứng
-            gắn ngoài để đảm bảo về dữ liệu và khả năng mở rộng dễ
-            dàng"
+          [nzDescription]="'app.alert.block.storage' | i18n"
           nzShowIcon
         ></nz-alert>
       </nz-card>
@@ -1421,7 +1427,7 @@
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add.svg"
               alt=""
-            />Bổ sung IPv4
+            />{{ 'app.button.add.ipv4' | i18n }}
           </button>
         </div>
         <div *ngIf="activeIPv4">
@@ -1430,9 +1436,9 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>Dải IP</th>
-                    <th>Số lượng</th>
-                    <th>Giá theo tháng (VND)</th>
+                    <th>{{ 'app.ip.range' | i18n }}</th>
+                    <th>{{ 'app.amount' | i18n }}</th>
+                    <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -1441,7 +1447,7 @@
                     <td>
                       <nz-select
                         style="width: 85%"
-                        nzPlaceHolder="Chọn"
+                        [nzPlaceHolder]="'app.choose' | i18n"
                         name="inputNetwork"
                         [ngModelOptions]="{ standalone: true }"
                         [(ngModel)]="data.ip"
@@ -1503,7 +1509,7 @@
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/add.svg"
               alt=""
-            />Bổ sung IPv6
+            />{{ 'app.button.add.ipv6' | i18n }}
           </button>
         </div>
         <div *ngIf="activeIPv6 && hasOfferIpv6">
@@ -1512,9 +1518,9 @@
               <table>
                 <thead class="ant-table-thead">
                   <tr>
-                    <th>Dải IP</th>
-                    <th>Số lượng</th>
-                    <th>Giá theo tháng (VND)</th>
+                    <th>{{ 'app.ip.range' | i18n }}</th>
+                    <th>{{ 'app.amount' | i18n }}/th></th>
+                    <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -1578,8 +1584,7 @@
           style="margin-left: -22px"
           class="ant-alert-warning-custom"
           nzType="warning"
-          nzDescription="Địa chỉ IP mà nhà cung cấp dịch vụ internet cung cấp cho router
-            gia đình hoặc doanh nghiệp để kết nối với internet"
+          [nzDescription]="'app.alert.network' | i18n"
           nzShowIcon
         ></nz-alert>
       </nz-card>
@@ -1590,17 +1595,19 @@
       <nz-affix [nzOffsetTop]="48">
         <nz-card style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
-            <span class="text-card-header">Chi phí ước tính</span>
+            <span class="text-card-header">{{
+              'app.estimated.cost' | i18n
+            }}</span>
           </div>
-          <div class="text-value">Tên máy ảo</div>
+          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.serviceName }}
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">Hệ điều hành</div>
+          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">{{ nameHdh }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">Gói dịch vụ</div>
+          <div class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div
             *ngIf="instanceCreate.cpu"
             style="margin-top: 10px"
@@ -1626,7 +1633,7 @@
             >)
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">Cài đặt</div>
+          <div class="text-value">{{ 'app.setting' | i18n }}</div>
           <div
             *ngIf="externalVolumeHdd > 0"
             style="margin-top: 10px"
@@ -1658,7 +1665,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value"> Chi phí 1 tháng </span>
+              <span class="text-value"> {{ 'app.monthly.price' | i18n }} </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
@@ -1683,8 +1690,11 @@
             nzGutter="16"
           >
             <nz-col nzSpan="16">
-              <span class="text-label">Tổng thanh toán</span><br />
-              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+              ><br />
+              <span class="text-note-italicized"
+                >({{ 'app.include.vat' | i18n:{"vat":"10"} }})</span
+              >
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #ea3829" nzAlign="right">

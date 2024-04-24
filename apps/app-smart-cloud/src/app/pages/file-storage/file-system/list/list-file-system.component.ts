@@ -1,12 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { RegionModel } from '../../../../shared/models/region.model';
-import { ProjectModel } from '../../../../shared/models/project.model';
+import { ProjectModel, SizeInCLoudProject } from '../../../../shared/models/project.model';
 import { Router } from '@angular/router';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { FileSystemModel, FormSearchFileSystem } from '../../../../shared/models/file-system.model';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ProjectService } from '../../../../shared/services/project.service';
 
 @Component({
   selector: 'one-portal-list-file-system',
@@ -30,9 +31,14 @@ export class ListFileSystemComponent implements OnInit {
 
   customerId: number;
 
+  typeVpc: number;
+
+  projectInfo: SizeInCLoudProject = new SizeInCLoudProject();
+
   constructor(private router: Router,
               private fileSystemService: FileSystemService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private projectService: ProjectService) {
   }
 
   onInputChange(value) {
@@ -46,11 +52,25 @@ export class ListFileSystemComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+    this.typeVpc = project?.type
     this.getListFileSystem(true);
+    this.getProject();
   }
 
-  navigateToCreateFileSystem() {
-    this.router.navigate(['/app-smart-cloud/file-storage/file-system/create']);
+  navigateToExtendFileSystem(id) {
+    this.router.navigate(['/app-smart-cloud/file-storage/'+id+'/extend'])
+  }
+  navigateToCreateFileSystem(typeVpc) {
+    //in vpc
+    if(typeVpc == 1) {
+      this.router.navigate(['/app-smart-cloud/file-storage/file-system/create']);
+    }
+
+    //no vpc
+    if(typeVpc == 0) {
+      this.router.navigate(['/app-smart-cloud/file-storage/create/normal'])
+    }
+
   }
 
   onPageSizeChange(value) {
@@ -97,16 +117,26 @@ export class ListFileSystemComponent implements OnInit {
     this.getListFileSystem(false)
   }
 
+  getProject() {
+    this.projectService.getByProjectId(this.project).subscribe(data => {
+      this.projectInfo = data
+
+      console.log('info', this.projectInfo)
+    })
+  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
+    this.getProject()
+
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe(data => {
       console.log(data);
     });
+
   }
 }

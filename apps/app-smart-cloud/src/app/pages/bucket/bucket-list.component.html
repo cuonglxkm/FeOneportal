@@ -37,13 +37,15 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        Gia hạn
+        {{ 'app.button.extend' | i18n }}
       </button>
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="opMenu">
         <img src="assets/imgs/dots.svg" alt="" />
         <nz-dropdown-menu #opMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="updateObjectStorage()">Điều chỉnh</li>
+            <li nz-menu-item (click)="updateObjectStorage()">
+              {{ 'app.button.resize' | i18n }}
+            </li>
             <li nz-menu-item (click)="deleteObjectStorage()">Xóa</li>
           </ul>
         </nz-dropdown-menu>
@@ -51,8 +53,12 @@
     </div>
   </nz-row>
   <div style="margin-bottom: 10px" class="text-label">Dung lượng đã dùng:</div>
-  <div style="margin-bottom: 10px" class="text-label">Ngày khởi tạo:</div>
-  <div style="margin-bottom: 10px" class="text-label">Ngày hết hạn:</div>
+  <div style="margin-bottom: 10px" class="text-label">
+    {{ 'app.service.creation-date' | i18n }}:
+  </div>
+  <div style="margin-bottom: 10px" class="text-label">
+    {{ 'app.service.expiration-date' | i18n }}:
+  </div>
 </nz-card>
 <nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
   <div nz-row [nzGutter]="24">
@@ -124,7 +130,7 @@
         <th>URL</th>
         <th>Quyền truy cập</th>
         <th>Versioning</th>
-        <th>Ngày khởi tạo</th>
+        <th>{{ 'app.service.creation-date' | i18n }}</th>
         <th>Trạng thái</th>
         <th nzRight>Thao tác</th>
       </tr>

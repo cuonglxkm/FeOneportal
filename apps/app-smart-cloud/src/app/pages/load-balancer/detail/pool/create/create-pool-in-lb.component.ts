@@ -19,14 +19,14 @@ import {
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { CreatePool } from 'src/app/shared/models/load-balancer.model';
+import { CreatePool, LoadBalancerModel } from 'src/app/shared/models/load-balancer.model';
 
 @Component({
   selector: 'one-portal-create-pool-in-lb',
   templateUrl: './create-pool-in-lb.component.html',
   styleUrls: ['./create-pool-in-lb.component.less'],
 })
-export class CreatePoolInLbComponent{
+export class CreatePoolInLbComponent implements OnInit {
   @Input() region: number;
   @Input() project: number;
   @Input() loadbalancerId: number;
@@ -61,6 +61,15 @@ export class CreatePoolInLbComponent{
     private notification: NzNotificationService
   ) {}
 
+  loadBalancer: LoadBalancerModel = new LoadBalancerModel()
+  ngOnInit(): void {
+    this.loadBalancerService
+      .getLoadBalancerById(this.loadbalancerId, true)
+      .subscribe((data) => {
+        this.loadBalancer = data;
+      });
+  }
+
   focusOkButton(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -80,7 +89,7 @@ export class CreatePoolInLbComponent{
 
   createPool = new CreatePool();
   showModal() {
-    this.createPool = new CreatePool()
+    this.createPool = new CreatePool();
     this.getListPool();
   }
 
@@ -94,7 +103,7 @@ export class CreatePoolInLbComponent{
     this.createPool.customerId = this.tokenService.get()?.userId;
     this.createPool.regionId = this.region;
     this.createPool.vpcId = this.project;
-    this.createPool.loadbalancer_id = this.loadbalancerId.toString();
+    this.createPool.loadbalancer_id = this.loadBalancer.cloudId;
     if (this.listenerId) {
       this.createPool.listener_id = this.listenerId.toString();
     } else {

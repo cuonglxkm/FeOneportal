@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
@@ -12,6 +13,8 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { finalize } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-user',
@@ -37,7 +40,8 @@ export class UserComponent implements OnInit {
     private service: UserService,
     private router: Router,
     private notification: NzNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   ngOnInit(): void {
@@ -81,9 +85,9 @@ export class UserComponent implements OnInit {
       let arrayFromSet = Array.from(this.setOfCheckedName);
       this.userDelete = arrayFromSet[0];
       this.isVisibleDelete = true;
-      this.nameModal = 'Xóa User ' + this.userDelete;
+      this.nameModal = this.i18n.fanyi("app.users.deleteUser.deleteUser") + this.userDelete;
     } else if (this.setOfCheckedName.size > 1) {
-      this.nameModal = 'Xóa ' + this.setOfCheckedName.size + ' User';
+      this.nameModal = this.i18n.fanyi("app.users.deleteUser.deleteUsers")+ ' ' + this.setOfCheckedName.size + ' ' + this.i18n.fanyi("app.users.deleteUser.deleteUsers2");
       this.isVisibleDeleteUsers = true;
     }
     console.log('user delete', this.userDelete);

@@ -101,8 +101,7 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngFor="let item of listOfData">
-      <tr>
+      <tr *ngFor="let item of listOfData">
         <td [nzChecked]="setOfCheckedId.has(item.key)"
             (nzCheckedChange)="onItemChecked(item.key , $event)"></td>
         <td *ngIf="item.objectType != 'folder'">{{item.key}}</td>
@@ -154,7 +153,6 @@
           </div>
         </td>
       </tr>
-    </ng-container>
     </tbody>
   </nz-table>
 </nz-card>
@@ -248,12 +246,12 @@
 </nz-modal>
 <!--Tải file lên-->
 <nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="isVisibleUploadFile = false"
-          (nzOnOk)="uploadFile()" nzOkText="Tải lên tất cả"
+          (nzOnOk)="uploadAllFile()" nzOkText="Tải lên tất cả"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <!--      2 case trống file-->
     <div *ngIf="emptyFileUpload">
-      <nz-upload nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      <nz-upload [nzFileList]="lstFileUpdate" nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                  (nzChange)="handleChange($event)">
         <img style="padding-right: 10px;" src="assets/imgs/document.svg" alt=""/>
         <img style="padding-right: 10px;" src="assets/imgs/document1.svg" alt=""/>
@@ -262,12 +260,12 @@
       </nz-upload>
     </div>
     <div *ngIf="!emptyFileUpload">
-      <p>Lựa chọn phân quyền đọc</p>
+      <p class="text-label">Lựa chọn phân quyền đọc</p>
       <nz-radio-group [(ngModel)]="radioValue">
-        <label nz-radio nzValue="Public">Public</label>
-        <label nz-radio nzValue="Private">Private</label>
+        <label nz-radio nzValue="Public" class="text-label">Public</label>
+        <label nz-radio nzValue="Private" class="text-label">Private</label>
       </nz-radio-group>
-      <nz-table [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
+      <nz-table  [nzData]="lstFileUpdate" style="margin-top: 10px;" [nzHideOnSinglePage]="true">
         <thead>
         <tr>
           <th>Tên</th>
@@ -277,20 +275,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of lstFileUpdate">
-          <th>{{item.name}}</th>
-          <th>{{item.type}}</th>
-          <th>{{(item.size / 1024).toFixed(2)}} KB</th>
-          <th>
+        <tr *ngFor="let item of lstFileUpdate, i as index">
+          <td>{{item.name}}</td>
+          <td>{{item.type}}</td>
+          <td>{{(item.size / 1024).toFixed(2)}} KB</td>
+          <td>
               <span style="color: #0066B3; margin-right: 10px;"
                     nz-tooltip
                     nzTooltipTitle="tải lên" nzTooltipPlacement="bottom"
-                    nz-icon nzType="upload" nzTheme="outline"></span>
+                    nz-icon nzType="upload" nzTheme="outline" (click)="uploadSingleFile(item, i)"></span>
             <span style="color: #0066B3"
                   nz-tooltip
                   nzTooltipTitle="Xóa" nzTooltipPlacement="bottom"
                   nz-icon nzType="delete" nzTheme="outline" (click)="removeFile(item)"></span>
-          </th>
+          </td>
         </tr>
       </nz-table>
       <h3 style="font-weight: bold">METADATA</h3>
@@ -308,7 +306,7 @@
           <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
           <span class="button-text-primary">Tạo metadata</span>
         </button>
-        <nz-upload (nzChange)="handleChange($event)" [nzShowUploadList]="false">
+        <nz-upload (nzChange)="handleChange($event)" [nzShowUploadList]="false" [nzFileList]="lstFileUpdate"	>
           <button nz-button nzType="primary" nzSize="large">
             <img style="padding-right: 10px;" src="assets/imgs/folder.png" alt=""/>
             <span class="button-text-primary">Thêm File</span>

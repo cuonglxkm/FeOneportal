@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 export class AppValidator {
   // @ts-ignore
@@ -167,16 +167,26 @@ export class AppValidator {
     return null;
   }
 
-  static ipWithCIDRValidator(): ValidatorFn { //validate input ip
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const ipAddress = control.value;
-      if (!ipAddress) {
-        return null;
-      }
-      const ipRegex = /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\/\d{1,2}$/;
+  static ipWithCIDRValidator(control: { value: string }): { [key: string]: boolean } | null { //validate input ip
+    const ipAddress = control.value;
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/;
 
-      return ipRegex.test(ipAddress) ? null : { 'invalidIP': true };
-    };
+    // Kiểm tra xem địa chỉ IP có đúng định dạng không
+    if (!ipRegex.test(ipAddress)) {
+      return { invalidIp: true }; // Trả về một object có thuộc tính invalidIp để chỉ ra lỗi
+    }
+
+    // Tách địa chỉ IP và subnet mask
+    const [ip, subnetMask] = ipAddress.split('/');
+
+    // Kiểm tra xem subnet mask có vượt quá 32 không
+    if (parseInt(subnetMask, 10) > 32) {
+      return { invalidSubnetMask: true }; // Trả về một object có thuộc tính invalidSubnetMask để chỉ ra lỗi
+    }
+    console.log('ip', ipAddress)
+    console.log('regex', ipRegex)
+
+    return null; // Trả về nếu địa chỉ IP hợp lệ và subnet mask không vượt quá 32
   }
 
   static validCodeAndType(control: { value: string }): { [key: string]: boolean } | null {
@@ -188,19 +198,24 @@ export class AppValidator {
   }
 
   static validateNumber(control: { value: string }): { [key: string]: boolean } | null {
-    const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
-    if (!isNumber && !!control.value) {
+    const isIntegerInRange = /^(-1|[0-9]|[1-9][0-9]?|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(control.value);
+    // const isNumber = !isNaN(parseFloat(control.value)) && isFinite(Number(control.value));
+    if (!isIntegerInRange && !!control.value) {
       return { invalidNumber: true };
     }
     return null;
   }
 
   static validateProtocol(control: { value: string }): { [key: string]: boolean } | null {
-    const numericValue = parseFloat(control.value);
-    if (numericValue < 1 || numericValue > 255) {
-      return { outOfRange: true };
+
+    const value = parseInt(control.value, 10);
+
+    // Check if the value is an integer and within the range -1 to 255
+    if (isNaN(value) || value < -1 || value > 255) {
+      return { invalidIntegerInRange: true }; // Return validation error if not within the range
     }
-    return null;
+
+    return null; // Return null if validation succeeds
   }
 
   static validProtocol(): ValidatorFn { // validate input protocol
@@ -235,6 +250,45 @@ export class AppValidator {
       return null;
     };
   }
+
+  static portValidator(fromPortControlName: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const fromPortControl = control.parent?.get(fromPortControlName);
+
+      if (!fromPortControl) {
+        return null; // If "from" port control is not found, return null
+      }
+
+      const fromPort = parseInt(fromPortControl.value, 10);
+      const toPort = parseInt(control.value, 10);
+
+      if (isNaN(fromPort) || isNaN(toPort)) {
+        return null; // If either "from" or "to" port is not a number, return null
+      }
+
+      if (toPort >= fromPort) {
+        return null; // If "to" port is greater than or equal to "from" port, return null (valid)
+      } else {
+        return { portMismatch: true }; // Otherwise, return validation error
+      }
+    };
+  }
+
+  static integerInRange(min: number = -1, max: number = 255): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (Validators.required(control) !== null) {
+        return null; // Nếu giá trị không bắt buộc, không thực hiện kiểm tra
+      }
+
+      const value = parseInt(control.value, 10);
+      if (isNaN(value) || value < min || value > max) {
+        return { integerInRange: { valid: false } };
+      }
+
+      return null;
+    };
+  }
+
 
   // static validRangeValidator(): ValidatorFn {
   //   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -351,7 +405,7 @@ export function ipAddressExistsValidator(ipAddresses: string[]): ValidatorFn {
     }
     return null;
   };
-  
+
 }
 
 
@@ -359,21 +413,23 @@ export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddress = control.value;
     if (!ipAddress) {
-      return null; 
+      return null;
     }
-    
+
     const networkPart = subnetIP.split('.').slice(0, 3).join('.');
     if (!ipAddress.startsWith(networkPart)) {
-      return { 'invalidSubnetIP': true }; 
+      return { 'invalidSubnetIP': true };
     }
-    
+
     const lastNumber = parseInt(ipAddress.split('.')[3], 10);
     if (lastNumber < 2 || lastNumber > 254) {
-      return { 'invalidLastNumber': true }; 
+      return { 'invalidLastNumber': true };
     }
-    
+
     return null;
   };
+
 }
+
 
 

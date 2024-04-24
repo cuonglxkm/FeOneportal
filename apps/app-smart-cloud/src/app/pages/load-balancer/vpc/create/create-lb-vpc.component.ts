@@ -167,12 +167,14 @@ export class CreateLbVpcComponent implements OnInit {
     const selectedOption = this.listSubnets?.find(option => option.cloudId === value);
     if (selectedOption) {
       this.selectedValueSpan.nativeElement.innerText = selectedOption.name + '(' + selectedOption.subnetAddressRequired + ')';
+      this.validateForm.controls.subnet.setValue(selectedOption.cloudId)
     }
   }
 
   selectedIp(value) {
     const selectedOption = this.ipFloating?.find(option => option.id === value)
     this.selectedValueIpFloating.nativeElement.innerText = selectedOption.ipAddress
+    this.validateForm.controls.ipFloating.setValue(selectedOption.id)
   }
 
   userChanged(project: ProjectModel) {

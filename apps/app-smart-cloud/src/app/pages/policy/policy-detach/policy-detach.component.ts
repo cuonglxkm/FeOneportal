@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Inject} from '@angular/core';
 import {ProjectModel} from "../../../shared/models/project.model";
 import {RegionModel} from "../../../shared/models/region.model";
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
@@ -9,7 +9,8 @@ import {PopupDetachPolicyComponent} from "../popup-policy/popup-detach-policy.co
 import {PolicyService} from "../../../shared/services/policy.service";
 import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {AttachOrDetachRequest} from "../policy.model";
-
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 @Component({
   selector: 'one-portal-policy-detach',
   templateUrl: './policy-detach.component.html',
@@ -26,7 +27,7 @@ export class PolicyDetachComponent implements OnInit {
   entitiesNameSearch: string;
 
   optionsEntities: NzSelectOptionInterface[] = [
-    {label: 'Tất cả các loại', value: null},
+    {label: this.i18n.fanyi("app.group-detail.allTypes"), value: null},
     {label: 'Users', value: 1},
     {label: 'Users Groups', value: 2},
 
@@ -88,16 +89,16 @@ export class PolicyDetachComponent implements OnInit {
     const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
 
     const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Detach Policy',
+      nzTitle: this.i18n.fanyi("app.button.detach-policy"),
       nzContent: PopupDetachPolicyComponent,
       nzFooter: [
         {
-          label: 'Hủy',
+          label: this.i18n.fanyi("app.button.cancel"),
           type: 'default',
           onClick: () => modal.destroy()
         },
         {
-          label: 'Đồng ý',
+          label: this.i18n.fanyi("app.button.agree"),
           type: 'primary',
           onClick: () => {
             this.doDetachPolicy(requestData, this.policyName);
@@ -173,7 +174,8 @@ export class PolicyDetachComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private modalService: NzModalService,
     private notification: NzNotificationService,
-    private router: Router,) {
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
 }

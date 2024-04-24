@@ -1,17 +1,17 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Danh sách Volume'" xmlns="http://www.w3.org/1999/html">
+             [title]="'volume.title' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Block Storage
+        {{ 'app.breadcrumb.block.storage' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Danh sách Volume</a>
+        <a routerLink="/app-smart-cloud/volumes">{{ 'volume.title' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
@@ -34,8 +34,8 @@
                        nzSize="large"
                        style="margin-right: 10px; width: 170px;"
                        (ngModelChange)="onChange($event)"
-                       nzPlaceHolder="Tất cả trạng thái"
-                       nzTooltipTitle="Tìm kiếm theo trạng thái"
+                       nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
+                       nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
                        nzTooltipPlacement="bottom"
                        nz-tooltip>
               <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
@@ -49,14 +49,14 @@
                 nz-input
                 [(ngModel)]="value"
                 (input)="onInputChange($event.target['value'])"
-                placeholder="Tìm kiếm tên ..."/>
+                placeholder="{{ 'volume.placeholder.filter.name' | i18n }}"/>
             </nz-input-group>
             <ng-template #prefixIconSearch>
               <img
                 src="assets/imgs/search.svg"
                 alt=""
                 style="cursor: pointer"
-                nz-tooltip="Tìm kiếm"/>
+                nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}"/>
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
@@ -69,13 +69,13 @@
                 style="padding-right: 10px; margin-top: -4px"
                 src="assets/imgs/add-circle.svg"
                 alt=""/>
-              <span class="button-text-primary">Tạo mới Volume</span>
+              <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
         <nz-table #fixedTable
                   style="margin-top: 20px;"
-                  nzShowPagination
+                  nzShowSizeChanger
                   [nzData]="response?.records || []"
                   [nzPageSize]="response?.pageSize"
                   (nzPageSizeChange)="onPageSizeChange($event)"
@@ -86,13 +86,13 @@
                   [nzLoading]="isLoading">
           <thead>
           <tr>
-            <th nzLeft>Tên Volume</th>
-            <th nzBreakWord>Dung lượng (GB)</th>
-            <th nzBreakWord>IOPS</th>
-            <th nzBreakWord>Trạng thái Volume</th>
-            <th nzBreakWord>Trạng thái tác vụ</th>
-            <th nzBreakWord>Máy ảo</th>
-            <th nzBreakWord>Thao tác</th>
+            <th nzLeft>{{ 'volume.table.title.name.volume' | i18n }}</th>
+            <th nzBreakWord>{{ 'volume.table.title.storage' | i18n }} (GB)</th>
+            <th nzBreakWord>{{ 'volume.table.title.iops' | i18n }}</th>
+            <th nzBreakWord>{{ 'volume.table.title.status.volume' | i18n }}</th>
+            <th nzBreakWord>{{ 'volume.table.title.task.status' | i18n }}</th>
+            <th nzBreakWord>{{ 'volume.table.title.ínstance' | i18n}}</th>
+            <th nzBreakWord>{{ 'volume.table.title.action' | i18n }}</th>
           </tr>
           </thead>
           <tbody>
@@ -106,19 +106,19 @@
             <td nzBreakWord nzAlign="left">
               <div class="status" [ngSwitch]="data.status">
                                 <span class="available" *ngSwitchCase="'KHOITAO'">
-                                            Đang hoạt động
+                                            {{ 'app.status.running' | i18n }}
                                           </span>
                 <span class="available" *ngSwitchCase="'CREATING'">
-                                            Đang khởi tạo
+                                            {{ 'app.status.init' | i18n }}
                                           </span>
                 <span class="suspended" *ngSwitchCase="'SUSPENDED'">
-                                            Tạm dừng
+                                            {{ 'app.status.suspend' | i18n }}
                                           </span>
                 <span class="suspended" *ngSwitchCase="'ERROR'">
-                                            Lỗi
+                                            {{ 'app.status.error' | i18n }}
                                           </span>
                 <span class="suspended" *ngSwitchCase="'DELETING'">
-                                            Đang xóa
+                                            {{ 'app.status.deleting' | i18n }}
                                           </span>
               </div>
             </td>
@@ -147,7 +147,7 @@
                                           (onOk)="handleOkDetachVm()"/>
                 <span *ngIf="data.serviceStatus != 'ERROR'" style="color: #0066B3; margin-right: 10px;margin-left: 10px; cursor: pointer;" nz-icon nzType="calendar"
                       nzTheme="outline" nz-popover
-                      [nzPopoverContent]="'Tạo Backup'"
+                      [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
                       nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(data.id, data.creationDate, data.expirationDate, data.name)"></span>
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
@@ -158,8 +158,8 @@
                       [nzDropdownMenu]="opMenu"></span>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="navigateToCreateScheduleBackup(data.id)">Tạo lịch Backup</li>
-                    <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
+                    <li nz-menu-item (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}</li>
+                    <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">{{ 'volume.menu.create.schedule.snapshot' | i18n}}</li>
                     <one-portal-update-volume [region]="region" [project]="project" [volume]="data" (onOk)="handleOkUpdate()"/>
                   </ul>
                 </nz-dropdown-menu>
@@ -178,18 +178,18 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">Volume<br>Lưu trữ ổ đĩa máy chủ</span>
+              <span class="text-intro-title" style="color: #0066b3">{{ 'volume.intro.title' | i18n}}
+                <br>{{ 'volume.intro.title2' | i18n}}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều
-                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</span>
+                <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n}}</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Tạo mới Volume
+            {{ 'volume.button.create' | i18n}}
           </button>
         </result>
       </ng-container>
@@ -206,8 +206,8 @@
                          nzSize="large"
                          style="margin-right: 15px;"
                          (ngModelChange)="onChange($event)"
-                         nzPlaceHolder="Tất cả trạng thái"
-                         nzTooltipTitle="Tìm kiếm theo trạng thi"
+                         nzPlaceHolder="{{'volume.placeholder.filter.status' | i18n}}"
+                         nzTooltipTitle="{{'volume.tooltip.title.filter.status' | i18n}}"
                          nzTooltipPlacement="bottom"
                          nz-tooltip>
                 <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
@@ -221,14 +221,14 @@
                   nz-input
                   [(ngModel)]="value"
                   (input)="onInputChange($event.target['value'])"
-                  placeholder="Tìm kiếm tên ..."/>
+                  placeholder="{{'volume.placeholder.filter.name' | i18n}}"/>
               </nz-input-group>
               <ng-template #prefixIconSearch>
                 <img
                   src="assets/imgs/search.svg"
                   alt=""
                   style="cursor: pointer"
-                  nz-tooltip="Tìm kiếm"/>
+                  nz-tooltip="{{'volume.tooltip.title.filter.img' | i18n}}"/>
               </ng-template>
             </nz-col>
             <nz-col nzSpan="8" style="flex:none;">
@@ -241,7 +241,7 @@
                   style="padding-right: 10px; margin-top: -4px"
                   src="assets/imgs/add-circle.svg"
                   alt=""/>
-                <span class="button-text-primary">Tạo mới Volume</span>
+                <span class="button-text-primary">{{'volume.button.create' | i18n}}</span>
               </button>
             </nz-col>
           </nz-row>
@@ -258,14 +258,14 @@
                     [nzLoading]="isLoading">
             <thead>
             <tr>
-              <th nzLeft>Tên Volume</th>
-              <th nzBreakWord>Loại Volume</th>
-              <th nzBreakWord>Dung lượng (GB)</th>
-              <th nzBreakWord>IOPS</th>
-              <th nzBreakWord>Trạng thái</th>
-              <th nzBreakWord>Trạng thái tác vụ</th>
-              <th nzBreakWord>Máy ảo</th>
-              <th nzBreakWord>Thao tác</th>
+              <th nzLeft>{{'volume.table.title.name.volume' | i18n}}</th>
+              <th nzBreakWord>{{'volume.table.title.type.volume' | i18n}}</th>
+              <th nzBreakWord>{{'volume.table.title.storage' | i18n}} (GB)</th>
+              <th nzBreakWord>{{'volume.table.title.iops' | i18n}}</th>
+              <th nzBreakWord>{{'volume.table.title.status.volume' | i18n}}</th>
+              <th nzBreakWord>{{'volume.table.title.task.status' | i18n}}</th>
+              <th nzBreakWord>{{'volume.table.title.ínstance' | i18n}}</th>
+              <th nzBreakWord>{{'volume.table.title.action' | i18n}}</th>
             </tr>
             </thead>
             <tbody>
@@ -280,19 +280,19 @@
               <td nzBreakWord>
                 <div class="status" [ngSwitch]="i.status">
                                 <span class="available" *ngSwitchCase="'KHOITAO'">
-                                            Đang hoạt động
+                                            {{'app.status.running' | i18n}}
                                           </span>
                   <span class="available" *ngSwitchCase="'CREATING'">
-                                            Đang khởi tạo
+                                            {{'app.status.init' | i18n}}
                                           </span>
                   <span class="suspended" *ngSwitchCase="'SUSPENDED'">
-                                            Tạm dừng
+                                            {{'app.status.suspend' | i18n}}
                                           </span>
                   <span class="suspended" *ngSwitchCase="'ERROR'">
-                                            Lỗi
+                                            {{'app.status.error' | i18n}}
                                           </span>
                   <span class="suspended" *ngSwitchCase="'DELETING'">
-                                            Đang xóa
+                                            {{'app.status.deleting' | i18n}}
                                           </span>
                 </div>
               </td>
@@ -319,7 +319,7 @@
                                             (onOk)="handleOkDetachVm()"/>
                   <span *ngIf="i.serviceStatus != 'ERROR'" style="color: #0066B3; margin-right: 10px; cursor: pointer;" nz-icon nzType="calendar"
                         nzTheme="outline" nz-popover
-                        [nzPopoverContent]="'Tạo Backup'"
+                        [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
                         nzPopoverPlacement="bottom" (click)="navigateToCreateBackup(i.id, i.creationDate, i.expirationDate, i.name)"></span>
                   <one-portal-delete-volume [region]="region"
                                             [project]="project"
@@ -329,8 +329,8 @@
                         [nzDropdownMenu]="opMenu"></span>
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToCreateScheduleBackup(i.id)">Tạo lịch backup</li>
-                      <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">Tạo lịch Snapshot</li>
+                      <li nz-menu-item (click)="navigateToCreateScheduleBackup(i.id)">{{'volume.menu.create.schedule.backup' | i18n}}</li>
+                      <li nz-menu-item (click)="navigateToCreateScheduleSnapshot()">{{'volume.menu.create.schedule.snapshot' | i18n}}</li>
                       <one-portal-update-volume [region]="region" [project]="project" [volume]="i" (onOk)="handleOkUpdate()"/>
                     </ul>
                   </nz-dropdown-menu>
@@ -349,18 +349,18 @@
             </nz-row>
             <nz-row style="margin-top: 20px">
               <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-title" style="color: #0066b3">Volume<br>Lưu trữ ổ đĩa máy chủ</span>
+                <span class="text-intro-title" style="color: #0066b3">{{'volume.intro.title' | i18n}}
+                  <br>{{'volume.intro.title2' | i18n}}</span>
               </nz-col>
             </nz-row>
             <nz-row style="margin-top: 20px">
               <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều
-                loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.</span>
+                <span class="text-intro-desc">{{'volume.intro.subtitle' | i18n}}</span>
               </nz-col>
             </nz-row>
             <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-              Khởi tạo Volume
+              {{'volume.button.create' | i18n}}
             </button>
           </result>
         </ng-container>

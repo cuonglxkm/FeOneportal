@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject} from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {NguCarouselConfig} from "@ngu/carousel";
 import {OfferItem} from "../../instances/instances.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -19,7 +19,7 @@ import {VpcService} from "../../../shared/services/vpc.service";
   styleUrls: ['./vpc-update.component.less'],
   animations: [slider],
 })
-export class VpcUpdateComponent {
+export class VpcUpdateComponent implements OnInit{
   public carouselTileConfig: NguCarouselConfig = {
     grid: {xs: 1, sm: 1, md: 2, lg: 4, all: 0},
     speed: 250,
@@ -330,11 +330,11 @@ export class VpcUpdateComponent {
           this.data = data;
           this.form.controls['name'].setValue(data.cloudProjectName);
           this.form.controls['description'].setValue(data.description);
-          this.form.controls['vCPU'].setValue(data.quotavCpu);
-          this.form.controls['ram'].setValue(data.quotaRamInGb);
-          this.form.controls['hhd'].setValue(data.quotaHddInGb);
-          this.form.controls['ssd'].setValue(data.quotaSSDInGb);
-          if (data.offerId != undefined && data.offerId != null) {
+          this.vCPU = data.quotavCpu;
+          this.ram = data.quotaRamInGb;
+          this.hhd = data.quotaHddInGb;
+          this.ssd = data.quotaSSDInGb;
+          if (data.offerId != null) {
             this.selectIndexTab = 0;
             if (data.quotaIpv6Count != 0) {
               this.form.controls['ipType'].setValue('2');
@@ -344,9 +344,7 @@ export class VpcUpdateComponent {
               this.form.controls['ipType'].setValue('1');
             }
           } else {
-            console.log(this.selectIndexTab)
             this.selectIndexTab = 1;
-            console.log(this.selectIndexTab)
           }
 
           this.numberNetwork = data.quotaNetworkCount

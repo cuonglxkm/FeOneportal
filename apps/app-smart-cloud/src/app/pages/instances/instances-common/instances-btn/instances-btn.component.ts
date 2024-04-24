@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnInit,
@@ -15,6 +16,8 @@ import { InstancesModel } from '../../instances.model';
 import { LoadingService } from '@delon/abc/loading';
 import { finalize } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -30,6 +33,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   inputConfirm: string = '';
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private route: Router,
@@ -37,7 +41,9 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     private loadingSrv: LoadingService
   ) {}
 
+  isViLanguage: boolean;
   ngOnInit(): void {
+    this.isViLanguage = this.i18n.currentLang == 'vi-VI' ? true : false;
     this.dataService.getById(this.instancesId, true).subscribe((data: any) => {
       this.instancesModel = data;
       this.cdr.detectChanges();
@@ -61,7 +67,12 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   showModalDelete() {
     this.isVisibleDelete = true;
     this.inputConfirm = '';
-    this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
+    if (this.isViLanguage) {
+      this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
+    } else {
+      this.titleDeleteInstance =
+        'Delete the ' + this.instancesModel.name + ' instance';
+    }
   }
 
   handleOkDelete() {
@@ -173,6 +184,18 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
             this.notification.error(e.statusText, e.error.detail);
           },
         });
+    }
+  }
+
+  changeAutoCreate() {
+    this.resetPassword = '';
+    this.resetPasswordRepeat = '';
+    if (this.autoCreate) {
+      this.formPass.get('newpass').disable();
+      this.formPass.get('passRepeat').disable();
+    } else {
+      this.formPass.get('newpass').enable();
+      this.formPass.get('passRepeat').enable();
     }
   }
 

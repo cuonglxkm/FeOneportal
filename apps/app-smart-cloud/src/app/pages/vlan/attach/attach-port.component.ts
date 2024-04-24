@@ -74,7 +74,7 @@ export class AttachPortComponent {
         this.isVisibleAttach = false
         this.isLoadingAttach = false
         this.instanceSelected = null
-        this.notification.error('Thất bại', 'Gắn port vào máy ảo thất bại')
+        this.notification.error('Thất bại', 'Gắn port vào máy ảo thất bại. ', error.error.detail)
       })
     }
 

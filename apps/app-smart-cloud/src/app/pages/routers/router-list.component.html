@@ -1,14 +1,14 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Thông tin Router'"
+  [title]="('app.info' | i18n) + ' Router'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Quản lý Router </nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{'kafka.detail.manage' | i18n}} Router </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -39,7 +39,7 @@
       <nz-select
         style="width: 20%"
         [ngModelOptions]="{ standalone: true }"
-        [nzPlaceHolder]="'Trạng thái'"
+        nzPlaceHolder="{{'app.text.status' | i18n}}"
         [nzShowSearch]="false"
         (ngModelChange)="doSearch()"
         nzSize="large"
@@ -58,7 +58,7 @@
         <input
           name="name"
           nz-input
-          placeholder="Tìm kiếm"
+          placeholder="{{'app.button.search' | i18n}}"
           (keyup.enter)="doSearch()"
         />
       </nz-input-group>
@@ -67,7 +67,7 @@
           src="assets/imgs/search.svg"
           alt=""
           style="cursor: pointer"
-          nz-tooltip="Tìm kiếm"
+          nz-tooltip="{{'app.button.search' | i18n}}"
           (click)="doSearch()"
         />
       </ng-template>
@@ -88,7 +88,7 @@
           src="assets/imgs/add-circle.svg"
           alt=""
         />
-        Tạo mới Router
+        {{'app.label.create' | i18n}} Router
       </button>
     </div>
   </div>
@@ -108,10 +108,10 @@
   >
     <thead>
       <tr>
-        <th nzLeft>Tên Router</th>
-        <th>Dải mạng</th>
-        <th>Trạng thái</th>
-        <th nzRight>Thao tác</th>
+        <th nzLeft>{{'app.create-user-groups.name' | i18n}}</th>
+        <th>{{'app.network.range' | i18n}}</th>
+        <th>{{'app.text.status' | i18n}}</th>
+        <th nzRight>{{'app.text.operation' | i18n}}</th>
       </tr>
     </thead>
     <tbody>
@@ -119,7 +119,7 @@
         <td nzLeft>
           <a
             nz-tooltip
-            nzTooltipTitle="Xem chi tiết"
+            nzTooltipTitle="{{'app.view.detail' | i18n}}"
             nzTooltipPlacement="bottom"
             [routerLink]="'/app-smart-cloud/network/router/detail/' + data.cloudId"
             >{{ data.routerName }}</a
@@ -139,14 +139,14 @@
             alt=""
             (click)="modalEdit(data)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Chỉnh sửa"
+            nz-tooltip="{{'app.text.edit' | i18n}}"
           />
           <img
             src="assets/imgs/trash.svg"
             alt=""
             (click)="modalDelete(data.cloudId, data.routerName)"
             style="cursor: pointer; margin-right: 16px"
-            nz-tooltip="Xóa"
+            nz-tooltip="{{'app.delete' | i18n}}"
           />
         </td>
       </tr>
@@ -172,11 +172,8 @@
       <nz-row style="margin-top: 20px">
         <nz-col class="text-center" style="width: 100%"
           ><span class="text-intro-desc">
-            Router kết nối thiết bị trong một mạng bằng cách chuyển gói dữ liệu
-            giữa chúng bằng cách gán địa chỉ IP cục bộ cho mỗi thiết bị trên
-            mạng.<br />
-            Điều này đảm bảo gói dữ liệu đến đúng nơi, không bị thất lạc trong
-            mạng.</span
+            {{'app.router.note1' | i18n}}<br />
+          {{'app.router.note2' | i18n}}</span
           ></nz-col
         >
       </nz-row>
@@ -192,7 +189,7 @@
           src="assets/imgs/cloud-plus-bold.svg"
           alt=""
         />
-        Khởi tạo Router
+        {{'app.button.create' | i18n}} Router
       </button>
     </result>
   </nz-card>
@@ -200,15 +197,15 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
-  nzTitle="Tạo mới Router"
+  nzTitle="{{'app.label.create' | i18n}} Router"
   (nzOnCancel)="handleCancelCreate()"
 >
   <ng-container *nzModalContent>
     <div class="text-label">
-      Tên Router (<span class="text-red">*</span>)
+      {{'form.account.name' | i18n}} Router (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Tối đa 50 ký tự, không có khoảng trắng và dấu tiếng việt"
+        nz-tooltip="{{'app.router.note3' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -222,22 +219,22 @@
       [ngModelOptions]="{ standalone: true }"
     />
     <span class="text-label"
-      >Chọn Network
+      >{{'app.select.network' | i18n}}
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Để tạo router dịch vụ Direct connect, cần chọn dải network direct connect SmartCloud đã cung cấp."
+        nz-tooltip="{{'app.router.note4' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
     /></span>
     <nz-form-control style="margin-top: 5px">
       <nz-input-group>
         <nz-select
-          [nzPlaceHolder]="'-- Chọn Network --'"
+          nzPlaceHolder="{{'app.select.network.dr' | i18n}}"
           [nzShowSearch]="true"
           [(ngModel)]="routerCreate.networkId"
           nzSize="large"
         >
-          <nz-option nzLabel="-- Chọn Network --" [nzValue]="" />
+          <nz-option nzLabel="{{'app.select.network.dr' | i18n}}" [nzValue]="" />
           <nz-option
             *ngFor="let p of listNetwork"
             [nzValue]="p.cloudId"
@@ -252,7 +249,7 @@
       nz-checkbox
       [(ngModel)]="isTrigger"
       [ngModelOptions]="{ standalone: true }"
-      >Kích hoạt</label
+      >{{'app.trigger' | i18n}}</label
     >
   </ng-container>
   <div *nzModalFooter>
@@ -261,26 +258,27 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()">
+    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isLoadingCreateRouter">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+        *ngIf="isLoadingCreateRouter === false"
+      />{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleEdit"
-  nzTitle="Chỉnh sửa Router"
+  nzTitle="{{'app.text.edit' | i18n}} Router"
   (nzOnCancel)="handleCancelEdit()"
 >
   <ng-container *nzModalContent>
     <div class="text-label">
-      Tên Router(<span class="text-red">*</span>)
+      {{'form.account.name' | i18n}} Router(<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="message-question"
@@ -297,7 +295,7 @@
       [ngModelOptions]="{ standalone: true }"
     />
     <span class="text-label"
-      >Chọn Network
+      >{{'app.select.network' | i18n}}
       <img
         style="padding-right: 10px; margin-top: -4px"
         nz-tooltip="message-question"
@@ -307,7 +305,7 @@
     <nz-form-control style="margin-top: 5px">
       <nz-input-group>
         <nz-select
-          [nzPlaceHolder]="'-- Chọn Network --'"
+          nzPlaceHolder="{{'app.select.network.dr' | i18n}}"
           [nzShowSearch]="true"
           [(ngModel)]="routerUpdate.networkId"
           nzSize="large"
@@ -326,7 +324,7 @@
       nz-checkbox
       [(ngModel)]="isTrigger"
       [ngModelOptions]="{ standalone: true }"
-      >Kích hoạt</label
+      >{{'app.trigger' | i18n}}</label
     >
   </ng-container>
   <div *nzModalFooter>
@@ -335,21 +333,22 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkEdit()">
+    <button nz-button nzType="primary" (click)="handleOkEdit()" >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+
+      />{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>
 
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="Xóa Router"
+  nzTitle="{{'app.delete' | i18n}} Router"
   (nzOnCancel)="handleCancelDelete()"
 >
   <ng-container *nzModalContent>
@@ -361,17 +360,16 @@
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
       <div>
-        Bạn đang thực hiện xóa Router <b> {{ nameRouterDelete }} </b>
+        {{'app.router.note5' | i18n}} <b> {{ nameRouterDelete }} </b>
       </div>
       <div>
-        Bạn phải xóa Router Interface và Static Router trước khi thực hiện xóa
-        Router
+        {{'app.router.note6' | i18n}}
       </div>
-      <div>Hành động này không thể được hoàn tác</div>
+      <div>{{'app.router.note7' | i18n}}</div>
     </ng-template>
 
     <span class="text-label"
-      >Để thực hiện xóa Router, vui lòng nhập tên Router để xác nhận</span
+      >{{'app.router.note8' | i18n}}</span
     >
     <nz-form-control>
       <input
@@ -389,7 +387,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDelete()">
       <img
@@ -397,7 +395,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
       />
-      Xác nhận
+      {{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>

@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Chi tiết L7 Policy'" xmlns="http://www.w3.org/1999/html">
+             [title]="'Chỉnh sửa L7 Policy'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb>
       <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
@@ -44,8 +44,13 @@
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
-            <nz-form-control nzDisableAutoTips>
-              <input nz-input class="input-custom" formControlName="nameL7" [placeholder]="'Tên L7 policy'" appAutofocus/>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="nameL7ErrorTpl">
+              <input nz-input class="input-custom" [maxlength]="50" formControlName="nameL7" [placeholder]="'Tên L7 policy'" appAutofocus/>
+              <ng-template #nameL7ErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập thông tin</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">không được chứa dấu cách, dấu tiếng việt và ký tự đặc biệt</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên L7 Policy đã tồn tại, vui lòng nhập tên khác</ng-container>
+              </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
@@ -129,10 +134,11 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                                                    <textarea nz-input class="input-custom"
-                                                              formControlName="description"
-                                                              [placeholder]="'Nhập nội dung'" [maxLength]="255"
-                                                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+              <textarea nz-input class="input-custom"
+                        formControlName="description"
+                        [placeholder]="'Nhập nội dung'" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"
+              (keydown.enter)="focusOkButton($event)"></textarea>
               <ng-template #descriptionErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 kí tự</ng-container>
               </ng-template>

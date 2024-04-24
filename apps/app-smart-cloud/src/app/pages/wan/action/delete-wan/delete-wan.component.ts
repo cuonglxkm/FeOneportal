@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { WanService } from '../../../../shared/services/wan.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-delete-wan',
@@ -27,6 +29,7 @@ export class DeleteWanComponent {
 
   constructor(private fb: NonNullableFormBuilder,
               private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private ipWanService: WanService) {
   }
   showModalDelete() {
@@ -46,17 +49,17 @@ export class DeleteWanComponent {
         if(data){
           this.isVisible = false
           this.isLoading = false
-          this.notification.success('Thành công', 'Xóa IP WAN thành công')
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.wan.note22'))
           this.onOk.emit(data)
         } else {
           this.isVisible = false
           this.isLoading = false
-          this.notification.error('Thất bại', 'Xóa IP WAN thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note23'))
         }
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error('Thất bại', 'Xóa IP WAN thất bại')
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.wan.note23'))
       })
     }
   }

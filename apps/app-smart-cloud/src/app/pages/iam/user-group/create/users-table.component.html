@@ -1,7 +1,7 @@
 <nz-card>
   <nz-row nzJustify="space-between" style="margin-bottom: 16px">
     <nz-col>
-      <div style="font-size: 20px; font-weight: 600">Thêm User vào Group (Optional) ({{listOfSelected?.length}}/{{filteredUsers?.length}})</div>
+      <div style="font-size: 20px; font-weight: 600">{{ 'app.create-user-groups.addUser' | i18n }} ({{ 'app.create-user-groups.optional' | i18n }}) ({{listOfSelected?.length}}/{{filteredUsers?.length}})</div>
     </nz-col>
     <nz-col>
       <nz-space>
@@ -16,7 +16,7 @@
           <input
             name="name"
             nz-input
-            placeholder="Tìm kiếm tên, thời gian tạo ..."
+            [placeholder]="'app.users.search' | i18n"
           />
         </nz-input-group>
         <ng-template #prefixIconSearch>
@@ -56,9 +56,9 @@
           [nzIndeterminate]="indeterminate"
           nzLabel="Select all"
           (nzCheckedChange)="onAllChecked($event)"></th>
-      <th>Name</th>
+      <th>{{ 'app.create-user-groups.name' | i18n }}</th>
       <th>Groups</th>
-      <th>Thời gian tạo</th>
+      <th>{{ 'app.users.createDate' | i18n }}</th>
     </tr>
     </thead>
     <tbody>

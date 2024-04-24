@@ -213,7 +213,7 @@ export class CreateNetworkComponent implements OnInit {
 
       }, error => {
         this.isLoading = false;
-        this.notification.error('Thất bại', 'Thêm mới Network thất bại');
+        this.notification.error('Thất bại', 'Thêm mới Network thất bại. ', error.error.detail);
       });
     } else {
       console.log('value form invalid', this.validateForm.getRawValue());

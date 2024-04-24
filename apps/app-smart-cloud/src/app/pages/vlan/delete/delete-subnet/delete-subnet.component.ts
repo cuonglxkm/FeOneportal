@@ -67,10 +67,11 @@ export class DeleteSubnetComponent implements AfterViewInit {
         this.isVisibleDeleteSubnet = false;
         this.isLoadingDeleteSubnet = false;
         this.notification.success('Thành công', 'Xoá subnet thành công');
+        this.onOk.emit(item)
       }, error => {
         this.isVisibleDeleteSubnet = false;
         this.isLoadingDeleteSubnet = false;
-        this.notification.error('Thất bại', 'Xoá subnet thất bại');
+        this.notification.error('Thất bại', 'Xoá subnet thất bại. ', error.error.detail);
       });
 
     } else {

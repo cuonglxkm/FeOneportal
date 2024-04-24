@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { RegionModel } from '../../../shared/models/region.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NguCarouselConfig } from '@ngu/carousel';
@@ -13,6 +13,7 @@ import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { OfferDetail } from '../../../shared/models/catalog.model';
 import { da } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'one-portal-vpc-create',
@@ -21,7 +22,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   animations: [slider]
 })
 
-export class VpcCreateComponent {
+export class VpcCreateComponent implements OnInit{
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -97,17 +98,13 @@ export class VpcCreateComponent {
     numOfMonth: new FormControl(1, { validators: [Validators.required] }),
     //tab 1
     ipType: new FormControl('', { validators: [] }),
-    //tab 2
-    // vCPU: new FormControl(1, {validators: [Validators.required]}),
-    // vCPU1: new FormControl(1, {validators: [Validators.required]}),
-    // ram: new FormControl(1, {validators: [Validators.required]}),
-    // hhd: new FormControl(0),
-    // ssd: new FormControl(0),
 
     loadBalancerId: new FormControl('', { validators: [] }),
     siteToSiteId: new FormControl('', { validators: [] })
   });
 
+  private searchSubject = new Subject<string>();
+  private readonly debounceTimeMs = 500;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancesService: InstancesService,
               private cdr: ChangeDetectorRef,
@@ -123,9 +120,12 @@ export class VpcCreateComponent {
     this.initVpnSiteToSiteData();
     this.initLoadBalancerData();
     this.loadListIpConnectInternet();
+    this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      this.calculateReal();
+    });
   }
 
-  calculate(number: any) {
+  calculateReal() {
     if (this.vpcType == '1') {
       let lstIp = this.form.controls['ipConnectInternet'].value.split('--');
       let ip = '';
@@ -209,9 +209,8 @@ export class VpcCreateComponent {
       }
     }
   }
-
-  onChangeConfigCustom() {
-
+  calculate(number: any) {
+    this.searchSubject.next('');
   }
 
   selectPackge = '';
@@ -271,10 +270,6 @@ export class VpcCreateComponent {
     dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
     this.expiredDate = dateNow;
     this.calculate(null);
-  }
-
-  backToList() {
-    this.router.navigate(['/app-smart-cloud/vpc']);
   }
 
   createIpPublic() {
@@ -451,25 +446,33 @@ export class VpcCreateComponent {
 
   private getPriceEachComponent(data: any) {
     console.log(data.orderItemPrices);
-    this.price.fileStorage = 0;
+    let fileStorage = 0
     for (let item of data.orderItemPrices[0]?.details) {
       if (item.typeName == 'ippublic') {
-        this.price.IpPublic = item.unitPrice.amount;
+        this.price.IpPublic = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'ipfloating') {
-        this.price.IpFloating = item.unitPrice.amount;
+        this.price.IpFloating = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'ipv6') {
-        this.price.IpV6 = item.unitPrice.amount;
+        this.price.IpV6 = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'backup') {
-        this.price.backup = item.unitPrice.amount;
+        this.price.backup = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'filestorage') {
-        this.price.fileStorage += item.unitPrice.amount;
+        fileStorage += item.unitPrice.amount;
       } else if (item.typeName == 'filestorage-snapshot') {
-        this.price.fileStorage += item.unitPrice.amount;
+        fileStorage += item.unitPrice.amount;
       } else if (item.typeName == 'loadbalancer') {
-        this.price.loadBalancer = item.unitPrice.amount;
+        this.price.loadBalancer = item.unitPrice.amount.toLocaleString();
       } else if (item.typeName == 'vpn-site-to-site') {
-        this.price.siteToSite = item.unitPrice.amount;
+        this.price.siteToSite = item.unitPrice.amount.toLocaleString();
       }
+    }
+    this.price.fileStorage = fileStorage;
+  }
+
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+      event.preventDefault();
     }
   }
 }

@@ -48,13 +48,12 @@
                          [(ngModel)]="selectedSG"
                          [nzLoading]="isLoadingSG"
                          nzSize="large"
-                         (ngModelChange)="onSecurityGroupChange()" style="width: 250px; border-radius: 8px;">
+                         (ngModelChange)="onSecurityGroupChange($event)" style="width: 250px; border-radius: 8px;">
                 <nz-option *ngFor="let item of listSG" [nzValue]="item" nzLabel="{{ item.name }}"></nz-option>
               </nz-select>
               <div *nzSpaceItem>
-                <one-portal-delete-security-group *ngIf="!!selectedSG"
-                                                  [nameSG]="selectedSG.name"
-                                                  [id]="selectedSG.id"
+                <one-portal-delete-security-group [nameSG]="selectedSG?.name"
+                                                  [idSG]="selectedSG?.id"
                                                   [region]="region"
                                                   [project]="project"
                                                   (onOk)="handleOKDeleteSG()" />
@@ -117,12 +116,14 @@
                   <td nzAlign="center" nzBreakWord>{{ data.ipPrivate }}</td>
                   <td nzAlign="center" nzBreakWord>{{ data.ipPublic }}</td>
                   <td nzAlign="center" nzBreakWord>
-                    <ng-container *ngIf="data?.securityGroupStr?.includes(selectedSG?.id);else elseBlock">
-                      <one-portal-attach-vm [idVm]="data.id"/>
-                    </ng-container>
-                    <ng-template #elseBlock>
-                      <one-portal-detach-vm [id]="data.id"/>
-                    </ng-template>
+                      <one-portal-attach-vm *ngIf="!(data?.securityGroups?.includes(selectedSG?.id))"
+                                            [idVm]="data.id"
+                                            [securityGroupId]="selectedSG?.id"
+                                            (onOk)="handleAttachSG()"/>
+                      <one-portal-detach-vm *ngIf="data?.securityGroups?.includes(selectedSG?.id)"
+                                            [idVm]="data?.id"
+                                            [securityGroupId]="selectedSG?.id"
+                                            (onOk)="handleDetachSG()"/>
                   </td>
                 </tr>
                 </tbody>

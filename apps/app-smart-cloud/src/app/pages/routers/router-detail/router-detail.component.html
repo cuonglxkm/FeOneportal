@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Thông tin Router'"
+  [title]="('app.detail' | i18n) + ' Router'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb>
@@ -9,9 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/network/router']">Quản lý Router</a>
+        <a [routerLink]="['/app-smart-cloud/network/router']">{{'kafka.detail.manage' | i18n}} Router</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Chi tiết Router </nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{'app.detail' | i18n}} Router </nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
@@ -42,7 +42,7 @@
             src="assets/imgs/add-circle.svg"
             alt=""
           />
-          Tạo mới
+          {{'app.label.create' | i18n}}
         </button>
       </div>
       <nz-table
@@ -58,9 +58,9 @@
       >
         <thead>
           <tr>
-            <th>Tên Subnet</th>
-            <th>Địa chỉ IP</th>
-            <th nzRight>Thao tác</th>
+            <th>{{'form.account.name' | i18n}} Subnet</th>
+            <th>{{'app.ip.address' | i18n}}</th>
+            <th nzRight>{{'app.text.operation' | i18n}}</th>
           </tr>
         </thead>
         <tbody>
@@ -76,7 +76,7 @@
                   alt=""
                   (click)="modalDeleteInterface(item.subnetCloud)"
                   style="cursor: pointer; margin-right: 16px"
-                  nz-tooltip="Xóa"
+                  nz-tooltip="{{'app.delete' | i18n}}"
                 />
               </td>
             </tr>
@@ -97,7 +97,7 @@
             src="assets/imgs/add-circle.svg"
             alt=""
           />
-          Tạo mới
+          {{'app.label.create' | i18n}}
         </button>
       </div>
       <nz-table
@@ -113,9 +113,9 @@
       >
         <thead>
           <tr>
-            <th>Destination CIDR</th>
+            <th>CIDR</th>
             <th>Next Hop</th>
-            <th>Thao tác</th>
+            <th>{{'app.text.operation' | i18n}}</th>
           </tr>
         </thead>
         <tbody>
@@ -128,7 +128,7 @@
                 alt=""
                 (click)="modalDeleteStatic(item)"
                 style="cursor: pointer; margin-right: 16px"
-                nz-tooltip="Xóa"
+                nz-tooltip="{{'app.delete' | i18n}}"
               />
             </td>
           </tr>
@@ -144,29 +144,29 @@
       src="assets/imgs/arrow-left-2.svg"
       alt=""
     />
-    <span>Quay lại</span>
+    <span>{{'app.order-detail.back' | i18n}}</span>
   </button>
 </div>
 
 <nz-modal
   [(nzVisible)]="isVisibleCreateInterface"
-  nzTitle="Tạo mới Router Interface"
+  nzTitle="{{'app.router.note18' | i18n}}"
   (nzOnCancel)="handleCancelCreateInterface()"
 >
 <form nz-form [formGroup]="formRouterInterface">
   <ng-container *nzModalContent>
     <div class="text-label">
-      Chọn Subnet (<span class="text-red">*</span>)
+      app.choose.subnet (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Các subnet hiển thị ở đây yêu cầu phải có gateway thì mới add routerinterface"
+        nz-tooltip="{{'app.router.note17' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
     </div>
     <nz-select
       style="width: 100%; margin-bottom: 16px; margin-top: 5px"
-      [nzPlaceHolder]="'-- Chọn Subnet --'"
+      nzPlaceHolder="{{'app.choose.subnet' | i18n}}"
       [nzShowSearch]="true"
       formControlName="subnetId"
       nzSize="large"
@@ -199,11 +199,11 @@
       <nz-form-control [nzErrorTip]="ipErrorTpl">
       <nz-form-label nzFor="name">
         <div>
-          <span>IP của Router Interface</span>
+          <span>{{'app.router.note20' | i18n}}</span>
           (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
           <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Địa chỉ IP Là địa chỉ bất kỳ của subnet vừa chọn và chưa được sử dụng"
+        nz-tooltip="{{'app.router.note19' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -217,9 +217,9 @@
       formControlName="ipAddress"
     />
       <ng-template #ipErrorTpl let-control>
-        <ng-container *ngIf="control.hasError('required')">Địa chỉ IP không được để trống</ng-container>
-        <ng-container *ngIf="control.hasError('invalidSubnetIP')">Địa chỉ IP sai định dạng</ng-container>
-        <ng-container *ngIf="control.hasError('invalidLastNumber')">Địa chỉ IP sai định dạng</ng-container>
+        <ng-container *ngIf="control.hasError('required')">{{'app.router.note21' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidSubnetIP')">{{'app.router.note22' | i18n}}</ng-container>
+        <ng-container *ngIf="control.hasError('invalidLastNumber')">{{'app.router.note22' | i18n}}</ng-container>
       </ng-template>
     </nz-form-control>
     </nz-form-item>
@@ -230,7 +230,7 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary" (click)="handleOkCreateInterface()" [nzLoading]="isLoadingRouterInterface">
       <img
@@ -238,7 +238,7 @@
         src="assets/imgs/confirm.svg"
         alt=""
         *ngIf="isLoadingRouterInterface === false"
-      />Xác nhận
+      />{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </form>
@@ -252,10 +252,10 @@
 <form nz-form [formGroup]="formRouterStatic">
   <ng-container *nzModalContent>
     <div class="text-label">
-      Dải Subnet đích (CIDR) (<span class="text-red">*</span>)
+      {{'app.router.note23' | i18n}} (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Destination CIDR, điểm đích muốn đến, hiểu đơn giản là muốn tới địa điểm này, thì phải đi qua đường IP ở NextHop"
+        nz-tooltip="{{'app.router.note24' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -271,7 +271,7 @@
       Next Hop (<span class="text-red">*</span>)
       <img
         style="padding-right: 10px; margin-top: -4px"
-        nz-tooltip="Là địa chỉ nằm trong dải Subnet đã được chọn bên phần Router Interface"
+        nz-tooltip="{{'app.router.note25' | i18n}}"
         src="assets/imgs/message-question.svg"
         alt=""
       />
@@ -290,15 +290,15 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary" (click)="handleOkCreateStatic()" [nzLoading]="isLoadingRouterStatic">
-      <img 
+      <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-        
-      />Xác nhận
+
+      />{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </form>
@@ -306,7 +306,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleDeleteInterface"
-  nzTitle="Xóa Router Interface"
+  nzTitle="{{'app.router.note26' | i18n}}"
   (nzOnCancel)="handleCancelDeleteInterface()"
 >
   <div *nzModalContent>
@@ -316,8 +316,8 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
-      <div>Bạn đang thực hiện xoá Router Interface</div>
-      <div>Bạn có chắc chăn muốn xóa không ?</div>
+      <div>{{'app.router.note27' | i18n}}</div>
+      <div>{{'app.router.note28' | i18n}}</div>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -326,14 +326,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDeleteInterface()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>
@@ -350,8 +350,8 @@
       nzShowIcon
     ></nz-alert>
     <ng-template #customTemplateMessageDelete>
-      <div>Bạn đang thực hiện xoá Static Router</div>
-      <div>Bạn có chắc chăn muốn xóa không ?</div>
+      <div>{{'app.router.note29' | i18n}}</div>
+      <div>{{'app.router.note28' | i18n}}</div>
     </ng-template>
   </div>
   <div *nzModalFooter>
@@ -360,14 +360,14 @@
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/cancel.svg"
         alt=""
-      />Hủy
+      />{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary" (click)="handleOkDeleteStatic()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-      />Xác nhận
+      />{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>

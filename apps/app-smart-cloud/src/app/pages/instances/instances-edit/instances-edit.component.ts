@@ -59,7 +59,7 @@ class ConfigGPU {
 export class InstancesEditComponent implements OnInit {
   //danh sách các biến của form model
   id: number;
-  instancesModel: InstancesModel;
+  instancesModel: InstancesModel = new InstancesModel();
   instanceNameEdit: string = '';
 
   instanceResize: InstanceResize = new InstanceResize();
@@ -81,6 +81,11 @@ export class InstancesEditComponent implements OnInit {
   configGPU: ConfigGPU = new ConfigGPU();
   isConfigPackage: boolean = true;
   cardHeight: string = '160px';
+
+  listGPUType: any[] = [
+    { type: 'a30', displayName: 'Nvidia A30' },
+    { type: 'a100', displayName: 'Nvidia A100' },
+  ];
 
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },

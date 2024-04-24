@@ -1,0 +1,38 @@
+<img src="assets/imgs/delete.svg" style="height: 20px; cursor: pointer;"
+     nz-popover
+     [nzPopoverContent]="'Xóa'"
+     nzPopoverPlacement="bottom" (click)="showModal()"/>
+<nz-modal [(nzVisible)]="isVisible"
+          (nzOnCancel)="handleCancel()" nzMask="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">Xác nhận xóa L7 Policy {{ L7Name }}</span>
+  </div>
+  <div *nzModalContent>
+    <nz-alert nzBanner
+              nzShowIcon
+              [nzMessage]="'Bạn đang thực hiện xóa L7 Policy'">
+    </nz-alert>
+    <div style="margin-top: 10px;">
+      <span class="text-label">Đế thực hiện xoá L7 Policy {{ L7Name }}, vui lòng nhập tên L7 Policy để xác nhận.</span>
+      <input nz-input #L7InputName
+             style="margin-top: 10px;"
+             class="input-custom"
+             [ngModel]="value"
+             (keydown.enter)="focusOkButton($event)"
+             (ngModelChange)="onInput($event)"
+             [placeholder]="'Nhập tên L7 Policy'"/>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên L7 Policy</span>
+    </div>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+    </button>
+  </div>
+</nz-modal>
