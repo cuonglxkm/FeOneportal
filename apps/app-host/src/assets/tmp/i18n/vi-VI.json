@@ -790,10 +790,7 @@
   "app.select.network": "Chọn Network",
   "app.trigger": "Kích hoạt",
   "app.detail": "Chi tiết",
-  "app.network.range": "Dải mạng"
-  "validation.kafka.logSegmentBytes-length": "Giá trị log.segment.bytes là số nguyên dương nằm trong khoảng 1 đến 10.737.418.240 (10GB)",
-
-
+  "app.network.range": "Dải mạng",
 
   "volume.title": "Danh sách Volume",
   "volume.title.detail": "Chi tiết Volume",
