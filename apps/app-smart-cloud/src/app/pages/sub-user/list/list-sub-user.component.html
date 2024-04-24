@@ -1,70 +1,107 @@
-<page-header *ngIf="hasOS" [breadcrumb]="breadcrumb" [action]="action"
-             [title]="'Quản lý Sub-User'">
+<page-header
+  *ngIf="hasOS"
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.sub.user.manage' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb>
-      <nz-breadcrumb-item [routerLink]="'/'">Trang chủ</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Dịch vụ hạ tầng</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.home' | i18n
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/'">{{
+        'app.breadcrumb.infrastructure.service' | i18n
+      }}</nz-breadcrumb-item>
       <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'">Subuser</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'"
+        >Subuser</nz-breadcrumb-item
+      >
     </nz-breadcrumb>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
+      <region-select-dropdown
+        (valueChanged)="regionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        (valueChanged)="projectChanged($event)"
+        [regionId]="region"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 <nz-content *ngIf="hasOS">
-  <nz-card style="border-radius: 8px;">
+  <nz-card style="border-radius: 8px">
     <nz-row nzJustify="space-between">
       <nz-col [nzSpan]="8">
-        <span class="text-card-header">Danh sách Sub-User</span>
+        <span class="text-card-header">{{ 'app.sub.user.list' | i18n }}</span>
       </nz-col>
-      <nz-col [nzSpan]="16" style="flex:none;">
+      <nz-col [nzSpan]="16" style="flex: none">
         <div>
-          <nz-input-group [nzPrefix]="prefixIconSearch"
-                          nzSize="large"
-                          style="width: 300px;">
-            <input name="name"
-                   nz-input
-                   placeholder="Tìm kiếm"
-                   [(ngModel)]="value"
-                   (input)="onInputChange($event.target['value'])" />
+          <nz-input-group
+            [nzPrefix]="prefixIconSearch"
+            nzSize="large"
+            style="width: 300px"
+          >
+            <input
+              name="name"
+              nz-input
+              [placeholder]="'app.placeholder.search' | i18n"
+              [(ngModel)]="value"
+              (input)="onInputChange($event.target['value'])"
+            />
           </nz-input-group>
           <ng-template #prefixIconSearch>
-            <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="Tìm kiếm" />
+            <img
+              src="assets/imgs/search.svg"
+              alt=""
+              style="cursor: pointer"
+              [nz-tooltip]="'app.button.search' | i18n"
+            />
           </ng-template>
-          <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large"
-                  (click)="navigateToCreateSubUser()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-            <span class="button-text-primary">Tạo mới Subuser</span>
+          <button
+            style="margin-left: 10px"
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="navigateToCreateSubUser()"
+          >
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/add-circle.svg"
+              alt=""
+            />
+            <span class="button-text-primary">{{
+              'app.sub.user.create.button' | i18n
+            }}</span>
           </button>
         </div>
       </nz-col>
     </nz-row>
-    <nz-table #fixTable
-              style="margin-top: 24px;"
-              nzShowPagination
-              [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzPageIndex]="response?.currentPage"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              [nzTotal]="response?.totalCount"
-              [nzFrontPagination]="false"
-              [nzLoading]="isLoading">
-        <thead>
+    <nz-table
+      #fixTable
+      style="margin-top: 24px"
+      nzShowPagination
+      [nzData]="response?.records"
+      [nzPageSize]="response?.pageSize"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzPageIndex]="response?.currentPage"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzTotal]="response?.totalCount"
+      [nzFrontPagination]="false"
+      [nzLoading]="isLoading"
+    >
+      <thead>
         <tr>
           <th>STT</th>
-          <th>Tên Sub-User</th>
+          <th>{{ 'app.sub.user.name' | i18n }}</th>
           <th>Access Key</th>
-          <th>Quyền truy cập</th>
-          <th>Thao tác</th>
+          <th>{{ 'app.access.rights' | i18n }}</th>
+          <th>{{ 'app.text.operation' | i18n }}</th>
         </tr>
-        </thead>
-        <tbody>
+      </thead>
+      <tbody>
         <ng-container *ngFor="let data of fixTable.data; index as i">
           <tr *ngFor="let key of data.keys; index as k">
             <td *ngIf="k === 0">{{ i + 1 }}</td>
@@ -74,30 +111,45 @@
               <nz-row nzJustify="space-between">
                 <nz-col>{{ key.accessKey }}</nz-col>
                 <nz-col>
-                    <img src="assets/imgs/icon-copy.svg" alt="" width="15px;" height="15px;" style="cursor: pointer"
-                         nz-tooltip="Copy" (click)="copyText(key.accessKey)" />
+                  <img
+                    src="assets/imgs/icon-copy.svg"
+                    alt=""
+                    width="15px;"
+                    height="15px;"
+                    style="cursor: pointer"
+                    nz-tooltip="Copy"
+                    (click)="copyText(key.accessKey)"
+                  />
                 </nz-col>
               </nz-row>
             </td>
             <td>
-              <div *ngIf="data.permissions.includes('full-control')">Tất cả quyền truy cập</div>
-              <div *ngIf="!data.permissions.includes('full-control')">Không có quyền truy cập</div>
+              <div *ngIf="data.permissions.includes('full-control')">
+                {{ 'app.all.access.permission' | i18n }}
+              </div>
+              <div *ngIf="!data.permissions.includes('full-control')">
+                {{ 'app.no.access.permission' | i18n }}
+              </div>
             </td>
             <td>
-              <one-portal-edit-sub-user [region]="region"
-                                        [project]="project"
-                                        [idSubUser]="data.subUserId"
-                                        [uid]="data.userId"
-                                        (onOk)="handleOkEdit()" />
-              <one-portal-delete-sub-user [region]="region"
-                                          [project]="project"
-                                          [idSubUser]="data.subUserId"
-                                          [uid]="data.userId"
-                                          (onOk)="handleOkDelete()" />
+              <one-portal-edit-sub-user
+                [region]="region"
+                [project]="project"
+                [idSubUser]="data.subUserId"
+                [uid]="data.userId"
+                (onOk)="handleOkEdit()"
+              />
+              <one-portal-delete-sub-user
+                [region]="region"
+                [project]="project"
+                [idSubUser]="data.subUserId"
+                [uid]="data.userId"
+                (onOk)="handleOkDelete()"
+              />
             </td>
           </tr>
         </ng-container>
-        </tbody>
+      </tbody>
     </nz-table>
   </nz-card>
 </nz-content>
