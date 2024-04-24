@@ -46,12 +46,12 @@ export class DetachVmComponent {
     this.securityGroupService.attachOrDetach(attachOrDetachForm).subscribe(data => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.success('Thành công', 'Gỡ Security Group vào máy ảo thành công')
+      this.notification.success('Thành công', 'Gỡ Security Group khỏi máy ảo thành công')
       this.onOk.emit()
     }, error => {
       this.isLoading = false
       this.isVisible = false
-      this.notification.error('Thất bại', 'Gỡ Security Group vào máy ảo thất bại, ' + error.error.detail)
+      this.notification.error('Thất bại', 'Gỡ Security Group khỏi máy ảo thất bại, ' + error.error.detail)
     })
   }
 }
