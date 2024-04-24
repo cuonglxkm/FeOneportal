@@ -136,6 +136,9 @@ export class SshKeyComponent implements OnInit {
     this.isVisibleDetail = false;
     form?.resetForm();
     this.nameDeleteInput = '';
+    this.form.get('keypair_name_2').enable();
+    this.form.get('public_key').enable();
+    this.form.get('keypair_name_1').enable();
   }
 
   indexTab: number = 0;
