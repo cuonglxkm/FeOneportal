@@ -180,7 +180,7 @@ export class AppValidator {
     const [ip, subnetMask] = ipAddress.split('/');
 
     // Kiểm tra xem subnet mask có vượt quá 32 không
-    if (parseInt(subnetMask, 10) > 32) {
+    if (parseInt(subnetMask, 10) > 32 || !/^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(ipAddress)) {
       return { invalidSubnetMask: true }; // Trả về một object có thuộc tính invalidSubnetMask để chỉ ra lỗi
     }
     console.log('ip', ipAddress)

@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FileSystemService } from '../../../../../shared/services/file-system.service';
-import { FormDeleteFileSystem } from '../../../../../shared/models/file-system.model';
+import { FileSystemService } from '../../../shared/services/file-system.service';
+import { FormDeleteFileSystem } from '../../../shared/models/file-system.model';
 
 @Component({
   selector: 'one-portal-delete-file-system',
