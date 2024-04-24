@@ -166,7 +166,7 @@ export class SshKeyComponent implements OnInit {
     this.sshKeyService.createSshKey(ax)
       .pipe(finalize(() => {
         this.loading = false;
-        this.isVisibleCreate = false;
+        this.handleCancel(form);
       }))
       .subscribe({
       next: post => {
@@ -182,8 +182,6 @@ export class SshKeyComponent implements OnInit {
           this.notification.warning('Cảnh báo', `Public Key không đúng định dạng. Vui lòng nhập Public Key khác.`);
         }
         else {
-          this.isVisibleCreate = false;
-          form?.resetForm();
           this.notification.error('Thất bại', 'Tạo mới thất bại keypair');
         }
       },
