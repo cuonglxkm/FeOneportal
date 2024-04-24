@@ -629,7 +629,7 @@ const routes: Routes = [
     component: ExtendFileSystemNormalComponent
   },
   {
-    path: 'file-storage/:idFileSystem/resize',
+    path: 'file-storage/file-system/:idFileSystem/resize',
     component: ResizeFileSystemNormalComponent
   }
 ];
