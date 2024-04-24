@@ -121,7 +121,10 @@ export class SshKeyComponent implements OnInit {
     this.loading = true;
     // call api
     this.sshKeyService.deleteSshKey(this.data.id)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.handleCancel(null);
+      }))
       .subscribe(() => {
       this.loadSshKeys(true);
       this.notification.success('Thành công', 'Xóa thành công keypair')
@@ -130,15 +133,12 @@ export class SshKeyComponent implements OnInit {
   }
 
   handleCancel(form: any): void {
-    console.log('Button cancel clicked')
     this.isVisibleDelete = false;
     this.isVisibleCreate = false;
     this.isVisibleDetail = false;
     form?.resetForm();
     this.nameDeleteInput = '';
-    this.form.get('keypair_name_2').enable();
-    this.form.get('public_key').enable();
-    this.form.get('keypair_name_1').enable();
+    this.onTabchange(0 , form);
   }
 
   indexTab: number = 0;
@@ -172,7 +172,6 @@ export class SshKeyComponent implements OnInit {
       next: post => {
         this.loadSshKeys(true);
         this.notification.success('Thành công', 'Tạo mới thành công keypair');
-        form?.resetForm();
       },
       error: e => {
         if(e && e.error && e.error.detail && e.error.detail === `Key pair '${namePrivate}' already exists.`) {
@@ -238,4 +237,12 @@ export class SshKeyComponent implements OnInit {
   }
 
   fontSize = 16;
+
+  enterCreate(form: any) {
+    if (this.indexTab === 0 && this.form.controls['keypair_name_1'].value != '' && !this.form.invalid) {
+      this.handleCreate(form);
+    } else if (this.indexTab === 1 && this.form.controls['keypair_name_2'].value != ''&& this.form.controls['public_key'].value != '' && !this.form.invalid){
+      this.handleCreate(form);
+    }
+  }
 }
