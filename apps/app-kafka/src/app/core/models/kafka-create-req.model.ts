@@ -49,3 +49,19 @@ export class KafkaUpgradeReq {
         this.usageTime = 1;
     }
 }
+
+export class KafkaExtend {
+    serviceOrderCode: string;
+    regionId: number;
+    serviceName: string;
+    customerId: number;
+    vpcId: number;
+    typeName: string;
+    serviceType: number;
+    actionType: number;
+    serviceInstanceId: number;
+    newExpireDate: string;
+    userEmail: string;
+    actorEmail: string;
+  }
+  

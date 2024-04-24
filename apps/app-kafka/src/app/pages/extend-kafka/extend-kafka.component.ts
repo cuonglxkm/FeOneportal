@@ -7,6 +7,7 @@ import { camelizeKeys } from 'humps';
 import { NzStatus } from 'ng-zorro-antd/core/types';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { AppConstants } from 'src/app/core/constants/app-constant';
+import { KafkaExtend } from 'src/app/core/models/kafka-create-req.model';
 import { KafkaDetail } from 'src/app/core/models/kafka-infor.model';
 import { Order, OrderItem } from 'src/app/core/models/order.model';
 import { KafkaService } from 'src/app/services/kafka.service';
@@ -30,7 +31,7 @@ export class ExtendKafkaComponent implements OnInit {
   expiryDate: Date;
   startExpiryDate: Date;
   expectExpiryDate: Date;
-  duration: number;
+  duration = 0;
   statusInput: NzStatus = null;
   msgError = '';
   unitPrice = {
@@ -133,20 +134,38 @@ export class ExtendKafkaComponent implements OnInit {
     this.expectExpiryDate = new Date(d.getTime());
   }
 
+  kafkaExtendObj: KafkaExtend = new KafkaExtend();
+  initkafkaExtend() {
+    this.kafkaExtendObj.serviceOrderCode = this.itemDetail.serviceOrderCode;
+    this.kafkaExtendObj.serviceName = this.itemDetail.serviceName;
+    this.kafkaExtendObj.newExpireDate = this.expectExpiryDate
+      .toISOString()
+      .substring(0, 19);
+    this.kafkaExtendObj.customerId = this.tokenService.get()?.userId;
+    this.kafkaExtendObj.userEmail = this.tokenService.get()?.email;
+    this.kafkaExtendObj.actorEmail = this.tokenService.get()?.email;
+    this.kafkaExtendObj.vpcId = this.projectId;
+    this.kafkaExtendObj.regionId = this.regionId;
+    this.kafkaExtendObj.serviceType = AppConstants.KAFKA_TYPE_ID;
+    this.kafkaExtendObj.actionType = 0;
+    this.kafkaExtendObj.serviceInstanceId = 0;
+  }
+
   onSubmitPayment() {
+    this.initkafkaExtend();
     // handle payment
     const data: Order = new Order();
     const userId = this.tokenService.get()?.userId;
-    const kafka = null;
     data.customerId = userId;
     data.createdByUserId = userId;
     data.orderItems = [];
+    data.note = 'Gia hạn Kafka';
 
     const orderItem: OrderItem = new OrderItem();
     orderItem.price = this.extendAmount;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = AppConstants.KAFKA_EXTEND_TYPE;
-    orderItem.specification = JSON.stringify(kafka);
+    orderItem.specification = JSON.stringify(this.kafkaExtendObj);
     orderItem.serviceDuration = this.duration;
 
     data.orderItems = [...data.orderItems, orderItem];
