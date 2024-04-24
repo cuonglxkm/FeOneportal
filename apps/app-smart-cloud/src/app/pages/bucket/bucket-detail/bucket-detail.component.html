@@ -82,9 +82,9 @@
     </ng-container>
   </div>
   <!-- Bảng-->
-  <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
-            [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)"
-            (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="loading">
+  <nz-table #rowSelectionTable [nzData]="listOfData"
+            [nzTotal]="total" [nzFrontPagination]="false" [nzPageSize]="pageSize" (nzPageSizeChange)="onPageSizeChange($event)"
+            (nzPageIndexChange)="onPageIndexChange($event)" [nzPageIndex]="pageIndex" [nzLoading]="loading">
     <thead>
     <tr>
       <th
@@ -101,10 +101,10 @@
     </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of listOfData">
+      <tr *ngFor="let item of rowSelectionTable.data">
         <td [nzChecked]="setOfCheckedId.has(item.key)"
             (nzCheckedChange)="onItemChecked(item.key , $event)"></td>
-        <td *ngIf="item.objectType != 'folder'">{{item.key}}</td>
+        <td *ngIf="item.objectType != 'folder'">{{item.keyName}}</td>
         <td *ngIf="item.objectType == 'folder'" style="color: #0074CC" (click)="toFolder2(item.key + '/')">
           <img style="padding-right: 5px;" src="assets/imgs/folder.svg" alt=""/>
           {{item.key}}
@@ -245,13 +245,13 @@
   </ng-container>
 </nz-modal>
 <!--Tải file lên-->
-<nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="isVisibleUploadFile = false"
+<nz-modal [(nzVisible)]="isVisibleUploadFile" nzTitle="Tải File lên" (nzOnCancel)="handleCancelUploadFile()"
           (nzOnOk)="uploadAllFile()" nzOkText="Tải lên tất cả"
           nzCancelText="Hủy" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <!--      2 case trống file-->
     <div *ngIf="emptyFileUpload">
-      <nz-upload [nzFileList]="lstFileUpdate" nzType="drag" [nzMultiple]="true" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      <nz-upload [nzFileList]="lstFileUpdate" nzType="drag" [nzMultiple]="true"
                  (nzChange)="handleChange($event)">
         <img style="padding-right: 10px;" src="assets/imgs/document.svg" alt=""/>
         <img style="padding-right: 10px;" src="assets/imgs/document1.svg" alt=""/>
@@ -278,7 +278,10 @@
         <tr *ngFor="let item of lstFileUpdate, i as index">
           <td>{{item.name}}</td>
           <td>{{item.type}}</td>
-          <td>{{(item.size / 1024).toFixed(2)}} KB</td>
+          <td>
+            <div>{{(item.size / 1024).toFixed(2)}} KB</div>
+            <div><nz-progress *ngIf="item.percentage > 0" nzType="line" [nzPercent]="item.percentage" [nzStatus]="normal"></nz-progress></div>
+          </td>
           <td>
               <span style="color: #0066B3; margin-right: 10px;"
                     nz-tooltip

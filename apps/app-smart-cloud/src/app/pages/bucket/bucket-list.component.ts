@@ -2,10 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { I18NService } from '@core';
 import { LoadingService } from '@delon/abc/loading';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -29,6 +32,7 @@ export class BucketListComponent implements OnInit {
   loading: boolean = true;
 
   constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
     private objectSevice: ObjectStorageService,
     private notification: NzNotificationService,
@@ -39,7 +43,9 @@ export class BucketListComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
 
+  isViLanguage: boolean;
   ngOnInit(): void {
+    this.isViLanguage = this.i18n.currentLang == 'vi-VI' ? true : false;
     this.hasObjectStorage();
   }
 
