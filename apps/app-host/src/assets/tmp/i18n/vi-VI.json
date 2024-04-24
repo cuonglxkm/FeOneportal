@@ -528,10 +528,10 @@
   "app.service.cost": "Chi phí",
   "app.service.include": "Đã bao gồm",
   "app.service.exclude": "Chưa bao gồm",
-
-  "app.kafka.name": "Tên Kafka",
+  
+  "app.kafka.name": "Tên Kafka Cluster",
   "app.kafka.version": "Phiên bản Kafka",
-  "app.kafka.name-placeholder": "Nhập tên Kafka",
+  "app.kafka.name-placeholder": "Nhập tên Kafka Cluster",
   "app.kafka.version-placeholder": "Chọn phiên bản Kafka",
   "app.kafka.broker": "Số Broker",
   "app.kafka.cost-cpu": "Chi phí vCPU",
@@ -666,7 +666,7 @@
   "app.text.version": "Phiên bản",
   "app.text.status": "Trạng thái",
   "app.text.package": "Gói dịch vụ",
-  "app.text.creation-time": "Thời gian tạo",
+  "app.text.creation-time": "Ngày khởi tạo",
   "app.text.created-date": "Ngày tạo",
   "app.text.operation": "Thao tác",
   "app.text.edit": "Chỉnh sửa",
@@ -790,10 +790,7 @@
   "app.select.network": "Chọn Network",
   "app.trigger": "Kích hoạt",
   "app.detail": "Chi tiết",
-  "app.network.range": "Dải mạng"
-  "validation.kafka.logSegmentBytes-length": "Giá trị log.segment.bytes là số nguyên dương nằm trong khoảng 1 đến 10.737.418.240 (10GB)",
-
-
+  "app.network.range": "Dải mạng",
 
   "volume.title": "Danh sách Volume",
   "volume.title.detail": "Chi tiết Volume",

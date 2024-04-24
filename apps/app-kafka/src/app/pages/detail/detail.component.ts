@@ -15,8 +15,8 @@ export class DetailComponent implements OnInit {
   selectedIndex = 0;
   serviceOrderCode: string;
   itemDetail: KafkaDetail;
-  regionId = 3;
-  projectId = 1;
+  regionId: number;
+  projectId: number;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -54,6 +54,8 @@ export class DetailComponent implements OnInit {
       res => {
         if (res && res.code == 200) {
           this.itemDetail = camelizeKeys(res.data) as KafkaDetail;
+          this.regionId = Number.parseInt(this.itemDetail.regionId);
+          this.projectId = Number.parseInt(this.itemDetail.projectId);
         }
       }
     )
