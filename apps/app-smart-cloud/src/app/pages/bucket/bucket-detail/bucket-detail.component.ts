@@ -1,27 +1,21 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import * as _ from 'lodash';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
-import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
-import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
-import { ActivatedRoute } from '@angular/router';
-import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BucketService } from '../../../shared/services/bucket.service';
-import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize } from 'rxjs/operators';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { addDays, differenceInCalendarDays, setHours } from 'date-fns';
-import { DisabledTimeFn, DisabledTimePartial } from 'ng-zorro-antd/date-picker';
 import {
-  HttpClient,
-  HttpRequest,
-  HttpHeaders,
-  HttpResponse,
-  HttpEventType,
-  HttpContext,
+  HttpClient
 } from '@angular/common/http';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { _HttpClient } from '@delon/theme';
+import { addDays, differenceInCalendarDays, setHours } from 'date-fns';
+import { DisabledTimeFn } from 'ng-zorro-antd/date-picker';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadFile } from 'ng-zorro-antd/upload/interface';
+import { finalize } from 'rxjs/operators';
+import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.model';
+import { BucketService } from '../../../shared/services/bucket.service';
+import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -36,7 +30,7 @@ export class BucketDetailComponent implements OnInit {
   currentKey = '';
   date: Date = new Date();
   orderMetadata = 0;
-  defaultMetadata = { order: 1, key: '', value: '' };
+  defaultMetadata = { metaKey: '', metaValue: '' };
   listOfMetadata: any = [];
   bucket: any;
   size = 5;
@@ -64,6 +58,7 @@ export class BucketDetailComponent implements OnInit {
     'border-radius': '10px',
     width: '80%',
   };
+  uploadFailed: boolean = false
 
   lstFileUpdate: NzUploadFile[] = [];
 
@@ -92,15 +87,15 @@ export class BucketDetailComponent implements OnInit {
       validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)],
     }),
   });
-  radioValue: any = 'Public';
+  radioValue: any = 'public-read';
   radioValue1: any = 'Private';
   checked = false;
   indeterminate = false;
   countObjectSelected = 0;
   nameFolder = '';
   folderNameLike = '';
-  pageSize:number
-  pageIndex:number
+  pageSize: number;
+  pageIndex: number;
   treeFolder = [];
   linkShare = '';
   today = new Date();
@@ -109,7 +104,7 @@ export class BucketDetailComponent implements OnInit {
   versionId: string;
   private: any;
   percent = 0;
-  keyName: string
+  keyName: string;
   range(start: number, end: number): number[] {
     const result: number[] = [];
     for (let i = start; i < end; i++) {
@@ -297,9 +292,6 @@ export class BucketDetailComponent implements OnInit {
     item.type = '';
   }
 
-  private async delay(number: number) {
-    return new Promise((resolve) => setTimeout(resolve, number));
-  }
 
   toFolder1(item: any, isBucket) {
     if (isBucket) {
@@ -341,29 +333,23 @@ export class BucketDetailComponent implements OnInit {
       );
   }
 
- 
-
   handleChange({ file, fileList }: NzUploadChangeParam) {
- 
-      let newFiles = fileList.filter(
-        (item) => !this.lstFileUpdate.some(existingItem => existingItem.name === item.name)
-      );
+    let newFiles = fileList.filter(
+      (item) =>
+        !this.lstFileUpdate.some(
+          (existingItem) => existingItem.name === item.name
+        )
+    );
 
-      if(newFiles.length === 0){
-        return;
-      }
+    if (newFiles.length === 0) {
+      return;
+    }
 
-      console.log(newFiles);
-      
-  
-      // Add new files to lstFileUpdate
-      this.lstFileUpdate = [...this.lstFileUpdate, ...newFiles];
-      console.log(this.lstFileUpdate);
-  
-      this.emptyFileUpload = false;
-    
+    // Add new files to lstFileUpdate
+    this.lstFileUpdate = [...this.lstFileUpdate, ...newFiles];
+
+    this.emptyFileUpload = false;
   }
-
 
   removeFile(item: NzUploadFile) {
     let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
@@ -421,8 +407,8 @@ export class BucketDetailComponent implements OnInit {
       )
       .subscribe((data) => {
         console.log(data);
-        this.pageSize = data.paginationObjectList.pageSize
-        this.pageIndex = data.paginationObjectList.draw
+        this.pageSize = data.paginationObjectList.pageSize;
+        this.pageIndex = data.paginationObjectList.draw;
         this.listOfData = data.paginationObjectList.items;
         this.listOfData.map((item) => {
           item.keyName = item.key.split('/').pop();
@@ -441,7 +427,6 @@ export class BucketDetailComponent implements OnInit {
 
   addMoreMetadata() {
     let defaultValue = { ...this.defaultMetadata };
-    defaultValue.order = this.orderMetadata++;
     this.listOfMetadata.push(defaultValue);
   }
 
@@ -449,8 +434,8 @@ export class BucketDetailComponent implements OnInit {
     this.lstFileUpdate.push(file);
   }
 
-  removeMetadata(order: any) {
-    const index = this.listOfMetadata.findIndex((item) => item.order == order);
+  removeMetadata(key: any) {
+    const index = this.listOfMetadata.findIndex((item) => item.key == key);
     if (index >= 0) {
       this.listOfMetadata.splice(index, 1);
     }
@@ -740,14 +725,13 @@ export class BucketDetailComponent implements OnInit {
 
   toFolder2(s: string) {
     this.currentKey = s;
-    
+
     this.loadData();
   }
 
   uploadAllFile() {
-    
-    const filesToUpload = this.lstFileUpdate.filter(item => !item.uploaded);
-  
+    const filesToUpload = this.lstFileUpdate.filter((item) => !item.uploaded);
+
     const uploadNextFile = (index) => {
       if (index < filesToUpload.length) {
         const item = filesToUpload[index];
@@ -758,61 +742,233 @@ export class BucketDetailComponent implements OnInit {
         });
       }
     };
-  
-    
+
     uploadNextFile(0);
   }
-  
+
   uploadSingleFile(item) {
     if (item.uploaded) {
       return Promise.resolve();
     }
-    return new Promise<void>((resolve, reject) => {
-      let data = {
-        bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
-        key: this.currentKey + item.name,
-        expiryTime: addDays(this.date, 1),
-        urlOrigin: 'http://localhost:4200',
-      };
-      this.service.getSignedUrl(data).subscribe(
-        (responseData) => {
-          const presignedUrl = responseData.url;
+    var chunkCounter = 0;
+    const chunkSize = 10000000; // 10MB
+    console.log(item);
+
+    if (item.size > 10000000) {
+      return new Promise<void>((resolve, reject) => {
+        let start;
+
+        var uploadPartsArray = [];
+
+        let orderData = [];
+        let upload_id;
+        start = 0;
+        chunkCounter = 0;
+        var chunkEnd = start + chunkSize;
+        var numberofChunks = Math.ceil(item.size / chunkSize);
+        var params = {
+          bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+          key: this.currentKey + item.name,
+          metadata: this.listOfMetadata,
+          acl: this.radioValue,
+        };
+
+        console.log(params);
+        
+
+        this.service.createMultiPartUpload(params).subscribe(
+          (data) => {
+            console.log(data);
+            upload_id = data.data;
+            createChunk(start);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+
+        const createChunk = (start) => {
+          chunkCounter++;
+          chunkEnd = Math.min(start + chunkSize, item.size);
+
+          const blob = item.originFileObj.slice(start, chunkEnd);
+          //created the chunk, now upload iit
+
+          uploadChunk(blob, start, chunkCounter);
+        };
+
+        const completemultipart = () => {
+          let data = {
+            bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+            key: this.currentKey + item.name,
+            uploadId: upload_id,
+            partETags: uploadPartsArray,
+            modal: uploadPartsArray,
+          };
+
           const xhr = new XMLHttpRequest();
-          xhr.open('PUT', presignedUrl, true);
+          xhr.open(
+            'POST',
+            'https://api.onsmartcloud.com/provisions/object-storage/CompleteMultipartUpload',
+            true
+          );
+          xhr.setRequestHeader(
+            'Authorization',
+            'Bearer ' + this.tokenService.get()?.token
+          );
+          xhr.setRequestHeader('Content-Type', 'application/json');
+
           xhr.upload.onprogress = (event) => {
+            var totalPercentComplete = Math.round(
+              (chunkCounter / numberofChunks) * 100
+            );
+            console.log(totalPercentComplete);
+
             if (event.lengthComputable) {
-              item.percentage = Math.round((event.loaded / event.total) * 100);
+              item.percentage = Math.round(
+                (event.loaded / event.total) * totalPercentComplete
+              );
             }
           };
           xhr.onload = () => {
-            this.notification.success('Thành công', 'Upload thành công');
-            this.loadData();
-            resolve(); 
+            if (xhr.status === 200) {
+              this.notification.success('Thành công', 'Upload thành công');
+              this.loadData();
+              resolve();
+            } else {
+              this.notification.error('Thất bại', 'Upload thất bại');
+              reject();
+            }
           };
+
           xhr.onerror = () => {
             this.notification.error('Thất bại', 'Upload thất bại');
-            reject(); 
+            reject();
           };
-          xhr.send(item.originFileObj);
-        },
-        (error) => {
-          this.notification.error('Thất bại', 'Upload thất bại');
-          reject(); 
-        }
-      );
-    });
+
+          xhr.send(JSON.stringify(data));
+        };
+
+        const uploadChunk = (blob, start, index) => {
+          let data = {
+            bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+            key: this.currentKey + item.name,
+            partNumber: index.toString(),
+            uploadId: upload_id,
+            expiryTime: addDays(new Date(), 1),
+            urlOrigin: 'https://oneportal.onsmartcloud.com',
+          };
+
+          this.service.getSignedUrl(data).subscribe(
+            (responseData) => {
+              const presignedUrl = responseData.url;
+              orderData.push({
+                presignedUrl: presignedUrl,
+                index: index,
+              });
+              const xhr = new XMLHttpRequest();
+              xhr.open('PUT', presignedUrl, true);
+              xhr.upload.onprogress = (event) => {
+                var totalPercentComplete = Math.round(
+                  ((chunkCounter - 1) / numberofChunks) * 100
+                );
+
+                if (event.lengthComputable) {
+                  item.percentage = Math.round(totalPercentComplete);
+                }
+              };
+              xhr.onload = () => {
+                uploadPartsArray.push({
+                  PartNumber: index,
+                  ETag: xhr
+                    .getResponseHeader('ETag')
+                    .replace(/[|&;$%@@"<>()+,]/g, ''),
+                });
+
+                //next chunk starts at + chunkSize from start
+                start += chunkSize;
+                console.log(start);
+
+                //if start is smaller than file size - we have more to still upload
+                if (start < item.size) {
+                  //create the new chunk
+                  createChunk(start);
+                } else {
+                  completemultipart();
+                }
+              };
+              xhr.onerror = () => {
+                this.notification.error('Thất bại', 'Upload thất bại');
+                this.uploadFailed = true
+                item.percentage = 100
+                let dataError = {
+                  bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+                  key: this.currentKey + item.name,
+                  uploadId: upload_id,
+                };
+                this.service.abortmultipart(dataError).subscribe(
+                  (data) => {
+                    console.log(data);                  
+                  },
+                  (error) => {
+                    console.log(error);
+                  }
+                );
+                reject()
+              };
+              xhr.send(blob);
+            },
+            (error) => {
+              this.notification.error('Thất bại', 'Upload thất bại');
+            }
+          );
+        };
+      });
+    } else {
+      return new Promise<void>((resolve, reject) => {
+        let data = {
+          bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
+          key: this.currentKey + item.name,
+          expiryTime: addDays(this.date, 1),
+          urlOrigin: 'https://oneportal.onsmartcloud.com',
+        };
+        this.service.getSignedUrl(data).subscribe(
+          (responseData) => {
+            const presignedUrl = responseData.url;
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', presignedUrl, true);
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                item.percentage = Math.round(
+                  (event.loaded / event.total) * 100
+                );
+              }
+            };
+            xhr.onload = () => {
+              this.notification.success('Thành công', 'Upload thành công');
+              this.loadData();
+              resolve();
+            };
+            xhr.onerror = () => {
+              this.notification.error('Thất bại', 'Upload thất bại');
+              reject();
+            };
+            xhr.send(item.originFileObj);
+          },
+          (error) => {
+            this.notification.error('Thất bại', 'Upload thất bại');
+            reject();
+          }
+        );
+      });
+    }
   }
-  
-  
 
   handleCancelUploadFile() {
-    this.lstFileUpdate = []
-    this.isVisibleUploadFile = false
+    this.lstFileUpdate = [];
+    this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
   }
 
-  uploadFile(){
-
-  }
-  
+  uploadFile() {}
 }

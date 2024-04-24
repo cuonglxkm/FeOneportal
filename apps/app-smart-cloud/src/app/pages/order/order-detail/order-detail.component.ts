@@ -64,11 +64,11 @@ export class OrderDetailComponent {
           next: (data) => {
             this.data = data;
             data?.orderItems?.forEach((item) => {
-              this.serviceName = item.serviceName.split('-')[0]
+              this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
                 this.serviceName = 'VM'
               }
-            })
+            });          
           },
           error: (e) => {
             this.notification.error('Thất bại', 'Lấy dữ liệu thất bại');
@@ -96,7 +96,12 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
-            console.log(data);
+            data?.orderItems?.forEach((item) => {
+              this.serviceName = item.serviceName.split('-')[0].trim()
+              if(this.serviceName.includes('Máy ảo')){
+                this.serviceName = 'VM'
+              }
+            })
             
           },
           error: (e) => {
