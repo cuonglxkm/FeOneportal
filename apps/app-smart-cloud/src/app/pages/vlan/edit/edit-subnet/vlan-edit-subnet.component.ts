@@ -225,15 +225,14 @@ export class VlanEditSubnetComponent implements OnInit {
     this.formUpdateSubnet.hostRoutes = null;
     console.log('edit', this.formUpdateSubnet);
     this.vlanService.updateSubnet(this.idSubnet, this.formUpdateSubnet).subscribe(data => {
-      if (data) {
         this.isLoading = false;
         this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
         this.notification.success('Thành công', 'Chỉnh sửa Subnet thành công');
-      }
+
     }, error => {
       this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/vlan/network/detail/' + this.idNetwork]);
-      this.notification.error('Thất bại', 'Chỉnh sửa Subnet thất bại');
+      this.notification.error('Thất bại', 'Chỉnh sửa Subnet thất bại. ' + error.error.detail);
     });
   }
 

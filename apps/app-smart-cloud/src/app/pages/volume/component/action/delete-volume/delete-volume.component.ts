@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VolumeService } from '../../../../../shared/services/volume.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-delete-volume',
@@ -29,7 +31,8 @@ export class DeleteVolumeComponent implements AfterViewInit{
 
 
   constructor(private notification: NzNotificationService,
-              private volumeService: VolumeService) {
+              private volumeService: VolumeService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
   focusOkButton(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
@@ -60,22 +63,15 @@ export class DeleteVolumeComponent implements AfterViewInit{
     if (this.value == this.volumeName) {
       this.isInput = false;
       this.volumeService.deleteVolume(this.volumeId).subscribe(data => {
-        if (data) {
           this.isLoading = false;
           this.isVisible = false;
-          this.notification.success('Thành công', 'Xóa Volume thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.delete.success'));
           this.onOk.emit(data);
-        } else {
-          console.log('data', data);
-          this.isLoading = false;
-          this.isVisible = false;
-          this.notification.error('Thất bại', 'Xóa Volume thất bại');
-        }
       }, error => {
         console.log('error', error);
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error('Thất bại', 'Xóa Volume thất bại');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.delete.fail'), error.error.detail);
       });
     } else {
       this.isInput = true;
